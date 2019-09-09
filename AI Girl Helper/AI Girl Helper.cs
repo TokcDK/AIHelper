@@ -1,0 +1,440 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace AI_Girl_Helper
+{
+    public partial class AIGirlHelper : Form
+    {
+        public AIGirlHelper()
+        {
+            InitializeComponent();
+        }
+
+        int mode = 0;
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            button1.Enabled = false;
+
+            switch (mode)
+            {
+                case 0:
+                    CompressingMode();
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    ExtractingMode();
+                    break;
+                default:
+                    break;
+            }
+
+            button1.Enabled = true;
+        }
+
+        private async void ExtractingMode()
+        {
+            button1.Text = "Extracting..";
+
+            //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+            await Task.Run(() => UnpackGame());
+            await Task.Run(() => UnpackMods());
+
+            BepinExLoadingFix();
+
+            CreateShortcuts();
+
+            button1.Text = "Game Ready";
+            FoldersInit();
+        }
+
+        private void UnpackGame()
+        {
+            if (Directory.Exists(DataPath))
+            {
+                string AIGirlTrial = Path.Combine(DataPath, "AIGirlTrial.7z");
+                string AIGirl = Path.Combine(DataPath, "AIGirl.7z");
+                if (File.Exists(AIGirlTrial) && !File.Exists(Path.Combine(DataPath, "AI-SyoujyoTrial.exe")))
+                {
+                    _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
+                    _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
+                    _ = label3.Invoke((Action)(() => label3.Text = "Extracting"));
+                    _ = label4.Invoke((Action)(() => label4.Text = "Game archive: " + Path.GetFileNameWithoutExtension(AIGirlTrial)));
+                    Compressor.Decompress(AIGirlTrial, DataPath);
+                    _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
+                }
+                else if (File.Exists(AIGirl) && !File.Exists(Path.Combine(DataPath, "AI-Syoujyo.exe")))
+                {
+                    _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
+                    _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
+                    _ = label3.Invoke((Action)(() => label3.Text = "Extracting"));
+                    _ = label4.Invoke((Action)(() => label4.Text = "Game archive: " + Path.GetFileNameWithoutExtension(AIGirl)));
+                    Compressor.Decompress(AIGirl, DataPath);
+                    _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
+                }
+            }
+        }
+
+        private void BepinExLoadingFix()
+        {
+            Symlink(Path.Combine(DataPath, "Bepinex", "core", "BepInEx.Preloader.dll")
+                  , Path.Combine(ModsPath, "BepInEx5", "Bepinex", "core", "BepInEx.Preloader.dll")
+                  );
+
+            Symlink(Path.Combine(DataPath, "doorstop_config.ini")
+                  , Path.Combine(ModsPath, "BepInEx5", "doorstop_config.ini")
+                  );
+
+            Symlink(Path.Combine(DataPath, "version.dll")
+                  , Path.Combine(ModsPath, "BepInEx5", "version.dll")
+                  );
+        }
+
+        private void Symlink(string symlink, string file)
+        {
+            if (File.Exists(symlink))
+            {
+            }
+            else
+            {
+                if (Directory.Exists(Path.GetDirectoryName(symlink)))
+                {
+                }
+                else
+                {
+                    _ = Directory.CreateDirectory(Path.GetDirectoryName(symlink));
+                }
+                if (File.Exists(file))
+                {
+                    CreateSymlink.File(file, symlink);
+                }
+            }
+        }
+
+        //https://bytescout.com/blog/create-shortcuts-in-c-and-vbnet.html
+        private void CreateShortcuts()
+        {
+            if (checkBox1.Checked)
+            {
+                //AI-Girl Trial
+                string shortcutname = "AI-Girl Trial";
+                string targetpath = Path.Combine(MOPath, "ModOrganizer.exe");
+                string arguments = "\"moshortcut://:AI-SyoujyoTrial\"";
+                string workingdir = Path.GetDirectoryName(targetpath);
+                string description = "Run " + shortcutname + " with ModOrganizer";
+                string iconlocation = Path.Combine(DataPath, "AI-SyoujyoTrial.exe");
+                Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description, iconlocation);
+
+                //Mod Organizer
+                shortcutname = "ModOrganizer AI-Shoujo Trial";
+                targetpath = Path.Combine(MOPath, "ModOrganizer.exe");
+                arguments = string.Empty;
+                workingdir = Path.GetDirectoryName(targetpath);
+                description = shortcutname;
+                Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description);
+            }
+        }
+
+        private void UnpackMods()
+        {
+            if (Directory.Exists(ModsPath) && Directory.Exists(DownloadsPath))
+            {
+                string[] ModDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();
+                string[] files = Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories).Where(name => !ModDirs.Contains(Path.Combine(ModsPath, Path.GetFileNameWithoutExtension(name)))).ToArray();
+                if (files.Length == 0)
+                {
+                }
+                else
+                {
+                    int i = 1;
+                    progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
+                    progressBar1.Invoke((Action)(() => progressBar1.Maximum = files.Length));
+                    progressBar1.Invoke((Action)(() => progressBar1.Value = i));
+                    foreach (string file in files)
+                    {
+                        string filename = Path.GetFileNameWithoutExtension(file);
+                        label3.Invoke((Action)(() => label3.Text = "Extracting " + i + "/" + files.Length));
+                        label4.Invoke((Action)(() => label4.Text = "Mod: " + filename));
+                        string moddirpath = Path.Combine(ModsPath, filename);
+                        if (!Directory.Exists(moddirpath))
+                        {
+                            Compressor.Decompress(file, moddirpath);
+                        }
+                        progressBar1.Invoke((Action)(() => progressBar1.Value = i));
+                        i++;
+                    }
+                    progressBar1.Invoke((Action)(() => progressBar1.Visible = false));
+                }
+            }
+        }
+
+        private async void CompressingMode()
+        {
+            button1.Text = "Compressing..";
+
+            //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+            await Task.Run(() => PackMods());
+
+            ////http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+            //Thread open = new Thread(new ParameterizedThreadStart((obj) => PackMods()));
+            //open.Start();
+
+            button1.Text = "Prepare the game";
+            FoldersInit();
+        }
+
+        private void PackMods()
+        {
+            if (Directory.Exists(ModsPath))
+            {
+                string[] dirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();//с игнором сепараторов
+                if (dirs.Length == 0)
+                {
+                }
+                else
+                {
+                    //Read categories.dat
+                    List<CategoriesList> categories = new List<CategoriesList>();
+                    foreach(string line in File.ReadAllLines(Path.Combine(MOPath, "categories.dat")))
+                    {
+                        if (line.Length == 0)
+                        {
+                        }
+                        else
+                        {
+                            string[] linevalues = line.Split('|');
+                            categories.Add(new CategoriesList(linevalues[0], linevalues[1], linevalues[2], linevalues[3]));
+                        }
+                    }
+
+                    int i = 1;
+                    progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
+                    progressBar1.Invoke((Action)(() => progressBar1.Maximum = dirs.Length));
+                    progressBar1.Invoke((Action)(() => progressBar1.Value = i));
+                    foreach (string dir in dirs)
+                    {
+                        label3.Invoke((Action)(() => label3.Text = "Compressing " + i + "/" + dirs.Length));
+                        label4.Invoke((Action)(() => label4.Text = "Folder: " + Path.GetFileNameWithoutExtension(dir)));
+                        
+                        Compressor.Compress(dir, GetResultTargetName(categories, dir));
+
+                        progressBar1.Invoke((Action)(() => progressBar1.Value = i));
+                        i++;
+                    }
+                    progressBar1.Invoke((Action)(() => progressBar1.Visible = false));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Get result subfolder in Downloads dir as set for mod in categories.dat
+        /// </summary>
+        /// <param name="categories"></param>
+        /// <param name="inputmoddir"></param>
+        /// <returns></returns>
+        private string GetResultTargetName(List<CategoriesList> categories, string inputmoddir)
+        {
+            string targetdir = DownloadsPath;
+
+            //Sideloader mods
+            if (Directory.Exists(Path.Combine(inputmoddir, "mods")))
+            {
+                targetdir = Path.Combine(targetdir, "Sideloader");
+            }
+
+            string categoryvalue = GetMetaParameterValue(Path.Combine(inputmoddir, "meta.ini"), "category");
+            if (categoryvalue.Replace("\"", string.Empty).Length == 0)
+            {
+            }
+            else
+            {
+
+                //Subcategory from meta
+                categoryvalue = categoryvalue.Replace("\"", string.Empty);//убрать кавычки
+                categoryvalue = categoryvalue.Split(',')[0];//взять только первое значение
+                int categiryindex = int.Parse(categoryvalue)-1;//В List индекс идет от нуля
+                if (categiryindex > 0)
+                {
+                    if (categiryindex < categories.Count)//на всякий, защита от ошибки выхода за диапазон
+                    {
+                        //Проверить родительскую категорию
+                        int ParentIDindex = int.Parse(categories[categiryindex].ParentID) - 1;//В List индекс идет от нуля
+                        if (ParentIDindex > 0 && ParentIDindex < categories.Count)
+                        {
+                            targetdir = Path.Combine(targetdir, categories[ParentIDindex].Name);
+                        }
+
+                        targetdir = Path.Combine(targetdir, categories[categiryindex].Name);
+
+                        _ = Directory.CreateDirectory(targetdir);
+                    }
+                }
+            }
+
+            return targetdir;
+        }
+
+        private string GetMetaParameterValue(string MetaFilePath, string NeededValue)
+        {
+            foreach (string line in File.ReadAllLines(MetaFilePath))
+            {
+                if (line.Length == 0)
+                {
+                }
+                else
+                {
+                    if (line.StartsWith(NeededValue + "="))
+                    {
+                        return line.Remove(0, (NeededValue + "=").Length);
+                    }
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private static readonly string ModsPath = Path.Combine(Application.StartupPath, "Mods");
+        private static readonly string DownloadsPath = Path.Combine(Application.StartupPath, "Downloads");
+        private static readonly string DataPath = Path.Combine(Application.StartupPath, "Data");
+        private static readonly string MOPath = Path.Combine(Application.StartupPath, "MO");
+        private void AIGirlHelper_Load(object sender, EventArgs e)
+        {
+            FoldersInit();
+        }
+
+        private void FoldersInit()
+        {
+            if (File.Exists(Path.Combine(DataPath, "AI-SyoujyoTrial.exe")))
+            {
+                label3.Text = "AI-SyoujyoTrial game installed in Data";
+            }
+            else if (File.Exists(Path.Combine(DataPath, "AI-Syoujyo.exe")))
+            {
+                label3.Text = "AI-Syoujyo game installed in Data";
+            }
+            else if (File.Exists(Path.Combine(DataPath, "AIGirlTrial.7z")))
+            {
+                label3.Text = "AIGirlTrial archive in Data";
+            }
+            else if (File.Exists(Path.Combine(DataPath, "AIGirl.7z")))
+            {
+                label3.Text = "AIGirl archive in Data";
+            }
+            else if (Directory.Exists(DataPath))
+            {
+                label3.Text = "AIGirl files not detected in Data. Move AIGirl game files there.";
+            }
+            else
+            {
+                Directory.CreateDirectory(DataPath);
+                label3.Text = "Data dir created. Move AIGirl game files there.";
+            }
+
+            string[] ModDirs;
+            if (!Directory.Exists(ModsPath))
+            {
+                Directory.CreateDirectory(ModsPath);
+                label4.Text = "Mods dir created";
+            }
+            else if ( (ModDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray()).Length > 0 )
+            {
+                bool NotAllModsExtracted = false;
+                foreach (var file in Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories))
+                {
+                    if (ModDirs.Contains(Path.Combine(ModsPath, Path.GetFileNameWithoutExtension(file))))
+                    {
+                    }
+                    else
+                    {
+                        NotAllModsExtracted = true;
+                        break;
+                    }
+                }
+
+                if (NotAllModsExtracted)
+                {
+                    label4.Text = "Not all mods extracted to mods";
+                    //button1.Enabled = false;
+                    mode = 2;
+                    button1.Text = "Extract missing";
+                }
+                else
+                {
+                    label4.Text = "Found mod folders in Mods";
+                    //button1.Enabled = false;
+                    mode = 1;
+                    button1.Text = "Mods Ready";
+                }
+            }
+            else
+            {
+                label4.Text = "There no any mod folders in Mods";
+                mode = 2;
+                button1.Text = "Extract mods";
+            }
+
+            //если нет папок модов но есть архивы в загрузках
+            if (Directory.Exists(DownloadsPath))
+            {
+                if (Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories).Length > 0)
+                {
+                    if (Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray().Length == 0)
+                    {
+                        label4.Text = "Mods Ready for extract";
+                        mode = 2;
+                        button1.Text = "Extract mods";
+                    }
+                }
+            }
+
+            //если нет архивов в загрузках, но есть папки модов
+            if (Directory.Exists(DownloadsPath) && Directory.Exists(ModsPath))
+            {
+                if (Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray().Length > 0)
+                {
+                    if (Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories).Length == 0)
+                    {
+                        label4.Text = "No archives in downloads";
+                        button1.Text = "Pack mods";
+                        mode = 0;
+                    }
+                }
+            }
+        }
+
+        private void CheckBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBoxChangeColor(sender as CheckBox);
+        }
+
+        private void CheckBoxChangeColor(CheckBox checkBox)
+        {
+            if (checkBox.Checked)
+            {
+                checkBox.ForeColor = Color.FromArgb(192, 255, 192);
+            }
+            else
+            {
+                checkBox.ForeColor = Color.White;
+            }
+        }
+
+        //Материалы
+        //Есть пример с загрузкой файла по ссылке:
+        //https://github.com/adoconnection/SevenZipExtractor
+        //Включение exe или dll в exe проекта
+        //https://stackoverflow.com/questions/189549/embedding-dlls-in-a-compiled-executable/20306095#20306095
+        //https://github.com/Fody/Costura
+        //Решение ошибка Argument exception для библиотек, включаемых в exe с помощью costurafody
+        //http://qaru.site/questions/6941424/not-able-to-get-costurafody-to-work-keeps-asking-for-the-dll
+    }
+}

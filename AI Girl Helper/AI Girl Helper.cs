@@ -153,7 +153,7 @@ namespace AI_Girl_Helper
                 if (files.Length == 0)
                 {
                 }
-                else
+                else 
                 {
                     int i = 1;
                     progressBar1.Invoke((Action)(() => progressBar1.Visible = true));

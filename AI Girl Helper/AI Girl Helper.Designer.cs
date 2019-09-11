@@ -43,7 +43,17 @@
             this.button1 = new System.Windows.Forms.Button();
             this.SettingsPage = new System.Windows.Forms.TabPage();
             this.SettingsPanel = new System.Windows.Forms.Panel();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.FixRegistryButton = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.FullScreenCheckBox = new System.Windows.Forms.CheckBox();
+            this.ResolutionComboBox = new System.Windows.Forms.ComboBox();
+            this.ShortcutsCheckBox = new System.Windows.Forms.CheckBox();
+            this.LaunchTabPage = new System.Windows.Forms.TabPage();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.StudioButton = new System.Windows.Forms.Button();
+            this.GameButton = new System.Windows.Forms.Button();
+            this.MOButton = new System.Windows.Forms.Button();
+            this.SettingsButton = new System.Windows.Forms.Button();
             this.TabControl1.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -52,12 +62,16 @@
             this.GameNamePanel.SuspendLayout();
             this.SettingsPage.SuspendLayout();
             this.SettingsPanel.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.LaunchTabPage.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // TabControl1
             // 
             this.TabControl1.Controls.Add(this.MainPage);
             this.TabControl1.Controls.Add(this.SettingsPage);
+            this.TabControl1.Controls.Add(this.LaunchTabPage);
             this.TabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TabControl1.HotTrack = true;
             this.TabControl1.Location = new System.Drawing.Point(0, 0);
@@ -208,26 +222,164 @@
             // SettingsPanel
             // 
             this.SettingsPanel.BackColor = System.Drawing.Color.Gray;
-            this.SettingsPanel.Controls.Add(this.checkBox1);
+            this.SettingsPanel.Controls.Add(this.FixRegistryButton);
+            this.SettingsPanel.Controls.Add(this.groupBox1);
+            this.SettingsPanel.Controls.Add(this.ShortcutsCheckBox);
             this.SettingsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SettingsPanel.Location = new System.Drawing.Point(3, 3);
             this.SettingsPanel.Name = "SettingsPanel";
             this.SettingsPanel.Size = new System.Drawing.Size(340, 155);
             this.SettingsPanel.TabIndex = 1;
             // 
-            // checkBox1
+            // FixRegistryButton
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.checkBox1.Location = new System.Drawing.Point(5, 3);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(224, 17);
-            this.checkBox1.TabIndex = 0;
-            this.checkBox1.Text = "Create shortcuts after archive extraction";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
+            this.FixRegistryButton.Location = new System.Drawing.Point(247, 41);
+            this.FixRegistryButton.Name = "FixRegistryButton";
+            this.FixRegistryButton.Size = new System.Drawing.Size(75, 23);
+            this.FixRegistryButton.TabIndex = 4;
+            this.FixRegistryButton.Text = "Fix registry";
+            this.FixRegistryButton.UseVisualStyleBackColor = true;
+            this.FixRegistryButton.Visible = false;
+            this.FixRegistryButton.Click += new System.EventHandler(this.FixRegistryButton_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.FullScreenCheckBox);
+            this.groupBox1.Controls.Add(this.ResolutionComboBox);
+            this.groupBox1.ForeColor = System.Drawing.Color.White;
+            this.groupBox1.Location = new System.Drawing.Point(5, 26);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(224, 46);
+            this.groupBox1.TabIndex = 3;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Game resolution";
+            // 
+            // FullScreenCheckBox
+            // 
+            this.FullScreenCheckBox.AutoSize = true;
+            this.FullScreenCheckBox.ForeColor = System.Drawing.Color.White;
+            this.FullScreenCheckBox.Location = new System.Drawing.Point(146, 21);
+            this.FullScreenCheckBox.Name = "FullScreenCheckBox";
+            this.FullScreenCheckBox.Size = new System.Drawing.Size(72, 17);
+            this.FullScreenCheckBox.TabIndex = 4;
+            this.FullScreenCheckBox.Text = "fullscreen";
+            this.FullScreenCheckBox.UseVisualStyleBackColor = true;
+            this.FullScreenCheckBox.CheckedChanged += new System.EventHandler(this.FullScreenCheckBox_CheckedChanged);
+            // 
+            // ResolutionComboBox
+            // 
+            this.ResolutionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ResolutionComboBox.FormattingEnabled = true;
+            this.ResolutionComboBox.Items.AddRange(new object[] {
+            "1280 x 720 (16 : 9)",
+            "1366 x 768 (16 : 9)",
+            "1536 x 864 (16 : 9)",
+            "1600 x 900 (16 : 9)",
+            "1920 x 1080 (16 : 9)",
+            "2048 x 1152 (16 : 9)",
+            "2560 x 1440 (16 : 9)",
+            "3200 x 1800 (16 : 9)",
+            "3840 x 2160 (16 : 9)"});
+            this.ResolutionComboBox.Location = new System.Drawing.Point(6, 19);
+            this.ResolutionComboBox.Name = "ResolutionComboBox";
+            this.ResolutionComboBox.Size = new System.Drawing.Size(134, 21);
+            this.ResolutionComboBox.TabIndex = 1;
+            this.ResolutionComboBox.SelectedIndexChanged += new System.EventHandler(this.ResolutionComboBox_SelectedIndexChanged);
+            // 
+            // ShortcutsCheckBox
+            // 
+            this.ShortcutsCheckBox.AutoSize = true;
+            this.ShortcutsCheckBox.Checked = true;
+            this.ShortcutsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ShortcutsCheckBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.ShortcutsCheckBox.Location = new System.Drawing.Point(5, 3);
+            this.ShortcutsCheckBox.Name = "ShortcutsCheckBox";
+            this.ShortcutsCheckBox.Size = new System.Drawing.Size(224, 17);
+            this.ShortcutsCheckBox.TabIndex = 0;
+            this.ShortcutsCheckBox.Text = "Create shortcuts after archive extraction";
+            this.ShortcutsCheckBox.UseVisualStyleBackColor = true;
+            this.ShortcutsCheckBox.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
+            // 
+            // LaunchTabPage
+            // 
+            this.LaunchTabPage.Controls.Add(this.panel2);
+            this.LaunchTabPage.Location = new System.Drawing.Point(4, 22);
+            this.LaunchTabPage.Name = "LaunchTabPage";
+            this.LaunchTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.LaunchTabPage.Size = new System.Drawing.Size(346, 161);
+            this.LaunchTabPage.TabIndex = 2;
+            this.LaunchTabPage.Text = "Launch";
+            this.LaunchTabPage.UseVisualStyleBackColor = true;
+            // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.Color.Gray;
+            this.panel2.Controls.Add(this.StudioButton);
+            this.panel2.Controls.Add(this.GameButton);
+            this.panel2.Controls.Add(this.MOButton);
+            this.panel2.Controls.Add(this.SettingsButton);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(3, 3);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(340, 155);
+            this.panel2.TabIndex = 0;
+            // 
+            // StudioButton
+            // 
+            this.StudioButton.BackColor = System.Drawing.Color.Silver;
+            this.StudioButton.Enabled = false;
+            this.StudioButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.StudioButton.ForeColor = System.Drawing.Color.Black;
+            this.StudioButton.Location = new System.Drawing.Point(5, 39);
+            this.StudioButton.Name = "StudioButton";
+            this.StudioButton.Size = new System.Drawing.Size(80, 30);
+            this.StudioButton.TabIndex = 16;
+            this.StudioButton.Text = "Studio";
+            this.StudioButton.UseVisualStyleBackColor = false;
+            this.StudioButton.Visible = false;
+            this.StudioButton.Click += new System.EventHandler(this.StudioButton_Click);
+            // 
+            // GameButton
+            // 
+            this.GameButton.BackColor = System.Drawing.Color.Silver;
+            this.GameButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.GameButton.ForeColor = System.Drawing.Color.Black;
+            this.GameButton.Location = new System.Drawing.Point(5, 3);
+            this.GameButton.Name = "GameButton";
+            this.GameButton.Size = new System.Drawing.Size(80, 30);
+            this.GameButton.TabIndex = 15;
+            this.GameButton.Text = "Game";
+            this.GameButton.UseVisualStyleBackColor = false;
+            this.GameButton.Visible = false;
+            this.GameButton.Click += new System.EventHandler(this.GameButton_Click);
+            // 
+            // MOButton
+            // 
+            this.MOButton.BackColor = System.Drawing.Color.Silver;
+            this.MOButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MOButton.ForeColor = System.Drawing.Color.Black;
+            this.MOButton.Location = new System.Drawing.Point(5, 75);
+            this.MOButton.Name = "MOButton";
+            this.MOButton.Size = new System.Drawing.Size(80, 30);
+            this.MOButton.TabIndex = 13;
+            this.MOButton.Text = "Manager";
+            this.MOButton.UseVisualStyleBackColor = false;
+            this.MOButton.Visible = false;
+            this.MOButton.Click += new System.EventHandler(this.MOButton_Click);
+            // 
+            // SettingsButton
+            // 
+            this.SettingsButton.BackColor = System.Drawing.Color.Silver;
+            this.SettingsButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.SettingsButton.ForeColor = System.Drawing.Color.Black;
+            this.SettingsButton.Location = new System.Drawing.Point(5, 111);
+            this.SettingsButton.Name = "SettingsButton";
+            this.SettingsButton.Size = new System.Drawing.Size(80, 30);
+            this.SettingsButton.TabIndex = 14;
+            this.SettingsButton.Text = "Settings";
+            this.SettingsButton.UseVisualStyleBackColor = false;
+            this.SettingsButton.Visible = false;
+            this.SettingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
             // 
             // AIGirlHelper
             // 
@@ -252,6 +404,10 @@
             this.SettingsPage.ResumeLayout(false);
             this.SettingsPanel.ResumeLayout(false);
             this.SettingsPanel.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.LaunchTabPage.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -272,7 +428,17 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TabPage SettingsPage;
         private System.Windows.Forms.Panel SettingsPanel;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox ShortcutsCheckBox;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.CheckBox FullScreenCheckBox;
+        private System.Windows.Forms.ComboBox ResolutionComboBox;
+        private System.Windows.Forms.Button FixRegistryButton;
+        private System.Windows.Forms.TabPage LaunchTabPage;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Button StudioButton;
+        private System.Windows.Forms.Button GameButton;
+        private System.Windows.Forms.Button MOButton;
+        private System.Windows.Forms.Button SettingsButton;
     }
 }
 

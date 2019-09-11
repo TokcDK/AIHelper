@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -9,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace AI_Girl_Helper
 {
@@ -30,6 +33,7 @@ namespace AI_Girl_Helper
                     CompressingMode();
                     break;
                 case 1:
+                    TabControl1.SelectedTab = LaunchTabPage;
                     break;
                 case 2:
                     ExtractingMode();
@@ -89,14 +93,37 @@ namespace AI_Girl_Helper
             Symlink(Path.Combine(DataPath, "Bepinex", "core", "BepInEx.Preloader.dll")
                   , Path.Combine(ModsPath, "BepInEx5", "Bepinex", "core", "BepInEx.Preloader.dll")
                   );
+            HideFileFolder(Path.Combine(DataPath, "Bepinex"));
 
             Symlink(Path.Combine(DataPath, "doorstop_config.ini")
                   , Path.Combine(ModsPath, "BepInEx5", "doorstop_config.ini")
                   );
+            HideFileFolder(Path.Combine(DataPath, "doorstop_config.ini"),true);
 
             Symlink(Path.Combine(DataPath, "version.dll")
                   , Path.Combine(ModsPath, "BepInEx5", "version.dll")
                   );
+            HideFileFolder(Path.Combine(DataPath, "version.dll"), true);
+        }
+
+        private void HideFileFolder(string path, bool IsFile = false)
+        {
+            if (IsFile)
+            {
+                if (File.Exists(path))
+                {
+                    File.SetAttributes(path, FileAttributes.Hidden);
+                }
+            }
+            else
+            {
+                if (Directory.Exists(path))
+                {
+                    DirectoryInfo dirinfo = new DirectoryInfo(path);
+                    dirinfo.Attributes = FileAttributes.Hidden;
+                }
+            }
+
         }
 
         private void Symlink(string symlink, string file)
@@ -123,24 +150,33 @@ namespace AI_Girl_Helper
         //https://bytescout.com/blog/create-shortcuts-in-c-and-vbnet.html
         private void CreateShortcuts()
         {
-            if (checkBox1.Checked)
+            if (ShortcutsCheckBox.Checked)
             {
-                //AI-Girl Trial
-                string shortcutname = "AI-Girl Trial";
-                string targetpath = Path.Combine(MOPath, "ModOrganizer.exe");
-                string arguments = "\"moshortcut://:AI-SyoujyoTrial\"";
+                //AI-Girl Helper
+                string shortcutname = "AI-Girl Helper";
+                string targetpath = Path.Combine(Application.StartupPath, "AI Girl Helper.exe");
+                string arguments = string.Empty;
                 string workingdir = Path.GetDirectoryName(targetpath);
-                string description = "Run " + shortcutname + " with ModOrganizer";
-                string iconlocation = Path.Combine(DataPath, "AI-SyoujyoTrial.exe");
+                string description = "Run " + shortcutname;
+                string iconlocation = Path.Combine(Application.StartupPath, "AI Girl Helper.exe");
                 Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description, iconlocation);
+                
+                //AI-Girl Trial
+                //shortcutname = "AI-Girl Trial";
+                //targetpath = Path.Combine(MOPath, "ModOrganizer.exe");
+                //arguments = "\"moshortcut://:AI-SyoujyoTrial\"";
+                //workingdir = Path.GetDirectoryName(targetpath);
+                //description = "Run " + shortcutname + " with ModOrganizer";
+                //iconlocation = Path.Combine(DataPath, "AI-SyoujyoTrial.exe");
+                //Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description, iconlocation);
 
-                //Mod Organizer
-                shortcutname = "ModOrganizer AI-Shoujo Trial";
-                targetpath = Path.Combine(MOPath, "ModOrganizer.exe");
-                arguments = string.Empty;
-                workingdir = Path.GetDirectoryName(targetpath);
-                description = shortcutname;
-                Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description);
+                ////Mod Organizer
+                //shortcutname = "ModOrganizer AI-Shoujo Trial";
+                //targetpath = Path.Combine(MOPath, "ModOrganizer.exe");
+                //arguments = string.Empty;
+                //workingdir = Path.GetDirectoryName(targetpath);
+                //description = shortcutname;
+                //Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description);
             }
         }
 
@@ -204,7 +240,7 @@ namespace AI_Girl_Helper
                 {
                     //Read categories.dat
                     List<CategoriesList> categories = new List<CategoriesList>();
-                    foreach(string line in File.ReadAllLines(Path.Combine(MOPath, "categories.dat")))
+                    foreach(string line in File.ReadAllLines(Path.Combine(MODirPath, "categories.dat")))
                     {
                         if (line.Length == 0)
                         {
@@ -305,10 +341,19 @@ namespace AI_Girl_Helper
         private static readonly string ModsPath = Path.Combine(Application.StartupPath, "Mods");
         private static readonly string DownloadsPath = Path.Combine(Application.StartupPath, "Downloads");
         private static readonly string DataPath = Path.Combine(Application.StartupPath, "Data");
-        private static readonly string MOPath = Path.Combine(Application.StartupPath, "MO");
+        private static readonly string MODirPath = Path.Combine(Application.StartupPath, "MO");
         private void AIGirlHelper_Load(object sender, EventArgs e)
         {
             FoldersInit();
+
+            //if (Registry.GetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", null) == null)
+            //{
+            //    FixRegistryButton.Visible = true;
+            //}
+
+            //set Settings
+            ResolutionComboBox.Text = ReadXmlValue(SetupXmlPath, "Setting/Size", ResolutionComboBox.Text);
+            FullScreenCheckBox.Checked = bool.Parse(ReadXmlValue(SetupXmlPath, "Setting/FullScreen", FullScreenCheckBox.Checked.ToString().ToLower()));
         }
 
         private void FoldersInit()
@@ -373,6 +418,11 @@ namespace AI_Girl_Helper
                     //button1.Enabled = false;
                     mode = 1;
                     button1.Text = "Mods Ready";
+                    MOButton.Visible = true;
+                    SettingsButton.Visible = true;
+                    GameButton.Visible = true;
+                    StudioButton.Visible = true;
+                    TabControl1.SelectedTab = LaunchTabPage;
                 }
             }
             else
@@ -425,6 +475,121 @@ namespace AI_Girl_Helper
             else
             {
                 checkBox.ForeColor = Color.White;
+            }
+        }
+
+        private static readonly string SetupXmlPath = Path.Combine(DataPath, "UserData", "setup.xml");
+        private void ResolutionComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ChangeXmlValue(SetupXmlPath, "Setting/Size", (sender as ComboBox).SelectedItem.ToString());
+            ChangeXmlValue(SetupXmlPath, "Setting/Width", (sender as ComboBox).SelectedItem.ToString().Replace("(16 : 9)",string.Empty).Trim().Split('x')[0].Trim());
+            ChangeXmlValue(SetupXmlPath, "Setting/Height", (sender as ComboBox).SelectedItem.ToString().Replace("(16 : 9)",string.Empty).Trim().Split('x')[1].Trim());
+        }
+
+        private void FullScreenCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBoxChangeColor(sender as CheckBox);
+            ChangeXmlValue(SetupXmlPath, "Setting/FullScreen", (sender as CheckBox).Checked.ToString().ToLower());
+        }
+
+        private void ChangeXmlValue(string xmlpath, string nodename, string value)
+        {
+            if (File.Exists(xmlpath))
+            {
+                //https://stackoverflow.com/questions/2137957/update-value-in-xml-file
+                XmlDocument xmlDoc = new XmlDocument();
+
+                xmlDoc.Load(xmlpath);
+
+                XmlNode node = xmlDoc.SelectSingleNode(nodename);
+
+                if (node == null || node.InnerText == value)
+                {
+                }
+                else
+                {
+                    node.InnerText = value;
+
+                    xmlDoc.Save(xmlpath);
+                }
+            }
+        }
+
+        private string ReadXmlValue(string xmlpath, string nodename, string defaultresult)
+        {
+            if (File.Exists(xmlpath))
+            {
+                //https://stackoverflow.com/questions/2137957/update-value-in-xml-file
+                XmlDocument xmlDoc = new XmlDocument();
+
+                xmlDoc.Load(xmlpath);
+
+                XmlNode node = xmlDoc.SelectSingleNode(nodename);
+
+                if (node == null || node.InnerText == defaultresult)
+                {
+                }
+                else
+                {
+                    return node.InnerText;
+                }
+            }
+            return defaultresult;
+        }
+
+        private void FixRegistryButton_Click(object sender, EventArgs e)
+        {
+            if (Registry.GetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", null) == null)
+            {
+                Registry.SetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", Path.Combine(DataPath));
+                MessageBox.Show("Registry fixed! Installdir was set to Data dir.");
+            }
+        }
+
+        private void MOButton_Click(object sender, EventArgs e)
+        {
+            RunProgram(Path.Combine(MODirPath, "ModOrganizer.exe"), string.Empty);
+        }
+
+        private void SettingsButton_Click(object sender, EventArgs e)
+        {
+            RunProgram(Path.Combine(MODirPath, "ModOrganizer.exe"), "moshortcut://:InitSetting");
+        }
+
+        private void GameButton_Click(object sender, EventArgs e)
+        {
+            RunProgram(Path.Combine(MODirPath, "ModOrganizer.exe"), "moshortcut://:AI-SyoujyoTrial");
+        }
+
+        private void StudioButton_Click(object sender, EventArgs e)
+        {
+            RunProgram(Path.Combine(MODirPath, "ModOrganizer.exe"), "moshortcut://:AI-SyoujyoStudio");
+        }
+
+        private void RunProgram(string ProgramPath, string Arguments)
+        {
+            if (File.Exists(ProgramPath))
+            {
+                using (Process Program = new Process())
+                {
+                    //MessageBox.Show("outdir=" + outdir);
+                    Program.StartInfo.FileName = ProgramPath;
+                    if (Arguments.Length > 0)
+                    {
+                        Program.StartInfo.Arguments = Arguments;
+                    }
+                    Program.StartInfo.WorkingDirectory = Path.GetDirectoryName(ProgramPath);
+
+                    //http://www.cyberforum.ru/windows-forms/thread31052.html
+                    // свернуть
+                    this.WindowState = FormWindowState.Minimized;
+
+                    Program.Start();
+                    Program.WaitForExit();
+
+                    // Показать
+                    this.WindowState = FormWindowState.Normal;
+                }
             }
         }
 

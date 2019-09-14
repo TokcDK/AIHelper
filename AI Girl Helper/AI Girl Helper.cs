@@ -17,6 +17,16 @@ namespace AI_Girl_Helper
 {
     public partial class AIGirlHelper : Form
     {
+        //constants
+        private static readonly string ModsPath = Path.Combine(Application.StartupPath, "Mods");
+        private static readonly string DownloadsPath = Path.Combine(Application.StartupPath, "Downloads");
+        private static readonly string DataPath = Path.Combine(Application.StartupPath, "Data");
+        private static readonly string MODirPath = Path.Combine(Application.StartupPath, "MO");
+        private static readonly string MOexePath = Path.Combine(MODirPath, "ModOrganizer.exe");
+        private static readonly string OverwriteFolder = Path.Combine(MODirPath, "overwrite");
+        private static readonly string OverwriteFolderLink = Path.Combine(Application.StartupPath, "MOUserData");
+        private static readonly string SetupXmlPath = Path.Combine(OverwriteFolderLink, "UserData", "setup.xml");
+
         public AIGirlHelper()
         {
             InitializeComponent();
@@ -160,7 +170,7 @@ namespace AI_Girl_Helper
                 string description = "Run " + shortcutname;
                 string iconlocation = Path.Combine(Application.StartupPath, "AI Girl Helper.exe");
                 Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description, iconlocation);
-                
+
                 //AI-Girl Trial
                 //shortcutname = "AI-Girl Trial";
                 //targetpath = Path.Combine(MOPath, "ModOrganizer.exe");
@@ -177,6 +187,11 @@ namespace AI_Girl_Helper
                 //workingdir = Path.GetDirectoryName(targetpath);
                 //description = shortcutname;
                 //Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description);
+
+                if (!Directory.Exists(OverwriteFolderLink) && Directory.Exists(OverwriteFolder))
+                {
+                    CreateSymlink.Folder(OverwriteFolder, OverwriteFolderLink);
+                }
             }
         }
 
@@ -338,10 +353,6 @@ namespace AI_Girl_Helper
             return string.Empty;
         }
 
-        private static readonly string ModsPath = Path.Combine(Application.StartupPath, "Mods");
-        private static readonly string DownloadsPath = Path.Combine(Application.StartupPath, "Downloads");
-        private static readonly string DataPath = Path.Combine(Application.StartupPath, "Data");
-        private static readonly string MODirPath = Path.Combine(Application.StartupPath, "MO");
         private void AIGirlHelper_Load(object sender, EventArgs e)
         {
             FoldersInit();
@@ -350,10 +361,61 @@ namespace AI_Girl_Helper
             //{
             //    FixRegistryButton.Visible = true;
             //}
+            SetScreenSettings();
+        }
 
+        private void SetScreenSettings()
+        {
             //set Settings
+            if (File.Exists(SetupXmlPath))
+            {
+            }
+            else
+            {
+                string screenWidth = Screen.PrimaryScreen.Bounds.Width.ToString();
+                //string screenHeight = Screen.PrimaryScreen.Bounds.Height.ToString();
+                int[] width = { 1280, 1366, 1536, 1600, 1920, 2048, 2560, 3200, 3840 };
+                if (int.Parse(screenWidth) > width[width.Length-1])
+                {
+                    ResolutionComboBox.SelectedItem = width.Length - 1;
+                    SetScreenResolution(ResolutionComboBox.Items[width.Length - 1].ToString());                   
+                }
+                else
+                {
+                    for (int w = 0; w < width.Length; w++)
+                    {
+                        if (int.Parse(screenWidth) <= width[w])
+                        {
+                            string SelectedRes = ResolutionComboBox.Items[w].ToString();
+                            ResolutionComboBox.Text = SelectedRes;
+                            SetScreenResolution(SelectedRes);
+                            break;
+                        }
+                    }
+                }
+            }
+
             ResolutionComboBox.Text = ReadXmlValue(SetupXmlPath, "Setting/Size", ResolutionComboBox.Text);
             FullScreenCheckBox.Checked = bool.Parse(ReadXmlValue(SetupXmlPath, "Setting/FullScreen", FullScreenCheckBox.Checked.ToString().ToLower()));
+        }
+
+        private void SetScreenResolution(string Resolution)
+        {
+            if (Directory.Exists(OverwriteFolder))
+            {
+            }
+            else
+            {
+                Directory.CreateDirectory(OverwriteFolder);
+            }
+            if (!Directory.Exists(OverwriteFolderLink))
+            {
+                CreateSymlink.Folder(OverwriteFolder, OverwriteFolderLink);
+            }
+
+            ChangeXmlValue(SetupXmlPath, "Setting/Size", Resolution);
+            ChangeXmlValue(SetupXmlPath, "Setting/Width", Resolution.Replace("(16 : 9)", string.Empty).Trim().Split('x')[0].Trim());
+            ChangeXmlValue(SetupXmlPath, "Setting/Height", Resolution.ToString().Replace("(16 : 9)", string.Empty).Trim().Split('x')[1].Trim());
         }
 
         private void FoldersInit()
@@ -478,12 +540,9 @@ namespace AI_Girl_Helper
             }
         }
 
-        private static readonly string SetupXmlPath = Path.Combine(DataPath, "UserData", "setup.xml");
         private void ResolutionComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ChangeXmlValue(SetupXmlPath, "Setting/Size", (sender as ComboBox).SelectedItem.ToString());
-            ChangeXmlValue(SetupXmlPath, "Setting/Width", (sender as ComboBox).SelectedItem.ToString().Replace("(16 : 9)",string.Empty).Trim().Split('x')[0].Trim());
-            ChangeXmlValue(SetupXmlPath, "Setting/Height", (sender as ComboBox).SelectedItem.ToString().Replace("(16 : 9)",string.Empty).Trim().Split('x')[1].Trim());
+            SetScreenResolution((sender as ComboBox).SelectedItem.ToString());
         }
 
         private void FullScreenCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -494,24 +553,28 @@ namespace AI_Girl_Helper
 
         private void ChangeXmlValue(string xmlpath, string nodename, string value)
         {
+            //https://stackoverflow.com/questions/2137957/update-value-in-xml-file
+            XmlDocument xmlDoc = new XmlDocument();
             if (File.Exists(xmlpath))
             {
-                //https://stackoverflow.com/questions/2137957/update-value-in-xml-file
-                XmlDocument xmlDoc = new XmlDocument();
-
                 xmlDoc.Load(xmlpath);
+            }
+            else
+            {
+                //если не был создан, создать с нуля
+                xmlDoc.LoadXml("<?xml version=\"1.0\" encoding=\"utf-16\"?>" + Environment.NewLine + "<Setting>" + Environment.NewLine + "  <Size>1280 x 720 (16 : 9)</Size>" + Environment.NewLine + "  <Width>1280</Width>" + Environment.NewLine + "  <Height>720</Height>" + Environment.NewLine + "  <Quality>2</Quality>" + Environment.NewLine + "  <FullScreen>false</FullScreen>" + Environment.NewLine + "  <Display>0</Display>" + Environment.NewLine + "  <Language>0</Language>" + Environment.NewLine + "</Setting>");
+            }
 
-                XmlNode node = xmlDoc.SelectSingleNode(nodename);
+            XmlNode node = xmlDoc.SelectSingleNode(nodename);
 
-                if (node == null || node.InnerText == value)
-                {
-                }
-                else
-                {
-                    node.InnerText = value;
+            if (node == null || node.InnerText == value)
+            {
+            }
+            else
+            {
+                node.InnerText = value;
 
-                    xmlDoc.Save(xmlpath);
-                }
+                xmlDoc.Save(xmlpath);
             }
         }
 
@@ -545,25 +608,24 @@ namespace AI_Girl_Helper
                 MessageBox.Show("Registry fixed! Installdir was set to Data dir.");
             }
         }
-
         private void MOButton_Click(object sender, EventArgs e)
         {
-            RunProgram(Path.Combine(MODirPath, "ModOrganizer.exe"), string.Empty);
+            RunProgram(MOexePath, string.Empty);
         }
 
         private void SettingsButton_Click(object sender, EventArgs e)
         {
-            RunProgram(Path.Combine(MODirPath, "ModOrganizer.exe"), "moshortcut://:InitSetting");
+            RunProgram(MOexePath, "moshortcut://:InitSetting");
         }
 
         private void GameButton_Click(object sender, EventArgs e)
         {
-            RunProgram(Path.Combine(MODirPath, "ModOrganizer.exe"), "moshortcut://:AI-SyoujyoTrial");
+            RunProgram(MOexePath, "moshortcut://:AI-SyoujyoTrial");
         }
 
         private void StudioButton_Click(object sender, EventArgs e)
         {
-            RunProgram(Path.Combine(MODirPath, "ModOrganizer.exe"), "moshortcut://:AI-SyoujyoStudio");
+            RunProgram(MOexePath, "moshortcut://:AI-SyoujyoStudio");
         }
 
         private void RunProgram(string ProgramPath, string Arguments)
@@ -582,13 +644,13 @@ namespace AI_Girl_Helper
 
                     //http://www.cyberforum.ru/windows-forms/thread31052.html
                     // свернуть
-                    this.WindowState = FormWindowState.Minimized;
+                    WindowState = FormWindowState.Minimized;
 
-                    Program.Start();
+                    _ = Program.Start();
                     Program.WaitForExit();
 
                     // Показать
-                    this.WindowState = FormWindowState.Normal;
+                    WindowState = FormWindowState.Normal;
                 }
             }
         }

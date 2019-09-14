@@ -18,6 +18,7 @@ namespace AI_Girl_Helper
     public partial class AIGirlHelper : Form
     {
         //constants
+        private static readonly string AppResDir = Path.Combine(Application.StartupPath, "AI Girl Helper_RES");
         private static readonly string ModsPath = Path.Combine(Application.StartupPath, "Mods");
         private static readonly string DownloadsPath = Path.Combine(Application.StartupPath, "Downloads");
         private static readonly string DataPath = Path.Combine(Application.StartupPath, "Data");
@@ -420,6 +421,16 @@ namespace AI_Girl_Helper
 
         private void FoldersInit()
         {
+            if (!Directory.Exists(DataPath))
+            {
+                Directory.CreateDirectory(DataPath);
+            }
+            if (!Directory.Exists(ModsPath))
+            {
+                Directory.CreateDirectory(ModsPath);
+                label4.Text = "Mods dir created";
+            }
+
             if (File.Exists(Path.Combine(DataPath, "AI-SyoujyoTrial.exe")))
             {
                 label3.Text = "AI-SyoujyoTrial game installed in Data";
@@ -428,17 +439,17 @@ namespace AI_Girl_Helper
             {
                 label3.Text = "AI-Syoujyo game installed in Data";
             }
-            else if (File.Exists(Path.Combine(DataPath, "AIGirlTrial.7z")))
+            else if (File.Exists(Path.Combine(AppResDir, "AIGirlTrial.7z")))
             {
                 label3.Text = "AIGirlTrial archive in Data";
             }
-            else if (File.Exists(Path.Combine(DataPath, "AIGirl.7z")))
+            else if (File.Exists(Path.Combine(AppResDir, "AIGirl.7z")))
             {
                 label3.Text = "AIGirl archive in Data";
             }
             else if (Directory.Exists(DataPath))
             {
-                label3.Text = "AIGirl files not detected in Data. Move AIGirl game files there.";
+                label3.Text = "AIGirl files not in Data. Move AIGirl game files there.";
             }
             else
             {
@@ -447,12 +458,7 @@ namespace AI_Girl_Helper
             }
 
             string[] ModDirs;
-            if (!Directory.Exists(ModsPath))
-            {
-                Directory.CreateDirectory(ModsPath);
-                label4.Text = "Mods dir created";
-            }
-            else if ( (ModDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray()).Length > 0 )
+            if ( (ModDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray()).Length > 0 )
             {
                 bool NotAllModsExtracted = false;
                 foreach (var file in Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories))
@@ -469,7 +475,7 @@ namespace AI_Girl_Helper
 
                 if (NotAllModsExtracted)
                 {
-                    label4.Text = "Not all mods extracted to mods";
+                    label4.Text = "Not all mods in Mods dir";
                     //button1.Enabled = false;
                     mode = 2;
                     button1.Text = "Extract missing";

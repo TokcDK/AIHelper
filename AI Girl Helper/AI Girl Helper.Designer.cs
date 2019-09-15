@@ -233,7 +233,7 @@
             // 
             // FixRegistryButton
             // 
-            this.FixRegistryButton.Location = new System.Drawing.Point(247, 41);
+            this.FixRegistryButton.Location = new System.Drawing.Point(260, 3);
             this.FixRegistryButton.Name = "FixRegistryButton";
             this.FixRegistryButton.Size = new System.Drawing.Size(75, 23);
             this.FixRegistryButton.TabIndex = 4;
@@ -249,10 +249,10 @@
             this.groupBox1.ForeColor = System.Drawing.Color.White;
             this.groupBox1.Location = new System.Drawing.Point(5, 26);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(224, 46);
+            this.groupBox1.Size = new System.Drawing.Size(249, 46);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Game resolution";
+            this.groupBox1.Text = "Display resolution";
             // 
             // FullScreenCheckBox
             // 
@@ -332,7 +332,7 @@
             this.StudioButton.ForeColor = System.Drawing.Color.Black;
             this.StudioButton.Location = new System.Drawing.Point(5, 39);
             this.StudioButton.Name = "StudioButton";
-            this.StudioButton.Size = new System.Drawing.Size(80, 30);
+            this.StudioButton.Size = new System.Drawing.Size(94, 30);
             this.StudioButton.TabIndex = 16;
             this.StudioButton.Text = "Studio";
             this.StudioButton.UseVisualStyleBackColor = false;
@@ -346,7 +346,7 @@
             this.GameButton.ForeColor = System.Drawing.Color.Black;
             this.GameButton.Location = new System.Drawing.Point(5, 3);
             this.GameButton.Name = "GameButton";
-            this.GameButton.Size = new System.Drawing.Size(80, 30);
+            this.GameButton.Size = new System.Drawing.Size(94, 30);
             this.GameButton.TabIndex = 15;
             this.GameButton.Text = "Game";
             this.GameButton.UseVisualStyleBackColor = false;
@@ -360,7 +360,7 @@
             this.MOButton.ForeColor = System.Drawing.Color.Black;
             this.MOButton.Location = new System.Drawing.Point(5, 75);
             this.MOButton.Name = "MOButton";
-            this.MOButton.Size = new System.Drawing.Size(80, 30);
+            this.MOButton.Size = new System.Drawing.Size(94, 30);
             this.MOButton.TabIndex = 13;
             this.MOButton.Text = "Manager";
             this.MOButton.UseVisualStyleBackColor = false;
@@ -374,7 +374,7 @@
             this.SettingsButton.ForeColor = System.Drawing.Color.Black;
             this.SettingsButton.Location = new System.Drawing.Point(5, 111);
             this.SettingsButton.Name = "SettingsButton";
-            this.SettingsButton.Size = new System.Drawing.Size(80, 30);
+            this.SettingsButton.Size = new System.Drawing.Size(94, 30);
             this.SettingsButton.TabIndex = 14;
             this.SettingsButton.Text = "Settings";
             this.SettingsButton.UseVisualStyleBackColor = false;

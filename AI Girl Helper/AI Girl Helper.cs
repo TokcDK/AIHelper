@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+//using Crc32C;
 
 namespace AI_Girl_Helper
 {
@@ -31,6 +32,24 @@ namespace AI_Girl_Helper
         public AIGirlHelper()
         {
             InitializeComponent();
+
+            SetLocalizationStrings();
+        }
+
+        private void SetLocalizationStrings()
+        {
+
+            button1.Text = T._("Prepare the game");
+            SettingsPage.Text = T._("Settings");
+            FixRegistryButton.Text = T._("Fix registry");
+            groupBox1.Text = T._("Display resolution");
+            FullScreenCheckBox.Text = T._("fullscreen");
+            ShortcutsCheckBox.Text = T._("Create shortcuts after archive extraction");
+            LaunchTabPage.Text = T._("Launch");
+            StudioButton.Text = T._("Studio");
+            GameButton.Text = T._("Game");
+            MOButton.Text = T._("Manager");
+            SettingsButton.Text = T._("Settings");
         }
 
         int mode = 0;
@@ -58,7 +77,7 @@ namespace AI_Girl_Helper
 
         private async void ExtractingMode()
         {
-            button1.Text = "Extracting..";
+            button1.Text = T._("Extracting..");
 
             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
             await Task.Run(() => UnpackGame());
@@ -68,7 +87,12 @@ namespace AI_Girl_Helper
 
             CreateShortcuts();
 
-            button1.Text = "Game Ready";
+            //Create dummy file and add hidden attribute
+            string dummyfile = Path.Combine(Application.StartupPath, "TESV.exe");
+            File.WriteAllText(dummyfile, "dummy file");
+            HideFileFolder(dummyfile, true);
+
+            button1.Text = T._("Game Ready");
             FoldersInit();
         }
 
@@ -76,14 +100,14 @@ namespace AI_Girl_Helper
         {
             if (Directory.Exists(DataPath))
             {
-                string AIGirlTrial = Path.Combine(DataPath, "AIGirlTrial.7z");
-                string AIGirl = Path.Combine(DataPath, "AIGirl.7z");
+                string AIGirlTrial = Path.Combine(AppResDir, "AIGirlTrial.7z");
+                string AIGirl = Path.Combine(AppResDir, "AIGirl.7z");
                 if (File.Exists(AIGirlTrial) && !File.Exists(Path.Combine(DataPath, "AI-SyoujyoTrial.exe")))
                 {
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
-                    _ = label3.Invoke((Action)(() => label3.Text = "Extracting"));
-                    _ = label4.Invoke((Action)(() => label4.Text = "Game archive: " + Path.GetFileNameWithoutExtension(AIGirlTrial)));
+                    _ = label3.Invoke((Action)(() => label3.Text = T._("Extracting")));
+                    _ = label4.Invoke((Action)(() => label4.Text = T._("Game archive: ") + Path.GetFileNameWithoutExtension(AIGirlTrial)));
                     Compressor.Decompress(AIGirlTrial, DataPath);
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
                 }
@@ -91,8 +115,8 @@ namespace AI_Girl_Helper
                 {
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
-                    _ = label3.Invoke((Action)(() => label3.Text = "Extracting"));
-                    _ = label4.Invoke((Action)(() => label4.Text = "Game archive: " + Path.GetFileNameWithoutExtension(AIGirl)));
+                    _ = label3.Invoke((Action)(() => label3.Text = T._("Extracting")));
+                    _ = label4.Invoke((Action)(() => label4.Text = T._("Game archive: ") + Path.GetFileNameWithoutExtension(AIGirl)));
                     Compressor.Decompress(AIGirl, DataPath);
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
                 }
@@ -130,8 +154,10 @@ namespace AI_Girl_Helper
             {
                 if (Directory.Exists(path))
                 {
-                    DirectoryInfo dirinfo = new DirectoryInfo(path);
-                    dirinfo.Attributes = FileAttributes.Hidden;
+                    _ = new DirectoryInfo(path)
+                    {
+                        Attributes = FileAttributes.Hidden
+                    };
                 }
             }
 
@@ -164,11 +190,11 @@ namespace AI_Girl_Helper
             if (ShortcutsCheckBox.Checked)
             {
                 //AI-Girl Helper
-                string shortcutname = "AI-Girl Helper";
+                string shortcutname = T._("AI-Girl Helper");
                 string targetpath = Path.Combine(Application.StartupPath, "AI Girl Helper.exe");
                 string arguments = string.Empty;
                 string workingdir = Path.GetDirectoryName(targetpath);
-                string description = "Run " + shortcutname;
+                string description = T._("Run ") + shortcutname;
                 string iconlocation = Path.Combine(Application.StartupPath, "AI Girl Helper.exe");
                 Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description, iconlocation);
 
@@ -214,8 +240,8 @@ namespace AI_Girl_Helper
                     foreach (string file in files)
                     {
                         string filename = Path.GetFileNameWithoutExtension(file);
-                        label3.Invoke((Action)(() => label3.Text = "Extracting " + i + "/" + files.Length));
-                        label4.Invoke((Action)(() => label4.Text = "Mod: " + filename));
+                        label3.Invoke((Action)(() => label3.Text = T._("Extracting ") + i + "/" + files.Length));
+                        label4.Invoke((Action)(() => label4.Text = T._("Mod: ") + filename));
                         string moddirpath = Path.Combine(ModsPath, filename);
                         if (!Directory.Exists(moddirpath))
                         {
@@ -234,14 +260,48 @@ namespace AI_Girl_Helper
             button1.Text = "Compressing..";
 
             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+            //await Task.Run(() => PackGame());
+            //await Task.Run(() => PackMO());
             await Task.Run(() => PackMods());
 
             ////http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
             //Thread open = new Thread(new ParameterizedThreadStart((obj) => PackMods()));
             //open.Start();
 
-            button1.Text = "Prepare the game";
+            button1.Text = T._("Prepare the game");
             FoldersInit();
+        }
+
+        private void PackMO()
+        {
+            if (Directory.Exists(MODirPath) && Directory.Exists(AppResDir))
+            {
+                _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
+                _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
+                _ = label3.Invoke((Action)(() => label3.Text = "Compressing"));
+                _ = label4.Invoke((Action)(() => label4.Text = "MO archive.."));
+                Compressor.Compress(MODirPath, AppResDir);
+                _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
+            }
+        }
+
+        private void PackGame()
+        {
+            if (Directory.Exists(DataPath) && Directory.Exists(AppResDir))
+            {
+                string AIGirlTrial = Path.Combine(AppResDir, "AIGirlTrial.7z");
+                string AIGirl = Path.Combine(AppResDir, "AIGirl.7z");
+                if (!File.Exists(AIGirlTrial)
+                    && (File.Exists(Path.Combine(DataPath, "AI-SyoujyoTrial.exe")) || File.Exists(Path.Combine(DataPath, "AI-Syoujyo.exe"))))
+                {
+                    _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
+                    _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
+                    _ = label3.Invoke((Action)(() => label3.Text = "Compressing"));
+                    _ = label4.Invoke((Action)(() => label4.Text = "Game archive: " + Path.GetFileNameWithoutExtension(AIGirlTrial)));
+                    Compressor.Compress(DataPath, AppResDir);
+                    _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
+                }
+            }
         }
 
         private void PackMods()
@@ -428,33 +488,33 @@ namespace AI_Girl_Helper
             if (!Directory.Exists(ModsPath))
             {
                 Directory.CreateDirectory(ModsPath);
-                label4.Text = "Mods dir created";
+                label4.Text = T._("Mods dir created");
             }
 
             if (File.Exists(Path.Combine(DataPath, "AI-SyoujyoTrial.exe")))
             {
-                label3.Text = "AI-SyoujyoTrial game installed in Data";
+                label3.Text = T._("AI-SyoujyoTrial game installed in Data");
             }
             else if (File.Exists(Path.Combine(DataPath, "AI-Syoujyo.exe")))
             {
-                label3.Text = "AI-Syoujyo game installed in Data";
+                label3.Text = T._("AI-Syoujyo game installed in Data");
             }
             else if (File.Exists(Path.Combine(AppResDir, "AIGirlTrial.7z")))
             {
-                label3.Text = "AIGirlTrial archive in Data";
+                label3.Text = T._("AIGirlTrial archive in Data");
             }
             else if (File.Exists(Path.Combine(AppResDir, "AIGirl.7z")))
             {
-                label3.Text = "AIGirl archive in Data";
+                label3.Text = T._("AIGirl archive in Data");
             }
             else if (Directory.Exists(DataPath))
             {
-                label3.Text = "AIGirl files not in Data. Move AIGirl game files there.";
+                label3.Text = T._("AIGirl files not in Data. Move AIGirl game files there.");
             }
             else
             {
                 Directory.CreateDirectory(DataPath);
-                label3.Text = "Data dir created. Move AIGirl game files there.";
+                label3.Text = T._("Data dir created. Move AIGirl game files there.");
             }
 
             string[] ModDirs;
@@ -475,17 +535,17 @@ namespace AI_Girl_Helper
 
                 if (NotAllModsExtracted)
                 {
-                    label4.Text = "Not all mods in Mods dir";
+                    label4.Text = T._("Not all mods in Mods dir");
                     //button1.Enabled = false;
                     mode = 2;
-                    button1.Text = "Extract missing";
+                    button1.Text = T._("Extract missing");
                 }
                 else
                 {
-                    label4.Text = "Found mod folders in Mods";
+                    label4.Text = T._("Found mod folders in Mods");
                     //button1.Enabled = false;
                     mode = 1;
-                    button1.Text = "Mods Ready";
+                    button1.Text = T._("Mods Ready");
                     MOButton.Visible = true;
                     SettingsButton.Visible = true;
                     GameButton.Visible = true;
@@ -495,9 +555,9 @@ namespace AI_Girl_Helper
             }
             else
             {
-                label4.Text = "There no any mod folders in Mods";
+                label4.Text = T._("There no any mod folders in Mods");
                 mode = 2;
-                button1.Text = "Extract mods";
+                button1.Text = T._("Extract mods");
             }
 
             //если нет папок модов но есть архивы в загрузках
@@ -507,9 +567,9 @@ namespace AI_Girl_Helper
                 {
                     if (Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray().Length == 0)
                     {
-                        label4.Text = "Mods Ready for extract";
+                        label4.Text = T._("Mods Ready for extract");
                         mode = 2;
-                        button1.Text = "Extract mods";
+                        button1.Text = T._("Extract mods");
                     }
                 }
             }

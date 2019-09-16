@@ -69,7 +69,7 @@ namespace AI_Girl_Helper
 
         private static string Get7zdllPath()
         {
-            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "MO", "dlls", "7z.dll");
+            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "AI Girl Helper_RES", "dlls", "7z.dll");
             if (File.Exists(path))
             {
             }

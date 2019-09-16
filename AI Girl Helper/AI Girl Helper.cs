@@ -18,7 +18,7 @@ namespace AI_Girl_Helper
 {
     public partial class AIGirlHelper : Form
     {
-        bool compressmode = true;
+        private readonly bool compressmode = true;
 
         //constants
         private static readonly string AppResDir = Path.Combine(Application.StartupPath, "AI Girl Helper_RES");
@@ -86,6 +86,7 @@ namespace AI_Girl_Helper
 
             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
             await Task.Run(() => UnpackGame());
+            await Task.Run(() => UnpackMO());
             await Task.Run(() => UnpackMods());
 
             BepinExLoadingFix();
@@ -99,6 +100,20 @@ namespace AI_Girl_Helper
 
             button1.Text = T._("Game Ready");
             FoldersInit();
+        }
+
+        private void UnpackMO()
+        {
+            string MO7zip = Path.Combine(AppResDir, "MO.7z");
+            if (File.Exists(MO7zip) && !File.Exists(Path.Combine(MODirPath, "ModOrganizer.exe")))
+            {
+                _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
+                _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
+                _ = label3.Invoke((Action)(() => label3.Text = T._("Extracting")));
+                _ = label4.Invoke((Action)(() => label4.Text = T._("MO archive: ") + Path.GetFileNameWithoutExtension(MO7zip)));
+                Compressor.Decompress(MO7zip, MODirPath);
+                _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
+            }
         }
 
         private void UnpackGame()
@@ -231,32 +246,43 @@ namespace AI_Girl_Helper
         {
             if (Directory.Exists(ModsPath) && Directory.Exists(DownloadsPath))
             {
-                string[] ModDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();
-                string[] files = Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories).Where(name => !ModDirs.Contains(Path.Combine(ModsPath, Path.GetFileNameWithoutExtension(name)))).ToArray();
-                if (files.Length == 0)
+                if (Directory.Exists(DownloadsPath))
                 {
-                }
-                else 
-                {
-                    int i = 1;
-                    progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
-                    progressBar1.Invoke((Action)(() => progressBar1.Maximum = files.Length));
-                    progressBar1.Invoke((Action)(() => progressBar1.Value = i));
-                    foreach (string file in files)
+                    string[] ModDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();
+                    string[] files = Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories).Where(name => !ModDirs.Contains(Path.Combine(ModsPath, Path.GetFileNameWithoutExtension(name)))).ToArray();
+                    if (files.Length == 0)
                     {
-                        string filename = Path.GetFileNameWithoutExtension(file);
-                        label3.Invoke((Action)(() => label3.Text = T._("Extracting ") + i + "/" + files.Length));
-                        label4.Invoke((Action)(() => label4.Text = T._("Mod: ") + filename));
-                        string moddirpath = Path.Combine(ModsPath, filename);
-                        if (!Directory.Exists(moddirpath))
-                        {
-                            Compressor.Decompress(file, moddirpath);
-                        }
-                        progressBar1.Invoke((Action)(() => progressBar1.Value = i));
-                        i++;
                     }
-                    progressBar1.Invoke((Action)(() => progressBar1.Visible = false));
+                    else
+                    {
+                        int i = 1;
+                        progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
+                        progressBar1.Invoke((Action)(() => progressBar1.Maximum = files.Length));
+                        progressBar1.Invoke((Action)(() => progressBar1.Value = i));
+                        foreach (string file in files)
+                        {
+                            string filename = Path.GetFileNameWithoutExtension(file);
+                            label3.Invoke((Action)(() => label3.Text = T._("Extracting ") + i + "/" + files.Length));
+                            label4.Invoke((Action)(() => label4.Text = T._("Mod: ") + filename));
+                            string moddirpath = Path.Combine(ModsPath, filename);
+                            if (!Directory.Exists(moddirpath))
+                            {
+                                Compressor.Decompress(file, moddirpath);
+                            }
+                            progressBar1.Invoke((Action)(() => progressBar1.Value = i));
+                            i++;
+                        }
+                        progressBar1.Invoke((Action)(() => progressBar1.Visible = false));
+                    }
                 }
+
+                //Unpack separators
+                string separators = Path.Combine(AppResDir, "MOModsSeparators.7z");
+                if (File.Exists(separators))
+                {
+                    Compressor.Decompress(separators, ModsPath);
+                }
+
             }
         }
 
@@ -270,6 +296,7 @@ namespace AI_Girl_Helper
                 //await Task.Run(() => PackGame());
                 //await Task.Run(() => PackMO());
                 await Task.Run(() => PackMods());
+                await Task.Run(() => PackSeparators());
 
                 ////http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                 //Thread open = new Thread(new ParameterizedThreadStart((obj) => PackMods()));
@@ -355,6 +382,38 @@ namespace AI_Girl_Helper
                         i++;
                     }
                     progressBar1.Invoke((Action)(() => progressBar1.Visible = false));
+                }
+            }
+        }
+
+        private void PackSeparators()
+        {
+            if (Directory.Exists(ModsPath))
+            {
+                string[] dirs = Directory.GetDirectories(ModsPath, "*").Where(name => name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();//с игнором сепараторов
+                if (dirs.Length == 0)
+                {
+                }
+                else
+                {
+                    //progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
+                    //progressBar1.Invoke((Action)(() => progressBar1.Maximum = dirs.Length));
+                    //progressBar1.Invoke((Action)(() => progressBar1.Value = 0));
+                    string tempdir = Path.Combine(ModsPath, "MOModsSeparators");
+
+                    label3.Invoke((Action)(() => label3.Text = "Compressing"));
+                    label4.Invoke((Action)(() => label4.Text = "Folder: " + Path.GetFileNameWithoutExtension(tempdir)));
+
+                    Directory.CreateDirectory(tempdir);
+                    foreach (string dir in dirs)
+                    {
+                        CopyFolder.Copy(dir, Path.Combine(tempdir, Path.GetFileName(dir)));
+                    }
+
+                    Compressor.Compress(tempdir, AppResDir);
+                    Directory.Delete(tempdir, true);
+
+                    //progressBar1.Invoke((Action)(() => progressBar1.Visible = false));
                 }
             }
         }
@@ -700,11 +759,13 @@ namespace AI_Girl_Helper
 
         private void FixRegistryButton_Click(object sender, EventArgs e)
         {
-            if (Registry.GetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", null) == null)
-            {
-                Registry.SetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", Path.Combine(DataPath));
-                MessageBox.Show("Registry fixed! Installdir was set to Data dir.");
-            }
+            Registry.SetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", Path.Combine(DataPath));
+            MessageBox.Show(T._("Registry fixed! Install dir was set to Data dir."));
+            //if (Registry.GetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", null) == null)
+            //{
+            //    Registry.SetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", Path.Combine(DataPath));
+            //    MessageBox.Show("Registry fixed! Installdir was set to Data dir.");
+            //}
         }
         private void MOButton_Click(object sender, EventArgs e)
         {

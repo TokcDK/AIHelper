@@ -45,6 +45,7 @@
             this.SettingsPanel = new System.Windows.Forms.Panel();
             this.FixRegistryButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.QualityComboBox = new System.Windows.Forms.ComboBox();
             this.FullScreenCheckBox = new System.Windows.Forms.CheckBox();
             this.ResolutionComboBox = new System.Windows.Forms.ComboBox();
             this.ShortcutsCheckBox = new System.Windows.Forms.CheckBox();
@@ -54,7 +55,6 @@
             this.GameButton = new System.Windows.Forms.Button();
             this.MOButton = new System.Windows.Forms.Button();
             this.SettingsButton = new System.Windows.Forms.Button();
-            this.QualityComboBox = new System.Windows.Forms.ComboBox();
             this.TabControl1.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -234,13 +234,12 @@
             // 
             // FixRegistryButton
             // 
-            this.FixRegistryButton.Location = new System.Drawing.Point(260, 3);
+            this.FixRegistryButton.Location = new System.Drawing.Point(225, 127);
             this.FixRegistryButton.Name = "FixRegistryButton";
-            this.FixRegistryButton.Size = new System.Drawing.Size(75, 23);
+            this.FixRegistryButton.Size = new System.Drawing.Size(110, 23);
             this.FixRegistryButton.TabIndex = 4;
             this.FixRegistryButton.Text = "Fix registry";
             this.FixRegistryButton.UseVisualStyleBackColor = true;
-            this.FixRegistryButton.Visible = false;
             this.FixRegistryButton.Click += new System.EventHandler(this.FixRegistryButton_Click);
             // 
             // groupBox1
@@ -255,6 +254,17 @@
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Display";
+            // 
+            // QualityComboBox
+            // 
+            this.QualityComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.QualityComboBox.FormattingEnabled = true;
+            this.QualityComboBox.Location = new System.Drawing.Point(6, 46);
+            this.QualityComboBox.MaxDropDownItems = 3;
+            this.QualityComboBox.Name = "QualityComboBox";
+            this.QualityComboBox.Size = new System.Drawing.Size(134, 21);
+            this.QualityComboBox.TabIndex = 5;
+            this.QualityComboBox.SelectedIndexChanged += new System.EventHandler(this.QualityComboBox_SelectedIndexChanged);
             // 
             // FullScreenCheckBox
             // 
@@ -383,17 +393,6 @@
             this.SettingsButton.UseVisualStyleBackColor = false;
             this.SettingsButton.Visible = false;
             this.SettingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
-            // 
-            // QualityComboBox
-            // 
-            this.QualityComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.QualityComboBox.FormattingEnabled = true;
-            this.QualityComboBox.Location = new System.Drawing.Point(6, 46);
-            this.QualityComboBox.MaxDropDownItems = 3;
-            this.QualityComboBox.Name = "QualityComboBox";
-            this.QualityComboBox.Size = new System.Drawing.Size(134, 21);
-            this.QualityComboBox.TabIndex = 5;
-            this.QualityComboBox.SelectedIndexChanged += new System.EventHandler(this.QualityComboBox_SelectedIndexChanged);
             // 
             // AIGirlHelper
             // 

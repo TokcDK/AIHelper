@@ -18,6 +18,8 @@ namespace AI_Girl_Helper
 {
     public partial class AIGirlHelper : Form
     {
+        bool compressmode = true;
+
         //constants
         private static readonly string AppResDir = Path.Combine(Application.StartupPath, "AI Girl Helper_RES");
         private static readonly string ModsPath = Path.Combine(Application.StartupPath, "Mods");
@@ -260,19 +262,26 @@ namespace AI_Girl_Helper
 
         private async void CompressingMode()
         {
-            button1.Text = "Compressing..";
+            if (compressmode)
+            {
+                button1.Text = "Compressing..";
 
-            //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
-            //await Task.Run(() => PackGame());
-            //await Task.Run(() => PackMO());
-            await Task.Run(() => PackMods());
+                //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+                //await Task.Run(() => PackGame());
+                //await Task.Run(() => PackMO());
+                await Task.Run(() => PackMods());
 
-            ////http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-            //Thread open = new Thread(new ParameterizedThreadStart((obj) => PackMods()));
-            //open.Start();
+                ////http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
+                //Thread open = new Thread(new ParameterizedThreadStart((obj) => PackMods()));
+                //open.Start();
 
-            button1.Text = T._("Prepare the game");
-            FoldersInit();
+                button1.Text = T._("Prepare the game");
+                FoldersInit();
+            }
+            else
+            {
+                TabControl1.SelectedTab = LaunchTabPage;
+            }
         }
 
         private void PackMO()
@@ -598,7 +607,7 @@ namespace AI_Girl_Helper
             }
 
             //если нет архивов в загрузках, но есть папки модов
-            if (Directory.Exists(DownloadsPath) && Directory.Exists(ModsPath))
+            if (compressmode && Directory.Exists(DownloadsPath) && Directory.Exists(ModsPath))
             {
                 if (Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray().Length > 0)
                 {

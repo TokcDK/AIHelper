@@ -54,6 +54,7 @@
             this.GameButton = new System.Windows.Forms.Button();
             this.MOButton = new System.Windows.Forms.Button();
             this.SettingsButton = new System.Windows.Forms.Button();
+            this.QualityComboBox = new System.Windows.Forms.ComboBox();
             this.TabControl1.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -244,15 +245,16 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.QualityComboBox);
             this.groupBox1.Controls.Add(this.FullScreenCheckBox);
             this.groupBox1.Controls.Add(this.ResolutionComboBox);
             this.groupBox1.ForeColor = System.Drawing.Color.White;
             this.groupBox1.Location = new System.Drawing.Point(5, 26);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(249, 46);
+            this.groupBox1.Size = new System.Drawing.Size(249, 74);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Display resolution";
+            this.groupBox1.Text = "Display";
             // 
             // FullScreenCheckBox
             // 
@@ -281,6 +283,7 @@
             "3200 x 1800 (16 : 9)",
             "3840 x 2160 (16 : 9)"});
             this.ResolutionComboBox.Location = new System.Drawing.Point(6, 19);
+            this.ResolutionComboBox.MaxDropDownItems = 9;
             this.ResolutionComboBox.Name = "ResolutionComboBox";
             this.ResolutionComboBox.Size = new System.Drawing.Size(134, 21);
             this.ResolutionComboBox.TabIndex = 1;
@@ -381,6 +384,17 @@
             this.SettingsButton.Visible = false;
             this.SettingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
             // 
+            // QualityComboBox
+            // 
+            this.QualityComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.QualityComboBox.FormattingEnabled = true;
+            this.QualityComboBox.Location = new System.Drawing.Point(6, 46);
+            this.QualityComboBox.MaxDropDownItems = 3;
+            this.QualityComboBox.Name = "QualityComboBox";
+            this.QualityComboBox.Size = new System.Drawing.Size(134, 21);
+            this.QualityComboBox.TabIndex = 5;
+            this.QualityComboBox.SelectedIndexChanged += new System.EventHandler(this.QualityComboBox_SelectedIndexChanged);
+            // 
             // AIGirlHelper
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -439,6 +453,7 @@
         private System.Windows.Forms.Button GameButton;
         private System.Windows.Forms.Button MOButton;
         private System.Windows.Forms.Button SettingsButton;
+        private System.Windows.Forms.ComboBox QualityComboBox;
     }
 }
 

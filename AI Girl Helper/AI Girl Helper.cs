@@ -42,7 +42,7 @@ namespace AI_Girl_Helper
             button1.Text = T._("Prepare the game");
             SettingsPage.Text = T._("Settings");
             FixRegistryButton.Text = T._("Fix registry");
-            groupBox1.Text = T._("Display resolution");
+            groupBox1.Text = T._("Display");
             FullScreenCheckBox.Text = T._("fullscreen");
             ShortcutsCheckBox.Text = T._("Create shortcuts after archive extraction");
             LaunchTabPage.Text = T._("Launch");
@@ -50,6 +50,9 @@ namespace AI_Girl_Helper
             GameButton.Text = T._("Game");
             MOButton.Text = T._("Manager");
             SettingsButton.Text = T._("Settings");
+            QualityComboBox.Items.Add(T._("Perfomance"));
+            QualityComboBox.Items.Add(T._("Normal"));
+            QualityComboBox.Items.Add(T._("Quality"));
         }
 
         int mode = 0;
@@ -458,6 +461,9 @@ namespace AI_Girl_Helper
 
             ResolutionComboBox.Text = ReadXmlValue(SetupXmlPath, "Setting/Size", ResolutionComboBox.Text);
             FullScreenCheckBox.Checked = bool.Parse(ReadXmlValue(SetupXmlPath, "Setting/FullScreen", FullScreenCheckBox.Checked.ToString().ToLower()));
+
+            QualityComboBox.SelectedIndex = int.Parse(ReadXmlValue(SetupXmlPath, "Setting/Quality", "2"));
+
         }
 
         private void SetScreenResolution(string Resolution)
@@ -477,6 +483,23 @@ namespace AI_Girl_Helper
             ChangeXmlValue(SetupXmlPath, "Setting/Size", Resolution);
             ChangeXmlValue(SetupXmlPath, "Setting/Width", Resolution.Replace("(16 : 9)", string.Empty).Trim().Split('x')[0].Trim());
             ChangeXmlValue(SetupXmlPath, "Setting/Height", Resolution.ToString().Replace("(16 : 9)", string.Empty).Trim().Split('x')[1].Trim());
+        }
+
+        private void SetGraphicsQuality(string quality)
+        {
+            if (Directory.Exists(OverwriteFolder))
+            {
+            }
+            else
+            {
+                Directory.CreateDirectory(OverwriteFolder);
+            }
+            if (!Directory.Exists(OverwriteFolderLink))
+            {
+                CreateSymlink.Folder(OverwriteFolder, OverwriteFolderLink);
+            }
+
+            ChangeXmlValue(SetupXmlPath, "Setting/Quality", quality);
         }
 
         private void FoldersInit()
@@ -719,6 +742,12 @@ namespace AI_Girl_Helper
                     WindowState = FormWindowState.Normal;
                 }
             }
+        }
+
+        Dictionary<string, string> qualitylevels = new Dictionary<string, string>(3);
+        private void QualityComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SetGraphicsQuality((sender as ComboBox).SelectedIndex.ToString());
         }
 
         //Материалы

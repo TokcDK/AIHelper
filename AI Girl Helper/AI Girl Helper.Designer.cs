@@ -51,6 +51,7 @@
             this.ShortcutsCheckBox = new System.Windows.Forms.CheckBox();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.newform = new System.Windows.Forms.Button();
             this.StudioButton = new System.Windows.Forms.Button();
             this.GameButton = new System.Windows.Forms.Button();
             this.MOButton = new System.Windows.Forms.Button();
@@ -327,6 +328,7 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.Gray;
+            this.panel2.Controls.Add(this.newform);
             this.panel2.Controls.Add(this.StudioButton);
             this.panel2.Controls.Add(this.GameButton);
             this.panel2.Controls.Add(this.MOButton);
@@ -336,6 +338,20 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(340, 155);
             this.panel2.TabIndex = 0;
+            // 
+            // newform
+            // 
+            this.newform.BackColor = System.Drawing.Color.Silver;
+            this.newform.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.newform.ForeColor = System.Drawing.Color.Black;
+            this.newform.Location = new System.Drawing.Point(303, 111);
+            this.newform.Name = "newform";
+            this.newform.Size = new System.Drawing.Size(32, 32);
+            this.newform.TabIndex = 17;
+            this.newform.Text = "\\/";
+            this.newform.UseVisualStyleBackColor = false;
+            this.newform.Visible = false;
+            this.newform.Click += new System.EventHandler(this.Newform_Click);
             // 
             // StudioButton
             // 
@@ -407,6 +423,7 @@
             this.Name = "AIGirlHelper";
             this.Text = "AI Girl Helper";
             this.Load += new System.EventHandler(this.AIGirlHelper_Load);
+            this.LocationChanged += new System.EventHandler(this.AIGirlHelper_LocationChanged);
             this.TabControl1.ResumeLayout(false);
             this.MainPage.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
@@ -453,6 +470,7 @@
         private System.Windows.Forms.Button MOButton;
         private System.Windows.Forms.Button SettingsButton;
         private System.Windows.Forms.ComboBox QualityComboBox;
+        private System.Windows.Forms.Button newform;
     }
 }
 

@@ -759,6 +759,7 @@ namespace AI_Girl_Helper
 
         private void FixRegistryButton_Click(object sender, EventArgs e)
         {
+            FixRegistryButton.Enabled = false;
             Registry.SetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", Path.Combine(DataPath));
             MessageBox.Show(T._("Registry fixed! Install dir was set to Data dir."));
             //if (Registry.GetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", null) == null)
@@ -766,6 +767,7 @@ namespace AI_Girl_Helper
             //    Registry.SetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", Path.Combine(DataPath));
             //    MessageBox.Show("Registry fixed! Installdir was set to Data dir.");
             //}
+            FixRegistryButton.Enabled = true;
         }
         private void MOButton_Click(object sender, EventArgs e)
         {
@@ -818,6 +820,39 @@ namespace AI_Girl_Helper
         private void QualityComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             SetGraphicsQuality((sender as ComboBox).SelectedIndex.ToString());
+        }
+
+        newform f2;
+        private void Newform_Click(object sender, EventArgs e)
+        {
+            if (f2 == null || f2.IsDisposed)
+            {
+                //show and reposition of form
+                //https://stackoverflow.com/questions/31492787/how-to-set-position-second-form-depend-on-first-form
+                f2 = new newform();
+                f2.StartPosition = FormStartPosition.Manual;
+                f2.Load += delegate (object s2, EventArgs e2)
+                {
+                    f2.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (f2.Width / 2),
+                        Bounds.Location.Y + /*(Bounds.Height / 2) - (f2.Height / 2) +*/ Bounds.Height);
+                };
+                f2.Show();
+            }
+            else
+            {
+                f2.Close();
+            }
+        }
+
+        private void AIGirlHelper_LocationChanged(object sender, EventArgs e)
+        {
+            //move second form with main form
+            //https://stackoverflow.com/questions/3429445/how-to-move-two-windows-forms-together
+            if (f2 != null)
+            {
+                f2.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (f2.Width / 2),
+                    Bounds.Location.Y + /*(Bounds.Height / 2) - (f2.Height / 2) +*/ Bounds.Height);
+            }
         }
 
         //Материалы

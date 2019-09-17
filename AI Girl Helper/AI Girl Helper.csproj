@@ -62,11 +62,8 @@
     <Reference Include="Costura, Version=4.1.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
       <HintPath>..\packages\Costura.Fody.4.1.0\lib\net40\Costura.dll</HintPath>
     </Reference>
-    <Reference Include="NGettext, Version=0.6.1.0, Culture=neutral, PublicKeyToken=08d3d1c89dfd2985, processorArchitecture=MSIL">
-      <HintPath>..\packages\NGettext.0.6.3\lib\net46\NGettext.dll</HintPath>
-    </Reference>
-    <Reference Include="NGettext.Wpf, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NGettext.Wpf.1.2.4\lib\net45\NGettext.Wpf.dll</HintPath>
+    <Reference Include="NGettext, Version=0.6.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NGettext.0.6.4\lib\net46\NGettext.dll</HintPath>
     </Reference>
     <Reference Include="SevenZipSharp, Version=0.64.3890.29348, Culture=neutral, PublicKeyToken=20de82c62b055c88, processorArchitecture=MSIL">
       <HintPath>..\packages\SevenZipSharp.0.64\lib\SevenZipSharp.dll</HintPath>
@@ -90,6 +87,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CategoriesList.cs" />
+    <Compile Include="newform.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="newform.Designer.cs">
+      <DependentUpon>newform.cs</DependentUpon>
+    </Compile>
     <Compile Include="T.cs" />
     <Compile Include="Utils\Compressor.cs" />
     <Compile Include="AI Girl Helper.cs">
@@ -106,6 +109,9 @@
     <Compile Include="Utils\Shortcut.cs" />
     <EmbeddedResource Include="AI Girl Helper.resx">
       <DependentUpon>AI Girl Helper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="newform.resx">
+      <DependentUpon>newform.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

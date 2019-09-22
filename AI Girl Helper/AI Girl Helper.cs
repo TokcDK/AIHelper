@@ -610,13 +610,14 @@ namespace AI_Girl_Helper
                 label3.Text = T._("Data dir created. Move AIGirl game files there.");
             }
 
-            string[] ModDirs;
-            if ( (ModDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray()).Length > 0 )
+            string[] ModDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();
+            string[] Archives7z = Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories);
+            if (ModDirs.Length > 0 && Archives7z.Length > 0)
             {
-                bool NotAllModsExtracted = false;
-                foreach (var file in Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories))
+                bool NotAllModsExtracted = false;                
+                foreach (var Archive in Archives7z)
                 {
-                    if (ModDirs.Contains(Path.Combine(ModsPath, Path.GetFileNameWithoutExtension(file))))
+                    if (ModDirs.Contains(Path.Combine(ModsPath, Path.GetFileNameWithoutExtension(Archive))))
                     {
                     }
                     else
@@ -626,7 +627,7 @@ namespace AI_Girl_Helper
                     }
                 }
 
-                if (NotAllModsExtracted)
+                if (NotAllModsExtracted && ModDirs.Length < Archives7z.Length)
                 {
                     label4.Text = T._("Not all mods in Mods dir");
                     //button1.Enabled = false;
@@ -648,31 +649,22 @@ namespace AI_Girl_Helper
             }
             else
             {
-                label4.Text = T._("There no any mod folders in Mods");
-                mode = 2;
-                button1.Text = T._("Extract mods");
-            }
-
-            //если нет папок модов но есть архивы в загрузках
-            if (Directory.Exists(DownloadsPath))
-            {
-                if (Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories).Length > 0)
+                //если нет папок модов но есть архивы в загрузках
+                if (Archives7z.Length > 0)
                 {
-                    if (Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray().Length == 0)
-                    {
-                        label4.Text = T._("Mods Ready for extract");
-                        mode = 2;
-                        button1.Text = T._("Extract mods");
-                    }
+                    label4.Text = T._("Mods Ready for extract");
+                    mode = 2;
+                    button1.Text = T._("Extract mods");
                 }
             }
+
 
             //если нет архивов в загрузках, но есть папки модов
             if (compressmode && Directory.Exists(DownloadsPath) && Directory.Exists(ModsPath))
             {
-                if (Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray().Length > 0)
+                if (ModDirs.Length > 0)
                 {
-                    if (Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories).Length == 0)
+                    if (Archives7z.Length == 0)
                     {
                         label4.Text = "No archives in downloads";
                         button1.Text = "Pack mods";
@@ -681,11 +673,11 @@ namespace AI_Girl_Helper
                 }
             }
 
-            if (Directory.Exists(Path.Combine(Application.StartupPath, "2MO")))
+            if (Directory.Exists(Install2MODirPath))
             {
                 InstallInModsButton.Visible = true;
 
-                if (Directory.GetFiles(Path.Combine(Application.StartupPath, "2MO"), "*.dll").Length > 0 || Directory.GetFiles(Path.Combine(Application.StartupPath, "Install"), "*.dll").Length > 0)
+                if (Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0)
                 {
                     InstallInModsButton.Enabled = true;
                 }

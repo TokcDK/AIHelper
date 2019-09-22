@@ -496,6 +496,41 @@ namespace AI_Girl_Helper
             //    FixRegistryButton.Visible = true;
             //}
             SetScreenSettings();
+
+            SetTooltips();
+        }
+
+        private void SetTooltips()
+        {
+            //http://qaru.site/questions/47162/c-how-do-i-add-a-tooltip-to-a-control
+            //THMainResetTableButton
+            ToolTip THToolTip = new ToolTip
+            {
+
+                // Set up the delays for the ToolTip.
+                AutoPopDelay = 10000,
+                InitialDelay = 1000,
+                ReshowDelay = 500,
+                UseAnimation = true,
+                UseFading = true,
+                // Force the ToolTip text to be displayed whether or not the form is active.
+                ShowAlways = true
+            };
+
+            //Main
+            THToolTip.SetToolTip(button1, T._("Unpacking mods and MO resources from 'Downloads' and 'AI Girl Helper_RES' folders to Data and Mods when they are not installed"));
+            THToolTip.SetToolTip(InstallInModsButton, T._("Automatically get required mod data, converts and moves dll and zipmod files from 2MO folder to MO format in Mods when possible"));
+            THToolTip.SetToolTip(ShortcutsCheckBox, T._("When checked will create shortcut of the AIGirl Helper manager on Desktop after mods extraction"));
+            THToolTip.SetToolTip(groupBox1, T._("Game Display settings"));
+            THToolTip.SetToolTip(ResolutionComboBox, T._("Select preferred screen resolution"));
+            THToolTip.SetToolTip(FullScreenCheckBox, T._("When checked game will be in fullscreen mode"));
+            THToolTip.SetToolTip(QualityComboBox, T._("Select preferred graphics quality"));
+            THToolTip.SetToolTip(FixRegistryButton, T._("Will set Data dir with game files as install dir in registry"));
+            THToolTip.SetToolTip(GameButton, T._("Will execute the Game from Mod Organizer with attached mods"));
+            THToolTip.SetToolTip(StudioButton, T._("Will execute Studio from Mod Organizer with attached mods"));
+            THToolTip.SetToolTip(MOButton, T._("Will execute Mod Organizer mod manager where you can manage your mods"));
+            THToolTip.SetToolTip(SettingsButton, T._("Will execute original game launcher from Mod Organizer with attached mods"));
+            ////////////////////////////
         }
 
         private void SetScreenSettings()
@@ -677,10 +712,9 @@ namespace AI_Girl_Helper
 
             if (Directory.Exists(Install2MODirPath))
             {
-                InstallInModsButton.Visible = true;
-
                 if (Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0)
                 {
+                    InstallInModsButton.Visible = true;
                     InstallInModsButton.Enabled = true;
                 }
             }

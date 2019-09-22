@@ -216,6 +216,7 @@
             // button1
             // 
             this.button1.BackColor = System.Drawing.Color.Silver;
+            this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button1.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.button1.ForeColor = System.Drawing.Color.Black;
             this.button1.Location = new System.Drawing.Point(100, 43);
@@ -274,6 +275,7 @@
             // 
             // QualityComboBox
             // 
+            this.QualityComboBox.Cursor = System.Windows.Forms.Cursors.PanSouth;
             this.QualityComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.QualityComboBox.FormattingEnabled = true;
             this.QualityComboBox.Location = new System.Drawing.Point(6, 46);
@@ -297,6 +299,7 @@
             // 
             // ResolutionComboBox
             // 
+            this.ResolutionComboBox.Cursor = System.Windows.Forms.Cursors.PanSouth;
             this.ResolutionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ResolutionComboBox.FormattingEnabled = true;
             this.ResolutionComboBox.Items.AddRange(new object[] {
@@ -372,6 +375,7 @@
             // StudioButton
             // 
             this.StudioButton.BackColor = System.Drawing.Color.Silver;
+            this.StudioButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.StudioButton.Enabled = false;
             this.StudioButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.StudioButton.ForeColor = System.Drawing.Color.Black;
@@ -387,6 +391,7 @@
             // GameButton
             // 
             this.GameButton.BackColor = System.Drawing.Color.Silver;
+            this.GameButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.GameButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.GameButton.ForeColor = System.Drawing.Color.Black;
             this.GameButton.Location = new System.Drawing.Point(5, 3);
@@ -401,6 +406,7 @@
             // MOButton
             // 
             this.MOButton.BackColor = System.Drawing.Color.Silver;
+            this.MOButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.MOButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MOButton.ForeColor = System.Drawing.Color.Black;
             this.MOButton.Location = new System.Drawing.Point(5, 75);
@@ -415,6 +421,7 @@
             // SettingsButton
             // 
             this.SettingsButton.BackColor = System.Drawing.Color.Silver;
+            this.SettingsButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.SettingsButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.SettingsButton.ForeColor = System.Drawing.Color.Black;
             this.SettingsButton.Location = new System.Drawing.Point(5, 111);

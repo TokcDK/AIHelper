@@ -88,14 +88,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CategoriesList.cs" />
-    <Compile Include="newform.cs">
+    <Compile Include="Classes\CategoriesList.cs" />
+    <Compile Include="AI Girl Links.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="newform.Designer.cs">
-      <DependentUpon>newform.cs</DependentUpon>
+    <Compile Include="AI Girl Links.Designer.cs">
+      <DependentUpon>AI Girl Links.cs</DependentUpon>
     </Compile>
-    <Compile Include="T.cs" />
+    <Compile Include="Utils\T.cs" />
     <Compile Include="Utils\Compressor.cs" />
     <Compile Include="AI Girl Helper.cs">
       <SubType>Form</SubType>
@@ -113,8 +113,8 @@
     <EmbeddedResource Include="AI Girl Helper.resx">
       <DependentUpon>AI Girl Helper.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="newform.resx">
-      <DependentUpon>newform.cs</DependentUpon>
+    <EmbeddedResource Include="AI Girl Links.resx">
+      <DependentUpon>AI Girl Links.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

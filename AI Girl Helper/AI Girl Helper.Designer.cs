@@ -32,6 +32,7 @@
             this.TabControl1 = new System.Windows.Forms.TabControl();
             this.MainPage = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.InstallInModsButton = new System.Windows.Forms.Button();
             this.LabelPanel2 = new System.Windows.Forms.Panel();
             this.label4 = new System.Windows.Forms.Label();
             this.LabelPanel = new System.Windows.Forms.Panel();
@@ -56,7 +57,6 @@
             this.GameButton = new System.Windows.Forms.Button();
             this.MOButton = new System.Windows.Forms.Button();
             this.SettingsButton = new System.Windows.Forms.Button();
-            this.InstallInModsButton = new System.Windows.Forms.Button();
             this.TabControl1.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -109,6 +109,20 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(340, 155);
             this.panel1.TabIndex = 0;
+            // 
+            // InstallInModsButton
+            // 
+            this.InstallInModsButton.BackColor = System.Drawing.Color.Silver;
+            this.InstallInModsButton.Enabled = false;
+            this.InstallInModsButton.ForeColor = System.Drawing.Color.Black;
+            this.InstallInModsButton.Location = new System.Drawing.Point(300, 3);
+            this.InstallInModsButton.Name = "InstallInModsButton";
+            this.InstallInModsButton.Size = new System.Drawing.Size(37, 23);
+            this.InstallInModsButton.TabIndex = 9;
+            this.InstallInModsButton.Text = "2MO";
+            this.InstallInModsButton.UseVisualStyleBackColor = false;
+            this.InstallInModsButton.Visible = false;
+            this.InstallInModsButton.Click += new System.EventHandler(this.InstallInModsButton_Click);
             // 
             // LabelPanel2
             // 
@@ -411,18 +425,6 @@
             this.SettingsButton.UseVisualStyleBackColor = false;
             this.SettingsButton.Visible = false;
             this.SettingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
-            // 
-            // InstallInModsButton
-            // 
-            this.InstallInModsButton.Enabled = false;
-            this.InstallInModsButton.Location = new System.Drawing.Point(299, 3);
-            this.InstallInModsButton.Name = "InstallInModsButton";
-            this.InstallInModsButton.Size = new System.Drawing.Size(38, 23);
-            this.InstallInModsButton.TabIndex = 9;
-            this.InstallInModsButton.Text = "2MO";
-            this.InstallInModsButton.UseVisualStyleBackColor = true;
-            this.InstallInModsButton.Visible = false;
-            this.InstallInModsButton.Click += new System.EventHandler(this.InstallInModsButton_Click);
             // 
             // AIGirlHelper
             // 

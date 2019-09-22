@@ -112,7 +112,7 @@ namespace AI_Girl_Helper
                 _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
                 _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
                 _ = label3.Invoke((Action)(() => label3.Text = T._("Extracting")));
-                _ = label4.Invoke((Action)(() => label4.Text = T._("MO archive: ") + Path.GetFileNameWithoutExtension(MO7zip)));
+                _ = label4.Invoke((Action)(() => label4.Text = T._("MO archive") + ": " + Path.GetFileNameWithoutExtension(MO7zip)));
                 Compressor.Decompress(MO7zip, MODirPath);
                 _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
             }
@@ -129,7 +129,7 @@ namespace AI_Girl_Helper
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
                     _ = label3.Invoke((Action)(() => label3.Text = T._("Extracting")));
-                    _ = label4.Invoke((Action)(() => label4.Text = T._("Game archive: ") + Path.GetFileNameWithoutExtension(AIGirlTrial)));
+                    _ = label4.Invoke((Action)(() => label4.Text = T._("Game archive") + ": " + Path.GetFileNameWithoutExtension(AIGirlTrial)));
                     Compressor.Decompress(AIGirlTrial, DataPath);
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
                 }
@@ -138,7 +138,7 @@ namespace AI_Girl_Helper
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
                     _ = label3.Invoke((Action)(() => label3.Text = T._("Extracting")));
-                    _ = label4.Invoke((Action)(() => label4.Text = T._("Game archive: ") + Path.GetFileNameWithoutExtension(AIGirl)));
+                    _ = label4.Invoke((Action)(() => label4.Text = T._("Game archive") + ": " + Path.GetFileNameWithoutExtension(AIGirl)));
                     Compressor.Decompress(AIGirl, DataPath);
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
                 }
@@ -265,7 +265,7 @@ namespace AI_Girl_Helper
                         {
                             string filename = Path.GetFileNameWithoutExtension(file);
                             label3.Invoke((Action)(() => label3.Text = T._("Extracting ") + i + "/" + files.Length));
-                            label4.Invoke((Action)(() => label4.Text = T._("Mod: ") + filename));
+                            label4.Invoke((Action)(() => label4.Text = T._("Mod") + ": " + filename));
                             string moddirpath = Path.Combine(ModsPath, filename);
                             if (!Directory.Exists(moddirpath))
                             {
@@ -584,30 +584,32 @@ namespace AI_Girl_Helper
                 label4.Text = T._("Mods dir created");
             }
 
-            if (File.Exists(Path.Combine(DataPath, "AI-SyoujyoTrial.exe")))
+            string AIGirl = "AIGirl";
+            string AIGirlTrial = "AIGirlTrial";
+            if (File.Exists(Path.Combine(DataPath, AIGirlTrial + ".exe")))
             {
-                label3.Text = T._("AI-SyoujyoTrial game installed in Data");
+                label3.Text = string.Format(T._("{0} game installed in {1}"), AIGirlTrial, "Data");
             }
-            else if (File.Exists(Path.Combine(DataPath, "AI-Syoujyo.exe")))
+            else if (File.Exists(Path.Combine(DataPath, AIGirl + ".exe")))
             {
-                label3.Text = T._("AI-Syoujyo game installed in Data");
+                label3.Text = string.Format(T._("{0} game installed in {1}"), AIGirl, "Data");
             }
-            else if (File.Exists(Path.Combine(AppResDir, "AIGirlTrial.7z")))
+            else if (File.Exists(Path.Combine(AppResDir, AIGirlTrial + ".7z")))
             {
-                label3.Text = T._("AIGirlTrial archive in Data");
+                label3.Text = string.Format(T._("{0} archive in {1}"), AIGirlTrial, "Data");
             }
-            else if (File.Exists(Path.Combine(AppResDir, "AIGirl.7z")))
+            else if (File.Exists(Path.Combine(AppResDir, AIGirl + ".7z")))
             {
-                label3.Text = T._("AIGirl archive in Data");
+                label3.Text = string.Format(T._("{0} archive in {1}"), "AIGirl", "Data");
             }
             else if (Directory.Exists(DataPath))
             {
-                label3.Text = T._("AIGirl files not in Data. Move AIGirl game files there.");
+                label3.Text = string.Format(T._("{0} files not in {1}. Move {0} game files there."), AIGirl, "Data");
             }
             else
             {
                 Directory.CreateDirectory(DataPath);
-                label3.Text = T._("Data dir created. Move AIGirl game files there.");
+                label3.Text = string.Format(T._("{0} dir created. Move {1} game files there."), "Data", AIGirl);
             }
 
             string[] ModDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();

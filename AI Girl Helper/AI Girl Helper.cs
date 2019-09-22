@@ -955,16 +955,46 @@ namespace AI_Girl_Helper
 
 
                 //запись meta.ini
-                Utils.IniFile INI = new Utils.IniFile(Path.Combine(dllmoddirpath, "meta.ini"));
-                INI.WriteINI("General", "category", "51,");
-                INI.WriteINI("General", "version", version);
-                INI.WriteINI("General", "gameName", "Skyrim");
-                INI.WriteINI("General", "comments", "Requires: BepinEx");
-                INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \"");
-                INI.WriteINI("General", "validated", "true");
+                WriteMetaINI(
+                    dllmoddirpath
+                    ,
+                    "\"51,\""
+                    , 
+                    version
+                    , 
+                    "Requires: BepinEx"
+                    , 
+                    "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \""
+                    );
+                //Utils.IniFile INI = new Utils.IniFile(Path.Combine(dllmoddirpath, "meta.ini"));
+                //INI.WriteINI("General", "category", "\"51,\"");
+                //INI.WriteINI("General", "version", version);
+                //INI.WriteINI("General", "gameName", "Skyrim");
+                //INI.WriteINI("General", "comments", "Requires: BepinEx");
+                //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \"");
+                //INI.WriteINI("General", "validated", "true");
 
                 ActivateModIfPossible(Path.GetFileName(dllmoddirpath));
             }
+        }
+
+        /// <summary>
+        /// Writes required parameters in meta.ini
+        /// </summary>
+        /// <param name="moddir"></param>
+        /// <param name="category"></param>
+        /// <param name="version"></param>
+        /// <param name="comments"></param>
+        /// <param name="notes"></param>
+        private void WriteMetaINI(string moddir, string category, string version, string comments, string notes)
+        {
+            Utils.IniFile INI = new Utils.IniFile(Path.Combine(moddir, "meta.ini"));
+            INI.WriteINI("General", "category", category);
+            INI.WriteINI("General", "version", version);
+            INI.WriteINI("General", "gameName", "Skyrim");
+            INI.WriteINI("General", "comments", comments);
+            INI.WriteINI("General", "notes", notes);
+            INI.WriteINI("General", "validated", "true");
         }
 
         private void ActivateModIfPossible(string modname)
@@ -983,7 +1013,7 @@ namespace AI_Girl_Helper
                     {
                         string profilemodlistpath = Path.Combine(MODirPath, "profiles", currentMOprofile, "modlist.txt");
 
-                        InsertLineInFile(profilemodlistpath, "+" + modname, 2);
+                        InsertLineInFile(profilemodlistpath, "+" + modname);
                     }
                 }
             }
@@ -996,7 +1026,7 @@ namespace AI_Girl_Helper
         /// <param name="path"></param>
         /// <param name="line"></param>
         /// <param name="position"></param>
-        public static void InsertLineInFile(string path, string line, int position = 0)
+        public static void InsertLineInFile(string path, string line, int position = 1)
         {
             if (File.Exists(path) && line.Length > 0)
             {
@@ -1107,13 +1137,24 @@ namespace AI_Girl_Helper
                     File.Move(zipfile, Path.Combine(zipmoddirmodspath, Path.GetFileName(zipfile)));
 
                     //запись meta.ini
-                    Utils.IniFile INI = new Utils.IniFile(Path.Combine(zipmoddirpath, "meta.ini"));
-                    INI.WriteINI("General", "category", string.Empty);
-                    INI.WriteINI("General", "version", version);
-                    INI.WriteINI("General", "gameName", "Skyrim");
-                    INI.WriteINI("General", "comments", "Requires: Sideloader plugin");
-                    INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + website + " \"");
-                    INI.WriteINI("General", "validated", "true");
+                    WriteMetaINI(
+                        zipmoddirpath
+                        ,
+                        string.Empty
+                        ,
+                        version
+                        ,
+                        "Requires: BepinEx"
+                        ,
+                        "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + website + " \""
+                        );
+                    //Utils.IniFile INI = new Utils.IniFile(Path.Combine(zipmoddirpath, "meta.ini"));
+                    //INI.WriteINI("General", "category", string.Empty);
+                    //INI.WriteINI("General", "version", version);
+                    //INI.WriteINI("General", "gameName", "Skyrim");
+                    //INI.WriteINI("General", "comments", "Requires: Sideloader plugin");
+                    //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + website + " \"");
+                    //INI.WriteINI("General", "validated", "true");
 
                     ActivateModIfPossible(Path.GetFileName(zipmoddirpath));
                 }
@@ -1122,7 +1163,7 @@ namespace AI_Girl_Helper
 
         private bool ContainsAnyInvalidCharacters(string path)
         {
-            return (!string.IsNullOrEmpty(path) && path.IndexOfAny(Path.GetInvalidPathChars()) >= 0);
+            return (path.Length > 0 && path.IndexOfAny(Path.GetInvalidPathChars()) >= 0);
         }
 
         //Материалы

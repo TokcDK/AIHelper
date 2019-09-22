@@ -6,6 +6,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -41,6 +42,7 @@ namespace AI_Girl_Helper
         private void SetLocalizationStrings()
         {
 
+            InstallInModsButton.Text = "2MO";
             button1.Text = T._("Prepare the game");
             SettingsPage.Text = T._("Settings");
             FixRegistryButton.Text = T._("Fix registry");
@@ -678,6 +680,16 @@ namespace AI_Girl_Helper
                     }
                 }
             }
+
+            if (Directory.Exists(Path.Combine(Application.StartupPath, "2MO")))
+            {
+                InstallInModsButton.Visible = true;
+
+                if (Directory.GetFiles(Path.Combine(Application.StartupPath, "2MO"), "*.dll").Length > 0 || Directory.GetFiles(Path.Combine(Application.StartupPath, "Install"), "*.dll").Length > 0)
+                {
+                    InstallInModsButton.Enabled = true;
+                }
+            }
         }
 
         private void CheckBox1_CheckedChanged(object sender, EventArgs e)
@@ -806,12 +818,26 @@ namespace AI_Girl_Helper
                     //http://www.cyberforum.ru/windows-forms/thread31052.html
                     // свернуть
                     WindowState = FormWindowState.Minimized;
+                    if (LinksForm == null || LinksForm.IsDisposed)
+                    {
+                    }
+                    else
+                    {
+                        LinksForm.WindowState = FormWindowState.Minimized;
+                    }
 
                     _ = Program.Start();
                     Program.WaitForExit();
 
                     // Показать
                     WindowState = FormWindowState.Normal;
+                    if (LinksForm == null || LinksForm.IsDisposed)
+                    {
+                    }
+                    else
+                    {
+                        LinksForm.WindowState = FormWindowState.Normal;
+                    }
                 }
             }
         }
@@ -822,25 +848,30 @@ namespace AI_Girl_Helper
             SetGraphicsQuality((sender as ComboBox).SelectedIndex.ToString());
         }
 
-        newform f2;
-        private void Newform_Click(object sender, EventArgs e)
+        private newform LinksForm;
+        private void NewformButton_Click(object sender, EventArgs e)
         {
-            if (f2 == null || f2.IsDisposed)
+            if (LinksForm == null || LinksForm.IsDisposed)
             {
                 //show and reposition of form
                 //https://stackoverflow.com/questions/31492787/how-to-set-position-second-form-depend-on-first-form
-                f2 = new newform();
-                f2.StartPosition = FormStartPosition.Manual;
-                f2.Load += delegate (object s2, EventArgs e2)
+                LinksForm = new newform
                 {
-                    f2.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (f2.Width / 2),
+                    //LinksForm.Text = T._("Links");
+                    StartPosition = FormStartPosition.Manual
+                };
+                LinksForm.Load += delegate (object s2, EventArgs e2)
+                {
+                    LinksForm.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (LinksForm.Width / 2),
                         Bounds.Location.Y + /*(Bounds.Height / 2) - (f2.Height / 2) +*/ Bounds.Height);
                 };
-                f2.Show();
+                newformButton.Text = @"/\";
+                LinksForm.Show();
             }
             else
             {
-                f2.Close();
+                newformButton.Text = @"\/";
+                LinksForm.Close();
             }
         }
 
@@ -848,11 +879,250 @@ namespace AI_Girl_Helper
         {
             //move second form with main form
             //https://stackoverflow.com/questions/3429445/how-to-move-two-windows-forms-together
-            if (f2 != null)
+            if (LinksForm == null || LinksForm.IsDisposed)
             {
-                f2.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (f2.Width / 2),
+
+            }
+            else
+            {
+                LinksForm.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (LinksForm.Width / 2),
                     Bounds.Location.Y + /*(Bounds.Height / 2) - (f2.Height / 2) +*/ Bounds.Height);
             }
+        }
+
+        string Install2MODirPath = Path.Combine(Application.StartupPath, "2MO");
+        private void InstallInModsButton_Click(object sender, EventArgs e)
+        {
+            if (Directory.Exists(Install2MODirPath) && (Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zipmod").Length > 0))
+            {
+                InstallZipModsToMods();
+
+                InstallBepinExModsToMods();
+
+                InstallInModsButton.Enabled = false;
+
+                MessageBox.Show(T._("All possible mods installed. Install all rest in 2MO folder manually."));
+            }
+        }
+
+        private void InstallBepinExModsToMods()
+        {
+            foreach (var dllfile in Directory.GetFiles(Install2MODirPath, "*.dll"))
+            {
+                FileVersionInfo dllInfo = FileVersionInfo.GetVersionInfo(dllfile);
+                string name = dllInfo.ProductName;
+                string description = dllInfo.FileDescription;
+                string version = dllInfo.FileVersion;
+                //string version = dllInfo.ProductVersion;
+                string copyright = dllInfo.LegalCopyright;
+
+                if (name.Length == 0)
+                {
+                    name = Path.GetFileNameWithoutExtension(dllfile);
+                }
+
+                //"Copyright © AuthorName 2019"
+                string author = copyright.Remove(copyright.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim();
+
+                //добавление имени автора в начало имени папки
+                if (name.StartsWith("[") || name.Contains(author))
+                {
+                }
+                else if (author.Length > 0)
+                {
+                    //проверка на любые невалидные для имени папки символы
+                    if (ContainsAnyInvalidCharacters(author))
+                    {
+                    }
+                    else
+                    {
+                        name = "[" + author + "]" + name;
+                    }
+                }
+
+                string dllmoddirpath = Path.Combine(ModsPath, name);
+
+                //Проверки существования целевой папки и модификация имени на более уникальное
+                if (Directory.Exists(dllmoddirpath))
+                {
+                    dllmoddirpath = Path.Combine(ModsPath, name + "(" + DateTime.Now.ToString().Replace(":", string.Empty) + ")");
+                }
+
+                //перемещение zipmod-а в свою подпапку в Mods
+                string dllmoddirmodspath = Path.Combine(dllmoddirpath, "BepInEx", "Plugins");
+                Directory.CreateDirectory(dllmoddirmodspath);
+                File.Move(dllfile, Path.Combine(dllmoddirmodspath, Path.GetFileName(dllfile)));
+
+
+                //запись meta.ini
+                Utils.IniFile INI = new Utils.IniFile(Path.Combine(dllmoddirpath, "meta.ini"));
+                INI.WriteINI("General", "category", "51,");
+                INI.WriteINI("General", "version", version);
+                INI.WriteINI("General", "gameName", "Skyrim");
+                INI.WriteINI("General", "comments", "Requires: BepinEx");
+                INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \"");
+                INI.WriteINI("General", "validated", "true");
+
+                ActivateModIfPossible(Path.GetFileName(dllmoddirpath));
+            }
+        }
+
+        private void ActivateModIfPossible(string modname)
+        {
+            if (modname.Length > 0)
+            {
+                Utils.IniFile INI = new Utils.IniFile(Path.Combine(MODirPath, "ModOrganizer.ini"));
+                if (INI.KeyExists("selected_profile", "General"))
+                {
+                    string currentMOprofile = INI.ReadINI("General", "selected_profile");
+
+                    if (currentMOprofile.Length == 0)
+                    {
+                    }
+                    else
+                    {
+                        string profilemodlistpath = Path.Combine(MODirPath, "profiles", currentMOprofile, "modlist.txt");
+
+                        InsertLineInFile(profilemodlistpath, "+" + modname, 2);
+                    }
+                }
+            }
+        }
+
+        //https://social.msdn.microsoft.com/Forums/vstudio/en-US/8f713e50-0789-4bf6-865f-c87cdebd0b4f/insert-line-to-text-file-using-streamwriter-using-csharp?forum=csharpgeneral
+        /// <summary>
+        /// Inserts line in file in set position
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="line"></param>
+        /// <param name="position"></param>
+        public static void InsertLineInFile(string path, string line, int position = 0)
+        {
+            if (File.Exists(path) && line.Length > 0)
+            {
+                string[] lines = File.ReadAllLines(path);
+                if (lines.Contains(line))
+                {
+                }
+                else
+                {
+                    using (StreamWriter writer = new StreamWriter(path))
+                    {
+                        for (int i = 0; i < position; i++)
+                        {
+                            writer.WriteLine(lines[i]);
+                        }
+
+                        writer.WriteLine(line);
+
+                        for (int i = position; i < lines.Length; i++)
+                        {
+                            writer.WriteLine(lines[i]);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void InstallZipModsToMods()
+        {
+            foreach (var zipfile in Directory.GetFiles(Install2MODirPath, "*.zipmod"))
+            {
+                string guid = string.Empty;
+                string name = string.Empty;
+                string version = string.Empty;
+                string author = string.Empty;
+                string description = string.Empty;
+                string website = string.Empty;
+                string game = string.Empty;
+
+                using (ZipArchive archive = ZipFile.OpenRead(zipfile))
+                {
+                    foreach (ZipArchiveEntry entry in archive.Entries)
+                    {
+                        if (entry.FullName.EndsWith("manifest.xml", StringComparison.OrdinalIgnoreCase))
+                        {            
+                            if (Directory.Exists(Path.Combine(Install2MODirPath, "Temp")))
+                            {
+                            }
+                            else
+                            {
+                                Directory.CreateDirectory(Path.Combine(Install2MODirPath, "Temp"));
+                            }
+
+                            string xmlpath = Path.Combine(Install2MODirPath, "Temp", entry.FullName);
+                            entry.ExtractToFile(xmlpath);
+
+                            guid = ReadXmlValue(xmlpath, "manifest/name", string.Empty);
+                            name = ReadXmlValue(xmlpath, "manifest/name", string.Empty);
+                            version = ReadXmlValue(xmlpath, "manifest/version", "0");
+                            author = ReadXmlValue(xmlpath, "manifest/author", "Unknown author");
+                            description = ReadXmlValue(xmlpath, "manifest/description", "Unknown description");
+                            website = ReadXmlValue(xmlpath, "manifest/website", string.Empty);
+                            game = ReadXmlValue(xmlpath, "manifest/game", string.Empty);
+                            File.Delete(xmlpath);
+                            break;
+                        }
+                    }
+                }
+
+                if (game == "AI Girl")
+                {
+                    if (name.Length == 0)
+                    {
+                        name = Path.GetFileNameWithoutExtension(zipfile);
+                    }
+
+                    //добавление имени автора в начало имени папки
+                    if (name.StartsWith("[") || name.Contains(author))
+                    {
+                    }
+                    else if (author.Length > 0)
+                    {
+                        //проверка на любые невалидные для имени папки символы
+                        if (ContainsAnyInvalidCharacters(author))
+                        {
+                        }
+                        else
+                        {
+                            name = "[" + author + "]" + name;
+                        }
+                    }
+
+                    string zipmoddirpath = Path.Combine(ModsPath, name);
+
+                    //Проверки существования целевой папки и модификация имени на более уникальное
+                    if (Directory.Exists(zipmoddirpath))
+                    {
+                        zipmoddirpath = Path.Combine(ModsPath, guid);
+                        if (Directory.Exists(zipmoddirpath))
+                        {
+                            zipmoddirpath = Path.Combine(ModsPath, name + "(" + guid + ")");
+                        }
+                    }
+
+                    //перемещение zipmod-а в свою подпапку в Mods
+                    string zipmoddirmodspath = Path.Combine(zipmoddirpath, "mods");
+                    Directory.CreateDirectory(zipmoddirmodspath);
+                    File.Move(zipfile, Path.Combine(zipmoddirmodspath, Path.GetFileName(zipfile)));
+
+                    //запись meta.ini
+                    Utils.IniFile INI = new Utils.IniFile(Path.Combine(zipmoddirpath, "meta.ini"));
+                    INI.WriteINI("General", "category", string.Empty);
+                    INI.WriteINI("General", "version", version);
+                    INI.WriteINI("General", "gameName", "Skyrim");
+                    INI.WriteINI("General", "comments", "Requires: Sideloader plugin");
+                    INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + website + " \"");
+                    INI.WriteINI("General", "validated", "true");
+
+                    ActivateModIfPossible(Path.GetFileName(zipmoddirpath));
+                }
+            }
+        }
+
+        private bool ContainsAnyInvalidCharacters(string path)
+        {
+            return (!string.IsNullOrEmpty(path) && path.IndexOfAny(Path.GetInvalidPathChars()) >= 0);
         }
 
         //Материалы

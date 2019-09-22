@@ -51,11 +51,12 @@
             this.ShortcutsCheckBox = new System.Windows.Forms.CheckBox();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.newform = new System.Windows.Forms.Button();
+            this.newformButton = new System.Windows.Forms.Button();
             this.StudioButton = new System.Windows.Forms.Button();
             this.GameButton = new System.Windows.Forms.Button();
             this.MOButton = new System.Windows.Forms.Button();
             this.SettingsButton = new System.Windows.Forms.Button();
+            this.InstallInModsButton = new System.Windows.Forms.Button();
             this.TabControl1.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -97,6 +98,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.Gray;
+            this.panel1.Controls.Add(this.InstallInModsButton);
             this.panel1.Controls.Add(this.LabelPanel2);
             this.panel1.Controls.Add(this.LabelPanel);
             this.panel1.Controls.Add(this.progressBar1);
@@ -328,7 +330,7 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.Gray;
-            this.panel2.Controls.Add(this.newform);
+            this.panel2.Controls.Add(this.newformButton);
             this.panel2.Controls.Add(this.StudioButton);
             this.panel2.Controls.Add(this.GameButton);
             this.panel2.Controls.Add(this.MOButton);
@@ -339,19 +341,19 @@
             this.panel2.Size = new System.Drawing.Size(340, 155);
             this.panel2.TabIndex = 0;
             // 
-            // newform
+            // newformButton
             // 
-            this.newform.BackColor = System.Drawing.Color.Silver;
-            this.newform.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.newform.ForeColor = System.Drawing.Color.Black;
-            this.newform.Location = new System.Drawing.Point(303, 111);
-            this.newform.Name = "newform";
-            this.newform.Size = new System.Drawing.Size(32, 32);
-            this.newform.TabIndex = 17;
-            this.newform.Text = "\\/";
-            this.newform.UseVisualStyleBackColor = false;
-            this.newform.Visible = false;
-            this.newform.Click += new System.EventHandler(this.Newform_Click);
+            this.newformButton.BackColor = System.Drawing.Color.Silver;
+            this.newformButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.newformButton.ForeColor = System.Drawing.Color.Black;
+            this.newformButton.Location = new System.Drawing.Point(303, 111);
+            this.newformButton.Name = "newformButton";
+            this.newformButton.Size = new System.Drawing.Size(32, 32);
+            this.newformButton.TabIndex = 17;
+            this.newformButton.Text = "\\/";
+            this.newformButton.UseVisualStyleBackColor = false;
+            this.newformButton.Visible = false;
+            this.newformButton.Click += new System.EventHandler(this.NewformButton_Click);
             // 
             // StudioButton
             // 
@@ -409,6 +411,18 @@
             this.SettingsButton.UseVisualStyleBackColor = false;
             this.SettingsButton.Visible = false;
             this.SettingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
+            // 
+            // InstallInModsButton
+            // 
+            this.InstallInModsButton.Enabled = false;
+            this.InstallInModsButton.Location = new System.Drawing.Point(299, 3);
+            this.InstallInModsButton.Name = "InstallInModsButton";
+            this.InstallInModsButton.Size = new System.Drawing.Size(38, 23);
+            this.InstallInModsButton.TabIndex = 9;
+            this.InstallInModsButton.Text = "2MO";
+            this.InstallInModsButton.UseVisualStyleBackColor = true;
+            this.InstallInModsButton.Visible = false;
+            this.InstallInModsButton.Click += new System.EventHandler(this.InstallInModsButton_Click);
             // 
             // AIGirlHelper
             // 
@@ -470,7 +484,8 @@
         private System.Windows.Forms.Button MOButton;
         private System.Windows.Forms.Button SettingsButton;
         private System.Windows.Forms.ComboBox QualityComboBox;
-        private System.Windows.Forms.Button newform;
+        private System.Windows.Forms.Button newformButton;
+        private System.Windows.Forms.Button InstallInModsButton;
     }
 }
 

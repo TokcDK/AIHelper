@@ -147,20 +147,58 @@ namespace AI_Girl_Helper
 
         private void BepinExLoadingFix()
         {
-            Symlink(Path.Combine(DataPath, "Bepinex", "core", "BepInEx.Preloader.dll")
-                  , Path.Combine(ModsPath, "BepInEx5", "Bepinex", "core", "BepInEx.Preloader.dll")
+            string linkpath = Path.Combine(ModsPath, "BepInEx5", "Bepinex", "core", "BepInEx.Preloader.dll");
+            string objectpath = Path.Combine(DataPath, "Bepinex", "core", "BepInEx.Preloader.dll");
+            if (!File.Exists(linkpath) && File.Exists(objectpath))
+            {
+                Symlink(objectpath
+                  , linkpath
                   );
-            HideFileFolder(Path.Combine(DataPath, "Bepinex"));
+                HideFileFolder(Path.Combine(DataPath, "Bepinex"));
+            }
 
-            Symlink(Path.Combine(DataPath, "doorstop_config.ini")
-                  , Path.Combine(ModsPath, "BepInEx5", "doorstop_config.ini")
+            linkpath = Path.Combine(DataPath, "doorstop_config.ini");
+            objectpath = Path.Combine(ModsPath, "BepInEx5", "doorstop_config.ini");
+            if (!File.Exists(linkpath) && File.Exists(objectpath))
+            {
+                Symlink(linkpath
+                  , objectpath
                   );
-            HideFileFolder(Path.Combine(DataPath, "doorstop_config.ini"),true);
+                HideFileFolder(linkpath, true);
+            }
 
-            Symlink(Path.Combine(DataPath, "version.dll")
-                  , Path.Combine(ModsPath, "BepInEx5", "version.dll")
-                  );
-            HideFileFolder(Path.Combine(DataPath, "version.dll"), true);
+            linkpath = Path.Combine(DataPath, "winhttp.dll");
+            objectpath = Path.Combine(ModsPath, "BepInEx5", "winhttp.dll");
+            if (!File.Exists(linkpath) && File.Exists(objectpath))
+            {
+                Symlink(linkpath
+                      , objectpath
+                      );
+                HideFileFolder(linkpath, true);
+            }
+
+            linkpath = Path.Combine(DataPath, "UserData", "MaterialEditor");
+            objectpath = Path.Combine(ModsPath, "MyUserData", "UserData", "MaterialEditor");
+            if (!File.Exists(linkpath) && File.Exists(objectpath))
+            {
+                Symlink(linkpath
+                      , objectpath
+                      );
+                HideFileFolder(linkpath, true);
+
+            }
+
+            linkpath = Path.Combine(DataPath, "UserData", "Overlays");
+            objectpath = Path.Combine(ModsPath, "MyUserData", "UserData", "Overlays");
+            if (!File.Exists(linkpath) && File.Exists(objectpath))
+            {
+                Symlink(linkpath
+                      , objectpath
+                      );
+                HideFileFolder(linkpath, true);
+
+            }
+
         }
 
         private void HideFileFolder(string path, bool IsFile = false)
@@ -717,6 +755,12 @@ namespace AI_Girl_Helper
                     InstallInModsButton.Visible = true;
                     InstallInModsButton.Enabled = true;
                 }
+                string[] InstallModDirs = Directory.GetDirectories(Install2MODirPath, "*").Where(name => !name.EndsWith("Temp", StringComparison.OrdinalIgnoreCase)).ToArray();
+                if (InstallModDirs.Length > 0)
+                {
+                    InstallInModsButton.Visible = true;
+                    InstallInModsButton.Enabled = true;
+                }
             }
         }
 
@@ -921,15 +965,175 @@ namespace AI_Girl_Helper
         string Install2MODirPath = Path.Combine(Application.StartupPath, "2MO");
         private void InstallInModsButton_Click(object sender, EventArgs e)
         {
-            if (Directory.Exists(Install2MODirPath) && (Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zipmod").Length > 0))
+            if (Directory.Exists(Install2MODirPath) && (Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zipmod").Length > 0) || Directory.GetDirectories(Install2MODirPath, "*").Length > 0)
             {
                 InstallZipModsToMods();
 
                 InstallBepinExModsToMods();
 
+                InstallModFilesFromSubfolders();
+
                 InstallInModsButton.Enabled = false;
 
                 MessageBox.Show(T._("All possible mods installed. Install all rest in 2MO folder manually."));
+            }
+        }
+
+        private void InstallModFilesFromSubfolders()
+        {
+            foreach (var dir in Directory.GetDirectories(Install2MODirPath, "*"))
+            {
+                if (dir.EndsWith("\\Temp"))
+                {
+                    continue;
+                }
+                bool b = false;
+                foreach (var subdir in Directory.GetDirectories(dir, "*"))
+                {
+                    string subdirname = Path.GetFileName(subdir);
+                    if (
+                           subdirname == "abdata" 
+                        || subdirname == "UserData" 
+                        || subdirname == "AI-SyoujyoTrial_Data" 
+                        || subdirname == "AI-Syoujyo_Data"
+                        )
+                    {
+                        CopyFolder.Copy(dir, Path.Combine(ModsPath, subdirname));
+                        Directory.Move(dir, Path.Combine(Install2MODirPath, "dir_copied"));
+                        b = true;
+                        break;
+                    }
+                }
+
+                if (!b)
+                {
+
+                    string moddir = dir.Replace(Install2MODirPath, ModsPath);
+                    string targetfilepath="readme.txt";
+                    foreach (var file in Directory.GetFiles(dir, "*.*"))
+                    {
+                        if (Path.GetExtension(file) == ".unity3d")
+                        {
+                            //string[] datafiles = Directory.GetFiles(dir, Path.GetFileName(file), SearchOption.AllDirectories);
+
+                            DirectoryInfo dirinfo = new DirectoryInfo(DataPath);
+
+                            var datafiles = dirinfo.GetFiles(Path.GetFileName(file), SearchOption.AllDirectories);
+
+                            if (datafiles.Length > 0)
+                            {
+                                string selectedfile = datafiles[0].FullName;
+                                if (datafiles.Length > 1)
+                                {
+                                    long size = 0;
+                                    for (int f = 0;f< datafiles.Length;f++)
+                                    {
+                                        if (datafiles[f].Length > size)
+                                        {
+                                            size = datafiles[f].Length;
+                                            selectedfile = datafiles[f].FullName;
+                                        }
+                                    }
+                                }
+
+                                targetfilepath = selectedfile.Replace(DataPath, moddir);
+
+                                Directory.CreateDirectory(Path.GetDirectoryName(targetfilepath));
+                                File.Move(file, targetfilepath);
+                            }
+                            
+                        }
+                    }
+
+                    string infofile = string.Empty;
+                    if (File.Exists(Path.Combine(dir, Path.GetFileName(dir)+".txt" )) )
+                    {
+                        infofile = Path.Combine(dir, Path.GetFileName(dir) + ".txt");
+                    }
+                    else if(File.Exists(Path.Combine(dir, "readme.txt")))
+                    {
+                        infofile = Path.Combine(dir, "readme.txt");
+                    }
+                    else if(File.Exists(Path.Combine(dir, "description.txt")))
+                    {
+                        infofile = Path.Combine(dir, "description.txt");
+                    }
+                    else if(File.Exists(Path.Combine(dir, Path.GetFileNameWithoutExtension(targetfilepath) + ".txt")))
+                    {
+                        infofile = Path.Combine(dir, Path.GetFileNameWithoutExtension(targetfilepath) + ".txt");
+                    }
+
+                    string name = Path.GetFileName(dir);
+                    string version = string.Empty;
+                    string author = string.Empty;
+                    string description = string.Empty;
+                    bool d = false;
+                    if (infofile.Length > 0)
+                    {
+                        string[] filecontent = File.ReadAllLines(infofile);
+                        for (int l = 0; l < filecontent.Length; l++)
+                        {
+                            if (d)
+                            {
+                                description += filecontent[l] + "<br>";
+                            }
+                            else if (filecontent[l].StartsWith("name:"))
+                            {
+                                string s = filecontent[l].Replace("name:", string.Empty);
+                                if (s.Length > 1)
+                                {
+                                    name = s;
+                                }
+                            }
+                            else if (filecontent[l].StartsWith("author:"))
+                            {
+                                string s = filecontent[l].Replace("author:", string.Empty);
+                                if (s.Length > 1)
+                                {
+                                    author = s;
+                                }
+                            }
+                            else if (filecontent[l].StartsWith("version:"))
+                            {
+                                string s = filecontent[l].Replace("version:", string.Empty);
+                                if (s.Length > 1)
+                                {
+                                    version = s;
+                                }
+                            }
+                            else if (filecontent[l].StartsWith("description:"))
+                            {
+                                description += filecontent[l].Replace("description:", string.Empty) + "<br>";
+                                d = true;
+                            }
+                        }
+                        File.Move(infofile, Path.Combine(moddir, Path.GetFileName(infofile)));
+                    }
+
+                    //запись meta.ini
+                    WriteMetaINI(
+                        moddir
+                        ,
+                        ""
+                        ,
+                        version
+                        ,
+                        string.Empty
+                        ,
+                        "\"<br>Author: " + author + "<br><br>" + description+" \""
+                        );
+                    //Utils.IniFile INI = new Utils.IniFile(Path.Combine(dllmoddirpath, "meta.ini"));
+                    //INI.WriteINI("General", "category", "\"51,\"");
+                    //INI.WriteINI("General", "version", version);
+                    //INI.WriteINI("General", "gameName", "Skyrim");
+                    //INI.WriteINI("General", "comments", "Requires: BepinEx");
+                    //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \"");
+                    //INI.WriteINI("General", "validated", "true");
+
+                    ActivateModIfPossible(Path.GetFileName(moddir));
+
+                }
+
             }
         }
 
@@ -981,6 +1185,12 @@ namespace AI_Girl_Helper
                 Directory.CreateDirectory(dllmoddirmodspath);
                 File.Move(dllfile, Path.Combine(dllmoddirmodspath, Path.GetFileName(dllfile)));
 
+                string readme = Path.Combine(Path.GetDirectoryName(dllfile), Path.GetFileNameWithoutExtension(dllfile) + " Readme.txt");
+                if (File.Exists(readme))
+                {
+                    File.Move(readme, Path.Combine(dllmoddirpath, Path.GetFileName(readme)));
+                }
+
 
                 //запись meta.ini
                 WriteMetaINI(
@@ -1014,15 +1224,18 @@ namespace AI_Girl_Helper
         /// <param name="version"></param>
         /// <param name="comments"></param>
         /// <param name="notes"></param>
-        private void WriteMetaINI(string moddir, string category, string version, string comments, string notes)
+        private void WriteMetaINI(string moddir, string category = "", string version = "", string comments = "", string notes="")
         {
-            Utils.IniFile INI = new Utils.IniFile(Path.Combine(moddir, "meta.ini"));
-            INI.WriteINI("General", "category", category);
-            INI.WriteINI("General", "version", version);
-            INI.WriteINI("General", "gameName", "Skyrim");
-            INI.WriteINI("General", "comments", comments);
-            INI.WriteINI("General", "notes", notes);
-            INI.WriteINI("General", "validated", "true");
+            if (!File.Exists(Path.Combine(moddir, "meta.ini")))
+            {
+                Utils.IniFile INI = new Utils.IniFile(Path.Combine(moddir, "meta.ini"));
+                INI.WriteINI("General", "category", category);
+                INI.WriteINI("General", "version", version);
+                INI.WriteINI("General", "gameName", "Skyrim");
+                INI.WriteINI("General", "comments", comments);
+                INI.WriteINI("General", "notes", notes);
+                INI.WriteINI("General", "validated", "true");
+            }
         }
 
         private void ActivateModIfPossible(string modname)

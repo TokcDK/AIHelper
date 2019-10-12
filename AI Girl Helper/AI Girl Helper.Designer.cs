@@ -57,6 +57,7 @@
             this.GameButton = new System.Windows.Forms.Button();
             this.MOButton = new System.Windows.Forms.Button();
             this.SettingsButton = new System.Windows.Forms.Button();
+            this.CreateShortcutButton = new System.Windows.Forms.Button();
             this.TabControl1.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -241,6 +242,7 @@
             // SettingsPanel
             // 
             this.SettingsPanel.BackColor = System.Drawing.Color.Gray;
+            this.SettingsPanel.Controls.Add(this.CreateShortcutButton);
             this.SettingsPanel.Controls.Add(this.FixRegistryButton);
             this.SettingsPanel.Controls.Add(this.groupBox1);
             this.SettingsPanel.Controls.Add(this.ShortcutsCheckBox);
@@ -433,6 +435,16 @@
             this.SettingsButton.Visible = false;
             this.SettingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
             // 
+            // CreateShortcutButton
+            // 
+            this.CreateShortcutButton.Location = new System.Drawing.Point(167, 127);
+            this.CreateShortcutButton.Name = "CreateShortcutButton";
+            this.CreateShortcutButton.Size = new System.Drawing.Size(56, 23);
+            this.CreateShortcutButton.TabIndex = 5;
+            this.CreateShortcutButton.Text = "Shortcut";
+            this.CreateShortcutButton.UseVisualStyleBackColor = true;
+            this.CreateShortcutButton.Click += new System.EventHandler(this.CreateShortcutButton_Click);
+            // 
             // AIGirlHelper
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -495,6 +507,7 @@
         private System.Windows.Forms.ComboBox QualityComboBox;
         private System.Windows.Forms.Button newformButton;
         private System.Windows.Forms.Button InstallInModsButton;
+        private System.Windows.Forms.Button CreateShortcutButton;
     }
 }
 

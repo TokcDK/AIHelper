@@ -45,6 +45,7 @@ namespace AI_Girl_Helper
             InstallInModsButton.Text = "2MO";
             button1.Text = T._("Prepare the game");
             SettingsPage.Text = T._("Settings");
+            CreateShortcutButton.Text = T._("Shortcut");
             FixRegistryButton.Text = T._("Fix registry");
             groupBox1.Text = T._("Display");
             FullScreenCheckBox.Text = T._("fullscreen");
@@ -245,9 +246,9 @@ namespace AI_Girl_Helper
         }
 
         //https://bytescout.com/blog/create-shortcuts-in-c-and-vbnet.html
-        private void CreateShortcuts()
+        private void CreateShortcuts(bool force = false)
         {
-            if (ShortcutsCheckBox.Checked)
+            if (ShortcutsCheckBox.Checked || force)
             {
                 //AI-Girl Helper
                 string shortcutname = T._("AI-Girl Helper");
@@ -563,6 +564,7 @@ namespace AI_Girl_Helper
             THToolTip.SetToolTip(ResolutionComboBox, T._("Select preferred screen resolution"));
             THToolTip.SetToolTip(FullScreenCheckBox, T._("When checked game will be in fullscreen mode"));
             THToolTip.SetToolTip(QualityComboBox, T._("Select preferred graphics quality"));
+            THToolTip.SetToolTip(CreateShortcutButton, T._("Will create shortcut in Desktop if not exist"));
             THToolTip.SetToolTip(FixRegistryButton, T._("Will set Data dir with game files as install dir in registry"));
             THToolTip.SetToolTip(GameButton, T._("Will execute the Game from Mod Organizer with attached mods"));
             THToolTip.SetToolTip(StudioButton, T._("Will execute Studio from Mod Organizer with attached mods"));
@@ -657,8 +659,8 @@ namespace AI_Girl_Helper
                 label4.Text = T._("Mods dir created");
             }
 
-            string AIGirl = "AIGirl";
-            string AIGirlTrial = "AIGirlTrial";
+            string AIGirl = "AI-Syoujyo";
+            string AIGirlTrial = "AI-SyoujyoTrial";
             if (File.Exists(Path.Combine(DataPath, AIGirlTrial + ".exe")))
             {
                 label3.Text = string.Format(T._("{0} game installed in {1}"), AIGirlTrial, "Data");
@@ -1405,6 +1407,11 @@ namespace AI_Girl_Helper
         private bool ContainsAnyInvalidCharacters(string path)
         {
             return (path.Length > 0 && path.IndexOfAny(Path.GetInvalidPathChars()) >= 0);
+        }
+
+        private void CreateShortcutButton_Click(object sender, EventArgs e)
+        {
+            CreateShortcuts(true);
         }
 
         //Материалы

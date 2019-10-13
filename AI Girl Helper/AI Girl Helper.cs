@@ -30,13 +30,15 @@ namespace AI_Girl_Helper
         private static readonly string MOexePath = Path.Combine(MODirPath, "ModOrganizer.exe");
         private static readonly string OverwriteFolder = Path.Combine(MODirPath, "overwrite");
         private static readonly string OverwriteFolderLink = Path.Combine(Application.StartupPath, "MOUserData");
-        private static readonly string SetupXmlPath = Path.Combine(OverwriteFolderLink, "UserData", "setup.xml");
+        private static string SetupXmlPath;
 
         public AIGirlHelper()
         {
             InitializeComponent();
 
             SetLocalizationStrings();
+
+            SetupXmlPath = GetSetupXmlPathForCurrentProfile();
         }
 
         private void SetLocalizationStrings()
@@ -752,7 +754,7 @@ namespace AI_Girl_Helper
 
             if (Directory.Exists(Install2MODirPath))
             {
-                if (Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0)
+                if (Directory.GetFiles(Install2MODirPath, "*.*").Length > 0)
                 {
                     InstallInModsButton.Visible = true;
                     InstallInModsButton.Enabled = true;
@@ -971,6 +973,8 @@ namespace AI_Girl_Helper
             {
                 InstallZipModsToMods();
 
+                InstallZipArchivesToMods();
+
                 InstallBepinExModsToMods();
 
                 InstallModFilesFromSubfolders();
@@ -978,6 +982,62 @@ namespace AI_Girl_Helper
                 InstallInModsButton.Enabled = false;
 
                 MessageBox.Show(T._("All possible mods installed. Install all rest in 2MO folder manually."));
+            }
+        }
+
+        private void InstallZipArchivesToMods()
+        {
+            foreach (var zipfile in Directory.GetFiles(Install2MODirPath, "*.zip"))
+            {
+                bool FoundZipMod = false;
+                bool FoundStandardModInZip = false;
+                using (ZipArchive archive = ZipFile.OpenRead(zipfile))
+                {
+                    foreach (ZipArchiveEntry entry in archive.Entries)
+                    {
+                        if (entry.FullName.EndsWith("manifest.xml", StringComparison.OrdinalIgnoreCase))
+                        {
+                            FoundZipMod = true;
+                            break;
+                        }
+                        if (entry.FullName.EndsWith("abdata/", StringComparison.OrdinalIgnoreCase)
+                            || entry.FullName.EndsWith("_data/", StringComparison.OrdinalIgnoreCase)
+                            || entry.FullName.EndsWith("bepinex/", StringComparison.OrdinalIgnoreCase)
+                            || entry.FullName.EndsWith("userdata/", StringComparison.OrdinalIgnoreCase)
+                            )
+                        {
+                            FoundStandardModInZip = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (FoundZipMod)
+                {
+                    File.Move(zipfile, zipfile+"mod");
+                    InstallZipModsToMods();
+                }
+                else if (FoundStandardModInZip)
+                {
+                    string zipmoddirpath = Path.Combine(ModsPath, Path.GetFileNameWithoutExtension(zipfile));
+                    Compressor.Decompress(zipfile, zipmoddirpath);
+                    File.Move(zipfile, zipfile+".Installed");
+
+                    //запись meta.ini
+                    WriteMetaINI(
+                        zipmoddirpath
+                        ,
+                        string.Empty
+                        ,
+                        "0.0.1"
+                        ,
+                        string.Empty
+                        ,
+                        "\"<br>Author: " + string.Empty + "<br><br>" + Path.GetFileNameWithoutExtension(zipfile) + "<br><br>"  + " \""
+                        );
+
+                    ActivateModIfPossible(Path.GetFileName(zipmoddirpath));
+                }
             }
         }
 
@@ -1262,6 +1322,47 @@ namespace AI_Girl_Helper
             }
         }
 
+        /// <summary>
+        /// Gets setup.xml path from latest enabled mod like must be in Mod Organizer
+        /// </summary>
+        /// <returns></returns>
+        private string GetSetupXmlPathForCurrentProfile()
+        {
+            Utils.IniFile INI = new Utils.IniFile(Path.Combine(MODirPath, "ModOrganizer.ini"));
+            if (INI.KeyExists("selected_profile", "General"))
+            {
+                string currentMOprofile = INI.ReadINI("General", "selected_profile");
+
+                if (currentMOprofile.Length == 0)
+                {
+                }
+                else
+                {
+                    string profilemodlistpath = Path.Combine(MODirPath, "profiles", currentMOprofile, "modlist.txt");
+                    
+                    if (File.Exists(profilemodlistpath))
+                    {
+                        string[] lines = File.ReadAllLines(profilemodlistpath);
+
+                        int linescount = lines.Length;
+                        for (int i = 1; i < linescount; i++) // 1- означает пропуск нулевой строки, где комментарий
+                        {
+                            if (lines[i].StartsWith("+"))
+                            {
+                                string SetupXmlPath = Path.Combine(ModsPath, lines[i].Remove(0, 1), "UserData", "setup.xml");
+                                if (File.Exists(SetupXmlPath))
+                                {
+                                    return SetupXmlPath;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return Path.Combine(OverwriteFolderLink, "UserData", "setup.xml");
+        }
+
         //https://social.msdn.microsoft.com/Forums/vstudio/en-US/8f713e50-0789-4bf6-865f-c87cdebd0b4f/insert-line-to-text-file-using-streamwriter-using-csharp?forum=csharpgeneral
         /// <summary>
         /// Inserts line in file in set position
@@ -1309,6 +1410,7 @@ namespace AI_Girl_Helper
                 string website = string.Empty;
                 string game = string.Empty;
 
+                bool IsManifestFound = false;
                 using (ZipArchive archive = ZipFile.OpenRead(zipfile))
                 {
                     foreach (ZipArchiveEntry entry in archive.Entries)
@@ -1326,6 +1428,8 @@ namespace AI_Girl_Helper
                             string xmlpath = Path.Combine(Install2MODirPath, "Temp", entry.FullName);
                             entry.ExtractToFile(xmlpath);
 
+                            IsManifestFound = true;
+
                             guid = ReadXmlValue(xmlpath, "manifest/name", string.Empty);
                             name = ReadXmlValue(xmlpath, "manifest/name", string.Empty);
                             version = ReadXmlValue(xmlpath, "manifest/version", "0");
@@ -1339,7 +1443,7 @@ namespace AI_Girl_Helper
                     }
                 }
 
-                if (game == "AI Girl")
+                if (IsManifestFound && game == "AI Girl")
                 {
                     if (name.Length == 0)
                     {
@@ -1387,7 +1491,7 @@ namespace AI_Girl_Helper
                         ,
                         version
                         ,
-                        "Requires: BepinEx"
+                        "Requires: Sideloader plugin"
                         ,
                         "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + website + " \""
                         );

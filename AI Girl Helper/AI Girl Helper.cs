@@ -969,20 +969,95 @@ namespace AI_Girl_Helper
         string Install2MODirPath = Path.Combine(Application.StartupPath, "2MO");
         private void InstallInModsButton_Click(object sender, EventArgs e)
         {
-            if (Directory.Exists(Install2MODirPath) && (Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zipmod").Length > 0) || Directory.GetDirectories(Install2MODirPath, "*").Length > 0)
+            if (Directory.Exists(Install2MODirPath) && (Directory.GetFiles(Install2MODirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zipmod").Length > 0 || Directory.GetDirectories(Install2MODirPath, "*").Length > 0))
             {
+                InstallInModsButton.Enabled = false;
+
+                InstallCardsFrom2MO();
+
                 InstallZipModsToMods();
 
                 InstallZipArchivesToMods();
 
                 InstallBepinExModsToMods();
 
-                InstallModFilesFromSubfolders();
+                InstallCardsFromSubfolders();
 
-                InstallInModsButton.Enabled = false;
+                InstallModFilesFromSubfolders();
 
                 MessageBox.Show(T._("All possible mods installed. Install all rest in 2MO folder manually."));
             }
+        }
+
+        private void InstallCardsFrom2MO()
+        {
+            string targetdir = Path.Combine(ModsPath, "MyUserData");
+            var images = Directory.GetFiles(Install2MODirPath, "*.png");
+            if (images.Length > 0 && Directory.GetDirectories(Install2MODirPath, "*").Length == 0)
+            {
+                //bool IsCharaCard = false;
+                foreach (var img in images)
+                {
+                    //var imgdata = Image.FromFile(img);
+
+                    //if (imgdata.Width == 252 && imgdata.Height == 352)
+                    //{
+                    //    IsCharaCard = true;
+                    //}
+                    string ImgFIleName = Path.GetFileNameWithoutExtension(img);
+                    string targetImagePath = string.Empty;
+
+                    for (int i = 1; i < 100000; i++)
+                    {
+                        targetImagePath = Path.Combine(IllusionImagesSubFolder(targetdir), ImgFIleName+".png");
+
+                        if (File.Exists(targetImagePath))
+                        {
+                            ImgFIleName += " (" + i + ")";
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    File.Move(img, targetImagePath);
+                }
+            }
+        }
+
+        private void InstallCardsFromSubfolders()
+        {
+            foreach (var dir in Directory.GetDirectories(Install2MODirPath, "*"))
+            {
+                var images = Directory.GetFiles(dir, "*.png");
+                if (images.Length > 0 && Directory.GetDirectories(dir, "*").Length==0)
+                {
+                    //bool IsCharaCard = false;
+                    foreach (var img in images)
+                    {
+                        //var imgdata = Image.FromFile(img);
+
+                        //if (imgdata.Width == 252 && imgdata.Height == 352)
+                        //{
+                        //    IsCharaCard = true;
+                        //}
+                        File.Move(img, Path.Combine(IllusionImagesSubFolder(dir), Path.GetFileName(img)));
+                    }
+                }
+
+                Directory.Move(dir, Path.Combine(ModsPath, Path.GetFileName(dir)));
+            }
+        }
+
+        private string IllusionImagesSubFolder(string dir)
+        {
+            var imagesSubdir = Path.Combine(dir, "UserData", "chara", "female");
+            if (!Directory.Exists(imagesSubdir))
+            {
+                Directory.CreateDirectory(imagesSubdir);
+            }
+            return imagesSubdir;
         }
 
         private void InstallZipArchivesToMods()
@@ -1400,6 +1475,7 @@ namespace AI_Girl_Helper
 
         private void InstallZipModsToMods()
         {
+            string TempDir = Path.Combine(Install2MODirPath, "Temp");
             foreach (var zipfile in Directory.GetFiles(Install2MODirPath, "*.zipmod"))
             {
                 string guid = string.Empty;
@@ -1417,12 +1493,12 @@ namespace AI_Girl_Helper
                     {
                         if (entry.FullName.EndsWith("manifest.xml", StringComparison.OrdinalIgnoreCase))
                         {            
-                            if (Directory.Exists(Path.Combine(Install2MODirPath, "Temp")))
+                            if (Directory.Exists(TempDir))
                             {
                             }
                             else
                             {
-                                Directory.CreateDirectory(Path.Combine(Install2MODirPath, "Temp"));
+                                Directory.CreateDirectory(TempDir);
                             }
 
                             string xmlpath = Path.Combine(Install2MODirPath, "Temp", entry.FullName);
@@ -1505,6 +1581,12 @@ namespace AI_Girl_Helper
 
                     ActivateModIfPossible(Path.GetFileName(zipmoddirpath));
                 }
+            }
+
+
+            if (Directory.Exists(TempDir))
+            {
+                Directory.Delete(Path.Combine(Install2MODirPath, "Temp"));
             }
         }
 

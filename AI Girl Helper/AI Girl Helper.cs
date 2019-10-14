@@ -1046,7 +1046,39 @@ namespace AI_Girl_Helper
                     }
                 }
 
-                Directory.Move(dir, Path.Combine(ModsPath, Path.GetFileName(dir)));
+                var cardsModName = Path.GetFileName(dir);
+                var cardsModDir = string.Empty;
+                for (int i = 1; i < 100000; i++)
+                {
+                    cardsModDir = Path.Combine(ModsPath, cardsModName);
+
+                    if (Directory.Exists(cardsModDir))
+                    {
+                        cardsModName += " (" + i + ")";
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+
+                Directory.Move(dir, cardsModDir);
+
+                //запись meta.ini
+                WriteMetaINI(
+                    cardsModDir
+                    ,
+                    "54,"
+                    ,
+                    string.Empty
+                    ,
+                    string.Empty
+                    ,
+                    "\"<br>Author: " + string.Empty + "<br><br>" + Path.GetFileNameWithoutExtension(cardsModDir) + "<br><br>" + " \""
+                    );
+
+                ActivateModIfPossible(Path.GetFileName(cardsModDir));
             }
         }
 

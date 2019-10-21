@@ -1,15 +1,12 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -407,7 +404,7 @@ namespace AI_Girl_Helper
                 {
                     //Read categories.dat
                     List<CategoriesList> categories = new List<CategoriesList>();
-                    foreach(string line in File.ReadAllLines(Path.Combine(MODirPath, "categories.dat")))
+                    foreach (string line in File.ReadAllLines(Path.Combine(MODirPath, "categories.dat")))
                     {
                         if (line.Length == 0)
                         {
@@ -427,7 +424,7 @@ namespace AI_Girl_Helper
                     {
                         label3.Invoke((Action)(() => label3.Text = "Compressing " + i + "/" + dirs.Length));
                         ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = "Folder: " + Path.GetFileNameWithoutExtension(dir)));
-                        
+
                         Compressor.Compress(dir, GetResultTargetName(categories, dir));
 
                         progressBar1.Invoke((Action)(() => progressBar1.Value = i));
@@ -496,7 +493,7 @@ namespace AI_Girl_Helper
                 //Subcategory from meta
                 categoryvalue = categoryvalue.Replace("\"", string.Empty);//убрать кавычки
                 categoryvalue = categoryvalue.Split(',')[0];//взять только первое значение
-                int categiryindex = int.Parse(categoryvalue)-1;//В List индекс идет от нуля
+                int categiryindex = int.Parse(categoryvalue) - 1;//В List индекс идет от нуля
                 if (categiryindex > 0)
                 {
                     if (categiryindex < categories.Count)//на всякий, защита от ошибки выхода за диапазон
@@ -595,10 +592,10 @@ namespace AI_Girl_Helper
                 string screenWidth = Screen.PrimaryScreen.Bounds.Width.ToString();
                 //string screenHeight = Screen.PrimaryScreen.Bounds.Height.ToString();
                 int[] width = { 1280, 1366, 1536, 1600, 1920, 2048, 2560, 3200, 3840 };
-                if (int.Parse(screenWidth) > width[width.Length-1])
+                if (int.Parse(screenWidth) > width[width.Length - 1])
                 {
                     ResolutionComboBox.SelectedItem = width.Length - 1;
-                    SetScreenResolution(ResolutionComboBox.Items[width.Length - 1].ToString());                   
+                    SetScreenResolution(ResolutionComboBox.Items[width.Length - 1].ToString());
                 }
                 else
                 {
@@ -1053,7 +1050,7 @@ namespace AI_Girl_Helper
 
                     for (int i = 1; i < 100000; i++)
                     {
-                        targetImagePath = Path.Combine(IllusionImagesSubFolder(targetdir), ImgFIleName+".png");
+                        targetImagePath = Path.Combine(IllusionImagesSubFolder(targetdir), ImgFIleName + ".png");
 
                         if (File.Exists(targetImagePath))
                         {
@@ -1075,7 +1072,7 @@ namespace AI_Girl_Helper
             foreach (var dir in Directory.GetDirectories(Install2MODirPath, "*"))
             {
                 var images = Directory.GetFiles(dir, "*.png");
-                if (images.Length > 0 && Directory.GetDirectories(dir, "*").Length==0)
+                if (images.Length > 0 && Directory.GetDirectories(dir, "*").Length == 0)
                 {
                     //bool IsCharaCard = false;
                     foreach (var img in images)
@@ -1165,14 +1162,14 @@ namespace AI_Girl_Helper
 
                 if (FoundZipMod)
                 {
-                    File.Move(zipfile, zipfile+"mod");
+                    File.Move(zipfile, zipfile + "mod");
                     InstallZipModsToMods();
                 }
                 else if (FoundStandardModInZip)
                 {
                     string zipmoddirpath = Path.Combine(ModsPath, Path.GetFileNameWithoutExtension(zipfile));
                     Compressor.Decompress(zipfile, zipmoddirpath);
-                    File.Move(zipfile, zipfile+".Installed");
+                    File.Move(zipfile, zipfile + ".Installed");
 
                     //запись meta.ini
                     WriteMetaINI(
@@ -1184,7 +1181,7 @@ namespace AI_Girl_Helper
                         ,
                         string.Empty
                         ,
-                        "\"<br>Author: " + string.Empty + "<br><br>" + Path.GetFileNameWithoutExtension(zipfile) + "<br><br>"  + " \""
+                        "\"<br>Author: " + string.Empty + "<br><br>" + Path.GetFileNameWithoutExtension(zipfile) + "<br><br>" + " \""
                         );
 
                     ActivateModIfPossible(Path.GetFileName(zipmoddirpath));
@@ -1205,9 +1202,9 @@ namespace AI_Girl_Helper
                 {
                     string subdirname = Path.GetFileName(subdir);
                     if (
-                           subdirname == "abdata" 
-                        || subdirname == "UserData" 
-                        || subdirname == "AI-SyoujyoTrial_Data" 
+                           subdirname == "abdata"
+                        || subdirname == "UserData"
+                        || subdirname == "AI-SyoujyoTrial_Data"
                         || subdirname == "AI-Syoujyo_Data"
                         )
                     {
@@ -1222,7 +1219,7 @@ namespace AI_Girl_Helper
                 {
 
                     string moddir = dir.Replace(Install2MODirPath, ModsPath);
-                    string targetfilepath="readme.txt";
+                    string targetfilepath = "readme.txt";
                     foreach (var file in Directory.GetFiles(dir, "*.*"))
                     {
                         if (Path.GetExtension(file) == ".unity3d")
@@ -1239,7 +1236,7 @@ namespace AI_Girl_Helper
                                 if (datafiles.Length > 1)
                                 {
                                     long size = 0;
-                                    for (int f = 0;f< datafiles.Length;f++)
+                                    for (int f = 0; f < datafiles.Length; f++)
                                     {
                                         if (datafiles[f].Length > size)
                                         {
@@ -1254,24 +1251,24 @@ namespace AI_Girl_Helper
                                 Directory.CreateDirectory(Path.GetDirectoryName(targetfilepath));
                                 File.Move(file, targetfilepath);
                             }
-                            
+
                         }
                     }
 
                     string infofile = string.Empty;
-                    if (File.Exists(Path.Combine(dir, Path.GetFileName(dir)+".txt" )) )
+                    if (File.Exists(Path.Combine(dir, Path.GetFileName(dir) + ".txt")))
                     {
                         infofile = Path.Combine(dir, Path.GetFileName(dir) + ".txt");
                     }
-                    else if(File.Exists(Path.Combine(dir, "readme.txt")))
+                    else if (File.Exists(Path.Combine(dir, "readme.txt")))
                     {
                         infofile = Path.Combine(dir, "readme.txt");
                     }
-                    else if(File.Exists(Path.Combine(dir, "description.txt")))
+                    else if (File.Exists(Path.Combine(dir, "description.txt")))
                     {
                         infofile = Path.Combine(dir, "description.txt");
                     }
-                    else if(File.Exists(Path.Combine(dir, Path.GetFileNameWithoutExtension(targetfilepath) + ".txt")))
+                    else if (File.Exists(Path.Combine(dir, Path.GetFileNameWithoutExtension(targetfilepath) + ".txt")))
                     {
                         infofile = Path.Combine(dir, Path.GetFileNameWithoutExtension(targetfilepath) + ".txt");
                     }
@@ -1333,7 +1330,7 @@ namespace AI_Girl_Helper
                         ,
                         string.Empty
                         ,
-                        "\"<br>Author: " + author + "<br><br>" + description+" \""
+                        "\"<br>Author: " + author + "<br><br>" + description + " \""
                         );
                     //Utils.IniFile INI = new Utils.IniFile(Path.Combine(dllmoddirpath, "meta.ini"));
                     //INI.WriteINI("General", "category", "\"51,\"");
@@ -1410,11 +1407,11 @@ namespace AI_Girl_Helper
                     dllmoddirpath
                     ,
                     "\"51,\""
-                    , 
+                    ,
                     version
-                    , 
+                    ,
                     "Requires: BepinEx"
-                    , 
+                    ,
                     "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \""
                     );
                 //Utils.IniFile INI = new Utils.IniFile(Path.Combine(dllmoddirpath, "meta.ini"));
@@ -1437,7 +1434,7 @@ namespace AI_Girl_Helper
         /// <param name="version"></param>
         /// <param name="comments"></param>
         /// <param name="notes"></param>
-        private void WriteMetaINI(string moddir, string category = "", string version = "", string comments = "", string notes="")
+        private void WriteMetaINI(string moddir, string category = "", string version = "", string comments = "", string notes = "")
         {
             if (!File.Exists(Path.Combine(moddir, "meta.ini")))
             {
@@ -1575,7 +1572,7 @@ namespace AI_Girl_Helper
                     foreach (ZipArchiveEntry entry in archive.Entries)
                     {
                         if (entry.FullName.EndsWith("manifest.xml", StringComparison.OrdinalIgnoreCase))
-                        {            
+                        {
                             if (Directory.Exists(TempDir))
                             {
                             }

@@ -96,16 +96,21 @@ namespace AI_Girl_Helper
 
             CreateShortcuts();
 
-            if (MOmode)
-            {
-                //Create dummy file and add hidden attribute
-                string dummyfile = Path.Combine(Application.StartupPath, "TESV.exe");
-                File.WriteAllText(dummyfile, "dummy file");
-                HideFileFolder(dummyfile, true);
-            }
+            MakeDummyFile();
 
             button1.Text = T._("Game Ready");
             FoldersInit();
+        }
+
+        private readonly string dummyfile = Path.Combine(Application.StartupPath, "TESV.exe");
+        private void MakeDummyFile()
+        {
+            //Create dummy file and add hidden attribute
+            if (!File.Exists(dummyfile))
+            {
+                File.WriteAllText(dummyfile, "dummy file need to execute mod organizer");
+                HideFileFolder(dummyfile, true);
+            }
         }
 
         private void UnpackMO()
@@ -660,6 +665,15 @@ namespace AI_Girl_Helper
 
         private void FoldersInit()
         {
+            if (File.Exists(dummyfile))
+            {
+                MOmode = true;
+            }
+            else
+            {
+                MOmode = false;
+            }
+
             if (!Directory.Exists(DataPath))
             {
                 Directory.CreateDirectory(DataPath);
@@ -730,10 +744,11 @@ namespace AI_Girl_Helper
                         //button1.Enabled = false;
                         mode = 1;
                         button1.Text = T._("Mods Ready");
-                        MOButton.Visible = true;
-                        SettingsButton.Visible = true;
-                        GameButton.Visible = true;
-                        StudioButton.Visible = true;
+                        MOButton.Enabled = true;
+                        SettingsButton.Enabled = true;
+                        GameButton.Enabled = true;
+                        StudioButton.Enabled = false;
+                        MO2StandartButton.Enabled = true;
                         AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
                     }
                 }
@@ -778,6 +793,11 @@ namespace AI_Girl_Helper
             else
             {
                 ModsInfoLabel.Visible = false;
+
+                StudioButton.Enabled = false;
+                MO2StandartButton.Enabled = false;
+                button1.Text = T._("Game in standart mode");
+                button1.Enabled = false;
             }
         }
 
@@ -1678,6 +1698,113 @@ namespace AI_Girl_Helper
         private void CreateShortcutButton_Click(object sender, EventArgs e)
         {
             CreateShortcuts(true);
+        }
+
+        private void MO2StandartButton_Click(object sender, EventArgs e)
+        {
+            MOmode = false;
+            MO2StandartButton.Enabled = false;
+
+            CleanBepInExLinksFromData();
+
+            if (File.Exists(dummyfile))
+            {
+                File.Delete(dummyfile);
+            }
+
+            string[] EnabledMods = GetEnabledModsFromActiveMOProfile();
+            int EnabledModsLength = EnabledMods.Length;
+            for (int N = 0; N < EnabledModsLength; N++)
+            {
+                string ModFolder = Path.Combine(ModsPath, EnabledMods[N]);
+                if (ModFolder.Length > 0)
+                {
+                    string[] ModFiles = Directory.GetFiles(ModFolder, "*.*", SearchOption.AllDirectories);
+                    int ModFilesLength = ModFiles.Length;
+                    for (int f = 0; f < ModFilesLength; f++)
+                    {
+                        MO2StandartButton.Text = "..." + EnabledModsLength + "/" + N + ": " + f + "/" + ModFilesLength;
+                        string destinationname = ModFiles[f].Replace(ModFolder, DataPath);
+                        MoveWithReplace(ModFiles[f], destinationname);
+                    }
+                    Directory.Delete(ModFolder, true);
+                }
+            }
+
+            Directory.Delete(ModsPath, true);
+            Directory.Move(MODirPath, Path.Combine(AppResDir, Path.GetFileName(MODirPath)));
+            MO2StandartButton.Text = T._("MOToStandart");
+            MessageBox.Show(T._("All mod files now in Data folder!"));
+        }
+
+        public static void MoveWithReplace(string sourceFileName, string destFileName)
+        {
+
+            //first, delete target file if exists, as File.Move() does not support overwrite
+            if (File.Exists(destFileName))
+            {
+                File.Delete(destFileName);
+            }
+
+            string destFolder = Path.GetDirectoryName(destFileName);
+            if (!Directory.Exists(destFolder))
+            {
+                Directory.CreateDirectory(destFolder);
+            }
+            File.Move(sourceFileName, destFileName);
+
+        }
+
+        private void CleanBepInExLinksFromData()
+        {
+            string file = Path.Combine(DataPath, "doorstop_config.ini");
+            if (File.Exists(file))
+            {
+                File.Delete(file);
+            }
+            file = Path.Combine(DataPath, "winhttp.dll");
+            if (File.Exists(file))
+            {
+                File.Delete(file);
+            }
+            file = Path.Combine(DataPath, "BepInEx");
+            if (Directory.Exists(file))
+            {
+                Directory.Delete(file, true);
+            }
+        }
+
+        private string[] GetEnabledModsFromActiveMOProfile()
+        {
+            Utils.IniFile INI = new Utils.IniFile(Path.Combine(MODirPath, "ModOrganizer.ini"));
+
+            if (INI.KeyExists("selected_profile", "General"))
+            {
+                string currentMOprofile = INI.ReadINI("General", "selected_profile");
+
+                if (currentMOprofile.Length == 0)
+                {
+                }
+                else
+                {
+                    string profilemodlistpath = Path.Combine(MODirPath, "profiles", currentMOprofile, "modlist.txt");
+
+                    if (File.Exists(profilemodlistpath))
+                    {
+                        string[] lines = File.ReadAllLines(profilemodlistpath).Where(line => line.StartsWith("+")).ToArray();
+                        Array.Reverse(lines);
+                        int linesLength = lines.Length;
+                        for (int l = 0; l < linesLength; l++)
+                        {
+                            lines[l] = lines[l].Remove(0, 1);
+                        }
+
+                        return lines;
+                    }
+                }
+            }
+
+            return null;
         }
 
         //Материалы

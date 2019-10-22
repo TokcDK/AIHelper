@@ -42,6 +42,18 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.LaunchTabPage = new System.Windows.Forms.TabPage();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.label6 = new System.Windows.Forms.Label();
+            this.GameNamePanel2 = new System.Windows.Forms.Panel();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.newformButton = new System.Windows.Forms.Button();
+            this.StudioButton = new System.Windows.Forms.Button();
+            this.GameButton = new System.Windows.Forms.Button();
+            this.MOButton = new System.Windows.Forms.Button();
+            this.SettingsButton = new System.Windows.Forms.Button();
             this.SettingsPage = new System.Windows.Forms.TabPage();
             this.SettingsPanel = new System.Windows.Forms.Panel();
             this.CreateShortcutButton = new System.Windows.Forms.Button();
@@ -51,18 +63,6 @@
             this.FullScreenCheckBox = new System.Windows.Forms.CheckBox();
             this.ResolutionComboBox = new System.Windows.Forms.ComboBox();
             this.ShortcutsCheckBox = new System.Windows.Forms.CheckBox();
-            this.LaunchTabPage = new System.Windows.Forms.TabPage();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.newformButton = new System.Windows.Forms.Button();
-            this.StudioButton = new System.Windows.Forms.Button();
-            this.GameButton = new System.Windows.Forms.Button();
-            this.MOButton = new System.Windows.Forms.Button();
-            this.SettingsButton = new System.Windows.Forms.Button();
-            this.GameNamePanel2 = new System.Windows.Forms.Panel();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.label6 = new System.Windows.Forms.Label();
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
             this.ToolsPanel = new System.Windows.Forms.Panel();
             this.MO2StandartButton = new System.Windows.Forms.Button();
@@ -72,9 +72,6 @@
             this.LabelPanel2.SuspendLayout();
             this.LabelPanel.SuspendLayout();
             this.GameNamePanel.SuspendLayout();
-            this.SettingsPage.SuspendLayout();
-            this.SettingsPanel.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.LaunchTabPage.SuspendLayout();
             this.panel2.SuspendLayout();
             this.GameNamePanel2.SuspendLayout();
@@ -82,6 +79,9 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.SettingsPage.SuspendLayout();
+            this.SettingsPanel.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.ToolsTabPage.SuspendLayout();
             this.ToolsPanel.SuspendLayout();
             this.SuspendLayout();
@@ -244,6 +244,169 @@
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
+            // LaunchTabPage
+            // 
+            this.LaunchTabPage.Controls.Add(this.panel2);
+            this.LaunchTabPage.Location = new System.Drawing.Point(4, 22);
+            this.LaunchTabPage.Name = "LaunchTabPage";
+            this.LaunchTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.LaunchTabPage.Size = new System.Drawing.Size(346, 161);
+            this.LaunchTabPage.TabIndex = 2;
+            this.LaunchTabPage.Text = "Launch";
+            this.LaunchTabPage.UseVisualStyleBackColor = true;
+            // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.Color.Gray;
+            this.panel2.Controls.Add(this.label6);
+            this.panel2.Controls.Add(this.GameNamePanel2);
+            this.panel2.Controls.Add(this.newformButton);
+            this.panel2.Controls.Add(this.StudioButton);
+            this.panel2.Controls.Add(this.GameButton);
+            this.panel2.Controls.Add(this.MOButton);
+            this.panel2.Controls.Add(this.SettingsButton);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(3, 3);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(340, 155);
+            this.panel2.TabIndex = 0;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Lucida Handwriting", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.ForeColor = System.Drawing.Color.White;
+            this.label6.Location = new System.Drawing.Point(203, 45);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(55, 15);
+            this.label6.TabIndex = 19;
+            this.label6.Text = "Launch";
+            // 
+            // GameNamePanel2
+            // 
+            this.GameNamePanel2.Controls.Add(this.splitContainer1);
+            this.GameNamePanel2.Location = new System.Drawing.Point(80, 21);
+            this.GameNamePanel2.Name = "GameNamePanel2";
+            this.GameNamePanel2.Size = new System.Drawing.Size(161, 30);
+            this.GameNamePanel2.TabIndex = 18;
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.label5);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.label4);
+            this.splitContainer1.Size = new System.Drawing.Size(161, 30);
+            this.splitContainer1.SplitterDistance = 30;
+            this.splitContainer1.TabIndex = 0;
+            // 
+            // label5
+            // 
+            this.label5.AutoEllipsis = true;
+            this.label5.AutoSize = true;
+            this.label5.BackColor = System.Drawing.Color.Gray;
+            this.label5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label5.Font = new System.Drawing.Font("Lucida Handwriting", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.label5.Location = new System.Drawing.Point(0, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(34, 24);
+            this.label5.TabIndex = 3;
+            this.label5.Text = "AI";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.Color.Gray;
+            this.label4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label4.Font = new System.Drawing.Font("Lucida Handwriting", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.ForeColor = System.Drawing.Color.White;
+            this.label4.Location = new System.Drawing.Point(0, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(124, 24);
+            this.label4.TabIndex = 2;
+            this.label4.Text = "Girl Helper";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // newformButton
+            // 
+            this.newformButton.BackColor = System.Drawing.Color.Silver;
+            this.newformButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.newformButton.ForeColor = System.Drawing.Color.Black;
+            this.newformButton.Location = new System.Drawing.Point(303, 111);
+            this.newformButton.Name = "newformButton";
+            this.newformButton.Size = new System.Drawing.Size(32, 32);
+            this.newformButton.TabIndex = 17;
+            this.newformButton.Text = "\\/";
+            this.newformButton.UseVisualStyleBackColor = false;
+            this.newformButton.Visible = false;
+            this.newformButton.Click += new System.EventHandler(this.NewformButton_Click);
+            // 
+            // StudioButton
+            // 
+            this.StudioButton.BackColor = System.Drawing.Color.Silver;
+            this.StudioButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.StudioButton.Enabled = false;
+            this.StudioButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.StudioButton.ForeColor = System.Drawing.Color.Black;
+            this.StudioButton.Location = new System.Drawing.Point(42, 111);
+            this.StudioButton.Name = "StudioButton";
+            this.StudioButton.Size = new System.Drawing.Size(94, 30);
+            this.StudioButton.TabIndex = 16;
+            this.StudioButton.Text = "Studio";
+            this.StudioButton.UseVisualStyleBackColor = false;
+            this.StudioButton.Click += new System.EventHandler(this.StudioButton_Click);
+            // 
+            // GameButton
+            // 
+            this.GameButton.BackColor = System.Drawing.Color.Silver;
+            this.GameButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.GameButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.GameButton.ForeColor = System.Drawing.Color.Black;
+            this.GameButton.Location = new System.Drawing.Point(42, 72);
+            this.GameButton.Name = "GameButton";
+            this.GameButton.Size = new System.Drawing.Size(94, 30);
+            this.GameButton.TabIndex = 15;
+            this.GameButton.Text = "Game";
+            this.GameButton.UseVisualStyleBackColor = false;
+            this.GameButton.Click += new System.EventHandler(this.GameButton_Click);
+            // 
+            // MOButton
+            // 
+            this.MOButton.BackColor = System.Drawing.Color.Silver;
+            this.MOButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.MOButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MOButton.ForeColor = System.Drawing.Color.Black;
+            this.MOButton.Location = new System.Drawing.Point(185, 72);
+            this.MOButton.Name = "MOButton";
+            this.MOButton.Size = new System.Drawing.Size(94, 30);
+            this.MOButton.TabIndex = 13;
+            this.MOButton.Text = "Manager";
+            this.MOButton.UseVisualStyleBackColor = false;
+            this.MOButton.Click += new System.EventHandler(this.MOButton_Click);
+            // 
+            // SettingsButton
+            // 
+            this.SettingsButton.BackColor = System.Drawing.Color.Silver;
+            this.SettingsButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.SettingsButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.SettingsButton.ForeColor = System.Drawing.Color.Black;
+            this.SettingsButton.Location = new System.Drawing.Point(185, 111);
+            this.SettingsButton.Name = "SettingsButton";
+            this.SettingsButton.Size = new System.Drawing.Size(94, 30);
+            this.SettingsButton.TabIndex = 14;
+            this.SettingsButton.Text = "Settings";
+            this.SettingsButton.UseVisualStyleBackColor = false;
+            this.SettingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
+            // 
             // SettingsPage
             // 
             this.SettingsPage.Controls.Add(this.SettingsPanel);
@@ -361,173 +524,6 @@
             this.ShortcutsCheckBox.UseVisualStyleBackColor = true;
             this.ShortcutsCheckBox.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
             // 
-            // LaunchTabPage
-            // 
-            this.LaunchTabPage.Controls.Add(this.panel2);
-            this.LaunchTabPage.Location = new System.Drawing.Point(4, 22);
-            this.LaunchTabPage.Name = "LaunchTabPage";
-            this.LaunchTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.LaunchTabPage.Size = new System.Drawing.Size(346, 161);
-            this.LaunchTabPage.TabIndex = 2;
-            this.LaunchTabPage.Text = "Launch";
-            this.LaunchTabPage.UseVisualStyleBackColor = true;
-            // 
-            // panel2
-            // 
-            this.panel2.BackColor = System.Drawing.Color.Gray;
-            this.panel2.Controls.Add(this.label6);
-            this.panel2.Controls.Add(this.GameNamePanel2);
-            this.panel2.Controls.Add(this.newformButton);
-            this.panel2.Controls.Add(this.StudioButton);
-            this.panel2.Controls.Add(this.GameButton);
-            this.panel2.Controls.Add(this.MOButton);
-            this.panel2.Controls.Add(this.SettingsButton);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(3, 3);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(340, 155);
-            this.panel2.TabIndex = 0;
-            // 
-            // newformButton
-            // 
-            this.newformButton.BackColor = System.Drawing.Color.Silver;
-            this.newformButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.newformButton.ForeColor = System.Drawing.Color.Black;
-            this.newformButton.Location = new System.Drawing.Point(303, 111);
-            this.newformButton.Name = "newformButton";
-            this.newformButton.Size = new System.Drawing.Size(32, 32);
-            this.newformButton.TabIndex = 17;
-            this.newformButton.Text = "\\/";
-            this.newformButton.UseVisualStyleBackColor = false;
-            this.newformButton.Visible = false;
-            this.newformButton.Click += new System.EventHandler(this.NewformButton_Click);
-            // 
-            // StudioButton
-            // 
-            this.StudioButton.BackColor = System.Drawing.Color.Silver;
-            this.StudioButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.StudioButton.Enabled = false;
-            this.StudioButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.StudioButton.ForeColor = System.Drawing.Color.Black;
-            this.StudioButton.Location = new System.Drawing.Point(42, 111);
-            this.StudioButton.Name = "StudioButton";
-            this.StudioButton.Size = new System.Drawing.Size(94, 30);
-            this.StudioButton.TabIndex = 16;
-            this.StudioButton.Text = "Studio";
-            this.StudioButton.UseVisualStyleBackColor = false;
-            this.StudioButton.Visible = false;
-            this.StudioButton.Click += new System.EventHandler(this.StudioButton_Click);
-            // 
-            // GameButton
-            // 
-            this.GameButton.BackColor = System.Drawing.Color.Silver;
-            this.GameButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.GameButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.GameButton.ForeColor = System.Drawing.Color.Black;
-            this.GameButton.Location = new System.Drawing.Point(42, 72);
-            this.GameButton.Name = "GameButton";
-            this.GameButton.Size = new System.Drawing.Size(94, 30);
-            this.GameButton.TabIndex = 15;
-            this.GameButton.Text = "Game";
-            this.GameButton.UseVisualStyleBackColor = false;
-            this.GameButton.Visible = false;
-            this.GameButton.Click += new System.EventHandler(this.GameButton_Click);
-            // 
-            // MOButton
-            // 
-            this.MOButton.BackColor = System.Drawing.Color.Silver;
-            this.MOButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.MOButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MOButton.ForeColor = System.Drawing.Color.Black;
-            this.MOButton.Location = new System.Drawing.Point(185, 72);
-            this.MOButton.Name = "MOButton";
-            this.MOButton.Size = new System.Drawing.Size(94, 30);
-            this.MOButton.TabIndex = 13;
-            this.MOButton.Text = "Manager";
-            this.MOButton.UseVisualStyleBackColor = false;
-            this.MOButton.Visible = false;
-            this.MOButton.Click += new System.EventHandler(this.MOButton_Click);
-            // 
-            // SettingsButton
-            // 
-            this.SettingsButton.BackColor = System.Drawing.Color.Silver;
-            this.SettingsButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.SettingsButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.SettingsButton.ForeColor = System.Drawing.Color.Black;
-            this.SettingsButton.Location = new System.Drawing.Point(185, 111);
-            this.SettingsButton.Name = "SettingsButton";
-            this.SettingsButton.Size = new System.Drawing.Size(94, 30);
-            this.SettingsButton.TabIndex = 14;
-            this.SettingsButton.Text = "Settings";
-            this.SettingsButton.UseVisualStyleBackColor = false;
-            this.SettingsButton.Visible = false;
-            this.SettingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
-            // 
-            // GameNamePanel2
-            // 
-            this.GameNamePanel2.Controls.Add(this.splitContainer1);
-            this.GameNamePanel2.Location = new System.Drawing.Point(80, 21);
-            this.GameNamePanel2.Name = "GameNamePanel2";
-            this.GameNamePanel2.Size = new System.Drawing.Size(161, 30);
-            this.GameNamePanel2.TabIndex = 18;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.BackColor = System.Drawing.Color.Gray;
-            this.label4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label4.Font = new System.Drawing.Font("Lucida Handwriting", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.Color.White;
-            this.label4.Location = new System.Drawing.Point(0, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(124, 24);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "Girl Helper";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // label5
-            // 
-            this.label5.AutoEllipsis = true;
-            this.label5.AutoSize = true;
-            this.label5.BackColor = System.Drawing.Color.Gray;
-            this.label5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label5.Font = new System.Drawing.Font("Lucida Handwriting", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.label5.Location = new System.Drawing.Point(0, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(34, 24);
-            this.label5.TabIndex = 3;
-            this.label5.Text = "AI";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // splitContainer1
-            // 
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer1.Name = "splitContainer1";
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.label5);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.label4);
-            this.splitContainer1.Size = new System.Drawing.Size(161, 30);
-            this.splitContainer1.SplitterDistance = 30;
-            this.splitContainer1.TabIndex = 0;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Lucida Handwriting", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.Color.White;
-            this.label6.Location = new System.Drawing.Point(203, 45);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(55, 15);
-            this.label6.TabIndex = 19;
-            this.label6.Text = "Launch";
-            // 
             // ToolsTabPage
             // 
             this.ToolsTabPage.Controls.Add(this.ToolsPanel);
@@ -561,7 +557,7 @@
             this.MO2StandartButton.TabIndex = 16;
             this.MO2StandartButton.Text = "MOToStandart";
             this.MO2StandartButton.UseVisualStyleBackColor = false;
-            this.MO2StandartButton.Visible = false;
+            this.MO2StandartButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
             // 
             // AIGirlHelper
             // 
@@ -584,11 +580,6 @@
             this.LabelPanel.ResumeLayout(false);
             this.GameNamePanel.ResumeLayout(false);
             this.GameNamePanel.PerformLayout();
-            this.SettingsPage.ResumeLayout(false);
-            this.SettingsPanel.ResumeLayout(false);
-            this.SettingsPanel.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.LaunchTabPage.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
@@ -599,6 +590,11 @@
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.SettingsPage.ResumeLayout(false);
+            this.SettingsPanel.ResumeLayout(false);
+            this.SettingsPanel.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ToolsTabPage.ResumeLayout(false);
             this.ToolsPanel.ResumeLayout(false);
             this.ResumeLayout(false);

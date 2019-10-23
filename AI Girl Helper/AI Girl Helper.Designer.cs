@@ -44,7 +44,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.label6 = new System.Windows.Forms.Label();
+            this.LaunchTabLaunchLabel = new System.Windows.Forms.Label();
             this.GameNamePanel2 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.label5 = new System.Windows.Forms.Label();
@@ -258,7 +258,7 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.Gray;
-            this.panel2.Controls.Add(this.label6);
+            this.panel2.Controls.Add(this.LaunchTabLaunchLabel);
             this.panel2.Controls.Add(this.GameNamePanel2);
             this.panel2.Controls.Add(this.newformButton);
             this.panel2.Controls.Add(this.StudioButton);
@@ -271,16 +271,16 @@
             this.panel2.Size = new System.Drawing.Size(340, 155);
             this.panel2.TabIndex = 0;
             // 
-            // label6
+            // LaunchTabLaunchLabel
             // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Lucida Handwriting", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.Color.White;
-            this.label6.Location = new System.Drawing.Point(203, 45);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(55, 15);
-            this.label6.TabIndex = 19;
-            this.label6.Text = "Launch";
+            this.LaunchTabLaunchLabel.AutoSize = true;
+            this.LaunchTabLaunchLabel.Font = new System.Drawing.Font("Lucida Handwriting", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LaunchTabLaunchLabel.ForeColor = System.Drawing.Color.White;
+            this.LaunchTabLaunchLabel.Location = new System.Drawing.Point(203, 45);
+            this.LaunchTabLaunchLabel.Name = "LaunchTabLaunchLabel";
+            this.LaunchTabLaunchLabel.Size = new System.Drawing.Size(55, 15);
+            this.LaunchTabLaunchLabel.TabIndex = 19;
+            this.LaunchTabLaunchLabel.Text = "Launch";
             // 
             // GameNamePanel2
             // 
@@ -347,7 +347,6 @@
             this.newformButton.TabIndex = 17;
             this.newformButton.Text = "\\/";
             this.newformButton.UseVisualStyleBackColor = false;
-            this.newformButton.Visible = false;
             this.newformButton.Click += new System.EventHandler(this.NewformButton_Click);
             // 
             // StudioButton
@@ -636,7 +635,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label LaunchTabLaunchLabel;
         private System.Windows.Forms.TabPage ToolsTabPage;
         private System.Windows.Forms.Panel ToolsPanel;
         private System.Windows.Forms.Button MOCommonModeSwitchButton;

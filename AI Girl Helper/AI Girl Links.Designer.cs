@@ -29,7 +29,32 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(newform));
+            this.BooruLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.LinksCharactersGroupBox = new System.Windows.Forms.GroupBox();
+            this.LinksCharactersGroupBox.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // BooruLinkLabel
+            // 
+            this.BooruLinkLabel.AutoSize = true;
+            this.BooruLinkLabel.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.BooruLinkLabel.Location = new System.Drawing.Point(6, 17);
+            this.BooruLinkLabel.Name = "BooruLinkLabel";
+            this.BooruLinkLabel.Size = new System.Drawing.Size(51, 19);
+            this.BooruLinkLabel.TabIndex = 0;
+            this.BooruLinkLabel.TabStop = true;
+            this.BooruLinkLabel.Text = "Booru";
+            this.BooruLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.BooruLinkLabel_LinkClicked);
+            // 
+            // LinksCharactersGroupBox
+            // 
+            this.LinksCharactersGroupBox.Controls.Add(this.BooruLinkLabel);
+            this.LinksCharactersGroupBox.Location = new System.Drawing.Point(12, 12);
+            this.LinksCharactersGroupBox.Name = "LinksCharactersGroupBox";
+            this.LinksCharactersGroupBox.Size = new System.Drawing.Size(105, 114);
+            this.LinksCharactersGroupBox.TabIndex = 1;
+            this.LinksCharactersGroupBox.TabStop = false;
+            this.LinksCharactersGroupBox.Text = "Characters";
             // 
             // newform
             // 
@@ -37,14 +62,20 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
             this.ClientSize = new System.Drawing.Size(354, 138);
+            this.Controls.Add(this.LinksCharactersGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "newform";
             this.Text = "Links";
+            this.LinksCharactersGroupBox.ResumeLayout(false);
+            this.LinksCharactersGroupBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private System.Windows.Forms.LinkLabel BooruLinkLabel;
+        private System.Windows.Forms.GroupBox LinksCharactersGroupBox;
     }
 }

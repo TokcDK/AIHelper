@@ -52,6 +52,8 @@ namespace AI_Girl_Helper
             FullScreenCheckBox.Text = T._("fullscreen");
             ShortcutsCheckBox.Text = T._("Create shortcuts after archive extraction");
             LaunchTabPage.Text = T._("Launch");
+            LaunchTabLaunchLabel.Text = T._("Launch");
+            ToolsTabPage.Text = T._("Tools");
             StudioButton.Text = T._("Studio");
             GameButton.Text = T._("Game");
             MOButton.Text = T._("Manager");

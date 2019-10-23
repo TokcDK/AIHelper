@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -583,6 +584,7 @@ namespace AI_Girl_Helper
             THToolTip.SetToolTip(StudioButton, MOmode ? T._("Will execute Studio") + T._(" from Mod Organizer with attached mods") : T._("Will execute Studio"));
             THToolTip.SetToolTip(MOButton, T._("Will execute Mod Organizer mod manager where you can manage your mods"));
             THToolTip.SetToolTip(SettingsButton, MOmode ? T._("Will execute original game launcher") + T._(" from Mod Organizer with attached mods") : T._("Will execute original game launcher"));
+            THToolTip.SetToolTip(MOCommonModeSwitchButton, MOmode ? T._("Will convert game from Mod Organizer Mode to common mode when you can run exes from Data folder without Mod Organizer. You can convert game back to MO mode when it will be need to install new mods or test your mod config") : T._("Will convert the game to MO mode when all mod files will be moved back to Mods folder in their folders and vanilla files restored"));
             ////////////////////////////
         }
 
@@ -748,7 +750,8 @@ namespace AI_Girl_Helper
                         SettingsButton.Enabled = true;
                         GameButton.Enabled = true;
                         StudioButton.Enabled = false;
-                        MO2StandartButton.Enabled = true;
+                        //MO2StandartButton.Enabled = true;
+                        MOCommonModeSwitchButton.Text = T._("MOToCommon");
                         AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
                     }
                 }
@@ -795,8 +798,9 @@ namespace AI_Girl_Helper
                 ModsInfoLabel.Visible = false;
 
                 StudioButton.Enabled = false;
-                MO2StandartButton.Enabled = false;
-                button1.Text = T._("Game in standart mode");
+                //MO2StandartButton.Enabled = false;
+                MOCommonModeSwitchButton.Text = "CommonToMO";
+                button1.Text = T._("Common Mode");
                 button1.Enabled = false;
             }
         }
@@ -1702,39 +1706,209 @@ namespace AI_Girl_Helper
 
         private void MO2StandartButton_Click(object sender, EventArgs e)
         {
-            MOmode = false;
-            MO2StandartButton.Enabled = false;
-
-            CleanBepInExLinksFromData();
-
-            if (File.Exists(dummyfile))
+            if (MOmode)
             {
-                File.Delete(dummyfile);
-            }
-
-            string[] EnabledMods = GetEnabledModsFromActiveMOProfile();
-            int EnabledModsLength = EnabledMods.Length;
-            for (int N = 0; N < EnabledModsLength; N++)
-            {
-                string ModFolder = Path.Combine(ModsPath, EnabledMods[N]);
-                if (ModFolder.Length > 0)
+                DialogResult result = MessageBox.Show(T._("This will move all mod files from Mods folder to Data folder to make it like common installation variant. You can restore it later back to MO mode. Continue?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
+                if (result == DialogResult.OK)
                 {
-                    string[] ModFiles = Directory.GetFiles(ModFolder, "*.*", SearchOption.AllDirectories);
-                    int ModFilesLength = ModFiles.Length;
-                    for (int f = 0; f < ModFilesLength; f++)
+                    MOmode = false;
+                    MOCommonModeSwitchButton.Enabled = false;
+
+                    CleanBepInExLinksFromData();
+
+                    if (File.Exists(dummyfile))
                     {
-                        MO2StandartButton.Text = "..." + EnabledModsLength + "/" + N + ": " + f + "/" + ModFilesLength;
-                        string destinationname = ModFiles[f].Replace(ModFolder, DataPath);
-                        MoveWithReplace(ModFiles[f], destinationname);
+                        File.Delete(dummyfile);
                     }
-                    Directory.Delete(ModFolder, true);
+
+                    if (!Directory.Exists(MOmodeDataFilesBak))
+                    {
+                        Directory.CreateDirectory(MOmodeDataFilesBak);
+                    }
+                    StringBuilder Operations = new StringBuilder();
+                    string[] DataFolderFilesPaths = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
+
+                    string[] EnabledMods = GetEnabledModsFromActiveMOProfile();
+                    int EnabledModsLength = EnabledMods.Length;
+                    for (int N = 0; N < EnabledModsLength; N++)
+                    {
+                        string ModFolder = Path.Combine(ModsPath, EnabledMods[N]);
+                        if (ModFolder.Length > 0)
+                        {
+                            string[] ModFiles = Directory.GetFiles(ModFolder, "*.*", SearchOption.AllDirectories);
+                            if (ModFolder.Length > 0)
+                            {
+                                int ModFilesLength = ModFiles.Length;
+                                string DestFilePath;
+
+                                for (int f = 0; f < ModFilesLength; f++)
+                                {
+                                    MOCommonModeSwitchButton.Text = "..." + EnabledModsLength + "/" + N + ": " + f + "/" + ModFilesLength;
+                                    DestFilePath = ModFiles[f].Replace(ModFolder, DataPath);
+
+                                    if (File.Exists(DestFilePath))
+                                    {
+                                        string bakfilename = DestFilePath.Replace(DataPath, MOmodeDataFilesBak);
+                                        if (!File.Exists(bakfilename) && DataFolderFilesPaths.Contains(DestFilePath))
+                                        {
+                                            string bakfolder = Path.GetDirectoryName(bakfilename);
+                                            if (!Directory.Exists(bakfolder))
+                                            {
+                                                Directory.CreateDirectory(bakfolder);
+                                            }
+
+                                            File.Move(DestFilePath, bakfilename);//перенос файла из Data в Bak, если там не было
+                                            File.Move(ModFiles[f], DestFilePath);//перенос файла из папки мода в Data
+                                            Operations.AppendLine(ModFiles[f] + "|MovedTo|" + DestFilePath);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        string destFolder = Path.GetDirectoryName(DestFilePath);
+                                        if (!Directory.Exists(destFolder))
+                                        {
+                                            Directory.CreateDirectory(destFolder);
+                                        }
+                                        File.Move(ModFiles[f], DestFilePath);//перенос файла из папки мода в Data
+                                        Operations.AppendLine(ModFiles[f] + "|MovedTo|" + DestFilePath);
+                                    }
+
+                                    //MoveWithReplace(ModFiles[f], DestFilePath[f]);
+                                }
+                                //Directory.Delete(ModFolder, true);
+                            }
+
+                        }
+                    }
+
+                    File.WriteAllText(MOToStandartConvertationOperationsListFile, Operations.ToString());
+                    string[] DataWithModsFileslist = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
+                    File.WriteAllLines(ModdedDataFilesListFile, DataWithModsFileslist);
+                    File.WriteAllLines(VanillaDataFilesListFile, DataWithModsFileslist);
+
+                    //Directory.Delete(ModsPath, true);
+                    //Directory.Move(MODirPath, Path.Combine(AppResDir, Path.GetFileName(MODirPath)));
+                    MOCommonModeSwitchButton.Text = T._("StandartToMO");
+                    MOCommonModeSwitchButton.Enabled = true;
+                    MessageBox.Show(T._("All mod files now in Data folder! You can restore MO mode by same button."));
+                }
+            }
+            else
+            {
+                DialogResult result = MessageBox.Show(T._("This will move all mod files back to Mods folder from Data and will switch to MO mode. Continue?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
+                if (result == DialogResult.OK)
+                {
+                    MOmode = true;
+                    MOCommonModeSwitchButton.Enabled = false;
+
+                    string[] Operations = File.ReadAllLines(MOToStandartConvertationOperationsListFile);
+                    string[] VanillaDataFiles = File.ReadAllLines(VanillaDataFilesListFile);
+                    string[] ModdedDataFiles = File.ReadAllLines(ModdedDataFilesListFile);
+
+                    //Перемещение файлов модов по списку
+                    int OperationsLength = Operations.Length;
+                    for (int o = 0; o < OperationsLength; o++)
+                    {
+                        string[] MovePaths = Operations[o].Split(new string[] { "|MovedTo|" }, StringSplitOptions.None);
+
+                        if (File.Exists(MovePaths[1]))
+                        {
+                            string modsubfolder = Path.GetDirectoryName(MovePaths[0]);
+                            if (!Directory.Exists(modsubfolder))
+                            {
+                                Directory.CreateDirectory(modsubfolder);
+                            }
+
+                            File.Move(MovePaths[1], MovePaths[0]);
+                        }
+                    }
+
+                    //Перемещение новых файлов
+                    string[] addedFiles = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories).Where(line => !ModdedDataFiles.Contains(line)).ToArray();
+
+                    string destFolderForNewFiles = Path.Combine(ModsPath, "NewAddedFiles");
+
+                    string addedFilesFolderName = "[added]UseFiles" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                    string DestFolderPath = Path.Combine(ModsPath, addedFilesFolderName);
+                    int addedFilesLength = addedFiles.Length;
+                    for (int f = 0; f < addedFilesLength; f++)
+                    {
+                        string DestFileName = addedFiles[f].Replace(DataPath, DestFolderPath);
+                        string DestFileFolder = Path.GetDirectoryName(DestFileName);
+                        if (!Directory.Exists(DestFileFolder))
+                        {
+                            Directory.CreateDirectory(DestFileFolder);
+                        }
+                        File.Move(addedFiles[f], DestFileName);
+                    }
+                    //подключить новый мод, если он существует
+                    if (Directory.Exists(DestFolderPath))
+                    {
+                        ActivateModIfPossible(addedFilesFolderName);
+                    }
+
+                    //перемещение ванильных файлов назад в дата
+                    int VanillaDataFilesListLength = VanillaDataFiles.Length;
+                    for (int f = 0; f < VanillaDataFilesListLength; f++)
+                    {
+                        if (File.Exists(VanillaDataFiles[f]))
+                        {
+                            string DestFileName = VanillaDataFiles[f].Replace(MOmodeDataFilesBak, DataPath);
+
+                            string DestFileFolder = Path.GetDirectoryName(DestFileName);
+                            if (!Directory.Exists(DestFileFolder))
+                            {
+                                Directory.CreateDirectory(DestFileFolder);
+                            }
+                            File.Move(VanillaDataFiles[f], DestFileName);
+                        }
+                    }
+
+                    //удаление папки, где хранились резервные копии ванильных файлов
+                    Directory.Delete(MOmodeDataFilesBak, true);
+
+                    //чистка файлов-списков
+                    File.Delete(MOToStandartConvertationOperationsListFile);
+                    File.Delete(VanillaDataFilesListFile);
+                    File.Delete(ModdedDataFilesListFile);
+
+                    //очистка пустых папок в Data
+                    DeleteEmptySubfolders(DataPath);
+
+                    //создание exe-болванки
+                    MakeDummyFile();
+
+                    //создание ссылок на файлы bepinex
+                    BepinExLoadingFix();
+
+                    MOCommonModeSwitchButton.Text = T._("MOToStandart");
+                    MOCommonModeSwitchButton.Enabled = true;
+                    MessageBox.Show(T._("Mod Organizer mode restored! All mod files moved back to Mods folder. If in Data folder was added new files they also moved in Mods folder as new mod, check and sort it if need"));
                 }
             }
 
-            Directory.Delete(ModsPath, true);
-            Directory.Move(MODirPath, Path.Combine(AppResDir, Path.GetFileName(MODirPath)));
-            MO2StandartButton.Text = T._("MOToStandart");
-            MessageBox.Show(T._("All mod files now in Data folder!"));
+        }
+        string MOmodeDataFilesBak = Path.Combine(AppResDir, "MOmodeDataFilesBak");
+        string ModdedDataFilesListFile = Path.Combine(AppResDir, "ModdedDataFilesList.txt");
+        string VanillaDataFilesListFile = Path.Combine(AppResDir, "VanillaDataFilesList.txt");
+        string MOToStandartConvertationOperationsListFile = Path.Combine(AppResDir, "MOToStandartConvertationOperationsList.txt");
+
+        private void DeleteEmptySubfolders(string dataPath)
+        {
+            string[] subfolders = Directory.GetDirectories(dataPath, "*");
+            int subfoldersLength = subfolders.Length;
+            if (subfoldersLength > 0)
+            {
+                for (int d = 0; d < subfoldersLength; d++)
+                {
+                    DeleteEmptySubfolders(subfolders[d]);
+                }
+            }
+
+            if (Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0)
+            {
+                Directory.Delete(dataPath);
+            }
         }
 
         public static void MoveWithReplace(string sourceFileName, string destFileName)
@@ -1792,7 +1966,7 @@ namespace AI_Girl_Helper
                     if (File.Exists(profilemodlistpath))
                     {
                         string[] lines = File.ReadAllLines(profilemodlistpath).Where(line => line.StartsWith("+")).ToArray();
-                        Array.Reverse(lines);
+                        //Array.Reverse(lines); //убрал, т.к. дулаю архив с резервными копиями
                         int linesLength = lines.Length;
                         for (int l = 0; l < linesLength; l++)
                         {

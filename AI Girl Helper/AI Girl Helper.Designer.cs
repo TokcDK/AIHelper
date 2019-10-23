@@ -65,7 +65,7 @@
             this.ShortcutsCheckBox = new System.Windows.Forms.CheckBox();
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
             this.ToolsPanel = new System.Windows.Forms.Panel();
-            this.MO2StandartButton = new System.Windows.Forms.Button();
+            this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -538,26 +538,26 @@
             // ToolsPanel
             // 
             this.ToolsPanel.BackColor = System.Drawing.Color.Gray;
-            this.ToolsPanel.Controls.Add(this.MO2StandartButton);
+            this.ToolsPanel.Controls.Add(this.MOCommonModeSwitchButton);
             this.ToolsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ToolsPanel.Location = new System.Drawing.Point(3, 3);
             this.ToolsPanel.Name = "ToolsPanel";
             this.ToolsPanel.Size = new System.Drawing.Size(340, 155);
             this.ToolsPanel.TabIndex = 1;
             // 
-            // MO2StandartButton
+            // MOCommonModeSwitchButton
             // 
-            this.MO2StandartButton.BackColor = System.Drawing.Color.Silver;
-            this.MO2StandartButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.MO2StandartButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MO2StandartButton.ForeColor = System.Drawing.Color.Black;
-            this.MO2StandartButton.Location = new System.Drawing.Point(3, 3);
-            this.MO2StandartButton.Name = "MO2StandartButton";
-            this.MO2StandartButton.Size = new System.Drawing.Size(123, 30);
-            this.MO2StandartButton.TabIndex = 16;
-            this.MO2StandartButton.Text = "MOToStandart";
-            this.MO2StandartButton.UseVisualStyleBackColor = false;
-            this.MO2StandartButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
+            this.MOCommonModeSwitchButton.BackColor = System.Drawing.Color.Silver;
+            this.MOCommonModeSwitchButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.MOCommonModeSwitchButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MOCommonModeSwitchButton.ForeColor = System.Drawing.Color.Black;
+            this.MOCommonModeSwitchButton.Location = new System.Drawing.Point(3, 3);
+            this.MOCommonModeSwitchButton.Name = "MOCommonModeSwitchButton";
+            this.MOCommonModeSwitchButton.Size = new System.Drawing.Size(123, 30);
+            this.MOCommonModeSwitchButton.TabIndex = 16;
+            this.MOCommonModeSwitchButton.Text = "MOToCommon";
+            this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
+            this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
             // 
             // AIGirlHelper
             // 
@@ -639,7 +639,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TabPage ToolsTabPage;
         private System.Windows.Forms.Panel ToolsPanel;
-        private System.Windows.Forms.Button MO2StandartButton;
+        private System.Windows.Forms.Button MOCommonModeSwitchButton;
     }
 }
 

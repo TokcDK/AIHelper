@@ -799,9 +799,10 @@ namespace AI_Girl_Helper
 
                 StudioButton.Enabled = false;
                 //MO2StandartButton.Enabled = false;
-                MOCommonModeSwitchButton.Text = "CommonToMO";
+                MOCommonModeSwitchButton.Text = T._("CommonToMO");
                 button1.Text = T._("Common Mode");
                 button1.Enabled = false;
+                AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
             }
         }
 
@@ -1788,7 +1789,7 @@ namespace AI_Girl_Helper
 
                     //Directory.Delete(ModsPath, true);
                     //Directory.Move(MODirPath, Path.Combine(AppResDir, Path.GetFileName(MODirPath)));
-                    MOCommonModeSwitchButton.Text = T._("StandartToMO");
+                    MOCommonModeSwitchButton.Text = T._("CommonToMO");
                     MOCommonModeSwitchButton.Enabled = true;
                     MessageBox.Show(T._("All mod files now in Data folder! You can restore MO mode by same button."));
                 }
@@ -1881,7 +1882,7 @@ namespace AI_Girl_Helper
                     //создание ссылок на файлы bepinex
                     BepinExLoadingFix();
 
-                    MOCommonModeSwitchButton.Text = T._("MOToStandart");
+                    MOCommonModeSwitchButton.Text = T._("MOToCommon");
                     MOCommonModeSwitchButton.Enabled = true;
                     MessageBox.Show(T._("Mod Organizer mode restored! All mod files moved back to Mods folder. If in Data folder was added new files they also moved in Mods folder as new mod, check and sort it if need"));
                 }

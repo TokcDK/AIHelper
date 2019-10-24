@@ -32,7 +32,6 @@
             this.AIGirlHelperTabControl = new System.Windows.Forms.TabControl();
             this.MainPage = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.InstallInModsButton = new System.Windows.Forms.Button();
             this.LabelPanel2 = new System.Windows.Forms.Panel();
             this.ModsInfoLabel = new System.Windows.Forms.Label();
             this.LabelPanel = new System.Windows.Forms.Panel();
@@ -66,6 +65,7 @@
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
             this.ToolsPanel = new System.Windows.Forms.Panel();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
+            this.InstallInModsButton = new System.Windows.Forms.Button();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -115,7 +115,6 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.Gray;
-            this.panel1.Controls.Add(this.InstallInModsButton);
             this.panel1.Controls.Add(this.LabelPanel2);
             this.panel1.Controls.Add(this.LabelPanel);
             this.panel1.Controls.Add(this.progressBar1);
@@ -126,20 +125,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(340, 155);
             this.panel1.TabIndex = 0;
-            // 
-            // InstallInModsButton
-            // 
-            this.InstallInModsButton.BackColor = System.Drawing.Color.Silver;
-            this.InstallInModsButton.Enabled = false;
-            this.InstallInModsButton.ForeColor = System.Drawing.Color.Black;
-            this.InstallInModsButton.Location = new System.Drawing.Point(300, 3);
-            this.InstallInModsButton.Name = "InstallInModsButton";
-            this.InstallInModsButton.Size = new System.Drawing.Size(37, 23);
-            this.InstallInModsButton.TabIndex = 9;
-            this.InstallInModsButton.Text = "2MO";
-            this.InstallInModsButton.UseVisualStyleBackColor = false;
-            this.InstallInModsButton.Visible = false;
-            this.InstallInModsButton.Click += new System.EventHandler(this.InstallInModsButton_Click);
             // 
             // LabelPanel2
             // 
@@ -537,6 +522,7 @@
             // ToolsPanel
             // 
             this.ToolsPanel.BackColor = System.Drawing.Color.Gray;
+            this.ToolsPanel.Controls.Add(this.InstallInModsButton);
             this.ToolsPanel.Controls.Add(this.MOCommonModeSwitchButton);
             this.ToolsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ToolsPanel.Location = new System.Drawing.Point(3, 3);
@@ -548,15 +534,30 @@
             // 
             this.MOCommonModeSwitchButton.BackColor = System.Drawing.Color.Silver;
             this.MOCommonModeSwitchButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.MOCommonModeSwitchButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MOCommonModeSwitchButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MOCommonModeSwitchButton.ForeColor = System.Drawing.Color.Black;
             this.MOCommonModeSwitchButton.Location = new System.Drawing.Point(3, 3);
             this.MOCommonModeSwitchButton.Name = "MOCommonModeSwitchButton";
-            this.MOCommonModeSwitchButton.Size = new System.Drawing.Size(123, 30);
+            this.MOCommonModeSwitchButton.Size = new System.Drawing.Size(112, 30);
             this.MOCommonModeSwitchButton.TabIndex = 16;
             this.MOCommonModeSwitchButton.Text = "MOToCommon";
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
+            // 
+            // InstallInModsButton
+            // 
+            this.InstallInModsButton.BackColor = System.Drawing.Color.Silver;
+            this.InstallInModsButton.Enabled = false;
+            this.InstallInModsButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.InstallInModsButton.ForeColor = System.Drawing.Color.Black;
+            this.InstallInModsButton.Location = new System.Drawing.Point(3, 39);
+            this.InstallInModsButton.Name = "InstallInModsButton";
+            this.InstallInModsButton.Size = new System.Drawing.Size(112, 30);
+            this.InstallInModsButton.TabIndex = 17;
+            this.InstallInModsButton.Text = "Install from 2MO";
+            this.InstallInModsButton.UseVisualStyleBackColor = false;
+            this.InstallInModsButton.Visible = false;
+            this.InstallInModsButton.Click += new System.EventHandler(this.InstallInModsButton_Click);
             // 
             // AIGirlHelper
             // 
@@ -569,7 +570,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "AIGirlHelper";
-            this.Text = "AI Girl Helper";
+            this.Text = "AI Girl Helper [Organized modpack]";
             this.Load += new System.EventHandler(this.AIGirlHelper_Load);
             this.LocationChanged += new System.EventHandler(this.AIGirlHelper_LocationChanged);
             this.AIGirlHelperTabControl.ResumeLayout(false);
@@ -629,7 +630,6 @@
         private System.Windows.Forms.Button SettingsButton;
         private System.Windows.Forms.ComboBox QualityComboBox;
         private System.Windows.Forms.Button newformButton;
-        private System.Windows.Forms.Button InstallInModsButton;
         private System.Windows.Forms.Button CreateShortcutButton;
         private System.Windows.Forms.Panel GameNamePanel2;
         private System.Windows.Forms.Label label4;
@@ -639,6 +639,7 @@
         private System.Windows.Forms.TabPage ToolsTabPage;
         private System.Windows.Forms.Panel ToolsPanel;
         private System.Windows.Forms.Button MOCommonModeSwitchButton;
+        private System.Windows.Forms.Button InstallInModsButton;
     }
 }
 

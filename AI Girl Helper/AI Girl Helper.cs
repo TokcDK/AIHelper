@@ -36,15 +36,13 @@ namespace AI_Girl_Helper
         {
             InitializeComponent();
 
-            SetLocalizationStrings();
-
             //SetupXmlPath = GetSetupXmlPathForCurrentProfile();
         }
 
         private void SetLocalizationStrings()
         {
-
-            InstallInModsButton.Text = "2MO";
+            this.Text = T._("AI Girl Helper for Organized modpack");
+            InstallInModsButton.Text = T._("Install from 2MO");
             button1.Text = T._("Prepare the game");
             SettingsPage.Text = T._("Settings");
             CreateShortcutButton.Text = T._("Shortcut");
@@ -557,6 +555,8 @@ namespace AI_Girl_Helper
 
         private void AIGirlHelper_Load(object sender, EventArgs e)
         {
+            SetLocalizationStrings();
+
             FoldersInit();
 
             //if (Registry.GetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", null) == null)
@@ -588,7 +588,7 @@ namespace AI_Girl_Helper
             //Main
             THToolTip.SetToolTip(button1, T._("Unpacking mods and resources from 'Downloads' and 'AI Girl Helper_RES' folders for game when they are not installed"));
             THToolTip.SetToolTip(InstallInModsButton, T._("Automatically get required mod data, converts and moves files from 2MO folder") + (MOmode ? T._(" to MO format in Mods when possible") : T._(" to the game folder when possible")));
-            THToolTip.SetToolTip(ShortcutsCheckBox, T._("When checked will create shortcut of the AIGirl Helper manager on Desktop after mods extraction"));
+            THToolTip.SetToolTip(ShortcutsCheckBox, T._("When checked will create shortcut for the AIGirl Helper manager on Desktop after mods extraction"));
             THToolTip.SetToolTip(groupBox1, T._("Game Display settings"));
             THToolTip.SetToolTip(ResolutionComboBox, T._("Select preferred screen resolution"));
             THToolTip.SetToolTip(FullScreenCheckBox, T._("When checked game will be in fullscreen mode"));
@@ -599,7 +599,7 @@ namespace AI_Girl_Helper
             THToolTip.SetToolTip(StudioButton, MOmode ? T._("Will execute Studio") + T._(" from Mod Organizer with attached mods") : T._("Will execute Studio"));
             THToolTip.SetToolTip(MOButton, T._("Will execute Mod Organizer mod manager where you can manage your mods"));
             THToolTip.SetToolTip(SettingsButton, MOmode ? T._("Will execute original game launcher") + T._(" from Mod Organizer with attached mods") : T._("Will execute original game launcher"));
-            THToolTip.SetToolTip(MOCommonModeSwitchButton, MOmode ? T._("Will convert game from Mod Organizer Mode to common mode when you can run exes from Data folder without Mod Organizer. You can convert game back to MO mode when it will be need to install new mods or test your mod config") : T._("Will convert the game to MO mode when all mod files will be moved back to Mods folder in their folders and vanilla files restored"));
+            THToolTip.SetToolTip(MOCommonModeSwitchButton, MOmode ? T._("Will convert game from MO Mode to Common mode\n when you can run exes from Data folder without Mod Organizer.\n You can convert game back to MO mode\n when it will be need to install new mods or test your mod config") : T._("Will convert the game to MO mode\n when all mod files will be moved back to Mods folder\n in their folders and vanilla files restored"));
             ////////////////////////////
         }
 
@@ -925,6 +925,7 @@ namespace AI_Girl_Helper
             else
             {
                 MOButton.Enabled = false;
+                MessageBox.Show(T._("Game in Common mode now.\n To execute Mod Organizer convert game back\n to MO mode by button in Tools tab"));
             }
         }
 
@@ -1028,6 +1029,7 @@ namespace AI_Girl_Helper
                     LinksForm.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (LinksForm.Width / 2),
                         Bounds.Location.Y + /*(Bounds.Height / 2) - (f2.Height / 2) +*/ Bounds.Height);
                 };
+                LinksForm.Text = T._("Links");
                 newformButton.Text = @"/\";
                 LinksForm.Show();
             }
@@ -1062,13 +1064,13 @@ namespace AI_Girl_Helper
 
                 InstallCardsFrom2MO();
 
+                InstallCardsFromSubfolders();
+
                 InstallZipModsToMods();
 
                 InstallZipArchivesToMods();
 
                 InstallBepinExModsToMods();
-
-                InstallCardsFromSubfolders();
 
                 InstallModFilesFromSubfolders();
 
@@ -1080,11 +1082,13 @@ namespace AI_Girl_Helper
         {
             string targetdir = Path.Combine(ModsPath, "MyUserData");
             var images = Directory.GetFiles(Install2MODirPath, "*.png");
-            if (images.Length > 0 && Directory.GetDirectories(Install2MODirPath, "*").Length == 0)
+            int imagesLength = images.Length;
+            if (imagesLength > 0 && Directory.GetDirectories(Install2MODirPath, "*").Length == 0)
             {
                 //bool IsCharaCard = false;
-                foreach (var img in images)
+                for (int imgnum = 0; imgnum < imagesLength; imgnum++)
                 {
+                    string img = images[imgnum];
                     //var imgdata = Image.FromFile(img);
 
                     //if (imgdata.Width == 252 && imgdata.Height == 352)
@@ -1131,42 +1135,42 @@ namespace AI_Girl_Helper
                         //}
                         File.Move(img, Path.Combine(IllusionImagesSubFolder(dir), Path.GetFileName(img)));
                     }
-                }
 
-                var cardsModName = Path.GetFileName(dir);
-                var cardsModDir = string.Empty;
+                    var cardsModName = Path.GetFileName(dir);
+                    var cardsModDir = string.Empty;
 
-                for (int i = 1; i < 100000; i++)
-                {
-                    cardsModDir = Path.Combine(ModsPath, cardsModName);
-
-                    if (Directory.Exists(cardsModDir))
+                    for (int i = 1; i < 100000; i++)
                     {
-                        cardsModName += " (" + i + ")";
+                        cardsModDir = Path.Combine(ModsPath, cardsModName);
+
+                        if (Directory.Exists(cardsModDir))
+                        {
+                            cardsModName += " (" + i + ")";
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
-                    else
-                    {
-                        break;
-                    }
+
+
+                    Directory.Move(dir, cardsModDir);
+
+                    //запись meta.ini
+                    WriteMetaINI(
+                        cardsModDir
+                        ,
+                        "54,"
+                        ,
+                        string.Empty
+                        ,
+                        string.Empty
+                        ,
+                        "\"<br>Author: " + string.Empty + "<br><br>" + Path.GetFileNameWithoutExtension(cardsModDir) + " character cards<br><br>" + " \""
+                        );
+
+                    ActivateModIfPossible(Path.GetFileName(cardsModDir));
                 }
-
-
-                Directory.Move(dir, cardsModDir);
-
-                //запись meta.ini
-                WriteMetaINI(
-                    cardsModDir
-                    ,
-                    "54,"
-                    ,
-                    string.Empty
-                    ,
-                    string.Empty
-                    ,
-                    "\"<br>Author: " + string.Empty + "<br><br>" + Path.GetFileNameWithoutExtension(cardsModDir) + "<br><br>" + " \""
-                    );
-
-                ActivateModIfPossible(Path.GetFileName(cardsModDir));
             }
         }
 

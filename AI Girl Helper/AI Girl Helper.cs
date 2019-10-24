@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using SymbolicLinkSupport;
 //using Crc32C;
 
 namespace AI_Girl_Helper
@@ -37,7 +38,7 @@ namespace AI_Girl_Helper
 
             SetLocalizationStrings();
 
-            SetupXmlPath = GetSetupXmlPathForCurrentProfile();
+            //SetupXmlPath = GetSetupXmlPathForCurrentProfile();
         }
 
         private void SetLocalizationStrings()
@@ -95,7 +96,7 @@ namespace AI_Girl_Helper
             await Task.Run(() => UnpackMO());
             await Task.Run(() => UnpackMods());
 
-            BepinExLoadingFix();
+            //BepinExLoadingFix();//добавлено в folderinit
 
             CreateShortcuts();
 
@@ -164,12 +165,13 @@ namespace AI_Girl_Helper
         {
             if (MOmode)
             {
-                string linkpath = Path.Combine(ModsPath, "BepInEx5", "Bepinex", "core", "BepInEx.Preloader.dll");
-                string objectpath = Path.Combine(DataPath, "Bepinex", "core", "BepInEx.Preloader.dll");
+                string objectpath = Path.Combine(ModsPath, "BepInEx5", "Bepinex", "core", "BepInEx.Preloader.dll");
+                string linkpath = Path.Combine(DataPath, "Bepinex", "core", "BepInEx.Preloader.dll");
                 if (!File.Exists(linkpath) && File.Exists(objectpath))
                 {
-                    Symlink(objectpath
-                      , linkpath
+                    Symlink(linkpath
+                      , objectpath
+                      , true
                       );
                     HideFileFolder(Path.Combine(DataPath, "Bepinex"));
                 }
@@ -180,6 +182,7 @@ namespace AI_Girl_Helper
                 {
                     Symlink(linkpath
                       , objectpath
+                      , true
                       );
                     HideFileFolder(linkpath, true);
                 }
@@ -189,30 +192,33 @@ namespace AI_Girl_Helper
                 if (!File.Exists(linkpath) && File.Exists(objectpath))
                 {
                     Symlink(linkpath
-                          , objectpath
-                          );
+                      , objectpath
+                      , true
+                      );
                     HideFileFolder(linkpath, true);
                 }
 
                 linkpath = Path.Combine(DataPath, "UserData", "MaterialEditor");
                 objectpath = Path.Combine(ModsPath, "MyUserData", "UserData", "MaterialEditor");
-                if (!File.Exists(linkpath) && File.Exists(objectpath))
+                if (!Directory.Exists(linkpath) && Directory.Exists(objectpath))
                 {
                     Symlink(linkpath
-                          , objectpath
-                          );
-                    HideFileFolder(linkpath, true);
+                      , objectpath
+                      , true
+                      );
+                    HideFileFolder(linkpath);
 
                 }
 
                 linkpath = Path.Combine(DataPath, "UserData", "Overlays");
                 objectpath = Path.Combine(ModsPath, "MyUserData", "UserData", "Overlays");
-                if (!File.Exists(linkpath) && File.Exists(objectpath))
+                if (!Directory.Exists(linkpath) && Directory.Exists(objectpath))
                 {
                     Symlink(linkpath
-                          , objectpath
-                          );
-                    HideFileFolder(linkpath, true);
+                      , objectpath
+                      , true
+                      );
+                    HideFileFolder(linkpath);
 
                 }
             }
@@ -240,23 +246,30 @@ namespace AI_Girl_Helper
 
         }
 
-        private void Symlink(string symlink, string file)
+        private void Symlink(string symlink, string objectFileDir, bool isRelative = false)
         {
             if (File.Exists(symlink))
             {
             }
             else
             {
-                if (Directory.Exists(Path.GetDirectoryName(symlink)))
+                string parentdirpath = Path.GetDirectoryName(symlink);
+                if (Directory.Exists(parentdirpath))
                 {
                 }
                 else
                 {
-                    _ = Directory.CreateDirectory(Path.GetDirectoryName(symlink));
+                    Directory.CreateDirectory(parentdirpath);
                 }
-                if (File.Exists(file))
+                if (File.Exists(objectFileDir))
                 {
-                    CreateSymlink.File(file, symlink);
+                    FileInfoExtensions.CreateSymbolicLink(new FileInfo(objectFileDir), symlink, isRelative);//new from NuGet package
+                    //CreateSymlink.File(file, symlink); //old
+                }
+                else if (Directory.Exists(objectFileDir))
+                {
+                    DirectoryInfoExtensions.CreateSymbolicLink(new DirectoryInfo(objectFileDir), symlink, isRelative);//new from NuGet package
+                    //CreateSymlink.Folder(file, symlink); //old
                 }
             }
         }
@@ -794,6 +807,9 @@ namespace AI_Girl_Helper
                         InstallInModsButton.Enabled = true;
                     }
                 }
+
+                //создание ссылок на файлы bepinex
+                BepinExLoadingFix();
             }
             else
             {
@@ -806,6 +822,9 @@ namespace AI_Girl_Helper
                 button1.Enabled = false;
                 AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
             }
+
+            //Обновление пути к setup.xml с настройками графики
+            SetupXmlPath = GetSetupXmlPathForCurrentProfile();
         }
 
         private void CheckBox1_CheckedChanged(object sender, EventArgs e)
@@ -1827,7 +1846,8 @@ namespace AI_Girl_Helper
                     //Directory.Move(MODirPath, Path.Combine(AppResDir, Path.GetFileName(MODirPath)));
                     MOCommonModeSwitchButton.Text = T._("CommonToMO");
                     MOCommonModeSwitchButton.Enabled = true;
-                    SetupXmlPath = GetSetupXmlPathForCurrentProfile();
+                    //обновление информации о конфигурации папок игры
+                    FoldersInit();
                     MessageBox.Show(T._("All mod files now in Data folder! You can restore MO mode by same button."));
                 }
             }
@@ -1917,11 +1937,12 @@ namespace AI_Girl_Helper
                     MakeDummyFile();
 
                     //создание ссылок на файлы bepinex
-                    BepinExLoadingFix();
+                    //BepinExLoadingFix();
+                    //обновление информации о конфигурации папок игры
+                    FoldersInit();
 
                     MOCommonModeSwitchButton.Text = T._("MOToCommon");
                     MOCommonModeSwitchButton.Enabled = true;
-                    SetupXmlPath = GetSetupXmlPathForCurrentProfile();
                     MessageBox.Show(T._("Mod Organizer mode restored! All mod files moved back to Mods folder. If in Data folder was added new files they also moved in Mods folder as new mod, check and sort it if need"));
                 }
             }
@@ -1970,20 +1991,41 @@ namespace AI_Girl_Helper
 
         private void CleanBepInExLinksFromData()
         {
-            string file = Path.Combine(DataPath, "doorstop_config.ini");
-            if (File.Exists(file))
+            //удаление файлов BepinEx
+            DeleteIfSymlink(Path.Combine(DataPath, "doorstop_config.ini"));
+            DeleteIfSymlink(Path.Combine(DataPath, "winhttp.dll"));
+            string BepInExDir = Path.Combine(DataPath, "BepInEx");
+            if (Directory.Exists(BepInExDir))
             {
-                File.Delete(file);
+                Directory.Delete(BepInExDir, true);
             }
-            file = Path.Combine(DataPath, "winhttp.dll");
-            if (File.Exists(file))
+
+            //удаление ссылок на папки плагинов BepinEx
+            DeleteIfSymlink(Path.Combine(DataPath, "UserData", "MaterialEditor"), true);
+            DeleteIfSymlink(Path.Combine(DataPath, "UserData", "Overlays"), true);
+        }
+
+        private void DeleteIfSymlink(string LinkPath, bool IsFolder=false)
+        {
+            if (IsFolder)
             {
-                File.Delete(file);
+                if (Directory.Exists(LinkPath))
+                {
+                    if (FileInfoExtensions.IsSymbolicLink(new FileInfo(LinkPath)))
+                    {
+                        Directory.Delete(LinkPath, true);
+                    }
+                }
             }
-            file = Path.Combine(DataPath, "BepInEx");
-            if (Directory.Exists(file))
+            else
             {
-                Directory.Delete(file, true);
+                if (File.Exists(LinkPath))
+                {
+                    if (FileInfoExtensions.IsSymbolicLink(new FileInfo(LinkPath)))
+                    {
+                        File.Delete(LinkPath);
+                    }
+                }
             }
         }
 

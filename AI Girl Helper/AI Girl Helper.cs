@@ -1011,14 +1011,14 @@ namespace AI_Girl_Helper
             SetGraphicsQuality((sender as ComboBox).SelectedIndex.ToString());
         }
 
-        private newform LinksForm;
+        private LinksForm LinksForm;
         private void NewformButton_Click(object sender, EventArgs e)
         {
             if (LinksForm == null || LinksForm.IsDisposed)
             {
                 //show and reposition of form
                 //https://stackoverflow.com/questions/31492787/how-to-set-position-second-form-depend-on-first-form
-                LinksForm = new newform
+                LinksForm = new LinksForm
                 {
                     //LinksForm.Text = T._("Links");
                     StartPosition = FormStartPosition.Manual
@@ -1135,6 +1135,7 @@ namespace AI_Girl_Helper
 
                 var cardsModName = Path.GetFileName(dir);
                 var cardsModDir = string.Empty;
+
                 for (int i = 1; i < 100000; i++)
                 {
                     cardsModDir = Path.Combine(ModsPath, cardsModName);

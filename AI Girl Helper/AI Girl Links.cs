@@ -1,21 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AI_Girl_Helper
 {
-    public partial class newform : Form
+    public partial class LinksForm : Form
     {
-        public newform()
+        public LinksForm()
         {
             InitializeComponent();
+            SetLocalization();
+        }
+
+        private void SetLocalization()
+        {
+            LinksCharactersGroupBox.Text = T._("Characters");
         }
 
         private void BooruLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

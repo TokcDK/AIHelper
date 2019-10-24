@@ -1,6 +1,6 @@
 ﻿namespace AI_Girl_Helper
 {
-    partial class newform
+    partial class LinksForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(newform));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LinksForm));
             this.BooruLinkLabel = new System.Windows.Forms.LinkLabel();
             this.LinksCharactersGroupBox = new System.Windows.Forms.GroupBox();
             this.LinksCharactersGroupBox.SuspendLayout();
@@ -56,7 +56,7 @@
             this.LinksCharactersGroupBox.TabStop = false;
             this.LinksCharactersGroupBox.Text = "Characters";
             // 
-            // newform
+            // LinksForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -65,7 +65,7 @@
             this.Controls.Add(this.LinksCharactersGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "newform";
+            this.Name = "LinksForm";
             this.Text = "Links";
             this.LinksCharactersGroupBox.ResumeLayout(false);
             this.LinksCharactersGroupBox.PerformLayout();

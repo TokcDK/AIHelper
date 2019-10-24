@@ -88,7 +88,7 @@ namespace AI_Girl_Helper
 
         private async void ExtractingMode()
         {
-            button1.Text = T._("Extracting..");
+            button1.Text = T._("Extracting") + "..";
 
             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
             await Task.Run(() => UnpackGame());
@@ -271,7 +271,7 @@ namespace AI_Girl_Helper
                 string targetpath = Path.Combine(Application.StartupPath, "AI Girl Helper.exe");
                 string arguments = string.Empty;
                 string workingdir = Path.GetDirectoryName(targetpath);
-                string description = T._("Run ") + shortcutname;
+                string description = T._("Run") + " " + shortcutname;
                 string iconlocation = Path.Combine(Application.StartupPath, "AI Girl Helper.exe");
                 Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description, iconlocation);
 
@@ -319,7 +319,7 @@ namespace AI_Girl_Helper
                         foreach (string file in files)
                         {
                             string filename = Path.GetFileNameWithoutExtension(file);
-                            label3.Invoke((Action)(() => label3.Text = T._("Extracting ") + i + "/" + files.Length));
+                            label3.Invoke((Action)(() => label3.Text = T._("Extracting") + " " + +i + "/" + files.Length));
                             ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = T._("Mod") + ": " + filename));
                             string moddirpath = Path.Combine(ModsPath, filename);
                             if (!Directory.Exists(moddirpath))
@@ -1463,14 +1463,46 @@ namespace AI_Girl_Helper
         /// <param name="notes"></param>
         private void WriteMetaINI(string moddir, string category = "", string version = "", string comments = "", string notes = "")
         {
+            string metaPath = Path.Combine(moddir, "meta.ini");
+            Utils.IniFile INI = new Utils.IniFile(metaPath);
             if (!File.Exists(Path.Combine(moddir, "meta.ini")))
             {
-                Utils.IniFile INI = new Utils.IniFile(Path.Combine(moddir, "meta.ini"));
                 INI.WriteINI("General", "category", category);
                 INI.WriteINI("General", "version", version);
                 INI.WriteINI("General", "gameName", "Skyrim");
                 INI.WriteINI("General", "comments", comments);
                 INI.WriteINI("General", "notes", notes);
+                INI.WriteINI("General", "validated", "true");
+            }
+            else
+            {
+                if (GetINIValueIfExist(metaPath, "category", "General").Length == 0 && category.Length > 0)
+                {
+                    INI.WriteINI("General", "category", category);
+                }
+
+                if (version.Length > 0)
+                {
+                    INI.WriteINI("General", "version", version);
+                }
+
+                INI.WriteINI("General", "gameName", "Skyrim");
+
+                if (GetINIValueIfExist(metaPath, "comments", "General").Length == 0 && comments.Length > 0)
+                {
+                    INI.WriteINI("General", "comments", comments);
+                }
+
+                if (GetINIValueIfExist(metaPath, "comments", "General").Length == 0 && comments.Length > 0)
+                {
+                    INI.WriteINI("General", "comments", comments);
+                }
+
+                if (GetINIValueIfExist(metaPath, "notes", "General").Length == 0 && notes.Length > 0)
+                {
+                    INI.WriteINI("General", "notes", notes);
+                }
+
                 INI.WriteINI("General", "validated", "true");
             }
         }
@@ -1479,20 +1511,16 @@ namespace AI_Girl_Helper
         {
             if (modname.Length > 0)
             {
-                Utils.IniFile INI = new Utils.IniFile(Path.Combine(MODirPath, "ModOrganizer.ini"));
-                if (INI.KeyExists("selected_profile", "General"))
+                string currentMOprofile = GetINIValueIfExist(Path.Combine(MODirPath, "ModOrganizer.ini"), "selected_profile", "General");
+
+                if (currentMOprofile.Length == 0)
                 {
-                    string currentMOprofile = INI.ReadINI("General", "selected_profile");
+                }
+                else
+                {
+                    string profilemodlistpath = Path.Combine(MODirPath, "profiles", currentMOprofile, "modlist.txt");
 
-                    if (currentMOprofile.Length == 0)
-                    {
-                    }
-                    else
-                    {
-                        string profilemodlistpath = Path.Combine(MODirPath, "profiles", currentMOprofile, "modlist.txt");
-
-                        InsertLineInFile(profilemodlistpath, "+" + modname);
-                    }
+                    InsertLineInFile(profilemodlistpath, "+" + modname);
                 }
             }
         }
@@ -1505,32 +1533,28 @@ namespace AI_Girl_Helper
         {
             if (MOmode)
             {
-                Utils.IniFile INI = new Utils.IniFile(Path.Combine(MODirPath, "ModOrganizer.ini"));
-                if (INI.KeyExists("selected_profile", "General"))
+                string currentMOprofile = GetINIValueIfExist(Path.Combine(MODirPath, "ModOrganizer.ini"), "selected_profile", "General");
+
+                if (currentMOprofile.Length == 0)
                 {
-                    string currentMOprofile = INI.ReadINI("General", "selected_profile");
+                }
+                else
+                {
+                    string profilemodlistpath = Path.Combine(MODirPath, "profiles", currentMOprofile, "modlist.txt");
 
-                    if (currentMOprofile.Length == 0)
+                    if (File.Exists(profilemodlistpath))
                     {
-                    }
-                    else
-                    {
-                        string profilemodlistpath = Path.Combine(MODirPath, "profiles", currentMOprofile, "modlist.txt");
+                        string[] lines = File.ReadAllLines(profilemodlistpath);
 
-                        if (File.Exists(profilemodlistpath))
+                        int linescount = lines.Length;
+                        for (int i = 1; i < linescount; i++) // 1- означает пропуск нулевой строки, где комментарий
                         {
-                            string[] lines = File.ReadAllLines(profilemodlistpath);
-
-                            int linescount = lines.Length;
-                            for (int i = 1; i < linescount; i++) // 1- означает пропуск нулевой строки, где комментарий
+                            if (lines[i].StartsWith("+"))
                             {
-                                if (lines[i].StartsWith("+"))
+                                string SetupXmlPath = Path.Combine(ModsPath, lines[i].Remove(0, 1), "UserData", "setup.xml");
+                                if (File.Exists(SetupXmlPath))
                                 {
-                                    string SetupXmlPath = Path.Combine(ModsPath, lines[i].Remove(0, 1), "UserData", "setup.xml");
-                                    if (File.Exists(SetupXmlPath))
-                                    {
-                                        return SetupXmlPath;
-                                    }
+                                    return SetupXmlPath;
                                 }
                             }
                         }
@@ -1543,6 +1567,16 @@ namespace AI_Girl_Helper
             {
                 return Path.Combine(DataPath, "UserData", "setup.xml");
             }
+        }
+
+        private string GetINIValueIfExist(string INIPath, string Key, string Section)
+        {
+            Utils.IniFile INI = new Utils.IniFile(INIPath);
+            if (INI.KeyExists(Key, Section))
+            {
+                return INI.ReadINI(Section, Key);
+            }
+            return string.Empty;
         }
 
         //https://social.msdn.microsoft.com/Forums/vstudio/en-US/8f713e50-0789-4bf6-865f-c87cdebd0b4f/insert-line-to-text-file-using-streamwriter-using-csharp?forum=csharpgeneral
@@ -1793,6 +1827,7 @@ namespace AI_Girl_Helper
                     //Directory.Move(MODirPath, Path.Combine(AppResDir, Path.GetFileName(MODirPath)));
                     MOCommonModeSwitchButton.Text = T._("CommonToMO");
                     MOCommonModeSwitchButton.Enabled = true;
+                    SetupXmlPath = GetSetupXmlPathForCurrentProfile();
                     MessageBox.Show(T._("All mod files now in Data folder! You can restore MO mode by same button."));
                 }
             }
@@ -1886,6 +1921,7 @@ namespace AI_Girl_Helper
 
                     MOCommonModeSwitchButton.Text = T._("MOToCommon");
                     MOCommonModeSwitchButton.Enabled = true;
+                    SetupXmlPath = GetSetupXmlPathForCurrentProfile();
                     MessageBox.Show(T._("Mod Organizer mode restored! All mod files moved back to Mods folder. If in Data folder was added new files they also moved in Mods folder as new mod, check and sort it if need"));
                 }
             }
@@ -1953,31 +1989,26 @@ namespace AI_Girl_Helper
 
         private string[] GetEnabledModsFromActiveMOProfile()
         {
-            Utils.IniFile INI = new Utils.IniFile(Path.Combine(MODirPath, "ModOrganizer.ini"));
+            string currentMOprofile = GetINIValueIfExist(Path.Combine(MODirPath, "ModOrganizer.ini"), "selected_profile", "General");
 
-            if (INI.KeyExists("selected_profile", "General"))
+            if (currentMOprofile.Length == 0)
             {
-                string currentMOprofile = INI.ReadINI("General", "selected_profile");
+            }
+            else
+            {
+                string profilemodlistpath = Path.Combine(MODirPath, "profiles", currentMOprofile, "modlist.txt");
 
-                if (currentMOprofile.Length == 0)
+                if (File.Exists(profilemodlistpath))
                 {
-                }
-                else
-                {
-                    string profilemodlistpath = Path.Combine(MODirPath, "profiles", currentMOprofile, "modlist.txt");
-
-                    if (File.Exists(profilemodlistpath))
+                    string[] lines = File.ReadAllLines(profilemodlistpath).Where(line => line.StartsWith("+")).ToArray();
+                    //Array.Reverse(lines); //убрал, т.к. дулаю архив с резервными копиями
+                    int linesLength = lines.Length;
+                    for (int l = 0; l < linesLength; l++)
                     {
-                        string[] lines = File.ReadAllLines(profilemodlistpath).Where(line => line.StartsWith("+")).ToArray();
-                        //Array.Reverse(lines); //убрал, т.к. дулаю архив с резервными копиями
-                        int linesLength = lines.Length;
-                        for (int l = 0; l < linesLength; l++)
-                        {
-                            lines[l] = lines[l].Remove(0, 1);
-                        }
-
-                        return lines;
+                        lines[l] = lines[l].Remove(0, 1);
                     }
+
+                    return lines;
                 }
             }
 

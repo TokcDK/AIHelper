@@ -506,6 +506,7 @@
             this.ShortcutsCheckBox.TabIndex = 0;
             this.ShortcutsCheckBox.Text = "Create shortcuts after archive extraction";
             this.ShortcutsCheckBox.UseVisualStyleBackColor = true;
+            this.ShortcutsCheckBox.Visible = false;
             this.ShortcutsCheckBox.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
             // 
             // ToolsTabPage
@@ -553,7 +554,7 @@
             this.MOCommonModeSwitchButton.Name = "MOCommonModeSwitchButton";
             this.MOCommonModeSwitchButton.Size = new System.Drawing.Size(112, 30);
             this.MOCommonModeSwitchButton.TabIndex = 16;
-            this.MOCommonModeSwitchButton.Text = "MOToCommon";
+            this.MOCommonModeSwitchButton.Text = "MOToCommon111";
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
             // 

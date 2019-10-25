@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using SymbolicLinkSupport;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +12,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
-using SymbolicLinkSupport;
 //using Crc32C;
 
 namespace AI_Girl_Helper
@@ -22,13 +22,13 @@ namespace AI_Girl_Helper
 
         //constants
         private static readonly string AppResDir = Path.Combine(Application.StartupPath, "AI Girl Helper_RES");
-        private static readonly string ModsPath = Path.Combine(Application.StartupPath, "Mods");
-        private static readonly string DownloadsPath = Path.Combine(Application.StartupPath, "Downloads");
-        private static readonly string DataPath = Path.Combine(Application.StartupPath, "Data");
-        private static readonly string MODirPath = Path.Combine(Application.StartupPath, "MO");
-        private static readonly string MOexePath = Path.Combine(MODirPath, "ModOrganizer.exe");
-        private static readonly string OverwriteFolder = Path.Combine(MODirPath, "overwrite");
-        private static readonly string OverwriteFolderLink = Path.Combine(Application.StartupPath, "MOUserData");
+        private static string ModsPath = Path.Combine(Application.StartupPath, "Mods");
+        private static string DownloadsPath = Path.Combine(Application.StartupPath, "Downloads");
+        private static string DataPath = Path.Combine(Application.StartupPath, "Data");
+        private static string MODirPath = Path.Combine(Application.StartupPath, "MO");
+        private static string MOexePath = Path.Combine(MODirPath, "ModOrganizer.exe");
+        private static string OverwriteFolder = Path.Combine(MODirPath, "overwrite");
+        private static string OverwriteFolderLink = Path.Combine(Application.StartupPath, "MOUserData");
         private static string SetupXmlPath;
         private static bool MOmode = true;
 
@@ -763,11 +763,11 @@ namespace AI_Girl_Helper
                         //button1.Enabled = false;
                         mode = 1;
                         button1.Text = T._("Mods Ready");
+                        //MO2StandartButton.Enabled = true;
                         MOButton.Enabled = true;
                         SettingsButton.Enabled = true;
                         GameButton.Enabled = true;
                         StudioButton.Enabled = false;
-                        //MO2StandartButton.Enabled = true;
                         MOCommonModeSwitchButton.Text = T._("MOToCommon");
                         AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
                     }
@@ -775,17 +775,18 @@ namespace AI_Girl_Helper
                 else
                 {
                     //если нет папок модов но есть архивы в загрузках
-                    if (Archives7z.Length > 0)
+                    if (Archives7z.Length > 0 && ModDirs.Length == 0)
                     {
                         ModsInfoLabel.Text = T._("Mods Ready for extract");
                         mode = 2;
                         button1.Text = T._("Extract mods");
                     }
                 }
+
                 //если нет архивов в загрузках, но есть папки модов
                 if (compressmode && Directory.Exists(DownloadsPath) && Directory.Exists(ModsPath))
                 {
-                    if (ModDirs.Length > 0)
+                    if (ModDirs.Length > 0 && Archives7z.Length == 0)
                     {
                         if (Archives7z.Length == 0)
                         {
@@ -795,6 +796,16 @@ namespace AI_Girl_Helper
                         }
                     }
                 }
+
+                if (ModDirs.Length > 0 && File.Exists(Path.Combine(DataPath, GetCurrentGameName() + ".exe")))
+                {
+                    MOButton.Enabled = File.Exists(Path.Combine(MODirPath, "ModOrganizer.exe")) ? true : false;
+                    SettingsButton.Enabled = File.Exists(Path.Combine(DataPath, "InitSetting.exe")) ? true : false;
+                    GameButton.Enabled = File.Exists(Path.Combine(DataPath, GetCurrentGameName() + ".exe")) ? true : false;
+                    StudioButton.Enabled = File.Exists(Path.Combine(DataPath, GetCurrentGameName() + "Studio.exe")) ? true : false;
+                    MOCommonModeSwitchButton.Text = T._("MOToCommon");
+                }
+
                 //if (Directory.Exists(Install2MODirPath))
                 //{
                 //    if (Directory.GetFiles(Install2MODirPath, "*.*").Length > 0)
@@ -815,6 +826,8 @@ namespace AI_Girl_Helper
 
                 //создание exe-болванки
                 MakeDummyFile();
+
+                SetModOrganizerINISettingsForTheGame();
             }
             else
             {
@@ -830,6 +843,103 @@ namespace AI_Girl_Helper
 
             //Обновление пути к setup.xml с настройками графики
             SetupXmlPath = GetSetupXmlPathForCurrentProfile();
+            ModsPath = Path.Combine(GetSelectedGameFolderPath(), "Mods");
+            DownloadsPath = Path.Combine(GetSelectedGameFolderPath(), "Downloads");
+            DataPath = Path.Combine(GetSelectedGameFolderPath(), "Data");
+            MODirPath = Path.Combine(Application.StartupPath, "MO");
+            MOexePath = Path.Combine(MODirPath, "ModOrganizer.exe");
+            OverwriteFolder = Path.Combine(MODirPath, "overwrite");
+            OverwriteFolderLink = Path.Combine(Application.StartupPath, "MOUserData");
+        }
+
+        private void SetModOrganizerINISettingsForTheGame()
+        {
+            string metaPath = Path.Combine(MODirPath, "ModOrganizer.ini");
+            Utils.IniFile INI = new Utils.IniFile(metaPath);
+
+            //General
+            string IniValue = GetSelectedGameFolderPath().Replace(@"\", @"\\");
+            if (GetINIValueIfExist(metaPath, "gamePath", "General") != IniValue)
+            {
+                INI.WriteINI("General", "gamePath", IniValue);
+            }
+            //customExecutables
+            IniValue = GetCurrentGameName().Replace(@"\", @"\\");
+            if (GetINIValueIfExist(metaPath, @"1\title", "customExecutables") != IniValue)
+            {
+                INI.WriteINI("customExecutables", @"1\title", IniValue);
+            }
+            IniValue = Path.Combine(DataPath, GetCurrentGameName() + ".exe").Replace(@"\", @"\\");
+            if (GetINIValueIfExist(metaPath, @"1\binary", "customExecutables") != IniValue)
+            {
+                INI.WriteINI("customExecutables", @"1\binary", IniValue);
+            }
+            IniValue = DataPath.Replace(@"\", @"\\");
+            if (GetINIValueIfExist(metaPath, @"1\workingDirectory", "customExecutables") != IniValue)
+            {
+                INI.WriteINI("customExecutables", @"1\workingDirectory", IniValue);
+            }
+            IniValue = GetSettingsEXEPath().Replace(@"\", @"\\");
+            if (GetINIValueIfExist(metaPath, @"2\binary", "customExecutables") != IniValue)
+            {
+                INI.WriteINI("customExecutables", @"2\binary", IniValue);
+            }
+            IniValue = GetSettingsEXEPath().Replace(@"\", @"\\");
+            if (GetINIValueIfExist(metaPath, @"2\binary", "customExecutables") != IniValue)
+            {
+                INI.WriteINI("customExecutables", @"2\binary", IniValue);
+            }
+            IniValue = DataPath.Replace(@"\", @"\\");
+            if (GetINIValueIfExist(metaPath, @"2\workingDirectory", "customExecutables") != IniValue)
+            {
+                INI.WriteINI("customExecutables", @"2\workingDirectory", IniValue);
+            }
+            IniValue = Path.Combine(MODirPath, "explorer++", "Explorer++.exe").Replace(@"\", @"\\");
+            if (GetINIValueIfExist(metaPath, @"3\binary", "customExecutables") != IniValue)
+            {
+                INI.WriteINI("customExecutables", @"3\binary", IniValue);
+            }
+            IniValue = "\\\"" + DataPath.Replace(@"\", @"\\") + "\\\"";
+            if (GetINIValueIfExist(metaPath, @"3\arguments", "customExecutables") != IniValue)
+            {
+                INI.WriteINI("customExecutables", @"3\arguments", IniValue);
+            }
+            IniValue = Path.Combine(MODirPath, "explorer++").Replace(@"\", @"\\");
+            if (GetINIValueIfExist(metaPath, @"3\workingDirectory", "customExecutables") != IniValue)
+            {
+                INI.WriteINI("customExecutables", @"3\workingDirectory", IniValue);
+            }
+            IniValue = Path.Combine(GetSelectedGameFolderPath(), "TESV.exe").Replace(@"\", @"\\");
+            if (GetINIValueIfExist(metaPath, @"4\binary", "customExecutables") != IniValue)
+            {
+                INI.WriteINI("customExecutables", @"4\binary", IniValue);
+            }
+            IniValue = GetSelectedGameFolderPath().Replace(@"\", @"\\");
+            if (GetINIValueIfExist(metaPath, @"4\workingDirectory", "customExecutables") != IniValue)
+            {
+                INI.WriteINI("customExecutables", @"4\workingDirectory", IniValue);
+            }
+            //Settings
+            IniValue = ModsPath.Replace(@"\", @"\\");
+            if (GetINIValueIfExist(metaPath, "mod_directory", "Settings") != IniValue)
+            {
+                INI.WriteINI("Settings", "mod_directory", IniValue);
+            }
+            IniValue = Path.Combine(GetSelectedGameFolderPath(), "Downloads").Replace(@"\", @"\\");
+            if (GetINIValueIfExist(metaPath, "download_directory", "Settings") != IniValue)
+            {
+                INI.WriteINI("Settings", "download_directory", IniValue);
+            }
+        }
+
+        private string GetSettingsEXEPath()
+        {
+            return Path.Combine(DataPath, "InitSetting.exe");
+        }
+
+        private string GetSelectedGameFolderPath()
+        {
+            return Application.StartupPath;
         }
 
         private void CheckBox1_CheckedChanged(object sender, EventArgs e)
@@ -953,7 +1063,7 @@ namespace AI_Girl_Helper
         {
             if (MOmode)
             {
-                RunProgram(MOexePath, "moshortcut://:"+GetCurrentGameName());
+                RunProgram(MOexePath, "moshortcut://:" + GetCurrentGameName());
             }
             else
             {
@@ -977,11 +1087,11 @@ namespace AI_Girl_Helper
         {
             if (MOmode)
             {
-                RunProgram(MOexePath, "moshortcut://:"+ GetCurrentGameName() + "Studio");
+                RunProgram(MOexePath, "moshortcut://:" + GetCurrentGameName() + "Studio");
             }
             else
             {
-                RunProgram(Path.Combine(DataPath, GetCurrentGameName()+".exe"), string.Empty);
+                RunProgram(Path.Combine(DataPath, GetCurrentGameName() + ".exe"), string.Empty);
             }
         }
 
@@ -1214,6 +1324,12 @@ namespace AI_Girl_Helper
         {
             foreach (var zipfile in Directory.GetFiles(Install2MODirPath, "*.zip"))
             {
+                //следующий, если не существует
+                if (!File.Exists(zipfile))
+                {
+                    continue;
+                }
+
                 bool FoundZipMod = false;
                 bool FoundStandardModInZip = false;
 
@@ -1229,7 +1345,7 @@ namespace AI_Girl_Helper
                             break;
                         }
 
-                        if (!FoundStandardModInZip && 
+                        if (!FoundStandardModInZip &&
                                (entryFullName.EndsWith("abdata/", StringComparison.OrdinalIgnoreCase)
                              || entryFullName.EndsWith("_data/", StringComparison.OrdinalIgnoreCase)
                              || entryFullName.EndsWith("bepinex/", StringComparison.OrdinalIgnoreCase)
@@ -1244,8 +1360,11 @@ namespace AI_Girl_Helper
 
                 if (FoundZipMod)
                 {
-                    File.Move(zipfile, zipfile + "mod");
-                    InstallZipModsToMods();
+                    if (Path.GetExtension(zipfile) == ".zip")
+                    {
+                        File.Move(zipfile, zipfile + "mod");
+                    }
+                    InstallZipModsToMods();//будет после установлено соответствующей функцией
                 }
                 else if (FoundStandardModInZip)
                 {
@@ -1284,7 +1403,7 @@ namespace AI_Girl_Helper
                 {
                     string subdirname = Path.GetFileName(subdir);
                     if (
-                           string.CompareOrdinal(subdirname, "abdata")== 0                           
+                           string.CompareOrdinal(subdirname, "abdata") == 0
                         || string.CompareOrdinal(subdirname, "userdata") == 0
                         || string.CompareOrdinal(subdirname, "ai-syoujyotrial_data") == 0
                         || string.CompareOrdinal(subdirname, "ai-syoujyo_data") == 0
@@ -1709,7 +1828,7 @@ namespace AI_Girl_Helper
                             author = ReadXmlValue(xmlpath, "manifest/author", "Unknown author");
                             description = ReadXmlValue(xmlpath, "manifest/description", "Unknown description");
                             website = ReadXmlValue(xmlpath, "manifest/website", string.Empty);
-                            game = ReadXmlValue(xmlpath, "manifest/game", string.Empty);
+                            game = ReadXmlValue(xmlpath, "manifest/game", "AI Girl"); //установил умолчание как "AI Girl"
                             File.Delete(xmlpath);
                             break;
                         }
@@ -1742,13 +1861,11 @@ namespace AI_Girl_Helper
                     string zipmoddirpath = Path.Combine(ModsPath, name);
 
                     //Проверки существования целевой папки и модификация имени на более уникальное
-                    if (Directory.Exists(zipmoddirpath))
+                    int i = 1;
+                    while (Directory.Exists(zipmoddirpath))
                     {
-                        zipmoddirpath = Path.Combine(ModsPath, guid);
-                        if (Directory.Exists(zipmoddirpath))
-                        {
-                            zipmoddirpath = Path.Combine(ModsPath, name + "(" + guid + ")");
-                        }
+                        zipmoddirpath = Path.Combine(ModsPath, name + "(" + i + ")");
+                        i++;
                     }
 
                     //перемещение zipmod-а в свою подпапку в Mods
@@ -2068,7 +2185,7 @@ namespace AI_Girl_Helper
             DeleteIfSymlink(Path.Combine(DataPath, "UserData", "Overlays"), true);
         }
 
-        private void DeleteIfSymlink(string LinkPath, bool IsFolder=false)
+        private void DeleteIfSymlink(string LinkPath, bool IsFolder = false)
         {
             if (IsFolder)
             {

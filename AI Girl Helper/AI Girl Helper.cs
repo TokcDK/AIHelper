@@ -2309,6 +2309,21 @@ namespace AI_Girl_Helper
             return null;
         }
 
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("explorer.exe", DataPath);
+        }
+
+        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("explorer.exe", MODirPath);
+        }
+
+        private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("explorer.exe", ModsPath);
+        }
+
         //Материалы
         //Есть пример с загрузкой файла по ссылке:
         //https://github.com/adoconnection/SevenZipExtractor

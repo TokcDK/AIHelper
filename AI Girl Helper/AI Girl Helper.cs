@@ -18,7 +18,7 @@ namespace AI_Girl_Helper
 {
     public partial class AIGirlHelper : Form
     {
-        private readonly bool compressmode = true;
+        private readonly bool compressmode = false;
 
         //constants
         private static readonly string AppResDir = Path.Combine(Application.StartupPath, "AI Girl Helper_RES");
@@ -43,7 +43,7 @@ namespace AI_Girl_Helper
         {
             this.Text = T._("AI Girl Helper for Organized modpack");
             InstallInModsButton.Text = T._("Install from 2MO");
-            button1.Text = T._("Prepare the game");
+            //button1.Text = T._("Prepare the game");
             SettingsPage.Text = T._("Settings");
             CreateShortcutButton.Text = T._("Shortcut");
             FixRegistryButton.Text = T._("Fix registry");
@@ -399,7 +399,7 @@ namespace AI_Girl_Helper
                 string AIGirlTrial = Path.Combine(AppResDir, "AIGirlTrial.7z");
                 string AIGirl = Path.Combine(AppResDir, "AIGirl.7z");
                 if (!File.Exists(AIGirlTrial)
-                    && (File.Exists(Path.Combine(DataPath, "AI-SyoujyoTrial.exe")) || File.Exists(Path.Combine(DataPath, "AI-Syoujyo.exe"))))
+                    && (File.Exists(Path.Combine(DataPath, GetCurrentGameName() + ".exe"))))
                 {
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
@@ -682,13 +682,15 @@ namespace AI_Girl_Helper
 
         private void FoldersInit()
         {
-            if (File.Exists(dummyfile))
+            if (File.Exists(Path.Combine(MODirPath, "ModOrganizer.exe.GameInCommonModeNow")) || File.Exists(MOToStandartConvertationOperationsListFile))
             {
-                MOmode = true;
+                MOmode = false;
+                button1.Text = T._("Common mode");
             }
             else
             {
-                MOmode = false;
+                MOmode = true;
+                button1.Text = T._("MO mode");
             }
 
             if (!Directory.Exists(DataPath))
@@ -701,8 +703,8 @@ namespace AI_Girl_Helper
                 ModsInfoLabel.Text = T._("Mods dir created");
             }
 
-            string AIGirl = "AI-Syoujyo";
-            string AIGirlTrial = "AI-SyoujyoTrial";
+            string AIGirl = GetCurrentGameName();
+            string AIGirlTrial = GetCurrentGameName();
             if (File.Exists(Path.Combine(DataPath, AIGirlTrial + ".exe")))
             {
                 label3.Text = string.Format(T._("{0} game installed in {1}"), AIGirlTrial, "Data");
@@ -748,7 +750,7 @@ namespace AI_Girl_Helper
                         }
                     }
 
-                    if (NotAllModsExtracted && ModDirs.Length < Archives7z.Length)
+                    if (compressmode && NotAllModsExtracted && ModDirs.Length < Archives7z.Length)
                     {
                         ModsInfoLabel.Text = T._("Not all mods in Mods dir");
                         //button1.Enabled = false;
@@ -793,23 +795,26 @@ namespace AI_Girl_Helper
                         }
                     }
                 }
-                if (Directory.Exists(Install2MODirPath))
-                {
-                    if (Directory.GetFiles(Install2MODirPath, "*.*").Length > 0)
-                    {
-                        InstallInModsButton.Visible = true;
-                        InstallInModsButton.Enabled = true;
-                    }
-                    string[] InstallModDirs = Directory.GetDirectories(Install2MODirPath, "*").Where(name => !name.EndsWith("Temp", StringComparison.OrdinalIgnoreCase)).ToArray();
-                    if (InstallModDirs.Length > 0)
-                    {
-                        InstallInModsButton.Visible = true;
-                        InstallInModsButton.Enabled = true;
-                    }
-                }
+                //if (Directory.Exists(Install2MODirPath))
+                //{
+                //    if (Directory.GetFiles(Install2MODirPath, "*.*").Length > 0)
+                //    {
+                //        InstallInModsButton.Visible = true;
+                //        InstallInModsButton.Enabled = true;
+                //    }
+                //    string[] InstallModDirs = Directory.GetDirectories(Install2MODirPath, "*").Where(name => !name.EndsWith("Temp", StringComparison.OrdinalIgnoreCase)).ToArray();
+                //    if (InstallModDirs.Length > 0)
+                //    {
+                //        InstallInModsButton.Visible = true;
+                //        InstallInModsButton.Enabled = true;
+                //    }
+                //}
 
                 //создание ссылок на файлы bepinex
                 BepinExLoadingFix();
+
+                //создание exe-болванки
+                MakeDummyFile();
             }
             else
             {
@@ -818,7 +823,7 @@ namespace AI_Girl_Helper
                 StudioButton.Enabled = false;
                 //MO2StandartButton.Enabled = false;
                 MOCommonModeSwitchButton.Text = T._("CommonToMO");
-                button1.Text = T._("Common Mode");
+                button1.Text = T._("Common mode");
                 button1.Enabled = false;
                 AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
             }
@@ -907,13 +912,16 @@ namespace AI_Girl_Helper
         private void FixRegistryButton_Click(object sender, EventArgs e)
         {
             FixRegistryButton.Enabled = false;
-            Registry.SetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", Path.Combine(DataPath));
-            MessageBox.Show(T._("Registry fixed! Install dir was set to Data dir."));
-            //if (Registry.GetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", null) == null)
-            //{
-            //    Registry.SetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", Path.Combine(DataPath));
-            //    MessageBox.Show("Registry fixed! Installdir was set to Data dir.");
-            //}
+            var InstallDirValue = Registry.GetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-Syoujyo", "INSTALLDIR", null);
+            if (InstallDirValue == null || InstallDirValue.ToString() != DataPath)
+            {
+                Registry.SetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\" + GetCurrentGameName(), "INSTALLDIR", DataPath);
+                MessageBox.Show(T._("Registry fixed! Install dir was set to Data dir."));
+            }
+            else
+            {
+                MessageBox.Show(T._("Registry was already fixed"));
+            }
             FixRegistryButton.Enabled = true;
         }
         private void MOButton_Click(object sender, EventArgs e)
@@ -945,11 +953,23 @@ namespace AI_Girl_Helper
         {
             if (MOmode)
             {
-                RunProgram(MOexePath, "moshortcut://:AI-SyoujyoTrial");
+                RunProgram(MOexePath, "moshortcut://:"+GetCurrentGameName());
             }
             else
             {
-                RunProgram(Path.Combine(DataPath, "AI-SyoujyoTrial.exe"), string.Empty);
+                RunProgram(Path.Combine(DataPath, GetCurrentGameName() + ".exe"), string.Empty);
+            }
+        }
+
+        private string GetCurrentGameName()
+        {
+            if (File.Exists(Path.Combine(DataPath, "AI-SyoujyoTrial.exe")))
+            {
+                return "AI-SyoujyoTrial";
+            }
+            else
+            {
+                return "AI-Syoujyo";
             }
         }
 
@@ -957,11 +977,11 @@ namespace AI_Girl_Helper
         {
             if (MOmode)
             {
-                RunProgram(MOexePath, "moshortcut://:AI-SyoujyoStudio");
+                RunProgram(MOexePath, "moshortcut://:"+ GetCurrentGameName() + "Studio");
             }
             else
             {
-                RunProgram(Path.Combine(DataPath, "AI-SyoujyoStudio.exe"), string.Empty);
+                RunProgram(Path.Combine(DataPath, GetCurrentGameName()+".exe"), string.Empty);
             }
         }
 
@@ -1058,7 +1078,7 @@ namespace AI_Girl_Helper
         string Install2MODirPath = Path.Combine(Application.StartupPath, "2MO");
         private void InstallInModsButton_Click(object sender, EventArgs e)
         {
-            if (Directory.Exists(Install2MODirPath) && (Directory.GetFiles(Install2MODirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zipmod").Length > 0 || Directory.GetDirectories(Install2MODirPath, "*").Length > 0))
+            if (Directory.Exists(Install2MODirPath) && (Directory.GetFiles(Install2MODirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zipmod").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zip").Length > 0 || Directory.GetDirectories(Install2MODirPath, "*").Length > 0))
             {
                 InstallInModsButton.Enabled = false;
 
@@ -1066,15 +1086,21 @@ namespace AI_Girl_Helper
 
                 InstallCardsFromSubfolders();
 
-                InstallZipModsToMods();
-
                 InstallZipArchivesToMods();
 
                 InstallBepinExModsToMods();
 
+                InstallZipModsToMods();
+
                 InstallModFilesFromSubfolders();
 
+                DeleteEmptySubfolders(Install2MODirPath);
+
                 MessageBox.Show(T._("All possible mods installed. Install all rest in 2MO folder manually."));
+            }
+            else
+            {
+                MessageBox.Show(T._("No compatible for installation formats found in 2MO folder.\nFormats: zip, zipmod, png, png in subfolder, unpacked mod in subfolder"));
             }
         }
 
@@ -1190,23 +1216,28 @@ namespace AI_Girl_Helper
             {
                 bool FoundZipMod = false;
                 bool FoundStandardModInZip = false;
+
                 using (ZipArchive archive = ZipFile.OpenRead(zipfile))
                 {
-                    foreach (ZipArchiveEntry entry in archive.Entries)
+                    int archiveEntriesCount = archive.Entries.Count;
+                    for (int entrieNum = 0; entrieNum < archiveEntriesCount; entrieNum++)
                     {
-                        if (entry.FullName.EndsWith("manifest.xml", StringComparison.OrdinalIgnoreCase))
+                        string entryFullName = archive.Entries[entrieNum].FullName;
+                        if (entryFullName.EndsWith("manifest.xml", StringComparison.OrdinalIgnoreCase))
                         {
                             FoundZipMod = true;
                             break;
                         }
-                        if (entry.FullName.EndsWith("abdata/", StringComparison.OrdinalIgnoreCase)
-                            || entry.FullName.EndsWith("_data/", StringComparison.OrdinalIgnoreCase)
-                            || entry.FullName.EndsWith("bepinex/", StringComparison.OrdinalIgnoreCase)
-                            || entry.FullName.EndsWith("userdata/", StringComparison.OrdinalIgnoreCase)
-                            )
+
+                        if (!FoundStandardModInZip && 
+                               (entryFullName.EndsWith("abdata/", StringComparison.OrdinalIgnoreCase)
+                             || entryFullName.EndsWith("_data/", StringComparison.OrdinalIgnoreCase)
+                             || entryFullName.EndsWith("bepinex/", StringComparison.OrdinalIgnoreCase)
+                             || entryFullName.EndsWith("userdata/", StringComparison.OrdinalIgnoreCase)
+                               )
+                           )
                         {
                             FoundStandardModInZip = true;
-                            break;
                         }
                     }
                 }
@@ -1253,14 +1284,15 @@ namespace AI_Girl_Helper
                 {
                     string subdirname = Path.GetFileName(subdir);
                     if (
-                           subdirname == "abdata"
-                        || subdirname == "UserData"
-                        || subdirname == "AI-SyoujyoTrial_Data"
-                        || subdirname == "AI-Syoujyo_Data"
+                           string.CompareOrdinal(subdirname, "abdata")== 0                           
+                        || string.CompareOrdinal(subdirname, "userdata") == 0
+                        || string.CompareOrdinal(subdirname, "ai-syoujyotrial_data") == 0
+                        || string.CompareOrdinal(subdirname, "ai-syoujyo_data") == 0
+                        || string.CompareOrdinal(subdirname, "bepinex") == 0
                         )
                     {
-                        CopyFolder.Copy(dir, Path.Combine(ModsPath, subdirname));
-                        Directory.Move(dir, Path.Combine(Install2MODirPath, "dir_copied"));
+                        CopyFolder.Copy(dir, Path.Combine(ModsPath, dir));
+                        Directory.Move(dir, "[installed]" + dir);
                         b = true;
                         break;
                     }
@@ -1818,9 +1850,26 @@ namespace AI_Girl_Helper
                                                 Directory.CreateDirectory(bakfolder);
                                             }
 
-                                            File.Move(DestFilePath, bakfilename);//перенос файла из Data в Bak, если там не было
-                                            File.Move(ModFiles[f], DestFilePath);//перенос файла из папки мода в Data
-                                            Operations.AppendLine(ModFiles[f] + "|MovedTo|" + DestFilePath);
+                                            try
+                                            {
+                                                File.Move(DestFilePath, bakfilename);//перенос файла из Data в Bak, если там не было
+                                                File.Move(ModFiles[f], DestFilePath);//перенос файла из папки мода в Data
+                                                Operations.AppendLine(ModFiles[f] + "|MovedTo|" + DestFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
+                                            }
+                                            catch
+                                            {
+                                                //когда файла в дата нет, файл в бак есть и есть файл в папке мода - вернуть файл из bak назад
+                                                if (!File.Exists(DestFilePath))
+                                                {
+                                                    if (File.Exists(bakfilename))
+                                                    {
+                                                        if (File.Exists(ModFiles[f]))
+                                                        {
+                                                            File.Move(bakfilename, DestFilePath);
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                     else
@@ -1830,8 +1879,15 @@ namespace AI_Girl_Helper
                                         {
                                             Directory.CreateDirectory(destFolder);
                                         }
-                                        File.Move(ModFiles[f], DestFilePath);//перенос файла из папки мода в Data
-                                        Operations.AppendLine(ModFiles[f] + "|MovedTo|" + DestFilePath);
+                                        try
+                                        {
+                                            File.Move(ModFiles[f], DestFilePath);//перенос файла из папки мода в Data
+                                            Operations.AppendLine(ModFiles[f] + "|MovedTo|" + DestFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
+                                        }
+                                        catch
+                                        {
+
+                                        }
                                     }
 
                                     //MoveWithReplace(ModFiles[f], DestFilePath[f]);
@@ -1851,6 +1907,7 @@ namespace AI_Girl_Helper
                     //Directory.Move(MODirPath, Path.Combine(AppResDir, Path.GetFileName(MODirPath)));
                     MOCommonModeSwitchButton.Text = T._("CommonToMO");
                     MOCommonModeSwitchButton.Enabled = true;
+                    File.Move(Path.Combine(MODirPath, "ModOrganizer.exe"), Path.Combine(MODirPath, "ModOrganizer.exe.GameInCommonModeNow"));
                     //обновление информации о конфигурации папок игры
                     FoldersInit();
                     MessageBox.Show(T._("All mod files now in Data folder! You can restore MO mode by same button."));
@@ -1874,7 +1931,7 @@ namespace AI_Girl_Helper
                     {
                         string[] MovePaths = Operations[o].Split(new string[] { "|MovedTo|" }, StringSplitOptions.None);
 
-                        if (File.Exists(MovePaths[1]))
+                        if (File.Exists(MovePaths[1]) && !File.Exists(MovePaths[0]))
                         {
                             string modsubfolder = Path.GetDirectoryName(MovePaths[0]);
                             if (!Directory.Exists(modsubfolder))
@@ -1887,6 +1944,8 @@ namespace AI_Girl_Helper
                     }
 
                     //Перемещение новых файлов
+                    //
+                    //добавление всех файлов из дата, которых нет в списке файлов модов и игры в дата, что был создан сразу после перехода в обычный режим
                     string[] addedFiles = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories).Where(line => !ModdedDataFiles.Contains(line)).ToArray();
 
                     string destFolderForNewFiles = Path.Combine(ModsPath, "NewAddedFiles");
@@ -1938,8 +1997,7 @@ namespace AI_Girl_Helper
                     //очистка пустых папок в Data
                     DeleteEmptySubfolders(DataPath);
 
-                    //создание exe-болванки
-                    MakeDummyFile();
+                    File.Move(Path.Combine(MODirPath, "ModOrganizer.exe.GameInCommonModeNow"), Path.Combine(MODirPath, "ModOrganizer.exe"));
 
                     //создание ссылок на файлы bepinex
                     //BepinExLoadingFix();

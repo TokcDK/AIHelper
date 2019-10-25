@@ -64,8 +64,8 @@
             this.ShortcutsCheckBox = new System.Windows.Forms.CheckBox();
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
             this.ToolsPanel = new System.Windows.Forms.Panel();
-            this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
             this.InstallInModsButton = new System.Windows.Forms.Button();
+            this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -530,6 +530,19 @@
             this.ToolsPanel.Size = new System.Drawing.Size(340, 155);
             this.ToolsPanel.TabIndex = 1;
             // 
+            // InstallInModsButton
+            // 
+            this.InstallInModsButton.BackColor = System.Drawing.Color.Silver;
+            this.InstallInModsButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.InstallInModsButton.ForeColor = System.Drawing.Color.Black;
+            this.InstallInModsButton.Location = new System.Drawing.Point(3, 39);
+            this.InstallInModsButton.Name = "InstallInModsButton";
+            this.InstallInModsButton.Size = new System.Drawing.Size(112, 30);
+            this.InstallInModsButton.TabIndex = 17;
+            this.InstallInModsButton.Text = "Install from 2MO";
+            this.InstallInModsButton.UseVisualStyleBackColor = false;
+            this.InstallInModsButton.Click += new System.EventHandler(this.InstallInModsButton_Click);
+            // 
             // MOCommonModeSwitchButton
             // 
             this.MOCommonModeSwitchButton.BackColor = System.Drawing.Color.Silver;
@@ -543,21 +556,6 @@
             this.MOCommonModeSwitchButton.Text = "MOToCommon";
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
-            // 
-            // InstallInModsButton
-            // 
-            this.InstallInModsButton.BackColor = System.Drawing.Color.Silver;
-            this.InstallInModsButton.Enabled = false;
-            this.InstallInModsButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.InstallInModsButton.ForeColor = System.Drawing.Color.Black;
-            this.InstallInModsButton.Location = new System.Drawing.Point(3, 39);
-            this.InstallInModsButton.Name = "InstallInModsButton";
-            this.InstallInModsButton.Size = new System.Drawing.Size(112, 30);
-            this.InstallInModsButton.TabIndex = 17;
-            this.InstallInModsButton.Text = "Install from 2MO";
-            this.InstallInModsButton.UseVisualStyleBackColor = false;
-            this.InstallInModsButton.Visible = false;
-            this.InstallInModsButton.Click += new System.EventHandler(this.InstallInModsButton_Click);
             // 
             // AIGirlHelper
             // 

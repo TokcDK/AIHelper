@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -930,6 +931,23 @@ namespace AI_Girl_Helper
             {
                 INI.WriteINI("Settings", "download_directory", IniValue);
             }
+
+            if (CultureInfo.CurrentCulture.Name == "ru-RU")
+            {
+                IniValue = "ru";
+                if (GetINIValueIfExist(metaPath, "language", "Settings") != IniValue)
+                {
+                    INI.WriteINI("Settings", "language", IniValue);
+                }
+            }
+            else
+            {
+                IniValue = "en";
+                if (GetINIValueIfExist(metaPath, "language", "Settings") != IniValue)
+                {
+                    INI.WriteINI("Settings", "language", IniValue);
+                }
+            }
         }
 
         private string GetSettingsEXEPath()
@@ -1192,20 +1210,34 @@ namespace AI_Girl_Helper
             {
                 InstallInModsButton.Enabled = false;
 
-                InstallCardsFrom2MO();
-
-                InstallCardsFromSubfolders();
-
+                InstallInModsButton.Text = ">.....>";
                 InstallZipArchivesToMods();
 
+                InstallInModsButton.Text = ".>....>";
                 InstallBepinExModsToMods();
 
+                InstallInModsButton.Text = "..>...>";
                 InstallZipModsToMods();
 
+                InstallInModsButton.Text = "...>..>";
+                InstallCardsFrom2MO();
+
+                InstallInModsButton.Text = "....>.>";
+                InstallCardsFromSubfolders();
+
+                InstallInModsButton.Text = ".....>>";
                 InstallModFilesFromSubfolders();
 
-                DeleteEmptySubfolders(Install2MODirPath);
+                InstallInModsButton.Text = "......>";
+                DeleteEmptySubfolders(Install2MODirPath, false);
 
+                if (!Directory.Exists(Install2MODirPath))
+                {
+                    Directory.CreateDirectory(Install2MODirPath);
+                }
+
+                InstallInModsButton.Text = T._("Install from 2MO");
+                InstallInModsButton.Enabled = true;
                 MessageBox.Show(T._("All possible mods installed. Install all rest in 2MO folder manually."));
             }
             else
@@ -1835,6 +1867,7 @@ namespace AI_Girl_Helper
                     }
                 }
 
+                string zipArchiveName = Path.GetFileNameWithoutExtension(zipfile);
                 if (IsManifestFound && game == "AI Girl")
                 {
                     if (name.Length == 0)
@@ -1872,6 +1905,20 @@ namespace AI_Girl_Helper
                     string zipmoddirmodspath = Path.Combine(zipmoddirpath, "mods");
                     Directory.CreateDirectory(zipmoddirmodspath);
                     File.Move(zipfile, Path.Combine(zipmoddirmodspath, Path.GetFileName(zipfile)));
+
+                    //Перемещение файлов мода, начинающихся с того же имени в папку этого мода
+                    string[] PossibleFilesOfTheMod = Directory.GetFiles(Install2MODirPath, "*.*").Where(file => Path.GetFileName(file).Trim().StartsWith(zipArchiveName)).ToArray();
+                    int PossibleFilesOfTheModLength = PossibleFilesOfTheMod.Length;
+                    if (PossibleFilesOfTheModLength > 0)
+                    {
+                        for (int n = 0; n < PossibleFilesOfTheModLength; n++)
+                        {
+                            if (File.Exists(PossibleFilesOfTheMod[n]))
+                            {
+                                File.Move(PossibleFilesOfTheMod[n], Path.Combine(zipmoddirpath, Path.GetFileName(PossibleFilesOfTheMod[n]).Replace(zipArchiveName, Path.GetFileNameWithoutExtension(zipmoddirpath))));
+                            }
+                        }
+                    }
 
                     //запись meta.ini
                     WriteMetaINI(
@@ -2112,7 +2159,7 @@ namespace AI_Girl_Helper
                     File.Delete(ModdedDataFilesListFile);
 
                     //очистка пустых папок в Data
-                    DeleteEmptySubfolders(DataPath);
+                    DeleteEmptySubfolders(DataPath, false);
 
                     File.Move(Path.Combine(MODirPath, "ModOrganizer.exe.GameInCommonModeNow"), Path.Combine(MODirPath, "ModOrganizer.exe"));
 
@@ -2133,7 +2180,7 @@ namespace AI_Girl_Helper
         string VanillaDataFilesListFile = Path.Combine(AppResDir, "VanillaDataFilesList.txt");
         string MOToStandartConvertationOperationsListFile = Path.Combine(AppResDir, "MOToStandartConvertationOperationsList.txt");
 
-        private void DeleteEmptySubfolders(string dataPath)
+        private void DeleteEmptySubfolders(string dataPath, bool DeleteThisDir=true, string[] Exclusions=null)
         {
             string[] subfolders = Directory.GetDirectories(dataPath, "*");
             int subfoldersLength = subfolders.Length;
@@ -2141,14 +2188,39 @@ namespace AI_Girl_Helper
             {
                 for (int d = 0; d < subfoldersLength; d++)
                 {
-                    DeleteEmptySubfolders(subfolders[d]);
+                    DeleteEmptySubfolders(subfolders[d], !TrueIfStringInExclusionsList(subfolders[d], Exclusions), Exclusions);
                 }
             }
 
-            if (Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0)
+            if (DeleteThisDir && Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0)
             {
                 Directory.Delete(dataPath);
             }
+        }
+
+        private bool TrueIfStringInExclusionsList(string Str, string[] exclusions)
+        {
+            if (exclusions == null || Str.Length==0)
+            {
+                return false;
+            }
+            else
+            {
+                int exclusionsLength = exclusions.Length;
+                for (int i = 0;i< exclusionsLength; i++)
+                {
+                    if (string.IsNullOrWhiteSpace(exclusions[i]))
+                    {
+                        continue;
+                    }
+                    if (Str.Contains(exclusions[i]))
+                    {
+                        return true;
+                    }
+                }
+
+            }
+            return false;
         }
 
         public static void MoveWithReplace(string sourceFileName, string destFileName)

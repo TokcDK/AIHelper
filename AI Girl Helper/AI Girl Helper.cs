@@ -2010,6 +2010,17 @@ namespace AI_Girl_Helper
                     MOmode = false;
                     MOCommonModeSwitchButton.Enabled = false;
 
+                    string[] EnabledMods = GetEnabledModsFromActiveMOProfile();
+                    int EnabledModsLength = EnabledMods.Length;
+
+                    if (EnabledMods.Length == 0)
+                    {
+                        MOmode = true;
+                        MOCommonModeSwitchButton.Enabled = true;
+                        MessageBox.Show(T._("There is no enabled mods in Mod Organizer"));
+                        return;
+                    }
+
                     CleanBepInExLinksFromData();
 
                     if (File.Exists(dummyfile))
@@ -2023,16 +2034,14 @@ namespace AI_Girl_Helper
                     }
                     StringBuilder Operations = new StringBuilder();
                     string[] DataFolderFilesPaths = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
-
-                    string[] EnabledMods = GetEnabledModsFromActiveMOProfile();
-                    int EnabledModsLength = EnabledMods.Length;
+                    
                     for (int N = 0; N < EnabledModsLength; N++)
                     {
                         string ModFolder = Path.Combine(ModsPath, EnabledMods[N]);
-                        if (ModFolder.Length > 0)
+                        if (ModFolder.Length > 0 && Directory.Exists(ModFolder))
                         {
                             string[] ModFiles = Directory.GetFiles(ModFolder, "*.*", SearchOption.AllDirectories);
-                            if (ModFolder.Length > 0)
+                            if (ModFiles.Length > 0)
                             {
                                 int ModFilesLength = ModFiles.Length;
                                 string DestFilePath;
@@ -2097,7 +2106,6 @@ namespace AI_Girl_Helper
                                 }
                                 //Directory.Delete(ModFolder, true);
                             }
-
                         }
                     }
 
@@ -2333,7 +2341,7 @@ namespace AI_Girl_Helper
 
                 if (File.Exists(profilemodlistpath))
                 {
-                    string[] lines = File.ReadAllLines(profilemodlistpath).Where(line => line.StartsWith("+")).ToArray();
+                    string[] lines = File.ReadAllLines(profilemodlistpath).Where(line => line.StartsWith("+") && Directory.Exists(Path.Combine(ModsPath, line.Remove(0,1))) ).ToArray();//Добавить включенные моды, папки которых присутствуют в Mods
                     //Array.Reverse(lines); //убрал, т.к. дулаю архив с резервными копиями
                     int linesLength = lines.Length;
                     for (int l = 0; l < linesLength; l++)

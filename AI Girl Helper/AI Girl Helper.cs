@@ -1410,28 +1410,36 @@ namespace AI_Girl_Helper
                     for (int entrieNum = 0; entrieNum < archiveEntriesCount; entrieNum++)
                     {
                         string entryFullName = archive.Entries[entrieNum].FullName;
-                        if (entryFullName.EndsWith("manifest.xml", StringComparison.OrdinalIgnoreCase))
+                        int entryFullNameLength = entryFullName.Length;
+                        if (string.CompareOrdinal(entryFullName.Substring(entryFullNameLength-12,12),"manifest.xml")==0)
                         {
                             FoundZipMod = true;
                             break;
                         }
 
-                        if (!FoundStandardModInZip &&
-                               (entryFullName.EndsWith("abdata/", StringComparison.OrdinalIgnoreCase)
-                             || entryFullName.EndsWith("_data/", StringComparison.OrdinalIgnoreCase)
-                             || entryFullName.EndsWith("bepinex/", StringComparison.OrdinalIgnoreCase)
-                             || entryFullName.EndsWith("userdata/", StringComparison.OrdinalIgnoreCase)
-                               )
-                           )
+                        if (FoundStandardModInZip)
                         {
-                            FoundStandardModInZip = true;
+
+                        }
+                        else
+                        {
+                            if (
+                                   string.CompareOrdinal(entryFullName.Substring(entryFullNameLength - 7, 7), "abdata/") == 0
+                                || string.CompareOrdinal(entryFullName.Substring(entryFullNameLength - 6, 6), "_data/") == 0
+                                || string.CompareOrdinal(entryFullName.Substring(entryFullNameLength - 8, 8), "bepinex/") == 0
+                                || string.CompareOrdinal(entryFullName.Substring(entryFullNameLength - 9, 9), "userdata/") == 0
+                               )
+                            {
+                                FoundStandardModInZip = true;
+                            }
                         }
                     }
                 }
 
                 if (FoundZipMod)
                 {
-                    if (Path.GetExtension(zipfile) == ".zip")
+                    //если файл имеет расширение zip. Надо, т.к. здесь может быть файл zipmod
+                    if (string.CompareOrdinal(zipfile.Substring(zipfile.Length-4,4),".zip")==0)
                     {
                         File.Move(zipfile, zipfile + "mod");
                     }
@@ -1640,7 +1648,7 @@ namespace AI_Girl_Helper
                 string author = copyright.Remove(copyright.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim();
 
                 //добавление имени автора в начало имени папки
-                if (name.StartsWith("[") || name.Contains(author))
+                if (name.Substring(0,1)=="[" || name.Contains(author))
                 {
                 }
                 else if (author.Length > 0)
@@ -2068,7 +2076,11 @@ namespace AI_Girl_Helper
                                         if (!File.Exists(bakfilename) && DataFolderFilesPaths.Contains(DestFilePath))
                                         {
                                             string bakfolder = Path.GetDirectoryName(bakfilename);
-                                            if (!Directory.Exists(bakfolder))
+
+                                            if (Directory.Exists(bakfolder))
+                                            {
+                                            }
+                                            else
                                             {
                                                 Directory.CreateDirectory(bakfolder);
                                             }
@@ -2352,7 +2364,7 @@ namespace AI_Girl_Helper
 
                 if (File.Exists(profilemodlistpath))
                 {
-                    string[] lines = File.ReadAllLines(profilemodlistpath).Where(line => line.StartsWith("+") && Directory.Exists(Path.Combine(ModsPath, line.Remove(0,1))) ).ToArray();//Добавить включенные моды, папки которых присутствуют в Mods
+                    string[] lines = File.ReadAllLines(profilemodlistpath).Where(line => line.StartsWith("+")).ToArray();
                     //Array.Reverse(lines); //убрал, т.к. дулаю архив с резервными копиями
                     int linesLength = lines.Length;
                     for (int l = 0; l < linesLength; l++)

@@ -21,5 +21,15 @@ namespace AI_Girl_Helper
         {
             Process.Start("https://illusioncards.booru.org/index.php?page=post&s=list");
         }
+
+        private void KenzatoLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://kenzato.uk/booru/category/AICARD");
+        }
+
+        private void IllusionDiscordLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://discord.gg/RfkZVS");
+        }
     }
 }

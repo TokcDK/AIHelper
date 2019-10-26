@@ -51,9 +51,9 @@ namespace AI_Girl_Helper
             groupBox1.Text = T._("Display");
             FullScreenCheckBox.Text = T._("fullscreen");
             ShortcutsCheckBox.Text = T._("Create shortcuts after archive extraction");
-            groupBox2.Text = T._("Folders");
-            linkLabel1.Text = T._("Game");
-            linkLabel3.Text = T._("Mods");
+            SettingsFoldersGroupBox.Text = T._("Folders");
+            OpenGameFolderLinkLabel.Text = T._("Game");
+            OpenModsFolderLinkLabel.Text = T._("Mods");
             LaunchTabPage.Text = T._("Launch");
             LaunchTabLaunchLabel.Text = T._("Launch");
             ToolsTabPage.Text = T._("Tools");
@@ -1297,7 +1297,7 @@ namespace AI_Girl_Helper
                 if (images.Length > 0 && Directory.GetDirectories(dir, "*").Where(d => Path.GetFileName(d) != "m").ToArray().Length == 0)
                 {
                     bool IsMdir = false;
-                    if (string.CompareOrdinal(Path.GetFileName(dir),"m")==0) // если это папка m с мужскими карточками
+                    if (string.CompareOrdinal(Path.GetFileName(dir), "m") == 0) // если это папка m с мужскими карточками
                     {
                         IsMdir = true;
                     }
@@ -1312,7 +1312,7 @@ namespace AI_Girl_Helper
                         //}
                         string UserDataPath = Path.Combine(ModsPath, "UserData");
                         string TargetDir = IllusionImagesSubFolder(IsMdir ? UserDataPath : dir, IsMdir);
-                        string TargetPath = Path.Combine(TargetDir, IsMdir ? GetTargetImgName(TargetDir, Path.GetFileNameWithoutExtension(img)+".png") : Path.GetFileName(img));
+                        string TargetPath = Path.Combine(TargetDir, IsMdir ? GetTargetImgName(TargetDir, Path.GetFileNameWithoutExtension(img) + ".png") : Path.GetFileName(img));
                         File.Move(img, TargetPath);
                     }
                     //папка "m" с мужскими карточками внутри
@@ -1384,7 +1384,7 @@ namespace AI_Girl_Helper
             return Name;
         }
 
-        private string IllusionImagesSubFolder(string dir, bool m=false)
+        private string IllusionImagesSubFolder(string dir, bool m = false)
         {
             var imagesSubdir = Path.Combine(dir, "UserData", "chara", m ? "male" : "female");
             if (!Directory.Exists(imagesSubdir))
@@ -1414,7 +1414,7 @@ namespace AI_Girl_Helper
                     {
                         string entryFullName = archive.Entries[entrieNum].FullName;
                         int entryFullNameLength = entryFullName.Length;
-                        if (string.CompareOrdinal(entryFullName.Substring(entryFullNameLength-12,12),"manifest.xml")==0)
+                        if (string.CompareOrdinal(entryFullName.Substring(entryFullNameLength - 12, 12), "manifest.xml") == 0)
                         {
                             FoundZipMod = true;
                             break;
@@ -1442,7 +1442,7 @@ namespace AI_Girl_Helper
                 if (FoundZipMod)
                 {
                     //если файл имеет расширение zip. Надо, т.к. здесь может быть файл zipmod
-                    if (string.CompareOrdinal(zipfile.Substring(zipfile.Length-4,4),".zip")==0)
+                    if (string.CompareOrdinal(zipfile.Substring(zipfile.Length - 4, 4), ".zip") == 0)
                     {
                         File.Move(zipfile, zipfile + "mod");
                     }
@@ -1651,7 +1651,7 @@ namespace AI_Girl_Helper
                 string author = copyright.Remove(copyright.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim();
 
                 //добавление имени автора в начало имени папки
-                if (name.Substring(0,1)=="[" || name.Contains(author))
+                if (name.Substring(0, 1) == "[" || name.Contains(author))
                 {
                 }
                 else if (author.Length > 0)
@@ -2045,7 +2045,7 @@ namespace AI_Girl_Helper
                     }
                     StringBuilder Operations = new StringBuilder();
                     string[] DataFolderFilesPaths = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
-                    
+
                     for (int N = 0; N < EnabledModsLength; N++)
                     {
                         string ModFolder = Path.Combine(ModsPath, EnabledMods[N]);
@@ -2395,6 +2395,14 @@ namespace AI_Girl_Helper
         private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("explorer.exe", ModsPath);
+        }
+
+        private void OpenLogLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            //https://stackoverflow.com/questions/9993561/c-sharp-open-file-path-starting-with-userprofile
+            var USERPROFILE = Path.Combine("%USERPROFILE%", "appdata", "locallow", "illusion__AI-Syoujyo", "AI-Syoujyo", "output_log.txt");
+            var output_log = Environment.ExpandEnvironmentVariables(USERPROFILE);
+            Process.Start("explorer.exe", output_log);
         }
 
         //Материалы

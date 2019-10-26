@@ -55,10 +55,10 @@
             this.SettingsButton = new System.Windows.Forms.Button();
             this.SettingsPage = new System.Windows.Forms.TabPage();
             this.SettingsPanel = new System.Windows.Forms.Panel();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.linkLabel3 = new System.Windows.Forms.LinkLabel();
-            this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.SettingsFoldersGroupBox = new System.Windows.Forms.GroupBox();
+            this.OpenModsFolderLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.OpenMOLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.OpenGameFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.CreateShortcutButton = new System.Windows.Forms.Button();
             this.FixRegistryButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -70,6 +70,7 @@
             this.ToolsPanel = new System.Windows.Forms.Panel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
+            this.OpenLogLinkLabel = new System.Windows.Forms.LinkLabel();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -85,7 +86,7 @@
             this.splitContainer1.SuspendLayout();
             this.SettingsPage.SuspendLayout();
             this.SettingsPanel.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.SettingsFoldersGroupBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.ToolsTabPage.SuspendLayout();
             this.ToolsPanel.SuspendLayout();
@@ -248,6 +249,7 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.Gray;
+            this.panel2.Controls.Add(this.OpenLogLinkLabel);
             this.panel2.Controls.Add(this.LaunchTabLaunchLabel);
             this.panel2.Controls.Add(this.GameNamePanel2);
             this.panel2.Controls.Add(this.newformButton);
@@ -410,7 +412,7 @@
             // SettingsPanel
             // 
             this.SettingsPanel.BackColor = System.Drawing.Color.Gray;
-            this.SettingsPanel.Controls.Add(this.groupBox2);
+            this.SettingsPanel.Controls.Add(this.SettingsFoldersGroupBox);
             this.SettingsPanel.Controls.Add(this.CreateShortcutButton);
             this.SettingsPanel.Controls.Add(this.FixRegistryButton);
             this.SettingsPanel.Controls.Add(this.groupBox1);
@@ -421,51 +423,51 @@
             this.SettingsPanel.Size = new System.Drawing.Size(340, 155);
             this.SettingsPanel.TabIndex = 1;
             // 
-            // groupBox2
+            // SettingsFoldersGroupBox
             // 
-            this.groupBox2.Controls.Add(this.linkLabel3);
-            this.groupBox2.Controls.Add(this.linkLabel2);
-            this.groupBox2.Controls.Add(this.linkLabel1);
-            this.groupBox2.ForeColor = System.Drawing.Color.White;
-            this.groupBox2.Location = new System.Drawing.Point(5, 106);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(110, 44);
-            this.groupBox2.TabIndex = 6;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Folders";
+            this.SettingsFoldersGroupBox.Controls.Add(this.OpenModsFolderLinkLabel);
+            this.SettingsFoldersGroupBox.Controls.Add(this.OpenMOLinkLabel);
+            this.SettingsFoldersGroupBox.Controls.Add(this.OpenGameFolderLinkLabel);
+            this.SettingsFoldersGroupBox.ForeColor = System.Drawing.Color.White;
+            this.SettingsFoldersGroupBox.Location = new System.Drawing.Point(5, 106);
+            this.SettingsFoldersGroupBox.Name = "SettingsFoldersGroupBox";
+            this.SettingsFoldersGroupBox.Size = new System.Drawing.Size(110, 44);
+            this.SettingsFoldersGroupBox.TabIndex = 6;
+            this.SettingsFoldersGroupBox.TabStop = false;
+            this.SettingsFoldersGroupBox.Text = "Folders";
             // 
-            // linkLabel3
+            // OpenModsFolderLinkLabel
             // 
-            this.linkLabel3.AutoSize = true;
-            this.linkLabel3.Location = new System.Drawing.Point(72, 17);
-            this.linkLabel3.Name = "linkLabel3";
-            this.linkLabel3.Size = new System.Drawing.Size(32, 13);
-            this.linkLabel3.TabIndex = 2;
-            this.linkLabel3.TabStop = true;
-            this.linkLabel3.Text = "Mods";
-            this.linkLabel3.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel3_LinkClicked);
+            this.OpenModsFolderLinkLabel.AutoSize = true;
+            this.OpenModsFolderLinkLabel.Location = new System.Drawing.Point(72, 17);
+            this.OpenModsFolderLinkLabel.Name = "OpenModsFolderLinkLabel";
+            this.OpenModsFolderLinkLabel.Size = new System.Drawing.Size(32, 13);
+            this.OpenModsFolderLinkLabel.TabIndex = 2;
+            this.OpenModsFolderLinkLabel.TabStop = true;
+            this.OpenModsFolderLinkLabel.Text = "Mods";
+            this.OpenModsFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel3_LinkClicked);
             // 
-            // linkLabel2
+            // OpenMOLinkLabel
             // 
-            this.linkLabel2.AutoSize = true;
-            this.linkLabel2.Location = new System.Drawing.Point(43, 17);
-            this.linkLabel2.Name = "linkLabel2";
-            this.linkLabel2.Size = new System.Drawing.Size(23, 13);
-            this.linkLabel2.TabIndex = 1;
-            this.linkLabel2.TabStop = true;
-            this.linkLabel2.Text = "MO";
-            this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
+            this.OpenMOLinkLabel.AutoSize = true;
+            this.OpenMOLinkLabel.Location = new System.Drawing.Point(43, 17);
+            this.OpenMOLinkLabel.Name = "OpenMOLinkLabel";
+            this.OpenMOLinkLabel.Size = new System.Drawing.Size(23, 13);
+            this.OpenMOLinkLabel.TabIndex = 1;
+            this.OpenMOLinkLabel.TabStop = true;
+            this.OpenMOLinkLabel.Text = "MO";
+            this.OpenMOLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
             // 
-            // linkLabel1
+            // OpenGameFolderLinkLabel
             // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(6, 17);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(34, 13);
-            this.linkLabel1.TabIndex = 0;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "Game";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            this.OpenGameFolderLinkLabel.AutoSize = true;
+            this.OpenGameFolderLinkLabel.Location = new System.Drawing.Point(6, 17);
+            this.OpenGameFolderLinkLabel.Name = "OpenGameFolderLinkLabel";
+            this.OpenGameFolderLinkLabel.Size = new System.Drawing.Size(34, 13);
+            this.OpenGameFolderLinkLabel.TabIndex = 0;
+            this.OpenGameFolderLinkLabel.TabStop = true;
+            this.OpenGameFolderLinkLabel.Text = "Game";
+            this.OpenGameFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // CreateShortcutButton
             // 
@@ -610,6 +612,17 @@
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
             // 
+            // OpenLogLinkLabel
+            // 
+            this.OpenLogLinkLabel.AutoSize = true;
+            this.OpenLogLinkLabel.Location = new System.Drawing.Point(319, 0);
+            this.OpenLogLinkLabel.Name = "OpenLogLinkLabel";
+            this.OpenLogLinkLabel.Size = new System.Drawing.Size(21, 13);
+            this.OpenLogLinkLabel.TabIndex = 20;
+            this.OpenLogLinkLabel.TabStop = true;
+            this.OpenLogLinkLabel.Text = "log";
+            this.OpenLogLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenLogLinkLabel_LinkClicked);
+            // 
             // AIGirlHelper
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -644,8 +657,8 @@
             this.SettingsPage.ResumeLayout(false);
             this.SettingsPanel.ResumeLayout(false);
             this.SettingsPanel.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.SettingsFoldersGroupBox.ResumeLayout(false);
+            this.SettingsFoldersGroupBox.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ToolsTabPage.ResumeLayout(false);
@@ -693,10 +706,11 @@
         private System.Windows.Forms.Panel ToolsPanel;
         private System.Windows.Forms.Button MOCommonModeSwitchButton;
         private System.Windows.Forms.Button InstallInModsButton;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.LinkLabel linkLabel3;
-        private System.Windows.Forms.LinkLabel linkLabel2;
-        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.GroupBox SettingsFoldersGroupBox;
+        private System.Windows.Forms.LinkLabel OpenModsFolderLinkLabel;
+        private System.Windows.Forms.LinkLabel OpenMOLinkLabel;
+        private System.Windows.Forms.LinkLabel OpenGameFolderLinkLabel;
+        private System.Windows.Forms.LinkLabel OpenLogLinkLabel;
     }
 }
 

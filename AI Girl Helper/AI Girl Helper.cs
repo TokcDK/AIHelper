@@ -1246,12 +1246,13 @@ namespace AI_Girl_Helper
             }
         }
 
-        private void InstallCardsFrom2MO()
+        private void InstallCardsFrom2MO(string TargetDir = "")
         {
             string targetdir = Path.Combine(ModsPath, "MyUserData");
-            var images = Directory.GetFiles(Install2MODirPath, "*.png");
+            string ProceedDir = TargetDir.Length == 0 ? Install2MODirPath : TargetDir;
+            var images = Directory.GetFiles(ProceedDir, "*.png");
             int imagesLength = images.Length;
-            if (imagesLength > 0 && Directory.GetDirectories(Install2MODirPath, "*").Length == 0)
+            if (imagesLength > 0 && Directory.GetDirectories(ProceedDir, "*").Length == 0)
             {
                 //bool IsCharaCard = false;
                 for (int imgnum = 0; imgnum < imagesLength; imgnum++)
@@ -1290,8 +1291,13 @@ namespace AI_Girl_Helper
             foreach (var dir in Directory.GetDirectories(Install2MODirPath, "*"))
             {
                 var images = Directory.GetFiles(dir, "*.png");
-                if (images.Length > 0 && Directory.GetDirectories(dir, "*").Length == 0)
+                if (images.Length > 0 && Directory.GetDirectories(dir, "*").Where(d => Path.GetFileName(d) != "m").ToArray().Length == 0)
                 {
+                    bool IsMdir = false;
+                    if (string.CompareOrdinal(Path.GetFileName(dir),"m")==0) // если это папка m с мужскими карточками
+                    {
+                        IsMdir = true;
+                    }
                     //bool IsCharaCard = false;
                     foreach (var img in images)
                     {
@@ -1301,7 +1307,24 @@ namespace AI_Girl_Helper
                         //{
                         //    IsCharaCard = true;
                         //}
-                        File.Move(img, Path.Combine(IllusionImagesSubFolder(dir), Path.GetFileName(img)));
+                        string UserDataPath = Path.Combine(ModsPath, "UserData");
+                        string TargetDir = IllusionImagesSubFolder(IsMdir ? UserDataPath : dir, IsMdir);
+                        string TargetPath = Path.Combine(TargetDir, IsMdir ? GetTargetImgName(TargetDir, Path.GetFileNameWithoutExtension(img)+".png") : Path.GetFileName(img));
+                        File.Move(img, TargetPath);
+                    }
+                    //папка "m" с мужскими карточками внутри
+                    string Mdir = Path.Combine(dir, "m");
+                    if (Directory.Exists(Mdir))
+                    {
+                        images = Directory.GetFiles(Mdir, "*.png");
+                        if (images.Length > 0)
+                        {
+                            foreach (var img in images)
+                            {
+                                File.Move(img, Path.Combine(IllusionImagesSubFolder(dir, true), Path.GetFileName(img)));
+                            }
+                        }
+                        DeleteEmptySubfolders(Mdir);
                     }
 
                     var cardsModName = Path.GetFileName(dir);
@@ -1342,9 +1365,25 @@ namespace AI_Girl_Helper
             }
         }
 
-        private string IllusionImagesSubFolder(string dir)
+        private string GetTargetImgName(string TargetFolder, string Name)
         {
-            var imagesSubdir = Path.Combine(dir, "UserData", "chara", "female");
+            if (Directory.Exists(TargetFolder))
+            {
+                string resultName = Name;
+                int i = 1;
+                while (File.Exists(Path.Combine(TargetFolder, resultName)))
+                {
+                    resultName = resultName + " (" + i + ")";
+                    i++;
+                }
+                return resultName;
+            }
+            return Name;
+        }
+
+        private string IllusionImagesSubFolder(string dir, bool m=false)
+        {
+            var imagesSubdir = Path.Combine(dir, "UserData", "chara", m ? "male" : "female");
             if (!Directory.Exists(imagesSubdir))
             {
                 Directory.CreateDirectory(imagesSubdir);
@@ -2180,7 +2219,7 @@ namespace AI_Girl_Helper
         string VanillaDataFilesListFile = Path.Combine(AppResDir, "VanillaDataFilesList.txt");
         string MOToStandartConvertationOperationsListFile = Path.Combine(AppResDir, "MOToStandartConvertationOperationsList.txt");
 
-        private void DeleteEmptySubfolders(string dataPath, bool DeleteThisDir=true, string[] Exclusions=null)
+        private void DeleteEmptySubfolders(string dataPath, bool DeleteThisDir = true, string[] Exclusions = null)
         {
             string[] subfolders = Directory.GetDirectories(dataPath, "*");
             int subfoldersLength = subfolders.Length;
@@ -2200,14 +2239,14 @@ namespace AI_Girl_Helper
 
         private bool TrueIfStringInExclusionsList(string Str, string[] exclusions)
         {
-            if (exclusions == null || Str.Length==0)
+            if (exclusions == null || Str.Length == 0)
             {
                 return false;
             }
             else
             {
                 int exclusionsLength = exclusions.Length;
-                for (int i = 0;i< exclusionsLength; i++)
+                for (int i = 0; i < exclusionsLength; i++)
                 {
                     if (string.IsNullOrWhiteSpace(exclusions[i]))
                     {

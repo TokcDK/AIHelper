@@ -2046,8 +2046,19 @@ namespace AI_Girl_Helper
                                 int ModFilesLength = ModFiles.Length;
                                 string DestFilePath;
 
+                                bool metaskipped = false;
                                 for (int f = 0; f < ModFilesLength; f++)
                                 {
+                                    //skip meta.ini
+                                    if (metaskipped)
+                                    {
+                                    }
+                                    else if (string.CompareOrdinal(ModFiles[f].Substring(ModFiles[f].Length - 8, 8), "meta.ini") == 0)
+                                    {
+                                        metaskipped = true;//для ускорения проверки, когда meta будет найден, будет делать быструю проверку bool переменной
+                                        continue;
+                                    }
+
                                     MOCommonModeSwitchButton.Text = "..." + EnabledModsLength + "/" + N + ": " + f + "/" + ModFilesLength;
                                     DestFilePath = ModFiles[f].Replace(ModFolder, DataPath);
 

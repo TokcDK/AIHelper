@@ -43,6 +43,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.OpenLogLinkLabel = new System.Windows.Forms.LinkLabel();
             this.LaunchTabLaunchLabel = new System.Windows.Forms.Label();
             this.GameNamePanel2 = new System.Windows.Forms.Panel();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -70,7 +71,6 @@
             this.ToolsPanel = new System.Windows.Forms.Panel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
-            this.OpenLogLinkLabel = new System.Windows.Forms.LinkLabel();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -262,6 +262,17 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(340, 155);
             this.panel2.TabIndex = 0;
+            // 
+            // OpenLogLinkLabel
+            // 
+            this.OpenLogLinkLabel.AutoSize = true;
+            this.OpenLogLinkLabel.Location = new System.Drawing.Point(319, 0);
+            this.OpenLogLinkLabel.Name = "OpenLogLinkLabel";
+            this.OpenLogLinkLabel.Size = new System.Drawing.Size(21, 13);
+            this.OpenLogLinkLabel.TabIndex = 20;
+            this.OpenLogLinkLabel.TabStop = true;
+            this.OpenLogLinkLabel.Text = "log";
+            this.OpenLogLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenLogLinkLabel_LinkClicked);
             // 
             // LaunchTabLaunchLabel
             // 
@@ -611,17 +622,6 @@
             this.MOCommonModeSwitchButton.Text = "MOToCommon111";
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
-            // 
-            // OpenLogLinkLabel
-            // 
-            this.OpenLogLinkLabel.AutoSize = true;
-            this.OpenLogLinkLabel.Location = new System.Drawing.Point(319, 0);
-            this.OpenLogLinkLabel.Name = "OpenLogLinkLabel";
-            this.OpenLogLinkLabel.Size = new System.Drawing.Size(21, 13);
-            this.OpenLogLinkLabel.TabIndex = 20;
-            this.OpenLogLinkLabel.TabStop = true;
-            this.OpenLogLinkLabel.Text = "log";
-            this.OpenLogLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenLogLinkLabel_LinkClicked);
             // 
             // AIGirlHelper
             // 

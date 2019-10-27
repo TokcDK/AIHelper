@@ -1484,7 +1484,7 @@ namespace AI_Girl_Helper
                 string version = string.Empty;
                 string author = string.Empty;
                 string description = string.Empty;
-                string moddir=string.Empty;
+                string moddir = string.Empty;
 
                 bool b = false;
                 foreach (var subdir in Directory.GetDirectories(dir, "*"))
@@ -1512,7 +1512,7 @@ namespace AI_Girl_Helper
                         moddir = TargetModDIr;
                         b = true;
                         version = Regex.Match(name, @"\d+(\.\d+)*").Value;
-                        author = name.StartsWith("[AI][") || (name.StartsWith("[") && !name.StartsWith("[AI]")) ? name.Substring(name.IndexOf("[")+1,name.IndexOf("]")-1) : string.Empty;
+                        author = name.StartsWith("[AI][") || (name.StartsWith("[") && !name.StartsWith("[AI]")) ? name.Substring(name.IndexOf("[") + 1, name.IndexOf("]") - 1) : string.Empty;
                         description = name;
                         break;
                     }
@@ -2226,8 +2226,8 @@ namespace AI_Girl_Helper
 
                     //удаление папки, где хранились резервные копии ванильных файлов
                     if (
-                        Directory.GetFiles(MOmodeDataFilesBak,"*.*",SearchOption.AllDirectories).Length==0
-                        && Directory.GetDirectories(MOmodeDataFilesBak,"*",SearchOption.AllDirectories).Length==0                        
+                        Directory.GetFiles(MOmodeDataFilesBak, "*.*", SearchOption.AllDirectories).Length == 0
+                        && Directory.GetDirectories(MOmodeDataFilesBak, "*", SearchOption.AllDirectories).Length == 0
                         )
                     {
                         Directory.Delete(MOmodeDataFilesBak, true);

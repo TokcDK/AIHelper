@@ -1268,20 +1268,13 @@ namespace AI_Girl_Helper
                     //    IsCharaCard = true;
                     //}
                     string ImgFIleName = Path.GetFileNameWithoutExtension(img);
-                    string targetImagePath = string.Empty;
-
-                    for (int i = 1; i < 100000; i++)
+                    string ImagesSubFolder = IllusionImagesSubFolder(targetdir);
+                    string targetImagePath = Path.Combine(ImagesSubFolder, ImgFIleName + ".png");
+                    int i = 1;
+                    while (File.Exists(targetImagePath))
                     {
-                        targetImagePath = Path.Combine(IllusionImagesSubFolder(targetdir), ImgFIleName + ".png");
-
-                        if (File.Exists(targetImagePath))
-                        {
-                            ImgFIleName += " (" + i + ")";
-                        }
-                        else
-                        {
-                            break;
-                        }
+                        targetImagePath = Path.Combine(ImagesSubFolder, ImgFIleName + " (" + i + ")" + ".png");
+                        i++;
                     }
 
                     File.Move(img, targetImagePath);
@@ -1312,7 +1305,7 @@ namespace AI_Girl_Helper
                         //}
                         string UserDataPath = Path.Combine(ModsPath, "UserData");
                         string TargetDir = IllusionImagesSubFolder(IsMdir ? UserDataPath : dir, IsMdir);
-                        string TargetPath = Path.Combine(TargetDir, IsMdir ? GetTargetImgName(TargetDir, Path.GetFileNameWithoutExtension(img) + ".png") : Path.GetFileName(img));
+                        string TargetPath = Path.Combine(TargetDir, IsMdir ? GetTargetImgName(TargetDir, Path.GetFileNameWithoutExtension(img)) : Path.GetFileName(img));
                         File.Move(img, TargetPath);
                     }
                     //папка "m" с мужскими карточками внутри
@@ -1331,22 +1324,13 @@ namespace AI_Girl_Helper
                     }
 
                     var cardsModName = Path.GetFileName(dir);
-                    var cardsModDir = string.Empty;
-
-                    for (int i = 1; i < 100000; i++)
+                    var cardsModDir = Path.Combine(ModsPath, cardsModName);
+                    int i = 1;
+                    while (Directory.Exists(cardsModDir))
                     {
-                        cardsModDir = Path.Combine(ModsPath, cardsModName);
-
-                        if (Directory.Exists(cardsModDir))
-                        {
-                            cardsModName += " (" + i + ")";
-                        }
-                        else
-                        {
-                            break;
-                        }
+                        cardsModDir = Path.Combine(ModsPath, cardsModName + " (" + i + ")");
+                        i++;
                     }
-
 
                     Directory.Move(dir, cardsModDir);
 
@@ -1376,12 +1360,12 @@ namespace AI_Girl_Helper
                 int i = 1;
                 while (File.Exists(Path.Combine(TargetFolder, resultName)))
                 {
-                    resultName = resultName + " (" + i + ")";
+                    resultName = Name + " (" + i + ")" + ".png";
                     i++;
                 }
                 return resultName;
             }
-            return Name;
+            return Name + ".png";
         }
 
         private string IllusionImagesSubFolder(string dir, bool m = false)
@@ -1442,7 +1426,7 @@ namespace AI_Girl_Helper
                 if (FoundZipMod)
                 {
                     //если файл имеет расширение zip. Надо, т.к. здесь может быть файл zipmod
-                    if (zipfile.Length>=4 && string.CompareOrdinal(zipfile.Substring(zipfile.Length - 4, 4), ".zip") == 0)
+                    if (zipfile.Length >= 4 && string.CompareOrdinal(zipfile.Substring(zipfile.Length - 4, 4), ".zip") == 0)
                     {
                         File.Move(zipfile, zipfile + "mod");
                     }
@@ -1492,8 +1476,18 @@ namespace AI_Girl_Helper
                         || string.CompareOrdinal(subdirname, "bepinex") == 0
                         )
                     {
-                        CopyFolder.Copy(dir, Path.Combine(ModsPath, dir));
-                        Directory.Move(dir, "[installed]" + dir);
+                        //CopyFolder.Copy(dir, Path.Combine(ModsPath, dir));
+                        //Directory.Move(dir, "[installed]" + dir);
+                        string TargetModDirName = Path.GetFileName(dir);
+                        string TargetModDIr = Path.Combine(ModsPath, TargetModDirName);
+                        int i = 1;
+                        while (Directory.Exists(TargetModDIr))
+                        {
+                            TargetModDIr = Path.Combine(ModsPath, TargetModDirName + " (" + i + ")");
+                            i++;
+                        }
+                        Directory.Move(dir, TargetModDIr);
+
                         b = true;
                         break;
                     }
@@ -1651,7 +1645,7 @@ namespace AI_Girl_Helper
                 string author = copyright.Remove(copyright.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim();
 
                 //добавление имени автора в начало имени папки
-                if ((!string.IsNullOrEmpty(name) && name.Substring(0, 1) == "[" && !name.StartsWith("[AI]")) || (name.Length>=5 && name.Substring(0, 5) == "[AI][") || name.Contains(author))
+                if ((!string.IsNullOrEmpty(name) && name.Substring(0, 1) == "[" && !name.StartsWith("[AI]")) || (name.Length >= 5 && name.Substring(0, 5) == "[AI][") || name.Contains(author))
                 {
                 }
                 else if (author.Length > 0)
@@ -1947,7 +1941,7 @@ namespace AI_Girl_Helper
                     int i = 1;
                     while (Directory.Exists(zipmoddirpath))
                     {
-                        zipmoddirpath = Path.Combine(ModsPath, name + "(" + i + ")");
+                        zipmoddirpath = Path.Combine(ModsPath, name + " (" + i + ")");
                         i++;
                     }
 
@@ -2064,7 +2058,7 @@ namespace AI_Girl_Helper
                                     if (metaskipped)
                                     {
                                     }
-                                    else if (ModFiles[f].Length>=8 && string.CompareOrdinal(ModFiles[f].Substring(ModFiles[f].Length - 8, 8), "meta.ini") == 0)
+                                    else if (ModFiles[f].Length >= 8 && string.CompareOrdinal(ModFiles[f].Substring(ModFiles[f].Length - 8, 8), "meta.ini") == 0)
                                     {
                                         metaskipped = true;//для ускорения проверки, когда meta будет найден, будет делать быструю проверку bool переменной
                                         continue;

@@ -103,20 +103,34 @@ namespace AI_Girl_Helper
 
             CreateShortcuts();
 
-            MakeDummyFile();
+            MakeDummyFiles();
 
             button1.Text = T._("Game Ready");
             FoldersInit();
         }
 
         private readonly string dummyfile = Path.Combine(Application.StartupPath, "TESV.exe");
-        private void MakeDummyFile()
+        private void MakeDummyFiles()
         {
             //Create dummy file and add hidden attribute
             if (!File.Exists(dummyfile))
             {
                 File.WriteAllText(dummyfile, "dummy file need to execute mod organizer");
                 HideFileFolder(dummyfile, true);
+            }
+
+            //make dummy files for empty folders to make them not empty
+            string dummy = Path.Combine(DataPath, "UserData", "audio", "dummy.file");
+            if (!File.Exists(dummy))
+            {
+                File.WriteAllText(dummy, "dummy file to make the folder not empty");
+                HideFileFolder(dummy, true);
+            }
+            dummy = Path.Combine(DataPath, "UserData", "coordinate", "male", "dummy.file");
+            if (!File.Exists(dummy))
+            {
+                File.WriteAllText(dummy, "dummy file to make the folder not empty");
+                HideFileFolder(dummy, true);
             }
         }
 
@@ -830,7 +844,7 @@ namespace AI_Girl_Helper
                 BepinExLoadingFix();
 
                 //создание exe-болванки
-                MakeDummyFile();
+                MakeDummyFiles();
 
                 SetModOrganizerINISettingsForTheGame();
             }
@@ -2023,7 +2037,7 @@ namespace AI_Girl_Helper
                             if (ModFiles.Length > 0)
                             {
                                 int ModFilesLength = ModFiles.Length;
-                                string DestFilePath;
+                                string FileInDataFolder;
 
                                 bool metaskipped = false;
                                 for (int f = 0; f < ModFilesLength; f++)
@@ -2039,14 +2053,14 @@ namespace AI_Girl_Helper
                                     }
 
                                     MOCommonModeSwitchButton.Text = "..." + EnabledModsLength + "/" + N + ": " + f + "/" + ModFilesLength;
-                                    DestFilePath = ModFiles[f].Replace(ModFolder, DataPath);
+                                    FileInDataFolder = ModFiles[f].Replace(ModFolder, DataPath);
 
-                                    if (File.Exists(DestFilePath))
+                                    if (File.Exists(FileInDataFolder))
                                     {
-                                        string bakfilename = DestFilePath.Replace(DataPath, MOmodeDataFilesBak);
-                                        if (!File.Exists(bakfilename) && DataFolderFilesPaths.Contains(DestFilePath))
+                                        string FileInBakFolderWhichIsInRES = FileInDataFolder.Replace(DataPath, MOmodeDataFilesBak);
+                                        if (!File.Exists(FileInBakFolderWhichIsInRES) && DataFolderFilesPaths.Contains(FileInDataFolder))
                                         {
-                                            string bakfolder = Path.GetDirectoryName(bakfilename);
+                                            string bakfolder = Path.GetDirectoryName(FileInBakFolderWhichIsInRES);
 
                                             if (Directory.Exists(bakfolder))
                                             {
@@ -2058,20 +2072,20 @@ namespace AI_Girl_Helper
 
                                             try
                                             {
-                                                File.Move(DestFilePath, bakfilename);//перенос файла из Data в Bak, если там не было
-                                                File.Move(ModFiles[f], DestFilePath);//перенос файла из папки мода в Data
-                                                Operations.AppendLine(ModFiles[f] + "|MovedTo|" + DestFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
+                                                File.Move(FileInDataFolder, FileInBakFolderWhichIsInRES);//перенос файла из Data в Bak, если там не было
+                                                File.Move(ModFiles[f], FileInDataFolder);//перенос файла из папки мода в Data
+                                                Operations.AppendLine(ModFiles[f] + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
                                             }
                                             catch
                                             {
                                                 //когда файла в дата нет, файл в бак есть и есть файл в папке мода - вернуть файл из bak назад
-                                                if (!File.Exists(DestFilePath))
+                                                if (!File.Exists(FileInDataFolder))
                                                 {
-                                                    if (File.Exists(bakfilename))
+                                                    if (File.Exists(FileInBakFolderWhichIsInRES))
                                                     {
                                                         if (File.Exists(ModFiles[f]))
                                                         {
-                                                            File.Move(bakfilename, DestFilePath);
+                                                            File.Move(FileInBakFolderWhichIsInRES, FileInDataFolder);
                                                         }
                                                     }
                                                 }
@@ -2080,15 +2094,15 @@ namespace AI_Girl_Helper
                                     }
                                     else
                                     {
-                                        string destFolder = Path.GetDirectoryName(DestFilePath);
+                                        string destFolder = Path.GetDirectoryName(FileInDataFolder);
                                         if (!Directory.Exists(destFolder))
                                         {
                                             Directory.CreateDirectory(destFolder);
                                         }
                                         try
                                         {
-                                            File.Move(ModFiles[f], DestFilePath);//перенос файла из папки мода в Data
-                                            Operations.AppendLine(ModFiles[f] + "|MovedTo|" + DestFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
+                                            File.Move(ModFiles[f], FileInDataFolder);//перенос файла из папки мода в Data
+                                            Operations.AppendLine(ModFiles[f] + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
                                         }
                                         catch
                                         {
@@ -2191,24 +2205,33 @@ namespace AI_Girl_Helper
                     }
 
                     //перемещение ванильных файлов назад в дата
-                    int VanillaDataFilesListLength = VanillaDataFiles.Length;
-                    for (int f = 0; f < VanillaDataFilesListLength; f++)
+                    if (Directory.Exists(MOmodeDataFilesBak))
                     {
-                        if (File.Exists(VanillaDataFiles[f]))
+                        string[] FilesInMOmodeDataFilesBak = Directory.GetFiles(MOmodeDataFilesBak, "*.*", SearchOption.AllDirectories);
+                        int FilesInMOmodeDataFilesBakLength = FilesInMOmodeDataFilesBak.Length;
+                        for (int f = 0; f < FilesInMOmodeDataFilesBakLength; f++)
                         {
-                            string DestFileName = VanillaDataFiles[f].Replace(MOmodeDataFilesBak, DataPath);
-
-                            string DestFileFolder = Path.GetDirectoryName(DestFileName);
-                            if (!Directory.Exists(DestFileFolder))
+                            string DestFileInDataFolderPath = FilesInMOmodeDataFilesBak[f].Replace(MOmodeDataFilesBak, DataPath);
+                            if (!File.Exists(DestFileInDataFolderPath))
                             {
-                                Directory.CreateDirectory(DestFileFolder);
+                                string DestFileInDataFolderPathFolder = Path.GetDirectoryName(DestFileInDataFolderPath);
+                                if (!Directory.Exists(DestFileInDataFolderPathFolder))
+                                {
+                                    Directory.CreateDirectory(DestFileInDataFolderPathFolder);
+                                }
+                                File.Move(FilesInMOmodeDataFilesBak[f], DestFileInDataFolderPath);
                             }
-                            File.Move(VanillaDataFiles[f], DestFileName);
                         }
                     }
 
                     //удаление папки, где хранились резервные копии ванильных файлов
-                    Directory.Delete(MOmodeDataFilesBak, true);
+                    if (
+                        Directory.GetFiles(MOmodeDataFilesBak,"*.*",SearchOption.AllDirectories).Length==0
+                        && Directory.GetDirectories(MOmodeDataFilesBak,"*",SearchOption.AllDirectories).Length==0                        
+                        )
+                    {
+                        Directory.Delete(MOmodeDataFilesBak, true);
+                    }
 
                     //чистка файлов-списков
                     File.Delete(MOToStandartConvertationOperationsListFile);

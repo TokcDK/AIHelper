@@ -1414,7 +1414,7 @@ namespace AI_Girl_Helper
                     {
                         string entryFullName = archive.Entries[entrieNum].FullName;
                         int entryFullNameLength = entryFullName.Length;
-                        if (string.CompareOrdinal(entryFullName.Substring(entryFullNameLength - 12, 12), "manifest.xml") == 0)
+                        if (entryFullNameLength >= 12 && string.CompareOrdinal(entryFullName.Substring(entryFullNameLength - 12, 12), "manifest.xml") == 0)
                         {
                             FoundZipMod = true;
                             break;
@@ -1427,10 +1427,10 @@ namespace AI_Girl_Helper
                         else
                         {
                             if (
-                                   string.CompareOrdinal(entryFullName.Substring(entryFullNameLength - 7, 7), "abdata/") == 0
-                                || string.CompareOrdinal(entryFullName.Substring(entryFullNameLength - 6, 6), "_data/") == 0
-                                || string.CompareOrdinal(entryFullName.Substring(entryFullNameLength - 8, 8), "bepinex/") == 0
-                                || string.CompareOrdinal(entryFullName.Substring(entryFullNameLength - 9, 9), "userdata/") == 0
+                                   (entryFullNameLength >= 7 && string.CompareOrdinal(entryFullName.Substring(entryFullNameLength - 7, 7), "abdata/") == 0)
+                                || (entryFullNameLength >= 6 && string.CompareOrdinal(entryFullName.Substring(entryFullNameLength - 6, 6), "_data/") == 0)
+                                || (entryFullNameLength >= 8 && string.CompareOrdinal(entryFullName.Substring(entryFullNameLength - 8, 8), "bepinex/") == 0)
+                                || (entryFullNameLength >= 9 && string.CompareOrdinal(entryFullName.Substring(entryFullNameLength - 9, 9), "userdata/") == 0)
                                )
                             {
                                 FoundStandardModInZip = true;
@@ -1442,7 +1442,7 @@ namespace AI_Girl_Helper
                 if (FoundZipMod)
                 {
                     //если файл имеет расширение zip. Надо, т.к. здесь может быть файл zipmod
-                    if (string.CompareOrdinal(zipfile.Substring(zipfile.Length - 4, 4), ".zip") == 0)
+                    if (zipfile.Length>=4 && string.CompareOrdinal(zipfile.Substring(zipfile.Length - 4, 4), ".zip") == 0)
                     {
                         File.Move(zipfile, zipfile + "mod");
                     }
@@ -1651,7 +1651,7 @@ namespace AI_Girl_Helper
                 string author = copyright.Remove(copyright.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim();
 
                 //добавление имени автора в начало имени папки
-                if (name.Substring(0, 1) == "[" || name.Contains(author))
+                if ((!string.IsNullOrEmpty(name) && name.Substring(0, 1) == "[" && !name.StartsWith("[AI]")) || (name.Length>=5 && name.Substring(0, 5) == "[AI][") || name.Contains(author))
                 {
                 }
                 else if (author.Length > 0)
@@ -1926,7 +1926,7 @@ namespace AI_Girl_Helper
                     }
 
                     //добавление имени автора в начало имени папки
-                    if (name.StartsWith("[") || name.Contains(author))
+                    if (name.StartsWith("[AI][") || (name.StartsWith("[") && !name.StartsWith("[AI]")) || name.Contains(author))
                     {
                     }
                     else if (author.Length > 0)
@@ -2064,7 +2064,7 @@ namespace AI_Girl_Helper
                                     if (metaskipped)
                                     {
                                     }
-                                    else if (string.CompareOrdinal(ModFiles[f].Substring(ModFiles[f].Length - 8, 8), "meta.ini") == 0)
+                                    else if (ModFiles[f].Length>=8 && string.CompareOrdinal(ModFiles[f].Substring(ModFiles[f].Length - 8, 8), "meta.ini") == 0)
                                     {
                                         metaskipped = true;//для ускорения проверки, когда meta будет найден, будет делать быструю проверку bool переменной
                                         continue;

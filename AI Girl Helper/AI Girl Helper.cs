@@ -118,20 +118,6 @@ namespace AI_Girl_Helper
                 File.WriteAllText(dummyfile, "dummy file need to execute mod organizer");
                 HideFileFolder(dummyfile, true);
             }
-
-            //make dummy files for empty folders to make them not empty
-            string dummy = Path.Combine(DataPath, "UserData", "audio", "dummy.file");
-            if (!File.Exists(dummy))
-            {
-                File.WriteAllText(dummy, "dummy file to make the folder not empty");
-                HideFileFolder(dummy, true);
-            }
-            dummy = Path.Combine(DataPath, "UserData", "coordinate", "male", "dummy.file");
-            if (!File.Exists(dummy))
-            {
-                File.WriteAllText(dummy, "dummy file to make the folder not empty");
-                HideFileFolder(dummy, true);
-            }
         }
 
         private void UnpackMO()
@@ -2240,6 +2226,15 @@ namespace AI_Girl_Helper
 
                     //очистка пустых папок в Data
                     DeleteEmptySubfolders(DataPath, false);
+                    try
+                    {
+                        //восстановление 2х папок, что были по умолчанию сначала пустыми
+                        Directory.CreateDirectory(Path.Combine(DataPath, "UserData", "audio"));
+                        Directory.CreateDirectory(Path.Combine(DataPath, "UserData", "coordinate", "male"));
+                    }
+                    catch
+                    {
+                    }
 
                     File.Move(Path.Combine(MODirPath, "ModOrganizer.exe.GameInCommonModeNow"), Path.Combine(MODirPath, "ModOrganizer.exe"));
 

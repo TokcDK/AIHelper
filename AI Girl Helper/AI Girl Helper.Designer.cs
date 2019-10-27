@@ -266,12 +266,14 @@
             // OpenLogLinkLabel
             // 
             this.OpenLogLinkLabel.AutoSize = true;
+            this.OpenLogLinkLabel.LinkColor = System.Drawing.Color.WhiteSmoke;
             this.OpenLogLinkLabel.Location = new System.Drawing.Point(319, 0);
             this.OpenLogLinkLabel.Name = "OpenLogLinkLabel";
             this.OpenLogLinkLabel.Size = new System.Drawing.Size(21, 13);
             this.OpenLogLinkLabel.TabIndex = 20;
             this.OpenLogLinkLabel.TabStop = true;
             this.OpenLogLinkLabel.Text = "log";
+            this.OpenLogLinkLabel.VisitedLinkColor = System.Drawing.Color.Gainsboro;
             this.OpenLogLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenLogLinkLabel_LinkClicked);
             // 
             // LaunchTabLaunchLabel
@@ -450,34 +452,40 @@
             // OpenModsFolderLinkLabel
             // 
             this.OpenModsFolderLinkLabel.AutoSize = true;
+            this.OpenModsFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.OpenModsFolderLinkLabel.Location = new System.Drawing.Point(72, 17);
             this.OpenModsFolderLinkLabel.Name = "OpenModsFolderLinkLabel";
             this.OpenModsFolderLinkLabel.Size = new System.Drawing.Size(32, 13);
             this.OpenModsFolderLinkLabel.TabIndex = 2;
             this.OpenModsFolderLinkLabel.TabStop = true;
             this.OpenModsFolderLinkLabel.Text = "Mods";
+            this.OpenModsFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
             this.OpenModsFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel3_LinkClicked);
             // 
             // OpenMOLinkLabel
             // 
             this.OpenMOLinkLabel.AutoSize = true;
+            this.OpenMOLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.OpenMOLinkLabel.Location = new System.Drawing.Point(43, 17);
             this.OpenMOLinkLabel.Name = "OpenMOLinkLabel";
             this.OpenMOLinkLabel.Size = new System.Drawing.Size(23, 13);
             this.OpenMOLinkLabel.TabIndex = 1;
             this.OpenMOLinkLabel.TabStop = true;
             this.OpenMOLinkLabel.Text = "MO";
+            this.OpenMOLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
             this.OpenMOLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
             // 
             // OpenGameFolderLinkLabel
             // 
             this.OpenGameFolderLinkLabel.AutoSize = true;
+            this.OpenGameFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.OpenGameFolderLinkLabel.Location = new System.Drawing.Point(6, 17);
             this.OpenGameFolderLinkLabel.Name = "OpenGameFolderLinkLabel";
             this.OpenGameFolderLinkLabel.Size = new System.Drawing.Size(34, 13);
             this.OpenGameFolderLinkLabel.TabIndex = 0;
             this.OpenGameFolderLinkLabel.TabStop = true;
             this.OpenGameFolderLinkLabel.Text = "Game";
+            this.OpenGameFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
             this.OpenGameFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // CreateShortcutButton

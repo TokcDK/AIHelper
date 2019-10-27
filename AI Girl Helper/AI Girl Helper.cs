@@ -1345,7 +1345,7 @@ namespace AI_Girl_Helper
                         ,
                         string.Empty
                         ,
-                        "\"<br>Author: " + string.Empty + "<br><br>" + Path.GetFileNameWithoutExtension(cardsModDir) + " character cards<br><br>" + " \""
+                        "<br>Author: " + string.Empty + "<br><br>" + Path.GetFileNameWithoutExtension(cardsModDir) + " character cards<br><br>"
                         );
 
                     ActivateModIfPossible(Path.GetFileName(cardsModDir));
@@ -1449,7 +1449,7 @@ namespace AI_Girl_Helper
                         ,
                         string.Empty
                         ,
-                        "\"<br>Author: " + string.Empty + "<br><br>" + Path.GetFileNameWithoutExtension(zipfile) + "<br><br>" + " \""
+                        "<br>Author: " + string.Empty + "<br><br>" + Path.GetFileNameWithoutExtension(zipfile) + "<br><br>"
                         );
 
                     ActivateModIfPossible(Path.GetFileName(zipmoddirpath));
@@ -1615,7 +1615,7 @@ namespace AI_Girl_Helper
                     ,
                     string.Empty
                     ,
-                    "\"<br>Author: " + author + "<br><br>" + description + " \""
+                    "<br>Author: " + author + "<br><br>" + description
                     );
                 //Utils.IniFile INI = new Utils.IniFile(Path.Combine(dllmoddirpath, "meta.ini"));
                 //INI.WriteINI("General", "category", "\"51,\"");
@@ -1689,13 +1689,13 @@ namespace AI_Girl_Helper
                 WriteMetaINI(
                     dllmoddirpath
                     ,
-                    "\"51,\""
+                    "51,"
                     ,
                     version
                     ,
                     "Requires: BepinEx"
                     ,
-                    "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \""
+                    "<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright
                     );
                 //Utils.IniFile INI = new Utils.IniFile(Path.Combine(dllmoddirpath, "meta.ini"));
                 //INI.WriteINI("General", "category", "\"51,\"");
@@ -1719,46 +1719,15 @@ namespace AI_Girl_Helper
         /// <param name="notes"></param>
         private void WriteMetaINI(string moddir, string category = "", string version = "", string comments = "", string notes = "")
         {
-            string metaPath = Path.Combine(moddir, "meta.ini");
-            Utils.IniFile INI = new Utils.IniFile(metaPath);
-            if (!File.Exists(Path.Combine(moddir, "meta.ini")))
+            if (Directory.Exists(moddir))
             {
-                INI.WriteINI("General", "category", category);
+                string metaPath = Path.Combine(moddir, "meta.ini");
+                Utils.IniFile INI = new Utils.IniFile(metaPath);
+                INI.WriteINI("General", "category", "\"" + category + "\"");
                 INI.WriteINI("General", "version", version);
                 INI.WriteINI("General", "gameName", "Skyrim");
                 INI.WriteINI("General", "comments", comments);
-                INI.WriteINI("General", "notes", notes);
-                INI.WriteINI("General", "validated", "true");
-            }
-            else
-            {
-                if (GetINIValueIfExist(metaPath, "category", "General").Length == 0 && category.Length > 0)
-                {
-                    INI.WriteINI("General", "category", category);
-                }
-
-                if (version.Length > 0)
-                {
-                    INI.WriteINI("General", "version", version);
-                }
-
-                INI.WriteINI("General", "gameName", "Skyrim");
-
-                if (GetINIValueIfExist(metaPath, "comments", "General").Length == 0 && comments.Length > 0)
-                {
-                    INI.WriteINI("General", "comments", comments);
-                }
-
-                if (GetINIValueIfExist(metaPath, "comments", "General").Length == 0 && comments.Length > 0)
-                {
-                    INI.WriteINI("General", "comments", comments);
-                }
-
-                if (GetINIValueIfExist(metaPath, "notes", "General").Length == 0 && notes.Length > 0)
-                {
-                    INI.WriteINI("General", "notes", notes);
-                }
-
+                INI.WriteINI("General", "notes", "\"" + notes + "\"");
                 INI.WriteINI("General", "validated", "true");
             }
         }
@@ -1979,7 +1948,7 @@ namespace AI_Girl_Helper
                         ,
                         "Requires: Sideloader plugin"
                         ,
-                        "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + website + " \""
+                        "<br>Author: " + author + "<br><br>" + description + "<br><br>" + website
                         );
                     //Utils.IniFile INI = new Utils.IniFile(Path.Combine(zipmoddirpath, "meta.ini"));
                     //INI.WriteINI("General", "category", string.Empty);
@@ -2186,7 +2155,8 @@ namespace AI_Girl_Helper
 
                     string destFolderForNewFiles = Path.Combine(ModsPath, "NewAddedFiles");
 
-                    string addedFilesFolderName = "[added]UseFiles" + DateTime.Now.ToString("yyyyMMddHHmmss");
+                    string DateTimeInFormat = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    string addedFilesFolderName = "[added]UseFiles" + DateTimeInFormat;
                     string DestFolderPath = Path.Combine(ModsPath, addedFilesFolderName);
                     int addedFilesLength = addedFiles.Length;
                     for (int f = 0; f < addedFilesLength; f++)
@@ -2199,9 +2169,24 @@ namespace AI_Girl_Helper
                         }
                         File.Move(addedFiles[f], DestFileName);
                     }
+
                     //подключить новый мод, если он существует
                     if (Directory.Exists(DestFolderPath))
                     {
+
+                        //запись meta.ini
+                        WriteMetaINI(
+                            DestFolderPath
+                            ,
+                            "53,"
+                            ,
+                            DateTimeInFormat
+                            ,
+                            "sort files if need"
+                            ,
+                            "<br>This files was added in Common mode<br>and moved as mod after convertation in MO mode.<br>Date: " + DateTimeInFormat
+                            );
+
                         ActivateModIfPossible(addedFilesFolderName);
                     }
 

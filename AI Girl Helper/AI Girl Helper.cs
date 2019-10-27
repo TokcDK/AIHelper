@@ -10,6 +10,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -1464,6 +1465,13 @@ namespace AI_Girl_Helper
                 {
                     continue;
                 }
+
+                string name = Path.GetFileName(dir);
+                string version = string.Empty;
+                string author = string.Empty;
+                string description = string.Empty;
+                string moddir=string.Empty;
+
                 bool b = false;
                 foreach (var subdir in Directory.GetDirectories(dir, "*"))
                 {
@@ -1487,16 +1495,18 @@ namespace AI_Girl_Helper
                             i++;
                         }
                         Directory.Move(dir, TargetModDIr);
-
+                        moddir = TargetModDIr;
                         b = true;
+                        version = Regex.Match(name, @"\d+(\.\d+)*").Value;
+                        author = name.StartsWith("[AI][") || (name.StartsWith("[") && !name.StartsWith("[AI]")) ? name.Substring(name.IndexOf("[")+1,name.IndexOf("]")-1) : string.Empty;
+                        description = name;
                         break;
                     }
                 }
 
                 if (!b)
                 {
-
-                    string moddir = dir.Replace(Install2MODirPath, ModsPath);
+                    moddir = dir.Replace(Install2MODirPath, ModsPath);
                     string targetfilepath = "readme.txt";
                     foreach (var file in Directory.GetFiles(dir, "*.*"))
                     {
@@ -1551,10 +1561,6 @@ namespace AI_Girl_Helper
                         infofile = Path.Combine(dir, Path.GetFileNameWithoutExtension(targetfilepath) + ".txt");
                     }
 
-                    string name = Path.GetFileName(dir);
-                    string version = string.Empty;
-                    string author = string.Empty;
-                    string description = string.Empty;
                     bool d = false;
                     if (infofile.Length > 0)
                     {
@@ -1597,30 +1603,29 @@ namespace AI_Girl_Helper
                         }
                         File.Move(infofile, Path.Combine(moddir, Path.GetFileName(infofile)));
                     }
-
-                    //запись meta.ini
-                    WriteMetaINI(
-                        moddir
-                        ,
-                        ""
-                        ,
-                        version
-                        ,
-                        string.Empty
-                        ,
-                        "\"<br>Author: " + author + "<br><br>" + description + " \""
-                        );
-                    //Utils.IniFile INI = new Utils.IniFile(Path.Combine(dllmoddirpath, "meta.ini"));
-                    //INI.WriteINI("General", "category", "\"51,\"");
-                    //INI.WriteINI("General", "version", version);
-                    //INI.WriteINI("General", "gameName", "Skyrim");
-                    //INI.WriteINI("General", "comments", "Requires: BepinEx");
-                    //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \"");
-                    //INI.WriteINI("General", "validated", "true");
-
-                    ActivateModIfPossible(Path.GetFileName(moddir));
-
                 }
+
+                //запись meta.ini
+                WriteMetaINI(
+                    moddir
+                    ,
+                    ""
+                    ,
+                    version
+                    ,
+                    string.Empty
+                    ,
+                    "\"<br>Author: " + author + "<br><br>" + description + " \""
+                    );
+                //Utils.IniFile INI = new Utils.IniFile(Path.Combine(dllmoddirpath, "meta.ini"));
+                //INI.WriteINI("General", "category", "\"51,\"");
+                //INI.WriteINI("General", "version", version);
+                //INI.WriteINI("General", "gameName", "Skyrim");
+                //INI.WriteINI("General", "comments", "Requires: BepinEx");
+                //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \"");
+                //INI.WriteINI("General", "validated", "true");
+
+                ActivateModIfPossible(Path.GetFileName(moddir));
 
             }
         }

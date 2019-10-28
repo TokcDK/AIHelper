@@ -1539,7 +1539,6 @@ namespace AI_Girl_Helper
                                 Directory.CreateDirectory(Path.GetDirectoryName(targetfilepath));
                                 File.Move(file, targetfilepath);
                             }
-
                         }
                     }
 
@@ -1625,32 +1624,32 @@ namespace AI_Girl_Helper
                             File.Move(infofile, Path.Combine(moddir, Path.GetFileName(infofile)));
                         }
                     }
+                }
 
-                    string[] dlls = Directory.GetFiles(dir, "*.dll", SearchOption.AllDirectories);
-                    if (author.Length == 0 && dlls.Length > 0)
+                string[] dlls = Directory.GetFiles(moddir, "*.dll", SearchOption.AllDirectories);
+                if (author.Length == 0 && dlls.Length > 0)
+                {
+                    foreach (string dll in dlls)
                     {
-                        foreach (string dll in dlls)
-                        {
-                            FileVersionInfo dllInfo = FileVersionInfo.GetVersionInfo(dll);
+                        FileVersionInfo dllInfo = FileVersionInfo.GetVersionInfo(dll);
 
-                            if (description.Length == 0)
-                            {
-                                description = dllInfo.FileDescription;
-                            }
-                            if (version.Length == 0)
-                            {
-                                version = dllInfo.FileVersion;
-                            }
-                            if (version.Length == 0)
-                            {
-                                version = dllInfo.FileVersion;
-                            }
-                            if (author.Length == 0)
-                            {
-                                author = dllInfo.LegalCopyright;
-                                //"Copyright © AuthorName 2019"
-                                author = author.Length >= 4 ? author.Remove(author.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim() : author;
-                            }
+                        if (description.Length == 0)
+                        {
+                            description = dllInfo.FileDescription;
+                        }
+                        if (version.Length == 0)
+                        {
+                            version = dllInfo.FileVersion;
+                        }
+                        if (version.Length == 0)
+                        {
+                            version = dllInfo.FileVersion;
+                        }
+                        if (author.Length == 0)
+                        {
+                            author = dllInfo.LegalCopyright;
+                            //"Copyright © AuthorName 2019"
+                            author = author.Length >= 4 ? author.Remove(author.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim() : author;
                         }
                     }
                 }

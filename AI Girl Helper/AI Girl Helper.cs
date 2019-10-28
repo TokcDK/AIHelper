@@ -1291,7 +1291,7 @@ namespace AI_Girl_Helper
                 if (images.Length > 0 && Directory.GetDirectories(dir, "*").Where(d => Path.GetFileName(d) != "m").ToArray().Length == 0)
                 {
                     bool IsMdir = false;
-                    if (string.CompareOrdinal(Path.GetFileName(dir), "m") == 0) // если это папка m с мужскими карточками
+                    if (string.Compare(Path.GetFileName(dir), "m", true) == 0) // если это папка m с мужскими карточками
                     {
                         IsMdir = true;
                     }
@@ -1399,7 +1399,7 @@ namespace AI_Girl_Helper
                     {
                         string entryFullName = archive.Entries[entrieNum].FullName;
                         int entryFullNameLength = entryFullName.Length;
-                        if (entryFullNameLength >= 12 && string.CompareOrdinal(entryFullName.Substring(entryFullNameLength - 12, 12), "manifest.xml") == 0)
+                        if (entryFullNameLength >= 12 && string.Compare(entryFullName.Substring(entryFullNameLength - 12, 12), "manifest.xml", true) == 0)
                         {
                             FoundZipMod = true;
                             break;
@@ -1412,10 +1412,10 @@ namespace AI_Girl_Helper
                         else
                         {
                             if (
-                                   (entryFullNameLength >= 7 && string.CompareOrdinal(entryFullName.Substring(entryFullNameLength - 7, 7), "abdata/") == 0)
-                                || (entryFullNameLength >= 6 && string.CompareOrdinal(entryFullName.Substring(entryFullNameLength - 6, 6), "_data/") == 0)
-                                || (entryFullNameLength >= 8 && string.CompareOrdinal(entryFullName.Substring(entryFullNameLength - 8, 8), "bepinex/") == 0)
-                                || (entryFullNameLength >= 9 && string.CompareOrdinal(entryFullName.Substring(entryFullNameLength - 9, 9), "userdata/") == 0)
+                                   (entryFullNameLength >= 7 && string.Compare(entryFullName.Substring(entryFullNameLength - 7, 7), "abdata/", true) == 0)
+                                || (entryFullNameLength >= 6 && string.Compare(entryFullName.Substring(entryFullNameLength - 6, 6), "_data/", true) == 0)
+                                || (entryFullNameLength >= 8 && string.Compare(entryFullName.Substring(entryFullNameLength - 8, 8), "bepinex/", true) == 0)
+                                || (entryFullNameLength >= 9 && string.Compare(entryFullName.Substring(entryFullNameLength - 9, 9), "userdata/", true) == 0)
                                )
                             {
                                 FoundStandardModInZip = true;
@@ -1427,7 +1427,7 @@ namespace AI_Girl_Helper
                 if (FoundZipMod)
                 {
                     //если файл имеет расширение zip. Надо, т.к. здесь может быть файл zipmod
-                    if (zipfile.Length >= 4 && string.CompareOrdinal(zipfile.Substring(zipfile.Length - 4, 4), ".zip") == 0)
+                    if (zipfile.Length >= 4 && string.Compare(zipfile.Substring(zipfile.Length - 4, 4), ".zip", true) == 0)
                     {
                         File.Move(zipfile, zipfile + "mod");
                     }
@@ -1477,11 +1477,11 @@ namespace AI_Girl_Helper
                 {
                     string subdirname = Path.GetFileName(subdir);
                     if (
-                           string.CompareOrdinal(subdirname, "abdata") == 0
-                        || string.CompareOrdinal(subdirname, "userdata") == 0
-                        || string.CompareOrdinal(subdirname, "ai-syoujyotrial_data") == 0
-                        || string.CompareOrdinal(subdirname, "ai-syoujyo_data") == 0
-                        || string.CompareOrdinal(subdirname, "bepinex") == 0
+                           string.Compare(subdirname, "abdata",true) == 0
+                        || string.Compare(subdirname, "userdata", true) == 0
+                        || string.Compare(subdirname, "ai-syoujyotrial_data", true) == 0
+                        || string.Compare(subdirname, "ai-syoujyo_data", true) == 0
+                        || string.Compare(subdirname, "bepinex", true) == 0
                         )
                     {
                         //CopyFolder.Copy(dir, Path.Combine(ModsPath, dir));
@@ -1508,7 +1508,7 @@ namespace AI_Girl_Helper
                 {
                     moddir = dir.Replace(Install2MODirPath, ModsPath);
                     string targetfilepath = "readme.txt";
-                    foreach (var file in Directory.GetFiles(dir, "*.*"))
+                    foreach (var file in Directory.GetFiles(dir, "*.*",SearchOption.AllDirectories))
                     {
                         if (Path.GetExtension(file) == ".unity3d")
                         {
@@ -1543,22 +1543,41 @@ namespace AI_Girl_Helper
                         }
                     }
 
+                    string[] txts = Directory.GetFiles(dir, "*.txt");
                     string infofile = string.Empty;
-                    if (File.Exists(Path.Combine(dir, Path.GetFileName(dir) + ".txt")))
+                    if (txts.Length > 0)
                     {
-                        infofile = Path.Combine(dir, Path.GetFileName(dir) + ".txt");
-                    }
-                    else if (File.Exists(Path.Combine(dir, "readme.txt")))
-                    {
-                        infofile = Path.Combine(dir, "readme.txt");
-                    }
-                    else if (File.Exists(Path.Combine(dir, "description.txt")))
-                    {
-                        infofile = Path.Combine(dir, "description.txt");
-                    }
-                    else if (File.Exists(Path.Combine(dir, Path.GetFileNameWithoutExtension(targetfilepath) + ".txt")))
-                    {
-                        infofile = Path.Combine(dir, Path.GetFileNameWithoutExtension(targetfilepath) + ".txt");
+                        foreach (string txt in txts)
+                        {
+                            string txtFileName = Path.GetFileName(txt);
+
+                            if (
+                                    string.Compare(txt, "readme.txt", true) ==0
+                                ||  string.Compare(txt, "description.txt", true) == 0
+                                ||  string.Compare(txt, Path.GetFileName(dir) + ".txt", true) == 0
+                                ||  string.Compare(txt, Path.GetFileNameWithoutExtension(targetfilepath) + ".txt", true) == 0
+                                )
+                            {
+                                infofile = txt;
+                            }
+                        }
+
+                        if (File.Exists(Path.Combine(dir, Path.GetFileName(dir) + ".txt")))
+                        {
+                            infofile = Path.Combine(dir, Path.GetFileName(dir) + ".txt");
+                        }
+                        else if (File.Exists(Path.Combine(dir, "readme.txt")))
+                        {
+                            infofile = Path.Combine(dir, "readme.txt");
+                        }
+                        else if (File.Exists(Path.Combine(dir, "description.txt")))
+                        {
+                            infofile = Path.Combine(dir, "description.txt");
+                        }
+                        else if (File.Exists(Path.Combine(dir, Path.GetFileNameWithoutExtension(targetfilepath) + ".txt")))
+                        {
+                            infofile = Path.Combine(dir, Path.GetFileNameWithoutExtension(targetfilepath) + ".txt");
+                        }
                     }
 
                     bool d = false;
@@ -1601,7 +1620,10 @@ namespace AI_Girl_Helper
                                 d = true;
                             }
                         }
-                        File.Move(infofile, Path.Combine(moddir, Path.GetFileName(infofile)));
+                        if (File.Exists(infofile))
+                        {
+                            File.Move(infofile, Path.Combine(moddir, Path.GetFileName(infofile)));
+                        }
                     }
                 }
 
@@ -2032,7 +2054,7 @@ namespace AI_Girl_Helper
                                     if (metaskipped)
                                     {
                                     }
-                                    else if (ModFiles[f].Length >= 8 && string.CompareOrdinal(ModFiles[f].Substring(ModFiles[f].Length - 8, 8), "meta.ini") == 0)
+                                    else if (ModFiles[f].Length >= 8 && string.Compare(ModFiles[f].Substring(ModFiles[f].Length - 8, 8), "meta.ini", true) == 0)
                                     {
                                         metaskipped = true;//для ускорения проверки, когда meta будет найден, будет делать быструю проверку bool переменной
                                         continue;

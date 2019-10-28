@@ -1625,6 +1625,34 @@ namespace AI_Girl_Helper
                             File.Move(infofile, Path.Combine(moddir, Path.GetFileName(infofile)));
                         }
                     }
+
+                    string[] dlls = Directory.GetFiles(dir, "*.dll", SearchOption.AllDirectories);
+                    if (author.Length == 0 && dlls.Length > 0)
+                    {
+                        foreach (string dll in dlls)
+                        {
+                            FileVersionInfo dllInfo = FileVersionInfo.GetVersionInfo(dll);
+
+                            if (description.Length == 0)
+                            {
+                                description = dllInfo.FileDescription;
+                            }
+                            if (version.Length == 0)
+                            {
+                                version = dllInfo.FileVersion;
+                            }
+                            if (version.Length == 0)
+                            {
+                                version = dllInfo.FileVersion;
+                            }
+                            if (author.Length == 0)
+                            {
+                                author = dllInfo.LegalCopyright;
+                                //"Copyright © AuthorName 2019"
+                                author = author.Length >= 4 ? author.Remove(author.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim() : author;
+                            }
+                        }
+                    }
                 }
 
                 //запись meta.ini
@@ -1655,7 +1683,7 @@ namespace AI_Girl_Helper
         private void InstallBepinExModsToMods()
         {
             foreach (var dllfile in Directory.GetFiles(Install2MODirPath, "*.dll"))
-            {
+            {                
                 FileVersionInfo dllInfo = FileVersionInfo.GetVersionInfo(dllfile);
                 string name = dllInfo.ProductName;
                 string description = dllInfo.FileDescription;

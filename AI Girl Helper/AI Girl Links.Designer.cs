@@ -31,8 +31,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LinksForm));
             this.BooruLinkLabel = new System.Windows.Forms.LinkLabel();
             this.LinksCharactersGroupBox = new System.Windows.Forms.GroupBox();
-            this.IllusionDiscordLinkLabel = new System.Windows.Forms.LinkLabel();
             this.KenzatoLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.IllusionDiscordLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.LinksCharactersGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -61,18 +62,6 @@
             this.LinksCharactersGroupBox.TabStop = false;
             this.LinksCharactersGroupBox.Text = "Characters";
             // 
-            // IllusionDiscordLinkLabel
-            // 
-            this.IllusionDiscordLinkLabel.AutoSize = true;
-            this.IllusionDiscordLinkLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.IllusionDiscordLinkLabel.Location = new System.Drawing.Point(6, 43);
-            this.IllusionDiscordLinkLabel.Name = "IllusionDiscordLinkLabel";
-            this.IllusionDiscordLinkLabel.Size = new System.Drawing.Size(78, 13);
-            this.IllusionDiscordLinkLabel.TabIndex = 1;
-            this.IllusionDiscordLinkLabel.TabStop = true;
-            this.IllusionDiscordLinkLabel.Text = "Illusion Discord";
-            this.IllusionDiscordLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.IllusionDiscordLinkLabel_LinkClicked);
-            // 
             // KenzatoLinkLabel
             // 
             this.KenzatoLinkLabel.AutoSize = true;
@@ -85,12 +74,36 @@
             this.KenzatoLinkLabel.Text = "Kenzato";
             this.KenzatoLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.KenzatoLinkLabel_LinkClicked);
             // 
+            // IllusionDiscordLinkLabel
+            // 
+            this.IllusionDiscordLinkLabel.AutoSize = true;
+            this.IllusionDiscordLinkLabel.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.IllusionDiscordLinkLabel.Location = new System.Drawing.Point(6, 43);
+            this.IllusionDiscordLinkLabel.Name = "IllusionDiscordLinkLabel";
+            this.IllusionDiscordLinkLabel.Size = new System.Drawing.Size(78, 13);
+            this.IllusionDiscordLinkLabel.TabIndex = 1;
+            this.IllusionDiscordLinkLabel.TabStop = true;
+            this.IllusionDiscordLinkLabel.Text = "Illusion Discord";
+            this.IllusionDiscordLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.IllusionDiscordLinkLabel_LinkClicked);
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(13, 102);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(84, 13);
+            this.linkLabel1.TabIndex = 2;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "Mods (Pastebin)";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            // 
             // LinksForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
             this.ClientSize = new System.Drawing.Size(354, 138);
+            this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.LinksCharactersGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -99,6 +112,7 @@
             this.LinksCharactersGroupBox.ResumeLayout(false);
             this.LinksCharactersGroupBox.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -108,5 +122,6 @@
         private System.Windows.Forms.GroupBox LinksCharactersGroupBox;
         private System.Windows.Forms.LinkLabel IllusionDiscordLinkLabel;
         private System.Windows.Forms.LinkLabel KenzatoLinkLabel;
+        private System.Windows.Forms.LinkLabel linkLabel1;
     }
 }

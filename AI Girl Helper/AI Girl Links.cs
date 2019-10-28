@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace AI_Girl_Helper
@@ -30,6 +29,11 @@ namespace AI_Girl_Helper
         private void IllusionDiscordLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("https://discord.gg/RfkZVS");
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://pastebin.com/QRRKtC45");
         }
     }
 }

@@ -769,10 +769,7 @@ namespace AI_Girl_Helper
                         mode = 1;
                         button1.Text = T._("Mods Ready");
                         //MO2StandartButton.Enabled = true;
-                        MOButton.Enabled = true;
-                        SettingsButton.Enabled = true;
-                        GameButton.Enabled = true;
-                        StudioButton.Enabled = false;
+                        GetEnableDisableLaunchButtons();
                         MOCommonModeSwitchButton.Text = T._("MOToCommon");
                         AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
                     }
@@ -804,10 +801,7 @@ namespace AI_Girl_Helper
 
                 if (ModDirs.Length > 0 && File.Exists(Path.Combine(DataPath, GetCurrentGameName() + ".exe")))
                 {
-                    MOButton.Enabled = File.Exists(Path.Combine(MODirPath, "ModOrganizer.exe")) ? true : false;
-                    SettingsButton.Enabled = File.Exists(Path.Combine(DataPath, "InitSetting.exe")) ? true : false;
-                    GameButton.Enabled = File.Exists(Path.Combine(DataPath, GetCurrentGameName() + ".exe")) ? true : false;
-                    StudioButton.Enabled = File.Exists(Path.Combine(DataPath, GetCurrentGameName() + "Studio.exe")) ? true : false;
+                    GetEnableDisableLaunchButtons();
                     MOCommonModeSwitchButton.Text = T._("MOToCommon");
                 }
 
@@ -855,6 +849,14 @@ namespace AI_Girl_Helper
             MOexePath = Path.Combine(MODirPath, "ModOrganizer.exe");
             OverwriteFolder = Path.Combine(MODirPath, "overwrite");
             OverwriteFolderLink = Path.Combine(Application.StartupPath, "MOUserData");
+        }
+
+        private void GetEnableDisableLaunchButtons()
+        {
+            MOButton.Enabled = File.Exists(Path.Combine(MODirPath, "ModOrganizer.exe")) ? true : false;
+            SettingsButton.Enabled = File.Exists(Path.Combine(DataPath, "InitSetting.exe")) ? true : false;
+            GameButton.Enabled = File.Exists(Path.Combine(DataPath, GetCurrentGameName() + ".exe")) ? true : false;
+            StudioButton.Enabled = File.Exists(Path.Combine(DataPath, "StudioNEOV2.exe")) ? true : false;
         }
 
         private void SetModOrganizerINISettingsForTheGame()

@@ -1109,11 +1109,11 @@ namespace AI_Girl_Helper
         {
             if (MOmode)
             {
-                RunProgram(MOexePath, "moshortcut://:" + GetCurrentGameName() + "Studio");
+                RunProgram(MOexePath, "moshortcut://:" + "StudioNEOV2");
             }
             else
             {
-                RunProgram(Path.Combine(DataPath, GetCurrentGameName() + ".exe"), string.Empty);
+                RunProgram(Path.Combine(DataPath, "StudioNEOV2.exe"), string.Empty);
             }
         }
 

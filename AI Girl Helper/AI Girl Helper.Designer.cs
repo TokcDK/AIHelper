@@ -358,7 +358,6 @@
             // 
             this.StudioButton.BackColor = System.Drawing.Color.Silver;
             this.StudioButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.StudioButton.Enabled = false;
             this.StudioButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.StudioButton.ForeColor = System.Drawing.Color.Black;
             this.StudioButton.Location = new System.Drawing.Point(42, 111);

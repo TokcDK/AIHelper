@@ -1245,6 +1245,10 @@ namespace AI_Girl_Helper
 
                 InstallInModsButton.Text = T._("Install from 2MO");
                 InstallInModsButton.Enabled = true;
+
+                //обновление информации о конфигурации папок игры
+                FoldersInit();
+
                 MessageBox.Show(T._("All possible mods installed. Install all rest in 2MO folder manually."));
             }
             else

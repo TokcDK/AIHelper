@@ -1212,11 +1212,12 @@ namespace AI_Girl_Helper
         string Install2MODirPath = Path.Combine(Application.StartupPath, "2MO");
         private void InstallInModsButton_Click(object sender, EventArgs e)
         {
-            if (Directory.Exists(Install2MODirPath) && (Directory.GetFiles(Install2MODirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zipmod").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zip").Length > 0 || Directory.GetDirectories(Install2MODirPath, "*").Length > 0))
+            if (Directory.Exists(Install2MODirPath) && (Directory.GetFiles(Install2MODirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.cs").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zipmod").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zip").Length > 0 || Directory.GetDirectories(Install2MODirPath, "*").Length > 0))
             {
                 InstallInModsButton.Enabled = false;
 
                 InstallInModsButton.Text = ">.....>";
+                InstallCsScriptsForScriptLoader();
                 InstallZipArchivesToMods();
 
                 InstallInModsButton.Text = ".>....>";
@@ -1249,6 +1250,82 @@ namespace AI_Girl_Helper
             else
             {
                 MessageBox.Show(T._("No compatible for installation formats found in 2MO folder.\nFormats: zip, zipmod, png, png in subfolder, unpacked mod in subfolder"));
+            }
+        }
+
+        private void InstallCsScriptsForScriptLoader(string WhereFromInstallDir = "")
+        {
+            WhereFromInstallDir = WhereFromInstallDir.Length > 0 ? WhereFromInstallDir : Install2MODirPath;
+
+            string[] csFiles = Directory.GetFiles(WhereFromInstallDir, "*.cs");
+
+            if (csFiles.Length > 0)
+            {
+                foreach (var csFile in csFiles)
+                {
+                    string name = Path.GetFileNameWithoutExtension(csFile);
+                    string author = string.Empty;
+                    string description = string.Empty;
+                    string modname = "[script]" + name;
+                    string moddir = Path.GetDirectoryName(csFile).Replace(WhereFromInstallDir, Path.Combine(ModsPath, modname));
+
+                    using (StreamReader sReader = new StreamReader(csFile))
+                    {
+                        string Line;
+                        bool readDescriptionMode = false;
+                        while (!sReader.EndOfStream)
+                        {
+                            Line = sReader.ReadLine();
+
+                            if (!readDescriptionMode && Line.Length > 0 && Line.Contains("/*"))
+                            {
+                                readDescriptionMode = true;
+                                Line = Line.Remove(Line.IndexOf("/*"), 2);
+                                if (Line.Length > 0)
+                                {
+                                    description += Line+ "<br>";
+                                }
+                            }
+                            else
+                            {
+                                if (Line.Contains(@"*/"))
+                                {
+                                    readDescriptionMode = false;
+                                    Line = Line.Remove(Line.IndexOf(@"*/"), 2);
+                                }
+
+                                description += Line + "<br>";
+
+                                if (!readDescriptionMode)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    string scriptsdir = Path.Combine(moddir, "scripts");
+                    if (!Directory.Exists(scriptsdir))
+                    {
+                        Directory.CreateDirectory(scriptsdir);
+                    }
+
+                    string FileLastModificationTime = File.GetLastWriteTime(csFile).ToString("0." + "yyyyMMddHHmm");
+                    //запись meta.ini
+                    WriteMetaINI(
+                        moddir
+                        ,
+                        "86,"
+                        ,
+                        FileLastModificationTime
+                        ,
+                        string.Empty
+                        ,
+                        "<br>Author: " + author + "<br><br>Requires: ScriptLoader<br><br>" + (description.Length > 0 ? description : name)
+                        );
+
+                    File.Move(csFile, Path.Combine(scriptsdir, name + ".cs"));
+                    ActivateInsertModIfPossible(modname, false, "ScriptLoader scripts_separator");
+                }
             }
         }
 
@@ -1350,7 +1427,7 @@ namespace AI_Girl_Helper
                         "<br>Author: " + string.Empty + "<br><br>" + Path.GetFileNameWithoutExtension(cardsModDir) + " character cards<br><br>"
                         );
 
-                    ActivateModIfPossible(Path.GetFileName(cardsModDir));
+                    ActivateInsertModIfPossible(Path.GetFileName(cardsModDir));
                 }
             }
         }
@@ -1454,7 +1531,7 @@ namespace AI_Girl_Helper
                         "<br>Author: " + string.Empty + "<br><br>" + Path.GetFileNameWithoutExtension(zipfile) + "<br><br>"
                         );
 
-                    ActivateModIfPossible(Path.GetFileName(zipmoddirpath));
+                    ActivateInsertModIfPossible(Path.GetFileName(zipmoddirpath));
                 }
             }
         }
@@ -1479,7 +1556,7 @@ namespace AI_Girl_Helper
                 {
                     string subdirname = Path.GetFileName(subdir);
                     if (
-                           string.Compare(subdirname, "abdata",true) == 0
+                           string.Compare(subdirname, "abdata", true) == 0
                         || string.Compare(subdirname, "userdata", true) == 0
                         || string.Compare(subdirname, "ai-syoujyotrial_data", true) == 0
                         || string.Compare(subdirname, "ai-syoujyo_data", true) == 0
@@ -1510,7 +1587,7 @@ namespace AI_Girl_Helper
                 {
                     moddir = dir.Replace(Install2MODirPath, ModsPath);
                     string targetfilepath = "readme.txt";
-                    foreach (var file in Directory.GetFiles(dir, "*.*",SearchOption.AllDirectories))
+                    foreach (var file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
                     {
                         if (Path.GetExtension(file) == ".unity3d")
                         {
@@ -1553,10 +1630,10 @@ namespace AI_Girl_Helper
                             string txtFileName = Path.GetFileName(txt);
 
                             if (
-                                    string.Compare(txt, "readme.txt", true) ==0
-                                ||  string.Compare(txt, "description.txt", true) == 0
-                                ||  string.Compare(txt, Path.GetFileName(dir) + ".txt", true) == 0
-                                ||  string.Compare(txt, Path.GetFileNameWithoutExtension(targetfilepath) + ".txt", true) == 0
+                                    string.Compare(txt, "readme.txt", true) == 0
+                                || string.Compare(txt, "description.txt", true) == 0
+                                || string.Compare(txt, Path.GetFileName(dir) + ".txt", true) == 0
+                                || string.Compare(txt, Path.GetFileNameWithoutExtension(targetfilepath) + ".txt", true) == 0
                                 )
                             {
                                 infofile = txt;
@@ -1676,7 +1753,7 @@ namespace AI_Girl_Helper
                 //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \"");
                 //INI.WriteINI("General", "validated", "true");
 
-                ActivateModIfPossible(Path.GetFileName(moddir));
+                ActivateInsertModIfPossible(Path.GetFileName(moddir));
 
             }
         }
@@ -1684,7 +1761,7 @@ namespace AI_Girl_Helper
         private void InstallBepinExModsToMods()
         {
             foreach (var dllfile in Directory.GetFiles(Install2MODirPath, "*.dll"))
-            {                
+            {
                 FileVersionInfo dllInfo = FileVersionInfo.GetVersionInfo(dllfile);
                 string name = dllInfo.ProductName;
                 string description = dllInfo.FileDescription;
@@ -1756,7 +1833,7 @@ namespace AI_Girl_Helper
                 //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \"");
                 //INI.WriteINI("General", "validated", "true");
 
-                ActivateModIfPossible(Path.GetFileName(dllmoddirpath));
+                ActivateInsertModIfPossible(Path.GetFileName(dllmoddirpath));
             }
         }
 
@@ -1783,7 +1860,7 @@ namespace AI_Girl_Helper
             }
         }
 
-        private void ActivateModIfPossible(string modname)
+        private void ActivateInsertModIfPossible(string modname, bool Activate=true, string modAfterWhichInsert="")
         {
             if (modname.Length > 0)
             {
@@ -1796,7 +1873,7 @@ namespace AI_Girl_Helper
                 {
                     string profilemodlistpath = Path.Combine(MODirPath, "profiles", currentMOprofile, "modlist.txt");
 
-                    InsertLineInFile(profilemodlistpath, "+" + modname);
+                    InsertLineInFile(profilemodlistpath, (Activate?"+":"-") + modname, 1 , modAfterWhichInsert);
                 }
             }
         }
@@ -1861,29 +1938,37 @@ namespace AI_Girl_Helper
         /// </summary>
         /// <param name="path"></param>
         /// <param name="line"></param>
-        /// <param name="position"></param>
-        public static void InsertLineInFile(string path, string line, int position = 1)
+        /// <param name="Position"></param>
+        public static void InsertLineInFile(string path, string Line, int Position = 1, string InsertAfterThisMod="")
         {
-            if (File.Exists(path) && line.Length > 0)
+            if (path.Length>0 && File.Exists(path) && Line.Length > 0)
             {
-                string[] lines = File.ReadAllLines(path);
-                if (lines.Contains(line))
+                string[] FileLines = File.ReadAllLines(path);
+                if (!FileLines.Contains(Line))
                 {
-                }
-                else
-                {
+                    bool InsertAfterMod = InsertAfterThisMod.Length > 0;
+                    Position = InsertAfterMod ? FileLines.Length : Position;
                     using (StreamWriter writer = new StreamWriter(path))
                     {
-                        for (int i = 0; i < position; i++)
+                        for (int LineNumber = 0; LineNumber < Position; LineNumber++)
                         {
-                            writer.WriteLine(lines[i]);
+                            if (InsertAfterMod && FileLines[LineNumber].Length>0 && string.Compare(FileLines[LineNumber].Remove(0, 1), InsertAfterThisMod, true)==0)
+                            {
+                                Position = LineNumber;
+                                break;
+
+                            }
+                            else
+                            {
+                                writer.WriteLine(FileLines[LineNumber]);
+                            }
                         }
 
-                        writer.WriteLine(line);
+                        writer.WriteLine(Line);
 
-                        for (int i = position; i < lines.Length; i++)
+                        for (int LineNumber = Position; LineNumber < FileLines.Length; LineNumber++)
                         {
-                            writer.WriteLine(lines[i]);
+                            writer.WriteLine(FileLines[LineNumber]);
                         }
                     }
                 }
@@ -2009,7 +2094,7 @@ namespace AI_Girl_Helper
                     //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + website + " \"");
                     //INI.WriteINI("General", "validated", "true");
 
-                    ActivateModIfPossible(Path.GetFileName(zipmoddirpath));
+                    ActivateInsertModIfPossible(Path.GetFileName(zipmoddirpath));
                 }
             }
 
@@ -2238,7 +2323,7 @@ namespace AI_Girl_Helper
                             "<br>This files was added in Common mode<br>and moved as mod after convertation in MO mode.<br>Date: " + DateTimeInFormat
                             );
 
-                        ActivateModIfPossible(addedFilesFolderName);
+                        ActivateInsertModIfPossible(addedFilesFolderName);
                     }
 
                     //перемещение ванильных файлов назад в дата

@@ -459,7 +459,7 @@
             this.OpenModsFolderLinkLabel.TabStop = true;
             this.OpenModsFolderLinkLabel.Text = "Mods";
             this.OpenModsFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
-            this.OpenModsFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel3_LinkClicked);
+            this.OpenModsFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel3_LinkClicked);
             // 
             // OpenMOLinkLabel
             // 
@@ -472,7 +472,7 @@
             this.OpenMOLinkLabel.TabStop = true;
             this.OpenMOLinkLabel.Text = "MO";
             this.OpenMOLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
-            this.OpenMOLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
+            this.OpenMOLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel2_LinkClicked);
             // 
             // OpenGameFolderLinkLabel
             // 
@@ -485,7 +485,7 @@
             this.OpenGameFolderLinkLabel.TabStop = true;
             this.OpenGameFolderLinkLabel.Text = "Game";
             this.OpenGameFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
-            this.OpenGameFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            this.OpenGameFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel1_LinkClicked);
             // 
             // CreateShortcutButton
             // 

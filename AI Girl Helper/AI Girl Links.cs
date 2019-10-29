@@ -31,7 +31,7 @@ namespace AI_Girl_Helper
             Process.Start("https://discord.gg/RfkZVS");
         }
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("https://pastebin.com/QRRKtC45");
         }

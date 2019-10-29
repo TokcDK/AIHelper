@@ -28,8 +28,7 @@ namespace AI_Girl_Helper
         [STAThread]
         static void Main()
         {
-            bool createdNew;
-            using (Mutex mutex = new Mutex(true, AppName, out createdNew))
+            using (Mutex mutex = new Mutex(true, AppName, out bool createdNew))
             {
                 if (createdNew)
                 {

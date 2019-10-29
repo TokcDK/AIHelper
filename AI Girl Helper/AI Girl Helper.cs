@@ -1160,7 +1160,7 @@ namespace AI_Girl_Helper
             }
         }
 
-        Dictionary<string, string> qualitylevels = new Dictionary<string, string>(3);
+        readonly Dictionary<string, string> qualitylevels = new Dictionary<string, string>(3);
         private void QualityComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             SetGraphicsQuality((sender as ComboBox).SelectedIndex.ToString());
@@ -1209,7 +1209,7 @@ namespace AI_Girl_Helper
             }
         }
 
-        string Install2MODirPath = Path.Combine(Application.StartupPath, "2MO");
+        readonly string Install2MODirPath = Path.Combine(Application.StartupPath, "2MO");
         private void InstallInModsButton_Click(object sender, EventArgs e)
         {
             if (Directory.Exists(Install2MODirPath) && (Directory.GetFiles(Install2MODirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.cs").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zipmod").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zip").Length > 0 || Directory.GetDirectories(Install2MODirPath, "*").Length > 0))
@@ -1287,7 +1287,7 @@ namespace AI_Girl_Helper
                                 Line = Line.Remove(Line.IndexOf("/*"), 2);
                                 if (Line.Length > 0)
                                 {
-                                    description += Line+ "<br>";
+                                    description += Line + "<br>";
                                 }
                             }
                             else
@@ -1313,18 +1313,18 @@ namespace AI_Girl_Helper
                         Directory.CreateDirectory(scriptsdir);
                     }
 
-                    string FileLastModificationTime = File.GetLastWriteTime(csFile).ToString("0." + "yyyyMMddHHmm");
+                    string FileLastModificationTime = File.GetLastWriteTime(csFile).ToString("yyyyMMddHHmm");
                     //запись meta.ini
                     WriteMetaINI(
                         moddir
                         ,
                         "86,"
                         ,
-                        FileLastModificationTime
+                        "0." + FileLastModificationTime
                         ,
-                        string.Empty
+                        "Requires: ScriptLoader"
                         ,
-                        "<br>Author: " + author + "<br><br>Requires: ScriptLoader<br><br>" + (description.Length > 0 ? description : name)
+                        "<br>Author: " + author + "<br><br>" + (description.Length > 0 ? description : name)
                         );
 
                     File.Move(csFile, Path.Combine(scriptsdir, name + ".cs"));
@@ -1339,7 +1339,7 @@ namespace AI_Girl_Helper
             string ProceedDir = TargetDir.Length == 0 ? Install2MODirPath : TargetDir;
             var images = Directory.GetFiles(ProceedDir, "*.png");
             int imagesLength = images.Length;
-            if (imagesLength > 0 && Directory.GetDirectories(ProceedDir, "*").Length == 0)
+            if (imagesLength > 0)
             {
                 //bool IsCharaCard = false;
                 for (int imgnum = 0; imgnum < imagesLength; imgnum++)
@@ -1352,7 +1352,7 @@ namespace AI_Girl_Helper
                     //    IsCharaCard = true;
                     //}
                     string ImgFIleName = Path.GetFileNameWithoutExtension(img);
-                    string ImagesSubFolder = IllusionImagesSubFolder(targetdir);
+                    string ImagesSubFolder = IllusionImagesTargetCharaSubFolder(targetdir);
                     string targetImagePath = Path.Combine(ImagesSubFolder, ImgFIleName + ".png");
                     int i = 1;
                     while (File.Exists(targetImagePath))
@@ -1373,65 +1373,66 @@ namespace AI_Girl_Helper
                 var images = Directory.GetFiles(dir, "*.png");
                 if (images.Length > 0 && Directory.GetDirectories(dir, "*").Where(d => Path.GetFileName(d) != "m").ToArray().Length == 0)
                 {
-                    bool IsMdir = false;
-                    if (string.Compare(Path.GetFileName(dir), "m", true) == 0) // если это папка m с мужскими карточками
+                    if (string.Compare(Path.GetFileName(dir), "m", true) == 0) // если это папка m с мужскими карточками                    
                     {
-                        IsMdir = true;
-                    }
-                    //bool IsCharaCard = false;
-                    foreach (var img in images)
-                    {
-                        //var imgdata = Image.FromFile(img);
-
-                        //if (imgdata.Width == 252 && imgdata.Height == 352)
-                        //{
-                        //    IsCharaCard = true;
-                        //}
-                        string UserDataPath = Path.Combine(ModsPath, "UserData");
-                        string TargetDir = IllusionImagesSubFolder(IsMdir ? UserDataPath : dir, IsMdir);
-                        string TargetPath = Path.Combine(TargetDir, IsMdir ? GetTargetImgName(TargetDir, Path.GetFileNameWithoutExtension(img)) : Path.GetFileName(img));
-                        File.Move(img, TargetPath);
-                    }
-                    //папка "m" с мужскими карточками внутри
-                    string Mdir = Path.Combine(dir, "m");
-                    if (Directory.Exists(Mdir))
-                    {
-                        images = Directory.GetFiles(Mdir, "*.png");
-                        if (images.Length > 0)
+                        //папка "m" с мужскими карточками внутри
+                        if (Directory.Exists(dir))
                         {
-                            foreach (var img in images)
+                            images = Directory.GetFiles(dir, "*.png");
+                            if (images.Length > 0)
                             {
-                                File.Move(img, Path.Combine(IllusionImagesSubFolder(dir, true), Path.GetFileName(img)));
+                                foreach (var img in images)
+                                {
+                                    var m = Path.Combine(IllusionImagesTargetCharaSubFolder(Path.Combine(ModsPath, "MyUserData"), true), Path.GetFileName(img));
+                                    File.Move(img, m);
+                                }
                             }
+                            DeleteEmptySubfolders(dir);
                         }
-                        DeleteEmptySubfolders(Mdir);
                     }
-
-                    var cardsModName = Path.GetFileName(dir);
-                    var cardsModDir = Path.Combine(ModsPath, cardsModName);
-                    int i = 1;
-                    while (Directory.Exists(cardsModDir))
+                    else
                     {
-                        cardsModDir = Path.Combine(ModsPath, cardsModName + " (" + i + ")");
-                        i++;
+                        //bool IsCharaCard = false;
+                        foreach (var img in images)
+                        {
+                            //var imgdata = Image.FromFile(img);
+
+                            //if (imgdata.Width == 252 && imgdata.Height == 352)
+                            //{
+                            //    IsCharaCard = true;
+                            //}
+                            string UserDataPath = Path.Combine(ModsPath, "UserData");
+                            string TargetDir = IllusionImagesTargetCharaSubFolder(dir);
+                            string TargetPath = Path.Combine(TargetDir, Path.GetFileName(img));
+                            File.Move(img, TargetPath);
+                        }
+
+                        var cardsModName = Path.GetFileName(dir);
+                        var cardsModDir = Path.Combine(ModsPath, cardsModName);
+                        int i = 1;
+                        while (Directory.Exists(cardsModDir))
+                        {
+                            cardsModDir = Path.Combine(ModsPath, cardsModName + " (" + i + ")");
+                            i++;
+                        }
+
+                        Directory.Move(dir, cardsModDir);
+
+                        //запись meta.ini
+                        WriteMetaINI(
+                            cardsModDir
+                            ,
+                            "54,"
+                            ,
+                            string.Empty
+                            ,
+                            string.Empty
+                            ,
+                            "<br>Author: " + string.Empty + "<br><br>" + Path.GetFileNameWithoutExtension(cardsModDir) + " character cards<br><br>"
+                            );
+
+                        ActivateInsertModIfPossible(Path.GetFileName(cardsModDir));
                     }
-
-                    Directory.Move(dir, cardsModDir);
-
-                    //запись meta.ini
-                    WriteMetaINI(
-                        cardsModDir
-                        ,
-                        "54,"
-                        ,
-                        string.Empty
-                        ,
-                        string.Empty
-                        ,
-                        "<br>Author: " + string.Empty + "<br><br>" + Path.GetFileNameWithoutExtension(cardsModDir) + " character cards<br><br>"
-                        );
-
-                    ActivateInsertModIfPossible(Path.GetFileName(cardsModDir));
                 }
             }
         }
@@ -1452,7 +1453,7 @@ namespace AI_Girl_Helper
             return Name + ".png";
         }
 
-        private string IllusionImagesSubFolder(string dir, bool m = false)
+        private string IllusionImagesTargetCharaSubFolder(string dir, bool m = false)
         {
             var imagesSubdir = Path.Combine(dir, "UserData", "chara", m ? "male" : "female");
             if (!Directory.Exists(imagesSubdir))
@@ -1709,30 +1710,33 @@ namespace AI_Girl_Helper
                     }
                 }
 
-                string[] dlls = Directory.GetFiles(moddir, "*.dll", SearchOption.AllDirectories);
-                if (author.Length == 0 && dlls.Length > 0)
+                if (Directory.Exists(moddir))
                 {
-                    foreach (string dll in dlls)
+                    string[] dlls = Directory.GetFiles(moddir, "*.dll", SearchOption.AllDirectories);
+                    if (author.Length == 0 && dlls.Length > 0)
                     {
-                        FileVersionInfo dllInfo = FileVersionInfo.GetVersionInfo(dll);
+                        foreach (string dll in dlls)
+                        {
+                            FileVersionInfo dllInfo = FileVersionInfo.GetVersionInfo(dll);
 
-                        if (description.Length == 0)
-                        {
-                            description = dllInfo.FileDescription;
-                        }
-                        if (version.Length == 0)
-                        {
-                            version = dllInfo.FileVersion;
-                        }
-                        if (version.Length == 0)
-                        {
-                            version = dllInfo.FileVersion;
-                        }
-                        if (author.Length == 0)
-                        {
-                            author = dllInfo.LegalCopyright;
-                            //"Copyright © AuthorName 2019"
-                            author = author.Length >= 4 ? author.Remove(author.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim() : author;
+                            if (description.Length == 0)
+                            {
+                                description = dllInfo.FileDescription;
+                            }
+                            if (version.Length == 0)
+                            {
+                                version = dllInfo.FileVersion;
+                            }
+                            if (version.Length == 0)
+                            {
+                                version = dllInfo.FileVersion;
+                            }
+                            if (author.Length == 0)
+                            {
+                                author = dllInfo.LegalCopyright;
+                                //"Copyright © AuthorName 2019"
+                                author = author.Length >= 4 ? author.Remove(author.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim() : author;
+                            }
                         }
                     }
                 }
@@ -1864,7 +1868,7 @@ namespace AI_Girl_Helper
             }
         }
 
-        private void ActivateInsertModIfPossible(string modname, bool Activate=true, string modAfterWhichInsert="")
+        private void ActivateInsertModIfPossible(string modname, bool Activate = true, string modAfterWhichInsert = "")
         {
             if (modname.Length > 0)
             {
@@ -1877,7 +1881,7 @@ namespace AI_Girl_Helper
                 {
                     string profilemodlistpath = Path.Combine(MODirPath, "profiles", currentMOprofile, "modlist.txt");
 
-                    InsertLineInFile(profilemodlistpath, (Activate?"+":"-") + modname, 1 , modAfterWhichInsert);
+                    InsertLineInFile(profilemodlistpath, (Activate ? "+" : "-") + modname, 1, modAfterWhichInsert);
                 }
             }
         }
@@ -1943,9 +1947,9 @@ namespace AI_Girl_Helper
         /// <param name="path"></param>
         /// <param name="line"></param>
         /// <param name="Position"></param>
-        public static void InsertLineInFile(string path, string Line, int Position = 1, string InsertAfterThisMod="")
+        public static void InsertLineInFile(string path, string Line, int Position = 1, string InsertAfterThisMod = "")
         {
-            if (path.Length>0 && File.Exists(path) && Line.Length > 0)
+            if (path.Length > 0 && File.Exists(path) && Line.Length > 0)
             {
                 string[] FileLines = File.ReadAllLines(path);
                 if (!FileLines.Contains(Line))
@@ -1956,7 +1960,7 @@ namespace AI_Girl_Helper
                     {
                         for (int LineNumber = 0; LineNumber < Position; LineNumber++)
                         {
-                            if (InsertAfterMod && FileLines[LineNumber].Length>0 && string.Compare(FileLines[LineNumber].Remove(0, 1), InsertAfterThisMod, true)==0)
+                            if (InsertAfterMod && FileLines[LineNumber].Length > 0 && string.Compare(FileLines[LineNumber].Remove(0, 1), InsertAfterThisMod, true) == 0)
                             {
                                 Position = LineNumber;
                                 break;
@@ -2524,17 +2528,17 @@ namespace AI_Girl_Helper
             return null;
         }
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("explorer.exe", DataPath);
         }
 
-        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LinkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("explorer.exe", MODirPath);
         }
 
-        private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LinkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("explorer.exe", ModsPath);
         }

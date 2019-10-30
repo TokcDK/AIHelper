@@ -35,5 +35,10 @@ namespace AI_Girl_Helper
         {
             Process.Start("https://pastebin.com/QRRKtC45");
         }
+
+        private void IllusionOficialUploader_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://mega.nz/#F!XOpkWahD!d0CpOSqiwww-M9QAVBjBSw");        
+        }
     }
 }

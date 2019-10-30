@@ -34,6 +34,7 @@
             this.KenzatoLinkLabel = new System.Windows.Forms.LinkLabel();
             this.IllusionDiscordLinkLabel = new System.Windows.Forms.LinkLabel();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.IllusionOficialUploaderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.LinksCharactersGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -97,12 +98,24 @@
             this.linkLabel1.Text = "Mods (Pastebin)";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel1_LinkClicked);
             // 
+            // IllusionOficialUploaderLinkLabel
+            // 
+            this.IllusionOficialUploaderLinkLabel.AutoSize = true;
+            this.IllusionOficialUploaderLinkLabel.Location = new System.Drawing.Point(13, 119);
+            this.IllusionOficialUploaderLinkLabel.Name = "IllusionOficialUploaderLinkLabel";
+            this.IllusionOficialUploaderLinkLabel.Size = new System.Drawing.Size(146, 13);
+            this.IllusionOficialUploaderLinkLabel.TabIndex = 3;
+            this.IllusionOficialUploaderLinkLabel.TabStop = true;
+            this.IllusionOficialUploaderLinkLabel.Text = "IllusionOficialUploader(Mega)";
+            this.IllusionOficialUploaderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.IllusionOficialUploader_LinkClicked);
+            // 
             // LinksForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
             this.ClientSize = new System.Drawing.Size(354, 138);
+            this.Controls.Add(this.IllusionOficialUploaderLinkLabel);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.LinksCharactersGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -123,5 +136,6 @@
         private System.Windows.Forms.LinkLabel IllusionDiscordLinkLabel;
         private System.Windows.Forms.LinkLabel KenzatoLinkLabel;
         private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.LinkLabel IllusionOficialUploaderLinkLabel;
     }
 }

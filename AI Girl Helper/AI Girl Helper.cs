@@ -837,7 +837,7 @@ namespace AI_Girl_Helper
                 MOCommonModeSwitchButton.Text = T._("CommonToMO");
                 button1.Text = T._("Common mode");
                 button1.Enabled = false;
-                AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
+                //AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
             }
 
             //Обновление пути к setup.xml с настройками графики
@@ -849,6 +849,7 @@ namespace AI_Girl_Helper
             MOexePath = Path.Combine(MODirPath, "ModOrganizer.exe");
             OverwriteFolder = Path.Combine(MODirPath, "overwrite");
             OverwriteFolderLink = Path.Combine(Application.StartupPath, "MOUserData");
+            AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
         }
 
         private void GetEnableDisableLaunchButtons()
@@ -2274,13 +2275,22 @@ namespace AI_Girl_Helper
                     string[] VanillaDataFiles = File.ReadAllLines(VanillaDataFilesListFile);
                     string[] ModdedDataFiles = File.ReadAllLines(ModdedDataFilesListFile);
 
+                    //РЕАЛИЗОВАТЬ: ЕСЛИ ОДИН ИЗ ФАЙЛОВ, ЧТО ПЕРЕМЕЩЕЮТСЯ НАЗАД ПО СВОИМ ПАПКАМ В Модс, УЖЕ СОДЕРЖИТСЯ В ПАПКЕ СВОЕГО МОДА
+                    //НАПРИМЕР БЫЛ СОЗДАН ПРИ ВНЕШНЕМ ОБНОВЛЕНИИ МОДА, КОГДА ИГРА БЫЛА В ОБЫЧНОМ РЕЖИМЕ,
+                    //ТО ПЕРЕНОСИТЬ ЭТОТ ФАЙЛ В НОВЫЙ МОД С УНИКАЛЬНЫМ ИМЕНЕМ, ДЛЯ САМОСТОЯТЕЛЬНОГО ПОСЛЕДУЮЩЕГО РАЗБОРА ИГРОКОМ.
+                    //StringBuilder FilesWhichAlreadyHaveSameDestFileInMods = new StringBuilder();
+                    //bool FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = false;
+
                     //Перемещение файлов модов по списку
                     int OperationsLength = Operations.Length;
                     for (int o = 0; o < OperationsLength; o++)
                     {
                         string[] MovePaths = Operations[o].Split(new string[] { "|MovedTo|" }, StringSplitOptions.None);
 
-                        if (File.Exists(MovePaths[1]) && !File.Exists(MovePaths[0]))
+                        bool File0Exists = File.Exists(MovePaths[0]);
+                        bool File1Exists = File.Exists(MovePaths[1]);
+
+                        if (File1Exists && !File0Exists)
                         {
                             string modsubfolder = Path.GetDirectoryName(MovePaths[0]);
                             if (!Directory.Exists(modsubfolder))
@@ -2290,6 +2300,12 @@ namespace AI_Girl_Helper
 
                             File.Move(MovePaths[1], MovePaths[0]);
                         }
+                        //else if(File0Exists && File1Exists)
+                        //{
+                        //    //если в Mods на месте планируемого для перемещения назад в Mods файла появился новый файл, то записать информацию о нем в новый мод, чтобы перенести его в новый мод
+                        //    FilesWhichAlreadyHaveSameDestFileInMods.AppendLine(MovePaths[0]);
+                        //    FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = true;
+                        //}
                     }
 
                     //Перемещение новых файлов
@@ -2297,7 +2313,7 @@ namespace AI_Girl_Helper
                     //добавление всех файлов из дата, которых нет в списке файлов модов и игры в дата, что был создан сразу после перехода в обычный режим
                     string[] addedFiles = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories).Where(line => !ModdedDataFiles.Contains(line)).ToArray();
 
-                    string destFolderForNewFiles = Path.Combine(ModsPath, "NewAddedFiles");
+                    //string destFolderForNewFiles = Path.Combine(ModsPath, "NewAddedFiles");
 
                     string DateTimeInFormat = DateTime.Now.ToString("yyyyMMddHHmmss");
                     string addedFilesFolderName = "[added]UseFiles" + DateTimeInFormat;
@@ -2313,6 +2329,14 @@ namespace AI_Girl_Helper
                         }
                         File.Move(addedFiles[f], DestFileName);
                     }
+
+                    //if (FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty)
+                    //{
+                    //    foreach (string fPath in FilesWhichAlreadyHaveSameDestFileInMods.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+                    //    {
+                    //        File.Move(fPath, GetSelectedGameFolderPath);
+                    //    }
+                    //}
 
                     //подключить новый мод, если он существует
                     if (Directory.Exists(DestFolderPath))

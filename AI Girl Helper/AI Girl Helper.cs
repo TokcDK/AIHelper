@@ -593,7 +593,7 @@ namespace AI_Girl_Helper
             //Main
             THToolTip.SetToolTip(button1, T._("Unpacking mods and resources from 'Downloads' and 'AI Girl Helper_RES' folders for game when they are not installed"));
             THToolTip.SetToolTip(InstallInModsButton, T._("Automatically get required mod data, converts and moves files from 2MO folder") + (MOmode ? T._(" to MO format in Mods when possible") : T._(" to the game folder when possible")));
-            THToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Will open"+") 2MO "+ T._("folder")));
+            THToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Will open") + " 2MO " + T._("folder"));
             THToolTip.SetToolTip(ShortcutsCheckBox, T._("When checked will create shortcut for the AIGirl Helper manager on Desktop after mods extraction"));
             THToolTip.SetToolTip(groupBox1, T._("Game Display settings"));
             THToolTip.SetToolTip(ResolutionComboBox, T._("Select preferred screen resolution"));
@@ -861,7 +861,7 @@ namespace AI_Girl_Helper
         {
             string IniValue = GetINIValueIfExist(ModOrganizerINIpath, "overwrite_directory", "Settings");
 
-            if (IniValue.Length>0)
+            if (IniValue.Length > 0)
             {
                 return IniValue;
             }
@@ -1342,9 +1342,9 @@ namespace AI_Girl_Helper
                         ,
                         "0." + FileLastModificationTime
                         ,
-                        "Requires: "+"ScriptLoader"
+                        "Requires: " + "ScriptLoader"
                         ,
-                        "<br>"+"Author"+": " + author + "<br><br>" + (description.Length > 0 ? description : name)
+                        "<br>" + "Author" + ": " + author + "<br><br>" + (description.Length > 0 ? description : name)
                         );
 
                     File.Move(csFile, Path.Combine(scriptsdir, name + ".cs"));
@@ -1888,7 +1888,7 @@ namespace AI_Girl_Helper
             }
         }
 
-        private void ActivateInsertModIfPossible(string modname, bool Activate = true, string modAfterWhichInsert = "", bool PlaceAfter=true)
+        private void ActivateInsertModIfPossible(string modname, bool Activate = true, string modAfterWhichInsert = "", bool PlaceAfter = true)
         {
             if (modname.Length > 0)
             {
@@ -2351,7 +2351,7 @@ namespace AI_Girl_Helper
                     string[] Operations = File.ReadAllLines(MOToStandartConvertationOperationsListFile);
                     string[] VanillaDataFiles = File.ReadAllLines(VanillaDataFilesListFile);
                     string[] ModdedDataFiles = File.ReadAllLines(ModdedDataFilesListFile);
-                    
+
                     StringBuilder FilesWhichAlreadyHaveSameDestFileInMods = new StringBuilder();
                     bool FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = false;
 
@@ -2395,7 +2395,7 @@ namespace AI_Girl_Helper
                         foreach (string FromToPathsLine in FilesWhichAlreadyHaveSameDestFileInMods.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
                         {
                             string[] FromToPaths = FromToPathsLine.Split(new string[] { "|MovedTo|" }, StringSplitOptions.None);
-                            
+
                             string TargetFolderPath = Path.GetDirectoryName(FromToPaths[1]);
 
                             bool IsForOverwriteFolder = TargetFolderPath.Contains(OverwriteFolder);
@@ -2423,7 +2423,7 @@ namespace AI_Girl_Helper
                             string TargetFileName = Path.GetFileNameWithoutExtension(FromToPaths[1]);
                             string TargetFileExtension = Path.GetExtension(FromToPaths[1]);
                             string TargetPath = Path.Combine(TargetFolderPath, TargetFileName + TargetFileExtension);
-                            
+
                             //создать подпапку для файла
                             if (!Directory.Exists(TargetFolderPath))
                             {
@@ -2453,7 +2453,7 @@ namespace AI_Girl_Helper
                                 ,
                                 string.Empty
                                 ,
-                                "0."+ DateTimeInFormat
+                                "0." + DateTimeInFormat
                                 ,
                                 string.Empty
                                 ,

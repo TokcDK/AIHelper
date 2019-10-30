@@ -1323,9 +1323,9 @@ namespace AI_Girl_Helper
                         ,
                         "0." + FileLastModificationTime
                         ,
-                        "Requires: ScriptLoader"
+                        "Requires: "+"ScriptLoader"
                         ,
-                        "<br>Author: " + author + "<br><br>" + (description.Length > 0 ? description : name)
+                        "<br>"+"Author"+": " + author + "<br><br>" + (description.Length > 0 ? description : name)
                         );
 
                     File.Move(csFile, Path.Combine(scriptsdir, name + ".cs"));
@@ -2278,8 +2278,8 @@ namespace AI_Girl_Helper
                     //РЕАЛИЗОВАТЬ: ЕСЛИ ОДИН ИЗ ФАЙЛОВ, ЧТО ПЕРЕМЕЩЕЮТСЯ НАЗАД ПО СВОИМ ПАПКАМ В Модс, УЖЕ СОДЕРЖИТСЯ В ПАПКЕ СВОЕГО МОДА
                     //НАПРИМЕР БЫЛ СОЗДАН ПРИ ВНЕШНЕМ ОБНОВЛЕНИИ МОДА, КОГДА ИГРА БЫЛА В ОБЫЧНОМ РЕЖИМЕ,
                     //ТО ПЕРЕНОСИТЬ ЭТОТ ФАЙЛ В НОВЫЙ МОД С УНИКАЛЬНЫМ ИМЕНЕМ, ДЛЯ САМОСТОЯТЕЛЬНОГО ПОСЛЕДУЮЩЕГО РАЗБОРА ИГРОКОМ.
-                    //StringBuilder FilesWhichAlreadyHaveSameDestFileInMods = new StringBuilder();
-                    //bool FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = false;
+                    StringBuilder FilesWhichAlreadyHaveSameDestFileInMods = new StringBuilder();
+                    bool FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = false;
 
                     //Перемещение файлов модов по списку
                     int OperationsLength = Operations.Length;
@@ -2300,12 +2300,12 @@ namespace AI_Girl_Helper
 
                             File.Move(MovePaths[1], MovePaths[0]);
                         }
-                        //else if(File0Exists && File1Exists)
-                        //{
-                        //    //если в Mods на месте планируемого для перемещения назад в Mods файла появился новый файл, то записать информацию о нем в новый мод, чтобы перенести его в новый мод
-                        //    FilesWhichAlreadyHaveSameDestFileInMods.AppendLine(MovePaths[0]);
-                        //    FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = true;
-                        //}
+                        else if (File0Exists && File1Exists)
+                        {
+                            //если в Mods на месте планируемого для перемещения назад в Mods файла появился новый файл, то записать информацию о нем в новый мод, чтобы перенести его в новый мод
+                            FilesWhichAlreadyHaveSameDestFileInMods.AppendLine(MovePaths[1] + "|MovedTo|" + MovePaths[0]);
+                            FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = true;
+                        }
                     }
 
                     //Перемещение новых файлов
@@ -2316,8 +2316,24 @@ namespace AI_Girl_Helper
                     //string destFolderForNewFiles = Path.Combine(ModsPath, "NewAddedFiles");
 
                     string DateTimeInFormat = DateTime.Now.ToString("yyyyMMddHHmmss");
-                    string addedFilesFolderName = "[added]UseFiles" + DateTimeInFormat;
+                    string addedFilesFolderName = "[added]UseFiles_" + DateTimeInFormat;
                     string DestFolderPath = Path.Combine(ModsPath, addedFilesFolderName);
+
+                    if (FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty)
+                    {
+                        foreach (string FromToPathsLine in FilesWhichAlreadyHaveSameDestFileInMods.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            string[] FromToPaths = FromToPathsLine.Split(new string[] { "|MovedTo|" }, StringSplitOptions.None);
+                            string TargetFolderPath = Path.GetDirectoryName(FromToPaths[1]);
+                            string TargetFileName = Path.GetFileNameWithoutExtension(FromToPaths[1]) + "_"+DateTimeInFormat;
+                            string TargetFileExtension = Path.GetExtension(FromToPaths[1]);
+                            string TargetPath = Path.Combine(TargetFolderPath, TargetFileName, TargetFileExtension);
+                            File.Move(FromToPaths[0], TargetPath);
+                            File.WriteAllText(Path.Combine(TargetFolderPath, "NOTE!.txt"), T._("Files in same paths already exist in ariginal mod folder!\n\n This folder was created in time of conversion from Common mode to MO mode and because in destination place\n where mod file must be moved already was other file with same name.\n It could happen if content of the mod folder was updated\n when game was in common mode and was made same file in same place.\n Please check files here and this files need\n activate this mod or move files to mod folder with same name\n and if this files obsolete or just not need anymore then delete this mod folder."));
+                        }
+                    }
+
+
                     int addedFilesLength = addedFiles.Length;
                     for (int f = 0; f < addedFilesLength; f++)
                     {
@@ -2329,14 +2345,6 @@ namespace AI_Girl_Helper
                         }
                         File.Move(addedFiles[f], DestFileName);
                     }
-
-                    //if (FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty)
-                    //{
-                    //    foreach (string fPath in FilesWhichAlreadyHaveSameDestFileInMods.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
-                    //    {
-                    //        File.Move(fPath, GetSelectedGameFolderPath);
-                    //    }
-                    //}
 
                     //подключить новый мод, если он существует
                     if (Directory.Exists(DestFolderPath))
@@ -2350,9 +2358,9 @@ namespace AI_Girl_Helper
                             ,
                             DateTimeInFormat
                             ,
-                            "sort files if need"
+                            T._("Sort files if need")
                             ,
-                            "<br>This files was added in Common mode<br>and moved as mod after convertation in MO mode.<br>Date: " + DateTimeInFormat
+                            T._("<br>This files was added in Common mode<br>and moved as mod after convertation in MO mode.<br>Date: ") + DateTimeInFormat
                             );
 
                         ActivateInsertModIfPossible(addedFilesFolderName);

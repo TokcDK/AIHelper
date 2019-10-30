@@ -581,7 +581,7 @@ namespace AI_Girl_Helper
             {
 
                 // Set up the delays for the ToolTip.
-                AutoPopDelay = 10000,
+                AutoPopDelay = 20000,
                 InitialDelay = 1000,
                 ReshowDelay = 500,
                 UseAnimation = true,

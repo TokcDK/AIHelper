@@ -2520,15 +2520,9 @@ namespace AI_Girl_Helper
                                 File.Move(FilesInMOmodeDataFilesBak[f], DestFileInDataFolderPath);
                             }
                         }
-                    }
 
-                    //удаление папки, где хранились резервные копии ванильных файлов
-                    if (
-                        Directory.GetFiles(MOmodeDataFilesBak, "*.*", SearchOption.AllDirectories).Length == 0
-                        && Directory.GetDirectories(MOmodeDataFilesBak, "*", SearchOption.AllDirectories).Length == 0
-                        )
-                    {
-                        Directory.Delete(MOmodeDataFilesBak, true);
+                        //удаление папки, где хранились резервные копии ванильных файлов
+                        DeleteEmptySubfolders(MOmodeDataFilesBak);
                     }
 
                     //чистка файлов-списков

@@ -847,9 +847,27 @@ namespace AI_Girl_Helper
             DataPath = Path.Combine(GetSelectedGameFolderPath(), "Data");
             MODirPath = Path.Combine(Application.StartupPath, "MO");
             MOexePath = Path.Combine(MODirPath, "ModOrganizer.exe");
-            OverwriteFolder = Path.Combine(MODirPath, "overwrite");
-            OverwriteFolderLink = Path.Combine(Application.StartupPath, "MOUserData");
+            OverwriteFolder = GetOverwriteFolderLocation();
+            OverwriteFolderLink = Path.Combine(GetSelectedGameFolderPath(), "MOUserData");
+            ModOrganizerINIpath = Path.Combine(MODirPath, "ModOrganizer.ini");
             AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
+        }
+
+        private string ModOrganizerINIpath = Path.Combine(MODirPath, "ModOrganizer.ini");
+
+        private string GetOverwriteFolderLocation()
+        {
+            string IniValue = GetINIValueIfExist(ModOrganizerINIpath, "overwrite_directory", "Settings");
+
+            if (IniValue.Length>0)
+            {
+                return IniValue;
+            }
+            else
+            {
+                return Path.Combine(MODirPath, "overwrite");
+            }
+
         }
 
         private void GetEnableDisableLaunchButtons()
@@ -862,79 +880,78 @@ namespace AI_Girl_Helper
 
         private void SetModOrganizerINISettingsForTheGame()
         {
-            string metaPath = Path.Combine(MODirPath, "ModOrganizer.ini");
-            Utils.IniFile INI = new Utils.IniFile(metaPath);
+            Utils.IniFile INI = new Utils.IniFile(ModOrganizerINIpath);
 
             //General
             string IniValue = GetSelectedGameFolderPath().Replace(@"\", @"\\");
-            if (GetINIValueIfExist(metaPath, "gamePath", "General") != IniValue)
+            if (GetINIValueIfExist(ModOrganizerINIpath, "gamePath", "General") != IniValue)
             {
                 INI.WriteINI("General", "gamePath", IniValue);
             }
             //customExecutables
             IniValue = GetCurrentGameName().Replace(@"\", @"\\");
-            if (GetINIValueIfExist(metaPath, @"1\title", "customExecutables") != IniValue)
+            if (GetINIValueIfExist(ModOrganizerINIpath, @"1\title", "customExecutables") != IniValue)
             {
                 INI.WriteINI("customExecutables", @"1\title", IniValue);
             }
             IniValue = Path.Combine(DataPath, GetCurrentGameName() + ".exe").Replace(@"\", @"\\");
-            if (GetINIValueIfExist(metaPath, @"1\binary", "customExecutables") != IniValue)
+            if (GetINIValueIfExist(ModOrganizerINIpath, @"1\binary", "customExecutables") != IniValue)
             {
                 INI.WriteINI("customExecutables", @"1\binary", IniValue);
             }
             IniValue = DataPath.Replace(@"\", @"\\");
-            if (GetINIValueIfExist(metaPath, @"1\workingDirectory", "customExecutables") != IniValue)
+            if (GetINIValueIfExist(ModOrganizerINIpath, @"1\workingDirectory", "customExecutables") != IniValue)
             {
                 INI.WriteINI("customExecutables", @"1\workingDirectory", IniValue);
             }
             IniValue = GetSettingsEXEPath().Replace(@"\", @"\\");
-            if (GetINIValueIfExist(metaPath, @"2\binary", "customExecutables") != IniValue)
+            if (GetINIValueIfExist(ModOrganizerINIpath, @"2\binary", "customExecutables") != IniValue)
             {
                 INI.WriteINI("customExecutables", @"2\binary", IniValue);
             }
             IniValue = GetSettingsEXEPath().Replace(@"\", @"\\");
-            if (GetINIValueIfExist(metaPath, @"2\binary", "customExecutables") != IniValue)
+            if (GetINIValueIfExist(ModOrganizerINIpath, @"2\binary", "customExecutables") != IniValue)
             {
                 INI.WriteINI("customExecutables", @"2\binary", IniValue);
             }
             IniValue = DataPath.Replace(@"\", @"\\");
-            if (GetINIValueIfExist(metaPath, @"2\workingDirectory", "customExecutables") != IniValue)
+            if (GetINIValueIfExist(ModOrganizerINIpath, @"2\workingDirectory", "customExecutables") != IniValue)
             {
                 INI.WriteINI("customExecutables", @"2\workingDirectory", IniValue);
             }
             IniValue = Path.Combine(MODirPath, "explorer++", "Explorer++.exe").Replace(@"\", @"\\");
-            if (GetINIValueIfExist(metaPath, @"3\binary", "customExecutables") != IniValue)
+            if (GetINIValueIfExist(ModOrganizerINIpath, @"3\binary", "customExecutables") != IniValue)
             {
                 INI.WriteINI("customExecutables", @"3\binary", IniValue);
             }
             IniValue = "\\\"" + DataPath.Replace(@"\", @"\\") + "\\\"";
-            if (GetINIValueIfExist(metaPath, @"3\arguments", "customExecutables") != IniValue)
+            if (GetINIValueIfExist(ModOrganizerINIpath, @"3\arguments", "customExecutables") != IniValue)
             {
                 INI.WriteINI("customExecutables", @"3\arguments", IniValue);
             }
             IniValue = Path.Combine(MODirPath, "explorer++").Replace(@"\", @"\\");
-            if (GetINIValueIfExist(metaPath, @"3\workingDirectory", "customExecutables") != IniValue)
+            if (GetINIValueIfExist(ModOrganizerINIpath, @"3\workingDirectory", "customExecutables") != IniValue)
             {
                 INI.WriteINI("customExecutables", @"3\workingDirectory", IniValue);
             }
             IniValue = Path.Combine(GetSelectedGameFolderPath(), "TESV.exe").Replace(@"\", @"\\");
-            if (GetINIValueIfExist(metaPath, @"4\binary", "customExecutables") != IniValue)
+            if (GetINIValueIfExist(ModOrganizerINIpath, @"4\binary", "customExecutables") != IniValue)
             {
                 INI.WriteINI("customExecutables", @"4\binary", IniValue);
             }
             IniValue = GetSelectedGameFolderPath().Replace(@"\", @"\\");
-            if (GetINIValueIfExist(metaPath, @"4\workingDirectory", "customExecutables") != IniValue)
+            if (GetINIValueIfExist(ModOrganizerINIpath, @"4\workingDirectory", "customExecutables") != IniValue)
             {
                 INI.WriteINI("customExecutables", @"4\workingDirectory", IniValue);
             }
             //Settings
             IniValue = ModsPath.Replace(@"\", @"\\");
-            if (GetINIValueIfExist(metaPath, "mod_directory", "Settings") != IniValue)
+            if (GetINIValueIfExist(ModOrganizerINIpath, "mod_directory", "Settings") != IniValue)
             {
                 INI.WriteINI("Settings", "mod_directory", IniValue);
             }
             IniValue = Path.Combine(GetSelectedGameFolderPath(), "Downloads").Replace(@"\", @"\\");
-            if (GetINIValueIfExist(metaPath, "download_directory", "Settings") != IniValue)
+            if (GetINIValueIfExist(ModOrganizerINIpath, "download_directory", "Settings") != IniValue)
             {
                 INI.WriteINI("Settings", "download_directory", IniValue);
             }
@@ -942,7 +959,7 @@ namespace AI_Girl_Helper
             if (CultureInfo.CurrentCulture.Name == "ru-RU")
             {
                 IniValue = "ru";
-                if (GetINIValueIfExist(metaPath, "language", "Settings") != IniValue)
+                if (GetINIValueIfExist(ModOrganizerINIpath, "language", "Settings") != IniValue)
                 {
                     INI.WriteINI("Settings", "language", IniValue);
                 }
@@ -950,7 +967,7 @@ namespace AI_Girl_Helper
             else
             {
                 IniValue = "en";
-                if (GetINIValueIfExist(metaPath, "language", "Settings") != IniValue)
+                if (GetINIValueIfExist(ModOrganizerINIpath, "language", "Settings") != IniValue)
                 {
                     INI.WriteINI("Settings", "language", IniValue);
                 }
@@ -2169,7 +2186,56 @@ namespace AI_Girl_Helper
                         Directory.CreateDirectory(MOmodeDataFilesBak);
                     }
                     StringBuilder Operations = new StringBuilder();
+
+                    //получение всех файлов из Data
                     string[] DataFolderFilesPaths = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
+
+                    //получение всех файлов из папки Overwrite и их обработка
+                    string[] FilesInOverwrite = Directory.GetFiles(OverwriteFolder, "*.*", SearchOption.AllDirectories);
+                    if (FilesInOverwrite.Length > 0)
+                    {
+                        string FileInDataFolder;
+                        int FilesInOverwriteLength = FilesInOverwrite.Length;
+                        for (int N = 0; N < FilesInOverwriteLength; N++)
+                        {
+                            FileInDataFolder = FilesInOverwrite[N].Replace(OverwriteFolder, DataPath);
+                            if (File.Exists(FileInDataFolder))
+                            {
+                                string FileInBakFolderWhichIsInRES = FileInDataFolder.Replace(DataPath, MOmodeDataFilesBak);
+                                if (!File.Exists(FileInBakFolderWhichIsInRES) && DataFolderFilesPaths.Contains(FileInDataFolder))
+                                {
+                                    string bakfolder = Path.GetDirectoryName(FileInBakFolderWhichIsInRES);
+
+                                    if (!Directory.Exists(bakfolder))
+                                    {
+                                        Directory.CreateDirectory(bakfolder);
+                                    }
+
+                                    try
+                                    {
+                                        File.Move(FileInDataFolder, FileInBakFolderWhichIsInRES);//перенос файла из Data в Bak, если там не было
+                                        File.Move(FilesInOverwrite[N], FileInDataFolder);//перенос файла из папки Overwrite в Data
+                                        Operations.AppendLine(FilesInOverwrite[N] + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
+                                    }
+                                    catch
+                                    {
+                                        //когда файла в дата нет, файл в бак есть и есть файл в папке Overwrite - вернуть файл из bak назад
+                                        if (!File.Exists(FileInDataFolder))
+                                        {
+                                            if (File.Exists(FileInBakFolderWhichIsInRES))
+                                            {
+                                                if (File.Exists(FilesInOverwrite[N]))
+                                                {
+                                                    File.Move(FileInBakFolderWhichIsInRES, FileInDataFolder);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    }
 
                     for (int N = 0; N < EnabledModsLength; N++)
                     {
@@ -2205,10 +2271,7 @@ namespace AI_Girl_Helper
                                         {
                                             string bakfolder = Path.GetDirectoryName(FileInBakFolderWhichIsInRES);
 
-                                            if (Directory.Exists(bakfolder))
-                                            {
-                                            }
-                                            else
+                                            if (!Directory.Exists(bakfolder))
                                             {
                                                 Directory.CreateDirectory(bakfolder);
                                             }
@@ -2286,10 +2349,7 @@ namespace AI_Girl_Helper
                     string[] Operations = File.ReadAllLines(MOToStandartConvertationOperationsListFile);
                     string[] VanillaDataFiles = File.ReadAllLines(VanillaDataFilesListFile);
                     string[] ModdedDataFiles = File.ReadAllLines(ModdedDataFilesListFile);
-
-                    //РЕАЛИЗОВАТЬ: ЕСЛИ ОДИН ИЗ ФАЙЛОВ, ЧТО ПЕРЕМЕЩЕЮТСЯ НАЗАД ПО СВОИМ ПАПКАМ В Модс, УЖЕ СОДЕРЖИТСЯ В ПАПКЕ СВОЕГО МОДА
-                    //НАПРИМЕР БЫЛ СОЗДАН ПРИ ВНЕШНЕМ ОБНОВЛЕНИИ МОДА, КОГДА ИГРА БЫЛА В ОБЫЧНОМ РЕЖИМЕ,
-                    //ТО ПЕРЕНОСИТЬ ЭТОТ ФАЙЛ В НОВЫЙ МОД С УНИКАЛЬНЫМ ИМЕНЕМ, ДЛЯ САМОСТОЯТЕЛЬНОГО ПОСЛЕДУЮЩЕГО РАЗБОРА ИГРОКОМ.
+                    
                     StringBuilder FilesWhichAlreadyHaveSameDestFileInMods = new StringBuilder();
                     bool FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = false;
 
@@ -2336,16 +2396,24 @@ namespace AI_Girl_Helper
                             
                             string TargetFolderPath = Path.GetDirectoryName(FromToPaths[1]);
 
-                            //поиск имени мода
+                            bool IsForOverwriteFolder = TargetFolderPath.Contains(OverwriteFolder);
+                            //поиск имени мода с учетом обработки файлов папки Overwrite
                             string ModName = TargetFolderPath;
-                            while (Path.GetDirectoryName(ModName) != ModsPath)
+                            if (IsForOverwriteFolder)
                             {
-                                ModName = Path.GetDirectoryName(ModName);
+                                ModName = Path.GetFileName(OverwriteFolder);
                             }
-                            ModName = Path.GetFileName(ModName);
+                            else
+                            {
+                                while (Path.GetDirectoryName(ModName) != ModsPath)
+                                {
+                                    ModName = Path.GetDirectoryName(ModName);
+                                }
+                                ModName = Path.GetFileName(ModName);
+                            }
 
                             //Новое имя для новой целевой папки мода
-                            string OriginalModPath = Path.Combine(ModsPath, ModName);
+                            string OriginalModPath = IsForOverwriteFolder ? OverwriteFolder : Path.Combine(ModsPath, ModName);
                             string NewModName = ModName + "_" + DateTimeInFormat;
                             string NewModPath = Path.Combine(ModsPath, NewModName);
                             TargetFolderPath = TargetFolderPath.Replace(OriginalModPath, NewModPath);

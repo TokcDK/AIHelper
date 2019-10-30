@@ -593,7 +593,7 @@ namespace AI_Girl_Helper
             //Main
             THToolTip.SetToolTip(button1, T._("Unpacking mods and resources from 'Downloads' and 'AI Girl Helper_RES' folders for game when they are not installed"));
             THToolTip.SetToolTip(InstallInModsButton, T._("Automatically get required mod data, converts and moves files from 2MO folder") + (MOmode ? T._(" to MO format in Mods when possible") : T._(" to the game folder when possible")));
-            THToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Will open") + " 2MO " + T._("folder"));
+            THToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Will open") + T._(" 2MO folder"));
             THToolTip.SetToolTip(ShortcutsCheckBox, T._("When checked will create shortcut for the AIGirl Helper manager on Desktop after mods extraction"));
             THToolTip.SetToolTip(groupBox1, T._("Game Display settings"));
             THToolTip.SetToolTip(ResolutionComboBox, T._("Select preferred screen resolution"));

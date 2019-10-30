@@ -2328,6 +2328,11 @@ namespace AI_Girl_Helper
                             string TargetFileName = Path.GetFileNameWithoutExtension(FromToPaths[1]) + "_"+DateTimeInFormat;
                             string TargetFileExtension = Path.GetExtension(FromToPaths[1]);
                             string TargetPath = Path.Combine(TargetFolderPath, TargetFileName, TargetFileExtension);
+                            if (!Directory.Exists(TargetFolderPath))
+                            {
+                                Directory.CreateDirectory(TargetFolderPath);
+                            }
+
                             File.Move(FromToPaths[0], TargetPath);
                             File.WriteAllText(Path.Combine(TargetFolderPath, "NOTE!.txt"), T._("Files in same paths already exist in ariginal mod folder!\n\n This folder was created in time of conversion from Common mode to MO mode and because in destination place\n where mod file must be moved already was other file with same name.\n It could happen if content of the mod folder was updated\n when game was in common mode and was made same file in same place.\n Please check files here and this files need\n activate this mod or move files to mod folder with same name\n and if this files obsolete or just not need anymore then delete this mod folder."));
                         }

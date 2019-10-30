@@ -1869,7 +1869,7 @@ namespace AI_Girl_Helper
             }
         }
 
-        private void ActivateInsertModIfPossible(string modname, bool Activate = true, string modAfterWhichInsert = "")
+        private void ActivateInsertModIfPossible(string modname, bool Activate = true, string modAfterWhichInsert = "", bool PlaceAfter=true)
         {
             if (modname.Length > 0)
             {
@@ -1882,7 +1882,7 @@ namespace AI_Girl_Helper
                 {
                     string profilemodlistpath = Path.Combine(MODirPath, "profiles", currentMOprofile, "modlist.txt");
 
-                    InsertLineInFile(profilemodlistpath, (Activate ? "+" : "-") + modname, 1, modAfterWhichInsert);
+                    InsertLineInFile(profilemodlistpath, (Activate ? "+" : "-") + modname, 1, modAfterWhichInsert, PlaceAfter);
                 }
             }
         }
@@ -1948,22 +1948,31 @@ namespace AI_Girl_Helper
         /// <param name="path"></param>
         /// <param name="line"></param>
         /// <param name="Position"></param>
-        public static void InsertLineInFile(string path, string Line, int Position = 1, string InsertAfterThisMod = "")
+        public static void InsertLineInFile(string path, string Line, int Position = 1, string InsertWithThisMod = "", bool PlaceAfter = true)
         {
             if (path.Length > 0 && File.Exists(path) && Line.Length > 0)
             {
                 string[] FileLines = File.ReadAllLines(path);
                 if (!FileLines.Contains(Line))
                 {
-                    bool InsertAfterMod = InsertAfterThisMod.Length > 0;
-                    Position = InsertAfterMod ? FileLines.Length : Position;
+                    int FileLinesLength = FileLines.Length;
+                    bool InsertWithMod = InsertWithThisMod.Length > 0;
+                    Position = InsertWithMod ? FileLinesLength : Position;
                     using (StreamWriter writer = new StreamWriter(path))
                     {
                         for (int LineNumber = 0; LineNumber < Position; LineNumber++)
                         {
-                            if (InsertAfterMod && FileLines[LineNumber].Length > 0 && string.Compare(FileLines[LineNumber].Remove(0, 1), InsertAfterThisMod, true) == 0)
+                            if (InsertWithMod && FileLines[LineNumber].Length > 0 && string.Compare(FileLines[LineNumber].Remove(0, 1), InsertWithThisMod, true) == 0)
                             {
-                                Position = LineNumber;
+                                if (PlaceAfter)
+                                {
+                                    Position = LineNumber;
+                                }
+                                else
+                                {
+                                    writer.WriteLine(FileLines[LineNumber]);
+                                    Position = LineNumber + 1;
+                                }
                                 break;
 
                             }
@@ -1975,9 +1984,12 @@ namespace AI_Girl_Helper
 
                         writer.WriteLine(Line);
 
-                        for (int LineNumber = Position; LineNumber < FileLines.Length; LineNumber++)
+                        if (Position < FileLinesLength)
                         {
-                            writer.WriteLine(FileLines[LineNumber]);
+                            for (int LineNumber = Position; LineNumber < FileLinesLength; LineNumber++)
+                            {
+                                writer.WriteLine(FileLines[LineNumber]);
+                            }
                         }
                     }
                 }
@@ -2287,57 +2299,108 @@ namespace AI_Girl_Helper
                     {
                         string[] MovePaths = Operations[o].Split(new string[] { "|MovedTo|" }, StringSplitOptions.None);
 
-                        bool File0Exists = File.Exists(MovePaths[0]);
-                        bool File1Exists = File.Exists(MovePaths[1]);
+                        bool FilePathInModsExists = File.Exists(MovePaths[0]);
+                        bool FilePathInDataExists = File.Exists(MovePaths[1]);
 
-                        if (File1Exists && !File0Exists)
+                        if (FilePathInDataExists)
                         {
-                            string modsubfolder = Path.GetDirectoryName(MovePaths[0]);
-                            if (!Directory.Exists(modsubfolder))
+                            if (!FilePathInModsExists)
                             {
-                                Directory.CreateDirectory(modsubfolder);
-                            }
+                                string modsubfolder = Path.GetDirectoryName(MovePaths[0]);
+                                if (!Directory.Exists(modsubfolder))
+                                {
+                                    Directory.CreateDirectory(modsubfolder);
+                                }
 
-                            File.Move(MovePaths[1], MovePaths[0]);
-                        }
-                        else if (File0Exists && File1Exists)
-                        {
-                            //если в Mods на месте планируемого для перемещения назад в Mods файла появился новый файл, то записать информацию о нем в новый мод, чтобы перенести его в новый мод
-                            FilesWhichAlreadyHaveSameDestFileInMods.AppendLine(MovePaths[1] + "|MovedTo|" + MovePaths[0]);
-                            FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = true;
+                                File.Move(MovePaths[1], MovePaths[0]);
+                            }
+                            else
+                            {
+                                //если в Mods на месте планируемого для перемещения назад в Mods файла появился новый файл, то записать информацию о нем в новый мод, чтобы перенести его в новый мод
+                                FilesWhichAlreadyHaveSameDestFileInMods.AppendLine(MovePaths[1] + "|MovedTo|" + MovePaths[0]);
+                                FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = true;
+                            }
                         }
                     }
 
-                    //Перемещение новых файлов
-                    //
-                    //добавление всех файлов из дата, которых нет в списке файлов модов и игры в дата, что был создан сразу после перехода в обычный режим
-                    string[] addedFiles = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories).Where(line => !ModdedDataFiles.Contains(line)).ToArray();
-
                     //string destFolderForNewFiles = Path.Combine(ModsPath, "NewAddedFiles");
 
+                    //получение даты и времени для дальнейшего использования
                     string DateTimeInFormat = DateTime.Now.ToString("yyyyMMddHHmmss");
-                    string addedFilesFolderName = "[added]UseFiles_" + DateTimeInFormat;
-                    string DestFolderPath = Path.Combine(ModsPath, addedFilesFolderName);
 
                     if (FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty)
                     {
                         foreach (string FromToPathsLine in FilesWhichAlreadyHaveSameDestFileInMods.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
                         {
                             string[] FromToPaths = FromToPathsLine.Split(new string[] { "|MovedTo|" }, StringSplitOptions.None);
+                            
                             string TargetFolderPath = Path.GetDirectoryName(FromToPaths[1]);
-                            string TargetFileName = Path.GetFileNameWithoutExtension(FromToPaths[1]) + "_"+DateTimeInFormat;
+
+                            //поиск имени мода
+                            string ModName = TargetFolderPath;
+                            while (Path.GetDirectoryName(ModName) != ModsPath)
+                            {
+                                ModName = Path.GetDirectoryName(ModName);
+                            }
+                            ModName = Path.GetFileName(ModName);
+
+                            //Новое имя для новой целевой папки мода
+                            string OriginalModPath = Path.Combine(ModsPath, ModName);
+                            string NewModName = ModName + "_" + DateTimeInFormat;
+                            string NewModPath = Path.Combine(ModsPath, NewModName);
+                            TargetFolderPath = TargetFolderPath.Replace(OriginalModPath, NewModPath);
+
+                            string TargetFileName = Path.GetFileNameWithoutExtension(FromToPaths[1]);
                             string TargetFileExtension = Path.GetExtension(FromToPaths[1]);
-                            string TargetPath = Path.Combine(TargetFolderPath, TargetFileName, TargetFileExtension);
+                            string TargetPath = Path.Combine(TargetFolderPath, TargetFileName + TargetFileExtension);
+                            
+                            //создать подпапку для файла
                             if (!Directory.Exists(TargetFolderPath))
                             {
                                 Directory.CreateDirectory(TargetFolderPath);
                             }
 
+                            //переместить файл в новую для него папку
                             File.Move(FromToPaths[0], TargetPath);
-                            File.WriteAllText(Path.Combine(TargetFolderPath, "NOTE!.txt"), T._("Files in same paths already exist in ariginal mod folder!\n\n This folder was created in time of conversion from Common mode to MO mode and because in destination place\n where mod file must be moved already was other file with same name.\n It could happen if content of the mod folder was updated\n when game was in common mode and was made same file in same place.\n Please check files here and this files need\n activate this mod or move files to mod folder with same name\n and if this files obsolete or just not need anymore then delete this mod folder."));
+
+                            //записать в папку мода замечание с объяснением наличия этого мода
+                            string note = T._(
+                                "Files in same paths already exist in original mod folder!\n\n" +
+                                " This folder was created in time of conversion from Common mode to MO mode\n" +
+                                " and because in destination place\n" +
+                                " where mod file must be moved already was other file with same name.\n" +
+                                " It could happen if content of the mod folder was updated\n" +
+                                " when game was in common mode and was made same file in same place.\n" +
+                                " Please check files here and if this files need for you\n" +
+                                " then activate this mod or move files to mod folder with same name\n" +
+                                " and if this files obsolete or just not need anymore then delete this mod folder."
+                                );
+                            File.WriteAllText(Path.Combine(NewModPath, "NOTE!.txt"), note);
+
+                            //запись meta.ini с замечанием
+                            WriteMetaINI(
+                                NewModPath
+                                ,
+                                string.Empty
+                                ,
+                                "0."+ DateTimeInFormat
+                                ,
+                                string.Empty
+                                ,
+                                note.Replace("\n", "<br>")
+                                );
+                            ActivateInsertModIfPossible(NewModName, false, ModName, false);
                         }
                     }
 
+
+                    //Перемещение новых файлов
+                    //
+                    //добавление всех файлов из дата, которых нет в списке файлов модов и игры в дата, что был создан сразу после перехода в обычный режим
+                    string[] addedFiles = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories).Where(line => !ModdedDataFiles.Contains(line)).ToArray();
+                    //задание имени целевой папки для новых модов
+                    string addedFilesFolderName = "[added]UseFiles_" + DateTimeInFormat;
+                    string DestFolderPath = Path.Combine(ModsPath, addedFilesFolderName);
 
                     int addedFilesLength = addedFiles.Length;
                     for (int f = 0; f < addedFilesLength; f++)

@@ -69,6 +69,7 @@
             this.ShortcutsCheckBox = new System.Windows.Forms.CheckBox();
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
             this.ToolsPanel = new System.Windows.Forms.Panel();
+            this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
             this.AIGirlHelperTabControl.SuspendLayout();
@@ -459,7 +460,7 @@
             this.OpenModsFolderLinkLabel.TabStop = true;
             this.OpenModsFolderLinkLabel.Text = "Mods";
             this.OpenModsFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
-            this.OpenModsFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel3_LinkClicked);
+            this.OpenModsFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenModsFolderLinkLabel_LinkClicked);
             // 
             // OpenMOLinkLabel
             // 
@@ -472,7 +473,7 @@
             this.OpenMOLinkLabel.TabStop = true;
             this.OpenMOLinkLabel.Text = "MO";
             this.OpenMOLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
-            this.OpenMOLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel2_LinkClicked);
+            this.OpenMOLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenMOFolderLinkLabel_LinkClicked);
             // 
             // OpenGameFolderLinkLabel
             // 
@@ -485,7 +486,7 @@
             this.OpenGameFolderLinkLabel.TabStop = true;
             this.OpenGameFolderLinkLabel.Text = "Game";
             this.OpenGameFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
-            this.OpenGameFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel1_LinkClicked);
+            this.OpenGameFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenGameFolderLinkLabel_LinkClicked);
             // 
             // CreateShortcutButton
             // 
@@ -595,6 +596,7 @@
             // ToolsPanel
             // 
             this.ToolsPanel.BackColor = System.Drawing.Color.Gray;
+            this.ToolsPanel.Controls.Add(this.Install2MODirPathOpenFolderLinkLabel);
             this.ToolsPanel.Controls.Add(this.InstallInModsButton);
             this.ToolsPanel.Controls.Add(this.MOCommonModeSwitchButton);
             this.ToolsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -602,6 +604,19 @@
             this.ToolsPanel.Name = "ToolsPanel";
             this.ToolsPanel.Size = new System.Drawing.Size(340, 155);
             this.ToolsPanel.TabIndex = 1;
+            // 
+            // Install2MODirPathOpenFolderLinkLabel
+            // 
+            this.Install2MODirPathOpenFolderLinkLabel.AutoSize = true;
+            this.Install2MODirPathOpenFolderLinkLabel.LinkColor = System.Drawing.Color.WhiteSmoke;
+            this.Install2MODirPathOpenFolderLinkLabel.Location = new System.Drawing.Point(114, 48);
+            this.Install2MODirPathOpenFolderLinkLabel.Name = "Install2MODirPathOpenFolderLinkLabel";
+            this.Install2MODirPathOpenFolderLinkLabel.Size = new System.Drawing.Size(15, 13);
+            this.Install2MODirPathOpenFolderLinkLabel.TabIndex = 18;
+            this.Install2MODirPathOpenFolderLinkLabel.TabStop = true;
+            this.Install2MODirPathOpenFolderLinkLabel.Text = "<";
+            this.Install2MODirPathOpenFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.Install2MODirPathOpenFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.Install2MODirPathOpenFolderLinkLabel_LinkClicked);
             // 
             // InstallInModsButton
             // 
@@ -670,6 +685,7 @@
             this.groupBox1.PerformLayout();
             this.ToolsTabPage.ResumeLayout(false);
             this.ToolsPanel.ResumeLayout(false);
+            this.ToolsPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -718,6 +734,7 @@
         private System.Windows.Forms.LinkLabel OpenMOLinkLabel;
         private System.Windows.Forms.LinkLabel OpenGameFolderLinkLabel;
         private System.Windows.Forms.LinkLabel OpenLogLinkLabel;
+        private System.Windows.Forms.LinkLabel Install2MODirPathOpenFolderLinkLabel;
     }
 }
 

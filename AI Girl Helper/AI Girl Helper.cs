@@ -593,6 +593,7 @@ namespace AI_Girl_Helper
             //Main
             THToolTip.SetToolTip(button1, T._("Unpacking mods and resources from 'Downloads' and 'AI Girl Helper_RES' folders for game when they are not installed"));
             THToolTip.SetToolTip(InstallInModsButton, T._("Automatically get required mod data, converts and moves files from 2MO folder") + (MOmode ? T._(" to MO format in Mods when possible") : T._(" to the game folder when possible")));
+            THToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Will open"+") 2MO "+ T._("folder")));
             THToolTip.SetToolTip(ShortcutsCheckBox, T._("When checked will create shortcut for the AIGirl Helper manager on Desktop after mods extraction"));
             THToolTip.SetToolTip(groupBox1, T._("Game Display settings"));
             THToolTip.SetToolTip(ResolutionComboBox, T._("Select preferred screen resolution"));
@@ -850,6 +851,7 @@ namespace AI_Girl_Helper
             OverwriteFolder = GetOverwriteFolderLocation();
             OverwriteFolderLink = Path.Combine(GetSelectedGameFolderPath(), "MOUserData");
             ModOrganizerINIpath = Path.Combine(MODirPath, "ModOrganizer.ini");
+            Install2MODirPath = Path.Combine(GetSelectedGameFolderPath(), "2MO");
             AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
         }
 
@@ -1227,7 +1229,7 @@ namespace AI_Girl_Helper
             }
         }
 
-        readonly string Install2MODirPath = Path.Combine(Application.StartupPath, "2MO");
+        string Install2MODirPath = Path.Combine(Application.StartupPath, "2MO");
         private void InstallInModsButton_Click(object sender, EventArgs e)
         {
             if (Directory.Exists(Install2MODirPath) && (Directory.GetFiles(Install2MODirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.cs").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zipmod").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zip").Length > 0 || Directory.GetDirectories(Install2MODirPath, "*").Length > 0))
@@ -2690,19 +2692,24 @@ namespace AI_Girl_Helper
             return null;
         }
 
-        private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void OpenGameFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("explorer.exe", DataPath);
         }
 
-        private void LinkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void OpenMOFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("explorer.exe", MODirPath);
         }
 
-        private void LinkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void OpenModsFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("explorer.exe", ModsPath);
+        }
+
+        private void Install2MODirPathOpenFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("explorer.exe", Install2MODirPath);
         }
 
         private void OpenLogLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

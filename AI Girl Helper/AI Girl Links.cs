@@ -18,7 +18,7 @@ namespace AI_Girl_Helper
 
         private void BooruLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://illusioncards.booru.org/index.php?page=post&s=list");
+            Process.Start("https://aigirl.booru.org/index.php?page=post&s=list&tags=all");
         }
 
         private void KenzatoLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

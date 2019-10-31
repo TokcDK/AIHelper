@@ -592,8 +592,12 @@ namespace AI_Girl_Helper
 
             //Main
             THToolTip.SetToolTip(button1, T._("Unpacking mods and resources from 'Downloads' and 'AI Girl Helper_RES' folders for game when they are not installed"));
-            THToolTip.SetToolTip(LanchModeInfoLinkLabel, T._("Same as button in Tool tab.\n") + T._("Automatically get required mod data, converts and moves files from 2MO folder") + (MOmode ? T._(" to MO format in Mods when possible") : T._(" to the game folder when possible")));
-            THToolTip.SetToolTip(InstallInModsButton, T._("Automatically get required mod data, converts and moves files from 2MO folder") + (MOmode ? T._(" to MO format in Mods when possible") : T._(" to the game folder when possible")));
+            THToolTip.SetToolTip(InstallInModsButton, T._("Automatically get required mod data, converts and moves files from 2MO folder")
+                + (MOmode ? T._(
+                        " to MO format in Mods when possible"
+                    ) : T._(
+                        " to the game folder when possible"
+                        )));
             THToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Will open") + T._(" 2MO folder"));
             THToolTip.SetToolTip(ShortcutsCheckBox, T._("When checked will create shortcut for the AIGirl Helper manager on Desktop after mods extraction"));
             THToolTip.SetToolTip(groupBox1, T._("Game Display settings"));
@@ -602,11 +606,39 @@ namespace AI_Girl_Helper
             THToolTip.SetToolTip(QualityComboBox, T._("Select preferred graphics quality"));
             THToolTip.SetToolTip(CreateShortcutButton, T._("Will create shortcut in Desktop if not exist"));
             THToolTip.SetToolTip(FixRegistryButton, T._("Will set Data dir with game files as install dir in registry"));
-            THToolTip.SetToolTip(GameButton, MOmode ? T._("Will execute the Game") + T._(" from Mod Organizer with attached mods") : T._("Will execute the Game"));
-            THToolTip.SetToolTip(StudioButton, MOmode ? T._("Will execute Studio") + T._(" from Mod Organizer with attached mods") : T._("Will execute Studio"));
+            THToolTip.SetToolTip(GameButton, MOmode ? T._("Will execute the Game")
+                + T._(" from Mod Organizer with attached mods")
+                : T._("Will execute the Game")
+                );
+            THToolTip.SetToolTip(StudioButton, MOmode ? T._("Will execute Studio")
+                + T._(" from Mod Organizer with attached mods")
+                : T._("Will execute Studio")
+                );
             THToolTip.SetToolTip(MOButton, T._("Will execute Mod Organizer mod manager where you can manage your mods"));
-            THToolTip.SetToolTip(SettingsButton, MOmode ? T._("Will execute original game launcher") + T._(" from Mod Organizer with attached mods") : T._("Will execute original game launcher"));
-            THToolTip.SetToolTip(MOCommonModeSwitchButton, MOmode ? T._("Will convert game from MO Mode to Common mode\n when you can run exes from Data folder without Mod Organizer.\n You can convert game back to MO mode\n when it will be need to install new mods or test your mod config") : T._("Will convert the game to MO mode\n when all mod files will be moved back to Mods folder\n in their folders and vanilla files restored"));
+            THToolTip.SetToolTip(SettingsButton, MOmode ?
+                  T._("Will execute original game launcher")
+                + T._(" from Mod Organizer with attached mods")
+                : T._("Will execute original game launcher")
+                );
+            THToolTip.SetToolTip(MOCommonModeSwitchButton, MOmode ? T._(
+                    "Will convert game from MO Mode to Common mode\n" +
+                    " when you can run exes from Data folder without Mod Organizer.\n You can convert game back to MO mode\n" +
+                    " when it will be need to install new mods or test your mod config"
+                ) : T._(
+                    "Will convert the game to MO mode\n" +
+                    " when all mod files will be moved back to Mods folder\n" +
+                    " in their folders and vanilla files restored"
+                ));
+            THToolTip.SetToolTip(LanchModeInfoLinkLabel, T._("Same as button in Tool tab.\n")
+                + (MOmode ? T._(
+                    "Will convert game from MO Mode to Common mode\n" +
+                    " when you can run exes from Data folder without Mod Organizer.\n" +
+                    " You can convert game back to MO mode\n" +
+                    " when it will be need to install new mods or test your mod config"
+                ) : T._(
+                    "Will convert the game to MO mode\n when all mod files will be moved back to Mods folder\n" +
+                    " in their folders and vanilla files restored"
+                )));
             ////////////////////////////
         }
 

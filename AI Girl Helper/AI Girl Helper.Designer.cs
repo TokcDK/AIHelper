@@ -43,6 +43,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.LanchModeInfoLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenLogLinkLabel = new System.Windows.Forms.LinkLabel();
             this.LaunchTabLaunchLabel = new System.Windows.Forms.Label();
             this.GameNamePanel2 = new System.Windows.Forms.Panel();
@@ -57,6 +58,7 @@
             this.SettingsPage = new System.Windows.Forms.TabPage();
             this.SettingsPanel = new System.Windows.Forms.Panel();
             this.SettingsFoldersGroupBox = new System.Windows.Forms.GroupBox();
+            this.OpenMyUserDataFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenModsFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenMOLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenGameFolderLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -250,6 +252,7 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.Gray;
+            this.panel2.Controls.Add(this.LanchModeInfoLinkLabel);
             this.panel2.Controls.Add(this.OpenLogLinkLabel);
             this.panel2.Controls.Add(this.LaunchTabLaunchLabel);
             this.panel2.Controls.Add(this.GameNamePanel2);
@@ -263,6 +266,19 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(340, 155);
             this.panel2.TabIndex = 0;
+            // 
+            // LanchModeInfoLinkLabel
+            // 
+            this.LanchModeInfoLinkLabel.AutoSize = true;
+            this.LanchModeInfoLinkLabel.LinkColor = System.Drawing.Color.White;
+            this.LanchModeInfoLinkLabel.Location = new System.Drawing.Point(4, 4);
+            this.LanchModeInfoLinkLabel.Name = "LanchModeInfoLinkLabel";
+            this.LanchModeInfoLinkLabel.Size = new System.Drawing.Size(52, 13);
+            this.LanchModeInfoLinkLabel.TabIndex = 21;
+            this.LanchModeInfoLinkLabel.TabStop = true;
+            this.LanchModeInfoLinkLabel.Text = "MO mode";
+            this.LanchModeInfoLinkLabel.VisitedLinkColor = System.Drawing.Color.White;
+            this.LanchModeInfoLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.MO2StandartButton_Click);
             // 
             // OpenLogLinkLabel
             // 
@@ -438,16 +454,30 @@
             // 
             // SettingsFoldersGroupBox
             // 
+            this.SettingsFoldersGroupBox.Controls.Add(this.OpenMyUserDataFolderLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenModsFolderLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenMOLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenGameFolderLinkLabel);
             this.SettingsFoldersGroupBox.ForeColor = System.Drawing.Color.White;
             this.SettingsFoldersGroupBox.Location = new System.Drawing.Point(5, 106);
             this.SettingsFoldersGroupBox.Name = "SettingsFoldersGroupBox";
-            this.SettingsFoldersGroupBox.Size = new System.Drawing.Size(110, 44);
+            this.SettingsFoldersGroupBox.Size = new System.Drawing.Size(167, 44);
             this.SettingsFoldersGroupBox.TabIndex = 6;
             this.SettingsFoldersGroupBox.TabStop = false;
             this.SettingsFoldersGroupBox.Text = "Folders";
+            // 
+            // OpenMyUserDataFolderLinkLabel
+            // 
+            this.OpenMyUserDataFolderLinkLabel.AutoSize = true;
+            this.OpenMyUserDataFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.OpenMyUserDataFolderLinkLabel.Location = new System.Drawing.Point(110, 17);
+            this.OpenMyUserDataFolderLinkLabel.Name = "OpenMyUserDataFolderLinkLabel";
+            this.OpenMyUserDataFolderLinkLabel.Size = new System.Drawing.Size(48, 13);
+            this.OpenMyUserDataFolderLinkLabel.TabIndex = 3;
+            this.OpenMyUserDataFolderLinkLabel.TabStop = true;
+            this.OpenMyUserDataFolderLinkLabel.Text = "Userfiles";
+            this.OpenMyUserDataFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
+            this.OpenMyUserDataFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenMyUserDataFolderLinkLabel_LinkClicked);
             // 
             // OpenModsFolderLinkLabel
             // 
@@ -490,9 +520,9 @@
             // 
             // CreateShortcutButton
             // 
-            this.CreateShortcutButton.Location = new System.Drawing.Point(167, 127);
+            this.CreateShortcutButton.Location = new System.Drawing.Point(260, 98);
             this.CreateShortcutButton.Name = "CreateShortcutButton";
-            this.CreateShortcutButton.Size = new System.Drawing.Size(56, 23);
+            this.CreateShortcutButton.Size = new System.Drawing.Size(77, 23);
             this.CreateShortcutButton.TabIndex = 5;
             this.CreateShortcutButton.Text = "Shortcut";
             this.CreateShortcutButton.UseVisualStyleBackColor = true;
@@ -500,9 +530,9 @@
             // 
             // FixRegistryButton
             // 
-            this.FixRegistryButton.Location = new System.Drawing.Point(225, 127);
+            this.FixRegistryButton.Location = new System.Drawing.Point(260, 127);
             this.FixRegistryButton.Name = "FixRegistryButton";
-            this.FixRegistryButton.Size = new System.Drawing.Size(110, 23);
+            this.FixRegistryButton.Size = new System.Drawing.Size(77, 23);
             this.FixRegistryButton.TabIndex = 4;
             this.FixRegistryButton.Text = "Fix registry";
             this.FixRegistryButton.UseVisualStyleBackColor = true;
@@ -735,6 +765,8 @@
         private System.Windows.Forms.LinkLabel OpenGameFolderLinkLabel;
         private System.Windows.Forms.LinkLabel OpenLogLinkLabel;
         private System.Windows.Forms.LinkLabel Install2MODirPathOpenFolderLinkLabel;
+        private System.Windows.Forms.LinkLabel LanchModeInfoLinkLabel;
+        private System.Windows.Forms.LinkLabel OpenMyUserDataFolderLinkLabel;
     }
 }
 

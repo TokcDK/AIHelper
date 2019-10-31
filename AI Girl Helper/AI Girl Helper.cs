@@ -592,6 +592,7 @@ namespace AI_Girl_Helper
 
             //Main
             THToolTip.SetToolTip(button1, T._("Unpacking mods and resources from 'Downloads' and 'AI Girl Helper_RES' folders for game when they are not installed"));
+            THToolTip.SetToolTip(LanchModeInfoLinkLabel, T._("Same as button in Tool tab.\n") + T._("Automatically get required mod data, converts and moves files from 2MO folder") + (MOmode ? T._(" to MO format in Mods when possible") : T._(" to the game folder when possible")));
             THToolTip.SetToolTip(InstallInModsButton, T._("Automatically get required mod data, converts and moves files from 2MO folder") + (MOmode ? T._(" to MO format in Mods when possible") : T._(" to the game folder when possible")));
             THToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Will open") + T._(" 2MO folder"));
             THToolTip.SetToolTip(ShortcutsCheckBox, T._("When checked will create shortcut for the AIGirl Helper manager on Desktop after mods extraction"));
@@ -821,6 +822,8 @@ namespace AI_Girl_Helper
                 //    }
                 //}
 
+                LanchModeInfoLinkLabel.Text = T._("MO mode");
+
                 //создание ссылок на файлы bepinex
                 BepinExLoadingFix();
 
@@ -837,6 +840,7 @@ namespace AI_Girl_Helper
                 //MO2StandartButton.Enabled = false;
                 MOCommonModeSwitchButton.Text = T._("CommonToMO");
                 button1.Text = T._("Common mode");
+                LanchModeInfoLinkLabel.Text = T._("Common mode");
                 button1.Enabled = false;
                 //AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
             }
@@ -2164,6 +2168,7 @@ namespace AI_Girl_Helper
                 {
                     MOmode = false;
                     MOCommonModeSwitchButton.Enabled = false;
+                    LanchModeInfoLinkLabel.Enabled = false;
 
                     string[] EnabledMods = GetEnabledModsFromActiveMOProfile();
                     int EnabledModsLength = EnabledMods.Length;
@@ -2334,6 +2339,7 @@ namespace AI_Girl_Helper
                     //Directory.Move(MODirPath, Path.Combine(AppResDir, Path.GetFileName(MODirPath)));
                     MOCommonModeSwitchButton.Text = T._("CommonToMO");
                     MOCommonModeSwitchButton.Enabled = true;
+                    LanchModeInfoLinkLabel.Enabled = true;
                     File.Move(Path.Combine(MODirPath, "ModOrganizer.exe"), Path.Combine(MODirPath, "ModOrganizer.exe.GameInCommonModeNow"));
                     //обновление информации о конфигурации папок игры
                     FoldersInit();
@@ -2347,6 +2353,7 @@ namespace AI_Girl_Helper
                 {
                     MOmode = true;
                     MOCommonModeSwitchButton.Enabled = false;
+                    LanchModeInfoLinkLabel.Enabled = false;
 
                     string[] Operations = File.ReadAllLines(MOToStandartConvertationOperationsListFile);
                     string[] VanillaDataFiles = File.ReadAllLines(VanillaDataFilesListFile);
@@ -2553,6 +2560,7 @@ namespace AI_Girl_Helper
 
                     MOCommonModeSwitchButton.Text = T._("MOToCommon");
                     MOCommonModeSwitchButton.Enabled = true;
+                    LanchModeInfoLinkLabel.Enabled = true;
                     MessageBox.Show(T._("Mod Organizer mode restored! All mod files moved back to Mods folder. If in Data folder was added new files they also moved in Mods folder as new mod, check and sort it if need"));
                 }
             }
@@ -2710,6 +2718,16 @@ namespace AI_Girl_Helper
         private void Install2MODirPathOpenFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start("explorer.exe", Install2MODirPath);
+        }
+
+        private void OpenMyUserDataFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            string UserFIlesFolder = Path.Combine(ModsPath, "MyUserData");
+            if (Directory.Exists(UserFIlesFolder))
+            {
+                Process.Start("explorer.exe", UserFIlesFolder);
+            }
+
         }
 
         private void OpenLogLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

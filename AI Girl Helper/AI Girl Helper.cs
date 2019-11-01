@@ -1609,10 +1609,11 @@ namespace AI_Girl_Helper
                 string name = Path.GetFileName(dir);
                 string version = string.Empty;
                 string author = string.Empty;
+                string comment = string.Empty;
                 string description = string.Empty;
                 string moddir = string.Empty;
 
-                bool b = false;
+                bool AnyModFound = false;
                 foreach (var subdir in Directory.GetDirectories(dir, "*"))
                 {
                     string subdirname = Path.GetFileName(subdir);
@@ -1621,7 +1622,14 @@ namespace AI_Girl_Helper
                         || string.Compare(subdirname, "userdata", true) == 0
                         || string.Compare(subdirname, "ai-syoujyotrial_data", true) == 0
                         || string.Compare(subdirname, "ai-syoujyo_data", true) == 0
+                        || string.Compare(subdirname, "StudioNEOV2_Data", true) == 0
+                        || string.Compare(subdirname, "manual_s", true) == 0
+                        || string.Compare(subdirname, "manual", true) == 0
+                        || string.Compare(subdirname, "MonoBleedingEdge", true) == 0
+                        || string.Compare(subdirname, "DefaultData", true) == 0
                         || string.Compare(subdirname, "bepinex", true) == 0
+                        || string.Compare(subdirname, "scripts", true) == 0
+                        || string.Compare(subdirname, "mods", true) == 0
                         )
                     {
                         //CopyFolder.Copy(dir, Path.Combine(ModsPath, dir));
@@ -1636,7 +1644,7 @@ namespace AI_Girl_Helper
                         }
                         Directory.Move(dir, TargetModDIr);
                         moddir = TargetModDIr;
-                        b = true;
+                        AnyModFound = true;
                         version = Regex.Match(name, @"\d+(\.\d+)*").Value;
                         author = name.StartsWith("[AI][") || (name.StartsWith("[") && !name.StartsWith("[AI]")) ? name.Substring(name.IndexOf("[") + 1, name.IndexOf("]") - 1) : string.Empty;
                         description = name;
@@ -1644,13 +1652,13 @@ namespace AI_Girl_Helper
                     }
                 }
 
-                if (!b)
+                if (!AnyModFound)
                 {
                     moddir = dir.Replace(Install2MODirPath, ModsPath);
                     string targetfilepath = "readme.txt";
                     foreach (var file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
                     {
-                        if (Path.GetExtension(file) == ".unity3d")
+                        if (string.Compare(Path.GetExtension(file),".unity3d",true)==0)//if extension == .unity3d
                         {
                             //string[] datafiles = Directory.GetFiles(dir, Path.GetFileName(file), SearchOption.AllDirectories);
 
@@ -1679,94 +1687,110 @@ namespace AI_Girl_Helper
                                 Directory.CreateDirectory(Path.GetDirectoryName(targetfilepath));
                                 File.Move(file, targetfilepath);
                             }
+                            AnyModFound = true;
+                        }
+                        else if (string.Compare(Path.GetExtension(file),".cs",true)==0)//if extension == .cs
+                        {
+                            string targetsubdirpath = Path.Combine(moddir, "scripts");
+                            if (!Directory.Exists(targetsubdirpath))
+                            {
+                                Directory.CreateDirectory(targetsubdirpath);
+                            }
+
+                            File.Move(file, Path.Combine(targetsubdirpath, Path.GetFileName(file)));
+                            comment += " Requires: ScriptLoader";
+                            AnyModFound = true;
                         }
                     }
 
-                    string[] txts = Directory.GetFiles(dir, "*.txt");
-                    string infofile = string.Empty;
-                    if (txts.Length > 0)
+                    if (AnyModFound)
                     {
-                        foreach (string txt in txts)
+                        string[] txts = Directory.GetFiles(dir, "*.txt");
+                        string infofile = string.Empty;
+                        if (txts.Length > 0)
                         {
-                            string txtFileName = Path.GetFileName(txt);
-
-                            if (
-                                    string.Compare(txt, "readme.txt", true) == 0
-                                || string.Compare(txt, "description.txt", true) == 0
-                                || string.Compare(txt, Path.GetFileName(dir) + ".txt", true) == 0
-                                || string.Compare(txt, Path.GetFileNameWithoutExtension(targetfilepath) + ".txt", true) == 0
-                                )
+                            foreach (string txt in txts)
                             {
-                                infofile = txt;
-                            }
-                        }
+                                string txtFileName = Path.GetFileName(txt);
 
-                        if (File.Exists(Path.Combine(dir, Path.GetFileName(dir) + ".txt")))
-                        {
-                            infofile = Path.Combine(dir, Path.GetFileName(dir) + ".txt");
-                        }
-                        else if (File.Exists(Path.Combine(dir, "readme.txt")))
-                        {
-                            infofile = Path.Combine(dir, "readme.txt");
-                        }
-                        else if (File.Exists(Path.Combine(dir, "description.txt")))
-                        {
-                            infofile = Path.Combine(dir, "description.txt");
-                        }
-                        else if (File.Exists(Path.Combine(dir, Path.GetFileNameWithoutExtension(targetfilepath) + ".txt")))
-                        {
-                            infofile = Path.Combine(dir, Path.GetFileNameWithoutExtension(targetfilepath) + ".txt");
-                        }
-                    }
-
-                    bool d = false;
-                    if (infofile.Length > 0)
-                    {
-                        string[] filecontent = File.ReadAllLines(infofile);
-                        for (int l = 0; l < filecontent.Length; l++)
-                        {
-                            if (d)
-                            {
-                                description += filecontent[l] + "<br>";
-                            }
-                            else if (filecontent[l].StartsWith("name:"))
-                            {
-                                string s = filecontent[l].Replace("name:", string.Empty);
-                                if (s.Length > 1)
+                                if (
+                                        string.Compare(txt, "readme.txt", true) == 0
+                                    || string.Compare(txt, "description.txt", true) == 0
+                                    || string.Compare(txt, Path.GetFileName(dir) + ".txt", true) == 0
+                                    || string.Compare(txt, Path.GetFileNameWithoutExtension(targetfilepath) + ".txt", true) == 0
+                                    )
                                 {
-                                    name = s;
+                                    infofile = txt;
                                 }
                             }
-                            else if (filecontent[l].StartsWith("author:"))
+
+                            if (File.Exists(Path.Combine(dir, Path.GetFileName(dir) + ".txt")))
                             {
-                                string s = filecontent[l].Replace("author:", string.Empty);
-                                if (s.Length > 1)
-                                {
-                                    author = s;
-                                }
+                                infofile = Path.Combine(dir, Path.GetFileName(dir) + ".txt");
                             }
-                            else if (filecontent[l].StartsWith("version:"))
+                            else if (File.Exists(Path.Combine(dir, "readme.txt")))
                             {
-                                string s = filecontent[l].Replace("version:", string.Empty);
-                                if (s.Length > 1)
-                                {
-                                    version = s;
-                                }
+                                infofile = Path.Combine(dir, "readme.txt");
                             }
-                            else if (filecontent[l].StartsWith("description:"))
+                            else if (File.Exists(Path.Combine(dir, "description.txt")))
                             {
-                                description += filecontent[l].Replace("description:", string.Empty) + "<br>";
-                                d = true;
+                                infofile = Path.Combine(dir, "description.txt");
+                            }
+                            else if (File.Exists(Path.Combine(dir, Path.GetFileNameWithoutExtension(targetfilepath) + ".txt")))
+                            {
+                                infofile = Path.Combine(dir, Path.GetFileNameWithoutExtension(targetfilepath) + ".txt");
                             }
                         }
-                        if (File.Exists(infofile))
+
+                        bool d = false;
+                        if (infofile.Length > 0)
                         {
-                            File.Move(infofile, Path.Combine(moddir, Path.GetFileName(infofile)));
+                            string[] filecontent = File.ReadAllLines(infofile);
+                            for (int l = 0; l < filecontent.Length; l++)
+                            {
+                                if (d)
+                                {
+                                    description += filecontent[l] + "<br>";
+                                }
+                                else if (filecontent[l].StartsWith("name:"))
+                                {
+                                    string s = filecontent[l].Replace("name:", string.Empty);
+                                    if (s.Length > 1)
+                                    {
+                                        name = s;
+                                    }
+                                }
+                                else if (filecontent[l].StartsWith("author:"))
+                                {
+                                    string s = filecontent[l].Replace("author:", string.Empty);
+                                    if (s.Length > 1)
+                                    {
+                                        author = s;
+                                    }
+                                }
+                                else if (filecontent[l].StartsWith("version:"))
+                                {
+                                    string s = filecontent[l].Replace("version:", string.Empty);
+                                    if (s.Length > 1)
+                                    {
+                                        version = s;
+                                    }
+                                }
+                                else if (filecontent[l].StartsWith("description:"))
+                                {
+                                    description += filecontent[l].Replace("description:", string.Empty) + "<br>";
+                                    d = true;
+                                }
+                            }
+                            if (File.Exists(infofile))
+                            {
+                                File.Move(infofile, Path.Combine(moddir, Path.GetFileName(infofile)));
+                            }
                         }
                     }
                 }
 
-                if (Directory.Exists(moddir))
+                if (AnyModFound)
                 {
                     string[] dlls = Directory.GetFiles(moddir, "*.dll", SearchOption.AllDirectories);
                     if (author.Length == 0 && dlls.Length > 0)
@@ -1795,30 +1819,38 @@ namespace AI_Girl_Helper
                             }
                         }
                     }
+
+                    if (version.Length == 0)
+                    {
+                        var r = Regex.Match(Path.GetFileName(moddir), @"(\d+(\.\d+)*)");
+                        if (r.Value.Length > 0)
+                        {
+                            version = r.Value;
+                        }
+                    }
+
+                    //запись meta.ini
+                    WriteMetaINI(
+                        moddir
+                        ,
+                        ""
+                        ,
+                        version
+                        ,
+                        comment
+                        ,
+                        "<br>Author: " + author + "<br><br>" + description
+                        );
+                    //Utils.IniFile INI = new Utils.IniFile(Path.Combine(dllmoddirpath, "meta.ini"));
+                    //INI.WriteINI("General", "category", "\"51,\"");
+                    //INI.WriteINI("General", "version", version);
+                    //INI.WriteINI("General", "gameName", "Skyrim");
+                    //INI.WriteINI("General", "comments", "Requires: BepinEx");
+                    //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \"");
+                    //INI.WriteINI("General", "validated", "true");
+
+                    ActivateInsertModIfPossible(Path.GetFileName(moddir));
                 }
-
-                //запись meta.ini
-                WriteMetaINI(
-                    moddir
-                    ,
-                    ""
-                    ,
-                    version
-                    ,
-                    string.Empty
-                    ,
-                    "<br>Author: " + author + "<br><br>" + description
-                    );
-                //Utils.IniFile INI = new Utils.IniFile(Path.Combine(dllmoddirpath, "meta.ini"));
-                //INI.WriteINI("General", "category", "\"51,\"");
-                //INI.WriteINI("General", "version", version);
-                //INI.WriteINI("General", "gameName", "Skyrim");
-                //INI.WriteINI("General", "comments", "Requires: BepinEx");
-                //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \"");
-                //INI.WriteINI("General", "validated", "true");
-
-                ActivateInsertModIfPossible(Path.GetFileName(moddir));
-
             }
         }
 

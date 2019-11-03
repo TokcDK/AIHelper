@@ -1369,22 +1369,36 @@ namespace AI_Girl_Helper
                         Directory.CreateDirectory(scriptsdir);
                     }
 
+                    string FileTargetPath = Path.Combine(scriptsdir, name + ".cs");
+                    bool IsUpdate = false;
+                    //резервная копия, если файл существовал
+                    if (File.Exists(FileTargetPath))
+                    {
+                        IsUpdate = true;
+                        File.Move(FileTargetPath, FileTargetPath + ".bak");
+                    }
+
                     string FileLastModificationTime = File.GetLastWriteTime(csFile).ToString("yyyyMMddHHmm");
                     //запись meta.ini
                     WriteMetaINI(
                         moddir
                         ,
-                        "86,"
+                        IsUpdate ? string.Empty : "86,"
                         ,
                         "0." + FileLastModificationTime
                         ,
-                        "Requires: " + "ScriptLoader"
+                        IsUpdate ? string.Empty : "Requires: " + "ScriptLoader"
                         ,
-                        "<br>" + "Author" + ": " + author + "<br><br>" + (description.Length > 0 ? description : name)
+                        IsUpdate ? string.Empty : "<br>" + "Author" + ": " + author + "<br><br>" + (description.Length > 0 ? description : name)
                         );
 
                     File.Move(csFile, Path.Combine(scriptsdir, name + ".cs"));
                     ActivateInsertModIfPossible(modname, false, "ScriptLoader scripts_separator");
+
+                    if (IsUpdate && File.Exists(FileTargetPath) && File.Exists(FileTargetPath + ".bak"))
+                    {
+                        File.Delete(FileTargetPath + ".bak");
+                    }
                 }
             }
         }
@@ -1531,6 +1545,7 @@ namespace AI_Girl_Helper
 
                 bool FoundZipMod = false;
                 bool FoundStandardModInZip = false;
+                bool FoundModsDir = false;
 
                 using (ZipArchive archive = ZipFile.OpenRead(zipfile))
                 {
@@ -1539,26 +1554,39 @@ namespace AI_Girl_Helper
                     {
                         string entryFullName = archive.Entries[entrieNum].FullName;
                         int entryFullNameLength = entryFullName.Length;
-                        if (entryFullNameLength >= 12 && string.Compare(entryFullName.Substring(entryFullNameLength - 12, 12), "manifest.xml", true) == 0)
+                        if (!FoundZipMod && entryFullNameLength >= 12 && string.Compare(entryFullName.Substring(entryFullNameLength - 12, 12), "manifest.xml", true) == 0) //entryFullName=="manifest.xml"
                         {
                             FoundZipMod = true;
                             break;
                         }
 
-                        if (FoundStandardModInZip)
-                        {
-
-                        }
-                        else
+                        if (!FoundStandardModInZip)
                         {
                             if (
-                                   (entryFullNameLength >= 7 && string.Compare(entryFullName.Substring(entryFullNameLength - 7, 7), "abdata/", true) == 0)
-                                || (entryFullNameLength >= 6 && string.Compare(entryFullName.Substring(entryFullNameLength - 6, 6), "_data/", true) == 0)
-                                || (entryFullNameLength >= 8 && string.Compare(entryFullName.Substring(entryFullNameLength - 8, 8), "bepinex/", true) == 0)
-                                || (entryFullNameLength >= 9 && string.Compare(entryFullName.Substring(entryFullNameLength - 9, 9), "userdata/", true) == 0)
+                                   (entryFullNameLength >= 7 && string.Compare(entryFullName.Substring(entryFullNameLength - 7, 7), "abdata/", true) == 0) //entryFullName=="abdata/"
+                                || (entryFullNameLength >= 6 && string.Compare(entryFullName.Substring(entryFullNameLength - 6, 6), "_data/", true) == 0) //entryFullName=="_data/"
+                                || (entryFullNameLength >= 8 && string.Compare(entryFullName.Substring(entryFullNameLength - 8, 8), "bepinex/", true) == 0) //entryFullName=="bepinex/"
+                                || (entryFullNameLength >= 9 && string.Compare(entryFullName.Substring(entryFullNameLength - 9, 9), "userdata/", true) == 0) //entryFullName=="userdata/"
                                )
                             {
                                 FoundStandardModInZip = true;
+                            }
+                            if (!FoundStandardModInZip && FoundModsDir)
+                            {
+                                if (entryFullNameLength >= 7 && string.Compare(entryFullName.Substring(entryFullNameLength - 7, 7), ".zipmod", true) == 0)
+                                {
+                                    archive.Entries[entrieNum].ExtractToFile(Path.Combine(Install2MODirPath, entryFullName));
+                                    break;
+                                }
+                                else if(entryFullNameLength >= 4 && string.Compare(entryFullName.Substring(entryFullNameLength - 4, 4), ".zip", true) == 0)
+                                {
+                                    archive.Entries[entrieNum].ExtractToFile(Path.Combine(Install2MODirPath, entryFullName+"mod"));
+                                    break;
+                                }
+                            }
+                            if (!FoundModsDir && entryFullNameLength >= 5 && string.Compare(entryFullName.Substring(entryFullNameLength - 5, 5), "mods/", true) == 0)
+                            {
+                                FoundModsDir = true;
                             }
                         }
                     }
@@ -1577,7 +1605,7 @@ namespace AI_Girl_Helper
                 {
                     string zipmoddirpath = Path.Combine(ModsPath, Path.GetFileNameWithoutExtension(zipfile));
                     Compressor.Decompress(zipfile, zipmoddirpath);
-                    File.Move(zipfile, zipfile + ".Installed");
+                    File.Move(zipfile, zipfile + ".InstalledExtractedToMods");
 
                     //запись meta.ini
                     WriteMetaINI(
@@ -1593,6 +1621,10 @@ namespace AI_Girl_Helper
                         );
 
                     ActivateInsertModIfPossible(Path.GetFileName(zipmoddirpath));
+                }
+                else if (FoundModsDir)
+                {
+                    File.Move(zipfile, zipfile + ".InstalledExtractedZipmod");
                 }
             }
         }
@@ -1947,13 +1979,37 @@ namespace AI_Girl_Helper
             {
                 string metaPath = Path.Combine(moddir, "meta.ini");
                 Utils.IniFile INI = new Utils.IniFile(metaPath);
-                INI.WriteINI("General", "category", "\"" + category + "\"");
-                INI.WriteINI("General", "version", version);
-                INI.WriteINI("General", "gameName", "Skyrim");
-                INI.WriteINI("General", "comments", comments);
-                INI.WriteINI("General", "notes", "\"" + notes + "\"");
+
+                bool IsKeyExists = INI.KeyExists("category", "General");
+                if (!IsKeyExists || (IsKeyExists && category.Length > 0 && INI.ReadINI("General", "category").Replace("\"",string.Empty).Length==0))
+                {
+                    INI.WriteINI("General", "category", "\"" + category + "\"");
+                }
+
+                if (version.Length > 0)
+                {
+                    INI.WriteINI("General", "version", version);
+                }
+
+                INI.WriteINI("General", "gameName", GETMOCurrentGame());
+                
+                if (comments.Length > 0)
+                {
+                    INI.WriteINI("General", "comments", comments);
+                }
+
+                if (notes.Length > 0)
+                {
+                    INI.WriteINI("General", "notes", "\"" + notes + "\"");
+                }
+
                 INI.WriteINI("General", "validated", "true");
             }
+        }
+
+        private string GETMOCurrentGame()
+        {
+            return "Skyrim";
         }
 
         private void ActivateInsertModIfPossible(string modname, bool Activate = true, string modAfterWhichInsert = "", bool PlaceAfter = true)

@@ -1499,7 +1499,7 @@ namespace AI_Girl_Helper
                             "<br>Author: " + string.Empty + "<br><br>" + Path.GetFileNameWithoutExtension(cardsModDir) + " character cards<br><br>"
                             );
 
-                        ActivateInsertModIfPossible(Path.GetFileName(cardsModDir));
+                        ActivateInsertModIfPossible(Path.GetFileName(cardsModDir), true, "UserCharacters_separator");
                     }
                 }
             }

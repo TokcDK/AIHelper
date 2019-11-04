@@ -1698,6 +1698,7 @@ namespace AI_Girl_Helper
                 }
 
                 string name = Path.GetFileName(dir);
+                string category = string.Empty;
                 string version = string.Empty;
                 string author = string.Empty;
                 string comment = string.Empty;
@@ -1792,6 +1793,17 @@ namespace AI_Girl_Helper
                             if (comment.Length == 0 || !comment.Contains("Requires: ScriptLoader"))
                             {
                                 comment += " Requires: ScriptLoader";
+                            }
+                            if (category.Length == 0 || !comment.Contains("86"))
+                            {
+                                if (category.Length == 0 || category == "-1,")
+                                {
+                                    category = "86,";
+                                }
+                                else
+                                {
+                                    category += category.EndsWith(",") ? "86" : ",86";
+                                }
                             }
 
                             AnyModFound = true;
@@ -1928,7 +1940,7 @@ namespace AI_Girl_Helper
                     WriteMetaINI(
                         moddir
                         ,
-                        ""
+                        category
                         ,
                         version
                         ,

@@ -1286,10 +1286,10 @@ namespace AI_Girl_Helper
                 InstallCardsFrom2MO();
 
                 InstallInModsButton.Text = "....>.>";
-                InstallCardsFromSubfolders();
+                InstallModFilesFromSubfolders();
 
                 InstallInModsButton.Text = ".....>>";
-                InstallModFilesFromSubfolders();
+                InstallImagesFromSubfolders();
 
                 InstallInModsButton.Text = "......>";
                 DeleteEmptySubfolders(Install2MODirPath, false);
@@ -1405,7 +1405,6 @@ namespace AI_Girl_Helper
 
         private void InstallCardsFrom2MO(string TargetDir = "")
         {
-            string targetdir = Path.Combine(ModsPath, "MyUserData");
             string ProceedDir = TargetDir.Length == 0 ? Install2MODirPath : TargetDir;
             var images = Directory.GetFiles(ProceedDir, "*.png");
             int imagesLength = images.Length;
@@ -1421,70 +1420,69 @@ namespace AI_Girl_Helper
                     //{
                     //    IsCharaCard = true;
                     //}
-                    string ImgFIleName = Path.GetFileNameWithoutExtension(img);
-                    string ImagesSubFolder = IllusionImagesTargetCharaSubFolder(targetdir);
-                    string targetImagePath = Path.Combine(ImagesSubFolder, ImgFIleName + ".png");
-                    int i = 1;
-                    while (File.Exists(targetImagePath))
-                    {
-                        targetImagePath = Path.Combine(ImagesSubFolder, ImgFIleName + " (" + i + ")" + ".png");
-                        i++;
-                    }
+
+                    var targetImagePath = GetResultTargetFilePathWithNameCheck(GetUserDataSubFolder(" Chars", "f"), Path.GetFileNameWithoutExtension(img), ".png");
 
                     File.Move(img, targetImagePath);
                 }
             }
         }
 
-        private void InstallCardsFromSubfolders()
+        private void InstallImagesFromSubfolders()
         {
             foreach (var dir in Directory.GetDirectories(Install2MODirPath, "*"))
             {
-                var images = Directory.GetFiles(dir, "*.png");
-                if (images.Length > 0 && Directory.GetDirectories(dir, "*").Where(d => Path.GetFileName(d) != "m").ToArray().Length == 0)
+                if (string.Compare(Path.GetFileName(dir), "f", true) == 0)
                 {
-                    if (string.Compare(Path.GetFileName(dir), "m", true) == 0) // если это папка m с мужскими карточками                    
+                    //папка "f" с женскими карточками внутри
+                    MoveImagesToTargetContentFolder(dir, "f");
+                }
+                else if (string.Compare(Path.GetFileName(dir), "m", true) == 0)
+                {
+                    //папка "m" с мужскими карточками внутри
+                    MoveImagesToTargetContentFolder(dir, "m");
+                }
+                else if (string.Compare(Path.GetFileName(dir), "c", true) == 0)
+                {
+                    //папка "c" с координатами
+                    MoveImagesToTargetContentFolder(dir, "c");
+                }
+                else if (string.Compare(Path.GetFileName(dir), "cf", true) == 0)
+                {
+                    //папка "cf" с передними фреймами
+                    MoveImagesToTargetContentFolder(dir, "cf");
+                }
+                else if (string.Compare(Path.GetFileName(dir), "cb", true) == 0)
+                {
+                    //папка "cb" с задними фреймами
+                    MoveImagesToTargetContentFolder(dir, "cb");
+                }
+                else if (string.Compare(Path.GetFileName(dir), "o", true) == 0)
+                {
+                    //папка "cb" с оверлеями
+                    MoveImagesToTargetContentFolder(dir, "o");
+                }
+                else
+                {
+                    var images = Directory.GetFiles(dir, "*.png");
+                    if (images.Length > 0)
                     {
-                        //папка "m" с мужскими карточками внутри
-                        if (Directory.Exists(dir))
-                        {
-                            images = Directory.GetFiles(dir, "*.png");
-                            if (images.Length > 0)
-                            {
-                                foreach (var img in images)
-                                {
-                                    var m = Path.Combine(IllusionImagesTargetCharaSubFolder(Path.Combine(ModsPath, "MyUserData"), true), Path.GetFileName(img));
-                                    File.Move(img, m);
-                                }
-                            }
-                            DeleteEmptySubfolders(dir);
-                        }
-                    }
-                    else
-                    {
+                        //Просто произвольная подпапка, которая будет перемещена как новый мод
+                        MoveImagesToTargetContentFolder(dir, "f", true);
                         //bool IsCharaCard = false;
-                        foreach (var img in images)
-                        {
-                            //var imgdata = Image.FromFile(img);
+                        //foreach (var img in images)
+                        //{
+                        //    //var imgdata = Image.FromFile(img);
 
-                            //if (imgdata.Width == 252 && imgdata.Height == 352)
-                            //{
-                            //    IsCharaCard = true;
-                            //}
-                            string UserDataPath = Path.Combine(ModsPath, "UserData");
-                            string TargetDir = IllusionImagesTargetCharaSubFolder(dir);
-                            string TargetPath = Path.Combine(TargetDir, Path.GetFileName(img));
-                            File.Move(img, TargetPath);
-                        }
+                        //    //if (imgdata.Width == 252 && imgdata.Height == 352)
+                        //    //{
+                        //    //    IsCharaCard = true;
+                        //    //}
+                        //    string TargetPath = Path.Combine(GetCharactersFolder(), Path.GetFileName(img));
+                        //    File.Move(img, TargetPath);
+                        //}
 
-                        var cardsModName = Path.GetFileName(dir);
-                        var cardsModDir = Path.Combine(ModsPath, cardsModName);
-                        int i = 1;
-                        while (Directory.Exists(cardsModDir))
-                        {
-                            cardsModDir = Path.Combine(ModsPath, cardsModName + " (" + i + ")");
-                            i++;
-                        }
+                        var cardsModDir = GetResultTargetDirPathWithNameCheck(ModsPath, Path.GetFileName(dir));
 
                         Directory.Move(dir, cardsModDir);
 
@@ -1507,31 +1505,273 @@ namespace AI_Girl_Helper
             }
         }
 
-        private string GetTargetImgName(string TargetFolder, string Name)
+        private void MoveImagesToTargetContentFolder(string dir, string ContentType, bool MoveInThisFolder = false)
         {
-            if (Directory.Exists(TargetFolder))
+            if (Directory.Exists(dir))
             {
-                string resultName = Name;
-                int i = 1;
-                while (File.Exists(Path.Combine(TargetFolder, resultName)))
+                string TargetFolder = string.Empty;
+                string Extension = ".png";
+                if (ContentType == "f")
                 {
-                    resultName = Name + " (" + i + ")" + ".png";
-                    i++;
+                    //TargetFolder = GetCharactersFolder();
+                    TargetFolder = GetUserDataSubFolder(MoveInThisFolder ? dir : " Chars", ContentType);
                 }
-                return resultName;
+                else if (ContentType == "m")
+                {
+                    //TargetFolder = GetCharactersFolder(true);
+                    TargetFolder = GetUserDataSubFolder(MoveInThisFolder ? dir : " Chars", ContentType);
+                }
+                else if (ContentType == "c")
+                {
+                    //TargetFolder = GetCoordinateFolder();
+                    TargetFolder = GetUserDataSubFolder(MoveInThisFolder ? dir : " Coordinate", ContentType);
+                }
+                else if (ContentType == "cf")
+                {
+                    //TargetFolder = GetCardFrameFolder();
+                    TargetFolder = GetUserDataSubFolder(MoveInThisFolder ? dir : " Cardframes", ContentType);
+                }
+                else if (ContentType == "cb")
+                {
+                    //TargetFolder = GetCardFrameFolder(false);
+                    TargetFolder = GetUserDataSubFolder(MoveInThisFolder ? dir : " Cardframes", ContentType);
+                }
+                else if (ContentType == "o")
+                {
+                    //TargetFolder = GetOverlaysFolder();
+                    TargetFolder = GetUserDataSubFolder(MoveInThisFolder ? dir : " Overlays", ContentType);
+                }
+                var Targets = Directory.GetFiles(dir, "*" + Extension);
+                if (Targets.Length > 0)
+                {
+                    foreach (var target in Targets)
+                    {
+                        var CardframeTargetFolder = GetResultTargetFilePathWithNameCheck(TargetFolder, Path.GetFileNameWithoutExtension(target), Extension);
+
+                        File.Move(target, CardframeTargetFolder);
+                    }
+                }
+
+                if (ContentType == "o")
+                {
+                    Targets = Directory.GetDirectories(dir, "*");
+                    if (Targets.Length > 0)
+                    {
+                        foreach (var target in Targets)
+                        {
+                            var ResultTargetPath = GetResultTargetDirPathWithNameCheck(Path.GetDirectoryName(TargetFolder), Path.GetFileName(target));
+
+                            Directory.Move(target, ResultTargetPath);
+                        }
+                    }
+                }
+                else if (ContentType == "f")
+                {
+                    string MaleDir = Path.Combine(dir, "m");
+                    if (Directory.Exists(MaleDir))
+                    {
+                        Targets = Directory.GetFiles(MaleDir, "*.png");
+                        foreach (var target in Targets)
+                        {
+                            string name = Path.GetFileName(target);
+                            File.Move(target, Path.Combine(dir, name));
+                        }
+                        Directory.Move(MaleDir, MaleDir + "_");
+                        MoveImagesToTargetContentFolder(dir, "m", MoveInThisFolder);
+                    }
+                }
+
+                DeleteEmptySubfolders(dir);
             }
-            return Name + ".png";
         }
 
-        private string IllusionImagesTargetCharaSubFolder(string dir, bool m = false)
+        private string GetOverlaysFolder()
         {
-            var imagesSubdir = Path.Combine(dir, "UserData", "chara", m ? "male" : "female");
+            string CoordinateFolder = Path.Combine(ModsPath, "OrganizedModPack Downloaded Overlays");
+            if (Directory.Exists(CoordinateFolder))
+            {
+                CoordinateFolder = Path.Combine(ModsPath, "OrganizedModPack Downloaded Overlays", "UserData", "Overlays");
+                if (!Directory.Exists(CoordinateFolder))
+                {
+                    Directory.CreateDirectory(CoordinateFolder);
+                }
+                return CoordinateFolder;
+            }
+            if (Directory.Exists(Path.Combine(ModsPath, "MyUserData")))
+            {
+                CoordinateFolder = Path.Combine(ModsPath, "MyUserData", "UserData", "Overlays");
+                if (!Directory.Exists(CoordinateFolder))
+                {
+                    Directory.CreateDirectory(CoordinateFolder);
+                }
+                return CoordinateFolder;
+            }
+            CoordinateFolder = Path.Combine(OverwriteFolder, "MyUserData", "UserData", "Overlays");
+            if (!Directory.Exists(CoordinateFolder))
+            {
+                Directory.CreateDirectory(CoordinateFolder);
+            }
+            return CoordinateFolder;
+        }
+
+        private string GetResultTargetFilePathWithNameCheck(string Folder, string Name, string Extension)
+        {
+            var ResultPath = Path.Combine(Folder, Name + Extension);
+            int i = 0;
+            while (File.Exists(ResultPath))
+            {
+                i++;
+                ResultPath = Path.Combine(Folder, Name + " (" + i + ")" + Extension);
+            }
+            return ResultPath;
+        }
+
+        private string GetCardFrameFolder(bool IsFront = true)
+        {
+            var imagesSubdir = Path.Combine(ModsPath, "OrganizedModPack Downloaded CardFrames");
+            var FrontBack = IsFront ? "Front" : "Back";
+            if (Directory.Exists(imagesSubdir))
+            {
+                imagesSubdir = Path.Combine(ModsPath, "OrganizedModPack Downloaded Cardframes", "UserData", "cardframe", FrontBack);
+                if (!Directory.Exists(imagesSubdir))
+                {
+                    Directory.CreateDirectory(imagesSubdir);
+                }
+                return imagesSubdir;
+            }
+            imagesSubdir = Path.Combine(ModsPath, "MyUserData");
+            if (Directory.Exists(imagesSubdir))
+            {
+                imagesSubdir = Path.Combine(imagesSubdir, "UserData", "cardframe", FrontBack);
+                if (!Directory.Exists(imagesSubdir))
+                {
+                    Directory.CreateDirectory(imagesSubdir);
+                }
+                return imagesSubdir;
+            }
+
+            imagesSubdir = Path.Combine(OverwriteFolder, "UserData", "cardframe", FrontBack);
             if (!Directory.Exists(imagesSubdir))
             {
                 Directory.CreateDirectory(imagesSubdir);
             }
             return imagesSubdir;
         }
+
+        private string GetCoordinateFolder()
+        {
+            string CoordinateFolder = Path.Combine(ModsPath, "OrganizedModPack Downloaded Coordinate");
+            if (Directory.Exists(CoordinateFolder))
+            {
+                CoordinateFolder = Path.Combine(ModsPath, "OrganizedModPack Downloaded Coordinate", "UserData", "coordinate");
+                if (!Directory.Exists(CoordinateFolder))
+                {
+                    Directory.CreateDirectory(CoordinateFolder);
+                }
+                return CoordinateFolder;
+            }
+            if (Directory.Exists(Path.Combine(ModsPath, "MyUserData")))
+            {
+                CoordinateFolder = Path.Combine(ModsPath, "MyUserData", "UserData", "coordinate");
+                if (!Directory.Exists(CoordinateFolder))
+                {
+                    Directory.CreateDirectory(CoordinateFolder);
+                }
+                return CoordinateFolder;
+            }
+            CoordinateFolder = Path.Combine(OverwriteFolder, "MyUserData", "UserData", "coordinate");
+            if (!Directory.Exists(CoordinateFolder))
+            {
+                Directory.CreateDirectory(CoordinateFolder);
+            }
+            return CoordinateFolder;
+        }
+
+        private string GetCharactersFolder(bool IsMaleCards = false)
+        {
+            string[] TargetFolders = new string[3]
+            {
+                Path.Combine(ModsPath, "OrganizedModPack Downloaded Chars"),
+                Path.Combine(ModsPath, "MyUserData"),
+                OverwriteFolder
+            };
+
+            var FeMaleFolder = IsMaleCards ? "male" : "female";
+            int TargetFoldersLength = TargetFolders.Length;
+            for (int i = 0; i < TargetFoldersLength; i++)
+            {
+                string Folder = TargetFolders[i];
+                if (Directory.Exists(Folder))
+                {
+                    var Subdir = Path.Combine(Folder, "UserData", "chara", FeMaleFolder);
+                    if (!Directory.Exists(Subdir))
+                    {
+                        Directory.CreateDirectory(Subdir);
+                    }
+                    return Subdir;
+                }
+            }
+            return OverwriteFolder;
+        }
+
+        private string GetUserDataSubFolder(string FirstCandidateFolder, string Type)
+        {
+            string[] TargetFolders = new string[3]
+            {
+                FirstCandidateFolder.Substring(0,1)== " " ? Path.Combine(ModsPath, "OrganizedModPack Downloaded"+FirstCandidateFolder) : FirstCandidateFolder,
+                Path.Combine(ModsPath, "MyUserData"),
+                OverwriteFolder
+            };
+
+            string TypeFolder = string.Empty;
+            string TargetFolderName = string.Empty;
+            if (Type == "f")
+            {
+                TypeFolder = "chara";
+                TargetFolderName = "female";
+            }
+            else if (Type == "m")
+            {
+                TypeFolder = "chara";
+                TargetFolderName = "male";
+            }
+            else if (Type == "c")
+            {
+                TypeFolder = "coordinate";
+            }
+            else if (Type == "cf")
+            {
+                TypeFolder = "cardframe";
+                TargetFolderName = "Front";
+            }
+            else if (Type == "cb")
+            {
+                TypeFolder = "cardframe";
+                TargetFolderName = "Back";
+            }
+            else if (Type == "o")
+            {
+                TypeFolder = "Overlays";
+            }
+
+            int TargetFoldersLength = TargetFolders.Length;
+            for (int i = 0; i < TargetFoldersLength; i++)
+            {
+                string Folder = TargetFolders[i];
+                if (Directory.Exists(Folder))
+                {
+                    var TargetResultDirPath = Path.Combine(Folder, "UserData", TypeFolder, TargetFolderName);
+                    if (!Directory.Exists(TargetResultDirPath))
+                    {
+                        Directory.CreateDirectory(TargetResultDirPath);
+                    }
+                    return TargetResultDirPath;
+                }
+            }
+
+            return Path.Combine(OverwriteFolder, "UserData", TypeFolder, TargetFolderName);
+        }
+
 
         private void InstallZipArchivesToMods()
         {
@@ -1726,14 +1966,9 @@ namespace AI_Girl_Helper
                     {
                         //CopyFolder.Copy(dir, Path.Combine(ModsPath, dir));
                         //Directory.Move(dir, "[installed]" + dir);
-                        string TargetModDirName = Path.GetFileName(dir);
-                        string TargetModDIr = Path.Combine(ModsPath, TargetModDirName);
-                        int i = 1;
-                        while (Directory.Exists(TargetModDIr))
-                        {
-                            TargetModDIr = Path.Combine(ModsPath, TargetModDirName + " (" + i + ")");
-                            i++;
-                        }
+
+                        var TargetModDIr = GetResultTargetDirPathWithNameCheck(ModsPath, Path.GetFileName(dir));
+
                         Directory.Move(dir, TargetModDIr);
                         moddir = TargetModDIr;
                         AnyModFound = true;
@@ -1959,6 +2194,24 @@ namespace AI_Girl_Helper
                     ActivateInsertModIfPossible(Path.GetFileName(moddir));
                 }
             }
+        }
+
+        /// <summary>
+        /// Проверки существования целевой папки и модификация имени на уникальное
+        /// </summary>
+        /// <param name="ParentFolder"></param>
+        /// <param name="TargetFolder"></param>
+        /// <returns></returns>
+        private string GetResultTargetDirPathWithNameCheck(string ParentFolder, string TargetFolder)
+        {
+            string ResultTargetDirPath = Path.Combine(ParentFolder, TargetFolder);
+            int i = 0;
+            while (Directory.Exists(ResultTargetDirPath))
+            {
+                i++;
+                ResultTargetDirPath = Path.Combine(ParentFolder, TargetFolder + " (" + i + ")");
+            }
+            return ResultTargetDirPath;
         }
 
         private void InstallBepinExModsToMods()
@@ -2288,15 +2541,7 @@ namespace AI_Girl_Helper
                         }
                     }
 
-                    string zipmoddirpath = Path.Combine(ModsPath, name);
-
-                    //Проверки существования целевой папки и модификация имени на более уникальное
-                    int i = 1;
-                    while (Directory.Exists(zipmoddirpath))
-                    {
-                        zipmoddirpath = Path.Combine(ModsPath, name + " (" + i + ")");
-                        i++;
-                    }
+                    string zipmoddirpath = GetResultTargetDirPathWithNameCheck(ModsPath, name);
 
                     //перемещение zipmod-а в свою подпапку в Mods
                     string zipmoddirmodspath = Path.Combine(zipmoddirpath, "mods");

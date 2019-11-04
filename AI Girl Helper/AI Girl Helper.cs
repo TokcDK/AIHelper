@@ -1546,6 +1546,13 @@ namespace AI_Girl_Helper
                 bool FoundZipMod = false;
                 bool FoundStandardModInZip = false;
                 bool FoundModsDir = false;
+                bool FoundcsFiles = false;
+
+                string author = string.Empty;
+                string category = string.Empty;
+                string version = string.Empty;
+                string comment = string.Empty;
+                string description = string.Empty;
 
                 using (ZipArchive archive = ZipFile.OpenRead(zipfile))
                 {
@@ -1571,22 +1578,57 @@ namespace AI_Girl_Helper
                             {
                                 FoundStandardModInZip = true;
                             }
-                            if (!FoundStandardModInZip && FoundModsDir)
+                            if (FoundModsDir && !FoundStandardModInZip)
                             {
-                                if (entryFullNameLength >= 7 && string.Compare(entryFullName.Substring(entryFullNameLength - 7, 7), ".zipmod", true) == 0)
+                                if (entryFullNameLength >= 7 && string.Compare(entryFullName.Substring(entryFullNameLength - 7, 7), ".zipmod", true) == 0)//entryFullName==".zipmod"
                                 {
                                     archive.Entries[entrieNum].ExtractToFile(Path.Combine(Install2MODirPath, entryFullName));
                                     break;
                                 }
-                                else if(entryFullNameLength >= 4 && string.Compare(entryFullName.Substring(entryFullNameLength - 4, 4), ".zip", true) == 0)
+                                else if (entryFullNameLength >= 4 && string.Compare(entryFullName.Substring(entryFullNameLength - 4, 4), ".zip", true) == 0)
                                 {
-                                    archive.Entries[entrieNum].ExtractToFile(Path.Combine(Install2MODirPath, entryFullName+"mod"));
+                                    archive.Entries[entrieNum].ExtractToFile(Path.Combine(Install2MODirPath, entryFullName + "mod"));
                                     break;
                                 }
                             }
                             if (!FoundModsDir && entryFullNameLength >= 5 && string.Compare(entryFullName.Substring(entryFullNameLength - 5, 5), "mods/", true) == 0)
                             {
                                 FoundModsDir = true;
+                            }
+                            if (!FoundcsFiles && entryFullNameLength >= 3 && string.Compare(entryFullName.Substring(entryFullNameLength - 3, 3), ".cs", true) == 0)
+                            {
+                                FoundStandardModInZip = false;
+                                FoundcsFiles = true;
+                                break;
+                            }
+                            if (FoundModsDir && entryFullNameLength >= 4 && string.Compare(entryFullName.Substring(entryFullNameLength - 4, 4), ".dll", true) == 0)
+                            {
+                                if (description.Length == 0 && version.Length == 0 && author.Length == 0)
+                                {
+                                    string tempdir = Path.Combine(Install2MODirPath, "temp");
+                                    if (Directory.Exists(tempdir))
+                                    {
+                                        Directory.CreateDirectory(tempdir);
+                                    }
+
+                                    archive.Entries[entrieNum].ExtractToFile(Path.Combine(Install2MODirPath, tempdir, entryFullName));
+
+                                    string entryPath = Path.Combine(tempdir, entryFullName);
+                                    if (File.Exists(entryPath))
+                                    {
+                                        FileVersionInfo dllInfo = FileVersionInfo.GetVersionInfo(entryPath);
+                                        description = dllInfo.FileDescription;
+                                        version = dllInfo.FileVersion;
+                                        //string version = dllInfo.ProductVersion;
+                                        string copyright = dllInfo.LegalCopyright;
+
+                                        if (copyright.Length >= 4)
+                                        {
+                                            //"Copyright © AuthorName 2019"
+                                            author = copyright.Remove(copyright.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim();
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -1603,21 +1645,31 @@ namespace AI_Girl_Helper
                 }
                 else if (FoundStandardModInZip)
                 {
-                    string zipmoddirpath = Path.Combine(ModsPath, Path.GetFileNameWithoutExtension(zipfile));
+                    string name = Path.GetFileNameWithoutExtension(zipfile);
+                    string zipmoddirpath = Path.Combine(ModsPath, name);
                     Compressor.Decompress(zipfile, zipmoddirpath);
                     File.Move(zipfile, zipfile + ".InstalledExtractedToMods");
+
+                    if (version.Length == 0)
+                    {
+                        version = Regex.Match(name, @"\d+(\.\d+)*").Value;
+                    }
+                    if (author.Length == 0)
+                    {
+                        author = name.StartsWith("[AI][") || (name.StartsWith("[") && !name.StartsWith("[AI]")) ? name.Substring(name.IndexOf("[") + 1, name.IndexOf("]") - 1) : string.Empty;
+                    }
 
                     //запись meta.ini
                     WriteMetaINI(
                         zipmoddirpath
                         ,
-                        string.Empty
+                        category
                         ,
-                        "0.0.1"
+                        version
                         ,
-                        string.Empty
+                        comment
                         ,
-                        "<br>Author: " + string.Empty + "<br><br>" + Path.GetFileNameWithoutExtension(zipfile) + "<br><br>"
+                        "<br>Author: " + author + "<br><br>" + (description.Length > 0 ? description : Path.GetFileNameWithoutExtension(zipfile)) + "<br><br>"
                         );
 
                     ActivateInsertModIfPossible(Path.GetFileName(zipmoddirpath));
@@ -1625,6 +1677,13 @@ namespace AI_Girl_Helper
                 else if (FoundModsDir)
                 {
                     File.Move(zipfile, zipfile + ".InstalledExtractedZipmod");
+                }
+                else if (FoundcsFiles)
+                {
+                    //extract to handle as subdir
+                    string extractpath = Path.Combine(Install2MODirPath, Path.GetFileNameWithoutExtension(zipfile));
+                    Compressor.Decompress(zipfile, extractpath);
+                    File.Move(zipfile, zipfile + ".InstalledExtractedAsSubfolder");
                 }
             }
         }
@@ -1690,7 +1749,7 @@ namespace AI_Girl_Helper
                     string targetfilepath = "readme.txt";
                     foreach (var file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
                     {
-                        if (string.Compare(Path.GetExtension(file),".unity3d",true)==0)//if extension == .unity3d
+                        if (string.Compare(Path.GetExtension(file), ".unity3d", true) == 0)//if extension == .unity3d
                         {
                             //string[] datafiles = Directory.GetFiles(dir, Path.GetFileName(file), SearchOption.AllDirectories);
 
@@ -1721,7 +1780,7 @@ namespace AI_Girl_Helper
                             }
                             AnyModFound = true;
                         }
-                        else if (string.Compare(Path.GetExtension(file),".cs",true)==0)//if extension == .cs
+                        else if (string.Compare(Path.GetExtension(file), ".cs", true) == 0)//if extension == .cs
                         {
                             string targetsubdirpath = Path.Combine(moddir, "scripts");
                             if (!Directory.Exists(targetsubdirpath))
@@ -1730,7 +1789,11 @@ namespace AI_Girl_Helper
                             }
 
                             File.Move(file, Path.Combine(targetsubdirpath, Path.GetFileName(file)));
-                            comment += " Requires: ScriptLoader";
+                            if (comment.Length == 0 || !comment.Contains("Requires: ScriptLoader"))
+                            {
+                                comment += " Requires: ScriptLoader";
+                            }
+
                             AnyModFound = true;
                         }
                     }
@@ -1902,8 +1965,12 @@ namespace AI_Girl_Helper
                     name = Path.GetFileNameWithoutExtension(dllfile);
                 }
 
-                //"Copyright © AuthorName 2019"
-                string author = copyright.Remove(copyright.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim();
+                string author = string.Empty;
+                if (copyright.Length >= 4)
+                {
+                    //"Copyright © AuthorName 2019"
+                    author = copyright.Remove(copyright.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim();
+                }
 
                 //добавление имени автора в начало имени папки
                 if ((!string.IsNullOrEmpty(name) && name.Substring(0, 1) == "[" && !name.StartsWith("[AI]")) || (name.Length >= 5 && name.Substring(0, 5) == "[AI][") || name.Contains(author))
@@ -1981,7 +2048,7 @@ namespace AI_Girl_Helper
                 Utils.IniFile INI = new Utils.IniFile(metaPath);
 
                 bool IsKeyExists = INI.KeyExists("category", "General");
-                if (!IsKeyExists || (IsKeyExists && category.Length > 0 && INI.ReadINI("General", "category").Replace("\"",string.Empty).Length==0))
+                if (!IsKeyExists || (IsKeyExists && category.Length > 0 && INI.ReadINI("General", "category").Replace("\"", string.Empty).Length == 0))
                 {
                     INI.WriteINI("General", "category", "\"" + category + "\"");
                 }
@@ -1992,7 +2059,7 @@ namespace AI_Girl_Helper
                 }
 
                 INI.WriteINI("General", "gameName", GETMOCurrentGame());
-                
+
                 if (comments.Length > 0)
                 {
                     INI.WriteINI("General", "comments", comments);

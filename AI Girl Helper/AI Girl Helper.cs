@@ -1272,32 +1272,7 @@ namespace AI_Girl_Helper
             {
                 InstallInModsButton.Enabled = false;
 
-                InstallInModsButton.Text = ">.....>";
-                InstallCsScriptsForScriptLoader();
-                InstallZipArchivesToMods();
-
-                InstallInModsButton.Text = ".>....>";
-                InstallBepinExModsToMods();
-
-                InstallInModsButton.Text = "..>...>";
-                InstallZipModsToMods();
-
-                InstallInModsButton.Text = "...>..>";
-                InstallCardsFrom2MO();
-
-                InstallInModsButton.Text = "....>.>";
-                InstallModFilesFromSubfolders();
-
-                InstallInModsButton.Text = ".....>>";
-                InstallImagesFromSubfolders();
-
-                InstallInModsButton.Text = "......>";
-                DeleteEmptySubfolders(Install2MODirPath, false);
-
-                if (!Directory.Exists(Install2MODirPath))
-                {
-                    Directory.CreateDirectory(Install2MODirPath);
-                }
+                InstallModFilesAndCleanEmptyFolder();
 
                 InstallInModsButton.Text = T._("Install from 2MO");
                 InstallInModsButton.Enabled = true;
@@ -1310,6 +1285,31 @@ namespace AI_Girl_Helper
             else
             {
                 MessageBox.Show(T._("No compatible for installation formats found in 2MO folder.\nFormats: zip, zipmod, png, png in subfolder, unpacked mod in subfolder"));
+            }
+        }
+
+        private void InstallModFilesAndCleanEmptyFolder()
+        {
+
+            InstallCsScriptsForScriptLoader();
+
+            InstallZipArchivesToMods();
+
+            InstallBepinExModsToMods();
+
+            InstallZipModsToMods();
+
+            InstallCardsFrom2MO();
+
+            InstallModFilesFromSubfolders();
+
+            InstallImagesFromSubfolders();
+
+            DeleteEmptySubfolders(Install2MODirPath, false);
+
+            if (!Directory.Exists(Install2MODirPath))
+            {
+                Directory.CreateDirectory(Install2MODirPath);
             }
         }
 
@@ -1793,6 +1793,10 @@ namespace AI_Girl_Helper
                 string version = string.Empty;
                 string comment = string.Empty;
                 string description = string.Empty;
+                string UpdateModNameFromMeta = string.Empty;
+                bool FoundUpdateName = false;
+                string ModFolderForUpdate = string.Empty;
+                string ZipName = Path.GetFileNameWithoutExtension(zipfile);
 
                 using (ZipArchive archive = ZipFile.OpenRead(zipfile))
                 {
@@ -1800,6 +1804,7 @@ namespace AI_Girl_Helper
                     for (int entrieNum = 0; entrieNum < archiveEntriesCount; entrieNum++)
                     {
                         string entryFullName = archive.Entries[entrieNum].FullName;
+
                         int entryFullNameLength = entryFullName.Length;
                         if (!FoundZipMod && entryFullNameLength >= 12 && string.Compare(entryFullName.Substring(entryFullNameLength - 12, 12), "manifest.xml", true) == 0) //entryFullName=="manifest.xml"
                         {
@@ -1810,64 +1815,106 @@ namespace AI_Girl_Helper
                         if (!FoundStandardModInZip)
                         {
                             if (
-                                   (entryFullNameLength >= 7 && string.Compare(entryFullName.Substring(entryFullNameLength - 7, 7), "abdata/", true) == 0) //entryFullName=="abdata/"
-                                || (entryFullNameLength >= 6 && string.Compare(entryFullName.Substring(entryFullNameLength - 6, 6), "_data/", true) == 0) //entryFullName=="_data/"
-                                || (entryFullNameLength >= 8 && string.Compare(entryFullName.Substring(entryFullNameLength - 8, 8), "bepinex/", true) == 0) //entryFullName=="bepinex/"
-                                || (entryFullNameLength >= 9 && string.Compare(entryFullName.Substring(entryFullNameLength - 9, 9), "userdata/", true) == 0) //entryFullName=="userdata/"
+                                   (entryFullNameLength >= 7 && (string.Compare(entryFullName.Substring(entryFullNameLength - 7, 6), "abdata", true) == 0 || string.Compare(entryFullName.Substring(0, 6), "abdata", true) == 0)) //entryFullName=="abdata/"
+                                || (entryFullNameLength >= 6 && (string.Compare(entryFullName.Substring(entryFullNameLength - 6, 5), "_data", true) == 0 || string.Compare(entryFullName.Substring(0, 5), "_data", true) == 0)) //entryFullName=="_data/"
+                                || (entryFullNameLength >= 8 && (string.Compare(entryFullName.Substring(entryFullNameLength - 8, 7), "bepinex", true) == 0 || string.Compare(entryFullName.Substring(0, 7), "bepinex", true) == 0)) //entryFullName=="bepinex/"
+                                || (entryFullNameLength >= 9 && (string.Compare(entryFullName.Substring(entryFullNameLength - 9, 8), "userdata", true) == 0 || string.Compare(entryFullName.Substring(0, 8), "userdata", true) == 0)) //entryFullName=="userdata/"
                                )
                             {
                                 FoundStandardModInZip = true;
                             }
-                            if (FoundModsDir && !FoundStandardModInZip)
+                        }
+
+                        //когда найдена папка mods, если найден zipmod
+                        if (FoundModsDir && !FoundStandardModInZip)
+                        {
+                            if (entryFullNameLength >= 7 && string.Compare(entryFullName.Substring(entryFullNameLength - 7, 7), ".zipmod", true) == 0)//entryFullName==".zipmod"
                             {
-                                if (entryFullNameLength >= 7 && string.Compare(entryFullName.Substring(entryFullNameLength - 7, 7), ".zipmod", true) == 0)//entryFullName==".zipmod"
-                                {
-                                    archive.Entries[entrieNum].ExtractToFile(Path.Combine(Install2MODirPath, entryFullName));
-                                    break;
-                                }
-                                else if (entryFullNameLength >= 4 && string.Compare(entryFullName.Substring(entryFullNameLength - 4, 4), ".zip", true) == 0)
-                                {
-                                    archive.Entries[entrieNum].ExtractToFile(Path.Combine(Install2MODirPath, entryFullName + "mod"));
-                                    break;
-                                }
-                            }
-                            if (!FoundModsDir && entryFullNameLength >= 5 && string.Compare(entryFullName.Substring(entryFullNameLength - 5, 5), "mods/", true) == 0)
-                            {
-                                FoundModsDir = true;
-                            }
-                            if (!FoundcsFiles && entryFullNameLength >= 3 && string.Compare(entryFullName.Substring(entryFullNameLength - 3, 3), ".cs", true) == 0)
-                            {
-                                FoundStandardModInZip = false;
-                                FoundcsFiles = true;
+                                archive.Entries[entrieNum].ExtractToFile(Path.Combine(Install2MODirPath, entryFullName));
                                 break;
                             }
-                            if (FoundModsDir && entryFullNameLength >= 4 && string.Compare(entryFullName.Substring(entryFullNameLength - 4, 4), ".dll", true) == 0)
+                            else if (entryFullNameLength >= 4 && string.Compare(entryFullName.Substring(entryFullNameLength - 4, 4), ".zip", true) == 0)
                             {
-                                if (description.Length == 0 && version.Length == 0 && author.Length == 0)
+                                archive.Entries[entrieNum].ExtractToFile(Path.Combine(Install2MODirPath, entryFullName + "mod"));
+                                break;
+                            }
+                        }
+
+                        //если найдена папка mods
+                        if (!FoundModsDir && entryFullNameLength >= 5 && (string.Compare(entryFullName.Substring(entryFullNameLength - 5, 4), "mods", true) == 0 || string.Compare(entryFullName.Substring(0, 4), "mods", true) == 0))
+                        {
+                            FoundModsDir = true;
+                        }
+
+                        //если найден cs
+                        if (!FoundcsFiles && entryFullNameLength >= 3 && string.Compare(entryFullName.Substring(entryFullNameLength - 3, 3), ".cs", true) == 0)
+                        {
+                            FoundStandardModInZip = false;
+                            FoundcsFiles = true;
+                            break;
+                        }
+
+                        //получение информации о моде из dll
+                        if (entryFullNameLength >= 4 && string.Compare(entryFullName.Substring(entryFullNameLength - 4, 4), ".dll", true) == 0)
+                        {
+                            if (description.Length == 0 && version.Length == 0 && author.Length == 0)
+                            {
+                                string temp = Path.Combine(Install2MODirPath, "temp");
+                                string entryPath = Path.Combine(temp, entryFullName);
+                                string entryDir = Path.GetDirectoryName(entryPath);
+                                if (!Directory.Exists(entryDir))
                                 {
-                                    string tempdir = Path.Combine(Install2MODirPath, "temp");
-                                    if (Directory.Exists(tempdir))
+                                    Directory.CreateDirectory(entryDir);
+                                }
+
+                                archive.Entries[entrieNum].ExtractToFile(entryPath);
+
+                                if (File.Exists(entryPath))
+                                {
+                                    FileVersionInfo dllInfo = FileVersionInfo.GetVersionInfo(entryPath);
+                                    description = dllInfo.FileDescription;
+                                    version = dllInfo.FileVersion;
+                                    //string version = dllInfo.ProductVersion;
+                                    string copyright = dllInfo.LegalCopyright;
+
+                                    if (copyright.Length >= 4)
                                     {
-                                        Directory.CreateDirectory(tempdir);
+                                        //"Copyright © AuthorName 2019"
+                                        author = copyright.Remove(copyright.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim();
                                     }
 
-                                    archive.Entries[entrieNum].ExtractToFile(Path.Combine(Install2MODirPath, tempdir, entryFullName));
+                                    string[] ModsList = GetModsListFromActiveMOProfile(false);
 
-                                    string entryPath = Path.Combine(tempdir, entryFullName);
-                                    if (File.Exists(entryPath))
+                                    foreach (var ModFolder in ModsList)
                                     {
-                                        FileVersionInfo dllInfo = FileVersionInfo.GetVersionInfo(entryPath);
-                                        description = dllInfo.FileDescription;
-                                        version = dllInfo.FileVersion;
-                                        //string version = dllInfo.ProductVersion;
-                                        string copyright = dllInfo.LegalCopyright;
-
-                                        if (copyright.Length >= 4)
+                                        ModFolderForUpdate = Path.Combine(ModsPath, ModFolder);
+                                        string targetfile = Path.Combine(ModFolderForUpdate, entryFullName);
+                                        if (File.Exists(targetfile))
                                         {
-                                            //"Copyright © AuthorName 2019"
-                                            author = copyright.Remove(copyright.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim();
+                                            UpdateModNameFromMeta = GetINIValueIfExist(Path.Combine(ModFolderForUpdate, "meta.ini"), "notes", "General");
+                                            if (UpdateModNameFromMeta.Length > 0)
+                                            {
+                                                int upIndex = UpdateModNameFromMeta.IndexOf("ompupname:");
+                                                if (upIndex > -1)
+                                                {
+                                                    //get update name
+                                                    UpdateModNameFromMeta = UpdateModNameFromMeta.Substring(upIndex).Split(':')[1];
+                                                    if (UpdateModNameFromMeta.Length > 0 && ZipName.Length >= UpdateModNameFromMeta.Length && ZipName.Contains(UpdateModNameFromMeta))
+                                                    {
+                                                        FoundUpdateName = true;
+                                                        break;
+                                                    }
+                                                    else
+                                                    {
+                                                        UpdateModNameFromMeta = string.Empty;
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
+
+                                    //File.Delete(entryPath);
+                                    Directory.Delete(temp, true);
                                 }
                             }
                         }
@@ -1885,34 +1932,67 @@ namespace AI_Girl_Helper
                 }
                 else if (FoundStandardModInZip)
                 {
-                    string name = Path.GetFileNameWithoutExtension(zipfile);
-                    string zipmoddirpath = Path.Combine(ModsPath, name);
-                    Compressor.Decompress(zipfile, zipmoddirpath);
-                    File.Move(zipfile, zipfile + ".InstalledExtractedToMods");
+                    string TargetModDirPath;
+                    if (FoundUpdateName)
+                    {
+                        TargetModDirPath = Path.Combine(Install2MODirPath, ZipName + "_temp");
+                    }
+                    else
+                    {
+                        TargetModDirPath = Path.Combine(ModsPath, ZipName);
+                    }
+
+                    Compressor.Decompress(zipfile, TargetModDirPath);
+
+                    if (FoundUpdateName)
+                    {
+                        string[] modfiles = Directory.GetFiles(TargetModDirPath, "*.*", SearchOption.AllDirectories);
+                        foreach (var file in modfiles)
+                        {
+                            //ModFolderForUpdate
+                            string TargetFIle = file.Replace(TargetModDirPath, ModFolderForUpdate);
+                            string TargetFileDir = Path.GetDirectoryName(TargetFIle);
+                            if (!Directory.Exists(TargetFileDir))
+                            {
+                                Directory.CreateDirectory(TargetFileDir);
+                                File.Move(file, TargetFIle);
+                            }
+                            else if (File.Exists(TargetFIle) && File.GetLastWriteTime(file) > File.GetLastWriteTime(TargetFIle))
+                            {
+                                File.Delete(TargetFIle);
+                                File.Move(file, TargetFIle);
+                            }
+                        }
+                        Directory.Delete(TargetModDirPath, true);
+                        //присваивание папки на целевую, после переноса, для дальнейшей работы с ней
+                        TargetModDirPath = ModFolderForUpdate;
+                    }
+
+                    File.Move(zipfile, zipfile + (FoundUpdateName ? ".InstalledUpdatedMod" : ".InstalledExtractedToMods"));
 
                     if (version.Length == 0)
                     {
-                        version = Regex.Match(name, @"\d+(\.\d+)*").Value;
+                        version = Regex.Match(ZipName, @"\d+(\.\d+)*").Value;
                     }
-                    if (author.Length == 0)
+                    if (!FoundUpdateName && author.Length == 0)
                     {
-                        author = name.StartsWith("[AI][") || (name.StartsWith("[") && !name.StartsWith("[AI]")) ? name.Substring(name.IndexOf("[") + 1, name.IndexOf("]") - 1) : string.Empty;
+                        author = ZipName.StartsWith("[AI][") || (ZipName.StartsWith("[") && !ZipName.StartsWith("[AI]")) ? ZipName.Substring(ZipName.IndexOf("[") + 1, ZipName.IndexOf("]") - 1) : string.Empty;
                     }
 
                     //запись meta.ini
                     WriteMetaINI(
-                        zipmoddirpath
+                        TargetModDirPath
                         ,
-                        category
+                        FoundUpdateName ? string.Empty : category
                         ,
                         version
                         ,
-                        comment
+                        FoundUpdateName ? string.Empty : comment
                         ,
-                        "<br>Author: " + author + "<br><br>" + (description.Length > 0 ? description : Path.GetFileNameWithoutExtension(zipfile)) + "<br><br>"
+                        FoundUpdateName ? string.Empty : "<br>Author: " + author + "<br><br>" + (description.Length > 0 ? description : Path.GetFileNameWithoutExtension(zipfile)) + "<br><br>"
                         );
 
-                    ActivateInsertModIfPossible(Path.GetFileName(zipmoddirpath));
+                    ActivateInsertModIfPossible(Path.GetFileName(TargetModDirPath));
                 }
                 else if (FoundModsDir)
                 {
@@ -2541,12 +2621,33 @@ namespace AI_Girl_Helper
                         }
                     }
 
-                    string zipmoddirpath = GetResultTargetDirPathWithNameCheck(ModsPath, name);
+                    //string zipmoddirpath = GetResultTargetDirPathWithNameCheck(ModsPath, name);
+                    string zipmoddirpath = Path.Combine(ModsPath, name);
+                    string zipmoddirmodspath = Path.Combine(zipmoddirpath, "mods");
+                    string targetZipFile = Path.Combine(zipmoddirmodspath, zipArchiveName + ".zipmod");
+                    bool update = false;
+                    string anyfname = string.Empty;
+                    if (Directory.Exists(zipmoddirpath))
+                    {
+                        if (File.Exists(targetZipFile) || (anyfname = IsAnyFileWithSameExtensionContainsNameOfTheFile(zipmoddirmodspath, zipArchiveName, "*.zip")).Length > 0)
+                        {
+                            if (File.GetLastWriteTime(zipfile) > File.GetLastWriteTime(targetZipFile))
+                            {
+                                update = true;
+                                File.Delete(anyfname.Length > 0 ? anyfname : targetZipFile);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        zipmoddirpath = GetResultTargetDirPathWithNameCheck(ModsPath, name);
+                        zipmoddirmodspath = Path.Combine(zipmoddirpath, "mods");
+                        targetZipFile = Path.Combine(zipmoddirmodspath, zipArchiveName + ".zipmod");
+                    }
 
                     //перемещение zipmod-а в свою подпапку в Mods
-                    string zipmoddirmodspath = Path.Combine(zipmoddirpath, "mods");
                     Directory.CreateDirectory(zipmoddirmodspath);
-                    File.Move(zipfile, Path.Combine(zipmoddirmodspath, Path.GetFileName(zipfile)));
+                    File.Move(zipfile, targetZipFile);
 
                     //Перемещение файлов мода, начинающихся с того же имени в папку этого мода
                     string[] PossibleFilesOfTheMod = Directory.GetFiles(Install2MODirPath, "*.*").Where(file => Path.GetFileName(file).Trim().StartsWith(zipArchiveName)).ToArray();
@@ -2570,9 +2671,9 @@ namespace AI_Girl_Helper
                         ,
                         version
                         ,
-                        "Requires: Sideloader plugin"
+                        update ? string.Empty : "Requires: Sideloader plugin"
                         ,
-                        "<br>Author: " + author + "<br><br>" + description + "<br><br>" + website
+                        update ? string.Empty : "<br>Author: " + author + "<br><br>" + description + "<br><br>" + website
                         );
                     //Utils.IniFile INI = new Utils.IniFile(Path.Combine(zipmoddirpath, "meta.ini"));
                     //INI.WriteINI("General", "category", string.Empty);
@@ -2585,12 +2686,22 @@ namespace AI_Girl_Helper
                     ActivateInsertModIfPossible(Path.GetFileName(zipmoddirpath));
                 }
             }
+        }
 
-
-            if (Directory.Exists(TempDir))
+        private string IsAnyFileWithSameExtensionContainsNameOfTheFile(string zipmoddirmodspath, string zipname, string extension)
+        {
+            if (Directory.Exists(zipmoddirmodspath))
             {
-                Directory.Delete(Path.Combine(Install2MODirPath, "Temp"));
+                foreach (var path in Directory.GetFiles(zipmoddirmodspath, extension))
+                {
+                    string name = Path.GetFileNameWithoutExtension(path);
+                    if (name.Contains(zipname))
+                    {
+                        return path;
+                    }
+                }
             }
+            return string.Empty;
         }
 
         private bool ContainsAnyInvalidCharacters(string path)
@@ -2614,10 +2725,10 @@ namespace AI_Girl_Helper
                     MOCommonModeSwitchButton.Enabled = false;
                     LanchModeInfoLinkLabel.Enabled = false;
 
-                    string[] EnabledMods = GetEnabledModsFromActiveMOProfile();
-                    int EnabledModsLength = EnabledMods.Length;
+                    string[] EnabledModsList = GetModsListFromActiveMOProfile();
+                    int EnabledModsLength = EnabledModsList.Length;
 
-                    if (EnabledMods.Length == 0)
+                    if (EnabledModsList.Length == 0)
                     {
                         MOmode = true;
                         MOCommonModeSwitchButton.Enabled = true;
@@ -2690,7 +2801,7 @@ namespace AI_Girl_Helper
 
                     for (int N = 0; N < EnabledModsLength; N++)
                     {
-                        string ModFolder = Path.Combine(ModsPath, EnabledMods[N]);
+                        string ModFolder = Path.Combine(ModsPath, EnabledModsList[N]);
                         if (ModFolder.Length > 0 && Directory.Exists(ModFolder))
                         {
                             string[] ModFiles = Directory.GetFiles(ModFolder, "*.*", SearchOption.AllDirectories);
@@ -3116,24 +3227,32 @@ namespace AI_Girl_Helper
             }
         }
 
-        private string[] GetEnabledModsFromActiveMOProfile()
+        private string[] GetModsListFromActiveMOProfile(bool OnlyEnabled = true)
         {
             string currentMOprofile = GetINIValueIfExist(Path.Combine(MODirPath, "ModOrganizer.ini"), "selected_profile", "General");
 
-            if (currentMOprofile.Length == 0)
-            {
-            }
-            else
+            if (currentMOprofile.Length > 0)
             {
                 string profilemodlistpath = Path.Combine(MODirPath, "profiles", currentMOprofile, "modlist.txt");
 
                 if (File.Exists(profilemodlistpath))
                 {
-                    string[] lines = File.ReadAllLines(profilemodlistpath).Where(line => line.StartsWith("+")).ToArray();
+                    string[] lines;
+                    if (OnlyEnabled)
+                    {
+                        //все строки с + в начале
+                        lines = File.ReadAllLines(profilemodlistpath).Where(line => line.Length > 0 && string.CompareOrdinal(line.Substring(0, 1), "#") != 0 && string.CompareOrdinal(line.Substring(0, 1), "+") == 0).ToArray();
+                    }
+                    else
+                    {
+                        //все строки кроме сепараторов
+                        lines = File.ReadAllLines(profilemodlistpath).Where(line => line.Length > 0 && string.CompareOrdinal(line.Substring(0, 1), "#") != 0 && (line.Length < 10 || string.CompareOrdinal(line.Substring(line.Length - 10, 10), "_separator") != 0)).ToArray();
+                    }
                     //Array.Reverse(lines); //убрал, т.к. дулаю архив с резервными копиями
                     int linesLength = lines.Length;
                     for (int l = 0; l < linesLength; l++)
                     {
+                        //remove +-
                         lines[l] = lines[l].Remove(0, 1);
                     }
 

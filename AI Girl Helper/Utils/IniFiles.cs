@@ -29,8 +29,8 @@ namespace AI_Girl_Helper.Utils
         //Читаем ini-файл и возвращаем значение указного ключа из заданной секции.
         public string ReadINI(string Section, string Key)
         {
-            var RetVal = new StringBuilder(255);
-            GetPrivateProfileString(Section, Key, "", RetVal, 255, Path);
+            var RetVal = new StringBuilder(4096);
+            GetPrivateProfileString(Section, Key, "", RetVal, 4096, Path);
             return RetVal.ToString();
         }
         //Записываем в ini-файл. Запись происходит в выбранную секцию в выбранный ключ.

@@ -1116,6 +1116,7 @@ namespace AI_Girl_Helper
         }
         private void MOButton_Click(object sender, EventArgs e)
         {
+            OnOffButtons(false);
             if (MOmode)
             {
                 RunProgram(MOexePath, string.Empty);
@@ -1125,10 +1126,12 @@ namespace AI_Girl_Helper
                 MOButton.Enabled = false;
                 MessageBox.Show(T._("Game in Common mode now.\n To execute Mod Organizer convert game back\n to MO mode by button in Tools tab"));
             }
+            OnOffButtons();
         }
 
         private void SettingsButton_Click(object sender, EventArgs e)
         {
+            OnOffButtons(false);
             if (MOmode)
             {
                 RunProgram(MOexePath, "moshortcut://:InitSetting");
@@ -1137,10 +1140,12 @@ namespace AI_Girl_Helper
             {
                 RunProgram(Path.Combine(DataPath, "InitSetting.exe"), string.Empty);
             }
+            OnOffButtons();
         }
 
         private void GameButton_Click(object sender, EventArgs e)
         {
+            OnOffButtons(false);
             if (MOmode)
             {
                 RunProgram(MOexePath, "moshortcut://:" + GetCurrentGameName());
@@ -1149,6 +1154,12 @@ namespace AI_Girl_Helper
             {
                 RunProgram(Path.Combine(DataPath, GetCurrentGameName() + ".exe"), string.Empty);
             }
+            OnOffButtons();
+        }
+
+        private void OnOffButtons(bool SwitchOn = true)
+        {
+            AIGirlHelperTabControl.Enabled = SwitchOn;
         }
 
         private string GetCurrentGameName()
@@ -1165,6 +1176,7 @@ namespace AI_Girl_Helper
 
         private void StudioButton_Click(object sender, EventArgs e)
         {
+            OnOffButtons(false);
             if (MOmode)
             {
                 RunProgram(MOexePath, "moshortcut://:" + "StudioNEOV2");
@@ -1173,6 +1185,7 @@ namespace AI_Girl_Helper
             {
                 RunProgram(Path.Combine(DataPath, "StudioNEOV2.exe"), string.Empty);
             }
+            OnOffButtons();
         }
 
         private void RunProgram(string ProgramPath, string Arguments)
@@ -1270,12 +1283,13 @@ namespace AI_Girl_Helper
         {
             if (Directory.Exists(Install2MODirPath) && (Directory.GetFiles(Install2MODirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.cs").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zipmod").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zip").Length > 0 || Directory.GetDirectories(Install2MODirPath, "*").Length > 0))
             {
-                InstallInModsButton.Enabled = false;
+                OnOffButtons(false);
 
                 await Task.Run((Action)(() => InstallModFilesAndCleanEmptyFolder()));
 
                 InstallInModsButton.Text = T._("Install from 2MO");
-                InstallInModsButton.Enabled = true;
+
+                OnOffButtons();
 
                 //обновление информации о конфигурации папок игры
                 FoldersInit();
@@ -1893,7 +1907,7 @@ namespace AI_Girl_Helper
                                         ModFolderForUpdate = Path.Combine(ModsPath, ModFolder);
                                         string targetfile = Path.Combine(ModFolderForUpdate, entryFullName);
                                         targetFileAny = GetTheDllFromSubfolders(ModFolderForUpdate, entryName.Remove(entryName.Length - 4, 4), "dll");
-                                        if (File.Exists(targetfile) || (targetFileAny.Length>0 && File.Exists(targetFileAny)))
+                                        if (File.Exists(targetfile) || (targetFileAny.Length > 0 && File.Exists(targetFileAny)))
                                         {
                                             if (targetFileAny.Length > 0)
                                             {
@@ -2381,10 +2395,13 @@ namespace AI_Girl_Helper
                     }
                 }
 
+                string dllName = Path.GetFileName(dllfile);
                 string dllTargetModDirPath = Path.Combine(ModsPath, name);
                 string dllTargetModPluginsSubdirPath = Path.Combine(dllTargetModDirPath, "BepInEx", "Plugins");
-                string dllTargetPath = Path.Combine(dllTargetModPluginsSubdirPath, Path.GetFileName(dllfile));
+                string dllTargetPath = Path.Combine(dllTargetModPluginsSubdirPath, dllName);
                 bool IsUpdate = false;
+                string modNameWithAuthor = string.Empty;
+                string newModDirPath = string.Empty;
 
                 if (Directory.Exists(dllTargetModDirPath))
                 {
@@ -2398,6 +2415,26 @@ namespace AI_Girl_Helper
                     {
                         //Проверки существования целевой папки и модификация имени на более уникальное
                         dllTargetModDirPath = GetResultTargetDirPathWithNameCheck(ModsPath, name);
+                    }
+                }
+                else
+                {
+                    modNameWithAuthor = GetModFromModListContainsTheName(name, false);
+                    if (modNameWithAuthor.Length > 0)
+                    {
+                        newModDirPath = Path.Combine(ModsPath, modNameWithAuthor);
+                        if (Directory.Exists(newModDirPath))
+                        {
+                            dllTargetModDirPath = newModDirPath;
+                            dllTargetModPluginsSubdirPath = Path.Combine(dllTargetModDirPath, "BepInEx", "Plugins");
+                            dllTargetPath = Path.Combine(dllTargetModPluginsSubdirPath, dllName);
+                            if (File.Exists(dllTargetPath) && File.GetLastWriteTime(dllfile) > File.GetLastWriteTime(dllTargetPath))
+                            {
+                                //обновление существующей dll на более новую, найдена папка существующего мода, с измененным именем
+                                IsUpdate = true;
+                                File.Delete(dllTargetPath);
+                            }
+                        }
                     }
                 }
 
@@ -2434,6 +2471,23 @@ namespace AI_Girl_Helper
 
                 ActivateInsertModIfPossible(Path.GetFileName(dllTargetModDirPath));
             }
+        }
+
+        private string GetModFromModListContainsTheName(string name, bool OnlyFromEnabledMods=true)
+        {
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                string[] modList = GetModsListFromActiveMOProfile(OnlyFromEnabledMods);
+                int nameLength = name.Length;
+                foreach (var modname in modList)
+                {
+                    if (modname.Length >= nameLength && modname.Contains(name))
+                    {
+                        return modname;
+                    }
+                }
+            }
+            return string.Empty;
         }
 
         /// <summary>
@@ -2775,6 +2829,7 @@ namespace AI_Girl_Helper
 
         private void MO2StandartButton_Click(object sender, EventArgs e)
         {
+            OnOffButtons(false);
             if (MOmode)
             {
                 DialogResult result = MessageBox.Show(T._("This will move all mod files from Mods folder to Data folder to make it like common installation variant. You can restore it later back to MO mode. Continue?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
@@ -3178,7 +3233,7 @@ namespace AI_Girl_Helper
                     MessageBox.Show(T._("Mod Organizer mode restored! All mod files moved back to Mods folder. If in Data folder was added new files they also moved in Mods folder as new mod, check and sort it if need"));
                 }
             }
-
+            OnOffButtons();
         }
         string MOmodeDataFilesBak = Path.Combine(AppResDir, "MOmodeDataFilesBak");
         string ModdedDataFilesListFile = Path.Combine(AppResDir, "ModdedDataFilesList.txt");

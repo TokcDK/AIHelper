@@ -1266,13 +1266,13 @@ namespace AI_Girl_Helper
         }
 
         string Install2MODirPath = Path.Combine(Application.StartupPath, "2MO");
-        private void InstallInModsButton_Click(object sender, EventArgs e)
+        private async void InstallInModsButton_Click(object sender, EventArgs e)
         {
             if (Directory.Exists(Install2MODirPath) && (Directory.GetFiles(Install2MODirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.cs").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zipmod").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zip").Length > 0 || Directory.GetDirectories(Install2MODirPath, "*").Length > 0))
             {
                 InstallInModsButton.Enabled = false;
 
-                InstallModFilesAndCleanEmptyFolder();
+                await Task.Run((Action)(() => InstallModFilesAndCleanEmptyFolder()));
 
                 InstallInModsButton.Text = T._("Install from 2MO");
                 InstallInModsButton.Enabled = true;

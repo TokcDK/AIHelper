@@ -1286,6 +1286,7 @@ namespace AI_Girl_Helper
             {
                 MessageBox.Show(T._("No compatible for installation formats found in 2MO folder.\nFormats: zip, zipmod, png, png in subfolder, unpacked mod in subfolder"));
             }
+            Process.Start("explorer.exe", Install2MODirPath);
         }
 
         private void InstallModFilesAndCleanEmptyFolder()
@@ -1797,12 +1798,14 @@ namespace AI_Girl_Helper
                 bool FoundUpdateName = false;
                 string ModFolderForUpdate = string.Empty;
                 string ZipName = Path.GetFileNameWithoutExtension(zipfile);
+                string targetFileAny = string.Empty;
 
                 using (ZipArchive archive = ZipFile.OpenRead(zipfile))
                 {
                     int archiveEntriesCount = archive.Entries.Count;
                     for (int entrieNum = 0; entrieNum < archiveEntriesCount; entrieNum++)
                     {
+                        string entryName = archive.Entries[entrieNum].Name;
                         string entryFullName = archive.Entries[entrieNum].FullName;
 
                         int entryFullNameLength = entryFullName.Length;
@@ -1830,12 +1833,12 @@ namespace AI_Girl_Helper
                         {
                             if (entryFullNameLength >= 7 && string.Compare(entryFullName.Substring(entryFullNameLength - 7, 7), ".zipmod", true) == 0)//entryFullName==".zipmod"
                             {
-                                archive.Entries[entrieNum].ExtractToFile(Path.Combine(Install2MODirPath, entryFullName));
+                                archive.Entries[entrieNum].ExtractToFile(Path.Combine(Install2MODirPath, entryName));
                                 break;
                             }
                             else if (entryFullNameLength >= 4 && string.Compare(entryFullName.Substring(entryFullNameLength - 4, 4), ".zip", true) == 0)
                             {
-                                archive.Entries[entrieNum].ExtractToFile(Path.Combine(Install2MODirPath, entryFullName + "mod"));
+                                archive.Entries[entrieNum].ExtractToFile(Path.Combine(Install2MODirPath, entryName + "mod"));
                                 break;
                             }
                         }
@@ -1889,8 +1892,14 @@ namespace AI_Girl_Helper
                                     {
                                         ModFolderForUpdate = Path.Combine(ModsPath, ModFolder);
                                         string targetfile = Path.Combine(ModFolderForUpdate, entryFullName);
-                                        if (File.Exists(targetfile))
+                                        targetFileAny = GetTheDllFromSubfolders(ModFolderForUpdate, entryName.Remove(entryName.Length - 4, 4), "dll");
+                                        if (File.Exists(targetfile) || (targetFileAny.Length>0 && File.Exists(targetFileAny)))
                                         {
+                                            if (targetFileAny.Length > 0)
+                                            {
+                                                targetfile = targetFileAny;
+                                            }
+
                                             UpdateModNameFromMeta = GetINIValueIfExist(Path.Combine(ModFolderForUpdate, "meta.ini"), "notes", "General");
                                             if (UpdateModNameFromMeta.Length > 0)
                                             {
@@ -1952,14 +1961,37 @@ namespace AI_Girl_Helper
                             //ModFolderForUpdate
                             string TargetFIle = file.Replace(TargetModDirPath, ModFolderForUpdate);
                             string TargetFileDir = Path.GetDirectoryName(TargetFIle);
+                            bool targetfileIsNewer = false;
+                            if (File.Exists(TargetFIle))
+                            {
+                                if (File.GetLastWriteTime(file) > File.GetLastWriteTime(TargetFIle))
+                                {
+                                    File.Delete(TargetFIle);
+                                    targetfileIsNewer = true;
+                                }
+                            }
+                            else
+                            {
+                                if (
+                                TargetFIle.Length >= 4 && TargetFIle.Substring(TargetFIle.Length - 4, 4) == ".dll"
+                                && Path.GetFileNameWithoutExtension(targetFileAny) == Path.GetFileNameWithoutExtension(file)
+                                && File.Exists(targetFileAny)
+                                && File.GetLastWriteTime(file) > File.GetLastWriteTime(targetFileAny)
+                                   )
+                                {
+                                    File.Delete(targetFileAny);
+                                }
+                            }
                             if (!Directory.Exists(TargetFileDir))
                             {
                                 Directory.CreateDirectory(TargetFileDir);
-                                File.Move(file, TargetFIle);
                             }
-                            else if (File.Exists(TargetFIle) && File.GetLastWriteTime(file) > File.GetLastWriteTime(TargetFIle))
+                            if (targetfileIsNewer)
                             {
-                                File.Delete(TargetFIle);
+                                File.Delete(file);
+                            }
+                            else
+                            {
                                 File.Move(file, TargetFIle);
                             }
                         }
@@ -2006,6 +2038,22 @@ namespace AI_Girl_Helper
                     File.Move(zipfile, zipfile + ".InstalledExtractedAsSubfolder");
                 }
             }
+        }
+
+        private string GetTheDllFromSubfolders(string Dir, string FileName, string Extension)
+        {
+            if (Directory.Exists(Dir))
+            {
+                foreach (var file in Directory.GetFiles(Dir, "*." + Extension, SearchOption.AllDirectories))
+                {
+                    string name = Path.GetFileNameWithoutExtension(file);
+                    if (string.Compare(name, FileName, true) == 0)
+                    {
+                        return file;
+                    }
+                }
+            }
+            return string.Empty;
         }
 
         private void InstallModFilesFromSubfolders()
@@ -2333,37 +2381,48 @@ namespace AI_Girl_Helper
                     }
                 }
 
-                string dllmoddirpath = Path.Combine(ModsPath, name);
+                string dllTargetModDirPath = Path.Combine(ModsPath, name);
+                string dllTargetModPluginsSubdirPath = Path.Combine(dllTargetModDirPath, "BepInEx", "Plugins");
+                string dllTargetPath = Path.Combine(dllTargetModPluginsSubdirPath, Path.GetFileName(dllfile));
+                bool IsUpdate = false;
 
-                //Проверки существования целевой папки и модификация имени на более уникальное
-                if (Directory.Exists(dllmoddirpath))
+                if (Directory.Exists(dllTargetModDirPath))
                 {
-                    dllmoddirpath = Path.Combine(ModsPath, name + "(" + DateTime.Now.ToString().Replace(":", string.Empty) + ")");
+                    if (File.Exists(dllTargetPath) && File.GetLastWriteTime(dllfile) > File.GetLastWriteTime(dllTargetPath))
+                    {
+                        //обновление существующей dll на более новую
+                        IsUpdate = true;
+                        File.Delete(dllTargetPath);
+                    }
+                    else
+                    {
+                        //Проверки существования целевой папки и модификация имени на более уникальное
+                        dllTargetModDirPath = GetResultTargetDirPathWithNameCheck(ModsPath, name);
+                    }
                 }
 
                 //перемещение zipmod-а в свою подпапку в Mods
-                string dllmoddirmodspath = Path.Combine(dllmoddirpath, "BepInEx", "Plugins");
-                Directory.CreateDirectory(dllmoddirmodspath);
-                File.Move(dllfile, Path.Combine(dllmoddirmodspath, Path.GetFileName(dllfile)));
+                Directory.CreateDirectory(dllTargetModPluginsSubdirPath);
+                File.Move(dllfile, dllTargetPath);
 
                 string readme = Path.Combine(Path.GetDirectoryName(dllfile), Path.GetFileNameWithoutExtension(dllfile) + " Readme.txt");
                 if (File.Exists(readme))
                 {
-                    File.Move(readme, Path.Combine(dllmoddirpath, Path.GetFileName(readme)));
+                    File.Move(readme, Path.Combine(dllTargetModDirPath, Path.GetFileName(readme)));
                 }
 
 
                 //запись meta.ini
                 WriteMetaINI(
-                    dllmoddirpath
+                    dllTargetModDirPath
                     ,
-                    "51,"
+                    IsUpdate ? string.Empty : "51,"
                     ,
                     version
                     ,
-                    "Requires: BepinEx"
+                    IsUpdate ? string.Empty : "Requires: BepinEx"
                     ,
-                    "<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright
+                    IsUpdate ? string.Empty : "<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright
                     );
                 //Utils.IniFile INI = new Utils.IniFile(Path.Combine(dllmoddirpath, "meta.ini"));
                 //INI.WriteINI("General", "category", "\"51,\"");
@@ -2373,7 +2432,7 @@ namespace AI_Girl_Helper
                 //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \"");
                 //INI.WriteINI("General", "validated", "true");
 
-                ActivateInsertModIfPossible(Path.GetFileName(dllmoddirpath));
+                ActivateInsertModIfPossible(Path.GetFileName(dllTargetModDirPath));
             }
         }
 

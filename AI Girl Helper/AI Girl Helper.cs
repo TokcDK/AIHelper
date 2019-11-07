@@ -1305,27 +1305,38 @@ namespace AI_Girl_Helper
 
         private void InstallModFilesAndCleanEmptyFolder()
         {
-
+            string InstallMessage = T._("Installing");
+            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage));
+            InstallInModsButton.Text = InstallMessage;
             InstallCsScriptsForScriptLoader();
 
+            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "."));
             InstallZipArchivesToMods();
 
+            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + ".."));
             InstallBepinExModsToMods();
 
+            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "..."));
             InstallZipModsToMods();
 
+            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage));
             InstallCardsFrom2MO();
 
+            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "."));
             InstallModFilesFromSubfolders();
 
+            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + ".."));
             InstallImagesFromSubfolders();
 
+            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "..."));
             DeleteEmptySubfolders(Install2MODirPath, false);
 
             if (!Directory.Exists(Install2MODirPath))
             {
                 Directory.CreateDirectory(Install2MODirPath);
             }
+
+            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = T._("Install from 2MO")));
         }
 
         private void InstallCsScriptsForScriptLoader(string WhereFromInstallDir = "")
@@ -1352,7 +1363,7 @@ namespace AI_Girl_Helper
                         {
                             Line = sReader.ReadLine();
 
-                            if (!readDescriptionMode && Line.Length > 0 && Line.Contains("/*"))
+                            if (!readDescriptionMode && Line.Length > 0 && IsStringAContainsStringB(Line, "/*"))
                             {
                                 readDescriptionMode = true;
                                 Line = Line.Remove(Line.IndexOf("/*"), 2);
@@ -1363,7 +1374,7 @@ namespace AI_Girl_Helper
                             }
                             else
                             {
-                                if (Line.Contains(@"*/"))
+                                if (IsStringAContainsStringB(Line, @"*/"))
                                 {
                                     readDescriptionMode = false;
                                     Line = Line.Remove(Line.IndexOf(@"*/"), 2);
@@ -1477,6 +1488,11 @@ namespace AI_Girl_Helper
                     //папка "cb" с оверлеями
                     MoveImagesToTargetContentFolder(dir, "o");
                 }
+                else if (string.Compare(Path.GetFileName(dir), "s", true) == 0)
+                {
+                    //папка "cb" с оверлеями
+                    MoveImagesToTargetContentFolder(dir, "s");
+                }
                 else
                 {
                     var images = Directory.GetFiles(dir, "*.png");
@@ -1555,6 +1571,11 @@ namespace AI_Girl_Helper
                 {
                     //TargetFolder = GetOverlaysFolder();
                     TargetFolder = GetUserDataSubFolder(MoveInThisFolder ? dir : " Overlays", ContentType);
+                }
+                else if (ContentType == "s")
+                {
+                    //TargetFolder = GetOverlaysFolder();
+                    TargetFolder = GetUserDataSubFolder(MoveInThisFolder ? dir : " Scenes", ContentType);
                 }
                 var Targets = Directory.GetFiles(dir, "*" + Extension);
                 if (Targets.Length > 0)
@@ -1768,6 +1789,11 @@ namespace AI_Girl_Helper
             {
                 TypeFolder = "Overlays";
             }
+            else if (Type == "s")
+            {
+                TypeFolder = "studio";
+                TargetFolderName = "scene";
+            }
 
             int TargetFoldersLength = TargetFolders.Length;
             for (int i = 0; i < TargetFoldersLength; i++)
@@ -1922,7 +1948,7 @@ namespace AI_Girl_Helper
                                                 {
                                                     //get update name
                                                     UpdateModNameFromMeta = UpdateModNameFromMeta.Substring(upIndex).Split(':')[1];
-                                                    if (UpdateModNameFromMeta.Length > 0 && ZipName.Length >= UpdateModNameFromMeta.Length && ZipName.Contains(UpdateModNameFromMeta))
+                                                    if (UpdateModNameFromMeta.Length > 0 && ZipName.Length >= UpdateModNameFromMeta.Length && IsStringAContainsStringB(ZipName, UpdateModNameFromMeta))
                                                     {
                                                         FoundUpdateName = true;
                                                         break;
@@ -1982,7 +2008,7 @@ namespace AI_Girl_Helper
                                 {
                                     File.Delete(TargetFIle);
                                 }
-                                else 
+                                else
                                 {
                                     targetfileIsNewerOrSame = true;
                                 }
@@ -2176,11 +2202,11 @@ namespace AI_Girl_Helper
                             }
 
                             File.Move(file, Path.Combine(targetsubdirpath, Path.GetFileName(file)));
-                            if (comment.Length == 0 || !comment.Contains("Requires: ScriptLoader"))
+                            if (comment.Length == 0 || !IsStringAContainsStringB(comment, "Requires: ScriptLoader"))
                             {
                                 comment += " Requires: ScriptLoader";
                             }
-                            if (category.Length == 0 || !comment.Contains("86"))
+                            if (category.Length == 0 || !IsStringAContainsStringB(comment, "86"))
                             {
                                 if (category.Length == 0 || category == "-1,")
                                 {
@@ -2389,7 +2415,7 @@ namespace AI_Girl_Helper
                 }
 
                 //добавление имени автора в начало имени папки
-                if ((!string.IsNullOrEmpty(name) && name.Substring(0, 1) == "[" && !name.StartsWith("[AI]")) || (name.Length >= 5 && name.Substring(0, 5) == "[AI][") || name.Contains(author))
+                if ((!string.IsNullOrEmpty(name) && name.Substring(0, 1) == "[" && !name.StartsWith("[AI]")) || (name.Length >= 5 && name.Substring(0, 5) == "[AI][") || IsStringAContainsStringB(name, author))
                 {
                 }
                 else if (author.Length > 0)
@@ -2428,7 +2454,13 @@ namespace AI_Girl_Helper
                 }
                 else
                 {
+                    //найти имя мода из списка модов
                     modNameWithAuthor = GetModFromModListContainsTheName(name, false);
+                    if (modNameWithAuthor.Length == 0)
+                    {
+                        //если пусто, поискать также имя по имени дллки
+                        modNameWithAuthor = GetModFromModListContainsTheName(dllName.Remove(dllName.Length-4,4), false);
+                    }
                     if (modNameWithAuthor.Length > 0)
                     {
                         newModDirPath = Path.Combine(ModsPath, modNameWithAuthor);
@@ -2482,21 +2514,42 @@ namespace AI_Girl_Helper
             }
         }
 
-        private string GetModFromModListContainsTheName(string name, bool OnlyFromEnabledMods=true)
+        private string GetModFromModListContainsTheName(string name, bool OnlyFromEnabledMods = true)
         {
             if (!string.IsNullOrWhiteSpace(name))
             {
                 string[] modList = GetModsListFromActiveMOProfile(OnlyFromEnabledMods);
                 int nameLength = name.Length;
-                foreach (var modname in modList)
+                int modListLength = modList.Length;
+                for (int modlineNumber = 0; modlineNumber < modListLength; modlineNumber++)
                 {
-                    if (modname.Length >= nameLength && modname.Contains(name))
+                    string modname = modList[modlineNumber];
+                    if (modname.Length >= nameLength && IsStringAContainsStringB(modname, name))
                     {
                         return modname;
                     }
                 }
             }
             return string.Empty;
+        }
+
+        /// <summary>
+        /// Check if string A contains string B (if length of A == length of A-B(if exists))<br></br><br></br>
+        /// Speed check tests: https://cc.davelozinski.com/c-sharp/fastest-way-to-check-if-a-string-occurs-within-a-string
+        /// </summary>
+        /// <param name="StringAInWhichSearch"></param>
+        /// <param name="StringBToSearch"></param>
+        /// <returns></returns>
+        private bool IsStringAContainsStringB(string StringAInWhichSearch, string StringBToSearch)
+        {
+            int StringAInWhichSearchLength = StringAInWhichSearch.Length;
+            if (StringAInWhichSearchLength > 0 && StringBToSearch.Length > 0)//safe check for empty values
+            {
+                //if string A contains string B result length(where string B will be replaced by "" if exists) will be not equal to length of string A
+                return (StringAInWhichSearchLength - StringAInWhichSearch.Replace(StringBToSearch, string.Empty).Length != StringAInWhichSearchLength);
+            }
+            return false;
+
         }
 
         /// <summary>
@@ -2728,7 +2781,7 @@ namespace AI_Girl_Helper
                     }
 
                     //добавление имени автора в начало имени папки
-                    if (name.StartsWith("[AI][") || (name.StartsWith("[") && !name.StartsWith("[AI]")) || name.Contains(author))
+                    if (name.StartsWith("[AI][") || (name.StartsWith("[") && !name.StartsWith("[AI]")) || IsStringAContainsStringB(name, author))
                     {
                     }
                     else if (author.Length > 0)
@@ -2817,7 +2870,7 @@ namespace AI_Girl_Helper
                 foreach (var path in Directory.GetFiles(zipmoddirmodspath, extension))
                 {
                     string name = Path.GetFileNameWithoutExtension(path);
-                    if (name.Contains(zipname))
+                    if (IsStringAContainsStringB(name, zipname))
                     {
                         return path;
                     }
@@ -3083,7 +3136,7 @@ namespace AI_Girl_Helper
 
                             string TargetFolderPath = Path.GetDirectoryName(FromToPaths[1]);
 
-                            bool IsForOverwriteFolder = TargetFolderPath.Contains(OverwriteFolder);
+                            bool IsForOverwriteFolder = IsStringAContainsStringB(TargetFolderPath, OverwriteFolder);
                             //поиск имени мода с учетом обработки файлов папки Overwrite
                             string ModName = TargetFolderPath;
                             if (IsForOverwriteFolder)
@@ -3282,7 +3335,7 @@ namespace AI_Girl_Helper
                     {
                         continue;
                     }
-                    if (Str.Contains(exclusions[i]))
+                    if (IsStringAContainsStringB(Str, exclusions[i]))
                     {
                         return true;
                     }

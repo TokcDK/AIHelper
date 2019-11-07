@@ -1975,13 +1975,16 @@ namespace AI_Girl_Helper
                             //ModFolderForUpdate
                             string TargetFIle = file.Replace(TargetModDirPath, ModFolderForUpdate);
                             string TargetFileDir = Path.GetDirectoryName(TargetFIle);
-                            bool targetfileIsNewer = false;
+                            bool targetfileIsNewerOrSame = false;
                             if (File.Exists(TargetFIle))
                             {
                                 if (File.GetLastWriteTime(file) > File.GetLastWriteTime(TargetFIle))
                                 {
                                     File.Delete(TargetFIle);
-                                    targetfileIsNewer = true;
+                                }
+                                else 
+                                {
+                                    targetfileIsNewerOrSame = true;
                                 }
                             }
                             else
@@ -1990,17 +1993,23 @@ namespace AI_Girl_Helper
                                 TargetFIle.Length >= 4 && TargetFIle.Substring(TargetFIle.Length - 4, 4) == ".dll"
                                 && Path.GetFileNameWithoutExtension(targetFileAny) == Path.GetFileNameWithoutExtension(file)
                                 && File.Exists(targetFileAny)
-                                && File.GetLastWriteTime(file) > File.GetLastWriteTime(targetFileAny)
                                    )
                                 {
-                                    File.Delete(targetFileAny);
+                                    if (File.GetLastWriteTime(file) > File.GetLastWriteTime(targetFileAny))
+                                    {
+                                        File.Delete(targetFileAny);
+                                    }
+                                    else
+                                    {
+                                        targetfileIsNewerOrSame = true;
+                                    }
                                 }
                             }
                             if (!Directory.Exists(TargetFileDir))
                             {
                                 Directory.CreateDirectory(TargetFileDir);
                             }
-                            if (targetfileIsNewer)
+                            if (targetfileIsNewerOrSame)
                             {
                                 File.Delete(file);
                             }

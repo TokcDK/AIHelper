@@ -28,7 +28,7 @@ namespace AI_Girl_Helper
 
         private void IllusionDiscordLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://discord.gg/RfkZVS");
+            Process.Start("https://discord.gg/TyQtXkf");
         }
 
         private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

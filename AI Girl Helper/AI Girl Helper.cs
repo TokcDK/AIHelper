@@ -1363,7 +1363,7 @@ namespace AI_Girl_Helper
                         {
                             Line = sReader.ReadLine();
 
-                            if (!readDescriptionMode && Line.Length > 0 && IsStringAContainsStringB(Line, "/*"))
+                            if (!readDescriptionMode /*&& Line.Length > 0 уже есть эта проверка в IsStringAContainsStringB*/ && IsStringAContainsStringB(Line, "/*"))
                             {
                                 readDescriptionMode = true;
                                 Line = Line.Remove(Line.IndexOf("/*"), 2);
@@ -2534,19 +2534,19 @@ namespace AI_Girl_Helper
         }
 
         /// <summary>
-        /// Check if string A contains string B (if length of A == length of A-B(if exists))<br></br><br></br>
+        /// Check if string A contains string B (if length of A > length of A with replaced B by "")<br></br><br></br>
         /// Speed check tests: https://cc.davelozinski.com/c-sharp/fastest-way-to-check-if-a-string-occurs-within-a-string
         /// </summary>
-        /// <param name="StringAInWhichSearch"></param>
+        /// <param name="StringAWhereSearch"></param>
         /// <param name="StringBToSearch"></param>
         /// <returns></returns>
-        private bool IsStringAContainsStringB(string StringAInWhichSearch, string StringBToSearch)
+        private bool IsStringAContainsStringB(string StringAWhereSearch, string StringBToSearch)
         {
-            int StringAInWhichSearchLength = StringAInWhichSearch.Length;
+            int StringAInWhichSearchLength = StringAWhereSearch.Length;
             if (StringAInWhichSearchLength > 0 && StringBToSearch.Length > 0)//safe check for empty values
             {
-                //if string A contains string B result length(where string B will be replaced by "" if exists) will be not equal to length of string A
-                return (StringAInWhichSearchLength - StringAInWhichSearch.Replace(StringBToSearch, string.Empty).Length != StringAInWhichSearchLength);
+                //if string A contains string B then string A with replaced stringB by empty will be
+                return StringAInWhichSearchLength > StringAWhereSearch.Replace(StringBToSearch, string.Empty).Length;
             }
             return false;
 

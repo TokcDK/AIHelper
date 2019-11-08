@@ -1513,9 +1513,29 @@ namespace AI_Girl_Helper
                         //    File.Move(img, TargetPath);
                         //}
 
-                        var cardsModDir = GetResultTargetDirPathWithNameCheck(ModsPath, Path.GetFileName(dir));
+                        string theDirName = Path.GetFileName(dir);
+                        var cardsModDir = Path.Combine(ModsPath, theDirName);
+                        //var cardsModDir = GetResultTargetDirPathWithNameCheck(ModsPath, Path.GetFileName(dir));
 
-                        Directory.Move(dir, cardsModDir);
+                        //Перемещение файлов в ту же папку, если она существует, вместо создания новой
+                        if (Directory.Exists(cardsModDir))
+                        {
+                            foreach (var file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
+                            {
+                                string fileTarget = file.Replace(Install2MODirPath, ModsPath);
+
+                                if (File.Exists(fileTarget))
+                                {
+                                    fileTarget = GetResultTargetFilePathWithNameCheck(Path.GetDirectoryName(fileTarget), Path.GetFileNameWithoutExtension(fileTarget), Path.GetExtension(fileTarget));
+                                }
+                                File.Move(file, fileTarget);
+                            }
+                            DeleteEmptySubfolders(dir);
+                        }
+                        else
+                        {
+                            Directory.Move(dir, cardsModDir);
+                        }
 
                         //запись meta.ini
                         WriteMetaINI(

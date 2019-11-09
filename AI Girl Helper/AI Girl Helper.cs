@@ -2127,13 +2127,14 @@ namespace AI_Girl_Helper
 
         private void InstallModFilesFromSubfolders()
         {
-            foreach (var dir in Directory.GetDirectories(Install2MODirPath, "*"))
+            foreach (var dirIn2mo in Directory.GetDirectories(Install2MODirPath, "*"))
             {
-                if (dir.EndsWith("\\Temp"))
+                if (dirIn2mo.Length>=4 && string.Compare(dirIn2mo.Substring(dirIn2mo.Length-4,4),"Temp",true)==0)//path ends with 'Temp'
                 {
                     continue;
                 }
 
+                string dir = dirIn2mo;
                 string name = Path.GetFileName(dir);
                 string category = string.Empty;
                 string version = string.Empty;
@@ -2143,9 +2144,21 @@ namespace AI_Girl_Helper
                 string moddir = string.Empty;
 
                 bool AnyModFound = false;
-                foreach (var subdir in Directory.GetDirectories(dir, "*"))
+
+                string[] subDirs = Directory.GetDirectories(dir, "*");
+
+                //when was extracted archive where is one folder with same name and this folder contains game files
+                if (subDirs.Length == 1 && Path.GetFileName(subDirs[0])==name)
+                {
+                    //re-set dir to this one subdir and get dirs from there
+                    dir = subDirs[0];
+                    subDirs = Directory.GetDirectories(dir, "*");
+                }
+
+                foreach (var subdir in subDirs)
                 {
                     string subdirname = Path.GetFileName(subdir);
+
                     if (
                            string.Compare(subdirname, "abdata", true) == 0
                         || string.Compare(subdirname, "userdata", true) == 0

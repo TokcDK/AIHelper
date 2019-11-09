@@ -283,7 +283,7 @@ namespace AI_Girl_Helper
             if (AutoShortcutRegistryCheckBox.Checked || force)
             {
                 //AI-Girl Helper
-                string shortcutname = GetCurrentGameName()+" "+ T._("Helper");
+                string shortcutname = GetCurrentGameName() + " " + T._("Helper");
                 string targetpath = Application.ExecutablePath;
                 string arguments = string.Empty;
                 string workingdir = Path.GetDirectoryName(targetpath);
@@ -314,7 +314,7 @@ namespace AI_Girl_Helper
                 }
                 if (!auto)
                 {
-                    MessageBox.Show(T._("Shortcut") +" "+T._("created")+"!");
+                    MessageBox.Show(T._("Shortcut") + " " + T._("created") + "!");
                 }
             }
         }
@@ -1199,7 +1199,7 @@ namespace AI_Girl_Helper
             {
                 return "AI-SyoujyoTrial";
             }
-            else if(File.Exists(Path.Combine(DataPath, "AI-Syoujyo.exe")))
+            else if (File.Exists(Path.Combine(DataPath, "AI-Syoujyo.exe")))
             {
                 return "AI-Syoujyo";
             }
@@ -1418,7 +1418,8 @@ namespace AI_Girl_Helper
                     {
                         string Line;
                         bool readDescriptionMode = false;
-                        while (!sReader.EndOfStream)
+                        int i = 0;
+                        while (!sReader.EndOfStream || (!readDescriptionMode && i == 10))
                         {
                             Line = sReader.ReadLine();
 
@@ -1446,6 +1447,8 @@ namespace AI_Girl_Helper
                                     break;
                                 }
                             }
+
+                            i++;
                         }
                     }
                     string scriptsdir = Path.Combine(moddir, "scripts");
@@ -1460,7 +1463,19 @@ namespace AI_Girl_Helper
                     if (File.Exists(FileTargetPath))
                     {
                         IsUpdate = true;
-                        File.Move(FileTargetPath, FileTargetPath + ".bak");
+                        if (File.GetLastWriteTime(csFile) > File.GetLastWriteTime(FileTargetPath))
+                        {
+                            File.Delete(FileTargetPath);
+                            File.Move(csFile, FileTargetPath);
+                        }
+                        else
+                        {
+                            File.Delete(csFile);
+                        }
+                    }
+                    else
+                    {
+                        File.Move(csFile, FileTargetPath);
                     }
 
                     string FileLastModificationTime = File.GetLastWriteTime(csFile).ToString("yyyyMMddHHmm");
@@ -1477,12 +1492,32 @@ namespace AI_Girl_Helper
                         IsUpdate ? string.Empty : "<br>" + "Author" + ": " + author + "<br><br>" + (description.Length > 0 ? description : name)
                         );
 
-                    File.Move(csFile, Path.Combine(scriptsdir, name + ".cs"));
                     ActivateInsertModIfPossible(modname, false, "ScriptLoader scripts_separator");
 
-                    if (IsUpdate && File.Exists(FileTargetPath) && File.Exists(FileTargetPath + ".bak"))
+                    string[] extrafiles = Directory.GetFiles(WhereFromInstallDir, name+"*.*");
+                    if (extrafiles.Length>0)
                     {
-                        File.Delete(FileTargetPath + ".bak");
+                        foreach(var extrafile in extrafiles)
+                        {
+                            string targetFile = extrafile.Replace(WhereFromInstallDir, moddir);
+
+                            if (File.Exists(targetFile))
+                            {
+                                if (File.GetLastWriteTime(extrafile)> File.GetLastWriteTime(targetFile))
+                                {
+                                    File.Delete(targetFile);
+                                    File.Move(extrafile, targetFile);
+                                }
+                                else
+                                {
+                                    File.Delete(extrafile);
+                                }
+                            }
+                            else
+                            {
+                                File.Move(extrafile, targetFile);
+                            }
+                        }
                     }
                 }
             }

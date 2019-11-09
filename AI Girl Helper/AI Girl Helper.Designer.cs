@@ -58,6 +58,7 @@
             this.SettingsPage = new System.Windows.Forms.TabPage();
             this.SettingsPanel = new System.Windows.Forms.Panel();
             this.SettingsFoldersGroupBox = new System.Windows.Forms.GroupBox();
+            this.OpenMOOverwriteFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenMyUserDataFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenModsFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenMOLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -68,7 +69,7 @@
             this.QualityComboBox = new System.Windows.Forms.ComboBox();
             this.FullScreenCheckBox = new System.Windows.Forms.CheckBox();
             this.ResolutionComboBox = new System.Windows.Forms.ComboBox();
-            this.ShortcutsCheckBox = new System.Windows.Forms.CheckBox();
+            this.AutoShortcutRegistryCheckBox = new System.Windows.Forms.CheckBox();
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
             this.ToolsPanel = new System.Windows.Forms.Panel();
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -445,7 +446,7 @@
             this.SettingsPanel.Controls.Add(this.CreateShortcutButton);
             this.SettingsPanel.Controls.Add(this.FixRegistryButton);
             this.SettingsPanel.Controls.Add(this.groupBox1);
-            this.SettingsPanel.Controls.Add(this.ShortcutsCheckBox);
+            this.SettingsPanel.Controls.Add(this.AutoShortcutRegistryCheckBox);
             this.SettingsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SettingsPanel.Location = new System.Drawing.Point(3, 3);
             this.SettingsPanel.Name = "SettingsPanel";
@@ -454,23 +455,37 @@
             // 
             // SettingsFoldersGroupBox
             // 
+            this.SettingsFoldersGroupBox.Controls.Add(this.OpenMOOverwriteFolderLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenMyUserDataFolderLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenModsFolderLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenMOLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenGameFolderLinkLabel);
             this.SettingsFoldersGroupBox.ForeColor = System.Drawing.Color.White;
-            this.SettingsFoldersGroupBox.Location = new System.Drawing.Point(5, 106);
+            this.SettingsFoldersGroupBox.Location = new System.Drawing.Point(5, 83);
             this.SettingsFoldersGroupBox.Name = "SettingsFoldersGroupBox";
-            this.SettingsFoldersGroupBox.Size = new System.Drawing.Size(167, 44);
+            this.SettingsFoldersGroupBox.Size = new System.Drawing.Size(107, 67);
             this.SettingsFoldersGroupBox.TabIndex = 6;
             this.SettingsFoldersGroupBox.TabStop = false;
             this.SettingsFoldersGroupBox.Text = "Folders";
+            // 
+            // OpenMOOverwriteFolderLinkLabel
+            // 
+            this.OpenMOOverwriteFolderLinkLabel.AutoSize = true;
+            this.OpenMOOverwriteFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.OpenMOOverwriteFolderLinkLabel.Location = new System.Drawing.Point(46, 12);
+            this.OpenMOOverwriteFolderLinkLabel.Name = "OpenMOOverwriteFolderLinkLabel";
+            this.OpenMOOverwriteFolderLinkLabel.Size = new System.Drawing.Size(55, 13);
+            this.OpenMOOverwriteFolderLinkLabel.TabIndex = 4;
+            this.OpenMOOverwriteFolderLinkLabel.TabStop = true;
+            this.OpenMOOverwriteFolderLinkLabel.Text = "Overwrite";
+            this.OpenMOOverwriteFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
+            this.OpenMOOverwriteFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenMOOverwriteFolderLinkLabel_LinkClicked);
             // 
             // OpenMyUserDataFolderLinkLabel
             // 
             this.OpenMyUserDataFolderLinkLabel.AutoSize = true;
             this.OpenMyUserDataFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.OpenMyUserDataFolderLinkLabel.Location = new System.Drawing.Point(110, 17);
+            this.OpenMyUserDataFolderLinkLabel.Location = new System.Drawing.Point(46, 26);
             this.OpenMyUserDataFolderLinkLabel.Name = "OpenMyUserDataFolderLinkLabel";
             this.OpenMyUserDataFolderLinkLabel.Size = new System.Drawing.Size(48, 13);
             this.OpenMyUserDataFolderLinkLabel.TabIndex = 3;
@@ -483,7 +498,7 @@
             // 
             this.OpenModsFolderLinkLabel.AutoSize = true;
             this.OpenModsFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.OpenModsFolderLinkLabel.Location = new System.Drawing.Point(72, 17);
+            this.OpenModsFolderLinkLabel.Location = new System.Drawing.Point(6, 26);
             this.OpenModsFolderLinkLabel.Name = "OpenModsFolderLinkLabel";
             this.OpenModsFolderLinkLabel.Size = new System.Drawing.Size(32, 13);
             this.OpenModsFolderLinkLabel.TabIndex = 2;
@@ -496,7 +511,7 @@
             // 
             this.OpenMOLinkLabel.AutoSize = true;
             this.OpenMOLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.OpenMOLinkLabel.Location = new System.Drawing.Point(43, 17);
+            this.OpenMOLinkLabel.Location = new System.Drawing.Point(6, 39);
             this.OpenMOLinkLabel.Name = "OpenMOLinkLabel";
             this.OpenMOLinkLabel.Size = new System.Drawing.Size(23, 13);
             this.OpenMOLinkLabel.TabIndex = 1;
@@ -509,7 +524,7 @@
             // 
             this.OpenGameFolderLinkLabel.AutoSize = true;
             this.OpenGameFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.OpenGameFolderLinkLabel.Location = new System.Drawing.Point(6, 17);
+            this.OpenGameFolderLinkLabel.Location = new System.Drawing.Point(6, 12);
             this.OpenGameFolderLinkLabel.Name = "OpenGameFolderLinkLabel";
             this.OpenGameFolderLinkLabel.Size = new System.Drawing.Size(34, 13);
             this.OpenGameFolderLinkLabel.TabIndex = 0;
@@ -520,7 +535,7 @@
             // 
             // CreateShortcutButton
             // 
-            this.CreateShortcutButton.Location = new System.Drawing.Point(260, 98);
+            this.CreateShortcutButton.Location = new System.Drawing.Point(258, 18);
             this.CreateShortcutButton.Name = "CreateShortcutButton";
             this.CreateShortcutButton.Size = new System.Drawing.Size(77, 23);
             this.CreateShortcutButton.TabIndex = 5;
@@ -530,7 +545,7 @@
             // 
             // FixRegistryButton
             // 
-            this.FixRegistryButton.Location = new System.Drawing.Point(260, 127);
+            this.FixRegistryButton.Location = new System.Drawing.Point(258, 49);
             this.FixRegistryButton.Name = "FixRegistryButton";
             this.FixRegistryButton.Size = new System.Drawing.Size(77, 23);
             this.FixRegistryButton.TabIndex = 4;
@@ -544,7 +559,7 @@
             this.groupBox1.Controls.Add(this.FullScreenCheckBox);
             this.groupBox1.Controls.Add(this.ResolutionComboBox);
             this.groupBox1.ForeColor = System.Drawing.Color.White;
-            this.groupBox1.Location = new System.Drawing.Point(5, 26);
+            this.groupBox1.Location = new System.Drawing.Point(5, 3);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(249, 74);
             this.groupBox1.TabIndex = 3;
@@ -597,20 +612,18 @@
             this.ResolutionComboBox.TabIndex = 1;
             this.ResolutionComboBox.SelectedIndexChanged += new System.EventHandler(this.ResolutionComboBox_SelectedIndexChanged);
             // 
-            // ShortcutsCheckBox
+            // AutoShortcutRegistryCheckBox
             // 
-            this.ShortcutsCheckBox.AutoSize = true;
-            this.ShortcutsCheckBox.Checked = true;
-            this.ShortcutsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ShortcutsCheckBox.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.ShortcutsCheckBox.Location = new System.Drawing.Point(5, 3);
-            this.ShortcutsCheckBox.Name = "ShortcutsCheckBox";
-            this.ShortcutsCheckBox.Size = new System.Drawing.Size(224, 17);
-            this.ShortcutsCheckBox.TabIndex = 0;
-            this.ShortcutsCheckBox.Text = "Create shortcuts after archive extraction";
-            this.ShortcutsCheckBox.UseVisualStyleBackColor = true;
-            this.ShortcutsCheckBox.Visible = false;
-            this.ShortcutsCheckBox.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
+            this.AutoShortcutRegistryCheckBox.AutoSize = true;
+            this.AutoShortcutRegistryCheckBox.ForeColor = System.Drawing.Color.White;
+            this.AutoShortcutRegistryCheckBox.Location = new System.Drawing.Point(286, 78);
+            this.AutoShortcutRegistryCheckBox.Name = "AutoShortcutRegistryCheckBox";
+            this.AutoShortcutRegistryCheckBox.Size = new System.Drawing.Size(49, 17);
+            this.AutoShortcutRegistryCheckBox.TabIndex = 0;
+            this.AutoShortcutRegistryCheckBox.Text = "Auto";
+            this.AutoShortcutRegistryCheckBox.UseVisualStyleBackColor = true;
+            this.AutoShortcutRegistryCheckBox.Visible = false;
+            this.AutoShortcutRegistryCheckBox.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
             // 
             // ToolsTabPage
             // 
@@ -671,7 +684,7 @@
             this.MOCommonModeSwitchButton.Name = "MOCommonModeSwitchButton";
             this.MOCommonModeSwitchButton.Size = new System.Drawing.Size(112, 30);
             this.MOCommonModeSwitchButton.TabIndex = 16;
-            this.MOCommonModeSwitchButton.Text = "MOToCommon111";
+            this.MOCommonModeSwitchButton.Text = "MOToCommon";
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
             // 
@@ -736,7 +749,7 @@
         private System.Windows.Forms.Label ModsInfoLabel;
         private System.Windows.Forms.TabPage SettingsPage;
         private System.Windows.Forms.Panel SettingsPanel;
-        private System.Windows.Forms.CheckBox ShortcutsCheckBox;
+        private System.Windows.Forms.CheckBox AutoShortcutRegistryCheckBox;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox FullScreenCheckBox;
         private System.Windows.Forms.ComboBox ResolutionComboBox;
@@ -767,6 +780,7 @@
         private System.Windows.Forms.LinkLabel Install2MODirPathOpenFolderLinkLabel;
         private System.Windows.Forms.LinkLabel LanchModeInfoLinkLabel;
         private System.Windows.Forms.LinkLabel OpenMyUserDataFolderLinkLabel;
+        private System.Windows.Forms.LinkLabel OpenMOOverwriteFolderLinkLabel;
     }
 }
 

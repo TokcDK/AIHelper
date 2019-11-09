@@ -48,10 +48,10 @@ namespace AI_Girl_Helper
             //button1.Text = T._("Prepare the game");
             SettingsPage.Text = T._("Settings");
             CreateShortcutButton.Text = T._("Shortcut");
-            FixRegistryButton.Text = T._("Fix registry");
+            FixRegistryButton.Text = T._("Registry");
             groupBox1.Text = T._("Display");
             FullScreenCheckBox.Text = T._("fullscreen");
-            ShortcutsCheckBox.Text = T._("Create shortcuts after archive extraction");
+            AutoShortcutRegistryCheckBox.Text = T._("Automatically create shortcut and fix registry if need");
             SettingsFoldersGroupBox.Text = T._("Folders");
             OpenGameFolderLinkLabel.Text = T._("Game");
             OpenModsFolderLinkLabel.Text = T._("Mods");
@@ -278,17 +278,17 @@ namespace AI_Girl_Helper
         }
 
         //https://bytescout.com/blog/create-shortcuts-in-c-and-vbnet.html
-        private void CreateShortcuts(bool force = false)
+        private void CreateShortcuts(bool force = false, bool auto = true)
         {
-            if (ShortcutsCheckBox.Checked || force)
+            if (AutoShortcutRegistryCheckBox.Checked || force)
             {
                 //AI-Girl Helper
-                string shortcutname = T._("AI-Girl Helper");
-                string targetpath = Path.Combine(Application.StartupPath, "AI Girl Helper.exe");
+                string shortcutname = GetCurrentGameName()+" "+ T._("Helper");
+                string targetpath = Application.ExecutablePath;
                 string arguments = string.Empty;
                 string workingdir = Path.GetDirectoryName(targetpath);
                 string description = T._("Run") + " " + shortcutname;
-                string iconlocation = Path.Combine(Application.StartupPath, "AI Girl Helper.exe");
+                string iconlocation = Application.ExecutablePath;
                 Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description, iconlocation);
 
                 //AI-Girl Trial
@@ -311,6 +311,10 @@ namespace AI_Girl_Helper
                 if (!Directory.Exists(OverwriteFolderLink) && Directory.Exists(OverwriteFolder))
                 {
                     CreateSymlink.Folder(OverwriteFolder, OverwriteFolderLink);
+                }
+                if (!auto)
+                {
+                    MessageBox.Show(T._("Shortcut") +" "+T._("created")+"!");
                 }
             }
         }
@@ -598,8 +602,8 @@ namespace AI_Girl_Helper
                     ) : T._(
                         " to the game folder when possible"
                         )));
-            THToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Will open") + T._(" 2MO folder"));
-            THToolTip.SetToolTip(ShortcutsCheckBox, T._("When checked will create shortcut for the AIGirl Helper manager on Desktop after mods extraction"));
+            THToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Open folder where you can drop/download files for autoinstallation"));
+            THToolTip.SetToolTip(AutoShortcutRegistryCheckBox, T._("When checked will create shortcut for the AIGirl Helper manager on Desktop after mods extraction"));
             THToolTip.SetToolTip(groupBox1, T._("Game Display settings"));
             THToolTip.SetToolTip(ResolutionComboBox, T._("Select preferred screen resolution"));
             THToolTip.SetToolTip(FullScreenCheckBox, T._("When checked game will be in fullscreen mode"));
@@ -889,6 +893,17 @@ namespace AI_Girl_Helper
             ModOrganizerINIpath = Path.Combine(MODirPath, "ModOrganizer.ini");
             Install2MODirPath = Path.Combine(GetSelectedGameFolderPath(), "2MO");
             AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
+
+            if (AutoShortcutRegistryCheckBox.Checked)
+            {
+                AutoShortcutAndRegystry();
+            }
+        }
+
+        private void AutoShortcutAndRegystry()
+        {
+            CreateShortcuts();
+            FixRegistry();
         }
 
         private string ModOrganizerINIpath = Path.Combine(MODirPath, "ModOrganizer.ini");
@@ -1102,18 +1117,34 @@ namespace AI_Girl_Helper
         private void FixRegistryButton_Click(object sender, EventArgs e)
         {
             FixRegistryButton.Enabled = false;
-            var InstallDirValue = Registry.GetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-Syoujyo", "INSTALLDIR", null);
+
+            FixRegistry(false);
+
+            FixRegistryButton.Enabled = true;
+        }
+
+        private void FixRegistry(bool auto = true)
+        {
+            string GameName = GetCurrentGameName();
+            string RegystryPath = @"HKEY_CURRENT_USER\Software\illusion\" + GameName + @"\" + GameName;
+            var InstallDirValue = Registry.GetValue(RegystryPath, "INSTALLDIR", null);
             if (InstallDirValue == null || InstallDirValue.ToString() != DataPath)
             {
-                Registry.SetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\" + GetCurrentGameName(), "INSTALLDIR", DataPath);
-                MessageBox.Show(T._("Registry fixed! Install dir was set to Data dir."));
+                Registry.SetValue(RegystryPath, "INSTALLDIR", DataPath);
+                if (!auto)
+                {
+                    MessageBox.Show(T._("Registry fixed! Install dir was set to Data dir."));
+                }
             }
             else
             {
-                MessageBox.Show(T._("Registry was already fixed"));
+                if (!auto)
+                {
+                    MessageBox.Show(T._("Registry was already fixed"));
+                }
             }
-            FixRegistryButton.Enabled = true;
         }
+
         private void MOButton_Click(object sender, EventArgs e)
         {
             OnOffButtons(false);
@@ -1168,10 +1199,11 @@ namespace AI_Girl_Helper
             {
                 return "AI-SyoujyoTrial";
             }
-            else
+            else if(File.Exists(Path.Combine(DataPath, "AI-Syoujyo.exe")))
             {
                 return "AI-Syoujyo";
             }
+            return string.Empty;
         }
 
         private void StudioButton_Click(object sender, EventArgs e)
@@ -1281,7 +1313,7 @@ namespace AI_Girl_Helper
         string Install2MODirPath = Path.Combine(Application.StartupPath, "2MO");
         private async void InstallInModsButton_Click(object sender, EventArgs e)
         {
-            if (Directory.Exists(Install2MODirPath) && (Directory.GetFiles(Install2MODirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.cs").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zipmod").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zip").Length > 0 || Directory.GetDirectories(Install2MODirPath, "*").Length > 0))
+            if (Directory.Exists(Install2MODirPath) && (Directory.GetFiles(Install2MODirPath, "*.rar").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.7z").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.cs").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zipmod").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zip").Length > 0 || Directory.GetDirectories(Install2MODirPath, "*").Length > 0))
             {
                 OnOffButtons(false);
 
@@ -1307,28 +1339,31 @@ namespace AI_Girl_Helper
         {
             string InstallMessage = T._("Installing");
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage));
-            InstallInModsButton.Text = InstallMessage;
+            UnpackArchives(Install2MODirPath, "rar");
+            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "."));
+            UnpackArchives(Install2MODirPath, "7z");
+            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + ".."));
             InstallCsScriptsForScriptLoader();
 
-            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "."));
+            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "..."));
             InstallZipArchivesToMods();
 
-            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + ".."));
+            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage));
             InstallBepinExModsToMods();
 
-            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "..."));
+            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "."));
             InstallZipModsToMods();
 
-            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage));
+            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + ".."));
             InstallCardsFrom2MO();
 
-            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "."));
+            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "..."));
             InstallModFilesFromSubfolders();
 
-            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + ".."));
+            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage));
             InstallImagesFromSubfolders();
 
-            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "..."));
+            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "."));
             DeleteEmptySubfolders(Install2MODirPath, false);
 
             if (!Directory.Exists(Install2MODirPath))
@@ -1337,6 +1372,30 @@ namespace AI_Girl_Helper
             }
 
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = T._("Install from 2MO")));
+        }
+
+        private void UnpackArchives(string dirForSearch, string extension)
+        {
+            if (dirForSearch.Length > 0 && extension.Length > 0 && Directory.Exists(dirForSearch))
+            {
+                foreach (var file in Directory.GetFiles(dirForSearch, "*." + extension, SearchOption.AllDirectories))
+                {
+                    string targetDir = Path.Combine(Install2MODirPath, Path.GetFileNameWithoutExtension(file));
+                    if (!Directory.Exists(targetDir))
+                    {
+                        try
+                        {
+                            Compressor.Decompress(file, targetDir);
+                            //File.Delete(file);
+                            File.Move(file, file + ".ExtractedAnMustBeInstalled");
+                        }
+                        catch
+                        {
+                            //if decompression failed
+                        }
+                    }
+                }
+            }
         }
 
         private void InstallCsScriptsForScriptLoader(string WhereFromInstallDir = "")
@@ -2129,7 +2188,7 @@ namespace AI_Girl_Helper
         {
             foreach (var dirIn2mo in Directory.GetDirectories(Install2MODirPath, "*"))
             {
-                if (dirIn2mo.Length>=4 && string.Compare(dirIn2mo.Substring(dirIn2mo.Length-4,4),"Temp",true)==0)//path ends with 'Temp'
+                if (dirIn2mo.Length >= 4 && string.Compare(dirIn2mo.Substring(dirIn2mo.Length - 4, 4), "Temp", true) == 0)//path ends with 'Temp'
                 {
                     continue;
                 }
@@ -2148,15 +2207,16 @@ namespace AI_Girl_Helper
                 string[] subDirs = Directory.GetDirectories(dir, "*");
 
                 //when was extracted archive where is one folder with same name and this folder contains game files
-                if (subDirs.Length == 1 && Path.GetFileName(subDirs[0])==name)
+                if (subDirs.Length == 1 && Path.GetFileName(subDirs[0]) == name)
                 {
                     //re-set dir to this one subdir and get dirs from there
                     dir = subDirs[0];
                     subDirs = Directory.GetDirectories(dir, "*");
                 }
-
-                foreach (var subdir in subDirs)
+                int subDirsLength = subDirs.Length;
+                for (int i = 0; i < subDirsLength; i++)
                 {
+                    string subdir = subDirs[i];
                     string subdirname = Path.GetFileName(subdir);
 
                     if (
@@ -2177,9 +2237,34 @@ namespace AI_Girl_Helper
                         //CopyFolder.Copy(dir, Path.Combine(ModsPath, dir));
                         //Directory.Move(dir, "[installed]" + dir);
 
-                        var TargetModDIr = GetResultTargetDirPathWithNameCheck(ModsPath, Path.GetFileName(dir));
+                        var TargetModDIr = Path.Combine(ModsPath, Path.GetFileName(dir));
+                        //var TargetModDIr = GetResultTargetDirPathWithNameCheck(ModsPath, Path.GetFileName(dir));
 
-                        Directory.Move(dir, TargetModDIr);
+                        if (Directory.Exists(TargetModDIr))
+                        {
+                            foreach (var file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
+                            {
+                                string fileTarget = file.Replace(dir, TargetModDIr);
+                                if (File.Exists(fileTarget))
+                                {
+                                    if (File.GetLastWriteTime(file) > File.GetLastWriteTime(fileTarget))
+                                    {
+                                        File.Delete(fileTarget);
+                                        File.Move(file, fileTarget);
+                                    }
+                                }
+                                else
+                                {
+                                    File.Move(file, fileTarget);
+                                }
+                            }
+                            Directory.Delete(dir, true);
+                        }
+                        else
+                        {
+                            Directory.Move(dir, TargetModDIr);
+                        }
+
                         moddir = TargetModDIr;
                         AnyModFound = true;
                         version = Regex.Match(name, @"\d+(\.\d+)*").Value;
@@ -2492,7 +2577,7 @@ namespace AI_Girl_Helper
                     if (modNameWithAuthor.Length == 0)
                     {
                         //если пусто, поискать также имя по имени дллки
-                        modNameWithAuthor = GetModFromModListContainsTheName(dllName.Remove(dllName.Length-4,4), false);
+                        modNameWithAuthor = GetModFromModListContainsTheName(dllName.Remove(dllName.Length - 4, 4), false);
                     }
                     if (modNameWithAuthor.Length > 0)
                     {
@@ -2919,7 +3004,7 @@ namespace AI_Girl_Helper
 
         private void CreateShortcutButton_Click(object sender, EventArgs e)
         {
-            CreateShortcuts(true);
+            CreateShortcuts(true, false);
         }
 
         private void MO2StandartButton_Click(object sender, EventArgs e)
@@ -3494,12 +3579,20 @@ namespace AI_Girl_Helper
 
         private void OpenMyUserDataFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            string UserFIlesFolder = Path.Combine(ModsPath, "MyUserData");
-            if (Directory.Exists(UserFIlesFolder))
+            string UserFilesFolder = Path.Combine(ModsPath, "MyUserData");
+            if (Directory.Exists(UserFilesFolder))
             {
-                Process.Start("explorer.exe", UserFIlesFolder);
+                Process.Start("explorer.exe", UserFilesFolder);
             }
 
+        }
+
+        private void OpenMOOverwriteFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (Directory.Exists(OverwriteFolder))
+            {
+                Process.Start("explorer.exe", OverwriteFolder);
+            }
         }
 
         private void OpenLogLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

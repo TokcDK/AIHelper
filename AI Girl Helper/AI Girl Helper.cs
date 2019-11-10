@@ -1426,7 +1426,7 @@ namespace AI_Girl_Helper
                             if (!readDescriptionMode /*&& Line.Length > 0 уже есть эта проверка в IsStringAContainsStringB*/ && IsStringAContainsStringB(Line, "/*"))
                             {
                                 readDescriptionMode = true;
-                                Line = Line.Remove(Line.IndexOf("/*"), 2);
+                                Line = Line.Replace("/*", string.Empty);
                                 if (Line.Length > 0)
                                 {
                                     description += Line + "<br>";
@@ -1434,10 +1434,10 @@ namespace AI_Girl_Helper
                             }
                             else
                             {
-                                if (IsStringAContainsStringB(Line, @"*/"))
+                                if (IsStringAContainsStringB(Line, "*/"))
                                 {
                                     readDescriptionMode = false;
-                                    Line = Line.Remove(Line.IndexOf(@"*/"), 2);
+                                    Line = Line.Replace("*/", string.Empty);
                                 }
 
                                 description += Line + "<br>";

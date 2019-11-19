@@ -110,11 +110,12 @@ namespace AI_Girl_Helper.Utils
                 { Path.Combine(moddir, "UserData", "housing"), "90", "png"} //Cardframe
             };
 
-            for (int i = 0; i < Categories.Length; i++)
+            int CategoriesLength = Categories.Length/3;
+            for (int i = 0; i < CategoriesLength; i++)
             {
                 string dir = Categories[i, 0];
                 string categorieNum = Categories[i, 1];
-                string extension = Categories[i, 1];
+                string extension = Categories[i, 2];
                 if (
                     (
                         (category.Length > 0

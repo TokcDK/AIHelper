@@ -2495,18 +2495,21 @@ namespace AI_Girl_Helper
 
                     if (version.Length == 0)
                     {
-                        var r = Regex.Match(Path.GetFileName(moddir), @"(\d+(\.\d+)*)");
-                        if (r.Value.Length > 0)
+                        var r = Regex.Match(Path.GetFileName(moddir), @"v(\d+(\.\d+)*)");
+                        if (r.Value.Length > 1)
                         {
-                            version = r.Value;
+                            version = r.Value.Substring(1);
                         }
                     }
+
+                    //Задание доп. категорий по наличию папок
+                    category = FileFolderOperations.GetCategoriesForTheFolder(moddir, category);
 
                     //запись meta.ini
                     WriteMetaINI(
                         moddir
                         ,
-                        FileFolderOperations.GetCategoriesForTheFolder(moddir, category)
+                        category
                         ,
                         version
                         ,

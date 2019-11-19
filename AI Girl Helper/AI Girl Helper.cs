@@ -1495,16 +1495,16 @@ namespace AI_Girl_Helper
 
                     ActivateInsertModIfPossible(modname, false, "ScriptLoader scripts_separator");
 
-                    string[] extrafiles = Directory.GetFiles(WhereFromInstallDir, name+"*.*");
-                    if (extrafiles.Length>0)
+                    string[] extrafiles = Directory.GetFiles(WhereFromInstallDir, name + "*.*");
+                    if (extrafiles.Length > 0)
                     {
-                        foreach(var extrafile in extrafiles)
+                        foreach (var extrafile in extrafiles)
                         {
                             string targetFile = extrafile.Replace(WhereFromInstallDir, moddir);
 
                             if (File.Exists(targetFile))
                             {
-                                if (File.GetLastWriteTime(extrafile)> File.GetLastWriteTime(targetFile))
+                                if (File.GetLastWriteTime(extrafile) > File.GetLastWriteTime(targetFile))
                                 {
                                     File.Delete(targetFile);
                                     File.Move(extrafile, targetFile);
@@ -1567,6 +1567,11 @@ namespace AI_Girl_Helper
                 {
                     //папка "c" с координатами
                     MoveImagesToTargetContentFolder(dir, "c");
+                }
+                else if (string.Compare(Path.GetFileName(dir), "h", true) == 0)
+                {
+                    //папка "h" с проектами домов
+                    MoveImagesToTargetContentFolder(dir, "h");
                 }
                 else if (string.Compare(Path.GetFileName(dir), "cf", true) == 0)
                 {
@@ -1672,6 +1677,11 @@ namespace AI_Girl_Helper
                     //TargetFolder = GetCoordinateFolder();
                     TargetFolder = GetUserDataSubFolder(MoveInThisFolder ? dir : " Coordinate", ContentType);
                 }
+                else if (ContentType == "h")
+                {
+                    //TargetFolder = GetCoordinateFolder();
+                    TargetFolder = GetUserDataSubFolder(MoveInThisFolder ? dir : " Housing", ContentType);
+                }
                 else if (ContentType == "cf")
                 {
                     //TargetFolder = GetCardFrameFolder();
@@ -1692,28 +1702,21 @@ namespace AI_Girl_Helper
                     //TargetFolder = GetOverlaysFolder();
                     TargetFolder = GetUserDataSubFolder(MoveInThisFolder ? dir : " Scenes", ContentType);
                 }
-                var Targets = Directory.GetFiles(dir, "*" + Extension);
-                if (Targets.Length > 0)
-                {
-                    foreach (var target in Targets)
-                    {
-                        var CardframeTargetFolder = GetResultTargetFilePathWithNameCheck(TargetFolder, Path.GetFileNameWithoutExtension(target), Extension);
 
-                        File.Move(target, CardframeTargetFolder);
-                    }
+                foreach (var target in Directory.GetFiles(dir, "*" + Extension))
+                {
+                    var CardframeTargetFolder = GetResultTargetFilePathWithNameCheck(TargetFolder, Path.GetFileNameWithoutExtension(target), Extension);
+
+                    File.Move(target, CardframeTargetFolder);
                 }
 
                 if (ContentType == "o")
                 {
-                    Targets = Directory.GetDirectories(dir, "*");
-                    if (Targets.Length > 0)
+                    foreach (var target in Directory.GetDirectories(dir, "*"))
                     {
-                        foreach (var target in Targets)
-                        {
-                            var ResultTargetPath = GetResultTargetDirPathWithNameCheck(Path.GetDirectoryName(TargetFolder), Path.GetFileName(target));
+                        var ResultTargetPath = GetResultTargetDirPathWithNameCheck(Path.GetDirectoryName(TargetFolder), Path.GetFileName(target));
 
-                            Directory.Move(target, ResultTargetPath);
-                        }
+                        Directory.Move(target, ResultTargetPath);
                     }
                 }
                 else if (ContentType == "f")
@@ -1721,14 +1724,23 @@ namespace AI_Girl_Helper
                     string MaleDir = Path.Combine(dir, "m");
                     if (Directory.Exists(MaleDir))
                     {
-                        Targets = Directory.GetFiles(MaleDir, "*.png");
-                        foreach (var target in Targets)
+                        foreach (var target in Directory.GetFiles(MaleDir, "*.png"))
                         {
                             string name = Path.GetFileName(target);
                             File.Move(target, Path.Combine(dir, name));
                         }
                         Directory.Move(MaleDir, MaleDir + "_");
                         MoveImagesToTargetContentFolder(dir, "m", MoveInThisFolder);
+                    }
+                }
+                else if (ContentType == "h")
+                {
+                    foreach (var typeDir in Directory.GetDirectories(dir))
+                    {
+                        foreach (var file in Directory.GetFiles(typeDir))
+                        {
+                            File.Move(file, GetResultTargetFilePathWithNameCheck(Path.Combine(TargetFolder, Path.GetFileName(Path.GetDirectoryName(file))), Path.GetFileNameWithoutExtension(file), ".png"));
+                        }
                     }
                 }
 
@@ -1765,9 +1777,9 @@ namespace AI_Girl_Helper
             return CoordinateFolder;
         }
 
-        private string GetResultTargetFilePathWithNameCheck(string Folder, string Name, string Extension)
+        private string GetResultTargetFilePathWithNameCheck(string Folder, string Name, string Extension=".*")
         {
-            var ResultPath = Path.Combine(Folder, Name + Extension);
+            var ResultPath = Path.Combine(Folder, Name + (Extension.Substring(0, 1) != "." ? "." : string.Empty) + Extension);
             int i = 0;
             while (File.Exists(ResultPath))
             {
@@ -1889,6 +1901,10 @@ namespace AI_Girl_Helper
             else if (Type == "c")
             {
                 TypeFolder = "coordinate";
+            }
+            else if (Type == "h")
+            {
+                TypeFolder = "housing";
             }
             else if (Type == "cf")
             {
@@ -3439,7 +3455,7 @@ namespace AI_Girl_Helper
         string ModdedDataFilesListFile = Path.Combine(AppResDir, "ModdedDataFilesList.txt");
         string VanillaDataFilesListFile = Path.Combine(AppResDir, "VanillaDataFilesList.txt");
         string MOToStandartConvertationOperationsListFile = Path.Combine(AppResDir, "MOToStandartConvertationOperationsList.txt");
-        
+
         private void CleanBepInExLinksFromData()
         {
             //удаление файлов BepinEx

@@ -98,6 +98,8 @@
     <Compile Include="AI Girl Links.Designer.cs">
       <DependentUpon>AI Girl Links.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utils\FileFolderOperations.cs" />
+    <Compile Include="Utils\StringEx.cs" />
     <Compile Include="Utils\T.cs" />
     <Compile Include="Utils\Compressor.cs" />
     <Compile Include="AI Girl Helper.cs">

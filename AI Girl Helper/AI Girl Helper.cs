@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using AI_Girl_Helper.Utils;
+using Microsoft.Win32;
 using SymbolicLinkSupport;
 using System;
 using System.Collections.Generic;
@@ -1364,7 +1365,7 @@ namespace AI_Girl_Helper
             InstallImagesFromSubfolders();
 
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "."));
-            DeleteEmptySubfolders(Install2MODirPath, false);
+            FileFolderOperations.DeleteEmptySubfolders(Install2MODirPath, false);
 
             if (!Directory.Exists(Install2MODirPath))
             {
@@ -1423,7 +1424,7 @@ namespace AI_Girl_Helper
                         {
                             Line = sReader.ReadLine();
 
-                            if (!readDescriptionMode /*&& Line.Length > 0 уже есть эта проверка в IsStringAContainsStringB*/ && IsStringAContainsStringB(Line, "/*"))
+                            if (!readDescriptionMode /*&& Line.Length > 0 уже есть эта проверка в StringEx.IsStringAContainsStringB*/ && StringEx.IsStringAContainsStringB(Line, "/*"))
                             {
                                 readDescriptionMode = true;
                                 Line = Line.Replace("/*", string.Empty);
@@ -1434,7 +1435,7 @@ namespace AI_Girl_Helper
                             }
                             else
                             {
-                                if (IsStringAContainsStringB(Line, "*/"))
+                                if (StringEx.IsStringAContainsStringB(Line, "*/"))
                                 {
                                     readDescriptionMode = false;
                                     Line = Line.Replace("*/", string.Empty);
@@ -1624,7 +1625,7 @@ namespace AI_Girl_Helper
                                 }
                                 File.Move(file, fileTarget);
                             }
-                            DeleteEmptySubfolders(dir);
+                            FileFolderOperations.DeleteEmptySubfolders(dir);
                         }
                         else
                         {
@@ -1731,7 +1732,7 @@ namespace AI_Girl_Helper
                     }
                 }
 
-                DeleteEmptySubfolders(dir);
+                FileFolderOperations.DeleteEmptySubfolders(dir);
             }
         }
 
@@ -2062,7 +2063,7 @@ namespace AI_Girl_Helper
                                                 {
                                                     //get update name
                                                     UpdateModNameFromMeta = UpdateModNameFromMeta.Substring(upIndex).Split(':')[1];
-                                                    if (UpdateModNameFromMeta.Length > 0 && ZipName.Length >= UpdateModNameFromMeta.Length && IsStringAContainsStringB(ZipName, UpdateModNameFromMeta))
+                                                    if (UpdateModNameFromMeta.Length > 0 && ZipName.Length >= UpdateModNameFromMeta.Length && StringEx.IsStringAContainsStringB(ZipName, UpdateModNameFromMeta))
                                                     {
                                                         FoundUpdateName = true;
                                                         break;
@@ -2355,11 +2356,11 @@ namespace AI_Girl_Helper
                             }
 
                             File.Move(file, Path.Combine(targetsubdirpath, Path.GetFileName(file)));
-                            if (comment.Length == 0 || !IsStringAContainsStringB(comment, "Requires: ScriptLoader"))
+                            if (comment.Length == 0 || !StringEx.IsStringAContainsStringB(comment, "Requires: ScriptLoader"))
                             {
                                 comment += " Requires: ScriptLoader";
                             }
-                            if (category.Length == 0 || !IsStringAContainsStringB(comment, "86"))
+                            if (category.Length == 0 || !StringEx.IsStringAContainsStringB(comment, "86"))
                             {
                                 if (category.Length == 0 || category == "-1,")
                                 {
@@ -2505,7 +2506,7 @@ namespace AI_Girl_Helper
                     WriteMetaINI(
                         moddir
                         ,
-                        category
+                        FileFolderOperations.GetCategoriesForTheFolder(moddir, category)
                         ,
                         version
                         ,
@@ -2568,7 +2569,7 @@ namespace AI_Girl_Helper
                 }
 
                 //добавление имени автора в начало имени папки
-                if ((!string.IsNullOrEmpty(name) && name.Substring(0, 1) == "[" && !name.StartsWith("[AI]")) || (name.Length >= 5 && name.Substring(0, 5) == "[AI][") || IsStringAContainsStringB(name, author))
+                if ((!string.IsNullOrEmpty(name) && name.Substring(0, 1) == "[" && !name.StartsWith("[AI]")) || (name.Length >= 5 && name.Substring(0, 5) == "[AI][") || StringEx.IsStringAContainsStringB(name, author))
                 {
                 }
                 else if (author.Length > 0)
@@ -2677,32 +2678,13 @@ namespace AI_Girl_Helper
                 for (int modlineNumber = 0; modlineNumber < modListLength; modlineNumber++)
                 {
                     string modname = modList[modlineNumber];
-                    if (modname.Length >= nameLength && IsStringAContainsStringB(modname, name))
+                    if (modname.Length >= nameLength && StringEx.IsStringAContainsStringB(modname, name))
                     {
                         return modname;
                     }
                 }
             }
             return string.Empty;
-        }
-
-        /// <summary>
-        /// Check if string A contains string B (if length of A > length of A with replaced B by "")<br></br><br></br>
-        /// Speed check tests: https://cc.davelozinski.com/c-sharp/fastest-way-to-check-if-a-string-occurs-within-a-string
-        /// </summary>
-        /// <param name="StringAWhereSearch"></param>
-        /// <param name="StringBToSearch"></param>
-        /// <returns></returns>
-        private bool IsStringAContainsStringB(string StringAWhereSearch, string StringBToSearch)
-        {
-            int StringAInWhichSearchLength = StringAWhereSearch.Length;
-            if (StringAInWhichSearchLength > 0 && StringBToSearch.Length > 0)//safe check for empty values
-            {
-                //if string A contains string B then string A with replaced stringB by empty will be
-                return StringAInWhichSearchLength > StringAWhereSearch.Replace(StringBToSearch, string.Empty).Length;
-            }
-            return false;
-
         }
 
         /// <summary>
@@ -2934,7 +2916,7 @@ namespace AI_Girl_Helper
                     }
 
                     //добавление имени автора в начало имени папки
-                    if (name.StartsWith("[AI][") || (name.StartsWith("[") && !name.StartsWith("[AI]")) || IsStringAContainsStringB(name, author))
+                    if (name.StartsWith("[AI][") || (name.StartsWith("[") && !name.StartsWith("[AI]")) || StringEx.IsStringAContainsStringB(name, author))
                     {
                     }
                     else if (author.Length > 0)
@@ -3023,7 +3005,7 @@ namespace AI_Girl_Helper
                 foreach (var path in Directory.GetFiles(zipmoddirmodspath, extension))
                 {
                     string name = Path.GetFileNameWithoutExtension(path);
-                    if (IsStringAContainsStringB(name, zipname))
+                    if (StringEx.IsStringAContainsStringB(name, zipname))
                     {
                         return path;
                     }
@@ -3289,7 +3271,7 @@ namespace AI_Girl_Helper
 
                             string TargetFolderPath = Path.GetDirectoryName(FromToPaths[1]);
 
-                            bool IsForOverwriteFolder = IsStringAContainsStringB(TargetFolderPath, OverwriteFolder);
+                            bool IsForOverwriteFolder = StringEx.IsStringAContainsStringB(TargetFolderPath, OverwriteFolder);
                             //поиск имени мода с учетом обработки файлов папки Overwrite
                             string ModName = TargetFolderPath;
                             if (IsForOverwriteFolder)
@@ -3415,7 +3397,7 @@ namespace AI_Girl_Helper
                         }
 
                         //удаление папки, где хранились резервные копии ванильных файлов
-                        DeleteEmptySubfolders(MOmodeDataFilesBak);
+                        FileFolderOperations.DeleteEmptySubfolders(MOmodeDataFilesBak);
                     }
 
                     //чистка файлов-списков
@@ -3424,7 +3406,7 @@ namespace AI_Girl_Helper
                     File.Delete(ModdedDataFilesListFile);
 
                     //очистка пустых папок в Data
-                    DeleteEmptySubfolders(DataPath, false);
+                    FileFolderOperations.DeleteEmptySubfolders(DataPath, false);
                     try
                     {
                         //восстановление 2х папок, что были по умолчанию сначала пустыми
@@ -3454,68 +3436,7 @@ namespace AI_Girl_Helper
         string ModdedDataFilesListFile = Path.Combine(AppResDir, "ModdedDataFilesList.txt");
         string VanillaDataFilesListFile = Path.Combine(AppResDir, "VanillaDataFilesList.txt");
         string MOToStandartConvertationOperationsListFile = Path.Combine(AppResDir, "MOToStandartConvertationOperationsList.txt");
-
-        private void DeleteEmptySubfolders(string dataPath, bool DeleteThisDir = true, string[] Exclusions = null)
-        {
-            string[] subfolders = Directory.GetDirectories(dataPath, "*");
-            int subfoldersLength = subfolders.Length;
-            if (subfoldersLength > 0)
-            {
-                for (int d = 0; d < subfoldersLength; d++)
-                {
-                    DeleteEmptySubfolders(subfolders[d], !TrueIfStringInExclusionsList(subfolders[d], Exclusions), Exclusions);
-                }
-            }
-
-            if (DeleteThisDir && Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0)
-            {
-                Directory.Delete(dataPath);
-            }
-        }
-
-        private bool TrueIfStringInExclusionsList(string Str, string[] exclusions)
-        {
-            if (exclusions == null || Str.Length == 0)
-            {
-                return false;
-            }
-            else
-            {
-                int exclusionsLength = exclusions.Length;
-                for (int i = 0; i < exclusionsLength; i++)
-                {
-                    if (string.IsNullOrWhiteSpace(exclusions[i]))
-                    {
-                        continue;
-                    }
-                    if (IsStringAContainsStringB(Str, exclusions[i]))
-                    {
-                        return true;
-                    }
-                }
-
-            }
-            return false;
-        }
-
-        public static void MoveWithReplace(string sourceFileName, string destFileName)
-        {
-
-            //first, delete target file if exists, as File.Move() does not support overwrite
-            if (File.Exists(destFileName))
-            {
-                File.Delete(destFileName);
-            }
-
-            string destFolder = Path.GetDirectoryName(destFileName);
-            if (!Directory.Exists(destFolder))
-            {
-                Directory.CreateDirectory(destFolder);
-            }
-            File.Move(sourceFileName, destFileName);
-
-        }
-
+        
         private void CleanBepInExLinksFromData()
         {
             //удаление файлов BepinEx

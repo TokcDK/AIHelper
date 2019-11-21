@@ -98,6 +98,16 @@
     <Compile Include="AI Girl Links.Designer.cs">
       <DependentUpon>AI Girl Links.cs</DependentUpon>
     </Compile>
+    <Compile Include="Games\AI-Shoujo.cs" />
+    <Compile Include="UserData\CardframeBack.cs" />
+    <Compile Include="UserData\CardframeFront.cs" />
+    <Compile Include="UserData\CharaFemale.cs" />
+    <Compile Include="UserData\CharaMale.cs" />
+    <Compile Include="UserData\Coordinate.cs" />
+    <Compile Include="UserData\Housing.cs" />
+    <Compile Include="UserData\IUserDataFolders.cs" />
+    <Compile Include="UserData\Overlays.cs" />
+    <Compile Include="UserData\StudioScene.cs" />
     <Compile Include="Utils\FileFolderOperations.cs" />
     <Compile Include="Utils\StringEx.cs" />
     <Compile Include="Utils\T.cs" />

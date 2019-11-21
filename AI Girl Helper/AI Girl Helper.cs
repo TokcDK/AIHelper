@@ -1874,11 +1874,13 @@ namespace AI_Girl_Helper
             }
             else if (Type == "c")
             {
-                TypeFolder = "coordinate";
+                TargetFolderName = "coordinate";
+                //TypeFolder = "";
             }
             else if (Type == "h")
             {
-                TypeFolder = "housing";
+                //TypeFolder = "";
+                TargetFolderName = "housing";
             }
             else if (Type == "cf")
             {
@@ -1892,7 +1894,8 @@ namespace AI_Girl_Helper
             }
             else if (Type == "o")
             {
-                TypeFolder = "Overlays";
+                //TypeFolder = "";
+                TargetFolderName = "Overlays";
             }
             else if (Type == "s")
             {

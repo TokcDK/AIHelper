@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SymbolicLinkSupport;
+using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -218,6 +219,56 @@ namespace AI_Girl_Helper.Utils
             }
             File.Move(sourceFileName, destFileName);
 
+        }
+
+        public static void HideFileFolder(string path, bool IsFile = false)
+        {
+            if (IsFile)
+            {
+                if (File.Exists(path))
+                {
+                    File.SetAttributes(path, FileAttributes.Hidden);
+                }
+            }
+            else
+            {
+                if (Directory.Exists(path))
+                {
+                    _ = new DirectoryInfo(path)
+                    {
+                        Attributes = FileAttributes.Hidden
+                    };
+                }
+            }
+
+        }
+
+        public static void Symlink(string objectFileDir, string symlink, bool isRelative = false)
+        {
+            if (File.Exists(symlink))
+            {
+            }
+            else
+            {
+                string parentdirpath = Path.GetDirectoryName(symlink);
+                if (Directory.Exists(parentdirpath))
+                {
+                }
+                else
+                {
+                    Directory.CreateDirectory(parentdirpath);
+                }
+                if (File.Exists(objectFileDir))
+                {
+                    FileInfoExtensions.CreateSymbolicLink(new FileInfo(objectFileDir), symlink, isRelative);//new from NuGet package
+                    //CreateSymlink.File(file, symlink); //old
+                }
+                else if (Directory.Exists(objectFileDir))
+                {
+                    DirectoryInfoExtensions.CreateSymbolicLink(new DirectoryInfo(objectFileDir), symlink, isRelative);//new from NuGet package
+                    //CreateSymlink.Folder(file, symlink); //old
+                }
+            }
         }
     }
 }

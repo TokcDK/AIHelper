@@ -24,20 +24,32 @@ namespace AI_Girl_Helper
         private readonly bool compressmode = false;
 
         //constants
-        private static readonly string AppResDir = Path.Combine(Application.StartupPath, "AI Girl Helper_RES");
-        private static string ModsPath = Path.Combine(Application.StartupPath, "Mods");
-        private static string DownloadsPath = Path.Combine(Application.StartupPath, "Downloads");
-        private static string DataPath = Path.Combine(Application.StartupPath, "Data");
-        private static string MODirPath = Path.Combine(Application.StartupPath, "MO");
-        private static string MOexePath = Path.Combine(MODirPath, "ModOrganizer.exe");
-        private static string OverwriteFolder = Path.Combine(MODirPath, "overwrite");
-        private static string OverwriteFolderLink = Path.Combine(Application.StartupPath, "MOUserData");
-        private static string SetupXmlPath;
-        private static bool MOmode = true;
+        private static string AppResDir { get => Properties.Settings.Default.AppResDir; set => Properties.Settings.Default.AppResDir = value; }
+        private static string ModsPath { get => Properties.Settings.Default.ModsPath; set => Properties.Settings.Default.ModsPath = value; }
+        private static string DownloadsPath { get => Properties.Settings.Default.DownloadsPath; set => Properties.Settings.Default.DownloadsPath = value; }
+        private static string DataPath { get => Properties.Settings.Default.DataPath; set => Properties.Settings.Default.DataPath = value; }
+        private static string MODirPath { get => Properties.Settings.Default.MODirPath; set => Properties.Settings.Default.MODirPath = value; }
+        private static string MOexePath { get => Properties.Settings.Default.MOexePath; set => Properties.Settings.Default.MOexePath = value; }
+        private static string OverwriteFolder { get => Properties.Settings.Default.OverwriteFolder; set => Properties.Settings.Default.OverwriteFolder = value; }
+        private static string OverwriteFolderLink { get => Properties.Settings.Default.OverwriteFolderLink; set => Properties.Settings.Default.OverwriteFolderLink = value; }
+        private static string SetupXmlPath { get => Properties.Settings.Default.SetupXmlPath; set => Properties.Settings.Default.SetupXmlPath = value; }
+        private static bool MOmode { get => Properties.Settings.Default.MOmode; set => Properties.Settings.Default.MOmode = value; }
 
         public AIGirlHelper()
         {
             InitializeComponent();
+
+
+
+            AppResDir = Path.Combine(Application.StartupPath, "AI Girl Helper_RES");
+            ModsPath = Path.Combine(Application.StartupPath, "Mods");
+            DownloadsPath = Path.Combine(Application.StartupPath, "Downloads");
+            DataPath = Path.Combine(Application.StartupPath, "Data");
+            MODirPath = Path.Combine(Application.StartupPath, "MO");
+            MOexePath = Path.Combine(MODirPath, "ModOrganizer.exe");
+            OverwriteFolder = Path.Combine(MODirPath, "overwrite");
+            OverwriteFolderLink = Path.Combine(Application.StartupPath, "MOUserData");
+            MOmode = true;
 
             //SetupXmlPath = GetSetupXmlPathForCurrentProfile();
         }
@@ -117,7 +129,7 @@ namespace AI_Girl_Helper
             if (!File.Exists(dummyfile))
             {
                 File.WriteAllText(dummyfile, "dummy file need to execute mod organizer");
-                HideFileFolder(dummyfile, true);
+                FileFolderOperations.HideFileFolder(dummyfile, true);
             }
         }
 
@@ -169,111 +181,54 @@ namespace AI_Girl_Helper
         {
             if (MOmode)
             {
-                string objectpath = Path.Combine(ModsPath, "BepInEx5", "Bepinex", "core", "BepInEx.Preloader.dll");
-                string linkpath = Path.Combine(DataPath, "Bepinex", "core", "BepInEx.Preloader.dll");
-                if (!File.Exists(linkpath) && File.Exists(objectpath))
+                string[,] ObjectLinkPaths =
                 {
-                    Symlink(linkpath
-                      , objectpath
-                      , true
-                      );
-                    HideFileFolder(Path.Combine(DataPath, "Bepinex"));
-                }
-
-                linkpath = Path.Combine(DataPath, "doorstop_config.ini");
-                objectpath = Path.Combine(ModsPath, "BepInEx5", "doorstop_config.ini");
-                if (!File.Exists(linkpath) && File.Exists(objectpath))
-                {
-                    Symlink(linkpath
-                      , objectpath
-                      , true
-                      );
-                    HideFileFolder(linkpath, true);
-                }
-
-                linkpath = Path.Combine(DataPath, "winhttp.dll");
-                objectpath = Path.Combine(ModsPath, "BepInEx5", "winhttp.dll");
-                if (!File.Exists(linkpath) && File.Exists(objectpath))
-                {
-                    Symlink(linkpath
-                      , objectpath
-                      , true
-                      );
-                    HideFileFolder(linkpath, true);
-                }
-
-                linkpath = Path.Combine(DataPath, "UserData", "MaterialEditor");
-                objectpath = Path.Combine(ModsPath, "MyUserData", "UserData", "MaterialEditor");
-                if (!Directory.Exists(linkpath) && Directory.Exists(objectpath))
-                {
-                    Symlink(linkpath
-                      , objectpath
-                      , true
-                      );
-                    HideFileFolder(linkpath);
-
-                }
-
-                linkpath = Path.Combine(DataPath, "UserData", "Overlays");
-                objectpath = Path.Combine(ModsPath, "MyUserData", "UserData", "Overlays");
-                if (!Directory.Exists(linkpath) && Directory.Exists(objectpath))
-                {
-                    Symlink(linkpath
-                      , objectpath
-                      , true
-                      );
-                    HideFileFolder(linkpath);
-
-                }
-            }
-        }
-
-        private void HideFileFolder(string path, bool IsFile = false)
-        {
-            if (IsFile)
-            {
-                if (File.Exists(path))
-                {
-                    File.SetAttributes(path, FileAttributes.Hidden);
-                }
-            }
-            else
-            {
-                if (Directory.Exists(path))
-                {
-                    _ = new DirectoryInfo(path)
+                    { 
+                        Path.Combine(ModsPath, "BepInEx5", "Bepinex", "core", "BepInEx.Preloader.dll")
+                        ,
+                        Path.Combine(DataPath, "Bepinex", "core", "BepInEx.Preloader.dll")
+                    }
+                    ,
                     {
-                        Attributes = FileAttributes.Hidden
-                    };
-                }
-            }
+                        Path.Combine(ModsPath, "BepInEx5", "doorstop_config.ini")
+                        ,
+                        Path.Combine(DataPath, "doorstop_config.ini")
+                    }
+                    ,
+                    {
+                        Path.Combine(ModsPath, "BepInEx5", "winhttp.dll")
+                        ,
+                        Path.Combine(DataPath, "winhttp.dll")
+                    }
+                    ,
+                    {
+                        Path.Combine(ModsPath, "MyUserData", "UserData", "MaterialEditor")
+                        ,
+                        Path.Combine(DataPath, "UserData", "MaterialEditor")
+                    }
+                    ,
+                    {
+                        Path.Combine(ModsPath, "MyUserData", "UserData", "Overlays")
+                        ,
+                        Path.Combine(DataPath, "UserData", "Overlays")
+                    }
+                };
 
-        }
-
-        private void Symlink(string symlink, string objectFileDir, bool isRelative = false)
-        {
-            if (File.Exists(symlink))
-            {
-            }
-            else
-            {
-                string parentdirpath = Path.GetDirectoryName(symlink);
-                if (Directory.Exists(parentdirpath))
+                int ObjectLinkPathsLength = ObjectLinkPaths.Length/2;
+                for (int i= 0;i< ObjectLinkPathsLength; i++)
                 {
-                }
-                else
-                {
-                    Directory.CreateDirectory(parentdirpath);
-                }
-                if (File.Exists(objectFileDir))
-                {
-                    FileInfoExtensions.CreateSymbolicLink(new FileInfo(objectFileDir), symlink, isRelative);//new from NuGet package
-                    //CreateSymlink.File(file, symlink); //old
-                }
-                else if (Directory.Exists(objectFileDir))
-                {
-                    DirectoryInfoExtensions.CreateSymbolicLink(new DirectoryInfo(objectFileDir), symlink, isRelative);//new from NuGet package
-                    //CreateSymlink.Folder(file, symlink); //old
+                    if (File.Exists(ObjectLinkPaths[i,0]) && !File.Exists(ObjectLinkPaths[i, 1]))
+                    {
+                        FileFolderOperations.Symlink
+                          (
+                           ObjectLinkPaths[i, 0]
+                           ,
+                           ObjectLinkPaths[i, 1]
+                           , 
+                           true
+                          );
+                        FileFolderOperations.HideFileFolder(Path.Combine(DataPath, "Bepinex"));
+                    }
                 }
             }
         }
@@ -1553,6 +1508,25 @@ namespace AI_Girl_Helper
         {
             foreach (var dir in Directory.GetDirectories(Install2MODirPath, "*"))
             {
+                //string[] folderTypes = 
+                //    {
+                //    "f" //папка "f" с женскими карточками внутри
+                //    ,
+                //    "m" //папка "m" с мужскими карточками внутри
+                //    ,
+                //    "c" //папка "c" с координатами
+                //    ,
+                //    "h" //папка "h" с проектами домов
+                //    ,
+                //    "cf"//папка "cf" с передними фреймами
+                //    ,
+                //    "cb"//папка "cb" с задними фреймами
+                //    ,
+                //    "o" //папка "o" с оверлеями
+                //    ,
+                //    "s" //папка "s" с сценами для стидии
+                //    };
+
                 if (string.Compare(Path.GetFileName(dir), "f", true) == 0)
                 {
                     //папка "f" с женскими карточками внутри
@@ -1585,12 +1559,12 @@ namespace AI_Girl_Helper
                 }
                 else if (string.Compare(Path.GetFileName(dir), "o", true) == 0)
                 {
-                    //папка "cb" с оверлеями
+                    //папка "o" с оверлеями
                     MoveImagesToTargetContentFolder(dir, "o");
                 }
                 else if (string.Compare(Path.GetFileName(dir), "s", true) == 0)
                 {
-                    //папка "cb" с оверлеями
+                    //папка "s" с сценами для стидии
                     MoveImagesToTargetContentFolder(dir, "s");
                 }
                 else
@@ -1777,7 +1751,7 @@ namespace AI_Girl_Helper
             return CoordinateFolder;
         }
 
-        private string GetResultTargetFilePathWithNameCheck(string Folder, string Name, string Extension=".*")
+        private string GetResultTargetFilePathWithNameCheck(string Folder, string Name, string Extension = ".*")
         {
             var ResultPath = Path.Combine(Folder, Name + (Extension.Substring(0, 1) != "." ? "." : string.Empty) + Extension);
             int i = 0;

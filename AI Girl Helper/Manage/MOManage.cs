@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AI_Girl_Helper.Utils;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -277,6 +278,25 @@ namespace AI_Girl_Helper.Manage
                 }
             }
 
+            return string.Empty;
+        }
+
+        public static string GetModFromModListContainsTheName(string name, bool OnlyFromEnabledMods = true)
+        {
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                string[] modList = MOManage.GetModsListFromActiveMOProfile(OnlyFromEnabledMods);
+                int nameLength = name.Length;
+                int modListLength = modList.Length;
+                for (int modlineNumber = 0; modlineNumber < modListLength; modlineNumber++)
+                {
+                    string modname = modList[modlineNumber];
+                    if (modname.Length >= nameLength && StringEx.IsStringAContainsStringB(modname, name))
+                    {
+                        return modname;
+                    }
+                }
+            }
             return string.Empty;
         }
     }

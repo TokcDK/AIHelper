@@ -294,5 +294,10 @@ namespace AI_Girl_Helper.Utils
                 }
             }
         }
+
+        public static bool ContainsAnyInvalidCharacters(string path)
+        {
+            return (path.Length > 0 && path.IndexOfAny(Path.GetInvalidPathChars()) >= 0);
+        }
     }
 }

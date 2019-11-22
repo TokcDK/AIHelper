@@ -202,5 +202,53 @@ namespace AI_Girl_Helper.Properties {
                 this["AutoShortcutRegistryCheckBoxChecked"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MOmodeDataFilesBak {
+            get {
+                return ((string)(this["MOmodeDataFilesBak"]));
+            }
+            set {
+                this["MOmodeDataFilesBak"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ModdedDataFilesListFile {
+            get {
+                return ((string)(this["ModdedDataFilesListFile"]));
+            }
+            set {
+                this["ModdedDataFilesListFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string VanillaDataFilesListFile {
+            get {
+                return ((string)(this["VanillaDataFilesListFile"]));
+            }
+            set {
+                this["VanillaDataFilesListFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MOToStandartConvertationOperationsListFile {
+            get {
+                return ((string)(this["MOToStandartConvertationOperationsListFile"]));
+            }
+            set {
+                this["MOToStandartConvertationOperationsListFile"] = value;
+            }
+        }
     }
 }

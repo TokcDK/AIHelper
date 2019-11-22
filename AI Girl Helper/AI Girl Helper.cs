@@ -1,4 +1,5 @@
-﻿using AI_Girl_Helper.Utils;
+﻿using AI_Girl_Helper.Manage;
+using AI_Girl_Helper.Utils;
 using Microsoft.Win32;
 using SymbolicLinkSupport;
 using System;
@@ -6,7 +7,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -14,7 +14,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
 //using Crc32C;
 
 namespace AI_Girl_Helper
@@ -33,22 +32,32 @@ namespace AI_Girl_Helper
         private static string OverwriteFolder { get => Properties.Settings.Default.OverwriteFolder; set => Properties.Settings.Default.OverwriteFolder = value; }
         private static string OverwriteFolderLink { get => Properties.Settings.Default.OverwriteFolderLink; set => Properties.Settings.Default.OverwriteFolderLink = value; }
         private static string SetupXmlPath { get => Properties.Settings.Default.SetupXmlPath; set => Properties.Settings.Default.SetupXmlPath = value; }
+        private static string ApplicationStartupPath { get => Properties.Settings.Default.ApplicationStartupPath; set => Properties.Settings.Default.ApplicationStartupPath = value; }
+        //private static string ModOrganizerINIpath { get => Properties.Settings.Default.ModOrganizerINIpath; set => Properties.Settings.Default.ModOrganizerINIpath = value; }
+        private static string Install2MODirPath { get => Properties.Settings.Default.Install2MODirPath; set => Properties.Settings.Default.Install2MODirPath = value; }
         private static bool MOmode { get => Properties.Settings.Default.MOmode; set => Properties.Settings.Default.MOmode = value; }
+
+        string MOmodeDataFilesBak = Path.Combine(AppResDir, "MOmodeDataFilesBak");
+        string ModdedDataFilesListFile = Path.Combine(AppResDir, "ModdedDataFilesList.txt");
+        string VanillaDataFilesListFile = Path.Combine(AppResDir, "VanillaDataFilesList.txt");
+        string MOToStandartConvertationOperationsListFile = Path.Combine(AppResDir, "MOToStandartConvertationOperationsList.txt");
 
         public AIGirlHelper()
         {
             InitializeComponent();
 
-
-
-            AppResDir = Path.Combine(Application.StartupPath, "AI Girl Helper_RES");
-            ModsPath = Path.Combine(Application.StartupPath, "Mods");
-            DownloadsPath = Path.Combine(Application.StartupPath, "Downloads");
-            DataPath = Path.Combine(Application.StartupPath, "Data");
-            MODirPath = Path.Combine(Application.StartupPath, "MO");
+            ApplicationStartupPath = Application.StartupPath;
+            Properties.Settings.Default.CurrentGamePath = ApplicationStartupPath;
+            AppResDir = Path.Combine(ApplicationStartupPath, "AI Girl Helper_RES");
+            ModsPath = Path.Combine(SettingsManage.GetCurrentGamePath(), "Mods");
+            DownloadsPath = Path.Combine(SettingsManage.GetCurrentGamePath(), "Downloads");
+            DataPath = Path.Combine(SettingsManage.GetCurrentGamePath(), "Data");
+            MODirPath = Path.Combine(ApplicationStartupPath, "MO");
             MOexePath = Path.Combine(MODirPath, "ModOrganizer.exe");
+            Properties.Settings.Default.ModOrganizerINIpath = SettingsManage.GetModOrganizerINIpath();
+            Install2MODirPath = Path.Combine(SettingsManage.GetCurrentGamePath(), "2MO");
             OverwriteFolder = Path.Combine(MODirPath, "overwrite");
-            OverwriteFolderLink = Path.Combine(Application.StartupPath, "MOUserData");
+            OverwriteFolderLink = Path.Combine(SettingsManage.GetCurrentGamePath(), "MOUserData");
             MOmode = true;
 
             //SetupXmlPath = GetSetupXmlPathForCurrentProfile();
@@ -114,23 +123,12 @@ namespace AI_Girl_Helper
 
             //BepinExLoadingFix();//добавлено в folderinit
 
-            CreateShortcuts();
+            Other.CreateShortcuts();
 
-            MakeDummyFiles();
+            Other.MakeDummyFiles();
 
             button1.Text = T._("Game Ready");
             FoldersInit();
-        }
-
-        private readonly string dummyfile = Path.Combine(Application.StartupPath, "TESV.exe");
-        private void MakeDummyFiles()
-        {
-            //Create dummy file and add hidden attribute
-            if (!File.Exists(dummyfile))
-            {
-                File.WriteAllText(dummyfile, "dummy file need to execute mod organizer");
-                FileFolderOperations.HideFileFolder(dummyfile, true);
-            }
         }
 
         private void UnpackMO()
@@ -173,104 +171,6 @@ namespace AI_Girl_Helper
                     _ = ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = T._("Game archive") + ": " + Path.GetFileNameWithoutExtension(AIGirl)));
                     Compressor.Decompress(AIGirl, DataPath);
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
-                }
-            }
-        }
-
-        private void BepinExLoadingFix()
-        {
-            if (MOmode)
-            {
-                string[,] ObjectLinkPaths =
-                {
-                    { 
-                        Path.Combine(ModsPath, "BepInEx5", "Bepinex", "core", "BepInEx.Preloader.dll")
-                        ,
-                        Path.Combine(DataPath, "Bepinex", "core", "BepInEx.Preloader.dll")
-                    }
-                    ,
-                    {
-                        Path.Combine(ModsPath, "BepInEx5", "doorstop_config.ini")
-                        ,
-                        Path.Combine(DataPath, "doorstop_config.ini")
-                    }
-                    ,
-                    {
-                        Path.Combine(ModsPath, "BepInEx5", "winhttp.dll")
-                        ,
-                        Path.Combine(DataPath, "winhttp.dll")
-                    }
-                    ,
-                    {
-                        Path.Combine(ModsPath, "MyUserData", "UserData", "MaterialEditor")
-                        ,
-                        Path.Combine(DataPath, "UserData", "MaterialEditor")
-                    }
-                    ,
-                    {
-                        Path.Combine(ModsPath, "MyUserData", "UserData", "Overlays")
-                        ,
-                        Path.Combine(DataPath, "UserData", "Overlays")
-                    }
-                };
-
-                int ObjectLinkPathsLength = ObjectLinkPaths.Length/2;
-                for (int i= 0;i< ObjectLinkPathsLength; i++)
-                {
-                    if (File.Exists(ObjectLinkPaths[i,0]) && !File.Exists(ObjectLinkPaths[i, 1]))
-                    {
-                        FileFolderOperations.Symlink
-                          (
-                           ObjectLinkPaths[i, 0]
-                           ,
-                           ObjectLinkPaths[i, 1]
-                           , 
-                           true
-                          );
-                        FileFolderOperations.HideFileFolder(Path.Combine(DataPath, "Bepinex"));
-                    }
-                }
-            }
-        }
-
-        //https://bytescout.com/blog/create-shortcuts-in-c-and-vbnet.html
-        private void CreateShortcuts(bool force = false, bool auto = true)
-        {
-            if (AutoShortcutRegistryCheckBox.Checked || force)
-            {
-                //AI-Girl Helper
-                string shortcutname = GetCurrentGameName() + " " + T._("Helper");
-                string targetpath = Application.ExecutablePath;
-                string arguments = string.Empty;
-                string workingdir = Path.GetDirectoryName(targetpath);
-                string description = T._("Run") + " " + shortcutname;
-                string iconlocation = Application.ExecutablePath;
-                Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description, iconlocation);
-
-                //AI-Girl Trial
-                //shortcutname = "AI-Girl Trial";
-                //targetpath = Path.Combine(MOPath, "ModOrganizer.exe");
-                //arguments = "\"moshortcut://:AI-SyoujyoTrial\"";
-                //workingdir = Path.GetDirectoryName(targetpath);
-                //description = "Run " + shortcutname + " with ModOrganizer";
-                //iconlocation = Path.Combine(DataPath, "AI-SyoujyoTrial.exe");
-                //Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description, iconlocation);
-
-                ////Mod Organizer
-                //shortcutname = "ModOrganizer AI-Shoujo Trial";
-                //targetpath = Path.Combine(MOPath, "ModOrganizer.exe");
-                //arguments = string.Empty;
-                //workingdir = Path.GetDirectoryName(targetpath);
-                //description = shortcutname;
-                //Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description);
-
-                if (!Directory.Exists(OverwriteFolderLink) && Directory.Exists(OverwriteFolder))
-                {
-                    CreateSymlink.Folder(OverwriteFolder, OverwriteFolderLink);
-                }
-                if (!auto)
-                {
-                    MessageBox.Show(T._("Shortcut") + " " + T._("created") + "!");
                 }
             }
         }
@@ -364,7 +264,7 @@ namespace AI_Girl_Helper
                 string AIGirlTrial = Path.Combine(AppResDir, "AIGirlTrial.7z");
                 string AIGirl = Path.Combine(AppResDir, "AIGirl.7z");
                 if (!File.Exists(AIGirlTrial)
-                    && (File.Exists(Path.Combine(DataPath, GetCurrentGameName() + ".exe"))))
+                    && (File.Exists(Path.Combine(DataPath, SettingsManage.GetCurrentGameName() + ".exe"))))
                 {
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
@@ -467,7 +367,7 @@ namespace AI_Girl_Helper
                 targetdir = Path.Combine(targetdir, "Sideloader");
             }
 
-            string categoryvalue = GetMetaParameterValue(Path.Combine(inputmoddir, "meta.ini"), "category");
+            string categoryvalue = MOManage.GetMetaParameterValue(Path.Combine(inputmoddir, "meta.ini"), "category");
             if (categoryvalue.Replace("\"", string.Empty).Length == 0)
             {
             }
@@ -497,25 +397,6 @@ namespace AI_Girl_Helper
             }
 
             return targetdir;
-        }
-
-        private string GetMetaParameterValue(string MetaFilePath, string NeededValue)
-        {
-            foreach (string line in File.ReadAllLines(MetaFilePath))
-            {
-                if (line.Length == 0)
-                {
-                }
-                else
-                {
-                    if (line.StartsWith(NeededValue + "="))
-                    {
-                        return line.Remove(0, (NeededValue + "=").Length);
-                    }
-                }
-            }
-
-            return string.Empty;
         }
 
         private void AIGirlHelper_Load(object sender, EventArgs e)
@@ -633,10 +514,10 @@ namespace AI_Girl_Helper
                 }
             }
 
-            ResolutionComboBox.Text = ReadXmlValue(SetupXmlPath, "Setting/Size", ResolutionComboBox.Text);
-            FullScreenCheckBox.Checked = bool.Parse(ReadXmlValue(SetupXmlPath, "Setting/FullScreen", FullScreenCheckBox.Checked.ToString().ToLower()));
+            ResolutionComboBox.Text = XMLManage.ReadXmlValue(SetupXmlPath, "Setting/Size", ResolutionComboBox.Text);
+            FullScreenCheckBox.Checked = bool.Parse(XMLManage.ReadXmlValue(SetupXmlPath, "Setting/FullScreen", FullScreenCheckBox.Checked.ToString().ToLower()));
 
-            QualityComboBox.SelectedIndex = int.Parse(ReadXmlValue(SetupXmlPath, "Setting/Quality", "2"));
+            QualityComboBox.SelectedIndex = int.Parse(XMLManage.ReadXmlValue(SetupXmlPath, "Setting/Quality", "2"));
 
         }
 
@@ -657,9 +538,9 @@ namespace AI_Girl_Helper
                 }
             }
 
-            ChangeXmlValue(SetupXmlPath, "Setting/Size", Resolution);
-            ChangeXmlValue(SetupXmlPath, "Setting/Width", Resolution.Replace("(16 : 9)", string.Empty).Trim().Split('x')[0].Trim());
-            ChangeXmlValue(SetupXmlPath, "Setting/Height", Resolution.ToString().Replace("(16 : 9)", string.Empty).Trim().Split('x')[1].Trim());
+            XMLManage.ChangeXmlValue(SetupXmlPath, "Setting/Size", Resolution);
+            XMLManage.ChangeXmlValue(SetupXmlPath, "Setting/Width", Resolution.Replace("(16 : 9)", string.Empty).Trim().Split('x')[0].Trim());
+            XMLManage.ChangeXmlValue(SetupXmlPath, "Setting/Height", Resolution.ToString().Replace("(16 : 9)", string.Empty).Trim().Split('x')[1].Trim());
         }
 
         private void SetGraphicsQuality(string quality)
@@ -676,7 +557,7 @@ namespace AI_Girl_Helper
                 CreateSymlink.Folder(OverwriteFolder, OverwriteFolderLink);
             }
 
-            ChangeXmlValue(SetupXmlPath, "Setting/Quality", quality);
+            XMLManage.ChangeXmlValue(SetupXmlPath, "Setting/Quality", quality);
         }
 
         private void FoldersInit()
@@ -702,8 +583,8 @@ namespace AI_Girl_Helper
                 ModsInfoLabel.Text = T._("Mods dir created");
             }
 
-            string AIGirl = GetCurrentGameName();
-            string AIGirlTrial = GetCurrentGameName();
+            string AIGirl = SettingsManage.GetCurrentGameName();
+            string AIGirlTrial = SettingsManage.GetCurrentGameName();
             if (File.Exists(Path.Combine(DataPath, AIGirlTrial + ".exe")))
             {
                 label3.Text = string.Format(T._("{0} game installed in {1}"), AIGirlTrial, "Data");
@@ -793,7 +674,7 @@ namespace AI_Girl_Helper
                     }
                 }
 
-                if (ModDirs.Length > 0 && File.Exists(Path.Combine(DataPath, GetCurrentGameName() + ".exe")))
+                if (ModDirs.Length > 0 && File.Exists(Path.Combine(DataPath, SettingsManage.GetCurrentGameName() + ".exe")))
                 {
                     GetEnableDisableLaunchButtons();
                     MOCommonModeSwitchButton.Text = T._("MOToCommon");
@@ -817,12 +698,12 @@ namespace AI_Girl_Helper
                 LanchModeInfoLinkLabel.Text = T._("MO mode");
 
                 //создание ссылок на файлы bepinex
-                BepinExLoadingFix();
+                MOModsManage.BepinExLoadingFix();
 
                 //создание exe-болванки
-                MakeDummyFiles();
+                Other.MakeDummyFiles();
 
-                SetModOrganizerINISettingsForTheGame();
+                MOManage.SetModOrganizerINISettingsForTheGame();
             }
             else
             {
@@ -838,176 +719,36 @@ namespace AI_Girl_Helper
             }
 
             //Обновление пути к setup.xml с настройками графики
-            SetupXmlPath = GetSetupXmlPathForCurrentProfile();
-            ModsPath = Path.Combine(GetSelectedGameFolderPath(), "Mods");
-            DownloadsPath = Path.Combine(GetSelectedGameFolderPath(), "Downloads");
-            DataPath = Path.Combine(GetSelectedGameFolderPath(), "Data");
-            MODirPath = Path.Combine(Application.StartupPath, "MO");
+            SetupXmlPath = MOManage.GetSetupXmlPathForCurrentProfile();
+            ModsPath = Path.Combine(SettingsManage.GetCurrentGamePath(), "Mods");
+            DownloadsPath = Path.Combine(SettingsManage.GetCurrentGamePath(), "Downloads");
+            DataPath = Path.Combine(SettingsManage.GetCurrentGamePath(), "Data");
+            MODirPath = Path.Combine(ApplicationStartupPath, "MO");
             MOexePath = Path.Combine(MODirPath, "ModOrganizer.exe");
-            OverwriteFolder = GetOverwriteFolderLocation();
-            OverwriteFolderLink = Path.Combine(GetSelectedGameFolderPath(), "MOUserData");
-            ModOrganizerINIpath = Path.Combine(MODirPath, "ModOrganizer.ini");
-            Install2MODirPath = Path.Combine(GetSelectedGameFolderPath(), "2MO");
+            OverwriteFolder = MOManage.GetOverwriteFolderLocation();
+            OverwriteFolderLink = Path.Combine(SettingsManage.GetCurrentGamePath(), "MOUserData");
+            Properties.Settings.Default.ModOrganizerINIpath = SettingsManage.GetModOrganizerINIpath();
+            Install2MODirPath = Path.Combine(SettingsManage.GetCurrentGamePath(), "2MO");
             AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
 
             if (AutoShortcutRegistryCheckBox.Checked)
             {
-                AutoShortcutAndRegystry();
+                Other.AutoShortcutAndRegystry();
             }
-        }
-
-        private void AutoShortcutAndRegystry()
-        {
-            CreateShortcuts();
-            FixRegistry();
-        }
-
-        private string ModOrganizerINIpath = Path.Combine(MODirPath, "ModOrganizer.ini");
-
-        private string GetOverwriteFolderLocation()
-        {
-            string IniValue = GetINIValueIfExist(ModOrganizerINIpath, "overwrite_directory", "Settings");
-
-            if (IniValue.Length > 0)
-            {
-                return IniValue;
-            }
-            else
-            {
-                return Path.Combine(MODirPath, "overwrite");
-            }
-
         }
 
         private void GetEnableDisableLaunchButtons()
         {
             MOButton.Enabled = File.Exists(Path.Combine(MODirPath, "ModOrganizer.exe")) ? true : false;
-            SettingsButton.Enabled = File.Exists(Path.Combine(DataPath, "InitSetting.exe")) ? true : false;
-            GameButton.Enabled = File.Exists(Path.Combine(DataPath, GetCurrentGameName() + ".exe")) ? true : false;
-            StudioButton.Enabled = File.Exists(Path.Combine(DataPath, "StudioNEOV2.exe")) ? true : false;
-        }
-
-        private void SetModOrganizerINISettingsForTheGame()
-        {
-            Utils.IniFile INI = new Utils.IniFile(ModOrganizerINIpath);
-
-            //General
-            string IniValue = GetSelectedGameFolderPath().Replace(@"\", @"\\");
-            if (GetINIValueIfExist(ModOrganizerINIpath, "gamePath", "General") != IniValue)
-            {
-                INI.WriteINI("General", "gamePath", IniValue);
-            }
-            //customExecutables
-            IniValue = GetCurrentGameName().Replace(@"\", @"\\");
-            if (GetINIValueIfExist(ModOrganizerINIpath, @"1\title", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"1\title", IniValue);
-            }
-            IniValue = Path.Combine(DataPath, GetCurrentGameName() + ".exe").Replace(@"\", @"\\");
-            if (GetINIValueIfExist(ModOrganizerINIpath, @"1\binary", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"1\binary", IniValue);
-            }
-            IniValue = DataPath.Replace(@"\", @"\\");
-            if (GetINIValueIfExist(ModOrganizerINIpath, @"1\workingDirectory", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"1\workingDirectory", IniValue);
-            }
-            IniValue = GetSettingsEXEPath().Replace(@"\", @"\\");
-            if (GetINIValueIfExist(ModOrganizerINIpath, @"2\binary", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"2\binary", IniValue);
-            }
-            IniValue = GetSettingsEXEPath().Replace(@"\", @"\\");
-            if (GetINIValueIfExist(ModOrganizerINIpath, @"2\binary", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"2\binary", IniValue);
-            }
-            IniValue = DataPath.Replace(@"\", @"\\");
-            if (GetINIValueIfExist(ModOrganizerINIpath, @"2\workingDirectory", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"2\workingDirectory", IniValue);
-            }
-            IniValue = Path.Combine(MODirPath, "explorer++", "Explorer++.exe").Replace(@"\", @"\\");
-            if (GetINIValueIfExist(ModOrganizerINIpath, @"3\binary", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"3\binary", IniValue);
-            }
-            IniValue = "\\\"" + DataPath.Replace(@"\", @"\\") + "\\\"";
-            if (GetINIValueIfExist(ModOrganizerINIpath, @"3\arguments", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"3\arguments", IniValue);
-            }
-            IniValue = Path.Combine(MODirPath, "explorer++").Replace(@"\", @"\\");
-            if (GetINIValueIfExist(ModOrganizerINIpath, @"3\workingDirectory", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"3\workingDirectory", IniValue);
-            }
-            IniValue = Path.Combine(GetSelectedGameFolderPath(), "TESV.exe").Replace(@"\", @"\\");
-            if (GetINIValueIfExist(ModOrganizerINIpath, @"4\binary", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"4\binary", IniValue);
-            }
-            IniValue = GetSelectedGameFolderPath().Replace(@"\", @"\\");
-            if (GetINIValueIfExist(ModOrganizerINIpath, @"4\workingDirectory", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"4\workingDirectory", IniValue);
-            }
-            //Settings
-            IniValue = ModsPath.Replace(@"\", @"\\");
-            if (GetINIValueIfExist(ModOrganizerINIpath, "mod_directory", "Settings") != IniValue)
-            {
-                INI.WriteINI("Settings", "mod_directory", IniValue);
-            }
-            IniValue = Path.Combine(GetSelectedGameFolderPath(), "Downloads").Replace(@"\", @"\\");
-            if (GetINIValueIfExist(ModOrganizerINIpath, "download_directory", "Settings") != IniValue)
-            {
-                INI.WriteINI("Settings", "download_directory", IniValue);
-            }
-
-            if (CultureInfo.CurrentCulture.Name == "ru-RU")
-            {
-                IniValue = "ru";
-                if (GetINIValueIfExist(ModOrganizerINIpath, "language", "Settings") != IniValue)
-                {
-                    INI.WriteINI("Settings", "language", IniValue);
-                }
-            }
-            else
-            {
-                IniValue = "en";
-                if (GetINIValueIfExist(ModOrganizerINIpath, "language", "Settings") != IniValue)
-                {
-                    INI.WriteINI("Settings", "language", IniValue);
-                }
-            }
-        }
-
-        private string GetSettingsEXEPath()
-        {
-            return Path.Combine(DataPath, "InitSetting.exe");
-        }
-
-        private string GetSelectedGameFolderPath()
-        {
-            return Application.StartupPath;
+            SettingsButton.Enabled = File.Exists(Path.Combine(DataPath, SettingsManage.GetINISettingsEXEName() + ".exe")) ? true : false;
+            GameButton.Enabled = File.Exists(Path.Combine(DataPath, SettingsManage.GetCurrentGameName() + ".exe")) ? true : false;
+            StudioButton.Enabled = File.Exists(Path.Combine(DataPath, SettingsManage.GetStudioEXEName() + ".exe")) ? true : false;
         }
 
         private void CheckBox1_CheckedChanged(object sender, EventArgs e)
         {
-            CheckBoxChangeColor(sender as CheckBox);
-        }
-
-        private void CheckBoxChangeColor(CheckBox checkBox)
-        {
-            if (checkBox.Checked)
-            {
-                checkBox.ForeColor = Color.FromArgb(192, 255, 192);
-            }
-            else
-            {
-                checkBox.ForeColor = Color.White;
-            }
+            Other.CheckBoxChangeColor(sender as CheckBox);
+            Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked = AutoShortcutRegistryCheckBox.Checked;
         }
 
         private void ResolutionComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -1017,88 +758,17 @@ namespace AI_Girl_Helper
 
         private void FullScreenCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            CheckBoxChangeColor(sender as CheckBox);
-            ChangeXmlValue(SetupXmlPath, "Setting/FullScreen", (sender as CheckBox).Checked.ToString().ToLower());
-        }
-
-        private void ChangeXmlValue(string xmlpath, string nodename, string value)
-        {
-            //https://stackoverflow.com/questions/2137957/update-value-in-xml-file
-            XmlDocument xmlDoc = new XmlDocument();
-            if (File.Exists(xmlpath))
-            {
-                xmlDoc.Load(xmlpath);
-            }
-            else
-            {
-                //если не был создан, создать с нуля
-                xmlDoc.LoadXml("<?xml version=\"1.0\" encoding=\"utf-16\"?>" + Environment.NewLine + "<Setting>" + Environment.NewLine + "  <Size>1280 x 720 (16 : 9)</Size>" + Environment.NewLine + "  <Width>1280</Width>" + Environment.NewLine + "  <Height>720</Height>" + Environment.NewLine + "  <Quality>2</Quality>" + Environment.NewLine + "  <FullScreen>false</FullScreen>" + Environment.NewLine + "  <Display>0</Display>" + Environment.NewLine + "  <Language>0</Language>" + Environment.NewLine + "</Setting>");
-            }
-
-            XmlNode node = xmlDoc.SelectSingleNode(nodename);
-
-            if (node == null || node.InnerText == value)
-            {
-            }
-            else
-            {
-                node.InnerText = value;
-
-                xmlDoc.Save(xmlpath);
-            }
-        }
-
-        private string ReadXmlValue(string xmlpath, string nodename, string defaultresult)
-        {
-            if (File.Exists(xmlpath))
-            {
-                //https://stackoverflow.com/questions/2137957/update-value-in-xml-file
-                XmlDocument xmlDoc = new XmlDocument();
-
-                xmlDoc.Load(xmlpath);
-
-                XmlNode node = xmlDoc.SelectSingleNode(nodename);
-
-                if (node == null || node.InnerText == defaultresult)
-                {
-                }
-                else
-                {
-                    return node.InnerText;
-                }
-            }
-            return defaultresult;
+            Other.CheckBoxChangeColor(sender as CheckBox);
+            XMLManage.ChangeXmlValue(SetupXmlPath, "Setting/FullScreen", (sender as CheckBox).Checked.ToString().ToLower());
         }
 
         private void FixRegistryButton_Click(object sender, EventArgs e)
         {
             FixRegistryButton.Enabled = false;
 
-            FixRegistry(false);
+            RegistryManage.FixRegistry(false);
 
             FixRegistryButton.Enabled = true;
-        }
-
-        private void FixRegistry(bool auto = true)
-        {
-            string GameName = GetCurrentGameName();
-            string RegystryPath = @"HKEY_CURRENT_USER\Software\illusion\" + GameName + @"\" + GameName;
-            var InstallDirValue = Registry.GetValue(RegystryPath, "INSTALLDIR", null);
-            if (InstallDirValue == null || InstallDirValue.ToString() != DataPath)
-            {
-                Registry.SetValue(RegystryPath, "INSTALLDIR", DataPath);
-                if (!auto)
-                {
-                    MessageBox.Show(T._("Registry fixed! Install dir was set to Data dir."));
-                }
-            }
-            else
-            {
-                if (!auto)
-                {
-                    MessageBox.Show(T._("Registry was already fixed"));
-                }
-            }
         }
 
         private void MOButton_Click(object sender, EventArgs e)
@@ -1121,11 +791,11 @@ namespace AI_Girl_Helper
             OnOffButtons(false);
             if (MOmode)
             {
-                RunProgram(MOexePath, "moshortcut://:InitSetting");
+                RunProgram(MOexePath, "moshortcut://:" + SettingsManage.GetINISettingsEXEName());
             }
             else
             {
-                RunProgram(Path.Combine(DataPath, "InitSetting.exe"), string.Empty);
+                RunProgram(Path.Combine(DataPath, SettingsManage.GetINISettingsEXEName() + ".exe"), string.Empty);
             }
             OnOffButtons();
         }
@@ -1135,11 +805,11 @@ namespace AI_Girl_Helper
             OnOffButtons(false);
             if (MOmode)
             {
-                RunProgram(MOexePath, "moshortcut://:" + GetCurrentGameName());
+                RunProgram(MOexePath, "moshortcut://:" + SettingsManage.GetCurrentGameName());
             }
             else
             {
-                RunProgram(Path.Combine(DataPath, GetCurrentGameName() + ".exe"), string.Empty);
+                RunProgram(Path.Combine(DataPath, SettingsManage.GetCurrentGameName() + ".exe"), string.Empty);
             }
             OnOffButtons();
         }
@@ -1149,29 +819,16 @@ namespace AI_Girl_Helper
             AIGirlHelperTabControl.Enabled = SwitchOn;
         }
 
-        private string GetCurrentGameName()
-        {
-            if (File.Exists(Path.Combine(DataPath, "AI-SyoujyoTrial.exe")))
-            {
-                return "AI-SyoujyoTrial";
-            }
-            else if (File.Exists(Path.Combine(DataPath, "AI-Syoujyo.exe")))
-            {
-                return "AI-Syoujyo";
-            }
-            return string.Empty;
-        }
-
         private void StudioButton_Click(object sender, EventArgs e)
         {
             OnOffButtons(false);
             if (MOmode)
             {
-                RunProgram(MOexePath, "moshortcut://:" + "StudioNEOV2");
+                RunProgram(MOexePath, "moshortcut://:" + SettingsManage.GetStudioEXEName());
             }
             else
             {
-                RunProgram(Path.Combine(DataPath, "StudioNEOV2.exe"), string.Empty);
+                RunProgram(Path.Combine(DataPath, SettingsManage.GetStudioEXEName() + ".exe"), string.Empty);
             }
             OnOffButtons();
         }
@@ -1266,7 +923,6 @@ namespace AI_Girl_Helper
             }
         }
 
-        string Install2MODirPath = Path.Combine(Application.StartupPath, "2MO");
         private async void InstallInModsButton_Click(object sender, EventArgs e)
         {
             if (Directory.Exists(Install2MODirPath) && (Directory.GetFiles(Install2MODirPath, "*.rar").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.7z").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.cs").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zipmod").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zip").Length > 0 || Directory.GetDirectories(Install2MODirPath, "*").Length > 0))
@@ -1436,7 +1092,7 @@ namespace AI_Girl_Helper
 
                     string FileLastModificationTime = File.GetLastWriteTime(csFile).ToString("yyyyMMddHHmm");
                     //запись meta.ini
-                    WriteMetaINI(
+                    MOManage.WriteMetaINI(
                         moddir
                         ,
                         IsUpdate ? string.Empty : "86,"
@@ -1448,7 +1104,7 @@ namespace AI_Girl_Helper
                         IsUpdate ? string.Empty : "<br>" + "Author" + ": " + author + "<br><br>" + (description.Length > 0 ? description : name)
                         );
 
-                    ActivateInsertModIfPossible(modname, false, "ScriptLoader scripts_separator");
+                    MOManage.ActivateInsertModIfPossible(modname, false, "ScriptLoader scripts_separator");
 
                     string[] extrafiles = Directory.GetFiles(WhereFromInstallDir, name + "*.*");
                     if (extrafiles.Length > 0)
@@ -1612,7 +1268,7 @@ namespace AI_Girl_Helper
                         }
 
                         //запись meta.ini
-                        WriteMetaINI(
+                        MOManage.WriteMetaINI(
                             cardsModDir
                             ,
                             "54,"
@@ -1624,7 +1280,7 @@ namespace AI_Girl_Helper
                             "<br>Author: " + string.Empty + "<br><br>" + Path.GetFileNameWithoutExtension(cardsModDir) + " character cards<br><br>"
                             );
 
-                        ActivateInsertModIfPossible(Path.GetFileName(cardsModDir), true, "UserCharacters_separator");
+                        MOManage.ActivateInsertModIfPossible(Path.GetFileName(cardsModDir), true, "UserCharacters_separator");
                     }
                 }
             }
@@ -1688,7 +1344,7 @@ namespace AI_Girl_Helper
                 {
                     foreach (var target in Directory.GetDirectories(dir, "*"))
                     {
-                        var ResultTargetPath = GetResultTargetDirPathWithNameCheck(Path.GetDirectoryName(TargetFolder), Path.GetFileName(target));
+                        var ResultTargetPath = Other.GetResultTargetDirPathWithNameCheck(Path.GetDirectoryName(TargetFolder), Path.GetFileName(target));
 
                         Directory.Move(target, ResultTargetPath);
                     }
@@ -1722,35 +1378,6 @@ namespace AI_Girl_Helper
             }
         }
 
-        private string GetOverlaysFolder()
-        {
-            string CoordinateFolder = Path.Combine(ModsPath, "OrganizedModPack Downloaded Overlays");
-            if (Directory.Exists(CoordinateFolder))
-            {
-                CoordinateFolder = Path.Combine(ModsPath, "OrganizedModPack Downloaded Overlays", "UserData", "Overlays");
-                if (!Directory.Exists(CoordinateFolder))
-                {
-                    Directory.CreateDirectory(CoordinateFolder);
-                }
-                return CoordinateFolder;
-            }
-            if (Directory.Exists(Path.Combine(ModsPath, "MyUserData")))
-            {
-                CoordinateFolder = Path.Combine(ModsPath, "MyUserData", "UserData", "Overlays");
-                if (!Directory.Exists(CoordinateFolder))
-                {
-                    Directory.CreateDirectory(CoordinateFolder);
-                }
-                return CoordinateFolder;
-            }
-            CoordinateFolder = Path.Combine(OverwriteFolder, "MyUserData", "UserData", "Overlays");
-            if (!Directory.Exists(CoordinateFolder))
-            {
-                Directory.CreateDirectory(CoordinateFolder);
-            }
-            return CoordinateFolder;
-        }
-
         private string GetResultTargetFilePathWithNameCheck(string Folder, string Name, string Extension = ".*")
         {
             var ResultPath = Path.Combine(Folder, Name + (Extension.Substring(0, 1) != "." ? "." : string.Empty) + Extension);
@@ -1761,94 +1388,6 @@ namespace AI_Girl_Helper
                 ResultPath = Path.Combine(Folder, Name + " (" + i + ")" + Extension);
             }
             return ResultPath;
-        }
-
-        private string GetCardFrameFolder(bool IsFront = true)
-        {
-            var imagesSubdir = Path.Combine(ModsPath, "OrganizedModPack Downloaded CardFrames");
-            var FrontBack = IsFront ? "Front" : "Back";
-            if (Directory.Exists(imagesSubdir))
-            {
-                imagesSubdir = Path.Combine(ModsPath, "OrganizedModPack Downloaded Cardframes", "UserData", "cardframe", FrontBack);
-                if (!Directory.Exists(imagesSubdir))
-                {
-                    Directory.CreateDirectory(imagesSubdir);
-                }
-                return imagesSubdir;
-            }
-            imagesSubdir = Path.Combine(ModsPath, "MyUserData");
-            if (Directory.Exists(imagesSubdir))
-            {
-                imagesSubdir = Path.Combine(imagesSubdir, "UserData", "cardframe", FrontBack);
-                if (!Directory.Exists(imagesSubdir))
-                {
-                    Directory.CreateDirectory(imagesSubdir);
-                }
-                return imagesSubdir;
-            }
-
-            imagesSubdir = Path.Combine(OverwriteFolder, "UserData", "cardframe", FrontBack);
-            if (!Directory.Exists(imagesSubdir))
-            {
-                Directory.CreateDirectory(imagesSubdir);
-            }
-            return imagesSubdir;
-        }
-
-        private string GetCoordinateFolder()
-        {
-            string CoordinateFolder = Path.Combine(ModsPath, "OrganizedModPack Downloaded Coordinate");
-            if (Directory.Exists(CoordinateFolder))
-            {
-                CoordinateFolder = Path.Combine(ModsPath, "OrganizedModPack Downloaded Coordinate", "UserData", "coordinate");
-                if (!Directory.Exists(CoordinateFolder))
-                {
-                    Directory.CreateDirectory(CoordinateFolder);
-                }
-                return CoordinateFolder;
-            }
-            if (Directory.Exists(Path.Combine(ModsPath, "MyUserData")))
-            {
-                CoordinateFolder = Path.Combine(ModsPath, "MyUserData", "UserData", "coordinate");
-                if (!Directory.Exists(CoordinateFolder))
-                {
-                    Directory.CreateDirectory(CoordinateFolder);
-                }
-                return CoordinateFolder;
-            }
-            CoordinateFolder = Path.Combine(OverwriteFolder, "MyUserData", "UserData", "coordinate");
-            if (!Directory.Exists(CoordinateFolder))
-            {
-                Directory.CreateDirectory(CoordinateFolder);
-            }
-            return CoordinateFolder;
-        }
-
-        private string GetCharactersFolder(bool IsMaleCards = false)
-        {
-            string[] TargetFolders = new string[3]
-            {
-                Path.Combine(ModsPath, "OrganizedModPack Downloaded Chars"),
-                Path.Combine(ModsPath, "MyUserData"),
-                OverwriteFolder
-            };
-
-            var FeMaleFolder = IsMaleCards ? "male" : "female";
-            int TargetFoldersLength = TargetFolders.Length;
-            for (int i = 0; i < TargetFoldersLength; i++)
-            {
-                string Folder = TargetFolders[i];
-                if (Directory.Exists(Folder))
-                {
-                    var Subdir = Path.Combine(Folder, "UserData", "chara", FeMaleFolder);
-                    if (!Directory.Exists(Subdir))
-                    {
-                        Directory.CreateDirectory(Subdir);
-                    }
-                    return Subdir;
-                }
-            }
-            return OverwriteFolder;
         }
 
         private string GetUserDataSubFolder(string FirstCandidateFolder, string Type)
@@ -1920,7 +1459,6 @@ namespace AI_Girl_Helper
 
             return Path.Combine(OverwriteFolder, "UserData", TypeFolder, TargetFolderName);
         }
-
 
         private void InstallZipArchivesToMods()
         {
@@ -2034,7 +1572,7 @@ namespace AI_Girl_Helper
                                         author = copyright.Remove(copyright.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim();
                                     }
 
-                                    string[] ModsList = GetModsListFromActiveMOProfile(false);
+                                    string[] ModsList = MOManage.GetModsListFromActiveMOProfile(false);
 
                                     foreach (var ModFolder in ModsList)
                                     {
@@ -2048,7 +1586,7 @@ namespace AI_Girl_Helper
                                                 targetfile = targetFileAny;
                                             }
 
-                                            UpdateModNameFromMeta = GetINIValueIfExist(Path.Combine(ModFolderForUpdate, "meta.ini"), "notes", "General");
+                                            UpdateModNameFromMeta = INIManage.GetINIValueIfExist(Path.Combine(ModFolderForUpdate, "meta.ini"), "notes", "General");
                                             if (UpdateModNameFromMeta.Length > 0)
                                             {
                                                 int upIndex = UpdateModNameFromMeta.IndexOf("ompupname:");
@@ -2169,7 +1707,7 @@ namespace AI_Girl_Helper
                     }
 
                     //запись meta.ini
-                    WriteMetaINI(
+                    MOManage.WriteMetaINI(
                         TargetModDirPath
                         ,
                         FoundUpdateName ? string.Empty : category
@@ -2181,7 +1719,7 @@ namespace AI_Girl_Helper
                         FoundUpdateName ? string.Empty : "<br>Author: " + author + "<br><br>" + (description.Length > 0 ? description : Path.GetFileNameWithoutExtension(zipfile)) + "<br><br>"
                         );
 
-                    ActivateInsertModIfPossible(Path.GetFileName(TargetModDirPath));
+                    MOManage.ActivateInsertModIfPossible(Path.GetFileName(TargetModDirPath));
                 }
                 else if (FoundModsDir)
                 {
@@ -2499,7 +2037,7 @@ namespace AI_Girl_Helper
                     category = FileFolderOperations.GetCategoriesForTheFolder(moddir, category);
 
                     //запись meta.ini
-                    WriteMetaINI(
+                    MOManage.WriteMetaINI(
                         moddir
                         ,
                         category
@@ -2518,27 +2056,9 @@ namespace AI_Girl_Helper
                     //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \"");
                     //INI.WriteINI("General", "validated", "true");
 
-                    ActivateInsertModIfPossible(Path.GetFileName(moddir));
+                    MOManage.ActivateInsertModIfPossible(Path.GetFileName(moddir));
                 }
             }
-        }
-
-        /// <summary>
-        /// Проверки существования целевой папки и модификация имени на уникальное
-        /// </summary>
-        /// <param name="ParentFolder"></param>
-        /// <param name="TargetFolder"></param>
-        /// <returns></returns>
-        private string GetResultTargetDirPathWithNameCheck(string ParentFolder, string TargetFolder)
-        {
-            string ResultTargetDirPath = Path.Combine(ParentFolder, TargetFolder);
-            int i = 0;
-            while (Directory.Exists(ResultTargetDirPath))
-            {
-                i++;
-                ResultTargetDirPath = Path.Combine(ParentFolder, TargetFolder + " (" + i + ")");
-            }
-            return ResultTargetDirPath;
         }
 
         private void InstallBepinExModsToMods()
@@ -2599,7 +2119,7 @@ namespace AI_Girl_Helper
                     else
                     {
                         //Проверки существования целевой папки и модификация имени на более уникальное
-                        dllTargetModDirPath = GetResultTargetDirPathWithNameCheck(ModsPath, name);
+                        dllTargetModDirPath = Other.GetResultTargetDirPathWithNameCheck(ModsPath, name);
                     }
                 }
                 else
@@ -2641,7 +2161,7 @@ namespace AI_Girl_Helper
 
 
                 //запись meta.ini
-                WriteMetaINI(
+                MOManage.WriteMetaINI(
                     dllTargetModDirPath
                     ,
                     IsUpdate ? string.Empty : "51,"
@@ -2660,7 +2180,7 @@ namespace AI_Girl_Helper
                 //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \"");
                 //INI.WriteINI("General", "validated", "true");
 
-                ActivateInsertModIfPossible(Path.GetFileName(dllTargetModDirPath));
+                MOManage.ActivateInsertModIfPossible(Path.GetFileName(dllTargetModDirPath));
             }
         }
 
@@ -2668,7 +2188,7 @@ namespace AI_Girl_Helper
         {
             if (!string.IsNullOrWhiteSpace(name))
             {
-                string[] modList = GetModsListFromActiveMOProfile(OnlyFromEnabledMods);
+                string[] modList = MOManage.GetModsListFromActiveMOProfile(OnlyFromEnabledMods);
                 int nameLength = name.Length;
                 int modListLength = modList.Length;
                 for (int modlineNumber = 0; modlineNumber < modListLength; modlineNumber++)
@@ -2681,180 +2201,6 @@ namespace AI_Girl_Helper
                 }
             }
             return string.Empty;
-        }
-
-        /// <summary>
-        /// Writes required parameters in meta.ini
-        /// </summary>
-        /// <param name="moddir"></param>
-        /// <param name="category"></param>
-        /// <param name="version"></param>
-        /// <param name="comments"></param>
-        /// <param name="notes"></param>
-        private void WriteMetaINI(string moddir, string category = "", string version = "", string comments = "", string notes = "")
-        {
-            if (Directory.Exists(moddir))
-            {
-                string metaPath = Path.Combine(moddir, "meta.ini");
-                Utils.IniFile INI = new Utils.IniFile(metaPath);
-
-                bool IsKeyExists = INI.KeyExists("category", "General");
-                if (!IsKeyExists || (IsKeyExists && category.Length > 0 && INI.ReadINI("General", "category").Replace("\"", string.Empty).Length == 0))
-                {
-                    INI.WriteINI("General", "category", "\"" + category + "\"");
-                }
-
-                if (version.Length > 0)
-                {
-                    INI.WriteINI("General", "version", version);
-                }
-
-                INI.WriteINI("General", "gameName", GETMOCurrentGame());
-
-                if (comments.Length > 0)
-                {
-                    INI.WriteINI("General", "comments", comments);
-                }
-
-                if (notes.Length > 0)
-                {
-                    INI.WriteINI("General", "notes", "\"" + notes + "\"");
-                }
-
-                INI.WriteINI("General", "validated", "true");
-            }
-        }
-
-        private string GETMOCurrentGame()
-        {
-            return "Skyrim";
-        }
-
-        private void ActivateInsertModIfPossible(string modname, bool Activate = true, string modAfterWhichInsert = "", bool PlaceAfter = true)
-        {
-            if (modname.Length > 0)
-            {
-                string currentMOprofile = GetINIValueIfExist(Path.Combine(MODirPath, "ModOrganizer.ini"), "selected_profile", "General");
-
-                if (currentMOprofile.Length == 0)
-                {
-                }
-                else
-                {
-                    string profilemodlistpath = Path.Combine(MODirPath, "profiles", currentMOprofile, "modlist.txt");
-
-                    InsertLineInFile(profilemodlistpath, (Activate ? "+" : "-") + modname, 1, modAfterWhichInsert, PlaceAfter);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets setup.xml path from latest enabled mod like must be in Mod Organizer
-        /// </summary>
-        /// <returns></returns>
-        private string GetSetupXmlPathForCurrentProfile()
-        {
-            if (MOmode)
-            {
-                string currentMOprofile = GetINIValueIfExist(Path.Combine(MODirPath, "ModOrganizer.ini"), "selected_profile", "General");
-
-                if (currentMOprofile.Length == 0)
-                {
-                }
-                else
-                {
-                    string profilemodlistpath = Path.Combine(MODirPath, "profiles", currentMOprofile, "modlist.txt");
-
-                    if (File.Exists(profilemodlistpath))
-                    {
-                        string[] lines = File.ReadAllLines(profilemodlistpath);
-
-                        int linescount = lines.Length;
-                        for (int i = 1; i < linescount; i++) // 1- означает пропуск нулевой строки, где комментарий
-                        {
-                            if (lines[i].StartsWith("+"))
-                            {
-                                string SetupXmlPath = Path.Combine(ModsPath, lines[i].Remove(0, 1), "UserData", "setup.xml");
-                                if (File.Exists(SetupXmlPath))
-                                {
-                                    return SetupXmlPath;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                return Path.Combine(OverwriteFolderLink, "UserData", "setup.xml");
-            }
-            else
-            {
-                return Path.Combine(DataPath, "UserData", "setup.xml");
-            }
-        }
-
-        private string GetINIValueIfExist(string INIPath, string Key, string Section)
-        {
-            Utils.IniFile INI = new Utils.IniFile(INIPath);
-            if (INI.KeyExists(Key, Section))
-            {
-                return INI.ReadINI(Section, Key);
-            }
-            return string.Empty;
-        }
-
-        //https://social.msdn.microsoft.com/Forums/vstudio/en-US/8f713e50-0789-4bf6-865f-c87cdebd0b4f/insert-line-to-text-file-using-streamwriter-using-csharp?forum=csharpgeneral
-        /// <summary>
-        /// Inserts line in file in set position
-        /// </summary>
-        /// <param name="path"></param>
-        /// <param name="line"></param>
-        /// <param name="Position"></param>
-        public static void InsertLineInFile(string path, string Line, int Position = 1, string InsertWithThisMod = "", bool PlaceAfter = true)
-        {
-            if (path.Length > 0 && File.Exists(path) && Line.Length > 0)
-            {
-                string[] FileLines = File.ReadAllLines(path);
-                if (!FileLines.Contains(Line))
-                {
-                    int FileLinesLength = FileLines.Length;
-                    bool InsertWithMod = InsertWithThisMod.Length > 0;
-                    Position = InsertWithMod ? FileLinesLength : Position;
-                    using (StreamWriter writer = new StreamWriter(path))
-                    {
-                        for (int LineNumber = 0; LineNumber < Position; LineNumber++)
-                        {
-                            if (InsertWithMod && FileLines[LineNumber].Length > 0 && string.Compare(FileLines[LineNumber].Remove(0, 1), InsertWithThisMod, true) == 0)
-                            {
-                                if (PlaceAfter)
-                                {
-                                    Position = LineNumber;
-                                }
-                                else
-                                {
-                                    writer.WriteLine(FileLines[LineNumber]);
-                                    Position = LineNumber + 1;
-                                }
-                                break;
-
-                            }
-                            else
-                            {
-                                writer.WriteLine(FileLines[LineNumber]);
-                            }
-                        }
-
-                        writer.WriteLine(Line);
-
-                        if (Position < FileLinesLength)
-                        {
-                            for (int LineNumber = Position; LineNumber < FileLinesLength; LineNumber++)
-                            {
-                                writer.WriteLine(FileLines[LineNumber]);
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         private void InstallZipModsToMods()
@@ -2890,13 +2236,13 @@ namespace AI_Girl_Helper
 
                             IsManifestFound = true;
 
-                            guid = ReadXmlValue(xmlpath, "manifest/name", string.Empty);
-                            name = ReadXmlValue(xmlpath, "manifest/name", string.Empty);
-                            version = ReadXmlValue(xmlpath, "manifest/version", "0");
-                            author = ReadXmlValue(xmlpath, "manifest/author", "Unknown author");
-                            description = ReadXmlValue(xmlpath, "manifest/description", "Unknown description");
-                            website = ReadXmlValue(xmlpath, "manifest/website", string.Empty);
-                            game = ReadXmlValue(xmlpath, "manifest/game", "AI Girl"); //установил умолчание как "AI Girl"
+                            guid = XMLManage.ReadXmlValue(xmlpath, "manifest/name", string.Empty);
+                            name = XMLManage.ReadXmlValue(xmlpath, "manifest/name", string.Empty);
+                            version = XMLManage.ReadXmlValue(xmlpath, "manifest/version", "0");
+                            author = XMLManage.ReadXmlValue(xmlpath, "manifest/author", "Unknown author");
+                            description = XMLManage.ReadXmlValue(xmlpath, "manifest/description", "Unknown description");
+                            website = XMLManage.ReadXmlValue(xmlpath, "manifest/website", string.Empty);
+                            game = XMLManage.ReadXmlValue(xmlpath, "manifest/game", "AI Girl"); //установил умолчание как "AI Girl"
                             File.Delete(xmlpath);
                             break;
                         }
@@ -2935,7 +2281,7 @@ namespace AI_Girl_Helper
                     string anyfname = string.Empty;
                     if (Directory.Exists(zipmoddirpath))
                     {
-                        if (File.Exists(targetZipFile) || (anyfname = IsAnyFileWithSameExtensionContainsNameOfTheFile(zipmoddirmodspath, zipArchiveName, "*.zip")).Length > 0)
+                        if (File.Exists(targetZipFile) || (anyfname = Other.IsAnyFileWithSameExtensionContainsNameOfTheFile(zipmoddirmodspath, zipArchiveName, "*.zip")).Length > 0)
                         {
                             if (File.GetLastWriteTime(zipfile) > File.GetLastWriteTime(targetZipFile))
                             {
@@ -2946,7 +2292,7 @@ namespace AI_Girl_Helper
                     }
                     else
                     {
-                        zipmoddirpath = GetResultTargetDirPathWithNameCheck(ModsPath, name);
+                        zipmoddirpath = Other.GetResultTargetDirPathWithNameCheck(ModsPath, name);
                         zipmoddirmodspath = Path.Combine(zipmoddirpath, "mods");
                         targetZipFile = Path.Combine(zipmoddirmodspath, zipArchiveName + ".zipmod");
                     }
@@ -2970,7 +2316,7 @@ namespace AI_Girl_Helper
                     }
 
                     //запись meta.ini
-                    WriteMetaINI(
+                    MOManage.WriteMetaINI(
                         zipmoddirpath
                         ,
                         string.Empty
@@ -2989,25 +2335,9 @@ namespace AI_Girl_Helper
                     //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + website + " \"");
                     //INI.WriteINI("General", "validated", "true");
 
-                    ActivateInsertModIfPossible(Path.GetFileName(zipmoddirpath));
+                    MOManage.ActivateInsertModIfPossible(Path.GetFileName(zipmoddirpath));
                 }
             }
-        }
-
-        private string IsAnyFileWithSameExtensionContainsNameOfTheFile(string zipmoddirmodspath, string zipname, string extension)
-        {
-            if (Directory.Exists(zipmoddirmodspath))
-            {
-                foreach (var path in Directory.GetFiles(zipmoddirmodspath, extension))
-                {
-                    string name = Path.GetFileNameWithoutExtension(path);
-                    if (StringEx.IsStringAContainsStringB(name, zipname))
-                    {
-                        return path;
-                    }
-                }
-            }
-            return string.Empty;
         }
 
         private bool ContainsAnyInvalidCharacters(string path)
@@ -3017,7 +2347,7 @@ namespace AI_Girl_Helper
 
         private void CreateShortcutButton_Click(object sender, EventArgs e)
         {
-            CreateShortcuts(true, false);
+            Other.CreateShortcuts(true, false);
         }
 
         private void MO2StandartButton_Click(object sender, EventArgs e)
@@ -3032,7 +2362,7 @@ namespace AI_Girl_Helper
                     MOCommonModeSwitchButton.Enabled = false;
                     LanchModeInfoLinkLabel.Enabled = false;
 
-                    string[] EnabledModsList = GetModsListFromActiveMOProfile();
+                    string[] EnabledModsList = MOManage.GetModsListFromActiveMOProfile();
                     int EnabledModsLength = EnabledModsList.Length;
 
                     if (EnabledModsList.Length == 0)
@@ -3043,11 +2373,11 @@ namespace AI_Girl_Helper
                         return;
                     }
 
-                    CleanBepInExLinksFromData();
+                    MOModsManage.CleanBepInExLinksFromData();
 
-                    if (File.Exists(dummyfile))
+                    if (File.Exists(SettingsManage.GetDummyFile()))
                     {
-                        File.Delete(dummyfile);
+                        File.Delete(SettingsManage.GetDummyFile());
                     }
 
                     if (!Directory.Exists(MOmodeDataFilesBak))
@@ -3317,7 +2647,7 @@ namespace AI_Girl_Helper
                             File.WriteAllText(Path.Combine(NewModPath, "NOTE!.txt"), note);
 
                             //запись meta.ini с замечанием
-                            WriteMetaINI(
+                            MOManage.WriteMetaINI(
                                 NewModPath
                                 ,
                                 string.Empty
@@ -3328,7 +2658,7 @@ namespace AI_Girl_Helper
                                 ,
                                 note.Replace("\n", "<br>")
                                 );
-                            ActivateInsertModIfPossible(NewModName, false, ModName, false);
+                            MOManage.ActivateInsertModIfPossible(NewModName, false, ModName, false);
                         }
                     }
 
@@ -3358,7 +2688,7 @@ namespace AI_Girl_Helper
                     {
 
                         //запись meta.ini
-                        WriteMetaINI(
+                        MOManage.WriteMetaINI(
                             DestFolderPath
                             ,
                             "53,"
@@ -3370,7 +2700,7 @@ namespace AI_Girl_Helper
                             T._("<br>This files was added in Common mode<br>and moved as mod after convertation in MO mode.<br>Date: ") + DateTimeInFormat
                             );
 
-                        ActivateInsertModIfPossible(addedFilesFolderName);
+                        MOManage.ActivateInsertModIfPossible(addedFilesFolderName);
                     }
 
                     //перемещение ванильных файлов назад в дата
@@ -3427,86 +2757,6 @@ namespace AI_Girl_Helper
                 }
             }
             OnOffButtons();
-        }
-        string MOmodeDataFilesBak = Path.Combine(AppResDir, "MOmodeDataFilesBak");
-        string ModdedDataFilesListFile = Path.Combine(AppResDir, "ModdedDataFilesList.txt");
-        string VanillaDataFilesListFile = Path.Combine(AppResDir, "VanillaDataFilesList.txt");
-        string MOToStandartConvertationOperationsListFile = Path.Combine(AppResDir, "MOToStandartConvertationOperationsList.txt");
-
-        private void CleanBepInExLinksFromData()
-        {
-            //удаление файлов BepinEx
-            DeleteIfSymlink(Path.Combine(DataPath, "doorstop_config.ini"));
-            DeleteIfSymlink(Path.Combine(DataPath, "winhttp.dll"));
-            string BepInExDir = Path.Combine(DataPath, "BepInEx");
-            if (Directory.Exists(BepInExDir))
-            {
-                Directory.Delete(BepInExDir, true);
-            }
-
-            //удаление ссылок на папки плагинов BepinEx
-            DeleteIfSymlink(Path.Combine(DataPath, "UserData", "MaterialEditor"), true);
-            DeleteIfSymlink(Path.Combine(DataPath, "UserData", "Overlays"), true);
-        }
-
-        private void DeleteIfSymlink(string LinkPath, bool IsFolder = false)
-        {
-            if (IsFolder)
-            {
-                if (Directory.Exists(LinkPath))
-                {
-                    if (FileInfoExtensions.IsSymbolicLink(new FileInfo(LinkPath)))
-                    {
-                        Directory.Delete(LinkPath, true);
-                    }
-                }
-            }
-            else
-            {
-                if (File.Exists(LinkPath))
-                {
-                    if (FileInfoExtensions.IsSymbolicLink(new FileInfo(LinkPath)))
-                    {
-                        File.Delete(LinkPath);
-                    }
-                }
-            }
-        }
-
-        private string[] GetModsListFromActiveMOProfile(bool OnlyEnabled = true)
-        {
-            string currentMOprofile = GetINIValueIfExist(Path.Combine(MODirPath, "ModOrganizer.ini"), "selected_profile", "General");
-
-            if (currentMOprofile.Length > 0)
-            {
-                string profilemodlistpath = Path.Combine(MODirPath, "profiles", currentMOprofile, "modlist.txt");
-
-                if (File.Exists(profilemodlistpath))
-                {
-                    string[] lines;
-                    if (OnlyEnabled)
-                    {
-                        //все строки с + в начале
-                        lines = File.ReadAllLines(profilemodlistpath).Where(line => line.Length > 0 && string.CompareOrdinal(line.Substring(0, 1), "#") != 0 && string.CompareOrdinal(line.Substring(0, 1), "+") == 0).ToArray();
-                    }
-                    else
-                    {
-                        //все строки кроме сепараторов
-                        lines = File.ReadAllLines(profilemodlistpath).Where(line => line.Length > 0 && string.CompareOrdinal(line.Substring(0, 1), "#") != 0 && (line.Length < 10 || string.CompareOrdinal(line.Substring(line.Length - 10, 10), "_separator") != 0)).ToArray();
-                    }
-                    //Array.Reverse(lines); //убрал, т.к. дулаю архив с резервными копиями
-                    int linesLength = lines.Length;
-                    for (int l = 0; l < linesLength; l++)
-                    {
-                        //remove +-
-                        lines[l] = lines[l].Remove(0, 1);
-                    }
-
-                    return lines;
-                }
-            }
-
-            return null;
         }
 
         private void OpenGameFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

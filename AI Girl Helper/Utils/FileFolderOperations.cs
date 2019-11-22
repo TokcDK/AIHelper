@@ -270,5 +270,29 @@ namespace AI_Girl_Helper.Utils
                 }
             }
         }
+
+        public static void DeleteIfSymlink(string LinkPath, bool IsFolder = false)
+        {
+            if (IsFolder)
+            {
+                if (Directory.Exists(LinkPath))
+                {
+                    if (FileInfoExtensions.IsSymbolicLink(new FileInfo(LinkPath)))
+                    {
+                        Directory.Delete(LinkPath, true);
+                    }
+                }
+            }
+            else
+            {
+                if (File.Exists(LinkPath))
+                {
+                    if (FileInfoExtensions.IsSymbolicLink(new FileInfo(LinkPath)))
+                    {
+                        File.Delete(LinkPath);
+                    }
+                }
+            }
+        }
     }
 }

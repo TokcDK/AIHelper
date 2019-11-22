@@ -142,5 +142,65 @@ namespace AI_Girl_Helper.Properties {
                 this["MOmode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ApplicationStartupPath {
+            get {
+                return ((string)(this["ApplicationStartupPath"]));
+            }
+            set {
+                this["ApplicationStartupPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CurrentGamePath {
+            get {
+                return ((string)(this["CurrentGamePath"]));
+            }
+            set {
+                this["CurrentGamePath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ModOrganizerINIpath {
+            get {
+                return ((string)(this["ModOrganizerINIpath"]));
+            }
+            set {
+                this["ModOrganizerINIpath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Install2MODirPath {
+            get {
+                return ((string)(this["Install2MODirPath"]));
+            }
+            set {
+                this["Install2MODirPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AutoShortcutRegistryCheckBoxChecked {
+            get {
+                return ((bool)(this["AutoShortcutRegistryCheckBoxChecked"]));
+            }
+            set {
+                this["AutoShortcutRegistryCheckBoxChecked"] = value;
+            }
+        }
     }
 }

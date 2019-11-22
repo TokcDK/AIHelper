@@ -98,7 +98,14 @@
     <Compile Include="AI Girl Links.Designer.cs">
       <DependentUpon>AI Girl Links.cs</DependentUpon>
     </Compile>
-    <Compile Include="Games\AI-Shoujo.cs" />
+    <Compile Include="Games\HoneySelect.cs" />
+    <Compile Include="Games\AISyoujyo.cs" />
+    <Compile Include="Games\Game.cs" />
+    <Compile Include="Manage\INIManage.cs" />
+    <Compile Include="Manage\MOModsManage.cs" />
+    <Compile Include="Manage\RegistryManage.cs" />
+    <Compile Include="Manage\SettingsManage.cs" />
+    <Compile Include="Manage\MOManage.cs" />
     <Compile Include="UserData\CardframeBack.cs" />
     <Compile Include="UserData\CardframeFront.cs" />
     <Compile Include="UserData\CharaFemale.cs" />
@@ -125,6 +132,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\IniFiles.cs" />
     <Compile Include="Utils\Shortcut.cs" />
+    <Compile Include="Manage\XMLManage.cs" />
+    <Compile Include="Manage\Other.cs" />
     <EmbeddedResource Include="AI Girl Helper.resx">
       <DependentUpon>AI Girl Helper.cs</DependentUpon>
     </EmbeddedResource>

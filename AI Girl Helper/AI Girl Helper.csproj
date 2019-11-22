@@ -98,6 +98,7 @@
     <Compile Include="AI Girl Links.Designer.cs">
       <DependentUpon>AI Girl Links.cs</DependentUpon>
     </Compile>
+    <Compile Include="Games\AISyoujyoTrial.cs" />
     <Compile Include="Games\HoneySelect.cs" />
     <Compile Include="Games\AISyoujyo.cs" />
     <Compile Include="Games\Game.cs" />

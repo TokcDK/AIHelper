@@ -37,11 +37,12 @@ namespace AI_Girl_Helper.Utils
 
         //https://stackoverflow.com/a/757925
         //быстро проверить, пуста ли папка
-        public static bool CheckDirectoryEmpty_Fast(string path)
+        public static bool CheckDirectoryNotExistsOrEmpty_Fast(string path)
         {
             if (string.IsNullOrEmpty(path))
             {
-                throw new ArgumentNullException(path);
+                return true; //return true if path is empty
+                //throw new ArgumentNullException(path);
             }
 
             if (Directory.Exists(path))
@@ -81,7 +82,11 @@ namespace AI_Girl_Helper.Utils
                 throw new Exception("Failed to get directory first file",
                     Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
             }
-            throw new DirectoryNotFoundException();
+            else
+            {
+                return true;//return true if not exists
+            }
+            //throw new DirectoryNotFoundException();
         }
 
         public static string GetCategoriesForTheFolder(string moddir, string category)
@@ -126,7 +131,7 @@ namespace AI_Girl_Helper.Utils
                      || category.Length == 0
                     )
                     && Directory.Exists(dir)
-                    && !CheckDirectoryEmpty_Fast(dir)
+                    && !CheckDirectoryNotExistsOrEmpty_Fast(dir)
                     && IsAnyFileExistsInTheDir(dir, extension)
                    )
                 {

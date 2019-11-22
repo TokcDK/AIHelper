@@ -250,5 +250,53 @@ namespace AI_Girl_Helper.Properties {
                 this["MOToStandartConvertationOperationsListFile"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CurrentGameEXEName {
+            get {
+                return ((string)(this["CurrentGameEXEName"]));
+            }
+            set {
+                this["CurrentGameEXEName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CurrentGameFolderName {
+            get {
+                return ((string)(this["CurrentGameFolderName"]));
+            }
+            set {
+                this["CurrentGameFolderName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string StudioEXEName {
+            get {
+                return ((string)(this["StudioEXEName"]));
+            }
+            set {
+                this["StudioEXEName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string INISettingsEXEName {
+            get {
+                return ((string)(this["INISettingsEXEName"]));
+            }
+            set {
+                this["INISettingsEXEName"] = value;
+            }
+        }
     }
 }

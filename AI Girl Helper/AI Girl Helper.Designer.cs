@@ -57,6 +57,8 @@
             this.SettingsButton = new System.Windows.Forms.Button();
             this.SettingsPage = new System.Windows.Forms.TabPage();
             this.SettingsPanel = new System.Windows.Forms.Panel();
+            this.label6 = new System.Windows.Forms.Label();
+            this.CurrentGameComboBox = new System.Windows.Forms.ComboBox();
             this.SettingsFoldersGroupBox = new System.Windows.Forms.GroupBox();
             this.OpenMOOverwriteFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenMyUserDataFolderLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -442,6 +444,8 @@
             // SettingsPanel
             // 
             this.SettingsPanel.BackColor = System.Drawing.Color.Gray;
+            this.SettingsPanel.Controls.Add(this.label6);
+            this.SettingsPanel.Controls.Add(this.CurrentGameComboBox);
             this.SettingsPanel.Controls.Add(this.SettingsFoldersGroupBox);
             this.SettingsPanel.Controls.Add(this.CreateShortcutButton);
             this.SettingsPanel.Controls.Add(this.FixRegistryButton);
@@ -452,6 +456,26 @@
             this.SettingsPanel.Name = "SettingsPanel";
             this.SettingsPanel.Size = new System.Drawing.Size(340, 155);
             this.SettingsPanel.TabIndex = 1;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.ForeColor = System.Drawing.Color.White;
+            this.label6.Location = new System.Drawing.Point(211, 113);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(78, 13);
+            this.label6.TabIndex = 8;
+            this.label6.Text = "Current Game:";
+            // 
+            // CurrentGameComboBox
+            // 
+            this.CurrentGameComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CurrentGameComboBox.FormattingEnabled = true;
+            this.CurrentGameComboBox.Location = new System.Drawing.Point(214, 129);
+            this.CurrentGameComboBox.Name = "CurrentGameComboBox";
+            this.CurrentGameComboBox.Size = new System.Drawing.Size(121, 21);
+            this.CurrentGameComboBox.TabIndex = 7;
+            this.CurrentGameComboBox.SelectedIndexChanged += new System.EventHandler(this.CurrentGameComboBox_SelectedIndexChanged);
             // 
             // SettingsFoldersGroupBox
             // 
@@ -781,6 +805,8 @@
         private System.Windows.Forms.LinkLabel LanchModeInfoLinkLabel;
         private System.Windows.Forms.LinkLabel OpenMyUserDataFolderLinkLabel;
         private System.Windows.Forms.LinkLabel OpenMOOverwriteFolderLinkLabel;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox CurrentGameComboBox;
     }
 }
 

@@ -22,12 +22,12 @@ namespace AI_Girl_Helper.Manage
                 INI.WriteINI("General", "gamePath", IniValue);
             }
             //customExecutables
-            IniValue = SettingsManage.GetCurrentGameName().Replace(@"\", @"\\");
+            IniValue = SettingsManage.GetCurrentGameEXEName().Replace(@"\", @"\\");
             if (INIManage.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, @"1\title", "customExecutables") != IniValue)
             {
                 INI.WriteINI("customExecutables", @"1\title", IniValue);
             }
-            IniValue = Path.Combine(Properties.Settings.Default.DataPath, SettingsManage.GetCurrentGameName() + ".exe").Replace(@"\", @"\\");
+            IniValue = Path.Combine(Properties.Settings.Default.DataPath, SettingsManage.GetCurrentGameEXEName() + ".exe").Replace(@"\", @"\\");
             if (INIManage.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, @"1\binary", "customExecutables") != IniValue)
             {
                 INI.WriteINI("customExecutables", @"1\binary", IniValue);
@@ -226,14 +226,14 @@ namespace AI_Girl_Helper.Manage
         {
             if (Properties.Settings.Default.MOmode)
             {
-                string currentMOprofile = INIManage.GetINIValueIfExist(Path.Combine(Properties.Settings.Default.MODirPath, "ModOrganizer.ini"), "selected_profile", "General");
+                string currentMOprofile = INIManage.GetINIValueIfExist(SettingsManage.GetModOrganizerINIpath(), "selected_profile", "General");
 
                 if (currentMOprofile.Length == 0)
                 {
                 }
                 else
                 {
-                    string profilemodlistpath = Path.Combine(Properties.Settings.Default.MODirPath, "profiles", currentMOprofile, "modlist.txt");
+                    string profilemodlistpath = Path.Combine(SettingsManage.GetMOdirPath(), "profiles", currentMOprofile, "modlist.txt");
 
                     if (File.Exists(profilemodlistpath))
                     {

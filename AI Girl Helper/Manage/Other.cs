@@ -70,7 +70,7 @@ namespace AI_Girl_Helper.Utils
             if (Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked || force)
             {
                 //AI-Girl Helper
-                string shortcutname = SettingsManage.GetCurrentGameName() + " " + T._("Helper");
+                string shortcutname = SettingsManage.GetCurrentGameFolderName() + " " + T._("Helper");
                 string targetpath = Application.ExecutablePath;
                 string arguments = string.Empty;
                 string workingdir = Path.GetDirectoryName(targetpath);
@@ -109,10 +109,10 @@ namespace AI_Girl_Helper.Utils
         public static void MakeDummyFiles()
         {
             //Create dummy file and add hidden attribute
-            if (!File.Exists(SettingsManage.GetDummyFile()))
+            if (!File.Exists(SettingsManage.GetDummyFilePath()))
             {
-                File.WriteAllText(SettingsManage.GetDummyFile(), "dummy file need to execute mod organizer");
-                FileFolderOperations.HideFileFolder(SettingsManage.GetDummyFile(), true);
+                File.WriteAllText(SettingsManage.GetDummyFilePath(), "dummy file need to execute mod organizer");
+                FileFolderOperations.HideFileFolder(SettingsManage.GetDummyFilePath(), true);
             }
         }
     }

@@ -12,7 +12,7 @@ namespace AI_Girl_Helper.Manage
     {
         public static void FixRegistry(bool auto = true)
         {
-            string GameName = SettingsManage.GetCurrentGameName();
+            string GameName = SettingsManage.GetCurrentGameEXEName();
             string RegystryPath = @"HKEY_CURRENT_USER\Software\illusion\" + GameName + @"\" + GameName;
             var InstallDirValue = Registry.GetValue(RegystryPath, "INSTALLDIR", null);
             if (InstallDirValue == null || InstallDirValue.ToString() != Properties.Settings.Default.DataPath)

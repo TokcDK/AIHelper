@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using AI_Girl_Helper.Manage;
+using System.IO;
 
 namespace AI_Girl_Helper.Games
 {
@@ -20,7 +21,15 @@ namespace AI_Girl_Helper.Games
             return "InitSetting";
         }
 
-        public abstract string GetGameStudioEXEName();
+        public virtual string GetGameStudioEXEName() 
+        {
+            return "None64";
+        }
+
+        public virtual string GetGameStudioEXENameX32() 
+        {
+            return "None32";
+        }
 
         public virtual string GetGamePath()
         {

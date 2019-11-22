@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace AI_Girl_Helper.Manage
 {
     class SettingsManage
     {
+        public static int GetCurrentGameIndex()
+        {
+            return 0;
+        }
+
         public static string GetSettingsEXEPath()
         {
-            return Path.Combine(Properties.Settings.Default.DataPath, "InitSetting.exe");
+            return Path.Combine(Properties.Settings.Default.DataPath, GetINISettingsEXEName() + ".exe");
         }
 
         public static string GetCurrentGamePath()
@@ -24,32 +24,29 @@ namespace AI_Girl_Helper.Manage
             return "Skyrim";
         }
 
-        public static string GetDummyFile()
+        public static string GetDummyFilePath()
         {
             return Path.Combine(GetCurrentGamePath(), "TESV.exe");
         }
 
-        public static string GetCurrentGameName()
+        public static string GetCurrentGameEXEName()
         {
-            if (File.Exists(Path.Combine(Properties.Settings.Default.DataPath, "AI-SyoujyoTrial.exe")))
-            {
-                return "AI-SyoujyoTrial";
-            }
-            else if (File.Exists(Path.Combine(Properties.Settings.Default.DataPath, "AI-Syoujyo.exe")))
-            {
-                return "AI-Syoujyo";
-            }
-            return string.Empty;
+            return Properties.Settings.Default.CurrentGameEXEName;
+        }
+
+        public static string GetCurrentGameFolderName()
+        {
+            return Properties.Settings.Default.CurrentGameFolderName;
         }
 
         public static string GetStudioEXEName()
         {
-            return "StudioNEOV2.exe";
+            return Properties.Settings.Default.StudioEXEName;
         }
 
         public static string GetINISettingsEXEName()
         {
-            return "InitSetting";
+            return Properties.Settings.Default.INISettingsEXEName;
         }
 
         public static string GetAppResDir()
@@ -72,14 +69,14 @@ namespace AI_Girl_Helper.Manage
             return Path.Combine(GetCurrentGamePath(), "Data");
         }
 
-        public static string GetMODirPath()
+        public static string GetMOdirPath()
         {
             return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO");
         }
 
         public static string GetMOexePath()
         {
-            return Path.Combine(GetMODirPath(), "ModOrganizer.exe");
+            return Path.Combine(GetMOdirPath(), "ModOrganizer.exe");
         }
 
         public static string GetInstall2MODirPath()
@@ -89,7 +86,7 @@ namespace AI_Girl_Helper.Manage
 
         public static string GetOverwriteFolder()
         {
-            return Path.Combine(GetMODirPath(), "overwrite");
+            return Path.Combine(GetMOdirPath(), "overwrite");
         }
 
         public static string GetOverwriteFolderLink()
@@ -99,27 +96,27 @@ namespace AI_Girl_Helper.Manage
 
         public static string GetModOrganizerINIpath()
         {
-            return Path.Combine(Properties.Settings.Default.MODirPath, "ModOrganizer.ini");
+            return Path.Combine(GetMOdirPath(), "ModOrganizer.ini");
         }
 
         public static string GetMOmodeDataFilesBakDirPath()
         {
-            return Path.Combine(Properties.Settings.Default.AppResDir, "MOmodeDataFilesBak");
+            return Path.Combine(GetAppResDir(), "MOmodeDataFilesBak");
         }
 
         public static string GetModdedDataFilesListFilePath()
         {
-            return Path.Combine(Properties.Settings.Default.AppResDir, "ModdedDataFilesList.txt");
+            return Path.Combine(GetAppResDir(), "ModdedDataFilesList.txt");
         }
 
         public static string GetVanillaDataFilesListFilePath()
         {
-            return Path.Combine(Properties.Settings.Default.AppResDir, "VanillaDataFilesList.txt");
+            return Path.Combine(GetAppResDir(), "VanillaDataFilesList.txt");
         }
 
         public static string GetMOToStandartConvertationOperationsListFilePath()
         {
-            return Path.Combine(Properties.Settings.Default.AppResDir, "MOToStandartConvertationOperationsList.txt");
+            return Path.Combine(GetAppResDir(), "MOToStandartConvertationOperationsList.txt");
         }
     }
 }

@@ -1,17 +1,14 @@
-﻿using AI_Girl_Helper.Manage;
+﻿using AI_Girl_Helper.Games;
+using AI_Girl_Helper.Manage;
 using AI_Girl_Helper.Utils;
-using Microsoft.Win32;
-using SymbolicLinkSupport;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 //using Crc32C;
@@ -36,26 +33,54 @@ namespace AI_Girl_Helper
         //private static string ModOrganizerINIpath { get => Properties.Settings.Default.ModOrganizerINIpath; set => Properties.Settings.Default.ModOrganizerINIpath = value; }
         private static string Install2MODirPath { get => Properties.Settings.Default.Install2MODirPath; set => Properties.Settings.Default.Install2MODirPath = value; }
         private static bool MOmode { get => Properties.Settings.Default.MOmode; set => Properties.Settings.Default.MOmode = value; }
-        
+
+        Game CurrentGame;
+        List<Game> ListOfGames;
+
         public AIGirlHelper()
         {
             InitializeComponent();
 
+            ListOfGames = new List<Game>()
+            {
+                new AISyoujyo(),
+                new AISyoujyoTrial(),
+                new HoneySelect()
+            };
+
+            ListOfGames = ListOfGames.Where
+                (game => 
+                    Directory.Exists(game.GetGamePath())
+                    && 
+                    !FileFolderOperations.CheckDirectoryNotExistsOrEmpty_Fast(Path.Combine(game.GetGamePath(), "MO", "Profiles"))
+                ).ToList();
+
+            foreach (var game in ListOfGames)
+            {
+                CurrentGameComboBox.Items.Add(game.GetGameFolderName());
+            }
+            CurrentGame = new AISyoujyo();
+
+            Properties.Settings.Default.CurrentGameEXEName = CurrentGame.GetGameEXEName();
+            Properties.Settings.Default.CurrentGameFolderName = CurrentGame.GetGameFolderName();
+            Properties.Settings.Default.StudioEXEName = CurrentGame.GetGameStudioEXEName();
+            Properties.Settings.Default.INISettingsEXEName = CurrentGame.GetINISettingsEXEName();
+
             ApplicationStartupPath = Application.StartupPath;
-            Properties.Settings.Default.CurrentGamePath = ApplicationStartupPath;
+            Properties.Settings.Default.CurrentGamePath = CurrentGame.GetGamePath();
             AppResDir = SettingsManage.GetAppResDir();
             ModsPath = SettingsManage.GetModsPath();
             DownloadsPath = SettingsManage.GetDownloadsPath();
             DataPath = SettingsManage.GetDataPath();
-            MODirPath = SettingsManage.GetMODirPath();
+            MODirPath = SettingsManage.GetMOdirPath();
             MOexePath = SettingsManage.GetMOexePath();
             Properties.Settings.Default.ModOrganizerINIpath = SettingsManage.GetModOrganizerINIpath();
             Install2MODirPath = SettingsManage.GetInstall2MODirPath();
             OverwriteFolder = SettingsManage.GetOverwriteFolder();
             OverwriteFolderLink = SettingsManage.GetOverwriteFolderLink();
+            SetupXmlPath = MOManage.GetSetupXmlPathForCurrentProfile();
             MOmode = true;
 
-            //SetupXmlPath = GetSetupXmlPathForCurrentProfile();
         }
 
         private void SetLocalizationStrings()
@@ -259,7 +284,7 @@ namespace AI_Girl_Helper
                 string AIGirlTrial = Path.Combine(AppResDir, "AIGirlTrial.7z");
                 string AIGirl = Path.Combine(AppResDir, "AIGirl.7z");
                 if (!File.Exists(AIGirlTrial)
-                    && (File.Exists(Path.Combine(DataPath, SettingsManage.GetCurrentGameName() + ".exe"))))
+                    && (File.Exists(Path.Combine(DataPath, SettingsManage.GetCurrentGameEXEName() + ".exe"))))
                 {
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
@@ -403,8 +428,7 @@ namespace AI_Girl_Helper
             //if (Registry.GetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", null) == null)
             //{
             //    FixRegistryButton.Visible = true;
-            //}
-            SetScreenSettings();
+            //}            
 
             SetTooltips();
         }
@@ -513,7 +537,7 @@ namespace AI_Girl_Helper
             FullScreenCheckBox.Checked = bool.Parse(XMLManage.ReadXmlValue(SetupXmlPath, "Setting/FullScreen", FullScreenCheckBox.Checked.ToString().ToLower()));
 
             QualityComboBox.SelectedIndex = int.Parse(XMLManage.ReadXmlValue(SetupXmlPath, "Setting/Quality", "2"));
-
+            
         }
 
         private void SetScreenResolution(string Resolution)
@@ -557,7 +581,7 @@ namespace AI_Girl_Helper
 
         private void FoldersInit()
         {
-            if (File.Exists(Path.Combine(MODirPath, "ModOrganizer.exe.GameInCommonModeNow")) || File.Exists(SettingsManage.GetMOToStandartConvertationOperationsListFilePath()))
+            if (File.Exists(SettingsManage.GetMOexePath() + ".GameInCommonModeNow") || File.Exists(SettingsManage.GetMOToStandartConvertationOperationsListFilePath()))
             {
                 MOmode = false;
                 button1.Text = T._("Common mode");
@@ -578,9 +602,9 @@ namespace AI_Girl_Helper
                 ModsInfoLabel.Text = T._("Mods dir created");
             }
 
-            string AIGirl = SettingsManage.GetCurrentGameName();
-            string AIGirlTrial = SettingsManage.GetCurrentGameName();
-            if (File.Exists(Path.Combine(DataPath, AIGirlTrial + ".exe")))
+            string AIGirl = SettingsManage.GetCurrentGameEXEName();
+            string AIGirlTrial = SettingsManage.GetCurrentGameEXEName();
+            if (File.Exists(Path.Combine(SettingsManage.GetDataPath(), AIGirlTrial + ".exe")))
             {
                 label3.Text = string.Format(T._("{0} game installed in {1}"), AIGirlTrial, "Data");
             }
@@ -608,68 +632,73 @@ namespace AI_Girl_Helper
 
             if (MOmode)
             {
+                string[] Archives7z;
                 string[] ModDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();
-                string[] Archives7z = Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories);
-                if (ModDirs.Length > 0 && Archives7z.Length > 0)
+                
+                if (Directory.Exists(DownloadsPath))
                 {
-                    bool NotAllModsExtracted = false;
-                    foreach (var Archive in Archives7z)
+                    Archives7z = Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories);
+                    if (ModDirs.Length > 0 && Archives7z.Length > 0)
                     {
-                        if (ModDirs.Contains(Path.Combine(ModsPath, Path.GetFileNameWithoutExtension(Archive))))
+                        bool NotAllModsExtracted = false;
+                        foreach (var Archive in Archives7z)
                         {
+                            if (ModDirs.Contains(Path.Combine(ModsPath, Path.GetFileNameWithoutExtension(Archive))))
+                            {
+                            }
+                            else
+                            {
+                                NotAllModsExtracted = true;
+                                break;
+                            }
+                        }
+
+                        if (compressmode && NotAllModsExtracted && ModDirs.Length < Archives7z.Length)
+                        {
+                            ModsInfoLabel.Text = T._("Not all mods in Mods dir");
+                            //button1.Enabled = false;
+                            mode = 2;
+                            button1.Text = T._("Extract missing");
                         }
                         else
                         {
-                            NotAllModsExtracted = true;
-                            break;
+                            ModsInfoLabel.Text = T._("Found mod folders in Mods");
+                            //button1.Enabled = false;
+                            mode = 1;
+                            button1.Text = T._("Mods Ready");
+                            //MO2StandartButton.Enabled = true;
+                            GetEnableDisableLaunchButtons();
+                            MOCommonModeSwitchButton.Text = T._("MOToCommon");
+                            AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
                         }
-                    }
-
-                    if (compressmode && NotAllModsExtracted && ModDirs.Length < Archives7z.Length)
-                    {
-                        ModsInfoLabel.Text = T._("Not all mods in Mods dir");
-                        //button1.Enabled = false;
-                        mode = 2;
-                        button1.Text = T._("Extract missing");
                     }
                     else
                     {
-                        ModsInfoLabel.Text = T._("Found mod folders in Mods");
-                        //button1.Enabled = false;
-                        mode = 1;
-                        button1.Text = T._("Mods Ready");
-                        //MO2StandartButton.Enabled = true;
-                        GetEnableDisableLaunchButtons();
-                        MOCommonModeSwitchButton.Text = T._("MOToCommon");
-                        AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
-                    }
-                }
-                else
-                {
-                    //если нет папок модов но есть архивы в загрузках
-                    if (Archives7z.Length > 0 && ModDirs.Length == 0)
-                    {
-                        ModsInfoLabel.Text = T._("Mods Ready for extract");
-                        mode = 2;
-                        button1.Text = T._("Extract mods");
-                    }
-                }
-
-                //если нет архивов в загрузках, но есть папки модов
-                if (compressmode && Directory.Exists(DownloadsPath) && Directory.Exists(ModsPath))
-                {
-                    if (ModDirs.Length > 0 && Archives7z.Length == 0)
-                    {
-                        if (Archives7z.Length == 0)
+                        //если нет папок модов но есть архивы в загрузках
+                        if (Archives7z.Length > 0 && ModDirs.Length == 0)
                         {
-                            ModsInfoLabel.Text = "No archives in downloads";
-                            button1.Text = "Pack mods";
-                            mode = 0;
+                            ModsInfoLabel.Text = T._("Mods Ready for extract");
+                            mode = 2;
+                            button1.Text = T._("Extract mods");
+                        }
+                    }
+
+                    //если нет архивов в загрузках, но есть папки модов
+                    if (compressmode && Directory.Exists(DownloadsPath) && Directory.Exists(ModsPath))
+                    {
+                        if (ModDirs.Length > 0 && Archives7z.Length == 0)
+                        {
+                            if (Archives7z.Length == 0)
+                            {
+                                ModsInfoLabel.Text = "No archives in downloads";
+                                button1.Text = "Pack mods";
+                                mode = 0;
+                            }
                         }
                     }
                 }
 
-                if (ModDirs.Length > 0 && File.Exists(Path.Combine(DataPath, SettingsManage.GetCurrentGameName() + ".exe")))
+                if (ModDirs.Length > 0 && File.Exists(Path.Combine(DataPath, SettingsManage.GetCurrentGameEXEName() + ".exe")))
                 {
                     GetEnableDisableLaunchButtons();
                     MOCommonModeSwitchButton.Text = T._("MOToCommon");
@@ -714,18 +743,21 @@ namespace AI_Girl_Helper
             }
 
             //Обновление пути к setup.xml с настройками графики
+            Properties.Settings.Default.CurrentGamePath = CurrentGame.GetGamePath();
             SetupXmlPath = MOManage.GetSetupXmlPathForCurrentProfile();
             ModsPath = SettingsManage.GetModsPath();
             DownloadsPath = SettingsManage.GetDownloadsPath();
             DataPath = SettingsManage.GetDataPath();
-            MODirPath = SettingsManage.GetMODirPath();
+            MODirPath = SettingsManage.GetMOdirPath();
             MOexePath = SettingsManage.GetMOexePath();
             OverwriteFolder = SettingsManage.GetOverwriteFolder();
             OverwriteFolderLink = SettingsManage.GetOverwriteFolderLink();
             Properties.Settings.Default.ModOrganizerINIpath = SettingsManage.GetModOrganizerINIpath();
             Install2MODirPath = SettingsManage.GetInstall2MODirPath();
             AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
-
+            CurrentGameComboBox.Text = CurrentGame.GetGameFolderName();
+            CurrentGameComboBox.SelectedIndex = SettingsManage.GetCurrentGameIndex();
+            SetScreenSettings();
             if (AutoShortcutRegistryCheckBox.Checked)
             {
                 Other.AutoShortcutAndRegystry();
@@ -734,10 +766,10 @@ namespace AI_Girl_Helper
 
         private void GetEnableDisableLaunchButtons()
         {
-            MOButton.Enabled = File.Exists(Path.Combine(MODirPath, "ModOrganizer.exe")) ? true : false;
-            SettingsButton.Enabled = File.Exists(Path.Combine(DataPath, SettingsManage.GetINISettingsEXEName() + ".exe")) ? true : false;
-            GameButton.Enabled = File.Exists(Path.Combine(DataPath, SettingsManage.GetCurrentGameName() + ".exe")) ? true : false;
-            StudioButton.Enabled = File.Exists(Path.Combine(DataPath, SettingsManage.GetStudioEXEName() + ".exe")) ? true : false;
+            MOButton.Enabled = File.Exists(SettingsManage.GetMOexePath());
+            SettingsButton.Enabled = File.Exists(Path.Combine(DataPath, SettingsManage.GetINISettingsEXEName() + ".exe"));
+            GameButton.Enabled = File.Exists(Path.Combine(DataPath, SettingsManage.GetCurrentGameEXEName() + ".exe"));
+            StudioButton.Enabled = File.Exists(Path.Combine(DataPath, SettingsManage.GetStudioEXEName() + ".exe"));
         }
 
         private void CheckBox1_CheckedChanged(object sender, EventArgs e)
@@ -800,11 +832,11 @@ namespace AI_Girl_Helper
             OnOffButtons(false);
             if (MOmode)
             {
-                RunProgram(MOexePath, "moshortcut://:" + SettingsManage.GetCurrentGameName());
+                RunProgram(MOexePath, "moshortcut://:" + SettingsManage.GetCurrentGameEXEName());
             }
             else
             {
-                RunProgram(Path.Combine(DataPath, SettingsManage.GetCurrentGameName() + ".exe"), string.Empty);
+                RunProgram(Path.Combine(DataPath, SettingsManage.GetCurrentGameEXEName() + ".exe"), string.Empty);
             }
             OnOffButtons();
         }
@@ -1035,9 +1067,9 @@ namespace AI_Girl_Helper
 
                     MOModsManage.CleanBepInExLinksFromData();
 
-                    if (File.Exists(SettingsManage.GetDummyFile()))
+                    if (File.Exists(SettingsManage.GetDummyFilePath()))
                     {
-                        File.Delete(SettingsManage.GetDummyFile());
+                        File.Delete(SettingsManage.GetDummyFilePath());
                     }
 
                     if (!Directory.Exists(SettingsManage.GetMOmodeDataFilesBakDirPath()))
@@ -1463,6 +1495,11 @@ namespace AI_Girl_Helper
             var USERPROFILE = Path.Combine("%USERPROFILE%", "appdata", "locallow", "illusion__AI-Syoujyo", "AI-Syoujyo", "output_log.txt");
             var output_log = Environment.ExpandEnvironmentVariables(USERPROFILE);
             Process.Start("explorer.exe", output_log);
+        }
+
+        private void CurrentGameComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
 
         //Материалы

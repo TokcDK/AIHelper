@@ -1,11 +1,7 @@
 ﻿using AI_Girl_Helper.Utils;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AI_Girl_Helper.Manage
 {
@@ -13,98 +9,273 @@ namespace AI_Girl_Helper.Manage
     {
         public static void SetModOrganizerINISettingsForTheGame()
         {
-            Utils.IniFile INI = new Utils.IniFile(Properties.Settings.Default.ModOrganizerINIpath);
+            RedefineCategoriesDat();
 
-            //General
-            string IniValue = SettingsManage.GetCurrentGamePath().Replace(@"\", @"\\");
-            if (INIManage.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, "gamePath", "General") != IniValue)
-            {
-                INI.WriteINI("General", "gamePath", IniValue);
-            }
-            //customExecutables
-            IniValue = SettingsManage.GetCurrentGameEXEName().Replace(@"\", @"\\");
-            if (INIManage.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, @"1\title", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"1\title", IniValue);
-            }
-            IniValue = Path.Combine(Properties.Settings.Default.DataPath, SettingsManage.GetCurrentGameEXEName() + ".exe").Replace(@"\", @"\\");
-            if (INIManage.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, @"1\binary", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"1\binary", IniValue);
-            }
-            IniValue = Properties.Settings.Default.DataPath.Replace(@"\", @"\\");
-            if (INIManage.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, @"1\workingDirectory", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"1\workingDirectory", IniValue);
-            }
-            IniValue = SettingsManage.GetSettingsEXEPath().Replace(@"\", @"\\");
-            if (INIManage.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, @"2\binary", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"2\binary", IniValue);
-            }
-            IniValue = SettingsManage.GetSettingsEXEPath().Replace(@"\", @"\\");
-            if (INIManage.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, @"2\binary", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"2\binary", IniValue);
-            }
-            IniValue = Properties.Settings.Default.DataPath.Replace(@"\", @"\\");
-            if (INIManage.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, @"2\workingDirectory", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"2\workingDirectory", IniValue);
-            }
-            IniValue = Path.Combine(Properties.Settings.Default.MODirPath, "explorer++", "Explorer++.exe").Replace(@"\", @"\\");
-            if (INIManage.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, @"3\binary", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"3\binary", IniValue);
-            }
-            IniValue = "\\\"" + Properties.Settings.Default.DataPath.Replace(@"\", @"\\") + "\\\"";
-            if (INIManage.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, @"3\arguments", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"3\arguments", IniValue);
-            }
-            IniValue = Path.Combine(Properties.Settings.Default.MODirPath, "explorer++").Replace(@"\", @"\\");
-            if (INIManage.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, @"3\workingDirectory", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"3\workingDirectory", IniValue);
-            }
-            IniValue = Path.Combine(SettingsManage.GetCurrentGamePath(), "TESV.exe").Replace(@"\", @"\\");
-            if (INIManage.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, @"4\binary", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"4\binary", IniValue);
-            }
-            IniValue = SettingsManage.GetCurrentGamePath().Replace(@"\", @"\\");
-            if (INIManage.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, @"4\workingDirectory", "customExecutables") != IniValue)
-            {
-                INI.WriteINI("customExecutables", @"4\workingDirectory", IniValue);
-            }
-            //Settings
-            IniValue = Properties.Settings.Default.ModsPath.Replace(@"\", @"\\");
-            if (INIManage.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, "mod_directory", "Settings") != IniValue)
-            {
-                INI.WriteINI("Settings", "mod_directory", IniValue);
-            }
-            IniValue = Path.Combine(SettingsManage.GetCurrentGamePath(), "Downloads").Replace(@"\", @"\\");
-            if (INIManage.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, "download_directory", "Settings") != IniValue)
-            {
-                INI.WriteINI("Settings", "download_directory", IniValue);
-            }
+            RedefineModOrganizerIni();
 
-            if (CultureInfo.CurrentCulture.Name == "ru-RU")
-            {
-                IniValue = "ru";
-                if (INIManage.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, "language", "Settings") != IniValue)
+            IniFile INI = new IniFile(SettingsManage.GetModOrganizerINIpath());
+
+            string[,] IniValues =
                 {
-                    INI.WriteINI("Settings", "language", IniValue);
+                    //General
+                    {
+                        SettingsManage.GetCurrentGamePath()
+                        ,
+                        "General"
+                        ,
+                        "gamePath"
+                    }
+                //,
+                //    {
+                //        GetSelectedProfileName()
+                //        ,
+                //        "General"
+                //        ,
+                //        @"selected_profile"
+                //    }
+                ,
+                    {
+                        "1"
+                        ,
+                        "General"
+                        ,
+                        @"selected_executable"
+                    }
+                ,
+                    //customExecutables
+                    {
+                        SettingsManage.GetCurrentGameEXEName()
+                        ,
+                        "customExecutables"
+                        ,
+                        @"1\title"
+                    }
+                ,
+                    {
+                        Path.Combine(SettingsManage.GetDataPath(), SettingsManage.GetCurrentGameEXEName() + ".exe")
+                        ,
+                        "customExecutables"
+                        ,
+                        @"1\binary"
+                    }
+                ,
+                    {
+                        SettingsManage.GetDataPath()
+                        ,
+                        "customExecutables"
+                        ,
+                        @"1\workingDirectory"
+                    }
+                ,
+                    {
+                        SettingsManage.GetINISettingsEXEName()
+                        ,
+                        "customExecutables"
+                        ,
+                        @"2\title"
+                    }
+                ,
+                    {
+                        SettingsManage.GetSettingsEXEPath()
+                        ,
+                        "customExecutables"
+                        ,
+                        @"2\binary"
+                    }
+                ,
+                    {
+                        SettingsManage.GetDataPath()
+                        ,
+                        "customExecutables"
+                        ,
+                        @"2\workingDirectory"
+                    }
+                ,
+                    {
+                        Path.Combine(SettingsManage.GetMOdirPath(), "explorer++", "Explorer++.exe")
+                        ,
+                        "customExecutables"
+                        ,
+                        @"3\binary"
+                    }
+                ,
+                    {
+                        SettingsManage.GetDataPath()
+                        ,
+                        "customExecutables"
+                        ,
+                        @"3\arguments"
+                    }
+                ,
+                    {
+                        Path.Combine(SettingsManage.GetMOdirPath(), "explorer++")
+                        ,
+                        "customExecutables"
+                        ,
+                        @"3\workingDirectory"
+                    }
+                ,
+                    {
+                        Path.Combine(SettingsManage.GetCurrentGamePath(), "TESV.exe")
+                        ,
+                        "customExecutables"
+                        ,
+                        @"4\binary"
+                    }
+                ,
+                    {
+                        SettingsManage.GetCurrentGamePath()
+                        ,
+                        "customExecutables"
+                        ,
+                        @"4\workingDirectory"
+                    }
+                ,
+                    {
+                        Path.Combine(SettingsManage.GetStudioEXEName())
+                        ,
+                        "customExecutables"
+                        ,
+                        @"5\title"
+                    }
+                ,
+                    {
+                        Path.Combine(SettingsManage.GetDataPath(),SettingsManage.GetStudioEXEName()+".exe")
+                        ,
+                        "customExecutables"
+                        ,
+                        @"5\binary"
+                    }
+                ,
+                    {
+                        SettingsManage.GetDataPath()
+                        ,
+                        "customExecutables"
+                        ,
+                        @"5\workingDirectory"
+                    }
+                ,
+                    //Settings
+                    {
+                        SettingsManage.GetModsPath()
+                        ,
+                        "Settings"
+                        ,
+                        @"mod_directory"
+                    }
+                ,
+                    {
+                        Path.Combine(SettingsManage.GetCurrentGamePath(), "Downloads")
+                        ,
+                        "Settings"
+                        ,
+                        @"download_directory"
+                    }
+                ,
+                    {
+                        Path.Combine(SettingsManage.GetCurrentGamePath(), "MO", "profiles")
+                        ,
+                        "Settings"
+                        ,
+                        @"profiles_directory"
+                    }
+                ,
+                    {
+                        Path.Combine(SettingsManage.GetCurrentGamePath(), "MO", "overwrite")
+                        ,
+                        "Settings"
+                        ,
+                        @"overwrite_directory"
+                    }
+                ,
+                    {
+                        CultureInfo.CurrentCulture.Name.Split('-')[0]
+                        ,
+                        "Settings"
+                        ,
+                        @"language"
+                    }
+
+                };
+
+            int IniValuesLength = IniValues.Length / 3;
+
+            for (int i = 0; i < IniValuesLength; i++)
+            {
+                string subquote = IniValues[i, 2].EndsWith(@"\arguments") ? "\\\"" : string.Empty;
+                string IniValue = subquote + IniValues[i, 0].Replace(@"\", @"\\") + subquote;
+                if (INIManage.GetINIValueIfExist(SettingsManage.GetModOrganizerINIpath(), IniValues[i, 2], IniValues[i, 1]) != IniValue)
+                {
+                    INI.WriteINI(IniValues[i, 1], IniValues[i, 2], IniValue);
                 }
             }
-            else
+        }
+
+        private static string GetSelectedProfileName()
+        {
+            string ret = INIManage.GetINIValueIfExist(Path.Combine(SettingsManage.GetCurrentGamePath(), "MO", "ModOrganizer.ini"), "selected_profile", "General");
+            return ret.Length > 0 ? ret : SettingsManage.GetCurrentGameFolderName();
+        }
+
+        private static void RedefineModOrganizerIni()
+        {
+            string[] categoriesdatGameAndLocalPaths = new string[2]
             {
-                IniValue = "en";
-                if (INIManage.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, "language", "Settings") != IniValue)
-                {
-                    INI.WriteINI("Settings", "language", IniValue);
-                }
+                Path.Combine(SettingsManage.GetCurrentGamePath(),"MO", "ModOrganizer.ini")
+                ,
+                Path.Combine(SettingsManage.GetMOdirPath(), "ModOrganizer.ini")
+            };
+
+            if (
+                File.Exists(categoriesdatGameAndLocalPaths[0])
+                &&
+                (
+                !File.Exists(categoriesdatGameAndLocalPaths[1])
+                ||
+                File.ReadAllText(categoriesdatGameAndLocalPaths[0]) != File.ReadAllText(categoriesdatGameAndLocalPaths[1])
+                )
+               )
+            {
+                FileFolderOperations.Symlink
+                  (
+                   categoriesdatGameAndLocalPaths[0]
+                   ,
+                   categoriesdatGameAndLocalPaths[1]
+                   ,
+                   true
+                  );
             }
+        }
+
+        public static void RedefineCategoriesDat()
+        {
+            string[] categoriesdatGameAndLocalPaths = new string[2]
+            {
+                Path.Combine(SettingsManage.GetCurrentGamePath(),"MO", "categories.dat")
+                ,
+                Path.Combine(SettingsManage.GetMOdirPath(), "categories.dat")
+            };
+
+            if (
+                File.Exists(categoriesdatGameAndLocalPaths[0])
+                &&
+                (
+                !File.Exists(categoriesdatGameAndLocalPaths[1])
+                ||
+                File.ReadAllText(categoriesdatGameAndLocalPaths[0]) != File.ReadAllText(categoriesdatGameAndLocalPaths[1])
+                )
+               )
+            {
+                FileFolderOperations.Symlink
+                  (
+                   categoriesdatGameAndLocalPaths[0]
+                   ,
+                   categoriesdatGameAndLocalPaths[1]
+                   ,
+                   true
+                  );
+            }
+
         }
 
         public static void ActivateInsertModIfPossible(string modname, bool Activate = true, string modAfterWhichInsert = "", bool PlaceAfter = true)
@@ -138,7 +309,7 @@ namespace AI_Girl_Helper.Manage
             if (Directory.Exists(moddir))
             {
                 string metaPath = Path.Combine(moddir, "meta.ini");
-                Utils.IniFile INI = new Utils.IniFile(metaPath);
+                IniFile INI = new IniFile(metaPath);
 
                 bool IsKeyExists = INI.KeyExists("category", "General");
                 if (!IsKeyExists || (IsKeyExists && category.Length > 0 && INI.ReadINI("General", "category").Replace("\"", string.Empty).Length == 0))

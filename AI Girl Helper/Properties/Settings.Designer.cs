@@ -298,5 +298,29 @@ namespace AI_Girl_Helper.Properties {
                 this["INISettingsEXEName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int CurrentGameListIndex {
+            get {
+                return ((int)(this["CurrentGameListIndex"]));
+            }
+            set {
+                this["CurrentGameListIndex"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool INITDone {
+            get {
+                return ((bool)(this["INITDone"]));
+            }
+            set {
+                this["INITDone"] = value;
+            }
+        }
     }
 }

@@ -11,10 +11,13 @@ namespace AI_Girl_Helper.Manage
     {
         public static string GetINIValueIfExist(string INIPath, string Key, string Section)
         {
-            Utils.IniFile INI = new Utils.IniFile(INIPath);
-            if (INI.KeyExists(Key, Section))
+            if (File.Exists(INIPath))
             {
-                return INI.ReadINI(Section, Key);
+                Utils.IniFile INI = new Utils.IniFile(INIPath);
+                if (INI.KeyExists(Key, Section))
+                {
+                    return INI.ReadINI(Section, Key);
+                }
             }
             return string.Empty;
         }

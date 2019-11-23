@@ -646,7 +646,6 @@
             this.AutoShortcutRegistryCheckBox.TabIndex = 0;
             this.AutoShortcutRegistryCheckBox.Text = "Auto";
             this.AutoShortcutRegistryCheckBox.UseVisualStyleBackColor = true;
-            this.AutoShortcutRegistryCheckBox.Visible = false;
             this.AutoShortcutRegistryCheckBox.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
             // 
             // ToolsTabPage

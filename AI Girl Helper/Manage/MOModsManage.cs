@@ -36,51 +36,64 @@ namespace AI_Girl_Helper.Manage
                 string[,] ObjectLinkPaths =
                 {
                     {
+                        "f"
+                        ,
                         Path.Combine(Properties.Settings.Default.ModsPath, "BepInEx5", "Bepinex", "core", "BepInEx.Preloader.dll")
                         ,
                         Path.Combine(Properties.Settings.Default.DataPath, "Bepinex", "core", "BepInEx.Preloader.dll")
                     }
                     ,
                     {
+                        "f"
+                        ,
                         Path.Combine(Properties.Settings.Default.ModsPath, "BepInEx5", "doorstop_config.ini")
                         ,
                         Path.Combine(Properties.Settings.Default.DataPath, "doorstop_config.ini")
                     }
                     ,
                     {
+                        "f"
+                        ,
                         Path.Combine(Properties.Settings.Default.ModsPath, "BepInEx5", "winhttp.dll")
                         ,
                         Path.Combine(Properties.Settings.Default.DataPath, "winhttp.dll")
                     }
                     ,
                     {
+                        string.Empty
+                        ,
                         Path.Combine(Properties.Settings.Default.ModsPath, "MyUserData", "UserData", "MaterialEditor")
                         ,
                         Path.Combine(Properties.Settings.Default.DataPath, "UserData", "MaterialEditor")
                     }
                     ,
                     {
+                        string.Empty
+                        ,
                         Path.Combine(Properties.Settings.Default.ModsPath, "MyUserData", "UserData", "Overlays")
                         ,
                         Path.Combine(Properties.Settings.Default.DataPath, "UserData", "Overlays")
                     }
                 };
 
-                int ObjectLinkPathsLength = ObjectLinkPaths.Length / 2;
+                int ObjectLinkPathsLength = ObjectLinkPaths.Length / 3;
                 for (int i = 0; i < ObjectLinkPathsLength; i++)
                 {
-                    if (File.Exists(ObjectLinkPaths[i, 0]) && !File.Exists(ObjectLinkPaths[i, 1]))
+                    if ((ObjectLinkPaths[i, 0].Length>0 && File.Exists(ObjectLinkPaths[i, 1]) && !File.Exists(ObjectLinkPaths[i, 2])) || (ObjectLinkPaths[i, 0].Length == 0 && Directory.Exists(ObjectLinkPaths[i, 1]) && !Directory.Exists(ObjectLinkPaths[i, 2])))
                     {
                         FileFolderOperations.Symlink
                           (
-                           ObjectLinkPaths[i, 0]
-                           ,
                            ObjectLinkPaths[i, 1]
+                           ,
+                           ObjectLinkPaths[i, 2]
                            ,
                            true
                           );
-                        FileFolderOperations.HideFileFolder(Path.Combine(Properties.Settings.Default.DataPath, "Bepinex"));
                     }
+                }
+                if (Directory.Exists(Path.Combine(SettingsManage.GetDataPath(), "Bepinex")))
+                {
+                    FileFolderOperations.HideFileFolder(Path.Combine(SettingsManage.GetDataPath(), "Bepinex"));
                 }
             }
         }

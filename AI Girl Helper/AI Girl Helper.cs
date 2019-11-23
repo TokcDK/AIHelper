@@ -41,33 +41,28 @@ namespace AI_Girl_Helper
         {
             InitializeComponent();
 
-            ListOfGames = new List<Game>()
-            {
-                new AISyoujyo(),
-                new AISyoujyoTrial(),
-                new HoneySelect()
-            };
+            SetListOfGames();
 
-            ListOfGames = ListOfGames.Where
-                (game => 
-                    Directory.Exists(game.GetGamePath())
-                    && 
-                    !FileFolderOperations.CheckDirectoryNotExistsOrEmpty_Fast(Path.Combine(game.GetGamePath(), "MO", "Profiles"))
-                ).ToList();
+            VariablesINIT();
+            MOmode = true;
 
-            foreach (var game in ListOfGames)
-            {
-                CurrentGameComboBox.Items.Add(game.GetGameFolderName());
-            }
-            CurrentGame = new AISyoujyo();
+            SetLocalizationStrings();
 
-            Properties.Settings.Default.CurrentGameEXEName = CurrentGame.GetGameEXEName();
-            Properties.Settings.Default.CurrentGameFolderName = CurrentGame.GetGameFolderName();
-            Properties.Settings.Default.StudioEXEName = CurrentGame.GetGameStudioEXEName();
-            Properties.Settings.Default.INISettingsEXEName = CurrentGame.GetINISettingsEXEName();
+            FoldersInit();
 
+            //if (Registry.GetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", null) == null)
+            //{
+            //    FixRegistryButton.Visible = true;
+            //} 
+
+            Properties.Settings.Default.INITDone = true;
+        }
+
+        private void VariablesINIT()
+        {
             ApplicationStartupPath = Application.StartupPath;
             Properties.Settings.Default.CurrentGamePath = CurrentGame.GetGamePath();
+            SettingsManage.SettingsINIT(ListOfGames);
             AppResDir = SettingsManage.GetAppResDir();
             ModsPath = SettingsManage.GetModsPath();
             DownloadsPath = SettingsManage.GetDownloadsPath();
@@ -79,8 +74,40 @@ namespace AI_Girl_Helper
             OverwriteFolder = SettingsManage.GetOverwriteFolder();
             OverwriteFolderLink = SettingsManage.GetOverwriteFolderLink();
             SetupXmlPath = MOManage.GetSetupXmlPathForCurrentProfile();
-            MOmode = true;
+        }
 
+        private void SetListOfGames()
+        {
+            ListOfGames = SettingsManage.GetListOfExistsGames();
+
+            if (ListOfGames == null || ListOfGames.Count == 0)
+            {
+                MessageBox.Show(T._("Games not found!"));
+                Application.Exit();
+            }
+
+            foreach (var game in ListOfGames)
+            {
+                CurrentGameComboBox.Items.Add(game.GetGameFolderName());
+            }
+
+            SetSelectedGameIndexAndBasicVariables(0);
+        }
+
+        private void SetSelectedGameIndexAndBasicVariables(int index = 0)
+        {
+            Properties.Settings.Default.CurrentGameListIndex = index;
+            CurrentGame = ListOfGames[Properties.Settings.Default.CurrentGameListIndex];
+            CurrentGameComboBox.SelectedIndex = index;
+
+            string sss = CurrentGame.GetGameEXEName();
+            Properties.Settings.Default.CurrentGameEXEName = CurrentGame.GetGameEXEName();
+            Properties.Settings.Default.CurrentGameFolderName = CurrentGame.GetGameFolderName();
+            Properties.Settings.Default.StudioEXEName = CurrentGame.GetGameStudioEXEName();
+            Properties.Settings.Default.INISettingsEXEName = CurrentGame.GetINISettingsEXEName();
+            Properties.Settings.Default.CurrentGamePath = CurrentGame.GetGamePath();
+            Properties.Settings.Default.DataPath = Path.Combine(CurrentGame.GetGamePath(), "Data");
+            Properties.Settings.Default.ModsPath = Path.Combine(CurrentGame.GetGamePath(), "Mods");
         }
 
         private void SetLocalizationStrings()
@@ -421,16 +448,6 @@ namespace AI_Girl_Helper
 
         private void AIGirlHelper_Load(object sender, EventArgs e)
         {
-            SetLocalizationStrings();
-
-            FoldersInit();
-
-            //if (Registry.GetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", null) == null)
-            //{
-            //    FixRegistryButton.Visible = true;
-            //}            
-
-            SetTooltips();
         }
 
         private void SetTooltips()
@@ -537,7 +554,7 @@ namespace AI_Girl_Helper
             FullScreenCheckBox.Checked = bool.Parse(XMLManage.ReadXmlValue(SetupXmlPath, "Setting/FullScreen", FullScreenCheckBox.Checked.ToString().ToLower()));
 
             QualityComboBox.SelectedIndex = int.Parse(XMLManage.ReadXmlValue(SetupXmlPath, "Setting/Quality", "2"));
-            
+
         }
 
         private void SetScreenResolution(string Resolution)
@@ -634,7 +651,7 @@ namespace AI_Girl_Helper
             {
                 string[] Archives7z;
                 string[] ModDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();
-                
+
                 if (Directory.Exists(DownloadsPath))
                 {
                     Archives7z = Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories);
@@ -743,21 +760,16 @@ namespace AI_Girl_Helper
             }
 
             //Обновление пути к setup.xml с настройками графики
-            Properties.Settings.Default.CurrentGamePath = CurrentGame.GetGamePath();
-            SetupXmlPath = MOManage.GetSetupXmlPathForCurrentProfile();
-            ModsPath = SettingsManage.GetModsPath();
-            DownloadsPath = SettingsManage.GetDownloadsPath();
-            DataPath = SettingsManage.GetDataPath();
-            MODirPath = SettingsManage.GetMOdirPath();
-            MOexePath = SettingsManage.GetMOexePath();
-            OverwriteFolder = SettingsManage.GetOverwriteFolder();
-            OverwriteFolderLink = SettingsManage.GetOverwriteFolderLink();
-            Properties.Settings.Default.ModOrganizerINIpath = SettingsManage.GetModOrganizerINIpath();
-            Install2MODirPath = SettingsManage.GetInstall2MODirPath();
+            VariablesINIT();
+
             AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
             CurrentGameComboBox.Text = CurrentGame.GetGameFolderName();
             CurrentGameComboBox.SelectedIndex = SettingsManage.GetCurrentGameIndex();
+
             SetScreenSettings();
+            
+            SetTooltips();
+
             if (AutoShortcutRegistryCheckBox.Checked)
             {
                 Other.AutoShortcutAndRegystry();
@@ -1499,7 +1511,11 @@ namespace AI_Girl_Helper
 
         private void CurrentGameComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            if (Properties.Settings.Default.INITDone)
+            {
+                SetSelectedGameIndexAndBasicVariables((sender as ComboBox).SelectedIndex);
+                FoldersInit();
+            }            
         }
 
         //Материалы

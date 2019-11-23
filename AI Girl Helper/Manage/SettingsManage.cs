@@ -1,12 +1,33 @@
-﻿using System.IO;
+﻿using AI_Girl_Helper.Games;
+using AI_Girl_Helper.Utils;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace AI_Girl_Helper.Manage
 {
     class SettingsManage
     {
+        public static void SettingsINIT(List<Game> ListOfGames)
+        {
+            //int index = Properties.Settings.Default.CurrentGameListIndex;
+            //Properties.Settings.Default.CurrentGamePath = ListOfGames[index].GetGamePath();
+            //ModsPath = SettingsManage.GetModsPath();
+            //DownloadsPath = SettingsManage.GetDownloadsPath();
+            //DataPath = SettingsManage.GetDataPath();
+            //MODirPath = SettingsManage.GetMOdirPath();
+            //MOexePath = SettingsManage.GetMOexePath();
+            //Properties.Settings.Default.ModOrganizerINIpath = SettingsManage.GetModOrganizerINIpath();
+            //Install2MODirPath = SettingsManage.GetInstall2MODirPath();
+            //OverwriteFolder = SettingsManage.GetOverwriteFolder();
+            //OverwriteFolderLink = SettingsManage.GetOverwriteFolderLink();
+            //SetupXmlPath = MOManage.GetSetupXmlPathForCurrentProfile();
+
+        }
+
         public static int GetCurrentGameIndex()
         {
-            return 0;
+            return Properties.Settings.Default.CurrentGameListIndex;
         }
 
         public static string GetSettingsEXEPath()
@@ -86,7 +107,7 @@ namespace AI_Girl_Helper.Manage
 
         public static string GetOverwriteFolder()
         {
-            return Path.Combine(GetMOdirPath(), "overwrite");
+            return Path.Combine(GetCurrentGamePath(), "MO", "overwrite");
         }
 
         public static string GetOverwriteFolderLink()
@@ -117,6 +138,24 @@ namespace AI_Girl_Helper.Manage
         public static string GetMOToStandartConvertationOperationsListFilePath()
         {
             return Path.Combine(GetAppResDir(), "MOToStandartConvertationOperationsList.txt");
+        }
+
+        public static List<Game> GetListOfExistsGames()
+        {
+            List<Game> ListOfGames = new List<Game>()
+            {
+                new AISyoujyo(),
+                new AISyoujyoTrial(),
+                new HoneySelect()
+            };
+
+            ListOfGames = ListOfGames.Where
+                (game =>
+                    Directory.Exists(game.GetGamePath())
+                    &&
+                    !FileFolderOperations.CheckDirectoryNotExistsOrEmpty_Fast(Path.Combine(game.GetGamePath(), "MO", "Profiles"))
+                ).ToList();
+            return ListOfGames;
         }
     }
 }

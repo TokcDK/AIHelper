@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AI_Girl_Helper.UserData
+namespace AI_Helper.UserData
 {
     public class CharaMale : IUserDataFolders
     {

@@ -1,9 +1,9 @@
-﻿using AI_Girl_Helper.Utils;
+﻿using AI_Helper.Utils;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 
-namespace AI_Girl_Helper.Manage
+namespace AI_Helper.Manage
 {
     class MOManage
     {

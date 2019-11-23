@@ -1,6 +1,6 @@
-﻿namespace AI_Girl_Helper
+﻿namespace AI_Helper
 {
-    partial class AIGirlHelper
+    partial class AIHelper
     {
         /// <summary>
         /// Обязательная переменная конструктора.
@@ -28,28 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AIGirlHelper));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AIHelper));
             this.AIGirlHelperTabControl = new System.Windows.Forms.TabControl();
             this.MainPage = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.LabelPanel2 = new System.Windows.Forms.Panel();
             this.ModsInfoLabel = new System.Windows.Forms.Label();
             this.LabelPanel = new System.Windows.Forms.Panel();
             this.label3 = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.GameNamePanel = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
             this.LanchModeInfoLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenLogLinkLabel = new System.Windows.Forms.LinkLabel();
             this.LaunchTabLaunchLabel = new System.Windows.Forms.Label();
-            this.GameNamePanel2 = new System.Windows.Forms.Panel();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.newformButton = new System.Windows.Forms.Button();
             this.StudioButton = new System.Windows.Forms.Button();
             this.GameButton = new System.Windows.Forms.Button();
@@ -77,19 +72,15 @@
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.panel1.SuspendLayout();
             this.LabelPanel2.SuspendLayout();
             this.LabelPanel.SuspendLayout();
-            this.GameNamePanel.SuspendLayout();
             this.LaunchTabPage.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.GameNamePanel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
             this.SettingsPage.SuspendLayout();
             this.SettingsPanel.SuspendLayout();
             this.SettingsFoldersGroupBox.SuspendLayout();
@@ -121,22 +112,47 @@
             this.MainPage.Padding = new System.Windows.Forms.Padding(3);
             this.MainPage.Size = new System.Drawing.Size(346, 161);
             this.MainPage.TabIndex = 0;
-            this.MainPage.Text = "AI Girl";
+            this.MainPage.Text = "Info";
             this.MainPage.UseVisualStyleBackColor = true;
             // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.Gray;
+            this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.LabelPanel2);
             this.panel1.Controls.Add(this.LabelPanel);
             this.panel1.Controls.Add(this.progressBar1);
-            this.panel1.Controls.Add(this.GameNamePanel);
             this.panel1.Controls.Add(this.button1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(340, 155);
             this.panel1.TabIndex = 0;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.Color.Gray;
+            this.label2.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.label2.Location = new System.Drawing.Point(114, 9);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(45, 31);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "AI";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Gray;
+            this.label1.Font = new System.Drawing.Font("Lucida Handwriting", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(154, 14);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(84, 24);
+            this.label1.TabIndex = 2;
+            this.label1.Text = " Helper";
             // 
             // LabelPanel2
             // 
@@ -194,39 +210,6 @@
             this.progressBar1.TabIndex = 5;
             this.progressBar1.Visible = false;
             // 
-            // GameNamePanel
-            // 
-            this.GameNamePanel.Controls.Add(this.label1);
-            this.GameNamePanel.Controls.Add(this.label2);
-            this.GameNamePanel.Location = new System.Drawing.Point(100, 11);
-            this.GameNamePanel.Name = "GameNamePanel";
-            this.GameNamePanel.Size = new System.Drawing.Size(150, 26);
-            this.GameNamePanel.TabIndex = 4;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.Gray;
-            this.label1.Font = new System.Drawing.Font("Lucida Handwriting", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(26, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(124, 24);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Girl Helper";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.BackColor = System.Drawing.Color.Gray;
-            this.label2.Font = new System.Drawing.Font("Lucida Handwriting", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.label2.Location = new System.Drawing.Point(-4, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(34, 24);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "AI";
-            // 
             // button1
             // 
             this.button1.BackColor = System.Drawing.Color.Silver;
@@ -255,10 +238,11 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.Gray;
+            this.panel2.Controls.Add(this.label4);
+            this.panel2.Controls.Add(this.label5);
             this.panel2.Controls.Add(this.LanchModeInfoLinkLabel);
             this.panel2.Controls.Add(this.OpenLogLinkLabel);
             this.panel2.Controls.Add(this.LaunchTabLaunchLabel);
-            this.panel2.Controls.Add(this.GameNamePanel2);
             this.panel2.Controls.Add(this.newformButton);
             this.panel2.Controls.Add(this.StudioButton);
             this.panel2.Controls.Add(this.GameButton);
@@ -306,60 +290,6 @@
             this.LaunchTabLaunchLabel.Size = new System.Drawing.Size(55, 15);
             this.LaunchTabLaunchLabel.TabIndex = 19;
             this.LaunchTabLaunchLabel.Text = "Launch";
-            // 
-            // GameNamePanel2
-            // 
-            this.GameNamePanel2.Controls.Add(this.splitContainer1);
-            this.GameNamePanel2.Location = new System.Drawing.Point(80, 21);
-            this.GameNamePanel2.Name = "GameNamePanel2";
-            this.GameNamePanel2.Size = new System.Drawing.Size(161, 30);
-            this.GameNamePanel2.TabIndex = 18;
-            // 
-            // splitContainer1
-            // 
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer1.Name = "splitContainer1";
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.label5);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.label4);
-            this.splitContainer1.Size = new System.Drawing.Size(161, 30);
-            this.splitContainer1.SplitterDistance = 30;
-            this.splitContainer1.TabIndex = 0;
-            // 
-            // label5
-            // 
-            this.label5.AutoEllipsis = true;
-            this.label5.AutoSize = true;
-            this.label5.BackColor = System.Drawing.Color.Gray;
-            this.label5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label5.Font = new System.Drawing.Font("Lucida Handwriting", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.label5.Location = new System.Drawing.Point(0, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(34, 24);
-            this.label5.TabIndex = 3;
-            this.label5.Text = "AI";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.BackColor = System.Drawing.Color.Gray;
-            this.label4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label4.Font = new System.Drawing.Font("Lucida Handwriting", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.Color.White;
-            this.label4.Location = new System.Drawing.Point(0, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(124, 24);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "Girl Helper";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // newformButton
             // 
@@ -711,7 +641,31 @@
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
             // 
-            // AIGirlHelper
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.Color.Gray;
+            this.label4.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.label4.Location = new System.Drawing.Point(98, 16);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(45, 31);
+            this.label4.TabIndex = 23;
+            this.label4.Text = "AI";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.BackColor = System.Drawing.Color.Gray;
+            this.label5.Font = new System.Drawing.Font("Lucida Handwriting", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ForeColor = System.Drawing.Color.White;
+            this.label5.Location = new System.Drawing.Point(138, 21);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(84, 24);
+            this.label5.TabIndex = 22;
+            this.label5.Text = " Helper";
+            // 
+            // AIHelper
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -721,27 +675,19 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "AIGirlHelper";
-            this.Text = "AI Girl Helper [Organized modpack]";
+            this.Name = "AIHelper";
+            this.Text = "AI Helper [Organized modpack]";
             this.Load += new System.EventHandler(this.AIGirlHelper_Load);
             this.LocationChanged += new System.EventHandler(this.AIGirlHelper_LocationChanged);
             this.AIGirlHelperTabControl.ResumeLayout(false);
             this.MainPage.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.LabelPanel2.ResumeLayout(false);
             this.LabelPanel.ResumeLayout(false);
-            this.GameNamePanel.ResumeLayout(false);
-            this.GameNamePanel.PerformLayout();
             this.LaunchTabPage.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            this.GameNamePanel2.ResumeLayout(false);
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel1.PerformLayout();
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            this.splitContainer1.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-            this.splitContainer1.ResumeLayout(false);
             this.SettingsPage.ResumeLayout(false);
             this.SettingsPanel.ResumeLayout(false);
             this.SettingsPanel.PerformLayout();
@@ -764,7 +710,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Panel GameNamePanel;
         private System.Windows.Forms.Panel LabelPanel;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ProgressBar progressBar1;
@@ -786,10 +731,6 @@
         private System.Windows.Forms.ComboBox QualityComboBox;
         private System.Windows.Forms.Button newformButton;
         private System.Windows.Forms.Button CreateShortcutButton;
-        private System.Windows.Forms.Panel GameNamePanel2;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.Label LaunchTabLaunchLabel;
         private System.Windows.Forms.TabPage ToolsTabPage;
         private System.Windows.Forms.Panel ToolsPanel;
@@ -806,6 +747,8 @@
         private System.Windows.Forms.LinkLabel OpenMOOverwriteFolderLinkLabel;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox CurrentGameComboBox;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
     }
 }
 

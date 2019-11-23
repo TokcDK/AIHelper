@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace AI_Girl_Helper
+namespace AI_Helper
 {
     static class Program
     {
@@ -34,7 +34,7 @@ namespace AI_Girl_Helper
                 {
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
-                    Application.Run(new AIGirlHelper());
+                    Application.Run(new AIHelper());
                 }
                 else
                 {

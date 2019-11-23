@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace AI_Girl_Helper
+namespace AI_Helper
 {
     public class CreateSymlink
     {

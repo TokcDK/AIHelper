@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace AI_Girl_Helper
+namespace AI_Helper
 {
     internal static class Shortcut
     {

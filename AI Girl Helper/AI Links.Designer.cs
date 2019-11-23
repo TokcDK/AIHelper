@@ -1,4 +1,4 @@
-﻿namespace AI_Girl_Helper
+﻿namespace AI_Helper
 {
     partial class LinksForm
     {

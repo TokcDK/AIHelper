@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace AI_Girl_Helper
+namespace AI_Helper
 {
     public partial class LinksForm : Form
     {

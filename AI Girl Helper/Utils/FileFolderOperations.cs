@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace AI_Girl_Helper.Utils
+namespace AI_Helper.Utils
 {
     class FileFolderOperations
     {

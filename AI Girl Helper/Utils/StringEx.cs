@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AI_Girl_Helper.Utils
+namespace AI_Helper.Utils
 {
     class StringEx
     {

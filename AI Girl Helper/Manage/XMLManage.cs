@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace AI_Girl_Helper.Manage
+namespace AI_Helper.Manage
 {
     class XMLManage
     {

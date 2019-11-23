@@ -1,7 +1,7 @@
-﻿using AI_Girl_Helper.Manage;
+﻿using AI_Helper.Manage;
 using System.IO;
 
-namespace AI_Girl_Helper.Games
+namespace AI_Helper.Games
 {
     public abstract class Game
     {

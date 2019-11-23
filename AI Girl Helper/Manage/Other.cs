@@ -1,4 +1,4 @@
-﻿using AI_Girl_Helper.Manage;
+﻿using AI_Helper.Manage;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace AI_Girl_Helper.Utils
+namespace AI_Helper.Utils
 {
     class Other
     {

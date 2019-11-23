@@ -1,4 +1,4 @@
-﻿namespace AI_Girl_Helper.Games
+﻿namespace AI_Helper.Games
 {
     public class HoneySelect : Game
     {

@@ -7,8 +7,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{6E16DB2A-586F-49D9-BFC8-FBEC0D3DF6C7}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>AI_Girl_Helper</RootNamespace>
-    <AssemblyName>AI Girl Helper</AssemblyName>
+    <RootNamespace>AI_Helper</RootNamespace>
+    <AssemblyName>AI Helper</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -92,11 +92,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\CategoriesList.cs" />
-    <Compile Include="AI Girl Links.cs">
+    <Compile Include="AI Links.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AI Girl Links.Designer.cs">
-      <DependentUpon>AI Girl Links.cs</DependentUpon>
+    <Compile Include="AI Links.Designer.cs">
+      <DependentUpon>AI Links.cs</DependentUpon>
     </Compile>
     <Compile Include="Games\AISyoujyoTrial.cs" />
     <Compile Include="Games\HoneySelect.cs" />
@@ -120,11 +120,11 @@
     <Compile Include="Utils\StringEx.cs" />
     <Compile Include="Utils\T.cs" />
     <Compile Include="Utils\Compressor.cs" />
-    <Compile Include="AI Girl Helper.cs">
+    <Compile Include="AI Helper.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AI Girl Helper.Designer.cs">
-      <DependentUpon>AI Girl Helper.cs</DependentUpon>
+    <Compile Include="AI Helper.Designer.cs">
+      <DependentUpon>AI Helper.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\CopyFolder.cs" />
     <Compile Include="Utils\crc32.cs" />
@@ -135,11 +135,11 @@
     <Compile Include="Utils\Shortcut.cs" />
     <Compile Include="Manage\XMLManage.cs" />
     <Compile Include="Manage\Other.cs" />
-    <EmbeddedResource Include="AI Girl Helper.resx">
-      <DependentUpon>AI Girl Helper.cs</DependentUpon>
+    <EmbeddedResource Include="AI Helper.resx">
+      <DependentUpon>AI Helper.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AI Girl Links.resx">
-      <DependentUpon>AI Girl Links.cs</DependentUpon>
+    <EmbeddedResource Include="AI Links.resx">
+      <DependentUpon>AI Links.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -149,6 +149,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

@@ -1,4 +1,4 @@
-﻿using AI_Girl_Helper.Utils;
+﻿using AI_Helper.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace AI_Girl_Helper.Manage
+namespace AI_Helper.Manage
 {
     class MOModsManage
     {

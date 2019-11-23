@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AI_Girl_Helper.Manage
+namespace AI_Helper.Manage
 {
     class INIManage
     {

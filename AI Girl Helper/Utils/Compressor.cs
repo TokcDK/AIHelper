@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using SevenZip;
 
-namespace AI_Girl_Helper
+namespace AI_Helper
 {
     //https://stackoverflow.com/a/53896663
     //https://www.cupofdev.com/compress-files-7zip-csharp/

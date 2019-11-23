@@ -1,6 +1,6 @@
-﻿using AI_Girl_Helper.Games;
-using AI_Girl_Helper.Manage;
-using AI_Girl_Helper.Utils;
+﻿using AI_Helper.Games;
+using AI_Helper.Manage;
+using AI_Helper.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,9 +13,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 //using Crc32C;
 
-namespace AI_Girl_Helper
+namespace AI_Helper
 {
-    public partial class AIGirlHelper : Form
+    public partial class AIHelper : Form
     {
         private readonly bool compressmode = false;
 
@@ -37,7 +37,7 @@ namespace AI_Girl_Helper
         Game CurrentGame;
         List<Game> ListOfGames;
 
-        public AIGirlHelper()
+        public AIHelper()
         {
             InitializeComponent();
 
@@ -82,7 +82,7 @@ namespace AI_Girl_Helper
 
             if (ListOfGames == null || ListOfGames.Count == 0)
             {
-                MessageBox.Show(T._("Games not found!"));
+                MessageBox.Show(T._("Games not found")+". "+ T._("Exit")+"..");
                 Application.Exit();
             }
 
@@ -112,7 +112,7 @@ namespace AI_Girl_Helper
 
         private void SetLocalizationStrings()
         {
-            this.Text = T._("AI Girl Helper for Organized modpack");
+            this.Text = T._("AI Helper for Organized ModPack");
             InstallInModsButton.Text = T._("Install from 2MO");
             //button1.Text = T._("Prepare the game");
             SettingsPage.Text = T._("Settings");
@@ -120,10 +120,11 @@ namespace AI_Girl_Helper
             FixRegistryButton.Text = T._("Registry");
             groupBox1.Text = T._("Display");
             FullScreenCheckBox.Text = T._("fullscreen");
-            AutoShortcutRegistryCheckBox.Text = T._("Automatically create shortcut and fix registry if need");
+            AutoShortcutRegistryCheckBox.Text = T._("Auto");
             SettingsFoldersGroupBox.Text = T._("Folders");
             OpenGameFolderLinkLabel.Text = T._("Game");
             OpenModsFolderLinkLabel.Text = T._("Mods");
+            MainPage.Text = T._("Info");
             LaunchTabPage.Text = T._("Launch");
             LaunchTabLaunchLabel.Text = T._("Launch");
             ToolsTabPage.Text = T._("Tools");
@@ -468,7 +469,7 @@ namespace AI_Girl_Helper
             };
 
             //Main
-            THToolTip.SetToolTip(button1, T._("Unpacking mods and resources from 'Downloads' and 'AI Girl Helper_RES' folders for game when they are not installed"));
+            //THToolTip.SetToolTip(button1, T._("Unpacking mods and resources from 'Downloads' and 'RES' folders for game when they are not installed"));
             THToolTip.SetToolTip(InstallInModsButton, T._("Automatically get required mod data, converts and moves files from 2MO folder")
                 + (MOmode ? T._(
                         " to MO format in Mods when possible"
@@ -476,7 +477,7 @@ namespace AI_Girl_Helper
                         " to the game folder when possible"
                         )));
             THToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Open folder where you can drop/download files for autoinstallation"));
-            THToolTip.SetToolTip(AutoShortcutRegistryCheckBox, T._("When checked will create shortcut for the AIGirl Helper manager on Desktop after mods extraction"));
+            THToolTip.SetToolTip(AutoShortcutRegistryCheckBox, T._("When checked will create shortcut for the AI Helper on Desktop and will fix registry if need"));
             THToolTip.SetToolTip(groupBox1, T._("Game Display settings"));
             THToolTip.SetToolTip(ResolutionComboBox, T._("Select preferred screen resolution"));
             THToolTip.SetToolTip(FullScreenCheckBox, T._("When checked game will be in fullscreen mode"));

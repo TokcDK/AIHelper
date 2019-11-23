@@ -1,10 +1,10 @@
-﻿using AI_Girl_Helper.Games;
-using AI_Girl_Helper.Utils;
+﻿using AI_Helper.Games;
+using AI_Helper.Utils;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace AI_Girl_Helper.Manage
+namespace AI_Helper.Manage
 {
     class SettingsManage
     {
@@ -72,7 +72,7 @@ namespace AI_Girl_Helper.Manage
 
         public static string GetAppResDir()
         {
-            return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "AI Girl Helper_RES");
+            return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "RES");
         }
 
         public static string GetModsPath()

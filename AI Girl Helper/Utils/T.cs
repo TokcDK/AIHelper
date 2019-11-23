@@ -12,13 +12,13 @@ using NGettext;
 //
 //  https://habr.com/ru/post/432786/
 //  https://github.com/VitaliiTsilnyk/NGettext
-namespace AI_Girl_Helper
+namespace AI_Helper
 {
 	internal class T
 	{
         static T()
         {
-            var localesDir = Path.Combine(Directory.GetCurrentDirectory(), "AI Girl Helper_RES", "locale");
+            var localesDir = Path.Combine(Directory.GetCurrentDirectory(), "RES", "locale");
             //_Catalog = new Catalog("en", localesDir, new CultureInfo("en-EN"));
             //_Catalog = new Catalog("ru", localesDir, new CultureInfo("ru-RU"));
             _Catalog = new Catalog("helper", localesDir);

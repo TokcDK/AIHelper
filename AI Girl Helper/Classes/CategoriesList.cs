@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AI_Girl_Helper
+namespace AI_Helper
 {
     internal class CategoriesList
     {

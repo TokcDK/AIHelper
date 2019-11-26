@@ -29,7 +29,7 @@ namespace AI_Helper
         private static string OverwriteFolder { get => Properties.Settings.Default.OverwriteFolder; set => Properties.Settings.Default.OverwriteFolder = value; }
         private static string OverwriteFolderLink { get => Properties.Settings.Default.OverwriteFolderLink; set => Properties.Settings.Default.OverwriteFolderLink = value; }
         private static string SetupXmlPath { get => Properties.Settings.Default.SetupXmlPath; set => Properties.Settings.Default.SetupXmlPath = value; }
-        private static string ApplicationStartupPath { get => Properties.Settings.Default.ApplicationStartupPath; set => Properties.Settings.Default.ApplicationStartupPath = value; }
+        private static string ApplicationStartupPath { /*get => Properties.Settings.Default.ApplicationStartupPath; */set => Properties.Settings.Default.ApplicationStartupPath = value; }
         //private static string ModOrganizerINIpath { get => Properties.Settings.Default.ModOrganizerINIpath; set => Properties.Settings.Default.ModOrganizerINIpath = value; }
         private static string Install2MODirPath { get => Properties.Settings.Default.Install2MODirPath; set => Properties.Settings.Default.Install2MODirPath = value; }
         private static bool MOmode { get => Properties.Settings.Default.MOmode; set => Properties.Settings.Default.MOmode = value; }
@@ -62,7 +62,7 @@ namespace AI_Helper
         {
             ApplicationStartupPath = Application.StartupPath;
             Properties.Settings.Default.CurrentGamePath = CurrentGame.GetGamePath();
-            SettingsManage.SettingsINIT(ListOfGames);
+            //SettingsManage.SettingsINIT();
             AppResDir = SettingsManage.GetAppResDir();
             ModsPath = SettingsManage.GetModsPath();
             DownloadsPath = SettingsManage.GetDownloadsPath();
@@ -100,7 +100,6 @@ namespace AI_Helper
             CurrentGame = ListOfGames[Properties.Settings.Default.CurrentGameListIndex];
             CurrentGameComboBox.SelectedIndex = index;
 
-            string sss = CurrentGame.GetGameEXEName();
             Properties.Settings.Default.CurrentGameEXEName = CurrentGame.GetGameEXEName();
             Properties.Settings.Default.CurrentGameFolderName = CurrentGame.GetGameFolderName();
             Properties.Settings.Default.StudioEXEName = CurrentGame.GetGameStudioEXEName();
@@ -1514,6 +1513,8 @@ namespace AI_Helper
         {
             if (Properties.Settings.Default.INITDone)
             {
+                File.Delete(SettingsManage.GetModOrganizerINIpath());
+                File.Delete(Path.Combine(SettingsManage.GetMOdirPath(), "categories.dat"));
                 SetSelectedGameIndexAndBasicVariables((sender as ComboBox).SelectedIndex);
                 FoldersInit();
             }            

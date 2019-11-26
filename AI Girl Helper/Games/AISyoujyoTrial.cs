@@ -11,10 +11,5 @@
         {
             return "AI-SyoujyoTrial";
         }
-
-        public override string GetGameStudioEXEName()
-        {
-            return string.Empty;
-        }
     }
 }

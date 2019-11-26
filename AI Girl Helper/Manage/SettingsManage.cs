@@ -8,7 +8,7 @@ namespace AI_Helper.Manage
 {
     class SettingsManage
     {
-        public static void SettingsINIT(List<Game> ListOfGames)
+        public static void SettingsINIT()
         {
             //int index = Properties.Settings.Default.CurrentGameListIndex;
             //Properties.Settings.Default.CurrentGamePath = ListOfGames[index].GetGamePath();

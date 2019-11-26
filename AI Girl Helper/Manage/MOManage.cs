@@ -195,39 +195,90 @@ namespace AI_Helper.Manage
             };
 
             //заполнить словарь значениями массива строк
-            int IniValuesLength = IniValues.Length / 2;
+            int IniValuesLength = IniValues.Length / 2;//дляна массива, деленое на 2 т.к. каждый элемент состоит из двух
+            int exclude = 0;//будет равен индексу, который надо пропустить
+            int resultindex = 1;//конечное количество добавленных exe
+            int skippedCnt = 0;//счет количества пропущенных, нужно для правильного подсчета resultindex
             for (int i = 0; i < IniValuesLength; i++)
             {
-                if (!IniValuesDict.ContainsKey(IniValues[i, 1]))
+                int curindex = int.Parse(IniValues[i, 1].Split(new string[1] { @"\" }, StringSplitOptions.None)[0]);
+                string parameterName = IniValues[i, 1].Split(new string[1] { @"\" }, StringSplitOptions.None)[1];
+                if (curindex == exclude)
                 {
-                    IniValuesDict.Add(IniValues[i, 1], IniValues[i, 0]);
+                    continue;
+                }
+                else if (exclude != 0)
+                {
+                    exclude = 0;
+                }
+                //Если название пустое, то пропускать все значения с таким индексом
+                if (parameterName == "title" && IniValues[i, 0].Length == 0)
+                {
+                    exclude = curindex;
+                    skippedCnt++;
+                    continue;
+                }
+
+                if (curindex- skippedCnt > resultindex && exclude == 0)
+                {
+                    resultindex++;
+                }
+
+                string ResultparameterName = resultindex + @"\" + parameterName;
+
+                if (!IniValuesDict.ContainsKey(ResultparameterName))
+                {
+                    IniValuesDict.Add(ResultparameterName, IniValues[i, 0]);
                 }
             }
 
-            int ExecutablesCount;
-            try
-            {
-                ExecutablesCount = int.Parse(IniValues[IniValuesLength - 1, 1].Split(new string[1] { @"\" }, StringSplitOptions.None)[0]);
-            }
-            catch
-            {
-                return;//если не число, выйти
-            }
+            int ExecutablesCount = resultindex;
+            //try
+            //{
+            //    ExecutablesCount = int.Parse(IniValues[IniValuesLength - 1, 1].Split(new string[1] { @"\" }, StringSplitOptions.None)[0]);
+            //}
+            //catch
+            //{
+            //    return;//если не число, выйти
+            //}
 
             var CurrentGame = SettingsManage.GetListOfExistsGames()[Properties.Settings.Default.CurrentGameListIndex];
-            if (CurrentGame.GetGameEXENameX32().Length > 0)
+            if (CurrentGame.GetGameEXENameX32().Length > 0 && File.Exists(Path.Combine(SettingsManage.GetDataPath(), CurrentGame.GetGameEXENameX32() + ".exe")))
             {
                 ExecutablesCount++;
                 IniValuesDict.Add(ExecutablesCount + @"\title", CurrentGame.GetGameEXENameX32());
                 IniValuesDict.Add(ExecutablesCount + @"\binary", Path.Combine(SettingsManage.GetDataPath(), CurrentGame.GetGameEXENameX32() + ".exe"));
                 IniValuesDict.Add(ExecutablesCount + @"\workingDirectory", SettingsManage.GetDataPath());
             }
-            if (CurrentGame.GetGameStudioEXENameX32().Length > 0)
+            if (CurrentGame.GetGameStudioEXENameX32().Length > 0 && File.Exists(Path.Combine(SettingsManage.GetDataPath(), CurrentGame.GetGameStudioEXENameX32() + ".exe")))
             {
                 ExecutablesCount++;
                 IniValuesDict.Add(ExecutablesCount + @"\title", CurrentGame.GetGameStudioEXENameX32());
                 IniValuesDict.Add(ExecutablesCount + @"\binary", Path.Combine(SettingsManage.GetDataPath(), CurrentGame.GetGameStudioEXENameX32() + ".exe"));
                 IniValuesDict.Add(ExecutablesCount + @"\workingDirectory", SettingsManage.GetDataPath());
+            }
+
+            string[] exeExclusions = { "Lec.ExtProtocol", "Common.ExtProtocol.Executor", "UnityCrashHandler64" };
+
+            //Добавление exe из Data
+            foreach (var exe in Directory.GetFiles(SettingsManage.GetDataPath(), "*.exe", SearchOption.AllDirectories))
+            {
+                if (Path.GetFileNameWithoutExtension(exe).Length > 0 && !IniValuesDict.Values.Contains(exe) && !exeExclusions.Contains(Path.GetFileNameWithoutExtension(exe)))
+                {
+                    ExecutablesCount++;
+                    IniValuesDict.Add(ExecutablesCount + @"\title", Path.GetFileNameWithoutExtension(exe));
+                    IniValuesDict.Add(ExecutablesCount + @"\binary", exe);
+                }
+            }
+            //Добавление exe из Mods
+            foreach (var exe in Directory.GetFiles(SettingsManage.GetModsPath(), "*.exe", SearchOption.AllDirectories))
+            {
+                if (Path.GetFileNameWithoutExtension(exe).Length > 0 && !IniValuesDict.Values.Contains(exe) && !exeExclusions.Contains(Path.GetFileNameWithoutExtension(exe)))
+                {
+                    ExecutablesCount++;
+                    IniValuesDict.Add(ExecutablesCount + @"\title", Path.GetFileNameWithoutExtension(exe));
+                    IniValuesDict.Add(ExecutablesCount + @"\binary", exe);
+                }
             }
 
             int cnt = 1;
@@ -471,12 +522,6 @@ namespace AI_Helper.Manage
                 Path.Combine(SettingsManage.GetMOdirPath(), "ModOrganizer.ini")
             };
 
-            var moINIinfo = new FileInfo(categoriesdatGameAndLocalPaths[1]);
-            if (!SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLink(moINIinfo) || !SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLinkValid(moINIinfo))
-            {
-                File.Delete(moINIinfo.FullName);
-            }
-
             if (
                 File.Exists(categoriesdatGameAndLocalPaths[0])
                 &&
@@ -487,6 +532,12 @@ namespace AI_Helper.Manage
                 )
                )
             {
+                var moINIinfo = new FileInfo(categoriesdatGameAndLocalPaths[1]);
+                if (File.Exists(moINIinfo.FullName) && (!SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLink(moINIinfo) || !SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLinkValid(moINIinfo) || Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(SymbolicLinkSupport.FileInfoExtensions.GetSymbolicLinkTarget(moINIinfo)))) != SettingsManage.GetCurrentGameFolderName()))
+                {
+                    File.Delete(moINIinfo.FullName);
+                }
+
                 FileFolderOperations.Symlink
                   (
                    categoriesdatGameAndLocalPaths[0]
@@ -507,12 +558,6 @@ namespace AI_Helper.Manage
                 Path.Combine(SettingsManage.GetMOdirPath(), "categories.dat")
             };
 
-            var categoriesDat = new FileInfo(categoriesdatGameAndLocalPaths[1]);
-            if (!SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLink(categoriesDat) || !SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLinkValid(categoriesDat))
-            {
-                File.Delete(categoriesDat.FullName);
-            }
-
             if (
                 File.Exists(categoriesdatGameAndLocalPaths[0])
                 &&
@@ -523,6 +568,12 @@ namespace AI_Helper.Manage
                 )
                )
             {
+                var categoriesDat = new FileInfo(categoriesdatGameAndLocalPaths[1]);
+                if (File.Exists(categoriesDat.FullName) && (!SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLink(categoriesDat) || !SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLinkValid(categoriesDat) || Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(SymbolicLinkSupport.FileInfoExtensions.GetSymbolicLinkTarget(categoriesDat)))) != SettingsManage.GetCurrentGameFolderName()))
+                {
+                    File.Delete(categoriesDat.FullName);
+                }
+
                 FileFolderOperations.Symlink
                   (
                    categoriesdatGameAndLocalPaths[0]

@@ -507,6 +507,12 @@ namespace AI_Helper.Manage
                 Path.Combine(SettingsManage.GetMOdirPath(), "categories.dat")
             };
 
+            var categoriesDat = new FileInfo(categoriesdatGameAndLocalPaths[1]);
+            if (!SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLink(categoriesDat) || !SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLinkValid(categoriesDat))
+            {
+                File.Delete(categoriesDat.FullName);
+            }
+
             if (
                 File.Exists(categoriesdatGameAndLocalPaths[0])
                 &&

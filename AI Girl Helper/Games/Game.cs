@@ -13,7 +13,7 @@ namespace AI_Helper.Games
 
         public virtual string GetGameEXENameX32() 
         {
-            return GetGameEXEName();
+            return string.Empty;
         }
 
         public virtual string GetINISettingsEXEName()
@@ -23,12 +23,12 @@ namespace AI_Helper.Games
 
         public virtual string GetGameStudioEXEName() 
         {
-            return "None64";
+            return string.Empty;
         }
 
         public virtual string GetGameStudioEXENameX32() 
         {
-            return "None32";
+            return string.Empty;
         }
 
         public virtual string GetGamePath()
@@ -54,6 +54,11 @@ namespace AI_Helper.Games
         public virtual string GetDummyFile()
         {
             return Path.Combine(GetGamePath(), "TESV.exe");
+        }
+        
+        public virtual string[] GetAdditionalExecutables()
+        {
+            return null;
         }
     }
 }

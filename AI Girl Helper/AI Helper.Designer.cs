@@ -677,8 +677,7 @@
             this.MaximizeBox = false;
             this.Name = "AIHelper";
             this.Text = "AI Helper [Organized modpack]";
-            this.Load += new System.EventHandler(this.AIGirlHelper_Load);
-            this.LocationChanged += new System.EventHandler(this.AIGirlHelper_LocationChanged);
+            this.LocationChanged += new System.EventHandler(this.AIHelper_LocationChanged);
             this.AIGirlHelperTabControl.ResumeLayout(false);
             this.MainPage.ResumeLayout(false);
             this.panel1.ResumeLayout(false);

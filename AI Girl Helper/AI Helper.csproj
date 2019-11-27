@@ -169,7 +169,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Costura64\SevenZipSharp.dll" />
     <Content Include="helpericon.ico" />
-    <Content Include="icon256.ico" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="IWshRuntimeLibrary">

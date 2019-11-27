@@ -414,15 +414,13 @@ namespace AI_Helper
                 targetdir = Path.Combine(targetdir, "Sideloader");
             }
 
-            string categoryvalue = MOManage.GetMetaParameterValue(Path.Combine(inputmoddir, "meta.ini"), "category");
-            if (categoryvalue.Replace("\"", string.Empty).Length == 0)
+            string categoryvalue = MOManage.GetMetaParameterValue(Path.Combine(inputmoddir, "meta.ini"), "category").Replace("\"", string.Empty);
+            if (categoryvalue.Length == 0)
             {
             }
             else
             {
-
                 //Subcategory from meta
-                categoryvalue = categoryvalue.Replace("\"", string.Empty);//убрать кавычки
                 categoryvalue = categoryvalue.Split(',')[0];//взять только первое значение
                 int categiryindex = int.Parse(categoryvalue) - 1;//В List индекс идет от нуля
                 if (categiryindex > 0)
@@ -444,10 +442,6 @@ namespace AI_Helper
             }
 
             return targetdir;
-        }
-
-        private void AIGirlHelper_Load(object sender, EventArgs e)
-        {
         }
 
         private void SetTooltips()
@@ -947,7 +941,7 @@ namespace AI_Helper
             }
         }
 
-        private void AIGirlHelper_LocationChanged(object sender, EventArgs e)
+        private void AIHelper_LocationChanged(object sender, EventArgs e)
         {
             //move second form with main form
             //https://stackoverflow.com/questions/3429445/how-to-move-two-windows-forms-together

@@ -172,7 +172,7 @@ namespace AI_Helper
 
             Other.CreateShortcuts();
 
-            Other.MakeDummyFiles();
+            MOManage.MakeDummyFiles();
 
             button1.Text = T._("Game Ready");
             FoldersInit();
@@ -742,7 +742,7 @@ namespace AI_Helper
                 MOModsManage.BepinExLoadingFix();
 
                 //создание exe-болванки
-                Other.MakeDummyFiles();
+                MOManage.MakeDummyFiles();
 
                 MOManage.SetModOrganizerINISettingsForTheGame();
             }
@@ -990,9 +990,9 @@ namespace AI_Helper
         {
             string InstallMessage = T._("Installing");
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage));
-            UnpackArchives(Install2MODirPath, "rar");
+            ArchiveManage.UnpackArchivesToSubfoldersWithSameName(Install2MODirPath, ".rar");
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "."));
-            UnpackArchives(Install2MODirPath, "7z");
+            ArchiveManage.UnpackArchivesToSubfoldersWithSameName(Install2MODirPath, ".7z");
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + ".."));
             MOModsManage.InstallCsScriptsForScriptLoader();
 
@@ -1015,7 +1015,7 @@ namespace AI_Helper
             MOModsManage.InstallImagesFromSubfolders();
 
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "."));
-            FileFolderOperations.DeleteEmptySubfolders(Install2MODirPath, false);
+            FilesFoldersManage.DeleteEmptySubfolders(Install2MODirPath, false);
 
             if (!Directory.Exists(Install2MODirPath))
             {
@@ -1023,30 +1023,6 @@ namespace AI_Helper
             }
 
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = T._("Install from 2MO")));
-        }
-
-        private void UnpackArchives(string dirForSearch, string extension)
-        {
-            if (dirForSearch.Length > 0 && extension.Length > 0 && Directory.Exists(dirForSearch))
-            {
-                foreach (var file in Directory.GetFiles(dirForSearch, "*." + extension, SearchOption.AllDirectories))
-                {
-                    string targetDir = Path.Combine(Install2MODirPath, Path.GetFileNameWithoutExtension(file));
-                    if (!Directory.Exists(targetDir))
-                    {
-                        try
-                        {
-                            Compressor.Decompress(file, targetDir);
-                            //File.Delete(file);
-                            File.Move(file, file + ".ExtractedAnMustBeInstalled");
-                        }
-                        catch
-                        {
-                            //if decompression failed
-                        }
-                    }
-                }
-            }
         }
 
         private void CreateShortcutButton_Click(object sender, EventArgs e)
@@ -1427,7 +1403,7 @@ namespace AI_Helper
                         }
 
                         //удаление папки, где хранились резервные копии ванильных файлов
-                        FileFolderOperations.DeleteEmptySubfolders(SettingsManage.GetMOmodeDataFilesBakDirPath());
+                        FilesFoldersManage.DeleteEmptySubfolders(SettingsManage.GetMOmodeDataFilesBakDirPath());
                     }
 
                     //чистка файлов-списков
@@ -1436,7 +1412,7 @@ namespace AI_Helper
                     File.Delete(SettingsManage.GetModdedDataFilesListFilePath());
 
                     //очистка пустых папок в Data
-                    FileFolderOperations.DeleteEmptySubfolders(DataPath, false);
+                    FilesFoldersManage.DeleteEmptySubfolders(DataPath, false);
                     try
                     {
                         //восстановление 2х папок, что были по умолчанию сначала пустыми

@@ -538,7 +538,7 @@ namespace AI_Helper.Manage
                     File.Delete(moINIinfo.FullName);
                 }
 
-                FileFolderOperations.Symlink
+                FilesFoldersManage.Symlink
                   (
                    categoriesdatGameAndLocalPaths[0]
                    ,
@@ -574,7 +574,7 @@ namespace AI_Helper.Manage
                     File.Delete(categoriesDat.FullName);
                 }
 
-                FileFolderOperations.Symlink
+                FilesFoldersManage.Symlink
                   (
                    categoriesdatGameAndLocalPaths[0]
                    ,
@@ -777,6 +777,16 @@ namespace AI_Helper.Manage
                 }
             }
             return string.Empty;
+        }
+
+        public static void MakeDummyFiles()
+        {
+            //Create dummy file and add hidden attribute
+            if (!File.Exists(SettingsManage.GetDummyFilePath()))
+            {
+                File.WriteAllText(SettingsManage.GetDummyFilePath(), "dummy file need to execute mod organizer");
+                FilesFoldersManage.HideFileFolder(SettingsManage.GetDummyFilePath(), true);
+            }
         }
     }
 }

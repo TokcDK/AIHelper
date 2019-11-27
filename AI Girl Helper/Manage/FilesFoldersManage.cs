@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace AI_Helper.Utils
 {
-    class FileFolderOperations
+    class FilesFoldersManage
     {
         private static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
 
@@ -303,6 +303,52 @@ namespace AI_Helper.Utils
         public static bool ContainsAnyInvalidCharacters(string path)
         {
             return (path.Length > 0 && path.IndexOfAny(Path.GetInvalidPathChars()) >= 0);
+        }
+
+        /// <summary>
+        /// Проверки существования целевой папки и модификация имени на уникальное
+        /// </summary>
+        /// <param name="ParentFolder"></param>
+        /// <param name="TargetFolder"></param>
+        /// <returns></returns>
+        public static string GetResultTargetDirPathWithNameCheck(string ParentFolder, string TargetFolder)
+        {
+            string ResultTargetDirPath = Path.Combine(ParentFolder, TargetFolder);
+            int i = 0;
+            while (Directory.Exists(ResultTargetDirPath))
+            {
+                i++;
+                ResultTargetDirPath = Path.Combine(ParentFolder, TargetFolder + " (" + i + ")");
+            }
+            return ResultTargetDirPath;
+        }
+
+        public static string GetResultTargetFilePathWithNameCheck(string Folder, string Name, string Extension = ".*")
+        {
+            var ResultPath = Path.Combine(Folder, Name + (Extension.Substring(0, 1) != "." ? "." : string.Empty) + Extension);
+            int i = 0;
+            while (File.Exists(ResultPath))
+            {
+                i++;
+                ResultPath = Path.Combine(Folder, Name + " (" + i + ")" + Extension);
+            }
+            return ResultPath;
+        }
+
+        public static string IsAnyFileWithSameExtensionContainsNameOfTheFile(string zipmoddirmodspath, string zipname, string extension)
+        {
+            if (Directory.Exists(zipmoddirmodspath))
+            {
+                foreach (var path in Directory.GetFiles(zipmoddirmodspath, extension))
+                {
+                    string name = Path.GetFileNameWithoutExtension(path);
+                    if (StringEx.IsStringAContainsStringB(name, zipname))
+                    {
+                        return path;
+                    }
+                }
+            }
+            return string.Empty;
         }
     }
 }

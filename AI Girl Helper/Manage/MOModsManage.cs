@@ -1,13 +1,10 @@
 ﻿using AI_Helper.Utils;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace AI_Helper.Manage
 {
@@ -16,8 +13,8 @@ namespace AI_Helper.Manage
         public static void CleanBepInExLinksFromData()
         {
             //удаление файлов BepinEx
-            FileFolderOperations.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "doorstop_config.ini"));
-            FileFolderOperations.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "winhttp.dll"));
+            FilesFoldersManage.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "doorstop_config.ini"));
+            FilesFoldersManage.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "winhttp.dll"));
             string BepInExDir = Path.Combine(Properties.Settings.Default.DataPath, "BepInEx");
             if (Directory.Exists(BepInExDir))
             {
@@ -25,8 +22,8 @@ namespace AI_Helper.Manage
             }
 
             //удаление ссылок на папки плагинов BepinEx
-            FileFolderOperations.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "UserData", "MaterialEditor"), true);
-            FileFolderOperations.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "UserData", "Overlays"), true);
+            FilesFoldersManage.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "UserData", "MaterialEditor"), true);
+            FilesFoldersManage.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "UserData", "Overlays"), true);
         }
 
         public static void BepinExLoadingFix()
@@ -79,9 +76,9 @@ namespace AI_Helper.Manage
                 int ObjectLinkPathsLength = ObjectLinkPaths.Length / 3;
                 for (int i = 0; i < ObjectLinkPathsLength; i++)
                 {
-                    if ((ObjectLinkPaths[i, 0].Length>0 && File.Exists(ObjectLinkPaths[i, 1]) && !File.Exists(ObjectLinkPaths[i, 2])) || (ObjectLinkPaths[i, 0].Length == 0 && Directory.Exists(ObjectLinkPaths[i, 1]) && !Directory.Exists(ObjectLinkPaths[i, 2])))
+                    if ((ObjectLinkPaths[i, 0].Length > 0 && File.Exists(ObjectLinkPaths[i, 1]) && !File.Exists(ObjectLinkPaths[i, 2])) || (ObjectLinkPaths[i, 0].Length == 0 && Directory.Exists(ObjectLinkPaths[i, 1]) && !Directory.Exists(ObjectLinkPaths[i, 2])))
                     {
-                        FileFolderOperations.Symlink
+                        FilesFoldersManage.Symlink
                           (
                            ObjectLinkPaths[i, 1]
                            ,
@@ -93,7 +90,7 @@ namespace AI_Helper.Manage
                 }
                 if (Directory.Exists(Path.Combine(SettingsManage.GetDataPath(), "Bepinex")))
                 {
-                    FileFolderOperations.HideFileFolder(Path.Combine(SettingsManage.GetDataPath(), "Bepinex"));
+                    FilesFoldersManage.HideFileFolder(Path.Combine(SettingsManage.GetDataPath(), "Bepinex"));
                 }
             }
         }
@@ -241,7 +238,7 @@ namespace AI_Helper.Manage
                     //    IsCharaCard = true;
                     //}
 
-                    var targetImagePath = GetResultTargetFilePathWithNameCheck(GetUserDataSubFolder(" Chars", "f"), Path.GetFileNameWithoutExtension(img), ".png");
+                    var targetImagePath = FilesFoldersManage.GetResultTargetFilePathWithNameCheck(GetUserDataSubFolder(" Chars", "f"), Path.GetFileNameWithoutExtension(img), ".png");
 
                     File.Move(img, targetImagePath);
                 }
@@ -344,11 +341,11 @@ namespace AI_Helper.Manage
 
                                 if (File.Exists(fileTarget))
                                 {
-                                    fileTarget = GetResultTargetFilePathWithNameCheck(Path.GetDirectoryName(fileTarget), Path.GetFileNameWithoutExtension(fileTarget), Path.GetExtension(fileTarget));
+                                    fileTarget = FilesFoldersManage.GetResultTargetFilePathWithNameCheck(Path.GetDirectoryName(fileTarget), Path.GetFileNameWithoutExtension(fileTarget), Path.GetExtension(fileTarget));
                                 }
                                 File.Move(file, fileTarget);
                             }
-                            FileFolderOperations.DeleteEmptySubfolders(dir);
+                            FilesFoldersManage.DeleteEmptySubfolders(dir);
                         }
                         else
                         {
@@ -423,7 +420,7 @@ namespace AI_Helper.Manage
 
                 foreach (var target in Directory.GetFiles(dir, "*" + Extension))
                 {
-                    var CardframeTargetFolder = GetResultTargetFilePathWithNameCheck(TargetFolder, Path.GetFileNameWithoutExtension(target), Extension);
+                    var CardframeTargetFolder = FilesFoldersManage.GetResultTargetFilePathWithNameCheck(TargetFolder, Path.GetFileNameWithoutExtension(target), Extension);
 
                     File.Move(target, CardframeTargetFolder);
                 }
@@ -432,7 +429,7 @@ namespace AI_Helper.Manage
                 {
                     foreach (var target in Directory.GetDirectories(dir, "*"))
                     {
-                        var ResultTargetPath = Other.GetResultTargetDirPathWithNameCheck(Path.GetDirectoryName(TargetFolder), Path.GetFileName(target));
+                        var ResultTargetPath = FilesFoldersManage.GetResultTargetDirPathWithNameCheck(Path.GetDirectoryName(TargetFolder), Path.GetFileName(target));
 
                         Directory.Move(target, ResultTargetPath);
                     }
@@ -457,25 +454,13 @@ namespace AI_Helper.Manage
                     {
                         foreach (var file in Directory.GetFiles(typeDir))
                         {
-                            File.Move(file, GetResultTargetFilePathWithNameCheck(Path.Combine(TargetFolder, Path.GetFileName(Path.GetDirectoryName(file))), Path.GetFileNameWithoutExtension(file), ".png"));
+                            File.Move(file, FilesFoldersManage.GetResultTargetFilePathWithNameCheck(Path.Combine(TargetFolder, Path.GetFileName(Path.GetDirectoryName(file))), Path.GetFileNameWithoutExtension(file), ".png"));
                         }
                     }
                 }
 
-                FileFolderOperations.DeleteEmptySubfolders(dir);
+                FilesFoldersManage.DeleteEmptySubfolders(dir);
             }
-        }
-
-        public static string GetResultTargetFilePathWithNameCheck(string Folder, string Name, string Extension = ".*")
-        {
-            var ResultPath = Path.Combine(Folder, Name + (Extension.Substring(0, 1) != "." ? "." : string.Empty) + Extension);
-            int i = 0;
-            while (File.Exists(ResultPath))
-            {
-                i++;
-                ResultPath = Path.Combine(Folder, Name + " (" + i + ")" + Extension);
-            }
-            return ResultPath;
         }
 
         public static string GetUserDataSubFolder(string FirstCandidateFolder, string Type)
@@ -1122,7 +1107,7 @@ namespace AI_Helper.Manage
                     }
 
                     //Задание доп. категорий по наличию папок
-                    category = FileFolderOperations.GetCategoriesForTheFolder(moddir, category);
+                    category = FilesFoldersManage.GetCategoriesForTheFolder(moddir, category);
 
                     //запись meta.ini
                     MOManage.WriteMetaINI(
@@ -1179,7 +1164,7 @@ namespace AI_Helper.Manage
                 else if (author.Length > 0)
                 {
                     //проверка на любые невалидные для имени папки символы
-                    if (FileFolderOperations.ContainsAnyInvalidCharacters(author))
+                    if (FilesFoldersManage.ContainsAnyInvalidCharacters(author))
                     {
                     }
                     else
@@ -1207,7 +1192,7 @@ namespace AI_Helper.Manage
                     else
                     {
                         //Проверки существования целевой папки и модификация имени на более уникальное
-                        dllTargetModDirPath = Other.GetResultTargetDirPathWithNameCheck(Properties.Settings.Default.ModsPath, name);
+                        dllTargetModDirPath = FilesFoldersManage.GetResultTargetDirPathWithNameCheck(Properties.Settings.Default.ModsPath, name);
                     }
                 }
                 else
@@ -1333,7 +1318,7 @@ namespace AI_Helper.Manage
                     else if (author.Length > 0)
                     {
                         //проверка на любые невалидные для имени папки символы
-                        if (FileFolderOperations.ContainsAnyInvalidCharacters(author))
+                        if (FilesFoldersManage.ContainsAnyInvalidCharacters(author))
                         {
                         }
                         else
@@ -1350,7 +1335,7 @@ namespace AI_Helper.Manage
                     string anyfname = string.Empty;
                     if (Directory.Exists(zipmoddirpath))
                     {
-                        if (File.Exists(targetZipFile) || (anyfname = Other.IsAnyFileWithSameExtensionContainsNameOfTheFile(zipmoddirmodspath, zipArchiveName, "*.zip")).Length > 0)
+                        if (File.Exists(targetZipFile) || (anyfname = FilesFoldersManage.IsAnyFileWithSameExtensionContainsNameOfTheFile(zipmoddirmodspath, zipArchiveName, "*.zip")).Length > 0)
                         {
                             if (File.GetLastWriteTime(zipfile) > File.GetLastWriteTime(targetZipFile))
                             {
@@ -1361,7 +1346,7 @@ namespace AI_Helper.Manage
                     }
                     else
                     {
-                        zipmoddirpath = Other.GetResultTargetDirPathWithNameCheck(Properties.Settings.Default.ModsPath, name);
+                        zipmoddirpath = FilesFoldersManage.GetResultTargetDirPathWithNameCheck(Properties.Settings.Default.ModsPath, name);
                         zipmoddirmodspath = Path.Combine(zipmoddirpath, "mods");
                         targetZipFile = Path.Combine(zipmoddirmodspath, zipArchiveName + ".zipmod");
                     }

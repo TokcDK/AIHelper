@@ -153,7 +153,7 @@ namespace AI_Helper.Manage
                 (game =>
                     Directory.Exists(game.GetGamePath())
                     &&
-                    !FileFolderOperations.CheckDirectoryNotExistsOrEmpty_Fast(Path.Combine(game.GetGamePath(), "MO", "Profiles"))
+                    !FilesFoldersManage.CheckDirectoryNotExistsOrEmpty_Fast(Path.Combine(game.GetGamePath(), "MO", "Profiles"))
                 ).ToList();
             return ListOfGames;
         }

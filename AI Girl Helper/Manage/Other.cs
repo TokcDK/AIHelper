@@ -24,40 +24,6 @@ namespace AI_Helper.Utils
             }
         }
 
-        /// <summary>
-        /// Проверки существования целевой папки и модификация имени на уникальное
-        /// </summary>
-        /// <param name="ParentFolder"></param>
-        /// <param name="TargetFolder"></param>
-        /// <returns></returns>
-        public static string GetResultTargetDirPathWithNameCheck(string ParentFolder, string TargetFolder)
-        {
-            string ResultTargetDirPath = Path.Combine(ParentFolder, TargetFolder);
-            int i = 0;
-            while (Directory.Exists(ResultTargetDirPath))
-            {
-                i++;
-                ResultTargetDirPath = Path.Combine(ParentFolder, TargetFolder + " (" + i + ")");
-            }
-            return ResultTargetDirPath;
-        }
-
-        public static string IsAnyFileWithSameExtensionContainsNameOfTheFile(string zipmoddirmodspath, string zipname, string extension)
-        {
-            if (Directory.Exists(zipmoddirmodspath))
-            {
-                foreach (var path in Directory.GetFiles(zipmoddirmodspath, extension))
-                {
-                    string name = Path.GetFileNameWithoutExtension(path);
-                    if (StringEx.IsStringAContainsStringB(name, zipname))
-                    {
-                        return path;
-                    }
-                }
-            }
-            return string.Empty;
-        }
-
         public static void AutoShortcutAndRegystry()
         {
             CreateShortcuts();
@@ -103,16 +69,6 @@ namespace AI_Helper.Utils
                 {
                     MessageBox.Show(T._("Shortcut") + " " + T._("created") + "!");
                 }
-            }
-        }
-
-        public static void MakeDummyFiles()
-        {
-            //Create dummy file and add hidden attribute
-            if (!File.Exists(SettingsManage.GetDummyFilePath()))
-            {
-                File.WriteAllText(SettingsManage.GetDummyFilePath(), "dummy file need to execute mod organizer");
-                FileFolderOperations.HideFileFolder(SettingsManage.GetDummyFilePath(), true);
             }
         }
     }

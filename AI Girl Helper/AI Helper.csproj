@@ -102,6 +102,7 @@
     <Compile Include="Games\HoneySelect.cs" />
     <Compile Include="Games\AISyoujyo.cs" />
     <Compile Include="Games\Game.cs" />
+    <Compile Include="Manage\ArchiveManage.cs" />
     <Compile Include="Manage\INIManage.cs" />
     <Compile Include="Manage\MOModsManage.cs" />
     <Compile Include="Manage\RegistryManage.cs" />
@@ -116,7 +117,7 @@
     <Compile Include="UserData\IUserDataFolders.cs" />
     <Compile Include="UserData\Overlays.cs" />
     <Compile Include="UserData\StudioScene.cs" />
-    <Compile Include="Utils\FileFolderOperations.cs" />
+    <Compile Include="Manage\FilesFoldersManage.cs" />
     <Compile Include="Utils\StringEx.cs" />
     <Compile Include="Utils\T.cs" />
     <Compile Include="Utils\Compressor.cs" />

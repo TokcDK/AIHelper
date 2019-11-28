@@ -152,6 +152,11 @@ namespace AI_Helper.Utils
             return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName(), "VanillaDataFilesList.txt");
         }
 
+        public static string GetVanillaDataEmptyFoldersListFilePath()
+        {
+            return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName(), "VanillaDataEmptyFoldersList.txt");
+        }
+
         public static string GetMOToStandartConvertationOperationsListFilePath()
         {
             return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName(), "MOToStandartConvertationOperationsList.txt");
@@ -170,7 +175,7 @@ namespace AI_Helper.Utils
                 (game =>
                     Directory.Exists(game.GetGamePath())
                     &&
-                    !ManageFilesFolders.CheckDirectoryNotExistsOrEmpty_Fast(Path.Combine(game.GetGamePath(), "MO", "Profiles"))
+                    !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(game.GetGamePath(), "MO", "Profiles"))
                 ).ToList();
             return ListOfGames;
         }

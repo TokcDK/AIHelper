@@ -751,7 +751,7 @@ namespace AI_Helper
                 //    }
                 //}
 
-                if (!Utils.ManageFilesFolders.CheckDirectoryNotExistsOrEmpty_Fast(Utils.ManageSettings.GetModsPath(), "*", new string[1] { "_separator" }))
+                if (!Utils.ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Utils.ManageSettings.GetModsPath(), "*", new string[1] { "_separator" }))
                 {
                     ModsInfoLabel.Text = T._("Found mod folders in Mods");
                     //button1.Enabled = false;
@@ -822,6 +822,8 @@ namespace AI_Helper
             {
                 ManageOther.AutoShortcutAndRegystry();
             }
+
+            SelectedGameLabel1.Text = ManageSettings.GetCurrentGameFolderName();
         }
 
         private void GetEnableDisableLaunchButtons()
@@ -1115,6 +1117,8 @@ namespace AI_Helper
                     }
                     StringBuilder Operations = new StringBuilder();
 
+                    StringBuilder EmptyFoldersPaths = ManageFilesFolders.GetEmptySubfoldersPaths(ManageSettings.GetDataPath(), new StringBuilder());
+
                     //получение всех файлов из Data
                     string[] DataFolderFilesPaths = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
 
@@ -1255,6 +1259,12 @@ namespace AI_Helper
                     string[] DataWithModsFileslist = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
                     File.WriteAllLines(ManageSettings.GetModdedDataFilesListFilePath(), DataWithModsFileslist);
                     File.WriteAllLines(ManageSettings.GetVanillaDataFilesListFilePath(), DataWithModsFileslist);
+
+                    //записать пути до пустых папок, чтобы при восстановлении восстановить и их
+                    if (EmptyFoldersPaths.ToString().Length > 0)
+                    {
+                        File.WriteAllText(ManageSettings.GetVanillaDataEmptyFoldersListFilePath(), EmptyFoldersPaths.ToString());
+                    }
 
                     //Directory.Delete(ModsPath, true);
                     //Directory.Move(MODirPath, Path.Combine(AppResDir, Path.GetFileName(MODirPath)));
@@ -1455,22 +1465,32 @@ namespace AI_Helper
                         ManageFilesFolders.DeleteEmptySubfolders(ManageSettings.GetMOmodeDataFilesBakDirPath());
                     }
 
+                    //очистка пустых папок в Data
+                    if (File.Exists(ManageSettings.GetVanillaDataEmptyFoldersListFilePath()))
+                    {
+                        //удалить все, за исключением добавленных ранее путей до пустых папок
+                        ManageFilesFolders.DeleteEmptySubfolders(DataPath, false, File.ReadAllLines(ManageSettings.GetVanillaDataEmptyFoldersListFilePath()));
+                    }
+                    else
+                    {
+                        ManageFilesFolders.DeleteEmptySubfolders(DataPath, false);
+                    }
+
                     //чистка файлов-списков
                     File.Delete(ManageSettings.GetMOToStandartConvertationOperationsListFilePath());
                     File.Delete(ManageSettings.GetVanillaDataFilesListFilePath());
+                    File.Delete(ManageSettings.GetVanillaDataEmptyFoldersListFilePath());
                     File.Delete(ManageSettings.GetModdedDataFilesListFilePath());
 
-                    //очистка пустых папок в Data
-                    ManageFilesFolders.DeleteEmptySubfolders(DataPath, false);
-                    try
-                    {
-                        //восстановление 2х папок, что были по умолчанию сначала пустыми
-                        Directory.CreateDirectory(Path.Combine(DataPath, "UserData", "audio"));
-                        Directory.CreateDirectory(Path.Combine(DataPath, "UserData", "coordinate", "male"));
-                    }
-                    catch
-                    {
-                    }
+                    //try
+                    //{
+                    //    //восстановление 2х папок, что были по умолчанию сначала пустыми
+                    //    Directory.CreateDirectory(Path.Combine(DataPath, "UserData", "audio"));
+                    //    Directory.CreateDirectory(Path.Combine(DataPath, "UserData", "coordinate", "male"));
+                    //}
+                    //catch
+                    //{
+                    //}
 
                     //File.Move(Path.Combine(MODirPath, "ModOrganizer.exe.GameInCommonModeNow"), Path.Combine(MODirPath, "ModOrganizer.exe"));
 

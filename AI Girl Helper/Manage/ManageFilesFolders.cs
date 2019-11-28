@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace AI_Helper.Utils
 {
@@ -37,7 +38,7 @@ namespace AI_Helper.Utils
 
         //https://stackoverflow.com/a/757925
         //быстро проверить, пуста ли папка
-        public static bool CheckDirectoryNotExistsOrEmpty_Fast(string path, string Mask = "*", string[] exclusions = null)
+        public static bool CheckDirectoryNullOrEmpty_Fast(string path, string Mask = "*", string[] exclusions = null)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -131,7 +132,7 @@ namespace AI_Helper.Utils
                      || category.Length == 0
                     )
                     && Directory.Exists(dir)
-                    && !CheckDirectoryNotExistsOrEmpty_Fast(dir)
+                    && !CheckDirectoryNullOrEmpty_Fast(dir)
                     && IsAnyFileExistsInTheDir(dir, extension)
                    )
                 {
@@ -177,9 +178,31 @@ namespace AI_Helper.Utils
                 }
             }
 
-            if (DeleteThisDir && Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0)
+            if (DeleteThisDir && CheckDirectoryNullOrEmpty_Fast(dataPath)/*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)
             {
                 Directory.Delete(dataPath);
+            }
+        }
+
+        public static StringBuilder GetEmptySubfoldersPaths(string dataPath, StringBuilder retArray)
+        {
+            string[] subfolders = Directory.GetDirectories(dataPath, "*");
+            int subfoldersLength = subfolders.Length;
+            if (subfoldersLength > 0)
+            {
+                for (int d = 0; d < subfoldersLength; d++)
+                {
+                    GetEmptySubfoldersPaths(subfolders[d], retArray);
+                }
+            }
+
+            if (CheckDirectoryNullOrEmpty_Fast(dataPath)/*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)
+            {
+                return retArray.AppendLine(dataPath);
+            }
+            else
+            {
+                return retArray;
             }
         }
 

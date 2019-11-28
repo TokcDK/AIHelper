@@ -42,6 +42,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.SelectedGameLabel1 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.LanchModeInfoLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -239,6 +240,7 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.Gray;
+            this.panel2.Controls.Add(this.SelectedGameLabel1);
             this.panel2.Controls.Add(this.label4);
             this.panel2.Controls.Add(this.label5);
             this.panel2.Controls.Add(this.LanchModeInfoLinkLabel);
@@ -254,6 +256,17 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(340, 155);
             this.panel2.TabIndex = 0;
+            // 
+            // SelectedGameLabel1
+            // 
+            this.SelectedGameLabel1.AutoSize = true;
+            this.SelectedGameLabel1.Font = new System.Drawing.Font("Lucida Handwriting", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SelectedGameLabel1.ForeColor = System.Drawing.Color.LavenderBlush;
+            this.SelectedGameLabel1.Location = new System.Drawing.Point(101, 45);
+            this.SelectedGameLabel1.Name = "SelectedGameLabel1";
+            this.SelectedGameLabel1.Size = new System.Drawing.Size(22, 15);
+            this.SelectedGameLabel1.TabIndex = 24;
+            this.SelectedGameLabel1.Text = "---";
             // 
             // label4
             // 
@@ -310,7 +323,7 @@
             this.LaunchTabLaunchLabel.AutoSize = true;
             this.LaunchTabLaunchLabel.Font = new System.Drawing.Font("Lucida Handwriting", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LaunchTabLaunchLabel.ForeColor = System.Drawing.Color.White;
-            this.LaunchTabLaunchLabel.Location = new System.Drawing.Point(203, 45);
+            this.LaunchTabLaunchLabel.Location = new System.Drawing.Point(224, 32);
             this.LaunchTabLaunchLabel.Name = "LaunchTabLaunchLabel";
             this.LaunchTabLaunchLabel.Size = new System.Drawing.Size(55, 15);
             this.LaunchTabLaunchLabel.TabIndex = 19;
@@ -763,6 +776,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.LinkLabel Open2MOLinkLabel;
+        private System.Windows.Forms.Label SelectedGameLabel1;
     }
 }
 

@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace AI_Helper.Utils
 {
-    class FilesFoldersManage
+    class ManageFilesFolders
     {
         private static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
 
@@ -37,7 +37,7 @@ namespace AI_Helper.Utils
 
         //https://stackoverflow.com/a/757925
         //быстро проверить, пуста ли папка
-        public static bool CheckDirectoryNotExistsOrEmpty_Fast(string path)
+        public static bool CheckDirectoryNotExistsOrEmpty_Fast(string path, string Mask = "*", string[] exclusions = null)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -49,11 +49,11 @@ namespace AI_Helper.Utils
             {
                 if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
                 {
-                    path += "*";
+                    path += Mask;
                 }
                 else
                 {
-                    path += Path.DirectorySeparatorChar + "*";
+                    path += Path.DirectorySeparatorChar + Mask;
                 }
 
                 var findHandle = FindFirstFile(path, out WIN32_FIND_DATA findData);
@@ -65,7 +65,7 @@ namespace AI_Helper.Utils
                         bool empty = true;
                         do
                         {
-                            if (findData.cFileName != "." && findData.cFileName != "..")
+                            if (findData.cFileName != "." && findData.cFileName != ".." && !ManageStrings.IsStringContainsAnyExclusion(findData.cFileName, exclusions))
                             {
                                 empty = false;
                             }
@@ -116,7 +116,7 @@ namespace AI_Helper.Utils
                 { Path.Combine(moddir, "UserData", "housing"), "90", "png"} //Cardframe
             };
 
-            int CategoriesLength = Categories.Length/3;
+            int CategoriesLength = Categories.Length / 3;
             for (int i = 0; i < CategoriesLength; i++)
             {
                 string dir = Categories[i, 0];
@@ -198,7 +198,7 @@ namespace AI_Helper.Utils
                     {
                         continue;
                     }
-                    if (StringEx.IsStringAContainsStringB(Str, exclusions[i]))
+                    if (ManageStrings.IsStringAContainsStringB(Str, exclusions[i]))
                     {
                         return true;
                     }
@@ -342,7 +342,7 @@ namespace AI_Helper.Utils
                 foreach (var path in Directory.GetFiles(zipmoddirmodspath, extension))
                 {
                     string name = Path.GetFileNameWithoutExtension(path);
-                    if (StringEx.IsStringAContainsStringB(name, zipname))
+                    if (ManageStrings.IsStringAContainsStringB(name, zipname))
                     {
                         return path;
                     }

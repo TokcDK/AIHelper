@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AI_Helper.Manage
+namespace AI_Helper.Utils
 {
-    class ArchiveManage
+    class ManageArchive
     {
         public static void UnpackArchivesToSubfoldersWithSameName(string dirForSearch, string extension)
         {
@@ -26,7 +26,7 @@ namespace AI_Helper.Manage
             {
                 foreach (var file in Directory.GetFiles(dirForSearch, "*" + extension, SearchOption.AllDirectories))
                 {
-                    string targetDir = FilesFoldersManage.GetResultTargetFilePathWithNameCheck(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file), extension);
+                    string targetDir = ManageFilesFolders.GetResultTargetFilePathWithNameCheck(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file), extension);
                     if (!Directory.Exists(targetDir))
                     {
                         try

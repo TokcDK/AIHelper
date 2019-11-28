@@ -102,12 +102,12 @@
     <Compile Include="Games\HoneySelect.cs" />
     <Compile Include="Games\AISyoujyo.cs" />
     <Compile Include="Games\Game.cs" />
-    <Compile Include="Manage\ArchiveManage.cs" />
-    <Compile Include="Manage\INIManage.cs" />
-    <Compile Include="Manage\MOModsManage.cs" />
-    <Compile Include="Manage\RegistryManage.cs" />
-    <Compile Include="Manage\SettingsManage.cs" />
-    <Compile Include="Manage\MOManage.cs" />
+    <Compile Include="Manage\ManageArchive.cs" />
+    <Compile Include="Manage\ManageINI.cs" />
+    <Compile Include="Manage\ManageMOMods.cs" />
+    <Compile Include="Manage\ManageRegistry.cs" />
+    <Compile Include="Manage\ManageSettings.cs" />
+    <Compile Include="Manage\ManageMO.cs" />
     <Compile Include="UserData\CardframeBack.cs" />
     <Compile Include="UserData\CardframeFront.cs" />
     <Compile Include="UserData\CharaFemale.cs" />
@@ -117,8 +117,8 @@
     <Compile Include="UserData\IUserDataFolders.cs" />
     <Compile Include="UserData\Overlays.cs" />
     <Compile Include="UserData\StudioScene.cs" />
-    <Compile Include="Manage\FilesFoldersManage.cs" />
-    <Compile Include="Utils\StringEx.cs" />
+    <Compile Include="Manage\ManageFilesFolders.cs" />
+    <Compile Include="Manage\ManageStrings.cs" />
     <Compile Include="Utils\T.cs" />
     <Compile Include="Utils\Compressor.cs" />
     <Compile Include="AI Helper.cs">
@@ -134,8 +134,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\IniFiles.cs" />
     <Compile Include="Utils\Shortcut.cs" />
-    <Compile Include="Manage\XMLManage.cs" />
-    <Compile Include="Manage\Other.cs" />
+    <Compile Include="Manage\ManageXML.cs" />
+    <Compile Include="Manage\ManageOther.cs" />
     <EmbeddedResource Include="AI Helper.resx">
       <DependentUpon>AI Helper.cs</DependentUpon>
     </EmbeddedResource>

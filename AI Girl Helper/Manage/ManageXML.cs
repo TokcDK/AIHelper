@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace AI_Helper.Manage
+namespace AI_Helper.Utils
 {
-    class XMLManage
+    class ManageXML
     {
         public static void ChangeXmlValue(string xmlpath, string nodename, string value)
         {

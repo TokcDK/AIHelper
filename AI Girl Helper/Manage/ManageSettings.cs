@@ -1,12 +1,12 @@
 ﻿using AI_Helper.Games;
-using AI_Helper.Utils;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
-namespace AI_Helper.Manage
+namespace AI_Helper.Utils
 {
-    class SettingsManage
+    class ManageSettings
     {
         public static void SettingsINIT()
         {
@@ -115,6 +115,23 @@ namespace AI_Helper.Manage
             return Path.Combine(GetCurrentGamePath(), "MOUserData");
         }
 
+        public static string GetAIHelperINIPath()
+        {
+            return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, Application.ProductName + ".ini");
+        }
+
+        public static int GetCurrentGameIndexByFolderName(List<Game> listOfGames, string FolderName)
+        {
+            for (int i = 0; i < listOfGames.Count; i++)
+            {
+                if (listOfGames[i].GetGameFolderName() == FolderName)
+                {
+                    return i;
+                }
+            }
+            return 0;
+        }
+
         public static string GetModOrganizerINIpath()
         {
             return Path.Combine(GetMOdirPath(), "ModOrganizer.ini");
@@ -122,22 +139,22 @@ namespace AI_Helper.Manage
 
         public static string GetMOmodeDataFilesBakDirPath()
         {
-            return Path.Combine(GetAppResDir(), "MOmodeDataFilesBak");
+            return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName() + "_" + "MOmodeDataFilesBak");
         }
 
         public static string GetModdedDataFilesListFilePath()
         {
-            return Path.Combine(GetAppResDir(), "ModdedDataFilesList.txt");
+            return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName() + "_" + "ModdedDataFilesList.txt");
         }
 
         public static string GetVanillaDataFilesListFilePath()
         {
-            return Path.Combine(GetAppResDir(), "VanillaDataFilesList.txt");
+            return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName() + "_" + "VanillaDataFilesList.txt");
         }
 
         public static string GetMOToStandartConvertationOperationsListFilePath()
         {
-            return Path.Combine(GetAppResDir(), "MOToStandartConvertationOperationsList.txt");
+            return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName() + "_" + "MOToStandartConvertationOperationsList.txt");
         }
 
         public static List<Game> GetListOfExistsGames()
@@ -153,7 +170,7 @@ namespace AI_Helper.Manage
                 (game =>
                     Directory.Exists(game.GetGamePath())
                     &&
-                    !FilesFoldersManage.CheckDirectoryNotExistsOrEmpty_Fast(Path.Combine(game.GetGamePath(), "MO", "Profiles"))
+                    !ManageFilesFolders.CheckDirectoryNotExistsOrEmpty_Fast(Path.Combine(game.GetGamePath(), "MO", "Profiles"))
                 ).ToList();
             return ListOfGames;
         }

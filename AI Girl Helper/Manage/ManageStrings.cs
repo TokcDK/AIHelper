@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AI_Helper.Utils
 {
-    class StringEx
+    class ManageStrings
     {
         /// <summary>
         /// Check if string A contains string B (if length of A > length of A with replaced B by "")<br></br><br></br>
@@ -25,6 +25,23 @@ namespace AI_Helper.Utils
             }
             return false;
 
+        }
+
+        public static bool IsStringContainsAnyExclusion(string InputString, string[] exclusions)
+        {
+            if (InputString.Length > 0 && exclusions != null)
+            {
+                int exclusionsLength = exclusions.Length;
+                for (int i = 0; i < exclusionsLength; i++)
+                {
+                    if (IsStringAContainsStringB(InputString, exclusions[i]))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }

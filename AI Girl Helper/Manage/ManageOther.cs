@@ -1,4 +1,4 @@
-﻿using AI_Helper.Manage;
+﻿using AI_Helper.Utils;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace AI_Helper.Utils
 {
-    class Other
+    class ManageOther
     {
         public static void CheckBoxChangeColor(CheckBox checkBox)
         {
@@ -27,7 +27,7 @@ namespace AI_Helper.Utils
         public static void AutoShortcutAndRegystry()
         {
             CreateShortcuts();
-            RegistryManage.FixRegistry();
+            ManageRegistry.FixRegistry();
         }
 
         //https://bytescout.com/blog/create-shortcuts-in-c-and-vbnet.html
@@ -36,7 +36,7 @@ namespace AI_Helper.Utils
             if (Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked || force)
             {
                 //AI-Girl Helper
-                string shortcutname = SettingsManage.GetCurrentGameFolderName() + " " + T._("Helper");
+                string shortcutname = ManageSettings.GetCurrentGameFolderName() + " " + T._("Helper");
                 string targetpath = Application.ExecutablePath;
                 string arguments = string.Empty;
                 string workingdir = Path.GetDirectoryName(targetpath);

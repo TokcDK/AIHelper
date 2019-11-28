@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AI_Helper.Manage
+namespace AI_Helper.Utils
 {
-    class INIManage
+    class ManageINI
     {
-        public static string GetINIValueIfExist(string INIPath, string Key, string Section)
+        public static string GetINIValueIfExist(string INIPath, string Key, string Section, string defaultValue = "")
         {
             if (File.Exists(INIPath))
             {
@@ -19,7 +19,7 @@ namespace AI_Helper.Manage
                     return INI.ReadINI(Section, Key);
                 }
             }
-            return string.Empty;
+            return defaultValue;
         }
 
         //https://social.msdn.microsoft.com/Forums/vstudio/en-US/8f713e50-0789-4bf6-865f-c87cdebd0b4f/insert-line-to-text-file-using-streamwriter-using-csharp?forum=csharpgeneral

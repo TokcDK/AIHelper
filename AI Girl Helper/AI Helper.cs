@@ -1,5 +1,4 @@
 ﻿using AI_Helper.Games;
-using AI_Helper.Manage;
 using AI_Helper.Utils;
 using System;
 using System.Collections.Generic;
@@ -63,26 +62,26 @@ namespace AI_Helper
             ApplicationStartupPath = Application.StartupPath;
             Properties.Settings.Default.CurrentGamePath = CurrentGame.GetGamePath();
             //SettingsManage.SettingsINIT();
-            AppResDir = SettingsManage.GetAppResDir();
-            ModsPath = SettingsManage.GetModsPath();
-            DownloadsPath = SettingsManage.GetDownloadsPath();
-            DataPath = SettingsManage.GetDataPath();
-            MODirPath = SettingsManage.GetMOdirPath();
-            MOexePath = SettingsManage.GetMOexePath();
-            Properties.Settings.Default.ModOrganizerINIpath = SettingsManage.GetModOrganizerINIpath();
-            Install2MODirPath = SettingsManage.GetInstall2MODirPath();
-            OverwriteFolder = SettingsManage.GetOverwriteFolder();
-            OverwriteFolderLink = SettingsManage.GetOverwriteFolderLink();
-            SetupXmlPath = MOManage.GetSetupXmlPathForCurrentProfile();
+            AppResDir = ManageSettings.GetAppResDir();
+            ModsPath = ManageSettings.GetModsPath();
+            DownloadsPath = ManageSettings.GetDownloadsPath();
+            DataPath = ManageSettings.GetDataPath();
+            MODirPath = ManageSettings.GetMOdirPath();
+            MOexePath = ManageSettings.GetMOexePath();
+            Properties.Settings.Default.ModOrganizerINIpath = ManageSettings.GetModOrganizerINIpath();
+            Install2MODirPath = ManageSettings.GetInstall2MODirPath();
+            OverwriteFolder = ManageSettings.GetOverwriteFolder();
+            OverwriteFolderLink = ManageSettings.GetOverwriteFolderLink();
+            SetupXmlPath = ManageMO.GetSetupXmlPathForCurrentProfile();
         }
 
         private void SetListOfGames()
         {
-            ListOfGames = SettingsManage.GetListOfExistsGames();
+            ListOfGames = ManageSettings.GetListOfExistsGames();
 
             if (ListOfGames == null || ListOfGames.Count == 0)
             {
-                MessageBox.Show(T._("Games not found")+". "+ T._("Exit")+"..");
+                MessageBox.Show(T._("Games not found") + ". " + T._("Exit") + "..");
                 Application.Exit();
             }
 
@@ -91,7 +90,12 @@ namespace AI_Helper
                 CurrentGameComboBox.Items.Add(game.GetGameFolderName());
             }
 
-            SetSelectedGameIndexAndBasicVariables(0);
+            SetSelectedGameIndexAndBasicVariables(
+                ManageSettings.GetCurrentGameIndexByFolderName(
+                    ListOfGames
+                    ,
+                    new IniFile(ManageSettings.GetAIHelperINIPath()).ReadINI("Settings", "selected_game")
+                    ));
         }
 
         private void SetSelectedGameIndexAndBasicVariables(int index = 0)
@@ -107,6 +111,10 @@ namespace AI_Helper
             Properties.Settings.Default.CurrentGamePath = CurrentGame.GetGamePath();
             Properties.Settings.Default.DataPath = Path.Combine(CurrentGame.GetGamePath(), "Data");
             Properties.Settings.Default.ModsPath = Path.Combine(CurrentGame.GetGamePath(), "Mods");
+
+            //set checkbox
+            Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked = bool.Parse(ManageINI.GetINIValueIfExist(ManageSettings.GetAIHelperINIPath(), "autoCreateShortcutAndFixRegystry", "Settings", "False"));
+            AutoShortcutRegistryCheckBox.Checked = Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked;
         }
 
         private void SetLocalizationStrings()
@@ -170,9 +178,9 @@ namespace AI_Helper
 
             //BepinExLoadingFix();//добавлено в folderinit
 
-            Other.CreateShortcuts();
+            ManageOther.CreateShortcuts();
 
-            MOManage.MakeDummyFiles();
+            ManageMO.MakeDummyFiles();
 
             button1.Text = T._("Game Ready");
             FoldersInit();
@@ -311,7 +319,7 @@ namespace AI_Helper
                 string AIGirlTrial = Path.Combine(AppResDir, "AIGirlTrial.7z");
                 string AIGirl = Path.Combine(AppResDir, "AIGirl.7z");
                 if (!File.Exists(AIGirlTrial)
-                    && (File.Exists(Path.Combine(DataPath, SettingsManage.GetCurrentGameEXEName() + ".exe"))))
+                    && (File.Exists(Path.Combine(DataPath, ManageSettings.GetCurrentGameEXEName() + ".exe"))))
                 {
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
@@ -414,7 +422,7 @@ namespace AI_Helper
                 targetdir = Path.Combine(targetdir, "Sideloader");
             }
 
-            string categoryvalue = MOManage.GetMetaParameterValue(Path.Combine(inputmoddir, "meta.ini"), "category").Replace("\"", string.Empty);
+            string categoryvalue = ManageMO.GetMetaParameterValue(Path.Combine(inputmoddir, "meta.ini"), "category").Replace("\"", string.Empty);
             if (categoryvalue.Length == 0)
             {
             }
@@ -544,10 +552,10 @@ namespace AI_Helper
                 }
             }
 
-            ResolutionComboBox.Text = XMLManage.ReadXmlValue(SetupXmlPath, "Setting/Size", ResolutionComboBox.Text);
-            FullScreenCheckBox.Checked = bool.Parse(XMLManage.ReadXmlValue(SetupXmlPath, "Setting/FullScreen", FullScreenCheckBox.Checked.ToString().ToLower()));
+            ResolutionComboBox.Text = ManageXML.ReadXmlValue(SetupXmlPath, "Setting/Size", ResolutionComboBox.Text);
+            FullScreenCheckBox.Checked = bool.Parse(ManageXML.ReadXmlValue(SetupXmlPath, "Setting/FullScreen", FullScreenCheckBox.Checked.ToString().ToLower()));
 
-            QualityComboBox.SelectedIndex = int.Parse(XMLManage.ReadXmlValue(SetupXmlPath, "Setting/Quality", "2"));
+            QualityComboBox.SelectedIndex = int.Parse(ManageXML.ReadXmlValue(SetupXmlPath, "Setting/Quality", "2"));
 
         }
 
@@ -568,9 +576,9 @@ namespace AI_Helper
                 }
             }
 
-            XMLManage.ChangeXmlValue(SetupXmlPath, "Setting/Size", Resolution);
-            XMLManage.ChangeXmlValue(SetupXmlPath, "Setting/Width", Resolution.Replace("(16 : 9)", string.Empty).Trim().Split('x')[0].Trim());
-            XMLManage.ChangeXmlValue(SetupXmlPath, "Setting/Height", Resolution.ToString().Replace("(16 : 9)", string.Empty).Trim().Split('x')[1].Trim());
+            ManageXML.ChangeXmlValue(SetupXmlPath, "Setting/Size", Resolution);
+            ManageXML.ChangeXmlValue(SetupXmlPath, "Setting/Width", Resolution.Replace("(16 : 9)", string.Empty).Trim().Split('x')[0].Trim());
+            ManageXML.ChangeXmlValue(SetupXmlPath, "Setting/Height", Resolution.ToString().Replace("(16 : 9)", string.Empty).Trim().Split('x')[1].Trim());
         }
 
         private void SetGraphicsQuality(string quality)
@@ -587,12 +595,12 @@ namespace AI_Helper
                 CreateSymlink.Folder(OverwriteFolder, OverwriteFolderLink);
             }
 
-            XMLManage.ChangeXmlValue(SetupXmlPath, "Setting/Quality", quality);
+            ManageXML.ChangeXmlValue(SetupXmlPath, "Setting/Quality", quality);
         }
 
         private void FoldersInit()
         {
-            if (File.Exists(SettingsManage.GetMOexePath() + ".GameInCommonModeNow") || File.Exists(SettingsManage.GetMOToStandartConvertationOperationsListFilePath()))
+            if (File.Exists(ManageSettings.GetMOToStandartConvertationOperationsListFilePath()))
             {
                 MOmode = false;
                 button1.Text = T._("Common mode");
@@ -613,9 +621,9 @@ namespace AI_Helper
                 ModsInfoLabel.Text = T._("Mods dir created");
             }
 
-            string AIGirl = SettingsManage.GetCurrentGameEXEName();
-            string AIGirlTrial = SettingsManage.GetCurrentGameEXEName();
-            if (File.Exists(Path.Combine(SettingsManage.GetDataPath(), AIGirlTrial + ".exe")))
+            string AIGirl = ManageSettings.GetCurrentGameEXEName();
+            string AIGirlTrial = ManageSettings.GetCurrentGameEXEName();
+            if (File.Exists(Path.Combine(ManageSettings.GetDataPath(), AIGirlTrial + ".exe")))
             {
                 label3.Text = string.Format(T._("{0} game installed in {1}"), AIGirlTrial, "Data");
             }
@@ -643,74 +651,84 @@ namespace AI_Helper
 
             if (MOmode)
             {
-                string[] Archives7z;
-                string[] ModDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();
+                //string[] Archives7z;
+                //string[] ModDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();
 
-                if (Directory.Exists(DownloadsPath))
+
+                //Archives7z = Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories);
+                //if (ModDirs.Length > 0 && Archives7z.Length > 0)
+                //{
+                //    bool NotAllModsExtracted = false;
+                //    foreach (var Archive in Archives7z)
+                //    {
+                //        if (ModDirs.Contains(Path.Combine(ModsPath, Path.GetFileNameWithoutExtension(Archive))))
+                //        {
+                //        }
+                //        else
+                //        {
+                //            NotAllModsExtracted = true;
+                //            break;
+                //        }
+                //    }
+
+                //    if (compressmode && NotAllModsExtracted && ModDirs.Length < Archives7z.Length)
+                //    {
+                //        ModsInfoLabel.Text = T._("Not all mods in Mods dir");
+                //        //button1.Enabled = false;
+                //        mode = 2;
+                //        button1.Text = T._("Extract missing");
+                //    }
+                //    else
+                //    {
+                //        ModsInfoLabel.Text = T._("Found mod folders in Mods");
+                //        //button1.Enabled = false;
+                //        mode = 1;
+                //        button1.Text = T._("Mods Ready");
+                //        //MO2StandartButton.Enabled = true;
+                //        GetEnableDisableLaunchButtons();
+                //        MOCommonModeSwitchButton.Text = T._("MOToCommon");
+                //        AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
+                //    }
+                //}
+                //else
+                //{
+                //    //если нет папок модов но есть архивы в загрузках
+                //    if (Archives7z.Length > 0 && ModDirs.Length == 0)
+                //    {
+                //        ModsInfoLabel.Text = T._("Mods Ready for extract");
+                //        mode = 2;
+                //        button1.Text = T._("Extract mods");
+                //    }
+                //}
+
+                ////если нет архивов в загрузках, но есть папки модов
+                //if (compressmode && Directory.Exists(DownloadsPath) && Directory.Exists(ModsPath))
+                //{
+                //    if (ModDirs.Length > 0 && Archives7z.Length == 0)
+                //    {
+                //        if (Archives7z.Length == 0)
+                //        {
+                //            ModsInfoLabel.Text = "No archives in downloads";
+                //            button1.Text = "Pack mods";
+                //            mode = 0;
+                //        }
+                //    }
+                //}
+
+                if (!Utils.ManageFilesFolders.CheckDirectoryNotExistsOrEmpty_Fast(Utils.ManageSettings.GetModsPath(), "*", new string[1] { "_separator" }))
                 {
-                    Archives7z = Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories);
-                    if (ModDirs.Length > 0 && Archives7z.Length > 0)
-                    {
-                        bool NotAllModsExtracted = false;
-                        foreach (var Archive in Archives7z)
-                        {
-                            if (ModDirs.Contains(Path.Combine(ModsPath, Path.GetFileNameWithoutExtension(Archive))))
-                            {
-                            }
-                            else
-                            {
-                                NotAllModsExtracted = true;
-                                break;
-                            }
-                        }
+                    ModsInfoLabel.Text = T._("Found mod folders in Mods");
+                    //button1.Enabled = false;
+                    mode = 1;
+                    button1.Text = T._("Mods Ready");
+                    //MO2StandartButton.Enabled = true;
+                    GetEnableDisableLaunchButtons();
+                    AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
 
-                        if (compressmode && NotAllModsExtracted && ModDirs.Length < Archives7z.Length)
-                        {
-                            ModsInfoLabel.Text = T._("Not all mods in Mods dir");
-                            //button1.Enabled = false;
-                            mode = 2;
-                            button1.Text = T._("Extract missing");
-                        }
-                        else
-                        {
-                            ModsInfoLabel.Text = T._("Found mod folders in Mods");
-                            //button1.Enabled = false;
-                            mode = 1;
-                            button1.Text = T._("Mods Ready");
-                            //MO2StandartButton.Enabled = true;
-                            GetEnableDisableLaunchButtons();
-                            MOCommonModeSwitchButton.Text = T._("MOToCommon");
-                            AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
-                        }
-                    }
-                    else
-                    {
-                        //если нет папок модов но есть архивы в загрузках
-                        if (Archives7z.Length > 0 && ModDirs.Length == 0)
-                        {
-                            ModsInfoLabel.Text = T._("Mods Ready for extract");
-                            mode = 2;
-                            button1.Text = T._("Extract mods");
-                        }
-                    }
+                    //if (File.Exists(Path.Combine(DataPath, ManageSettings.GetCurrentGameEXEName() + ".exe")))
+                    //{
 
-                    //если нет архивов в загрузках, но есть папки модов
-                    if (compressmode && Directory.Exists(DownloadsPath) && Directory.Exists(ModsPath))
-                    {
-                        if (ModDirs.Length > 0 && Archives7z.Length == 0)
-                        {
-                            if (Archives7z.Length == 0)
-                            {
-                                ModsInfoLabel.Text = "No archives in downloads";
-                                button1.Text = "Pack mods";
-                                mode = 0;
-                            }
-                        }
-                    }
-                }
-
-                if (ModDirs.Length > 0 && File.Exists(Path.Combine(DataPath, SettingsManage.GetCurrentGameEXEName() + ".exe")))
-                {
+                    //}
                     GetEnableDisableLaunchButtons();
                     MOCommonModeSwitchButton.Text = T._("MOToCommon");
                 }
@@ -733,12 +751,12 @@ namespace AI_Helper
                 LanchModeInfoLinkLabel.Text = T._("MO mode");
 
                 //создание ссылок на файлы bepinex
-                MOModsManage.BepinExLoadingFix();
+                ManageMOMods.BepinExLoadingFix();
 
                 //создание exe-болванки
-                MOManage.MakeDummyFiles();
+                ManageMO.MakeDummyFiles();
 
-                MOManage.SetModOrganizerINISettingsForTheGame();
+                ManageMO.SetModOrganizerINISettingsForTheGame();
             }
             else
             {
@@ -758,30 +776,31 @@ namespace AI_Helper
 
             AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
             CurrentGameComboBox.Text = CurrentGame.GetGameFolderName();
-            CurrentGameComboBox.SelectedIndex = SettingsManage.GetCurrentGameIndex();
+            CurrentGameComboBox.SelectedIndex = ManageSettings.GetCurrentGameIndex();
 
             SetScreenSettings();
-            
+
             SetTooltips();
 
             if (AutoShortcutRegistryCheckBox.Checked)
             {
-                Other.AutoShortcutAndRegystry();
+                ManageOther.AutoShortcutAndRegystry();
             }
         }
 
         private void GetEnableDisableLaunchButtons()
         {
-            MOButton.Enabled = File.Exists(SettingsManage.GetMOexePath());
-            SettingsButton.Enabled = File.Exists(Path.Combine(DataPath, SettingsManage.GetINISettingsEXEName() + ".exe"));
-            GameButton.Enabled = File.Exists(Path.Combine(DataPath, SettingsManage.GetCurrentGameEXEName() + ".exe"));
-            StudioButton.Enabled = File.Exists(Path.Combine(DataPath, SettingsManage.GetStudioEXEName() + ".exe"));
+            MOButton.Enabled = File.Exists(ManageSettings.GetMOexePath());
+            SettingsButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"));
+            GameButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetCurrentGameEXEName() + ".exe"));
+            StudioButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetStudioEXEName() + ".exe"));
         }
 
         private void CheckBox1_CheckedChanged(object sender, EventArgs e)
         {
-            Other.CheckBoxChangeColor(sender as CheckBox);
+            ManageOther.CheckBoxChangeColor(sender as CheckBox);
             Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked = AutoShortcutRegistryCheckBox.Checked;
+            new IniFile(ManageSettings.GetAIHelperINIPath()).WriteINI("Settings", "autoCreateShortcutAndFixRegystry", Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked.ToString());
         }
 
         private void ResolutionComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -791,15 +810,15 @@ namespace AI_Helper
 
         private void FullScreenCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Other.CheckBoxChangeColor(sender as CheckBox);
-            XMLManage.ChangeXmlValue(SetupXmlPath, "Setting/FullScreen", (sender as CheckBox).Checked.ToString().ToLower());
+            ManageOther.CheckBoxChangeColor(sender as CheckBox);
+            ManageXML.ChangeXmlValue(SetupXmlPath, "Setting/FullScreen", (sender as CheckBox).Checked.ToString().ToLower());
         }
 
         private void FixRegistryButton_Click(object sender, EventArgs e)
         {
             FixRegistryButton.Enabled = false;
 
-            RegistryManage.FixRegistry(false);
+            ManageRegistry.FixRegistry(false);
 
             FixRegistryButton.Enabled = true;
         }
@@ -824,11 +843,11 @@ namespace AI_Helper
             OnOffButtons(false);
             if (MOmode)
             {
-                RunProgram(MOexePath, "moshortcut://:" + SettingsManage.GetINISettingsEXEName());
+                RunProgram(MOexePath, "moshortcut://:" + ManageSettings.GetINISettingsEXEName());
             }
             else
             {
-                RunProgram(Path.Combine(DataPath, SettingsManage.GetINISettingsEXEName() + ".exe"), string.Empty);
+                RunProgram(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"), string.Empty);
             }
             OnOffButtons();
         }
@@ -838,11 +857,11 @@ namespace AI_Helper
             OnOffButtons(false);
             if (MOmode)
             {
-                RunProgram(MOexePath, "moshortcut://:" + SettingsManage.GetCurrentGameEXEName());
+                RunProgram(MOexePath, "moshortcut://:" + ManageSettings.GetCurrentGameEXEName());
             }
             else
             {
-                RunProgram(Path.Combine(DataPath, SettingsManage.GetCurrentGameEXEName() + ".exe"), string.Empty);
+                RunProgram(Path.Combine(DataPath, ManageSettings.GetCurrentGameEXEName() + ".exe"), string.Empty);
             }
             OnOffButtons();
         }
@@ -857,11 +876,11 @@ namespace AI_Helper
             OnOffButtons(false);
             if (MOmode)
             {
-                RunProgram(MOexePath, "moshortcut://:" + SettingsManage.GetStudioEXEName());
+                RunProgram(MOexePath, "moshortcut://:" + ManageSettings.GetStudioEXEName());
             }
             else
             {
-                RunProgram(Path.Combine(DataPath, SettingsManage.GetStudioEXEName() + ".exe"), string.Empty);
+                RunProgram(Path.Combine(DataPath, ManageSettings.GetStudioEXEName() + ".exe"), string.Empty);
             }
             OnOffButtons();
         }
@@ -984,32 +1003,32 @@ namespace AI_Helper
         {
             string InstallMessage = T._("Installing");
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage));
-            ArchiveManage.UnpackArchivesToSubfoldersWithSameName(Install2MODirPath, ".rar");
+            ManageArchive.UnpackArchivesToSubfoldersWithSameName(Install2MODirPath, ".rar");
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "."));
-            ArchiveManage.UnpackArchivesToSubfoldersWithSameName(Install2MODirPath, ".7z");
+            ManageArchive.UnpackArchivesToSubfoldersWithSameName(Install2MODirPath, ".7z");
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + ".."));
-            MOModsManage.InstallCsScriptsForScriptLoader();
+            ManageMOMods.InstallCsScriptsForScriptLoader();
 
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "..."));
-            MOModsManage.InstallZipArchivesToMods();
+            ManageMOMods.InstallZipArchivesToMods();
 
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage));
-            MOModsManage.InstallBepinExModsToMods();
+            ManageMOMods.InstallBepinExModsToMods();
 
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "."));
-            MOModsManage.InstallZipModsToMods();
+            ManageMOMods.InstallZipModsToMods();
 
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + ".."));
-            MOModsManage.InstallCardsFrom2MO();
+            ManageMOMods.InstallCardsFrom2MO();
 
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "..."));
-            MOModsManage.InstallModFilesFromSubfolders();
+            ManageMOMods.InstallModFilesFromSubfolders();
 
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage));
-            MOModsManage.InstallImagesFromSubfolders();
+            ManageMOMods.InstallImagesFromSubfolders();
 
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = InstallMessage + "."));
-            FilesFoldersManage.DeleteEmptySubfolders(Install2MODirPath, false);
+            ManageFilesFolders.DeleteEmptySubfolders(Install2MODirPath, false);
 
             if (!Directory.Exists(Install2MODirPath))
             {
@@ -1021,7 +1040,7 @@ namespace AI_Helper
 
         private void CreateShortcutButton_Click(object sender, EventArgs e)
         {
-            Other.CreateShortcuts(true, false);
+            ManageOther.CreateShortcuts(true, false);
         }
 
         private void MO2StandartButton_Click(object sender, EventArgs e)
@@ -1029,14 +1048,14 @@ namespace AI_Helper
             OnOffButtons(false);
             if (MOmode)
             {
-                DialogResult result = MessageBox.Show(T._("This will move all mod files from Mods folder to Data folder to make it like common installation variant. You can restore it later back to MO mode. Continue?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
+                DialogResult result = MessageBox.Show(T._("Attention") + "\n\n" + T._("Conversation to") + " " + T._("Common mode") + "\n\n" + T._("This will move all mod files from Mods folder to Data folder to make it like common installation variant.\nYou can restore it later back to MO mode.\n\nContinue?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
                 if (result == DialogResult.OK)
                 {
                     MOmode = false;
                     MOCommonModeSwitchButton.Enabled = false;
                     LanchModeInfoLinkLabel.Enabled = false;
 
-                    string[] EnabledModsList = MOManage.GetModsListFromActiveMOProfile();
+                    string[] EnabledModsList = ManageMO.GetModsListFromActiveMOProfile();
                     int EnabledModsLength = EnabledModsList.Length;
 
                     if (EnabledModsList.Length == 0)
@@ -1047,16 +1066,16 @@ namespace AI_Helper
                         return;
                     }
 
-                    MOModsManage.CleanBepInExLinksFromData();
+                    ManageMOMods.CleanBepInExLinksFromData();
 
-                    if (File.Exists(SettingsManage.GetDummyFilePath()))
+                    if (File.Exists(ManageSettings.GetDummyFilePath()))
                     {
-                        File.Delete(SettingsManage.GetDummyFilePath());
+                        File.Delete(ManageSettings.GetDummyFilePath());
                     }
 
-                    if (!Directory.Exists(SettingsManage.GetMOmodeDataFilesBakDirPath()))
+                    if (!Directory.Exists(ManageSettings.GetMOmodeDataFilesBakDirPath()))
                     {
-                        Directory.CreateDirectory(SettingsManage.GetMOmodeDataFilesBakDirPath());
+                        Directory.CreateDirectory(ManageSettings.GetMOmodeDataFilesBakDirPath());
                     }
                     StringBuilder Operations = new StringBuilder();
 
@@ -1074,7 +1093,7 @@ namespace AI_Helper
                             FileInDataFolder = FilesInOverwrite[N].Replace(OverwriteFolder, DataPath);
                             if (File.Exists(FileInDataFolder))
                             {
-                                string FileInBakFolderWhichIsInRES = FileInDataFolder.Replace(DataPath, SettingsManage.GetMOmodeDataFilesBakDirPath());
+                                string FileInBakFolderWhichIsInRES = FileInDataFolder.Replace(DataPath, ManageSettings.GetMOmodeDataFilesBakDirPath());
                                 if (!File.Exists(FileInBakFolderWhichIsInRES) && DataFolderFilesPaths.Contains(FileInDataFolder))
                                 {
                                     string bakfolder = Path.GetDirectoryName(FileInBakFolderWhichIsInRES);
@@ -1139,7 +1158,7 @@ namespace AI_Helper
 
                                     if (File.Exists(FileInDataFolder))
                                     {
-                                        string FileInBakFolderWhichIsInRES = FileInDataFolder.Replace(DataPath, SettingsManage.GetMOmodeDataFilesBakDirPath());
+                                        string FileInBakFolderWhichIsInRES = FileInDataFolder.Replace(DataPath, ManageSettings.GetMOmodeDataFilesBakDirPath());
                                         if (!File.Exists(FileInBakFolderWhichIsInRES) && DataFolderFilesPaths.Contains(FileInDataFolder))
                                         {
                                             string bakfolder = Path.GetDirectoryName(FileInBakFolderWhichIsInRES);
@@ -1196,17 +1215,17 @@ namespace AI_Helper
                         }
                     }
 
-                    File.WriteAllText(SettingsManage.GetMOToStandartConvertationOperationsListFilePath(), Operations.ToString());
+                    File.WriteAllText(ManageSettings.GetMOToStandartConvertationOperationsListFilePath(), Operations.ToString());
                     string[] DataWithModsFileslist = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
-                    File.WriteAllLines(SettingsManage.GetModdedDataFilesListFilePath(), DataWithModsFileslist);
-                    File.WriteAllLines(SettingsManage.GetVanillaDataFilesListFilePath(), DataWithModsFileslist);
+                    File.WriteAllLines(ManageSettings.GetModdedDataFilesListFilePath(), DataWithModsFileslist);
+                    File.WriteAllLines(ManageSettings.GetVanillaDataFilesListFilePath(), DataWithModsFileslist);
 
                     //Directory.Delete(ModsPath, true);
                     //Directory.Move(MODirPath, Path.Combine(AppResDir, Path.GetFileName(MODirPath)));
                     MOCommonModeSwitchButton.Text = T._("CommonToMO");
                     MOCommonModeSwitchButton.Enabled = true;
                     LanchModeInfoLinkLabel.Enabled = true;
-                    File.Move(Path.Combine(MODirPath, "ModOrganizer.exe"), Path.Combine(MODirPath, "ModOrganizer.exe.GameInCommonModeNow"));
+                    //File.Move(Path.Combine(MODirPath, "ModOrganizer.exe"), Path.Combine(MODirPath, "ModOrganizer.exe.GameInCommonModeNow"));
                     //обновление информации о конфигурации папок игры
                     FoldersInit();
                     MessageBox.Show(T._("All mod files now in Data folder! You can restore MO mode by same button."));
@@ -1214,16 +1233,16 @@ namespace AI_Helper
             }
             else
             {
-                DialogResult result = MessageBox.Show(T._("This will move all mod files back to Mods folder from Data and will switch to MO mode. Continue?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
+                DialogResult result = MessageBox.Show(T._("Attention") + "\n\n" + T._("Conversation to") + " " + T._("MO mode") + "\n\n" + T._("This will move all mod files back to Mods folder from Data and will switch to MO mode.\n\nContinue?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
                 if (result == DialogResult.OK)
                 {
                     MOmode = true;
                     MOCommonModeSwitchButton.Enabled = false;
                     LanchModeInfoLinkLabel.Enabled = false;
 
-                    string[] Operations = File.ReadAllLines(SettingsManage.GetMOToStandartConvertationOperationsListFilePath());
-                    string[] VanillaDataFiles = File.ReadAllLines(SettingsManage.GetVanillaDataFilesListFilePath());
-                    string[] ModdedDataFiles = File.ReadAllLines(SettingsManage.GetModdedDataFilesListFilePath());
+                    string[] Operations = File.ReadAllLines(ManageSettings.GetMOToStandartConvertationOperationsListFilePath());
+                    string[] VanillaDataFiles = File.ReadAllLines(ManageSettings.GetVanillaDataFilesListFilePath());
+                    string[] ModdedDataFiles = File.ReadAllLines(ManageSettings.GetModdedDataFilesListFilePath());
 
                     StringBuilder FilesWhichAlreadyHaveSameDestFileInMods = new StringBuilder();
                     bool FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = false;
@@ -1271,7 +1290,7 @@ namespace AI_Helper
 
                             string TargetFolderPath = Path.GetDirectoryName(FromToPaths[1]);
 
-                            bool IsForOverwriteFolder = StringEx.IsStringAContainsStringB(TargetFolderPath, OverwriteFolder);
+                            bool IsForOverwriteFolder = ManageStrings.IsStringAContainsStringB(TargetFolderPath, OverwriteFolder);
                             //поиск имени мода с учетом обработки файлов папки Overwrite
                             string ModName = TargetFolderPath;
                             if (IsForOverwriteFolder)
@@ -1321,7 +1340,7 @@ namespace AI_Helper
                             File.WriteAllText(Path.Combine(NewModPath, "NOTE!.txt"), note);
 
                             //запись meta.ini с замечанием
-                            MOManage.WriteMetaINI(
+                            ManageMO.WriteMetaINI(
                                 NewModPath
                                 ,
                                 string.Empty
@@ -1332,7 +1351,7 @@ namespace AI_Helper
                                 ,
                                 note.Replace("\n", "<br>")
                                 );
-                            MOManage.ActivateInsertModIfPossible(NewModName, false, ModName, false);
+                            ManageMO.ActivateInsertModIfPossible(NewModName, false, ModName, false);
                         }
                     }
 
@@ -1362,7 +1381,7 @@ namespace AI_Helper
                     {
 
                         //запись meta.ini
-                        MOManage.WriteMetaINI(
+                        ManageMO.WriteMetaINI(
                             DestFolderPath
                             ,
                             "53,"
@@ -1374,17 +1393,17 @@ namespace AI_Helper
                             T._("<br>This files was added in Common mode<br>and moved as mod after convertation in MO mode.<br>Date: ") + DateTimeInFormat
                             );
 
-                        MOManage.ActivateInsertModIfPossible(addedFilesFolderName);
+                        ManageMO.ActivateInsertModIfPossible(addedFilesFolderName);
                     }
 
                     //перемещение ванильных файлов назад в дата
-                    if (Directory.Exists(SettingsManage.GetMOmodeDataFilesBakDirPath()))
+                    if (Directory.Exists(ManageSettings.GetMOmodeDataFilesBakDirPath()))
                     {
-                        string[] FilesInMOmodeDataFilesBak = Directory.GetFiles(SettingsManage.GetMOmodeDataFilesBakDirPath(), "*.*", SearchOption.AllDirectories);
+                        string[] FilesInMOmodeDataFilesBak = Directory.GetFiles(ManageSettings.GetMOmodeDataFilesBakDirPath(), "*.*", SearchOption.AllDirectories);
                         int FilesInMOmodeDataFilesBakLength = FilesInMOmodeDataFilesBak.Length;
                         for (int f = 0; f < FilesInMOmodeDataFilesBakLength; f++)
                         {
-                            string DestFileInDataFolderPath = FilesInMOmodeDataFilesBak[f].Replace(SettingsManage.GetMOmodeDataFilesBakDirPath(), DataPath);
+                            string DestFileInDataFolderPath = FilesInMOmodeDataFilesBak[f].Replace(ManageSettings.GetMOmodeDataFilesBakDirPath(), DataPath);
                             if (!File.Exists(DestFileInDataFolderPath))
                             {
                                 string DestFileInDataFolderPathFolder = Path.GetDirectoryName(DestFileInDataFolderPath);
@@ -1397,16 +1416,16 @@ namespace AI_Helper
                         }
 
                         //удаление папки, где хранились резервные копии ванильных файлов
-                        FilesFoldersManage.DeleteEmptySubfolders(SettingsManage.GetMOmodeDataFilesBakDirPath());
+                        ManageFilesFolders.DeleteEmptySubfolders(ManageSettings.GetMOmodeDataFilesBakDirPath());
                     }
 
                     //чистка файлов-списков
-                    File.Delete(SettingsManage.GetMOToStandartConvertationOperationsListFilePath());
-                    File.Delete(SettingsManage.GetVanillaDataFilesListFilePath());
-                    File.Delete(SettingsManage.GetModdedDataFilesListFilePath());
+                    File.Delete(ManageSettings.GetMOToStandartConvertationOperationsListFilePath());
+                    File.Delete(ManageSettings.GetVanillaDataFilesListFilePath());
+                    File.Delete(ManageSettings.GetModdedDataFilesListFilePath());
 
                     //очистка пустых папок в Data
-                    FilesFoldersManage.DeleteEmptySubfolders(DataPath, false);
+                    ManageFilesFolders.DeleteEmptySubfolders(DataPath, false);
                     try
                     {
                         //восстановление 2х папок, что были по умолчанию сначала пустыми
@@ -1417,7 +1436,7 @@ namespace AI_Helper
                     {
                     }
 
-                    File.Move(Path.Combine(MODirPath, "ModOrganizer.exe.GameInCommonModeNow"), Path.Combine(MODirPath, "ModOrganizer.exe"));
+                    //File.Move(Path.Combine(MODirPath, "ModOrganizer.exe.GameInCommonModeNow"), Path.Combine(MODirPath, "ModOrganizer.exe"));
 
                     //создание ссылок на файлы bepinex
                     //BepinExLoadingFix();
@@ -1483,11 +1502,14 @@ namespace AI_Helper
         {
             if (Properties.Settings.Default.INITDone)
             {
-                File.Delete(SettingsManage.GetModOrganizerINIpath());
-                File.Delete(Path.Combine(SettingsManage.GetMOdirPath(), "categories.dat"));
+                File.Delete(ManageSettings.GetModOrganizerINIpath());
+                File.Delete(Path.Combine(ManageSettings.GetMOdirPath(), "categories.dat"));
                 SetSelectedGameIndexAndBasicVariables((sender as ComboBox).SelectedIndex);
+
+                new IniFile(ManageSettings.GetAIHelperINIPath()).WriteINI("Settings", "selected_game", ManageSettings.GetCurrentGameFolderName());
+
                 FoldersInit();
-            }            
+            }
         }
 
         //Материалы

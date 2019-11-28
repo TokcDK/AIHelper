@@ -6,13 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace AI_Helper.Manage
+namespace AI_Helper.Utils
 {
-    class RegistryManage
+    class ManageRegistry
     {
         public static void FixRegistry(bool auto = true)
         {
-            string GameName = SettingsManage.GetCurrentGameEXEName();
+            string GameName = ManageSettings.GetCurrentGameEXEName();
             string RegystryPath = @"HKEY_CURRENT_USER\Software\illusion\" + GameName + @"\" + GameName;
             var InstallDirValue = Registry.GetValue(RegystryPath, "INSTALLDIR", null);
             if (InstallDirValue == null || InstallDirValue.ToString() != Properties.Settings.Default.DataPath)

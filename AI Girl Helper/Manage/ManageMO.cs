@@ -5,9 +5,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 
-namespace AI_Helper.Manage
+namespace AI_Helper.Utils
 {
-    class MOManage
+    class ManageMO
     {
         public static void SetModOrganizerINISettingsForTheGame()
         {
@@ -15,7 +15,7 @@ namespace AI_Helper.Manage
 
             RedefineModOrganizerIni();
 
-            IniFile INI = new IniFile(SettingsManage.GetModOrganizerINIpath());
+            IniFile INI = new IniFile(ManageSettings.GetModOrganizerINIpath());
 
             SetCommonIniValues(INI);
             SetCustomExecutablesIniValues(INI);
@@ -27,19 +27,19 @@ namespace AI_Helper.Manage
                 {
                     //customExecutables
                     {
-                        SettingsManage.GetCurrentGameEXEName()
+                        ManageSettings.GetCurrentGameEXEName()
                         ,
                         @"1\title"
                     }
                 ,
                     {
-                        Path.Combine(SettingsManage.GetDataPath(), SettingsManage.GetCurrentGameEXEName() + ".exe")
+                        Path.Combine(ManageSettings.GetDataPath(), ManageSettings.GetCurrentGameEXEName() + ".exe")
                         ,
                         @"1\binary"
                     }
                 ,
                     {
-                        SettingsManage.GetDataPath()
+                        ManageSettings.GetDataPath()
                         ,
                         @"1\workingDirectory"
                     }
@@ -51,19 +51,19 @@ namespace AI_Helper.Manage
                     }
                 ,
                     {
-                        SettingsManage.GetINISettingsEXEName()
+                        ManageSettings.GetINISettingsEXEName()
                         ,
                         @"2\title"
                     }
                 ,
                     {
-                        SettingsManage.GetSettingsEXEPath()
+                        ManageSettings.GetSettingsEXEPath()
                         ,
                         @"2\binary"
                     }
                 ,
                     {
-                        SettingsManage.GetDataPath()
+                        ManageSettings.GetDataPath()
                         ,
                         @"2\workingDirectory"
                     }
@@ -123,19 +123,19 @@ namespace AI_Helper.Manage
                 //    }
                 ,
                     {
-                        Path.Combine(SettingsManage.GetStudioEXEName())
+                        Path.Combine(ManageSettings.GetStudioEXEName())
                         ,
                         @"3\title"
                     }
                 ,
                     {
-                        Path.Combine(SettingsManage.GetDataPath(),SettingsManage.GetStudioEXEName()+".exe")
+                        Path.Combine(ManageSettings.GetDataPath(),ManageSettings.GetStudioEXEName()+".exe")
                         ,
                         @"3\binary"
                     }
                 ,
                     {
-                        SettingsManage.GetDataPath()
+                        ManageSettings.GetDataPath()
                         ,
                         @"3\workingDirectory"
                     }
@@ -242,26 +242,26 @@ namespace AI_Helper.Manage
             //    return;//если не число, выйти
             //}
 
-            var CurrentGame = SettingsManage.GetListOfExistsGames()[Properties.Settings.Default.CurrentGameListIndex];
-            if (CurrentGame.GetGameEXENameX32().Length > 0 && File.Exists(Path.Combine(SettingsManage.GetDataPath(), CurrentGame.GetGameEXENameX32() + ".exe")))
+            var CurrentGame = ManageSettings.GetListOfExistsGames()[Properties.Settings.Default.CurrentGameListIndex];
+            if (CurrentGame.GetGameEXENameX32().Length > 0 && File.Exists(Path.Combine(ManageSettings.GetDataPath(), CurrentGame.GetGameEXENameX32() + ".exe")))
             {
                 ExecutablesCount++;
                 IniValuesDict.Add(ExecutablesCount + @"\title", CurrentGame.GetGameEXENameX32());
-                IniValuesDict.Add(ExecutablesCount + @"\binary", Path.Combine(SettingsManage.GetDataPath(), CurrentGame.GetGameEXENameX32() + ".exe"));
-                IniValuesDict.Add(ExecutablesCount + @"\workingDirectory", SettingsManage.GetDataPath());
+                IniValuesDict.Add(ExecutablesCount + @"\binary", Path.Combine(ManageSettings.GetDataPath(), CurrentGame.GetGameEXENameX32() + ".exe"));
+                IniValuesDict.Add(ExecutablesCount + @"\workingDirectory", ManageSettings.GetDataPath());
             }
-            if (CurrentGame.GetGameStudioEXENameX32().Length > 0 && File.Exists(Path.Combine(SettingsManage.GetDataPath(), CurrentGame.GetGameStudioEXENameX32() + ".exe")))
+            if (CurrentGame.GetGameStudioEXENameX32().Length > 0 && File.Exists(Path.Combine(ManageSettings.GetDataPath(), CurrentGame.GetGameStudioEXENameX32() + ".exe")))
             {
                 ExecutablesCount++;
                 IniValuesDict.Add(ExecutablesCount + @"\title", CurrentGame.GetGameStudioEXENameX32());
-                IniValuesDict.Add(ExecutablesCount + @"\binary", Path.Combine(SettingsManage.GetDataPath(), CurrentGame.GetGameStudioEXENameX32() + ".exe"));
-                IniValuesDict.Add(ExecutablesCount + @"\workingDirectory", SettingsManage.GetDataPath());
+                IniValuesDict.Add(ExecutablesCount + @"\binary", Path.Combine(ManageSettings.GetDataPath(), CurrentGame.GetGameStudioEXENameX32() + ".exe"));
+                IniValuesDict.Add(ExecutablesCount + @"\workingDirectory", ManageSettings.GetDataPath());
             }
 
             string[] exeExclusions = { "Lec.ExtProtocol", "Common.ExtProtocol.Executor", "UnityCrashHandler64" };
 
             //Добавление exe из Data
-            foreach (var exe in Directory.GetFiles(SettingsManage.GetDataPath(), "*.exe", SearchOption.AllDirectories))
+            foreach (var exe in Directory.GetFiles(ManageSettings.GetDataPath(), "*.exe", SearchOption.AllDirectories))
             {
                 if (Path.GetFileNameWithoutExtension(exe).Length > 0 && !IniValuesDict.Values.Contains(exe) && !exeExclusions.Contains(Path.GetFileNameWithoutExtension(exe)))
                 {
@@ -271,7 +271,7 @@ namespace AI_Helper.Manage
                 }
             }
             //Добавление exe из Mods
-            foreach (var exe in Directory.GetFiles(SettingsManage.GetModsPath(), "*.exe", SearchOption.AllDirectories))
+            foreach (var exe in Directory.GetFiles(ManageSettings.GetModsPath(), "*.exe", SearchOption.AllDirectories))
             {
                 if (Path.GetFileNameWithoutExtension(exe).Length > 0 && !IniValuesDict.Values.Contains(exe) && !exeExclusions.Contains(Path.GetFileNameWithoutExtension(exe)))
                 {
@@ -314,7 +314,7 @@ namespace AI_Helper.Manage
                 {
                     //General
                     {
-                        SettingsManage.GetCurrentGamePath()
+                        ManageSettings.GetCurrentGamePath()
                         ,
                         "General"
                         ,
@@ -452,7 +452,7 @@ namespace AI_Helper.Manage
                 ,
                     //Settings
                     {
-                        SettingsManage.GetModsPath()
+                        ManageSettings.GetModsPath()
                         ,
                         "Settings"
                         ,
@@ -460,7 +460,7 @@ namespace AI_Helper.Manage
                     }
                 ,
                     {
-                        Path.Combine(SettingsManage.GetCurrentGamePath(), "Downloads")
+                        Path.Combine(ManageSettings.GetCurrentGamePath(), "Downloads")
                         ,
                         "Settings"
                         ,
@@ -468,7 +468,7 @@ namespace AI_Helper.Manage
                     }
                 ,
                     {
-                        Path.Combine(SettingsManage.GetCurrentGamePath(), "MO", "profiles")
+                        Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles")
                         ,
                         "Settings"
                         ,
@@ -476,7 +476,7 @@ namespace AI_Helper.Manage
                     }
                 ,
                     {
-                        Path.Combine(SettingsManage.GetCurrentGamePath(), "MO", "overwrite")
+                        Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "overwrite")
                         ,
                         "Settings"
                         ,
@@ -509,17 +509,17 @@ namespace AI_Helper.Manage
 
         private static string GetSelectedProfileName()
         {
-            string ret = INIManage.GetINIValueIfExist(Path.Combine(SettingsManage.GetCurrentGamePath(), "MO", "ModOrganizer.ini"), "selected_profile", "General");
-            return ret.Length > 0 ? ret : SettingsManage.GetCurrentGameFolderName();
+            string ret = ManageINI.GetINIValueIfExist(Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "ModOrganizer.ini"), "selected_profile", "General");
+            return ret.Length > 0 ? ret : ManageSettings.GetCurrentGameFolderName();
         }
 
         private static void RedefineModOrganizerIni()
         {
             string[] categoriesdatGameAndLocalPaths = new string[2]
             {
-                Path.Combine(SettingsManage.GetCurrentGamePath(),"MO", "ModOrganizer.ini")
+                Path.Combine(ManageSettings.GetCurrentGamePath(),"MO", "ModOrganizer.ini")
                 ,
-                Path.Combine(SettingsManage.GetMOdirPath(), "ModOrganizer.ini")
+                Path.Combine(ManageSettings.GetMOdirPath(), "ModOrganizer.ini")
             };
 
             if (
@@ -533,12 +533,12 @@ namespace AI_Helper.Manage
                )
             {
                 var moINIinfo = new FileInfo(categoriesdatGameAndLocalPaths[1]);
-                if (File.Exists(moINIinfo.FullName) && (!SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLink(moINIinfo) || !SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLinkValid(moINIinfo) || Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(SymbolicLinkSupport.FileInfoExtensions.GetSymbolicLinkTarget(moINIinfo)))) != SettingsManage.GetCurrentGameFolderName()))
+                if (File.Exists(moINIinfo.FullName) && (!SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLink(moINIinfo) || !SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLinkValid(moINIinfo) || Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(SymbolicLinkSupport.FileInfoExtensions.GetSymbolicLinkTarget(moINIinfo)))) != ManageSettings.GetCurrentGameFolderName()))
                 {
                     File.Delete(moINIinfo.FullName);
                 }
 
-                FilesFoldersManage.Symlink
+                ManageFilesFolders.Symlink
                   (
                    categoriesdatGameAndLocalPaths[0]
                    ,
@@ -553,9 +553,9 @@ namespace AI_Helper.Manage
         {
             string[] categoriesdatGameAndLocalPaths = new string[2]
             {
-                Path.Combine(SettingsManage.GetCurrentGamePath(),"MO", "categories.dat")
+                Path.Combine(ManageSettings.GetCurrentGamePath(),"MO", "categories.dat")
                 ,
-                Path.Combine(SettingsManage.GetMOdirPath(), "categories.dat")
+                Path.Combine(ManageSettings.GetMOdirPath(), "categories.dat")
             };
 
             if (
@@ -569,12 +569,12 @@ namespace AI_Helper.Manage
                )
             {
                 var categoriesDat = new FileInfo(categoriesdatGameAndLocalPaths[1]);
-                if (File.Exists(categoriesDat.FullName) && (!SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLink(categoriesDat) || !SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLinkValid(categoriesDat) || Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(SymbolicLinkSupport.FileInfoExtensions.GetSymbolicLinkTarget(categoriesDat)))) != SettingsManage.GetCurrentGameFolderName()))
+                if (File.Exists(categoriesDat.FullName) && (!SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLink(categoriesDat) || !SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLinkValid(categoriesDat) || Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(SymbolicLinkSupport.FileInfoExtensions.GetSymbolicLinkTarget(categoriesDat)))) != ManageSettings.GetCurrentGameFolderName()))
                 {
                     File.Delete(categoriesDat.FullName);
                 }
 
-                FilesFoldersManage.Symlink
+                ManageFilesFolders.Symlink
                   (
                    categoriesdatGameAndLocalPaths[0]
                    ,
@@ -590,7 +590,7 @@ namespace AI_Helper.Manage
         {
             if (modname.Length > 0)
             {
-                string currentMOprofile = INIManage.GetINIValueIfExist(Path.Combine(Properties.Settings.Default.MODirPath, "ModOrganizer.ini"), "selected_profile", "General");
+                string currentMOprofile = ManageINI.GetINIValueIfExist(Path.Combine(Properties.Settings.Default.MODirPath, "ModOrganizer.ini"), "selected_profile", "General");
 
                 if (currentMOprofile.Length == 0)
                 {
@@ -599,7 +599,7 @@ namespace AI_Helper.Manage
                 {
                     string profilemodlistpath = Path.Combine(Properties.Settings.Default.MODirPath, "profiles", currentMOprofile, "modlist.txt");
 
-                    INIManage.InsertLineInFile(profilemodlistpath, (Activate ? "+" : "-") + modname, 1, modAfterWhichInsert, PlaceAfter);
+                    ManageINI.InsertLineInFile(profilemodlistpath, (Activate ? "+" : "-") + modname, 1, modAfterWhichInsert, PlaceAfter);
                 }
             }
         }
@@ -630,7 +630,7 @@ namespace AI_Helper.Manage
                     INI.WriteINI("General", "version", version);
                 }
 
-                INI.WriteINI("General", "gameName", SettingsManage.GETMOCurrentGameName());
+                INI.WriteINI("General", "gameName", ManageSettings.GETMOCurrentGameName());
 
                 if (comments.Length > 0)
                 {
@@ -648,11 +648,11 @@ namespace AI_Helper.Manage
 
         public static string[] GetModsListFromActiveMOProfile(bool OnlyEnabled = true)
         {
-            string currentMOprofile = INIManage.GetINIValueIfExist(Path.Combine(Properties.Settings.Default.MODirPath, "ModOrganizer.ini"), "selected_profile", "General");
+            string currentMOprofile = ManageINI.GetINIValueIfExist(Path.Combine(ManageSettings.GetMOdirPath(), "ModOrganizer.ini"), "selected_profile", "General");
 
             if (currentMOprofile.Length > 0)
             {
-                string profilemodlistpath = Path.Combine(Properties.Settings.Default.MODirPath, "profiles", currentMOprofile, "modlist.txt");
+                string profilemodlistpath = Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", currentMOprofile, "modlist.txt");
 
                 if (File.Exists(profilemodlistpath))
                 {
@@ -684,7 +684,7 @@ namespace AI_Helper.Manage
 
         public static string GetOverwriteFolderLocation()
         {
-            string IniValue = INIManage.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, "overwrite_directory", "Settings");
+            string IniValue = ManageINI.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, "overwrite_directory", "Settings");
 
             if (IniValue.Length > 0)
             {
@@ -705,14 +705,14 @@ namespace AI_Helper.Manage
         {
             if (Properties.Settings.Default.MOmode)
             {
-                string currentMOprofile = INIManage.GetINIValueIfExist(SettingsManage.GetModOrganizerINIpath(), "selected_profile", "General");
+                string currentMOprofile = ManageINI.GetINIValueIfExist(ManageSettings.GetModOrganizerINIpath(), "selected_profile", "General");
 
                 if (currentMOprofile.Length == 0)
                 {
                 }
                 else
                 {
-                    string profilemodlistpath = Path.Combine(SettingsManage.GetMOdirPath(), "profiles", currentMOprofile, "modlist.txt");
+                    string profilemodlistpath = Path.Combine(ManageSettings.GetMOdirPath(), "profiles", currentMOprofile, "modlist.txt");
 
                     if (File.Exists(profilemodlistpath))
                     {
@@ -764,13 +764,13 @@ namespace AI_Helper.Manage
         {
             if (!string.IsNullOrWhiteSpace(name))
             {
-                string[] modList = MOManage.GetModsListFromActiveMOProfile(OnlyFromEnabledMods);
+                string[] modList = ManageMO.GetModsListFromActiveMOProfile(OnlyFromEnabledMods);
                 int nameLength = name.Length;
                 int modListLength = modList.Length;
                 for (int modlineNumber = 0; modlineNumber < modListLength; modlineNumber++)
                 {
                     string modname = modList[modlineNumber];
-                    if (modname.Length >= nameLength && StringEx.IsStringAContainsStringB(modname, name))
+                    if (modname.Length >= nameLength && ManageStrings.IsStringAContainsStringB(modname, name))
                     {
                         return modname;
                     }
@@ -782,10 +782,10 @@ namespace AI_Helper.Manage
         public static void MakeDummyFiles()
         {
             //Create dummy file and add hidden attribute
-            if (!File.Exists(SettingsManage.GetDummyFilePath()))
+            if (!File.Exists(ManageSettings.GetDummyFilePath()))
             {
-                File.WriteAllText(SettingsManage.GetDummyFilePath(), "dummy file need to execute mod organizer");
-                FilesFoldersManage.HideFileFolder(SettingsManage.GetDummyFilePath(), true);
+                File.WriteAllText(ManageSettings.GetDummyFilePath(), "dummy file need to execute mod organizer");
+                ManageFilesFolders.HideFileFolder(ManageSettings.GetDummyFilePath(), true);
             }
         }
     }

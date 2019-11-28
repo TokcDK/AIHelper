@@ -42,6 +42,8 @@
             this.button1 = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.LanchModeInfoLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenLogLinkLabel = new System.Windows.Forms.LinkLabel();
             this.LaunchTabLaunchLabel = new System.Windows.Forms.Label();
@@ -55,10 +57,11 @@
             this.label6 = new System.Windows.Forms.Label();
             this.CurrentGameComboBox = new System.Windows.Forms.ComboBox();
             this.SettingsFoldersGroupBox = new System.Windows.Forms.GroupBox();
+            this.Open2MOLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenMOOverwriteFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenMyUserDataFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenModsFolderLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.OpenMOLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.OpenMOFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenGameFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.CreateShortcutButton = new System.Windows.Forms.Button();
             this.FixRegistryButton = new System.Windows.Forms.Button();
@@ -72,8 +75,6 @@
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -254,6 +255,30 @@
             this.panel2.Size = new System.Drawing.Size(340, 155);
             this.panel2.TabIndex = 0;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.Color.Gray;
+            this.label4.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.label4.Location = new System.Drawing.Point(98, 16);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(45, 31);
+            this.label4.TabIndex = 23;
+            this.label4.Text = "AI";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.BackColor = System.Drawing.Color.Gray;
+            this.label5.Font = new System.Drawing.Font("Lucida Handwriting", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ForeColor = System.Drawing.Color.White;
+            this.label5.Location = new System.Drawing.Point(138, 21);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(84, 24);
+            this.label5.TabIndex = 22;
+            this.label5.Text = " Helper";
+            // 
             // LanchModeInfoLinkLabel
             // 
             this.LanchModeInfoLinkLabel.AutoSize = true;
@@ -409,10 +434,11 @@
             // 
             // SettingsFoldersGroupBox
             // 
+            this.SettingsFoldersGroupBox.Controls.Add(this.Open2MOLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenMOOverwriteFolderLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenMyUserDataFolderLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenModsFolderLinkLabel);
-            this.SettingsFoldersGroupBox.Controls.Add(this.OpenMOLinkLabel);
+            this.SettingsFoldersGroupBox.Controls.Add(this.OpenMOFolderLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenGameFolderLinkLabel);
             this.SettingsFoldersGroupBox.ForeColor = System.Drawing.Color.White;
             this.SettingsFoldersGroupBox.Location = new System.Drawing.Point(5, 83);
@@ -421,6 +447,18 @@
             this.SettingsFoldersGroupBox.TabIndex = 6;
             this.SettingsFoldersGroupBox.TabStop = false;
             this.SettingsFoldersGroupBox.Text = "Folders";
+            // 
+            // Open2MOLinkLabel
+            // 
+            this.Open2MOLinkLabel.AutoSize = true;
+            this.Open2MOLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.Open2MOLinkLabel.Location = new System.Drawing.Point(46, 39);
+            this.Open2MOLinkLabel.Name = "Open2MOLinkLabel";
+            this.Open2MOLinkLabel.Size = new System.Drawing.Size(29, 13);
+            this.Open2MOLinkLabel.TabIndex = 5;
+            this.Open2MOLinkLabel.TabStop = true;
+            this.Open2MOLinkLabel.Text = "2MO";
+            this.Open2MOLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
             // 
             // OpenMOOverwriteFolderLinkLabel
             // 
@@ -461,18 +499,18 @@
             this.OpenModsFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
             this.OpenModsFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenModsFolderLinkLabel_LinkClicked);
             // 
-            // OpenMOLinkLabel
+            // OpenMOFolderLinkLabel
             // 
-            this.OpenMOLinkLabel.AutoSize = true;
-            this.OpenMOLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.OpenMOLinkLabel.Location = new System.Drawing.Point(6, 39);
-            this.OpenMOLinkLabel.Name = "OpenMOLinkLabel";
-            this.OpenMOLinkLabel.Size = new System.Drawing.Size(23, 13);
-            this.OpenMOLinkLabel.TabIndex = 1;
-            this.OpenMOLinkLabel.TabStop = true;
-            this.OpenMOLinkLabel.Text = "MO";
-            this.OpenMOLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
-            this.OpenMOLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenMOFolderLinkLabel_LinkClicked);
+            this.OpenMOFolderLinkLabel.AutoSize = true;
+            this.OpenMOFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.OpenMOFolderLinkLabel.Location = new System.Drawing.Point(6, 39);
+            this.OpenMOFolderLinkLabel.Name = "OpenMOFolderLinkLabel";
+            this.OpenMOFolderLinkLabel.Size = new System.Drawing.Size(23, 13);
+            this.OpenMOFolderLinkLabel.TabIndex = 1;
+            this.OpenMOFolderLinkLabel.TabStop = true;
+            this.OpenMOFolderLinkLabel.Text = "MO";
+            this.OpenMOFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
+            this.OpenMOFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenMOFolderLinkLabel_LinkClicked);
             // 
             // OpenGameFolderLinkLabel
             // 
@@ -641,30 +679,6 @@
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.BackColor = System.Drawing.Color.Gray;
-            this.label4.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.label4.Location = new System.Drawing.Point(98, 16);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(45, 31);
-            this.label4.TabIndex = 23;
-            this.label4.Text = "AI";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.BackColor = System.Drawing.Color.Gray;
-            this.label5.Font = new System.Drawing.Font("Lucida Handwriting", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.ForeColor = System.Drawing.Color.White;
-            this.label5.Location = new System.Drawing.Point(138, 21);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(84, 24);
-            this.label5.TabIndex = 22;
-            this.label5.Text = " Helper";
-            // 
             // AIHelper
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -737,7 +751,7 @@
         private System.Windows.Forms.Button InstallInModsButton;
         private System.Windows.Forms.GroupBox SettingsFoldersGroupBox;
         private System.Windows.Forms.LinkLabel OpenModsFolderLinkLabel;
-        private System.Windows.Forms.LinkLabel OpenMOLinkLabel;
+        private System.Windows.Forms.LinkLabel OpenMOFolderLinkLabel;
         private System.Windows.Forms.LinkLabel OpenGameFolderLinkLabel;
         private System.Windows.Forms.LinkLabel OpenLogLinkLabel;
         private System.Windows.Forms.LinkLabel Install2MODirPathOpenFolderLinkLabel;
@@ -748,6 +762,7 @@
         private System.Windows.Forms.ComboBox CurrentGameComboBox;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.LinkLabel Open2MOLinkLabel;
     }
 }
 

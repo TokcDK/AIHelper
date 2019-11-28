@@ -459,8 +459,8 @@ namespace AI_Helper
             ToolTip THToolTip = new ToolTip
             {
 
-                // Set up the delays for the ToolTip.
-                AutoPopDelay = 20000,
+                // Set up the delays for the ToolTip.                
+                AutoPopDelay = 30000,
                 InitialDelay = 1000,
                 ReshowDelay = 500,
                 UseAnimation = true,
@@ -518,6 +518,42 @@ namespace AI_Helper
                     "Will convert the game to MO mode\n when all mod files will be moved back to Mods folder\n" +
                     " in their folders and vanilla files restored"
                 )));
+
+            //Open Folders
+            THToolTip.SetToolTip(OpenGameFolderLinkLabel, T._("Opens Data folder of selected game"));
+            THToolTip.SetToolTip(OpenModsFolderLinkLabel, T._("Opens Mods folder of selected game"));
+            THToolTip.SetToolTip(OpenMOFolderLinkLabel, T._("Opens Mod Organizer folder"));
+            THToolTip.SetToolTip(OpenMOOverwriteFolderLinkLabel, T._("Opens Overwrite folder of Mod Organizer with possible new generated files for selected game\n\nFiles here have highest priority and will be loaded over any enabled mod files"));
+            THToolTip.SetToolTip(OpenMyUserDataFolderLinkLabel, T._("Opens MyUserData folder in Mods if exist\n\nHere placed usual User files of Organized ModPack for selected game"));
+            
+            THToolTip.SetToolTip(Open2MOLinkLabel, 
+                T._("Opens 2MO folder fo selected game" +
+                "\n\nHere can be placed mod files which you want to install for selected game in approriate subfolders in mods" +
+                "\nand then can be installed all by one click on") + " " + InstallInModsButton.Text + " " + T._("button") +
+                "\n"+ T._("which can be found in")+" " + ToolsTabPage.Text + " " + T._("tab page") +
+                "\n\n"+ T._("Helper recognize")+":"
+                + "\n "+ T._(".dll files of BepinEx plugins in \"2MO\" folder")
+                + "\n " + T._("Sideloader mod archives in \"2MO\" folder")
+                + "\n " + T._("Female character cards in \"2MO\" folder")
+                + "\n " + T._("Female character cards in \"f\" subfolder")
+                + "\n " + T._("Male character cards in \"m\" subfolder")
+                + "\n " + T._("Coordinate clothes set cards in \"c\" subfolder")
+                + "\n " + T._("Studio scene cards in \"s\" subfolder")
+                + "\n " + T._("Cardframe Front cards in \"cf\" subfolder")
+                + "\n " + T._("Cardframe Back cards in \"cf\" subfolder")
+                + "\n " + T._("Script loader scripts in \"2MO\" folder")
+                + "\n " + T._("Housing plan cards in \"h\\01\", \"h\\02\", \"h\\03\" subfolders")
+                + "\n " + T._("Overlays cards in \"o\" subfolder")
+                + "\n " + T._("folders with overlays cards in \"o\" subfolder")
+                + "\n " + T._("Subfolders with modfiles in \"2MO\" folder")
+                + "\n " + T._("Zip archives with mod files in \"2MO\" folder")
+                + "\n " + T._("Zip archives with mod files in \"2MO\" folder")
+                + "\n\n" + T._("Any Rar and 7z archives in \"2MO\" folder will be extracted" +
+                "\nSome recognized mods can be updated instead of be installed as new mod" +
+                "\nMost of mods will be automatically activated except .cs scripts" +
+                "\nwhich always optional and often it is cheats or can slowdown/break game")
+                
+                );
             ////////////////////////////
         }
 

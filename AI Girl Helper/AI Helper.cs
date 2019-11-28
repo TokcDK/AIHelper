@@ -460,7 +460,7 @@ namespace AI_Helper
             {
 
                 // Set up the delays for the ToolTip.                
-                AutoPopDelay = 30000,
+                AutoPopDelay = 120000,
                 InitialDelay = 1000,
                 ReshowDelay = 500,
                 UseAnimation = true,

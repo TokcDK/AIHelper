@@ -139,22 +139,22 @@ namespace AI_Helper.Utils
 
         public static string GetMOmodeDataFilesBakDirPath()
         {
-            return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName() + "_" + "MOmodeDataFilesBak");
+            return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName(), "MOmodeDataFilesBak");
         }
 
         public static string GetModdedDataFilesListFilePath()
         {
-            return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName() + "_" + "ModdedDataFilesList.txt");
+            return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName(), "ModdedDataFilesList.txt");
         }
 
         public static string GetVanillaDataFilesListFilePath()
         {
-            return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName() + "_" + "VanillaDataFilesList.txt");
+            return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName(), "VanillaDataFilesList.txt");
         }
 
         public static string GetMOToStandartConvertationOperationsListFilePath()
         {
-            return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName() + "_" + "MOToStandartConvertationOperationsList.txt");
+            return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName(), "MOToStandartConvertationOperationsList.txt");
         }
 
         public static List<Game> GetListOfExistsGames()

@@ -509,7 +509,7 @@ namespace AI_Helper.Utils
 
         private static string GetSelectedProfileName()
         {
-            string ret = ManageINI.GetINIValueIfExist(Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "ModOrganizer.ini"), "selected_profile", "General");
+            string ret = ManageINI.GetINIValueIfExist(ManageSettings.GetMOiniPathForSelectedGame(), "selected_profile", "General");
             return ret.Length > 0 ? ret : ManageSettings.GetCurrentGameFolderName();
         }
 
@@ -517,9 +517,9 @@ namespace AI_Helper.Utils
         {
             string[] categoriesdatGameAndLocalPaths = new string[2]
             {
-                Path.Combine(ManageSettings.GetCurrentGamePath(),"MO", "ModOrganizer.ini")
+                ManageSettings.GetMOiniPathForSelectedGame()
                 ,
-                Path.Combine(ManageSettings.GetMOdirPath(), "ModOrganizer.ini")
+                ManageSettings.GetMOiniPath()
             };
 
             if (
@@ -553,9 +553,9 @@ namespace AI_Helper.Utils
         {
             string[] categoriesdatGameAndLocalPaths = new string[2]
             {
-                Path.Combine(ManageSettings.GetCurrentGamePath(),"MO", "categories.dat")
+                ManageSettings.GetMOcategoriesPathForSelectedGame()
                 ,
-                Path.Combine(ManageSettings.GetMOdirPath(), "categories.dat")
+                ManageSettings.GetMOcategoriesPath()
             };
 
             if (
@@ -590,14 +590,14 @@ namespace AI_Helper.Utils
         {
             if (modname.Length > 0)
             {
-                string currentMOprofile = ManageINI.GetINIValueIfExist(Path.Combine(Properties.Settings.Default.MODirPath, "ModOrganizer.ini"), "selected_profile", "General");
+                string currentMOprofile = ManageINI.GetINIValueIfExist(ManageSettings.GetMOiniPath(), "selected_profile", "General");
 
                 if (currentMOprofile.Length == 0)
                 {
                 }
                 else
                 {
-                    string profilemodlistpath = Path.Combine(Properties.Settings.Default.MODirPath, "profiles", currentMOprofile, "modlist.txt");
+                    string profilemodlistpath = Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", currentMOprofile, "modlist.txt");
 
                     ManageINI.InsertLineInFile(profilemodlistpath, (Activate ? "+" : "-") + modname, 1, modAfterWhichInsert, PlaceAfter);
                 }
@@ -648,7 +648,7 @@ namespace AI_Helper.Utils
 
         public static string[] GetModsListFromActiveMOProfile(bool OnlyEnabled = true)
         {
-            string currentMOprofile = ManageINI.GetINIValueIfExist(Path.Combine(ManageSettings.GetMOdirPath(), "ModOrganizer.ini"), "selected_profile", "General");
+            string currentMOprofile = ManageINI.GetINIValueIfExist(ManageSettings.GetMOiniPath(), "selected_profile", "General");
 
             if (currentMOprofile.Length > 0)
             {
@@ -682,21 +682,6 @@ namespace AI_Helper.Utils
             return null;
         }
 
-        public static string GetOverwriteFolderLocation()
-        {
-            string IniValue = ManageINI.GetINIValueIfExist(Properties.Settings.Default.ModOrganizerINIpath, "overwrite_directory", "Settings");
-
-            if (IniValue.Length > 0)
-            {
-                return IniValue;
-            }
-            else
-            {
-                return Path.Combine(Properties.Settings.Default.MODirPath, "overwrite");
-            }
-
-        }
-
         /// <summary>
         /// Gets setup.xml path from latest enabled mod like must be in Mod Organizer
         /// </summary>
@@ -712,7 +697,7 @@ namespace AI_Helper.Utils
                 }
                 else
                 {
-                    string profilemodlistpath = Path.Combine(ManageSettings.GetMOdirPath(), "profiles", currentMOprofile, "modlist.txt");
+                    string profilemodlistpath = Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", currentMOprofile, "modlist.txt");
 
                     if (File.Exists(profilemodlistpath))
                     {

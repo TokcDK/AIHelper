@@ -1389,7 +1389,7 @@ namespace AI_Helper.Utils
                     //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + website + " \"");
                     //INI.WriteINI("General", "validated", "true");
 
-                    ManageMO.ActivateInsertModIfPossible(Path.GetFileName(zipmoddirpath));
+                    ManageMO.ActivateInsertModIfPossible(Path.GetFileName(zipmoddirpath),true);
                 }
             }
         }

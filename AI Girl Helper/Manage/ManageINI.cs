@@ -26,20 +26,20 @@ namespace AI_Helper.Utils
         /// <summary>
         /// Inserts line in file in set position
         /// </summary>
-        /// <param name="path"></param>
+        /// <param name="MOiniPath"></param>
         /// <param name="line"></param>
         /// <param name="Position"></param>
-        public static void InsertLineInFile(string path, string Line, int Position = 1, string InsertWithThisMod = "", bool PlaceAfter = true)
+        public static void InsertLineInFile(string MOiniPath, string Line, int Position = 1, string InsertWithThisMod = "", bool PlaceAfter = true)
         {
-            if (path.Length > 0 && File.Exists(path) && Line.Length > 0)
+            if (MOiniPath.Length > 0 && File.Exists(MOiniPath) && Line.Length > 0)
             {
-                string[] FileLines = File.ReadAllLines(path);
+                string[] FileLines = File.ReadAllLines(MOiniPath);
                 if (!FileLines.Contains(Line))
                 {
                     int FileLinesLength = FileLines.Length;
                     bool InsertWithMod = InsertWithThisMod.Length > 0;
                     Position = InsertWithMod ? FileLinesLength : Position;
-                    using (StreamWriter writer = new StreamWriter(path))
+                    using (StreamWriter writer = new StreamWriter(MOiniPath))
                     {
                         for (int LineNumber = 0; LineNumber < Position; LineNumber++)
                         {

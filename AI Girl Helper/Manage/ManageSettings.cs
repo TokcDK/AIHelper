@@ -100,6 +100,26 @@ namespace AI_Helper.Utils
             return Path.Combine(GetMOdirPath(), "ModOrganizer.exe");
         }
 
+        public static string GetMOiniPath()
+        {
+            return Path.Combine(GetMOdirPath(), "ModOrganizer.ini");
+        }
+
+        public static string GetMOiniPathForSelectedGame()
+        {
+            return Path.Combine(GetCurrentGamePath(), "MO", "ModOrganizer.ini");
+        }
+
+        public static string GetMOcategoriesPath()
+        {
+            return Path.Combine(GetMOdirPath(), "categories.dat");
+        }
+
+        public static string GetMOcategoriesPathForSelectedGame()
+        {
+            return Path.Combine(GetCurrentGamePath(), "MO", "categories.dat");
+        }
+
         public static string GetInstall2MODirPath()
         {
             return Path.Combine(GetCurrentGamePath(), "2MO");

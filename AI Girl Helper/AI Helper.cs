@@ -343,7 +343,7 @@ namespace AI_Helper
                 {
                     //Read categories.dat
                     List<CategoriesList> categories = new List<CategoriesList>();
-                    foreach (string line in File.ReadAllLines(Path.Combine(MODirPath, "categories.dat")))
+                    foreach (string line in File.ReadAllLines(ManageSettings.GetMOcategoriesPath()))
                     {
                         if (line.Length == 0)
                         {
@@ -1559,7 +1559,7 @@ namespace AI_Helper
             if (Properties.Settings.Default.INITDone)
             {
                 File.Delete(ManageSettings.GetModOrganizerINIpath());
-                File.Delete(Path.Combine(ManageSettings.GetMOdirPath(), "categories.dat"));
+                File.Delete(ManageSettings.GetMOcategoriesPath());
                 SetSelectedGameIndexAndBasicVariables((sender as ComboBox).SelectedIndex);
 
                 new IniFile(ManageSettings.GetAIHelperINIPath()).WriteINI("Settings", "selected_game", ManageSettings.GetCurrentGameFolderName());

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using AI_Helper.Utils;
 using SevenZip;
 
 namespace AI_Helper
@@ -69,13 +70,13 @@ namespace AI_Helper
 
         private static string Get7zdllPath()
         {
-            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "AI Girl Helper_RES", "dlls", "7z.dll");
+            string path = Path.Combine(ManageSettings.GetAppResDir(), "dlls", "x86", "7z.dll");
             if (File.Exists(path))
             {
             }
             else
             {
-                path = Path.Combine("C:", "Program Files", "7-Zip", "7z.dll");
+                path = Path.Combine("C:", "Program Files (x86)", "7-Zip", "7z.dll");
                 if (File.Exists(path))
                 {
                 }

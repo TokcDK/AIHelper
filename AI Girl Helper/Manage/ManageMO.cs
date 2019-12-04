@@ -639,7 +639,7 @@ namespace AI_Helper.Utils
 
                 if (notes.Length > 0)
                 {
-                    INI.WriteINI("General", "notes", "\"" + notes + "\"");
+                    INI.WriteINI("General", "notes", "\"" + notes.Replace(Environment.NewLine, "<br>") + "\"");
                 }
 
                 INI.WriteINI("General", "validated", "true");

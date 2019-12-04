@@ -43,5 +43,10 @@ namespace AI_Helper.Utils
 
             return false;
         }
+
+        public static bool IsStringAequalsStringB(string StringA, string StringB, bool ignoreCase = false)
+        {
+            return string.Compare(StringA, StringB, ignoreCase) == 0;
+        }
     }
 }

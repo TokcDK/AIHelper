@@ -1,5 +1,4 @@
-﻿using AI_Helper.Utils;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -268,42 +267,48 @@ namespace AI_Helper.Utils
                 //    "s" //папка "s" с сценами для стидии
                 //    };
 
-                if (string.Compare(Path.GetFileName(dir), "f", true) == 0)
+                string theDirName = Path.GetFileName(dir);
+                if (ManageStrings.IsStringAequalsStringB(theDirName, "f", true))
                 {
                     //папка "f" с женскими карточками внутри
                     MoveImagesToTargetContentFolder(dir, "f");
                 }
-                else if (string.Compare(Path.GetFileName(dir), "m", true) == 0)
+                else if (ManageStrings.IsStringAequalsStringB(theDirName, "m", true))
                 {
                     //папка "m" с мужскими карточками внутри
                     MoveImagesToTargetContentFolder(dir, "m");
                 }
-                else if (string.Compare(Path.GetFileName(dir), "c", true) == 0)
+                else if (ManageStrings.IsStringAequalsStringB(theDirName, "c", true))
                 {
                     //папка "c" с координатами
                     MoveImagesToTargetContentFolder(dir, "c");
                 }
-                else if (string.Compare(Path.GetFileName(dir), "h", true) == 0)
+                else if (ManageStrings.IsStringAequalsStringB(theDirName, "h", true)
+                    || ManageStrings.IsStringAequalsStringB(theDirName, "h1", true)
+                    || ManageStrings.IsStringAequalsStringB(theDirName, "h2", true)
+                    || ManageStrings.IsStringAequalsStringB(theDirName, "h3", true)
+                    || ManageStrings.IsStringAequalsStringB(theDirName, "h4", true)
+                    )
                 {
                     //папка "h" с проектами домов
-                    MoveImagesToTargetContentFolder(dir, "h");
+                    MoveImagesToTargetContentFolder(dir, theDirName);
                 }
-                else if (string.Compare(Path.GetFileName(dir), "cf", true) == 0)
+                else if (ManageStrings.IsStringAequalsStringB(theDirName, "cf", true))
                 {
                     //папка "cf" с передними фреймами
                     MoveImagesToTargetContentFolder(dir, "cf");
                 }
-                else if (string.Compare(Path.GetFileName(dir), "cb", true) == 0)
+                else if (ManageStrings.IsStringAequalsStringB(theDirName, "cb", true))
                 {
                     //папка "cb" с задними фреймами
                     MoveImagesToTargetContentFolder(dir, "cb");
                 }
-                else if (string.Compare(Path.GetFileName(dir), "o", true) == 0)
+                else if (ManageStrings.IsStringAequalsStringB(theDirName, "o", true))
                 {
                     //папка "o" с оверлеями
                     MoveImagesToTargetContentFolder(dir, "o");
                 }
-                else if (string.Compare(Path.GetFileName(dir), "s", true) == 0)
+                else if (ManageStrings.IsStringAequalsStringB(theDirName, "s", true))
                 {
                     //папка "s" с сценами для стидии
                     MoveImagesToTargetContentFolder(dir, "s");
@@ -328,7 +333,7 @@ namespace AI_Helper.Utils
                         //    File.Move(img, TargetPath);
                         //}
 
-                        string theDirName = Path.GetFileName(dir);
+                        //string theDirName = Path.GetFileName(dir);
                         var cardsModDir = Path.Combine(Properties.Settings.Default.ModsPath, theDirName);
                         //var cardsModDir = GetResultTargetDirPathWithNameCheck(Properties.Settings.Default.ModsPath, Path.GetFileName(dir));
 
@@ -392,7 +397,12 @@ namespace AI_Helper.Utils
                     //TargetFolder = GetCoordinateFolder();
                     TargetFolder = GetUserDataSubFolder(MoveInThisFolder ? dir : " Coordinate", ContentType);
                 }
-                else if (ContentType == "h")
+                else if (ContentType == "h"
+                    || ContentType == "h1"
+                    || ContentType == "h2"
+                    || ContentType == "h3"
+                    || ContentType == "h4"
+                    )
                 {
                     //TargetFolder = GetCoordinateFolder();
                     TargetFolder = GetUserDataSubFolder(MoveInThisFolder ? dir : " Housing", ContentType);
@@ -418,6 +428,7 @@ namespace AI_Helper.Utils
                     TargetFolder = GetUserDataSubFolder(MoveInThisFolder ? dir : " Scenes", ContentType);
                 }
 
+                //Для всех, сброс png из корневой папки в целевую
                 foreach (var target in Directory.GetFiles(dir, "*" + Extension))
                 {
                     var CardframeTargetFolder = ManageFilesFolders.GetResultTargetFilePathWithNameCheck(TargetFolder, Path.GetFileNameWithoutExtension(target), Extension);
@@ -427,11 +438,14 @@ namespace AI_Helper.Utils
 
                 if (ContentType == "o")
                 {
-                    foreach (var target in Directory.GetDirectories(dir, "*"))
+                    ManageArchive.UnpackArchivesToSubfoldersWithSameName(dir, ".zip");
+                    foreach (var oSubDir in Directory.GetDirectories(dir, "*"))
                     {
-                        var ResultTargetPath = ManageFilesFolders.GetResultTargetDirPathWithNameCheck(Path.GetDirectoryName(TargetFolder), Path.GetFileName(target));
+                        string newTarget = ManageFilesFolders.MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(oSubDir);
+                        string targetDirName = Path.GetFileName(newTarget);
+                        var ResultTargetPath = ManageFilesFolders.GetResultTargetDirPathWithNameCheck(TargetFolder, targetDirName);
 
-                        Directory.Move(target, ResultTargetPath);
+                        Directory.Move(newTarget, ResultTargetPath);
                     }
                 }
                 else if (ContentType == "f")
@@ -448,14 +462,31 @@ namespace AI_Helper.Utils
                         MoveImagesToTargetContentFolder(dir, "m", MoveInThisFolder);
                     }
                 }
-                else if (ContentType == "h")
+                else if (ContentType == "h"
+                    || ContentType == "h1"
+                    || ContentType == "h2"
+                    || ContentType == "h3"
+                    || ContentType == "h4"
+                    )
                 {
-                    foreach (var typeDir in Directory.GetDirectories(dir))
+                    if (ContentType.Length == 2)
                     {
-                        foreach (var file in Directory.GetFiles(typeDir))
+                        foreach (var file in Directory.GetFiles(dir))
                         {
-                            File.Move(file, ManageFilesFolders.GetResultTargetFilePathWithNameCheck(Path.Combine(TargetFolder, Path.GetFileName(Path.GetDirectoryName(file))), Path.GetFileNameWithoutExtension(file), ".png"));
+                            File.Move(file, ManageFilesFolders.GetResultTargetFilePathWithNameCheck(TargetFolder, Path.GetFileNameWithoutExtension(file), ".png"));
                         }
+                    }
+                    else
+                    {
+                        foreach (var typeDir in Directory.GetDirectories(dir))
+                        {
+                            string hSubDirName = Path.GetFileName(typeDir);
+                            foreach (var file in Directory.GetFiles(typeDir))
+                            {
+                                File.Move(file, ManageFilesFolders.GetResultTargetFilePathWithNameCheck(Path.Combine(TargetFolder, hSubDirName), Path.GetFileNameWithoutExtension(file), ".png"));
+                            }
+                        }
+
                     }
                 }
 
@@ -489,10 +520,15 @@ namespace AI_Helper.Utils
                 TargetFolderName = "coordinate";
                 //TypeFolder = "";
             }
-            else if (Type == "h")
+            else if (Type == "h"
+                || Type == "h1"
+                || Type == "h2"
+                || Type == "h3"
+                || Type == "h4"
+                )
             {
-                //TypeFolder = "";
-                TargetFolderName = "housing";
+                TypeFolder = "housing";
+                TargetFolderName = Type.Length == 2 ? "0" + Type.Remove(0, 1) : string.Empty;
             }
             else if (Type == "cf")
             {
@@ -559,12 +595,18 @@ namespace AI_Helper.Utils
                 string ZipName = Path.GetFileNameWithoutExtension(zipfile);
                 string targetFileAny = string.Empty;
 
+                int filesCount = 0;
+
                 using (ZipArchive archive = ZipFile.OpenRead(zipfile))
                 {
                     int archiveEntriesCount = archive.Entries.Count;
                     for (int entrieNum = 0; entrieNum < archiveEntriesCount; entrieNum++)
                     {
                         string entryName = archive.Entries[entrieNum].Name;
+                        if (entryName.Length > 0 && entryName.Contains("."))
+                        {
+                            filesCount++;
+                        }
                         string entryFullName = archive.Entries[entrieNum].FullName;
 
                         int entryFullNameLength = entryFullName.Length;
@@ -592,12 +634,26 @@ namespace AI_Helper.Utils
                         {
                             if (entryFullNameLength >= 7 && string.Compare(entryFullName.Substring(entryFullNameLength - 7, 7), ".zipmod", true) == 0)//entryFullName==".zipmod"
                             {
-                                archive.Entries[entrieNum].ExtractToFile(Path.Combine(Properties.Settings.Default.Install2MODirPath, entryName));
+                                if (filesCount > 1)
+                                {
+                                    archive.ExtractToDirectory(Path.Combine(Properties.Settings.Default.Install2MODirPath, Path.GetFileNameWithoutExtension(zipfile)));
+                                }
+                                else
+                                {
+                                    archive.Entries[entrieNum].ExtractToFile(Path.Combine(Properties.Settings.Default.Install2MODirPath, entryName));
+                                }
                                 break;
                             }
                             else if (entryFullNameLength >= 4 && string.Compare(entryFullName.Substring(entryFullNameLength - 4, 4), ".zip", true) == 0)
                             {
-                                archive.Entries[entrieNum].ExtractToFile(Path.Combine(Properties.Settings.Default.Install2MODirPath, entryName + "mod"));
+                                if (filesCount > 1)
+                                {
+                                    archive.ExtractToDirectory(Path.Combine(Properties.Settings.Default.Install2MODirPath, Path.GetFileNameWithoutExtension(zipfile)));
+                                }
+                                else
+                                {
+                                    archive.Entries[entrieNum].ExtractToFile(Path.Combine(Properties.Settings.Default.Install2MODirPath, entryName + "mod"));
+                                }
                                 break;
                             }
                         }
@@ -796,7 +852,14 @@ namespace AI_Helper.Utils
                 }
                 else if (FoundModsDir)
                 {
-                    File.Move(zipfile, zipfile + ".InstalledExtractedZipmod");
+                    if (filesCount > 1)
+                    {
+                        File.Move(zipfile, zipfile + ".InstalledExtractedToSubfolder");
+                    }
+                    else
+                    {
+                        File.Move(zipfile, zipfile + ".InstalledExtractedZipmod");
+                    }
                 }
                 else if (FoundcsFiles)
                 {
@@ -828,13 +891,27 @@ namespace AI_Helper.Utils
         {
             foreach (var dirIn2mo in Directory.GetDirectories(Properties.Settings.Default.Install2MODirPath, "*"))
             {
-                if (dirIn2mo.Length >= 4 && string.Compare(dirIn2mo.Substring(dirIn2mo.Length - 4, 4), "Temp", true) == 0)//path ends with 'Temp'
+                string name = Path.GetFileName(dirIn2mo);
+                if (ManageStrings.IsStringAequalsStringB(name, "Temp", true) 
+                    || ManageStrings.IsStringAequalsStringB(name, "f")
+                    || ManageStrings.IsStringAequalsStringB(name, "m")
+                    || ManageStrings.IsStringAequalsStringB(name, "c")
+                    || ManageStrings.IsStringAequalsStringB(name, "cf")
+                    || ManageStrings.IsStringAequalsStringB(name, "cb")
+                    || ManageStrings.IsStringAequalsStringB(name, "h")
+                    || ManageStrings.IsStringAequalsStringB(name, "h1")
+                    || ManageStrings.IsStringAequalsStringB(name, "h2")
+                    || ManageStrings.IsStringAequalsStringB(name, "h3")
+                    || ManageStrings.IsStringAequalsStringB(name, "h4")
+                    || ManageStrings.IsStringAequalsStringB(name, "o")
+                    || ManageStrings.IsStringAequalsStringB(name, "s")
+                    )//path ends with 'Temp'
                 {
                     continue;
                 }
 
-                string dir = dirIn2mo;
-                string name = Path.GetFileName(dir);
+                string dir = ManageFilesFolders.MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(dirIn2mo);
+                name = Path.GetFileName(dir);
                 string category = string.Empty;
                 string version = string.Empty;
                 string author = string.Empty;
@@ -847,12 +924,14 @@ namespace AI_Helper.Utils
                 string[] subDirs = Directory.GetDirectories(dir, "*");
 
                 //when was extracted archive where is one folder with same name and this folder contains game files
-                if (subDirs.Length == 1 && Path.GetFileName(subDirs[0]) == name)
-                {
-                    //re-set dir to this one subdir and get dirs from there
-                    dir = subDirs[0];
-                    subDirs = Directory.GetDirectories(dir, "*");
-                }
+                //upd. уже сделано выше через ManageFilesFolders.MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(dirIn2mo)
+                //if (subDirs.Length == 1 && Path.GetFileName(subDirs[0]) == name)
+                //{
+                //    //re-set dir to this one subdir and get dirs from there
+                //    dir = subDirs[0];
+                //    subDirs = Directory.GetDirectories(dir, "*");
+                //}
+
                 int subDirsLength = subDirs.Length;
                 for (int i = 0; i < subDirsLength; i++)
                 {
@@ -920,7 +999,19 @@ namespace AI_Helper.Utils
                     string targetfilepath = "readme.txt";
                     foreach (var file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
                     {
-                        if (string.Compare(Path.GetExtension(file), ".unity3d", true) == 0)//if extension == .unity3d
+                        if (Path.GetExtension(file) == ".zipmod")
+                        {
+                            string newpath = Path.Combine(ManageSettings.GetInstall2MODirPath(), Path.GetFileName(file));
+                            File.Move(file, newpath);
+                            InstallZipModsToMods();
+                        }
+                        else if (Path.GetExtension(file) == ".dll")
+                        {
+                            string newpath = Path.Combine(ManageSettings.GetInstall2MODirPath(), Path.GetFileName(file));
+                            File.Move(file, newpath);
+                            InstallBepinExModsToMods();
+                        }
+                        else if (string.Compare(Path.GetExtension(file), ".unity3d", true) == 0)//if extension == .unity3d
                         {
                             //string[] datafiles = Directory.GetFiles(dir, Path.GetFileName(file), SearchOption.AllDirectories);
 
@@ -1092,7 +1183,17 @@ namespace AI_Helper.Utils
                             {
                                 author = dllInfo.LegalCopyright;
                                 //"Copyright © AuthorName 2019"
-                                author = author.Length >= 4 ? author.Remove(author.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim() : author;
+                                if (!string.IsNullOrEmpty(author))
+                                {
+                                    if (author.Length >= 4)//удаление года, строка должна быть не менее 4 символов для этого
+                                    {
+                                        author = author.Remove(author.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim();
+                                    }
+                                }
+                                else
+                                {
+                                    author = string.Empty;
+                                }
                             }
                         }
                     }
@@ -1356,7 +1457,7 @@ namespace AI_Helper.Utils
                     File.Move(zipfile, targetZipFile);
 
                     //Перемещение файлов мода, начинающихся с того же имени в папку этого мода
-                    string[] PossibleFilesOfTheMod = Directory.GetFiles(Properties.Settings.Default.Install2MODirPath, "*.*").Where(file => Path.GetFileName(file).Trim().StartsWith(zipArchiveName)).ToArray();
+                    string[] PossibleFilesOfTheMod = Directory.GetFiles(Properties.Settings.Default.Install2MODirPath, "*.*").Where(file => Path.GetFileName(file).Trim().StartsWith(zipArchiveName) && !Path.GetExtension(file).Contains("Extracted") && !Path.GetExtension(file).Contains("Installed")).ToArray();
                     int PossibleFilesOfTheModLength = PossibleFilesOfTheMod.Length;
                     if (PossibleFilesOfTheModLength > 0)
                     {
@@ -1389,7 +1490,7 @@ namespace AI_Helper.Utils
                     //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + website + " \"");
                     //INI.WriteINI("General", "validated", "true");
 
-                    ManageMO.ActivateInsertModIfPossible(Path.GetFileName(zipmoddirpath),true);
+                    ManageMO.ActivateInsertModIfPossible(Path.GetFileName(zipmoddirpath), true);
                 }
             }
         }

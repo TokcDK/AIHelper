@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,12 +27,22 @@ namespace AI_Helper.Utils
             {
                 foreach (var file in Directory.GetFiles(dirForSearch, "*" + extension, SearchOption.AllDirectories))
                 {
-                    string targetDir = ManageFilesFolders.GetResultTargetFilePathWithNameCheck(Path.GetDirectoryName(file), Path.GetFileNameWithoutExtension(file), extension);
+                    string targetDir = ManageFilesFolders.GetResultTargetDirPathWithNameCheck(dirForSearch, Path.GetFileNameWithoutExtension(file));
                     if (!Directory.Exists(targetDir))
                     {
                         try
                         {
-                            Compressor.Decompress(file, targetDir);
+                            if (extension.EndsWith("zip"))
+                            {
+                                using (ZipArchive archive = ZipFile.OpenRead(file))
+                                {
+                                    archive.ExtractToDirectory(targetDir);
+                                }
+                            }
+                            else
+                            {
+                                Compressor.Decompress(file, targetDir);
+                            }
                             //File.Delete(file);
                             File.Move(file, file + ".ExtractedAndShouldHaveBeenInstalled");
                         }

@@ -166,27 +166,30 @@ namespace AI_Helper.Utils
             return false;
         }
 
-        public static void DeleteEmptySubfolders(string dataPath, bool DeleteThisDir = true, string[] Exclusions = null)
+        public static void DeleteEmptySubfolders(string dirPath, bool DeleteThisDir = true, string[] Exclusions = null)
         {
-            string[] subfolders = Directory.GetDirectories(dataPath, "*");
-            int subfoldersLength = subfolders.Length;
-            if (subfoldersLength > 0)
+            if (Directory.Exists(dirPath))
             {
-                for (int d = 0; d < subfoldersLength; d++)
+                string[] subfolders = Directory.GetDirectories(dirPath, "*");
+                int subfoldersLength = subfolders.Length;
+                if (subfoldersLength > 0)
                 {
-                    DeleteEmptySubfolders(subfolders[d], !TrueIfStringInExclusionsList(subfolders[d], Exclusions), Exclusions);
+                    for (int d = 0; d < subfoldersLength; d++)
+                    {
+                        DeleteEmptySubfolders(subfolders[d], !TrueIfStringInExclusionsList(subfolders[d], Exclusions), Exclusions);
+                    }
                 }
-            }
 
-            if (DeleteThisDir && CheckDirectoryNullOrEmpty_Fast(dataPath)/*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)
-            {
-                Directory.Delete(dataPath);
+                if (DeleteThisDir && CheckDirectoryNullOrEmpty_Fast(dirPath)/*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)
+                {
+                    Directory.Delete(dirPath);
+                }
             }
         }
 
-        public static StringBuilder GetEmptySubfoldersPaths(string dataPath, StringBuilder retArray)
+        public static StringBuilder GetEmptySubfoldersPaths(string dirPath, StringBuilder retArray)
         {
-            string[] subfolders = Directory.GetDirectories(dataPath, "*");
+            string[] subfolders = Directory.GetDirectories(dirPath, "*");
             int subfoldersLength = subfolders.Length;
             if (subfoldersLength > 0)
             {
@@ -196,9 +199,9 @@ namespace AI_Helper.Utils
                 }
             }
 
-            if (CheckDirectoryNullOrEmpty_Fast(dataPath)/*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)
+            if (CheckDirectoryNullOrEmpty_Fast(dirPath)/*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)
             {
-                return retArray.AppendLine(dataPath);
+                return retArray.AppendLine(dirPath);
             }
             else
             {
@@ -331,17 +334,17 @@ namespace AI_Helper.Utils
         /// <summary>
         /// Проверки существования целевой папки и модификация имени на уникальное
         /// </summary>
-        /// <param name="ParentFolder"></param>
-        /// <param name="TargetFolder"></param>
+        /// <param name="ParentFolderPath"></param>
+        /// <param name="TargetFolderName"></param>
         /// <returns></returns>
-        public static string GetResultTargetDirPathWithNameCheck(string ParentFolder, string TargetFolder)
+        public static string GetResultTargetDirPathWithNameCheck(string ParentFolderPath, string TargetFolderName)
         {
-            string ResultTargetDirPath = Path.Combine(ParentFolder, TargetFolder);
+            string ResultTargetDirPath = Path.Combine(ParentFolderPath, TargetFolderName);
             int i = 0;
             while (Directory.Exists(ResultTargetDirPath))
             {
                 i++;
-                ResultTargetDirPath = Path.Combine(ParentFolder, TargetFolder + " (" + i + ")");
+                ResultTargetDirPath = Path.Combine(ParentFolderPath, TargetFolderName + " (" + i + ")");
             }
             return ResultTargetDirPath;
         }
@@ -372,6 +375,58 @@ namespace AI_Helper.Utils
                 }
             }
             return string.Empty;
+        }
+
+        public static bool IsInTheFolderOnlyOneFolder(string folderPath)
+        {
+            int cnt = 1;
+            foreach (var file in Directory.GetFiles(folderPath))
+            {
+                cnt--;
+                if (cnt == 0)
+                {
+                    return false;
+                }
+            }
+            cnt = 2;
+            foreach (var dir in Directory.GetDirectories(folderPath))
+            {
+                cnt--;
+                if (cnt == 0)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public static string MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(string folderPath)
+        {
+            if (IsInTheFolderOnlyOneFolder(folderPath))
+            {
+                foreach (var oDirSubdir in Directory.GetDirectories(folderPath))
+                {
+                    string oDirSubdirName = Path.GetFileName(oDirSubdir);
+                    string folderParentDirPath = Path.GetDirectoryName(folderPath);
+                    if (oDirSubdirName == Path.GetFileName(folderPath))
+                    {
+                        string newSubDirPath = GetResultTargetDirPathWithNameCheck(folderParentDirPath, oDirSubdirName);
+                        Directory.Move(oDirSubdir, newSubDirPath);
+                        Directory.Delete(folderPath);
+                        Directory.Move(newSubDirPath, folderPath);
+                    }
+                    else
+                    {
+                        string newDirPath = Path.Combine(folderParentDirPath, oDirSubdirName);
+                        Directory.Move(oDirSubdir, newDirPath);
+                        Directory.Delete(folderPath);
+                        return newDirPath;
+                    }
+                }
+            }
+
+            return folderPath;
         }
     }
 }

@@ -604,6 +604,13 @@ namespace AI_Helper.Utils
                     int archiveEntriesCount = archive.Entries.Count;
                     for (int entrieNum = 0; entrieNum < archiveEntriesCount; entrieNum++)
                     {
+                        //если один файл, распаковать в подпапку
+                        if (filesCount == 1)
+                        {
+                            archive.ExtractToDirectory(Path.Combine(Properties.Settings.Default.Install2MODirPath, Path.GetFileNameWithoutExtension(zipfile)));
+                            break;
+                        }
+
                         string entryName = archive.Entries[entrieNum].Name;
                         string entryFullName = archive.Entries[entrieNum].FullName;
 
@@ -618,7 +625,7 @@ namespace AI_Helper.Utils
                         {
                             if (
                                    (entryFullNameLength >= 7 && (string.Compare(entryFullName.Substring(entryFullNameLength - 7, 6), "abdata", true) == 0 || string.Compare(entryFullName.Substring(0, 6), "abdata", true) == 0)) //entryFullName=="abdata/"
-                                || (entryFullNameLength >= 6 && (string.Compare(entryFullName.Substring(entryFullNameLength - 6, 5), "_data", true) == 0 || string.Compare(entryFullName.Substring(0, 5), "_data", true) == 0)) //entryFullName=="_data/"
+                                || (entryFullNameLength >= 6 && (string.Compare(entryFullName.Substring(entryFullNameLength - 6, 5), "_data", true) == 0/*тут только проверка на окончание нужна || string.Compare(entryFullName.Substring(0, 5), "_data", true) == 0*/)) //entryFullName=="_data/"
                                 || (entryFullNameLength >= 8 && (string.Compare(entryFullName.Substring(entryFullNameLength - 8, 7), "bepinex", true) == 0 || string.Compare(entryFullName.Substring(0, 7), "bepinex", true) == 0)) //entryFullName=="bepinex/"
                                 || (entryFullNameLength >= 9 && (string.Compare(entryFullName.Substring(entryFullNameLength - 9, 8), "userdata", true) == 0 || string.Compare(entryFullName.Substring(0, 8), "userdata", true) == 0)) //entryFullName=="userdata/"
                                )
@@ -743,7 +750,11 @@ namespace AI_Helper.Utils
                     }
                 }
 
-                if (FoundZipMod)
+                if (filesCount == 1)
+                {
+                    File.Move(zipfile, zipfile + ".ExtractedToSubdirAndMustBeInstalled");
+                }
+                else if (FoundZipMod)
                 {
                     //если файл имеет расширение zip. Надо, т.к. здесь может быть файл zipmod
                     if (zipfile.Length >= 4 && string.Compare(zipfile.Substring(zipfile.Length - 4, 4), ".zip", true) == 0)
@@ -890,7 +901,7 @@ namespace AI_Helper.Utils
             foreach (var dirIn2mo in Directory.GetDirectories(Properties.Settings.Default.Install2MODirPath, "*"))
             {
                 string name = Path.GetFileName(dirIn2mo);
-                if (ManageStrings.IsStringAequalsStringB(name, "Temp", true) 
+                if (ManageStrings.IsStringAequalsStringB(name, "Temp", true)
                     || ManageStrings.IsStringAequalsStringB(name, "f")
                     || ManageStrings.IsStringAequalsStringB(name, "m")
                     || ManageStrings.IsStringAequalsStringB(name, "c")
@@ -1408,7 +1419,8 @@ namespace AI_Helper.Utils
                 }
 
                 string zipArchiveName = Path.GetFileNameWithoutExtension(zipfile);
-                if (IsManifestFound && game == "AI Girl")
+                bool gameEmpty = game.Length == 0;
+                if (IsManifestFound && (gameEmpty || game == "AI Girl"))
                 {
                     if (name.Length == 0)
                     {
@@ -1416,21 +1428,29 @@ namespace AI_Helper.Utils
                     }
 
                     //добавление имени автора в начало имени папки
-                    if (name.StartsWith("[AI][") || (name.StartsWith("[") && !name.StartsWith("[AI]")) || ManageStrings.IsStringAContainsStringB(name, author))
-                    {
-                    }
-                    else if (author.Length > 0)
-                    {
-                        //проверка на любые невалидные для имени папки символы
-                        if (ManageFilesFolders.ContainsAnyInvalidCharacters(author))
-                        {
-                        }
-                        else
-                        {
-                            name = "[" + author + "]" + name;
-                        }
-                    }
+                    name = ManageStrings.AddStringBToAIfValid(name, author);
+                    //if (name.StartsWith("[AI][") || (name.StartsWith("[") && !name.StartsWith("[AI]")) || ManageStrings.IsStringAContainsStringB(name, author))
+                    //{
+                    //}
+                    //else if (author.Length > 0)
+                    //{
+                    //    //проверка на любые невалидные для имени папки символы
+                    //    if (ManageFilesFolders.ContainsAnyInvalidCharacters(author))
+                    //    {
+                    //    }
+                    //    else
+                    //    {
+                    //        name = "[" + author + "]" + name;
+                    //    }
+                    //}
 
+                    //устанавливать имя папки из имени архива, если оно длиннее
+                    if (zipArchiveName.Length > name.Length)
+                    {
+                        name = zipArchiveName;
+                        //добавление автора к имени папки, если не пустое и валидное
+                        name = ManageStrings.AddStringBToAIfValid(name, author);
+                    }
                     //string zipmoddirpath = GetResultTargetDirPathWithNameCheck(Properties.Settings.Default.ModsPath, name);
                     string zipmoddirpath = Path.Combine(Properties.Settings.Default.ModsPath, name);
                     string zipmoddirmodspath = Path.Combine(zipmoddirpath, "mods");
@@ -1460,7 +1480,7 @@ namespace AI_Helper.Utils
                     File.Move(zipfile, targetZipFile);
 
                     //Перемещение файлов мода, начинающихся с того же имени в папку этого мода
-                    string[] PossibleFilesOfTheMod = Directory.GetFiles(Properties.Settings.Default.Install2MODirPath, "*.*").Where(file => Path.GetFileName(file).Trim().StartsWith(zipArchiveName) && !Path.GetExtension(file).Contains("Extracted") && !Path.GetExtension(file).Contains("Installed")).ToArray();
+                    string[] PossibleFilesOfTheMod = Directory.GetFiles(Properties.Settings.Default.Install2MODirPath, "*.*").Where(file => Path.GetFileName(file).Trim().StartsWith(zipArchiveName) && ManageStrings.IsStringAContainsAnyStringFromStringArray(Path.GetExtension(file), new string[7] { ".txt", ".png", ".jpg", ".jpeg", ".bmp", ".doc", ".rtf" })).ToArray();
                     int PossibleFilesOfTheModLength = PossibleFilesOfTheMod.Length;
                     if (PossibleFilesOfTheModLength > 0)
                     {
@@ -1483,7 +1503,7 @@ namespace AI_Helper.Utils
                         ,
                         update ? string.Empty : "Requires: Sideloader plugin"
                         ,
-                        update ? string.Empty : "<br>Author: " + author + "<br><br>" + description + "<br><br>" + website
+                        update ? string.Empty : "<br>Author: " + author + "<br><br>" + description + "<br><br>" + website + (gameEmpty ? "<br>WARNING: Game field for the Sideloader plugin was empty. Check the plugin manually if need.": string.Empty)
                         );
                     //Utils.IniFile INI = new Utils.IniFile(Path.Combine(zipmoddirpath, "meta.ini"));
                     //INI.WriteINI("General", "category", string.Empty);

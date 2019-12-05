@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AI_Helper.Utils
+﻿namespace AI_Helper.Utils
 {
     class ManageStrings
     {
@@ -46,7 +40,48 @@ namespace AI_Helper.Utils
 
         public static bool IsStringAequalsStringB(string StringA, string StringB, bool ignoreCase = false)
         {
-            return string.Compare(StringA, StringB, ignoreCase) == 0;
+            if (ignoreCase)
+            {
+                return string.Compare(StringA, StringB, ignoreCase) == 0;
+            }
+            else
+            {
+                return string.CompareOrdinal(StringA, StringB) == 0;
+            }
+        }
+
+        public static string AddStringBToAIfValid(string StringA, string StringB)
+        {
+            //добавление имени автора в начало имени папки
+            if (StringA.StartsWith("[AI][") || (StringA.StartsWith("[") && !StringA.StartsWith("[AI]")) || ManageStrings.IsStringAContainsStringB(StringA, StringB))
+            {
+            }
+            else if (StringB.Length > 0)
+            {
+                //проверка на любые невалидные для имени папки символы
+                if (ManageFilesFolders.ContainsAnyInvalidCharacters(StringB))
+                {
+                }
+                else
+                {
+                    StringA = "[" + StringB + "]" + StringA;
+                }
+            }
+
+            return StringA;
+        }
+
+        public static bool IsStringAContainsAnyStringFromStringArray(string StringA, string[] StringArray)
+        {
+            foreach (var StringB in StringArray)
+            {
+                if (IsStringAContainsStringB(StringA, StringB))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

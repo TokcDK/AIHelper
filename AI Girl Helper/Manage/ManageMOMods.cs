@@ -599,14 +599,12 @@ namespace AI_Helper.Utils
 
                 using (ZipArchive archive = ZipFile.OpenRead(zipfile))
                 {
+                    filesCount = ManageArchive.GetFilesCountInZipArchive(archive);
+
                     int archiveEntriesCount = archive.Entries.Count;
                     for (int entrieNum = 0; entrieNum < archiveEntriesCount; entrieNum++)
                     {
                         string entryName = archive.Entries[entrieNum].Name;
-                        if (entryName.Length > 0 && entryName.Contains("."))
-                        {
-                            filesCount++;
-                        }
                         string entryFullName = archive.Entries[entrieNum].FullName;
 
                         int entryFullNameLength = entryFullName.Length;
@@ -1363,6 +1361,11 @@ namespace AI_Helper.Utils
             string TempDir = Path.Combine(Properties.Settings.Default.Install2MODirPath, "Temp");
             foreach (var zipfile in Directory.GetFiles(Properties.Settings.Default.Install2MODirPath, "*.zipmod"))
             {
+                if (!File.Exists(zipfile))
+                {
+                    continue;
+                }
+
                 string guid = string.Empty;
                 string name = string.Empty;
                 string version = string.Empty;

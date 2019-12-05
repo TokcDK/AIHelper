@@ -54,5 +54,39 @@ namespace AI_Helper.Utils
                 }
             }
         }
+        
+        // Number of files within zip archive
+        public static int GetFilesCountInZipArchive(ZipArchive InputArchive=null, string zipFilePath="")
+        {
+            int count = 0;
+
+            if (InputArchive != null)
+            {
+                // We count only named (i.e. that are with files) entries
+                foreach (var entry in InputArchive.Entries)
+                {
+                    if (!string.IsNullOrEmpty(entry.Name))
+                    {
+                        count++;
+                    }
+                }
+            }
+            else if (zipFilePath.Length>0)
+            {
+                using (ZipArchive archive = ZipFile.Open(zipFilePath, ZipArchiveMode.Read))
+                {
+                    // We count only named (i.e. that are with files) entries
+                    foreach (var entry in archive.Entries)
+                    {
+                        if (!string.IsNullOrEmpty(entry.Name))
+                        {
+                            count++;
+                        }
+                    }
+                }
+            }
+
+            return count;
+        }
     }
 }

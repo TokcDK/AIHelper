@@ -274,29 +274,30 @@ namespace AI_Helper.Utils
 
         }
 
-        public static void Symlink(string objectFileDir, string symlink, bool isRelative = false)
+        public static void Symlink(string objectFileDirPath, string symlinkPath, bool isRelative = false)
         {
-            if (File.Exists(symlink))
+            if (symlinkPath.Length == 0 || objectFileDirPath.Length == 0 || File.Exists(symlinkPath))
             {
             }
             else
             {
-                string parentdirpath = Path.GetDirectoryName(symlink);
-                if (Directory.Exists(parentdirpath))
+                string parentDirPath = Path.GetDirectoryName(symlinkPath);
+                if (Directory.Exists(parentDirPath))
                 {
                 }
                 else
                 {
-                    Directory.CreateDirectory(parentdirpath);
+                    Directory.CreateDirectory(parentDirPath);
                 }
-                if (File.Exists(objectFileDir))
+
+                if (File.Exists(objectFileDirPath))
                 {
-                    FileInfoExtensions.CreateSymbolicLink(new FileInfo(objectFileDir), symlink, isRelative);//new from NuGet package
+                    FileInfoExtensions.CreateSymbolicLink(new FileInfo(objectFileDirPath), symlinkPath, isRelative);//new from NuGet package
                     //CreateSymlink.File(file, symlink); //old
                 }
-                else if (Directory.Exists(objectFileDir))
+                else if (Directory.Exists(objectFileDirPath))
                 {
-                    DirectoryInfoExtensions.CreateSymbolicLink(new DirectoryInfo(objectFileDir), symlink, isRelative);//new from NuGet package
+                    DirectoryInfoExtensions.CreateSymbolicLink(new DirectoryInfo(objectFileDirPath), symlinkPath, isRelative);//new from NuGet package
                     //CreateSymlink.Folder(file, symlink); //old
                 }
             }

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 //using Crc32C;
 
 namespace AI_Helper
@@ -20,6 +21,7 @@ namespace AI_Helper
 
         //constants
         private static string AppResDir { get => Properties.Settings.Default.AppResDir; set => Properties.Settings.Default.AppResDir = value; }
+
         private static string ModsPath { get => Properties.Settings.Default.ModsPath; set => Properties.Settings.Default.ModsPath = value; }
         private static string DownloadsPath { get => Properties.Settings.Default.DownloadsPath; set => Properties.Settings.Default.DownloadsPath = value; }
         private static string DataPath { get => Properties.Settings.Default.DataPath; set => Properties.Settings.Default.DataPath = value; }
@@ -29,12 +31,14 @@ namespace AI_Helper
         private static string OverwriteFolderLink { get => Properties.Settings.Default.OverwriteFolderLink; set => Properties.Settings.Default.OverwriteFolderLink = value; }
         private static string SetupXmlPath { get => Properties.Settings.Default.SetupXmlPath; set => Properties.Settings.Default.SetupXmlPath = value; }
         private static string ApplicationStartupPath { /*get => Properties.Settings.Default.ApplicationStartupPath; */set => Properties.Settings.Default.ApplicationStartupPath = value; }
+
         //private static string ModOrganizerINIpath { get => Properties.Settings.Default.ModOrganizerINIpath; set => Properties.Settings.Default.ModOrganizerINIpath = value; }
         private static string Install2MODirPath { get => Properties.Settings.Default.Install2MODirPath; set => Properties.Settings.Default.Install2MODirPath = value; }
+
         private static bool MOmode { get => Properties.Settings.Default.MOmode; set => Properties.Settings.Default.MOmode = value; }
 
-        Game CurrentGame;
-        List<Game> ListOfGames;
+        private Game CurrentGame;
+        private List<Game> ListOfGames;
 
         public AIHelper()
         {
@@ -52,7 +56,7 @@ namespace AI_Helper
             //if (Registry.GetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", null) == null)
             //{
             //    FixRegistryButton.Visible = true;
-            //} 
+            //}
 
             Properties.Settings.Default.INITDone = true;
         }
@@ -144,7 +148,8 @@ namespace AI_Helper
             QualityComboBox.Items.Add(T._("Quality"));
         }
 
-        int mode = 0;
+        private int mode = 0;
+
         private void Button1_Click(object sender, EventArgs e)
         {
             button1.Enabled = false;
@@ -154,12 +159,15 @@ namespace AI_Helper
                 case 0:
                     CompressingMode();
                     break;
+
                 case 1:
                     AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
                     break;
+
                 case 2:
                     ExtractingMode();
                     break;
+
                 default:
                     break;
             }
@@ -171,7 +179,7 @@ namespace AI_Helper
         {
             button1.Text = T._("Extracting") + "..";
 
-            //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+            //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5
             await Task.Run(() => UnpackGame());
             await Task.Run(() => UnpackMO());
             await Task.Run(() => UnpackMods());
@@ -270,7 +278,6 @@ namespace AI_Helper
                 {
                     Compressor.Decompress(separators, ModsPath);
                 }
-
             }
         }
 
@@ -280,7 +287,7 @@ namespace AI_Helper
             {
                 button1.Text = "Compressing..";
 
-                //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5 
+                //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5
                 //await Task.Run(() => PackGame());
                 //await Task.Run(() => PackMO());
                 await Task.Run(() => PackMods());
@@ -458,8 +465,7 @@ namespace AI_Helper
             //THMainResetTableButton
             ToolTip THToolTip = new ToolTip
             {
-
-                // Set up the delays for the ToolTip.                
+                // Set up the delays for the ToolTip.
                 AutoPopDelay = 120000,
                 InitialDelay = 1000,
                 ReshowDelay = 500,
@@ -525,8 +531,8 @@ namespace AI_Helper
             THToolTip.SetToolTip(OpenMOFolderLinkLabel, T._("Opens Mod Organizer folder"));
             THToolTip.SetToolTip(OpenMOOverwriteFolderLinkLabel, T._("Opens Overwrite folder of Mod Organizer with possible new generated files for selected game\n\nFiles here have highest priority and will be loaded over any enabled mod files"));
             THToolTip.SetToolTip(OpenMyUserDataFolderLinkLabel, T._("Opens MyUserData folder in Mods if exist\n\nHere placed usual User files of Organized ModPack for selected game"));
-            
-            THToolTip.SetToolTip(Open2MOLinkLabel, 
+
+            THToolTip.SetToolTip(Open2MOLinkLabel,
                 T._("Opens 2MO folder fo selected game" +
                 "\n\nHere can be placed mod files which you want to install for selected game in approriate subfolders in mods" +
                 "\nand then can be installed all by one click on") + " " + InstallInModsButton.Text + " " + T._("button") +
@@ -552,7 +558,7 @@ namespace AI_Helper
                 "\nSome recognized mods can be updated instead of be installed as new mod" +
                 "\nMost of mods will be automatically activated except .cs scripts" +
                 "\nwhich always optional and often it is cheats or can slowdown/break game")
-                
+
                 );
             ////////////////////////////
         }
@@ -592,7 +598,6 @@ namespace AI_Helper
             FullScreenCheckBox.Checked = bool.Parse(ManageXML.ReadXmlValue(SetupXmlPath, "Setting/FullScreen", FullScreenCheckBox.Checked.ToString().ToLower()));
 
             QualityComboBox.SelectedIndex = int.Parse(ManageXML.ReadXmlValue(SetupXmlPath, "Setting/Quality", "2"));
-
         }
 
         private void SetScreenResolution(string Resolution)
@@ -690,7 +695,6 @@ namespace AI_Helper
                 //string[] Archives7z;
                 //string[] ModDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();
 
-
                 //Archives7z = Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories);
                 //if (ModDirs.Length > 0 && Archives7z.Length > 0)
                 //{
@@ -763,7 +767,6 @@ namespace AI_Helper
 
                     //if (File.Exists(Path.Combine(DataPath, ManageSettings.GetCurrentGameEXEName() + ".exe")))
                     //{
-
                     //}
                     GetEnableDisableLaunchButtons();
                     MOCommonModeSwitchButton.Text = T._("MOToCommon");
@@ -964,13 +967,15 @@ namespace AI_Helper
             }
         }
 
-        readonly Dictionary<string, string> qualitylevels = new Dictionary<string, string>(3);
+        private readonly Dictionary<string, string> qualitylevels = new Dictionary<string, string>(3);
+
         private void QualityComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             SetGraphicsQuality((sender as ComboBox).SelectedIndex.ToString());
         }
 
         private LinksForm LinksForm;
+
         private void NewformButton_Click(object sender, EventArgs e)
         {
             if (LinksForm == null || LinksForm.IsDisposed)
@@ -1004,7 +1009,6 @@ namespace AI_Helper
             //https://stackoverflow.com/questions/3429445/how-to-move-two-windows-forms-together
             if (LinksForm == null || LinksForm.IsDisposed)
             {
-
             }
             else
             {
@@ -1163,7 +1167,6 @@ namespace AI_Helper
                                             }
                                         }
                                     }
-
                                 }
                             }
                         }
@@ -1244,7 +1247,6 @@ namespace AI_Helper
                                         }
                                         catch
                                         {
-
                                         }
                                     }
 
@@ -1401,7 +1403,6 @@ namespace AI_Helper
                         }
                     }
 
-
                     //Перемещение новых файлов
                     //
                     //добавление всех файлов из дата, которых нет в списке файлов модов и игры в дата, что был создан сразу после перехода в обычный режим
@@ -1425,7 +1426,6 @@ namespace AI_Helper
                     //подключить новый мод, если он существует
                     if (Directory.Exists(DestFolderPath))
                     {
-
                         //запись meta.ini
                         ManageMO.WriteMetaINI(
                             DestFolderPath
@@ -1535,7 +1535,6 @@ namespace AI_Helper
             {
                 Process.Start("explorer.exe", UserFilesFolder);
             }
-
         }
 
         private void OpenMOOverwriteFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

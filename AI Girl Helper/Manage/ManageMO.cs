@@ -1,5 +1,4 @@
-﻿using AI_Helper.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -219,7 +218,7 @@ namespace AI_Helper.Utils
                     continue;
                 }
 
-                if (curindex- skippedCnt > resultindex && exclude == 0)
+                if (curindex - skippedCnt > resultindex && exclude == 0)
                 {
                     resultindex++;
                 }
@@ -608,11 +607,11 @@ namespace AI_Helper.Utils
         /// Writes required parameters in meta.ini
         /// </summary>
         /// <param name="moddir"></param>
-        /// <param name="category"></param>
+        /// <param name="categoryIDIndex"></param>
         /// <param name="version"></param>
         /// <param name="comments"></param>
         /// <param name="notes"></param>
-        public static void WriteMetaINI(string moddir, string category = "", string version = "", string comments = "", string notes = "")
+        public static void WriteMetaINI(string moddir, string categoryIDIndex = "", string version = "", string comments = "", string notes = "")
         {
             if (Directory.Exists(moddir))
             {
@@ -620,9 +619,9 @@ namespace AI_Helper.Utils
                 IniFile INI = new IniFile(metaPath);
 
                 bool IsKeyExists = INI.KeyExists("category", "General");
-                if (!IsKeyExists || (IsKeyExists && category.Length > 0 && INI.ReadINI("General", "category").Replace("\"", string.Empty).Length == 0))
+                if (!IsKeyExists || (IsKeyExists && categoryIDIndex.Length > 0 && INI.ReadINI("General", "category").Replace("\"", string.Empty).Length == 0))
                 {
-                    INI.WriteINI("General", "category", "\"" + category + "\"");
+                    INI.WriteINI("General", "category", "\"" + categoryIDIndex + "\"");
                 }
 
                 if (version.Length > 0)
@@ -772,6 +771,113 @@ namespace AI_Helper.Utils
                 File.WriteAllText(ManageSettings.GetDummyFilePath(), "dummy file need to execute mod organizer");
                 ManageFilesFolders.HideFileFolder(ManageSettings.GetDummyFilePath(), true);
             }
+        }
+
+        public static string GetCategoryNameForTheIndex(string inputCategoryIndex, string[] categoriesList = null)
+        {
+            return GetCategoryIndexNameBase(inputCategoryIndex, categoriesList, true);
+        }
+
+        public static string GetCategoryIndexForTheName(string inputCategoryName, string[] categoriesList = null)
+        {
+            return GetCategoryIndexNameBase(inputCategoryName, categoriesList, false);
+        }
+
+        /// <summary>
+        /// GetName = true means will be returned categorie name by index else will be returned index by name
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="categoriesList"></param>
+        /// <param name="GetName"></param>
+        /// <returns></returns>
+        public static string GetCategoryIndexNameBase(string input, string[] categoriesList = null, bool GetName = true)
+        {
+            if (categoriesList == null)
+            {
+                categoriesList = File.ReadAllLines(ManageSettings.GetMOcategoriesPathForSelectedGame());
+            }
+            foreach (var category in categoriesList)
+            {
+                string[] categoryData = category.Split('|');
+                if (categoryData[GetName ? 0 : 1] == input)
+                {
+                    return categoryData[GetName ? 1 : 0];
+                }
+            }
+
+            return string.Empty;
+        }
+
+        public static string GetCategoriesForTheFolder(string moddir, string category, string[] categoriesList = null)
+        {
+            string Category = category;
+
+            if (categoriesList == null)
+            {
+                categoriesList = File.ReadAllLines(ManageSettings.GetMOcategoriesPathForSelectedGame());
+            }
+
+            string[,] Categories =
+            {
+                { Path.Combine(moddir, "BepInEx", "Plugins"), ManageMO.GetCategoryIndexForTheName("Plugins",categoriesList), "dll" } //Plug-ins 51
+                ,
+                { Path.Combine(moddir, "UserData"), ManageMO.GetCategoryIndexForTheName("UserFiles",categoriesList), "*" } //UserFiles 53
+                ,
+                { Path.Combine(moddir, "UserData", "chara"), ManageMO.GetCategoryIndexForTheName("Characters",categoriesList), "png" } //Characters 54
+                ,
+                { Path.Combine(moddir, "UserData", "studio", "scene"), ManageMO.GetCategoryIndexForTheName("Studio scenes",categoriesList), "png"} //Studio scenes 57
+                ,
+                { Path.Combine(moddir, "Mods"), ManageMO.GetCategoryIndexForTheName("Sideloader",categoriesList), "zip" } //Sideloader 60
+                ,
+                { Path.Combine(moddir, "scripts"), ManageMO.GetCategoryIndexForTheName("ScriptLoader scripts",categoriesList), "cs"} //ScriptLoader scripts 86
+                ,
+                { Path.Combine(moddir, "UserData", "coordinate"), ManageMO.GetCategoryIndexForTheName("Coordinate",categoriesList), "png"} //Coordinate 87
+                ,
+                { Path.Combine(moddir, "UserData", "Overlays"), ManageMO.GetCategoryIndexForTheName("Overlay",categoriesList), "png"} //Overlay 88
+                ,
+                { Path.Combine(moddir, "UserData", "housing"), ManageMO.GetCategoryIndexForTheName("Housing",categoriesList), "png"} //Housing 89
+                ,
+                { Path.Combine(moddir, "UserData", "housing"), ManageMO.GetCategoryIndexForTheName("Cardframe",categoriesList), "png"} //Cardframe 90
+            };
+
+            int CategoriesLength = Categories.Length / 3;
+            for (int i = 0; i < CategoriesLength; i++)
+            {
+                string dir = Categories[i, 0];
+                string categorieNum = Categories[i, 1];
+                string extension = Categories[i, 2];
+                if (
+                    (
+                        (category.Length > 0
+                        && !category.Contains("," + categorieNum)
+                        && !category.Contains(categorieNum + ",")
+                        )
+                     || category.Length == 0
+                    )
+                    && Directory.Exists(dir)
+                    && !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(dir)
+                    && ManageFilesFolders.IsAnyFileExistsInTheDir(dir, extension)
+                   )
+                {
+                    if (Category.Length > 0)
+                    {
+                        if (Category.Substring(Category.Length - 1, 1) == ",")
+                        {
+                            Category += categorieNum;
+                        }
+                        else
+                        {
+                            Category += "," + categorieNum;
+                        }
+                    }
+                    else
+                    {
+                        Category = categorieNum + ",";
+                    }
+                }
+            }
+
+            return Category;
         }
     }
 }

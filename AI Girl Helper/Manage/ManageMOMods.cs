@@ -135,7 +135,7 @@ namespace AI_Helper.Utils
                     ManageMO.WriteMetaINI(
                         moddir
                         ,
-                        IsUpdate ? string.Empty : "86,"
+                        IsUpdate ? string.Empty : ManageMO.GetCategoryIndexForTheName("ScriptLoader scripts") +","
                         ,
                         "0." + FileLastModificationTime
                         ,
@@ -317,7 +317,7 @@ namespace AI_Helper.Utils
                         ManageMO.WriteMetaINI(
                             cardsModDir
                             ,
-                            "54,"
+                            ManageMO.GetCategoryIndexForTheName("Characters")+","
                             ,
                             string.Empty
                             ,
@@ -1020,15 +1020,16 @@ namespace AI_Helper.Utils
                             {
                                 comment += " Requires: ScriptLoader";
                             }
-                            if (category.Length == 0 || !ManageStrings.IsStringAContainsStringB(comment, "86"))
+                            string categoryIndex = ManageMO.GetCategoryIndexForTheName("ScriptLoader scripts");
+                            if (categoryIndex.Length > 0 && (category.Length == 0 || !ManageStrings.IsStringAContainsStringB(category, categoryIndex)))
                             {
                                 if (category.Length == 0 || category == "-1,")
                                 {
-                                    category = "86,";
+                                    category = categoryIndex + ",";
                                 }
                                 else
                                 {
-                                    category += category.EndsWith(",") ? "86" : ",86";
+                                    category += category.EndsWith(",") ? categoryIndex : "," + categoryIndex;
                                 }
                             }
 
@@ -1173,7 +1174,7 @@ namespace AI_Helper.Utils
                     }
 
                     //Задание доп. категорий по наличию папок
-                    category = ManageFilesFolders.GetCategoriesForTheFolder(moddir, category);
+                    category = ManageMO.GetCategoriesForTheFolder(moddir, category);
 
                     //запись meta.ini
                     ManageMO.WriteMetaINI(
@@ -1303,7 +1304,7 @@ namespace AI_Helper.Utils
                 ManageMO.WriteMetaINI(
                     dllTargetModDirPath
                     ,
-                    IsUpdate ? string.Empty : "51,"
+                    IsUpdate ? string.Empty : ManageMO.GetCategoryIndexForTheName("Plugins")+","
                     ,
                     version
                     ,
@@ -1459,7 +1460,7 @@ namespace AI_Helper.Utils
                         ,
                         update ? string.Empty : "Requires: Sideloader plugin"
                         ,
-                        update ? string.Empty : "<br>Author: " + author + "<br><br>" + description + "<br><br>" + website + (gameEmpty ? "<br>WARNING: Game field for the Sideloader plugin was empty. Check the plugin manually if need.": string.Empty)
+                        update ? string.Empty : "<br>Author: " + author + "<br><br>" + description + "<br><br>" + website + (gameEmpty ? "<br>WARNING: Game field for the Sideloader plugin was empty. Check the plugin manually if need." : string.Empty)
                         );
                     //Utils.IniFile INI = new Utils.IniFile(Path.Combine(zipmoddirpath, "meta.ini"));
                     //INI.WriteINI("General", "category", string.Empty);

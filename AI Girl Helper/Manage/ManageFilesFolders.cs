@@ -276,10 +276,7 @@ namespace AI_Helper.Utils
 
         public static void Symlink(string objectFileDirPath, string symlinkPath, bool isRelative = false)
         {
-            if (symlinkPath.Length == 0 || objectFileDirPath.Length == 0 || File.Exists(symlinkPath))
-            {
-            }
-            else
+            if (symlinkPath.Length > 0 && objectFileDirPath.Length > 0)
             {
                 string parentDirPath = Path.GetDirectoryName(symlinkPath);
                 if (Directory.Exists(parentDirPath))
@@ -290,12 +287,12 @@ namespace AI_Helper.Utils
                     Directory.CreateDirectory(parentDirPath);
                 }
 
-                if (File.Exists(objectFileDirPath))
+                if (File.Exists(objectFileDirPath) && !File.Exists(symlinkPath))
                 {
                     FileInfoExtensions.CreateSymbolicLink(new FileInfo(objectFileDirPath), symlinkPath, isRelative);//new from NuGet package
                     //CreateSymlink.File(file, symlink); //old
                 }
-                else if (Directory.Exists(objectFileDirPath))
+                else if (Directory.Exists(objectFileDirPath) && !Directory.Exists(symlinkPath))
                 {
                     DirectoryInfoExtensions.CreateSymbolicLink(new DirectoryInfo(objectFileDirPath), symlinkPath, isRelative);//new from NuGet package
                     //CreateSymlink.Folder(file, symlink); //old

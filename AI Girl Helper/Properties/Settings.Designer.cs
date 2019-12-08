@@ -322,5 +322,17 @@ namespace AI_Helper.Properties {
                 this["INITDone"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string BepinExCfgPath {
+            get {
+                return ((string)(this["BepinExCfgPath"]));
+            }
+            set {
+                this["BepinExCfgPath"] = value;
+            }
+        }
     }
 }

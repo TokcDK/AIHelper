@@ -42,6 +42,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.BepInExConsoleCheckBox = new System.Windows.Forms.CheckBox();
             this.SelectedGameLabel1 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -240,6 +241,7 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.Gray;
+            this.panel2.Controls.Add(this.BepInExConsoleCheckBox);
             this.panel2.Controls.Add(this.SelectedGameLabel1);
             this.panel2.Controls.Add(this.label4);
             this.panel2.Controls.Add(this.label5);
@@ -256,6 +258,16 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(340, 155);
             this.panel2.TabIndex = 0;
+            // 
+            // BepInExConsoleCheckBox
+            // 
+            this.BepInExConsoleCheckBox.AutoSize = true;
+            this.BepInExConsoleCheckBox.Location = new System.Drawing.Point(320, 4);
+            this.BepInExConsoleCheckBox.Name = "BepInExConsoleCheckBox";
+            this.BepInExConsoleCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.BepInExConsoleCheckBox.TabIndex = 25;
+            this.BepInExConsoleCheckBox.UseVisualStyleBackColor = true;
+            this.BepInExConsoleCheckBox.CheckedChanged += new System.EventHandler(this.ConsoleCheckBox_CheckedChanged);
             // 
             // SelectedGameLabel1
             // 
@@ -309,7 +321,7 @@
             // 
             this.OpenLogLinkLabel.AutoSize = true;
             this.OpenLogLinkLabel.LinkColor = System.Drawing.Color.WhiteSmoke;
-            this.OpenLogLinkLabel.Location = new System.Drawing.Point(319, 0);
+            this.OpenLogLinkLabel.Location = new System.Drawing.Point(300, 3);
             this.OpenLogLinkLabel.Name = "OpenLogLinkLabel";
             this.OpenLogLinkLabel.Size = new System.Drawing.Size(21, 13);
             this.OpenLogLinkLabel.TabIndex = 20;
@@ -778,6 +790,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.LinkLabel Open2MOLinkLabel;
         private System.Windows.Forms.Label SelectedGameLabel1;
+        private System.Windows.Forms.CheckBox BepInExConsoleCheckBox;
     }
 }
 

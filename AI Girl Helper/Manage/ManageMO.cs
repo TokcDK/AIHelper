@@ -645,7 +645,7 @@ namespace AI_Helper.Utils
             }
         }
 
-        public static string[] GetModsListFromActiveMOProfile(bool OnlyEnabled = true)
+        public static string[] GetModNamesListFromActiveMOProfile(bool OnlyEnabled = true)
         {
             string currentMOprofile = ManageINI.GetINIValueIfExist(ManageSettings.GetMOiniPath(), "selected_profile", "General");
 
@@ -679,6 +679,44 @@ namespace AI_Helper.Utils
             }
 
             return null;
+        }
+
+        public static string GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(string pathInMods, bool IsDir = false)
+        {
+            //отсеивание первого элемента с именем мода
+            string subpath = string.Empty;
+            int i = 0;
+            foreach (var element in pathInMods.Replace(ManageSettings.GetModsPath(), string.Empty).Split(Path.DirectorySeparatorChar))
+            {
+                if (i > 0)
+                {
+                    subpath += element;
+                    subpath += Path.DirectorySeparatorChar;
+                }
+            }
+
+            //поиск по списку активных модов
+            string ModsPath = ManageSettings.GetModsPath();
+            foreach (var modName in GetModNamesListFromActiveMOProfile())
+            {
+                string possiblePath = Path.Combine(ModsPath, modName, subpath);
+                if (IsDir)
+                {
+                    if (Directory.Exists(Path.Combine()))
+                    {
+                        return possiblePath;
+                    }
+                }
+                else
+                {
+                    if (File.Exists(Path.Combine()))
+                    {
+                        return possiblePath;
+                    }
+                }
+            }
+
+            return pathInMods;
         }
 
         /// <summary>
@@ -748,7 +786,7 @@ namespace AI_Helper.Utils
         {
             if (!string.IsNullOrWhiteSpace(name))
             {
-                string[] modList = ManageMO.GetModsListFromActiveMOProfile(OnlyFromEnabledMods);
+                string[] modList = ManageMO.GetModNamesListFromActiveMOProfile(OnlyFromEnabledMods);
                 int nameLength = name.Length;
                 int modListLength = modList.Length;
                 for (int modlineNumber = 0; modlineNumber < modListLength; modlineNumber++)

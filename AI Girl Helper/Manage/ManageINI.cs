@@ -21,6 +21,16 @@ namespace AI_Helper.Utils
             }
             return defaultValue;
         }
+        public static bool WriteINIValue(string INIPath, string Section, string Key, string Value)
+        {
+            if (File.Exists(INIPath))
+            {
+                (new Utils.IniFile(INIPath)).WriteINI(Section, Key, Value);
+                return true;
+            }
+
+            return false;
+        }
 
         //https://social.msdn.microsoft.com/Forums/vstudio/en-US/8f713e50-0789-4bf6-865f-c87cdebd0b4f/insert-line-to-text-file-using-streamwriter-using-csharp?forum=csharpgeneral
         /// <summary>

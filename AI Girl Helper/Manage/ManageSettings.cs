@@ -199,5 +199,24 @@ namespace AI_Helper.Utils
                 ).ToList();
             return ListOfGames;
         }
+
+        public static string GetBepInExPath()
+        {
+            return Path.Combine(GetModsPath(), "BepInEx");
+        }
+
+        public static string GetBepInExCfgDirPath()
+        {
+            return ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(Path.Combine(GetBepInExPath(), "BepInEx", "config"), true);
+        }
+
+        public static string GetBepInExCfgFilePath()
+        {
+            if (Properties.Settings.Default.BepinExCfgPath.Length > 0)
+            {
+                return Properties.Settings.Default.BepinExCfgPath;
+            }
+            return ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(Path.Combine(GetBepInExCfgDirPath(), "BepInEx.cfg"));
+        }
     }
 }

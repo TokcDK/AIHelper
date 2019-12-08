@@ -662,7 +662,7 @@ namespace AI_Helper.Utils
                                         author = copyright.Remove(copyright.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim();
                                     }
 
-                                    string[] ModsList = ManageMO.GetModsListFromActiveMOProfile(false);
+                                    string[] ModsList = ManageMO.GetModNamesListFromActiveMOProfile(false);
 
                                     foreach (var ModFolder in ModsList)
                                     {

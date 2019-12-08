@@ -77,6 +77,7 @@ namespace AI_Helper
             OverwriteFolder = ManageSettings.GetOverwriteFolder();
             OverwriteFolderLink = ManageSettings.GetOverwriteFolderLink();
             SetupXmlPath = ManageMO.GetSetupXmlPathForCurrentProfile();
+            Properties.Settings.Default.BepinExCfgPath = ManageSettings.GetBepInExCfgFilePath();
         }
 
         private void SetListOfGames()
@@ -768,7 +769,7 @@ namespace AI_Helper
                     //if (File.Exists(Path.Combine(DataPath, ManageSettings.GetCurrentGameEXEName() + ".exe")))
                     //{
                     //}
-                    GetEnableDisableLaunchButtons();
+                    //GetEnableDisableLaunchButtons();
                     MOCommonModeSwitchButton.Text = T._("MOToCommon");
                 }
 
@@ -835,6 +836,15 @@ namespace AI_Helper
             SettingsButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"));
             GameButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetCurrentGameEXEName() + ".exe"));
             StudioButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetStudioEXEName() + ".exe"));
+            try
+            {
+                BepInExConsoleCheckBox.Checked = bool.Parse(ManageINI.GetINIValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "Enabled", "Logging.Console", "False"));
+            }
+            catch
+            {
+                BepInExConsoleCheckBox.Checked = false;
+            }
+            BepInExConsoleCheckBox.Enabled = Properties.Settings.Default.BepinExCfgPath.Length > 0;
         }
 
         private void CheckBox1_CheckedChanged(object sender, EventArgs e)
@@ -1097,7 +1107,7 @@ namespace AI_Helper
                     MOCommonModeSwitchButton.Enabled = false;
                     LanchModeInfoLinkLabel.Enabled = false;
 
-                    string[] EnabledModsList = ManageMO.GetModsListFromActiveMOProfile();
+                    string[] EnabledModsList = ManageMO.GetModNamesListFromActiveMOProfile();
                     int EnabledModsLength = EnabledModsList.Length;
 
                     if (EnabledModsList.Length == 0)
@@ -1565,6 +1575,11 @@ namespace AI_Helper
 
                 FoldersInit();
             }
+        }
+
+        private void ConsoleCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "Enabled", (sender as CheckBox).Checked.ToString());
         }
 
         //Материалы

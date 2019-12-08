@@ -42,6 +42,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.BepInExDisplayedLogLevelLabel = new System.Windows.Forms.Label();
             this.BepInExConsoleCheckBox = new System.Windows.Forms.CheckBox();
             this.SelectedGameLabel1 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -241,6 +242,7 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.Gray;
+            this.panel2.Controls.Add(this.BepInExDisplayedLogLevelLabel);
             this.panel2.Controls.Add(this.BepInExConsoleCheckBox);
             this.panel2.Controls.Add(this.SelectedGameLabel1);
             this.panel2.Controls.Add(this.label4);
@@ -254,10 +256,23 @@
             this.panel2.Controls.Add(this.MOButton);
             this.panel2.Controls.Add(this.SettingsButton);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.ForeColor = System.Drawing.SystemColors.ScrollBar;
             this.panel2.Location = new System.Drawing.Point(3, 3);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(340, 155);
             this.panel2.TabIndex = 0;
+            // 
+            // BepInExDisplayedLogLevelLabel
+            // 
+            this.BepInExDisplayedLogLevelLabel.AutoSize = true;
+            this.BepInExDisplayedLogLevelLabel.Location = new System.Drawing.Point(294, 16);
+            this.BepInExDisplayedLogLevelLabel.Name = "BepInExDisplayedLogLevelLabel";
+            this.BepInExDisplayedLogLevelLabel.Size = new System.Drawing.Size(27, 13);
+            this.BepInExDisplayedLogLevelLabel.TabIndex = 26;
+            this.BepInExDisplayedLogLevelLabel.Text = "Info";
+            this.BepInExDisplayedLogLevelLabel.Visible = false;
+            this.BepInExDisplayedLogLevelLabel.VisibleChanged += new System.EventHandler(this.BepInExDisplayedLogLevelLabel_VisibleChanged);
+            this.BepInExDisplayedLogLevelLabel.Click += new System.EventHandler(this.BepInExDisplayedLogLevelLabel_Click);
             // 
             // BepInExConsoleCheckBox
             // 
@@ -791,6 +806,7 @@
         private System.Windows.Forms.LinkLabel Open2MOLinkLabel;
         private System.Windows.Forms.Label SelectedGameLabel1;
         private System.Windows.Forms.CheckBox BepInExConsoleCheckBox;
+        private System.Windows.Forms.Label BepInExDisplayedLogLevelLabel;
     }
 }
 

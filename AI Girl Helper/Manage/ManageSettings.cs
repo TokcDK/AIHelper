@@ -218,5 +218,35 @@ namespace AI_Helper.Utils
             }
             return ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(Path.Combine(GetBepInExCfgDirPath(), "BepInEx.cfg"));
         }
+
+        public static void SwitchBepInExDisplayedLogLevelValue(CheckBox BepInExConsoleCheckBox, Label BepInExDisplayedLogLevelLabel, bool OnlyShow = false)
+        {
+            string curValue = ManageINI.GetINIValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "DisplayedLogLevel", "Logging.Console");
+            if (OnlyShow)
+            {
+                BepInExDisplayedLogLevelLabel.Text = curValue;
+            }
+            else //switch
+            {
+                string[] values = { "None", "Fatal", "Error", "Warning", "Message", "Info", "Debug", "All" };
+
+                bool setNext = false;
+                foreach (var value in values)
+                {
+                    if (setNext)
+                    {
+                        ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", " " + value);
+                        BepInExDisplayedLogLevelLabel.Text = value;
+                        return;
+                    }
+                    if (value == curValue)
+                    {
+                        setNext = true;
+                    }
+                }
+                ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", " " + values[0]);
+                BepInExDisplayedLogLevelLabel.Text = values[0];
+            }
+        }
     }
 }

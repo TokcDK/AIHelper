@@ -537,9 +537,9 @@ namespace AI_Helper
                 T._("Opens 2MO folder fo selected game" +
                 "\n\nHere can be placed mod files which you want to install for selected game in approriate subfolders in mods" +
                 "\nand then can be installed all by one click on") + " " + InstallInModsButton.Text + " " + T._("button") +
-                "\n"+ T._("which can be found in")+" " + ToolsTabPage.Text + " " + T._("tab page") +
-                "\n\n"+ T._("Helper recognize")+":"
-                + "\n "+ T._(".dll files of BepinEx plugins in \"2MO\" folder")
+                "\n" + T._("which can be found in") + " " + ToolsTabPage.Text + " " + T._("tab page") +
+                "\n\n" + T._("Helper recognize") + ":"
+                + "\n " + T._(".dll files of BepinEx plugins in \"2MO\" folder")
                 + "\n " + T._("Sideloader mod archives in \"2MO\" folder")
                 + "\n " + T._("Female character cards in \"2MO\" folder")
                 + "\n " + T._("Female character cards in \"f\" subfolder")
@@ -845,6 +845,11 @@ namespace AI_Helper
                 BepInExConsoleCheckBox.Checked = false;
             }
             BepInExConsoleCheckBox.Enabled = Properties.Settings.Default.BepinExCfgPath.Length > 0;
+            if (BepInExConsoleCheckBox.Checked)
+            {
+                BepInExDisplayedLogLevelLabel.Visible = true;
+                ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExConsoleCheckBox, BepInExDisplayedLogLevelLabel, true);
+            }
         }
 
         private void CheckBox1_CheckedChanged(object sender, EventArgs e)
@@ -1579,7 +1584,32 @@ namespace AI_Helper
 
         private void ConsoleCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "Enabled", (sender as CheckBox).Checked.ToString());
+            ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "Enabled", " " + (sender as CheckBox).Checked.ToString());
+            if ((sender as CheckBox).Checked)
+            {
+                BepInExDisplayedLogLevelLabel.Visible = true;
+            }
+            else
+            {
+                BepInExDisplayedLogLevelLabel.Visible = false;
+            }
+
+        }
+
+        private void BepInExDisplayedLogLevelLabel_VisibleChanged(object sender, EventArgs e)
+        {
+            if (BepInExConsoleCheckBox.Checked)
+            {
+                ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExConsoleCheckBox, BepInExDisplayedLogLevelLabel, true);
+            }
+        }
+
+        private void BepInExDisplayedLogLevelLabel_Click(object sender, EventArgs e)
+        {
+            if (BepInExConsoleCheckBox.Checked)
+            {
+                ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExConsoleCheckBox, BepInExDisplayedLogLevelLabel);
+            }
         }
 
         //Материалы

@@ -222,6 +222,10 @@ namespace AI_Helper.Utils
         public static void SwitchBepInExDisplayedLogLevelValue(CheckBox BepInExConsoleCheckBox, Label BepInExDisplayedLogLevelLabel, bool OnlyShow = false)
         {
             string curValue = ManageINI.GetINIValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "DisplayedLogLevel", "Logging.Console");
+            if (curValue.Length == 0)
+            {
+                BepInExDisplayedLogLevelLabel.Visible = false;
+            }
             if (OnlyShow)
             {
                 BepInExDisplayedLogLevelLabel.Text = curValue;

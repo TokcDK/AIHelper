@@ -1,6 +1,7 @@
 ﻿using SymbolicLinkSupport;
 using System;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -308,15 +309,16 @@ namespace AI_Helper.Utils
             return string.Empty;
         }
 
-        public static bool IsInTheFolderOnlyOneFolder(string folderPath)
+        public static string IfInTheFolderOnlyOneFolderGetItName(string folderPath)
         {
+            string AloneFolderName = string.Empty;
             int cnt = 1;
             foreach (var file in Directory.GetFiles(folderPath))
             {
                 cnt--;
                 if (cnt == 0)
                 {
-                    return false;
+                    return string.Empty;
                 }
             }
             cnt = 2;
@@ -325,38 +327,51 @@ namespace AI_Helper.Utils
                 cnt--;
                 if (cnt == 0)
                 {
-                    return false;
+                    return string.Empty;
                 }
+                AloneFolderName = Path.GetFileName(dir);
             }
 
-            return true;
+            return AloneFolderName;
         }
 
         public static string MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(string folderPath)
         {
-            if (IsInTheFolderOnlyOneFolder(folderPath))
+            string AloneFolderName = IfInTheFolderOnlyOneFolderGetItName(folderPath);
+            if (AloneFolderName.Length>0)
             {
-                foreach (var oDirSubdir in Directory.GetDirectories(folderPath))
+                if (!ManageStrings.IsStringAContainsAnyStringFromStringArray(AloneFolderName, ManageSettings.GetListOfExistsGames()[ManageSettings.GetCurrentGameIndex()].GetGameStandartFolderNames(), true))
                 {
-                    string oDirSubdirName = Path.GetFileName(oDirSubdir);
+                    string folderPathName = Path.GetFileName(folderPath);
                     string folderParentDirPath = Path.GetDirectoryName(folderPath);
-                    if (oDirSubdirName == Path.GetFileName(folderPath))
+                    string oDirSubdir = Path.Combine(folderPath, AloneFolderName);
+                    string newDirPath;
+                    if (AloneFolderName == folderPathName)
                     {
-                        string newSubDirPath = GetResultTargetDirPathWithNameCheck(folderParentDirPath, oDirSubdirName);
-                        Directory.Move(oDirSubdir, newSubDirPath);
+                        newDirPath = GetResultTargetDirPathWithNameCheck(folderParentDirPath, AloneFolderName);
+                        Directory.Move(oDirSubdir, newDirPath);
                         Directory.Delete(folderPath);
-                        Directory.Move(newSubDirPath, folderPath);
+                        Directory.Move(newDirPath, folderPath);
                     }
                     else
                     {
-                        string newDirPath = Path.Combine(folderParentDirPath, oDirSubdirName);
+                        newDirPath = Path.Combine(folderParentDirPath, AloneFolderName);
                         Directory.Move(oDirSubdir, newDirPath);
                         Directory.Delete(folderPath);
-                        return newDirPath;
+                        if (folderPathName.Length > AloneFolderName.Length)//если изначальное имя было длиннее, то переименовать имя субпапки на него
+                        {
+                            Directory.Move(newDirPath, folderPath);
+                        }
+                        else
+                        {
+                            return MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(newDirPath);
+                        }
                     }
+
+                    //возвращение через эту же функцию, если вложенных одиночных подпапок было более одной
+                    return MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(folderPath);
                 }
             }
-
             return folderPath;
         }
     }

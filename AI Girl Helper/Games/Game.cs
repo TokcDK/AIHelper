@@ -61,9 +61,21 @@ namespace AI_Helper.Games
             return null;
         }
 
+        public virtual string[] GetGameStandartFolderNames()
+        {
+            if (GetGameEXENameX32().Length>0 && GetGameStudioEXENameX32().Length > 0)
+            {
+                return new string[] { "abdata", "UserData", GetGameEXEName() + "_Data", GetGameEXENameX32() + "_Data", GetGameStudioEXEName() + "_Data", GetGameStudioEXENameX32() + "_Data", "Bepinex" };
+            }
+            else
+            {
+                return new string[] { "abdata", "UserData", GetGameEXEName() + "_Data", GetGameStudioEXEName() + "_Data", "Bepinex" };
+            }
+        }
+
         public virtual string[,] GetObjectsForSymLinksPaths()
         {
-            return new string[,] 
+            return new string[,]
             {
                     {
                     Path.Combine(ManageSettings.GetModsPath(), "BepInEx", "Bepinex", "core", "BepInEx.Preloader.dll")

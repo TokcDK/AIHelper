@@ -4,7 +4,7 @@
     {
         public override string GetGameFolderName()
         {
-            return "AI-Syoujyo";
+            return GetGameEXEName();
         }
 
         public override string GetGameEXEName()

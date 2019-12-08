@@ -71,13 +71,23 @@
             return StringA;
         }
 
-        public static bool IsStringAContainsAnyStringFromStringArray(string StringA, string[] StringArray)
+        public static bool IsStringAContainsAnyStringFromStringArray(string StringA, string[] StringArray, bool IgnoreCase = false)
         {
             foreach (var StringB in StringArray)
             {
-                if (IsStringAContainsStringB(StringA, StringB))
+                if (IgnoreCase)
                 {
-                    return true;
+                    if (string.Compare(StringA, StringB, true)==0)
+                    {
+                        return true;
+                    }
+                }
+                else
+                {
+                    if (IsStringAContainsStringB(StringA, StringB))
+                    {
+                        return true;
+                    }
                 }
             }
 

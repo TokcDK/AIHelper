@@ -429,7 +429,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.ForeColor = System.Drawing.Color.White;
-            this.label6.Location = new System.Drawing.Point(211, 113);
+            this.label6.Location = new System.Drawing.Point(11, 4);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(78, 13);
             this.label6.TabIndex = 8;
@@ -439,7 +439,7 @@
             // 
             this.CurrentGameComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CurrentGameComboBox.FormattingEnabled = true;
-            this.CurrentGameComboBox.Location = new System.Drawing.Point(214, 129);
+            this.CurrentGameComboBox.Location = new System.Drawing.Point(5, 20);
             this.CurrentGameComboBox.Name = "CurrentGameComboBox";
             this.CurrentGameComboBox.Size = new System.Drawing.Size(121, 21);
             this.CurrentGameComboBox.TabIndex = 7;
@@ -454,9 +454,9 @@
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenMOFolderLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenGameFolderLinkLabel);
             this.SettingsFoldersGroupBox.ForeColor = System.Drawing.Color.White;
-            this.SettingsFoldersGroupBox.Location = new System.Drawing.Point(5, 83);
+            this.SettingsFoldersGroupBox.Location = new System.Drawing.Point(5, 76);
             this.SettingsFoldersGroupBox.Name = "SettingsFoldersGroupBox";
-            this.SettingsFoldersGroupBox.Size = new System.Drawing.Size(107, 67);
+            this.SettingsFoldersGroupBox.Size = new System.Drawing.Size(107, 74);
             this.SettingsFoldersGroupBox.TabIndex = 6;
             this.SettingsFoldersGroupBox.TabStop = false;
             this.SettingsFoldersGroupBox.Text = "Folders";
@@ -472,6 +472,7 @@
             this.Open2MOLinkLabel.TabStop = true;
             this.Open2MOLinkLabel.Text = "2MO";
             this.Open2MOLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
+            this.Open2MOLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.Install2MODirPathOpenFolderLinkLabel_LinkClicked);
             // 
             // OpenMOOverwriteFolderLinkLabel
             // 
@@ -540,7 +541,7 @@
             // 
             // CreateShortcutButton
             // 
-            this.CreateShortcutButton.Location = new System.Drawing.Point(258, 18);
+            this.CreateShortcutButton.Location = new System.Drawing.Point(258, 47);
             this.CreateShortcutButton.Name = "CreateShortcutButton";
             this.CreateShortcutButton.Size = new System.Drawing.Size(77, 23);
             this.CreateShortcutButton.TabIndex = 5;
@@ -550,7 +551,7 @@
             // 
             // FixRegistryButton
             // 
-            this.FixRegistryButton.Location = new System.Drawing.Point(258, 49);
+            this.FixRegistryButton.Location = new System.Drawing.Point(258, 18);
             this.FixRegistryButton.Name = "FixRegistryButton";
             this.FixRegistryButton.Size = new System.Drawing.Size(77, 23);
             this.FixRegistryButton.TabIndex = 4;
@@ -564,9 +565,9 @@
             this.groupBox1.Controls.Add(this.FullScreenCheckBox);
             this.groupBox1.Controls.Add(this.ResolutionComboBox);
             this.groupBox1.ForeColor = System.Drawing.Color.White;
-            this.groupBox1.Location = new System.Drawing.Point(5, 3);
+            this.groupBox1.Location = new System.Drawing.Point(190, 76);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(249, 74);
+            this.groupBox1.Size = new System.Drawing.Size(145, 74);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Display";
@@ -587,7 +588,7 @@
             // 
             this.FullScreenCheckBox.AutoSize = true;
             this.FullScreenCheckBox.ForeColor = System.Drawing.Color.White;
-            this.FullScreenCheckBox.Location = new System.Drawing.Point(146, 21);
+            this.FullScreenCheckBox.Location = new System.Drawing.Point(50, 0);
             this.FullScreenCheckBox.Name = "FullScreenCheckBox";
             this.FullScreenCheckBox.Size = new System.Drawing.Size(72, 17);
             this.FullScreenCheckBox.TabIndex = 4;
@@ -621,7 +622,7 @@
             // 
             this.AutoShortcutRegistryCheckBox.AutoSize = true;
             this.AutoShortcutRegistryCheckBox.ForeColor = System.Drawing.Color.White;
-            this.AutoShortcutRegistryCheckBox.Location = new System.Drawing.Point(286, 78);
+            this.AutoShortcutRegistryCheckBox.Location = new System.Drawing.Point(281, 0);
             this.AutoShortcutRegistryCheckBox.Name = "AutoShortcutRegistryCheckBox";
             this.AutoShortcutRegistryCheckBox.Size = new System.Drawing.Size(49, 17);
             this.AutoShortcutRegistryCheckBox.TabIndex = 0;

@@ -1656,6 +1656,11 @@ namespace AI_Helper
             }
         }
 
+        private void AIGirlHelperTabControl_Selecting(object sender, TabControlCancelEventArgs e)
+        {
+            newformButton.Text = @"\/";
+        }
+
         //Материалы
         //Есть пример с загрузкой файла по ссылке:
         //https://github.com/adoconnection/SevenZipExtractor

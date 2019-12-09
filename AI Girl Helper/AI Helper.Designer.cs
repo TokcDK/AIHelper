@@ -57,6 +57,7 @@
             this.SettingsButton = new System.Windows.Forms.Button();
             this.SettingsPage = new System.Windows.Forms.TabPage();
             this.SettingsPanel = new System.Windows.Forms.Panel();
+            this.ExtraSettingsLinkLabel = new System.Windows.Forms.LinkLabel();
             this.label6 = new System.Windows.Forms.Label();
             this.CurrentGameComboBox = new System.Windows.Forms.ComboBox();
             this.SettingsFoldersGroupBox = new System.Windows.Forms.GroupBox();
@@ -78,7 +79,6 @@
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
-            this.ExtraSettingsLinkLabel = new System.Windows.Forms.LinkLabel();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -107,6 +107,7 @@
             this.AIGirlHelperTabControl.SelectedIndex = 0;
             this.AIGirlHelperTabControl.Size = new System.Drawing.Size(354, 187);
             this.AIGirlHelperTabControl.TabIndex = 0;
+            this.AIGirlHelperTabControl.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.AIGirlHelperTabControl_Selecting);
             // 
             // MainPage
             // 
@@ -454,6 +455,17 @@
             this.SettingsPanel.Size = new System.Drawing.Size(340, 155);
             this.SettingsPanel.TabIndex = 1;
             // 
+            // ExtraSettingsLinkLabel
+            // 
+            this.ExtraSettingsLinkLabel.AutoSize = true;
+            this.ExtraSettingsLinkLabel.Location = new System.Drawing.Point(5, 52);
+            this.ExtraSettingsLinkLabel.Name = "ExtraSettingsLinkLabel";
+            this.ExtraSettingsLinkLabel.Size = new System.Drawing.Size(39, 13);
+            this.ExtraSettingsLinkLabel.TabIndex = 9;
+            this.ExtraSettingsLinkLabel.TabStop = true;
+            this.ExtraSettingsLinkLabel.Text = "EXTRA";
+            this.ExtraSettingsLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.ExtraSettingsLinkLabel_LinkClicked);
+            // 
             // label6
             // 
             this.label6.AutoSize = true;
@@ -721,17 +733,6 @@
             this.MOCommonModeSwitchButton.Text = "MOToCommon";
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
-            // 
-            // ExtraSettingsLinkLabel
-            // 
-            this.ExtraSettingsLinkLabel.AutoSize = true;
-            this.ExtraSettingsLinkLabel.Location = new System.Drawing.Point(133, 137);
-            this.ExtraSettingsLinkLabel.Name = "ExtraSettingsLinkLabel";
-            this.ExtraSettingsLinkLabel.Size = new System.Drawing.Size(33, 13);
-            this.ExtraSettingsLinkLabel.TabIndex = 9;
-            this.ExtraSettingsLinkLabel.TabStop = true;
-            this.ExtraSettingsLinkLabel.Text = "Extra";
-            this.ExtraSettingsLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.ExtraSettingsLinkLabel_LinkClicked);
             // 
             // AIHelper
             // 

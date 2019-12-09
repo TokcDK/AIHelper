@@ -36,7 +36,7 @@ namespace AI_Helper.Manage
             if (Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked || force)
             {
                 //AI-Girl Helper
-                string shortcutname = ManageSettings.GetCurrentGameFolderName() + " " + T._("Helper");
+                string shortcutname = /*ManageSettings.GetCurrentGameFolderName() +*/ "AI " + T._("Helper");
                 string targetpath = Application.ExecutablePath;
                 string arguments = string.Empty;
                 string workingdir = Path.GetDirectoryName(targetpath);

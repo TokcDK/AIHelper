@@ -6,6 +6,11 @@ namespace AI_Helper
     //https://code.4noobz.net/c-copy-a-folder-its-content-and-the-subfolders/
     internal class CopyFolder
     {
+        /// <summary>
+        /// Copy Directory with all content
+        /// </summary>
+        /// <param name="sourceDirectory"></param>
+        /// <param name="targetDirectory"></param>
         public static void Copy(string sourceDirectory, string targetDirectory)
         {
             var diSource = new DirectoryInfo(sourceDirectory);
@@ -14,14 +19,14 @@ namespace AI_Helper
             CopyAll(diSource, diTarget);
         }
 
-        public static void CopyAll(DirectoryInfo source, DirectoryInfo target)
+        private static void CopyAll(DirectoryInfo source, DirectoryInfo target)
         {
             Directory.CreateDirectory(target.FullName);
 
             // Copy each file into the new directory.
             foreach (FileInfo fi in source.GetFiles())
             {
-                Console.WriteLine(@"Copying {0}\{1}", target.FullName, fi.Name);
+                //Console.WriteLine(@"Copying {0}\{1}", target.FullName, fi.Name);
                 fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
             }
 

@@ -334,5 +334,17 @@ namespace AI_Helper.Properties {
                 this["BepinExCfgPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string MOSelectedProfileDirPath {
+            get {
+                return ((string)(this["MOSelectedProfileDirPath"]));
+            }
+            set {
+                this["MOSelectedProfileDirPath"] = value;
+            }
+        }
     }
 }

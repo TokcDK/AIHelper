@@ -506,12 +506,6 @@ namespace AI_Helper.Manage
             }
         }
 
-        private static string GetSelectedProfileName()
-        {
-            string ret = ManageINI.GetINIValueIfExist(ManageSettings.GetMOiniPathForSelectedGame(), "selected_profile", "General");
-            return ret.Length > 0 ? ret : ManageSettings.GetCurrentGameFolderName();
-        }
-
         private static void RedefineModOrganizerIni()
         {
             string[] categoriesdatGameAndLocalPaths = new string[2]
@@ -589,7 +583,7 @@ namespace AI_Helper.Manage
         {
             if (modname.Length > 0)
             {
-                string currentMOprofile = ManageINI.GetINIValueIfExist(ManageSettings.GetMOiniPath(), "selected_profile", "General");
+                string currentMOprofile = ManageSettings.GetMOSelectedProfileDirPath();
 
                 if (currentMOprofile.Length == 0)
                 {
@@ -647,7 +641,7 @@ namespace AI_Helper.Manage
 
         public static string[] GetModNamesListFromActiveMOProfile(bool OnlyEnabled = true)
         {
-            string currentMOprofile = ManageINI.GetINIValueIfExist(ManageSettings.GetMOiniPath(), "selected_profile", "General");
+            string currentMOprofile = ManageSettings.GetMOSelectedProfileDirPath();
 
             if (currentMOprofile.Length > 0)
             {
@@ -727,7 +721,7 @@ namespace AI_Helper.Manage
         {
             if (Properties.Settings.Default.MOmode)
             {
-                string currentMOprofile = ManageINI.GetINIValueIfExist(ManageSettings.GetModOrganizerINIpath(), "selected_profile", "General");
+                string currentMOprofile = ManageSettings.GetMOSelectedProfileDirPath();
 
                 if (currentMOprofile.Length == 0)
                 {

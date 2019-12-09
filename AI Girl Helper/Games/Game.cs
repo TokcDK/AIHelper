@@ -5,6 +5,11 @@ namespace AI_Helper.Games
 {
     public abstract class Game
     {
+        public virtual void InitActions()
+        {
+
+        }
+
         public string GamesLocationFolderName = "Games";
 
         public abstract string GetGameFolderName();

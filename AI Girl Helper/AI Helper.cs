@@ -48,6 +48,7 @@ namespace AI_Helper
 
             VariablesINIT();
             MOmode = true;
+            CurrentGame.InitActions();
 
             SetLocalizationStrings();
 

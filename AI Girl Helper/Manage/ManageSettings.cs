@@ -100,6 +100,20 @@ namespace AI_Helper.Manage
             return Path.Combine(GetMOdirPath(), "ModOrganizer.exe");
         }
 
+        public static string GetMOSelectedProfileDirPath()
+        {
+            if (Properties.Settings.Default.MOSelectedProfileDirPath.Length > 0)
+            {
+                return Properties.Settings.Default.MOSelectedProfileDirPath;
+            }
+            else
+            {
+                Properties.Settings.Default.MOSelectedProfileDirPath = ManageINI.GetINIValueIfExist(ManageSettings.GetModOrganizerINIpath(), "selected_profile", "General");
+                    
+                return Properties.Settings.Default.MOSelectedProfileDirPath;
+            }
+        }
+
         public static string GetMOiniPath()
         {
             return Path.Combine(GetMOdirPath(), "ModOrganizer.ini");

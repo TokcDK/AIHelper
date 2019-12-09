@@ -1,4 +1,4 @@
-﻿using AI_Helper.Utils;
+﻿using AI_Helper.Manage;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AI_Helper.Utils
+namespace AI_Helper.Manage
 {
     class ManageArchive
     {

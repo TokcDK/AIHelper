@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace AI_Helper.Utils
+namespace AI_Helper.Manage
 {
     class ManageFilesFolders
     {

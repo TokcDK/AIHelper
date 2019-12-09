@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AI_Helper.Utils
+namespace AI_Helper.Manage
 {
     public class IniFile
     {

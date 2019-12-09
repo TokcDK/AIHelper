@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using AI_Helper.Utils;
+using AI_Helper.Manage;
 using SevenZip;
 
 namespace AI_Helper

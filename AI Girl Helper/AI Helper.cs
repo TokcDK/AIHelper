@@ -1,5 +1,5 @@
 ﻿using AI_Helper.Games;
-using AI_Helper.Utils;
+using AI_Helper.Manage;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -756,7 +756,7 @@ namespace AI_Helper
                 //    }
                 //}
 
-                if (!Utils.ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Utils.ManageSettings.GetModsPath(), "*", new string[1] { "_separator" }))
+                if (!Manage.ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Manage.ManageSettings.GetModsPath(), "*", new string[1] { "_separator" }))
                 {
                     ModsInfoLabel.Text = T._("Found mod folders in Mods");
                     //button1.Enabled = false;
@@ -1609,6 +1609,34 @@ namespace AI_Helper
             if (BepInExConsoleCheckBox.Checked)
             {
                 ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExConsoleCheckBox, BepInExDisplayedLogLevelLabel);
+            }
+        }
+
+        ExtraSettings extraSettings;
+        private void ExtraSettingsLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (extraSettings == null || extraSettings.IsDisposed)
+            {
+                //show and reposition of form
+                //https://stackoverflow.com/questions/31492787/how-to-set-position-second-form-depend-on-first-form
+                extraSettings = new ExtraSettings
+                {
+                    //LinksForm.Text = T._("Links");
+                    StartPosition = FormStartPosition.Manual
+                };
+                extraSettings.Load += delegate (object s2, EventArgs e2)
+                {
+                    extraSettings.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (extraSettings.Width / 2),
+                        Bounds.Location.Y + /*(Bounds.Height / 2) - (f2.Height / 2) +*/ Bounds.Height);
+                };
+                //extraSettings.Text = T._("Links");
+                //newformButton.Text = @"/\";
+                extraSettings.Show();
+            }
+            else
+            {
+                //newformButton.Text = @"\/";
+                extraSettings.Close();
             }
         }
 

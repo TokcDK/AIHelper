@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace AI_Helper.Utils
+namespace AI_Helper.Manage
 {
     class ManageSettings
     {

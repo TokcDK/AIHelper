@@ -5,7 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace AI_Helper.Utils
+namespace AI_Helper.Manage
 {
     class ManageMOMods
     {

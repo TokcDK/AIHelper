@@ -78,6 +78,7 @@
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
+            this.ExtraSettingsLinkLabel = new System.Windows.Forms.LinkLabel();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -439,6 +440,7 @@
             // SettingsPanel
             // 
             this.SettingsPanel.BackColor = System.Drawing.Color.Gray;
+            this.SettingsPanel.Controls.Add(this.ExtraSettingsLinkLabel);
             this.SettingsPanel.Controls.Add(this.label6);
             this.SettingsPanel.Controls.Add(this.CurrentGameComboBox);
             this.SettingsPanel.Controls.Add(this.SettingsFoldersGroupBox);
@@ -720,6 +722,17 @@
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
             // 
+            // ExtraSettingsLinkLabel
+            // 
+            this.ExtraSettingsLinkLabel.AutoSize = true;
+            this.ExtraSettingsLinkLabel.Location = new System.Drawing.Point(133, 137);
+            this.ExtraSettingsLinkLabel.Name = "ExtraSettingsLinkLabel";
+            this.ExtraSettingsLinkLabel.Size = new System.Drawing.Size(33, 13);
+            this.ExtraSettingsLinkLabel.TabIndex = 9;
+            this.ExtraSettingsLinkLabel.TabStop = true;
+            this.ExtraSettingsLinkLabel.Text = "Extra";
+            this.ExtraSettingsLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.ExtraSettingsLinkLabel_LinkClicked);
+            // 
             // AIHelper
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -807,6 +820,7 @@
         private System.Windows.Forms.Label SelectedGameLabel1;
         private System.Windows.Forms.CheckBox BepInExConsoleCheckBox;
         private System.Windows.Forms.Label BepInExDisplayedLogLevelLabel;
+        private System.Windows.Forms.LinkLabel ExtraSettingsLinkLabel;
     }
 }
 

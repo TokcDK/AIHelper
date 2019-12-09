@@ -4,7 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 
-namespace AI_Helper.Utils
+namespace AI_Helper.Manage
 {
     class ManageMO
     {

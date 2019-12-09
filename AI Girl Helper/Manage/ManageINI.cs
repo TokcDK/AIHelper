@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AI_Helper.Utils
+namespace AI_Helper.Manage
 {
     class ManageINI
     {
@@ -13,7 +13,7 @@ namespace AI_Helper.Utils
         {
             if (File.Exists(INIPath))
             {
-                Utils.IniFile INI = new Utils.IniFile(INIPath);
+                Manage.IniFile INI = new Manage.IniFile(INIPath);
                 if (INI.KeyExists(Key, Section))
                 {
                     return INI.ReadINI(Section, Key);
@@ -25,7 +25,7 @@ namespace AI_Helper.Utils
         {
             if (File.Exists(INIPath))
             {
-                (new Utils.IniFile(INIPath)).WriteINI(Section, Key, Value);
+                (new Manage.IniFile(INIPath)).WriteINI(Section, Key, Value);
                 return true;
             }
 

@@ -1009,6 +1009,10 @@ namespace AI_Helper
                 };
                 LinksForm.Text = T._("Links");
                 newformButton.Text = @"/\";
+                if (extraSettingsForm != null && !extraSettingsForm.IsDisposed)
+                {
+                    extraSettingsForm.Close();
+                }
                 LinksForm.Show();
             }
             else
@@ -1028,6 +1032,14 @@ namespace AI_Helper
             else
             {
                 LinksForm.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (LinksForm.Width / 2),
+                    Bounds.Location.Y + /*(Bounds.Height / 2) - (f2.Height / 2) +*/ Bounds.Height);
+            }
+            if (extraSettingsForm == null || extraSettingsForm.IsDisposed)
+            {
+            }
+            else
+            {
+                extraSettingsForm.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (extraSettingsForm.Width / 2),
                     Bounds.Location.Y + /*(Bounds.Height / 2) - (f2.Height / 2) +*/ Bounds.Height);
             }
         }
@@ -1612,31 +1624,35 @@ namespace AI_Helper
             }
         }
 
-        ExtraSettings extraSettings;
+        ExtraSettings extraSettingsForm;
         private void ExtraSettingsLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (extraSettings == null || extraSettings.IsDisposed)
+            if (extraSettingsForm == null || extraSettingsForm.IsDisposed)
             {
                 //show and reposition of form
                 //https://stackoverflow.com/questions/31492787/how-to-set-position-second-form-depend-on-first-form
-                extraSettings = new ExtraSettings
+                extraSettingsForm = new ExtraSettings
                 {
                     //LinksForm.Text = T._("Links");
                     StartPosition = FormStartPosition.Manual
                 };
-                extraSettings.Load += delegate (object s2, EventArgs e2)
+                extraSettingsForm.Load += delegate (object s2, EventArgs e2)
                 {
-                    extraSettings.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (extraSettings.Width / 2),
+                    extraSettingsForm.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (extraSettingsForm.Width / 2),
                         Bounds.Location.Y + /*(Bounds.Height / 2) - (f2.Height / 2) +*/ Bounds.Height);
                 };
                 //extraSettings.Text = T._("Links");
                 //newformButton.Text = @"/\";
-                extraSettings.Show();
+                if (LinksForm != null && !LinksForm.IsDisposed)
+                {
+                    LinksForm.Close();
+                }
+                extraSettingsForm.Show();
             }
             else
             {
                 //newformButton.Text = @"\/";
-                extraSettings.Close();
+                extraSettingsForm.Close();
             }
         }
 

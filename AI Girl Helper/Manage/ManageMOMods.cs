@@ -9,6 +9,11 @@ namespace AI_Helper.Manage
 {
     class ManageMOMods
     {
+        public static void SetMOModsVariables()
+        {
+            Properties.Settings.Default.BepinExCfgPath = ManageSettings.GetBepInExCfgFilePath();
+        }
+
         public static void CleanBepInExLinksFromData()
         {
             //удаление файлов BepinEx

@@ -346,5 +346,17 @@ namespace AI_Helper.Properties {
                 this["MOSelectedProfileDirPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string XUAiniPath {
+            get {
+                return ((string)(this["XUAiniPath"]));
+            }
+            set {
+                this["XUAiniPath"] = value;
+            }
+        }
     }
 }

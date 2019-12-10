@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AI_Helper.Manage
 {
-    class ManageINI
+    internal static class ManageINI
     {
         public static string GetINIValueIfExist(string INIPath, string Key, string Section, string defaultValue = "")
         {

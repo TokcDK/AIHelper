@@ -37,7 +37,7 @@
             this.LabelPanel2 = new System.Windows.Forms.Panel();
             this.ModsInfoLabel = new System.Windows.Forms.Label();
             this.LabelPanel = new System.Windows.Forms.Panel();
-            this.label3 = new System.Windows.Forms.Label();
+            this.DataInfoLabel = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.button1 = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
@@ -185,7 +185,7 @@
             // 
             // LabelPanel
             // 
-            this.LabelPanel.Controls.Add(this.label3);
+            this.LabelPanel.Controls.Add(this.DataInfoLabel);
             this.LabelPanel.Location = new System.Drawing.Point(3, 82);
             this.LabelPanel.Name = "LabelPanel";
             this.LabelPanel.Size = new System.Drawing.Size(334, 18);
@@ -193,18 +193,18 @@
             // 
             // label3
             // 
-            this.label3.AutoEllipsis = true;
-            this.label3.BackColor = System.Drawing.Color.Gray;
-            this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.label3.Font = new System.Drawing.Font("Times New Roman", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(0, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(334, 18);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "...";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.DataInfoLabel.AutoEllipsis = true;
+            this.DataInfoLabel.BackColor = System.Drawing.Color.Gray;
+            this.DataInfoLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DataInfoLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DataInfoLabel.Font = new System.Drawing.Font("Times New Roman", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.DataInfoLabel.ForeColor = System.Drawing.Color.White;
+            this.DataInfoLabel.Location = new System.Drawing.Point(0, 0);
+            this.DataInfoLabel.Name = "label3";
+            this.DataInfoLabel.Size = new System.Drawing.Size(334, 18);
+            this.DataInfoLabel.TabIndex = 6;
+            this.DataInfoLabel.Text = "...";
+            this.DataInfoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // progressBar1
             // 
@@ -458,12 +458,13 @@
             // ExtraSettingsLinkLabel
             // 
             this.ExtraSettingsLinkLabel.AutoSize = true;
-            this.ExtraSettingsLinkLabel.Location = new System.Drawing.Point(5, 52);
+            this.ExtraSettingsLinkLabel.LinkColor = System.Drawing.Color.White;
+            this.ExtraSettingsLinkLabel.Location = new System.Drawing.Point(3, 44);
             this.ExtraSettingsLinkLabel.Name = "ExtraSettingsLinkLabel";
-            this.ExtraSettingsLinkLabel.Size = new System.Drawing.Size(39, 13);
+            this.ExtraSettingsLinkLabel.Size = new System.Drawing.Size(75, 13);
             this.ExtraSettingsLinkLabel.TabIndex = 9;
             this.ExtraSettingsLinkLabel.TabStop = true;
-            this.ExtraSettingsLinkLabel.Text = "EXTRA";
+            this.ExtraSettingsLinkLabel.Text = "Extra Settings";
             this.ExtraSettingsLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.ExtraSettingsLinkLabel_LinkClicked);
             // 
             // label6
@@ -779,7 +780,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel LabelPanel;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label DataInfoLabel;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Panel LabelPanel2;
         private System.Windows.Forms.Label ModsInfoLabel;

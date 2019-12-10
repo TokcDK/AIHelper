@@ -78,7 +78,6 @@ namespace AI_Helper
             OverwriteFolder = ManageSettings.GetOverwriteFolder();
             OverwriteFolderLink = ManageSettings.GetOverwriteFolderLink();
             SetupXmlPath = ManageMO.GetSetupXmlPathForCurrentProfile();
-            Properties.Settings.Default.BepinExCfgPath = ManageSettings.GetBepInExCfgFilePath();
         }
 
         private void SetListOfGames()
@@ -205,7 +204,7 @@ namespace AI_Helper
                 {
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
-                    _ = label3.Invoke((Action)(() => label3.Text = T._("Extracting")));
+                    _ = DataInfoLabel.Invoke((Action)(() => DataInfoLabel.Text = T._("Extracting")));
                     _ = ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = T._("MO archive") + ": " + Path.GetFileNameWithoutExtension(MO7zip)));
                     Compressor.Decompress(MO7zip, MODirPath);
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
@@ -223,7 +222,7 @@ namespace AI_Helper
                 {
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
-                    _ = label3.Invoke((Action)(() => label3.Text = T._("Extracting")));
+                    _ = DataInfoLabel.Invoke((Action)(() => DataInfoLabel.Text = T._("Extracting")));
                     _ = ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = T._("Game archive") + ": " + Path.GetFileNameWithoutExtension(AIGirlTrial)));
                     Compressor.Decompress(AIGirlTrial, DataPath);
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
@@ -232,7 +231,7 @@ namespace AI_Helper
                 {
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
-                    _ = label3.Invoke((Action)(() => label3.Text = T._("Extracting")));
+                    _ = DataInfoLabel.Invoke((Action)(() => DataInfoLabel.Text = T._("Extracting")));
                     _ = ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = T._("Game archive") + ": " + Path.GetFileNameWithoutExtension(AIGirl)));
                     Compressor.Decompress(AIGirl, DataPath);
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
@@ -260,7 +259,7 @@ namespace AI_Helper
                         foreach (string file in files)
                         {
                             string filename = Path.GetFileNameWithoutExtension(file);
-                            label3.Invoke((Action)(() => label3.Text = T._("Extracting") + " " + +i + "/" + files.Length));
+                            DataInfoLabel.Invoke((Action)(() => DataInfoLabel.Text = T._("Extracting") + " " + +i + "/" + files.Length));
                             ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = T._("Mod") + ": " + filename));
                             string moddirpath = Path.Combine(ModsPath, filename);
                             if (!Directory.Exists(moddirpath))
@@ -314,7 +313,7 @@ namespace AI_Helper
             {
                 _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
                 _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
-                _ = label3.Invoke((Action)(() => label3.Text = "Compressing"));
+                _ = DataInfoLabel.Invoke((Action)(() => DataInfoLabel.Text = "Compressing"));
                 _ = ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = "MO archive.."));
                 Compressor.Compress(MODirPath, AppResDir);
                 _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
@@ -332,7 +331,7 @@ namespace AI_Helper
                 {
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
-                    _ = label3.Invoke((Action)(() => label3.Text = "Compressing"));
+                    _ = DataInfoLabel.Invoke((Action)(() => DataInfoLabel.Text = "Compressing"));
                     _ = ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = "Game archive: " + Path.GetFileNameWithoutExtension(AIGirlTrial)));
                     Compressor.Compress(DataPath, AppResDir);
                     _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
@@ -370,7 +369,7 @@ namespace AI_Helper
                     progressBar1.Invoke((Action)(() => progressBar1.Value = i));
                     foreach (string dir in dirs)
                     {
-                        label3.Invoke((Action)(() => label3.Text = "Compressing " + i + "/" + dirs.Length));
+                        DataInfoLabel.Invoke((Action)(() => DataInfoLabel.Text = "Compressing " + i + "/" + dirs.Length));
                         ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = "Folder: " + Path.GetFileNameWithoutExtension(dir)));
 
                         Compressor.Compress(dir, GetResultTargetName(categories, dir));
@@ -398,7 +397,7 @@ namespace AI_Helper
                     //progressBar1.Invoke((Action)(() => progressBar1.Value = 0));
                     string tempdir = Path.Combine(ModsPath, "MOModsSeparators");
 
-                    label3.Invoke((Action)(() => label3.Text = "Compressing"));
+                    DataInfoLabel.Invoke((Action)(() => DataInfoLabel.Text = "Compressing"));
                     ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = "Folder: " + Path.GetFileNameWithoutExtension(tempdir)));
 
                     Directory.CreateDirectory(tempdir);
@@ -668,28 +667,28 @@ namespace AI_Helper
             string AIGirlTrial = ManageSettings.GetCurrentGameEXEName();
             if (File.Exists(Path.Combine(ManageSettings.GetDataPath(), AIGirlTrial + ".exe")))
             {
-                label3.Text = string.Format(T._("{0} game installed in {1}"), AIGirlTrial, "Data");
+                DataInfoLabel.Text = string.Format(T._("{0} game installed in {1}"), AIGirlTrial, "Data");
             }
             else if (File.Exists(Path.Combine(DataPath, AIGirl + ".exe")))
             {
-                label3.Text = string.Format(T._("{0} game installed in {1}"), AIGirl, "Data");
+                DataInfoLabel.Text = string.Format(T._("{0} game installed in {1}"), AIGirl, "Data");
             }
             else if (File.Exists(Path.Combine(AppResDir, AIGirlTrial + ".7z")))
             {
-                label3.Text = string.Format(T._("{0} archive in {1}"), AIGirlTrial, "Data");
+                DataInfoLabel.Text = string.Format(T._("{0} archive in {1}"), AIGirlTrial, "Data");
             }
             else if (File.Exists(Path.Combine(AppResDir, AIGirl + ".7z")))
             {
-                label3.Text = string.Format(T._("{0} archive in {1}"), "AIGirl", "Data");
+                DataInfoLabel.Text = string.Format(T._("{0} archive in {1}"), "AIGirl", "Data");
             }
             else if (Directory.Exists(DataPath))
             {
-                label3.Text = string.Format(T._("{0} files not in {1}. Move {0} game files there."), AIGirl, "Data");
+                DataInfoLabel.Text = string.Format(T._("{0} files not in {1}. Move {0} game files there."), AIGirl, "Data");
             }
             else
             {
                 Directory.CreateDirectory(DataPath);
-                label3.Text = string.Format(T._("{0} dir created. Move {1} game files there."), "Data", AIGirl);
+                DataInfoLabel.Text = string.Format(T._("{0} dir created. Move {1} game files there."), "Data", AIGirl);
             }
 
             if (MOmode)
@@ -798,6 +797,7 @@ namespace AI_Helper
                 ManageMO.MakeDummyFiles();
 
                 ManageMO.SetModOrganizerINISettingsForTheGame();
+                ManageMOMods.SetMOModsVariables();
             }
             else
             {

@@ -266,5 +266,207 @@ namespace AI_Helper.Manage
                 BepInExDisplayedLogLevelLabel.Text = values[0];
             }
         }
+
+        /// <summary>
+        /// Gets the supported languages.
+        /// </summary>
+        public static IEnumerable<string> Languages
+        {
+            get
+            {
+                EnsureInitialized();
+                return _languageModeMap.Keys.OrderBy(p => p);
+            }
+        }
+
+        /// <summary>
+        /// Converts a language to its identifier.
+        /// </summary>
+        /// <param name="language">The language."</param>
+        /// <returns>The identifier or <see cref="string.Empty"/> if none.</returns>
+        public static string LanguageEnumToIdentifier
+                (string language)
+        {
+            string mode = string.Empty;
+            EnsureInitialized();
+            _languageModeMap.TryGetValue(language, out mode);
+            return mode;
+        }
+
+        /// <summary>
+        /// Converts a language to its identifier.
+        /// </summary>
+        /// <param name="identifier">The identifier of language."</param>
+        /// <returns>The identifier or <see cref="string.Empty"/> if none.</returns>
+        public static string LanguageEnumFromIdentifier
+                (string identifier)
+        {
+            EnsureInitialized(true);
+            string language;
+            _languageModeMapReversed.TryGetValue(identifier, out language);
+            return language;
+        }
+
+        /// <summary>
+        /// Ensures the translator has been initialized.
+        /// </summary>
+        public static void EnsureInitialized(bool reversed = false)
+        {
+            if (reversed)
+            {
+                if (_languageModeMapReversed == null)
+                {
+                    _languageModeMapReversed = new Dictionary<string, string>
+                {
+                    { "af", "Afrikaans" },
+                    { "sq", "Albanian" },
+                    { "ar", "Arabic" },
+                    { "hy", "Armenian" },
+                    { "az", "Azerbaijani" },
+                    { "eu", "Basque" },
+                    { "be", "Belarusian" },
+                    { "bn", "Bengali" },
+                    { "bg", "Bulgarian" },
+                    { "ca", "Catalan" },
+                    { "Chinese", "zh-CN" },
+                    { "hr", "Croatian" },
+                    { "cs", "Czech" },
+                    { "da", "Danish" },
+                    { "nl", "Dutch" },
+                    { "en", "English" },
+                    { "eo", "Esperanto" },
+                    { "et", "Estonian" },
+                    { "tl", "Filipino" },
+                    { "fi", "Finnish" },
+                    { "fr", "French" },
+                    { "gl", "Galician" },
+                    { "de", "German" },
+                    { "ka", "Georgian" },
+                    { "el", "Greek" },
+                    { "Haitian Creole", "ht" },
+                    { "iw", "Hebrew" },
+                    { "hi", "Hindi" },
+                    { "hu", "Hungarian" },
+                    { "is", "Icelandic" },
+                    { "id", "Indonesian" },
+                    { "ga", "Irish" },
+                    { "it", "Italian" },
+                    { "ja", "Japanese" },
+                    { "ko", "Korean" },
+                    { "lo", "Lao" },
+                    { "la", "Latin" },
+                    { "lv", "Latvian" },
+                    { "lt", "Lithuanian" },
+                    { "mk", "Macedonian" },
+                    { "ms", "Malay" },
+                    { "mt", "Maltese" },
+                    { "no", "Norwegian" },
+                    { "fa", "Persian" },
+                    { "pl", "Polish" },
+                    { "pt", "Portuguese" },
+                    { "ro", "Romanian" },
+                    { "ru", "Russian" },
+                    { "sr", "Serbian" },
+                    { "sk", "Slovak" },
+                    { "sl", "Slovenian" },
+                    { "es", "Spanish" },
+                    { "sw", "Swahili" },
+                    { "sv", "Swedish" },
+                    { "ta", "Tamil" },
+                    { "te", "Telugu" },
+                    { "th", "Thai" },
+                    { "tr", "Turkish" },
+                    { "uk", "Ukrainian" },
+                    { "ur", "Urdu" },
+                    { "vi", "Vietnamese" },
+                    { "cy", "Welsh" },
+                    { "Yiddish", "yi" }
+                };
+                }
+            }
+            else
+            {
+                if (_languageModeMap == null)
+                {
+                    _languageModeMap = new Dictionary<string, string>
+                {
+                    { "Afrikaans", "af" },
+                    { "Albanian", "sq" },
+                    { "Arabic", "ar" },
+                    { "Armenian", "hy" },
+                    { "Azerbaijani", "az" },
+                    { "Basque", "eu" },
+                    { "Belarusian", "be" },
+                    { "Bengali", "bn" },
+                    { "Bulgarian", "bg" },
+                    { "Catalan", "ca" },
+                    { "Chinese", "zh-CN" },
+                    { "Croatian", "hr" },
+                    { "Czech", "cs" },
+                    { "Danish", "da" },
+                    { "Dutch", "nl" },
+                    { "English", "en" },
+                    { "Esperanto", "eo" },
+                    { "Estonian", "et" },
+                    { "Filipino", "tl" },
+                    { "Finnish", "fi" },
+                    { "French", "fr" },
+                    { "Galician", "gl" },
+                    { "German", "de" },
+                    { "Georgian", "ka" },
+                    { "Greek", "el" },
+                    { "Haitian Creole", "ht" },
+                    { "Hebrew", "iw" },
+                    { "Hindi", "hi" },
+                    { "Hungarian", "hu" },
+                    { "Icelandic", "is" },
+                    { "Indonesian", "id" },
+                    { "Irish", "ga" },
+                    { "Italian", "it" },
+                    { "Japanese", "ja" },
+                    { "Korean", "ko" },
+                    { "Lao", "lo" },
+                    { "Latin", "la" },
+                    { "Latvian", "lv" },
+                    { "Lithuanian", "lt" },
+                    { "Macedonian", "mk" },
+                    { "Malay", "ms" },
+                    { "Maltese", "mt" },
+                    { "Norwegian", "no" },
+                    { "Persian", "fa" },
+                    { "Polish", "pl" },
+                    { "Portuguese", "pt" },
+                    { "Romanian", "ro" },
+                    { "Russian", "ru" },
+                    { "Serbian", "sr" },
+                    { "Slovak", "sk" },
+                    { "Slovenian", "sl" },
+                    { "Spanish", "es" },
+                    { "Swahili", "sw" },
+                    { "Swedish", "sv" },
+                    { "Tamil", "ta" },
+                    { "Telugu", "te" },
+                    { "Thai", "th" },
+                    { "Turkish", "tr" },
+                    { "Ukrainian", "uk" },
+                    { "Urdu", "ur" },
+                    { "Vietnamese", "vi" },
+                    { "Welsh", "cy" },
+                    { "Yiddish", "yi" }
+                };
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// The language to translation mode map.
+        /// </summary>
+        public static Dictionary<string, string> _languageModeMap;
+
+        /// <summary>
+        /// The language to translation mode map. (Reversed)
+        /// </summary>
+        public static Dictionary<string, string> _languageModeMapReversed;
     }
 }

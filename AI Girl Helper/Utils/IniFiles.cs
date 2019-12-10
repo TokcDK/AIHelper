@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AI_Helper.Manage
 {
@@ -20,7 +16,7 @@ namespace AI_Helper.Manage
         [DllImport("kernel32", CharSet = CharSet.Unicode)] // Еще раз подключаем kernel32.dll, а теперь описываем функцию GetPrivateProfileString
         static extern int GetPrivateProfileString(string Section, string Key, string Default, StringBuilder RetVal, int Size, string FilePath);
 
-        // С помощью конструктора записываем пусть до файла и его имя.
+        // С помощью конструктора записываем путь до файла и его имя.
         public IniFile(string IniPath)
         {
             Path = new FileInfo(IniPath).FullName.ToString();
@@ -29,31 +25,89 @@ namespace AI_Helper.Manage
         //Читаем ini-файл и возвращаем значение указного ключа из заданной секции.
         public string ReadINI(string Section, string Key)
         {
-            var RetVal = new StringBuilder(4096);
-            GetPrivateProfileString(Section, Key, "", RetVal, 4096, Path);
-            return RetVal.ToString();
+            var ini = ExIni.IniFile.FromFile(Path);
+            var section = ini.GetSection(Section);
+            if (section == null)
+            {
+                return string.Empty;
+            }
+            else
+            {
+                var key = section.GetKey(Key);
+
+                if (key != null)//ExIni не умеет читать ключи с \\ в имени
+                {
+                    return key.Value;
+                }
+                else
+                {
+                    var RetVal = new StringBuilder(4096);
+                    GetPrivateProfileString(Section, Key, "", RetVal, 4096, Path);
+                    return RetVal.ToString();
+                }
+            }
+
         }
         //Записываем в ini-файл. Запись происходит в выбранную секцию в выбранный ключ.
         public void WriteINI(string Section, string Key, string Value)
         {
-            WritePrivateProfileString(Section, Key, Value, Path);
+            var ini = ExIni.IniFile.FromFile(Path);
+            var section = ini.GetSection(Section);
+            if (section != null)
+            {
+                var key = section.GetKey(Key);
+                if (key != null)//ExIni не умеет читать ключи с \\ в имени
+                {
+                    key.Value = Value;
+                }
+                else
+                {
+                    WritePrivateProfileString(Section, Key, Value, Path);
+                }
+            }
         }
 
         //Удаляем ключ из выбранной секции.
         public void DeleteKey(string Key, string Section = null)
         {
-            WriteINI(Section, Key, null);
+            var ini = ExIni.IniFile.FromFile(Path);
+            var section = ini.GetSection(Section);
+            if (section != null)
+            {
+                if (section.HasKey(Key) && !ManageStrings.IsStringAContainsStringB(Key,"\\"))//ExIni не умеет читать ключи с \\ в имени
+                {
+                    section.DeleteKey(Key);
+                }
+                else
+                {
+                    WriteINI(Section, Key, null);
+                }
+            }
         }
         //Удаляем выбранную секцию
         public void DeleteSection(string Section = null)
         {
-            WriteINI(Section, null, null);
+            var ini = ExIni.IniFile.FromFile(Path);
+            if(Section!=null && ini.HasSection(Section))
+            {
+                ExIni.IniFile.FromFile(Path).DeleteSection(Section);
+            }
+            //WriteINI(Section, null, null);
         }
         //Проверяем, есть ли такой ключ, в этой секции
         public bool KeyExists(string Key, string Section = null)
         {
+            var iniSection = ExIni.IniFile.FromFile(Path).GetSection(Section);
+            if (iniSection == null)
+            {
+                return false;
+            }
+            else
+            {
+                return iniSection.HasKey(Key);
+            }
             //MessageBox.Show("key length="+ ReadINI(Section, Key).Length);
-            return ReadINI(Section, Key).Length > 0;
+            //return ReadINI(Section, Key).Length > 0;
         }
     }
 }

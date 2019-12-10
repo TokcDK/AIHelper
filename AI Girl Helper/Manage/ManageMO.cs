@@ -682,11 +682,12 @@ namespace AI_Helper.Manage
             int i = 0;
             foreach (var element in pathInMods.Replace(ManageSettings.GetModsPath(), string.Empty).Split(Path.DirectorySeparatorChar))
             {
-                if (i > 0)
+                if (i > 1)
                 {
+                    subpath += i > 2 ? Path.DirectorySeparatorChar.ToString() : string.Empty;
                     subpath += element;
-                    subpath += Path.DirectorySeparatorChar;
                 }
+                i++;
             }
 
             //поиск по списку активных модов
@@ -696,14 +697,14 @@ namespace AI_Helper.Manage
                 string possiblePath = Path.Combine(ModsPath, modName, subpath);
                 if (IsDir)
                 {
-                    if (Directory.Exists(Path.Combine()))
+                    if (Directory.Exists(possiblePath))
                     {
                         return possiblePath;
                     }
                 }
                 else
                 {
-                    if (File.Exists(Path.Combine()))
+                    if (File.Exists(possiblePath))
                     {
                         return possiblePath;
                     }

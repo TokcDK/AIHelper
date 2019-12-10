@@ -5,7 +5,7 @@ namespace AI_Helper.Games
 {
     public class HoneySelect : Game
     {
-        public virtual void InitActions()
+        public override void InitActions()
         {
             //var game = ManageSettings.GetListOfExistsGames()[ManageSettings.GetCurrentGameIndex()];
             string MO = Path.Combine(ManageSettings.GetCurrentGamePath(), "MO");

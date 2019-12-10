@@ -59,6 +59,7 @@ namespace AI_Helper.Manage
                 if (key != null)//ExIni не умеет читать ключи с \\ в имени
                 {
                     key.Value = Value;
+                    ini.Save(Path);
                 }
                 else
                 {
@@ -77,6 +78,7 @@ namespace AI_Helper.Manage
                 if (section.HasKey(Key) && !ManageStrings.IsStringAContainsStringB(Key,"\\"))//ExIni не умеет читать ключи с \\ в имени
                 {
                     section.DeleteKey(Key);
+                    ini.Save(Path);
                 }
                 else
                 {
@@ -91,6 +93,7 @@ namespace AI_Helper.Manage
             if(Section!=null && ini.HasSection(Section))
             {
                 ExIni.IniFile.FromFile(Path).DeleteSection(Section);
+                ini.Save(Path);
             }
             //WriteINI(Section, null, null);
         }

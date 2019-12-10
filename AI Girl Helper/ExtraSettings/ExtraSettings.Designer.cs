@@ -78,6 +78,7 @@
             this.XUAEndpointComboBox.Name = "XUAEndpointComboBox";
             this.XUAEndpointComboBox.Size = new System.Drawing.Size(140, 21);
             this.XUAEndpointComboBox.TabIndex = 14;
+            this.XUAEndpointComboBox.SelectedIndexChanged += new System.EventHandler(this.XUAEndpointComboBox_SelectedIndexChanged);
             // 
             // label3
             // 
@@ -117,6 +118,7 @@
             this.XUALanguageComboBox.Name = "XUALanguageComboBox";
             this.XUALanguageComboBox.Size = new System.Drawing.Size(121, 21);
             this.XUALanguageComboBox.TabIndex = 10;
+            this.XUALanguageComboBox.SelectedIndexChanged += new System.EventHandler(this.XUALanguageComboBox_SelectedIndexChanged);
             // 
             // XUALanguageLabel
             // 
@@ -136,6 +138,7 @@
             this.XUAFromLanguageComboBox.Name = "XUAFromLanguageComboBox";
             this.XUAFromLanguageComboBox.Size = new System.Drawing.Size(121, 21);
             this.XUAFromLanguageComboBox.TabIndex = 8;
+            this.XUAFromLanguageComboBox.SelectedIndexChanged += new System.EventHandler(this.XUAFromLanguageComboBox_SelectedIndexChanged);
             // 
             // ExtraSettings
             // 

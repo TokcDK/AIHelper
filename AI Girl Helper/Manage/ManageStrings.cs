@@ -77,7 +77,7 @@
             {
                 if (IgnoreCase)
                 {
-                    if (string.Compare(StringA, StringB, true)==0)
+                    if (IsStringAContainsStringB(StringA, StringB) || IsStringAContainsStringB(StringA.ToUpper(), StringB.ToUpper()))
                     {
                         return true;
                     }

@@ -301,7 +301,7 @@ namespace AI_Helper.Manage
                         IniValue = subquote + (iniParameters[i, 1].Substring(iniParameters[i, 1].Length - 1) == "b" ? "false" : string.Empty) + subquote;
                     }
 
-                    INI.WriteINI("customExecutables", key, IniValue);
+                    INI.WriteINI("customExecutables", key, IniValue, false);
                 }
                 cnt++;
             }
@@ -504,7 +504,7 @@ namespace AI_Helper.Manage
                 //{
                 //    INI.WriteINI(IniValues[i, 1], IniValues[i, 2], IniValue);
                 //}
-                INI.WriteINI(IniValues[i, 1], IniValues[i, 2], IniValue);
+                INI.WriteINI(IniValues[i, 1], IniValues[i, 2], IniValue, false);
             }
         }
 

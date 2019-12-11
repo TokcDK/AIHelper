@@ -42,7 +42,7 @@ namespace AI_Helper.Manage
                 else
                 {
                     var RetVal = new StringBuilder(4096);
-                    GetPrivateProfileString(Section, Key, "", RetVal, 4096, Path);
+                    GetPrivateProfileString(Section, Key, "", RetVal, 4096, Path);//Это почему-то не может прочитать ключи из секций с определенными названиями
                     return RetVal.ToString();
                 }
             }
@@ -50,22 +50,29 @@ namespace AI_Helper.Manage
         }
         //Записываем в ini-файл. Запись происходит в выбранную секцию в выбранный ключ.
         public void WriteINI(string Section, string Key, string Value)
-        {
-            var ini = ExIni.IniFile.FromFile(Path);
-            var section = ini.GetSection(Section);
-            if (section != null)
+        { 
+            if (!ManageStrings.IsStringAContainsStringB(Key, "\\"))
             {
-                var key = section.GetKey(Key);
-                if (key != null)//ExIni не умеет читать ключи с \\ в имени
+                var ini = ExIni.IniFile.FromFile(Path);
+                var section = ini.GetSection(Section);
+                if (section != null)
                 {
-                    key.Value = Value;
-                    ini.Save(Path);
-                }
-                else
-                {
-                    WritePrivateProfileString(Section, Key, Value, Path);
+                    if (section.HasKey(Key))//ExIni не умеет читать ключи с \\ в имени
+                    {
+                        section.GetKey(Key).Value = Value;
+                        ini.Save(Path);
+                        return;
+                    }
+                    else
+                    {
+                        section.CreateKey(Key);
+                        section.GetKey(Key).Value = Value;
+                        ini.Save(Path);
+                        return;
+                    }
                 }
             }
+            WritePrivateProfileString(Section, Key, Value, Path);
         }
 
         //Удаляем ключ из выбранной секции.

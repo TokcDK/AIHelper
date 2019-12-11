@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AIHelper));
             this.AIGirlHelperTabControl = new System.Windows.Forms.TabControl();
             this.MainPage = new System.Windows.Forms.TabPage();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.InfoPagePanel = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.LabelPanel2 = new System.Windows.Forms.Panel();
@@ -41,7 +41,7 @@
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.button1 = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.LaunchPagePanel = new System.Windows.Forms.Panel();
             this.BepInExDisplayedLogLevelLabel = new System.Windows.Forms.Label();
             this.BepInExConsoleCheckBox = new System.Windows.Forms.CheckBox();
             this.SelectedGameLabel1 = new System.Windows.Forms.Label();
@@ -56,7 +56,7 @@
             this.MOButton = new System.Windows.Forms.Button();
             this.SettingsButton = new System.Windows.Forms.Button();
             this.SettingsPage = new System.Windows.Forms.TabPage();
-            this.SettingsPanel = new System.Windows.Forms.Panel();
+            this.SettingsPagePanel = new System.Windows.Forms.Panel();
             this.ExtraSettingsLinkLabel = new System.Windows.Forms.LinkLabel();
             this.label6 = new System.Windows.Forms.Label();
             this.CurrentGameComboBox = new System.Windows.Forms.ComboBox();
@@ -75,23 +75,23 @@
             this.ResolutionComboBox = new System.Windows.Forms.ComboBox();
             this.AutoShortcutRegistryCheckBox = new System.Windows.Forms.CheckBox();
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
-            this.ToolsPanel = new System.Windows.Forms.Panel();
+            this.ToolsPagePanel = new System.Windows.Forms.Panel();
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainPage.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.InfoPagePanel.SuspendLayout();
             this.LabelPanel2.SuspendLayout();
             this.LabelPanel.SuspendLayout();
             this.LaunchTabPage.SuspendLayout();
-            this.panel2.SuspendLayout();
+            this.LaunchPagePanel.SuspendLayout();
             this.SettingsPage.SuspendLayout();
-            this.SettingsPanel.SuspendLayout();
+            this.SettingsPagePanel.SuspendLayout();
             this.SettingsFoldersGroupBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.ToolsTabPage.SuspendLayout();
-            this.ToolsPanel.SuspendLayout();
+            this.ToolsPagePanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // AIGirlHelperTabControl
@@ -111,7 +111,7 @@
             // 
             // MainPage
             // 
-            this.MainPage.Controls.Add(this.panel1);
+            this.MainPage.Controls.Add(this.InfoPagePanel);
             this.MainPage.ForeColor = System.Drawing.Color.Black;
             this.MainPage.Location = new System.Drawing.Point(4, 22);
             this.MainPage.Name = "MainPage";
@@ -121,20 +121,20 @@
             this.MainPage.Text = "Info";
             this.MainPage.UseVisualStyleBackColor = true;
             // 
-            // panel1
+            // InfoPagePanel
             // 
-            this.panel1.BackColor = System.Drawing.Color.Gray;
-            this.panel1.Controls.Add(this.label2);
-            this.panel1.Controls.Add(this.label1);
-            this.panel1.Controls.Add(this.LabelPanel2);
-            this.panel1.Controls.Add(this.LabelPanel);
-            this.panel1.Controls.Add(this.progressBar1);
-            this.panel1.Controls.Add(this.button1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(3, 3);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(340, 155);
-            this.panel1.TabIndex = 0;
+            this.InfoPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.InfoPagePanel.Controls.Add(this.label2);
+            this.InfoPagePanel.Controls.Add(this.label1);
+            this.InfoPagePanel.Controls.Add(this.LabelPanel2);
+            this.InfoPagePanel.Controls.Add(this.LabelPanel);
+            this.InfoPagePanel.Controls.Add(this.progressBar1);
+            this.InfoPagePanel.Controls.Add(this.button1);
+            this.InfoPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.InfoPagePanel.Location = new System.Drawing.Point(3, 3);
+            this.InfoPagePanel.Name = "InfoPagePanel";
+            this.InfoPagePanel.Size = new System.Drawing.Size(340, 155);
+            this.InfoPagePanel.TabIndex = 0;
             // 
             // label2
             // 
@@ -191,7 +191,7 @@
             this.LabelPanel.Size = new System.Drawing.Size(334, 18);
             this.LabelPanel.TabIndex = 7;
             // 
-            // label3
+            // DataInfoLabel
             // 
             this.DataInfoLabel.AutoEllipsis = true;
             this.DataInfoLabel.BackColor = System.Drawing.Color.Gray;
@@ -200,7 +200,7 @@
             this.DataInfoLabel.Font = new System.Drawing.Font("Times New Roman", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.DataInfoLabel.ForeColor = System.Drawing.Color.White;
             this.DataInfoLabel.Location = new System.Drawing.Point(0, 0);
-            this.DataInfoLabel.Name = "label3";
+            this.DataInfoLabel.Name = "DataInfoLabel";
             this.DataInfoLabel.Size = new System.Drawing.Size(334, 18);
             this.DataInfoLabel.TabIndex = 6;
             this.DataInfoLabel.Text = "...";
@@ -232,7 +232,7 @@
             // 
             // LaunchTabPage
             // 
-            this.LaunchTabPage.Controls.Add(this.panel2);
+            this.LaunchTabPage.Controls.Add(this.LaunchPagePanel);
             this.LaunchTabPage.Location = new System.Drawing.Point(4, 22);
             this.LaunchTabPage.Name = "LaunchTabPage";
             this.LaunchTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -241,28 +241,28 @@
             this.LaunchTabPage.Text = "Launch";
             this.LaunchTabPage.UseVisualStyleBackColor = true;
             // 
-            // panel2
+            // LaunchPagePanel
             // 
-            this.panel2.BackColor = System.Drawing.Color.Gray;
-            this.panel2.Controls.Add(this.BepInExDisplayedLogLevelLabel);
-            this.panel2.Controls.Add(this.BepInExConsoleCheckBox);
-            this.panel2.Controls.Add(this.SelectedGameLabel1);
-            this.panel2.Controls.Add(this.label4);
-            this.panel2.Controls.Add(this.label5);
-            this.panel2.Controls.Add(this.LanchModeInfoLinkLabel);
-            this.panel2.Controls.Add(this.OpenLogLinkLabel);
-            this.panel2.Controls.Add(this.LaunchTabLaunchLabel);
-            this.panel2.Controls.Add(this.newformButton);
-            this.panel2.Controls.Add(this.StudioButton);
-            this.panel2.Controls.Add(this.GameButton);
-            this.panel2.Controls.Add(this.MOButton);
-            this.panel2.Controls.Add(this.SettingsButton);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.ForeColor = System.Drawing.SystemColors.ScrollBar;
-            this.panel2.Location = new System.Drawing.Point(3, 3);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(340, 155);
-            this.panel2.TabIndex = 0;
+            this.LaunchPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.LaunchPagePanel.Controls.Add(this.BepInExDisplayedLogLevelLabel);
+            this.LaunchPagePanel.Controls.Add(this.BepInExConsoleCheckBox);
+            this.LaunchPagePanel.Controls.Add(this.SelectedGameLabel1);
+            this.LaunchPagePanel.Controls.Add(this.label4);
+            this.LaunchPagePanel.Controls.Add(this.label5);
+            this.LaunchPagePanel.Controls.Add(this.LanchModeInfoLinkLabel);
+            this.LaunchPagePanel.Controls.Add(this.OpenLogLinkLabel);
+            this.LaunchPagePanel.Controls.Add(this.LaunchTabLaunchLabel);
+            this.LaunchPagePanel.Controls.Add(this.newformButton);
+            this.LaunchPagePanel.Controls.Add(this.StudioButton);
+            this.LaunchPagePanel.Controls.Add(this.GameButton);
+            this.LaunchPagePanel.Controls.Add(this.MOButton);
+            this.LaunchPagePanel.Controls.Add(this.SettingsButton);
+            this.LaunchPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LaunchPagePanel.ForeColor = System.Drawing.SystemColors.ScrollBar;
+            this.LaunchPagePanel.Location = new System.Drawing.Point(3, 3);
+            this.LaunchPagePanel.Name = "LaunchPagePanel";
+            this.LaunchPagePanel.Size = new System.Drawing.Size(340, 155);
+            this.LaunchPagePanel.TabIndex = 0;
             // 
             // BepInExDisplayedLogLevelLabel
             // 
@@ -429,7 +429,7 @@
             // 
             // SettingsPage
             // 
-            this.SettingsPage.Controls.Add(this.SettingsPanel);
+            this.SettingsPage.Controls.Add(this.SettingsPagePanel);
             this.SettingsPage.Location = new System.Drawing.Point(4, 22);
             this.SettingsPage.Name = "SettingsPage";
             this.SettingsPage.Padding = new System.Windows.Forms.Padding(3);
@@ -438,22 +438,22 @@
             this.SettingsPage.Text = "Settings";
             this.SettingsPage.UseVisualStyleBackColor = true;
             // 
-            // SettingsPanel
+            // SettingsPagePanel
             // 
-            this.SettingsPanel.BackColor = System.Drawing.Color.Gray;
-            this.SettingsPanel.Controls.Add(this.ExtraSettingsLinkLabel);
-            this.SettingsPanel.Controls.Add(this.label6);
-            this.SettingsPanel.Controls.Add(this.CurrentGameComboBox);
-            this.SettingsPanel.Controls.Add(this.SettingsFoldersGroupBox);
-            this.SettingsPanel.Controls.Add(this.CreateShortcutButton);
-            this.SettingsPanel.Controls.Add(this.FixRegistryButton);
-            this.SettingsPanel.Controls.Add(this.groupBox1);
-            this.SettingsPanel.Controls.Add(this.AutoShortcutRegistryCheckBox);
-            this.SettingsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SettingsPanel.Location = new System.Drawing.Point(3, 3);
-            this.SettingsPanel.Name = "SettingsPanel";
-            this.SettingsPanel.Size = new System.Drawing.Size(340, 155);
-            this.SettingsPanel.TabIndex = 1;
+            this.SettingsPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.SettingsPagePanel.Controls.Add(this.ExtraSettingsLinkLabel);
+            this.SettingsPagePanel.Controls.Add(this.label6);
+            this.SettingsPagePanel.Controls.Add(this.CurrentGameComboBox);
+            this.SettingsPagePanel.Controls.Add(this.SettingsFoldersGroupBox);
+            this.SettingsPagePanel.Controls.Add(this.CreateShortcutButton);
+            this.SettingsPagePanel.Controls.Add(this.FixRegistryButton);
+            this.SettingsPagePanel.Controls.Add(this.groupBox1);
+            this.SettingsPagePanel.Controls.Add(this.AutoShortcutRegistryCheckBox);
+            this.SettingsPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SettingsPagePanel.Location = new System.Drawing.Point(3, 3);
+            this.SettingsPagePanel.Name = "SettingsPagePanel";
+            this.SettingsPagePanel.Size = new System.Drawing.Size(340, 155);
+            this.SettingsPagePanel.TabIndex = 1;
             // 
             // ExtraSettingsLinkLabel
             // 
@@ -674,7 +674,7 @@
             // 
             // ToolsTabPage
             // 
-            this.ToolsTabPage.Controls.Add(this.ToolsPanel);
+            this.ToolsTabPage.Controls.Add(this.ToolsPagePanel);
             this.ToolsTabPage.Location = new System.Drawing.Point(4, 22);
             this.ToolsTabPage.Name = "ToolsTabPage";
             this.ToolsTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -683,17 +683,17 @@
             this.ToolsTabPage.Text = "Tools";
             this.ToolsTabPage.UseVisualStyleBackColor = true;
             // 
-            // ToolsPanel
+            // ToolsPagePanel
             // 
-            this.ToolsPanel.BackColor = System.Drawing.Color.Gray;
-            this.ToolsPanel.Controls.Add(this.Install2MODirPathOpenFolderLinkLabel);
-            this.ToolsPanel.Controls.Add(this.InstallInModsButton);
-            this.ToolsPanel.Controls.Add(this.MOCommonModeSwitchButton);
-            this.ToolsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ToolsPanel.Location = new System.Drawing.Point(3, 3);
-            this.ToolsPanel.Name = "ToolsPanel";
-            this.ToolsPanel.Size = new System.Drawing.Size(340, 155);
-            this.ToolsPanel.TabIndex = 1;
+            this.ToolsPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.ToolsPagePanel.Controls.Add(this.Install2MODirPathOpenFolderLinkLabel);
+            this.ToolsPagePanel.Controls.Add(this.InstallInModsButton);
+            this.ToolsPagePanel.Controls.Add(this.MOCommonModeSwitchButton);
+            this.ToolsPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ToolsPagePanel.Location = new System.Drawing.Point(3, 3);
+            this.ToolsPagePanel.Name = "ToolsPagePanel";
+            this.ToolsPagePanel.Size = new System.Drawing.Size(340, 155);
+            this.ToolsPagePanel.TabIndex = 1;
             // 
             // Install2MODirPathOpenFolderLinkLabel
             // 
@@ -750,23 +750,23 @@
             this.LocationChanged += new System.EventHandler(this.AIHelper_LocationChanged);
             this.AIGirlHelperTabControl.ResumeLayout(false);
             this.MainPage.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.InfoPagePanel.ResumeLayout(false);
+            this.InfoPagePanel.PerformLayout();
             this.LabelPanel2.ResumeLayout(false);
             this.LabelPanel.ResumeLayout(false);
             this.LaunchTabPage.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
+            this.LaunchPagePanel.ResumeLayout(false);
+            this.LaunchPagePanel.PerformLayout();
             this.SettingsPage.ResumeLayout(false);
-            this.SettingsPanel.ResumeLayout(false);
-            this.SettingsPanel.PerformLayout();
+            this.SettingsPagePanel.ResumeLayout(false);
+            this.SettingsPagePanel.PerformLayout();
             this.SettingsFoldersGroupBox.ResumeLayout(false);
             this.SettingsFoldersGroupBox.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ToolsTabPage.ResumeLayout(false);
-            this.ToolsPanel.ResumeLayout(false);
-            this.ToolsPanel.PerformLayout();
+            this.ToolsPagePanel.ResumeLayout(false);
+            this.ToolsPagePanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -775,7 +775,7 @@
 
         private System.Windows.Forms.TabControl AIGirlHelperTabControl;
         private System.Windows.Forms.TabPage MainPage;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel InfoPagePanel;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label2;
@@ -785,14 +785,14 @@
         private System.Windows.Forms.Panel LabelPanel2;
         private System.Windows.Forms.Label ModsInfoLabel;
         private System.Windows.Forms.TabPage SettingsPage;
-        private System.Windows.Forms.Panel SettingsPanel;
+        private System.Windows.Forms.Panel SettingsPagePanel;
         private System.Windows.Forms.CheckBox AutoShortcutRegistryCheckBox;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.CheckBox FullScreenCheckBox;
         private System.Windows.Forms.ComboBox ResolutionComboBox;
         private System.Windows.Forms.Button FixRegistryButton;
         private System.Windows.Forms.TabPage LaunchTabPage;
-        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel LaunchPagePanel;
         private System.Windows.Forms.Button StudioButton;
         private System.Windows.Forms.Button GameButton;
         private System.Windows.Forms.Button MOButton;
@@ -802,7 +802,7 @@
         private System.Windows.Forms.Button CreateShortcutButton;
         private System.Windows.Forms.Label LaunchTabLaunchLabel;
         private System.Windows.Forms.TabPage ToolsTabPage;
-        private System.Windows.Forms.Panel ToolsPanel;
+        private System.Windows.Forms.Panel ToolsPagePanel;
         private System.Windows.Forms.Button MOCommonModeSwitchButton;
         private System.Windows.Forms.Button InstallInModsButton;
         private System.Windows.Forms.GroupBox SettingsFoldersGroupBox;

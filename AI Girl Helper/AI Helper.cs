@@ -845,7 +845,7 @@ namespace AI_Helper
             {
                 BepInExConsoleCheckBox.Checked = false;
             }
-            BepInExConsoleCheckBox.Enabled = Properties.Settings.Default.BepinExCfgPath.Length > 0;
+            BepInExConsoleCheckBox.Enabled = ManageSettings.GetBepInExCfgFilePath().Length > 0;
             if (BepInExConsoleCheckBox.Checked)
             {
                 BepInExDisplayedLogLevelLabel.Visible = true;
@@ -1597,7 +1597,7 @@ namespace AI_Helper
 
         private void ConsoleCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "Enabled", " " + (sender as CheckBox).Checked.ToString());
+            ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "Enabled", /*" " +*/ (sender as CheckBox).Checked.ToString());
             if ((sender as CheckBox).Checked)
             {
                 BepInExDisplayedLogLevelLabel.Visible = true;

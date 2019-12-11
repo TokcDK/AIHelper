@@ -257,7 +257,7 @@ namespace AI_Helper.Manage
                 {
                     if (setNext)
                     {
-                        ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", " " + value);
+                        ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", /*" " +*/ value);
                         BepInExDisplayedLogLevelLabel.Text = value;
                         return;
                     }
@@ -266,7 +266,7 @@ namespace AI_Helper.Manage
                         setNext = true;
                     }
                 }
-                ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", " " + values[0]);
+                ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", /*" " +*/ values[0]);
                 BepInExDisplayedLogLevelLabel.Text = values[0];
             }
         }

@@ -179,7 +179,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Costura64\SevenZipSharp.dll" />
     <EmbeddedResource Include="Costura32\SevenZipSharp.dll" />
     <Content Include="helpericon.ico" />
   </ItemGroup>
@@ -195,6 +194,7 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Costura64\" />
     <Folder Include="ExtraSettings\XUA\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

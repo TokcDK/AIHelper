@@ -17,11 +17,11 @@ namespace AI_Helper.Manage
             }
             return defaultValue;
         }
-        public static bool WriteINIValue(string INIPath, string Section, string Key, string Value)
+        public static bool WriteINIValue(string INIPath, string Section, string Key, string Value, bool DOSaveINI=true)
         {
             if (File.Exists(INIPath))
             {
-                (new Manage.IniFile(INIPath)).WriteINI(Section, Key, Value);
+                (new Manage.IniFile(INIPath)).WriteINI(Section, Key, Value, DOSaveINI);
                 return true;
             }
 

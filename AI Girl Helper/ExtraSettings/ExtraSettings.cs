@@ -175,5 +175,10 @@ namespace AI_Helper
                 ManageINI.WriteINIValue(Properties.Settings.Default.XUAiniPath, "Service", "Endpoint", value);
             }
         }
+
+        private void XUAHelpLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://github.com/bbepis/XUnity.AutoTranslator#index");
+        }
     }
 }

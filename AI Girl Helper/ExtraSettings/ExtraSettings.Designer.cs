@@ -38,11 +38,13 @@
             this.XUALanguageComboBox = new System.Windows.Forms.ComboBox();
             this.XUALanguageLabel = new System.Windows.Forms.Label();
             this.XUAFromLanguageComboBox = new System.Windows.Forms.ComboBox();
+            this.XUAHelpLinkLabel = new System.Windows.Forms.LinkLabel();
             this.XUAGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // XUAGroupBox
             // 
+            this.XUAGroupBox.Controls.Add(this.XUAHelpLinkLabel);
             this.XUAGroupBox.Controls.Add(this.XUAcfgFileOpenLinkLabel);
             this.XUAGroupBox.Controls.Add(this.XUAEndpointComboBox);
             this.XUAGroupBox.Controls.Add(this.label3);
@@ -140,6 +142,17 @@
             this.XUAFromLanguageComboBox.TabIndex = 8;
             this.XUAFromLanguageComboBox.SelectedIndexChanged += new System.EventHandler(this.XUAFromLanguageComboBox_SelectedIndexChanged);
             // 
+            // XUAHelpLinkLabel
+            // 
+            this.XUAHelpLinkLabel.AutoSize = true;
+            this.XUAHelpLinkLabel.Location = new System.Drawing.Point(115, 0);
+            this.XUAHelpLinkLabel.Name = "XUAHelpLinkLabel";
+            this.XUAHelpLinkLabel.Size = new System.Drawing.Size(12, 13);
+            this.XUAHelpLinkLabel.TabIndex = 16;
+            this.XUAHelpLinkLabel.TabStop = true;
+            this.XUAHelpLinkLabel.Text = "?";
+            this.XUAHelpLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.XUAHelpLinkLabel_LinkClicked);
+            // 
             // ExtraSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -147,7 +160,7 @@
             this.BackColor = System.Drawing.Color.Gray;
             this.ClientSize = new System.Drawing.Size(354, 187);
             this.Controls.Add(this.XUAGroupBox);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ExtraSettings";
             this.Text = "Extra";
@@ -169,5 +182,6 @@
         private System.Windows.Forms.ComboBox XUAEndpointComboBox;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.LinkLabel XUAcfgFileOpenLinkLabel;
+        private System.Windows.Forms.LinkLabel XUAHelpLinkLabel;
     }
 }

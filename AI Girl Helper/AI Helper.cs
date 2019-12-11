@@ -1032,6 +1032,10 @@ namespace AI_Helper
             }
             else
             {
+                if (LinksForm.WindowState == FormWindowState.Minimized)
+                {
+                    LinksForm.WindowState = FormWindowState.Normal;
+                }
                 LinksForm.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (LinksForm.Width / 2),
                     Bounds.Location.Y + /*(Bounds.Height / 2) - (f2.Height / 2) +*/ Bounds.Height);
             }
@@ -1040,6 +1044,10 @@ namespace AI_Helper
             }
             else
             {
+                if (extraSettingsForm.WindowState == FormWindowState.Minimized)
+                {
+                    extraSettingsForm.WindowState = FormWindowState.Normal;
+                }
                 extraSettingsForm.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (extraSettingsForm.Width / 2),
                     Bounds.Location.Y + /*(Bounds.Height / 2) - (f2.Height / 2) +*/ Bounds.Height);
             }

@@ -928,15 +928,22 @@ namespace AI_Helper.Manage
                     {
                         //CopyFolder.Copy(dir, Path.Combine(Properties.Settings.Default.ModsPath, dir));
                         //Directory.Move(dir, "[installed]" + dir);
-                        
-                        //var TargetModDIr = Path.Combine(Properties.Settings.Default.ModsPath, Path.GetFileName(dir));
-                        var TargetModDIr = ManageFilesFolders.GetResultTargetDirPathWithNameCheck(
+
+                        //имя папки без GetResultTargetDirPathWithNameCheck для того, чтобы обновить существующую, если такая найдется
+                        var TargetModDIr = Path.Combine(
                             Properties.Settings.Default.ModsPath, 
                             (author.Length > 0 && !ManageStrings.IsStringAContainsStringB(name, author))
                                 ?
                                 "[" + author + "]" + name
-                                : 
+                                :
                                 name);
+                        //var TargetModDIr = ManageFilesFolders.GetResultTargetDirPathWithNameCheck(
+                        //    Properties.Settings.Default.ModsPath, 
+                        //    (author.Length > 0 && !ManageStrings.IsStringAContainsStringB(name, author))
+                        //        ?
+                        //        "[" + author + "]" + name
+                        //        : 
+                        //        name);
 
 
                         if (Directory.Exists(TargetModDIr))

@@ -144,6 +144,7 @@ namespace AI_Helper
             GameButton.Text = T._("Game");
             MOButton.Text = T._("Manager");
             SettingsButton.Text = T._("Settings");
+            LaunchLinksLinkLabel.Text = T._("Links");
             QualityComboBox.Items.Add(T._("Perfomance"));
             QualityComboBox.Items.Add(T._("Normal"));
             QualityComboBox.Items.Add(T._("Quality"));
@@ -1015,6 +1016,7 @@ namespace AI_Helper
                     extraSettingsForm.Close();
                 }
                 LinksForm.Show();
+                LinksForm.TopMost = true;
             }
             else
             {
@@ -1126,7 +1128,7 @@ namespace AI_Helper
             OnOffButtons(false);
             if (MOmode)
             {
-                DialogResult result = MessageBox.Show(T._("Attention") + "\n\n" + T._("Conversation to") + " " + T._("Common mode") + "\n\n" + T._("This will move all mod files from Mods folder to Data folder to make it like common installation variant.\nYou can restore it later back to MO mode.\n\nContinue?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
+                DialogResult result = MessageBox.Show(T._("Attention") + "\n\n" + T._("Conversation to") + " " + T._("Common mode") + "\n\n" + T._("This will move using mod files from Mods folder to Data folder to make it like common installation variant.\nYou can restore it later back to MO mode.\n\nContinue?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
                 if (result == DialogResult.OK)
                 {
                     MOmode = false;
@@ -1657,6 +1659,7 @@ namespace AI_Helper
                     LinksForm.Close();
                 }
                 extraSettingsForm.Show();
+                extraSettingsForm.TopMost = true;
             }
             else
             {

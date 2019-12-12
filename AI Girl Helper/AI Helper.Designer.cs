@@ -42,6 +42,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.LaunchPagePanel = new System.Windows.Forms.Panel();
+            this.LaunchLinksLinkLabel = new System.Windows.Forms.LinkLabel();
             this.BepInExDisplayedLogLevelLabel = new System.Windows.Forms.Label();
             this.BepInExConsoleCheckBox = new System.Windows.Forms.CheckBox();
             this.SelectedGameLabel1 = new System.Windows.Forms.Label();
@@ -244,6 +245,7 @@
             // LaunchPagePanel
             // 
             this.LaunchPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.LaunchPagePanel.Controls.Add(this.LaunchLinksLinkLabel);
             this.LaunchPagePanel.Controls.Add(this.BepInExDisplayedLogLevelLabel);
             this.LaunchPagePanel.Controls.Add(this.BepInExConsoleCheckBox);
             this.LaunchPagePanel.Controls.Add(this.SelectedGameLabel1);
@@ -263,6 +265,18 @@
             this.LaunchPagePanel.Name = "LaunchPagePanel";
             this.LaunchPagePanel.Size = new System.Drawing.Size(340, 155);
             this.LaunchPagePanel.TabIndex = 0;
+            // 
+            // LaunchLinksLinkLabel
+            // 
+            this.LaunchLinksLinkLabel.AutoSize = true;
+            this.LaunchLinksLinkLabel.LinkColor = System.Drawing.Color.White;
+            this.LaunchLinksLinkLabel.Location = new System.Drawing.Point(5, 21);
+            this.LaunchLinksLinkLabel.Name = "LaunchLinksLinkLabel";
+            this.LaunchLinksLinkLabel.Size = new System.Drawing.Size(38, 13);
+            this.LaunchLinksLinkLabel.TabIndex = 27;
+            this.LaunchLinksLinkLabel.TabStop = true;
+            this.LaunchLinksLinkLabel.Text = "Links>";
+            this.LaunchLinksLinkLabel.Click += new System.EventHandler(this.NewformButton_Click);
             // 
             // BepInExDisplayedLogLevelLabel
             // 
@@ -290,7 +304,7 @@
             // 
             this.SelectedGameLabel1.AutoSize = true;
             this.SelectedGameLabel1.Font = new System.Drawing.Font("Lucida Handwriting", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SelectedGameLabel1.ForeColor = System.Drawing.Color.LavenderBlush;
+            this.SelectedGameLabel1.ForeColor = System.Drawing.Color.LightPink;
             this.SelectedGameLabel1.Location = new System.Drawing.Point(101, 45);
             this.SelectedGameLabel1.Name = "SelectedGameLabel1";
             this.SelectedGameLabel1.Size = new System.Drawing.Size(22, 15);
@@ -363,12 +377,13 @@
             this.newformButton.BackColor = System.Drawing.Color.Silver;
             this.newformButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.newformButton.ForeColor = System.Drawing.Color.Black;
-            this.newformButton.Location = new System.Drawing.Point(303, 111);
+            this.newformButton.Location = new System.Drawing.Point(305, 88);
             this.newformButton.Name = "newformButton";
             this.newformButton.Size = new System.Drawing.Size(32, 32);
             this.newformButton.TabIndex = 17;
             this.newformButton.Text = "\\/";
             this.newformButton.UseVisualStyleBackColor = false;
+            this.newformButton.Visible = false;
             this.newformButton.Click += new System.EventHandler(this.NewformButton_Click);
             // 
             // StudioButton
@@ -823,6 +838,7 @@
         private System.Windows.Forms.CheckBox BepInExConsoleCheckBox;
         private System.Windows.Forms.Label BepInExDisplayedLogLevelLabel;
         private System.Windows.Forms.LinkLabel ExtraSettingsLinkLabel;
+        private System.Windows.Forms.LinkLabel LaunchLinksLinkLabel;
     }
 }
 

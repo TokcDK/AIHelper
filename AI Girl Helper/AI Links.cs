@@ -1,4 +1,7 @@
-﻿using System.Diagnostics;
+﻿using AI_Helper.Manage;
+using System;
+using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 
 namespace AI_Helper
@@ -13,32 +16,123 @@ namespace AI_Helper
 
         private void SetLocalization()
         {
-            LinksCharactersGroupBox.Text = T._("Characters");
+            //LinksCharactersGroupBox.Text = T._("Characters");
         }
 
-        private void BooruLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        //private void BooruLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        //{
+        //    Process.Start("https://aigirl.booru.org/index.php?page=post&s=list&tags=all");
+        //}
+
+        //private void KenzatoLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        //{
+        //    Process.Start("https://kenzato.uk/booru/category/AICARD");
+        //}
+
+        //private void IllusionDiscordLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        //{
+        //    Process.Start("https://discord.gg/TyQtXkf");
+        //}
+
+        //private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        //{
+        //    Process.Start("https://pastebin.com/QRRKtC45");
+        //}
+
+        //private void IllusionOficialUploader_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        //{
+        //    Process.Start("https://mega.nz/#F!XOpkWahD!d0CpOSqiwww-M9QAVBjBSw");        
+        //}
+
+        Label lbl = new Label();
+        LinkLabel Llbl = new LinkLabel();
+
+        private void LinksForm_Load(object sender, System.EventArgs e)
         {
-            Process.Start("https://aigirl.booru.org/index.php?page=post&s=list&tags=all");
+            GetLinksListAndAddLinks();
         }
 
-        private void KenzatoLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        string linksSeparator = "{{link}}";
+        private void GetLinksListAndAddLinks()
         {
-            Process.Start("https://kenzato.uk/booru/category/AICARD");
+            string GameLinksPath = Path.Combine(Properties.Settings.Default.AppResDir, "links", ManageSettings.GetCurrentGameFolderName() + ".txt");
+            if (!File.Exists(GameLinksPath))
+            {
+                GameLinksPath = Path.Combine(Properties.Settings.Default.AppResDir, "links", "Default.txt");
+            }
+            if (File.Exists(GameLinksPath))
+            {
+                //https://stackoverflow.com/questions/16959122/displaying-multiple-linklabels-in-a-form
+                string[] links = File.ReadAllLines(GameLinksPath);
+                int groupcnt = 0;
+                string lastgroup = string.Empty;
+                foreach (var line in links)
+                {
+                    string group = line.Split(new string[] { linksSeparator }, StringSplitOptions.None)[0];
+                    if (lastgroup != group)
+                    {
+                        lastgroup = group;
+                        groupcnt++;
+                    }
+                }
+                lastgroup = string.Empty;
+
+                TableLayoutPanel panel = new TableLayoutPanel
+                {
+                    RowCount = links.Length + groupcnt,
+                    ColumnCount = 1
+                };
+                //panel.MaximumSize = new System.Drawing.Size(354, 138);
+                int currentRow = 0;
+
+                foreach (var link in links)
+                {
+                    string[] linkParts = link.Split(new string[] { linksSeparator }, StringSplitOptions.None);
+
+                    LinkLabel linkLabel = new LinkLabel
+                    {
+                        Text = linkParts[1]
+                    };
+                    linkLabel.Links.Add(0, linkParts[1].Length, linkParts[2]);
+                    linkLabel.LinkClicked += OnLinkClicked;
+
+                    if (lastgroup != linkParts[0])
+                    {
+                        lastgroup = linkParts[0];
+                        Label lblGroup = new Label
+                        {
+                            Text = lastgroup
+                        };
+
+                        panel.Controls.Add(lblGroup, 0, currentRow++);
+                        panel.Controls[currentRow - 1].Height = 13;
+                        panel.Controls[currentRow - 1].Width = 330;
+
+                    }
+
+                    panel.Controls.Add(linkLabel, 0, currentRow++);
+                    panel.Controls[currentRow - 1].Height = 13;
+                    panel.Controls[currentRow - 1].Width = 330;
+                }
+                //panel.AutoSize = true;
+                this.Controls.Add(panel);
+                //panel.HorizontalScroll.Visible = false;
+                panel.AutoScroll = true;
+                panel.MaximumSize = new System.Drawing.Size(354, 138);
+                //panel.Size = new System.Drawing.Size(354, 138);
+                panel.Dock = DockStyle.Fill;
+            }
+            else
+            {
+                //this.Controls.Add(lbl);
+            }
+
         }
 
-        private void IllusionDiscordLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        void OnLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://discord.gg/TyQtXkf");
-        }
-
-        private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Process.Start("https://pastebin.com/QRRKtC45");
-        }
-
-        private void IllusionOficialUploader_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Process.Start("https://mega.nz/#F!XOpkWahD!d0CpOSqiwww-M9QAVBjBSw");        
+            string link = e.Link.LinkData.ToString();
+            Process.Start(link);
         }
     }
 }

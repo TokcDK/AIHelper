@@ -2,9 +2,9 @@
 <Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
   <Costura>
     <Unmanaged32Assemblies>
+      SevenZipSharp
   </Unmanaged32Assemblies>
     <Unmanaged64Assemblies>
-      SevenZipSharp
   </Unmanaged64Assemblies>
   </Costura>
 </Weavers>

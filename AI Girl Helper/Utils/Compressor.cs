@@ -1,8 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using AI_Helper.Manage;
 using SevenZip;
+using SharpCompress.Archives;
+using SharpCompress.Archives.Rar;
+using SharpCompress.Common;
 
 namespace AI_Helper
 {
@@ -63,7 +67,28 @@ namespace AI_Helper
                 //Extract archive to targetFolder
                 using (SevenZipExtractor sevenZipDecompressor = new SevenZipExtractor(sourceFile))
                 {
-                    sevenZipDecompressor.ExtractArchive(targetFolder);
+                    try
+                    {
+                        sevenZipDecompressor.ExtractArchive(targetFolder);
+                    }
+                    catch
+                    {
+                        //https://github.com/adamhathcock/sharpcompress/blob/master/USAGE.md
+                        if (Path.GetExtension(sourceFile) == ".rar")
+                        {
+                            using (var archive = RarArchive.Open(sourceFile))
+                            {
+                                foreach (var entry in archive.Entries.Where(entry => !entry.IsDirectory))
+                                {
+                                    entry.WriteToDirectory(targetFolder, new ExtractionOptions()
+                                    {
+                                        ExtractFullPath = true,
+                                        Overwrite = true
+                                    });
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

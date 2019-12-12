@@ -91,12 +91,33 @@ namespace AI_Helper.Manage
             //throw new DirectoryNotFoundException();
         }
 
-        public static bool IsAnyFileExistsInTheDir(string dirPath, string extension)
+        public static bool IsAnyFileExistsInTheDir(string dirPath, string extension, bool AllDirectories = true)
         {
-            foreach (var file in (Directory.GetFiles(dirPath, "*." + extension, SearchOption.AllDirectories)))
+            if (extension.Length==0 || dirPath.Length == 0)
             {
-                return true;
+                return false;
             }
+
+            if (extension.Substring(0,1) != ".")
+            {
+                extension = "." + extension;
+            }
+
+            if (AllDirectories)
+            {
+                foreach (var file in (Directory.GetFiles(dirPath, "*" + extension, SearchOption.AllDirectories)))
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                foreach (var file in (Directory.GetFiles(dirPath, "*" + extension)))
+                {
+                    return true;
+                }
+            }
+
             return false;
         }
 

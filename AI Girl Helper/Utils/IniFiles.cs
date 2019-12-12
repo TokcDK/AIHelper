@@ -11,6 +11,7 @@ namespace AI_Helper.Manage
         private readonly string Path; //Имя файла.
         private readonly FileIniDataParser INIParser;
         private readonly IniData INIData;
+        bool ActionWasExecuted = false;
 
         //[DllImport("kernel32", CharSet = CharSet.Unicode)] // Подключаем kernel32.dll и описываем его функцию WritePrivateProfilesString
         //static extern long WritePrivateProfileString(string Section, string Key, string Value, string FilePath);
@@ -28,6 +29,10 @@ namespace AI_Helper.Manage
         {
             Path = new FileInfo(IniPath).FullName.ToString();
             INIParser = new FileIniDataParser();
+            if (!File.Exists(Path))
+            {
+                File.WriteAllText(Path, string.Empty);
+            }
             INIData = INIParser.ReadFile(Path);
         }
 
@@ -40,6 +45,10 @@ namespace AI_Helper.Manage
             }
             else
             {
+                if (!INIData.Sections.ContainsSection(Section))
+                {
+                    return string.Empty;
+                }
                 return INIData[Section][Key];
             }
 
@@ -72,13 +81,19 @@ namespace AI_Helper.Manage
             if (string.IsNullOrEmpty(Section))
             {
                 INIData.Global[Key] = Value;
+                ActionWasExecuted = true;
             }
             else
             {
+                if (!INIData.Sections.ContainsSection(Section))
+                {
+                    INIData.Sections.AddSection(Section);
+                }
                 INIData[Section][Key] = Value;
+                ActionWasExecuted = true;
             }
 
-            if (DoSaveINI)
+            if (DoSaveINI && ActionWasExecuted)
             {
                 INIParser.WriteFile(Path, INIData);
             }
@@ -112,12 +127,17 @@ namespace AI_Helper.Manage
             if (string.IsNullOrEmpty(Section))
             {
                 INIData.Global.RemoveKey(Key);
+                ActionWasExecuted = true;
             }
             else
             {
-                INIData[Section].RemoveKey(Key);
+                if (INIData.Sections.ContainsSection(Section))
+                {
+                    INIData[Section].RemoveKey(Key);
+                    ActionWasExecuted = true;
+                }
             }
-            if (DoSaveINI)
+            if (DoSaveINI && ActionWasExecuted)
             {
                 INIParser.WriteFile(Path, INIData);
             }
@@ -139,8 +159,12 @@ namespace AI_Helper.Manage
         //Удаляем выбранную секцию
         public void DeleteSection(string Section/* = null*/, bool DoSaveINI = true)
         {
-            INIData.Sections.RemoveSection(Section);
-            if (DoSaveINI)
+            if (INIData.Sections.ContainsSection(Section))
+            {
+                INIData.Sections.RemoveSection(Section);
+                ActionWasExecuted = true;
+            }
+            if (DoSaveINI && ActionWasExecuted)
             {
                 INIParser.WriteFile(Path, INIData);
             }
@@ -161,6 +185,10 @@ namespace AI_Helper.Manage
             }
             else
             {
+                if (!INIData.Sections.ContainsSection(Section))
+                {
+                    return false;
+                }
                 return INIData[Section].ContainsKey(Key);
             }
             //var iniSection = ExIni.IniFile.FromFile(Path).GetSection(Section);

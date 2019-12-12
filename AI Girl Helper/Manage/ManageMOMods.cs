@@ -140,7 +140,7 @@ namespace AI_Helper.Manage
                     ManageMO.WriteMetaINI(
                         moddir
                         ,
-                        IsUpdate ? string.Empty : ManageMO.GetCategoryIndexForTheName("ScriptLoader scripts") +","
+                        IsUpdate ? string.Empty : ManageMO.GetCategoryIndexForTheName("ScriptLoader scripts") + ","
                         ,
                         "0." + FileLastModificationTime
                         ,
@@ -322,7 +322,7 @@ namespace AI_Helper.Manage
                         ManageMO.WriteMetaINI(
                             cardsModDir
                             ,
-                            ManageMO.GetCategoryIndexForTheName("Characters")+","
+                            ManageMO.GetCategoryIndexForTheName("Characters") + ","
                             ,
                             string.Empty
                             ,
@@ -880,11 +880,14 @@ namespace AI_Helper.Manage
                     continue;
                 }
 
+                //сортировка по подпапкам и переименование файлов
+                SortFilesToSubfolders(dirIn2mo);
+
                 string dir = ManageFilesFolders.MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(dirIn2mo);
                 name = Path.GetFileName(dir);
                 string category = string.Empty;
                 string version = string.Empty;
-                string author = string.Empty;
+                string author = GetAuthorName(dir, name);//получение имени автора из имени файла или других файлов
                 string comment = string.Empty;
                 string description = string.Empty;
                 string moddir = string.Empty;
@@ -925,9 +928,16 @@ namespace AI_Helper.Manage
                     {
                         //CopyFolder.Copy(dir, Path.Combine(Properties.Settings.Default.ModsPath, dir));
                         //Directory.Move(dir, "[installed]" + dir);
+                        
+                        //var TargetModDIr = Path.Combine(Properties.Settings.Default.ModsPath, Path.GetFileName(dir));
+                        var TargetModDIr = ManageFilesFolders.GetResultTargetDirPathWithNameCheck(
+                            Properties.Settings.Default.ModsPath, 
+                            (author.Length > 0 && !ManageStrings.IsStringAContainsStringB(name, author))
+                                ?
+                                "[" + author + "]" + name
+                                : 
+                                name);
 
-                        var TargetModDIr = Path.Combine(Properties.Settings.Default.ModsPath, Path.GetFileName(dir));
-                        //var TargetModDIr = GetResultTargetDirPathWithNameCheck(Properties.Settings.Default.ModsPath, Path.GetFileName(dir));
 
                         if (Directory.Exists(TargetModDIr))
                         {
@@ -947,6 +957,7 @@ namespace AI_Helper.Manage
                                     File.Move(file, fileTarget);
                                 }
                             }
+                            //ManageFilesFolders.DeleteEmptySubfolders(dir);
                             Directory.Delete(dir, true);
                         }
                         else
@@ -957,7 +968,6 @@ namespace AI_Helper.Manage
                         moddir = TargetModDIr;
                         AnyModFound = true;
                         version = Regex.Match(name, @"\d+(\.\d+)*").Value;
-                        author = name.StartsWith("[AI][") || (name.StartsWith("[") && !name.StartsWith("[AI]")) ? name.Substring(name.IndexOf("[") + 1, name.IndexOf("]") - 1) : string.Empty;
                         description = name;
                         break;
                     }
@@ -1131,10 +1141,9 @@ namespace AI_Helper.Manage
 
                 if (AnyModFound)
                 {
-                    string[] dlls = Directory.GetFiles(moddir, "*.dll", SearchOption.AllDirectories);
-                    if (author.Length == 0 && dlls.Length > 0)
+                    if (author.Length == 0 && ManageFilesFolders.IsAnyFileExistsInTheDir(moddir, ".dll"))
                     {
-                        foreach (string dll in dlls)
+                        foreach (string dll in Directory.GetFiles(moddir, "*.dll", SearchOption.AllDirectories))
                         {
                             FileVersionInfo dllInfo = FileVersionInfo.GetVersionInfo(dll);
 
@@ -1202,6 +1211,152 @@ namespace AI_Helper.Manage
                     //INI.WriteINI("General", "validated", "true");
 
                     ManageMO.ActivateInsertModIfPossible(Path.GetFileName(moddir));
+                }
+            }
+        }
+
+        private static string GetAuthorName(string subdir = null, string name = null)
+        {
+            string author = string.Empty;
+
+            if (!string.IsNullOrEmpty(subdir))
+            {
+                string modsDir = Path.GetFileName(subdir) == "mods" ? subdir : Path.Combine(subdir, "mods");
+                if (Directory.Exists(modsDir) && ManageFilesFolders.IsAnyFileExistsInTheDir(modsDir, ".zip", false))
+                {
+                    foreach (var zipfile in Directory.GetFiles(modsDir, "*.zip"))
+                    {
+                        using (ZipArchive archive = ZipFile.OpenRead(zipfile))
+                        {
+                            foreach (ZipArchiveEntry entry in archive.Entries)
+                            {
+                                if (entry.FullName.EndsWith("manifest.xml", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    string TempDir = Path.Combine(modsDir, "temp");
+                                    if (Directory.Exists(TempDir))
+                                    {
+                                    }
+                                    else
+                                    {
+                                        Directory.CreateDirectory(TempDir);
+                                    }
+
+                                    string xmlpath = Path.Combine(TempDir, entry.FullName);
+                                    entry.ExtractToFile(xmlpath);
+
+                                    author = ManageXML.ReadXmlValue(xmlpath, "manifest/author", "author");
+
+                                    File.Delete(xmlpath);
+                                    ManageFilesFolders.DeleteEmptySubfolders(TempDir);
+                                    break;
+                                }
+                            }
+                            if (author.Length > 0)
+                            {
+                                return author;
+                            }
+                        }
+
+                    }
+                }
+
+                if (author.Length == 0 && ManageFilesFolders.IsAnyFileExistsInTheDir(subdir, ".dll"))
+                {
+                    foreach (var dllFilePath in Directory.GetFiles(subdir, "*.dll", SearchOption.AllDirectories))
+                    {
+                        FileVersionInfo dllInfo = FileVersionInfo.GetVersionInfo(dllFilePath);
+
+                        author = dllInfo.LegalCopyright;
+                        //"Copyright © AuthorName 2019"
+                        if (!string.IsNullOrEmpty(author))
+                        {
+                            if (author.Length >= 4)//удаление года, строка должна быть не менее 4 символов для этого
+                            {
+                                author = author.Remove(author.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim();
+                            }
+                        }
+                        else
+                        {
+                            author = string.Empty;
+                        }
+                    }
+                }
+
+                if (author.Length == 0 && ManageFilesFolders.IsAnyFileExistsInTheDir(subdir, ".txt", false))
+                {
+                    foreach (var txtFilePath in Directory.GetFiles(subdir, "*.txt"))
+                    {
+                        using (StreamReader sr = new StreamReader(txtFilePath))
+                        {
+                            string line = sr.ReadLine();
+
+                            if (line.ToUpper().StartsWith("BY ") || line.ToUpper().StartsWith("AUTHOR: ") || line.ToUpper().StartsWith("AUTHOR "))
+                            {
+                                author = line.Split(' ')[1];
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(name) && author.Length == 0)
+            {
+                if (name.StartsWith("["))
+                {
+                    string[] s = name.Split(']');
+
+                    if (!name.StartsWith("[AI]"))
+                    {
+                        author = s[0].Remove(0, 1);
+                    }
+                    else if (name.StartsWith("[AI]["))
+                    {
+                        author = s[1].Remove(0, 1);
+                    }
+                }
+            }
+
+            return author;
+        }
+
+        private static void SortFilesToSubfolders(string dirIn2mo)
+        {
+            foreach (var file in Directory.GetFiles(dirIn2mo, "*.*"))
+            {
+                string fileName = Path.GetFileNameWithoutExtension(file);
+                string fileExtension = Path.GetExtension(file);
+                string parentFolderPath = Path.GetDirectoryName(file);
+                string parentFolderName = Path.GetFileName(Path.GetDirectoryName(file));
+
+                if (!ManageStrings.IsStringAContainsStringB(fileName, parentFolderName) && (fileExtension == ".txt" || fileExtension == ".jpg" || fileExtension == ".jpeg" || fileExtension == ".bmp" || fileExtension == ".rtd" || fileExtension == ".doc" || fileExtension == ".html"))
+                {
+                    File.Move(file, Path.Combine(parentFolderPath, parentFolderName + " " + fileName + fileExtension));
+                }
+                else if (fileExtension == ".zipmod")
+                {
+                    string modsDirPath = Path.Combine(parentFolderPath, "mods");
+                    Directory.CreateDirectory(modsDirPath);
+                    File.Move(file, Path.Combine(modsDirPath, fileName + fileExtension));
+                }
+                else if (fileExtension == ".png")
+                {
+                    if (ManageStrings.IsStringAContainsStringB(fileName, "AISChaF"))
+                    {
+                        string AISChaFDirPath = Path.Combine(parentFolderPath, "UserData", "chara", "female");
+                        Directory.CreateDirectory(AISChaFDirPath);
+                        File.Move(file, Path.Combine(AISChaFDirPath, fileName + fileExtension));
+
+                    }
+                    else if (ManageStrings.IsStringAContainsStringB(fileName, "AISChaM"))
+                    {
+                        string AISChaMDirPath = Path.Combine(parentFolderPath, "UserData", "chara", "male");
+                        Directory.CreateDirectory(AISChaMDirPath);
+                        File.Move(file, Path.Combine(AISChaMDirPath, fileName + fileExtension));
+                    }
+                    else if (!ManageStrings.IsStringAContainsStringB(fileName, parentFolderName))
+                    {
+                        File.Move(file, Path.Combine(parentFolderPath, parentFolderName + " " + fileName + fileExtension));
+                    }
                 }
             }
         }
@@ -1309,7 +1464,7 @@ namespace AI_Helper.Manage
                 ManageMO.WriteMetaINI(
                     dllTargetModDirPath
                     ,
-                    IsUpdate ? string.Empty : ManageMO.GetCategoryIndexForTheName("Plugins")+","
+                    IsUpdate ? string.Empty : ManageMO.GetCategoryIndexForTheName("Plugins") + ","
                     ,
                     version
                     ,

@@ -1,7 +1,9 @@
 ﻿using AI_Helper.Manage;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace AI_Helper
@@ -55,6 +57,15 @@ namespace AI_Helper
         string linksSeparator = "{{link}}";
         private void GetLinksListAndAddLinks()
         {
+            Dictionary<string, string> GroupNames = new Dictionary<string, string>
+            {
+                { "Characters", T._("Characters") },
+                { "Mods", T._("Mods") },
+                { "Authors", T._("Authors") },
+                { "Resources", T._("Resources") },
+                { "Other", T._("Other") }
+            };
+
             string GameLinksPath = Path.Combine(Properties.Settings.Default.AppResDir, "links", ManageSettings.GetCurrentGameFolderName() + ".txt");
             if (!File.Exists(GameLinksPath))
             {
@@ -63,7 +74,7 @@ namespace AI_Helper
             if (File.Exists(GameLinksPath))
             {
                 //https://stackoverflow.com/questions/16959122/displaying-multiple-linklabels-in-a-form
-                string[] links = File.ReadAllLines(GameLinksPath);
+                string[] links = File.ReadAllLines(GameLinksPath).Where(line => !line.StartsWith(";")).ToArray();
                 int groupcnt = 0;
                 string lastgroup = string.Empty;
                 foreach (var line in links)
@@ -101,7 +112,7 @@ namespace AI_Helper
                         lastgroup = linkParts[0];
                         Label lblGroup = new Label
                         {
-                            Text = lastgroup
+                            Text = GroupNames.Keys.Contains(linkParts[0]) ? GroupNames[linkParts[0]] : linkParts[0]
                         };
 
                         panel.Controls.Add(lblGroup, 0, currentRow++);

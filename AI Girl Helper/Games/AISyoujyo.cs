@@ -12,6 +12,11 @@
             return "AI-Syoujyo";
         }
 
+        public override string GetDisplayingGameName()
+        {
+            return T._("AI-Girl");
+        }
+
         public override string GetGameStudioEXEName()
         {
             return "StudioNEOV2";

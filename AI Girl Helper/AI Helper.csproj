@@ -98,16 +98,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\CategoriesList.cs" />
-    <Compile Include="AI Links.cs">
+    <Compile Include="ExtraForms\AI Links.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AI Links.Designer.cs">
+    <Compile Include="ExtraForms\AI Links.Designer.cs">
       <DependentUpon>AI Links.cs</DependentUpon>
     </Compile>
-    <Compile Include="AI ExtraSettings\AI ExtraSettings.cs">
+    <Compile Include="ExtraForms\AI ExtraSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AI ExtraSettings\AI ExtraSettings.Designer.cs">
+    <Compile Include="ExtraForms\AI ExtraSettings.Designer.cs">
       <DependentUpon>AI ExtraSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="Games\AISyoujyoTrial.cs" />
@@ -151,10 +151,10 @@
     <EmbeddedResource Include="AI Helper.resx">
       <DependentUpon>AI Helper.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AI Links.resx">
+    <EmbeddedResource Include="ExtraForms\AI Links.resx">
       <DependentUpon>AI Links.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AI ExtraSettings\AI ExtraSettings.resx">
+    <EmbeddedResource Include="ExtraForms\AI ExtraSettings.resx">
       <DependentUpon>AI ExtraSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

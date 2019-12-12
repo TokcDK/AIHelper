@@ -30,15 +30,15 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExtraSettings));
             this.XUAGroupBox = new System.Windows.Forms.GroupBox();
+            this.XUAHelpLinkLabel = new System.Windows.Forms.LinkLabel();
             this.XUAcfgFileOpenLinkLabel = new System.Windows.Forms.LinkLabel();
             this.XUAEndpointComboBox = new System.Windows.Forms.ComboBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.XUATranslateServiceLabel = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.XUALanguageComboBox = new System.Windows.Forms.ComboBox();
             this.XUALanguageLabel = new System.Windows.Forms.Label();
             this.XUAFromLanguageComboBox = new System.Windows.Forms.ComboBox();
-            this.XUAHelpLinkLabel = new System.Windows.Forms.LinkLabel();
             this.XUAGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -47,7 +47,7 @@
             this.XUAGroupBox.Controls.Add(this.XUAHelpLinkLabel);
             this.XUAGroupBox.Controls.Add(this.XUAcfgFileOpenLinkLabel);
             this.XUAGroupBox.Controls.Add(this.XUAEndpointComboBox);
-            this.XUAGroupBox.Controls.Add(this.label3);
+            this.XUAGroupBox.Controls.Add(this.XUATranslateServiceLabel);
             this.XUAGroupBox.Controls.Add(this.label2);
             this.XUAGroupBox.Controls.Add(this.label1);
             this.XUAGroupBox.Controls.Add(this.XUALanguageComboBox);
@@ -60,6 +60,17 @@
             this.XUAGroupBox.TabIndex = 0;
             this.XUAGroupBox.TabStop = false;
             this.XUAGroupBox.Text = "XUnity.AutoTranslator";
+            // 
+            // XUAHelpLinkLabel
+            // 
+            this.XUAHelpLinkLabel.AutoSize = true;
+            this.XUAHelpLinkLabel.Location = new System.Drawing.Point(115, 0);
+            this.XUAHelpLinkLabel.Name = "XUAHelpLinkLabel";
+            this.XUAHelpLinkLabel.Size = new System.Drawing.Size(12, 13);
+            this.XUAHelpLinkLabel.TabIndex = 16;
+            this.XUAHelpLinkLabel.TabStop = true;
+            this.XUAHelpLinkLabel.Text = "?";
+            this.XUAHelpLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.XUAHelpLinkLabel_LinkClicked);
             // 
             // XUAcfgFileOpenLinkLabel
             // 
@@ -82,15 +93,15 @@
             this.XUAEndpointComboBox.TabIndex = 14;
             this.XUAEndpointComboBox.SelectedIndexChanged += new System.EventHandler(this.XUAEndpointComboBox_SelectedIndexChanged);
             // 
-            // label3
+            // XUATranslateServiceLabel
             // 
-            this.label3.AutoSize = true;
-            this.label3.ForeColor = System.Drawing.Color.Black;
-            this.label3.Location = new System.Drawing.Point(4, 84);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(93, 13);
-            this.label3.TabIndex = 13;
-            this.label3.Text = "Translate service:";
+            this.XUATranslateServiceLabel.AutoSize = true;
+            this.XUATranslateServiceLabel.ForeColor = System.Drawing.Color.Black;
+            this.XUATranslateServiceLabel.Location = new System.Drawing.Point(4, 84);
+            this.XUATranslateServiceLabel.Name = "XUATranslateServiceLabel";
+            this.XUATranslateServiceLabel.Size = new System.Drawing.Size(93, 13);
+            this.XUATranslateServiceLabel.TabIndex = 13;
+            this.XUATranslateServiceLabel.Text = "Translate service:";
             // 
             // label2
             // 
@@ -142,17 +153,6 @@
             this.XUAFromLanguageComboBox.TabIndex = 8;
             this.XUAFromLanguageComboBox.SelectedIndexChanged += new System.EventHandler(this.XUAFromLanguageComboBox_SelectedIndexChanged);
             // 
-            // XUAHelpLinkLabel
-            // 
-            this.XUAHelpLinkLabel.AutoSize = true;
-            this.XUAHelpLinkLabel.Location = new System.Drawing.Point(115, 0);
-            this.XUAHelpLinkLabel.Name = "XUAHelpLinkLabel";
-            this.XUAHelpLinkLabel.Size = new System.Drawing.Size(12, 13);
-            this.XUAHelpLinkLabel.TabIndex = 16;
-            this.XUAHelpLinkLabel.TabStop = true;
-            this.XUAHelpLinkLabel.Text = "?";
-            this.XUAHelpLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.XUAHelpLinkLabel_LinkClicked);
-            // 
             // ExtraSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -180,7 +180,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox XUALanguageComboBox;
         private System.Windows.Forms.ComboBox XUAEndpointComboBox;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label XUATranslateServiceLabel;
         private System.Windows.Forms.LinkLabel XUAcfgFileOpenLinkLabel;
         private System.Windows.Forms.LinkLabel XUAHelpLinkLabel;
     }

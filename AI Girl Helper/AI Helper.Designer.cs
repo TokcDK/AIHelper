@@ -45,7 +45,7 @@
             this.LaunchLinksLinkLabel = new System.Windows.Forms.LinkLabel();
             this.BepInExDisplayedLogLevelLabel = new System.Windows.Forms.Label();
             this.BepInExConsoleCheckBox = new System.Windows.Forms.CheckBox();
-            this.SelectedGameLabel1 = new System.Windows.Forms.Label();
+            this.SelectedGameLabel = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.LanchModeInfoLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -58,8 +58,9 @@
             this.SettingsButton = new System.Windows.Forms.Button();
             this.SettingsPage = new System.Windows.Forms.TabPage();
             this.SettingsPagePanel = new System.Windows.Forms.Panel();
+            this.JPLauncherRunLinkLabel = new System.Windows.Forms.LinkLabel();
             this.ExtraSettingsLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.label6 = new System.Windows.Forms.Label();
+            this.CurrentGameLabel = new System.Windows.Forms.Label();
             this.CurrentGameComboBox = new System.Windows.Forms.ComboBox();
             this.SettingsFoldersGroupBox = new System.Windows.Forms.GroupBox();
             this.Open2MOLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -248,7 +249,7 @@
             this.LaunchPagePanel.Controls.Add(this.LaunchLinksLinkLabel);
             this.LaunchPagePanel.Controls.Add(this.BepInExDisplayedLogLevelLabel);
             this.LaunchPagePanel.Controls.Add(this.BepInExConsoleCheckBox);
-            this.LaunchPagePanel.Controls.Add(this.SelectedGameLabel1);
+            this.LaunchPagePanel.Controls.Add(this.SelectedGameLabel);
             this.LaunchPagePanel.Controls.Add(this.label4);
             this.LaunchPagePanel.Controls.Add(this.label5);
             this.LaunchPagePanel.Controls.Add(this.LanchModeInfoLinkLabel);
@@ -300,16 +301,16 @@
             this.BepInExConsoleCheckBox.UseVisualStyleBackColor = true;
             this.BepInExConsoleCheckBox.CheckedChanged += new System.EventHandler(this.ConsoleCheckBox_CheckedChanged);
             // 
-            // SelectedGameLabel1
+            // SelectedGameLabel
             // 
-            this.SelectedGameLabel1.AutoSize = true;
-            this.SelectedGameLabel1.Font = new System.Drawing.Font("Lucida Handwriting", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SelectedGameLabel1.ForeColor = System.Drawing.Color.LightPink;
-            this.SelectedGameLabel1.Location = new System.Drawing.Point(101, 45);
-            this.SelectedGameLabel1.Name = "SelectedGameLabel1";
-            this.SelectedGameLabel1.Size = new System.Drawing.Size(22, 15);
-            this.SelectedGameLabel1.TabIndex = 24;
-            this.SelectedGameLabel1.Text = "---";
+            this.SelectedGameLabel.AutoSize = true;
+            this.SelectedGameLabel.Font = new System.Drawing.Font("Lucida Handwriting", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SelectedGameLabel.ForeColor = System.Drawing.Color.LightPink;
+            this.SelectedGameLabel.Location = new System.Drawing.Point(101, 45);
+            this.SelectedGameLabel.Name = "SelectedGameLabel";
+            this.SelectedGameLabel.Size = new System.Drawing.Size(22, 15);
+            this.SelectedGameLabel.TabIndex = 24;
+            this.SelectedGameLabel.Text = "---";
             // 
             // label4
             // 
@@ -456,8 +457,9 @@
             // SettingsPagePanel
             // 
             this.SettingsPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.SettingsPagePanel.Controls.Add(this.JPLauncherRunLinkLabel);
             this.SettingsPagePanel.Controls.Add(this.ExtraSettingsLinkLabel);
-            this.SettingsPagePanel.Controls.Add(this.label6);
+            this.SettingsPagePanel.Controls.Add(this.CurrentGameLabel);
             this.SettingsPagePanel.Controls.Add(this.CurrentGameComboBox);
             this.SettingsPagePanel.Controls.Add(this.SettingsFoldersGroupBox);
             this.SettingsPagePanel.Controls.Add(this.CreateShortcutButton);
@@ -470,10 +472,22 @@
             this.SettingsPagePanel.Size = new System.Drawing.Size(340, 155);
             this.SettingsPagePanel.TabIndex = 1;
             // 
+            // JPLauncherRunLinkLabel
+            // 
+            this.JPLauncherRunLinkLabel.AutoSize = true;
+            this.JPLauncherRunLinkLabel.LinkColor = System.Drawing.Color.White;
+            this.JPLauncherRunLinkLabel.Location = new System.Drawing.Point(2, 60);
+            this.JPLauncherRunLinkLabel.Name = "JPLauncherRunLinkLabel";
+            this.JPLauncherRunLinkLabel.Size = new System.Drawing.Size(65, 13);
+            this.JPLauncherRunLinkLabel.TabIndex = 10;
+            this.JPLauncherRunLinkLabel.TabStop = true;
+            this.JPLauncherRunLinkLabel.Text = "JP Launcher";
+            this.JPLauncherRunLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            // 
             // ExtraSettingsLinkLabel
             // 
             this.ExtraSettingsLinkLabel.AutoSize = true;
-            this.ExtraSettingsLinkLabel.LinkColor = System.Drawing.Color.White;
+            this.ExtraSettingsLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.ExtraSettingsLinkLabel.Location = new System.Drawing.Point(3, 44);
             this.ExtraSettingsLinkLabel.Name = "ExtraSettingsLinkLabel";
             this.ExtraSettingsLinkLabel.Size = new System.Drawing.Size(75, 13);
@@ -482,15 +496,15 @@
             this.ExtraSettingsLinkLabel.Text = "Extra Settings";
             this.ExtraSettingsLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.ExtraSettingsLinkLabel_LinkClicked);
             // 
-            // label6
+            // CurrentGameLabel
             // 
-            this.label6.AutoSize = true;
-            this.label6.ForeColor = System.Drawing.Color.White;
-            this.label6.Location = new System.Drawing.Point(11, 4);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(78, 13);
-            this.label6.TabIndex = 8;
-            this.label6.Text = "Current Game:";
+            this.CurrentGameLabel.AutoSize = true;
+            this.CurrentGameLabel.ForeColor = System.Drawing.Color.White;
+            this.CurrentGameLabel.Location = new System.Drawing.Point(11, 4);
+            this.CurrentGameLabel.Name = "CurrentGameLabel";
+            this.CurrentGameLabel.Size = new System.Drawing.Size(78, 13);
+            this.CurrentGameLabel.TabIndex = 8;
+            this.CurrentGameLabel.Text = "Current Game:";
             // 
             // CurrentGameComboBox
             // 
@@ -829,16 +843,17 @@
         private System.Windows.Forms.LinkLabel LanchModeInfoLinkLabel;
         private System.Windows.Forms.LinkLabel OpenMyUserDataFolderLinkLabel;
         private System.Windows.Forms.LinkLabel OpenMOOverwriteFolderLinkLabel;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label CurrentGameLabel;
         private System.Windows.Forms.ComboBox CurrentGameComboBox;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.LinkLabel Open2MOLinkLabel;
-        private System.Windows.Forms.Label SelectedGameLabel1;
+        private System.Windows.Forms.Label SelectedGameLabel;
         private System.Windows.Forms.CheckBox BepInExConsoleCheckBox;
         private System.Windows.Forms.Label BepInExDisplayedLogLevelLabel;
         private System.Windows.Forms.LinkLabel ExtraSettingsLinkLabel;
         private System.Windows.Forms.LinkLabel LaunchLinksLinkLabel;
+        private System.Windows.Forms.LinkLabel JPLauncherRunLinkLabel;
     }
 }
 

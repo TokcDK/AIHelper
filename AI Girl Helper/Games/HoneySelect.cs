@@ -39,5 +39,10 @@ namespace AI_Helper.Games
         {
             return "StudioNEO_64";
         }
+
+        public override string GetDisplayingGameName()
+        {
+            return T._("Honey Select");
+        }
     }
 }

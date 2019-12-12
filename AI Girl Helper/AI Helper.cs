@@ -125,6 +125,7 @@ namespace AI_Helper
         private void SetLocalizationStrings()
         {
             this.Text = T._("AI Helper for Organized ModPack");
+            CurrentGameLabel.Text = T._("Current Game")+":";
             InstallInModsButton.Text = T._("Install from 2MO");
             //button1.Text = T._("Prepare the game");
             SettingsPage.Text = T._("Settings");
@@ -144,6 +145,8 @@ namespace AI_Helper
             GameButton.Text = T._("Game");
             MOButton.Text = T._("Manager");
             SettingsButton.Text = T._("Settings");
+            ExtraSettingsLinkLabel.Text = T._("Extra Settings");
+            JPLauncherRunLinkLabel.Text = T._("Orig Launcher");
             LaunchLinksLinkLabel.Text = T._("Links");
             QualityComboBox.Items.Add(T._("Perfomance"));
             QualityComboBox.Items.Add(T._("Normal"));
@@ -502,11 +505,12 @@ namespace AI_Helper
                 : T._("Will execute Studio")
                 );
             THToolTip.SetToolTip(MOButton, T._("Will execute Mod Organizer mod manager where you can manage your mods"));
-            THToolTip.SetToolTip(SettingsButton, MOmode ?
+            THToolTip.SetToolTip(JPLauncherRunLinkLabel, MOmode ?
                   T._("Will execute original game launcher")
                 + T._(" from Mod Organizer with attached mods")
                 : T._("Will execute original game launcher")
                 );
+            THToolTip.SetToolTip(SettingsButton, T._("Will be opened Settings tab"));
             THToolTip.SetToolTip(MOCommonModeSwitchButton, MOmode ? T._(
                     "Will convert game from MO Mode to Common mode\n" +
                     " when you can run exes from Data folder without Mod Organizer.\n You can convert game back to MO mode\n" +
@@ -829,13 +833,14 @@ namespace AI_Helper
                 ManageOther.AutoShortcutAndRegystry();
             }
 
-            SelectedGameLabel1.Text = ManageSettings.GetCurrentGameFolderName();
+            SelectedGameLabel.Text = ManageSettings.GetCurrentGameFolderName()+ "❤";
         }
 
         private void GetEnableDisableLaunchButtons()
         {
             MOButton.Enabled = File.Exists(ManageSettings.GetMOexePath());
-            SettingsButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"));
+            //SettingsButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"));
+            JPLauncherRunLinkLabel.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"));
             GameButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetCurrentGameEXEName() + ".exe"));
             StudioButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetStudioEXEName() + ".exe"));
             try
@@ -898,16 +903,17 @@ namespace AI_Helper
 
         private void SettingsButton_Click(object sender, EventArgs e)
         {
-            OnOffButtons(false);
-            if (MOmode)
-            {
-                RunProgram(MOexePath, "moshortcut://:" + ManageSettings.GetINISettingsEXEName());
-            }
-            else
-            {
-                RunProgram(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"), string.Empty);
-            }
-            OnOffButtons();
+            AIGirlHelperTabControl.SelectedTab = SettingsPage;
+            //OnOffButtons(false);
+            //if (MOmode)
+            //{
+            //    RunProgram(MOexePath, "moshortcut://:" + ManageSettings.GetINISettingsEXEName());
+            //}
+            //else
+            //{
+            //    RunProgram(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"), string.Empty);
+            //}
+            //OnOffButtons();
         }
 
         private void GameButton_Click(object sender, EventArgs e)
@@ -1671,6 +1677,20 @@ namespace AI_Helper
         private void AIGirlHelperTabControl_Selecting(object sender, TabControlCancelEventArgs e)
         {
             newformButton.Text = @"\/";
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            OnOffButtons(false);
+            if (MOmode)
+            {
+                RunProgram(MOexePath, "moshortcut://:" + ManageSettings.GetINISettingsEXEName());
+            }
+            else
+            {
+                RunProgram(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"), string.Empty);
+            }
+            OnOffButtons();
         }
 
         //Материалы

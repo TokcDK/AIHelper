@@ -23,9 +23,18 @@ namespace AI_Helper
 
             InitOnLoad();
 
+            SetLocalizationStrings();
+
             SetTooltips();
 
             InitOnLoadIsInAction = false;
+        }
+
+        private void SetLocalizationStrings()
+        {
+            this.Text = T._("Extra Settings");
+            XUALanguageLabel.Text = T._("Language")+":";
+            XUATranslateServiceLabel.Text = T._("Translate Service") +":";
         }
 
         private void InitOnLoad()

@@ -304,11 +304,11 @@
             // SelectedGameLabel
             // 
             this.SelectedGameLabel.AutoSize = true;
-            this.SelectedGameLabel.Font = new System.Drawing.Font("Lucida Handwriting", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SelectedGameLabel.Font = new System.Drawing.Font("Monotype Corsiva", 11.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.SelectedGameLabel.ForeColor = System.Drawing.Color.LightPink;
             this.SelectedGameLabel.Location = new System.Drawing.Point(101, 45);
             this.SelectedGameLabel.Name = "SelectedGameLabel";
-            this.SelectedGameLabel.Size = new System.Drawing.Size(22, 15);
+            this.SelectedGameLabel.Size = new System.Drawing.Size(20, 17);
             this.SelectedGameLabel.TabIndex = 24;
             this.SelectedGameLabel.Text = "---";
             // 

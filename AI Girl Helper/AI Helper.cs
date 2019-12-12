@@ -151,6 +151,8 @@ namespace AI_Helper
             QualityComboBox.Items.Add(T._("Perfomance"));
             QualityComboBox.Items.Add(T._("Normal"));
             QualityComboBox.Items.Add(T._("Quality"));
+
+            Properties.Settings.Default.CurrentGameDisplayingName = CurrentGame.GetGameDisplayingName();
         }
 
         private int mode = 0;
@@ -833,7 +835,7 @@ namespace AI_Helper
                 ManageOther.AutoShortcutAndRegystry();
             }
 
-            SelectedGameLabel.Text = ManageSettings.GetCurrentGameFolderName()+ "❤";
+            SelectedGameLabel.Text = CurrentGame.GetGameDisplayingName()+ "❤";
         }
 
         private void GetEnableDisableLaunchButtons()

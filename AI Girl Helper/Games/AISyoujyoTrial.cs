@@ -12,7 +12,7 @@
             return "AI-SyoujyoTrial";
         }
 
-        public override string GetDisplayingGameName()
+        public override string GetGameDisplayingName()
         {
             return T._("AI-Girl")+"Trial";
         }

@@ -64,6 +64,11 @@ namespace AI_Helper.Manage
             return Properties.Settings.Default.CurrentGameFolderName;
         }
 
+        public static string GetCurrentGameDisplayingName()
+        {
+            return Properties.Settings.Default.CurrentGameDisplayingName;
+        }
+
         public static string GetStudioEXEName()
         {
             return Properties.Settings.Default.StudioEXEName;

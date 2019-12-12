@@ -14,7 +14,7 @@ namespace AI_Helper.Games
 
         public abstract string GetGameFolderName();
 
-        public virtual string GetDisplayingGameName() 
+        public virtual string GetGameDisplayingName() 
         {
             return GetGameFolderName();
         }

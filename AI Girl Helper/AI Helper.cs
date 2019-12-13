@@ -1695,6 +1695,18 @@ namespace AI_Helper
             OnOffButtons();
         }
 
+        private void FixMOModsButton_Click(object sender, EventArgs e)
+        {
+            foreach (var folder in Directory.GetDirectories(ManageSettings.GetModsPath()))
+            {
+                if (!folder.EndsWith("_separator"))
+                {
+                    ManageMOMods.SortFilesToSubfolders(folder);
+                }
+            }
+            MessageBox.Show("Service finished");
+        }
+
         //Материалы
         //Есть пример с загрузкой файла по ссылке:
         //https://github.com/adoconnection/SevenZipExtractor

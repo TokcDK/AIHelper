@@ -1222,7 +1222,7 @@ namespace AI_Helper.Manage
             }
         }
 
-        private static string GetAuthorName(string subdir = null, string name = null)
+        public static string GetAuthorName(string subdir = null, string name = null)
         {
             string author = string.Empty;
 
@@ -1326,7 +1326,7 @@ namespace AI_Helper.Manage
             return author;
         }
 
-        private static void SortFilesToSubfolders(string dirIn2mo)
+        public static void SortFilesToSubfolders(string dirIn2mo)
         {
             foreach (var file in Directory.GetFiles(dirIn2mo, "*.*"))
             {

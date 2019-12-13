@@ -78,6 +78,7 @@
             this.AutoShortcutRegistryCheckBox = new System.Windows.Forms.CheckBox();
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
             this.ToolsPagePanel = new System.Windows.Forms.Panel();
+            this.FixMOModsButton = new System.Windows.Forms.Button();
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
@@ -715,6 +716,7 @@
             // ToolsPagePanel
             // 
             this.ToolsPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.ToolsPagePanel.Controls.Add(this.FixMOModsButton);
             this.ToolsPagePanel.Controls.Add(this.Install2MODirPathOpenFolderLinkLabel);
             this.ToolsPagePanel.Controls.Add(this.InstallInModsButton);
             this.ToolsPagePanel.Controls.Add(this.MOCommonModeSwitchButton);
@@ -723,6 +725,20 @@
             this.ToolsPagePanel.Name = "ToolsPagePanel";
             this.ToolsPagePanel.Size = new System.Drawing.Size(340, 155);
             this.ToolsPagePanel.TabIndex = 1;
+            // 
+            // FixMOModsButton
+            // 
+            this.FixMOModsButton.BackColor = System.Drawing.Color.Silver;
+            this.FixMOModsButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.FixMOModsButton.ForeColor = System.Drawing.Color.Black;
+            this.FixMOModsButton.Location = new System.Drawing.Point(223, 122);
+            this.FixMOModsButton.Name = "FixMOModsButton";
+            this.FixMOModsButton.Size = new System.Drawing.Size(112, 30);
+            this.FixMOModsButton.TabIndex = 19;
+            this.FixMOModsButton.Text = "Fix MOMods";
+            this.FixMOModsButton.UseVisualStyleBackColor = false;
+            this.FixMOModsButton.Visible = false;
+            this.FixMOModsButton.Click += new System.EventHandler(this.FixMOModsButton_Click);
             // 
             // Install2MODirPathOpenFolderLinkLabel
             // 
@@ -854,6 +870,7 @@
         private System.Windows.Forms.LinkLabel ExtraSettingsLinkLabel;
         private System.Windows.Forms.LinkLabel LaunchLinksLinkLabel;
         private System.Windows.Forms.LinkLabel JPLauncherRunLinkLabel;
+        private System.Windows.Forms.Button FixMOModsButton;
     }
 }
 

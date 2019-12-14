@@ -1,6 +1,6 @@
-﻿namespace AI_Helper
+﻿namespace AIHelper
 {
-    partial class AIHelper
+    partial class AI_Helper
     {
         /// <summary>
         /// Обязательная переменная конструктора.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AIHelper));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AI_Helper));
             this.AIGirlHelperTabControl = new System.Windows.Forms.TabControl();
             this.MainPage = new System.Windows.Forms.TabPage();
             this.InfoPagePanel = new System.Windows.Forms.Panel();

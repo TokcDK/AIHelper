@@ -4,9 +4,9 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace AI_Helper
+namespace AIHelper
 {
-    static class Program
+    internal static class Program
     {
         //предотвратить повторный запуск и показать окно, если свернуто
         //https://stackoverflow.com/questions/184084/how-to-force-c-sharp-net-app-to-run-only-one-instance-in-windows
@@ -34,7 +34,7 @@ namespace AI_Helper
                 {
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
-                    Application.Run(new AIHelper());
+                    Application.Run(new AI_Helper());
                 }
                 else
                 {

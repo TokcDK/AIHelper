@@ -1,8 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace AI_Helper
+namespace AIHelper
 {
-    public class CreateSymlink
+    public static class CreateSymlink
     {
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         static extern bool CreateSymbolicLink(

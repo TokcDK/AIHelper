@@ -1,7 +1,7 @@
-﻿using AI_Helper.Manage;
+﻿using AIHelper.Manage;
 using System.IO;
 
-namespace AI_Helper.Games
+namespace AIHelper.Games
 {
     public abstract class Game
     {
@@ -10,7 +10,7 @@ namespace AI_Helper.Games
 
         }
 
-        public string GamesLocationFolderName = "Games";
+        internal readonly string GamesLocationFolderName = "Games";
 
         public abstract string GetGameFolderName();
 

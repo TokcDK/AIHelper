@@ -1,4 +1,4 @@
-﻿namespace AI_Helper.Manage
+﻿namespace AIHelper.Manage
 {
     class ManageStrings
     {

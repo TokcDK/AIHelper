@@ -1,4 +1,4 @@
-﻿using AI_Helper.Manage;
+﻿using AIHelper.Manage;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace AI_Helper.Manage
+namespace AIHelper.Manage
 {
     class ManageOther
     {

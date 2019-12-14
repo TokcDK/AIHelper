@@ -1,13 +1,12 @@
 ﻿using SymbolicLinkSupport;
 using System;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace AI_Helper.Manage
+namespace AIHelper.Manage
 {
-    class ManageFilesFolders
+    internal class ManageFilesFolders
     {
         private static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
 
@@ -93,12 +92,12 @@ namespace AI_Helper.Manage
 
         public static bool IsAnyFileExistsInTheDir(string dirPath, string extension, bool AllDirectories = true)
         {
-            if (extension.Length==0 || dirPath.Length == 0)
+            if (extension.Length == 0 || dirPath.Length == 0)
             {
                 return false;
             }
 
-            if (extension.Substring(0,1) != ".")
+            if (extension.Substring(0, 1) != ".")
             {
                 extension = "." + extension;
             }
@@ -359,7 +358,7 @@ namespace AI_Helper.Manage
         public static string MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(string folderPath)
         {
             string AloneFolderName = IfInTheFolderOnlyOneFolderGetItName(folderPath);
-            if (AloneFolderName.Length>0)
+            if (AloneFolderName.Length > 0)
             {
                 if (!ManageStrings.IsStringAContainsAnyStringFromStringArray(AloneFolderName, ManageSettings.GetListOfExistsGames()[ManageSettings.GetCurrentGameIndex()].GetGameStandartFolderNames(), true))
                 {

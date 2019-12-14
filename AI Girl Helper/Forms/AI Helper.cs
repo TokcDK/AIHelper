@@ -1,5 +1,5 @@
-﻿using AI_Helper.Games;
-using AI_Helper.Manage;
+﻿using AIHelper.Games;
+using AIHelper.Manage;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,9 +13,9 @@ using System.Windows.Forms;
 
 //using Crc32C;
 
-namespace AI_Helper
+namespace AIHelper
 {
-    public partial class AIHelper : Form
+    public partial class AI_Helper : Form
     {
         private readonly bool compressmode = false;
 
@@ -40,7 +40,7 @@ namespace AI_Helper
         private Game CurrentGame;
         private List<Game> ListOfGames;
 
-        public AIHelper()
+        public AI_Helper()
         {
             InitializeComponent();
 
@@ -426,7 +426,7 @@ namespace AI_Helper
         /// <param name="categories"></param>
         /// <param name="inputmoddir"></param>
         /// <returns></returns>
-        private string GetResultTargetName(List<CategoriesList> categories, string inputmoddir)
+        private static string GetResultTargetName(List<CategoriesList> categories, string inputmoddir)
         {
             string targetdir = DownloadsPath;
 
@@ -608,7 +608,7 @@ namespace AI_Helper
             QualityComboBox.SelectedIndex = int.Parse(ManageXML.ReadXmlValue(SetupXmlPath, "Setting/Quality", "2"));
         }
 
-        private void SetScreenResolution(string Resolution)
+        private static void SetScreenResolution(string Resolution)
         {
             if (MOmode)
             {

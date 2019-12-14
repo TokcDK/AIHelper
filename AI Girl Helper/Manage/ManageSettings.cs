@@ -1,10 +1,10 @@
-﻿using AI_Helper.Games;
+﻿using AIHelper.Games;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace AI_Helper.Manage
+namespace AIHelper.Manage
 {
     class ManageSettings
     {
@@ -296,9 +296,8 @@ namespace AI_Helper.Manage
         public static string LanguageEnumToIdentifier
                 (string language)
         {
-            string mode = string.Empty;
             EnsureInitialized();
-            _languageModeMap.TryGetValue(language, out mode);
+            _languageModeMap.TryGetValue(language, out string mode);
             return mode;
         }
 
@@ -311,8 +310,7 @@ namespace AI_Helper.Manage
                 (string identifier)
         {
             EnsureInitialized(true);
-            string language;
-            _languageModeMapReversed.TryGetValue(identifier, out language);
+            _languageModeMapReversed.TryGetValue(identifier, out string language);
             return language;
         }
 

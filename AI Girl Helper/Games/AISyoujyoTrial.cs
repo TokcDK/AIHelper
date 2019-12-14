@@ -1,4 +1,4 @@
-﻿namespace AI_Helper.Games
+﻿namespace AIHelper.Games
 {
     public class AISyoujyoTrial : Game
     {

@@ -5,7 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace AI_Helper.Manage
+namespace AIHelper.Manage
 {
     class ManageMOMods
     {
@@ -1412,9 +1412,6 @@ namespace AI_Helper.Manage
                 string dllTargetModPluginsSubdirPath = Path.Combine(dllTargetModDirPath, "BepInEx", "Plugins");
                 string dllTargetPath = Path.Combine(dllTargetModPluginsSubdirPath, dllName);
                 bool IsUpdate = false;
-                string modNameWithAuthor = string.Empty;
-                string newModDirPath = string.Empty;
-
                 if (Directory.Exists(dllTargetModDirPath))
                 {
                     if (File.Exists(dllTargetPath) && File.GetLastWriteTime(dllfile) > File.GetLastWriteTime(dllTargetPath))
@@ -1432,7 +1429,7 @@ namespace AI_Helper.Manage
                 else
                 {
                     //найти имя мода из списка модов
-                    modNameWithAuthor = ManageMO.GetModFromModListContainsTheName(name, false);
+                    string modNameWithAuthor = ManageMO.GetModFromModListContainsTheName(name, false);
                     if (modNameWithAuthor.Length == 0)
                     {
                         //если пусто, поискать также имя по имени дллки
@@ -1440,7 +1437,7 @@ namespace AI_Helper.Manage
                     }
                     if (modNameWithAuthor.Length > 0)
                     {
-                        newModDirPath = Path.Combine(Properties.Settings.Default.ModsPath, modNameWithAuthor);
+                        string newModDirPath = Path.Combine(Properties.Settings.Default.ModsPath, modNameWithAuthor);
                         if (Directory.Exists(newModDirPath))
                         {
                             dllTargetModDirPath = newModDirPath;

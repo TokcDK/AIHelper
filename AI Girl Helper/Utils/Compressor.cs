@@ -2,13 +2,13 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using AI_Helper.Manage;
+using AIHelper.Manage;
 using SevenZip;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
 using SharpCompress.Common;
 
-namespace AI_Helper
+namespace AIHelper
 {
     //https://stackoverflow.com/a/53896663
     //https://www.cupofdev.com/compress-files-7zip-csharp/

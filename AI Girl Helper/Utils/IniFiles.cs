@@ -2,7 +2,7 @@
 using IniParser.Model;
 using System.IO;
 
-namespace AI_Helper.Manage
+namespace AIHelper.Manage
 {
     public class IniFile
     {

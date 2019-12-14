@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 
-namespace AI_Helper.Manage
+namespace AIHelper.Manage
 {
     internal static class ManageINI
     {

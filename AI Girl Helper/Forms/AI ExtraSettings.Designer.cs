@@ -1,4 +1,4 @@
-﻿namespace AI_Helper
+﻿namespace AIHelper
 {
     partial class ExtraSettings
     {

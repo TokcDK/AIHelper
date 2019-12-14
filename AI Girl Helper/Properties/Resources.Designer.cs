@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AI_Helper.Properties {
+namespace AIHelper.Properties {
     using System;
     
     

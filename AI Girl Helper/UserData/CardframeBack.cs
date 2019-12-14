@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AI_Helper.UserData
+namespace AIHelper.UserData
 {
     class CardframeBack : IUserDataFolders
     {

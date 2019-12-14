@@ -1,7 +1,7 @@
-﻿using AI_Helper.Manage;
+﻿using AIHelper.Manage;
 using System.IO;
 
-namespace AI_Helper.Games
+namespace AIHelper.Games
 {
     public class HoneySelect : Game
     {

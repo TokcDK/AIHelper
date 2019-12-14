@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace AI_Helper
+namespace AIHelper
 {
     //https://code.4noobz.net/c-copy-a-folder-its-content-and-the-subfolders/
     internal class CopyFolder

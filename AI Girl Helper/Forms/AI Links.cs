@@ -1,4 +1,4 @@
-﻿using AI_Helper.Manage;
+﻿using AIHelper.Manage;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace AI_Helper
+namespace AIHelper
 {
     public partial class LinksForm : Form
     {
@@ -46,15 +46,12 @@ namespace AI_Helper
         //    Process.Start("https://mega.nz/#F!XOpkWahD!d0CpOSqiwww-M9QAVBjBSw");        
         //}
 
-        Label lbl = new Label();
-        LinkLabel Llbl = new LinkLabel();
-
         private void LinksForm_Load(object sender, System.EventArgs e)
         {
             GetLinksListAndAddLinks();
         }
 
-        string linksSeparator = "{{link}}";
+        private readonly string linksSeparator = "{{link}}";
         private void GetLinksListAndAddLinks()
         {
             Dictionary<string, string> GroupNames = new Dictionary<string, string>
@@ -118,7 +115,6 @@ namespace AI_Helper
                         panel.Controls.Add(lblGroup, 0, currentRow++);
                         panel.Controls[currentRow - 1].Height = 13;
                         panel.Controls[currentRow - 1].Width = 330;
-
                     }
 
                     panel.Controls.Add(linkLabel, 0, currentRow++);

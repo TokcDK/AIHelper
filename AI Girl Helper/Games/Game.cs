@@ -76,11 +76,11 @@ namespace AIHelper.Games
         {
             if (GetGameEXENameX32().Length>0 && GetGameStudioEXENameX32().Length > 0)
             {
-                return new string[] { "abdata", "UserData", GetGameEXEName() + "_Data", GetGameEXENameX32() + "_Data", GetGameStudioEXEName() + "_Data", GetGameStudioEXENameX32() + "_Data", "Bepinex" };
+                return new string[] { "abdata", "UserData", GetGameEXEName() + "_Data", GetGameEXENameX32() + "_Data", GetGameStudioEXEName() + "_Data", GetGameStudioEXENameX32() + "_Data", "BepInEx" };
             }
             else
             {
-                return new string[] { "abdata", "UserData", GetGameEXEName() + "_Data", GetGameStudioEXEName() + "_Data", "Bepinex" };
+                return new string[] { "abdata", "UserData", GetGameEXEName() + "_Data", GetGameStudioEXEName() + "_Data", "BepInEx" };
             }
         }
 
@@ -89,31 +89,31 @@ namespace AIHelper.Games
             return new string[,]
             {
                     {
-                    Path.Combine(ManageSettings.GetModsPath(), "BepInEx", "Bepinex", "core", "BepInEx.Preloader.dll")
+                        Path.Combine(ManageSettings.GetModsPath(), "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
                         ,
-                        Path.Combine(ManageSettings.GetDataPath(), "Bepinex", "core", "BepInEx.Preloader.dll")
+                        Path.Combine(ManageSettings.GetDataPath(), "BepInEx", "core", "BepInEx.Preloader.dll")
                     }
                     ,
                     {
-                    Path.Combine(ManageSettings.GetModsPath(), "BepInEx", "doorstop_config.ini")
+                        Path.Combine(ManageSettings.GetModsPath(), "BepInEx", "doorstop_config.ini")
                         ,
                         Path.Combine(ManageSettings.GetDataPath(), "doorstop_config.ini")
                     }
                     ,
                     {
-                    Path.Combine(ManageSettings.GetModsPath(), "BepInEx", "winhttp.dll")
+                        Path.Combine(ManageSettings.GetModsPath(), "BepInEx", "winhttp.dll")
                         ,
                         Path.Combine(ManageSettings.GetDataPath(), "winhttp.dll")
                     }
                     ,
                     {
-                    Path.Combine(ManageSettings.GetModsPath(), "MyUserData", "UserData", "MaterialEditor")
+                        Path.Combine(ManageSettings.GetModsPath(), "MyUserData", "UserData", "MaterialEditor")
                         ,
                         Path.Combine(ManageSettings.GetDataPath(), "UserData", "MaterialEditor")
                     }
                     ,
                     {
-                    Path.Combine(ManageSettings.GetModsPath(), "MyUserData", "UserData", "Overlays")
+                        Path.Combine(ManageSettings.GetModsPath(), "MyUserData", "UserData", "Overlays")
                         ,
                         Path.Combine(ManageSettings.GetDataPath(), "UserData", "Overlays")
                     }

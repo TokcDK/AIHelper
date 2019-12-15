@@ -16,21 +16,22 @@ namespace AIHelper.Manage
 
         public static void CleanBepInExLinksFromData()
         {
-            //удаление файлов BepinEx
-            ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "doorstop_config.ini"));
-            ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "winhttp.dll"));
-            string BepInExDir = Path.Combine(Properties.Settings.Default.DataPath, "BepInEx");
-            if (Directory.Exists(BepInExDir))
-            {
-                Directory.Delete(BepInExDir, true);
-            }
+            BepinExLoadingFix(true);
+            ////удаление файлов BepinEx
+            //ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "doorstop_config.ini"));
+            //ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "winhttp.dll"));
+            //string BepInExDir = Path.Combine(Properties.Settings.Default.DataPath, "BepInEx");
+            //if (Directory.Exists(BepInExDir))
+            //{
+            //    Directory.Delete(BepInExDir, true);
+            //}
 
-            //удаление ссылок на папки плагинов BepinEx
-            ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "UserData", "MaterialEditor"), true);
-            ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "UserData", "Overlays"), true);
+            ////удаление ссылок на папки плагинов BepinEx
+            //ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "UserData", "MaterialEditor"), true);
+            //ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "UserData", "Overlays"), true);
         }
 
-        public static void BepinExLoadingFix()
+        public static void BepinExLoadingFix(bool RemoveLinks = false)
         {
             if (Properties.Settings.Default.MOmode)
             {
@@ -39,18 +40,30 @@ namespace AIHelper.Manage
                 int ObjectLinkPathsLength = ObjectLinkPaths.Length / 2;
                 for (int i = 0; i < ObjectLinkPathsLength; i++)
                 {
-                    ManageFilesFolders.Symlink
-                      (
-                       ObjectLinkPaths[i, 0]
-                       ,
-                       ObjectLinkPaths[i, 1]
-                       ,
-                       true
-                      );
+                    if (RemoveLinks)
+                    {
+                        ManageFilesFolders.DeleteIfSymlink(ObjectLinkPaths[i, 1]);
+                    }
+                    else
+                    {
+                        ManageFilesFolders.Symlink
+                          (
+                           ObjectLinkPaths[i, 0]
+                           ,
+                           ObjectLinkPaths[i, 1]
+                           ,
+                           true
+                          );
+                    }
                 }
-                if (Directory.Exists(Path.Combine(ManageSettings.GetDataPath(), "Bepinex")))
+
+                if (RemoveLinks)
                 {
-                    ManageFilesFolders.HideFileFolder(Path.Combine(ManageSettings.GetDataPath(), "Bepinex"));
+                    ManageFilesFolders.DeleteEmptySubfolders(Path.Combine(ManageSettings.GetDataPath(), "BepInEx"));
+                }
+                else if (Directory.Exists(Path.Combine(ManageSettings.GetDataPath(), "BepInEx")))
+                {
+                    ManageFilesFolders.HideFileFolder(Path.Combine(ManageSettings.GetDataPath(), "BepInEx"));
                 }
             }
         }

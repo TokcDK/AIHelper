@@ -164,6 +164,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ExtraSettings";
             this.Text = "Extra";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ExtraSettings_FormClosing);
             this.Load += new System.EventHandler(this.ExtraSettings_Load);
             this.XUAGroupBox.ResumeLayout(false);
             this.XUAGroupBox.PerformLayout();

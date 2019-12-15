@@ -187,9 +187,9 @@ namespace AIHelper
             button1.Text = T._("Extracting") + "..";
 
             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5
-            await Task.Run(() => UnpackGame());
-            await Task.Run(() => UnpackMO());
-            await Task.Run(() => UnpackMods());
+            await Task.Run(() => UnpackGame()).ConfigureAwait(false);
+            await Task.Run(() => UnpackMO()).ConfigureAwait(false);
+            await Task.Run(() => UnpackMods()).ConfigureAwait(false);
 
             //BepinExLoadingFix();//добавлено в folderinit
 
@@ -297,8 +297,8 @@ namespace AIHelper
                 //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5
                 //await Task.Run(() => PackGame());
                 //await Task.Run(() => PackMO());
-                await Task.Run(() => PackMods());
-                await Task.Run(() => PackSeparators());
+                await Task.Run(() => PackMods()).ConfigureAwait(false);
+                await Task.Run(() => PackSeparators()).ConfigureAwait(false);
 
                 ////http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                 //Thread open = new Thread(new ParameterizedThreadStart((obj) => PackMods()));
@@ -1069,7 +1069,7 @@ namespace AIHelper
             {
                 OnOffButtons(false);
 
-                await Task.Run((Action)(() => InstallModFilesAndCleanEmptyFolder()));
+                await Task.Run(() => InstallModFilesAndCleanEmptyFolder()).ConfigureAwait(false);
 
                 InstallInModsButton.Text = T._("Install from 2MO");
 
@@ -1705,6 +1705,11 @@ namespace AIHelper
                 }
             }
             MessageBox.Show("Service finished");
+        }
+
+        private void AI_Helper_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            ManageMOMods.BepinExLoadingFix(true);
         }
 
         //Материалы

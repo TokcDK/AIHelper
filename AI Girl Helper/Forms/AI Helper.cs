@@ -187,9 +187,9 @@ namespace AIHelper
             button1.Text = T._("Extracting") + "..";
 
             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5
-            await Task.Run(() => UnpackGame()).ConfigureAwait(false);
-            await Task.Run(() => UnpackMO()).ConfigureAwait(false);
-            await Task.Run(() => UnpackMods()).ConfigureAwait(false);
+            await Task.Run(() => UnpackGame()).ConfigureAwait(true);
+            await Task.Run(() => UnpackMO()).ConfigureAwait(true);
+            await Task.Run(() => UnpackMods()).ConfigureAwait(true);
 
             //BepinExLoadingFix();//добавлено в folderinit
 
@@ -297,8 +297,8 @@ namespace AIHelper
                 //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5
                 //await Task.Run(() => PackGame());
                 //await Task.Run(() => PackMO());
-                await Task.Run(() => PackMods()).ConfigureAwait(false);
-                await Task.Run(() => PackSeparators()).ConfigureAwait(false);
+                await Task.Run(() => PackMods()).ConfigureAwait(true);
+                await Task.Run(() => PackSeparators()).ConfigureAwait(true);
 
                 ////http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
                 //Thread open = new Thread(new ParameterizedThreadStart((obj) => PackMods()));
@@ -1069,7 +1069,7 @@ namespace AIHelper
             {
                 OnOffButtons(false);
 
-                await Task.Run(() => InstallModFilesAndCleanEmptyFolder()).ConfigureAwait(false);
+                await Task.Run(() => InstallModFilesAndCleanEmptyFolder()).ConfigureAwait(true);
 
                 InstallInModsButton.Text = T._("Install from 2MO");
 

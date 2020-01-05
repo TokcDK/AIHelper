@@ -77,7 +77,6 @@ namespace AIHelper
             Install2MODirPath = ManageSettings.GetInstall2MODirPath();
             OverwriteFolder = ManageSettings.GetOverwriteFolder();
             OverwriteFolderLink = ManageSettings.GetOverwriteFolderLink();
-            SetupXmlPath = ManageMO.GetSetupXmlPathForCurrentProfile();
         }
 
         private void SetListOfGames()
@@ -670,32 +669,22 @@ namespace AIHelper
                 ModsInfoLabel.Text = T._("Mods dir created");
             }
 
-            string AIGirl = ManageSettings.GetCurrentGameEXEName();
-            string AIGirlTrial = ManageSettings.GetCurrentGameEXEName();
-            if (File.Exists(Path.Combine(ManageSettings.GetDataPath(), AIGirlTrial + ".exe")))
+            if (File.Exists(Path.Combine(DataPath, ManageSettings.GetCurrentGameEXEName() + ".exe")))
             {
-                DataInfoLabel.Text = string.Format(T._("{0} game installed in {1}"), AIGirlTrial, "Data");
+                DataInfoLabel.Text = string.Format(T._("{0} game installed in {1}"), ManageSettings.GetCurrentGameFolderName(), "Data");
             }
-            else if (File.Exists(Path.Combine(DataPath, AIGirl + ".exe")))
-            {
-                DataInfoLabel.Text = string.Format(T._("{0} game installed in {1}"), AIGirl, "Data");
-            }
-            else if (File.Exists(Path.Combine(AppResDir, AIGirlTrial + ".7z")))
-            {
-                DataInfoLabel.Text = string.Format(T._("{0} archive in {1}"), AIGirlTrial, "Data");
-            }
-            else if (File.Exists(Path.Combine(AppResDir, AIGirl + ".7z")))
+            else if (File.Exists(Path.Combine(AppResDir, ManageSettings.GetCurrentGameEXEName() + ".7z")))
             {
                 DataInfoLabel.Text = string.Format(T._("{0} archive in {1}"), "AIGirl", "Data");
             }
             else if (Directory.Exists(DataPath))
             {
-                DataInfoLabel.Text = string.Format(T._("{0} files not in {1}. Move {0} game files there."), AIGirl, "Data");
+                DataInfoLabel.Text = string.Format(T._("{0} files not in {1}. Move {0} game files there."), ManageSettings.GetCurrentGameFolderName(), "Data");
             }
             else
             {
                 Directory.CreateDirectory(DataPath);
-                DataInfoLabel.Text = string.Format(T._("{0} dir created. Move {1} game files there."), "Data", AIGirl);
+                DataInfoLabel.Text = string.Format(T._("{0} dir created. Move {1} game files there."), "Data", ManageSettings.GetCurrentGameFolderName());
             }
 
             if (MOmode)
@@ -763,6 +752,8 @@ namespace AIHelper
                 //    }
                 //}
 
+                ManageMO.SetModOrganizerINISettingsForTheGame();
+
                 if (!Manage.ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Manage.ManageSettings.GetModsPath(), "*", new string[1] { "_separator" }))
                 {
                     ModsInfoLabel.Text = T._("Found mod folders in Mods");
@@ -803,7 +794,7 @@ namespace AIHelper
                 //создание exe-болванки
                 ManageMO.MakeDummyFiles();
 
-                ManageMO.SetModOrganizerINISettingsForTheGame();
+                SetupXmlPath = ManageMO.GetSetupXmlPathForCurrentProfile();
                 ManageMOMods.SetMOModsVariables();
             }
             else

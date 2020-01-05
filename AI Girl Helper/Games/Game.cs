@@ -5,22 +5,32 @@ namespace AIHelper.Games
 {
     public abstract class Game
     {
+        public Game()
+        {
+            InitActions();
+        }
+
         public virtual void InitActions()
         {
 
         }
 
-        internal readonly string GamesLocationFolderName = "Games";
+        public virtual string GetGameFolderName()
+        {
+            return SearchGameFolder();
+        }
 
-        public abstract string GetGameFolderName();
-
-        public virtual string GetGameDisplayingName() 
+        public virtual string GetGameDisplayingName()
         {
             return GetGameFolderName();
         }
 
-
         public abstract string GetGameEXEName();
+
+        public virtual string GetGameEXENameVR() 
+        {
+            return GetGameEXEName() + "VR";
+        }
 
         public virtual string GetGameEXENameX32()
         {
@@ -44,7 +54,7 @@ namespace AIHelper.Games
 
         public virtual string GetGamePath()
         {
-            return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, GamesLocationFolderName, GetGameFolderName());
+            return Path.Combine(ManageSettings.GetGamesFolderPath(), GetGameFolderName());
         }
 
         public virtual string GetModsPath()
@@ -74,7 +84,7 @@ namespace AIHelper.Games
 
         public virtual string[] GetGameStandartFolderNames()
         {
-            if (GetGameEXENameX32().Length>0 && GetGameStudioEXENameX32().Length > 0)
+            if (GetGameEXENameX32().Length > 0 && GetGameStudioEXENameX32().Length > 0)
             {
                 return new string[] { "abdata", "UserData", GetGameEXEName() + "_Data", GetGameEXENameX32() + "_Data", GetGameStudioEXEName() + "_Data", GetGameStudioEXENameX32() + "_Data", "BepInEx" };
             }
@@ -118,6 +128,33 @@ namespace AIHelper.Games
                         Path.Combine(ManageSettings.GetDataPath(), "UserData", "Overlays")
                     }
             };
+        }
+
+        protected string SearchGameFolder()
+        {
+            foreach (var folder in Directory.EnumerateDirectories(ManageSettings.GetGamesFolderPath()))
+            {
+                if (File.Exists(Path.Combine(folder, "Data", GetGameEXEName() + ".exe")))
+                {
+                    return Path.GetFileName(folder);
+                }
+            }
+            return "None";
+        }
+
+        protected void CopyMOfiles(string GameMPAltDirName)
+        {
+            //var game = ManageSettings.GetListOfExistsGames()[ManageSettings.GetCurrentGameIndex()];
+            string GameMOPath = Path.Combine(GetGamePath(), "MO");
+            string GameMPAltDirNamePath = Path.Combine(GetGamePath(), GameMPAltDirName);
+            if (Directory.Exists(GameMPAltDirNamePath) && !Directory.Exists(GameMOPath))
+            {
+                //Directory.CreateDirectory(MO);
+                CopyFolder.Copy(Path.Combine(GameMPAltDirNamePath, "Profiles"), Path.Combine(GameMOPath, "Profiles"));
+                CopyFolder.Copy(Path.Combine(GameMPAltDirNamePath, "Overwrite"), Path.Combine(GameMOPath, "Overwrite"));
+                File.Copy(Path.Combine(GameMPAltDirNamePath, "categories.dat"), Path.Combine(GameMOPath, "categories.dat"));
+                File.Copy(Path.Combine(GameMPAltDirNamePath, "ModOrganizer.ini"), Path.Combine(GameMOPath, "ModOrganizer.ini"));
+            }
         }
     }
 }

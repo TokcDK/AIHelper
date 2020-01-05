@@ -1,4 +1,5 @@
-﻿using AIHelper.Games;
+﻿using AI_Helper.Games;
+using AIHelper.Games;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -27,6 +28,24 @@ namespace AIHelper.Manage
             //OverwriteFolderLink = SettingsManage.GetOverwriteFolderLink();
             //SetupXmlPath = MOManage.GetSetupXmlPathForCurrentProfile();
 
+        }
+
+        public static List<Game> GetListOfExistsGames()
+        {
+            List<Game> ListOfGames = GamesList.GetGamesList();
+
+            ListOfGames = ListOfGames.Where
+                (game =>
+                    Directory.Exists(game.GetGamePath())
+                    &&
+                    !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(game.GetGamePath(), "MO", "Profiles"))
+                ).ToList();
+            return ListOfGames;
+        }
+
+        public static string GetGamesFolderPath()
+        {
+            return Path.Combine(Application.StartupPath, "Games");
         }
 
         public static int GetCurrentGameIndex()
@@ -81,7 +100,7 @@ namespace AIHelper.Manage
 
         public static string GetAppResDir()
         {
-            return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "RES");
+            return Path.Combine(Application.StartupPath, "RES");
         }
 
         public static string GetModsPath()
@@ -101,7 +120,7 @@ namespace AIHelper.Manage
 
         public static string GetMOdirPath()
         {
-            return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO");
+            return Path.Combine(Application.StartupPath, "MO");
         }
 
         public static string GetMOexePath()
@@ -160,7 +179,7 @@ namespace AIHelper.Manage
 
         public static string GetAIHelperINIPath()
         {
-            return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, Application.ProductName + ".ini");
+            return Path.Combine(Application.StartupPath, Application.ProductName + ".ini");
         }
 
         public static int GetCurrentGameIndexByFolderName(List<Game> listOfGames, string FolderName)
@@ -203,24 +222,6 @@ namespace AIHelper.Manage
         public static string GetMOToStandartConvertationOperationsListFilePath()
         {
             return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName(), "MOToStandartConvertationOperationsList.txt");
-        }
-
-        public static List<Game> GetListOfExistsGames()
-        {
-            List<Game> ListOfGames = new List<Game>()
-            {
-                new AISyoujyo(),
-                new AISyoujyoTrial(),
-                new HoneySelect()
-            };
-
-            ListOfGames = ListOfGames.Where
-                (game =>
-                    Directory.Exists(game.GetGamePath())
-                    &&
-                    !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(game.GetGamePath(), "MO", "Profiles"))
-                ).ToList();
-            return ListOfGames;
         }
 
         public static string GetBepInExPath()

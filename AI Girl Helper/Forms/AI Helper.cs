@@ -836,7 +836,7 @@ namespace AIHelper
 
         private void GetEnableDisableLaunchButtons()
         {
-            MOButton.Enabled = File.Exists(ManageSettings.GetMOexePath());
+            MOButton.Enabled = Properties.Settings.Default.MOmode && File.Exists(ManageSettings.GetMOexePath());
             //SettingsButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"));
             JPLauncherRunLinkLabel.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"));
             GameButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetCurrentGameEXEName() + ".exe"));
@@ -1062,10 +1062,10 @@ namespace AIHelper
 
         private async void InstallInModsButton_Click(object sender, EventArgs e)
         {
-            OnOffButtons(false);
-
             if (Directory.Exists(Install2MODirPath) && (Directory.GetFiles(Install2MODirPath, "*.rar").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.7z").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.cs").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zipmod").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zip").Length > 0 || Directory.GetDirectories(Install2MODirPath, "*").Length > 0))
             {
+                OnOffButtons(false);
+
                 //impossible to correctly update mods in common mode
                 if (!Properties.Settings.Default.MOmode)
                 {

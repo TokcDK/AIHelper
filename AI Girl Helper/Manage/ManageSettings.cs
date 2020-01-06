@@ -11,7 +11,7 @@ namespace AIHelper.Manage
     {
         public static bool IsFirstRun()
         {
-            return ManageINI.GetINIValueIfExist(GetAIHelperINIPath(), "FirstRun", "General")=="True";
+            return ManageINI.GetINIValueIfExist(GetAIHelperINIPath(), "FirstRun", "General") == "True";
         }
         public static void SettingsINIT()
         {
@@ -137,7 +137,7 @@ namespace AIHelper.Manage
             else
             {
                 Properties.Settings.Default.MOSelectedProfileDirPath = ManageINI.GetINIValueIfExist(ManageSettings.GetModOrganizerINIpath(), "selected_profile", "General");
-                    
+
                 return Properties.Settings.Default.MOSelectedProfileDirPath;
             }
         }
@@ -226,16 +226,24 @@ namespace AIHelper.Manage
 
         public static string GetBepInExPath()
         {
-            return Path.Combine(GetModsPath(), "BepInEx");
+            return Path.Combine(Properties.Settings.Default.MOmode ? GetModsPath() : GetDataPath(), "BepInEx");
         }
 
         public static string GetBepInExCfgDirPath()
         {
+            if (!Properties.Settings.Default.MOmode)
+            {
+                return Path.Combine(GetBepInExPath(), "BepInEx", "config");
+            }
             return ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(Path.Combine(GetBepInExPath(), "BepInEx", "config"), true);
         }
 
         public static string GetBepInExCfgFilePath()
         {
+            if (!Properties.Settings.Default.MOmode)
+            {
+                return Path.Combine(GetBepInExPath(), "config", "BepInEx.cfg");
+            }
             if (Properties.Settings.Default.BepinExCfgPath.Length > 0)
             {
                 return Properties.Settings.Default.BepinExCfgPath;

@@ -692,6 +692,11 @@ namespace AIHelper.Manage
                 i++;
             }
 
+            if (!Properties.Settings.Default.MOmode)
+            {
+                return Path.Combine(ManageSettings.GetDataPath(), subpath);
+            }
+
             //поиск по списку активных модов
             string ModsPath = ManageSettings.GetModsPath();
             foreach (var modName in GetModNamesListFromActiveMOProfile())

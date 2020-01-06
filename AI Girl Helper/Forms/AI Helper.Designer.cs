@@ -289,7 +289,6 @@
             this.BepInExDisplayedLogLevelLabel.TabIndex = 26;
             this.BepInExDisplayedLogLevelLabel.Text = "Info";
             this.BepInExDisplayedLogLevelLabel.Visible = false;
-            this.BepInExDisplayedLogLevelLabel.VisibleChanged += new System.EventHandler(this.BepInExDisplayedLogLevelLabel_VisibleChanged);
             this.BepInExDisplayedLogLevelLabel.Click += new System.EventHandler(this.BepInExDisplayedLogLevelLabel_Click);
             // 
             // BepInExConsoleCheckBox

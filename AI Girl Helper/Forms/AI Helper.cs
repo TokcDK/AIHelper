@@ -1600,14 +1600,24 @@ namespace AIHelper
         {
             if (Properties.Settings.Default.INITDone)
             {
-                File.Delete(ManageSettings.GetModOrganizerINIpath());
-                File.Delete(ManageSettings.GetMOcategoriesPath());
                 SetSelectedGameIndexAndBasicVariables((sender as ComboBox).SelectedIndex);
+                ActionsOnGameChanged();
 
                 new INIFile(ManageSettings.GetAIHelperINIPath()).WriteINI("Settings", "selected_game", ManageSettings.GetCurrentGameFolderName());
 
                 FoldersInit();
             }
+        }
+
+        private void ActionsOnGameChanged()
+        {
+            //cleaning previous game data
+            File.Delete(ManageSettings.GetModOrganizerINIpath());
+            File.Delete(ManageSettings.GetMOcategoriesPath());
+            Properties.Settings.Default.BepinExCfgPath = string.Empty;
+            Properties.Settings.Default.MOSelectedProfileDirPath = string.Empty;
+
+            CurrentGame.InitActions();
         }
 
         private void ConsoleCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -1625,13 +1635,13 @@ namespace AIHelper
 
         }
 
-        private void BepInExDisplayedLogLevelLabel_VisibleChanged(object sender, EventArgs e)
-        {
-            if (BepInExConsoleCheckBox.Checked)
-            {
-                ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExConsoleCheckBox, BepInExDisplayedLogLevelLabel, true);
-            }
-        }
+        //private void BepInExDisplayedLogLevelLabel_VisibleChanged(object sender, EventArgs e)
+        //{
+        //    if (BepInExConsoleCheckBox.Checked)
+        //    {
+        //        ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExConsoleCheckBox, BepInExDisplayedLogLevelLabel, true);
+        //    }
+        //}
 
         private void BepInExDisplayedLogLevelLabel_Click(object sender, EventArgs e)
         {

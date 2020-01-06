@@ -1062,9 +1062,25 @@ namespace AIHelper
 
         private async void InstallInModsButton_Click(object sender, EventArgs e)
         {
+            OnOffButtons(false);
+
             if (Directory.Exists(Install2MODirPath) && (Directory.GetFiles(Install2MODirPath, "*.rar").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.7z").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.cs").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zipmod").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zip").Length > 0 || Directory.GetDirectories(Install2MODirPath, "*").Length > 0))
             {
-                OnOffButtons(false);
+                //impossible to correctly update mods in common mode
+                if (!Properties.Settings.Default.MOmode)
+                {
+                    DialogResult result = MessageBox.Show(T._("Attention") + "\n\n" + T._("Impossible to correctly install/update mods\n\n in standart mode because files was moved in Data.\n\nSwitch to MO mode?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
+                    if (result == DialogResult.OK)
+                    {
+                        SwitchBetweenMOAndStandartModes();
+                    }
+                    else
+                    {
+                        OnOffButtons();
+                        return;
+                    }
+                }
+
 
                 await Task.Run(() => InstallModFilesAndCleanEmptyFolder()).ConfigureAwait(true);
 
@@ -1129,6 +1145,11 @@ namespace AIHelper
         }
 
         private void MO2StandartButton_Click(object sender, EventArgs e)
+        {
+            SwitchBetweenMOAndStandartModes();
+        }
+
+        private void SwitchBetweenMOAndStandartModes()
         {
             OnOffButtons(false);
             if (MOmode)

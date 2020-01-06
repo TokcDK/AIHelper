@@ -260,7 +260,7 @@ namespace AIHelper.Manage
             string[] pathExclusions = { "BepInEx" + Path.DirectorySeparatorChar + "plugins", "Lec.ExtProtocol", "Common.ExtProtocol.Executor", "UnityCrashHandler64" };
 
             //Добавление exe из Data
-            foreach (var exePath in Directory.GetFiles(ManageSettings.GetDataPath(), "*.exe", SearchOption.AllDirectories))
+            foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetDataPath(), "*.exe", SearchOption.AllDirectories))
             {
                 string exeName = Path.GetFileNameWithoutExtension(exePath);
                 if (exeName.Length > 0 && !IniValuesDict.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
@@ -271,7 +271,7 @@ namespace AIHelper.Manage
                 }
             }
             //Добавление exe из Mods
-            foreach (var exePath in Directory.GetFiles(ManageSettings.GetModsPath(), "*.exe", SearchOption.AllDirectories))
+            foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetModsPath(), "*.exe", SearchOption.AllDirectories))
             {
                 string exeName = Path.GetFileNameWithoutExtension(exePath);
                 if (Path.GetFileNameWithoutExtension(exePath).Length > 0 && !IniValuesDict.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))

@@ -1174,7 +1174,7 @@ namespace AIHelper
 
                     ManageMOMods.CleanBepInExLinksFromData();
 
-                    if (File.Exists(ManageSettings.GetDummyFilePath()))
+                    if (File.Exists(ManageSettings.GetDummyFilePath()) && /*Удалил TESV.exe, который был лаунчером, а не болванкой*/new FileInfo(ManageSettings.GetDummyFilePath()).Length<10000)
                     {
                         File.Delete(ManageSettings.GetDummyFilePath());
                     }
@@ -1183,6 +1183,7 @@ namespace AIHelper
                     {
                         Directory.CreateDirectory(ManageSettings.GetMOmodeDataFilesBakDirPath());
                     }
+
                     StringBuilder Operations = new StringBuilder();
 
                     StringBuilder EmptyFoldersPaths = ManageFilesFolders.GetEmptySubfoldersPaths(ManageSettings.GetDataPath(), new StringBuilder());

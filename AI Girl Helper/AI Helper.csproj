@@ -81,6 +81,9 @@
     <Reference Include="SharpCompress, Version=0.24.0.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpCompress.0.24.0\lib\net45\SharpCompress.dll</HintPath>
     </Reference>
+    <Reference Include="SharpConfig, Version=3.2.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\sharpconfig.3.2.8\lib\net20\SharpConfig.dll</HintPath>
+    </Reference>
     <Reference Include="SymbolicLinkSupport, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SymbolicLinkSupport.1.2.0\lib\net35\SymbolicLinkSupport.dll</HintPath>
     </Reference>
@@ -122,6 +125,7 @@
     <Compile Include="Games\Illusion\AISyoujyo.cs" />
     <Compile Include="Games\Game.cs" />
     <Compile Include="Manage\ManageArchive.cs" />
+    <Compile Include="Manage\ManageCFG.cs" />
     <Compile Include="Manage\ManageINI.cs" />
     <Compile Include="Manage\ManageMOMods.cs" />
     <Compile Include="Manage\ManageRegistry.cs" />
@@ -138,6 +142,7 @@
     <Compile Include="UserData\StudioScene.cs" />
     <Compile Include="Manage\ManageFilesFolders.cs" />
     <Compile Include="Manage\ManageStrings.cs" />
+    <Compile Include="Utils\CFGFiles.cs" />
     <Compile Include="Utils\T.cs" />
     <Compile Include="Utils\Compressor.cs" />
     <Compile Include="Forms\AI Helper.cs">
@@ -151,7 +156,7 @@
     <Compile Include="Utils\CreateSymlink.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utils\IniFiles.cs" />
+    <Compile Include="Utils\INIFile.cs" />
     <Compile Include="Utils\Shortcut.cs" />
     <Compile Include="Manage\ManageXML.cs" />
     <Compile Include="Manage\ManageOther.cs" />

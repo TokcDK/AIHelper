@@ -245,7 +245,8 @@ namespace AIHelper.Manage
 
         public static void SwitchBepInExDisplayedLogLevelValue(CheckBox BepInExConsoleCheckBox, Label BepInExDisplayedLogLevelLabel, bool OnlyShow = false)
         {
-            string curValue = ManageINI.GetINIValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "DisplayedLogLevel", "Logging.Console");
+            //string curValue = ManageINI.GetINIValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "DisplayedLogLevel", "Logging.Console");
+            string curValue = ManageCFG.GetCFGValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "DisplayedLogLevel", "Logging.Console");
             if (curValue.Length == 0)
             {
                 BepInExDisplayedLogLevelLabel.Visible = false;
@@ -263,7 +264,8 @@ namespace AIHelper.Manage
                 {
                     if (setNext)
                     {
-                        ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", /*" " +*/ value);
+                        //ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", /*" " +*/ value);
+                        ManageCFG.WriteCFGValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", /*" " +*/ value);
                         BepInExDisplayedLogLevelLabel.Text = value;
                         return;
                     }
@@ -272,7 +274,8 @@ namespace AIHelper.Manage
                         setNext = true;
                     }
                 }
-                ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", /*" " +*/ values[0]);
+                //ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", /*" " +*/ values[0]);
+                ManageCFG.WriteCFGValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", /*" " +*/ values[0]);
                 BepInExDisplayedLogLevelLabel.Text = values[0];
             }
         }

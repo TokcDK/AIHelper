@@ -9,7 +9,7 @@ namespace AIHelper.Manage
         {
             if (File.Exists(INIPath))
             {
-                Manage.IniFile INI = new Manage.IniFile(INIPath);
+                Manage.INIFile INI = new Manage.INIFile(INIPath);
                 if (INI.KeyExists(Key, Section))
                 {
                     return INI.ReadINI(Section, Key);
@@ -21,7 +21,7 @@ namespace AIHelper.Manage
         {
             if (File.Exists(INIPath))
             {
-                (new Manage.IniFile(INIPath)).WriteINI(Section, Key, Value, DOSaveINI);
+                (new Manage.INIFile(INIPath)).WriteINI(Section, Key, Value, DOSaveINI);
                 return true;
             }
 

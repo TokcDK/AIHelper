@@ -14,13 +14,13 @@ namespace AIHelper.Manage
 
             RedefineModOrganizerIni();
 
-            IniFile INI = new IniFile(ManageSettings.GetModOrganizerINIpath());
+            INIFile INI = new INIFile(ManageSettings.GetModOrganizerINIpath());
 
             SetCommonIniValues(INI);
             SetCustomExecutablesIniValues(INI);
         }
 
-        private static void SetCustomExecutablesIniValues(IniFile INI)
+        private static void SetCustomExecutablesIniValues(INIFile INI)
         {
             string[,] IniValues =
                 {
@@ -309,7 +309,7 @@ namespace AIHelper.Manage
             INI.WriteINI("customExecutables", "size", ExecutablesCount.ToString());
         }
 
-        private static void SetCommonIniValues(IniFile INI)
+        private static void SetCommonIniValues(INIFile INI)
         {
             string[,] IniValues =
                 {
@@ -612,7 +612,7 @@ namespace AIHelper.Manage
             if (Directory.Exists(moddir))
             {
                 string metaPath = Path.Combine(moddir, "meta.ini");
-                IniFile INI = new IniFile(metaPath);
+                INIFile INI = new INIFile(metaPath);
 
                 bool IsKeyExists = INI.KeyExists("category", "General");
                 if (!IsKeyExists || (IsKeyExists && categoryIDIndex.Length > 0 && INI.ReadINI("General", "category").Replace("\"", string.Empty).Length == 0))

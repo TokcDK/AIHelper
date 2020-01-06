@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AIHelper.Manage
 {
-    public class IniFile
+    public class INIFile
     {
         //Материал: https://habr.com/ru/post/271483/
 
@@ -26,7 +26,7 @@ namespace AIHelper.Manage
         //}
 
         // С помощью конструктора записываем путь до файла и его имя.
-        public IniFile(string IniPath)
+        public INIFile(string IniPath)
         {
             Path = new FileInfo(IniPath).FullName;
             INIParser = new FileIniDataParser();

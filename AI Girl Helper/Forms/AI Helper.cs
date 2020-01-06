@@ -1,10 +1,12 @@
-﻿using AIHelper.Games;
+﻿using AI_Helper.Utils;
+using AIHelper.Games;
 using AIHelper.Manage;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -98,7 +100,7 @@ namespace AIHelper
                 ManageSettings.GetCurrentGameIndexByFolderName(
                     ListOfGames
                     ,
-                    new IniFile(ManageSettings.GetAIHelperINIPath()).ReadINI("Settings", "selected_game")
+                    new INIFile(ManageSettings.GetAIHelperINIPath()).ReadINI("Settings", "selected_game")
                     ));
         }
 
@@ -443,13 +445,13 @@ namespace AIHelper
             {
                 //Subcategory from meta
                 categoryvalue = categoryvalue.Split(',')[0];//взять только первое значение
-                int categiryindex = int.Parse(categoryvalue) - 1;//В List индекс идет от нуля
+                int categiryindex = int.Parse(categoryvalue, CultureInfo.GetCultureInfo("en-US")) - 1;//В List индекс идет от нуля
                 if (categiryindex > 0)
                 {
                     if (categiryindex < categories.Count)//на всякий, защита от ошибки выхода за диапазон
                     {
                         //Проверить родительскую категорию
-                        int ParentIDindex = int.Parse(categories[categiryindex].ParentID) - 1;//В List индекс идет от нуля
+                        int ParentIDindex = int.Parse(categories[categiryindex].ParentID, CultureInfo.GetCultureInfo("en-US")) - 1;//В List индекс идет от нуля
                         if (ParentIDindex > 0 && ParentIDindex < categories.Count)
                         {
                             targetdir = Path.Combine(targetdir, categories[ParentIDindex].Name);
@@ -581,7 +583,7 @@ namespace AIHelper
                 string screenWidth = Screen.PrimaryScreen.Bounds.Width.ToString();
                 //string screenHeight = Screen.PrimaryScreen.Bounds.Height.ToString();
                 int[] width = { 1280, 1366, 1536, 1600, 1920, 2048, 2560, 3200, 3840 };
-                if (int.Parse(screenWidth) > width[width.Length - 1])
+                if (int.Parse(screenWidth, CultureInfo.GetCultureInfo("en-US")) > width[width.Length - 1])
                 {
                     ResolutionComboBox.SelectedItem = width.Length - 1;
                     SetScreenResolution(ResolutionComboBox.Items[width.Length - 1].ToString());
@@ -590,7 +592,7 @@ namespace AIHelper
                 {
                     for (int w = 0; w < width.Length; w++)
                     {
-                        if (int.Parse(screenWidth) <= width[w])
+                        if (int.Parse(screenWidth, CultureInfo.GetCultureInfo("en-US")) <= width[w])
                         {
                             string SelectedRes = ResolutionComboBox.Items[w].ToString();
                             ResolutionComboBox.Text = SelectedRes;
@@ -604,7 +606,7 @@ namespace AIHelper
             ResolutionComboBox.Text = ManageXML.ReadXmlValue(SetupXmlPath, "Setting/Size", ResolutionComboBox.Text);
             FullScreenCheckBox.Checked = bool.Parse(ManageXML.ReadXmlValue(SetupXmlPath, "Setting/FullScreen", FullScreenCheckBox.Checked.ToString().ToLower()));
 
-            QualityComboBox.SelectedIndex = int.Parse(ManageXML.ReadXmlValue(SetupXmlPath, "Setting/Quality", "2"));
+            QualityComboBox.SelectedIndex = int.Parse(ManageXML.ReadXmlValue(SetupXmlPath, "Setting/Quality", "2"), CultureInfo.GetCultureInfo("en-US"));
         }
 
         private static void SetScreenResolution(string Resolution)
@@ -626,7 +628,7 @@ namespace AIHelper
 
             ManageXML.ChangeXmlValue(SetupXmlPath, "Setting/Size", Resolution);
             ManageXML.ChangeXmlValue(SetupXmlPath, "Setting/Width", Resolution.Replace("(16 : 9)", string.Empty).Trim().Split('x')[0].Trim());
-            ManageXML.ChangeXmlValue(SetupXmlPath, "Setting/Height", Resolution.ToString().Replace("(16 : 9)", string.Empty).Trim().Split('x')[1].Trim());
+            ManageXML.ChangeXmlValue(SetupXmlPath, "Setting/Height", Resolution.Replace("(16 : 9)", string.Empty).Trim().Split('x')[1].Trim());
         }
 
         private void SetGraphicsQuality(string quality)
@@ -752,7 +754,6 @@ namespace AIHelper
                 //    }
                 //}
 
-                ManageMO.SetModOrganizerINISettingsForTheGame();
 
                 if (!Manage.ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Manage.ManageSettings.GetModsPath(), "*", new string[1] { "_separator" }))
                 {
@@ -761,7 +762,6 @@ namespace AIHelper
                     mode = 1;
                     button1.Text = T._("Mods Ready");
                     //MO2StandartButton.Enabled = true;
-                    GetEnableDisableLaunchButtons();
                     AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
 
                     //if (File.Exists(Path.Combine(DataPath, ManageSettings.GetCurrentGameEXEName() + ".exe")))
@@ -794,7 +794,10 @@ namespace AIHelper
                 //создание exe-болванки
                 ManageMO.MakeDummyFiles();
 
+                ManageMO.SetModOrganizerINISettingsForTheGame();
+
                 SetupXmlPath = ManageMO.GetSetupXmlPathForCurrentProfile();
+
                 ManageMOMods.SetMOModsVariables();
             }
             else
@@ -817,6 +820,8 @@ namespace AIHelper
             CurrentGameComboBox.Text = CurrentGame.GetGameFolderName();
             CurrentGameComboBox.SelectedIndex = ManageSettings.GetCurrentGameIndex();
 
+            GetEnableDisableLaunchButtons();
+
             SetScreenSettings();
 
             SetTooltips();
@@ -838,7 +843,8 @@ namespace AIHelper
             StudioButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetStudioEXEName() + ".exe"));
             try
             {
-                BepInExConsoleCheckBox.Checked = bool.Parse(ManageINI.GetINIValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "Enabled", "Logging.Console", "False"));
+                //BepInExConsoleCheckBox.Checked = bool.Parse(ManageINI.GetINIValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "Enabled", "Logging.Console", "False"));
+                BepInExConsoleCheckBox.Checked = bool.Parse(ManageCFG.GetCFGValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "Enabled", "Logging.Console", "False"));
             }
             catch
             {
@@ -856,7 +862,7 @@ namespace AIHelper
         {
             ManageOther.CheckBoxChangeColor(sender as CheckBox);
             Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked = AutoShortcutRegistryCheckBox.Checked;
-            new IniFile(ManageSettings.GetAIHelperINIPath()).WriteINI("Settings", "autoCreateShortcutAndFixRegystry", Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked.ToString());
+            new INIFile(ManageSettings.GetAIHelperINIPath()).WriteINI("Settings", "autoCreateShortcutAndFixRegystry", Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked.ToString());
         }
 
         private void ResolutionComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -1598,7 +1604,7 @@ namespace AIHelper
                 File.Delete(ManageSettings.GetMOcategoriesPath());
                 SetSelectedGameIndexAndBasicVariables((sender as ComboBox).SelectedIndex);
 
-                new IniFile(ManageSettings.GetAIHelperINIPath()).WriteINI("Settings", "selected_game", ManageSettings.GetCurrentGameFolderName());
+                new INIFile(ManageSettings.GetAIHelperINIPath()).WriteINI("Settings", "selected_game", ManageSettings.GetCurrentGameFolderName());
 
                 FoldersInit();
             }
@@ -1606,7 +1612,8 @@ namespace AIHelper
 
         private void ConsoleCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "Enabled", /*" " +*/ (sender as CheckBox).Checked.ToString());
+            //ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "Enabled", /*" " +*/ (sender as CheckBox).Checked.ToString(CultureInfo.GetCultureInfo("en-US")));
+            ManageCFG.WriteCFGValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "Enabled", /*" " +*/ (sender as CheckBox).Checked.ToString(CultureInfo.GetCultureInfo("en-US")));
             if ((sender as CheckBox).Checked)
             {
                 BepInExDisplayedLogLevelLabel.Visible = true;

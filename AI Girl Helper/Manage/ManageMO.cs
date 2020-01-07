@@ -8,11 +8,15 @@ namespace AIHelper.Manage
 {
     class ManageMO
     {
-        public static void SetModOrganizerINISettingsForTheGame()
+        public static void RedefineGameMOData()
         {
             RedefineCategoriesDat();
-
             RedefineModOrganizerIni();
+        }
+
+        public static void SetModOrganizerINISettingsForTheGame()
+        {
+            RedefineGameMOData();
 
             INIFile INI = new INIFile(ManageSettings.GetModOrganizerINIpath());
 
@@ -508,7 +512,7 @@ namespace AIHelper.Manage
             }
         }
 
-        private static void RedefineModOrganizerIni()
+        internal static void RedefineModOrganizerIni()
         {
             string[] categoriesdatGameAndLocalPaths = new string[2]
             {
@@ -544,7 +548,7 @@ namespace AIHelper.Manage
             }
         }
 
-        public static void RedefineCategoriesDat()
+        internal static void RedefineCategoriesDat()
         {
             string[] categoriesdatGameAndLocalPaths = new string[2]
             {
@@ -679,6 +683,10 @@ namespace AIHelper.Manage
 
         public static string GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(string pathInMods, bool IsDir = false)
         {
+            //искать путь только для ссылки в Mods или в Data
+            if (!ManageStrings.IsStringAContainsStringB(pathInMods, ManageSettings.GetModsPath()) && !ManageStrings.IsStringAContainsStringB(pathInMods, ManageSettings.GetDataPath()))
+                return pathInMods;
+
             //отсеивание первого элемента с именем мода
             string subpath = string.Empty;
             int i = 0;

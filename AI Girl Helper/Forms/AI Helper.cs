@@ -1613,9 +1613,13 @@ namespace AIHelper
         private void OpenLogLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             //https://stackoverflow.com/questions/9993561/c-sharp-open-file-path-starting-with-userprofile
-            var USERPROFILE = Path.Combine("%USERPROFILE%", "appdata", "locallow", "illusion__AI-Syoujyo", "AI-Syoujyo", "output_log.txt");
-            var output_log = Environment.ExpandEnvironmentVariables(USERPROFILE);
-            Process.Start("explorer.exe", output_log);
+            string gameNameByExe = CurrentGame.GetGameEXEName().Replace("_64", "").Replace("_32", "");
+            string USERPROFILE = Path.Combine("%USERPROFILE%", "appdata", "locallow", "illusion__"+ gameNameByExe, gameNameByExe, "output_log.txt");
+            string output_log = Environment.ExpandEnvironmentVariables(USERPROFILE);
+            if (File.Exists(output_log))
+            {
+                Process.Start("explorer.exe", output_log);
+            }
         }
 
         private void CurrentGameComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -1634,8 +1638,9 @@ namespace AIHelper
         private void ActionsOnGameChanged()
         {
             //cleaning previous game data
-            File.Delete(ManageSettings.GetModOrganizerINIpath());
-            File.Delete(ManageSettings.GetMOcategoriesPath());
+            //File.Delete(ManageSettings.GetModOrganizerINIpath());
+            //File.Delete(ManageSettings.GetMOcategoriesPath());
+            ManageMO.RedefineGameMOData();
             Properties.Settings.Default.BepinExCfgPath = string.Empty;
             Properties.Settings.Default.MOSelectedProfileDirPath = string.Empty;
 
@@ -1645,7 +1650,8 @@ namespace AIHelper
         private void ConsoleCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             //ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "Enabled", /*" " +*/ (sender as CheckBox).Checked.ToString(CultureInfo.GetCultureInfo("en-US")));
-            ManageCFG.WriteCFGValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "Enabled", /*" " +*/ (sender as CheckBox).Checked.ToString(CultureInfo.GetCultureInfo("en-US")));
+            string BepinExcfg = ManageSettings.GetBepInExCfgFilePath();
+            ManageCFG.WriteCFGValue(BepinExcfg, "Logging.Console", "Enabled", /*" " +*/ (sender as CheckBox).Checked.ToString(CultureInfo.GetCultureInfo("en-US")));
             if ((sender as CheckBox).Checked)
             {
                 BepInExDisplayedLogLevelLabel.Visible = true;

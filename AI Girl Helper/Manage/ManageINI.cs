@@ -7,25 +7,27 @@ namespace AIHelper.Manage
     {
         public static string GetINIValueIfExist(string INIPath, string Key, string Section, string defaultValue = "")
         {
-            if (File.Exists(INIPath))
+            if (!File.Exists(INIPath))
             {
-                Manage.INIFile INI = new Manage.INIFile(INIPath);
-                if (INI.KeyExists(Key, Section))
-                {
-                    return INI.ReadINI(Section, Key);
-                }
+                ManageMO.RedefineGameMOData();
+            }
+
+            Manage.INIFile INI = new Manage.INIFile(INIPath);
+            if (INI.KeyExists(Key, Section))
+            {
+                return INI.ReadINI(Section, Key);
             }
             return defaultValue;
         }
-        public static bool WriteINIValue(string INIPath, string Section, string Key, string Value, bool DOSaveINI=true)
+        public static bool WriteINIValue(string INIPath, string Section, string Key, string Value, bool DOSaveINI = true)
         {
-            if (File.Exists(INIPath))
+            if (!File.Exists(INIPath))
             {
-                (new Manage.INIFile(INIPath)).WriteINI(Section, Key, Value, DOSaveINI);
-                return true;
+                ManageMO.RedefineGameMOData();
             }
-
-            return false;
+            (new Manage.INIFile(INIPath)).WriteINI(Section, Key, Value, DOSaveINI);
+            return true;
+            //return false;
         }
 
         //https://social.msdn.microsoft.com/Forums/vstudio/en-US/8f713e50-0789-4bf6-865f-c87cdebd0b4f/insert-line-to-text-file-using-streamwriter-using-csharp?forum=csharpgeneral

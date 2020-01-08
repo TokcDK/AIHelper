@@ -48,6 +48,8 @@ namespace AIHelper
 
             SetListOfGames();
 
+            ManageMO.RedefineGameMOData();
+
             VariablesINIT();
             MOmode = true;
             CurrentGame.InitActions();
@@ -1703,6 +1705,8 @@ namespace AIHelper
                     LinksForm.Close();
                 }
                 extraSettingsForm.Show();
+                //extraSettingsForm.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (extraSettingsForm.Width / 2),
+                //         Bounds.Location.Y + /*(Bounds.Height / 2) - (f2.Height / 2) +*/ Bounds.Height);
                 extraSettingsForm.TopMost = true;
             }
             else

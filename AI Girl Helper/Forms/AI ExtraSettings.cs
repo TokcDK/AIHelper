@@ -43,17 +43,35 @@ namespace AIHelper
                 ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(Path.Combine(ManageSettings.GetModsPath(), "XUnity.AutoTranslator", "BepInEx", "config", "AutoTranslatorConfig.ini"))
                 ;
 
+            //если xua ini не найден, отключить элемент
+            if (Properties.Settings.Default.XUAiniPath.Length == 0)
+            {
+                XUASettingsPanel.Enabled = false;
+                return;
+            }
+            else
+            {
+                XUAGroupBox.Enabled = true;
+            }
+
             if (Properties.Settings.Default.XUAiniPath.Length > 0)
             {
-
-                XUAFromLanguageComboBox.Items.AddRange(ManageSettings.Languages.ToArray());
-                XUALanguageComboBox.Items.AddRange(ManageSettings.Languages.ToArray());
-
                 string iniValue = ManageINI.GetINIValueIfExist(
                     Properties.Settings.Default.XUAiniPath,
                     "FromLanguage",
                     "General"
                     );
+
+                //запретить элементы, если значение пустое
+                if (iniValue.Length == 0)
+                {
+                    XUASettingsPanel.Enabled = false;
+                    return;
+                }
+
+                XUAFromLanguageComboBox.Items.AddRange(ManageSettings.Languages.ToArray());
+                XUALanguageComboBox.Items.AddRange(ManageSettings.Languages.ToArray());
+
                 XUAFromLanguageComboBox.SelectedItem = ManageSettings.LanguageEnumFromIdentifier(iniValue);
 
                 if (ManageSettings.IsFirstRun())
@@ -193,7 +211,6 @@ namespace AIHelper
 
         private void ExtraSettings_FormClosing(object sender, FormClosingEventArgs e)
         {
-            THToolTip.Dispose();
         }
     }
 }

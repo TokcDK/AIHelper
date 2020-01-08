@@ -39,7 +39,9 @@
             this.XUALanguageComboBox = new System.Windows.Forms.ComboBox();
             this.XUALanguageLabel = new System.Windows.Forms.Label();
             this.XUAFromLanguageComboBox = new System.Windows.Forms.ComboBox();
+            this.XUASettingsPanel = new System.Windows.Forms.Panel();
             this.XUAGroupBox.SuspendLayout();
+            this.XUASettingsPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // XUAGroupBox
@@ -54,7 +56,7 @@
             this.XUAGroupBox.Controls.Add(this.XUALanguageLabel);
             this.XUAGroupBox.Controls.Add(this.XUAFromLanguageComboBox);
             this.XUAGroupBox.ForeColor = System.Drawing.Color.White;
-            this.XUAGroupBox.Location = new System.Drawing.Point(12, 12);
+            this.XUAGroupBox.Location = new System.Drawing.Point(0, 0);
             this.XUAGroupBox.Name = "XUAGroupBox";
             this.XUAGroupBox.Size = new System.Drawing.Size(152, 163);
             this.XUAGroupBox.TabIndex = 0;
@@ -153,13 +155,21 @@
             this.XUAFromLanguageComboBox.TabIndex = 8;
             this.XUAFromLanguageComboBox.SelectedIndexChanged += new System.EventHandler(this.XUAFromLanguageComboBox_SelectedIndexChanged);
             // 
+            // XUASettingsPanel
+            // 
+            this.XUASettingsPanel.Controls.Add(this.XUAGroupBox);
+            this.XUASettingsPanel.Location = new System.Drawing.Point(12, 12);
+            this.XUASettingsPanel.Name = "XUASettingsPanel";
+            this.XUASettingsPanel.Size = new System.Drawing.Size(152, 163);
+            this.XUASettingsPanel.TabIndex = 1;
+            // 
             // ExtraSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
             this.ClientSize = new System.Drawing.Size(354, 187);
-            this.Controls.Add(this.XUAGroupBox);
+            this.Controls.Add(this.XUASettingsPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ExtraSettings";
@@ -168,6 +178,7 @@
             this.Load += new System.EventHandler(this.ExtraSettings_Load);
             this.XUAGroupBox.ResumeLayout(false);
             this.XUAGroupBox.PerformLayout();
+            this.XUASettingsPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -184,5 +195,6 @@
         private System.Windows.Forms.Label XUATranslateServiceLabel;
         private System.Windows.Forms.LinkLabel XUAcfgFileOpenLinkLabel;
         private System.Windows.Forms.LinkLabel XUAHelpLinkLabel;
+        private System.Windows.Forms.Panel XUASettingsPanel;
     }
 }

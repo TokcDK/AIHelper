@@ -1,5 +1,6 @@
 ﻿using IniParser;
 using IniParser.Model;
+using System;
 using System.IO;
 using System.Text;
 
@@ -30,16 +31,26 @@ namespace AIHelper.Manage
         {
             Path = new FileInfo(IniPath).FullName;
             INIParser = new FileIniDataParser();
-            if (!File.Exists(Path))
+            //if (!File.Exists(Path))
+            //{
+            //    File.WriteAllText(Path, string.Empty);
+            //}
+            if (File.Exists(Path))
             {
-                File.WriteAllText(Path, string.Empty);
+                INIData = INIParser.ReadFile(Path);
             }
-            INIData = INIParser.ReadFile(Path);
+            //else
+            //{
+            //    throw new FileNotFoundException();
+            //}
         }
 
         //Читаем ini-файл и возвращаем значение указного ключа из заданной секции.
         public string ReadINI(string Section, string Key)
         {
+            if (INIData == null)
+                return string.Empty;
+
             if (string.IsNullOrEmpty(Section))
             {
                 return INIData.Global[Key];
@@ -79,6 +90,9 @@ namespace AIHelper.Manage
         //Записываем в ini-файл. Запись происходит в выбранную секцию в выбранный ключ.
         public void WriteINI(string Section, string Key, string Value, bool DoSaveINI = true)
         {
+            if (INIData == null)
+                return;
+
             if (string.IsNullOrEmpty(Section))
             {
                 INIData.Global[Key] = Value;
@@ -125,6 +139,9 @@ namespace AIHelper.Manage
         //Удаляем ключ из выбранной секции.
         public void DeleteKey(string Key, string Section = null, bool DoSaveINI = true)
         {
+            if (INIData == null)
+                return;
+
             if (string.IsNullOrEmpty(Section))
             {
                 INIData.Global.RemoveKey(Key);
@@ -160,6 +177,9 @@ namespace AIHelper.Manage
         //Удаляем выбранную секцию
         public void DeleteSection(string Section/* = null*/, bool DoSaveINI = true)
         {
+            if (INIData == null)
+                return;
+
             if (INIData.Sections.ContainsSection(Section))
             {
                 INIData.Sections.RemoveSection(Section);
@@ -180,6 +200,9 @@ namespace AIHelper.Manage
         //Проверяем, есть ли такой ключ, в этой секции
         public bool KeyExists(string Key, string Section = null)
         {
+            if (INIData == null)
+                return false;
+
             if (string.IsNullOrEmpty(Section))
             {
                 return INIData.Global.ContainsKey(Key);

@@ -93,6 +93,8 @@ namespace AIHelper.Manage
             if (INIData == null)
                 return;
 
+            ActionWasExecuted = false;
+
             if (string.IsNullOrEmpty(Section))
             {
                 INIData.Global[Key] = Value;
@@ -110,7 +112,7 @@ namespace AIHelper.Manage
 
             if (DoSaveINI && ActionWasExecuted)
             {
-                INIParser.WriteFile(Path, INIData);
+                INIParser.WriteFile(Path, INIData, Encoding.UTF8);
             }
             //if (!ManageStrings.IsStringAContainsStringB(Key, "\\"))
             //{
@@ -142,6 +144,8 @@ namespace AIHelper.Manage
             if (INIData == null)
                 return;
 
+            ActionWasExecuted = false;
+
             if (string.IsNullOrEmpty(Section))
             {
                 INIData.Global.RemoveKey(Key);
@@ -157,7 +161,7 @@ namespace AIHelper.Manage
             }
             if (DoSaveINI && ActionWasExecuted)
             {
-                INIParser.WriteFile(Path, INIData);
+                INIParser.WriteFile(Path, INIData, Encoding.UTF8);
             }
             //var ini = ExIni.IniFile.FromFile(Path);
             //var section = ini.GetSection(Section);
@@ -174,11 +178,14 @@ namespace AIHelper.Manage
             //    }
             //}
         }
+
         //Удаляем выбранную секцию
         public void DeleteSection(string Section/* = null*/, bool DoSaveINI = true)
         {
             if (INIData == null)
                 return;
+
+            ActionWasExecuted = false;
 
             if (INIData.Sections.ContainsSection(Section))
             {
@@ -187,7 +194,7 @@ namespace AIHelper.Manage
             }
             if (DoSaveINI && ActionWasExecuted)
             {
-                INIParser.WriteFile(Path, INIData);
+                INIParser.WriteFile(Path, INIData, Encoding.UTF8);
             }
             //var ini = ExIni.IniFile.FromFile(Path);
             //if(Section!=null && ini.HasSection(Section))
@@ -197,6 +204,33 @@ namespace AIHelper.Manage
             //}
             //WriteINI(Section, null, null);
         }
+
+        //Очистка выбранной секции
+        public void ClearSection(string Section/* = null*/, bool DoSaveINI = true)
+        {
+            if (INIData == null)
+                return;
+
+            ActionWasExecuted = false;
+
+            if (INIData.Sections.ContainsSection(Section))
+            {
+                INIData.Sections[Section].RemoveAllKeys();
+                ActionWasExecuted = true;
+            }
+            if (DoSaveINI && ActionWasExecuted)
+            {
+                INIParser.WriteFile(Path, INIData, Encoding.UTF8);
+            }
+            //var ini = ExIni.IniFile.FromFile(Path);
+            //if(Section!=null && ini.HasSection(Section))
+            //{
+            //    ExIni.IniFile.FromFile(Path).DeleteSection(Section);
+            //    ini.Save(Path);
+            //}
+            //WriteINI(Section, null, null);
+        }
+
         //Проверяем, есть ли такой ключ, в этой секции
         public bool KeyExists(string Key, string Section = null)
         {

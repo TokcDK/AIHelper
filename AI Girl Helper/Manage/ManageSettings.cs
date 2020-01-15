@@ -1,6 +1,8 @@
 ﻿using AI_Helper.Games;
 using AIHelper.Games;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -136,8 +138,8 @@ namespace AIHelper.Manage
             }
             else
             {
-                Properties.Settings.Default.MOSelectedProfileDirPath = ManageINI.GetINIValueIfExist(ManageSettings.GetModOrganizerINIpath(), "selected_profile", "General");
-
+                Properties.Settings.Default.MOSelectedProfileDirPath = ManageMO.MOremoveByteArray(ManageINI.GetINIValueIfExist(ManageSettings.GetModOrganizerINIpath(), "selected_profile", "General"));
+                
                 return Properties.Settings.Default.MOSelectedProfileDirPath;
             }
         }

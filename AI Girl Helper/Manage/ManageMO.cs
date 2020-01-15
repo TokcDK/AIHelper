@@ -3,11 +3,27 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace AIHelper.Manage
 {
     class ManageMO
     {
+
+        internal static string MOremoveByteArray(string mOSelectedProfileDirPath)
+        {
+            if (mOSelectedProfileDirPath.StartsWith("@ByteArray("))
+            {
+                return mOSelectedProfileDirPath
+                    .Remove(mOSelectedProfileDirPath.Length - 1, 1)
+                    .Replace("@ByteArray(", string.Empty);
+            }
+            else
+            {
+                return mOSelectedProfileDirPath;
+            }
+        }
+
         public static void RedefineGameMOData()
         {
             RedefineCategoriesDat();
@@ -195,6 +211,12 @@ namespace AIHelper.Manage
                     ,
                         "s"
                     }
+                ,
+                    {
+                        "hide"
+                    ,
+                        "b"
+                    }
             };
 
             //заполнить словарь значениями массива строк
@@ -261,7 +283,7 @@ namespace AIHelper.Manage
                 IniValuesDict.Add(ExecutablesCount + @"\workingDirectory", ManageSettings.GetDataPath());
             }
 
-            string[] pathExclusions = { "BepInEx" + Path.DirectorySeparatorChar + "plugins", "Lec.ExtProtocol", "Common.ExtProtocol.Executor", "UnityCrashHandler64" };
+            string[] pathExclusions = { "BepInEx" + Path.DirectorySeparatorChar + "plugins", "Lec.ExtProtocol", "Common.ExtProtocol.Executor", "UnityCrashHandler64", Path.DirectorySeparatorChar + "IPA", "WideSliderPatch" };
 
             //Добавление exe из Data
             foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetDataPath(), "*.exe", SearchOption.AllDirectories))
@@ -286,6 +308,23 @@ namespace AIHelper.Manage
                 }
             }
 
+            //добавление hardcoded exe
+            ExecutablesCount++;
+            IniValuesDict.Add(ExecutablesCount + @"\title", "Skyrim");
+            IniValuesDict.Add(ExecutablesCount + @"\binary", Path.Combine(Application.StartupPath, "TESV.exe"));
+            IniValuesDict.Add(ExecutablesCount + @"\workingDirectory", Application.StartupPath);
+            IniValuesDict.Add(ExecutablesCount + @"\ownicon", "true");
+            ExecutablesCount++;
+            IniValuesDict.Add(ExecutablesCount + @"\title", "Explore Virtual Folder");
+            IniValuesDict.Add(ExecutablesCount + @"\binary", Path.Combine(ManageSettings.GetMOdirPath(), "explorer++","Explorer++.exe"));
+            IniValuesDict.Add(ExecutablesCount + @"\workingDirectory", Path.Combine(ManageSettings.GetMOdirPath(), "explorer++"));
+            IniValuesDict.Add(ExecutablesCount + @"\arguments", ManageSettings.GetDataPath());
+            IniValuesDict.Add(ExecutablesCount + @"\ownicon", "true");
+
+
+            //очистка секции
+            INI.ClearSection("customExecutables", false);
+
             int cnt = 1;
             int iniParametersLength = iniParameters.Length / 2;
             while (cnt <= ExecutablesCount)
@@ -298,17 +337,20 @@ namespace AIHelper.Manage
                     string subquote = key.EndsWith(@"\arguments") && keyExists ? "\\\"" : string.Empty;
                     if (keyExists)
                     {
-                        IniValue = subquote + IniValuesDict[key].Replace(@"\", @"\\") + subquote;
+                        IniValue = subquote + IniValuesDict[key].Replace(@"\", key.EndsWith(@"\arguments") ? @"\\" : "/") + subquote;
                     }
                     else
                     {
-                        IniValue = subquote + (iniParameters[i, 1].Substring(iniParameters[i, 1].Length - 1) == "b" ? "false" : string.Empty) + subquote;
+                        IniValue = subquote + (iniParameters[i, 1].EndsWith("b") ? "false" : string.Empty) + subquote;
                     }
 
                     INI.WriteINI("customExecutables", key, IniValue, false);
                 }
                 cnt++;
             }
+
+            //Hardcoded exe Game exe and Explorer++
+            //ExecutablesCount += 2;
 
             INI.WriteINI("customExecutables", "size", ExecutablesCount.ToString());
         }
@@ -319,7 +361,7 @@ namespace AIHelper.Manage
                 {
                     //General
                     {
-                        ManageSettings.GetCurrentGamePath()
+                        "@ByteArray("+ManageSettings.GetCurrentGamePath()+")"
                         ,
                         "General"
                         ,
@@ -331,7 +373,7 @@ namespace AIHelper.Manage
                 //        ,
                 //        "General"
                 //        ,
-                //        @"selected_profile"
+                //        "@ByteArray("+"selected_profile"+")"
                 //    }
                 ,
                     {

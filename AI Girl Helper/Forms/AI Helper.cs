@@ -962,7 +962,7 @@ namespace AIHelper
                     {
                         Program.StartInfo.Arguments = Arguments;
                     }
-                    Program.StartInfo.WorkingDirectory = Path.GetDirectoryName(ProgramPath);
+                    //Program.StartInfo.WorkingDirectory = Path.GetDirectoryName(ProgramPath);
 
                     //http://www.cyberforum.ru/windows-forms/thread31052.html
                     // свернуть
@@ -973,6 +973,13 @@ namespace AIHelper
                     else
                     {
                         LinksForm.WindowState = FormWindowState.Minimized;
+                    }
+                    if (extraSettingsForm == null || extraSettingsForm.IsDisposed)
+                    {
+                    }
+                    else
+                    {
+                        extraSettingsForm.WindowState = FormWindowState.Minimized;
                     }
 
                     _ = Program.Start();
@@ -986,6 +993,13 @@ namespace AIHelper
                     else
                     {
                         LinksForm.WindowState = FormWindowState.Normal;
+                    }
+                    if (extraSettingsForm == null || extraSettingsForm.IsDisposed)
+                    {
+                    }
+                    else
+                    {
+                        extraSettingsForm.WindowState = FormWindowState.Normal;
                     }
                 }
             }

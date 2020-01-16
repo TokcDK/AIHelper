@@ -1,7 +1,9 @@
 ﻿using IniParser;
 using IniParser.Model;
-using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace AIHelper.Manage
@@ -87,6 +89,61 @@ namespace AIHelper.Manage
             //}
 
         }
+
+        //Читаем ini-файл и возвращаем значение указного ключа из заданной секции.
+        public string[] ReadSectionValuesToArray(string Section)
+        {
+            if (INIData == null)
+                return null;
+
+            if (string.IsNullOrEmpty(Section) || !INIData.Sections.ContainsSection(Section))
+            {
+                return null;
+            }
+            else
+            {
+
+                using (var sectionKeys = INIData[Section].GetEnumerator())
+                {
+                    Dictionary<int, string> SearchQueries = new Dictionary<int, string>();
+
+                    for (int i = 0; i < INIData[Section].Count; i++)
+                    {
+                        sectionKeys.MoveNext();
+
+                        if (sectionKeys.Current.Value.Length > 0)
+                        {
+                            SearchQueries.Add(i, sectionKeys.Current.Value);
+                        }
+                    }
+
+                    return SearchQueries.Values.ToArray();
+                }
+            }
+        }
+
+        //Читаем ini-файл и возвращаем значение указного ключа из заданной секции.
+        public void WriteArrayToSectionValues(string Section, string[] Values, bool CleanSectionBeforeWrite = true, bool DoSaveINI = true)
+        {
+            if (INIData == null || string.IsNullOrEmpty(Section) || Values == null || Values.Length == 0)
+                return;
+
+            if (CleanSectionBeforeWrite)
+            {
+                INIData[Section].RemoveAllKeys();
+            }
+
+            for (int i = 0; i < Values.Length; i++)
+            {
+                INIData[Section][i.ToString(CultureInfo.GetCultureInfo("en-US"))] = Values[i];
+            }
+
+            if (DoSaveINI)
+            {
+                INIParser.WriteFile(Path, INIData, Encoding.UTF8);
+            }
+        }
+
         //Записываем в ini-файл. Запись происходит в выбранную секцию в выбранный ключ.
         public void WriteINI(string Section, string Key, string Value, bool DoSaveINI = true)
         {

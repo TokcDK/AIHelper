@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AI_Helper.Manage;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -26,8 +27,10 @@ namespace AIHelper.Manage
 
         public static void RedefineGameMOData()
         {
-            RedefineCategoriesDat();
-            RedefineModOrganizerIni();
+            //MOini
+            ManageSymLinks.ReCreateFileLinkWhenNotValid(ManageSettings.GetMOiniPath(), ManageSettings.GetMOiniPathForSelectedGame(), true);
+            //Categories
+            ManageSymLinks.ReCreateFileLinkWhenNotValid(ManageSettings.GetMOcategoriesPath(), ManageSettings.GetMOcategoriesPathForSelectedGame(), true);
         }
 
         public static void SetModOrganizerINISettingsForTheGame()
@@ -316,7 +319,7 @@ namespace AIHelper.Manage
             IniValuesDict.Add(ExecutablesCount + @"\ownicon", "true");
             ExecutablesCount++;
             IniValuesDict.Add(ExecutablesCount + @"\title", "Explore Virtual Folder");
-            IniValuesDict.Add(ExecutablesCount + @"\binary", Path.Combine(ManageSettings.GetMOdirPath(), "explorer++","Explorer++.exe"));
+            IniValuesDict.Add(ExecutablesCount + @"\binary", Path.Combine(ManageSettings.GetMOdirPath(), "explorer++", "Explorer++.exe"));
             IniValuesDict.Add(ExecutablesCount + @"\workingDirectory", Path.Combine(ManageSettings.GetMOdirPath(), "explorer++"));
             IniValuesDict.Add(ExecutablesCount + @"\arguments", ManageSettings.GetDataPath());
             IniValuesDict.Add(ExecutablesCount + @"\ownicon", "true");
@@ -552,79 +555,6 @@ namespace AIHelper.Manage
                 //}
                 INI.WriteINI(IniValues[i, 1], IniValues[i, 2], IniValue, false);
             }
-        }
-
-        internal static void RedefineModOrganizerIni()
-        {
-            string[] categoriesdatGameAndLocalPaths = new string[2]
-            {
-                ManageSettings.GetMOiniPathForSelectedGame()
-                ,
-                ManageSettings.GetMOiniPath()
-            };
-
-            if (
-                File.Exists(categoriesdatGameAndLocalPaths[0])
-                &&
-                (
-                !File.Exists(categoriesdatGameAndLocalPaths[1])
-                ||
-                File.ReadAllText(categoriesdatGameAndLocalPaths[0]) != File.ReadAllText(categoriesdatGameAndLocalPaths[1])
-                )
-               )
-            {
-                var moINIinfo = new FileInfo(categoriesdatGameAndLocalPaths[1]);
-                if (File.Exists(moINIinfo.FullName) && (!SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLink(moINIinfo) || !SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLinkValid(moINIinfo) || Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(SymbolicLinkSupport.FileInfoExtensions.GetSymbolicLinkTarget(moINIinfo)))) != ManageSettings.GetCurrentGameFolderName()))
-                {
-                    File.Delete(moINIinfo.FullName);
-                }
-
-                ManageFilesFolders.Symlink
-                  (
-                   categoriesdatGameAndLocalPaths[0]
-                   ,
-                   categoriesdatGameAndLocalPaths[1]
-                   ,
-                   true
-                  );
-            }
-        }
-
-        internal static void RedefineCategoriesDat()
-        {
-            string[] categoriesdatGameAndLocalPaths = new string[2]
-            {
-                ManageSettings.GetMOcategoriesPathForSelectedGame()
-                ,
-                ManageSettings.GetMOcategoriesPath()
-            };
-
-            if (
-                File.Exists(categoriesdatGameAndLocalPaths[0])
-                &&
-                (
-                !File.Exists(categoriesdatGameAndLocalPaths[1])
-                ||
-                File.ReadAllText(categoriesdatGameAndLocalPaths[0]) != File.ReadAllText(categoriesdatGameAndLocalPaths[1])
-                )
-               )
-            {
-                var categoriesDat = new FileInfo(categoriesdatGameAndLocalPaths[1]);
-                if (File.Exists(categoriesDat.FullName) && (!SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLink(categoriesDat) || !SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLinkValid(categoriesDat) || Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(SymbolicLinkSupport.FileInfoExtensions.GetSymbolicLinkTarget(categoriesDat)))) != ManageSettings.GetCurrentGameFolderName()))
-                {
-                    File.Delete(categoriesDat.FullName);
-                }
-
-                ManageFilesFolders.Symlink
-                  (
-                   categoriesdatGameAndLocalPaths[0]
-                   ,
-                   categoriesdatGameAndLocalPaths[1]
-                   ,
-                   true
-                  );
-            }
-
         }
 
         public static void ActivateInsertModIfPossible(string modname, bool Activate = true, string modAfterWhichInsert = "", bool PlaceAfter = true)

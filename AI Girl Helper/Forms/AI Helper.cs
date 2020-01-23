@@ -790,12 +790,13 @@ namespace AIHelper
 
                 LanchModeInfoLinkLabel.Text = T._("MO mode");
 
-                //создание ссылок на файлы bepinex
+                //создание ссылок на файлы bepinex, НА ЭТО ТРАТИТСЯ МНОГО ВРЕМЕНИ
                 ManageMOMods.BepinExLoadingFix();
 
                 //создание exe-болванки
                 ManageMO.MakeDummyFiles();
 
+                //НА ЭТО ТРАТИТСЯ БОЛЬШЕ ВСЕГО ВРЕМЕНИ
                 ManageMO.SetModOrganizerINISettingsForTheGame();
 
                 SetupXmlPath = ManageMO.GetSetupXmlPathForCurrentProfile();

@@ -131,6 +131,7 @@
     <Compile Include="Manage\ManageRegistry.cs" />
     <Compile Include="Manage\ManageSettings.cs" />
     <Compile Include="Manage\ManageMO.cs" />
+    <Compile Include="Manage\ManageSymLinks.cs" />
     <Compile Include="UserData\CardframeBack.cs" />
     <Compile Include="UserData\CardframeFront.cs" />
     <Compile Include="UserData\CharaFemale.cs" />

@@ -547,7 +547,7 @@ namespace AIHelper.Manage
 
             for (int i = 0; i < IniValuesLength; i++)
             {
-                string subquote = IniValues[i, 2].EndsWith(@"\arguments") ? "\\\"" : string.Empty;
+                string subquote = IniValues[i, 2].EndsWith(@"\arguments",StringComparison.InvariantCulture) ? "\\\"" : string.Empty;
                 string IniValue = subquote + IniValues[i, 0].Replace(@"\", @"\\") + subquote;
                 //if (INIManage.GetINIValueIfExist(SettingsManage.GetModOrganizerINIpath(), IniValues[i, 2], IniValues[i, 1]) != IniValue)
                 //{

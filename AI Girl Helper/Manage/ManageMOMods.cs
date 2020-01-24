@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AI_Helper.Manage;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -46,7 +47,7 @@ namespace AIHelper.Manage
                     }
                     else
                     {
-                        ManageFilesFolders.Symlink
+                        ManageSymLinks.Symlink
                           (
                            ObjectLinkPaths[i, 0]
                            ,
@@ -944,7 +945,7 @@ namespace AIHelper.Manage
 
                         //имя папки без GetResultTargetDirPathWithNameCheck для того, чтобы обновить существующую, если такая найдется
                         var TargetModDIr = Path.Combine(
-                            Properties.Settings.Default.ModsPath, 
+                            Properties.Settings.Default.ModsPath,
                             (author.Length > 0 && !ManageStrings.IsStringAContainsStringB(name, author))
                                 ?
                                 "[" + author + "]" + name

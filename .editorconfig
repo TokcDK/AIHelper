@@ -2,3 +2,6 @@
 
 # CA1303: Не передавать литералы в качестве локализованных параметров
 dotnet_diagnostic.CA1303.severity = none
+
+# CA1814: Используйте массивы массивов вместо многомерных массивов
+dotnet_diagnostic.CA1814.severity = none

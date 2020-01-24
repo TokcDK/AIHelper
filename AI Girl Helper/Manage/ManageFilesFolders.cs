@@ -228,33 +228,6 @@ namespace AIHelper.Manage
 
         }
 
-        public static void Symlink(string objectFileDirPath, string symlinkPath, bool isRelative = false)
-        {
-            if (symlinkPath.Length > 0 && objectFileDirPath.Length > 0)
-            {
-                string parentDirPath = Path.GetDirectoryName(symlinkPath);
-                if (!Directory.Exists(parentDirPath))
-                {
-                    Directory.CreateDirectory(parentDirPath);
-                }
-
-                //ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(
-                string objectPath;
-                if (File.Exists(objectPath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(objectFileDirPath)) && (!File.Exists(symlinkPath) || (FileInfoExtensions.IsSymbolicLink(new FileInfo(symlinkPath)) && !FileInfoExtensions.IsSymbolicLinkValid(new FileInfo(symlinkPath)))))
-                {
-                    //FileInfoExtensions.CreateSymbolicLink(new FileInfo(objectFileDirPath), symlinkPath, isRelative);//new from NuGet package
-                    FileInfoExtensions.CreateSymbolicLink(new FileInfo(objectPath), symlinkPath, isRelative);//new from NuGet package
-                    //CreateSymlink.File(file, symlink); //old
-                }
-                else if (Directory.Exists(objectPath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(objectFileDirPath, true)) && (!Directory.Exists(symlinkPath) || (DirectoryInfoExtensions.IsSymbolicLink(new DirectoryInfo(symlinkPath)) && !DirectoryInfoExtensions.IsSymbolicLinkValid(new DirectoryInfo(symlinkPath)))))
-                {
-                    //DirectoryInfoExtensions.CreateSymbolicLink(new DirectoryInfo(objectFileDirPath), symlinkPath, isRelative);//new from NuGet package
-                    DirectoryInfoExtensions.CreateSymbolicLink(new DirectoryInfo(objectPath), symlinkPath, isRelative);//new from NuGet package
-                    //CreateSymlink.Folder(file, symlink); //old
-                }
-            }
-        }
-
         public static void DeleteIfSymlink(string LinkPath, bool IsFolder = false)
         {
             if (IsFolder || Directory.Exists(LinkPath))

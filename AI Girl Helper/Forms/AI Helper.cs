@@ -10,6 +10,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -789,15 +790,11 @@ namespace AIHelper
                 //}
 
                 LanchModeInfoLinkLabel.Text = T._("MO mode");
-
-                //создание ссылок на файлы bepinex, НА ЭТО ТРАТИТСЯ МНОГО ВРЕМЕНИ
-                ManageMOMods.BepinExLoadingFix();
-
+                
                 //создание exe-болванки
                 ManageMO.MakeDummyFiles();
 
-                //НА ЭТО ТРАТИТСЯ БОЛЬШЕ ВСЕГО ВРЕМЕНИ
-                ManageMO.SetModOrganizerINISettingsForTheGame();
+                RunSlowActions();
 
                 SetupXmlPath = ManageMO.GetSetupXmlPathForCurrentProfile();
 
@@ -835,6 +832,37 @@ namespace AIHelper
             }
 
             SelectedGameLabel.Text = CurrentGame.GetGameDisplayingName()+ "❤";
+        }
+
+        private void RunSlowActions()
+        {
+            //создание ссылок на файлы bepinex, НА ЭТО ТРАТИТСЯ МНОГО ВРЕМЕНИ
+            //ManageMOMods.BepinExLoadingFix();
+            GameButton.Enabled = false;
+            Task t1 = new Task(() =>
+            ManageMOMods.BepinExLoadingFix()
+            );
+            t1.Start();
+            t1.ContinueWith(delegate
+            {
+                Thread.Sleep(1000);//бфло исключение с невозможностью выполнения операции, возможно операция выполнялась до появления окна программы, задержка для исправления
+                GameButton.Invoke((Action)(() => GameButton.Enabled = true));
+            }, TaskScheduler.Current);
+
+
+            //НА ЭТО ТРАТИТСЯ БОЛЬШЕ ВСЕГО ВРЕМЕНИ
+            //ManageMO.SetModOrganizerINISettingsForTheGame();
+            //await Task.Run(() => ManageMO.SetModOrganizerINISettingsForTheGame()).ConfigureAwait(false);
+            MOButton.Enabled = false;
+            Task t2 = new Task(() =>
+            ManageMO.SetModOrganizerINISettingsForTheGame()
+            );
+            t2.Start();
+            t2.ContinueWith(delegate
+            {
+                Thread.Sleep(1000);//бфло исключение с невозможностью выполнения операции, возможно операция выполнялась до появления окна программы, задержка для исправления
+                MOButton.Invoke((Action)(() => MOButton.Enabled = true));
+            }, TaskScheduler.Current);
         }
 
         private void GetEnableDisableLaunchButtons()

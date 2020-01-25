@@ -223,7 +223,7 @@ namespace AIHelper.Manage
             };
 
             //заполнить словарь значениями массива строк
-            int IniValuesLength = IniValues.Length / 2;//дляна массива, деленое на 2 т.к. каждый элемент состоит из двух
+            int IniValuesLength = IniValues.Length / 2;//длина массива, деленая на 2 т.к. каждый элемент состоит из двух
             int exclude = 0;//будет равен индексу, который надо пропустить
             int resultindex = 1;//конечное количество добавленных exe
             int skippedCnt = 0;//счет количества пропущенных, нужно для правильного подсчета resultindex
@@ -625,6 +625,12 @@ namespace AIHelper.Manage
             {
                 string profilemodlistpath = Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", currentMOprofile, "modlist.txt");
 
+                //фикс на случай несовпадения выбранной игры и профиля в MO ini
+                if (!File.Exists(profilemodlistpath))
+                {
+                    ManageMO.RedefineGameMOData();
+                }
+
                 if (File.Exists(profilemodlistpath))
                 {
                     string[] lines;
@@ -747,21 +753,26 @@ namespace AIHelper.Manage
 
         public static string GetMetaParameterValue(string MetaFilePath, string NeededValue)
         {
-            foreach (string line in File.ReadAllLines(MetaFilePath))
-            {
-                if (line.Length == 0)
-                {
-                }
-                else
-                {
-                    if (line.StartsWith(NeededValue + "="))
-                    {
-                        return line.Remove(0, (NeededValue + "=").Length);
-                    }
-                }
-            }
+            return ManageINI.GetINIValueIfExist(MetaFilePath, NeededValue);
 
-            return string.Empty;
+            //using (StreamReader sr = new StreamReader(MetaFilePath))
+            //{
+            //    string line;
+            //    while (!sr.EndOfStream)
+            //    {
+            //        line = sr.ReadLine();
+
+            //        if (line.Length > 0)
+            //        {
+            //            if (line.StartsWith(NeededValue + "=", StringComparison.InvariantCulture))
+            //            {
+            //                return line.Remove(0, (NeededValue + "=").Length);
+            //            }
+            //        }
+            //    }
+            //}
+
+            //return string.Empty;
         }
 
         public static string GetModFromModListContainsTheName(string name, bool OnlyFromEnabledMods = true)

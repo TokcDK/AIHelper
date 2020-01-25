@@ -1,32 +1,49 @@
 ﻿using AIHelper.Manage;
 using SymbolicLinkSupport;
 using System.IO;
+using System.Windows.Forms;
 
 namespace AI_Helper.Manage
 {
     class ManageSymLinks
     {
-        internal static bool IsSymlinkAndValid(string symlinkPath, string linkTargetPath, bool IsLinkTargetPathRelative=false)
+        public static void DeleteIfSymlink(string LinkPath, bool IsFolder = false)
+        {
+            if (IsFolder || Directory.Exists(LinkPath))
+            {
+                if (FileInfoExtensions.IsSymbolicLink(new FileInfo(LinkPath)))
+                {
+                    Directory.Delete(LinkPath);
+                }
+            }
+            else if (File.Exists(LinkPath))
+            {
+                if (FileInfoExtensions.IsSymbolicLink(new FileInfo(LinkPath)))
+                {
+                    File.Delete(LinkPath);
+                }
+            }
+        }
+
+        internal static bool IsSymlinkAndValid(string symlinkPath, string linkTargetPath, bool IsLinkTargetPathRelative = false)
         {
             var symlinkPathInfo = new FileInfo(symlinkPath);
-            if (
-                //ссылка вообще существует
-                File.Exists(symlinkPath)
-                &&
-                //файл является ссылкой
-                SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLink(symlinkPathInfo)
-                &&
-                //ссылка валидная
-                SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLinkValid(symlinkPathInfo)
-                &&
-                //целевой файл ссылки равен целевому файлу игры
-                (
-                (!IsLinkTargetPathRelative && SymbolicLinkSupport.FileInfoExtensions.GetSymbolicLinkTarget(symlinkPathInfo) != linkTargetPath)
-                ||
-                (IsLinkTargetPathRelative && SymbolicLinkSupport.FileInfoExtensions.GetSymbolicLinkTarget(symlinkPathInfo) != linkTargetPath.Replace(Path.GetDirectoryName(symlinkPath), ".."))
-                ))
+            //ссылка вообще существует
+            if (File.Exists(symlinkPath))
             {
-                return true;
+                //файл является ссылкой
+                if (SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLink(symlinkPathInfo))
+                {
+                    //ссылка валидная
+                    if (SymbolicLinkSupport.FileInfoExtensions.IsSymbolicLinkValid(symlinkPathInfo))
+                    {
+                        //целевой файл ссылки равен целевому файлу игры
+                        if (SymbolicLinkSupport.FileInfoExtensions.GetSymbolicLinkTarget(symlinkPathInfo) == linkTargetPath)
+                        {
+                            return true;
+                        };
+                    };
+                };
             };
 
             return false;

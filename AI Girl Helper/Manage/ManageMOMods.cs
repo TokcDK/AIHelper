@@ -43,7 +43,7 @@ namespace AIHelper.Manage
                 {
                     if (RemoveLinks)
                     {
-                        ManageFilesFolders.DeleteIfSymlink(ObjectLinkPaths[i, 1]);
+                        ManageSymLinks.DeleteIfSymlink(ObjectLinkPaths[i, 1]);
                     }
                     else
                     {

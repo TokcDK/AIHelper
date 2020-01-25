@@ -228,24 +228,6 @@ namespace AIHelper.Manage
 
         }
 
-        public static void DeleteIfSymlink(string LinkPath, bool IsFolder = false)
-        {
-            if (IsFolder || Directory.Exists(LinkPath))
-            {
-                if (FileInfoExtensions.IsSymbolicLink(new FileInfo(LinkPath)))
-                {
-                    Directory.Delete(LinkPath);
-                }
-            }
-            else if(File.Exists(LinkPath))
-            {
-                if (FileInfoExtensions.IsSymbolicLink(new FileInfo(LinkPath)))
-                {
-                    File.Delete(LinkPath);
-                }
-            }
-        }
-
         public static bool ContainsAnyInvalidCharacters(string path)
         {
             return (path.Length > 0 && path.IndexOfAny(Path.GetInvalidPathChars()) >= 0);

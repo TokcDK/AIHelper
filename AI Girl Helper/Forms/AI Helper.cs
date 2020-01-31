@@ -583,7 +583,7 @@ namespace AIHelper
             }
             else
             {
-                string screenWidth = Screen.PrimaryScreen.Bounds.Width.ToString();
+                string screenWidth = Screen.PrimaryScreen.Bounds.Width.ToString(CultureInfo.GetCultureInfo("en-US"));
                 //string screenHeight = Screen.PrimaryScreen.Bounds.Height.ToString();
                 int[] width = { 1280, 1366, 1536, 1600, 1920, 2048, 2560, 3200, 3840 };
                 if (int.Parse(screenWidth, CultureInfo.GetCultureInfo("en-US")) > width[width.Length - 1])
@@ -607,9 +607,16 @@ namespace AIHelper
             }
 
             ResolutionComboBox.Text = ManageXML.ReadXmlValue(SetupXmlPath, "Setting/Size", ResolutionComboBox.Text);
-            FullScreenCheckBox.Checked = bool.Parse(ManageXML.ReadXmlValue(SetupXmlPath, "Setting/FullScreen", FullScreenCheckBox.Checked.ToString().ToLower()));
+            FullScreenCheckBox.Checked = bool.Parse(ManageXML.ReadXmlValue(SetupXmlPath, "Setting/FullScreen", FullScreenCheckBox.Checked.ToString(CultureInfo.GetCultureInfo("en-US")).ToLower(CultureInfo.GetCultureInfo("en-US"))));
 
-            QualityComboBox.SelectedIndex = int.Parse(ManageXML.ReadXmlValue(SetupXmlPath, "Setting/Quality", "2"), CultureInfo.GetCultureInfo("en-US"));
+            string Quality = ManageXML.ReadXmlValue(SetupXmlPath, "Setting/Quality", "2");
+            //если качество будет за пределами диапазона 0-2, тогда будет равно 2
+            if (int.Parse(Quality, CultureInfo.GetCultureInfo("en-US")) <0 || int.Parse(Quality, CultureInfo.GetCultureInfo("en-US")) > 2)
+            {
+                Quality = "2";
+            }
+
+            QualityComboBox.SelectedIndex = int.Parse(Quality, CultureInfo.GetCultureInfo("en-US"));
         }
 
         private static void SetScreenResolution(string Resolution)
@@ -676,20 +683,20 @@ namespace AIHelper
 
             if (File.Exists(Path.Combine(DataPath, ManageSettings.GetCurrentGameEXEName() + ".exe")))
             {
-                DataInfoLabel.Text = string.Format(T._("{0} game installed in {1}"), ManageSettings.GetCurrentGameFolderName(), "Data");
+                DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} game installed in {1}"), ManageSettings.GetCurrentGameFolderName(), "Data");
             }
             else if (File.Exists(Path.Combine(AppResDir, ManageSettings.GetCurrentGameEXEName() + ".7z")))
             {
-                DataInfoLabel.Text = string.Format(T._("{0} archive in {1}"), "AIGirl", "Data");
+                DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} archive in {1}"), "AIGirl", "Data");
             }
             else if (Directory.Exists(DataPath))
             {
-                DataInfoLabel.Text = string.Format(T._("{0} files not in {1}. Move {0} game files there."), ManageSettings.GetCurrentGameFolderName(), "Data");
+                DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} files not in {1}. Move {0} game files there."), ManageSettings.GetCurrentGameFolderName(), "Data");
             }
             else
             {
                 Directory.CreateDirectory(DataPath);
-                DataInfoLabel.Text = string.Format(T._("{0} dir created. Move {1} game files there."), "Data", ManageSettings.GetCurrentGameFolderName());
+                DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} dir created. Move {1} game files there."), "Data", ManageSettings.GetCurrentGameFolderName());
             }
 
             if (MOmode)

@@ -610,10 +610,13 @@ namespace AIHelper
             FullScreenCheckBox.Checked = bool.Parse(ManageXML.ReadXmlValue(SetupXmlPath, "Setting/FullScreen", FullScreenCheckBox.Checked.ToString(CultureInfo.GetCultureInfo("en-US")).ToLower(CultureInfo.GetCultureInfo("en-US"))));
 
             string Quality = ManageXML.ReadXmlValue(SetupXmlPath, "Setting/Quality", "2");
-            //если качество будет за пределами диапазона 0-2, тогда будет равно 2
-            if (int.Parse(Quality, CultureInfo.GetCultureInfo("en-US")) <0 || int.Parse(Quality, CultureInfo.GetCultureInfo("en-US")) > 2)
+            //если качество будет за пределами диапазона 0-2, тогда будет равно 1 - нормально
+            if (Quality=="0" || Quality=="1" || Quality == "2")
             {
-                Quality = "2";
+            }
+            else
+            {
+                Quality = "1";
             }
 
             QualityComboBox.SelectedIndex = int.Parse(Quality, CultureInfo.GetCultureInfo("en-US"));

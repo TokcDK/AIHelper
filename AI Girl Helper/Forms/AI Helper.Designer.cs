@@ -71,7 +71,7 @@
             this.OpenGameFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.CreateShortcutButton = new System.Windows.Forms.Button();
             this.FixRegistryButton = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.DisplaySettingsGroupBox = new System.Windows.Forms.GroupBox();
             this.SetupXmlLinkLabel = new System.Windows.Forms.LinkLabel();
             this.QualityComboBox = new System.Windows.Forms.ComboBox();
             this.FullScreenCheckBox = new System.Windows.Forms.CheckBox();
@@ -93,7 +93,7 @@
             this.SettingsPage.SuspendLayout();
             this.SettingsPagePanel.SuspendLayout();
             this.SettingsFoldersGroupBox.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.DisplaySettingsGroupBox.SuspendLayout();
             this.ToolsTabPage.SuspendLayout();
             this.ToolsPagePanel.SuspendLayout();
             this.SuspendLayout();
@@ -458,7 +458,6 @@
             // SettingsPagePanel
             // 
             this.SettingsPagePanel.BackColor = System.Drawing.Color.Gray;
-            this.SettingsPagePanel.Controls.Add(this.SetupXmlLinkLabel);
             this.SettingsPagePanel.Controls.Add(this.JPLauncherRunLinkLabel);
             this.SettingsPagePanel.Controls.Add(this.ExtraSettingsLinkLabel);
             this.SettingsPagePanel.Controls.Add(this.CurrentGameLabel);
@@ -466,7 +465,7 @@
             this.SettingsPagePanel.Controls.Add(this.SettingsFoldersGroupBox);
             this.SettingsPagePanel.Controls.Add(this.CreateShortcutButton);
             this.SettingsPagePanel.Controls.Add(this.FixRegistryButton);
-            this.SettingsPagePanel.Controls.Add(this.groupBox1);
+            this.SettingsPagePanel.Controls.Add(this.DisplaySettingsGroupBox);
             this.SettingsPagePanel.Controls.Add(this.AutoShortcutRegistryCheckBox);
             this.SettingsPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SettingsPagePanel.Location = new System.Drawing.Point(3, 3);
@@ -632,29 +631,30 @@
             this.FixRegistryButton.UseVisualStyleBackColor = true;
             this.FixRegistryButton.Click += new System.EventHandler(this.FixRegistryButton_Click);
             // 
-            // groupBox1
+            // DisplaySettingsGroupBox
             // 
-            this.groupBox1.Controls.Add(this.QualityComboBox);
-            this.groupBox1.Controls.Add(this.FullScreenCheckBox);
-            this.groupBox1.Controls.Add(this.ResolutionComboBox);
-            this.groupBox1.ForeColor = System.Drawing.Color.White;
-            this.groupBox1.Location = new System.Drawing.Point(190, 76);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(145, 74);
-            this.groupBox1.TabIndex = 3;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Display";
+            this.DisplaySettingsGroupBox.Controls.Add(this.SetupXmlLinkLabel);
+            this.DisplaySettingsGroupBox.Controls.Add(this.QualityComboBox);
+            this.DisplaySettingsGroupBox.Controls.Add(this.FullScreenCheckBox);
+            this.DisplaySettingsGroupBox.Controls.Add(this.ResolutionComboBox);
+            this.DisplaySettingsGroupBox.ForeColor = System.Drawing.Color.White;
+            this.DisplaySettingsGroupBox.Location = new System.Drawing.Point(190, 76);
+            this.DisplaySettingsGroupBox.Name = "DisplaySettingsGroupBox";
+            this.DisplaySettingsGroupBox.Size = new System.Drawing.Size(145, 74);
+            this.DisplaySettingsGroupBox.TabIndex = 3;
+            this.DisplaySettingsGroupBox.TabStop = false;
+            this.DisplaySettingsGroupBox.Text = "Display";
             // 
             // SetupXmlLinkLabel
             // 
             this.SetupXmlLinkLabel.AutoSize = true;
             this.SetupXmlLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.SetupXmlLinkLabel.Location = new System.Drawing.Point(175, 137);
+            this.SetupXmlLinkLabel.Location = new System.Drawing.Point(6, 0);
             this.SetupXmlLinkLabel.Name = "SetupXmlLinkLabel";
-            this.SetupXmlLinkLabel.Size = new System.Drawing.Size(15, 13);
+            this.SetupXmlLinkLabel.Size = new System.Drawing.Size(41, 13);
             this.SetupXmlLinkLabel.TabIndex = 6;
             this.SetupXmlLinkLabel.TabStop = true;
-            this.SetupXmlLinkLabel.Text = ">";
+            this.SetupXmlLinkLabel.Text = "Display";
             this.SetupXmlLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked_1);
             // 
             // QualityComboBox
@@ -821,8 +821,8 @@
             this.SettingsPagePanel.PerformLayout();
             this.SettingsFoldersGroupBox.ResumeLayout(false);
             this.SettingsFoldersGroupBox.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.DisplaySettingsGroupBox.ResumeLayout(false);
+            this.DisplaySettingsGroupBox.PerformLayout();
             this.ToolsTabPage.ResumeLayout(false);
             this.ToolsPagePanel.ResumeLayout(false);
             this.ToolsPagePanel.PerformLayout();
@@ -846,7 +846,7 @@
         private System.Windows.Forms.TabPage SettingsPage;
         private System.Windows.Forms.Panel SettingsPagePanel;
         private System.Windows.Forms.CheckBox AutoShortcutRegistryCheckBox;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox DisplaySettingsGroupBox;
         private System.Windows.Forms.CheckBox FullScreenCheckBox;
         private System.Windows.Forms.ComboBox ResolutionComboBox;
         private System.Windows.Forms.Button FixRegistryButton;

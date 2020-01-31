@@ -1,5 +1,4 @@
-﻿using AI_Helper.Utils;
-using AIHelper.Games;
+﻿using AIHelper.Games;
 using AIHelper.Manage;
 using System;
 using System.Collections.Generic;
@@ -10,7 +9,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -129,13 +127,14 @@ namespace AIHelper
         private void SetLocalizationStrings()
         {
             this.Text = T._("AI Helper for Organized ModPack");
-            CurrentGameLabel.Text = T._("Current Game")+":";
+            CurrentGameLabel.Text = T._("Current Game") + ":";
             InstallInModsButton.Text = T._("Install from 2MO");
             //button1.Text = T._("Prepare the game");
             SettingsPage.Text = T._("Settings");
             CreateShortcutButton.Text = T._("Shortcut");
             FixRegistryButton.Text = T._("Registry");
-            groupBox1.Text = T._("Display");
+            DisplaySettingsGroupBox.Text = T._("Display");
+            SetupXmlLinkLabel.Text = DisplaySettingsGroupBox.Text;//Тот же текст
             FullScreenCheckBox.Text = T._("fullscreen");
             AutoShortcutRegistryCheckBox.Text = T._("Auto");
             SettingsFoldersGroupBox.Text = T._("Folders");
@@ -496,7 +495,8 @@ namespace AIHelper
                         )));
             THToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Open folder where you can drop/download files for autoinstallation"));
             THToolTip.SetToolTip(AutoShortcutRegistryCheckBox, T._("When checked will create shortcut for the AI Helper on Desktop and will fix registry if need"));
-            THToolTip.SetToolTip(groupBox1, T._("Game Display settings"));
+            THToolTip.SetToolTip(DisplaySettingsGroupBox, T._("Game Display settings"));
+            THToolTip.SetToolTip(SetupXmlLinkLabel, T._("Open Setup.xml in notepad"));
             THToolTip.SetToolTip(ResolutionComboBox, T._("Select preferred screen resolution"));
             THToolTip.SetToolTip(FullScreenCheckBox, T._("When checked game will be in fullscreen mode"));
             THToolTip.SetToolTip(QualityComboBox, T._("Select preferred graphics quality"));
@@ -611,7 +611,7 @@ namespace AIHelper
 
             string Quality = ManageXML.ReadXmlValue(SetupXmlPath, "Setting/Quality", "2");
             //если качество будет за пределами диапазона 0-2, тогда будет равно 1 - нормально
-            if (Quality=="0" || Quality=="1" || Quality == "2")
+            if (Quality == "0" || Quality == "1" || Quality == "2")
             {
             }
             else
@@ -800,7 +800,7 @@ namespace AIHelper
                 //}
 
                 LanchModeInfoLinkLabel.Text = T._("MO mode");
-                
+
                 //создание exe-болванки
                 ManageMO.MakeDummyFiles();
 
@@ -841,7 +841,7 @@ namespace AIHelper
                 ManageOther.AutoShortcutAndRegystry();
             }
 
-            SelectedGameLabel.Text = CurrentGame.GetGameDisplayingName()+ "❤";
+            SelectedGameLabel.Text = CurrentGame.GetGameDisplayingName() + "❤";
         }
 
         private void RunSlowActions()
@@ -1229,7 +1229,7 @@ namespace AIHelper
 
                     ManageMOMods.CleanBepInExLinksFromData();
 
-                    if (File.Exists(ManageSettings.GetDummyFilePath()) && /*Удалил TESV.exe, который был лаунчером, а не болванкой*/new FileInfo(ManageSettings.GetDummyFilePath()).Length<10000)
+                    if (File.Exists(ManageSettings.GetDummyFilePath()) && /*Удалил TESV.exe, который был лаунчером, а не болванкой*/new FileInfo(ManageSettings.GetDummyFilePath()).Length < 10000)
                     {
                         File.Delete(ManageSettings.GetDummyFilePath());
                     }
@@ -1630,27 +1630,35 @@ namespace AIHelper
 
         private void OpenGameFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("explorer.exe", DataPath);
+            if (Directory.Exists(DataPath))
+                Process.Start("explorer.exe", DataPath);
         }
 
         private void OpenMOFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("explorer.exe", MODirPath);
+            if (Directory.Exists(MODirPath))
+                Process.Start("explorer.exe", MODirPath);
         }
 
         private void OpenModsFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("explorer.exe", ModsPath);
+            if (Directory.Exists(ModsPath))
+                Process.Start("explorer.exe", ModsPath);
         }
 
         private void Install2MODirPathOpenFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("explorer.exe", Install2MODirPath);
+            if (Directory.Exists(Install2MODirPath))
+                Process.Start("explorer.exe", Install2MODirPath);
         }
 
         private void OpenMyUserDataFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             string UserFilesFolder = Path.Combine(ModsPath, "MyUserData");
+            if (!Directory.Exists(UserFilesFolder))
+            {
+                UserFilesFolder = ManageSettings.GetOverwriteFolder();
+            }
             if (Directory.Exists(UserFilesFolder))
             {
                 Process.Start("explorer.exe", UserFilesFolder);
@@ -1669,7 +1677,7 @@ namespace AIHelper
         {
             //https://stackoverflow.com/questions/9993561/c-sharp-open-file-path-starting-with-userprofile
             string gameNameByExe = CurrentGame.GetGameEXEName().Replace("_64", "").Replace("_32", "");
-            string USERPROFILE = Path.Combine("%USERPROFILE%", "appdata", "locallow", "illusion__"+ gameNameByExe, gameNameByExe, "output_log.txt");
+            string USERPROFILE = Path.Combine("%USERPROFILE%", "appdata", "locallow", "illusion__" + gameNameByExe, gameNameByExe, "output_log.txt");
             string output_log = Environment.ExpandEnvironmentVariables(USERPROFILE);
             if (File.Exists(output_log))
             {
@@ -1810,7 +1818,7 @@ namespace AIHelper
             if (File.Exists(SetupXmlPath))
             {
                 Process.Start("notepad.exe", SetupXmlPath);
-            }            
+            }
         }
 
         //Материалы

@@ -629,6 +629,9 @@ namespace AIHelper.Manage
                 if (!File.Exists(profilemodlistpath))
                 {
                     ManageMO.RedefineGameMOData();
+                    currentMOprofile = ReGetcurrentMOprofile(currentMOprofile);
+
+                    profilemodlistpath = Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", currentMOprofile, "modlist.txt");                                       
                 }
 
                 if (File.Exists(profilemodlistpath))
@@ -657,6 +660,35 @@ namespace AIHelper.Manage
             }
 
             return null;
+        }
+
+        private static string ReGetcurrentMOprofile(string currentMOprofile)
+        {
+            while (!Directory.Exists(Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", currentMOprofile)))
+            {
+                if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", ManageSettings.GetCurrentGameEXEName())))
+                {
+                    return ManageSettings.GetCurrentGameEXEName();
+                }
+                else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", ManageSettings.GetCurrentGameDisplayingName())))
+                {
+                    return ManageSettings.GetCurrentGameDisplayingName();
+                }
+                else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", ManageSettings.GetCurrentGameFolderName())))
+                {
+                    return ManageSettings.GetCurrentGameFolderName();
+                }
+                else if (Directory.GetDirectories(Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles")).Length == 0)
+                {
+                    MessageBox.Show(T._("No profiles found for Current game") +" "+ ManageSettings.GetCurrentGameDisplayingName());                    
+                }
+                else
+                {
+                    return Path.GetDirectoryName(Directory.GetDirectories(Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles"))[0]);
+                }
+            }
+            Application.Exit();
+            return "Default";
         }
 
         public static string GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(string pathInMods, bool IsDir = false)

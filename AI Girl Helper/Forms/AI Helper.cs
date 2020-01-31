@@ -1805,6 +1805,14 @@ namespace AIHelper
             ManageMOMods.BepinExLoadingFix(true);
         }
 
+        private void linkLabel1_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (File.Exists(SetupXmlPath))
+            {
+                Process.Start("notepad.exe", SetupXmlPath);
+            }            
+        }
+
         //Материалы
         //Есть пример с загрузкой файла по ссылке:
         //https://github.com/adoconnection/SevenZipExtractor

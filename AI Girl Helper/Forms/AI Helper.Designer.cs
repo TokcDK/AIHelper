@@ -72,6 +72,7 @@
             this.CreateShortcutButton = new System.Windows.Forms.Button();
             this.FixRegistryButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.SetupXmlLinkLabel = new System.Windows.Forms.LinkLabel();
             this.QualityComboBox = new System.Windows.Forms.ComboBox();
             this.FullScreenCheckBox = new System.Windows.Forms.CheckBox();
             this.ResolutionComboBox = new System.Windows.Forms.ComboBox();
@@ -457,6 +458,7 @@
             // SettingsPagePanel
             // 
             this.SettingsPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.SettingsPagePanel.Controls.Add(this.SetupXmlLinkLabel);
             this.SettingsPagePanel.Controls.Add(this.JPLauncherRunLinkLabel);
             this.SettingsPagePanel.Controls.Add(this.ExtraSettingsLinkLabel);
             this.SettingsPagePanel.Controls.Add(this.CurrentGameLabel);
@@ -642,6 +644,18 @@
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Display";
+            // 
+            // SetupXmlLinkLabel
+            // 
+            this.SetupXmlLinkLabel.AutoSize = true;
+            this.SetupXmlLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.SetupXmlLinkLabel.Location = new System.Drawing.Point(175, 137);
+            this.SetupXmlLinkLabel.Name = "SetupXmlLinkLabel";
+            this.SetupXmlLinkLabel.Size = new System.Drawing.Size(15, 13);
+            this.SetupXmlLinkLabel.TabIndex = 6;
+            this.SetupXmlLinkLabel.TabStop = true;
+            this.SetupXmlLinkLabel.Text = ">";
+            this.SetupXmlLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked_1);
             // 
             // QualityComboBox
             // 
@@ -871,6 +885,7 @@
         private System.Windows.Forms.LinkLabel LaunchLinksLinkLabel;
         private System.Windows.Forms.LinkLabel JPLauncherRunLinkLabel;
         private System.Windows.Forms.Button FixMOModsButton;
+        private System.Windows.Forms.LinkLabel SetupXmlLinkLabel;
     }
 }
 

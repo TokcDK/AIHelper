@@ -1,5 +1,6 @@
 ﻿using IniParser;
 using IniParser.Model;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -137,11 +138,7 @@ namespace AIHelper.Manage
             {
                 INIData[Section][i.ToString(CultureInfo.GetCultureInfo("en-US"))] = Values[i];
             }
-
-            if (DoSaveINI)
-            {
-                INIParser.WriteFile(Path, INIData, Encoding.UTF8);
-            }
+            SaveINI(DoSaveINI, ActionWasExecuted);
         }
 
         //Записываем в ini-файл. Запись происходит в выбранную секцию в выбранный ключ.
@@ -166,11 +163,7 @@ namespace AIHelper.Manage
                 INIData[Section][Key] = Value;
                 ActionWasExecuted = true;
             }
-
-            if (DoSaveINI && ActionWasExecuted)
-            {
-                INIParser.WriteFile(Path, INIData, Encoding.UTF8);
-            }
+            SaveINI(DoSaveINI, ActionWasExecuted);
             //if (!ManageStrings.IsStringAContainsStringB(Key, "\\"))
             //{
             //    var ini = ExIni.IniFile.FromFile(Path);
@@ -216,10 +209,7 @@ namespace AIHelper.Manage
                     ActionWasExecuted = true;
                 }
             }
-            if (DoSaveINI && ActionWasExecuted)
-            {
-                INIParser.WriteFile(Path, INIData, Encoding.UTF8);
-            }
+            SaveINI(DoSaveINI, ActionWasExecuted);
             //var ini = ExIni.IniFile.FromFile(Path);
             //var section = ini.GetSection(Section);
             //if (section != null)
@@ -249,10 +239,8 @@ namespace AIHelper.Manage
                 INIData.Sections.RemoveSection(Section);
                 ActionWasExecuted = true;
             }
-            if (DoSaveINI && ActionWasExecuted)
-            {
-                INIParser.WriteFile(Path, INIData, Encoding.UTF8);
-            }
+
+            SaveINI(DoSaveINI, ActionWasExecuted);
             //var ini = ExIni.IniFile.FromFile(Path);
             //if(Section!=null && ini.HasSection(Section))
             //{
@@ -260,6 +248,14 @@ namespace AIHelper.Manage
             //    ini.Save(Path);
             //}
             //WriteINI(Section, null, null);
+        }
+
+        private void SaveINI(bool DoSaveINI, bool ActionWasExecuted)
+        {
+            if (DoSaveINI && ActionWasExecuted)
+            {
+                INIParser.WriteFile(Path, INIData, new UTF8Encoding(false));
+            }
         }
 
         //Очистка выбранной секции
@@ -275,10 +271,7 @@ namespace AIHelper.Manage
                 INIData.Sections[Section].RemoveAllKeys();
                 ActionWasExecuted = true;
             }
-            if (DoSaveINI && ActionWasExecuted)
-            {
-                INIParser.WriteFile(Path, INIData, Encoding.UTF8);
-            }
+            SaveINI(DoSaveINI, ActionWasExecuted);
             //var ini = ExIni.IniFile.FromFile(Path);
             //if(Section!=null && ini.HasSection(Section))
             //{

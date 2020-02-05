@@ -831,7 +831,8 @@ namespace AIHelper.Manage
             //Create dummy file and add hidden attribute
             if (!File.Exists(ManageSettings.GetDummyFilePath()))
             {
-                new FileInfo(ManageSettings.GetDummyFilePath()).Create().Close();
+                File.Copy(Path.Combine(ManageSettings.GetAppResDir(), "TESV.exe.dummy"), ManageSettings.GetDummyFilePath());
+                //new FileInfo(ManageSettings.GetDummyFilePath()).Create().Close();
                 //File.WriteAllText(ManageSettings.GetDummyFilePath(), "dummy file need to execute mod organizer");
                 ManageFilesFolders.HideFileFolder(ManageSettings.GetDummyFilePath(), true);
             }

@@ -37,10 +37,18 @@ namespace AIHelper.Manage
         {
             RedefineGameMOData();
 
+            //менять настройки МО только когда игра меняется
+            if (!Properties.Settings.Default.CurrentGameIsChanging)
+            {
+                return;
+            }
+
             INIFile INI = new INIFile(ManageSettings.GetModOrganizerINIpath());
 
             SetCommonIniValues(INI);
             SetCustomExecutablesIniValues(INI);
+
+            Properties.Settings.Default.CurrentGameIsChanging = false;
         }
 
         private static void SetCustomExecutablesIniValues(INIFile INI)

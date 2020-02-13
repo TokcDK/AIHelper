@@ -254,6 +254,7 @@ namespace AIHelper.Manage
         {
             if (DoSaveINI && ActionWasExecuted)
             {
+                //https://stackoverflow.com/questions/2502990/create-text-file-without-bom
                 INIParser.WriteFile(Path, INIData, new UTF8Encoding(false));
             }
         }

@@ -12,7 +12,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{6E16DB2A-586F-49D9-BFC8-FBEC0D3DF6C7}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>AI_Helper</RootNamespace>
+    <RootNamespace>AIHelper</RootNamespace>
     <AssemblyName>AI Helper</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -20,6 +20,7 @@
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>

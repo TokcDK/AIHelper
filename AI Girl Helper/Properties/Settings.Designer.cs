@@ -370,5 +370,17 @@ namespace AIHelper.Properties {
                 this["CurrentGameDisplayingName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool CurrentGameIsChanging {
+            get {
+                return ((bool)(this["CurrentGameIsChanging"]));
+            }
+            set {
+                this["CurrentGameIsChanging"] = value;
+            }
+        }
     }
 }

@@ -1687,8 +1687,10 @@ namespace AIHelper
 
         private void CurrentGameComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Properties.Settings.Default.INITDone)
+            if (Properties.Settings.Default.INITDone && !Properties.Settings.Default.CurrentGameIsChanging)
             {
+                Properties.Settings.Default.CurrentGameIsChanging = true;
+
                 SetSelectedGameIndexAndBasicVariables((sender as ComboBox).SelectedIndex);
                 ActionsOnGameChanged();
 

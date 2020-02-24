@@ -37,5 +37,47 @@ namespace AI_Helper.Games
         {
             return "CharaStudio";
         }
+
+        public virtual string[,] GetObjectsForSymLinksPaths()
+        {
+            return new string[,]
+            {
+                    {
+                        Path.Combine(ManageSettings.GetModsPath(), "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
+                        ,
+                        Path.Combine(ManageSettings.GetDataPath(), "BepInEx", "core", "BepInEx.Preloader.dll")
+                    }
+                    ,
+                    {
+                        Path.Combine(ManageSettings.GetModsPath(), "BepInEx", "doorstop_config.ini")
+                        ,
+                        Path.Combine(ManageSettings.GetDataPath(), "doorstop_config.ini")
+                    }
+                    ,
+                    {
+                        Path.Combine(ManageSettings.GetModsPath(), "BepInEx", "winhttp.dll")
+                        ,
+                        Path.Combine(ManageSettings.GetDataPath(), "winhttp.dll")
+                    }
+                    ,
+                    {
+                        Path.Combine(ManageSettings.GetMOdirPath(), "Overwrite", "UserData", "MaterialEditor")
+                        ,
+                        Path.Combine(ManageSettings.GetDataPath(), "UserData", "MaterialEditor")
+                    }
+                    ,
+                    {
+                        Path.Combine(ManageSettings.GetMOdirPath(), "Overwrite", "UserData", "Overlays")
+                        ,
+                        Path.Combine(ManageSettings.GetDataPath(), "UserData", "Overlays")
+                    }
+                    ,
+                    {
+                        Path.Combine(ManageSettings.GetMOdirPath(), "Overwrite", "UserData", "cap")
+                        ,
+                        Path.Combine(ManageSettings.GetDataPath(), "UserData", "cap")
+                    }
+            };
+        }
     }
 }

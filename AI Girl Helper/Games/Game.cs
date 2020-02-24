@@ -131,7 +131,7 @@ namespace AIHelper.Games
                     {
                         Path.Combine(ManageSettings.GetModsPath(), "MyUserData", "UserData", "cap")
                         ,
-                        Path.Combine(ManageSettings.GetDataPath(), "UserData", "Overlays")
+                        Path.Combine(ManageSettings.GetDataPath(), "UserData", "cap")
                     }
             };
         }

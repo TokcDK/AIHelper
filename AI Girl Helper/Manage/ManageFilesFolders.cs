@@ -1,4 +1,5 @@
-﻿using SymbolicLinkSupport;
+﻿using AI_Helper.Manage;
+using SymbolicLinkSupport;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -343,6 +344,23 @@ namespace AIHelper.Manage
                 }
             }
             return folderPath;
+        }
+
+        internal static void MoveContentOfSourceFolderToTargetFolderAndThenCleanSource(string SourceFolder, string TargetFolder)
+        {
+            if (Directory.Exists(SourceFolder) && !CheckDirectoryNullOrEmpty_Fast(SourceFolder) && !ManageSymLinks.IsSymLink(SourceFolder))
+            {
+                foreach (string dir in Directory.EnumerateDirectories(SourceFolder))
+                {
+                    Directory.Move(dir, Path.Combine(TargetFolder, Path.GetFileName(dir)));
+                }
+                foreach (string file in Directory.EnumerateFiles(SourceFolder))
+                {
+                    File.Move(file, Path.Combine(TargetFolder, Path.GetFileName(file)));
+                }
+            }
+
+            DeleteEmptySubfolders(SourceFolder, true);
         }
     }
 }

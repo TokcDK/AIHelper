@@ -7,13 +7,15 @@ namespace AI_Helper.Manage
 {
     class ManageSymLinks
     {
-        public static void DeleteIfSymlink(string LinkPath, bool IsFolder = false)
+        public static bool DeleteIfSymlink(string LinkPath, bool IsFolder = false)
         {
             if (IsFolder || Directory.Exists(LinkPath))
             {
                 if (FileInfoExtensions.IsSymbolicLink(new FileInfo(LinkPath)))
                 {
                     Directory.Delete(LinkPath);
+
+                    return true;
                 }
             }
             else if (File.Exists(LinkPath))
@@ -21,8 +23,12 @@ namespace AI_Helper.Manage
                 if (FileInfoExtensions.IsSymbolicLink(new FileInfo(LinkPath)))
                 {
                     File.Delete(LinkPath);
+
+                    return true;
                 }
             }
+
+            return false;
         }
 
         internal static bool IsSymlinkAndValid(string symlinkPath, string linkTargetPath, bool IsLinkTargetPathRelative = false)
@@ -80,7 +86,7 @@ namespace AI_Helper.Manage
 
         }
 
-        public static void Symlink(string objectFileDirPath, string symlinkPath, bool isRelative = false)
+        public static bool Symlink(string objectFileDirPath, string symlinkPath, bool isRelative = false)
         {
             if (symlinkPath.Length > 0 && objectFileDirPath.Length > 0)
             {
@@ -97,14 +103,34 @@ namespace AI_Helper.Manage
                     //FileInfoExtensions.CreateSymbolicLink(new FileInfo(objectFileDirPath), symlinkPath, isRelative);//new from NuGet package
                     FileInfoExtensions.CreateSymbolicLink(new FileInfo(objectPath), symlinkPath, isRelative);//new from NuGet package
                     //CreateSymlink.File(file, symlink); //old
+
+                    return true;
                 }
                 else if (Directory.Exists(objectPath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(objectFileDirPath, true)) && (!Directory.Exists(symlinkPath) || (DirectoryInfoExtensions.IsSymbolicLink(new DirectoryInfo(symlinkPath)) && !DirectoryInfoExtensions.IsSymbolicLinkValid(new DirectoryInfo(symlinkPath)))))
                 {
                     //DirectoryInfoExtensions.CreateSymbolicLink(new DirectoryInfo(objectFileDirPath), symlinkPath, isRelative);//new from NuGet package
                     DirectoryInfoExtensions.CreateSymbolicLink(new DirectoryInfo(objectPath), symlinkPath, isRelative);//new from NuGet package
                     //CreateSymlink.Folder(file, symlink); //old
+
+                    return true;
                 }
             }
+
+            return false;
+        }
+
+        internal static bool IsSymLink(string sourceFileFolder)
+        {
+            if (File.Exists(sourceFileFolder))
+            {
+                return FileInfoExtensions.IsSymbolicLink(new FileInfo(sourceFileFolder));
+            }
+            else if(Directory.Exists(sourceFileFolder))
+            {
+                return DirectoryInfoExtensions.IsSymbolicLink(new DirectoryInfo(sourceFileFolder));
+            }
+
+            return false;
         }
     }
 }

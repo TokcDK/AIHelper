@@ -38,7 +38,7 @@ namespace AI_Helper.Games
             return "CharaStudio";
         }
 
-        public virtual string[,] GetObjectsForSymLinksPaths()
+        public override string[,] GetObjectsForSymLinksPaths()
         {
             return new string[,]
             {

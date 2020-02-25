@@ -59,19 +59,16 @@ namespace AIHelper.Manage
                         }
                         else
                         {
-                            if (Directory.Exists(ObjectLinkPaths[i, 0]))
-                            {
-                                ManageFilesFolders.MoveContentOfSourceFolderToTargetFolderAndThenCleanSource(ObjectLinkPaths[i, 1], ObjectLinkPaths[i, 0]); 
-                                
-                                ManageSymLinks.Symlink
-                                    (
-                                     ObjectLinkPaths[i, 0]
-                                     ,
-                                     ObjectLinkPaths[i, 1]
-                                     ,
-                                     true
-                                    );
-                            }
+                            ManageFilesFolders.MoveContentOfSourceFolderToTargetFolderAndThenCleanSource(ObjectLinkPaths[i, 1], ObjectLinkPaths[i, 0]);
+
+                            ManageSymLinks.Symlink
+                                (
+                                 ObjectLinkPaths[i, 0]
+                                 ,
+                                 ObjectLinkPaths[i, 1]
+                                 ,
+                                 true
+                                );
                         }
                     }
                 }

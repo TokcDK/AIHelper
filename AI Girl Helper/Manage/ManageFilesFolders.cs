@@ -350,6 +350,11 @@ namespace AIHelper.Manage
         {
             if (Directory.Exists(SourceFolder) && !CheckDirectoryNullOrEmpty_Fast(SourceFolder) && !ManageSymLinks.IsSymLink(SourceFolder))
             {
+                if (!Directory.Exists(TargetFolder))
+                {
+                    Directory.CreateDirectory(TargetFolder);
+                }
+
                 foreach (string dir in Directory.EnumerateDirectories(SourceFolder))
                 {
                     Directory.Move(dir, Path.Combine(TargetFolder, Path.GetFileName(dir)));

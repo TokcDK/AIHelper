@@ -1691,6 +1691,18 @@ namespace AIHelper
             {
                 Process.Start("explorer.exe", output_log);
             }
+            else
+            {
+                if (File.Exists(Path.Combine(ManageSettings.GetDataPath(), CurrentGame.GetGameEXEName() + "_Data", "output_log.txt")))
+                {
+                    Process.Start("explorer.exe", Path.Combine(ManageSettings.GetDataPath(), CurrentGame.GetGameEXEName() + "_Data", "output_log.txt"));
+                }
+                else if (File.Exists(Path.Combine(ManageSettings.GetDataPath(), gameNameByExe + "_Data", "output_log.txt")))
+                {
+                    Process.Start("explorer.exe", Path.Combine(ManageSettings.GetDataPath(), gameNameByExe + "_Data", "output_log.txt"));
+                }
+
+            }
         }
 
         private void CurrentGameComboBox_SelectedIndexChanged(object sender, EventArgs e)

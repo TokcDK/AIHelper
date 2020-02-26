@@ -1308,7 +1308,7 @@ namespace AIHelper
                                 {
                                     //skip images and txt in mod root folder
                                     string FileExtension = Path.GetExtension(ModFiles[f]);
-                                    if (Path.GetFileName(Path.GetDirectoryName(ModFiles[f])) == EnabledModsList[N] && (FileExtension == "*.txt" || FileExtension == "*.jpg" || FileExtension == "*.png"))
+                                    if ((FileExtension == ".txt" || FileExtension == ".jpg" || FileExtension == ".png") && Path.GetFileName(Path.GetDirectoryName(ModFiles[f])) == EnabledModsList[N])
                                     {
                                         //пропускать картинки и txt в корне папки мода
                                         continue;

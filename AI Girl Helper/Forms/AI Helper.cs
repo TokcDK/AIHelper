@@ -1835,7 +1835,10 @@ namespace AIHelper
 
         private void AI_Helper_FormClosing(object sender, FormClosingEventArgs e)
         {
-            ManageMOMods.BepinExLoadingFix(true);
+            //нашел баг, когда при открытии свойства ссылки в проводнике
+            //, с последующим закрытием свойств и закрытием AI Helper происходит блокировка папки проводником и при следующем запуске происходит ошибка AI Helper, до разблокировки папки
+            //также если пользователь решит запускать МО без помощника, игра не запустится, т.к. фикса бепинекс нет
+            //ManageMOMods.BepinExLoadingFix(true);
         }
 
         private void linkLabel1_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)

@@ -1656,8 +1656,11 @@ namespace AIHelper
 
         private void Install2MODirPathOpenFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (Directory.Exists(Install2MODirPath))
-                Process.Start("explorer.exe", Install2MODirPath);
+            if (!Directory.Exists(Install2MODirPath))
+            {
+                Directory.CreateDirectory(Install2MODirPath);
+            }
+            Process.Start("explorer.exe", Install2MODirPath);
         }
 
         private void OpenMyUserDataFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

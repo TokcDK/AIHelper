@@ -1456,7 +1456,7 @@ namespace AIHelper
                     //string destFolderForNewFiles = Path.Combine(ModsPath, "NewAddedFiles");
 
                     //получение даты и времени для дальнейшего использования
-                    string DateTimeInFormat = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    string DateTimeInFormat = DateTime.Now.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
 
                     if (FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty)
                     {

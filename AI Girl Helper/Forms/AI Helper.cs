@@ -1306,6 +1306,14 @@ namespace AIHelper
                                 bool metaskipped = false;
                                 for (int f = 0; f < ModFilesLength; f++)
                                 {
+                                    //skip images and txt in mod root folder
+                                    string FileExtension = Path.GetExtension(ModFiles[f]);
+                                    if (Path.GetFileName(Path.GetDirectoryName(ModFiles[f])) == EnabledModsList[N] && (FileExtension == "*.txt" || FileExtension == "*.jpg" || FileExtension == "*.png"))
+                                    {
+                                        //пропускать картинки и txt в корне папки мода
+                                        continue;
+                                    }
+
                                     //skip meta.ini
                                     if (metaskipped)
                                     {

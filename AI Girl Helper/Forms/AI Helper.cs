@@ -1318,7 +1318,7 @@ namespace AIHelper
                                     if (metaskipped)
                                     {
                                     }
-                                    else if (ModFiles[f].Length >= 8 && string.Compare(ModFiles[f].Substring(ModFiles[f].Length - 8, 8), "meta.ini", true) == 0)
+                                    else if (Path.GetFileName(ModFiles[f])=="meta.ini" /*ModFiles[f].Length >= 8 && string.Compare(ModFiles[f].Substring(ModFiles[f].Length - 8, 8), "meta.ini", true) == 0*/)
                                     {
                                         metaskipped = true;//для ускорения проверки, когда meta будет найден, будет делать быструю проверку bool переменной
                                         continue;

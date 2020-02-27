@@ -469,11 +469,23 @@ namespace AIHelper
             return targetdir;
         }
 
+        ToolTip THToolTip;
         private void SetTooltips()
         {
+            try
+            {
+                if (THToolTip != null)
+                {
+                    THToolTip.RemoveAll();
+                }
+            }
+            catch
+            {
+            }
+
             //http://qaru.site/questions/47162/c-how-do-i-add-a-tooltip-to-a-control
             //THMainResetTableButton
-            ToolTip THToolTip = new ToolTip
+            THToolTip = new ToolTip
             {
                 // Set up the delays for the ToolTip.
                 AutoPopDelay = 32000,
@@ -484,6 +496,7 @@ namespace AIHelper
                 // Force the ToolTip text to be displayed whether or not the form is active.
                 ShowAlways = true
             };
+
 
             //Main
             //THToolTip.SetToolTip(button1, T._("Unpacking mods and resources from 'Downloads' and 'RES' folders for game when they are not installed"));
@@ -525,8 +538,9 @@ namespace AIHelper
                     "Will convert the game to MO mode\n" +
                     " when all mod files will be moved back to Mods folder\n" +
                     " in their folders and vanilla files restored"
-                ));
-            THToolTip.SetToolTip(LanchModeInfoLinkLabel, T._("Same as button in Tool tab.\n")
+                )
+                );
+            THToolTip.SetToolTip(LaunchModeInfoLinkLabel, T._("Same as button in Tool tab.\n")
                 + (MOmode ? T._(
                     "Will convert game from MO Mode to Common mode\n" +
                     " when you can run exes from Data folder without Mod Organizer.\n" +
@@ -535,7 +549,9 @@ namespace AIHelper
                 ) : T._(
                     "Will convert the game to MO mode\n when all mod files will be moved back to Mods folder\n" +
                     " in their folders and vanilla files restored"
-                )));
+                )
+                )
+                );
 
             //Open Folders
             THToolTip.SetToolTip(OpenGameFolderLinkLabel, T._("Opens Data folder of selected game"));
@@ -799,7 +815,7 @@ namespace AIHelper
                 //    }
                 //}
 
-                LanchModeInfoLinkLabel.Text = T._("MO mode");
+                LaunchModeInfoLinkLabel.Text = T._("MO mode");
 
                 //создание exe-болванки
                 ManageMO.MakeDummyFiles();
@@ -818,7 +834,7 @@ namespace AIHelper
                 //MO2StandartButton.Enabled = false;
                 MOCommonModeSwitchButton.Text = T._("CommonToMO");
                 button1.Text = T._("Common mode");
-                LanchModeInfoLinkLabel.Text = T._("Common mode");
+                LaunchModeInfoLinkLabel.Text = T._("Common mode");
                 button1.Enabled = false;
                 //AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
             }
@@ -1204,7 +1220,7 @@ namespace AIHelper
             SwitchBetweenMOAndStandartModes();
         }
 
-        private void SwitchBetweenMOAndStandartModes()
+        private async void SwitchBetweenMOAndStandartModes()
         {
             OnOffButtons(false);
             if (MOmode)
@@ -1228,226 +1244,31 @@ namespace AIHelper
                         return;
                     }
 
-                    //список выполненных операций с файлами.
-                    StringBuilder Operations = new StringBuilder();
-                    //список пустых папок в data до ереноса файлов модов
-                    StringBuilder EmptyFoldersPaths;
-                    //список файлов в data без модов
-                    string[] DataFolderFilesPaths;
+                    using (ProgressBar MO2CommonProgressBar = new ProgressBar())
+                    {
+                        MO2CommonProgressBar.Style = ProgressBarStyle.Marquee;
+                        MO2CommonProgressBar.MarqueeAnimationSpeed = 50;
+                        MO2CommonProgressBar.Dock = DockStyle.Bottom;
+                        MO2CommonProgressBar.Height = 10;
+
+                        this.Controls.Add(MO2CommonProgressBar);
+
+                        await Task.Run(() => SwitchToCommonMode(EnabledModsList, EnabledModsLength)).ConfigureAwait(true);
+
+                        this.Controls.Remove(MO2CommonProgressBar);
+                    }
 
                     try
                     {
-                        ManageMOMods.CleanBepInExLinksFromData();
-
-                        if (File.Exists(ManageSettings.GetDummyFilePath()) && /*Удалил TESV.exe, который был лаунчером, а не болванкой*/new FileInfo(ManageSettings.GetDummyFilePath()).Length < 10000)
-                        {
-                            File.Delete(ManageSettings.GetDummyFilePath());
-                        }
-
-                        if (!Directory.Exists(ManageSettings.GetMOmodeDataFilesBakDirPath()))
-                        {
-                            Directory.CreateDirectory(ManageSettings.GetMOmodeDataFilesBakDirPath());
-                        }
-                        Operations = new StringBuilder();
-
-                        EmptyFoldersPaths = ManageFilesFolders.GetEmptySubfoldersPaths(ManageSettings.GetDataPath(), new StringBuilder());
-
-                        //получение всех файлов из Data
-                        DataFolderFilesPaths = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
-
-                        //получение всех файлов из папки Overwrite и их обработка
-                        string[] FilesInOverwrite = Directory.GetFiles(OverwriteFolder, "*.*", SearchOption.AllDirectories);
-                        if (FilesInOverwrite.Length > 0)
-                        {
-                            string FileInDataFolder;
-                            int FilesInOverwriteLength = FilesInOverwrite.Length;
-                            for (int N = 0; N < FilesInOverwriteLength; N++)
-                            {
-                                FileInDataFolder = FilesInOverwrite[N].Replace(OverwriteFolder, DataPath);
-                                if (File.Exists(FileInDataFolder))
-                                {
-                                    string FileInBakFolderWhichIsInRES = FileInDataFolder.Replace(DataPath, ManageSettings.GetMOmodeDataFilesBakDirPath());
-                                    if (!File.Exists(FileInBakFolderWhichIsInRES) && DataFolderFilesPaths.Contains(FileInDataFolder))
-                                    {
-                                        string bakfolder = Path.GetDirectoryName(FileInBakFolderWhichIsInRES);
-
-                                        if (!Directory.Exists(bakfolder))
-                                        {
-                                            Directory.CreateDirectory(bakfolder);
-                                        }
-
-                                        try
-                                        {
-                                            File.Move(FileInDataFolder, FileInBakFolderWhichIsInRES);//перенос файла из Data в Bak, если там не было
-                                            File.Move(FilesInOverwrite[N], FileInDataFolder);//перенос файла из папки Overwrite в Data
-                                            Operations.AppendLine(FilesInOverwrite[N] + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
-                                        }
-                                        catch
-                                        {
-                                            //когда файла в дата нет, файл в бак есть и есть файл в папке Overwrite - вернуть файл из bak назад
-                                            if (!File.Exists(FileInDataFolder))
-                                            {
-                                                if (File.Exists(FileInBakFolderWhichIsInRES))
-                                                {
-                                                    if (File.Exists(FilesInOverwrite[N]))
-                                                    {
-                                                        File.Move(FileInBakFolderWhichIsInRES, FileInDataFolder);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        for (int N = 0; N < EnabledModsLength; N++)
-                        {
-                            string ModFolder = Path.Combine(ModsPath, EnabledModsList[N]);
-                            if (ModFolder.Length > 0 && Directory.Exists(ModFolder))
-                            {
-                                string[] ModFiles = Directory.GetFiles(ModFolder, "*.*", SearchOption.AllDirectories);
-                                if (ModFiles.Length > 0)
-                                {
-                                    int ModFilesLength = ModFiles.Length;
-                                    string FileInDataFolder;
-
-                                    bool metaskipped = false;
-                                    for (int f = 0; f < ModFilesLength; f++)
-                                    {
-                                        //skip images and txt in mod root folder
-                                        string FileExtension = Path.GetExtension(ModFiles[f]);
-                                        if ((FileExtension == ".txt" || FileExtension == ".jpg" || FileExtension == ".png") && Path.GetFileName(Path.GetDirectoryName(ModFiles[f])) == EnabledModsList[N])
-                                        {
-                                            //пропускать картинки и txt в корне папки мода
-                                            continue;
-                                        }
-
-                                        //skip meta.ini
-                                        if (metaskipped)
-                                        {
-                                        }
-                                        else if (Path.GetFileName(ModFiles[f]) == "meta.ini" /*ModFiles[f].Length >= 8 && string.Compare(ModFiles[f].Substring(ModFiles[f].Length - 8, 8), "meta.ini", true) == 0*/)
-                                        {
-                                            metaskipped = true;//для ускорения проверки, когда meta будет найден, будет делать быструю проверку bool переменной
-                                            continue;
-                                        }
-
-                                        //MOCommonModeSwitchButton.Text = "..." + EnabledModsLength + "/" + N + ": " + f + "/" + ModFilesLength;
-                                        FileInDataFolder = ModFiles[f].Replace(ModFolder, DataPath);
-
-                                        if (File.Exists(FileInDataFolder))
-                                        {
-                                            string FileInBakFolderWhichIsInRES = FileInDataFolder.Replace(DataPath, ManageSettings.GetMOmodeDataFilesBakDirPath());
-                                            if (!File.Exists(FileInBakFolderWhichIsInRES) && DataFolderFilesPaths.Contains(FileInDataFolder))
-                                            {
-                                                string bakfolder = Path.GetDirectoryName(FileInBakFolderWhichIsInRES);
-
-                                                if (!Directory.Exists(bakfolder))
-                                                {
-                                                    Directory.CreateDirectory(bakfolder);
-                                                }
-
-                                                try
-                                                {
-                                                    File.Move(FileInDataFolder, FileInBakFolderWhichIsInRES);//перенос файла из Data в Bak, если там не было
-                                                    File.Move(ModFiles[f], FileInDataFolder);//перенос файла из папки мода в Data
-                                                    Operations.AppendLine(ModFiles[f] + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
-                                                }
-                                                catch
-                                                {
-                                                    //когда файла в дата нет, файл в бак есть и есть файл в папке мода - вернуть файл из bak назад
-                                                    if (!File.Exists(FileInDataFolder))
-                                                    {
-                                                        if (File.Exists(FileInBakFolderWhichIsInRES))
-                                                        {
-                                                            if (File.Exists(ModFiles[f]))
-                                                            {
-                                                                File.Move(FileInBakFolderWhichIsInRES, FileInDataFolder);
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            string destFolder = Path.GetDirectoryName(FileInDataFolder);
-                                            if (!Directory.Exists(destFolder))
-                                            {
-                                                Directory.CreateDirectory(destFolder);
-                                            }
-                                            try
-                                            {
-                                                File.Move(ModFiles[f], FileInDataFolder);//перенос файла из папки мода в Data
-                                                Operations.AppendLine(ModFiles[f] + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
-                                            }
-                                            catch
-                                            {
-                                            }
-                                        }
-
-                                        //MoveWithReplace(ModFiles[f], DestFilePath[f]);
-                                    }
-                                    //Directory.Delete(ModFolder, true);
-                                }
-                            }
-                        }
-
-                        File.WriteAllText(ManageSettings.GetMOToStandartConvertationOperationsListFilePath(), Operations.ToString());
-                        Operations.Clear();
-                        string[] DataWithModsFileslist = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
-                        File.WriteAllLines(ManageSettings.GetModdedDataFilesListFilePath(), DataWithModsFileslist);
-                        File.WriteAllLines(ManageSettings.GetVanillaDataFilesListFilePath(), DataWithModsFileslist);
-                        DataWithModsFileslist = null;
-
-                        //записать пути до пустых папок, чтобы при восстановлении восстановить и их
-                        if (EmptyFoldersPaths.ToString().Length > 0)
-                        {
-                            File.WriteAllText(ManageSettings.GetVanillaDataEmptyFoldersListFilePath(), EmptyFoldersPaths.ToString());
-                        }
-
-                        MOmode = false;
-                        MOCommonModeSwitchButton.Text = T._("CommonToMO");
-                        MessageBox.Show(T._("All mod files now in Data folder! You can restore MO mode by same button."));
+                        MOCommonModeSwitchButton.Text = MOmode ? T._("MOToCommon") : T._("CommonToMO");
+                        AIGirlHelperTabControl.Enabled = true;
                     }
-                    catch (Exception ex)
+                    catch
                     {
-                        if (Operations.Length > 0)
-                        {
-                            foreach (string record in Operations.ToString().SplitToLines())
-                            {
-                                string[] MovePaths = record.Split(new string[] { "|MovedTo|" }, StringSplitOptions.None);
-
-                                bool FilePathInModsExists = File.Exists(MovePaths[0]);
-                                bool FilePathInDataExists = File.Exists(MovePaths[1]);
-
-                                if (FilePathInDataExists)
-                                {
-                                    if (!FilePathInModsExists)
-                                    {
-                                        string modsubfolder = Path.GetDirectoryName(MovePaths[0]);
-                                        if (!Directory.Exists(modsubfolder))
-                                        {
-                                            Directory.CreateDirectory(modsubfolder);
-                                        }
-
-                                        File.Move(MovePaths[1], MovePaths[0]);
-                                    }
-                                }
-                            }
-
-                            //возврат возможных ванильных резервных копий
-                            MoveVanillaFIlesBackToData();
-                        }
-
-                        //сообщить об ошибке
-                        MessageBox.Show("Mode was not switched. Error:" + Environment.NewLine + ex);
                     }
 
                     //Directory.Delete(ModsPath, true);
                     //Directory.Move(MODirPath, Path.Combine(AppResDir, Path.GetFileName(MODirPath)));
-                    AIGirlHelperTabControl.Enabled = true;
                     //MOCommonModeSwitchButton.Enabled = true;
                     //LanchModeInfoLinkLabel.Enabled = true;
                     //File.Move(Path.Combine(MODirPath, "ModOrganizer.exe"), Path.Combine(MODirPath, "ModOrganizer.exe.GameInCommonModeNow"));
@@ -1464,18 +1285,414 @@ namespace AIHelper
                     //MOCommonModeSwitchButton.Enabled = false;
                     //LanchModeInfoLinkLabel.Enabled = false;
 
-                    string[] Operations = File.ReadAllLines(ManageSettings.GetMOToStandartConvertationOperationsListFilePath());
-                    string[] VanillaDataFiles = File.ReadAllLines(ManageSettings.GetVanillaDataFilesListFilePath());
-                    string[] ModdedDataFiles = File.ReadAllLines(ManageSettings.GetModdedDataFilesListFilePath());
-
-                    StringBuilder FilesWhichAlreadyHaveSameDestFileInMods = new StringBuilder();
-                    bool FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = false;
-
-                    //Перемещение файлов модов по списку
-                    int OperationsLength = Operations.Length;
-                    for (int o = 0; o < OperationsLength; o++)
+                    using (ProgressBar MO2CommonProgressBar = new ProgressBar())
                     {
-                        string[] MovePaths = Operations[o].Split(new string[] { "|MovedTo|" }, StringSplitOptions.None);
+                        MO2CommonProgressBar.Style = ProgressBarStyle.Marquee;
+                        MO2CommonProgressBar.MarqueeAnimationSpeed = 50;
+                        MO2CommonProgressBar.Dock = DockStyle.Bottom;
+                        MO2CommonProgressBar.Height = 10;
+
+                        this.Controls.Add(MO2CommonProgressBar);
+
+                        await Task.Run(() => SwitchBackToMOMode()).ConfigureAwait(true);
+
+                        this.Controls.Remove(MO2CommonProgressBar);
+                    }
+
+                    AIGirlHelperTabControl.Enabled = true;
+                    MOCommonModeSwitchButton.Text = T._("MOToCommon");
+                    //MOCommonModeSwitchButton.Enabled = true;
+                    //LanchModeInfoLinkLabel.Enabled = true;
+
+                    //создание ссылок на файлы bepinex
+                    //BepinExLoadingFix();
+                    //обновление информации о конфигурации папок игры
+                    FoldersInit();
+                }
+            }
+            OnOffButtons();
+        }
+
+        private void SwitchBackToMOMode()
+        {
+            try
+            {
+                string[] Operations = File.ReadAllLines(ManageSettings.GetMOToStandartConvertationOperationsListFilePath());
+                string[] VanillaDataFiles = File.ReadAllLines(ManageSettings.GetVanillaDataFilesListFilePath());
+                string[] ModdedDataFiles = File.ReadAllLines(ManageSettings.GetModdedDataFilesListFilePath());
+
+                StringBuilder FilesWhichAlreadyHaveSameDestFileInMods = new StringBuilder();
+                bool FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = false;
+
+                //Перемещение файлов модов по списку
+                int OperationsLength = Operations.Length;
+                for (int o = 0; o < OperationsLength; o++)
+                {
+                    string[] MovePaths = Operations[o].Split(new string[] { "|MovedTo|" }, StringSplitOptions.None);
+
+                    bool FilePathInModsExists = File.Exists(MovePaths[0]);
+                    bool FilePathInDataExists = File.Exists(MovePaths[1]);
+
+                    if (FilePathInDataExists)
+                    {
+                        if (!FilePathInModsExists)
+                        {
+                            string modsubfolder = Path.GetDirectoryName(MovePaths[0]);
+                            if (!Directory.Exists(modsubfolder))
+                            {
+                                Directory.CreateDirectory(modsubfolder);
+                            }
+
+                            File.Move(MovePaths[1], MovePaths[0]);
+                        }
+                        else
+                        {
+                            //если в Mods на месте планируемого для перемещения назад в Mods файла появился новый файл, то записать информацию о нем в новый мод, чтобы перенести его в новый мод
+                            FilesWhichAlreadyHaveSameDestFileInMods.AppendLine(MovePaths[1] + "|MovedTo|" + MovePaths[0]);
+                            FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = true;
+                        }
+                    }
+                }
+
+                //string destFolderForNewFiles = Path.Combine(ModsPath, "NewAddedFiles");
+
+                //получение даты и времени для дальнейшего использования
+                string DateTimeInFormat = DateTime.Now.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+
+                if (FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty)
+                {
+                    foreach (string FromToPathsLine in FilesWhichAlreadyHaveSameDestFileInMods.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        string[] FromToPaths = FromToPathsLine.Split(new string[] { "|MovedTo|" }, StringSplitOptions.None);
+
+                        string TargetFolderPath = Path.GetDirectoryName(FromToPaths[1]);
+
+                        bool IsForOverwriteFolder = ManageStrings.IsStringAContainsStringB(TargetFolderPath, OverwriteFolder);
+                        //поиск имени мода с учетом обработки файлов папки Overwrite
+                        string ModName = TargetFolderPath;
+                        if (IsForOverwriteFolder)
+                        {
+                            ModName = Path.GetFileName(OverwriteFolder);
+                        }
+                        else
+                        {
+                            while (Path.GetDirectoryName(ModName) != ModsPath)
+                            {
+                                ModName = Path.GetDirectoryName(ModName);
+                            }
+                            ModName = Path.GetFileName(ModName);
+                        }
+
+                        //Новое имя для новой целевой папки мода
+                        string OriginalModPath = IsForOverwriteFolder ? OverwriteFolder : Path.Combine(ModsPath, ModName);
+                        string NewModName = ModName + "_" + DateTimeInFormat;
+                        string NewModPath = Path.Combine(ModsPath, NewModName);
+                        TargetFolderPath = TargetFolderPath.Replace(OriginalModPath, NewModPath);
+
+                        string TargetFileName = Path.GetFileNameWithoutExtension(FromToPaths[1]);
+                        string TargetFileExtension = Path.GetExtension(FromToPaths[1]);
+                        string TargetPath = Path.Combine(TargetFolderPath, TargetFileName + TargetFileExtension);
+
+                        //создать подпапку для файла
+                        if (!Directory.Exists(TargetFolderPath))
+                        {
+                            Directory.CreateDirectory(TargetFolderPath);
+                        }
+
+                        //переместить файл в новую для него папку
+                        File.Move(FromToPaths[0], TargetPath);
+
+                        //записать в папку мода замечание с объяснением наличия этого мода
+                        string note = T._(
+                            "Files in same paths already exist in original mod folder!\n\n" +
+                            " This folder was created in time of conversion from Common mode to MO mode\n" +
+                            " and because in destination place\n" +
+                            " where mod file must be moved already was other file with same name.\n" +
+                            " It could happen if content of the mod folder was updated\n" +
+                            " when game was in common mode and was made same file in same place.\n" +
+                            " Please check files here and if this files need for you\n" +
+                            " then activate this mod or move files to mod folder with same name\n" +
+                            " and if this files obsolete or just not need anymore then delete this mod folder."
+                            );
+                        File.WriteAllText(Path.Combine(NewModPath, "NOTE!.txt"), note);
+
+                        //запись meta.ini с замечанием
+                        ManageMO.WriteMetaINI(
+                            NewModPath
+                            ,
+                            string.Empty
+                            ,
+                            "0." + DateTimeInFormat
+                            ,
+                            string.Empty
+                            ,
+                            note.Replace("\n", "<br>")
+                            );
+                        ManageMO.ActivateInsertModIfPossible(NewModName, false, ModName, false);
+                    }
+                }
+
+                //Перемещение новых файлов
+                //
+                //добавление всех файлов из дата, которых нет в списке файлов модов и игры в дата, что был создан сразу после перехода в обычный режим
+                string[] addedFiles = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories).Where(line => !ModdedDataFiles.Contains(line)).ToArray();
+                //задание имени целевой папки для новых модов
+                string addedFilesFolderName = "[added]UseFiles_" + DateTimeInFormat;
+                string DestFolderPath = Path.Combine(ModsPath, addedFilesFolderName);
+
+                int addedFilesLength = addedFiles.Length;
+                for (int f = 0; f < addedFilesLength; f++)
+                {
+                    string DestFileName = addedFiles[f].Replace(DataPath, DestFolderPath);
+                    string DestFileFolder = Path.GetDirectoryName(DestFileName);
+                    if (!Directory.Exists(DestFileFolder))
+                    {
+                        Directory.CreateDirectory(DestFileFolder);
+                    }
+                    File.Move(addedFiles[f], DestFileName);
+                }
+
+                //подключить новый мод, если он существует
+                if (Directory.Exists(DestFolderPath))
+                {
+                    //запись meta.ini
+                    ManageMO.WriteMetaINI(
+                        DestFolderPath
+                        ,
+                        "53,"
+                        ,
+                        DateTimeInFormat
+                        ,
+                        T._("Sort files if need")
+                        ,
+                        T._("<br>This files was added in Common mode<br>and moved as mod after convertation in MO mode.<br>Date: ") + DateTimeInFormat
+                        );
+
+                    ManageMO.ActivateInsertModIfPossible(addedFilesFolderName);
+                }
+
+                //перемещение ванильных файлов назад в дата
+                MoveVanillaFIlesBackToData();
+
+                //очистка пустых папок в Data
+                if (File.Exists(ManageSettings.GetVanillaDataEmptyFoldersListFilePath()))
+                {
+                    //удалить все, за исключением добавленных ранее путей до пустых папок
+                    ManageFilesFolders.DeleteEmptySubfolders(DataPath, false, File.ReadAllLines(ManageSettings.GetVanillaDataEmptyFoldersListFilePath()));
+                }
+                else
+                {
+                    ManageFilesFolders.DeleteEmptySubfolders(DataPath, false);
+                }
+
+                //чистка файлов-списков
+                File.Delete(ManageSettings.GetMOToStandartConvertationOperationsListFilePath());
+                File.Delete(ManageSettings.GetVanillaDataFilesListFilePath());
+                File.Delete(ManageSettings.GetVanillaDataEmptyFoldersListFilePath());
+                File.Delete(ManageSettings.GetModdedDataFilesListFilePath());
+
+                MOmode = true;
+
+                MessageBox.Show(T._("Mod Organizer mode restored! All mod files moved back to Mods folder. If in Data folder was added new files they also moved in Mods folder as new mod, check and sort it if need"));
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to switch in MO mode. Error:" + Environment.NewLine + ex);
+            }
+        }
+
+        private void SwitchToCommonMode(string[] EnabledModsList, int EnabledModsLength)
+        {
+            //список выполненных операций с файлами.
+            StringBuilder Operations = new StringBuilder();
+            //список пустых папок в data до ереноса файлов модов
+            StringBuilder EmptyFoldersPaths;
+            //список файлов в data без модов
+            string[] DataFolderFilesPaths;
+
+            try
+            {
+                ManageMOMods.CleanBepInExLinksFromData();
+
+                if (File.Exists(ManageSettings.GetDummyFilePath()) && /*Удалил TESV.exe, который был лаунчером, а не болванкой*/new FileInfo(ManageSettings.GetDummyFilePath()).Length < 10000)
+                {
+                    File.Delete(ManageSettings.GetDummyFilePath());
+                }
+
+                if (!Directory.Exists(ManageSettings.GetMOmodeDataFilesBakDirPath()))
+                {
+                    Directory.CreateDirectory(ManageSettings.GetMOmodeDataFilesBakDirPath());
+                }
+                Operations = new StringBuilder();
+
+                EmptyFoldersPaths = ManageFilesFolders.GetEmptySubfoldersPaths(ManageSettings.GetDataPath(), new StringBuilder());
+
+                //получение всех файлов из Data
+                DataFolderFilesPaths = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
+
+                //получение всех файлов из папки Overwrite и их обработка
+                string[] FilesInOverwrite = Directory.GetFiles(OverwriteFolder, "*.*", SearchOption.AllDirectories);
+                if (FilesInOverwrite.Length > 0)
+                {
+                    string FileInDataFolder;
+                    int FilesInOverwriteLength = FilesInOverwrite.Length;
+                    for (int N = 0; N < FilesInOverwriteLength; N++)
+                    {
+                        FileInDataFolder = FilesInOverwrite[N].Replace(OverwriteFolder, DataPath);
+                        if (File.Exists(FileInDataFolder))
+                        {
+                            string FileInBakFolderWhichIsInRES = FileInDataFolder.Replace(DataPath, ManageSettings.GetMOmodeDataFilesBakDirPath());
+                            if (!File.Exists(FileInBakFolderWhichIsInRES) && DataFolderFilesPaths.Contains(FileInDataFolder))
+                            {
+                                string bakfolder = Path.GetDirectoryName(FileInBakFolderWhichIsInRES);
+
+                                if (!Directory.Exists(bakfolder))
+                                {
+                                    Directory.CreateDirectory(bakfolder);
+                                }
+
+                                try
+                                {
+                                    File.Move(FileInDataFolder, FileInBakFolderWhichIsInRES);//перенос файла из Data в Bak, если там не было
+                                    File.Move(FilesInOverwrite[N], FileInDataFolder);//перенос файла из папки Overwrite в Data
+                                    Operations.AppendLine(FilesInOverwrite[N] + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
+                                }
+                                catch
+                                {
+                                    //когда файла в дата нет, файл в бак есть и есть файл в папке Overwrite - вернуть файл из bak назад
+                                    if (!File.Exists(FileInDataFolder))
+                                    {
+                                        if (File.Exists(FileInBakFolderWhichIsInRES))
+                                        {
+                                            if (File.Exists(FilesInOverwrite[N]))
+                                            {
+                                                File.Move(FileInBakFolderWhichIsInRES, FileInDataFolder);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                for (int N = 0; N < EnabledModsLength; N++)
+                {
+                    string ModFolder = Path.Combine(ModsPath, EnabledModsList[N]);
+                    if (ModFolder.Length > 0 && Directory.Exists(ModFolder))
+                    {
+                        string[] ModFiles = Directory.GetFiles(ModFolder, "*.*", SearchOption.AllDirectories);
+                        if (ModFiles.Length > 0)
+                        {
+                            int ModFilesLength = ModFiles.Length;
+                            string FileInDataFolder;
+
+                            bool metaskipped = false;
+                            for (int f = 0; f < ModFilesLength; f++)
+                            {
+                                //skip images and txt in mod root folder
+                                string FileExtension = Path.GetExtension(ModFiles[f]);
+                                if ((FileExtension == ".txt" || FileExtension == ".jpg" || FileExtension == ".png") && Path.GetFileName(Path.GetDirectoryName(ModFiles[f])) == EnabledModsList[N])
+                                {
+                                    //пропускать картинки и txt в корне папки мода
+                                    continue;
+                                }
+
+                                //skip meta.ini
+                                if (metaskipped)
+                                {
+                                }
+                                else if (Path.GetFileName(ModFiles[f]) == "meta.ini" /*ModFiles[f].Length >= 8 && string.Compare(ModFiles[f].Substring(ModFiles[f].Length - 8, 8), "meta.ini", true) == 0*/)
+                                {
+                                    metaskipped = true;//для ускорения проверки, когда meta будет найден, будет делать быструю проверку bool переменной
+                                    continue;
+                                }
+
+                                //MOCommonModeSwitchButton.Text = "..." + EnabledModsLength + "/" + N + ": " + f + "/" + ModFilesLength;
+                                FileInDataFolder = ModFiles[f].Replace(ModFolder, DataPath);
+
+                                if (File.Exists(FileInDataFolder))
+                                {
+                                    string FileInBakFolderWhichIsInRES = FileInDataFolder.Replace(DataPath, ManageSettings.GetMOmodeDataFilesBakDirPath());
+                                    if (!File.Exists(FileInBakFolderWhichIsInRES) && DataFolderFilesPaths.Contains(FileInDataFolder))
+                                    {
+                                        string bakfolder = Path.GetDirectoryName(FileInBakFolderWhichIsInRES);
+
+                                        if (!Directory.Exists(bakfolder))
+                                        {
+                                            Directory.CreateDirectory(bakfolder);
+                                        }
+
+                                        try
+                                        {
+                                            File.Move(FileInDataFolder, FileInBakFolderWhichIsInRES);//перенос файла из Data в Bak, если там не было
+                                            File.Move(ModFiles[f], FileInDataFolder);//перенос файла из папки мода в Data
+                                            Operations.AppendLine(ModFiles[f] + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
+                                        }
+                                        catch
+                                        {
+                                            //когда файла в дата нет, файл в бак есть и есть файл в папке мода - вернуть файл из bak назад
+                                            if (!File.Exists(FileInDataFolder))
+                                            {
+                                                if (File.Exists(FileInBakFolderWhichIsInRES))
+                                                {
+                                                    if (File.Exists(ModFiles[f]))
+                                                    {
+                                                        File.Move(FileInBakFolderWhichIsInRES, FileInDataFolder);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    string destFolder = Path.GetDirectoryName(FileInDataFolder);
+                                    if (!Directory.Exists(destFolder))
+                                    {
+                                        Directory.CreateDirectory(destFolder);
+                                    }
+                                    try
+                                    {
+                                        File.Move(ModFiles[f], FileInDataFolder);//перенос файла из папки мода в Data
+                                        Operations.AppendLine(ModFiles[f] + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
+                                    }
+                                    catch
+                                    {
+                                    }
+                                }
+
+                                //MoveWithReplace(ModFiles[f], DestFilePath[f]);
+                            }
+                            //Directory.Delete(ModFolder, true);
+                        }
+                    }
+                }
+
+                File.WriteAllText(ManageSettings.GetMOToStandartConvertationOperationsListFilePath(), Operations.ToString());
+                Operations.Clear();
+                string[] DataWithModsFileslist = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
+                File.WriteAllLines(ManageSettings.GetModdedDataFilesListFilePath(), DataWithModsFileslist);
+                File.WriteAllLines(ManageSettings.GetVanillaDataFilesListFilePath(), DataWithModsFileslist);
+                DataWithModsFileslist = null;
+
+                //записать пути до пустых папок, чтобы при восстановлении восстановить и их
+                if (EmptyFoldersPaths.ToString().Length > 0)
+                {
+                    File.WriteAllText(ManageSettings.GetVanillaDataEmptyFoldersListFilePath(), EmptyFoldersPaths.ToString());
+                }
+
+                MOmode = false;
+                MessageBox.Show(T._("All mod files now in Data folder! You can restore MO mode by same button."));
+            }
+            catch (Exception ex)
+            {
+                if (Operations.Length > 0)
+                {
+                    foreach (string record in Operations.ToString().SplitToLines())
+                    {
+                        string[] MovePaths = record.Split(new string[] { "|MovedTo|" }, StringSplitOptions.None);
 
                         bool FilePathInModsExists = File.Exists(MovePaths[0]);
                         bool FilePathInDataExists = File.Exists(MovePaths[1]);
@@ -1492,180 +1709,16 @@ namespace AIHelper
 
                                 File.Move(MovePaths[1], MovePaths[0]);
                             }
-                            else
-                            {
-                                //если в Mods на месте планируемого для перемещения назад в Mods файла появился новый файл, то записать информацию о нем в новый мод, чтобы перенести его в новый мод
-                                FilesWhichAlreadyHaveSameDestFileInMods.AppendLine(MovePaths[1] + "|MovedTo|" + MovePaths[0]);
-                                FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = true;
-                            }
                         }
                     }
 
-                    //string destFolderForNewFiles = Path.Combine(ModsPath, "NewAddedFiles");
-
-                    //получение даты и времени для дальнейшего использования
-                    string DateTimeInFormat = DateTime.Now.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
-
-                    if (FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty)
-                    {
-                        foreach (string FromToPathsLine in FilesWhichAlreadyHaveSameDestFileInMods.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
-                        {
-                            string[] FromToPaths = FromToPathsLine.Split(new string[] { "|MovedTo|" }, StringSplitOptions.None);
-
-                            string TargetFolderPath = Path.GetDirectoryName(FromToPaths[1]);
-
-                            bool IsForOverwriteFolder = ManageStrings.IsStringAContainsStringB(TargetFolderPath, OverwriteFolder);
-                            //поиск имени мода с учетом обработки файлов папки Overwrite
-                            string ModName = TargetFolderPath;
-                            if (IsForOverwriteFolder)
-                            {
-                                ModName = Path.GetFileName(OverwriteFolder);
-                            }
-                            else
-                            {
-                                while (Path.GetDirectoryName(ModName) != ModsPath)
-                                {
-                                    ModName = Path.GetDirectoryName(ModName);
-                                }
-                                ModName = Path.GetFileName(ModName);
-                            }
-
-                            //Новое имя для новой целевой папки мода
-                            string OriginalModPath = IsForOverwriteFolder ? OverwriteFolder : Path.Combine(ModsPath, ModName);
-                            string NewModName = ModName + "_" + DateTimeInFormat;
-                            string NewModPath = Path.Combine(ModsPath, NewModName);
-                            TargetFolderPath = TargetFolderPath.Replace(OriginalModPath, NewModPath);
-
-                            string TargetFileName = Path.GetFileNameWithoutExtension(FromToPaths[1]);
-                            string TargetFileExtension = Path.GetExtension(FromToPaths[1]);
-                            string TargetPath = Path.Combine(TargetFolderPath, TargetFileName + TargetFileExtension);
-
-                            //создать подпапку для файла
-                            if (!Directory.Exists(TargetFolderPath))
-                            {
-                                Directory.CreateDirectory(TargetFolderPath);
-                            }
-
-                            //переместить файл в новую для него папку
-                            File.Move(FromToPaths[0], TargetPath);
-
-                            //записать в папку мода замечание с объяснением наличия этого мода
-                            string note = T._(
-                                "Files in same paths already exist in original mod folder!\n\n" +
-                                " This folder was created in time of conversion from Common mode to MO mode\n" +
-                                " and because in destination place\n" +
-                                " where mod file must be moved already was other file with same name.\n" +
-                                " It could happen if content of the mod folder was updated\n" +
-                                " when game was in common mode and was made same file in same place.\n" +
-                                " Please check files here and if this files need for you\n" +
-                                " then activate this mod or move files to mod folder with same name\n" +
-                                " and if this files obsolete or just not need anymore then delete this mod folder."
-                                );
-                            File.WriteAllText(Path.Combine(NewModPath, "NOTE!.txt"), note);
-
-                            //запись meta.ini с замечанием
-                            ManageMO.WriteMetaINI(
-                                NewModPath
-                                ,
-                                string.Empty
-                                ,
-                                "0." + DateTimeInFormat
-                                ,
-                                string.Empty
-                                ,
-                                note.Replace("\n", "<br>")
-                                );
-                            ManageMO.ActivateInsertModIfPossible(NewModName, false, ModName, false);
-                        }
-                    }
-
-                    //Перемещение новых файлов
-                    //
-                    //добавление всех файлов из дата, которых нет в списке файлов модов и игры в дата, что был создан сразу после перехода в обычный режим
-                    string[] addedFiles = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories).Where(line => !ModdedDataFiles.Contains(line)).ToArray();
-                    //задание имени целевой папки для новых модов
-                    string addedFilesFolderName = "[added]UseFiles_" + DateTimeInFormat;
-                    string DestFolderPath = Path.Combine(ModsPath, addedFilesFolderName);
-
-                    int addedFilesLength = addedFiles.Length;
-                    for (int f = 0; f < addedFilesLength; f++)
-                    {
-                        string DestFileName = addedFiles[f].Replace(DataPath, DestFolderPath);
-                        string DestFileFolder = Path.GetDirectoryName(DestFileName);
-                        if (!Directory.Exists(DestFileFolder))
-                        {
-                            Directory.CreateDirectory(DestFileFolder);
-                        }
-                        File.Move(addedFiles[f], DestFileName);
-                    }
-
-                    //подключить новый мод, если он существует
-                    if (Directory.Exists(DestFolderPath))
-                    {
-                        //запись meta.ini
-                        ManageMO.WriteMetaINI(
-                            DestFolderPath
-                            ,
-                            "53,"
-                            ,
-                            DateTimeInFormat
-                            ,
-                            T._("Sort files if need")
-                            ,
-                            T._("<br>This files was added in Common mode<br>and moved as mod after convertation in MO mode.<br>Date: ") + DateTimeInFormat
-                            );
-
-                        ManageMO.ActivateInsertModIfPossible(addedFilesFolderName);
-                    }
-
-                    //перемещение ванильных файлов назад в дата
+                    //возврат возможных ванильных резервных копий
                     MoveVanillaFIlesBackToData();
-
-                    //очистка пустых папок в Data
-                    if (File.Exists(ManageSettings.GetVanillaDataEmptyFoldersListFilePath()))
-                    {
-                        //удалить все, за исключением добавленных ранее путей до пустых папок
-                        ManageFilesFolders.DeleteEmptySubfolders(DataPath, false, File.ReadAllLines(ManageSettings.GetVanillaDataEmptyFoldersListFilePath()));
-                    }
-                    else
-                    {
-                        ManageFilesFolders.DeleteEmptySubfolders(DataPath, false);
-                    }
-
-                    //чистка файлов-списков
-                    File.Delete(ManageSettings.GetMOToStandartConvertationOperationsListFilePath());
-                    File.Delete(ManageSettings.GetVanillaDataFilesListFilePath());
-                    File.Delete(ManageSettings.GetVanillaDataEmptyFoldersListFilePath());
-                    File.Delete(ManageSettings.GetModdedDataFilesListFilePath());
-
-                    //try
-                    //{
-                    //    //восстановление 2х папок, что были по умолчанию сначала пустыми
-                    //    Directory.CreateDirectory(Path.Combine(DataPath, "UserData", "audio"));
-                    //    Directory.CreateDirectory(Path.Combine(DataPath, "UserData", "coordinate", "male"));
-                    //}
-                    //catch
-                    //{
-                    //}
-
-                    //File.Move(Path.Combine(MODirPath, "ModOrganizer.exe.GameInCommonModeNow"), Path.Combine(MODirPath, "ModOrganizer.exe"));
-
-                    MOmode = true;
-
-                    AIGirlHelperTabControl.Enabled = true;
-                    MOCommonModeSwitchButton.Text = T._("MOToCommon");
-                    //MOCommonModeSwitchButton.Enabled = true;
-                    //LanchModeInfoLinkLabel.Enabled = true;
-
-                    MessageBox.Show(T._("Mod Organizer mode restored! All mod files moved back to Mods folder. If in Data folder was added new files they also moved in Mods folder as new mod, check and sort it if need"));
-
-                    //создание ссылок на файлы bepinex
-                    //BepinExLoadingFix();
-                    //обновление информации о конфигурации папок игры
-                    FoldersInit();
                 }
+
+                //сообщить об ошибке
+                MessageBox.Show("Mode was not switched. Error:" + Environment.NewLine + ex);
             }
-            OnOffButtons();
         }
 
         private void MoveVanillaFIlesBackToData()

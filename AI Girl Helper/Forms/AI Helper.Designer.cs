@@ -48,7 +48,7 @@
             this.SelectedGameLabel = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.LanchModeInfoLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.LaunchModeInfoLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenLogLinkLabel = new System.Windows.Forms.LinkLabel();
             this.LaunchTabLaunchLabel = new System.Windows.Forms.Label();
             this.newformButton = new System.Windows.Forms.Button();
@@ -254,7 +254,7 @@
             this.LaunchPagePanel.Controls.Add(this.SelectedGameLabel);
             this.LaunchPagePanel.Controls.Add(this.label4);
             this.LaunchPagePanel.Controls.Add(this.label5);
-            this.LaunchPagePanel.Controls.Add(this.LanchModeInfoLinkLabel);
+            this.LaunchPagePanel.Controls.Add(this.LaunchModeInfoLinkLabel);
             this.LaunchPagePanel.Controls.Add(this.OpenLogLinkLabel);
             this.LaunchPagePanel.Controls.Add(this.LaunchTabLaunchLabel);
             this.LaunchPagePanel.Controls.Add(this.newformButton);
@@ -337,18 +337,18 @@
             this.label5.TabIndex = 22;
             this.label5.Text = " Helper";
             // 
-            // LanchModeInfoLinkLabel
+            // LaunchModeInfoLinkLabel
             // 
-            this.LanchModeInfoLinkLabel.AutoSize = true;
-            this.LanchModeInfoLinkLabel.LinkColor = System.Drawing.Color.White;
-            this.LanchModeInfoLinkLabel.Location = new System.Drawing.Point(4, 4);
-            this.LanchModeInfoLinkLabel.Name = "LanchModeInfoLinkLabel";
-            this.LanchModeInfoLinkLabel.Size = new System.Drawing.Size(52, 13);
-            this.LanchModeInfoLinkLabel.TabIndex = 21;
-            this.LanchModeInfoLinkLabel.TabStop = true;
-            this.LanchModeInfoLinkLabel.Text = "MO mode";
-            this.LanchModeInfoLinkLabel.VisitedLinkColor = System.Drawing.Color.White;
-            this.LanchModeInfoLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.MO2StandartButton_Click);
+            this.LaunchModeInfoLinkLabel.AutoSize = true;
+            this.LaunchModeInfoLinkLabel.LinkColor = System.Drawing.Color.White;
+            this.LaunchModeInfoLinkLabel.Location = new System.Drawing.Point(4, 4);
+            this.LaunchModeInfoLinkLabel.Name = "LaunchModeInfoLinkLabel";
+            this.LaunchModeInfoLinkLabel.Size = new System.Drawing.Size(52, 13);
+            this.LaunchModeInfoLinkLabel.TabIndex = 21;
+            this.LaunchModeInfoLinkLabel.TabStop = true;
+            this.LaunchModeInfoLinkLabel.Text = "MO mode";
+            this.LaunchModeInfoLinkLabel.VisitedLinkColor = System.Drawing.Color.White;
+            this.LaunchModeInfoLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.MO2StandartButton_Click);
             // 
             // OpenLogLinkLabel
             // 
@@ -870,7 +870,7 @@
         private System.Windows.Forms.LinkLabel OpenGameFolderLinkLabel;
         private System.Windows.Forms.LinkLabel OpenLogLinkLabel;
         private System.Windows.Forms.LinkLabel Install2MODirPathOpenFolderLinkLabel;
-        private System.Windows.Forms.LinkLabel LanchModeInfoLinkLabel;
+        private System.Windows.Forms.LinkLabel LaunchModeInfoLinkLabel;
         private System.Windows.Forms.LinkLabel OpenMyUserDataFolderLinkLabel;
         private System.Windows.Forms.LinkLabel OpenMOOverwriteFolderLinkLabel;
         private System.Windows.Forms.Label CurrentGameLabel;

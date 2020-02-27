@@ -1,7 +1,32 @@
-﻿namespace AIHelper.Manage
+﻿using System.Collections.Generic;
+
+namespace AIHelper.Manage
 {
-    class ManageStrings
+    static class ManageStrings
     {
+        /// <summary>
+        /// Split string to lines
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static IEnumerable<string> SplitToLines(this string input)
+        {
+            //https://stackoverflow.com/a/23408020
+            if (input == null)
+            {
+                yield break;
+            }
+
+            using (System.IO.StringReader reader = new System.IO.StringReader(input))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    yield return line;
+                }
+            }
+        }
+
         /// <summary>
         /// Check if string A contains string B (if length of A > length of A with replaced B by "")<br></br><br></br>
         /// Speed check tests: https://cc.davelozinski.com/c-sharp/fastest-way-to-check-if-a-string-occurs-within-a-string

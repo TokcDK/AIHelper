@@ -710,10 +710,19 @@ namespace AIHelper.Manage
             //отсеивание первого элемента с именем мода
             //string subpath = string.Empty;
             int i = 0;
+
+            //поправить здесь, т.к. при замене пути для мода кроме пути к mods еще и имя мода есть, т.е. надо не с нулевого элемента складывать
             string[] pathInModsElements = pathInMods
                 .Replace(ModsOverwrite, string.Empty)
                 .Split(Path.DirectorySeparatorChar)
                 .Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+
+            //для мода в mods пропустить имя этого мода
+            if (ModsOverwrite == ManageSettings.GetModsPath())
+            {
+                pathInModsElements = pathInModsElements.Skip(1).ToArray();
+            }
+
             //foreach (var element in pathInModsElements)
             //{
             //    if (i > 1)
@@ -729,10 +738,7 @@ namespace AIHelper.Manage
             {
                 return Path.Combine(ManageSettings.GetDataPath(), subpath);
             }
-
-            //поиск по списку активных модов
-            string ModsPath = ManageSettings.GetModsPath();
-
+            
             //check in Overwrite 1st
             string overwritePath = ManageSettings.GetCurrentGameMOOverwritePath() + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
             if (IsDir)
@@ -750,6 +756,8 @@ namespace AIHelper.Manage
                 }
             }
 
+            //поиск по списку активных модов
+            string ModsPath = ManageSettings.GetModsPath();
             foreach (var modName in GetModNamesListFromActiveMOProfile())
             {
                 string possiblePath = Path.Combine(ModsPath, modName) + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;

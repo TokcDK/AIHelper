@@ -711,7 +711,6 @@ namespace AIHelper.Manage
             //string subpath = string.Empty;
             int i = 0;
 
-            //поправить здесь, т.к. при замене пути для мода кроме пути к mods еще и имя мода есть, т.е. надо не с нулевого элемента складывать
             string[] pathInModsElements = pathInMods
                 .Replace(ModsOverwrite, string.Empty)
                 .Split(Path.DirectorySeparatorChar)

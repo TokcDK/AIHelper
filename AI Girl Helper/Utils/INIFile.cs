@@ -13,7 +13,7 @@ namespace AIHelper.Manage
     {
         //Материал: https://habr.com/ru/post/271483/
 
-        private readonly string Path; //Имя файла.
+        private readonly string iniPath; //Имя ini файла.
         private readonly FileIniDataParser INIParser;
         private readonly IniData INIData;
         bool ActionWasExecuted = false;
@@ -32,15 +32,15 @@ namespace AIHelper.Manage
         // С помощью конструктора записываем путь до файла и его имя.
         public INIFile(string IniPath)
         {
-            Path = new FileInfo(IniPath).FullName;
+            iniPath = new FileInfo(IniPath).FullName;
             INIParser = new FileIniDataParser();
             //if (!File.Exists(Path))
             //{
             //    File.WriteAllText(Path, string.Empty);
             //}
-            if (File.Exists(Path))
+            if (File.Exists(iniPath))
             {
-                INIData = INIParser.ReadFile(Path);
+                INIData = INIParser.ReadFile(iniPath);
             }
             //else
             //{
@@ -254,8 +254,12 @@ namespace AIHelper.Manage
         {
             if (DoSaveINI && ActionWasExecuted)
             {
+                if (Path.GetFileName(iniPath)== "AutoTranslatorConfig.ini")
+                {
+                    INIData.Configuration.AssigmentSpacer = string.Empty;
+                }
                 //https://stackoverflow.com/questions/2502990/create-text-file-without-bom
-                INIParser.WriteFile(Path, INIData, new UTF8Encoding(false));
+                INIParser.WriteFile(iniPath, INIData, new UTF8Encoding(false));
             }
         }
 

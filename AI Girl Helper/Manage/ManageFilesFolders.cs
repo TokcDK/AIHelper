@@ -41,53 +41,53 @@ namespace AIHelper.Manage
         //быстро проверить, пуста ли папка
         public static bool CheckDirectoryNullOrEmpty_Fast(string path, string Mask = "*", string[] exclusions = null)
         {
-            if (string.IsNullOrEmpty(path))
+            if (string.IsNullOrEmpty(path) || !Directory.Exists(path)
+                //|| (DirectoryInfoExtensions.IsSymbolicLink(new DirectoryInfo(path)) && !DirectoryInfoExtensions.IsSymbolicLinkValid(new DirectoryInfo(path)))
+                )
             {
                 return true; //return true if path is empty
                 //throw new ArgumentNullException(path);
             }
 
-            if (Directory.Exists(path))
+            if (DirectoryInfoExtensions.IsSymbolicLink(new DirectoryInfo(path)) && !DirectoryInfoExtensions.IsSymbolicLinkValid(new DirectoryInfo(path)))
             {
-                if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
-                {
-                    path += Mask;
-                }
-                else
-                {
-                    path += Path.DirectorySeparatorChar + Mask;
-                }
+                return true;
+            }
 
-                var findHandle = FindFirstFile(path, out WIN32_FIND_DATA findData);
-
-                if (findHandle != INVALID_HANDLE_VALUE)
-                {
-                    try
-                    {
-                        bool empty = true;
-                        do
-                        {
-                            if (findData.cFileName != "." && findData.cFileName != ".." && !ManageStrings.IsStringContainsAnyExclusion(findData.cFileName, exclusions))
-                            {
-                                empty = false;
-                            }
-                        } while (empty && FindNextFile(findHandle, out findData));
-
-                        return empty;
-                    }
-                    finally
-                    {
-                        FindClose(findHandle);
-                    }
-                }
-
-                throw new Exception("Failed to get directory first file",
-                    Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+            if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
+            {
+                path += Mask;
             }
             else
             {
-                return true;//return true if not exists
+                path += Path.DirectorySeparatorChar + Mask;
             }
+
+            var findHandle = FindFirstFile(path, out WIN32_FIND_DATA findData);
+
+            if (findHandle != INVALID_HANDLE_VALUE)
+            {
+                try
+                {
+                    bool empty = true;
+                    do
+                    {
+                        if (findData.cFileName != "." && findData.cFileName != ".." && !ManageStrings.IsStringContainsAnyExclusion(findData.cFileName, exclusions))
+                        {
+                            empty = false;
+                        }
+                    } while (empty && FindNextFile(findHandle, out findData));
+
+                    return empty;
+                }
+                finally
+                {
+                    FindClose(findHandle);
+                }
+            }
+
+            throw new Exception("Failed to get directory first file",
+                Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
             //throw new DirectoryNotFoundException();
         }
 
@@ -123,22 +123,29 @@ namespace AIHelper.Manage
 
         public static void DeleteEmptySubfolders(string dirPath, bool DeleteThisDir = true, string[] Exclusions = null)
         {
-            if (Directory.Exists(dirPath))
+            if (string.IsNullOrEmpty(dirPath) || !Directory.Exists(dirPath))
             {
-                string[] subfolders = Directory.GetDirectories(dirPath, "*");
-                int subfoldersLength = subfolders.Length;
-                if (subfoldersLength > 0)
-                {
-                    for (int d = 0; d < subfoldersLength; d++)
-                    {
-                        DeleteEmptySubfolders(subfolders[d], !TrueIfStringInExclusionsList(subfolders[d], Exclusions), Exclusions);
-                    }
-                }
+                return;
+            }
 
-                if (DeleteThisDir && CheckDirectoryNullOrEmpty_Fast(dirPath)/*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)
+            if (DirectoryInfoExtensions.IsSymbolicLink(new DirectoryInfo(dirPath)) && !DirectoryInfoExtensions.IsSymbolicLinkValid(new DirectoryInfo(dirPath)))
+            {
+                return;
+            }
+
+            string[] subfolders = Directory.GetDirectories(dirPath, "*");
+            int subfoldersLength = subfolders.Length;
+            if (subfoldersLength > 0)
+            {
+                for (int d = 0; d < subfoldersLength; d++)
                 {
-                    Directory.Delete(dirPath);
+                    DeleteEmptySubfolders(subfolders[d], !TrueIfStringInExclusionsList(subfolders[d], Exclusions), Exclusions);
                 }
+            }
+
+            if (DeleteThisDir && CheckDirectoryNullOrEmpty_Fast(dirPath)/*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)
+            {
+                Directory.Delete(dirPath);
             }
         }
 
@@ -348,24 +355,27 @@ namespace AIHelper.Manage
 
         internal static void MoveContentOfSourceFolderToTargetFolderAndThenCleanSource(string SourceFolder, string TargetFolder)
         {
-            if (Directory.Exists(SourceFolder) && !CheckDirectoryNullOrEmpty_Fast(SourceFolder) && !ManageSymLinks.IsSymLink(SourceFolder))
+            if (Directory.Exists(SourceFolder))
             {
-                if (!Directory.Exists(TargetFolder))
+                if (!CheckDirectoryNullOrEmpty_Fast(SourceFolder) && !ManageSymLinks.IsSymLink(SourceFolder))
                 {
-                    Directory.CreateDirectory(TargetFolder);
+                    if (!Directory.Exists(TargetFolder))
+                    {
+                        Directory.CreateDirectory(TargetFolder);
+                    }
+
+                    foreach (string dir in Directory.EnumerateDirectories(SourceFolder))
+                    {
+                        Directory.Move(dir, Path.Combine(TargetFolder, Path.GetFileName(dir)));
+                    }
+                    foreach (string file in Directory.EnumerateFiles(SourceFolder))
+                    {
+                        File.Move(file, Path.Combine(TargetFolder, Path.GetFileName(file)));
+                    }
                 }
 
-                foreach (string dir in Directory.EnumerateDirectories(SourceFolder))
-                {
-                    Directory.Move(dir, Path.Combine(TargetFolder, Path.GetFileName(dir)));
-                }
-                foreach (string file in Directory.EnumerateFiles(SourceFolder))
-                {
-                    File.Move(file, Path.Combine(TargetFolder, Path.GetFileName(file)));
-                }
+                DeleteEmptySubfolders(SourceFolder, true);
             }
-
-            DeleteEmptySubfolders(SourceFolder, true);
         }
     }
 }

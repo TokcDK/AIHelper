@@ -61,19 +61,19 @@ namespace AI_Helper.Games
                     }
                     ,
                     {
-                        Path.Combine(ManageSettings.GetMOdirPath(), "Overwrite", "UserData", "MaterialEditor")
+                        Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath(), "UserData", "MaterialEditor")
                         ,
                         Path.Combine(ManageSettings.GetDataPath(), "UserData", "MaterialEditor")
                     }
                     ,
                     {
-                        Path.Combine(ManageSettings.GetMOdirPath(), "Overwrite", "UserData", "Overlays")
+                        Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath(), "UserData", "Overlays")
                         ,
                         Path.Combine(ManageSettings.GetDataPath(), "UserData", "Overlays")
                     }
                     ,
                     {
-                        Path.Combine(ManageSettings.GetMOdirPath(), "Overwrite", "UserData", "cap")
+                        Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath(), "UserData", "cap")
                         ,
                         Path.Combine(ManageSettings.GetDataPath(), "UserData", "cap")
                     }

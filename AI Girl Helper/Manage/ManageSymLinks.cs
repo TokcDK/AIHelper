@@ -98,21 +98,38 @@ namespace AI_Helper.Manage
 
                 //ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(
                 string objectPath;
-                if (File.Exists(objectPath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(objectFileDirPath)) && (!File.Exists(symlinkPath) || (FileInfoExtensions.IsSymbolicLink(new FileInfo(symlinkPath)) && !FileInfoExtensions.IsSymbolicLinkValid(new FileInfo(symlinkPath)))))
+                if (File.Exists(objectPath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(objectFileDirPath)))
                 {
-                    //FileInfoExtensions.CreateSymbolicLink(new FileInfo(objectFileDirPath), symlinkPath, isRelative);//new from NuGet package
-                    FileInfoExtensions.CreateSymbolicLink(new FileInfo(objectPath), symlinkPath, isRelative);//new from NuGet package
-                    //CreateSymlink.File(file, symlink); //old
+                    if((!File.Exists(symlinkPath) || (FileInfoExtensions.IsSymbolicLink(new FileInfo(symlinkPath)) && !FileInfoExtensions.IsSymbolicLinkValid(new FileInfo(symlinkPath)))))
+                    {
+                        if (File.Exists(symlinkPath))
+                        {
+                            File.Delete(symlinkPath);
+                        }
 
-                    return true;
+                        //FileInfoExtensions.CreateSymbolicLink(new FileInfo(objectFileDirPath), symlinkPath, isRelative);//new from NuGet package
+                        FileInfoExtensions.CreateSymbolicLink(new FileInfo(objectPath), symlinkPath, isRelative);//new from NuGet package
+                                                                                                                 //CreateSymlink.File(file, symlink); //old
+
+                        return true;
+                    }
                 }
-                else if (Directory.Exists(objectPath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(objectFileDirPath, true)) && (!Directory.Exists(symlinkPath) || (DirectoryInfoExtensions.IsSymbolicLink(new DirectoryInfo(symlinkPath)) && !DirectoryInfoExtensions.IsSymbolicLinkValid(new DirectoryInfo(symlinkPath)))))
+                else if (Directory.Exists(objectPath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(objectFileDirPath, true)))
                 {
-                    //DirectoryInfoExtensions.CreateSymbolicLink(new DirectoryInfo(objectFileDirPath), symlinkPath, isRelative);//new from NuGet package
-                    DirectoryInfoExtensions.CreateSymbolicLink(new DirectoryInfo(objectPath), symlinkPath, isRelative);//new from NuGet package
-                    //CreateSymlink.Folder(file, symlink); //old
+                    if ((!Directory.Exists(symlinkPath) || (DirectoryInfoExtensions.IsSymbolicLink(new DirectoryInfo(symlinkPath)) && !DirectoryInfoExtensions.IsSymbolicLinkValid(new DirectoryInfo(symlinkPath)))))
+                    {
+                        if (Directory.Exists(symlinkPath) && ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(symlinkPath))
+                        {
+                            Directory.Delete(symlinkPath);
+                        }
 
-                    return true;
+                        //DirectoryInfoExtensions.CreateSymbolicLink(new DirectoryInfo(objectFileDirPath), symlinkPath, isRelative);//new from NuGet package
+                        DirectoryInfoExtensions.CreateSymbolicLink(new DirectoryInfo(objectPath), symlinkPath, isRelative);//new from NuGet package
+                                                                                                                           //CreateSymlink.Folder(file, symlink); //old
+
+                        return true;
+                    }
+
                 }
             }
 

@@ -65,6 +65,11 @@ namespace AIHelper.Manage
             return Properties.Settings.Default.CurrentGamePath;
         }
 
+        public static string GetCurrentGameMOOverwritePath()
+        {
+            return GetOverwriteFolder();
+        }
+
         public static string GETMOCurrentGameName()
         {
             return "Skyrim";

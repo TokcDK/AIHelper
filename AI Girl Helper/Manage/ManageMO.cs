@@ -555,7 +555,7 @@ namespace AIHelper.Manage
 
             for (int i = 0; i < IniValuesLength; i++)
             {
-                string subquote = IniValues[i, 2].EndsWith(@"\arguments",StringComparison.InvariantCulture) ? "\\\"" : string.Empty;
+                string subquote = IniValues[i, 2].EndsWith(@"\arguments", StringComparison.InvariantCulture) ? "\\\"" : string.Empty;
                 string IniValue = subquote + IniValues[i, 0].Replace(@"\", @"\\") + subquote;
                 //if (INIManage.GetINIValueIfExist(SettingsManage.GetModOrganizerINIpath(), IniValues[i, 2], IniValues[i, 1]) != IniValue)
                 //{
@@ -639,7 +639,7 @@ namespace AIHelper.Manage
                     ManageMO.RedefineGameMOData();
                     currentMOprofile = ReGetcurrentMOprofile(currentMOprofile);
 
-                    profilemodlistpath = Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", currentMOprofile, "modlist.txt");                                       
+                    profilemodlistpath = Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", currentMOprofile, "modlist.txt");
                 }
 
                 if (File.Exists(profilemodlistpath))
@@ -688,7 +688,7 @@ namespace AIHelper.Manage
                 }
                 else if (Directory.GetDirectories(Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles")).Length == 0)
                 {
-                    MessageBox.Show(T._("No profiles found for Current game") +" "+ ManageSettings.GetCurrentGameDisplayingName());                    
+                    MessageBox.Show(T._("No profiles found for Current game") + " " + ManageSettings.GetCurrentGameDisplayingName());
                 }
                 else
                 {
@@ -701,22 +701,29 @@ namespace AIHelper.Manage
 
         public static string GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(string pathInMods, bool IsDir = false)
         {
+            string ModsOverwrite = pathInMods.Contains(ManageSettings.GetCurrentGameMOOverwritePath()) ? ManageSettings.GetCurrentGameMOOverwritePath() : ManageSettings.GetModsPath();
+
             //искать путь только для ссылки в Mods или в Data
-            if (!ManageStrings.IsStringAContainsStringB(pathInMods, ManageSettings.GetModsPath()) && !ManageStrings.IsStringAContainsStringB(pathInMods, ManageSettings.GetDataPath()))
+            if (!ManageStrings.IsStringAContainsStringB(pathInMods, ModsOverwrite) && !ManageStrings.IsStringAContainsStringB(pathInMods, ManageSettings.GetDataPath()))
                 return pathInMods;
 
             //отсеивание первого элемента с именем мода
-            string subpath = string.Empty;
+            //string subpath = string.Empty;
             int i = 0;
-            foreach (var element in pathInMods.Replace(ManageSettings.GetModsPath(), string.Empty).Split(Path.DirectorySeparatorChar))
-            {
-                if (i > 1)
-                {
-                    subpath += i > 2 ? Path.DirectorySeparatorChar.ToString() : string.Empty;
-                    subpath += element;
-                }
-                i++;
-            }
+            string[] pathInModsElements = pathInMods
+                .Replace(ModsOverwrite, string.Empty)
+                .Split(Path.DirectorySeparatorChar)
+                .Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+            //foreach (var element in pathInModsElements)
+            //{
+            //    if (i > 1)
+            //    {
+            //        subpath += i > 2 ? Path.DirectorySeparatorChar.ToString() : string.Empty;
+            //        subpath += element;
+            //    }
+            //    i++;
+            //}
+            string subpath = string.Join(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture), pathInModsElements);
 
             if (!Properties.Settings.Default.MOmode)
             {
@@ -725,9 +732,27 @@ namespace AIHelper.Manage
 
             //поиск по списку активных модов
             string ModsPath = ManageSettings.GetModsPath();
+
+            //check in Overwrite 1st
+            string overwritePath = ManageSettings.GetCurrentGameMOOverwritePath() + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
+            if (IsDir)
+            {
+                if (Directory.Exists(overwritePath))
+                {
+                    return overwritePath;
+                }
+            }
+            else
+            {
+                if (File.Exists(overwritePath))
+                {
+                    return overwritePath;
+                }
+            }
+
             foreach (var modName in GetModNamesListFromActiveMOProfile())
             {
-                string possiblePath = Path.Combine(ModsPath, modName, subpath);
+                string possiblePath = Path.Combine(ModsPath, modName) + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
                 if (IsDir)
                 {
                     if (Directory.Exists(possiblePath))

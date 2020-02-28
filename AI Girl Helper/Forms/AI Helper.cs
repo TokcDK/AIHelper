@@ -1321,6 +1321,11 @@ namespace AIHelper
                 int OperationsLength = Operations.Length;
                 for (int o = 0; o < OperationsLength; o++)
                 {
+                    if (string.IsNullOrWhiteSpace(Operations[o]))
+                    {
+                        continue;
+                    }
+
                     string[] MovePaths = Operations[o].Split(new string[] { "|MovedTo|" }, StringSplitOptions.None);
 
                     bool FilePathInModsExists = File.Exists(MovePaths[0]);
@@ -1363,6 +1368,11 @@ namespace AIHelper
                 {
                     foreach (string FromToPathsLine in FilesWhichAlreadyHaveSameDestFileInMods.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
                     {
+                        if (string.IsNullOrWhiteSpace(FromToPathsLine))
+                        {
+                            continue;
+                        }
+
                         string[] FromToPaths = FromToPathsLine.Split(new string[] { "|MovedTo|" }, StringSplitOptions.None);
 
                         string TargetFolderPath = Path.GetDirectoryName(FromToPaths[1]);
@@ -1564,15 +1574,9 @@ namespace AIHelper
                                 catch
                                 {
                                     //когда файла в дата нет, файл в бак есть и есть файл в папке Overwrite - вернуть файл из bak назад
-                                    if (!File.Exists(FileInDataFolder))
+                                    if (!File.Exists(FileInDataFolder) && File.Exists(FileInBakFolderWhichIsInRES) && File.Exists(FilesInOverwrite[N]))
                                     {
-                                        if (File.Exists(FileInBakFolderWhichIsInRES))
-                                        {
-                                            if (File.Exists(FilesInOverwrite[N]))
-                                            {
-                                                File.Move(FileInBakFolderWhichIsInRES, FileInDataFolder);
-                                            }
-                                        }
+                                        File.Move(FileInBakFolderWhichIsInRES, FileInDataFolder);
                                     }
                                 }
                             }
@@ -1636,15 +1640,9 @@ namespace AIHelper
                                         catch
                                         {
                                             //когда файла в дата нет, файл в бак есть и есть файл в папке мода - вернуть файл из bak назад
-                                            if (!File.Exists(FileInDataFolder))
+                                            if (!File.Exists(FileInDataFolder) && File.Exists(FileInBakFolderWhichIsInRES) && File.Exists(ModFiles[f]))
                                             {
-                                                if (File.Exists(FileInBakFolderWhichIsInRES))
-                                                {
-                                                    if (File.Exists(ModFiles[f]))
-                                                    {
-                                                        File.Move(FileInBakFolderWhichIsInRES, FileInDataFolder);
-                                                    }
-                                                }
+                                                File.Move(FileInBakFolderWhichIsInRES, FileInDataFolder);
                                             }
                                         }
                                     }
@@ -1733,6 +1731,11 @@ namespace AIHelper
                 int FilesInMOmodeDataFilesBakLength = FilesInMOmodeDataFilesBak.Length;
                 for (int f = 0; f < FilesInMOmodeDataFilesBakLength; f++)
                 {
+                    if (string.IsNullOrWhiteSpace(FilesInMOmodeDataFilesBak[f]))
+                    {
+                        continue;
+                    }
+
                     string DestFileInDataFolderPath = FilesInMOmodeDataFilesBak[f].Replace(MOmodeDataFilesBakDirPath, DataPath);
                     if (!File.Exists(DestFileInDataFolderPath))
                     {

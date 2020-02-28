@@ -1,9 +1,11 @@
 ﻿using AI_Helper.Manage;
+using AIHelper.Utils;
 using SymbolicLinkSupport;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Forms;
 
 namespace AIHelper.Manage
 {
@@ -128,8 +130,16 @@ namespace AIHelper.Manage
                 return;
             }
 
-            if (DirectoryInfoExtensions.IsSymbolicLink(new DirectoryInfo(dirPath)) && !DirectoryInfoExtensions.IsSymbolicLinkValid(new DirectoryInfo(dirPath)))
+            try
             {
+                if (DirectoryInfoExtensions.IsSymbolicLink(new DirectoryInfo(dirPath)) && !DirectoryInfoExtensions.IsSymbolicLinkValid(new DirectoryInfo(dirPath)))
+                {
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName + ".log"), DateTime.Now + " >>" + "dirPath=" + dirPath + Environment.NewLine + "Error:" + Environment.NewLine + ex + Environment.NewLine, true);
                 return;
             }
 

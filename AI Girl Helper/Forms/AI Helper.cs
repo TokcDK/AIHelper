@@ -1228,19 +1228,13 @@ namespace AIHelper
                 DialogResult result = MessageBox.Show(T._("Attention") + "\n\n" + T._("Conversation to") + " " + T._("Common mode") + "\n\n" + T._("This will move using mod files from Mods folder to Data folder to make it like common installation variant.\nYou can restore it later back to MO mode.\n\nContinue?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
                 if (result == DialogResult.OK)
                 {
-                    AIGirlHelperTabControl.Enabled = false;
-                    //MOCommonModeSwitchButton.Enabled = false;
-                    //LanchModeInfoLinkLabel.Enabled = false;
-
                     string[] EnabledModsList = ManageMO.GetModNamesListFromActiveMOProfile();
                     int EnabledModsLength = EnabledModsList.Length;
 
                     if (EnabledModsList.Length == 0)
                     {
-                        AIGirlHelperTabControl.Enabled = true;
-                        //MOCommonModeSwitchButton.Enabled = true;
-                        //LanchModeInfoLinkLabel.Enabled = true;
                         MessageBox.Show(T._("There is no enabled mods in Mod Organizer"));
+                        OnOffButtons();
                         return;
                     }
 
@@ -1261,7 +1255,6 @@ namespace AIHelper
                     try
                     {
                         MOCommonModeSwitchButton.Text = MOmode ? T._("MOToCommon") : T._("CommonToMO");
-                        AIGirlHelperTabControl.Enabled = true;
                     }
                     catch
                     {
@@ -1281,7 +1274,6 @@ namespace AIHelper
                 DialogResult result = MessageBox.Show(T._("Attention") + "\n\n" + T._("Conversation to") + " " + T._("MO mode") + "\n\n" + T._("This will move all mod files back to Mods folder from Data and will switch to MO mode.\n\nContinue?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
                 if (result == DialogResult.OK)
                 {
-                    AIGirlHelperTabControl.Enabled = false;
                     //MOCommonModeSwitchButton.Enabled = false;
                     //LanchModeInfoLinkLabel.Enabled = false;
 
@@ -1298,8 +1290,6 @@ namespace AIHelper
 
                         this.Controls.Remove(MO2CommonProgressBar);
                     }
-
-                    AIGirlHelperTabControl.Enabled = true;
                     MOCommonModeSwitchButton.Text = T._("MOToCommon");
                     //MOCommonModeSwitchButton.Enabled = true;
                     //LanchModeInfoLinkLabel.Enabled = true;
@@ -1308,8 +1298,10 @@ namespace AIHelper
                     //BepinExLoadingFix();
                     //обновление информации о конфигурации папок игры
                     FoldersInit();
+
                 }
             }
+
             OnOffButtons();
         }
 

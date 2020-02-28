@@ -1,5 +1,6 @@
 ﻿using AIHelper.Games;
 using AIHelper.Manage;
+using AIHelper.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -1334,8 +1335,15 @@ namespace AIHelper
                             {
                                 Directory.CreateDirectory(modsubfolder);
                             }
-
-                            File.Move(MovePaths[1], MovePaths[0]);
+                            
+                            try//ignore move file error if file will be locked and write in log about this
+                            {
+                                File.Move(MovePaths[1], MovePaths[0]);
+                            }
+                            catch (Exception ex)
+                            {
+                                FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName + ".log"), DateTime.Now + " >>" + " Failed to move file: '" + Environment.NewLine + MovePaths[1] + "' " + Environment.NewLine + "Error:" + Environment.NewLine + ex + Environment.NewLine, true);
+                            }
                         }
                         else
                         {
@@ -1393,6 +1401,9 @@ namespace AIHelper
 
                         //переместить файл в новую для него папку
                         File.Move(FromToPaths[0], TargetPath);
+
+                        //ВОЗМОЖНО ЗДЕСЬ ПРОБЛЕМА В КОДЕ, ПРИ КОТОРОЙ ДЛЯ КАЖДОГО ФАЙЛА БУДЕТ СОЗДАНА ОТДЕЛЬНАЯ ПАПКА С МОДОМ
+                        //НУЖНО ДОБАВИТЬ ЗАПИСЬ И ПОДКЛЮЧЕНИЕ НОВОГО МОДА ТОЛЬКО ПОСЛЕ ТОГО, КАК ВСЕ ФАЙЛЫ ИЗ НЕГО ПЕРЕМЕЩЕНЫ
 
                         //записать в папку мода замечание с объяснением наличия этого мода
                         string note = T._(

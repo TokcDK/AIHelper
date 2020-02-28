@@ -1308,9 +1308,11 @@ namespace AIHelper
 
         private void SwitchBackToMOMode()
         {
+            StringBuilder OperationsMade = new StringBuilder();
+            string[] Operations = null;
             try
             {
-                string[] Operations = File.ReadAllLines(ManageSettings.GetMOToStandartConvertationOperationsListFilePath());
+                Operations = File.ReadAllLines(ManageSettings.GetMOToStandartConvertationOperationsListFilePath());
                 string[] VanillaDataFiles = File.ReadAllLines(ManageSettings.GetVanillaDataFilesListFilePath());
                 string[] ModdedDataFiles = File.ReadAllLines(ManageSettings.GetModdedDataFilesListFilePath());
 
@@ -1340,10 +1342,13 @@ namespace AIHelper
                             {
                                 Directory.CreateDirectory(modsubfolder);
                             }
-                            
+
                             try//ignore move file error if file will be locked and write in log about this
                             {
                                 File.Move(MovePaths[1], MovePaths[0]);
+
+                                //запись выполненной операции для удаления из общего списка в случае ошибки при переключении из обычного режима
+                                OperationsMade.AppendLine(Operations[o]);
                             }
                             catch (Exception ex)
                             {
@@ -1511,6 +1516,22 @@ namespace AIHelper
             }
             catch (Exception ex)
             {
+                //обновление списка операций с файлами, для удаления уже выполненных и записи обновленного списка
+                if (OperationsMade.ToString().Length>0 && Operations !=null && Operations.Length>0)
+                {
+                    foreach (string line in OperationsMade.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.None))
+                    {
+                        if (string.IsNullOrEmpty(line))
+                        {
+                            continue;
+                        }
+
+                        Operations = Operations.Where(val => val != line).ToArray();
+                    }
+
+                    File.WriteAllLines(ManageSettings.GetMOToStandartConvertationOperationsListFilePath(), Operations);
+                }
+
                 MessageBox.Show("Failed to switch in MO mode. Error:" + Environment.NewLine + ex);
             }
         }

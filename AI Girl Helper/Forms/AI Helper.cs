@@ -894,7 +894,7 @@ namespace AIHelper
 
         private void GetEnableDisableLaunchButtons()
         {
-            MOButton.Enabled = Properties.Settings.Default.MOmode && File.Exists(ManageSettings.GetMOexePath());
+            MOButton.Enabled = /*Properties.Settings.Default.MOmode && */File.Exists(ManageSettings.GetMOexePath());
             //SettingsButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"));
             JPLauncherRunLinkLabel.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"));
             GameButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetCurrentGameEXEName() + ".exe"));
@@ -952,7 +952,7 @@ namespace AIHelper
             }
             else
             {
-                MOButton.Enabled = false;
+                //MOButton.Enabled = false;
                 MessageBox.Show(T._("Game in Common mode now.\n To execute Mod Organizer convert game back\n to MO mode by button in Tools tab"));
             }
             OnOffButtons();

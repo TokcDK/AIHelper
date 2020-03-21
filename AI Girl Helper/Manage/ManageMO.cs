@@ -1,4 +1,5 @@
 ﻿using AI_Helper.Manage;
+using AIHelper.Utils;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -306,27 +307,50 @@ namespace AIHelper.Manage
             string[] pathExclusions = { "BepInEx" + Path.DirectorySeparatorChar + "plugins", "Lec.ExtProtocol", "Common.ExtProtocol.Executor", "UnityCrashHandler64", Path.DirectorySeparatorChar + "IPA", "WideSliderPatch" };
 
             //Добавление exe из Data
-            foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetDataPath(), "*.exe", SearchOption.AllDirectories))
-            {
-                string exeName = Path.GetFileNameWithoutExtension(exePath);
-                if (exeName.Length > 0 && !IniValuesDict.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
-                {
-                    ExecutablesCount++;
-                    IniValuesDict.Add(ExecutablesCount + @"\title", exeName);
-                    IniValuesDict.Add(ExecutablesCount + @"\binary", exePath);
-                }
-            }
+            ParallelPoorMan.ForEach(Directory.EnumerateFiles(ManageSettings.GetDataPath(), "*.exe", SearchOption.AllDirectories), 
+                exePath=> {
+                    string exeName = Path.GetFileNameWithoutExtension(exePath);
+                    if (exeName.Length > 0 && !IniValuesDict.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
+                    {
+                        ExecutablesCount++;
+                        IniValuesDict.Add(ExecutablesCount + @"\title", exeName);
+                        IniValuesDict.Add(ExecutablesCount + @"\binary", exePath);
+                    }
+
+                });
+
+            //foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetDataPath(), "*.exe", SearchOption.AllDirectories))
+            //{
+            //    string exeName = Path.GetFileNameWithoutExtension(exePath);
+            //    if (exeName.Length > 0 && !IniValuesDict.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
+            //    {
+            //        ExecutablesCount++;
+            //        IniValuesDict.Add(ExecutablesCount + @"\title", exeName);
+            //        IniValuesDict.Add(ExecutablesCount + @"\binary", exePath);
+            //    }
+            //}
             //Добавление exe из Mods
-            foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetModsPath(), "*.exe", SearchOption.AllDirectories))
-            {
-                string exeName = Path.GetFileNameWithoutExtension(exePath);
-                if (Path.GetFileNameWithoutExtension(exePath).Length > 0 && !IniValuesDict.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
-                {
-                    ExecutablesCount++;
-                    IniValuesDict.Add(ExecutablesCount + @"\title", exeName);
-                    IniValuesDict.Add(ExecutablesCount + @"\binary", exePath);
-                }
-            }
+            ParallelPoorMan.ForEach(Directory.EnumerateFiles(ManageSettings.GetModsPath(), "*.exe", SearchOption.AllDirectories),
+                exePath => {
+                    string exeName = Path.GetFileNameWithoutExtension(exePath);
+                    if (exeName.Length > 0 && !IniValuesDict.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
+                    {
+                        ExecutablesCount++;
+                        IniValuesDict.Add(ExecutablesCount + @"\title", exeName);
+                        IniValuesDict.Add(ExecutablesCount + @"\binary", exePath);
+                    }
+
+                });
+            //foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetModsPath(), "*.exe", SearchOption.AllDirectories))
+            //{
+            //    string exeName = Path.GetFileNameWithoutExtension(exePath);
+            //    if (Path.GetFileNameWithoutExtension(exePath).Length > 0 && !IniValuesDict.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
+            //    {
+            //        ExecutablesCount++;
+            //        IniValuesDict.Add(ExecutablesCount + @"\title", exeName);
+            //        IniValuesDict.Add(ExecutablesCount + @"\binary", exePath);
+            //    }
+            //}
 
             //добавление hardcoded exe
             ExecutablesCount++;

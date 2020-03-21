@@ -149,6 +149,7 @@
     <Compile Include="Manage\ManageStrings.cs" />
     <Compile Include="Utils\CFGFiles.cs" />
     <Compile Include="Utils\FileWriter.cs" />
+    <Compile Include="Utils\ParallelPoorMan.cs" />
     <Compile Include="Utils\T.cs" />
     <Compile Include="Utils\Compressor.cs" />
     <Compile Include="Forms\AI Helper.cs">

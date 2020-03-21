@@ -307,7 +307,7 @@ namespace AIHelper.Manage
             string[] pathExclusions = { "BepInEx" + Path.DirectorySeparatorChar + "plugins", "Lec.ExtProtocol", "Common.ExtProtocol.Executor", "UnityCrashHandler64", Path.DirectorySeparatorChar + "IPA", "WideSliderPatch" };
 
             //Добавление exe из Data
-            Parallel.ForEach(Directory.EnumerateFiles(ManageSettings.GetDataPath(), "*.exe", SearchOption.AllDirectories), 
+            Parallel.ForEach(Directory.EnumerateFileSystemEntries(ManageSettings.GetDataPath(), "*.exe", SearchOption.AllDirectories), 
                 exePath=> {
                     string exeName = Path.GetFileNameWithoutExtension(exePath);
                     if (exeName.Length > 0 && !IniValuesDict.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
@@ -330,7 +330,7 @@ namespace AIHelper.Manage
             //    }
             //}
             //Добавление exe из Mods
-            Parallel.ForEach(Directory.EnumerateFiles(ManageSettings.GetModsPath(), "*.exe", SearchOption.AllDirectories),
+            Parallel.ForEach(Directory.EnumerateFileSystemEntries(ManageSettings.GetModsPath(), "*.exe", SearchOption.AllDirectories),
                 exePath => {
                     string exeName = Path.GetFileNameWithoutExtension(exePath);
                     if (exeName.Length > 0 && !IniValuesDict.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
@@ -396,7 +396,7 @@ namespace AIHelper.Manage
             //Hardcoded exe Game exe and Explorer++
             //ExecutablesCount += 2;
 
-            INI.WriteINI("customExecutables", "size", ExecutablesCount.ToString());
+            INI.WriteINI("customExecutables", "size", ExecutablesCount.ToString(CultureInfo.InvariantCulture));
 
             Properties.Settings.Default.SetModOrganizerINISettingsForTheGame = false;
         }

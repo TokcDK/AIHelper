@@ -382,5 +382,17 @@ namespace AIHelper.Properties {
                 this["CurrentGameIsChanging"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SetModOrganizerINISettingsForTheGame {
+            get {
+                return ((bool)(this["SetModOrganizerINISettingsForTheGame"]));
+            }
+            set {
+                this["SetModOrganizerINISettingsForTheGame"] = value;
+            }
+        }
     }
 }

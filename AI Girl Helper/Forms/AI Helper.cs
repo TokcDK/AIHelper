@@ -10,6 +10,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -861,7 +862,7 @@ namespace AIHelper
             SelectedGameLabel.Text = CurrentGame.GetGameDisplayingName() + "❤";
         }
 
-        private void RunSlowActions()
+        private static void RunSlowActions()
         {
             //создание ссылок на файлы bepinex, НА ЭТО ТРАТИТСЯ МНОГО ВРЕМЕНИ
             ManageMOMods.BepinExLoadingFix();
@@ -878,6 +879,7 @@ namespace AIHelper
 
 
             //НА ЭТО ТРАТИТСЯ БОЛЬШЕ ВСЕГО ВРЕМЕНИ
+
             ManageMO.SetModOrganizerINISettingsForTheGame();
             //await Task.Run(() => ManageMO.SetModOrganizerINISettingsForTheGame()).ConfigureAwait(false);
             //MOButton.Enabled = false;
@@ -946,6 +948,9 @@ namespace AIHelper
         private void MOButton_Click(object sender, EventArgs e)
         {
             OnOffButtons(false);
+
+            ManageOther.WaitIfGameIsChanging();
+
             if (MOmode)
             {
                 RunProgram(MOexePath, string.Empty);
@@ -976,6 +981,9 @@ namespace AIHelper
         private void GameButton_Click(object sender, EventArgs e)
         {
             OnOffButtons(false);
+
+            ManageOther.WaitIfGameIsChanging();
+
             if (MOmode)
             {
                 RunProgram(MOexePath, "moshortcut://:" + ManageSettings.GetCurrentGameEXEName());
@@ -995,6 +1003,9 @@ namespace AIHelper
         private void StudioButton_Click(object sender, EventArgs e)
         {
             OnOffButtons(false);
+
+            ManageOther.WaitIfGameIsChanging();
+
             if (MOmode)
             {
                 RunProgram(MOexePath, "moshortcut://:" + ManageSettings.GetStudioEXEName());
@@ -1006,7 +1017,7 @@ namespace AIHelper
             OnOffButtons();
         }
 
-        private void RunProgram(string ProgramPath, string Arguments)
+        private void RunProgram(string ProgramPath, string Arguments = "")
         {
             if (File.Exists(ProgramPath))
             {
@@ -1018,45 +1029,47 @@ namespace AIHelper
                     {
                         Program.StartInfo.Arguments = Arguments;
                     }
-                    //Program.StartInfo.WorkingDirectory = Path.GetDirectoryName(ProgramPath);
+                    Program.StartInfo.WorkingDirectory = Path.GetDirectoryName(ProgramPath);
 
                     //http://www.cyberforum.ru/windows-forms/thread31052.html
                     // свернуть
-                    WindowState = FormWindowState.Minimized;
-                    if (LinksForm == null || LinksForm.IsDisposed)
-                    {
-                    }
-                    else
-                    {
-                        LinksForm.WindowState = FormWindowState.Minimized;
-                    }
-                    if (extraSettingsForm == null || extraSettingsForm.IsDisposed)
-                    {
-                    }
-                    else
-                    {
-                        extraSettingsForm.WindowState = FormWindowState.Minimized;
-                    }
+                    ManageOther.SwitchFormMinimizedNormalAll(new Form[3] { this, LinksForm, extraSettingsForm });
+                    //WindowState = FormWindowState.Minimized;
+                    //if (LinksForm == null || LinksForm.IsDisposed)
+                    //{
+                    //}
+                    //else
+                    //{
+                    //    LinksForm.WindowState = FormWindowState.Minimized;
+                    //}
+                    //if (extraSettingsForm == null || extraSettingsForm.IsDisposed)
+                    //{
+                    //}
+                    //else
+                    //{
+                    //    extraSettingsForm.WindowState = FormWindowState.Minimized;
+                    //}
 
                     _ = Program.Start();
                     Program.WaitForExit();
 
                     // Показать
-                    WindowState = FormWindowState.Normal;
-                    if (LinksForm == null || LinksForm.IsDisposed)
-                    {
-                    }
-                    else
-                    {
-                        LinksForm.WindowState = FormWindowState.Normal;
-                    }
-                    if (extraSettingsForm == null || extraSettingsForm.IsDisposed)
-                    {
-                    }
-                    else
-                    {
-                        extraSettingsForm.WindowState = FormWindowState.Normal;
-                    }
+                    ManageOther.SwitchFormMinimizedNormalAll(new Form[3] { this, LinksForm, extraSettingsForm });
+                    //WindowState = FormWindowState.Normal;
+                    //if (LinksForm == null || LinksForm.IsDisposed)
+                    //{
+                    //}
+                    //else
+                    //{
+                    //    LinksForm.WindowState = FormWindowState.Normal;
+                    //}
+                    //if (extraSettingsForm == null || extraSettingsForm.IsDisposed)
+                    //{
+                    //}
+                    //else
+                    //{
+                    //    extraSettingsForm.WindowState = FormWindowState.Normal;
+                    //}
                 }
             }
         }
@@ -1065,7 +1078,7 @@ namespace AIHelper
 
         private void QualityComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SetGraphicsQuality((sender as ComboBox).SelectedIndex.ToString());
+            SetGraphicsQuality((sender as ComboBox).SelectedIndex.ToString(CultureInfo.InvariantCulture));
         }
 
         private LinksForm LinksForm;
@@ -1517,7 +1530,7 @@ namespace AIHelper
             catch (Exception ex)
             {
                 //обновление списка операций с файлами, для удаления уже выполненных и записи обновленного списка
-                if (OperationsMade.ToString().Length>0 && Operations !=null && Operations.Length>0)
+                if (OperationsMade.ToString().Length > 0 && Operations != null && Operations.Length > 0)
                 {
                     foreach (string line in OperationsMade.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.None))
                     {
@@ -1848,7 +1861,10 @@ namespace AIHelper
 
         private void CurrentGameComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Properties.Settings.Default.INITDone && !Properties.Settings.Default.CurrentGameIsChanging)
+            //bool init = Properties.Settings.Default.INITDone;
+            //bool change = Properties.Settings.Default.CurrentGameIsChanging;
+
+            if (Properties.Settings.Default.INITDone && !Properties.Settings.Default.CurrentGameIsChanging && !Properties.Settings.Default.SetModOrganizerINISettingsForTheGame)
             {
                 Properties.Settings.Default.CurrentGameIsChanging = true;
 
@@ -1858,6 +1874,12 @@ namespace AIHelper
                 new INIFile(ManageSettings.GetAIHelperINIPath()).WriteINI("Settings", "selected_game", ManageSettings.GetCurrentGameFolderName());
 
                 FoldersInit();
+
+                Properties.Settings.Default.CurrentGameIsChanging = false;
+            }
+            else
+            {
+                CurrentGameComboBox.SelectedItem = Properties.Settings.Default.CurrentGameFolderName;
             }
         }
 
@@ -1948,6 +1970,9 @@ namespace AIHelper
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             OnOffButtons(false);
+
+            ManageOther.WaitIfGameIsChanging();
+
             if (MOmode)
             {
                 RunProgram(MOexePath, "moshortcut://:" + ManageSettings.GetINISettingsEXEName());
@@ -1986,6 +2011,25 @@ namespace AIHelper
                 Process.Start("notepad.exe", SetupXmlPath);
             }
         }
+
+        //Disable close window button
+        //https://social.msdn.microsoft.com/Forums/en-US/b1f0d913-c603-43e9-8fe3-681fb7286d4c/c-disable-close-button-on-windows-form-application?forum=csharpgeneral
+        //[DllImport("user32")]
+        //static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
+        //[DllImport("user32")]
+        //static extern bool EnableMenuItem(IntPtr hMenu, uint uIDEnableItem, uint uEnable);
+
+        //const int MF_BYCOMMAND = 0;
+        //const int MF_DISABLED = 2;
+        //const int SC_CLOSE = 0xF060;
+        //bool DisableMainClose = true;
+        //private void button2_Click(object sender, EventArgs e)
+        //{
+        //    //DisableMainClose = !DisableMainClose;
+        //    //var sm = GetSystemMenu(Handle, DisableMainClose);
+        //    //EnableMenuItem(sm, SC_CLOSE, MF_BYCOMMAND | MF_DISABLED);
+        //    //this.ControlBox = !this.ControlBox;
+        //}
 
         //Материалы
         //Есть пример с загрузкой файла по ссылке:

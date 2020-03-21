@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -12,6 +13,26 @@ namespace AIHelper.Manage
 {
     class ManageOther
     {
+        internal static async void WaitIfGameIsChanging()
+        {
+            if (!Properties.Settings.Default.MOmode)
+            {
+                return;
+            }
+
+            await Task.Run(() => WaitIfGameIsChanging(1000)).ConfigureAwait(true);
+        }
+
+        private static void WaitIfGameIsChanging(int waittime, int maxLoops=15)
+        {
+            int loopsCount = 0;
+            while (Properties.Settings.Default.MOmode && (Properties.Settings.Default.SetModOrganizerINISettingsForTheGame || Properties.Settings.Default.CurrentGameIsChanging) && loopsCount < maxLoops)
+            {
+                Thread.Sleep(waittime);
+                loopsCount++;
+            }
+        }
+
         public static void CheckBoxChangeColor(CheckBox checkBox)
         {
             if (checkBox.Checked)
@@ -69,6 +90,30 @@ namespace AIHelper.Manage
                 {
                     MessageBox.Show(T._("Shortcut") + " " + T._("created") + "!");
                 }
+            }
+        }
+
+        internal static void SwitchFormMinimizedNormalAll(Form[] forms)
+        {
+            foreach (var form in forms)
+            {
+                SwitchFormMinimizedNormal(form);
+            }
+        }
+
+        internal static void SwitchFormMinimizedNormal(Form form)
+        {
+            //http://www.cyberforum.ru/windows-forms/thread31052.html
+            if (form == null || form.IsDisposed)
+            {
+            }
+            else if (form.WindowState == FormWindowState.Normal)
+            {
+                form.WindowState = FormWindowState.Minimized;
+            }
+            else if (form.WindowState == FormWindowState.Minimized)
+            {
+                form.WindowState = FormWindowState.Normal;
             }
         }
     }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AIHelper.Manage
@@ -33,7 +34,7 @@ namespace AIHelper.Manage
             ManageSymLinks.ReCreateFileLinkWhenNotValid(ManageSettings.GetMOcategoriesPath(), ManageSettings.GetMOcategoriesPathForSelectedGame(), true);
         }
 
-        public static void SetModOrganizerINISettingsForTheGame()
+        public async static void SetModOrganizerINISettingsForTheGame()
         {
             RedefineGameMOData();
 
@@ -46,13 +47,21 @@ namespace AIHelper.Manage
             INIFile INI = new INIFile(ManageSettings.GetModOrganizerINIpath());
 
             SetCommonIniValues(INI);
-            SetCustomExecutablesIniValues(INI);
 
-            Properties.Settings.Default.CurrentGameIsChanging = false;
+            await Task.Run(() => SetCustomExecutablesIniValues(INI)).ConfigureAwait(true);
+
+            //Properties.Settings.Default.CurrentGameIsChanging = false;
         }
 
         private static void SetCustomExecutablesIniValues(INIFile INI)
         {
+            if (Properties.Settings.Default.SetModOrganizerINISettingsForTheGame)
+            {
+                return;
+            }
+
+            Properties.Settings.Default.SetModOrganizerINISettingsForTheGame = true;
+
             string[,] IniValues =
                 {
                     //customExecutables
@@ -364,6 +373,8 @@ namespace AIHelper.Manage
             //ExecutablesCount += 2;
 
             INI.WriteINI("customExecutables", "size", ExecutablesCount.ToString());
+
+            Properties.Settings.Default.SetModOrganizerINISettingsForTheGame = false;
         }
 
         private static void SetCommonIniValues(INIFile INI)

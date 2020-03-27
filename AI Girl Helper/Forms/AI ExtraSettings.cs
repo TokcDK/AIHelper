@@ -39,12 +39,17 @@ namespace AIHelper
 
         private void InitOnLoad()
         {
+            AddXUASettings();
+        }
+
+        private void AddXUASettings()
+        {
             Properties.Settings.Default.XUAiniPath =
-                ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(Path.Combine(ManageSettings.GetModsPath(), "XUnity.AutoTranslator", "BepInEx", "config", "AutoTranslatorConfig.ini"))
+                ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(new string[2] { Path.Combine(ManageSettings.GetModsPath(), "XUnity.AutoTranslator", "BepInEx", "config", "AutoTranslatorConfig.ini") , Path.Combine(ManageSettings.GetModsPath(), "XUnity.AutoTranslator", "AutoTranslatorConfig.ini") }, new bool[2] { false, false })
                 ;
 
             //если xua ini не найден, отключить элемент
-            if (Properties.Settings.Default.XUAiniPath.Length == 0)
+            if (string.IsNullOrWhiteSpace(Properties.Settings.Default.XUAiniPath) || !File.Exists(Properties.Settings.Default.XUAiniPath))
             {
                 XUASettingsPanel.Enabled = false;
                 return;

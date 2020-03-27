@@ -734,6 +734,36 @@ namespace AIHelper.Manage
             return "Default";
         }
 
+        public static string GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(string[] pathInMods, bool[] IsDir)
+        {
+            string path = string.Empty;
+            int d = 0;
+            foreach (var pathCandidate in pathInMods)
+            {
+                path = pathCandidate;
+
+                if (!string.IsNullOrWhiteSpace(path))
+                {
+                    if ((IsDir[d] && Directory.Exists(pathCandidate)) || (!IsDir[d] && File.Exists(pathCandidate)))
+                    {
+                        return pathCandidate;
+                    }
+                    else
+                    {
+                        path = GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(pathCandidate, IsDir[d]);
+                        if (!string.IsNullOrWhiteSpace(path) && path != pathCandidate)
+                        {
+                            return path;
+                        }
+                    }
+                }
+
+                d++;
+            }
+
+            return path;
+        }
+
         public static string GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(string pathInMods, bool IsDir = false)
         {
             string ModsOverwrite = pathInMods.Contains(ManageSettings.GetCurrentGameMOOverwritePath()) ? ManageSettings.GetCurrentGameMOOverwritePath() : ManageSettings.GetModsPath();

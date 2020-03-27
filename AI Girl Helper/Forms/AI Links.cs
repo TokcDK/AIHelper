@@ -71,7 +71,7 @@ namespace AIHelper
             if (File.Exists(GameLinksPath))
             {
                 //https://stackoverflow.com/questions/16959122/displaying-multiple-linklabels-in-a-form
-                string[] links = File.ReadAllLines(GameLinksPath).Where(line => !line.StartsWith(";")).ToArray();
+                string[] links = File.ReadAllLines(GameLinksPath).Where(line => !line.StartsWith(";", StringComparison.InvariantCulture)).ToArray();
                 int groupcnt = 0;
                 string lastgroup = string.Empty;
                 foreach (var line in links)

@@ -133,6 +133,12 @@ namespace AIHelper.Games
                         ,
                         Path.Combine(ManageSettings.GetDataPath(), "UserData", "cap")
                     }
+                    ,
+                    {
+                        Path.Combine(ManageSettings.GetModsPath(), "MyUserData", "UserData", "studioneo", "BetterSceneLoader")
+                        ,
+                        Path.Combine(ManageSettings.GetDataPath(), "UserData", "studioneo", "BetterSceneLoader")
+                    }
             };
         }
 

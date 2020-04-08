@@ -2,7 +2,6 @@
 using AIHelper.Games;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -30,6 +29,28 @@ namespace AIHelper.Manage
             //OverwriteFolderLink = SettingsManage.GetOverwriteFolderLink();
             //SetupXmlPath = MOManage.GetSetupXmlPathForCurrentProfile();
 
+        }
+
+        public static string[] GetScreenResolutions()
+        {
+            return new string[]
+            {
+                "1280 x 720 (16 : 9)",
+                "1366 x 768 (16 : 9)",
+                "1536 x 864 (16 : 9)",
+                "1600 x 900 (16 : 9)",
+                "1920 x 1080 (16 : 9)",
+                "2048 x 1152 (16 : 9)",
+                "2560 x 1440 (16 : 9)",
+                "3200 x 1800 (16 : 9)",
+                "3840 x 2160 (16 : 9)",
+                GetCustomRes()
+            };
+        }
+
+        private static string GetCustomRes()
+        {
+            throw new NotImplementedException();
         }
 
         public static List<Game> GetListOfExistsGames()
@@ -144,7 +165,7 @@ namespace AIHelper.Manage
             else
             {
                 Properties.Settings.Default.MOSelectedProfileDirPath = ManageMO.MOremoveByteArray(ManageINI.GetINIValueIfExist(ManageSettings.GetModOrganizerINIpath(), "selected_profile", "General"));
-                
+
                 return Properties.Settings.Default.MOSelectedProfileDirPath;
             }
         }

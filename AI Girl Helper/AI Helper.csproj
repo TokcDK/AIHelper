@@ -109,6 +109,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\CustomResolution.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CustomResolution.Designer.cs">
+      <DependentUpon>CustomResolution.cs</DependentUpon>
+    </Compile>
     <Compile Include="Games\GamesList.cs" />
     <Compile Include="Games\Illusion\Koikatsu.cs" />
     <Compile Include="Lists\CategoriesList.cs" />
@@ -175,6 +181,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AI ExtraSettings.resx">
       <DependentUpon>AI ExtraSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\CustomResolution.resx">
+      <DependentUpon>CustomResolution.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

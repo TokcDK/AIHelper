@@ -1021,6 +1021,11 @@ namespace AIHelper
         {
             if (File.Exists(ProgramPath))
             {
+                if (Path.GetFileNameWithoutExtension(ProgramPath) == "ModOrganizer" && Arguments.Length > 0)
+                {
+                    Task.Run(() => RunFreezedMOKiller(Arguments.Replace("moshortcut://:", string.Empty))).ConfigureAwait(false);
+                }
+
                 using (Process Program = new Process())
                 {
                     //MessageBox.Show("outdir=" + outdir);
@@ -1072,6 +1077,42 @@ namespace AIHelper
                     //}
                 }
             }
+        }
+
+        /// <summary>
+        /// If Mod Organizer Will freeze in memory after main process will be closed then it will try to kill MO exe
+        /// </summary>
+        /// <param name="processName"></param>
+        private static void RunFreezedMOKiller(string processName)
+        {
+            if (string.IsNullOrEmpty(processName))
+            {
+                return;
+            }
+
+            //https://stackoverflow.com/questions/262280/how-can-i-know-if-a-process-is-running
+
+            Thread.Sleep(5000);
+            while (Process.GetProcessesByName(processName).Length != 0)
+            {
+                Thread.Sleep(5000);
+            }
+
+            try
+            {
+                if (Process.GetProcessesByName("ModOrganizer").Length != 0)
+                {
+                    foreach (var process in Process.GetProcessesByName("ModOrganizer"))
+                    {
+                        process.Kill();
+                    }
+                }
+            } 
+            catch
+            {
+                MessageBox.Show("AIHelper: Failed to kill one of freezed ModOrganizer.exe. Try to kill it from Task Manager.");
+            }
+
         }
 
         private readonly Dictionary<string, string> qualitylevels = new Dictionary<string, string>(3);

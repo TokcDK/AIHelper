@@ -144,14 +144,20 @@ namespace AIHelper.Games
 
         protected string SearchGameFolder()
         {
-            foreach (var folder in Directory.EnumerateDirectories(ManageSettings.GetGamesFolderPath()))
+            try
             {
-                if (File.Exists(Path.Combine(folder, "Data", GetGameEXEName() + ".exe")))
+                foreach (var folder in Directory.EnumerateDirectories(ManageSettings.GetGamesFolderPath()))
                 {
-                    return Path.GetFileName(folder);
+                    if (File.Exists(Path.Combine(folder, "Data", GetGameEXEName() + ".exe")))
+                    {
+                        return Path.GetFileName(folder);
+                    }
                 }
             }
-            return "None";
+            catch
+            {
+            }
+            return string.Empty;
         }
 
         protected void CopyMOfiles(string GameMPAltDirName)

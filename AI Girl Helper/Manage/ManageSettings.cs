@@ -66,6 +66,19 @@ namespace AIHelper.Manage
             return ListOfGames;
         }
 
+        public static string GetStringListOfAllGames()
+        {
+            List<Game> ListOfGames = GamesList.GetGamesList();
+
+            string listOfGamesString = string.Empty;
+            foreach (var game in ListOfGames)
+            {
+                listOfGamesString += game.GetGameFolderName() + Environment.NewLine;
+            }
+
+            return listOfGamesString;
+        }
+
         public static string GetGamesFolderPath()
         {
             return Path.Combine(Application.StartupPath, "Games");
@@ -177,7 +190,7 @@ namespace AIHelper.Manage
 
         public static string GetMOiniPathForSelectedGame()
         {
-            return Path.Combine(GetCurrentGamePath(), "MO", "ModOrganizer.ini");
+            return ManageFilesFolders.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGamePath(), "MO", "ModOrganizer.ini"));
         }
 
         public static string GetMOcategoriesPath()
@@ -187,7 +200,7 @@ namespace AIHelper.Manage
 
         public static string GetMOcategoriesPathForSelectedGame()
         {
-            return Path.Combine(GetCurrentGamePath(), "MO", "categories.dat");
+            return ManageFilesFolders.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGamePath(), "MO", "categories.dat"));
         }
 
         public static string GetInstall2MODirPath()
@@ -197,7 +210,7 @@ namespace AIHelper.Manage
 
         public static string GetOverwriteFolder()
         {
-            return Path.Combine(GetCurrentGamePath(), "MO", "overwrite");
+            return ManageFilesFolders.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGamePath(), "MO", "overwrite"), true);
         }
 
         public static string GetOverwriteFolderLink()

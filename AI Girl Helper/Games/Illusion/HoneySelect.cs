@@ -14,7 +14,7 @@ namespace AIHelper.Games
 
         public override string GetGameFolderName()
         {
-            return GameFolderName.Length > 0 ? GameFolderName : GameFolderName = SearchGameFolder();
+            return GameFolderName.Length > 0 ? GameFolderName : (GameFolderName = SearchGameFolder()).Length>0? GameFolderName : "HoneySelect";
         }
 
         public override string GetGameEXEName()

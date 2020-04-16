@@ -181,6 +181,33 @@ namespace AIHelper.Manage
             }
         }
 
+        /// <summary>
+        /// If input file\folder not exists it will create empty. Will return inputPath
+        /// </summary>
+        /// <param name="inputPath"></param>
+        /// <param name="IsFolder"></param>
+        /// <returns></returns>
+        internal static string GreateFileFolderIfNotExists(string inputPath, bool IsFolder=false)
+        {
+            if (IsFolder)
+            {
+                if (!Directory.Exists(inputPath))
+                {
+                    Directory.CreateDirectory(inputPath);
+                }
+            }
+            else
+            {
+                if (!File.Exists(inputPath))
+                {
+                    File.WriteAllText(inputPath, string.Empty);
+                }
+            }
+
+            return inputPath;
+
+        }
+
         public static bool TrueIfStringInExclusionsList(string Str, string[] exclusions)
         {
             if (exclusions == null || Str.Length == 0)

@@ -47,7 +47,12 @@ namespace AIHelper
         {
             InitializeComponent();
 
-            SetListOfGames();
+            if (!SetListOfGames())
+            {
+                Application.Exit();
+                this.Enabled = false;
+                return;
+            }
 
             ManageMO.RedefineGameMOData();
 
@@ -84,27 +89,52 @@ namespace AIHelper
             OverwriteFolderLink = ManageSettings.GetOverwriteFolderLink();
         }
 
-        private void SetListOfGames()
+        private bool SetListOfGames()
         {
-            ListOfGames = ManageSettings.GetListOfExistsGames();
-
-            if (ListOfGames == null || ListOfGames.Count == 0)
+            try
             {
-                MessageBox.Show(T._("Games not found") + ". " + T._("Exit") + "..");
-                Application.Exit();
+                ListOfGames = ManageSettings.GetListOfExistsGames();
+
+                if (ListOfGames == null || ListOfGames.Count == 0)
+                {
+                    MessageBox.Show(T._("Games not found") + "."
+                        + Environment.NewLine + T._("Need atleast one game in subfolder in Games folder") + "."
+                        + Environment.NewLine + "----------------"
+                        + Environment.NewLine + T._("List of games") + ":"
+                        + Environment.NewLine + ManageSettings.GetStringListOfAllGames()
+                        + Environment.NewLine + "----------------"
+                        + Environment.NewLine + T._("The game folder must contain") + ":"
+                        + Environment.NewLine + "Data" + " - " + T._("main game data")
+                        + Environment.NewLine + "Mods" + " - " + T._("game mods in subfolders")
+                        + Environment.NewLine + "MO" + " - " + T._("Mod Organizer folder with next data") + ":"
+                        + Environment.NewLine + "  " + "profiles" + " - " + T._("profiles folder with mod combinations")
+                        + Environment.NewLine + "  " + "categories.dat" + " - " + T._("list of categories for mods")
+                        + Environment.NewLine + "  " + "ModOrganizer.ini" + " - " + T._("Mod Organizer settings for the game")
+                        + Environment.NewLine + "  " + T._("in place of any not exists MO data files will be created empty.")
+                        );
+                    //Application.Exit();
+                    return false;
+                }
+
+                foreach (var game in ListOfGames)
+                {
+                    CurrentGameComboBox.Items.Add(game.GetGameFolderName());
+                }
+
+                SetSelectedGameIndexAndBasicVariables(
+                    ManageSettings.GetCurrentGameIndexByFolderName(
+                        ListOfGames
+                        ,
+                        new INIFile(ManageSettings.GetAIHelperINIPath()).ReadINI("Settings", "selected_game")
+                        ));
+            }
+            catch
+            {
+                return false;
             }
 
-            foreach (var game in ListOfGames)
-            {
-                CurrentGameComboBox.Items.Add(game.GetGameFolderName());
-            }
 
-            SetSelectedGameIndexAndBasicVariables(
-                ManageSettings.GetCurrentGameIndexByFolderName(
-                    ListOfGames
-                    ,
-                    new INIFile(ManageSettings.GetAIHelperINIPath()).ReadINI("Settings", "selected_game")
-                    ));
+            return true;
         }
 
         private void SetSelectedGameIndexAndBasicVariables(int index = 0)
@@ -1107,7 +1137,7 @@ namespace AIHelper
                         process.Kill();
                     }
                 }
-            } 
+            }
             catch
             {
                 MessageBox.Show("AIHelper: Failed to kill one of freezed ModOrganizer.exe. Try to kill it from Task Manager.");
@@ -1367,6 +1397,7 @@ namespace AIHelper
             try
             {
                 Operations = File.ReadAllLines(ManageSettings.GetMOToStandartConvertationOperationsListFilePath());
+                var OperationsSplitString = new string[] { "|MovedTo|" };
                 string[] VanillaDataFiles = File.ReadAllLines(ManageSettings.GetVanillaDataFilesListFilePath());
                 string[] ModdedDataFiles = File.ReadAllLines(ManageSettings.GetModdedDataFilesListFilePath());
 
@@ -1382,7 +1413,7 @@ namespace AIHelper
                         continue;
                     }
 
-                    string[] MovePaths = Operations[o].Split(new string[] { "|MovedTo|" }, StringSplitOptions.None);
+                    string[] MovePaths = Operations[o].Split(OperationsSplitString, StringSplitOptions.None);
 
                     bool FilePathInModsExists = File.Exists(MovePaths[0]);
                     bool FilePathInDataExists = File.Exists(MovePaths[1]);
@@ -1403,6 +1434,20 @@ namespace AIHelper
 
                                 //запись выполненной операции для удаления из общего списка в случае ошибки при переключении из обычного режима
                                 OperationsMade.AppendLine(Operations[o]);
+
+                                try
+                                {
+                                    //Move bonemod file both with original
+                                    if (File.Exists(MovePaths[1] + ".bonemod.txt"))
+                                    {
+                                        File.Move(MovePaths[1] + ".bonemod.txt", MovePaths[0] + ".bonemod.txt");
+                                    }
+                                    //запись выполненной операции для удаления из общего списка в случае ошибки при переключении из обычного режима
+                                    OperationsMade.AppendLine(MovePaths[1] + ".bonemod.txt" + "|MovedTo|" + MovePaths[0] + ".bonemod.txt");
+                                }
+                                catch
+                                {
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -1573,14 +1618,14 @@ namespace AIHelper
                 //обновление списка операций с файлами, для удаления уже выполненных и записи обновленного списка
                 if (OperationsMade.ToString().Length > 0 && Operations != null && Operations.Length > 0)
                 {
-                    foreach (string line in OperationsMade.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.None))
+                    foreach (string OperationsMadeLine in OperationsMade.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.None))
                     {
-                        if (string.IsNullOrEmpty(line))
+                        if (string.IsNullOrEmpty(OperationsMadeLine))
                         {
                             continue;
                         }
 
-                        Operations = Operations.Where(val => val != line).ToArray();
+                        Operations = Operations.Where(OperationsLine => OperationsLine != OperationsMadeLine).ToArray();
                     }
 
                     File.WriteAllLines(ManageSettings.GetMOToStandartConvertationOperationsListFilePath(), Operations);

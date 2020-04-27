@@ -109,6 +109,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="000IDEAS.cs" />
     <Compile Include="Forms\CustomResolution.cs">
       <SubType>Form</SubType>
     </Compile>

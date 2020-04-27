@@ -23,7 +23,7 @@ namespace AIHelper.Manage
             await Task.Run(() => WaitIfGameIsChanging(1000)).ConfigureAwait(true);
         }
 
-        private static void WaitIfGameIsChanging(int waittime, int maxLoops=15)
+        private static void WaitIfGameIsChanging(int waittime, int maxLoops=20)
         {
             int loopsCount = 0;
             while (Properties.Settings.Default.MOmode && (Properties.Settings.Default.SetModOrganizerINISettingsForTheGame || Properties.Settings.Default.CurrentGameIsChanging) && loopsCount < maxLoops)

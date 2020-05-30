@@ -1,6 +1,5 @@
 ﻿using IniParser;
 using IniParser.Model;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -254,7 +253,7 @@ namespace AIHelper.Manage
         {
             if (DoSaveINI && ActionWasExecuted)
             {
-                if (Path.GetFileName(iniPath)== "AutoTranslatorConfig.ini")
+                if (Path.GetFileName(iniPath) == "AutoTranslatorConfig.ini")
                 {
                     INIData.Configuration.AssigmentSpacer = string.Empty;
                 }

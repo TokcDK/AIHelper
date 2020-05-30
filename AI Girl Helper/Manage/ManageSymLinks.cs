@@ -1,7 +1,6 @@
 ﻿using AIHelper.Manage;
 using SymbolicLinkSupport;
 using System.IO;
-using System.Windows.Forms;
 
 namespace AI_Helper.Manage
 {
@@ -100,7 +99,7 @@ namespace AI_Helper.Manage
                 string objectPath;
                 if (File.Exists(objectPath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(objectFileDirPath)))
                 {
-                    if((!File.Exists(symlinkPath) || (FileInfoExtensions.IsSymbolicLink(new FileInfo(symlinkPath)) && !FileInfoExtensions.IsSymbolicLinkValid(new FileInfo(symlinkPath)))))
+                    if ((!File.Exists(symlinkPath) || (FileInfoExtensions.IsSymbolicLink(new FileInfo(symlinkPath)) && !FileInfoExtensions.IsSymbolicLinkValid(new FileInfo(symlinkPath)))))
                     {
                         if (File.Exists(symlinkPath))
                         {
@@ -142,7 +141,7 @@ namespace AI_Helper.Manage
             {
                 return FileInfoExtensions.IsSymbolicLink(new FileInfo(sourceFileFolder));
             }
-            else if(Directory.Exists(sourceFileFolder))
+            else if (Directory.Exists(sourceFileFolder))
             {
                 return DirectoryInfoExtensions.IsSymbolicLink(new DirectoryInfo(sourceFileFolder));
             }

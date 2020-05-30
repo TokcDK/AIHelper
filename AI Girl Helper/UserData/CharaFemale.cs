@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AIHelper.UserData
+﻿namespace AIHelper.UserData
 {
     public class CharaFemale : IUserDataFolders
     {
-        public string Foldername() 
+        public string Foldername()
         {
             return "f";
         }

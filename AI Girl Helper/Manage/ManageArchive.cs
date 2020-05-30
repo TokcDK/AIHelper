@@ -1,11 +1,5 @@
-﻿using AIHelper.Manage;
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AIHelper.Manage
 {
@@ -54,9 +48,9 @@ namespace AIHelper.Manage
                 }
             }
         }
-        
+
         // Number of files within zip archive
-        public static int GetFilesCountInZipArchive(ZipArchive InputArchive=null, string zipFilePath="")
+        public static int GetFilesCountInZipArchive(ZipArchive InputArchive = null, string zipFilePath = "")
         {
             int count = 0;
 
@@ -71,7 +65,7 @@ namespace AIHelper.Manage
                     }
                 }
             }
-            else if (zipFilePath.Length>0)
+            else if (zipFilePath.Length > 0)
             {
                 using (ZipArchive archive = ZipFile.Open(zipFilePath, ZipArchiveMode.Read))
                 {

@@ -1,5 +1,6 @@
 ﻿using AI_Helper.Manage;
 using AIHelper.Utils;
+using Soft160.Data.Cryptography;
 using SymbolicLinkSupport;
 using System;
 using System.IO;
@@ -9,7 +10,7 @@ using System.Windows.Forms;
 
 namespace AIHelper.Manage
 {
-    internal class ManageFilesFolders
+    internal static class ManageFilesFolders
     {
         private static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
 
@@ -107,14 +108,14 @@ namespace AIHelper.Manage
 
             if (AllDirectories)
             {
-                foreach (var file in (Directory.GetFiles(dirPath, "*" + extension, SearchOption.AllDirectories)))
+                foreach (var file in (Directory.EnumerateFileSystemEntries(dirPath, "*" + extension, SearchOption.AllDirectories)))
                 {
                     return true;
                 }
             }
             else
             {
-                foreach (var file in (Directory.GetFiles(dirPath, "*" + extension)))
+                foreach (var file in (Directory.EnumerateFileSystemEntries(dirPath, "*" + extension)))
                 {
                     return true;
                 }
@@ -187,7 +188,7 @@ namespace AIHelper.Manage
         /// <param name="inputPath"></param>
         /// <param name="IsFolder"></param>
         /// <returns></returns>
-        internal static string GreateFileFolderIfNotExists(string inputPath, bool IsFolder=false)
+        internal static string GreateFileFolderIfNotExists(string inputPath, bool IsFolder = false)
         {
             if (IsFolder)
             {
@@ -413,6 +414,27 @@ namespace AIHelper.Manage
 
                 DeleteEmptySubfolders(SourceFolder, true);
             }
+        }
+
+        internal static string GetCrc32(this string fileName)
+        {
+            //https://stackoverflow.com/a/57450238
+            using (var crc32 = new CRCServiceProvider())
+            {
+                string hash = string.Empty;
+                using (var fs = File.Open(fileName, FileMode.Open))
+                {
+                    var array = crc32.ComputeHash(fs);
+                    var arrayLength = array.Length;
+                    for (int i = 0; i < arrayLength; i++)
+                    {
+                        hash += array[i].ToString("x2")/*.ToLowerInvariant()*/;
+                    }
+                }
+
+                return hash;
+            }
+
         }
     }
 }

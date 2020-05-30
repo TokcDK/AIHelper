@@ -10,11 +10,9 @@ namespace AIHelper.Games
             CopyMOfiles("MOHS");
         }
 
-        private string GameFolderName = string.Empty;
-
         public override string GetGameFolderName()
         {
-            return GameFolderName.Length > 0 ? GameFolderName : (GameFolderName = SearchGameFolder()).Length>0? GameFolderName : "HoneySelect";
+            return GetTheGameFolderName("HoneySelect");
         }
 
         public override string GetGameEXEName()

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 
 namespace AIHelper.Manage
 {
@@ -9,13 +10,22 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        public static IEnumerable<string> SplitToLines(this string input)
+        internal static IEnumerable<string> SplitToLines(this string input)
         {
             //https://stackoverflow.com/a/23408020
             if (input == null)
             {
                 yield break;
             }
+
+            if (!input.IsMultiline())
+            {
+                yield return input;
+                yield break;
+            }
+
+            //Fix of last newline \n symbol was not returned 
+            bool EndsWithNewLine = input.EndsWith("\n", System.StringComparison.InvariantCulture);
 
             using (System.IO.StringReader reader = new System.IO.StringReader(input))
             {
@@ -24,6 +34,66 @@ namespace AIHelper.Manage
                 {
                     yield return line;
                 }
+                if (EndsWithNewLine)//if string endswith \n then last line will be null
+                {
+                    yield return string.Empty;
+                }
+            }
+        }
+
+        /// <summary>
+        /// If string is multiline
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        internal static bool IsMultiline(this string input)
+        {
+            //inputString="line1\r\n"
+            //00.00066x100000
+            //var count = 0;
+            //var index = -1;
+
+            //do
+            //{
+            //    if (++count > 1)
+            //    {
+            //        return true;
+            //    }
+
+            //    index = inputString.IndexOf('\n', index + 1);
+            //}
+            //while (index != -1);
+
+            //return false;
+
+            //inputString="line1\r\n"
+            //00.00055x100000
+            return input.IndexOf('\n', 0) > -1;
+
+            //inputString="line1\r\n"
+            //00.0021x100000
+            //return inputString.Contains("\n");
+
+            ///old
+            {
+                //0.0035x100000
+                //if (input != null)
+                //{
+                //    using (System.IO.StringReader reader = new System.IO.StringReader(input))
+                //    {
+                //        int i = 0;
+                //        while (reader.ReadLine() != null)
+                //        {
+                //            i++;
+                //            if (i > 1)
+                //            {
+                //                return true;
+                //            }
+                //        }
+                //    }
+                //}
+
+                //return false;
             }
         }
 
@@ -67,7 +137,7 @@ namespace AIHelper.Manage
         {
             if (ignoreCase)
             {
-                return string.Compare(StringA, StringB, ignoreCase) == 0;
+                return string.Compare(StringA, StringB, ignoreCase, CultureInfo.InvariantCulture) == 0;
             }
             else
             {
@@ -78,7 +148,7 @@ namespace AIHelper.Manage
         public static string AddStringBToAIfValid(string StringA, string StringB)
         {
             //добавление имени автора в начало имени папки
-            if (StringA.StartsWith("[AI][") || (StringA.StartsWith("[") && !StringA.StartsWith("[AI]")) || ManageStrings.IsStringAContainsStringB(StringA, StringB))
+            if (StringA.StartsWith("[AI][", System.StringComparison.InvariantCulture) || (StringA.StartsWith("[", System.StringComparison.InvariantCulture) && !StringA.StartsWith("[AI]", System.StringComparison.InvariantCulture)) || ManageStrings.IsStringAContainsStringB(StringA, StringB))
             {
             }
             else if (StringB.Length > 0)
@@ -102,7 +172,7 @@ namespace AIHelper.Manage
             {
                 if (IgnoreCase)
                 {
-                    if (IsStringAContainsStringB(StringA, StringB) || IsStringAContainsStringB(StringA.ToUpper(), StringB.ToUpper()))
+                    if (IsStringAContainsStringB(StringA, StringB) || IsStringAContainsStringB(StringA.ToUpperInvariant(), StringB.ToUpperInvariant()))
                     {
                         return true;
                     }

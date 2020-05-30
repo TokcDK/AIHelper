@@ -79,6 +79,7 @@
             this.AutoShortcutRegistryCheckBox = new System.Windows.Forms.CheckBox();
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
             this.ToolsPagePanel = new System.Windows.Forms.Panel();
+            this.button2 = new System.Windows.Forms.Button();
             this.FixMOModsButton = new System.Windows.Forms.Button();
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
@@ -309,9 +310,9 @@
             this.SelectedGameLabel.ForeColor = System.Drawing.Color.LightPink;
             this.SelectedGameLabel.Location = new System.Drawing.Point(101, 45);
             this.SelectedGameLabel.Name = "SelectedGameLabel";
-            this.SelectedGameLabel.Size = new System.Drawing.Size(20, 17);
+            this.SelectedGameLabel.Size = new System.Drawing.Size(70, 17);
             this.SelectedGameLabel.TabIndex = 24;
-            this.SelectedGameLabel.Text = "---";
+            this.SelectedGameLabel.Text = "GameName";
             // 
             // label4
             // 
@@ -655,7 +656,7 @@
             this.SetupXmlLinkLabel.TabIndex = 6;
             this.SetupXmlLinkLabel.TabStop = true;
             this.SetupXmlLinkLabel.Text = "Display";
-            this.SetupXmlLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked_1);
+            this.SetupXmlLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel1_LinkClicked_1);
             // 
             // QualityComboBox
             // 
@@ -729,6 +730,7 @@
             // ToolsPagePanel
             // 
             this.ToolsPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.ToolsPagePanel.Controls.Add(this.button2);
             this.ToolsPagePanel.Controls.Add(this.FixMOModsButton);
             this.ToolsPagePanel.Controls.Add(this.Install2MODirPathOpenFolderLinkLabel);
             this.ToolsPagePanel.Controls.Add(this.InstallInModsButton);
@@ -738,6 +740,20 @@
             this.ToolsPagePanel.Name = "ToolsPagePanel";
             this.ToolsPagePanel.Size = new System.Drawing.Size(340, 155);
             this.ToolsPagePanel.TabIndex = 1;
+            // 
+            // button2
+            // 
+            this.button2.BackColor = System.Drawing.Color.Silver;
+            this.button2.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button2.ForeColor = System.Drawing.Color.Black;
+            this.button2.Location = new System.Drawing.Point(223, 86);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(112, 30);
+            this.button2.TabIndex = 20;
+            this.button2.Text = "Make SnapShot";
+            this.button2.UseVisualStyleBackColor = false;
+            this.button2.Visible = false;
+            this.button2.Click += new System.EventHandler(this.Button2_Click);
             // 
             // FixMOModsButton
             // 
@@ -886,6 +902,7 @@
         private System.Windows.Forms.LinkLabel JPLauncherRunLinkLabel;
         private System.Windows.Forms.Button FixMOModsButton;
         private System.Windows.Forms.LinkLabel SetupXmlLinkLabel;
+        private System.Windows.Forms.Button button2;
     }
 }
 

@@ -33,8 +33,8 @@ namespace AIHelper
         private void SetLocalizationStrings()
         {
             this.Text = T._("Extra Settings");
-            XUALanguageLabel.Text = T._("Language")+":";
-            XUATranslateServiceLabel.Text = T._("Translate Service") +":";
+            XUALanguageLabel.Text = T._("Language") + ":";
+            XUATranslateServiceLabel.Text = T._("Translate Service") + ":";
         }
 
         private void InitOnLoad()
@@ -45,7 +45,7 @@ namespace AIHelper
         private void AddXUASettings()
         {
             Properties.Settings.Default.XUAiniPath =
-                ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(new string[2] { Path.Combine(ManageSettings.GetModsPath(), "XUnity.AutoTranslator", "BepInEx", "config", "AutoTranslatorConfig.ini") , Path.Combine(ManageSettings.GetModsPath(), "XUnity.AutoTranslator", "AutoTranslatorConfig.ini") }, new bool[2] { false, false })
+                ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(new string[2] { Path.Combine(ManageSettings.GetModsPath(), "XUnity.AutoTranslator", "BepInEx", "config", "AutoTranslatorConfig.ini"), Path.Combine(ManageSettings.GetModsPath(), "XUnity.AutoTranslator", "AutoTranslatorConfig.ini") }, new bool[2] { false, false })
                 ;
 
             //если xua ini не найден, отключить элемент
@@ -148,9 +148,9 @@ namespace AIHelper
                 //ShowAlways = true
             };
 
-            THToolTip.SetToolTip(XUAEndpointComboBox, 
+            THToolTip.SetToolTip(XUAEndpointComboBox,
                 T._("From XUA documentation.\nThe supported translators are: ")
-                +"\n\n"+
+                + "\n\n" +
                 T._("GoogleTranslate, based on the online Google translation service. Does not require authentication.")
                 + "\n\n" +
                 T._("GoogleTranslateLegitimate, based on the Google cloud translation API. Requires an API key.\nProvides trial period of 1 year with $300 credits. Enough for 15 million characters translations.")
@@ -170,7 +170,7 @@ namespace AIHelper
                 T._("LecPowerTranslator15, based on LEC's Power Translator. Does not require authentication, but does require the software installed.")
 
                 );
-            
+
             ////////////////////////////
         }
 

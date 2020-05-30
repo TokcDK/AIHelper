@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AIHelper.Utils
@@ -15,7 +10,7 @@ namespace AIHelper.Utils
 
         public static void WriteData(string filePath, string data, bool DebugMode = false)
         {
-            if (string.IsNullOrEmpty(filePath) || (!DebugMode && filePath.Contains(Application.ProductName+".log")))
+            if (string.IsNullOrEmpty(filePath) || (!DebugMode && filePath.Contains(Application.ProductName + ".log")))
             {
                 return;
             }

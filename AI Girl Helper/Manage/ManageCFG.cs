@@ -1,6 +1,5 @@
 ﻿using AI_Helper.Utils;
 using System.IO;
-using System.Linq;
 
 namespace AIHelper.Manage
 {
@@ -18,7 +17,7 @@ namespace AIHelper.Manage
             }
             return defaultValue;
         }
-        public static bool WriteCFGValue(string CFGPath, string Section, string Key, string Value, bool DOSaveINI=true)
+        public static bool WriteCFGValue(string CFGPath, string Section, string Key, string Value, bool DOSaveINI = true)
         {
             if (File.Exists(CFGPath))
             {

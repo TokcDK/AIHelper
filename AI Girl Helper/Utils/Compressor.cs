@@ -1,12 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using AIHelper.Manage;
+﻿using AIHelper.Manage;
 using SevenZip;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
 using SharpCompress.Common;
+using System.IO;
+using System.Linq;
 
 namespace AIHelper
 {
@@ -54,7 +52,7 @@ namespace AIHelper
                 if (path == null)
                 {
                     return;//return if path was not found
-                }                
+                }
                 SevenZipBase.SetLibraryPath(path);
 
                 //create dir if not exists

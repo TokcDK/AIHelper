@@ -1,5 +1,4 @@
 ﻿using AI_Helper.Manage;
-using AIHelper.Utils;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -307,8 +306,9 @@ namespace AIHelper.Manage
             string[] pathExclusions = { "BepInEx" + Path.DirectorySeparatorChar + "plugins", "Lec.ExtProtocol", "Common.ExtProtocol.Executor", "UnityCrashHandler64", Path.DirectorySeparatorChar + "IPA", "WideSliderPatch" };
 
             //Добавление exe из Data
-            Parallel.ForEach(Directory.EnumerateFileSystemEntries(ManageSettings.GetDataPath(), "*.exe", SearchOption.AllDirectories), 
-                exePath=> {
+            Parallel.ForEach(Directory.EnumerateFileSystemEntries(ManageSettings.GetDataPath(), "*.exe", SearchOption.AllDirectories),
+                exePath =>
+                {
                     string exeName = Path.GetFileNameWithoutExtension(exePath);
                     if (exeName.Length > 0 && !IniValuesDict.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
                     {
@@ -331,7 +331,8 @@ namespace AIHelper.Manage
             //}
             //Добавление exe из Mods
             Parallel.ForEach(Directory.EnumerateFileSystemEntries(ManageSettings.GetModsPath(), "*.exe", SearchOption.AllDirectories),
-                exePath => {
+                exePath =>
+                {
                     string exeName = Path.GetFileNameWithoutExtension(exePath);
                     if (exeName.Length > 0 && !IniValuesDict.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
                     {
@@ -802,7 +803,7 @@ namespace AIHelper.Manage
             {
                 return Path.Combine(ManageSettings.GetDataPath(), subpath);
             }
-            
+
             //check in Overwrite 1st
             string overwritePath = ManageSettings.GetCurrentGameMOOverwritePath() + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
             if (IsDir)

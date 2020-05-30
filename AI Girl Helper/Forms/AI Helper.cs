@@ -952,7 +952,7 @@ namespace AIHelper
         {
             ManageOther.CheckBoxChangeColor(sender as CheckBox);
             Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked = AutoShortcutRegistryCheckBox.Checked;
-            new INIFile(ManageSettings.GetAIHelperINIPath()).WriteINI("Settings", "autoCreateShortcutAndFixRegystry", Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked.ToString());
+            new INIFile(ManageSettings.GetAIHelperINIPath()).WriteINI("Settings", "autoCreateShortcutAndFixRegystry", Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked.ToString(CultureInfo.InvariantCulture));
         }
 
         private void ResolutionComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -975,11 +975,11 @@ namespace AIHelper
             FixRegistryButton.Enabled = true;
         }
 
-        private void MOButton_Click(object sender, EventArgs e)
+        private async void MOButton_Click(object sender, EventArgs e)
         {
             OnOffButtons(false);
 
-            ManageOther.WaitIfGameIsChanging();
+            await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
             if (MOmode)
             {
@@ -1008,11 +1008,11 @@ namespace AIHelper
             //OnOffButtons();
         }
 
-        private void GameButton_Click(object sender, EventArgs e)
+        private async void GameButton_Click(object sender, EventArgs e)
         {
             OnOffButtons(false);
 
-            ManageOther.WaitIfGameIsChanging();
+            await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
             if (MOmode)
             {
@@ -1030,11 +1030,11 @@ namespace AIHelper
             AIGirlHelperTabControl.Enabled = SwitchOn;
         }
 
-        private void StudioButton_Click(object sender, EventArgs e)
+        private async void StudioButton_Click(object sender, EventArgs e)
         {
             OnOffButtons(false);
 
-            ManageOther.WaitIfGameIsChanging();
+            await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
             if (MOmode)
             {
@@ -1401,6 +1401,12 @@ namespace AIHelper
                 string[] VanillaDataFiles = File.ReadAllLines(ManageSettings.GetVanillaDataFilesListFilePath());
                 string[] ModdedDataFiles = File.ReadAllLines(ManageSettings.GetModdedDataFilesListFilePath());
 
+                //remove normal mode identifier
+                if (File.Exists(Path.Combine(ManageSettings.GetDataPath(), "normal.mode")))
+                {
+                    File.Delete(Path.Combine(ManageSettings.GetDataPath(), "normal.mode"));
+                }
+
                 StringBuilder FilesWhichAlreadyHaveSameDestFileInMods = new StringBuilder();
                 bool FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = false;
 
@@ -1631,6 +1637,12 @@ namespace AIHelper
                     File.WriteAllLines(ManageSettings.GetMOToStandartConvertationOperationsListFilePath(), Operations);
                 }
 
+                //recreate normal mode identifier if failed
+                if (!File.Exists(Path.Combine(ManageSettings.GetDataPath(), "normal.mode")))
+                {
+                    File.WriteAllText(Path.Combine(ManageSettings.GetDataPath(), "normal.mode"), "The game is in normal mode");
+                }
+
                 MessageBox.Show("Failed to switch in MO mode. Error:" + Environment.NewLine + ex);
             }
         }
@@ -1797,6 +1809,13 @@ namespace AIHelper
                 File.WriteAllLines(ManageSettings.GetModdedDataFilesListFilePath(), DataWithModsFileslist);
                 File.WriteAllLines(ManageSettings.GetVanillaDataFilesListFilePath(), DataWithModsFileslist);
                 DataWithModsFileslist = null;
+
+                //create normal mode identifier
+                if(!File.Exists(Path.Combine(ManageSettings.GetDataPath(), "normal.mode")))
+                {
+                    File.WriteAllText(Path.Combine(ManageSettings.GetDataPath(), "normal.mode"), "The game is in normal mode");
+                }
+
 
                 //записать пути до пустых папок, чтобы при восстановлении восстановить и их
                 if (EmptyFoldersPaths.ToString().Length > 0)
@@ -2053,11 +2072,11 @@ namespace AIHelper
             newformButton.Text = @"\/";
         }
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private async void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             OnOffButtons(false);
 
-            ManageOther.WaitIfGameIsChanging();
+            await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
             if (MOmode)
             {
@@ -2090,12 +2109,35 @@ namespace AIHelper
             //ManageMOMods.BepinExLoadingFix(true);
         }
 
-        private void linkLabel1_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LinkLabel1_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
         {
             if (File.Exists(SetupXmlPath))
             {
                 Process.Start("notepad.exe", SetupXmlPath);
             }
+        }
+
+        private void Button2_Click(object sender, EventArgs e)
+        {
+            //Dictionary<string, string[]> PathCRCPair = new Dictionary<string, string[]>();
+            List<string> snapshotData = new List<string>();
+            foreach (var file in Directory.EnumerateFiles(ManageSettings.GetModsPath(), "*",SearchOption.AllDirectories))
+            {
+                snapshotData.Add(
+                    file.Replace(ManageSettings.GetModsPath(), string.Empty)
+                    + "|" +
+                    new FileInfo(file).Length
+                    + "|" +
+                    file.GetCrc32()
+                    +Environment.NewLine
+                    );
+                //if (!PathCRCPair.ContainsKey(file))
+                //{
+                //    PathCRCPair.Add(file.Replace(ManageSettings.GetModsPath(), string.Empty), new[] { new FileInfo(file).Length.ToString(),  file.GetCrc32() });
+                //}
+            }
+            File.WriteAllLines(Path.Combine(Application.StartupPath, "snapshot.txt"), snapshotData);
+
         }
 
         //Disable close window button

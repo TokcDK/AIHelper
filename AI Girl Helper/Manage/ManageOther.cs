@@ -1,10 +1,5 @@
-﻿using AIHelper.Manage;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -23,7 +18,7 @@ namespace AIHelper.Manage
             await Task.Run(() => WaitIfGameIsChanging(1000)).ConfigureAwait(true);
         }
 
-        private static void WaitIfGameIsChanging(int waittime, int maxLoops=20)
+        private static void WaitIfGameIsChanging(int waittime, int maxLoops = 60)
         {
             int loopsCount = 0;
             while (Properties.Settings.Default.MOmode && (Properties.Settings.Default.SetModOrganizerINISettingsForTheGame || Properties.Settings.Default.CurrentGameIsChanging) && loopsCount < maxLoops)

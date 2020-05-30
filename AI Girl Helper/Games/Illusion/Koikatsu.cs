@@ -1,12 +1,7 @@
 ﻿using AIHelper;
 using AIHelper.Games;
 using AIHelper.Manage;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AI_Helper.Games
 {
@@ -17,10 +12,9 @@ namespace AI_Helper.Games
             CopyMOfiles("MOKK");
         }
 
-        private string GameFolderName = string.Empty;
         public override string GetGameFolderName()
         {
-            return GameFolderName.Length > 0 ? GameFolderName : (GameFolderName = SearchGameFolder()).Length>0? GameFolderName:"Koikatsu";
+            return GetTheGameFolderName("Koikatsu");
         }
 
         public override string GetGameEXEName()

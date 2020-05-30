@@ -5,7 +5,7 @@ namespace AIHelper.Manage
 {
     internal static class ManageINI
     {
-        public static string GetINIValueIfExist(string INIPath, string Key, string Section=null, string defaultValue = "")
+        public static string GetINIValueIfExist(string INIPath, string Key, string Section = null, string defaultValue = "")
         {
             if (!File.Exists(INIPath))
             {

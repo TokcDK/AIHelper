@@ -15,9 +15,23 @@ namespace AIHelper.Games
 
         }
 
+        protected string gamefoldername { get; set; } = string.Empty;
+
         public virtual string GetGameFolderName()
         {
             return SearchGameFolder();
+        }
+
+        protected string GetTheGameFolderName(string DefaultGameFolderName)
+        {
+            if(gamefoldername.Length > 0 || (gamefoldername = SearchGameFolder()).Length > 0)
+            {
+                return gamefoldername;
+            }
+            else
+            {
+                return DefaultGameFolderName;
+            }
         }
 
         public virtual string GetGameDisplayingName()
@@ -27,7 +41,7 @@ namespace AIHelper.Games
 
         public abstract string GetGameEXEName();
 
-        public virtual string GetGameEXENameVR() 
+        public virtual string GetGameEXENameVR()
         {
             return GetGameEXEName() + "VR";
         }

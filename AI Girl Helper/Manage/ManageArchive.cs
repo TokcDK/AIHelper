@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.IO.Compression;
 
 namespace AIHelper.Manage
@@ -81,6 +82,33 @@ namespace AIHelper.Manage
             }
 
             return count;
+        }
+
+        internal static string GetZipmodGUID(string zipmodPath)
+        {
+            if (string.IsNullOrWhiteSpace(zipmodPath) || !File.Exists(zipmodPath))
+            {
+                return string.Empty;
+            }
+
+            try
+            {
+                using (ZipArchive archive = ZipFile.OpenRead(zipmodPath))
+                {
+                    foreach (var entry in archive.Entries)
+                    {
+                        if (entry.FullName.EndsWith("manifest.xml", StringComparison.OrdinalIgnoreCase))
+                        {
+                            return ManageXML.ReadXmlValue(entry.Open(), "manifest/guid");
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            return string.Empty;
         }
     }
 }

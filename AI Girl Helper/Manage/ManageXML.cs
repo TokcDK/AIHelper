@@ -33,7 +33,7 @@ namespace AIHelper.Manage
             }
         }
 
-        public static string ReadXmlValue(string xmlpath, string nodename, string defaultresult)
+        public static string ReadXmlValue(string xmlpath, string nodename, string defaultresult = "")
         {
             if (File.Exists(xmlpath))
             {
@@ -50,6 +50,34 @@ namespace AIHelper.Manage
                 else
                 {
                     return node.InnerText;
+                }
+            }
+            return defaultresult;
+        }
+
+        public static string ReadXmlValue(Stream xmlStream, string nodename, string defaultresult = "")
+        {
+            if (xmlStream != null)
+            {
+                try
+                {
+                    //https://stackoverflow.com/questions/2137957/update-value-in-xml-file
+                    XmlDocument xmlDoc = new XmlDocument();
+
+                    xmlDoc.Load(xmlStream);
+
+                    XmlNode node = xmlDoc.SelectSingleNode(nodename);
+
+                    if (node == null || node.InnerText == defaultresult)
+                    {
+                    }
+                    else
+                    {
+                        return node.InnerText;
+                    }
+                }
+                catch
+                {
                 }
             }
             return defaultresult;

@@ -10,7 +10,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -1027,7 +1026,7 @@ namespace AIHelper
 
         private void OnOffButtons(bool SwitchOn = true)
         {
-            AIGirlHelperTabControl.Enabled = SwitchOn;
+            AIGirlHelperTabControl.Invoke((Action)(() => AIGirlHelperTabControl.Enabled = SwitchOn));
         }
 
         private async void StudioButton_Click(object sender, EventArgs e)
@@ -1115,33 +1114,33 @@ namespace AIHelper
         /// <param name="processName"></param>
         private static void RunFreezedMOKiller(string processName)
         {
-            if (string.IsNullOrEmpty(processName))
-            {
-                return;
-            }
+            //if (string.IsNullOrEmpty(processName))
+            //{
+            //    return;
+            //}
 
-            //https://stackoverflow.com/questions/262280/how-can-i-know-if-a-process-is-running
+            ////https://stackoverflow.com/questions/262280/how-can-i-know-if-a-process-is-running
 
-            Thread.Sleep(5000);
-            while (Process.GetProcessesByName(processName).Length != 0)
-            {
-                Thread.Sleep(5000);
-            }
+            //Thread.Sleep(5000);
+            //while (Process.GetProcessesByName(processName).Length != 0)
+            //{
+            //    Thread.Sleep(5000);
+            //}
 
-            try
-            {
-                if (Process.GetProcessesByName("ModOrganizer").Length != 0)
-                {
-                    foreach (var process in Process.GetProcessesByName("ModOrganizer"))
-                    {
-                        process.Kill();
-                    }
-                }
-            }
-            catch
-            {
-                MessageBox.Show("AIHelper: Failed to kill one of freezed ModOrganizer.exe. Try to kill it from Task Manager.");
-            }
+            //try
+            //{
+            //    if (Process.GetProcessesByName("ModOrganizer").Length != 0)
+            //    {
+            //        foreach (var process in Process.GetProcessesByName("ModOrganizer"))
+            //        {
+            //            process.Kill();
+            //        }
+            //    }
+            //}
+            //catch
+            //{
+            //    MessageBox.Show("AIHelper: Failed to kill one of freezed ModOrganizer.exe. Try to kill it from Task Manager.");
+            //}
 
         }
 
@@ -1310,19 +1309,16 @@ namespace AIHelper
             OnOffButtons(false);
             if (MOmode)
             {
-                DialogResult result = MessageBox.Show(T._("Attention") + "\n\n" + T._("Conversation to") + " " + T._("Common mode") + "\n\n" + T._("This will move using mod files from Mods folder to Data folder to make it like common installation variant.\nYou can restore it later back to MO mode.\n\nContinue?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
+                DialogResult result = MessageBox.Show(
+                    T._("Attention")
+                    + "\n\n"
+                    + T._("Conversation to")
+                    + " " + T._("Common mode")
+                    + "\n\n"
+                    + T._("This will move using mod files from Mods folder to Data folder to make it like common installation variant.\nYou can restore it later back to MO mode.\n\nContinue?")
+                    , T._("Confirmation"), MessageBoxButtons.OKCancel);
                 if (result == DialogResult.OK)
                 {
-                    string[] EnabledModsList = ManageMO.GetModNamesListFromActiveMOProfile();
-                    int EnabledModsLength = EnabledModsList.Length;
-
-                    if (EnabledModsList.Length == 0)
-                    {
-                        MessageBox.Show(T._("There is no enabled mods in Mod Organizer"));
-                        OnOffButtons();
-                        return;
-                    }
-
                     using (ProgressBar MO2CommonProgressBar = new ProgressBar())
                     {
                         MO2CommonProgressBar.Style = ProgressBarStyle.Marquee;
@@ -1332,9 +1328,11 @@ namespace AIHelper
 
                         this.Controls.Add(MO2CommonProgressBar);
 
-                        await Task.Run(() => SwitchToCommonMode(EnabledModsList, EnabledModsLength)).ConfigureAwait(true);
+                        await Task.Run(() => SwitchToCommonMode()).ConfigureAwait(true);
 
                         this.Controls.Remove(MO2CommonProgressBar);
+
+                        OnOffButtons();
                     }
 
                     try
@@ -1398,8 +1396,27 @@ namespace AIHelper
             {
                 Operations = File.ReadAllLines(ManageSettings.GetMOToStandartConvertationOperationsListFilePath());
                 var OperationsSplitString = new string[] { "|MovedTo|" };
-                string[] VanillaDataFiles = File.ReadAllLines(ManageSettings.GetVanillaDataFilesListFilePath());
-                string[] ModdedDataFiles = File.ReadAllLines(ManageSettings.GetModdedDataFilesListFilePath());
+                var VanillaDataFiles = File.ReadAllLines(ManageSettings.GetVanillaDataFilesListFilePath());
+                var ModdedDataFiles = File.ReadAllLines(ManageSettings.GetModdedDataFilesListFilePath());
+                Dictionary<string, string> ZipmodsGUIDList = new Dictionary<string, string>();
+                bool ZipmodsGUIDListNotEmpty = false;
+                if (File.Exists(ManageSettings.GetZipmodsGUIDListFilePath()))
+                {
+                    using (var sr = new StreamReader(ManageSettings.GetZipmodsGUIDListFilePath()))
+                    {
+                        while (!sr.EndOfStream)
+                        {
+                            var line = sr.ReadLine();
+
+                            if (!string.IsNullOrWhiteSpace(line) && line.Contains("{{ZIPMOD}}"))
+                            {
+                                var GUIDPathPair = line.Split(new[] { "{{ZIPMOD}}" }, StringSplitOptions.None);
+                                ZipmodsGUIDList.Add(GUIDPathPair[0], GUIDPathPair[1]);
+                            }
+                        }
+                    }
+                    ZipmodsGUIDListNotEmpty = ZipmodsGUIDList.Count > 0;
+                }
 
                 //remove normal mode identifier
                 if (File.Exists(Path.Combine(ManageSettings.GetDataPath(), "normal.mode")))
@@ -1421,51 +1438,53 @@ namespace AIHelper
 
                     string[] MovePaths = Operations[o].Split(OperationsSplitString, StringSplitOptions.None);
 
-                    bool FilePathInModsExists = File.Exists(MovePaths[0]);
-                    bool FilePathInDataExists = File.Exists(MovePaths[1]);
+                    var FilePathInModsExists = File.Exists(MovePaths[0]);
+                    var FilePathInDataExists = File.Exists(MovePaths[1]);
 
-                    if (FilePathInDataExists)
+                    if (!FilePathInDataExists)
                     {
-                        if (!FilePathInModsExists)
+                        continue;
+                    }
+
+                    if (!FilePathInModsExists)
+                    {
+                        string modsubfolder = Path.GetDirectoryName(MovePaths[0]);
+                        if (!Directory.Exists(modsubfolder))
                         {
-                            string modsubfolder = Path.GetDirectoryName(MovePaths[0]);
-                            if (!Directory.Exists(modsubfolder))
-                            {
-                                Directory.CreateDirectory(modsubfolder);
-                            }
+                            Directory.CreateDirectory(modsubfolder);
+                        }
 
-                            try//ignore move file error if file will be locked and write in log about this
-                            {
-                                File.Move(MovePaths[1], MovePaths[0]);
+                        try//ignore move file error if file will be locked and write in log about this
+                        {
+                            File.Move(MovePaths[1], MovePaths[0]);
 
+                            //запись выполненной операции для удаления из общего списка в случае ошибки при переключении из обычного режима
+                            OperationsMade.AppendLine(Operations[o]);
+
+                            try
+                            {
+                                //Move bonemod file both with original
+                                if (File.Exists(MovePaths[1] + ".bonemod.txt"))
+                                {
+                                    File.Move(MovePaths[1] + ".bonemod.txt", MovePaths[0] + ".bonemod.txt");
+                                }
                                 //запись выполненной операции для удаления из общего списка в случае ошибки при переключении из обычного режима
-                                OperationsMade.AppendLine(Operations[o]);
-
-                                try
-                                {
-                                    //Move bonemod file both with original
-                                    if (File.Exists(MovePaths[1] + ".bonemod.txt"))
-                                    {
-                                        File.Move(MovePaths[1] + ".bonemod.txt", MovePaths[0] + ".bonemod.txt");
-                                    }
-                                    //запись выполненной операции для удаления из общего списка в случае ошибки при переключении из обычного режима
-                                    OperationsMade.AppendLine(MovePaths[1] + ".bonemod.txt" + "|MovedTo|" + MovePaths[0] + ".bonemod.txt");
-                                }
-                                catch
-                                {
-                                }
+                                OperationsMade.AppendLine(MovePaths[1] + ".bonemod.txt" + "|MovedTo|" + MovePaths[0] + ".bonemod.txt");
                             }
-                            catch (Exception ex)
+                            catch
                             {
-                                FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName + ".log"), DateTime.Now + " >>" + " Failed to move file: '" + Environment.NewLine + MovePaths[1] + "' " + Environment.NewLine + "Error:" + Environment.NewLine + ex + Environment.NewLine, true);
                             }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            //если в Mods на месте планируемого для перемещения назад в Mods файла появился новый файл, то записать информацию о нем в новый мод, чтобы перенести его в новый мод
-                            FilesWhichAlreadyHaveSameDestFileInMods.AppendLine(MovePaths[1] + "|MovedTo|" + MovePaths[0]);
-                            FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = true;
+                            FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName + ".log"), DateTime.Now + " >>" + " Failed to move file: '" + Environment.NewLine + MovePaths[1] + "' " + Environment.NewLine + "Error:" + Environment.NewLine + ex + Environment.NewLine, true);
                         }
+                    }
+                    else
+                    {
+                        //если в Mods на месте планируемого для перемещения назад в Mods файла появился новый файл, то записать информацию о нем в новый мод, чтобы перенести его в новый мод
+                        FilesWhichAlreadyHaveSameDestFileInMods.AppendLine(MovePaths[1] + "|MovedTo|" + MovePaths[0]);
+                        FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = true;
                     }
                 }
 
@@ -1566,12 +1585,31 @@ namespace AIHelper
                 int addedFilesLength = addedFiles.Length;
                 for (int f = 0; f < addedFilesLength; f++)
                 {
-                    string DestFileName = addedFiles[f].Replace(DataPath, DestFolderPath);
-                    string DestFileFolder = Path.GetDirectoryName(DestFileName);
-                    if (!Directory.Exists(DestFileFolder))
+                    string DestFileName = null;
+                    try
                     {
-                        Directory.CreateDirectory(DestFileFolder);
+                        //если zipmod guid присутствует в сохраненных, переместить его на место удаленного
+                        string ext;
+                        string guid;
+                        if (ZipmodsGUIDListNotEmpty
+                            && addedFiles[f].ToLowerInvariant().Contains("sideloader modpack")
+                            && ((ext = Path.GetExtension(addedFiles[f])) == ".zipmod" || ext == ".zip")
+                            && !string.IsNullOrWhiteSpace(guid = ManageArchive.GetZipmodGUID(addedFiles[f]))
+                            && ZipmodsGUIDList.ContainsKey(guid)
+                            )
+                        {
+                            DestFileName = Path.Combine(Path.GetDirectoryName(ZipmodsGUIDList[guid]), Path.GetFileName(addedFiles[f]));
+                        }
                     }
+                    catch
+                    {
+                    }
+
+                    if (string.IsNullOrEmpty(DestFileName))
+                    {
+                        DestFileName = addedFiles[f].Replace(DataPath, DestFolderPath);
+                    }
+                    Directory.CreateDirectory(Path.GetDirectoryName(DestFileName));
                     File.Move(addedFiles[f], DestFileName);
                 }
 
@@ -1613,6 +1651,10 @@ namespace AIHelper
                 File.Delete(ManageSettings.GetVanillaDataFilesListFilePath());
                 File.Delete(ManageSettings.GetVanillaDataEmptyFoldersListFilePath());
                 File.Delete(ManageSettings.GetModdedDataFilesListFilePath());
+                if (File.Exists(ManageSettings.GetZipmodsGUIDListFilePath()))
+                {
+                    File.Delete(ManageSettings.GetZipmodsGUIDListFilePath());
+                }
 
                 MOmode = true;
 
@@ -1647,14 +1689,27 @@ namespace AIHelper
             }
         }
 
-        private void SwitchToCommonMode(string[] EnabledModsList, int EnabledModsLength)
+        private void SwitchToCommonMode()
         {
+            string[] EnabledModsList = ManageMO.GetModNamesListFromActiveMOProfile();
+
+            if (EnabledModsList.Length == 0)
+            {
+                MessageBox.Show(T._("There is no enabled mods in Mod Organizer"));
+                return;
+            }
+
             //список выполненных операций с файлами.
             StringBuilder Operations = new StringBuilder();
             //список пустых папок в data до ереноса файлов модов
             StringBuilder EmptyFoldersPaths;
             //список файлов в data без модов
             string[] DataFolderFilesPaths;
+            //список guid zipmod-ов
+            Dictionary<string, string> ZipmodsGUIDList = new Dictionary<string, string>();
+
+
+            int EnabledModsLength = EnabledModsList.Length;
 
             try
             {
@@ -1676,10 +1731,16 @@ namespace AIHelper
                 //получение всех файлов из Data
                 DataFolderFilesPaths = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
 
+
                 //получение всех файлов из папки Overwrite и их обработка
                 string[] FilesInOverwrite = Directory.GetFiles(OverwriteFolder, "*.*", SearchOption.AllDirectories);
                 if (FilesInOverwrite.Length > 0)
                 {
+                    //if (Path.GetFileName(FilesInOverwrite[0]).Contains("Overwrite"))
+                    //{
+                    //    OverwriteFolder = OverwriteFolder.Replace("overwrite", "Overwrite");
+                    //}
+
                     string FileInDataFolder;
                     int FilesInOverwriteLength = FilesInOverwrite.Length;
                     for (int N = 0; N < FilesInOverwriteLength; N++)
@@ -1702,6 +1763,17 @@ namespace AIHelper
                                     File.Move(FileInDataFolder, FileInBakFolderWhichIsInRES);//перенос файла из Data в Bak, если там не было
                                     File.Move(FilesInOverwrite[N], FileInDataFolder);//перенос файла из папки Overwrite в Data
                                     Operations.AppendLine(FilesInOverwrite[N] + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
+
+                                    //zipmod GUID save
+                                    string FileInDataFolderExtension;
+                                    if (FileInDataFolder.ToLowerInvariant().Contains("sideloader modpack") && ((FileInDataFolderExtension = Path.GetExtension(FileInDataFolder).ToLowerInvariant()) == ".zipmod" || FileInDataFolderExtension == ".zip"))
+                                    {
+                                        var guid = ManageArchive.GetZipmodGUID(FileInDataFolder);
+                                        if (guid.Length > 0 && !ZipmodsGUIDList.ContainsKey(guid))
+                                        {
+                                            ZipmodsGUIDList.Add(guid, FilesInOverwrite[N]);
+                                        }
+                                    }
                                 }
                                 catch
                                 {
@@ -1711,6 +1783,33 @@ namespace AIHelper
                                         File.Move(FileInBakFolderWhichIsInRES, FileInDataFolder);
                                     }
                                 }
+                            }
+                        }
+                        else
+                        {
+                            string destFolder = Path.GetDirectoryName(FileInDataFolder);
+                            if (!Directory.Exists(destFolder))
+                            {
+                                Directory.CreateDirectory(destFolder);
+                            }
+                            try
+                            {
+                                File.Move(FilesInOverwrite[N], FileInDataFolder);//перенос файла из папки мода в Data
+                                Operations.AppendLine(FilesInOverwrite[N] + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
+
+                                //zipmod GUID save
+                                string FileInDataFolderExtension;
+                                if (FileInDataFolder.ToLowerInvariant().Contains("sideloader modpack") && ((FileInDataFolderExtension = Path.GetExtension(FileInDataFolder).ToLowerInvariant()) == ".zipmod" || FileInDataFolderExtension == ".zip"))
+                                {
+                                    var guid = ManageArchive.GetZipmodGUID(FileInDataFolder);
+                                    if (guid.Length > 0 && !ZipmodsGUIDList.ContainsKey(guid))
+                                    {
+                                        ZipmodsGUIDList.Add(guid, FilesInOverwrite[N]);
+                                    }
+                                }
+                            }
+                            catch
+                            {
                             }
                         }
                     }
@@ -1768,6 +1867,17 @@ namespace AIHelper
                                             File.Move(FileInDataFolder, FileInBakFolderWhichIsInRES);//перенос файла из Data в Bak, если там не было
                                             File.Move(ModFiles[f], FileInDataFolder);//перенос файла из папки мода в Data
                                             Operations.AppendLine(ModFiles[f] + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
+
+                                            //zipmod GUID save
+                                            string FileInDataFolderExtension;
+                                            if (FileInDataFolder.ToLowerInvariant().Contains("sideloader modpack") && ((FileInDataFolderExtension = Path.GetExtension(FileInDataFolder).ToLowerInvariant()) == ".zipmod" || FileInDataFolderExtension == ".zip"))
+                                            {
+                                                var guid = ManageArchive.GetZipmodGUID(FileInDataFolder);
+                                                if (guid.Length > 0 && !ZipmodsGUIDList.ContainsKey(guid))
+                                                {
+                                                    ZipmodsGUIDList.Add(guid, ModFiles[f]);
+                                                }
+                                            }
                                         }
                                         catch
                                         {
@@ -1790,6 +1900,17 @@ namespace AIHelper
                                     {
                                         File.Move(ModFiles[f], FileInDataFolder);//перенос файла из папки мода в Data
                                         Operations.AppendLine(ModFiles[f] + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
+
+                                        //zipmod GUID save
+                                        string FileInDataFolderExtension;
+                                        if (FileInDataFolder.ToLowerInvariant().Contains("sideloader modpack") && ((FileInDataFolderExtension = Path.GetExtension(FileInDataFolder).ToLowerInvariant()) == ".zipmod" || FileInDataFolderExtension == ".zip"))
+                                        {
+                                            var guid = ManageArchive.GetZipmodGUID(FileInDataFolder);
+                                            if (guid.Length > 0 && !ZipmodsGUIDList.ContainsKey(guid))
+                                            {
+                                                ZipmodsGUIDList.Add(guid, ModFiles[f]);
+                                            }
+                                        }
                                     }
                                     catch
                                     {
@@ -1808,10 +1929,22 @@ namespace AIHelper
                 string[] DataWithModsFileslist = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
                 File.WriteAllLines(ManageSettings.GetModdedDataFilesListFilePath(), DataWithModsFileslist);
                 File.WriteAllLines(ManageSettings.GetVanillaDataFilesListFilePath(), DataWithModsFileslist);
+                if (ZipmodsGUIDList.Count > 0)
+                {
+                    //using (var file = new StreamWriter(ManageSettings.GetZipmodsGUIDListFilePath()))
+                    //{
+                    //    foreach (var entry in ZipmodsGUIDList)
+                    //    {
+                    //        file.WriteLine("{0}{{ZIPMOD}}{1}", entry.Key, entry.Value);
+                    //    }
+                    //}
+                    File.WriteAllLines(ManageSettings.GetZipmodsGUIDListFilePath(),
+                        ZipmodsGUIDList.Select(x => x.Key + "{{ZIPMOD}}" + x.Value).ToArray());
+                }
                 DataWithModsFileslist = null;
 
                 //create normal mode identifier
-                if(!File.Exists(Path.Combine(ManageSettings.GetDataPath(), "normal.mode")))
+                if (!File.Exists(Path.Combine(ManageSettings.GetDataPath(), "normal.mode")))
                 {
                     File.WriteAllText(Path.Combine(ManageSettings.GetDataPath(), "normal.mode"), "The game is in normal mode");
                 }
@@ -2121,7 +2254,7 @@ namespace AIHelper
         {
             //Dictionary<string, string[]> PathCRCPair = new Dictionary<string, string[]>();
             List<string> snapshotData = new List<string>();
-            foreach (var file in Directory.EnumerateFiles(ManageSettings.GetModsPath(), "*",SearchOption.AllDirectories))
+            foreach (var file in Directory.EnumerateFiles(ManageSettings.GetModsPath(), "*", SearchOption.AllDirectories))
             {
                 snapshotData.Add(
                     file.Replace(ManageSettings.GetModsPath(), string.Empty)
@@ -2129,7 +2262,7 @@ namespace AIHelper
                     new FileInfo(file).Length
                     + "|" +
                     file.GetCrc32()
-                    +Environment.NewLine
+                    + Environment.NewLine
                     );
                 //if (!PathCRCPair.ContainsKey(file))
                 //{

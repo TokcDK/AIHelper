@@ -265,6 +265,11 @@ namespace AIHelper.Manage
             return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName(), "MOToStandartConvertationOperationsList.txt");
         }
 
+        internal static string GetZipmodsGUIDListFilePath()
+        {
+            return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName(), "ZipmodsGUIDList.txt");
+        }
+
         public static string GetBepInExPath()
         {
             return Path.Combine(Properties.Settings.Default.MOmode ? GetModsPath() : GetDataPath(), "BepInEx");

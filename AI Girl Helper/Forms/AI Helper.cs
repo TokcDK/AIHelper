@@ -1598,21 +1598,29 @@ namespace AIHelper
                             && ZipmodsGUIDList.ContainsKey(guid)
                             )
                         {
-                            if(Path.GetFileName(addedFiles[f])== Path.GetFileName(ZipmodsGUIDList[guid]))//when zipmod has same name but moved
+                            if (Path.GetFileName(addedFiles[f]) == Path.GetFileName(ZipmodsGUIDList[guid]))//when zipmod has same name but moved
                             {
                                 DestFileName = addedFiles[f].Replace(ManageSettings.GetDataPath(),
-                                    ZipmodsGUIDList[guid].IsInOverwriteFolder() ? 
+                                    ZipmodsGUIDList[guid].IsInOverwriteFolder() ?
                                     ManageSettings.GetOverwriteFolder() : ManageSettings.GetModsPath());
                             }
                             else//when mod was renamed
                             {
                                 if (ZipmodsGUIDList[guid].IsInOverwriteFolder())//zipmod in overwrite
                                 {
-                                    DestFileName = addedFiles[f].Replace(ManageSettings.GetDataPath(), ManageSettings.GetOverwriteFolder());
+                                    var NewFilePath = addedFiles[f].Replace(ManageSettings.GetDataPath(), ManageSettings.GetOverwriteFolder());
+                                    if(Directory.Exists(Path.GetDirectoryName(NewFilePath)) && NewFilePath!= addedFiles[f])
+                                    {
+                                        DestFileName = NewFilePath;
+                                    }
                                 }
                                 else//zipmod in Mods
                                 {
-                                    DestFileName = addedFiles[f].Replace(ManageSettings.GetDataPath(), ManageMOMods.GetMOModPathInMods(ZipmodsGUIDList[guid]));
+                                    var ModPath = ManageMOMods.GetMOModPathInMods(ZipmodsGUIDList[guid]);
+                                    if (Path.GetFileName(ModPath).ToUpperInvariant() != "MODS" && Directory.Exists(ModPath))
+                                    {
+                                        DestFileName = addedFiles[f].Replace(ManageSettings.GetDataPath(), ModPath);
+                                    }
                                 }
                             }
                         }

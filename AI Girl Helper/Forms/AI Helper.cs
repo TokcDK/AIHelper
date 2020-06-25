@@ -1598,7 +1598,23 @@ namespace AIHelper
                             && ZipmodsGUIDList.ContainsKey(guid)
                             )
                         {
-                            DestFileName = Path.Combine(Path.GetDirectoryName(ZipmodsGUIDList[guid]), Path.GetFileName(addedFiles[f]));
+                            if(Path.GetFileName(addedFiles[f])== Path.GetFileName(ZipmodsGUIDList[guid]))//when zipmod has same name but moved
+                            {
+                                DestFileName = addedFiles[f].Replace(ManageSettings.GetDataPath(),
+                                    ZipmodsGUIDList[guid].IsInOverwriteFolder() ? 
+                                    ManageSettings.GetOverwriteFolder() : ManageSettings.GetModsPath());
+                            }
+                            else//when mod was renamed
+                            {
+                                if (ZipmodsGUIDList[guid].IsInOverwriteFolder())//zipmod in overwrite
+                                {
+                                    DestFileName = addedFiles[f].Replace(ManageSettings.GetDataPath(), ManageSettings.GetOverwriteFolder());
+                                }
+                                else//zipmod in Mods
+                                {
+                                    DestFileName = addedFiles[f].Replace(ManageSettings.GetDataPath(), ManageMOMods.GetMOModPathInMods(ZipmodsGUIDList[guid]));
+                                }
+                            }
                         }
                     }
                     catch

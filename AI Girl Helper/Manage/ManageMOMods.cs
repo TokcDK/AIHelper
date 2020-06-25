@@ -1667,5 +1667,19 @@ namespace AIHelper.Manage
                 }
             }
         }
+
+        internal static string GetMOModPathInMods(string inputPath)
+        {
+            //search ModPath
+            string ModPath = inputPath;
+            string FolderPath = ModPath;
+            while (FolderPath.ToUpperInvariant() != ManageSettings.GetModsPath().ToUpperInvariant())
+            {
+                ModPath = FolderPath;
+                FolderPath = Path.GetDirectoryName(FolderPath);
+            }
+
+            return ModPath;
+        }
     }
 }

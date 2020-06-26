@@ -140,7 +140,7 @@ namespace AIHelper.Manage
             }
             catch (Exception ex)
             {
-                FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName + ".log"), DateTime.Now + " >>" + "dirPath=" + dirPath + Environment.NewLine + "Error:" + Environment.NewLine + ex + Environment.NewLine, true);
+                ManageLogs.Log("dirPath=" + dirPath + Environment.NewLine + "Error:" + Environment.NewLine + ex);
                 return;
             }
 

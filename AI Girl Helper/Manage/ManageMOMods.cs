@@ -1681,5 +1681,19 @@ namespace AIHelper.Manage
 
             return ModPath;
         }
+
+        internal static void SaveGUIDIfZipMod(string FileInDataFolder, string FileInOverwrite, System.Collections.Generic.Dictionary<string, string> ZipmodsGUIDList)
+        {
+            //zipmod GUID save
+            string FileInDataFolderExtension;
+            if (FileInDataFolder.ToLowerInvariant().Contains("sideloader modpack") && ((FileInDataFolderExtension = Path.GetExtension(FileInDataFolder).ToLowerInvariant()) == ".zipmod" || FileInDataFolderExtension == ".zip"))
+            {
+                var guid = ManageArchive.GetZipmodGUID(FileInDataFolder);
+                if (guid.Length > 0 && !ZipmodsGUIDList.ContainsKey(guid))
+                {
+                    ZipmodsGUIDList.Add(guid, FileInOverwrite);
+                }
+            }
+        }
     }
 }

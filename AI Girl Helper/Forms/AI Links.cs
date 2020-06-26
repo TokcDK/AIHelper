@@ -16,7 +16,7 @@ namespace AIHelper
             SetLocalization();
         }
 
-        private void SetLocalization()
+        private static void SetLocalization()
         {
             //LinksCharactersGroupBox.Text = T._("Characters");
         }

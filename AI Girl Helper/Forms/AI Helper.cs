@@ -691,7 +691,7 @@ namespace AIHelper
             ManageXML.ChangeXmlValue(SetupXmlPath, "Setting/Height", Resolution.Replace("(16 : 9)", string.Empty).Trim().Split('x')[1].Trim());
         }
 
-        private void SetGraphicsQuality(string quality)
+        private static void SetGraphicsQuality(string quality)
         {
             if (Directory.Exists(OverwriteFolder))
             {
@@ -1477,7 +1477,7 @@ namespace AIHelper
                         }
                         catch (Exception ex)
                         {
-                            FileWriter.WriteData(Path.Combine(Application.StartupPath, Application.ProductName + ".log"), DateTime.Now + " >>" + " Failed to move file: '" + Environment.NewLine + MovePaths[1] + "' " + Environment.NewLine + "Error:" + Environment.NewLine + ex + Environment.NewLine, true);
+                             ManageLogs.Log("Failed to move file: '" + Environment.NewLine + MovePaths[1] + "' " + Environment.NewLine + "Error:" + Environment.NewLine + ex);
                         }
                     }
                     else
@@ -1625,8 +1625,9 @@ namespace AIHelper
                             }
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        ManageLogs.Log("Error occured while to MO mode switch:" + Environment.NewLine + ex);
                     }
 
                     if (string.IsNullOrEmpty(DestFileName))
@@ -1715,7 +1716,7 @@ namespace AIHelper
 
         private void SwitchToCommonMode()
         {
-            string[] EnabledModsList = ManageMO.GetModNamesListFromActiveMOProfile();
+            var EnabledModsList = ManageMO.GetModNamesListFromActiveMOProfile();
 
             if (EnabledModsList.Length == 0)
             {
@@ -1724,7 +1725,7 @@ namespace AIHelper
             }
 
             //список выполненных операций с файлами.
-            StringBuilder Operations = new StringBuilder();
+            var Operations = new StringBuilder();
             //список пустых папок в data до ереноса файлов модов
             StringBuilder EmptyFoldersPaths;
             //список файлов в data без модов
@@ -1733,7 +1734,7 @@ namespace AIHelper
             Dictionary<string, string> ZipmodsGUIDList = new Dictionary<string, string>();
 
 
-            int EnabledModsLength = EnabledModsList.Length;
+            var EnabledModsLength = EnabledModsList.Length;
 
             try
             {
@@ -1757,7 +1758,7 @@ namespace AIHelper
 
 
                 //получение всех файлов из папки Overwrite и их обработка
-                string[] FilesInOverwrite = Directory.GetFiles(OverwriteFolder, "*.*", SearchOption.AllDirectories);
+                var FilesInOverwrite = Directory.GetFiles(OverwriteFolder, "*.*", SearchOption.AllDirectories);
                 if (FilesInOverwrite.Length > 0)
                 {
                     //if (Path.GetFileName(FilesInOverwrite[0]).Contains("Overwrite"))
@@ -1766,16 +1767,34 @@ namespace AIHelper
                     //}
 
                     string FileInDataFolder;
-                    int FilesInOverwriteLength = FilesInOverwrite.Length;
+                    var FilesInOverwriteLength = FilesInOverwrite.Length;
                     for (int N = 0; N < FilesInOverwriteLength; N++)
                     {
-                        FileInDataFolder = FilesInOverwrite[N].Replace(OverwriteFolder, DataPath);
+                        var FileInOverwrite = FilesInOverwrite[N];
+                        if (FileInOverwrite.Length > 259)
+                        {
+                            if (OfferToSkipTheFileConfirmed(FileInOverwrite))
+                            {
+                                continue;
+                            }
+                            //    FileInOverwrite = @"\\?\" + FileInOverwrite;
+                        }
+
+                        FileInDataFolder = FileInOverwrite.Replace(OverwriteFolder, DataPath);
+                        //if (FileInDataFolder.Length > 259)
+                        //{
+                        //    FileInDataFolder = @"\\?\" + FileInDataFolder;
+                        //}
                         if (File.Exists(FileInDataFolder))
                         {
-                            string FileInBakFolderWhichIsInRES = FileInDataFolder.Replace(DataPath, ManageSettings.GetMOmodeDataFilesBakDirPath());
+                            var FileInBakFolderWhichIsInRES = FileInDataFolder.Replace(DataPath, ManageSettings.GetMOmodeDataFilesBakDirPath());
+                            //if (FileInBakFolderWhichIsInRES.Length > 259)
+                            //{
+                            //    FileInBakFolderWhichIsInRES = @"\\?\" + FileInBakFolderWhichIsInRES;
+                            //}
                             if (!File.Exists(FileInBakFolderWhichIsInRES) && DataFolderFilesPaths.Contains(FileInDataFolder))
                             {
-                                string bakfolder = Path.GetDirectoryName(FileInBakFolderWhichIsInRES);
+                                var bakfolder = Path.GetDirectoryName(FileInBakFolderWhichIsInRES);
 
                                 if (!Directory.Exists(bakfolder))
                                 {
@@ -1785,24 +1804,15 @@ namespace AIHelper
                                 try
                                 {
                                     File.Move(FileInDataFolder, FileInBakFolderWhichIsInRES);//перенос файла из Data в Bak, если там не было
-                                    File.Move(FilesInOverwrite[N], FileInDataFolder);//перенос файла из папки Overwrite в Data
-                                    Operations.AppendLine(FilesInOverwrite[N] + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
+                                    File.Move(FileInOverwrite, FileInDataFolder);//перенос файла из папки Overwrite в Data
+                                    Operations.AppendLine(FileInOverwrite + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
 
-                                    //zipmod GUID save
-                                    string FileInDataFolderExtension;
-                                    if (FileInDataFolder.ToLowerInvariant().Contains("sideloader modpack") && ((FileInDataFolderExtension = Path.GetExtension(FileInDataFolder).ToLowerInvariant()) == ".zipmod" || FileInDataFolderExtension == ".zip"))
-                                    {
-                                        var guid = ManageArchive.GetZipmodGUID(FileInDataFolder);
-                                        if (guid.Length > 0 && !ZipmodsGUIDList.ContainsKey(guid))
-                                        {
-                                            ZipmodsGUIDList.Add(guid, FilesInOverwrite[N]);
-                                        }
-                                    }
+                                    ManageMOMods.SaveGUIDIfZipMod(FileInDataFolder, FileInOverwrite, ZipmodsGUIDList);
                                 }
                                 catch
                                 {
                                     //когда файла в дата нет, файл в бак есть и есть файл в папке Overwrite - вернуть файл из bak назад
-                                    if (!File.Exists(FileInDataFolder) && File.Exists(FileInBakFolderWhichIsInRES) && File.Exists(FilesInOverwrite[N]))
+                                    if (!File.Exists(FileInDataFolder) && File.Exists(FileInBakFolderWhichIsInRES) && File.Exists(FileInOverwrite))
                                     {
                                         File.Move(FileInBakFolderWhichIsInRES, FileInDataFolder);
                                     }
@@ -1811,29 +1821,21 @@ namespace AIHelper
                         }
                         else
                         {
-                            string destFolder = Path.GetDirectoryName(FileInDataFolder);
+                            var destFolder = Path.GetDirectoryName(FileInDataFolder);
                             if (!Directory.Exists(destFolder))
                             {
                                 Directory.CreateDirectory(destFolder);
                             }
                             try
                             {
-                                File.Move(FilesInOverwrite[N], FileInDataFolder);//перенос файла из папки мода в Data
-                                Operations.AppendLine(FilesInOverwrite[N] + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
+                                File.Move(FileInOverwrite, FileInDataFolder);//перенос файла из папки мода в Data
+                                Operations.AppendLine(FileInOverwrite + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
 
-                                //zipmod GUID save
-                                string FileInDataFolderExtension;
-                                if (FileInDataFolder.ToLowerInvariant().Contains("sideloader modpack") && ((FileInDataFolderExtension = Path.GetExtension(FileInDataFolder).ToLowerInvariant()) == ".zipmod" || FileInDataFolderExtension == ".zip"))
-                                {
-                                    var guid = ManageArchive.GetZipmodGUID(FileInDataFolder);
-                                    if (guid.Length > 0 && !ZipmodsGUIDList.ContainsKey(guid))
-                                    {
-                                        ZipmodsGUIDList.Add(guid, FilesInOverwrite[N]);
-                                    }
-                                }
+                                ManageMOMods.SaveGUIDIfZipMod(FileInDataFolder, FileInOverwrite, ZipmodsGUIDList);
                             }
-                            catch
+                            catch (Exception ex)
                             {
+                                ManageLogs.Log("Error occured while to common mode switch:" + Environment.NewLine + ex);
                             }
                         }
                     }
@@ -1841,45 +1843,74 @@ namespace AIHelper
 
                 for (int N = 0; N < EnabledModsLength; N++)
                 {
-                    string ModFolder = Path.Combine(ModsPath, EnabledModsList[N]);
+                    var ModFolder = Path.Combine(ModsPath, EnabledModsList[N]);
                     if (ModFolder.Length > 0 && Directory.Exists(ModFolder))
                     {
-                        string[] ModFiles = Directory.GetFiles(ModFolder, "*.*", SearchOption.AllDirectories);
+                        var ModFiles = Directory.GetFiles(ModFolder, "*.*", SearchOption.AllDirectories);
                         if (ModFiles.Length > 0)
                         {
-                            int ModFilesLength = ModFiles.Length;
+                            var ModFilesLength = ModFiles.Length;
                             string FileInDataFolder;
 
-                            bool metaskipped = false;
+                            var metaskipped = false;
                             for (int f = 0; f < ModFilesLength; f++)
                             {
-                                //skip images and txt in mod root folder
-                                string FileExtension = Path.GetExtension(ModFiles[f]);
-                                if ((FileExtension == ".txt" || FileExtension == ".jpg" || FileExtension == ".png") && Path.GetFileName(Path.GetDirectoryName(ModFiles[f])) == EnabledModsList[N])
+                                //"\\?\" - prefix to ignore 260 path cars limit
+
+                                var FileOfMod = ModFiles[f];
+                                if (FileOfMod.Length > 259)
                                 {
-                                    //пропускать картинки и txt в корне папки мода
-                                    continue;
+                                    if (OfferToSkipTheFileConfirmed(FileOfMod))
+                                    {
+                                        continue;
+                                    }
+                                    //FileOfMod = @"\\?\" + FileOfMod;
+                                }
+
+                                try
+                                {
+                                    //skip images and txt in mod root folder
+                                    var FileExtension = Path.GetExtension(FileOfMod);
+                                    if (FileExtension == ".txt" || FileExtension == ".jpg" || FileExtension == ".png")
+                                    {
+                                        if (Path.GetFileName(FileOfMod.Replace(Path.DirectorySeparatorChar + Path.GetFileName(FileOfMod), string.Empty)) == EnabledModsList[N])
+                                        {
+                                            //пропускать картинки и txt в корне папки мода
+                                            continue;
+                                        }
+                                    }
+                                }
+                                catch
+                                {
                                 }
 
                                 //skip meta.ini
                                 if (metaskipped)
                                 {
                                 }
-                                else if (Path.GetFileName(ModFiles[f]) == "meta.ini" /*ModFiles[f].Length >= 8 && string.Compare(ModFiles[f].Substring(ModFiles[f].Length - 8, 8), "meta.ini", true) == 0*/)
+                                else if (Path.GetFileName(FileOfMod) == "meta.ini" /*ModFile.Length >= 8 && string.Compare(ModFile.Substring(ModFile.Length - 8, 8), "meta.ini", true) == 0*/)
                                 {
                                     metaskipped = true;//для ускорения проверки, когда meta будет найден, будет делать быструю проверку bool переменной
                                     continue;
                                 }
 
                                 //MOCommonModeSwitchButton.Text = "..." + EnabledModsLength + "/" + N + ": " + f + "/" + ModFilesLength;
-                                FileInDataFolder = ModFiles[f].Replace(ModFolder, DataPath);
+                                FileInDataFolder = FileOfMod.Replace(ModFolder, DataPath);
+                                //if (FileInDataFolder.Length > 259)
+                                //{
+                                //    FileInDataFolder = @"\\?\" + FileInDataFolder;
+                                //}
 
                                 if (File.Exists(FileInDataFolder))
                                 {
-                                    string FileInBakFolderWhichIsInRES = FileInDataFolder.Replace(DataPath, ManageSettings.GetMOmodeDataFilesBakDirPath());
+                                    var FileInBakFolderWhichIsInRES = FileInDataFolder.Replace(DataPath, ManageSettings.GetMOmodeDataFilesBakDirPath());
+                                    //if (FileInBakFolderWhichIsInRES.Length > 259)
+                                    //{
+                                    //    FileInBakFolderWhichIsInRES = @"\\?\" + FileInBakFolderWhichIsInRES;
+                                    //}
                                     if (!File.Exists(FileInBakFolderWhichIsInRES) && DataFolderFilesPaths.Contains(FileInDataFolder))
                                     {
-                                        string bakfolder = Path.GetDirectoryName(FileInBakFolderWhichIsInRES);
+                                        var bakfolder = Path.GetDirectoryName(FileInBakFolderWhichIsInRES);
 
                                         if (!Directory.Exists(bakfolder))
                                         {
@@ -1889,24 +1920,15 @@ namespace AIHelper
                                         try
                                         {
                                             File.Move(FileInDataFolder, FileInBakFolderWhichIsInRES);//перенос файла из Data в Bak, если там не было
-                                            File.Move(ModFiles[f], FileInDataFolder);//перенос файла из папки мода в Data
-                                            Operations.AppendLine(ModFiles[f] + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
+                                            File.Move(FileOfMod, FileInDataFolder);//перенос файла из папки мода в Data
+                                            Operations.AppendLine(FileOfMod + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
 
-                                            //zipmod GUID save
-                                            string FileInDataFolderExtension;
-                                            if (FileInDataFolder.ToLowerInvariant().Contains("sideloader modpack") && ((FileInDataFolderExtension = Path.GetExtension(FileInDataFolder).ToLowerInvariant()) == ".zipmod" || FileInDataFolderExtension == ".zip"))
-                                            {
-                                                var guid = ManageArchive.GetZipmodGUID(FileInDataFolder);
-                                                if (guid.Length > 0 && !ZipmodsGUIDList.ContainsKey(guid))
-                                                {
-                                                    ZipmodsGUIDList.Add(guid, ModFiles[f]);
-                                                }
-                                            }
+                                            ManageMOMods.SaveGUIDIfZipMod(FileInDataFolder, FileOfMod, ZipmodsGUIDList);
                                         }
                                         catch
                                         {
                                             //когда файла в дата нет, файл в бак есть и есть файл в папке мода - вернуть файл из bak назад
-                                            if (!File.Exists(FileInDataFolder) && File.Exists(FileInBakFolderWhichIsInRES) && File.Exists(ModFiles[f]))
+                                            if (!File.Exists(FileInDataFolder) && File.Exists(FileInBakFolderWhichIsInRES) && File.Exists(FileOfMod))
                                             {
                                                 File.Move(FileInBakFolderWhichIsInRES, FileInDataFolder);
                                             }
@@ -1915,33 +1937,25 @@ namespace AIHelper
                                 }
                                 else
                                 {
-                                    string destFolder = Path.GetDirectoryName(FileInDataFolder);
+                                    var destFolder = Path.GetDirectoryName(FileInDataFolder);
                                     if (!Directory.Exists(destFolder))
                                     {
                                         Directory.CreateDirectory(destFolder);
                                     }
                                     try
                                     {
-                                        File.Move(ModFiles[f], FileInDataFolder);//перенос файла из папки мода в Data
-                                        Operations.AppendLine(ModFiles[f] + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
+                                        File.Move(FileOfMod, FileInDataFolder);//перенос файла из папки мода в Data
+                                        Operations.AppendLine(FileOfMod + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
 
-                                        //zipmod GUID save
-                                        string FileInDataFolderExtension;
-                                        if (FileInDataFolder.ToLowerInvariant().Contains("sideloader modpack") && ((FileInDataFolderExtension = Path.GetExtension(FileInDataFolder).ToLowerInvariant()) == ".zipmod" || FileInDataFolderExtension == ".zip"))
-                                        {
-                                            var guid = ManageArchive.GetZipmodGUID(FileInDataFolder);
-                                            if (guid.Length > 0 && !ZipmodsGUIDList.ContainsKey(guid))
-                                            {
-                                                ZipmodsGUIDList.Add(guid, ModFiles[f]);
-                                            }
-                                        }
+                                        ManageMOMods.SaveGUIDIfZipMod(FileInDataFolder, FileOfMod, ZipmodsGUIDList);
                                     }
-                                    catch
+                                    catch (Exception ex)
                                     {
+                                        ManageLogs.Log("Error occured while to common mode switch:" + Environment.NewLine+ex);
                                     }
                                 }
 
-                                //MoveWithReplace(ModFiles[f], DestFilePath[f]);
+                                //MoveWithReplace(ModFile, DestFilePath[f]);
                             }
                             //Directory.Delete(ModFolder, true);
                         }
@@ -1950,7 +1964,7 @@ namespace AIHelper
 
                 File.WriteAllText(ManageSettings.GetMOToStandartConvertationOperationsListFilePath(), Operations.ToString());
                 Operations.Clear();
-                string[] DataWithModsFileslist = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
+                var DataWithModsFileslist = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
                 File.WriteAllLines(ManageSettings.GetModdedDataFilesListFilePath(), DataWithModsFileslist);
                 File.WriteAllLines(ManageSettings.GetVanillaDataFilesListFilePath(), DataWithModsFileslist);
                 if (ZipmodsGUIDList.Count > 0)
@@ -1985,45 +1999,75 @@ namespace AIHelper
             }
             catch (Exception ex)
             {
-                if (Operations.Length > 0)
-                {
-                    foreach (string record in Operations.ToString().SplitToLines())
-                    {
-                        string[] MovePaths = record.Split(new string[] { "|MovedTo|" }, StringSplitOptions.None);
-
-                        bool FilePathInModsExists = File.Exists(MovePaths[0]);
-                        bool FilePathInDataExists = File.Exists(MovePaths[1]);
-
-                        if (FilePathInDataExists)
-                        {
-                            if (!FilePathInModsExists)
-                            {
-                                string modsubfolder = Path.GetDirectoryName(MovePaths[0]);
-                                if (!Directory.Exists(modsubfolder))
-                                {
-                                    Directory.CreateDirectory(modsubfolder);
-                                }
-
-                                File.Move(MovePaths[1], MovePaths[0]);
-                            }
-                        }
-                    }
-
-                    //возврат возможных ванильных резервных копий
-                    MoveVanillaFIlesBackToData();
-                }
+                //восстановление файлов в первоначальные папки
+                RestoreMovedFilesLocation(Operations);
 
                 //сообщить об ошибке
                 MessageBox.Show("Mode was not switched. Error:" + Environment.NewLine + ex);
             }
         }
 
+        private static bool OfferToSkipTheFileConfirmed(string file)
+        {
+            DialogResult result = MessageBox.Show(
+                T._("Path to file is too long!") + Environment.NewLine
+                + "(" + file + ")" + Environment.NewLine
+                + T._("Long Path can cause mode switch error and mode will not be switched.") + Environment.NewLine
+                + T._("Skip it?") + Environment.NewLine
+                , T._("Too long file path"), MessageBoxButtons.YesNo);
+
+            return result == DialogResult.Yes;
+        }
+
+        private void RestoreMovedFilesLocation(StringBuilder Operations)
+        {
+            if (Operations.Length > 0)
+            {
+                foreach (string record in Operations.ToString().SplitToLines())
+                {
+                    try
+                    {
+                        if (string.IsNullOrWhiteSpace(record))
+                        {
+                            continue;
+                        }
+
+                        var MovePaths = record.Split(new string[] { "|MovedTo|" }, StringSplitOptions.None);
+
+                        if (MovePaths.Length != 2)
+                        {
+                            continue;
+                        }
+
+                        var FilePathInMods = MovePaths[0];
+                        var FilePathInData = MovePaths[1];
+
+                        if (File.Exists(FilePathInData))
+                        {
+                            if (!File.Exists(FilePathInMods))
+                            {
+                                Directory.CreateDirectory(Path.GetDirectoryName(FilePathInMods));
+
+                                File.Move(FilePathInData, FilePathInMods);
+                            }
+                        }
+                    }
+                    catch
+                    {
+                    }
+                }
+
+                //возврат возможных ванильных резервных копий
+                MoveVanillaFIlesBackToData();
+            }
+        }
+
         private void MoveVanillaFIlesBackToData()
         {
-            string MOmodeDataFilesBakDirPath = ManageSettings.GetMOmodeDataFilesBakDirPath();
+            var MOmodeDataFilesBakDirPath = ManageSettings.GetMOmodeDataFilesBakDirPath();
             if (Directory.Exists(MOmodeDataFilesBakDirPath))
             {
-                string[] FilesInMOmodeDataFilesBak = Directory.GetFiles(MOmodeDataFilesBakDirPath, "*.*", SearchOption.AllDirectories);
+                var FilesInMOmodeDataFilesBak = Directory.GetFiles(MOmodeDataFilesBakDirPath, "*.*", SearchOption.AllDirectories);
                 int FilesInMOmodeDataFilesBakLength = FilesInMOmodeDataFilesBak.Length;
                 for (int f = 0; f < FilesInMOmodeDataFilesBakLength; f++)
                 {
@@ -2032,10 +2076,10 @@ namespace AIHelper
                         continue;
                     }
 
-                    string DestFileInDataFolderPath = FilesInMOmodeDataFilesBak[f].Replace(MOmodeDataFilesBakDirPath, DataPath);
+                    var DestFileInDataFolderPath = FilesInMOmodeDataFilesBak[f].Replace(MOmodeDataFilesBakDirPath, DataPath);
                     if (!File.Exists(DestFileInDataFolderPath))
                     {
-                        string DestFileInDataFolderPathFolder = Path.GetDirectoryName(DestFileInDataFolderPath);
+                        var DestFileInDataFolderPathFolder = Path.GetDirectoryName(DestFileInDataFolderPath);
                         if (!Directory.Exists(DestFileInDataFolderPathFolder))
                         {
                             Directory.CreateDirectory(DestFileInDataFolderPathFolder);

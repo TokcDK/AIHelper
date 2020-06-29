@@ -1,6 +1,5 @@
 ﻿using AIHelper.Games;
 using AIHelper.Manage;
-using AIHelper.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -46,6 +45,11 @@ namespace AIHelper
         {
             InitializeComponent();
 
+            if (string.IsNullOrWhiteSpace(Properties.Settings.Default.ApplicationStartupPath))
+            {
+                ApplicationStartupPath = Application.StartupPath;
+            }
+
             if (!SetListOfGames())
             {
                 Application.Exit();
@@ -73,8 +77,7 @@ namespace AIHelper
 
         private void VariablesINIT()
         {
-            ApplicationStartupPath = Application.StartupPath;
-            Properties.Settings.Default.CurrentGamePath = CurrentGame.GetGamePath();
+            Properties.Settings.Default.CurrentGamePath = Directory.Exists(ManageSettings.GetGamesFolderPath()) ? CurrentGame.GetGamePath() : Properties.Settings.Default.ApplicationStartupPath;
             //SettingsManage.SettingsINIT();
             AppResDir = ManageSettings.GetAppResDir();
             ModsPath = ManageSettings.GetModsPath();
@@ -1419,7 +1422,7 @@ namespace AIHelper
                 }
 
                 //remove normal mode identifier
-                SwitchNormalModeIdentifier(false);                
+                SwitchNormalModeIdentifier(false);
 
                 StringBuilder FilesWhichAlreadyHaveSameDestFileInMods = new StringBuilder();
                 bool FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = false;
@@ -1474,7 +1477,7 @@ namespace AIHelper
                         }
                         catch (Exception ex)
                         {
-                             ManageLogs.Log("Failed to move file: '" + Environment.NewLine + MovePaths[1] + "' " + Environment.NewLine + "Error:" + Environment.NewLine + ex);
+                            ManageLogs.Log("Failed to move file: '" + Environment.NewLine + MovePaths[1] + "' " + Environment.NewLine + "Error:" + Environment.NewLine + ex);
                         }
                     }
                     else
@@ -1606,7 +1609,7 @@ namespace AIHelper
                                 if (ZipmodsGUIDList[guid].IsInOverwriteFolder())//zipmod in overwrite
                                 {
                                     var NewFilePath = addedFiles[f].Replace(ManageSettings.GetDataPath(), ManageSettings.GetOverwriteFolder());
-                                    if(Directory.Exists(Path.GetDirectoryName(NewFilePath)) && NewFilePath!= addedFiles[f])
+                                    if (Directory.Exists(Path.GetDirectoryName(NewFilePath)) && NewFilePath != addedFiles[f])
                                     {
                                         DestFileName = NewFilePath;
                                     }
@@ -1718,7 +1721,7 @@ namespace AIHelper
         /// normal mode identifier switcher
         /// </summary>
         /// <param name="Create">true=Create/false=Delete</param>
-        private void SwitchNormalModeIdentifier(bool Create=true)
+        private void SwitchNormalModeIdentifier(bool Create = true)
         {
             if (Create)
             {
@@ -1973,7 +1976,7 @@ namespace AIHelper
                                     }
                                     catch (Exception ex)
                                     {
-                                        ManageLogs.Log("Error occured while to common mode switch:" + Environment.NewLine+ex);
+                                        ManageLogs.Log("Error occured while to common mode switch:" + Environment.NewLine + ex);
                                     }
                                 }
 
@@ -2356,7 +2359,7 @@ namespace AIHelper
                 //    PathCRCPair.Add(file.Replace(ManageSettings.GetModsPath(), string.Empty), new[] { new FileInfo(file).Length.ToString(),  file.GetCrc32() });
                 //}
             }
-            File.WriteAllLines(Path.Combine(Application.StartupPath, "snapshot.txt"), snapshotData);
+            File.WriteAllLines(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "snapshot.txt"), snapshotData);
 
         }
 

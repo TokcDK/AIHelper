@@ -1,9 +1,6 @@
-﻿using AIHelper;
-using AIHelper.Games;
-using AIHelper.Manage;
+﻿using AIHelper.Games;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
 
 namespace AI_Helper.Games
 {
@@ -21,7 +18,7 @@ namespace AI_Helper.Games
                 List<Game> ListOfGames = GamesList.GetGamesList();
                 foreach (var game in ListOfGames)
                 {
-                    if (File.Exists(Path.Combine(Application.StartupPath, "Data", game.GetGameEXEName())))
+                    if (File.Exists(Path.Combine(AIHelper.Properties.Settings.Default.ApplicationStartupPath, "Data", game.GetGameEXEName())))
                     {
                         DetectedGame = game;
                         break;

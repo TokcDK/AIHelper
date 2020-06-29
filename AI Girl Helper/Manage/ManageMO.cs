@@ -356,8 +356,8 @@ namespace AIHelper.Manage
             //добавление hardcoded exe
             ExecutablesCount++;
             IniValuesDict.Add(ExecutablesCount + @"\title", "Skyrim");
-            IniValuesDict.Add(ExecutablesCount + @"\binary", Path.Combine(Application.StartupPath, "TESV.exe"));
-            IniValuesDict.Add(ExecutablesCount + @"\workingDirectory", Application.StartupPath);
+            IniValuesDict.Add(ExecutablesCount + @"\binary", Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "TESV.exe"));
+            IniValuesDict.Add(ExecutablesCount + @"\workingDirectory", Properties.Settings.Default.ApplicationStartupPath);
             IniValuesDict.Add(ExecutablesCount + @"\ownicon", "true");
             ExecutablesCount++;
             IniValuesDict.Add(ExecutablesCount + @"\title", "Explore Virtual Folder");

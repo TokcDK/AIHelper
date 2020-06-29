@@ -85,21 +85,21 @@ namespace AIHelper.Manage
             //{
             //    try
             //    {
-            //        if (Directory.Exists(Path.Combine(Application.StartupPath, "Mods"))
+            //        if (Directory.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Mods"))
             //            &&
-            //            Directory.Exists(Path.Combine(Application.StartupPath, "Data"))
+            //            Directory.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
             //            &&
-            //            !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Application.StartupPath, "Data"))
+            //            !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
             //            &&
-            //            !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Application.StartupPath, "MO"))
+            //            !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO"))
             //            &&
-            //            Directory.Exists(Path.Combine(Path.Combine(Application.StartupPath, "MO", "Profiles")))
+            //            Directory.Exists(Path.Combine(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", "Profiles")))
             //            &&
-            //            !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Application.StartupPath, "MO", "Profiles"))
+            //            !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", "Profiles"))
             //            &&
-            //            !ManageSymLinks.IsSymLink(Path.Combine(Application.StartupPath, "MO", "ModOrganizer.ini"))
+            //            !ManageSymLinks.IsSymLink(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", "ModOrganizer.ini"))
             //            &&
-            //            !ManageSymLinks.IsSymLink(Path.Combine(Application.StartupPath, "MO", "categories.dat"))
+            //            !ManageSymLinks.IsSymLink(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", "categories.dat"))
             //            )
             //        {
             //            ListOfGames.Add(new RootGame());
@@ -137,7 +137,7 @@ namespace AIHelper.Manage
         public static string GetGamesFolderPath()
         {
             //var GamesPath = Path.Combine(Application.StartupPath, "Games");
-            return Path.Combine(Application.StartupPath, "Games");
+            return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Games");
             //return Directory.Exists(GamesPath) ? GamesPath : Application.StartupPath;
         }
 
@@ -198,7 +198,7 @@ namespace AIHelper.Manage
 
         public static string GetAppResDir()
         {
-            return Path.Combine(Application.StartupPath, "RES");
+            return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "RES");
         }
 
         public static string GetModsPath()
@@ -218,7 +218,7 @@ namespace AIHelper.Manage
 
         public static string GetMOdirPath()
         {
-            return Path.Combine(Application.StartupPath, "MO");
+            return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO");
         }
 
         public static string GetMOexePath()
@@ -277,7 +277,7 @@ namespace AIHelper.Manage
 
         public static string GetAIHelperINIPath()
         {
-            return Path.Combine(Application.StartupPath, Application.ProductName + ".ini");
+            return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, Application.ProductName + ".ini");
         }
 
         public static int GetCurrentGameIndexByFolderName(List<Game> listOfGames, string FolderName)

@@ -14,7 +14,7 @@ namespace AIHelper.Manage
                 if (LogLevel < 1)
                 {
                     FileWriter.WriteData(
-                    Path.Combine(Application.StartupPath, Application.ProductName + ".log")
+                    Path.Combine(Properties.Settings.Default.ApplicationStartupPath, Application.ProductName + ".log")
                     , DateTime.Now + " >>" +
                     Message
                     + Environment.NewLine, true);

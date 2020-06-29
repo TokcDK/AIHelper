@@ -15,7 +15,9 @@ namespace AIHelper.Games
 
         }
 
-        protected string gamefoldername { get; set; } = string.Empty;
+        protected string gamefolderName { get; set; } = string.Empty;
+
+        internal string gamefolderPath { get; set; } = string.Empty;
 
         public virtual string GetGameFolderName()
         {
@@ -24,9 +26,9 @@ namespace AIHelper.Games
 
         protected string GetTheGameFolderName(string DefaultGameFolderName)
         {
-            if(gamefoldername.Length > 0 || (gamefoldername = SearchGameFolder()).Length > 0)
+            if (gamefolderName.Length > 0 || (gamefolderName = SearchGameFolder()).Length > 0)
             {
-                return gamefoldername;
+                return gamefolderName;
             }
             else
             {

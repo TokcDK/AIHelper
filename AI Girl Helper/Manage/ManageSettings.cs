@@ -57,12 +57,67 @@ namespace AIHelper.Manage
         {
             List<Game> ListOfGames = GamesList.GetGamesList();
 
-            ListOfGames = ListOfGames.Where
-                (game =>
-                    Directory.Exists(game.GetGamePath())
-                    &&
-                    !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(game.GetGamePath(), "MO", "Profiles"))
-                ).ToList();
+            if (Directory.Exists(ManageSettings.GetGamesFolderPath()))
+            {
+                foreach (var game in ListOfGames)
+                {
+                    if (
+                            Directory.Exists(game.GetGamePath())
+                            &&
+                            !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(game.GetGamePath(), "MO", "Profiles"))
+                        )
+                    {
+
+                    }
+                    else
+                    {
+                        ListOfGames.Remove(game);
+                    }
+                }
+            }
+            else
+            {
+                ListOfGames.Clear();
+            }
+
+
+            //if (ListOfGames.Count == 0)
+            //{
+            //    try
+            //    {
+            //        if (Directory.Exists(Path.Combine(Application.StartupPath, "Mods"))
+            //            &&
+            //            Directory.Exists(Path.Combine(Application.StartupPath, "Data"))
+            //            &&
+            //            !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Application.StartupPath, "Data"))
+            //            &&
+            //            !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Application.StartupPath, "MO"))
+            //            &&
+            //            Directory.Exists(Path.Combine(Path.Combine(Application.StartupPath, "MO", "Profiles")))
+            //            &&
+            //            !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Application.StartupPath, "MO", "Profiles"))
+            //            &&
+            //            !ManageSymLinks.IsSymLink(Path.Combine(Application.StartupPath, "MO", "ModOrganizer.ini"))
+            //            &&
+            //            !ManageSymLinks.IsSymLink(Path.Combine(Application.StartupPath, "MO", "categories.dat"))
+            //            )
+            //        {
+            //            ListOfGames.Add(new RootGame());
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        ManageLogs.Log("RootGame check failed. Error:" + Environment.NewLine + ex);
+            //    }
+            //}
+
+            //ListOfGames = ListOfGames.Where
+            //(game =>
+            //    Directory.Exists(game.GetGamePath())
+            //    &&
+            //    !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(game.GetGamePath(), "MO", "Profiles"))
+            //).ToList();
+
             return ListOfGames;
         }
 
@@ -81,7 +136,9 @@ namespace AIHelper.Manage
 
         public static string GetGamesFolderPath()
         {
+            //var GamesPath = Path.Combine(Application.StartupPath, "Games");
             return Path.Combine(Application.StartupPath, "Games");
+            //return Directory.Exists(GamesPath) ? GamesPath : Application.StartupPath;
         }
 
         public static int GetCurrentGameIndex()

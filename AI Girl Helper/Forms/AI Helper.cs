@@ -1419,10 +1419,7 @@ namespace AIHelper
                 }
 
                 //remove normal mode identifier
-                if (File.Exists(Path.Combine(ManageSettings.GetDataPath(), "normal.mode")))
-                {
-                    File.Delete(Path.Combine(ManageSettings.GetDataPath(), "normal.mode"));
-                }
+                SwitchNormalModeIdentifier(false);                
 
                 StringBuilder FilesWhichAlreadyHaveSameDestFileInMods = new StringBuilder();
                 bool FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = false;
@@ -1691,26 +1688,51 @@ namespace AIHelper
                 //обновление списка операций с файлами, для удаления уже выполненных и записи обновленного списка
                 if (OperationsMade.ToString().Length > 0 && Operations != null && Operations.Length > 0)
                 {
-                    foreach (string OperationsMadeLine in OperationsMade.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.None))
+                    foreach (string OperationsMadeLine in OperationsMade.ToString().SplitToLines())
                     {
-                        if (string.IsNullOrEmpty(OperationsMadeLine))
+                        try
                         {
-                            continue;
-                        }
+                            if (string.IsNullOrEmpty(OperationsMadeLine))
+                            {
+                                continue;
+                            }
 
-                        Operations = Operations.Where(OperationsLine => OperationsLine != OperationsMadeLine).ToArray();
+                            Operations = Operations.Where(OperationsLine => OperationsLine != OperationsMadeLine).ToArray();
+                        }
+                        catch
+                        {
+                        }
                     }
 
                     File.WriteAllLines(ManageSettings.GetMOToStandartConvertationOperationsListFilePath(), Operations);
                 }
 
                 //recreate normal mode identifier if failed
+                SwitchNormalModeIdentifier();
+
+                MessageBox.Show("Failed to switch in MO mode. Error:" + Environment.NewLine + ex);
+            }
+        }
+
+        /// <summary>
+        /// normal mode identifier switcher
+        /// </summary>
+        /// <param name="Create">true=Create/false=Delete</param>
+        private void SwitchNormalModeIdentifier(bool Create=true)
+        {
+            if (Create)
+            {
                 if (!File.Exists(Path.Combine(ManageSettings.GetDataPath(), "normal.mode")))
                 {
                     File.WriteAllText(Path.Combine(ManageSettings.GetDataPath(), "normal.mode"), "The game is in normal mode");
                 }
-
-                MessageBox.Show("Failed to switch in MO mode. Error:" + Environment.NewLine + ex);
+            }
+            else
+            {
+                if (File.Exists(Path.Combine(ManageSettings.GetDataPath(), "normal.mode")))
+                {
+                    File.Delete(Path.Combine(ManageSettings.GetDataPath(), "normal.mode"));
+                }
             }
         }
 
@@ -1982,10 +2004,7 @@ namespace AIHelper
                 DataWithModsFileslist = null;
 
                 //create normal mode identifier
-                if (!File.Exists(Path.Combine(ManageSettings.GetDataPath(), "normal.mode")))
-                {
-                    File.WriteAllText(Path.Combine(ManageSettings.GetDataPath(), "normal.mode"), "The game is in normal mode");
-                }
+                SwitchNormalModeIdentifier();
 
 
                 //записать пути до пустых папок, чтобы при восстановлении восстановить и их

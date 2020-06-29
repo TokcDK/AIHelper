@@ -137,6 +137,7 @@
     </Compile>
     <Compile Include="Games\GamesList.cs" />
     <Compile Include="Games\Illusion\HoneySelect2.cs" />
+    <Compile Include="Games\Illusion\RootGame.cs" />
     <Compile Include="Games\Illusion\Koikatsu.cs" />
     <Compile Include="Install\Types\Files\Archive\7z.cs" />
     <Compile Include="Install\Types\Files\Archive\ArchivesBase.cs" />

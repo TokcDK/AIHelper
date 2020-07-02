@@ -295,7 +295,7 @@ namespace AIHelper.Manage
             {
                 //очистка секции
                 INI.ClearSection("customExecutables", false);
-                foreach(var pair in customExecutables)
+                foreach (var pair in customExecutables)
                 {
                     if (!IniValuesDict.ContainsKey(pair.Key))
                     {
@@ -383,15 +383,19 @@ namespace AIHelper.Manage
                         if (exeName.Length > 0 && !customs.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
                         {
                             executablesCount++;
-                            if (!OneexeNotEqual && exists.Contains(exePath))
+                            if (!OneexeNotEqual)
                             {
-                                exeEqual++;
+                                if (exists.Contains(exePath))
+                                {
+                                    exeEqual++;
+                                }
+                                else
+                                {
+                                    exeEqual = 0;
+                                    OneexeNotEqual = true;
+                                }
                             }
-                            else
-                            {
-                                exeEqual = 0;
-                                OneexeNotEqual = true;
-                            }
+
                             customs.Add(executablesCount + @"\title", exeName);
                             customs.Add(executablesCount + @"\binary", exePath);
                         }
@@ -425,15 +429,19 @@ namespace AIHelper.Manage
                         if (exeName.Length > 0 && !customs.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
                         {
                             executablesCount++;
-                            if (!OneexeNotEqual && exists.Contains(exePath))
+                            if (!OneexeNotEqual)
                             {
-                                exeEqual++;
+                                if (exists.Contains(exePath))
+                                {
+                                    exeEqual++;
+                                }
+                                else
+                                {
+                                    exeEqual = 0;
+                                    OneexeNotEqual = true;
+                                }
                             }
-                            else
-                            {
-                                exeEqual = 0;
-                                OneexeNotEqual = true;
-                            }
+
                             customs.Add(executablesCount + @"\title", exeName);
                             customs.Add(executablesCount + @"\binary", exePath);
                         }
@@ -464,7 +472,7 @@ namespace AIHelper.Manage
             customs.Add(executablesCount + @"\workingDirectory", Path.Combine(ManageSettings.GetMOdirPath(), "explorer++"));
             customs.Add(executablesCount + @"\arguments", ManageSettings.GetDataPath());
             customs.Add(executablesCount + @"\ownicon", "true");
-            
+
             customExecutables = customs;
             ExecutablesCount = executablesCount;
         }

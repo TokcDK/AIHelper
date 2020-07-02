@@ -39,7 +39,7 @@ namespace AIHelper.Manage
             RedefineGameMOData();
 
             //менять настройки МО только когда игра меняется
-            if (!Properties.Settings.Default.CurrentGameIsChanging)
+            if (!Properties.Settings.Default.CurrentGameIsChanging && Path.GetDirectoryName(ManageSettings.GetMOdirPath())!=Properties.Settings.Default.ApplicationStartupPath)
             {
                 return;
             }
@@ -287,6 +287,8 @@ namespace AIHelper.Manage
             //    return;//если не число, выйти
             //}
 
+            //Dictionary<string, string> customExecutables = new Dictionary<string, string>();
+
             var CurrentGame = ManageSettings.GetListOfExistsGames()[Properties.Settings.Default.CurrentGameListIndex];
             if (CurrentGame.GetGameEXENameX32().Length > 0 && File.Exists(Path.Combine(ManageSettings.GetDataPath(), CurrentGame.GetGameEXENameX32() + ".exe")))
             {
@@ -309,13 +311,17 @@ namespace AIHelper.Manage
             Parallel.ForEach(Directory.EnumerateFileSystemEntries(ManageSettings.GetDataPath(), "*.exe", SearchOption.AllDirectories),
                 exePath =>
                 {
-                    string exeName = Path.GetFileNameWithoutExtension(exePath);
-                    if (exeName.Length > 0 && !IniValuesDict.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
+                    try
                     {
-                        ExecutablesCount++;
-                        IniValuesDict.Add(ExecutablesCount + @"\title", exeName);
-                        IniValuesDict.Add(ExecutablesCount + @"\binary", exePath);
+                        var exeName = Path.GetFileNameWithoutExtension(exePath);
+                        if (exeName.Length > 0 && !IniValuesDict.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
+                        {
+                            ExecutablesCount++;
+                            IniValuesDict.Add(ExecutablesCount + @"\title", exeName);
+                            IniValuesDict.Add(ExecutablesCount + @"\binary", exePath);
+                        }
                     }
+                    catch { }
 
                 });
 
@@ -333,13 +339,17 @@ namespace AIHelper.Manage
             Parallel.ForEach(Directory.EnumerateFileSystemEntries(ManageSettings.GetModsPath(), "*.exe", SearchOption.AllDirectories),
                 exePath =>
                 {
-                    string exeName = Path.GetFileNameWithoutExtension(exePath);
-                    if (exeName.Length > 0 && !IniValuesDict.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
+                    try
                     {
-                        ExecutablesCount++;
-                        IniValuesDict.Add(ExecutablesCount + @"\title", exeName);
-                        IniValuesDict.Add(ExecutablesCount + @"\binary", exePath);
+                        string exeName = Path.GetFileNameWithoutExtension(exePath);
+                        if (exeName.Length > 0 && !IniValuesDict.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
+                        {
+                            ExecutablesCount++;
+                            IniValuesDict.Add(ExecutablesCount + @"\title", exeName);
+                            IniValuesDict.Add(ExecutablesCount + @"\binary", exePath);
+                        }
                     }
+                    catch { }
 
                 });
             //foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetModsPath(), "*.exe", SearchOption.AllDirectories))
@@ -885,7 +895,7 @@ namespace AIHelper.Manage
             }
             else
             {
-                return Path.Combine(Properties.Settings.Default.DataPath, "UserData", "setup.xml");
+                return Path.Combine(ManageSettings.GetDataPath(), "UserData", "setup.xml");
             }
         }
 

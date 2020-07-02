@@ -1,4 +1,5 @@
-﻿using AIHelper.Games;
+﻿using AIHelper.Forms;
+using AIHelper.Games;
 using AIHelper.Manage;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace AIHelper
 
         private static string ModsPath { get => Properties.Settings.Default.ModsPath; set => Properties.Settings.Default.ModsPath = value; }
         private static string DownloadsPath { get => Properties.Settings.Default.DownloadsPath; set => Properties.Settings.Default.DownloadsPath = value; }
-        private static string DataPath { get => Properties.Settings.Default.DataPath; set => Properties.Settings.Default.DataPath = value; }
+        private static string DataPath { get => ManageSettings.GetDataPath(); /*set => Properties.Settings.Default.DataPath = value;*/ }
         private static string MODirPath { get => Properties.Settings.Default.MODirPath; set => Properties.Settings.Default.MODirPath = value; }
         private static string MOexePath { get => Properties.Settings.Default.MOexePath; set => Properties.Settings.Default.MOexePath = value; }
         private static string OverwriteFolder { get => Properties.Settings.Default.OverwriteFolder; set => Properties.Settings.Default.OverwriteFolder = value; }
@@ -77,12 +78,12 @@ namespace AIHelper
 
         private void VariablesINIT()
         {
-            Properties.Settings.Default.CurrentGamePath = Directory.Exists(ManageSettings.GetGamesFolderPath()) ? CurrentGame.GetGamePath() : Properties.Settings.Default.ApplicationStartupPath;
+            Properties.Settings.Default.CurrentGamePath = CurrentGame.GetGamePath();
             //SettingsManage.SettingsINIT();
             AppResDir = ManageSettings.GetAppResDir();
             ModsPath = ManageSettings.GetModsPath();
             DownloadsPath = ManageSettings.GetDownloadsPath();
-            DataPath = ManageSettings.GetDataPath();
+            //DataPath = ManageSettings.GetDataPath();
             MODirPath = ManageSettings.GetMOdirPath();
             MOexePath = ManageSettings.GetMOexePath();
             Properties.Settings.Default.ModOrganizerINIpath = ManageSettings.GetModOrganizerINIpath();
@@ -122,13 +123,23 @@ namespace AIHelper
                 {
                     CurrentGameComboBox.Items.Add(game.GetGameFolderName());
                 }
+                if (CurrentGameComboBox.Items.Count == 1)
+                {
+                    //CurrentGameComboBox.Items[0] = ListOfGames[0].GetGameDisplayingName();
+                    CurrentGameComboBox.Enabled = false;
+                }
 
-                SetSelectedGameIndexAndBasicVariables(
-                    ManageSettings.GetCurrentGameIndexByFolderName(
+                SetSelectedGameIndexAndBasicVariables(ManageSettings.GetCurrentGameIndexByFolderName(
                         ListOfGames
                         ,
                         new INIFile(ManageSettings.GetAIHelperINIPath()).ReadINI("Settings", "selected_game")
                         ));
+                try
+                {
+                    CurrentGameTitleTextBox.Text = ListOfGames[Properties.Settings.Default.CurrentGameListIndex].GetGameDisplayingName();
+                    CurrentGameTitleTextBox.Enabled = false;
+                }
+                catch { }
             }
             catch
             {
@@ -150,7 +161,7 @@ namespace AIHelper
             Properties.Settings.Default.StudioEXEName = CurrentGame.GetGameStudioEXEName();
             Properties.Settings.Default.INISettingsEXEName = CurrentGame.GetINISettingsEXEName();
             Properties.Settings.Default.CurrentGamePath = CurrentGame.GetGamePath();
-            Properties.Settings.Default.DataPath = Path.Combine(CurrentGame.GetGamePath(), "Data");
+            //Properties.Settings.Default.DataPath = Path.Combine(CurrentGame.GetGamePath(), "Data");
             Properties.Settings.Default.ModsPath = Path.Combine(CurrentGame.GetGamePath(), "Mods");
 
             //set checkbox
@@ -530,7 +541,12 @@ namespace AIHelper
                 // Force the ToolTip text to be displayed whether or not the form is active.
                 ShowAlways = true
             };
-
+            
+            THToolTip.SetToolTip(ProgramNameLabelPart2, Application.ProductName+" - "+ T._("Illusion games manager.\n\n"
+                    +"Move mouse over wished button or text to see info about it"
+                    )
+                );
+            THToolTip.SetToolTip(SelectedGameLabel, T._("Selected game title"));
 
             //Main
             //THToolTip.SetToolTip(button1, T._("Unpacking mods and resources from 'Downloads' and 'RES' folders for game when they are not installed"));
@@ -593,6 +609,15 @@ namespace AIHelper
             THToolTip.SetToolTip(OpenMOFolderLinkLabel, T._("Opens Mod Organizer folder"));
             THToolTip.SetToolTip(OpenMOOverwriteFolderLinkLabel, T._("Opens Overwrite folder of Mod Organizer with possible new generated files for selected game\n\nFiles here have highest priority and will be loaded over any enabled mod files"));
             THToolTip.SetToolTip(OpenMyUserDataFolderLinkLabel, T._("Opens MyUserData folder in Mods if exist\n\nHere placed usual User files of Organized ModPack for selected game"));
+            
+            THToolTip.SetToolTip(LaunchLinksLinkLabel, T._("Opens list of links for game resources"));
+            THToolTip.SetToolTip(ExtraSettingsLinkLabel, T._("Opens extra setting window for plugins and etc"));
+
+            THToolTip.SetToolTip(OpenLogLinkLabel, T._("Opens BepinEx log if found"));
+            THToolTip.SetToolTip(BepInExDisplayedLogLevelLabel, T._("Click here to select log level"));
+            
+            
+            THToolTip.SetToolTip(CurrentGameComboBox, T._("List of found games. Current")+": "+ ListOfGames[CurrentGameComboBox.SelectedIndex].GetGameDisplayingName());
 
             THToolTip.SetToolTip(Open2MOLinkLabel,
                 T._("Opens 2MO folder fo selected game" +
@@ -736,7 +761,7 @@ namespace AIHelper
 
             if (File.Exists(Path.Combine(DataPath, ManageSettings.GetCurrentGameEXEName() + ".exe")))
             {
-                DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} game installed in {1}"), ManageSettings.GetCurrentGameFolderName(), "Data");
+                DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} game installed in {1}"), ManageSettings.GetCurrentGameDisplayingName(), "Data");
             }
             else if (File.Exists(Path.Combine(AppResDir, ManageSettings.GetCurrentGameEXEName() + ".7z")))
             {
@@ -928,7 +953,7 @@ namespace AIHelper
 
         private void GetEnableDisableLaunchButtons()
         {
-            MOButton.Enabled = /*Properties.Settings.Default.MOmode && */File.Exists(ManageSettings.GetMOexePath());
+            //MOButton.Enabled = /*Properties.Settings.Default.MOmode && */File.Exists(ManageSettings.GetMOexePath());
             //SettingsButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"));
             JPLauncherRunLinkLabel.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"));
             GameButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetCurrentGameEXEName() + ".exe"));
@@ -2166,9 +2191,9 @@ namespace AIHelper
         private void OpenLogLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             //https://stackoverflow.com/questions/9993561/c-sharp-open-file-path-starting-with-userprofile
-            string gameNameByExe = CurrentGame.GetGameEXEName().Replace("_64", "").Replace("_32", "");
-            string USERPROFILE = Path.Combine("%USERPROFILE%", "appdata", "locallow", "illusion__" + gameNameByExe, gameNameByExe, "output_log.txt");
-            string output_log = Environment.ExpandEnvironmentVariables(USERPROFILE);
+            var gameNameByExe = CurrentGame.GetGameEXEName().Replace("_64", string.Empty).Replace("_32", string.Empty);
+            var USERPROFILE = Path.Combine("%USERPROFILE%", "appdata", "locallow", "illusion__" + gameNameByExe.Replace("Trial", string.Empty), gameNameByExe, "output_log.txt");
+            var output_log = Environment.ExpandEnvironmentVariables(USERPROFILE);
             if (File.Exists(output_log))
             {
                 Process.Start("explorer.exe", output_log);
@@ -2197,6 +2222,7 @@ namespace AIHelper
                 Properties.Settings.Default.CurrentGameIsChanging = true;
 
                 SetSelectedGameIndexAndBasicVariables((sender as ComboBox).SelectedIndex);
+                Properties.Settings.Default.CurrentGameListIndex = (sender as ComboBox).SelectedIndex;
                 ActionsOnGameChanged();
 
                 new INIFile(ManageSettings.GetAIHelperINIPath()).WriteINI("Settings", "selected_game", ManageSettings.GetCurrentGameFolderName());
@@ -2221,6 +2247,8 @@ namespace AIHelper
             Properties.Settings.Default.MOSelectedProfileDirPath = string.Empty;
 
             CurrentGame.InitActions();
+            CurrentGameTitleTextBox.Text = CurrentGame.GetGameDisplayingName();
+            Properties.Settings.Default.CurrentGameDisplayingName = CurrentGame.GetGameDisplayingName();
         }
 
         private void ConsoleCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -2361,6 +2389,42 @@ namespace AIHelper
             }
             File.WriteAllLines(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "snapshot.txt"), snapshotData);
 
+        }
+
+        private void OpenHelpLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            MessageBox.Show(T._("Move mouse cursor over wished button or text to see info about it"));
+            //var HelpFilePath = "FilePath";
+            //if (File.Exists(HelpFilePath))
+            //    Process.Start("explorer.exe", HelpFilePath);
+        }
+
+        LogLevelselectionForm objForm;
+        private void TestSubWindow_Click(object sender, EventArgs e)
+        {
+            //LogLevelselectionForm
+            //LogLevelselectionForm childwindow = new LogLevelselectionForm();
+            //childwindow.Owner = LogLevelSelectionPanel;
+            //LogLevelSelectionPanel.Controls.Add(childwindow);
+            //childwindow.ShowInTaskbar = false;
+            //childwindow.ShowDialog();
+
+
+            if (objForm != null && !objForm.IsDisposed)
+            {
+                objForm.Close();
+            }
+            else
+            {
+                objForm = new LogLevelselectionForm
+                {
+                    TopLevel = false,
+                    Dock = DockStyle.Fill,
+                    FormBorderStyle = FormBorderStyle.None
+                };
+                LogLevelSelectionPanel.Controls.Add(objForm);
+                objForm.Show();
+            }
         }
 
         //Disable close window button

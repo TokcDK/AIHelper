@@ -135,6 +135,12 @@
     <Compile Include="Forms\CustomResolution.Designer.cs">
       <DependentUpon>CustomResolution.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\LogLevelselectionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\LogLevelselectionForm.Designer.cs">
+      <DependentUpon>LogLevelselectionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Games\GamesList.cs" />
     <Compile Include="Games\Illusion\HoneySelect2.cs" />
     <Compile Include="Games\Illusion\RootGame.cs" />
@@ -182,6 +188,7 @@
     <Compile Include="Manage\ManageSettings.cs" />
     <Compile Include="Manage\ManageMO.cs" />
     <Compile Include="Manage\ManageSymLinks.cs" />
+    <Compile Include="SharedData\Data.cs" />
     <Compile Include="UserData\CardframeBack.cs" />
     <Compile Include="UserData\CardframeFront.cs" />
     <Compile Include="UserData\CharaFemale.cs" />
@@ -225,6 +232,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\CustomResolution.resx">
       <DependentUpon>CustomResolution.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\LogLevelselectionForm.resx">
+      <DependentUpon>LogLevelselectionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

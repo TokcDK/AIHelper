@@ -42,12 +42,13 @@
             this.button1 = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.LaunchPagePanel = new System.Windows.Forms.Panel();
+            this.OpenHelpLinkLabel = new System.Windows.Forms.LinkLabel();
             this.LaunchLinksLinkLabel = new System.Windows.Forms.LinkLabel();
             this.BepInExDisplayedLogLevelLabel = new System.Windows.Forms.Label();
             this.BepInExConsoleCheckBox = new System.Windows.Forms.CheckBox();
             this.SelectedGameLabel = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
+            this.ProgramNameLabelPart1 = new System.Windows.Forms.Label();
+            this.ProgramNameLabelPart2 = new System.Windows.Forms.Label();
             this.LaunchModeInfoLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenLogLinkLabel = new System.Windows.Forms.LinkLabel();
             this.LaunchTabLaunchLabel = new System.Windows.Forms.Label();
@@ -58,6 +59,7 @@
             this.SettingsButton = new System.Windows.Forms.Button();
             this.SettingsPage = new System.Windows.Forms.TabPage();
             this.SettingsPagePanel = new System.Windows.Forms.Panel();
+            this.CurrentGameTitleTextBox = new System.Windows.Forms.TextBox();
             this.JPLauncherRunLinkLabel = new System.Windows.Forms.LinkLabel();
             this.ExtraSettingsLinkLabel = new System.Windows.Forms.LinkLabel();
             this.CurrentGameLabel = new System.Windows.Forms.Label();
@@ -79,11 +81,13 @@
             this.AutoShortcutRegistryCheckBox = new System.Windows.Forms.CheckBox();
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
             this.ToolsPagePanel = new System.Windows.Forms.Panel();
+            this.testSubWindow = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.FixMOModsButton = new System.Windows.Forms.Button();
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
+            this.LogLevelSelectionPanel = new System.Windows.Forms.Panel();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -249,12 +253,14 @@
             // LaunchPagePanel
             // 
             this.LaunchPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.LaunchPagePanel.Controls.Add(this.LogLevelSelectionPanel);
+            this.LaunchPagePanel.Controls.Add(this.OpenHelpLinkLabel);
             this.LaunchPagePanel.Controls.Add(this.LaunchLinksLinkLabel);
             this.LaunchPagePanel.Controls.Add(this.BepInExDisplayedLogLevelLabel);
             this.LaunchPagePanel.Controls.Add(this.BepInExConsoleCheckBox);
             this.LaunchPagePanel.Controls.Add(this.SelectedGameLabel);
-            this.LaunchPagePanel.Controls.Add(this.label4);
-            this.LaunchPagePanel.Controls.Add(this.label5);
+            this.LaunchPagePanel.Controls.Add(this.ProgramNameLabelPart1);
+            this.LaunchPagePanel.Controls.Add(this.ProgramNameLabelPart2);
             this.LaunchPagePanel.Controls.Add(this.LaunchModeInfoLinkLabel);
             this.LaunchPagePanel.Controls.Add(this.OpenLogLinkLabel);
             this.LaunchPagePanel.Controls.Add(this.LaunchTabLaunchLabel);
@@ -269,6 +275,19 @@
             this.LaunchPagePanel.Name = "LaunchPagePanel";
             this.LaunchPagePanel.Size = new System.Drawing.Size(340, 155);
             this.LaunchPagePanel.TabIndex = 0;
+            // 
+            // OpenHelpLinkLabel
+            // 
+            this.OpenHelpLinkLabel.AutoSize = true;
+            this.OpenHelpLinkLabel.LinkColor = System.Drawing.Color.White;
+            this.OpenHelpLinkLabel.Location = new System.Drawing.Point(5, 34);
+            this.OpenHelpLinkLabel.Name = "OpenHelpLinkLabel";
+            this.OpenHelpLinkLabel.Size = new System.Drawing.Size(28, 13);
+            this.OpenHelpLinkLabel.TabIndex = 28;
+            this.OpenHelpLinkLabel.TabStop = true;
+            this.OpenHelpLinkLabel.Text = "Help";
+            this.OpenHelpLinkLabel.Visible = false;
+            this.OpenHelpLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenHelpLinkLabel_LinkClicked);
             // 
             // LaunchLinksLinkLabel
             // 
@@ -310,39 +329,39 @@
             this.SelectedGameLabel.ForeColor = System.Drawing.Color.LightPink;
             this.SelectedGameLabel.Location = new System.Drawing.Point(101, 45);
             this.SelectedGameLabel.Name = "SelectedGameLabel";
-            this.SelectedGameLabel.Size = new System.Drawing.Size(70, 17);
+            this.SelectedGameLabel.Size = new System.Drawing.Size(65, 17);
             this.SelectedGameLabel.TabIndex = 24;
-            this.SelectedGameLabel.Text = "GameName";
+            this.SelectedGameLabel.Text = "GameTitle";
             // 
-            // label4
+            // ProgramNameLabelPart1
             // 
-            this.label4.AutoSize = true;
-            this.label4.BackColor = System.Drawing.Color.Gray;
-            this.label4.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.label4.Location = new System.Drawing.Point(98, 16);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(45, 31);
-            this.label4.TabIndex = 23;
-            this.label4.Text = "AI";
+            this.ProgramNameLabelPart1.AutoSize = true;
+            this.ProgramNameLabelPart1.BackColor = System.Drawing.Color.Gray;
+            this.ProgramNameLabelPart1.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ProgramNameLabelPart1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.ProgramNameLabelPart1.Location = new System.Drawing.Point(98, 16);
+            this.ProgramNameLabelPart1.Name = "ProgramNameLabelPart1";
+            this.ProgramNameLabelPart1.Size = new System.Drawing.Size(45, 31);
+            this.ProgramNameLabelPart1.TabIndex = 23;
+            this.ProgramNameLabelPart1.Text = "AI";
             // 
-            // label5
+            // ProgramNameLabelPart2
             // 
-            this.label5.AutoSize = true;
-            this.label5.BackColor = System.Drawing.Color.Gray;
-            this.label5.Font = new System.Drawing.Font("Lucida Handwriting", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.ForeColor = System.Drawing.Color.White;
-            this.label5.Location = new System.Drawing.Point(138, 21);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(84, 24);
-            this.label5.TabIndex = 22;
-            this.label5.Text = " Helper";
+            this.ProgramNameLabelPart2.AutoSize = true;
+            this.ProgramNameLabelPart2.BackColor = System.Drawing.Color.Gray;
+            this.ProgramNameLabelPart2.Font = new System.Drawing.Font("Lucida Handwriting", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ProgramNameLabelPart2.ForeColor = System.Drawing.Color.White;
+            this.ProgramNameLabelPart2.Location = new System.Drawing.Point(138, 21);
+            this.ProgramNameLabelPart2.Name = "ProgramNameLabelPart2";
+            this.ProgramNameLabelPart2.Size = new System.Drawing.Size(84, 24);
+            this.ProgramNameLabelPart2.TabIndex = 22;
+            this.ProgramNameLabelPart2.Text = " Helper";
             // 
             // LaunchModeInfoLinkLabel
             // 
             this.LaunchModeInfoLinkLabel.AutoSize = true;
             this.LaunchModeInfoLinkLabel.LinkColor = System.Drawing.Color.White;
-            this.LaunchModeInfoLinkLabel.Location = new System.Drawing.Point(4, 4);
+            this.LaunchModeInfoLinkLabel.Location = new System.Drawing.Point(5, 5);
             this.LaunchModeInfoLinkLabel.Name = "LaunchModeInfoLinkLabel";
             this.LaunchModeInfoLinkLabel.Size = new System.Drawing.Size(52, 13);
             this.LaunchModeInfoLinkLabel.TabIndex = 21;
@@ -459,6 +478,7 @@
             // SettingsPagePanel
             // 
             this.SettingsPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.SettingsPagePanel.Controls.Add(this.CurrentGameTitleTextBox);
             this.SettingsPagePanel.Controls.Add(this.JPLauncherRunLinkLabel);
             this.SettingsPagePanel.Controls.Add(this.ExtraSettingsLinkLabel);
             this.SettingsPagePanel.Controls.Add(this.CurrentGameLabel);
@@ -473,6 +493,15 @@
             this.SettingsPagePanel.Name = "SettingsPagePanel";
             this.SettingsPagePanel.Size = new System.Drawing.Size(340, 155);
             this.SettingsPagePanel.TabIndex = 1;
+            // 
+            // CurrentGameTitleTextBox
+            // 
+            this.CurrentGameTitleTextBox.BackColor = System.Drawing.SystemColors.Window;
+            this.CurrentGameTitleTextBox.Location = new System.Drawing.Point(6, 20);
+            this.CurrentGameTitleTextBox.Name = "CurrentGameTitleTextBox";
+            this.CurrentGameTitleTextBox.ReadOnly = true;
+            this.CurrentGameTitleTextBox.Size = new System.Drawing.Size(102, 21);
+            this.CurrentGameTitleTextBox.TabIndex = 11;
             // 
             // JPLauncherRunLinkLabel
             // 
@@ -730,6 +759,7 @@
             // ToolsPagePanel
             // 
             this.ToolsPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.ToolsPagePanel.Controls.Add(this.testSubWindow);
             this.ToolsPagePanel.Controls.Add(this.button2);
             this.ToolsPagePanel.Controls.Add(this.FixMOModsButton);
             this.ToolsPagePanel.Controls.Add(this.Install2MODirPathOpenFolderLinkLabel);
@@ -740,6 +770,20 @@
             this.ToolsPagePanel.Name = "ToolsPagePanel";
             this.ToolsPagePanel.Size = new System.Drawing.Size(340, 155);
             this.ToolsPagePanel.TabIndex = 1;
+            // 
+            // testSubWindow
+            // 
+            this.testSubWindow.BackColor = System.Drawing.Color.Silver;
+            this.testSubWindow.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.testSubWindow.ForeColor = System.Drawing.Color.Black;
+            this.testSubWindow.Location = new System.Drawing.Point(136, 122);
+            this.testSubWindow.Name = "testSubWindow";
+            this.testSubWindow.Size = new System.Drawing.Size(81, 30);
+            this.testSubWindow.TabIndex = 21;
+            this.testSubWindow.Text = "SubWindow";
+            this.testSubWindow.UseVisualStyleBackColor = false;
+            this.testSubWindow.Visible = false;
+            this.testSubWindow.Click += new System.EventHandler(this.TestSubWindow_Click);
             // 
             // button2
             // 
@@ -808,6 +852,14 @@
             this.MOCommonModeSwitchButton.Text = "MOToCommon";
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
+            // 
+            // LogLevelSelectionPanel
+            // 
+            this.LogLevelSelectionPanel.Location = new System.Drawing.Point(104, 3);
+            this.LogLevelSelectionPanel.Name = "LogLevelSelectionPanel";
+            this.LogLevelSelectionPanel.Size = new System.Drawing.Size(195, 26);
+            this.LogLevelSelectionPanel.TabIndex = 29;
+            this.LogLevelSelectionPanel.Visible = false;
             // 
             // AI_Helper
             // 
@@ -891,8 +943,8 @@
         private System.Windows.Forms.LinkLabel OpenMOOverwriteFolderLinkLabel;
         private System.Windows.Forms.Label CurrentGameLabel;
         private System.Windows.Forms.ComboBox CurrentGameComboBox;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label ProgramNameLabelPart1;
+        private System.Windows.Forms.Label ProgramNameLabelPart2;
         private System.Windows.Forms.LinkLabel Open2MOLinkLabel;
         private System.Windows.Forms.Label SelectedGameLabel;
         private System.Windows.Forms.CheckBox BepInExConsoleCheckBox;
@@ -903,6 +955,10 @@
         private System.Windows.Forms.Button FixMOModsButton;
         private System.Windows.Forms.LinkLabel SetupXmlLinkLabel;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.LinkLabel OpenHelpLinkLabel;
+        private System.Windows.Forms.TextBox CurrentGameTitleTextBox;
+        private System.Windows.Forms.Button testSubWindow;
+        private System.Windows.Forms.Panel LogLevelSelectionPanel;
     }
 }
 

@@ -17,7 +17,8 @@ namespace AIHelper.Games
 
         protected string gamefolderName { get; set; } = string.Empty;
 
-        internal string gamefolderPath { get; set; } = string.Empty;
+        //internal string gamefolderPath { get; set; } = string.Empty;
+        internal virtual bool isRootGame { get; set; } = false;
 
         public virtual string GetGameFolderName()
         {
@@ -70,7 +71,11 @@ namespace AIHelper.Games
 
         public virtual string GetGamePath()
         {
-            return Path.Combine(ManageSettings.GetGamesFolderPath(), GetGameFolderName());
+            return isRootGame ?
+                Properties.Settings.Default.ApplicationStartupPath
+                :
+                Path.Combine(ManageSettings.GetGamesFolderPath(), GetGameFolderName())
+                ;
         }
 
         public virtual string GetModsPath()
@@ -162,11 +167,14 @@ namespace AIHelper.Games
         {
             try
             {
-                foreach (var folder in Directory.EnumerateDirectories(ManageSettings.GetGamesFolderPath()))
+                if (Directory.Exists(ManageSettings.GetGamesFolderPath()))
                 {
-                    if (File.Exists(Path.Combine(folder, "Data", GetGameEXEName() + ".exe")))
+                    foreach (var folder in Directory.EnumerateDirectories(ManageSettings.GetGamesFolderPath()))
                     {
-                        return Path.GetFileName(folder);
+                        if (File.Exists(Path.Combine(folder, "Data", GetGameEXEName() + ".exe")))
+                        {
+                            return Path.GetFileName(folder);
+                        }
                     }
                 }
             }

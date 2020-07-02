@@ -1,4 +1,5 @@
 ﻿using AI_Helper.Games;
+using AI_Helper.Manage;
 using AIHelper.Games;
 using System;
 using System.Collections.Generic;
@@ -44,7 +45,7 @@ namespace AIHelper.Manage
                 "2560 x 1440 (16 : 9)",
                 "3200 x 1800 (16 : 9)",
                 "3840 x 2160 (16 : 9)",
-                GetCustomRes()
+                //GetCustomRes()
             };
         }
 
@@ -81,35 +82,37 @@ namespace AIHelper.Manage
             }
 
 
-            //if (ListOfGames.Count == 0)
-            //{
-            //    try
-            //    {
-            //        if (Directory.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Mods"))
-            //            &&
-            //            Directory.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
-            //            &&
-            //            !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
-            //            &&
-            //            !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO"))
-            //            &&
-            //            Directory.Exists(Path.Combine(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", "Profiles")))
-            //            &&
-            //            !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", "Profiles"))
-            //            &&
-            //            !ManageSymLinks.IsSymLink(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", "ModOrganizer.ini"))
-            //            &&
-            //            !ManageSymLinks.IsSymLink(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", "categories.dat"))
-            //            )
-            //        {
-            //            ListOfGames.Add(new RootGame());
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        ManageLogs.Log("RootGame check failed. Error:" + Environment.NewLine + ex);
-            //    }
-            //}
+            if (ListOfGames.Count == 0)
+            {
+                try
+                {
+                    if (Directory.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Mods"))
+                        &&
+                        Directory.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
+                        &&
+                        !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
+                        //&&
+                        //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO"))
+                        &&
+                        IsMOFolderValid(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO"))
+                        //&&
+                        //Directory.Exists(Path.Combine(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", "Profiles")))
+                        //&&
+                        //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", "Profiles"))
+                        &&
+                        !ManageSymLinks.IsSymLink(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", "ModOrganizer.ini"))
+                        &&
+                        !ManageSymLinks.IsSymLink(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", "categories.dat"))
+                        )
+                    {
+                        ListOfGames.Add(new RootGame());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ManageLogs.Log("RootGame check failed. Error:" + Environment.NewLine + ex);
+                }
+            }
 
             //ListOfGames = ListOfGames.Where
             //(game =>
@@ -119,6 +122,127 @@ namespace AIHelper.Manage
             //).ToList();
 
             return ListOfGames;
+        }
+
+        //public static Dictionary<string, Game> GetListOfGames()
+        //{
+        //    List<Game> ListOfGames = GamesList.GetGamesList();
+        //    Dictionary<string, Game> ListOfGames1 = new Dictionary<string, Game>();
+
+        //    if (Directory.Exists(ManageSettings.GetGamesFolderPath()))
+        //    {
+        //        foreach (var candidateFolder in Directory.EnumerateDirectories(ManageSettings.GetGamesFolderPath()))
+        //        {
+        //            if (FolderIsValid(candidateFolder))
+        //            {
+        //                foreach (var game in ListOfGames)
+        //                {
+        //                    if (File.Exists(Path.Combine(candidateFolder, "Data", game.GetGameEXEName() + ".exe")))
+        //                    {
+        //                        ListOfGames1.Add(Path.GetFileName(candidateFolder), game);
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        ListOfGames.Clear();
+        //    }
+
+
+        //    if (ListOfGames.Count == 0)
+        //    {
+        //        try
+        //        {
+        //            if (Directory.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Mods"))
+        //                &&
+        //                Directory.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
+        //                &&
+        //                !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
+        //                //&&
+        //                //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO"))
+        //                &&
+        //                IsMOFolderValid(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO"))
+        //                //&&
+        //                //Directory.Exists(Path.Combine(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", "Profiles")))
+        //                //&&
+        //                //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", "Profiles"))
+        //                &&
+        //                !ManageSymLinks.IsSymLink(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", "ModOrganizer.ini"))
+        //                &&
+        //                !ManageSymLinks.IsSymLink(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", "categories.dat"))
+        //                )
+        //            {
+        //                ListOfGames1.Add(Properties.Settings.Default.ApplicationStartupPath, new RootGame());
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            ManageLogs.Log("RootGame check failed. Error:" + Environment.NewLine + ex);
+        //        }
+        //    }
+
+        //    //ListOfGames = ListOfGames.Where
+        //    //(game =>
+        //    //    Directory.Exists(game.GetGamePath())
+        //    //    &&
+        //    //    !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(game.GetGamePath(), "MO", "Profiles"))
+        //    //).ToList();
+
+        //    return ListOfGames1;
+        //}
+
+        //private static bool FolderIsValid(string folder)
+        //{
+        //    string MOFolder;
+        //    if (Directory.Exists(folder)
+        //        &&
+        //        Directory.Exists(Path.Combine(folder, "Mods"))
+        //        &&
+        //        Directory.Exists(Path.Combine(folder, "Data"))
+        //        &&
+        //        !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(folder, "Data"))
+        //        &&
+        //        ((IsMOFolderValid(MOFolder = Path.Combine(folder, "MO"))) || MOFolderFound(folder, ref MOFolder))
+        //        //&&
+        //        //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(folder, "MO"))
+        //        //&&
+        //        //Directory.Exists(Path.Combine(Path.Combine(folder, "MO", "Profiles")))
+        //        //&&
+        //        //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(folder, "MO", "Profiles"))
+        //        )
+        //    {
+        //        return true;
+        //    }
+
+        //    return false;
+        //}
+
+        //private static bool MOFolderFound(string folder, ref string MOFolder)
+        //{
+        //    foreach (var subfolder in Directory.EnumerateDirectories(folder))
+        //    {
+        //        if (IsMOFolderValid(folder))
+        //        {
+        //            MOFolder = subfolder;
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //}
+
+        private static bool IsMOFolderValid(string folder)
+        {
+            if (Directory.Exists(Path.Combine(folder, "Profiles"))
+                    && File.Exists(Path.Combine(folder, "ModOrganizer.ini"))
+                    && File.Exists(Path.Combine(folder, "categories.dat"))
+                    && !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(folder, "Profiles"))
+                    )
+            {
+                return true;
+            }
+            return false;
         }
 
         public static string GetStringListOfAllGames()
@@ -148,7 +272,7 @@ namespace AIHelper.Manage
 
         public static string GetSettingsEXEPath()
         {
-            return Path.Combine(Properties.Settings.Default.DataPath, GetINISettingsEXEName() + ".exe");
+            return Path.Combine(ManageSettings.GetDataPath(), GetINISettingsEXEName() + ".exe");
         }
 
         public static string GetCurrentGamePath()
@@ -282,7 +406,7 @@ namespace AIHelper.Manage
 
         public static int GetCurrentGameIndexByFolderName(List<Game> listOfGames, string FolderName)
         {
-            for (int i = 0; i < listOfGames.Count; i++)
+            for (var i = 0; i < listOfGames.Count; i++)
             {
                 if (listOfGames[i].GetGameFolderName() == FolderName)
                 {

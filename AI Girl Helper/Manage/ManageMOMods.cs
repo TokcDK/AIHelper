@@ -1031,7 +1031,7 @@ namespace AIHelper.Manage
                         {
                             //string[] datafiles = Directory.GetFiles(dir, Path.GetFileName(file), SearchOption.AllDirectories);
 
-                            DirectoryInfo dirinfo = new DirectoryInfo(Properties.Settings.Default.DataPath);
+                            DirectoryInfo dirinfo = new DirectoryInfo(ManageSettings.GetDataPath());
 
                             var datafiles = dirinfo.GetFiles(Path.GetFileName(file), SearchOption.AllDirectories);
 
@@ -1051,7 +1051,7 @@ namespace AIHelper.Manage
                                     }
                                 }
 
-                                targetfilepath = selectedfile.Replace(Properties.Settings.Default.DataPath, moddir);
+                                targetfilepath = selectedfile.Replace(ManageSettings.GetDataPath(), moddir);
 
                                 Directory.CreateDirectory(Path.GetDirectoryName(targetfilepath));
                                 File.Move(file, targetfilepath);

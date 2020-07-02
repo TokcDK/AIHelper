@@ -17,7 +17,16 @@ namespace AIHelper.Manage
             else
             {
                 //если не был создан, создать с нуля
-                xmlDoc.LoadXml("<?xml version=\"1.0\" encoding=\"utf-16\"?>" + Environment.NewLine + "<Setting>" + Environment.NewLine + "  <Size>1280 x 720 (16 : 9)</Size>" + Environment.NewLine + "  <Width>1280</Width>" + Environment.NewLine + "  <Height>720</Height>" + Environment.NewLine + "  <Quality>2</Quality>" + Environment.NewLine + "  <FullScreen>false</FullScreen>" + Environment.NewLine + "  <Display>0</Display>" + Environment.NewLine + "  <Language>0</Language>" + Environment.NewLine + "</Setting>");
+                xmlDoc.LoadXml("<?xml version=\"1.0\" encoding=\"utf-16\"?>"
+                    + Environment.NewLine + "<Setting>"
+                    + Environment.NewLine + "  <Size>1280 x 720 (16 : 9)</Size>"
+                    + Environment.NewLine + "  <Width>1280</Width>"
+                    + Environment.NewLine + "  <Height>720</Height>"
+                    + Environment.NewLine + "  <Quality>2</Quality>"
+                    + Environment.NewLine + "  <FullScreen>false</FullScreen>"
+                    + Environment.NewLine + "  <Display>0</Display>"
+                    + Environment.NewLine + "  <Language>0</Language>"
+                    + Environment.NewLine + "</Setting>");
             }
 
             XmlNode node = xmlDoc.SelectSingleNode(nodename);

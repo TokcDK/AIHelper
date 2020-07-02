@@ -11,6 +11,8 @@ namespace AI_Helper.Games
             DetectRootGame();
         }
 
+        internal override bool isRootGame { get; set; } = true;
+
         public void DetectRootGame()
         {
             if (DetectedGame == null)
@@ -18,7 +20,7 @@ namespace AI_Helper.Games
                 List<Game> ListOfGames = GamesList.GetGamesList();
                 foreach (var game in ListOfGames)
                 {
-                    if (File.Exists(Path.Combine(AIHelper.Properties.Settings.Default.ApplicationStartupPath, "Data", game.GetGameEXEName())))
+                    if (File.Exists(Path.Combine(AIHelper.Properties.Settings.Default.ApplicationStartupPath, "Data", game.GetGameEXEName()+".exe")))
                     {
                         DetectedGame = game;
                         break;
@@ -31,7 +33,7 @@ namespace AI_Helper.Games
         public override string GetGameFolderName()
         {
             DetectRootGame();
-            return string.Empty;
+            return "RootGame";
         }
 
         public override string GetGameEXEName()

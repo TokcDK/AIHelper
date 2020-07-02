@@ -67,7 +67,7 @@ namespace AI_Helper.Manage
                 File.Exists(targetFilePath)
                )
             {
-                if (!IsSymlinkAndValid(symlinkPath, targetFilePath, linktargetPathIsRelative))
+                if (targetFilePath != symlinkPath && !IsSymlinkAndValid(symlinkPath, targetFilePath, linktargetPathIsRelative))
                 {
                     File.Delete(symlinkPath);
 
@@ -99,7 +99,13 @@ namespace AI_Helper.Manage
                 string objectPath;
                 if (File.Exists(objectPath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(objectFileDirPath)))
                 {
-                    if ((!File.Exists(symlinkPath) || (FileInfoExtensions.IsSymbolicLink(new FileInfo(symlinkPath)) && !FileInfoExtensions.IsSymbolicLinkValid(new FileInfo(symlinkPath)))))
+                    if ((objectPath != symlinkPath && !File.Exists(symlinkPath))
+                        || (
+                                FileInfoExtensions.IsSymbolicLink(new FileInfo(symlinkPath))
+                                &&
+                                !FileInfoExtensions.IsSymbolicLinkValid(new FileInfo(symlinkPath))
+                            )
+                       )
                     {
                         if (File.Exists(symlinkPath))
                         {
@@ -115,7 +121,7 @@ namespace AI_Helper.Manage
                 }
                 else if (Directory.Exists(objectPath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(objectFileDirPath, true)))
                 {
-                    if ((!Directory.Exists(symlinkPath) || (DirectoryInfoExtensions.IsSymbolicLink(new DirectoryInfo(symlinkPath)) && !DirectoryInfoExtensions.IsSymbolicLinkValid(new DirectoryInfo(symlinkPath)))))
+                    if ((objectPath != symlinkPath && !Directory.Exists(symlinkPath)) || (DirectoryInfoExtensions.IsSymbolicLink(new DirectoryInfo(symlinkPath)) && !DirectoryInfoExtensions.IsSymbolicLinkValid(new DirectoryInfo(symlinkPath))))
                     {
                         if (Directory.Exists(symlinkPath) && ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(symlinkPath))
                         {

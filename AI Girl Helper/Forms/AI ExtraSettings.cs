@@ -45,7 +45,7 @@ namespace AIHelper
         private void AddXUASettings()
         {
             Properties.Settings.Default.XUAiniPath =
-                ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(new string[2] { Path.Combine(ManageSettings.GetModsPath(), "XUnity.AutoTranslator", "BepInEx", "config", "AutoTranslatorConfig.ini"), Path.Combine(ManageSettings.GetModsPath(), "XUnity.AutoTranslator", "AutoTranslatorConfig.ini") }, new bool[2] { false, false })
+                ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(new string[2] { Path.Combine(ManageSettings.GetModsPath(), "XUnity.AutoTranslator", "BepInEx", "config", "AutoTranslatorConfig.ini"), Path.Combine(ManageSettings.GetModsPath(), "XUnity.AutoTranslator", "Plugins", "AutoTranslatorConfig.ini") }, new bool[2] { false, false })
                 ;
 
             //если xua ini не найден, отключить элемент
@@ -76,6 +76,7 @@ namespace AIHelper
 
                 XUAFromLanguageComboBox.Items.AddRange(ManageSettings.Languages.ToArray());
                 XUALanguageComboBox.Items.AddRange(ManageSettings.Languages.ToArray());
+                XUALanguageComboBox.Items.Remove(T._("Auto"));//удаление Авто
 
                 XUAFromLanguageComboBox.SelectedItem = ManageSettings.LanguageEnumFromIdentifier(iniValue);
 

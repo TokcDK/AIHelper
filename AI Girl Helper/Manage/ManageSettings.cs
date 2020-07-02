@@ -564,6 +564,7 @@ namespace AIHelper.Manage
                 {
                     _languageModeMapReversed = new Dictionary<string, string>
                 {
+                    { "auto", T._("Auto") },
                     { "af", T._("Afrikaans") },
                     { "sq", T._("Albanian") },
                     { "ar", T._("Arabic") },
@@ -636,6 +637,7 @@ namespace AIHelper.Manage
                 {
                     _languageModeMap = new Dictionary<string, string>
                 {
+                    { T._("Auto"), "auto" },
                     { T._("Afrikaans"), "af" },
                     { T._("Albanian"), "sq" },
                     { T._("Arabic"), "ar" },

@@ -39,7 +39,7 @@ namespace AIHelper.Manage
             RedefineGameMOData();
 
             //менять настройки МО только когда игра меняется
-            if (!Properties.Settings.Default.CurrentGameIsChanging && Path.GetDirectoryName(ManageSettings.GetMOdirPath())!=Properties.Settings.Default.ApplicationStartupPath)
+            if (!Properties.Settings.Default.CurrentGameIsChanging && Path.GetDirectoryName(ManageSettings.GetMOdirPath()) != Properties.Settings.Default.ApplicationStartupPath)
             {
                 return;
             }
@@ -287,22 +287,83 @@ namespace AIHelper.Manage
             //    return;//если не число, выйти
             //}
 
-            //Dictionary<string, string> customExecutables = new Dictionary<string, string>();
+            Dictionary<string, string> customExecutables = new Dictionary<string, string>();
+
+            AddCustomExecutables(INI, customExecutables, ref ExecutablesCount);
+
+            if (customExecutables.Count > 0)
+            {
+                //очистка секции
+                INI.ClearSection("customExecutables", false);
+                foreach(var pair in customExecutables)
+                {
+                    if (!IniValuesDict.ContainsKey(pair.Key))
+                    {
+                        IniValuesDict.Add(pair.Key, pair.Value);
+                    }
+                }
+
+                int cnt = 1;
+                int iniParametersLength = iniParameters.Length / 2;
+                while (cnt <= ExecutablesCount)
+                {
+                    for (int i = 0; i < iniParametersLength; i++)
+                    {
+                        string key = cnt + @"\" + iniParameters[i, 0];
+                        string IniValue;
+                        bool keyExists = IniValuesDict.ContainsKey(key);
+                        string subquote = key.EndsWith(@"\arguments") && keyExists ? "\\\"" : string.Empty;
+                        if (keyExists)
+                        {
+                            IniValue = subquote + IniValuesDict[key].Replace(@"\", key.EndsWith(@"\arguments") ? @"\\" : "/") + subquote;
+                        }
+                        else
+                        {
+                            IniValue = subquote + (iniParameters[i, 1].EndsWith("b") ? "false" : string.Empty) + subquote;
+                        }
+
+                        INI.WriteINI("customExecutables", key, IniValue, false);
+                    }
+                    cnt++;
+                }
+
+                //Hardcoded exe Game exe and Explorer++
+                //ExecutablesCount += 2;
+
+                INI.WriteINI("customExecutables", "size", ExecutablesCount.ToString(CultureInfo.InvariantCulture));
+            }
+            else
+            {
+                INI.SaveINI(true, true);
+            }
+
+            Properties.Settings.Default.SetModOrganizerINISettingsForTheGame = false;
+        }
+
+        private static void AddCustomExecutables(INIFile INI, Dictionary<string, string> customExecutables, ref int ExecutablesCount)
+        {
+            var exists = INI.ReadSectionValuesToArray("customExecutables");
+
+            var exeEqual = 0;
+            var OneexeNotEqual = false;
+            var executablesCount = ExecutablesCount;
+            Dictionary<string, string> customs = new Dictionary<string, string>();
 
             var CurrentGame = ManageSettings.GetListOfExistsGames()[Properties.Settings.Default.CurrentGameListIndex];
             if (CurrentGame.GetGameEXENameX32().Length > 0 && File.Exists(Path.Combine(ManageSettings.GetDataPath(), CurrentGame.GetGameEXENameX32() + ".exe")))
             {
-                ExecutablesCount++;
-                IniValuesDict.Add(ExecutablesCount + @"\title", CurrentGame.GetGameEXENameX32());
-                IniValuesDict.Add(ExecutablesCount + @"\binary", Path.Combine(ManageSettings.GetDataPath(), CurrentGame.GetGameEXENameX32() + ".exe"));
-                IniValuesDict.Add(ExecutablesCount + @"\workingDirectory", ManageSettings.GetDataPath());
+                executablesCount++;
+                exeEqual++;
+                customs.Add(executablesCount + @"\title", CurrentGame.GetGameEXENameX32());
+                customs.Add(executablesCount + @"\binary", Path.Combine(ManageSettings.GetDataPath(), CurrentGame.GetGameEXENameX32() + ".exe"));
+                customs.Add(executablesCount + @"\workingDirectory", ManageSettings.GetDataPath());
             }
             if (CurrentGame.GetGameStudioEXENameX32().Length > 0 && File.Exists(Path.Combine(ManageSettings.GetDataPath(), CurrentGame.GetGameStudioEXENameX32() + ".exe")))
             {
-                ExecutablesCount++;
-                IniValuesDict.Add(ExecutablesCount + @"\title", CurrentGame.GetGameStudioEXENameX32());
-                IniValuesDict.Add(ExecutablesCount + @"\binary", Path.Combine(ManageSettings.GetDataPath(), CurrentGame.GetGameStudioEXENameX32() + ".exe"));
-                IniValuesDict.Add(ExecutablesCount + @"\workingDirectory", ManageSettings.GetDataPath());
+                executablesCount++;
+                customs.Add(executablesCount + @"\title", CurrentGame.GetGameStudioEXENameX32());
+                customs.Add(executablesCount + @"\binary", Path.Combine(ManageSettings.GetDataPath(), CurrentGame.GetGameStudioEXENameX32() + ".exe"));
+                customs.Add(executablesCount + @"\workingDirectory", ManageSettings.GetDataPath());
             }
 
             string[] pathExclusions = { "BepInEx" + Path.DirectorySeparatorChar + "plugins", "Lec.ExtProtocol", "Common.ExtProtocol.Executor", "UnityCrashHandler64", Path.DirectorySeparatorChar + "IPA", "WideSliderPatch" };
@@ -313,12 +374,26 @@ namespace AIHelper.Manage
                 {
                     try
                     {
-                        var exeName = Path.GetFileNameWithoutExtension(exePath);
-                        if (exeName.Length > 0 && !IniValuesDict.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
+                        if (exeEqual > 9)
                         {
-                            ExecutablesCount++;
-                            IniValuesDict.Add(ExecutablesCount + @"\title", exeName);
-                            IniValuesDict.Add(ExecutablesCount + @"\binary", exePath);
+                            return;
+                        }
+
+                        var exeName = Path.GetFileNameWithoutExtension(exePath);
+                        if (exeName.Length > 0 && !customs.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
+                        {
+                            executablesCount++;
+                            if (!OneexeNotEqual && exists.Contains(exePath))
+                            {
+                                exeEqual++;
+                            }
+                            else
+                            {
+                                exeEqual = 0;
+                                OneexeNotEqual = true;
+                            }
+                            customs.Add(executablesCount + @"\title", exeName);
+                            customs.Add(executablesCount + @"\binary", exePath);
                         }
                     }
                     catch { }
@@ -328,11 +403,11 @@ namespace AIHelper.Manage
             //foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetDataPath(), "*.exe", SearchOption.AllDirectories))
             //{
             //    string exeName = Path.GetFileNameWithoutExtension(exePath);
-            //    if (exeName.Length > 0 && !IniValuesDict.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
+            //    if (exeName.Length > 0 && !customExecutables.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
             //    {
             //        ExecutablesCount++;
-            //        IniValuesDict.Add(ExecutablesCount + @"\title", exeName);
-            //        IniValuesDict.Add(ExecutablesCount + @"\binary", exePath);
+            //        customExecutables.Add(ExecutablesCount + @"\title", exeName);
+            //        customExecutables.Add(ExecutablesCount + @"\binary", exePath);
             //    }
             //}
             //Добавление exe из Mods
@@ -341,12 +416,26 @@ namespace AIHelper.Manage
                 {
                     try
                     {
-                        string exeName = Path.GetFileNameWithoutExtension(exePath);
-                        if (exeName.Length > 0 && !IniValuesDict.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
+                        if (exeEqual > 9)
                         {
-                            ExecutablesCount++;
-                            IniValuesDict.Add(ExecutablesCount + @"\title", exeName);
-                            IniValuesDict.Add(ExecutablesCount + @"\binary", exePath);
+                            return;
+                        }
+
+                        string exeName = Path.GetFileNameWithoutExtension(exePath);
+                        if (exeName.Length > 0 && !customs.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
+                        {
+                            executablesCount++;
+                            if (!OneexeNotEqual && exists.Contains(exePath))
+                            {
+                                exeEqual++;
+                            }
+                            else
+                            {
+                                exeEqual = 0;
+                                OneexeNotEqual = true;
+                            }
+                            customs.Add(executablesCount + @"\title", exeName);
+                            customs.Add(executablesCount + @"\binary", exePath);
                         }
                     }
                     catch { }
@@ -355,61 +444,29 @@ namespace AIHelper.Manage
             //foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetModsPath(), "*.exe", SearchOption.AllDirectories))
             //{
             //    string exeName = Path.GetFileNameWithoutExtension(exePath);
-            //    if (Path.GetFileNameWithoutExtension(exePath).Length > 0 && !IniValuesDict.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
+            //    if (Path.GetFileNameWithoutExtension(exePath).Length > 0 && !customExecutables.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
             //    {
             //        ExecutablesCount++;
-            //        IniValuesDict.Add(ExecutablesCount + @"\title", exeName);
-            //        IniValuesDict.Add(ExecutablesCount + @"\binary", exePath);
+            //        customExecutables.Add(ExecutablesCount + @"\title", exeName);
+            //        customExecutables.Add(ExecutablesCount + @"\binary", exePath);
             //    }
             //}
 
             //добавление hardcoded exe
-            ExecutablesCount++;
-            IniValuesDict.Add(ExecutablesCount + @"\title", "Skyrim");
-            IniValuesDict.Add(ExecutablesCount + @"\binary", Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "TESV.exe"));
-            IniValuesDict.Add(ExecutablesCount + @"\workingDirectory", Properties.Settings.Default.ApplicationStartupPath);
-            IniValuesDict.Add(ExecutablesCount + @"\ownicon", "true");
-            ExecutablesCount++;
-            IniValuesDict.Add(ExecutablesCount + @"\title", "Explore Virtual Folder");
-            IniValuesDict.Add(ExecutablesCount + @"\binary", Path.Combine(ManageSettings.GetMOdirPath(), "explorer++", "Explorer++.exe"));
-            IniValuesDict.Add(ExecutablesCount + @"\workingDirectory", Path.Combine(ManageSettings.GetMOdirPath(), "explorer++"));
-            IniValuesDict.Add(ExecutablesCount + @"\arguments", ManageSettings.GetDataPath());
-            IniValuesDict.Add(ExecutablesCount + @"\ownicon", "true");
-
-
-            //очистка секции
-            INI.ClearSection("customExecutables", false);
-
-            int cnt = 1;
-            int iniParametersLength = iniParameters.Length / 2;
-            while (cnt <= ExecutablesCount)
-            {
-                for (int i = 0; i < iniParametersLength; i++)
-                {
-                    string key = cnt + @"\" + iniParameters[i, 0];
-                    string IniValue;
-                    bool keyExists = IniValuesDict.ContainsKey(key);
-                    string subquote = key.EndsWith(@"\arguments") && keyExists ? "\\\"" : string.Empty;
-                    if (keyExists)
-                    {
-                        IniValue = subquote + IniValuesDict[key].Replace(@"\", key.EndsWith(@"\arguments") ? @"\\" : "/") + subquote;
-                    }
-                    else
-                    {
-                        IniValue = subquote + (iniParameters[i, 1].EndsWith("b") ? "false" : string.Empty) + subquote;
-                    }
-
-                    INI.WriteINI("customExecutables", key, IniValue, false);
-                }
-                cnt++;
-            }
-
-            //Hardcoded exe Game exe and Explorer++
-            //ExecutablesCount += 2;
-
-            INI.WriteINI("customExecutables", "size", ExecutablesCount.ToString(CultureInfo.InvariantCulture));
-
-            Properties.Settings.Default.SetModOrganizerINISettingsForTheGame = false;
+            executablesCount++;
+            customs.Add(executablesCount + @"\title", "Skyrim");
+            customs.Add(executablesCount + @"\binary", Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "TESV.exe"));
+            customs.Add(executablesCount + @"\workingDirectory", Properties.Settings.Default.ApplicationStartupPath);
+            customs.Add(executablesCount + @"\ownicon", "true");
+            executablesCount++;
+            customs.Add(executablesCount + @"\title", "Explore Virtual Folder");
+            customs.Add(executablesCount + @"\binary", Path.Combine(ManageSettings.GetMOdirPath(), "explorer++", "Explorer++.exe"));
+            customs.Add(executablesCount + @"\workingDirectory", Path.Combine(ManageSettings.GetMOdirPath(), "explorer++"));
+            customs.Add(executablesCount + @"\arguments", ManageSettings.GetDataPath());
+            customs.Add(executablesCount + @"\ownicon", "true");
+            
+            customExecutables = customs;
+            ExecutablesCount = executablesCount;
         }
 
         private static void SetCommonIniValues(INIFile INI)

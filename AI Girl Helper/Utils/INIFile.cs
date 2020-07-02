@@ -249,7 +249,7 @@ namespace AIHelper.Manage
             //WriteINI(Section, null, null);
         }
 
-        private void SaveINI(bool DoSaveINI, bool ActionWasExecuted)
+        internal void SaveINI(bool DoSaveINI, bool ActionWasExecuted)
         {
             if (DoSaveINI && ActionWasExecuted)
             {

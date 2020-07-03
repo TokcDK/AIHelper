@@ -135,11 +135,13 @@
     <Compile Include="Forms\CustomResolution.Designer.cs">
       <DependentUpon>CustomResolution.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ExtraSettings\Elements\XUnityAutotranslator.cs">
+    <Compile Include="Forms\ExtraSettings\Elements\Elements.cs" />
+    <Compile Include="Forms\ExtraSettings\Elements\XUnityAutotranslator\XUnityAutotranslator.cs" />
+    <Compile Include="Forms\ExtraSettings\Elements\XUnityAutotranslator\XUnityAutotranslatorForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ExtraSettings\Elements\XUnityAutotranslator.Designer.cs">
-      <DependentUpon>XUnityAutotranslator.cs</DependentUpon>
+    <Compile Include="Forms\ExtraSettings\Elements\XUnityAutotranslator\XUnityAutotranslatorForm.Designer.cs">
+      <DependentUpon>XUnityAutotranslatorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\LogLevelselectionForm.cs">
       <SubType>Form</SubType>
@@ -229,8 +231,8 @@
     <EmbeddedResource Include="Forms\AI Helper.resx">
       <DependentUpon>AI Helper.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ExtraSettings\Elements\XUnityAutotranslator.resx">
-      <DependentUpon>XUnityAutotranslator.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ExtraSettings\Elements\XUnityAutotranslator\XUnityAutotranslatorForm.resx">
+      <DependentUpon>XUnityAutotranslatorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\LinksForm.resx">
       <DependentUpon>LinksForm.cs</DependentUpon>

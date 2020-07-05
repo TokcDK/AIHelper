@@ -42,6 +42,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.LaunchPagePanel = new System.Windows.Forms.Panel();
+            this.LogLevelSelectionPanel = new System.Windows.Forms.Panel();
             this.OpenHelpLinkLabel = new System.Windows.Forms.LinkLabel();
             this.LaunchLinksLinkLabel = new System.Windows.Forms.LinkLabel();
             this.BepInExDisplayedLogLevelLabel = new System.Windows.Forms.Label();
@@ -87,7 +88,6 @@
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
-            this.LogLevelSelectionPanel = new System.Windows.Forms.Panel();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -275,6 +275,14 @@
             this.LaunchPagePanel.Name = "LaunchPagePanel";
             this.LaunchPagePanel.Size = new System.Drawing.Size(340, 155);
             this.LaunchPagePanel.TabIndex = 0;
+            // 
+            // LogLevelSelectionPanel
+            // 
+            this.LogLevelSelectionPanel.Location = new System.Drawing.Point(104, 3);
+            this.LogLevelSelectionPanel.Name = "LogLevelSelectionPanel";
+            this.LogLevelSelectionPanel.Size = new System.Drawing.Size(195, 26);
+            this.LogLevelSelectionPanel.TabIndex = 29;
+            this.LogLevelSelectionPanel.Visible = false;
             // 
             // OpenHelpLinkLabel
             // 
@@ -539,6 +547,7 @@
             // 
             // CurrentGameComboBox
             // 
+            this.CurrentGameComboBox.Cursor = System.Windows.Forms.Cursors.PanSouth;
             this.CurrentGameComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CurrentGameComboBox.FormattingEnabled = true;
             this.CurrentGameComboBox.Location = new System.Drawing.Point(5, 20);
@@ -852,14 +861,6 @@
             this.MOCommonModeSwitchButton.Text = "MOToCommon";
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
-            // 
-            // LogLevelSelectionPanel
-            // 
-            this.LogLevelSelectionPanel.Location = new System.Drawing.Point(104, 3);
-            this.LogLevelSelectionPanel.Name = "LogLevelSelectionPanel";
-            this.LogLevelSelectionPanel.Size = new System.Drawing.Size(195, 26);
-            this.LogLevelSelectionPanel.TabIndex = 29;
-            this.LogLevelSelectionPanel.Visible = false;
             // 
             // AI_Helper
             // 

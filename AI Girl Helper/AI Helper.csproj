@@ -135,6 +135,12 @@
     <Compile Include="Forms\CustomResolution.Designer.cs">
       <DependentUpon>CustomResolution.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ExtraSettings\Elements\BepinEx\BepinExForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ExtraSettings\Elements\BepinEx\BepinExForm.Designer.cs">
+      <DependentUpon>BepinExForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ExtraSettings\Elements\Elements.cs" />
     <Compile Include="Forms\ExtraSettings\Elements\XUnityAutotranslator\XUnityAutotranslator.cs" />
     <Compile Include="Forms\ExtraSettings\Elements\XUnityAutotranslator\XUnityAutotranslatorForm.cs">
@@ -230,6 +236,9 @@
     <Compile Include="Manage\ManageOther.cs" />
     <EmbeddedResource Include="Forms\AI Helper.resx">
       <DependentUpon>AI Helper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ExtraSettings\Elements\BepinEx\BepinExForm.resx">
+      <DependentUpon>BepinExForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ExtraSettings\Elements\XUnityAutotranslator\XUnityAutotranslatorForm.resx">
       <DependentUpon>XUnityAutotranslatorForm.cs</DependentUpon>

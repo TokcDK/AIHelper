@@ -2172,6 +2172,10 @@ namespace AIHelper
             string UserFilesFolder = Path.Combine(ModsPath, "MyUserData");
             if (!Directory.Exists(UserFilesFolder))
             {
+                UserFilesFolder = Path.Combine(ModsPath, "MyUserFiles");
+            }
+            if (!Directory.Exists(UserFilesFolder))
+            {
                 UserFilesFolder = ManageSettings.GetOverwriteFolder();
             }
             if (Directory.Exists(UserFilesFolder))

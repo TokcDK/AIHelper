@@ -2227,6 +2227,7 @@ namespace AIHelper
 
         private void ActionsOnGameChanged()
         {
+            CloseExtraForms();
             //cleaning previous game data
             //File.Delete(ManageSettings.GetModOrganizerINIpath());
             //File.Delete(ManageSettings.GetMOcategoriesPath());
@@ -2237,6 +2238,18 @@ namespace AIHelper
             CurrentGame.InitActions();
             CurrentGameTitleTextBox.Text = CurrentGame.GetGameDisplayingName();
             Properties.Settings.Default.CurrentGameDisplayingName = CurrentGame.GetGameDisplayingName();
+        }
+
+        private void CloseExtraForms()
+        {
+            if (LinksForm != null && !LinksForm.IsDisposed)
+            {
+                LinksForm.Close();
+            }
+            if (extraSettingsForm != null && !extraSettingsForm.IsDisposed)
+            {
+                extraSettingsForm.Close();
+            }
         }
 
         private void ConsoleCheckBox_CheckedChanged(object sender, EventArgs e)

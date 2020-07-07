@@ -90,7 +90,7 @@
             // BepinExLogOpenConfigFileLinkLabel
             // 
             this.BepinExLogOpenConfigFileLinkLabel.AutoSize = true;
-            this.BepinExLogOpenConfigFileLinkLabel.Location = new System.Drawing.Point(84, 144);
+            this.BepinExLogOpenConfigFileLinkLabel.Location = new System.Drawing.Point(84, 143);
             this.BepinExLogOpenConfigFileLinkLabel.Name = "BepinExLogOpenConfigFileLinkLabel";
             this.BepinExLogOpenConfigFileLinkLabel.Size = new System.Drawing.Size(46, 13);
             this.BepinExLogOpenConfigFileLinkLabel.TabIndex = 16;
@@ -174,7 +174,7 @@
             // BepInExSettingsLogCheckBox
             // 
             this.BepInExSettingsLogCheckBox.AutoSize = true;
-            this.BepInExSettingsLogCheckBox.Location = new System.Drawing.Point(104, 129);
+            this.BepInExSettingsLogCheckBox.Location = new System.Drawing.Point(104, 128);
             this.BepInExSettingsLogCheckBox.Name = "BepInExSettingsLogCheckBox";
             this.BepInExSettingsLogCheckBox.Size = new System.Drawing.Size(15, 14);
             this.BepInExSettingsLogCheckBox.TabIndex = 20;
@@ -185,7 +185,7 @@
             // 
             this.OpenLogLinkLabel.AutoSize = true;
             this.OpenLogLinkLabel.LinkColor = System.Drawing.Color.WhiteSmoke;
-            this.OpenLogLinkLabel.Location = new System.Drawing.Point(84, 127);
+            this.OpenLogLinkLabel.Location = new System.Drawing.Point(84, 126);
             this.OpenLogLinkLabel.Name = "OpenLogLinkLabel";
             this.OpenLogLinkLabel.Size = new System.Drawing.Size(21, 13);
             this.OpenLogLinkLabel.TabIndex = 21;
@@ -198,7 +198,7 @@
             // 
             this.BepInExSettingsDisplayedLogLevelLabel.AutoSize = true;
             this.BepInExSettingsDisplayedLogLevelLabel.ForeColor = System.Drawing.SystemColors.ScrollBar;
-            this.BepInExSettingsDisplayedLogLevelLabel.Location = new System.Drawing.Point(84, 114);
+            this.BepInExSettingsDisplayedLogLevelLabel.Location = new System.Drawing.Point(84, 113);
             this.BepInExSettingsDisplayedLogLevelLabel.Name = "BepInExSettingsDisplayedLogLevelLabel";
             this.BepInExSettingsDisplayedLogLevelLabel.Size = new System.Drawing.Size(27, 13);
             this.BepInExSettingsDisplayedLogLevelLabel.TabIndex = 27;

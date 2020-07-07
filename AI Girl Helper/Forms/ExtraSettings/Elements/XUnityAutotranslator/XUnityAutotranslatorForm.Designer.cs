@@ -76,7 +76,7 @@
             // XUAcfgFileOpenLinkLabel
             // 
             this.XUAcfgFileOpenLinkLabel.AutoSize = true;
-            this.XUAcfgFileOpenLinkLabel.Location = new System.Drawing.Point(3, 134);
+            this.XUAcfgFileOpenLinkLabel.Location = new System.Drawing.Point(6, 141);
             this.XUAcfgFileOpenLinkLabel.Name = "XUAcfgFileOpenLinkLabel";
             this.XUAcfgFileOpenLinkLabel.Size = new System.Drawing.Size(124, 13);
             this.XUAcfgFileOpenLinkLabel.TabIndex = 15;

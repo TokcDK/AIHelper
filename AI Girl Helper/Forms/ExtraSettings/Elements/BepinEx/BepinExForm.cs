@@ -107,7 +107,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
         private string GetDiscConsoleSectionName()
         {
             var LogTargetSection = "Logging.Disk";
-            if (BepinExLogTargetLinkLabel.Text == "Console")
+            if (BepinExLogTargetLinkLabel.Text == T._("Console"))
             {
                 LogTargetSection = "Logging.Console";
             }

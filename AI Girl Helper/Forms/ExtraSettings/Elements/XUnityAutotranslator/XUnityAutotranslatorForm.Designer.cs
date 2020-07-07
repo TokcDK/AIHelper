@@ -54,10 +54,11 @@
             this.XUAGroupBox.Controls.Add(this.XUALanguageComboBox);
             this.XUAGroupBox.Controls.Add(this.XUALanguageLabel);
             this.XUAGroupBox.Controls.Add(this.XUAFromLanguageComboBox);
+            this.XUAGroupBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.XUAGroupBox.ForeColor = System.Drawing.Color.White;
             this.XUAGroupBox.Location = new System.Drawing.Point(0, 0);
             this.XUAGroupBox.Name = "XUAGroupBox";
-            this.XUAGroupBox.Size = new System.Drawing.Size(152, 163);
+            this.XUAGroupBox.Size = new System.Drawing.Size(170, 180);
             this.XUAGroupBox.TabIndex = 2;
             this.XUAGroupBox.TabStop = false;
             this.XUAGroupBox.Text = "XUnity.AutoTranslator";
@@ -76,12 +77,12 @@
             // XUAcfgFileOpenLinkLabel
             // 
             this.XUAcfgFileOpenLinkLabel.AutoSize = true;
-            this.XUAcfgFileOpenLinkLabel.Location = new System.Drawing.Point(6, 141);
+            this.XUAcfgFileOpenLinkLabel.Location = new System.Drawing.Point(100, 160);
             this.XUAcfgFileOpenLinkLabel.Name = "XUAcfgFileOpenLinkLabel";
-            this.XUAcfgFileOpenLinkLabel.Size = new System.Drawing.Size(124, 13);
+            this.XUAcfgFileOpenLinkLabel.Size = new System.Drawing.Size(46, 13);
             this.XUAcfgFileOpenLinkLabel.TabIndex = 15;
             this.XUAcfgFileOpenLinkLabel.TabStop = true;
-            this.XUAcfgFileOpenLinkLabel.Text = "AutoTranslatorConfig.ini";
+            this.XUAcfgFileOpenLinkLabel.Text = "Settings";
             this.XUAcfgFileOpenLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.XUAcfgFileOpenLinkLabel_LinkClicked);
             // 
             // XUAEndpointComboBox
@@ -98,7 +99,7 @@
             // XUATranslateServiceLabel
             // 
             this.XUATranslateServiceLabel.AutoSize = true;
-            this.XUATranslateServiceLabel.ForeColor = System.Drawing.Color.Black;
+            this.XUATranslateServiceLabel.ForeColor = System.Drawing.Color.White;
             this.XUATranslateServiceLabel.Location = new System.Drawing.Point(4, 84);
             this.XUATranslateServiceLabel.Name = "XUATranslateServiceLabel";
             this.XUATranslateServiceLabel.Size = new System.Drawing.Size(93, 13);
@@ -139,7 +140,7 @@
             // XUALanguageLabel
             // 
             this.XUALanguageLabel.AutoSize = true;
-            this.XUALanguageLabel.ForeColor = System.Drawing.Color.Black;
+            this.XUALanguageLabel.ForeColor = System.Drawing.Color.White;
             this.XUALanguageLabel.Location = new System.Drawing.Point(6, 17);
             this.XUALanguageLabel.Name = "XUALanguageLabel";
             this.XUALanguageLabel.Size = new System.Drawing.Size(58, 13);
@@ -163,7 +164,7 @@
             this.XUASettingsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.XUASettingsPanel.Location = new System.Drawing.Point(0, 0);
             this.XUASettingsPanel.Name = "XUASettingsPanel";
-            this.XUASettingsPanel.Size = new System.Drawing.Size(152, 163);
+            this.XUASettingsPanel.Size = new System.Drawing.Size(170, 180);
             this.XUASettingsPanel.TabIndex = 2;
             // 
             // XUnityAutotranslatorForm
@@ -171,7 +172,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
-            this.ClientSize = new System.Drawing.Size(152, 163);
+            this.ClientSize = new System.Drawing.Size(170, 180);
             this.Controls.Add(this.XUASettingsPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "XUnityAutotranslatorForm";

@@ -51,7 +51,7 @@
             this.BepinExSettingsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.BepinExSettingsPanel.Location = new System.Drawing.Point(0, 0);
             this.BepinExSettingsPanel.Name = "BepinExSettingsPanel";
-            this.BepinExSettingsPanel.Size = new System.Drawing.Size(152, 163);
+            this.BepinExSettingsPanel.Size = new System.Drawing.Size(170, 180);
             this.BepinExSettingsPanel.TabIndex = 0;
             // 
             // BepInExSettingsGroupBox
@@ -71,7 +71,7 @@
             this.BepInExSettingsGroupBox.ForeColor = System.Drawing.Color.White;
             this.BepInExSettingsGroupBox.Location = new System.Drawing.Point(0, 0);
             this.BepInExSettingsGroupBox.Name = "BepInExSettingsGroupBox";
-            this.BepInExSettingsGroupBox.Size = new System.Drawing.Size(152, 163);
+            this.BepInExSettingsGroupBox.Size = new System.Drawing.Size(170, 180);
             this.BepInExSettingsGroupBox.TabIndex = 2;
             this.BepInExSettingsGroupBox.TabStop = false;
             this.BepInExSettingsGroupBox.Text = "BepInEx";
@@ -80,7 +80,7 @@
             // 
             this.BepInExSettingsDisplayedLogLevelLabel.AutoSize = true;
             this.BepInExSettingsDisplayedLogLevelLabel.ForeColor = System.Drawing.SystemColors.ScrollBar;
-            this.BepInExSettingsDisplayedLogLevelLabel.Location = new System.Drawing.Point(84, 113);
+            this.BepInExSettingsDisplayedLogLevelLabel.Location = new System.Drawing.Point(40, 160);
             this.BepInExSettingsDisplayedLogLevelLabel.Name = "BepInExSettingsDisplayedLogLevelLabel";
             this.BepInExSettingsDisplayedLogLevelLabel.Size = new System.Drawing.Size(27, 13);
             this.BepInExSettingsDisplayedLogLevelLabel.TabIndex = 27;
@@ -92,7 +92,7 @@
             // 
             this.OpenLogLinkLabel.AutoSize = true;
             this.OpenLogLinkLabel.LinkColor = System.Drawing.Color.WhiteSmoke;
-            this.OpenLogLinkLabel.Location = new System.Drawing.Point(84, 126);
+            this.OpenLogLinkLabel.Location = new System.Drawing.Point(3, 160);
             this.OpenLogLinkLabel.Name = "OpenLogLinkLabel";
             this.OpenLogLinkLabel.Size = new System.Drawing.Size(21, 13);
             this.OpenLogLinkLabel.TabIndex = 21;
@@ -104,7 +104,7 @@
             // BepInExSettingsLogCheckBox
             // 
             this.BepInExSettingsLogCheckBox.AutoSize = true;
-            this.BepInExSettingsLogCheckBox.Location = new System.Drawing.Point(104, 128);
+            this.BepInExSettingsLogCheckBox.Location = new System.Drawing.Point(25, 161);
             this.BepInExSettingsLogCheckBox.Name = "BepInExSettingsLogCheckBox";
             this.BepInExSettingsLogCheckBox.Size = new System.Drawing.Size(15, 14);
             this.BepInExSettingsLogCheckBox.TabIndex = 20;
@@ -147,7 +147,7 @@
             // BepinExLogOpenConfigFileLinkLabel
             // 
             this.BepinExLogOpenConfigFileLinkLabel.AutoSize = true;
-            this.BepinExLogOpenConfigFileLinkLabel.Location = new System.Drawing.Point(84, 143);
+            this.BepinExLogOpenConfigFileLinkLabel.Location = new System.Drawing.Point(100, 160);
             this.BepinExLogOpenConfigFileLinkLabel.Name = "BepinExLogOpenConfigFileLinkLabel";
             this.BepinExLogOpenConfigFileLinkLabel.Size = new System.Drawing.Size(46, 13);
             this.BepinExLogOpenConfigFileLinkLabel.TabIndex = 16;
@@ -158,7 +158,7 @@
             // BepinExLogTargetLinkLabel
             // 
             this.BepinExLogTargetLinkLabel.AutoSize = true;
-            this.BepinExLogTargetLinkLabel.Location = new System.Drawing.Point(44, 17);
+            this.BepinExLogTargetLinkLabel.Location = new System.Drawing.Point(47, 17);
             this.BepinExLogTargetLinkLabel.Name = "BepinExLogTargetLinkLabel";
             this.BepinExLogTargetLinkLabel.Size = new System.Drawing.Size(45, 13);
             this.BepinExLogTargetLinkLabel.TabIndex = 8;
@@ -211,7 +211,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
-            this.ClientSize = new System.Drawing.Size(152, 163);
+            this.ClientSize = new System.Drawing.Size(170, 180);
             this.Controls.Add(this.BepinExSettingsPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "BepinExForm";

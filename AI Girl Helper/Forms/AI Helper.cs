@@ -613,7 +613,8 @@ namespace AIHelper
             THToolTip.SetToolTip(ExtraSettingsLinkLabel, T._("Open extra setting window for plugins and etc"));
 
             THToolTip.SetToolTip(OpenLogLinkLabel, T._("Open BepinEx log if found"));
-            THToolTip.SetToolTip(BepInExDisplayedLogLevelLabel, T._("Click here to select log level"));
+            THToolTip.SetToolTip(BepInExDisplayedLogLevelLabel, T._("Click here to select log level\n" +
+                "Only displays the specified log level and above in the console output"));
 
 
             THToolTip.SetToolTip(CurrentGameComboBox, T._("List of found games. Current") + ": " + ListOfGames[CurrentGameComboBox.SelectedIndex].GetGameDisplayingName());

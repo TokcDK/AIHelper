@@ -50,7 +50,8 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
             THToolTip.SetToolTip(BepInExSettingsLogCheckedListBox, T._("Log levels. How many messages will be displayed"));
 
             THToolTip.SetToolTip(OpenLogLinkLabel, T._("Open BepinEx log if found"));
-            THToolTip.SetToolTip(BepInExSettingsDisplayedLogLevelLabel, T._("Click here to select log level"));
+            THToolTip.SetToolTip(BepInExSettingsDisplayedLogLevelLabel, T._("Click here to select log level\n" +
+                "Only displays the specified log level and above in the console output"));
             THToolTip.SetToolTip(BepInExSettingsLogCheckBox, T._("Click to enable log"));
 
             THToolTip.SetToolTip(BepinExHelpLinkLabel, T._("Open BepInEx documentation"));

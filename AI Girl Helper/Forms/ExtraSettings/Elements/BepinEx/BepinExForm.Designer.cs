@@ -30,17 +30,17 @@
         {
             this.BepinExSettingsPanel = new System.Windows.Forms.Panel();
             this.BepInExSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.BepInExSettingsDisplayedLogLevelLabel = new System.Windows.Forms.Label();
+            this.OpenLogLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.BepInExSettingsLogCheckBox = new System.Windows.Forms.CheckBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.BepinExHelpLinkLabel = new System.Windows.Forms.LinkLabel();
             this.BepinExLogOpenConfigFileLinkLabel = new System.Windows.Forms.LinkLabel();
             this.BepinExLogTargetLinkLabel = new System.Windows.Forms.LinkLabel();
             this.BepInExSettingsLogCheckedListBox = new System.Windows.Forms.CheckedListBox();
             this.BepInExLogLevelsSourceLabel = new System.Windows.Forms.Label();
             this.BepInExLogLevelsLabel = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.BepInExSettingsLogCheckBox = new System.Windows.Forms.CheckBox();
-            this.OpenLogLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.BepInExSettingsDisplayedLogLevelLabel = new System.Windows.Forms.Label();
             this.BepinExSettingsPanel.SuspendLayout();
             this.BepInExSettingsGroupBox.SuspendLayout();
             this.SuspendLayout();
@@ -76,6 +76,63 @@
             this.BepInExSettingsGroupBox.TabStop = false;
             this.BepInExSettingsGroupBox.Text = "BepInEx";
             // 
+            // BepInExSettingsDisplayedLogLevelLabel
+            // 
+            this.BepInExSettingsDisplayedLogLevelLabel.AutoSize = true;
+            this.BepInExSettingsDisplayedLogLevelLabel.ForeColor = System.Drawing.SystemColors.ScrollBar;
+            this.BepInExSettingsDisplayedLogLevelLabel.Location = new System.Drawing.Point(84, 113);
+            this.BepInExSettingsDisplayedLogLevelLabel.Name = "BepInExSettingsDisplayedLogLevelLabel";
+            this.BepInExSettingsDisplayedLogLevelLabel.Size = new System.Drawing.Size(27, 13);
+            this.BepInExSettingsDisplayedLogLevelLabel.TabIndex = 27;
+            this.BepInExSettingsDisplayedLogLevelLabel.Text = "Info";
+            this.BepInExSettingsDisplayedLogLevelLabel.Visible = false;
+            this.BepInExSettingsDisplayedLogLevelLabel.Click += new System.EventHandler(this.BepInExSettingsDisplayedLogLevelLabel_Click);
+            // 
+            // OpenLogLinkLabel
+            // 
+            this.OpenLogLinkLabel.AutoSize = true;
+            this.OpenLogLinkLabel.LinkColor = System.Drawing.Color.WhiteSmoke;
+            this.OpenLogLinkLabel.Location = new System.Drawing.Point(84, 126);
+            this.OpenLogLinkLabel.Name = "OpenLogLinkLabel";
+            this.OpenLogLinkLabel.Size = new System.Drawing.Size(21, 13);
+            this.OpenLogLinkLabel.TabIndex = 21;
+            this.OpenLogLinkLabel.TabStop = true;
+            this.OpenLogLinkLabel.Text = "log";
+            this.OpenLogLinkLabel.VisitedLinkColor = System.Drawing.Color.Gainsboro;
+            this.OpenLogLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenLogLinkLabel_LinkClicked);
+            // 
+            // BepInExSettingsLogCheckBox
+            // 
+            this.BepInExSettingsLogCheckBox.AutoSize = true;
+            this.BepInExSettingsLogCheckBox.Location = new System.Drawing.Point(104, 128);
+            this.BepInExSettingsLogCheckBox.Name = "BepInExSettingsLogCheckBox";
+            this.BepInExSettingsLogCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.BepInExSettingsLogCheckBox.TabIndex = 20;
+            this.BepInExSettingsLogCheckBox.UseVisualStyleBackColor = true;
+            this.BepInExSettingsLogCheckBox.CheckedChanged += new System.EventHandler(this.BepInExSettingsLogCheckBox_CheckedChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.ForeColor = System.Drawing.Color.White;
+            this.label2.Location = new System.Drawing.Point(65, 41);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(11, 13);
+            this.label2.TabIndex = 19;
+            this.label2.Text = "-";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(49, 41);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(15, 13);
+            this.label1.TabIndex = 18;
+            this.label1.Text = "+";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
+            // 
             // BepinExHelpLinkLabel
             // 
             this.BepinExHelpLinkLabel.AutoSize = true;
@@ -101,7 +158,7 @@
             // BepinExLogTargetLinkLabel
             // 
             this.BepinExLogTargetLinkLabel.AutoSize = true;
-            this.BepinExLogTargetLinkLabel.Location = new System.Drawing.Point(47, 17);
+            this.BepinExLogTargetLinkLabel.Location = new System.Drawing.Point(44, 17);
             this.BepinExLogTargetLinkLabel.Name = "BepinExLogTargetLinkLabel";
             this.BepinExLogTargetLinkLabel.Size = new System.Drawing.Size(45, 13);
             this.BepinExLogTargetLinkLabel.TabIndex = 8;
@@ -148,63 +205,6 @@
             this.BepInExLogLevelsLabel.Size = new System.Drawing.Size(34, 13);
             this.BepInExLogLevelsLabel.TabIndex = 6;
             this.BepInExLogLevelsLabel.Text = "levels";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(49, 41);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(15, 13);
-            this.label1.TabIndex = 18;
-            this.label1.Text = "+";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(65, 41);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(11, 13);
-            this.label2.TabIndex = 19;
-            this.label2.Text = "-";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
-            // 
-            // BepInExSettingsLogCheckBox
-            // 
-            this.BepInExSettingsLogCheckBox.AutoSize = true;
-            this.BepInExSettingsLogCheckBox.Location = new System.Drawing.Point(104, 128);
-            this.BepInExSettingsLogCheckBox.Name = "BepInExSettingsLogCheckBox";
-            this.BepInExSettingsLogCheckBox.Size = new System.Drawing.Size(15, 14);
-            this.BepInExSettingsLogCheckBox.TabIndex = 20;
-            this.BepInExSettingsLogCheckBox.UseVisualStyleBackColor = true;
-            this.BepInExSettingsLogCheckBox.CheckedChanged += new System.EventHandler(this.BepInExSettingsLogCheckBox_CheckedChanged);
-            // 
-            // OpenLogLinkLabel
-            // 
-            this.OpenLogLinkLabel.AutoSize = true;
-            this.OpenLogLinkLabel.LinkColor = System.Drawing.Color.WhiteSmoke;
-            this.OpenLogLinkLabel.Location = new System.Drawing.Point(84, 126);
-            this.OpenLogLinkLabel.Name = "OpenLogLinkLabel";
-            this.OpenLogLinkLabel.Size = new System.Drawing.Size(21, 13);
-            this.OpenLogLinkLabel.TabIndex = 21;
-            this.OpenLogLinkLabel.TabStop = true;
-            this.OpenLogLinkLabel.Text = "log";
-            this.OpenLogLinkLabel.VisitedLinkColor = System.Drawing.Color.Gainsboro;
-            this.OpenLogLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenLogLinkLabel_LinkClicked);
-            // 
-            // BepInExSettingsDisplayedLogLevelLabel
-            // 
-            this.BepInExSettingsDisplayedLogLevelLabel.AutoSize = true;
-            this.BepInExSettingsDisplayedLogLevelLabel.ForeColor = System.Drawing.SystemColors.ScrollBar;
-            this.BepInExSettingsDisplayedLogLevelLabel.Location = new System.Drawing.Point(84, 113);
-            this.BepInExSettingsDisplayedLogLevelLabel.Name = "BepInExSettingsDisplayedLogLevelLabel";
-            this.BepInExSettingsDisplayedLogLevelLabel.Size = new System.Drawing.Size(27, 13);
-            this.BepInExSettingsDisplayedLogLevelLabel.TabIndex = 27;
-            this.BepInExSettingsDisplayedLogLevelLabel.Text = "Info";
-            this.BepInExSettingsDisplayedLogLevelLabel.Visible = false;
-            this.BepInExSettingsDisplayedLogLevelLabel.Click += new System.EventHandler(this.BepInExSettingsDisplayedLogLevelLabel_Click);
             // 
             // BepinExForm
             // 

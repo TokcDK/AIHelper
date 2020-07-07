@@ -161,6 +161,10 @@ namespace AIHelper.Forms.ExtraSettings.Elements
             };
 
             THToolTip.SetToolTip(XUAcfgFileOpenLinkLabel, T._("Open file with all settings"));
+            THToolTip.SetToolTip(XUAHelpLinkLabel, T._("Open XUA documentation"));
+            THToolTip.SetToolTip(XUAFromLanguageComboBox, T._("List of source languages. From which translate"));
+            THToolTip.SetToolTip(XUALanguageComboBox, T._("List of target languages. To which translate"));
+            THToolTip.SetToolTip(XUAEndpointComboBox, T._("List of translation services"));
 
             THToolTip.SetToolTip(XUAEndpointComboBox,
                 T._("From XUA documentation.\nThe supported translators are: ")

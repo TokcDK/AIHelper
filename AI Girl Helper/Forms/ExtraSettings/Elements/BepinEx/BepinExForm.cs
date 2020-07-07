@@ -21,8 +21,8 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
         private void BepinExForm_Load(object sender, EventArgs e)
         {
             Version = ManageStringsExtensions.GetProductVersionToFloatNumber(GetBepInExVersionString());
-            InitSettings();
             SetLocalization();
+            InitSettings();
             SetTooltips();
         }
 

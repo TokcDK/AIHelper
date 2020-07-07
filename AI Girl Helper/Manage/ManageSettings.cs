@@ -11,11 +11,11 @@ namespace AIHelper.Manage
 {
     class ManageSettings
     {
-        public static bool IsFirstRun()
+        internal static bool IsFirstRun()
         {
             return ManageINI.GetINIValueIfExist(GetAIHelperINIPath(), "FirstRun", "General") == "True";
         }
-        public static void SettingsINIT()
+        internal static void SettingsINIT()
         {
             //int index = Properties.Settings.Default.CurrentGameListIndex;
             //Properties.Settings.Default.CurrentGamePath = ListOfGames[index].GetGamePath();
@@ -32,7 +32,12 @@ namespace AIHelper.Manage
 
         }
 
-        public static string[] GetScreenResolutions()
+        internal static string GetDefaultBepInEx5OlderVersion()
+        {
+            return "5.0.1";
+        }
+
+        internal static string[] GetScreenResolutions()
         {
             return new string[]
             {
@@ -54,7 +59,7 @@ namespace AIHelper.Manage
             throw new NotImplementedException();
         }
 
-        public static List<Game> GetListOfExistsGames()
+        internal static List<Game> GetListOfExistsGames()
         {
             List<Game> ListOfGames = GamesList.GetGamesList();
 
@@ -124,7 +129,7 @@ namespace AIHelper.Manage
             return ListOfGames;
         }
 
-        //public static Dictionary<string, Game> GetListOfGames()
+        //internal static Dictionary<string, Game> GetListOfGames()
         //{
         //    List<Game> ListOfGames = GamesList.GetGamesList();
         //    Dictionary<string, Game> ListOfGames1 = new Dictionary<string, Game>();
@@ -245,7 +250,7 @@ namespace AIHelper.Manage
             return false;
         }
 
-        public static string GetStringListOfAllGames()
+        internal static string GetStringListOfAllGames()
         {
             List<Game> ListOfGames = GamesList.GetGamesList();
 
@@ -258,99 +263,99 @@ namespace AIHelper.Manage
             return listOfGamesString;
         }
 
-        public static string GetGamesFolderPath()
+        internal static string GetGamesFolderPath()
         {
             //var GamesPath = Path.Combine(Application.StartupPath, "Games");
             return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Games");
             //return Directory.Exists(GamesPath) ? GamesPath : Application.StartupPath;
         }
 
-        public static int GetCurrentGameIndex()
+        internal static int GetCurrentGameIndex()
         {
             return Properties.Settings.Default.CurrentGameListIndex;
         }
 
-        public static string GetSettingsEXEPath()
+        internal static string GetSettingsEXEPath()
         {
             return Path.Combine(ManageSettings.GetDataPath(), GetINISettingsEXEName() + ".exe");
         }
 
-        public static string GetCurrentGamePath()
+        internal static string GetCurrentGamePath()
         {
             return Properties.Settings.Default.CurrentGamePath;
         }
 
-        public static string GetCurrentGameMOOverwritePath()
+        internal static string GetCurrentGameMOOverwritePath()
         {
             return GetOverwriteFolder();
         }
 
-        public static string GETMOCurrentGameName()
+        internal static string GETMOCurrentGameName()
         {
             return "Skyrim";
         }
 
-        public static string GetDummyFilePath()
+        internal static string GetDummyFilePath()
         {
             return Path.Combine(GetCurrentGamePath(), "TESV.exe");
         }
 
-        public static string GetCurrentGameEXEName()
+        internal static string GetCurrentGameEXEName()
         {
             return Properties.Settings.Default.CurrentGameEXEName;
         }
 
-        public static string GetCurrentGameFolderName()
+        internal static string GetCurrentGameFolderName()
         {
             return Properties.Settings.Default.CurrentGameFolderName;
         }
 
-        public static string GetCurrentGameDisplayingName()
+        internal static string GetCurrentGameDisplayingName()
         {
             return Properties.Settings.Default.CurrentGameDisplayingName;
         }
 
-        public static string GetStudioEXEName()
+        internal static string GetStudioEXEName()
         {
             return Properties.Settings.Default.StudioEXEName;
         }
 
-        public static string GetINISettingsEXEName()
+        internal static string GetINISettingsEXEName()
         {
             return Properties.Settings.Default.INISettingsEXEName;
         }
 
-        public static string GetAppResDir()
+        internal static string GetAppResDir()
         {
             return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "RES");
         }
 
-        public static string GetModsPath()
+        internal static string GetModsPath()
         {
             return Path.Combine(GetCurrentGamePath(), "Mods");
         }
 
-        public static string GetDownloadsPath()
+        internal static string GetDownloadsPath()
         {
             return Path.Combine(GetCurrentGamePath(), "Downloads");
         }
 
-        public static string GetDataPath()
+        internal static string GetDataPath()
         {
             return Path.Combine(GetCurrentGamePath(), "Data");
         }
 
-        public static string GetMOdirPath()
+        internal static string GetMOdirPath()
         {
             return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO");
         }
 
-        public static string GetMOexePath()
+        internal static string GetMOexePath()
         {
             return Path.Combine(GetMOdirPath(), "ModOrganizer.exe");
         }
 
-        public static string GetMOSelectedProfileDirPath()
+        internal static string GetMOSelectedProfileDirPath()
         {
             if (Properties.Settings.Default.MOSelectedProfileDirPath.Length > 0)
             {
@@ -364,47 +369,47 @@ namespace AIHelper.Manage
             }
         }
 
-        public static string GetMOiniPath()
+        internal static string GetMOiniPath()
         {
             return Path.Combine(GetMOdirPath(), "ModOrganizer.ini");
         }
 
-        public static string GetMOiniPathForSelectedGame()
+        internal static string GetMOiniPathForSelectedGame()
         {
             return ManageFilesFolders.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGamePath(), "MO", "ModOrganizer.ini"));
         }
 
-        public static string GetMOcategoriesPath()
+        internal static string GetMOcategoriesPath()
         {
             return Path.Combine(GetMOdirPath(), "categories.dat");
         }
 
-        public static string GetMOcategoriesPathForSelectedGame()
+        internal static string GetMOcategoriesPathForSelectedGame()
         {
             return ManageFilesFolders.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGamePath(), "MO", "categories.dat"));
         }
 
-        public static string GetInstall2MODirPath()
+        internal static string GetInstall2MODirPath()
         {
             return Path.Combine(GetCurrentGamePath(), "2MO");
         }
 
-        public static string GetOverwriteFolder()
+        internal static string GetOverwriteFolder()
         {
             return ManageFilesFolders.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGamePath(), "MO", "overwrite"), true);
         }
 
-        public static string GetOverwriteFolderLink()
+        internal static string GetOverwriteFolderLink()
         {
             return Path.Combine(GetCurrentGamePath(), "MOUserData");
         }
 
-        public static string GetAIHelperINIPath()
+        internal static string GetAIHelperINIPath()
         {
             return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, Application.ProductName + ".ini");
         }
 
-        public static int GetCurrentGameIndexByFolderName(List<Game> listOfGames, string FolderName)
+        internal static int GetCurrentGameIndexByFolderName(List<Game> listOfGames, string FolderName)
         {
             for (var i = 0; i < listOfGames.Count; i++)
             {
@@ -416,47 +421,54 @@ namespace AIHelper.Manage
             return 0;
         }
 
-        public static string GetModOrganizerINIpath()
+        internal static string GetModOrganizerINIpath()
         {
             return Path.Combine(GetMOdirPath(), "ModOrganizer.ini");
         }
 
-        public static string GetMOmodeDataFilesBakDirPath()
+        internal static string MOmodeSwitchDataDirName { get => "momode";}
+
+        internal static string GetMOmodeSwitchDataDirPath()
         {
-            return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName(), "MOmodeDataFilesBak");
+            return Path.Combine(GetAppResDir(), MOmodeSwitchDataDirName);
         }
 
-        public static string GetModdedDataFilesListFilePath()
+        internal static string GetMOmodeDataFilesBakDirPath()
         {
-            return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName(), "ModdedDataFilesList.txt");
+            return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName(), "MOmodeDataFilesBak");
         }
 
-        public static string GetVanillaDataFilesListFilePath()
+        internal static string GetModdedDataFilesListFilePath()
         {
-            return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName(), "VanillaDataFilesList.txt");
+            return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName(), "ModdedDataFilesList.txt");
         }
 
-        public static string GetVanillaDataEmptyFoldersListFilePath()
+        internal static string GetVanillaDataFilesListFilePath()
         {
-            return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName(), "VanillaDataEmptyFoldersList.txt");
+            return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName(), "VanillaDataFilesList.txt");
         }
 
-        public static string GetMOToStandartConvertationOperationsListFilePath()
+        internal static string GetVanillaDataEmptyFoldersListFilePath()
         {
-            return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName(), "MOToStandartConvertationOperationsList.txt");
+            return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName(), "VanillaDataEmptyFoldersList.txt");
+        }
+
+        internal static string GetMOToStandartConvertationOperationsListFilePath()
+        {
+            return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName(), "MOToStandartConvertationOperationsList.txt");
         }
 
         internal static string GetZipmodsGUIDListFilePath()
         {
-            return Path.Combine(GetAppResDir(), "momode", GetCurrentGameFolderName(), "ZipmodsGUIDList.txt");
+            return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName(), "ZipmodsGUIDList.txt");
         }
 
-        public static string GetBepInExPath()
+        internal static string GetBepInExPath()
         {
             return Path.Combine(Properties.Settings.Default.MOmode ? GetModsPath() : GetDataPath(), "BepInEx");
         }
 
-        public static string GetBepInExCfgDirPath()
+        internal static string GetBepInExCfgDirPath()
         {
             if (!Properties.Settings.Default.MOmode)
             {
@@ -465,7 +477,7 @@ namespace AIHelper.Manage
             return ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(Path.Combine(GetBepInExPath(), "BepInEx", "config"), true);
         }
 
-        public static string GetBepInExCfgFilePath()
+        internal static string GetBepInExCfgFilePath()
         {
             if (!Properties.Settings.Default.MOmode)
             {
@@ -478,7 +490,7 @@ namespace AIHelper.Manage
             return ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(Path.Combine(GetBepInExCfgDirPath(), "BepInEx.cfg"));
         }
 
-        public static void SwitchBepInExDisplayedLogLevelValue(CheckBox BepInExConsoleCheckBox, Label BepInExDisplayedLogLevelLabel, bool OnlyShow = false)
+        internal static void SwitchBepInExDisplayedLogLevelValue(CheckBox BepInExConsoleCheckBox, Label BepInExDisplayedLogLevelLabel, bool OnlyShow = false, string TargetSectionName = "Logging.Console")
         {
             //string curValue = ManageINI.GetINIValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "DisplayedLogLevel", "Logging.Console");
             string curValue = ManageCFG.GetCFGValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "DisplayedLogLevel", "Logging.Console");
@@ -500,7 +512,7 @@ namespace AIHelper.Manage
                     if (setNext)
                     {
                         //ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", /*" " +*/ value);
-                        ManageCFG.WriteCFGValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", /*" " +*/ value);
+                        ManageCFG.WriteCFGValue(ManageSettings.GetBepInExCfgFilePath(), TargetSectionName, "DisplayedLogLevel", /*" " +*/ value);
                         BepInExDisplayedLogLevelLabel.Text = value;
                         return;
                     }
@@ -518,7 +530,7 @@ namespace AIHelper.Manage
         /// <summary>
         /// Gets the supported languages.
         /// </summary>
-        public static IEnumerable<string> Languages
+        internal static IEnumerable<string> Languages
         {
             get
             {
@@ -532,7 +544,7 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="language">The language."</param>
         /// <returns>The identifier or <see cref="string.Empty"/> if none.</returns>
-        public static string LanguageEnumToIdentifier
+        internal static string LanguageEnumToIdentifier
                 (string language)
         {
             EnsureInitialized();
@@ -545,7 +557,7 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="identifier">The identifier of language."</param>
         /// <returns>The identifier or <see cref="string.Empty"/> if none.</returns>
-        public static string LanguageEnumFromIdentifier
+        internal static string LanguageEnumFromIdentifier
                 (string identifier)
         {
             EnsureInitialized(true);
@@ -556,7 +568,7 @@ namespace AIHelper.Manage
         /// <summary>
         /// Ensures the translator has been initialized.
         /// </summary>
-        public static void EnsureInitialized(bool reversed = false)
+        internal static void EnsureInitialized(bool reversed = false)
         {
             if (reversed)
             {
@@ -710,11 +722,11 @@ namespace AIHelper.Manage
         /// <summary>
         /// The language to translation mode map.
         /// </summary>
-        public static Dictionary<string, string> _languageModeMap;
+        internal static Dictionary<string, string> _languageModeMap;
 
         /// <summary>
         /// The language to translation mode map. (Reversed)
         /// </summary>
-        public static Dictionary<string, string> _languageModeMapReversed;
+        internal static Dictionary<string, string> _languageModeMapReversed;
     }
 }

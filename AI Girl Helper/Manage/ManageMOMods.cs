@@ -32,6 +32,30 @@ namespace AIHelper.Manage
             //ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "UserData", "Overlays"), true);
         }
 
+        internal static void OpenBepinexLog()
+        {
+            //https://stackoverflow.com/questions/9993561/c-sharp-open-file-path-starting-with-userprofile
+            var gameNameByExe = ManageSettings.GetCurrentGameEXEName().Replace("_64", string.Empty).Replace("_32", string.Empty);
+            var USERPROFILE = Path.Combine("%USERPROFILE%", "appdata", "locallow", "illusion__" + gameNameByExe.Replace("Trial", string.Empty), gameNameByExe, "output_log.txt");
+            var output_log = Environment.ExpandEnvironmentVariables(USERPROFILE);
+            if (File.Exists(output_log))
+            {
+                Process.Start("explorer.exe", output_log);
+            }
+            else
+            {
+                if (File.Exists(Path.Combine(ManageSettings.GetDataPath(), ManageSettings.GetCurrentGameEXEName() + "_Data", "output_log.txt")))
+                {
+                    Process.Start("explorer.exe", Path.Combine(ManageSettings.GetDataPath(), ManageSettings.GetCurrentGameEXEName() + "_Data", "output_log.txt"));
+                }
+                else if (File.Exists(Path.Combine(ManageSettings.GetDataPath(), gameNameByExe + "_Data", "output_log.txt")))
+                {
+                    Process.Start("explorer.exe", Path.Combine(ManageSettings.GetDataPath(), gameNameByExe + "_Data", "output_log.txt"));
+                }
+
+            }
+        }
+
         public static void BepinExLoadingFix(bool RemoveLinks = false)
         {
             if (Properties.Settings.Default.MOmode)

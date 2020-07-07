@@ -42,7 +42,6 @@
             this.button1 = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.LaunchPagePanel = new System.Windows.Forms.Panel();
-            this.LogLevelSelectionPanel = new System.Windows.Forms.Panel();
             this.OpenHelpLinkLabel = new System.Windows.Forms.LinkLabel();
             this.LaunchLinksLinkLabel = new System.Windows.Forms.LinkLabel();
             this.BepInExDisplayedLogLevelLabel = new System.Windows.Forms.Label();
@@ -253,7 +252,6 @@
             // LaunchPagePanel
             // 
             this.LaunchPagePanel.BackColor = System.Drawing.Color.Gray;
-            this.LaunchPagePanel.Controls.Add(this.LogLevelSelectionPanel);
             this.LaunchPagePanel.Controls.Add(this.OpenHelpLinkLabel);
             this.LaunchPagePanel.Controls.Add(this.LaunchLinksLinkLabel);
             this.LaunchPagePanel.Controls.Add(this.BepInExDisplayedLogLevelLabel);
@@ -275,14 +273,6 @@
             this.LaunchPagePanel.Name = "LaunchPagePanel";
             this.LaunchPagePanel.Size = new System.Drawing.Size(340, 155);
             this.LaunchPagePanel.TabIndex = 0;
-            // 
-            // LogLevelSelectionPanel
-            // 
-            this.LogLevelSelectionPanel.Location = new System.Drawing.Point(104, 3);
-            this.LogLevelSelectionPanel.Name = "LogLevelSelectionPanel";
-            this.LogLevelSelectionPanel.Size = new System.Drawing.Size(195, 26);
-            this.LogLevelSelectionPanel.TabIndex = 29;
-            this.LogLevelSelectionPanel.Visible = false;
             // 
             // OpenHelpLinkLabel
             // 
@@ -959,7 +949,6 @@
         private System.Windows.Forms.LinkLabel OpenHelpLinkLabel;
         private System.Windows.Forms.TextBox CurrentGameTitleTextBox;
         private System.Windows.Forms.Button testSubWindow;
-        private System.Windows.Forms.Panel LogLevelSelectionPanel;
     }
 }
 

@@ -23,9 +23,12 @@ namespace AIHelper.Forms.ExtraSettings.Elements
         internal abstract bool Check();
 
 
-        internal abstract Form form
+        internal Form ElementToPlace;
+
+        internal abstract Form ElementToShow 
         {
             get;
+            set;
         }
 
         internal abstract void Show(Form parentForm);

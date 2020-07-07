@@ -1,5 +1,4 @@
-﻿using AIHelper.Forms;
-using AIHelper.Games;
+﻿using AIHelper.Games;
 using AIHelper.Manage;
 using System;
 using System.Collections.Generic;
@@ -541,9 +540,9 @@ namespace AIHelper
                 // Force the ToolTip text to be displayed whether or not the form is active.
                 ShowAlways = true
             };
-            
-            THToolTip.SetToolTip(ProgramNameLabelPart2, Application.ProductName+" - "+ T._("Illusion games manager.\n\n"
-                    +"Move mouse over wished button or text to see info about it"
+
+            THToolTip.SetToolTip(ProgramNameLabelPart2, Application.ProductName + " - " + T._("Illusion games manager.\n\n"
+                    + "Move mouse over wished button or text to see info about it"
                     )
                 );
             THToolTip.SetToolTip(SelectedGameLabel, T._("Selected game title"));
@@ -604,23 +603,23 @@ namespace AIHelper
                 );
 
             //Open Folders
-            THToolTip.SetToolTip(OpenGameFolderLinkLabel, T._("Opens Data folder of selected game"));
-            THToolTip.SetToolTip(OpenModsFolderLinkLabel, T._("Opens Mods folder of selected game"));
-            THToolTip.SetToolTip(OpenMOFolderLinkLabel, T._("Opens Mod Organizer folder"));
-            THToolTip.SetToolTip(OpenMOOverwriteFolderLinkLabel, T._("Opens Overwrite folder of Mod Organizer with possible new generated files for selected game\n\nFiles here have highest priority and will be loaded over any enabled mod files"));
-            THToolTip.SetToolTip(OpenMyUserDataFolderLinkLabel, T._("Opens MyUserData folder in Mods if exist\n\nHere placed usual User files of Organized ModPack for selected game"));
-            
-            THToolTip.SetToolTip(LaunchLinksLinkLabel, T._("Opens list of links for game resources"));
-            THToolTip.SetToolTip(ExtraSettingsLinkLabel, T._("Opens extra setting window for plugins and etc"));
+            THToolTip.SetToolTip(OpenGameFolderLinkLabel, T._("Open Data folder of selected game"));
+            THToolTip.SetToolTip(OpenModsFolderLinkLabel, T._("Open Mods folder of selected game"));
+            THToolTip.SetToolTip(OpenMOFolderLinkLabel, T._("Open Mod Organizer folder"));
+            THToolTip.SetToolTip(OpenMOOverwriteFolderLinkLabel, T._("Open Overwrite folder of Mod Organizer with possible new generated files for selected game\n\nFiles here have highest priority and will be loaded over any enabled mod files"));
+            THToolTip.SetToolTip(OpenMyUserDataFolderLinkLabel, T._("Open MyUserData folder in Mods if exist\n\nHere placed usual User files of Organized ModPack for selected game"));
 
-            THToolTip.SetToolTip(OpenLogLinkLabel, T._("Opens BepinEx log if found"));
+            THToolTip.SetToolTip(LaunchLinksLinkLabel, T._("Open list of links for game resources"));
+            THToolTip.SetToolTip(ExtraSettingsLinkLabel, T._("Open extra setting window for plugins and etc"));
+
+            THToolTip.SetToolTip(OpenLogLinkLabel, T._("Open BepinEx log if found"));
             THToolTip.SetToolTip(BepInExDisplayedLogLevelLabel, T._("Click here to select log level"));
-            
-            
-            THToolTip.SetToolTip(CurrentGameComboBox, T._("List of found games. Current")+": "+ ListOfGames[CurrentGameComboBox.SelectedIndex].GetGameDisplayingName());
+
+
+            THToolTip.SetToolTip(CurrentGameComboBox, T._("List of found games. Current") + ": " + ListOfGames[CurrentGameComboBox.SelectedIndex].GetGameDisplayingName());
 
             THToolTip.SetToolTip(Open2MOLinkLabel,
-                T._("Opens 2MO folder fo selected game" +
+                T._("Open 2MO folder fo selected game" +
                 "\n\nHere can be placed mod files which you want to install for selected game in approriate subfolders in mods" +
                 "\nand then can be installed all by one click on") + " " + InstallInModsButton.Text + " " + T._("button") +
                 "\n" + T._("which can be found in") + " " + ToolsTabPage.Text + " " + T._("tab page") +
@@ -905,7 +904,7 @@ namespace AIHelper
             CurrentGameComboBox.Text = CurrentGame.GetGameFolderName();
             CurrentGameComboBox.SelectedIndex = ManageSettings.GetCurrentGameIndex();
 
-            GetEnableDisableLaunchButtons();
+            GetEnableDisableLaunchTabButtons();
 
             SetScreenSettings();
 
@@ -951,8 +950,13 @@ namespace AIHelper
             //}, TaskScheduler.Current);
         }
 
-        private void GetEnableDisableLaunchButtons()
+        private void GetEnableDisableLaunchTabButtons()
         {
+            if (AIGirlHelperTabControl.SelectedTab.Text != T._("Launch"))
+            {
+                return;
+            }
+
             //MOButton.Enabled = /*Properties.Settings.Default.MOmode && */File.Exists(ManageSettings.GetMOexePath());
             //SettingsButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"));
             JPLauncherRunLinkLabel.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"));
@@ -968,9 +972,8 @@ namespace AIHelper
                 BepInExConsoleCheckBox.Checked = false;
             }
             BepInExConsoleCheckBox.Enabled = ManageSettings.GetBepInExCfgFilePath().Length > 0;
-            if (BepInExConsoleCheckBox.Checked)
+            if (BepInExDisplayedLogLevelLabel.Visible = BepInExConsoleCheckBox.Checked)
             {
-                BepInExDisplayedLogLevelLabel.Visible = true;
                 ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExConsoleCheckBox, BepInExDisplayedLogLevelLabel, true);
             }
         }
@@ -2194,26 +2197,7 @@ namespace AIHelper
 
         private void OpenLogLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            //https://stackoverflow.com/questions/9993561/c-sharp-open-file-path-starting-with-userprofile
-            var gameNameByExe = CurrentGame.GetGameEXEName().Replace("_64", string.Empty).Replace("_32", string.Empty);
-            var USERPROFILE = Path.Combine("%USERPROFILE%", "appdata", "locallow", "illusion__" + gameNameByExe.Replace("Trial", string.Empty), gameNameByExe, "output_log.txt");
-            var output_log = Environment.ExpandEnvironmentVariables(USERPROFILE);
-            if (File.Exists(output_log))
-            {
-                Process.Start("explorer.exe", output_log);
-            }
-            else
-            {
-                if (File.Exists(Path.Combine(ManageSettings.GetDataPath(), CurrentGame.GetGameEXEName() + "_Data", "output_log.txt")))
-                {
-                    Process.Start("explorer.exe", Path.Combine(ManageSettings.GetDataPath(), CurrentGame.GetGameEXEName() + "_Data", "output_log.txt"));
-                }
-                else if (File.Exists(Path.Combine(ManageSettings.GetDataPath(), gameNameByExe + "_Data", "output_log.txt")))
-                {
-                    Process.Start("explorer.exe", Path.Combine(ManageSettings.GetDataPath(), gameNameByExe + "_Data", "output_log.txt"));
-                }
-
-            }
+            ManageMOMods.OpenBepinexLog();
         }
 
         private void CurrentGameComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -2258,16 +2242,10 @@ namespace AIHelper
         private void ConsoleCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             //ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "Enabled", /*" " +*/ (sender as CheckBox).Checked.ToString(CultureInfo.GetCultureInfo("en-US")));
-            string BepinExcfg = ManageSettings.GetBepInExCfgFilePath();
+            var BepinExcfg = ManageSettings.GetBepInExCfgFilePath();
             ManageCFG.WriteCFGValue(BepinExcfg, "Logging.Console", "Enabled", /*" " +*/ (sender as CheckBox).Checked.ToString(CultureInfo.GetCultureInfo("en-US")));
-            if ((sender as CheckBox).Checked)
-            {
-                BepInExDisplayedLogLevelLabel.Visible = true;
-            }
-            else
-            {
-                BepInExDisplayedLogLevelLabel.Visible = false;
-            }
+
+            BepInExDisplayedLogLevelLabel.Visible = (sender as CheckBox).Checked;
 
         }
 
@@ -2325,6 +2303,8 @@ namespace AIHelper
         private void AIGirlHelperTabControl_Selecting(object sender, TabControlCancelEventArgs e)
         {
             newformButton.Text = @"\/";
+            GetEnableDisableLaunchTabButtons();
+            //FoldersInit();
         }
 
         private async void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -2403,7 +2383,7 @@ namespace AIHelper
             //    Process.Start("explorer.exe", HelpFilePath);
         }
 
-        LogLevelselectionForm objForm;
+        //LogLevelselectionForm objForm;
         private void TestSubWindow_Click(object sender, EventArgs e)
         {
             //LogLevelselectionForm
@@ -2414,21 +2394,21 @@ namespace AIHelper
             //childwindow.ShowDialog();
 
 
-            if (objForm != null && !objForm.IsDisposed)
-            {
-                objForm.Close();
-            }
-            else
-            {
-                objForm = new LogLevelselectionForm
-                {
-                    TopLevel = false,
-                    Dock = DockStyle.Fill,
-                    FormBorderStyle = FormBorderStyle.None
-                };
-                LogLevelSelectionPanel.Controls.Add(objForm);
-                objForm.Show();
-            }
+            //if (objForm != null && !objForm.IsDisposed)
+            //{
+            //    objForm.Close();
+            //}
+            //else
+            //{
+            //    objForm = new LogLevelselectionForm
+            //    {
+            //        TopLevel = false,
+            //        Dock = DockStyle.Fill,
+            //        FormBorderStyle = FormBorderStyle.None
+            //    };
+            //    LogLevelSelectionPanel.Controls.Add(objForm);
+            //    objForm.Show();
+            //}
         }
 
         //Disable close window button

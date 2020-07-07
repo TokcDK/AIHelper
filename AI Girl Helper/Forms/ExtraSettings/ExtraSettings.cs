@@ -1,4 +1,5 @@
 ﻿using AIHelper.Forms.ExtraSettings.Elements;
+using AIHelper.Forms.ExtraSettings.Elements.BepinEx;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -29,16 +30,23 @@ namespace AIHelper
             //AddXUASettings();
             List<Elements> elements = new List<Elements>
             {
+                new BepinEx(),
                 new XUnityAutotranslator()
             };
 
             foreach (var element in elements)
             {
-                if (element.Check())
+                if (element.Check() && element.ElementToShow != null)
                 {
                     //element.ElementInit();
-                    element.Show(this);
+                    //element.Show(this);
                     //var size = element.form.Size;
+                    //Button b = new Button();
+                    //ExtraSettingsFlowLayoutPanel.Controls.Add(element.ElementToPlace);
+                    //element.ElementToPlace.Show();
+                    ExtraSettingsFlowLayoutPanel.Controls.Add(element.ElementToShow);
+                    element.ElementToShow.ForeColor = this.ForeColor;
+                    element.ElementToShow.Show();
                 }
                 else
                 {

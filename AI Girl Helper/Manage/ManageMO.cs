@@ -369,40 +369,72 @@ namespace AIHelper.Manage
             string[] pathExclusions = { "BepInEx" + Path.DirectorySeparatorChar + "plugins", "Lec.ExtProtocol", "Common.ExtProtocol.Executor", "UnityCrashHandler64", Path.DirectorySeparatorChar + "IPA", "WideSliderPatch" };
 
             //Добавление exe из Data
-            Parallel.ForEach(Directory.EnumerateFileSystemEntries(ManageSettings.GetDataPath(), "*.exe", SearchOption.AllDirectories),
-                exePath =>
+            //Parallel.ForEach(Directory.EnumerateFileSystemEntries(ManageSettings.GetDataPath(), "*.exe", SearchOption.AllDirectories),
+            //    exePath =>
+            //    {
+            //        try
+            //        {
+            //            if (exeEqual > 9)
+            //            {
+            //                return;
+            //            }
+
+            //            var exeName = Path.GetFileNameWithoutExtension(exePath);
+            //            if (exeName.Length > 0 && !customs.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
+            //            {
+            //                executablesCount++;
+            //                if (!OneexeNotEqual)
+            //                {
+            //                    if (exists.Contains(exePath))
+            //                    {
+            //                        exeEqual++;
+            //                    }
+            //                    else
+            //                    {
+            //                        exeEqual = 0;
+            //                        OneexeNotEqual = true;
+            //                    }
+            //                }
+
+            //                customs.Add(executablesCount + @"\title", exeName);
+            //                customs.Add(executablesCount + @"\binary", exePath);
+            //            }
+            //        }
+            //        catch { }
+
+            //    });
+            foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetDataPath(), "*.exe", SearchOption.AllDirectories))
+            {
+                try
                 {
-                    try
+                    if (exeEqual > 9)
                     {
-                        if (exeEqual > 9)
-                        {
-                            return;
-                        }
-
-                        var exeName = Path.GetFileNameWithoutExtension(exePath);
-                        if (exeName.Length > 0 && !customs.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
-                        {
-                            executablesCount++;
-                            if (!OneexeNotEqual)
-                            {
-                                if (exists.Contains(exePath))
-                                {
-                                    exeEqual++;
-                                }
-                                else
-                                {
-                                    exeEqual = 0;
-                                    OneexeNotEqual = true;
-                                }
-                            }
-
-                            customs.Add(executablesCount + @"\title", exeName);
-                            customs.Add(executablesCount + @"\binary", exePath);
-                        }
+                        return;
                     }
-                    catch { }
 
-                });
+                    var exeName = Path.GetFileNameWithoutExtension(exePath);
+                    if (exeName.Length > 0 && !customs.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
+                    {
+                        executablesCount++;
+                        if (!OneexeNotEqual)
+                        {
+                            if (exists.Contains(exePath))
+                            {
+                                exeEqual++;
+                            }
+                            else
+                            {
+                                exeEqual = 0;
+                                OneexeNotEqual = true;
+                            }
+                        }
+
+                        customs.Add(executablesCount + @"\title", exeName);
+                        customs.Add(executablesCount + @"\binary", exePath);
+                    }
+                }
+                catch { }
+            }
 
             //foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetDataPath(), "*.exe", SearchOption.AllDirectories))
             //{
@@ -415,40 +447,40 @@ namespace AIHelper.Manage
             //    }
             //}
             //Добавление exe из Mods
-            Parallel.ForEach(Directory.EnumerateFileSystemEntries(ManageSettings.GetModsPath(), "*.exe", SearchOption.AllDirectories),
-                exePath =>
-                {
-                    try
-                    {
-                        if (exeEqual > 9)
-                        {
-                            return;
-                        }
+            //Parallel.ForEach(Directory.EnumerateFileSystemEntries(ManageSettings.GetModsPath(), "*.exe", SearchOption.AllDirectories),
+            //    exePath =>
+            //    {
+            //        try
+            //        {
+            //            if (exeEqual > 9)
+            //            {
+            //                return;
+            //            }
 
-                        string exeName = Path.GetFileNameWithoutExtension(exePath);
-                        if (exeName.Length > 0 && !customs.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
-                        {
-                            executablesCount++;
-                            if (!OneexeNotEqual)
-                            {
-                                if (exists.Contains(exePath))
-                                {
-                                    exeEqual++;
-                                }
-                                else
-                                {
-                                    exeEqual = 0;
-                                    OneexeNotEqual = true;
-                                }
-                            }
+            //            string exeName = Path.GetFileNameWithoutExtension(exePath);
+            //            if (exeName.Length > 0 && !customs.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
+            //            {
+            //                executablesCount++;
+            //                if (!OneexeNotEqual)
+            //                {
+            //                    if (exists.Contains(exePath))
+            //                    {
+            //                        exeEqual++;
+            //                    }
+            //                    else
+            //                    {
+            //                        exeEqual = 0;
+            //                        OneexeNotEqual = true;
+            //                    }
+            //                }
 
-                            customs.Add(executablesCount + @"\title", exeName);
-                            customs.Add(executablesCount + @"\binary", exePath);
-                        }
-                    }
-                    catch { }
+            //                customs.Add(executablesCount + @"\title", exeName);
+            //                customs.Add(executablesCount + @"\binary", exePath);
+            //            }
+            //        }
+            //        catch { }
 
-                });
+            //    });
             //foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetModsPath(), "*.exe", SearchOption.AllDirectories))
             //{
             //    string exeName = Path.GetFileNameWithoutExtension(exePath);
@@ -459,6 +491,39 @@ namespace AIHelper.Manage
             //        customExecutables.Add(ExecutablesCount + @"\binary", exePath);
             //    }
             //}
+
+            foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetModsPath(), "*.exe", SearchOption.AllDirectories))
+            {
+                try
+                {
+                    if (exeEqual > 9)
+                    {
+                        return;
+                    }
+
+                    string exeName = Path.GetFileNameWithoutExtension(exePath);
+                    if (exeName.Length > 0 && !customs.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
+                    {
+                        executablesCount++;
+                        if (!OneexeNotEqual)
+                        {
+                            if (exists.Contains(exePath))
+                            {
+                                exeEqual++;
+                            }
+                            else
+                            {
+                                exeEqual = 0;
+                                OneexeNotEqual = true;
+                            }
+                        }
+
+                        customs.Add(executablesCount + @"\title", exeName);
+                        customs.Add(executablesCount + @"\binary", exePath);
+                    }
+                }
+                catch { }
+            }
 
             //добавление hardcoded exe
             executablesCount++;

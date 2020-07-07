@@ -4,10 +4,16 @@ using System.Windows.Forms;
 
 namespace AIHelper.Forms.ExtraSettings.Elements
 {
-    internal class XUnityAutotranslator : Elements
+    internal class XUnityAutotranslator : Elements, System.IDisposable
     {
         public XUnityAutotranslator()
         {
+            XUAElement = new XUnityAutotranslatorForm
+            {
+                TopLevel = false,
+                //BackColor = parentForm.BackColor
+            };
+            ElementToPlace = XUAElement;
         }
 
         internal override bool Check()
@@ -22,22 +28,24 @@ namespace AIHelper.Forms.ExtraSettings.Elements
 
         XUnityAutotranslatorForm XUAElement;
 
-        internal override Form form { get => XUAElement;}
+        //internal override T ElementToPlace { get => XUAElement; set => XUAElement = value; }
 
         internal override string Title => "XUnity.Autotranslator";
+
+        internal override Form ElementToShow { get => XUAElement; set => XUAElement=value as XUnityAutotranslatorForm; }
 
         internal override void Show(Form parentForm)
         {
             if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.XUAiniPath))
             {
-                XUAElement = new XUnityAutotranslatorForm
-                {
-                    TopLevel = false,
-                    BackColor=parentForm.BackColor
-                };
                 parentForm.Controls.Add(XUAElement);
                 XUAElement.Show();
             }
+        }
+
+        public void Dispose()
+        {
+            XUAElement.Dispose();
         }
     }
 }

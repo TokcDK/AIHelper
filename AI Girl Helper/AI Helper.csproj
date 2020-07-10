@@ -200,6 +200,7 @@
     <Compile Include="Manage\ManageMOModsExtensionsь.cs" />
     <Compile Include="Manage\ManageMOMods.cs" />
     <Compile Include="Manage\ManageRegistry.cs" />
+    <Compile Include="Manage\ManageRules.cs" />
     <Compile Include="Manage\ManageSettings.cs" />
     <Compile Include="Manage\ManageMO.cs" />
     <Compile Include="Manage\ManageStringsExtensions.cs" />

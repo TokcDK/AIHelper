@@ -44,13 +44,13 @@ namespace AIHelper.Manage
             }
             else
             {
-                if (File.Exists(Path.Combine(ManageSettings.GetDataPath(), ManageSettings.GetCurrentGameEXEName() + "_Data", "output_log.txt")))
+                if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameEXEName() + "_Data", "output_log.txt")))
                 {
-                    Process.Start("explorer.exe", Path.Combine(ManageSettings.GetDataPath(), ManageSettings.GetCurrentGameEXEName() + "_Data", "output_log.txt"));
+                    Process.Start("explorer.exe", Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameEXEName() + "_Data", "output_log.txt"));
                 }
-                else if (File.Exists(Path.Combine(ManageSettings.GetDataPath(), gameNameByExe + "_Data", "output_log.txt")))
+                else if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), gameNameByExe + "_Data", "output_log.txt")))
                 {
-                    Process.Start("explorer.exe", Path.Combine(ManageSettings.GetDataPath(), gameNameByExe + "_Data", "output_log.txt"));
+                    Process.Start("explorer.exe", Path.Combine(ManageSettings.GetCurrentGameDataPath(), gameNameByExe + "_Data", "output_log.txt"));
                 }
 
             }
@@ -99,11 +99,11 @@ namespace AIHelper.Manage
 
                 if (RemoveLinks)
                 {
-                    ManageFilesFolders.DeleteEmptySubfolders(Path.Combine(ManageSettings.GetDataPath(), "BepInEx"));
+                    ManageFilesFolders.DeleteEmptySubfolders(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx"));
                 }
-                else if (Directory.Exists(Path.Combine(ManageSettings.GetDataPath(), "BepInEx")))
+                else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx")))
                 {
-                    ManageFilesFolders.HideFileFolder(Path.Combine(ManageSettings.GetDataPath(), "BepInEx"));
+                    ManageFilesFolders.HideFileFolder(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx"));
                 }
             }
         }
@@ -1055,7 +1055,7 @@ namespace AIHelper.Manage
                         {
                             //string[] datafiles = Directory.GetFiles(dir, Path.GetFileName(file), SearchOption.AllDirectories);
 
-                            DirectoryInfo dirinfo = new DirectoryInfo(ManageSettings.GetDataPath());
+                            DirectoryInfo dirinfo = new DirectoryInfo(ManageSettings.GetCurrentGameDataPath());
 
                             var datafiles = dirinfo.GetFiles(Path.GetFileName(file), SearchOption.AllDirectories);
 
@@ -1075,7 +1075,7 @@ namespace AIHelper.Manage
                                     }
                                 }
 
-                                targetfilepath = selectedfile.Replace(ManageSettings.GetDataPath(), moddir);
+                                targetfilepath = selectedfile.Replace(ManageSettings.GetCurrentGameDataPath(), moddir);
 
                                 Directory.CreateDirectory(Path.GetDirectoryName(targetfilepath));
                                 File.Move(file, targetfilepath);
@@ -1697,7 +1697,7 @@ namespace AIHelper.Manage
             //search ModPath
             string ModPath = inputPath;
             string FolderPath = ModPath;
-            while (FolderPath.ToUpperInvariant() != ManageSettings.GetModsPath().ToUpperInvariant())
+            while (FolderPath.ToUpperInvariant() != ManageSettings.GetCurrentGameModsPath().ToUpperInvariant())
             {
                 ModPath = FolderPath;
                 FolderPath = Path.GetDirectoryName(FolderPath);

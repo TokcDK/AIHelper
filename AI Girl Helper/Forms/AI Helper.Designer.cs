@@ -87,6 +87,7 @@
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
+            this.ToolsFixModListButton = new System.Windows.Forms.Button();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -758,6 +759,7 @@
             // ToolsPagePanel
             // 
             this.ToolsPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.ToolsPagePanel.Controls.Add(this.ToolsFixModListButton);
             this.ToolsPagePanel.Controls.Add(this.testSubWindow);
             this.ToolsPagePanel.Controls.Add(this.button2);
             this.ToolsPagePanel.Controls.Add(this.FixMOModsButton);
@@ -851,6 +853,20 @@
             this.MOCommonModeSwitchButton.Text = "MOToCommon";
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
+            // 
+            // ToolsFixModListButton
+            // 
+            this.ToolsFixModListButton.BackColor = System.Drawing.Color.Silver;
+            this.ToolsFixModListButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.ToolsFixModListButton.ForeColor = System.Drawing.Color.Black;
+            this.ToolsFixModListButton.Location = new System.Drawing.Point(3, 75);
+            this.ToolsFixModListButton.Name = "ToolsFixModListButton";
+            this.ToolsFixModListButton.Size = new System.Drawing.Size(112, 30);
+            this.ToolsFixModListButton.TabIndex = 22;
+            this.ToolsFixModListButton.Text = "Fix ModList";
+            this.ToolsFixModListButton.UseVisualStyleBackColor = false;
+            this.ToolsFixModListButton.Visible = false;
+            this.ToolsFixModListButton.Click += new System.EventHandler(this.ToolsFixModListButton_Click);
             // 
             // AI_Helper
             // 
@@ -949,6 +965,7 @@
         private System.Windows.Forms.LinkLabel OpenHelpLinkLabel;
         private System.Windows.Forms.TextBox CurrentGameTitleTextBox;
         private System.Windows.Forms.Button testSubWindow;
+        private System.Windows.Forms.Button ToolsFixModListButton;
     }
 }
 

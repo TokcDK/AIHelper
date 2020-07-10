@@ -72,13 +72,13 @@ namespace AIHelper.Manage
                     }
                 ,
                     {
-                        Path.Combine(ManageSettings.GetDataPath(), ManageSettings.GetCurrentGameEXEName() + ".exe")
+                        Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameEXEName() + ".exe")
                         ,
                         @"1\binary"
                     }
                 ,
                     {
-                        ManageSettings.GetDataPath()
+                        ManageSettings.GetCurrentGameDataPath()
                         ,
                         @"1\workingDirectory"
                     }
@@ -102,7 +102,7 @@ namespace AIHelper.Manage
                     }
                 ,
                     {
-                        ManageSettings.GetDataPath()
+                        ManageSettings.GetCurrentGameDataPath()
                         ,
                         @"2\workingDirectory"
                     }
@@ -168,13 +168,13 @@ namespace AIHelper.Manage
                     }
                 ,
                     {
-                        Path.Combine(ManageSettings.GetDataPath(),ManageSettings.GetStudioEXEName()+".exe")
+                        Path.Combine(ManageSettings.GetCurrentGameDataPath(),ManageSettings.GetStudioEXEName()+".exe")
                         ,
                         @"3\binary"
                     }
                 ,
                     {
-                        ManageSettings.GetDataPath()
+                        ManageSettings.GetCurrentGameDataPath()
                         ,
                         @"3\workingDirectory"
                     }
@@ -350,20 +350,20 @@ namespace AIHelper.Manage
             Dictionary<string, string> customs = new Dictionary<string, string>();
 
             var CurrentGame = ManageSettings.GetListOfExistsGames()[Properties.Settings.Default.CurrentGameListIndex];
-            if (CurrentGame.GetGameEXENameX32().Length > 0 && File.Exists(Path.Combine(ManageSettings.GetDataPath(), CurrentGame.GetGameEXENameX32() + ".exe")))
+            if (CurrentGame.GetGameEXENameX32().Length > 0 && File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), CurrentGame.GetGameEXENameX32() + ".exe")))
             {
                 executablesCount++;
                 exeEqual++;
                 customs.Add(executablesCount + @"\title", CurrentGame.GetGameEXENameX32());
-                customs.Add(executablesCount + @"\binary", Path.Combine(ManageSettings.GetDataPath(), CurrentGame.GetGameEXENameX32() + ".exe"));
-                customs.Add(executablesCount + @"\workingDirectory", ManageSettings.GetDataPath());
+                customs.Add(executablesCount + @"\binary", Path.Combine(ManageSettings.GetCurrentGameDataPath(), CurrentGame.GetGameEXENameX32() + ".exe"));
+                customs.Add(executablesCount + @"\workingDirectory", ManageSettings.GetCurrentGameDataPath());
             }
-            if (CurrentGame.GetGameStudioEXENameX32().Length > 0 && File.Exists(Path.Combine(ManageSettings.GetDataPath(), CurrentGame.GetGameStudioEXENameX32() + ".exe")))
+            if (CurrentGame.GetGameStudioEXENameX32().Length > 0 && File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), CurrentGame.GetGameStudioEXENameX32() + ".exe")))
             {
                 executablesCount++;
                 customs.Add(executablesCount + @"\title", CurrentGame.GetGameStudioEXENameX32());
-                customs.Add(executablesCount + @"\binary", Path.Combine(ManageSettings.GetDataPath(), CurrentGame.GetGameStudioEXENameX32() + ".exe"));
-                customs.Add(executablesCount + @"\workingDirectory", ManageSettings.GetDataPath());
+                customs.Add(executablesCount + @"\binary", Path.Combine(ManageSettings.GetCurrentGameDataPath(), CurrentGame.GetGameStudioEXENameX32() + ".exe"));
+                customs.Add(executablesCount + @"\workingDirectory", ManageSettings.GetCurrentGameDataPath());
             }
 
             string[] pathExclusions = { "BepInEx" + Path.DirectorySeparatorChar + "plugins", "Lec.ExtProtocol", "Common.ExtProtocol.Executor", "UnityCrashHandler64", Path.DirectorySeparatorChar + "IPA", "WideSliderPatch" };
@@ -403,7 +403,7 @@ namespace AIHelper.Manage
             //        catch { }
 
             //    });
-            foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetDataPath(), "*.exe", SearchOption.AllDirectories))
+            foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetCurrentGameDataPath(), "*.exe", SearchOption.AllDirectories))
             {
                 try
                 {
@@ -492,7 +492,7 @@ namespace AIHelper.Manage
             //    }
             //}
 
-            foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetModsPath(), "*.exe", SearchOption.AllDirectories))
+            foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetCurrentGameModsPath(), "*.exe", SearchOption.AllDirectories))
             {
                 try
                 {
@@ -535,7 +535,7 @@ namespace AIHelper.Manage
             customs.Add(executablesCount + @"\title", "Explore Virtual Folder");
             customs.Add(executablesCount + @"\binary", Path.Combine(ManageSettings.GetMOdirPath(), "explorer++", "Explorer++.exe"));
             customs.Add(executablesCount + @"\workingDirectory", Path.Combine(ManageSettings.GetMOdirPath(), "explorer++"));
-            customs.Add(executablesCount + @"\arguments", ManageSettings.GetDataPath());
+            customs.Add(executablesCount + @"\arguments", ManageSettings.GetCurrentGameDataPath());
             customs.Add(executablesCount + @"\ownicon", "true");
 
             customExecutables = customs;
@@ -686,7 +686,7 @@ namespace AIHelper.Manage
                 ,
                     //Settings
                     {
-                        ManageSettings.GetModsPath()
+                        ManageSettings.GetCurrentGameModsPath()
                         ,
                         "Settings"
                         ,
@@ -907,10 +907,10 @@ namespace AIHelper.Manage
 
         public static string GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(string pathInMods, bool IsDir = false)
         {
-            string ModsOverwrite = pathInMods.Contains(ManageSettings.GetCurrentGameMOOverwritePath()) ? ManageSettings.GetCurrentGameMOOverwritePath() : ManageSettings.GetModsPath();
+            string ModsOverwrite = pathInMods.Contains(ManageSettings.GetCurrentGameMOOverwritePath()) ? ManageSettings.GetCurrentGameMOOverwritePath() : ManageSettings.GetCurrentGameModsPath();
 
             //искать путь только для ссылки в Mods или в Data
-            if (!ManageStrings.IsStringAContainsStringB(pathInMods, ModsOverwrite) && !ManageStrings.IsStringAContainsStringB(pathInMods, ManageSettings.GetDataPath()))
+            if (!ManageStrings.IsStringAContainsStringB(pathInMods, ModsOverwrite) && !ManageStrings.IsStringAContainsStringB(pathInMods, ManageSettings.GetCurrentGameDataPath()))
                 return pathInMods;
 
             //отсеивание первого элемента с именем мода
@@ -923,7 +923,7 @@ namespace AIHelper.Manage
                 .Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
 
             //для мода в mods пропустить имя этого мода
-            if (ModsOverwrite == ManageSettings.GetModsPath())
+            if (ModsOverwrite == ManageSettings.GetCurrentGameModsPath())
             {
                 pathInModsElements = pathInModsElements.Skip(1).ToArray();
             }
@@ -941,7 +941,7 @@ namespace AIHelper.Manage
 
             if (!Properties.Settings.Default.MOmode)
             {
-                return Path.Combine(ManageSettings.GetDataPath(), subpath);
+                return Path.Combine(ManageSettings.GetCurrentGameDataPath(), subpath);
             }
 
             //check in Overwrite 1st
@@ -962,7 +962,7 @@ namespace AIHelper.Manage
             }
 
             //поиск по списку активных модов
-            string ModsPath = ManageSettings.GetModsPath();
+            string ModsPath = ManageSettings.GetCurrentGameModsPath();
             foreach (var modName in GetModNamesListFromActiveMOProfile())
             {
                 string possiblePath = Path.Combine(ModsPath, modName) + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
@@ -1025,7 +1025,7 @@ namespace AIHelper.Manage
             }
             else
             {
-                return Path.Combine(ManageSettings.GetDataPath(), "UserData", "setup.xml");
+                return Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "setup.xml");
             }
         }
 

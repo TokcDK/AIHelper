@@ -37,39 +37,39 @@ namespace AI_Helper.Games
             return new string[,]
             {
                     {
-                        Path.Combine(ManageSettings.GetModsPath(), "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
+                        Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
                         ,
-                        Path.Combine(ManageSettings.GetDataPath(), "BepInEx", "core", "BepInEx.Preloader.dll")
+                        Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx", "core", "BepInEx.Preloader.dll")
                     }
                     ,
                     {
-                        Path.Combine(ManageSettings.GetModsPath(), "BepInEx", "doorstop_config.ini")
+                        Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "doorstop_config.ini")
                         ,
-                        Path.Combine(ManageSettings.GetDataPath(), "doorstop_config.ini")
+                        Path.Combine(ManageSettings.GetCurrentGameDataPath(), "doorstop_config.ini")
                     }
                     ,
                     {
-                        Path.Combine(ManageSettings.GetModsPath(), "BepInEx", "winhttp.dll")
+                        Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "winhttp.dll")
                         ,
-                        Path.Combine(ManageSettings.GetDataPath(), "winhttp.dll")
+                        Path.Combine(ManageSettings.GetCurrentGameDataPath(), "winhttp.dll")
                     }
                     ,
                     {
                         Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath(), "UserData", "MaterialEditor")
                         ,
-                        Path.Combine(ManageSettings.GetDataPath(), "UserData", "MaterialEditor")
+                        Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "MaterialEditor")
                     }
                     ,
                     {
                         Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath(), "UserData", "Overlays")
                         ,
-                        Path.Combine(ManageSettings.GetDataPath(), "UserData", "Overlays")
+                        Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "Overlays")
                     }
                     ,
                     {
                         Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath(), "UserData", "cap")
                         ,
-                        Path.Combine(ManageSettings.GetDataPath(), "UserData", "cap")
+                        Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "cap")
                     }
             };
         }

@@ -277,7 +277,7 @@ namespace AIHelper.Manage
 
         internal static string GetSettingsEXEPath()
         {
-            return Path.Combine(ManageSettings.GetDataPath(), GetINISettingsEXEName() + ".exe");
+            return Path.Combine(ManageSettings.GetCurrentGameDataPath(), GetINISettingsEXEName() + ".exe");
         }
 
         internal static string GetCurrentGamePath()
@@ -330,7 +330,7 @@ namespace AIHelper.Manage
             return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "RES");
         }
 
-        internal static string GetModsPath()
+        internal static string GetCurrentGameModsPath()
         {
             return Path.Combine(GetCurrentGamePath(), "Mods");
         }
@@ -340,7 +340,7 @@ namespace AIHelper.Manage
             return Path.Combine(GetCurrentGamePath(), "Downloads");
         }
 
-        internal static string GetDataPath()
+        internal static string GetCurrentGameDataPath()
         {
             return Path.Combine(GetCurrentGamePath(), "Data");
         }
@@ -465,7 +465,7 @@ namespace AIHelper.Manage
 
         internal static string GetBepInExPath()
         {
-            return Path.Combine(Properties.Settings.Default.MOmode ? GetModsPath() : GetDataPath(), "BepInEx");
+            return Path.Combine(Properties.Settings.Default.MOmode ? GetCurrentGameModsPath() : GetCurrentGameDataPath(), "BepInEx");
         }
 
         internal static string GetBepInExCfgDirPath()

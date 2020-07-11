@@ -199,12 +199,15 @@
     <Compile Include="Manage\ManageLogs.cs" />
     <Compile Include="Manage\ManageMOModsExtensionsь.cs" />
     <Compile Include="Manage\ManageMOMods.cs" />
+    <Compile Include="Manage\ManageNumbersExtensions.cs" />
     <Compile Include="Manage\ManageRegistry.cs" />
     <Compile Include="Manage\ManageRules.cs" />
     <Compile Include="Manage\ManageSettings.cs" />
     <Compile Include="Manage\ManageMO.cs" />
     <Compile Include="Manage\ManageStringsExtensions.cs" />
     <Compile Include="Manage\ManageSymLinks.cs" />
+    <Compile Include="Manage\Rules\ModList\HardcodedRules.cs" />
+    <Compile Include="Manage\Rules\ModList\RuleModForBepInex.cs" />
     <Compile Include="SharedData\Data.cs" />
     <Compile Include="UserData\CardframeBack.cs" />
     <Compile Include="UserData\CardframeFront.cs" />

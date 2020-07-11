@@ -32,6 +32,47 @@ namespace AIHelper.Manage
             //ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "UserData", "Overlays"), true);
         }
 
+        internal static bool IsFileDirExistsInDataOROverwrite(string filedir, out string source)
+        {
+            if (File.Exists(
+                       Path.GetFullPath(
+                           Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath() + Path.DirectorySeparatorChar + filedir)
+                                       )
+                               )
+                   ||
+                   Directory.Exists(
+                       Path.GetFullPath(
+                           Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath() + Path.DirectorySeparatorChar + filedir)
+                                       )
+                                   )
+              )
+            {
+                source = "overwrite";
+                return true;
+            }
+            else if (
+
+                   File.Exists(
+                       Path.GetFullPath(
+                           Path.Combine(ManageSettings.GetCurrentGameDataPath() + Path.DirectorySeparatorChar + filedir)
+                                       )
+                                   )
+                   ||
+                   Directory.Exists(
+                       Path.GetFullPath(
+                           Path.Combine(ManageSettings.GetCurrentGameDataPath() + Path.DirectorySeparatorChar + filedir)
+                                       )
+                                   )
+                   )
+            {
+                source = "data";
+                return true;
+            }
+
+            source = string.Empty;
+            return false;
+        }
+
         internal static void OpenBepinexLog()
         {
             //https://stackoverflow.com/questions/9993561/c-sharp-open-file-path-starting-with-userprofile

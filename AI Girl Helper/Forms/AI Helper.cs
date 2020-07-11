@@ -2427,7 +2427,7 @@ namespace AIHelper
 
         private void ToolsFixModListButton_Click(object sender, EventArgs e)
         {
-            ManageRules.ModList.ModlistFixes();
+            new ManageRules.ModList().ModlistFixes();
         }
 
         //Disable close window button

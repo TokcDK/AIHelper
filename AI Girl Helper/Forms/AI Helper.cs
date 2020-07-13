@@ -233,7 +233,7 @@ namespace AIHelper
 
         private int GetModeValue()
         {
-            if (File.Exists(Path.Combine(Application.StartupPath, "PackMe!.txt")))
+            if (File.Exists("PackMe!.txt"))
             {
                 compressmode = true;
             }
@@ -491,7 +491,7 @@ namespace AIHelper
         private static string GetResultTargetName(List<CategoriesList> categories, string inputmoddir)
         {
             string targetdir = DownloadsPath;
-            targetdir = ManageSettings.GetInstallDirPath();
+            targetdir = ManageSettings.GetCurrentGameInstallDirPath();
 
             //Sideloader mods
             if (Directory.Exists(Path.Combine(inputmoddir, "mods")))
@@ -2382,7 +2382,7 @@ namespace AIHelper
             }
         }
 
-        private void Button2_Click(object sender, EventArgs e)
+        private void MakeSnapShot_Click(object sender, EventArgs e)
         {
             //Dictionary<string, string[]> PathCRCPair = new Dictionary<string, string[]>();
             List<string> snapshotData = new List<string>();
@@ -2401,7 +2401,7 @@ namespace AIHelper
                 //    PathCRCPair.Add(file.Replace(ManageSettings.GetModsPath(), string.Empty), new[] { new FileInfo(file).Length.ToString(),  file.GetCrc32() });
                 //}
             }
-            File.WriteAllLines(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "snapshot.txt"), snapshotData);
+            File.WriteAllLines(Path.Combine(ManageSettings.GetCurrentGameInstallDirPath(), "snapshot.txt"), snapshotData);
 
         }
 

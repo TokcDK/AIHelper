@@ -84,7 +84,7 @@
             this.button3 = new System.Windows.Forms.Button();
             this.ToolsFixModListButton = new System.Windows.Forms.Button();
             this.testSubWindow = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.MakeSnapShot = new System.Windows.Forms.Button();
             this.FixMOModsButton = new System.Windows.Forms.Button();
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
@@ -226,14 +226,14 @@
             this.progressBar1.TabIndex = 5;
             this.progressBar1.Visible = false;
             // 
-            // button1
+            // MainService
             // 
             this.MainService.BackColor = System.Drawing.Color.Silver;
             this.MainService.Cursor = System.Windows.Forms.Cursors.Hand;
             this.MainService.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MainService.ForeColor = System.Drawing.Color.Black;
             this.MainService.Location = new System.Drawing.Point(100, 43);
-            this.MainService.Name = "button1";
+            this.MainService.Name = "MainService";
             this.MainService.Size = new System.Drawing.Size(150, 33);
             this.MainService.TabIndex = 0;
             this.MainService.Text = "Prepare the game";
@@ -763,7 +763,7 @@
             this.ToolsPagePanel.Controls.Add(this.button3);
             this.ToolsPagePanel.Controls.Add(this.ToolsFixModListButton);
             this.ToolsPagePanel.Controls.Add(this.testSubWindow);
-            this.ToolsPagePanel.Controls.Add(this.button2);
+            this.ToolsPagePanel.Controls.Add(this.MakeSnapShot);
             this.ToolsPagePanel.Controls.Add(this.FixMOModsButton);
             this.ToolsPagePanel.Controls.Add(this.Install2MODirPathOpenFolderLinkLabel);
             this.ToolsPagePanel.Controls.Add(this.InstallInModsButton);
@@ -815,19 +815,19 @@
             this.testSubWindow.Visible = false;
             this.testSubWindow.Click += new System.EventHandler(this.TestSubWindow_Click);
             // 
-            // button2
+            // MakeSnapShot
             // 
-            this.button2.BackColor = System.Drawing.Color.Silver;
-            this.button2.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button2.ForeColor = System.Drawing.Color.Black;
-            this.button2.Location = new System.Drawing.Point(223, 86);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(112, 30);
-            this.button2.TabIndex = 20;
-            this.button2.Text = "Make SnapShot";
-            this.button2.UseVisualStyleBackColor = false;
-            this.button2.Visible = false;
-            this.button2.Click += new System.EventHandler(this.Button2_Click);
+            this.MakeSnapShot.BackColor = System.Drawing.Color.Silver;
+            this.MakeSnapShot.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MakeSnapShot.ForeColor = System.Drawing.Color.Black;
+            this.MakeSnapShot.Location = new System.Drawing.Point(223, 86);
+            this.MakeSnapShot.Name = "MakeSnapShot";
+            this.MakeSnapShot.Size = new System.Drawing.Size(112, 30);
+            this.MakeSnapShot.TabIndex = 20;
+            this.MakeSnapShot.Text = "Make SnapShot";
+            this.MakeSnapShot.UseVisualStyleBackColor = false;
+            this.MakeSnapShot.Visible = false;
+            this.MakeSnapShot.Click += new System.EventHandler(this.MakeSnapShot_Click);
             // 
             // FixMOModsButton
             // 
@@ -976,7 +976,7 @@
         private System.Windows.Forms.LinkLabel JPLauncherRunLinkLabel;
         private System.Windows.Forms.Button FixMOModsButton;
         private System.Windows.Forms.LinkLabel SetupXmlLinkLabel;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button MakeSnapShot;
         private System.Windows.Forms.LinkLabel OpenHelpLinkLabel;
         private System.Windows.Forms.TextBox CurrentGameTitleTextBox;
         private System.Windows.Forms.Button testSubWindow;

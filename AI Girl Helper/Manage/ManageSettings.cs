@@ -724,7 +724,7 @@ namespace AIHelper.Manage
 
         }
 
-        internal static string GetInstallDirPath()
+        internal static string GetCurrentGameInstallDirPath()
         {
             return Path.Combine(GetAppResDir(), "install", GetCurrentGameFolderName());
         }

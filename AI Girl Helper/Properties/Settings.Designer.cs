@@ -338,12 +338,12 @@ namespace AIHelper.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string MOSelectedProfileDirPath {
+        public string MOSelectedProfileDirName {
             get {
-                return ((string)(this["MOSelectedProfileDirPath"]));
+                return ((string)(this["MOSelectedProfileDirName"]));
             }
             set {
-                this["MOSelectedProfileDirPath"] = value;
+                this["MOSelectedProfileDirName"] = value;
             }
         }
         

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
 using System.Linq;
 
 namespace AIHelper.Manage
@@ -34,24 +35,24 @@ namespace AIHelper.Manage
         /// <summary>
         /// Inserts line in file in set position
         /// </summary>
-        /// <param name="MOiniPath"></param>
+        /// <param name="MOModlistPath"></param>
         /// <param name="line"></param>
         /// <param name="Position"></param>
-        public static void InsertLineInFile(string MOiniPath, string Line, int Position = 1, string InsertWithThisMod = "", bool PlaceAfter = true)
+        public static void InsertLineInFile(string MOModlistPath, string Line, int Position = 1, string InsertWithThisMod = "", bool PlaceAfter = true)
         {
-            if (MOiniPath.Length > 0 && File.Exists(MOiniPath) && Line.Length > 0)
+            if (MOModlistPath.Length > 0 && File.Exists(MOModlistPath) && Line.Length > 0)
             {
-                string[] FileLines = File.ReadAllLines(MOiniPath);
-                if (!FileLines.Contains(Line))
+                string[] FileLines = File.ReadAllLines(MOModlistPath);
+                if (!FileLines.Contains("+" + Line.Remove(0, 1)) && !FileLines.Contains("-" + Line.Remove(0, 1)))
                 {
                     int FileLinesLength = FileLines.Length;
                     bool InsertWithMod = InsertWithThisMod.Length > 0;
                     Position = InsertWithMod ? FileLinesLength : Position;
-                    using (StreamWriter writer = new StreamWriter(MOiniPath))
+                    using (StreamWriter writer = new StreamWriter(MOModlistPath))
                     {
                         for (int LineNumber = 0; LineNumber < Position; LineNumber++)
                         {
-                            if (InsertWithMod && FileLines[LineNumber].Length > 0 && string.Compare(FileLines[LineNumber].Remove(0, 1), InsertWithThisMod, true) == 0)
+                            if (InsertWithMod && FileLines[LineNumber].Length > 0 && string.Compare(FileLines[LineNumber].Remove(0, 1), InsertWithThisMod, true, CultureInfo.InvariantCulture) == 0)
                             {
                                 if (PlaceAfter)
                                 {
@@ -81,6 +82,11 @@ namespace AIHelper.Manage
                             }
                         }
                     }
+                }
+                else if (FileLines.Contains("-" + Line.Remove(0, 1)))
+                {
+                    FileLines = FileLines.Replace("-" + Line.Remove(0, 1), Line);
+                    File.WriteAllLines(MOModlistPath, FileLines);
                 }
             }
         }

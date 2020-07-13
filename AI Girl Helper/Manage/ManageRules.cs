@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace AIHelper.Manage
 {
@@ -21,7 +22,8 @@ namespace AIHelper.Manage
             internal string RulesTagFile = "file:";
             internal string RulesTagREQ = "req";
             internal string RulesTagINC = "inc:";
-            internal List<HardcodedRules> HCRulesList;
+            internal List<ModListRules> HCRulesList;
+            internal List<string> Report = new List<string>();
         }
 
         internal class ModList
@@ -34,71 +36,78 @@ namespace AIHelper.Manage
 
             internal void ModlistFixes()
             {
+                ManageMO.MakeMOProfileModlistFileBuckup();
+
                 modlistData.AllModsList = ManageMO.GetModNamesListFromActiveMOProfile(false);
                 modlistData.EnabledModsList = ManageMO.GetModNamesListFromActiveMOProfile();
 
                 //Dictionary<string, string[]> rulesDict;
-                var rulesExists = FillrulesDict(out Dictionary<string, string[]> rulesDict);
-                var OverwritePath = ManageSettings.GetCurrentGameMOOverwritePath();
+                //var rulesExists = FillrulesDict(out Dictionary<string, string[]> rulesDict);
+                //var OverwritePath = ManageSettings.GetCurrentGameMOOverwritePath();
 
                 //parse rules from meta.ini
                 foreach (var ModName in modlistData.EnabledModsList)
                 {
-                    var ModPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModName);
+                    //var ModPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModName);
 
                     ApplyHardCodedRules(ModName);
 
-                    var metaPath = Path.Combine(ModPath, "meta.ini");
-                    if (File.Exists(metaPath))
-                    {
-                        var metaNotes = ManageINI.GetINIValueIfExist(metaPath, "notes", "General");
-                        var metaComments = ManageINI.GetINIValueIfExist(metaPath, "comments", "General");
+                    //var metaPath = Path.Combine(ModPath, "meta.ini");
+                    //if (File.Exists(metaPath))
+                    //{
+                    //    var metaNotes = ManageINI.GetINIValueIfExist(metaPath, "notes", "General");
+                    //    var metaComments = ManageINI.GetINIValueIfExist(metaPath, "comments", "General");
 
-                        var req = false;
-                        var inc = false;
-                        if ((req = metaNotes.Contains(modlistData.RulesTagREQ)) || (inc = metaNotes.Contains("inc:")))
-                        {
-                            var subrules = new List<string>();
-                            foreach (var line in metaNotes.SplitToLines())
-                            {
-                                if (string.IsNullOrWhiteSpace(line))
-                                {
-                                    continue;
-                                }
+                    //    var req = false;
+                    //    var inc = false;
+                    //    if ((req = metaNotes.Contains(modlistData.RulesTagREQ)) || (inc = metaNotes.Contains("inc:")))
+                    //    {
+                    //        var subrules = new List<string>();
+                    //        foreach (var line in metaNotes.SplitToLines())
+                    //        {
+                    //            if (string.IsNullOrWhiteSpace(line))
+                    //            {
+                    //                continue;
+                    //            }
 
-                                var trimmedLine = line.Trim();
-                                if ((req && trimmedLine.StartsWith(modlistData.RulesTagREQ, StringComparison.InvariantCulture))
-                                    || (inc && trimmedLine.StartsWith(modlistData.RulesTagINC, StringComparison.InvariantCulture))
-                                    )
-                                {
-                                    subrules.Add(trimmedLine);
-                                }
-                            }
-                            if (subrules.Count > 0)
-                            {
-                                ParseRules(ModName, subrules.ToArray());
-                                //rulesDict.Add(Mod, subrules.ToArray());
-                            }
-                        }
-                    }
+                    //            var trimmedLine = line.Trim();
+                    //            if ((req && trimmedLine.StartsWith(modlistData.RulesTagREQ, StringComparison.InvariantCulture))
+                    //                || (inc && trimmedLine.StartsWith(modlistData.RulesTagINC, StringComparison.InvariantCulture))
+                    //                )
+                    //            {
+                    //                subrules.Add(trimmedLine);
+                    //            }
+                    //        }
+                    //        if (subrules.Count > 0)
+                    //        {
+                    //            ParseRules(ModName, subrules.ToArray());
+                    //            //rulesDict.Add(Mod, subrules.ToArray());
+                    //        }
+                    //    }
+                    //}
+                }
+                if (modlistData.Report.Count > 0)
+                {
+                    MessageBox.Show("Results" + ":" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, modlistData.Report));
                 }
             }
 
             private void ApplyHardCodedRules(string modName)
             {
-                if (modlistData.HCRulesList == null)
-                {
-                    modlistData.HCRulesList = new List<HardcodedRules>
+                modlistData.HCRulesList = new List<ModListRules>
                     {
-                         new RuleModForBepInex(modName)
+                         new RuleModForBepInex(modName),
+                         new RuleModForBepInexIPA(modName),
                     };
-                }
 
                 foreach (var rule in modlistData.HCRulesList)
                 {
                     if (rule.Condition())
                     {
-                        rule.Fix();
+                        if (rule.Fix())
+                        {
+                            modlistData.Report.Add(T._("For mod") + " \"" + modName + "\" " + T._("was applied rule") + " \"" + rule.Description() + "\"" + (rule.Result.Length > 0 ? (" " + T._("with result") + ":" + " \" " + rule.Result) : rule.Result));
+                        }
                     }
                 }
             }

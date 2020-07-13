@@ -57,7 +57,7 @@ namespace AIHelper.Manage
                 return true;
             }
 
-            if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
+            if (path.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.InvariantCulture))
             {
                 path += Mask;
             }
@@ -88,9 +88,10 @@ namespace AIHelper.Manage
                     FindClose(findHandle);
                 }
             }
+            return true;
 
-            throw new Exception("Failed to get directory first file",
-                Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+            //throw new Exception("Failed to get directory first file",
+            //    Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
             //throw new DirectoryNotFoundException();
         }
 

@@ -18,7 +18,7 @@ namespace AIHelper
 {
     public partial class AI_Helper : Form
     {
-        private readonly bool compressmode = false;
+        private bool compressmode = false;
 
         //constants
         private static string AppResDir { get => Properties.Settings.Default.AppResDir; set => Properties.Settings.Default.AppResDir = value; }
@@ -204,9 +204,11 @@ namespace AIHelper
 
         private int mode = 0;
 
-        private void Button1_Click(object sender, EventArgs e)
+        private void MainService_Click(object sender, EventArgs e)
         {
-            button1.Enabled = false;
+            MainService.Enabled = false;
+
+            mode = GetModeValue();
 
             switch (mode)
             {
@@ -226,12 +228,25 @@ namespace AIHelper
                     break;
             }
 
-            button1.Enabled = true;
+            MainService.Enabled = true;
+        }
+
+        private int GetModeValue()
+        {
+            if (File.Exists(Path.Combine(Application.StartupPath, "PackMe!.txt")))
+            {
+                compressmode = true;
+            }
+            else
+            {
+                compressmode = false;
+            }
+            return 0;
         }
 
         private async void ExtractingMode()
         {
-            button1.Text = T._("Extracting") + "..";
+            MainService.Text = T._("Extracting") + "..";
 
             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5
             await Task.Run(() => UnpackGame()).ConfigureAwait(true);
@@ -244,7 +259,7 @@ namespace AIHelper
 
             ManageMO.MakeDummyFiles();
 
-            button1.Text = T._("Game Ready");
+            MainService.Text = T._("Game Ready");
             FoldersInit();
         }
 
@@ -339,7 +354,7 @@ namespace AIHelper
         {
             if (compressmode)
             {
-                button1.Text = "Compressing..";
+                MainService.Text = "Compressing..";
 
                 //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5
                 //await Task.Run(() => PackGame());
@@ -351,7 +366,7 @@ namespace AIHelper
                 //Thread open = new Thread(new ParameterizedThreadStart((obj) => PackMods()));
                 //open.Start();
 
-                button1.Text = T._("Prepare the game");
+                MainService.Text = T._("Prepare the game");
                 FoldersInit();
             }
             else
@@ -476,6 +491,7 @@ namespace AIHelper
         private static string GetResultTargetName(List<CategoriesList> categories, string inputmoddir)
         {
             string targetdir = DownloadsPath;
+            targetdir = ManageSettings.GetInstallDirPath();
 
             //Sideloader mods
             if (Directory.Exists(Path.Combine(inputmoddir, "mods")))
@@ -505,7 +521,7 @@ namespace AIHelper
 
                         targetdir = Path.Combine(targetdir, categories[categiryindex].Name);
 
-                        _ = Directory.CreateDirectory(targetdir);
+                        Directory.CreateDirectory(targetdir);
                     }
                 }
             }
@@ -741,12 +757,12 @@ namespace AIHelper
             if (File.Exists(ManageSettings.GetMOToStandartConvertationOperationsListFilePath()))
             {
                 MOmode = false;
-                button1.Text = T._("Common mode");
+                MainService.Text = T._("Common mode");
             }
             else
             {
                 MOmode = true;
-                button1.Text = T._("MO mode");
+                MainService.Text = T._("MO mode");
             }
 
             if (!Directory.Exists(DataPath))
@@ -848,7 +864,7 @@ namespace AIHelper
                     ModsInfoLabel.Text = T._("Found mod folders in Mods");
                     //button1.Enabled = false;
                     mode = 1;
-                    button1.Text = T._("Mods Ready");
+                    MainService.Text = T._("Mods Ready");
                     //MO2StandartButton.Enabled = true;
                     AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
 
@@ -892,9 +908,9 @@ namespace AIHelper
                 StudioButton.Enabled = false;
                 //MO2StandartButton.Enabled = false;
                 MOCommonModeSwitchButton.Text = T._("CommonToMO");
-                button1.Text = T._("Common mode");
+                MainService.Text = T._("Common mode");
                 LaunchModeInfoLinkLabel.Text = T._("Common mode");
-                button1.Enabled = false;
+                MainService.Enabled = false;
                 //AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
             }
 
@@ -2234,7 +2250,7 @@ namespace AIHelper
             //File.Delete(ManageSettings.GetMOcategoriesPath());
             ManageMO.RedefineGameMOData();
             Properties.Settings.Default.BepinExCfgPath = string.Empty;
-            Properties.Settings.Default.MOSelectedProfileDirPath = string.Empty;
+            Properties.Settings.Default.MOSelectedProfileDirName = string.Empty;
 
             CurrentGame.InitActions();
             CurrentGameTitleTextBox.Text = CurrentGame.GetGameDisplayingName();
@@ -2428,6 +2444,13 @@ namespace AIHelper
         private void ToolsFixModListButton_Click(object sender, EventArgs e)
         {
             new ManageRules.ModList().ModlistFixes();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            //var htmlString = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">Patch for Koikatsu fixes. Replaces one fix from Koikatsu fixes to prevent bugs from it when abmx is enabled.</span></p>\n<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">mlinfo::</span></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">req:file:BepInEx\\plugins\\KKABMX.dll|and|file:BepInEx\\plugins\\IllusionFixes\\KK_Fix_MainGameOptimizations.dll</span></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">inc:API</span></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">::</span></p></body></html>";
+
+            //MessageBox.Show(ManageHTML.GetMLInfoFromHTML(htmlString));
         }
 
         //Disable close window button

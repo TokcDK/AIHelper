@@ -355,18 +355,23 @@ namespace AIHelper.Manage
             return Path.Combine(GetMOdirPath(), "ModOrganizer.exe");
         }
 
-        internal static string GetMOSelectedProfileDirPath()
+        internal static string GetMOSelectedProfileDirName()
         {
-            if (Properties.Settings.Default.MOSelectedProfileDirPath.Length > 0)
+            if (Properties.Settings.Default.MOSelectedProfileDirName.Length > 0)
             {
-                return Properties.Settings.Default.MOSelectedProfileDirPath;
+                return Properties.Settings.Default.MOSelectedProfileDirName;
             }
             else
             {
-                Properties.Settings.Default.MOSelectedProfileDirPath = ManageMO.MOremoveByteArray(ManageINI.GetINIValueIfExist(ManageSettings.GetModOrganizerINIpath(), "selected_profile", "General"));
+                Properties.Settings.Default.MOSelectedProfileDirName = ManageMO.MOremoveByteArray(ManageINI.GetINIValueIfExist(ManageSettings.GetModOrganizerINIpath(), "selected_profile", "General"));
 
-                return Properties.Settings.Default.MOSelectedProfileDirPath;
+                return Properties.Settings.Default.MOSelectedProfileDirName;
             }
+        }
+
+        internal static string GetMOSelectedProfileDirPath()
+        {
+            return Path.Combine(GetCurrentGamePath(), "MO", "profiles", GetMOSelectedProfileDirName());
         }
 
         internal static string GetMOiniPath()
@@ -717,6 +722,11 @@ namespace AIHelper.Manage
                 }
             }
 
+        }
+
+        internal static string GetInstallDirPath()
+        {
+            return Path.Combine(GetAppResDir(), "install", GetCurrentGameFolderName());
         }
 
         /// <summary>

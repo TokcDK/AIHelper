@@ -39,7 +39,7 @@
             this.LabelPanel = new System.Windows.Forms.Panel();
             this.DataInfoLabel = new System.Windows.Forms.Label();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.button1 = new System.Windows.Forms.Button();
+            this.MainService = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.LaunchPagePanel = new System.Windows.Forms.Panel();
             this.OpenHelpLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -81,13 +81,14 @@
             this.AutoShortcutRegistryCheckBox = new System.Windows.Forms.CheckBox();
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
             this.ToolsPagePanel = new System.Windows.Forms.Panel();
+            this.button3 = new System.Windows.Forms.Button();
+            this.ToolsFixModListButton = new System.Windows.Forms.Button();
             this.testSubWindow = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.FixMOModsButton = new System.Windows.Forms.Button();
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
-            this.ToolsFixModListButton = new System.Windows.Forms.Button();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -138,7 +139,7 @@
             this.InfoPagePanel.Controls.Add(this.LabelPanel2);
             this.InfoPagePanel.Controls.Add(this.LabelPanel);
             this.InfoPagePanel.Controls.Add(this.progressBar1);
-            this.InfoPagePanel.Controls.Add(this.button1);
+            this.InfoPagePanel.Controls.Add(this.MainService);
             this.InfoPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.InfoPagePanel.Location = new System.Drawing.Point(3, 3);
             this.InfoPagePanel.Name = "InfoPagePanel";
@@ -227,17 +228,17 @@
             // 
             // button1
             // 
-            this.button1.BackColor = System.Drawing.Color.Silver;
-            this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button1.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button1.ForeColor = System.Drawing.Color.Black;
-            this.button1.Location = new System.Drawing.Point(100, 43);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(150, 33);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Prepare the game";
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.Button1_Click);
+            this.MainService.BackColor = System.Drawing.Color.Silver;
+            this.MainService.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.MainService.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MainService.ForeColor = System.Drawing.Color.Black;
+            this.MainService.Location = new System.Drawing.Point(100, 43);
+            this.MainService.Name = "button1";
+            this.MainService.Size = new System.Drawing.Size(150, 33);
+            this.MainService.TabIndex = 0;
+            this.MainService.Text = "Prepare the game";
+            this.MainService.UseVisualStyleBackColor = false;
+            this.MainService.Click += new System.EventHandler(this.MainService_Click);
             // 
             // LaunchTabPage
             // 
@@ -759,6 +760,7 @@
             // ToolsPagePanel
             // 
             this.ToolsPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.ToolsPagePanel.Controls.Add(this.button3);
             this.ToolsPagePanel.Controls.Add(this.ToolsFixModListButton);
             this.ToolsPagePanel.Controls.Add(this.testSubWindow);
             this.ToolsPagePanel.Controls.Add(this.button2);
@@ -771,6 +773,33 @@
             this.ToolsPagePanel.Name = "ToolsPagePanel";
             this.ToolsPagePanel.Size = new System.Drawing.Size(340, 155);
             this.ToolsPagePanel.TabIndex = 1;
+            // 
+            // button3
+            // 
+            this.button3.BackColor = System.Drawing.Color.Silver;
+            this.button3.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.button3.ForeColor = System.Drawing.Color.Black;
+            this.button3.Location = new System.Drawing.Point(3, 111);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(112, 30);
+            this.button3.TabIndex = 23;
+            this.button3.Text = "html2text";
+            this.button3.UseVisualStyleBackColor = false;
+            this.button3.Visible = false;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // ToolsFixModListButton
+            // 
+            this.ToolsFixModListButton.BackColor = System.Drawing.Color.Silver;
+            this.ToolsFixModListButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.ToolsFixModListButton.ForeColor = System.Drawing.Color.Black;
+            this.ToolsFixModListButton.Location = new System.Drawing.Point(3, 75);
+            this.ToolsFixModListButton.Name = "ToolsFixModListButton";
+            this.ToolsFixModListButton.Size = new System.Drawing.Size(112, 30);
+            this.ToolsFixModListButton.TabIndex = 22;
+            this.ToolsFixModListButton.Text = "Fix ModList";
+            this.ToolsFixModListButton.UseVisualStyleBackColor = false;
+            this.ToolsFixModListButton.Click += new System.EventHandler(this.ToolsFixModListButton_Click);
             // 
             // testSubWindow
             // 
@@ -854,20 +883,6 @@
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
             // 
-            // ToolsFixModListButton
-            // 
-            this.ToolsFixModListButton.BackColor = System.Drawing.Color.Silver;
-            this.ToolsFixModListButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.ToolsFixModListButton.ForeColor = System.Drawing.Color.Black;
-            this.ToolsFixModListButton.Location = new System.Drawing.Point(3, 75);
-            this.ToolsFixModListButton.Name = "ToolsFixModListButton";
-            this.ToolsFixModListButton.Size = new System.Drawing.Size(112, 30);
-            this.ToolsFixModListButton.TabIndex = 22;
-            this.ToolsFixModListButton.Text = "Fix ModList";
-            this.ToolsFixModListButton.UseVisualStyleBackColor = false;
-            this.ToolsFixModListButton.Visible = false;
-            this.ToolsFixModListButton.Click += new System.EventHandler(this.ToolsFixModListButton_Click);
-            // 
             // AI_Helper
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -911,7 +926,7 @@
         private System.Windows.Forms.TabPage MainPage;
         private System.Windows.Forms.Panel InfoPagePanel;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button MainService;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel LabelPanel;
         private System.Windows.Forms.Label DataInfoLabel;
@@ -966,6 +981,7 @@
         private System.Windows.Forms.TextBox CurrentGameTitleTextBox;
         private System.Windows.Forms.Button testSubWindow;
         private System.Windows.Forms.Button ToolsFixModListButton;
+        private System.Windows.Forms.Button button3;
     }
 }
 

@@ -80,7 +80,7 @@
     <Setting Name="BepinExCfgPath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="MOSelectedProfileDirPath" Type="System.String" Scope="User">
+    <Setting Name="MOSelectedProfileDirName" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="XUAiniPath" Type="System.String" Scope="User">

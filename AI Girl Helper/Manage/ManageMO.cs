@@ -53,6 +53,15 @@ namespace AIHelper.Manage
             //Properties.Settings.Default.CurrentGameIsChanging = false;
         }
 
+        internal static void MakeMOProfileModlistFileBuckup()
+        {
+            var modlistPath = Path.Combine(ManageSettings.GetMOSelectedProfileDirPath(), "modlist.txt");
+            if (File.Exists(modlistPath))
+            {
+                File.Copy(modlistPath, modlistPath + "." + DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss",CultureInfo.InvariantCulture));
+            }
+        }
+
         private static void SetCustomExecutablesIniValues(INIFile INI)
         {
             if (Properties.Settings.Default.SetModOrganizerINISettingsForTheGame)
@@ -745,7 +754,7 @@ namespace AIHelper.Manage
         {
             if (modname.Length > 0)
             {
-                string currentMOprofile = ManageSettings.GetMOSelectedProfileDirPath();
+                string currentMOprofile = ManageSettings.GetMOSelectedProfileDirName();
 
                 if (currentMOprofile.Length == 0)
                 {
@@ -803,7 +812,7 @@ namespace AIHelper.Manage
 
         public static string[] GetModNamesListFromActiveMOProfile(bool OnlyEnabled = true)
         {
-            string currentMOprofile = ManageSettings.GetMOSelectedProfileDirPath();
+            string currentMOprofile = ManageSettings.GetMOSelectedProfileDirName();
 
             if (currentMOprofile.Length > 0)
             {
@@ -993,7 +1002,7 @@ namespace AIHelper.Manage
         {
             if (Properties.Settings.Default.MOmode)
             {
-                string currentMOprofile = ManageSettings.GetMOSelectedProfileDirPath();
+                string currentMOprofile = ManageSettings.GetMOSelectedProfileDirName();
 
                 if (currentMOprofile.Length == 0)
                 {

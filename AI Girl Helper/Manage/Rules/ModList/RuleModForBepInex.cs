@@ -2,7 +2,7 @@
 
 namespace AIHelper.Manage.Rules.ModList
 {
-    internal class RuleModForBepInex : HardcodedRules
+    internal class RuleModForBepInex : ModListRules
     {
         public RuleModForBepInex(string ModName) : base(ModName)
         {
@@ -10,9 +10,11 @@ namespace AIHelper.Manage.Rules.ModList
 
         internal override bool Condition()
         {
-            return !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(
-                Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModName), "*.dll"
-                );
+            return (!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(
+                Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModName, "BepInEx", "plugins"), "*.dll"
+                ) || !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(
+                Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModName, "BepInEx", "patchers"), "*.dll"
+                )) && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModName, "BepInEx", "core", "BepInEx.dll"));
         }
 
         internal override string Description()
@@ -22,7 +24,7 @@ namespace AIHelper.Manage.Rules.ModList
 
         internal override bool Fix()
         {
-            return FindModPath(out outModName);
+            return FindModPath("BepInEx" + Path.DirectorySeparatorChar + "core" + Path.DirectorySeparatorChar + "BepInEx.dll", out outModName);
         }
     }
 }

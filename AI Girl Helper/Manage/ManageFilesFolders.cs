@@ -1,12 +1,10 @@
 ﻿using AI_Helper.Manage;
-using AIHelper.Utils;
 using Soft160.Data.Cryptography;
 using SymbolicLinkSupport;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Windows.Forms;
 
 namespace AIHelper.Manage
 {
@@ -42,7 +40,7 @@ namespace AIHelper.Manage
 
         //https://stackoverflow.com/a/757925
         //быстро проверить, пуста ли папка
-        public static bool CheckDirectoryNullOrEmpty_Fast(string path, string Mask = "*", string[] exclusions = null)
+        public static bool CheckDirectoryNullOrEmpty_Fast(string path, string Mask = "*", string[] exclusions = null, bool recursive = false)
         {
             if (string.IsNullOrEmpty(path) || !Directory.Exists(path)
                 //|| (DirectoryInfoExtensions.IsSymbolicLink(new DirectoryInfo(path)) && !DirectoryInfoExtensions.IsSymbolicLinkValid(new DirectoryInfo(path)))
@@ -75,7 +73,12 @@ namespace AIHelper.Manage
                     bool empty = true;
                     do
                     {
-                        if (findData.cFileName != "." && findData.cFileName != ".." && !ManageStrings.IsStringContainsAnyExclusion(findData.cFileName, exclusions))
+                        if (findData.cFileName != "."
+                            && findData.cFileName != ".."
+                            && !ManageStrings.IsStringContainsAnyExclusion(findData.cFileName, exclusions)
+                            && ((recursive && IsDir(findData.dwFileAttributes) && !CheckDirectoryNullOrEmpty_Fast(path + Path.DirectorySeparatorChar + findData.cFileName + Path.DirectorySeparatorChar, Mask, exclusions, recursive))
+                            || Mask.Length==1 || findData.cFileName.EndsWith(Mask.Remove(0, 1), StringComparison.InvariantCultureIgnoreCase)
+                            ))
                         {
                             empty = false;
                         }
@@ -93,6 +96,11 @@ namespace AIHelper.Manage
             //throw new Exception("Failed to get directory first file",
             //    Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
             //throw new DirectoryNotFoundException();
+        }
+
+        private static bool IsDir(uint dwFileAttributes)
+        {
+            return dwFileAttributes == 16;
         }
 
         public static bool IsAnyFileExistsInTheDir(string dirPath, string extension, bool AllDirectories = true)

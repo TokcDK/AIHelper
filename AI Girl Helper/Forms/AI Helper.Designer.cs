@@ -686,7 +686,7 @@
             this.SetupXmlLinkLabel.TabIndex = 6;
             this.SetupXmlLinkLabel.TabStop = true;
             this.SetupXmlLinkLabel.Text = "Display";
-            this.SetupXmlLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel1_LinkClicked_1);
+            this.SetupXmlLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.SetupXmlPathLinkLabel_LinkClicked);
             // 
             // QualityComboBox
             // 

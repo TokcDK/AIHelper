@@ -1272,7 +1272,7 @@ namespace AIHelper
                 //impossible to correctly update mods in common mode
                 if (!Properties.Settings.Default.MOmode)
                 {
-                    DialogResult result = MessageBox.Show(T._("Attention") + "\n\n" + T._("Impossible to correctly install/update mods\n\n in standart mode because files was moved in Data.\n\nSwitch to MO mode?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
+                    DialogResult result = MessageBox.Show(T._("Attention") + "\n\n" + T._("Impossible to correctly install/update mods\n\n in standart mode because files was moved in Data.") + "\n\n" + T._("Switch to MO mode?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
                     if (result == DialogResult.OK)
                     {
                         SwitchBetweenMOAndStandartModes();
@@ -1615,7 +1615,7 @@ namespace AIHelper
                             ,
                             note.Replace("\n", "<br>")
                             );
-                        ManageMO.ActivateInsertModIfPossible(NewModName, false, ModName, false);
+                        ManageMO.ActivateDeactivateInsertMod(NewModName, false, ModName, false);
                     }
                 }
 
@@ -1699,7 +1699,7 @@ namespace AIHelper
                         T._("<br>This files was added in Common mode<br>and moved as mod after convertation in MO mode.<br>Date: ") + DateTimeInFormat
                         );
 
-                    ManageMO.ActivateInsertModIfPossible(addedFilesFolderName);
+                    ManageMO.ActivateDeactivateInsertMod(addedFilesFolderName);
                 }
 
                 //перемещение ванильных файлов назад в дата
@@ -2358,7 +2358,7 @@ namespace AIHelper
         {
             foreach (var folder in Directory.GetDirectories(ManageSettings.GetCurrentGameModsPath()))
             {
-                if (!folder.EndsWith("_separator"))
+                if (!folder.EndsWith("_separator", StringComparison.InvariantCulture))
                 {
                     ManageMOMods.SortFilesToSubfolders(folder);
                 }
@@ -2374,7 +2374,7 @@ namespace AIHelper
             //ManageMOMods.BepinExLoadingFix(true);
         }
 
-        private void LinkLabel1_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
+        private void SetupXmlPathLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             if (File.Exists(SetupXmlPath))
             {
@@ -2443,7 +2443,27 @@ namespace AIHelper
 
         private void ToolsFixModListButton_Click(object sender, EventArgs e)
         {
+            OnOffButtons(false);
+            //impossible to correctly update mods in common mode
+            if (!Properties.Settings.Default.MOmode)
+            {
+                DialogResult result = MessageBox.Show(T._("Attention") + "\n\n" + T._("Correct modlist fixes possible only in MO mode") + "\n\n" + T._("Switch to MO mode?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
+                if (result == DialogResult.OK)
+                {
+                    SwitchBetweenMOAndStandartModes();
+                }
+                else
+                {
+                    OnOffButtons();
+                    return;
+                }
+            }
+
             new ManageRules.ModList().ModlistFixes();
+
+            OnOffButtons();
+
+            FoldersInit();
         }
 
         private void button3_Click(object sender, EventArgs e)

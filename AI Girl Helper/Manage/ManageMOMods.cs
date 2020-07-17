@@ -34,39 +34,49 @@ namespace AIHelper.Manage
 
         internal static bool IsFileDirExistsInDataOROverwrite(string filedir, out string source)
         {
+            //string filePathInOverwrite =
+            //           Path.GetFullPath(
+            //               Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath() + Path.DirectorySeparatorChar + filedir)
+            //                           );
             if (File.Exists(
                        Path.GetFullPath(
                            Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath() + Path.DirectorySeparatorChar + filedir)
                                        )
-                               )
-                   ||
-                   Directory.Exists(
-                       Path.GetFullPath(
-                           Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath() + Path.DirectorySeparatorChar + filedir)
-                                       )
-                                   )
+                       )
+                   //||
+                   //Directory.Exists(
+                   //    Path.GetFullPath(
+                   //        Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath() + Path.DirectorySeparatorChar + filedir)
+                   //                    )
+                   //                )
               )
             {
                 source = "overwrite";
                 return true;
             }
-            else if (
+            else
+            {
+                //var FilePathInData = Path.GetFullPath(
+                //           Path.Combine(ManageSettings.GetCurrentGameDataPath() + Path.DirectorySeparatorChar + filedir)
+                //                       );
+                if (
 
                    File.Exists(
                        Path.GetFullPath(
                            Path.Combine(ManageSettings.GetCurrentGameDataPath() + Path.DirectorySeparatorChar + filedir)
                                        )
                                    )
-                   ||
-                   Directory.Exists(
-                       Path.GetFullPath(
-                           Path.Combine(ManageSettings.GetCurrentGameDataPath() + Path.DirectorySeparatorChar + filedir)
-                                       )
-                                   )
+                   //||
+                   //Directory.Exists(
+                   //    Path.GetFullPath(
+                   //        Path.Combine(ManageSettings.GetCurrentGameDataPath() + Path.DirectorySeparatorChar + filedir)
+                   //                    )
+                   //                )
                    )
-            {
-                source = "data";
-                return true;
+                {
+                    source = "data";
+                    return true;
+                }
             }
 
             source = string.Empty;
@@ -243,7 +253,7 @@ namespace AIHelper.Manage
                         IsUpdate ? string.Empty : "<br>" + "Author" + ": " + author + "<br><br>" + (description.Length > 0 ? description : name)
                         );
 
-                    ManageMO.ActivateInsertModIfPossible(modname, false, "ScriptLoader scripts_separator");
+                    ManageMO.ActivateDeactivateInsertMod(modname, false, "ScriptLoader scripts_separator");
 
                     string[] extrafiles = Directory.GetFiles(WhereFromInstallDir, name + "*.*");
                     if (extrafiles.Length > 0)
@@ -425,7 +435,7 @@ namespace AIHelper.Manage
                             "<br>Author: " + string.Empty + "<br><br>" + Path.GetFileNameWithoutExtension(cardsModDir) + " character cards<br><br>"
                             );
 
-                        ManageMO.ActivateInsertModIfPossible(Path.GetFileName(cardsModDir), true, "UserCharacters_separator");
+                        ManageMO.ActivateDeactivateInsertMod(Path.GetFileName(cardsModDir), true, "UserCharacters_separator");
                     }
                 }
             }
@@ -912,7 +922,7 @@ namespace AIHelper.Manage
                         FoundUpdateName ? string.Empty : "<br>Author: " + author + "<br><br>" + (description.Length > 0 ? description : Path.GetFileNameWithoutExtension(zipfile)) + "<br><br>"
                         );
 
-                    ManageMO.ActivateInsertModIfPossible(Path.GetFileName(TargetModDirPath));
+                    ManageMO.ActivateDeactivateInsertMod(Path.GetFileName(TargetModDirPath));
                 }
                 else if (FoundModsDir)
                 {
@@ -1311,7 +1321,7 @@ namespace AIHelper.Manage
                     //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \"");
                     //INI.WriteINI("General", "validated", "true");
 
-                    ManageMO.ActivateInsertModIfPossible(Path.GetFileName(moddir));
+                    ManageMO.ActivateDeactivateInsertMod(Path.GetFileName(moddir));
                 }
             }
         }
@@ -1578,7 +1588,7 @@ namespace AIHelper.Manage
                 //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \"");
                 //INI.WriteINI("General", "validated", "true");
 
-                ManageMO.ActivateInsertModIfPossible(Path.GetFileName(dllTargetModDirPath));
+                ManageMO.ActivateDeactivateInsertMod(Path.GetFileName(dllTargetModDirPath));
             }
         }
 
@@ -1728,7 +1738,7 @@ namespace AIHelper.Manage
                     //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + website + " \"");
                     //INI.WriteINI("General", "validated", "true");
 
-                    ManageMO.ActivateInsertModIfPossible(Path.GetFileName(zipmoddirpath), true);
+                    ManageMO.ActivateDeactivateInsertMod(Path.GetFileName(zipmoddirpath), true);
                 }
             }
         }

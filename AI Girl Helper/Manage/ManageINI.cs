@@ -43,7 +43,8 @@ namespace AIHelper.Manage
             if (MOModlistPath.Length > 0 && File.Exists(MOModlistPath) && Line.Length > 0)
             {
                 string[] FileLines = File.ReadAllLines(MOModlistPath);
-                if (!FileLines.Contains("+" + Line.Remove(0, 1)) && !FileLines.Contains("-" + Line.Remove(0, 1)))
+                bool IsEnabled;
+                if (!(IsEnabled=FileLines.Contains("+" + Line.Remove(0, 1))) && !FileLines.Contains("-" + Line.Remove(0, 1)))
                 {
                     int FileLinesLength = FileLines.Length;
                     bool InsertWithMod = InsertWithThisMod.Length > 0;
@@ -83,9 +84,14 @@ namespace AIHelper.Manage
                         }
                     }
                 }
-                else if (FileLines.Contains("-" + Line.Remove(0, 1)))
+                else
                 {
-                    FileLines = FileLines.Replace("-" + Line.Remove(0, 1), Line);
+                    var prefix = "-";
+                    if (IsEnabled)
+                    {
+                        prefix = "+";
+                    }
+                    FileLines = FileLines.Replace(prefix + Line.Remove(0, 1), Line);
                     File.WriteAllLines(MOModlistPath, FileLines);
                 }
             }

@@ -53,13 +53,21 @@ namespace AIHelper.Manage
             //Properties.Settings.Default.CurrentGameIsChanging = false;
         }
 
-        internal static void MakeMOProfileModlistFileBuckup()
+        /// <summary>
+        /// returns filename
+        /// </summary>
+        /// <param name="suffix"></param>
+        /// <returns></returns>
+        internal static string MakeMOProfileModlistFileBuckup(string suffix = "")
         {
             var modlistPath = Path.Combine(ManageSettings.GetMOSelectedProfileDirPath(), "modlist.txt");
             if (File.Exists(modlistPath))
             {
-                File.Copy(modlistPath, modlistPath + "." + DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss",CultureInfo.InvariantCulture));
+                var targetFile = modlistPath + "." + DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss", CultureInfo.InvariantCulture) + suffix;
+                File.Copy(modlistPath, targetFile);
+                return targetFile;
             }
+            return string.Empty;
         }
 
         private static void SetCustomExecutablesIniValues(INIFile INI)
@@ -750,7 +758,22 @@ namespace AIHelper.Manage
             }
         }
 
-        public static void ActivateInsertModIfPossible(string modname, bool Activate = true, string modAfterWhichInsert = "", bool PlaceAfter = true)
+        public static void ActivateMod(string modname)
+        {
+            ActivateDeactivateInsertMod(modname);
+        }
+
+        public static void DeactivateMod(string modname)
+        {
+            ActivateDeactivateInsertMod(modname, false);
+        }
+
+        public static void InsertMod(string modname, bool Activate = true, string modAfterWhichInsert = "", bool PlaceAfter = true)
+        {
+            ActivateDeactivateInsertMod(modname, Activate, modAfterWhichInsert, PlaceAfter);
+        }
+
+        public static void ActivateDeactivateInsertMod(string modname, bool Activate = true, string modAfterWhichInsert = "", bool PlaceAfter = true)
         {
             if (modname.Length > 0)
             {

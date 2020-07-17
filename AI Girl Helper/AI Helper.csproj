@@ -211,8 +211,13 @@
     <Compile Include="Manage\ManageMO.cs" />
     <Compile Include="Manage\ManageStringsExtensions.cs" />
     <Compile Include="Manage\ManageSymLinks.cs" />
+    <Compile Include="Manage\Rules\ModList\ModListData.cs" />
     <Compile Include="Manage\Rules\ModList\ModListRules.cs" />
+    <Compile Include="Manage\Rules\ModList\RuleFromRulesFile.cs" />
     <Compile Include="Manage\Rules\ModList\RuleFromMeta.cs" />
+    <Compile Include="Manage\Rules\ModList\RuleModForIPA.cs" />
+    <Compile Include="Manage\Rules\ModList\RuleModForOverlaysPlugin.cs" />
+    <Compile Include="Manage\Rules\ModList\RuleModForSideloaderPlugin.cs" />
     <Compile Include="Manage\Rules\ModList\RuleModForBepInexIPA.cs" />
     <Compile Include="Manage\Rules\ModList\RuleModForBepInex.cs" />
     <Compile Include="SharedData\Data.cs" />

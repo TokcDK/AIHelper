@@ -78,7 +78,7 @@
       <HintPath>..\packages\ini-parser.2.5.2\lib\net20\INIFileParser.dll</HintPath>
     </Reference>
     <Reference Include="NGettext, Version=0.6.1.0, Culture=neutral, PublicKeyToken=08d3d1c89dfd2985, processorArchitecture=MSIL">
-      <HintPath>..\packages\NGettext.0.6.5\lib\net46\NGettext.dll</HintPath>
+      <HintPath>..\packages\NGettext.0.6.6\lib\net46\NGettext.dll</HintPath>
     </Reference>
     <Reference Include="SevenZipSharp, Version=0.64.3890.29348, Culture=neutral, PublicKeyToken=20de82c62b055c88, processorArchitecture=MSIL">
       <HintPath>..\packages\SevenZipSharp.0.64\lib\SevenZipSharp.dll</HintPath>
@@ -213,6 +213,8 @@
     <Compile Include="Manage\ManageSymLinks.cs" />
     <Compile Include="Manage\Rules\ModList\ModListData.cs" />
     <Compile Include="Manage\Rules\ModList\ModListRules.cs" />
+    <Compile Include="Manage\Rules\ModList\ModlistRulesTags.cs" />
+    <Compile Include="Manage\Rules\ModList\RuleFromRulesFileOverall.cs" />
     <Compile Include="Manage\Rules\ModList\RuleFromRulesFile.cs" />
     <Compile Include="Manage\Rules\ModList\RuleFromMeta.cs" />
     <Compile Include="Manage\Rules\ModList\RuleModForIPA.cs" />

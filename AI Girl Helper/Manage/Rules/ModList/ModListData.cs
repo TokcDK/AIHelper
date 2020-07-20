@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace AIHelper.Manage.Rules.ModList
 {
@@ -17,49 +16,54 @@ namespace AIHelper.Manage.Rules.ModList
         internal string RulesTagFile = "file:";
         internal string RulesTagREQ = "req:";
         internal string RulesTagINC = "inc:";
-        internal List<ModListRules> HardCodedRulesList;
+        internal List<ModListRules> RulesList;
         internal List<string> Report = new List<string>();
         internal string ModName;
         internal Dictionary<string, string[]> rulesDict;
+        internal Dictionary<string, string[]> rulesDictOverall;
 
         public ModListData()
         {
-            HardCodedRulesList = GetListOfHardcodedRules(this);
+            RulesList = GetListOfSubClasses<ModListRules>(this);
         }
+
+        ///// <summary>
+        ///// Get all inherited classes of an abstract class (requires linq)
+        ///// </summary>
+        ///// <returns></returns>
+        //internal static List<ModListRules> GetListOfRulesLinq(ModListData modlistData)
+        //{
+        //    //https://stackoverflow.com/a/5411981
+        //    //Get all inherited classes of an abstract class
+        //    IEnumerable<ModListRules> SubclassesOfModListRules = typeof(ModListRules)
+        //    .Assembly.GetTypes()
+        //    .Where(t => t.IsSubclassOf(typeof(ModListRules)) && !t.IsAbstract)
+        //    .Select(t => (ModListRules)Activator.CreateInstance(t, modlistData));
+
+        //    return (from ModListRules SubClass in SubclassesOfModListRules
+        //                //where (SubClass.IsHardRule)
+        //            select SubClass).ToList();
+        //}
 
         /// <summary>
         /// Get all inherited classes of an abstract class
-        /// Get only HardCoded Rules
+        /// non linq version of https://stackoverflow.com/a/5411981
         /// </summary>
-        /// <returns></returns>
-        internal static List<ModListRules> GetListOfHardcodedRules(ModListData modlistData)
+        /// <typeparam name="T">type of subclasses</typeparam>
+        /// <param name="parameter">parameter required for subclass(remove if not need)</param>
+        /// <returns>List of subclasses of abstract class</returns>
+        internal static List<T> GetListOfSubClasses<T>(ModListData parameter)
         {
-            //https://stackoverflow.com/a/5411981
-            //Get all inherited classes of an abstract class
-            IEnumerable<ModListRules> SubclassesOfModListRules = typeof(ModListRules)
-            .Assembly.GetTypes()
-            .Where(t => t.IsSubclassOf(typeof(ModListRules)) && !t.IsAbstract)
-            .Select(t => (ModListRules)Activator.CreateInstance(t, modlistData));
+            var ListOfSubClasses = new List<T>();
+            foreach (var ClassType in typeof(T).Assembly.GetTypes())
+            {
+                if (ClassType.IsSubclassOf(typeof(T)) && !ClassType.IsAbstract)
+                {
+                    ListOfSubClasses.Add((T)Activator.CreateInstance(ClassType, parameter));
+                }
+            }
 
-            return (from ModListRules SubClass in SubclassesOfModListRules
-                    //where (SubClass.IsHardRule)
-                    select SubClass).ToList();
-        }
-    }
-
-    internal class ModlistRulesTags
-    {
-        internal class Main: ModlistRulesTags
-        {
-            internal string REQ = "req:";
-            internal string INC = "inc:";
-        }
-
-        internal class Sub : ModlistRulesTags
-        {
-            internal string File = "file:";
-            internal string OR = "|or|";
-            internal string AND = "|and|";
+            return ListOfSubClasses;
         }
     }
 }

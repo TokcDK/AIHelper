@@ -8,9 +8,10 @@ namespace AI_Helper.Manage
     {
         public static bool DeleteIfSymlink(string LinkPath, bool IsFolder = false)
         {
+            var fInfo = new FileInfo(LinkPath);
             if (IsFolder || Directory.Exists(LinkPath))
             {
-                if (FileInfoExtensions.IsSymbolicLink(new FileInfo(LinkPath)))
+                if (FileInfoExtensions.IsSymbolicLink(fInfo))
                 {
                     Directory.Delete(LinkPath);
 
@@ -19,8 +20,11 @@ namespace AI_Helper.Manage
             }
             else if (File.Exists(LinkPath))
             {
-                if (FileInfoExtensions.IsSymbolicLink(new FileInfo(LinkPath)))
+                if (FileInfoExtensions.IsSymbolicLink(fInfo))
                 {
+                    //https://stackoverflow.com/a/6375373
+                    //ManageFilesFolders.Unblock(LinkPath);
+
                     File.Delete(LinkPath);
 
                     return true;
@@ -112,9 +116,7 @@ namespace AI_Helper.Manage
                             File.Delete(symlinkPath);
                         }
 
-                        //FileInfoExtensions.CreateSymbolicLink(new FileInfo(objectFileDirPath), symlinkPath, isRelative);//new from NuGet package
                         FileInfoExtensions.CreateSymbolicLink(new FileInfo(objectPath), symlinkPath, isRelative);//new from NuGet package
-                                                                                                                 //CreateSymlink.File(file, symlink); //old
 
                         return true;
                     }

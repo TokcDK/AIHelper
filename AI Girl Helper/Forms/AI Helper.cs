@@ -1,4 +1,5 @@
-﻿using AIHelper.Games;
+﻿using AI_Helper.Manage;
+using AIHelper.Games;
 using AIHelper.Manage;
 using System;
 using System.Collections.Generic;
@@ -2471,6 +2472,41 @@ namespace AIHelper
             //var htmlString = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">Patch for Koikatsu fixes. Replaces one fix from Koikatsu fixes to prevent bugs from it when abmx is enabled.</span></p>\n<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">mlinfo::</span></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">req:file:BepInEx\\plugins\\KKABMX.dll|and|file:BepInEx\\plugins\\IllusionFixes\\KK_Fix_MainGameOptimizations.dll</span></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">inc:API</span></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">::</span></p></body></html>";
 
             //MessageBox.Show(ManageHTML.GetMLInfoFromHTML(htmlString));
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var CCCCPfolderPath = @"F:\C";
+            var targetFolder = @"F:\mods";
+            HashSet<string> addedMods = new HashSet<string>();
+            if (!Directory.Exists(CCCCPfolderPath))
+                return;
+
+            foreach (var modFolder in Directory.GetDirectories(CCCCPfolderPath, "abdata*", SearchOption.AllDirectories))
+            {
+                try
+                {
+                    if (Path.GetFileName(modFolder) != "abdata" && Path.GetFileName(modFolder) != "abdata-emulated")
+                    {
+                        continue;
+                    }
+
+                    if (addedMods.Contains(Path.GetDirectoryName(modFolder)))
+                    {
+                        continue;
+                    }
+
+                    addedMods.Add(modFolder);
+                    ManageSymLinks.Symlink(Path.GetDirectoryName(modFolder),
+                        Path.Combine(targetFolder, Path.GetFileName(Path.GetDirectoryName(modFolder)))
+                        );
+                }
+                catch
+                {
+                }
+
+            }
+            MessageBox.Show("Finished!");
         }
 
         //Disable close window button

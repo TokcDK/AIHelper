@@ -37,6 +37,13 @@ namespace AIHelper.Manage.Rules.ModList
             {
                 inSubPath = inSubPath.Remove(0, modlistData.RulesTagFile.Length).TrimStart();
             }
+
+            if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName) + Path.DirectorySeparatorChar + inSubPath))
+            {
+                FoundModName = modlistData.ModName;
+                return true;
+            }
+
             if (ManageMOMods.IsFileDirExistsInDataOROverwrite(inSubPath, out string Source))
             {
                 FoundModName = Source;

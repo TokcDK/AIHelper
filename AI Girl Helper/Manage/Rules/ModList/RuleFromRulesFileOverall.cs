@@ -34,9 +34,10 @@ namespace AIHelper.Manage.Rules.ModList
             var IsAllTrue = false;
             foreach (var file in modlistData.rulesDictOverall)
             {
-                if(File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName, file.Key.Remove(0, modlistData.RulesTagFile.Length)))
+                var targetPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName, file.Key.Remove(0, modlistData.RulesTagFile.Length));
+                if (File.Exists(targetPath)
                     ||
-                    Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName, file.Key.Remove(0, modlistData.RulesTagFile.Length)))
+                    Directory.Exists(targetPath)
                     )
                 {
                     IsAllTrue = ParseRules(file.Value);

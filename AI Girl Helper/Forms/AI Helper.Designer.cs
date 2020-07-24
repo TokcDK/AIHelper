@@ -42,6 +42,7 @@
             this.MainService = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.LaunchPagePanel = new System.Windows.Forms.Panel();
+            this.VRGameCheckBox = new System.Windows.Forms.CheckBox();
             this.OpenHelpLinkLabel = new System.Windows.Forms.LinkLabel();
             this.LaunchLinksLinkLabel = new System.Windows.Forms.LinkLabel();
             this.BepInExDisplayedLogLevelLabel = new System.Windows.Forms.Label();
@@ -255,6 +256,7 @@
             // LaunchPagePanel
             // 
             this.LaunchPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.LaunchPagePanel.Controls.Add(this.VRGameCheckBox);
             this.LaunchPagePanel.Controls.Add(this.OpenHelpLinkLabel);
             this.LaunchPagePanel.Controls.Add(this.LaunchLinksLinkLabel);
             this.LaunchPagePanel.Controls.Add(this.BepInExDisplayedLogLevelLabel);
@@ -276,6 +278,17 @@
             this.LaunchPagePanel.Name = "LaunchPagePanel";
             this.LaunchPagePanel.Size = new System.Drawing.Size(340, 155);
             this.LaunchPagePanel.TabIndex = 0;
+            // 
+            // VRGameCheckBox
+            // 
+            this.VRGameCheckBox.AutoSize = true;
+            this.VRGameCheckBox.Location = new System.Drawing.Point(304, 138);
+            this.VRGameCheckBox.Name = "VRGameCheckBox";
+            this.VRGameCheckBox.Size = new System.Drawing.Size(36, 17);
+            this.VRGameCheckBox.TabIndex = 29;
+            this.VRGameCheckBox.Text = "vr";
+            this.VRGameCheckBox.UseVisualStyleBackColor = true;
+            this.VRGameCheckBox.Visible = false;
             // 
             // OpenHelpLinkLabel
             // 
@@ -999,6 +1012,7 @@
         private System.Windows.Forms.Button ToolsFixModListButton;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.CheckBox VRGameCheckBox;
     }
 }
 

@@ -743,5 +743,10 @@ namespace AIHelper.Manage
         /// The language to translation mode map. (Reversed)
         /// </summary>
         internal static Dictionary<string, string> _languageModeMapReversed;
+
+        internal static bool GetCurrentGameIsHaveVR()
+        {
+            return File.Exists(Path.Combine(GetCurrentGameDataPath(), GetCurrentGameEXEName() + "VR" + ".exe"));
+        }
     }
 }

@@ -989,6 +989,10 @@ namespace AIHelper
             {
                 BepInExConsoleCheckBox.Checked = false;
             }
+
+            //VR
+            VRGameCheckBox.Visible = ManageSettings.GetCurrentGameIsHaveVR();
+
             BepInExConsoleCheckBox.Enabled = ManageSettings.GetBepInExCfgFilePath().Length > 0;
             if (BepInExDisplayedLogLevelLabel.Visible = BepInExConsoleCheckBox.Checked)
             {
@@ -1062,13 +1066,18 @@ namespace AIHelper
 
             await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
+            string vr = string.Empty;
+            if(VRGameCheckBox.Visible && VRGameCheckBox.Checked && ManageSettings.GetCurrentGameIsHaveVR())
+            {
+                vr = "VR";
+            }
             if (MOmode)
             {
-                RunProgram(MOexePath, "moshortcut://:" + ManageSettings.GetCurrentGameEXEName());
+                RunProgram(MOexePath, "moshortcut://:" + ManageSettings.GetCurrentGameEXEName() + vr);
             }
             else
             {
-                RunProgram(Path.Combine(DataPath, ManageSettings.GetCurrentGameEXEName() + ".exe"), string.Empty);
+                RunProgram(Path.Combine(DataPath, ManageSettings.GetCurrentGameEXEName() + vr + ".exe"), string.Empty);
             }
             OnOffButtons();
         }

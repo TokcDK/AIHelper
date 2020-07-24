@@ -163,7 +163,6 @@
     <Compile Include="Games\Illusion\HoneySelect2.cs" />
     <Compile Include="Games\Illusion\RootGame.cs" />
     <Compile Include="Games\Illusion\Koikatsu.cs" />
-    <Compile Include="HtmlUtilities.cs" />
     <Compile Include="Install\Types\Files\Archive\7z.cs" />
     <Compile Include="Install\Types\Files\Archive\ArchivesBase.cs" />
     <Compile Include="Install\Types\Files\Document\DocumentBase.cs" />

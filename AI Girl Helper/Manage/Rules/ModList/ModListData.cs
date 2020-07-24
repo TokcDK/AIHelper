@@ -27,23 +27,27 @@ namespace AIHelper.Manage.Rules.ModList
             RulesList = GetListOfSubClasses<ModListRules>(this);
         }
 
-        ///// <summary>
-        ///// Get all inherited classes of an abstract class (requires linq)
-        ///// </summary>
-        ///// <returns></returns>
-        //internal static List<ModListRules> GetListOfRulesLinq(ModListData modlistData)
-        //{
-        //    //https://stackoverflow.com/a/5411981
-        //    //Get all inherited classes of an abstract class
-        //    IEnumerable<ModListRules> SubclassesOfModListRules = typeof(ModListRules)
-        //    .Assembly.GetTypes()
-        //    .Where(t => t.IsSubclassOf(typeof(ModListRules)) && !t.IsAbstract)
-        //    .Select(t => (ModListRules)Activator.CreateInstance(t, modlistData));
+        /// <summary>
+        /// Comment tags: ";"
+        /// </summary>
+        internal static string[] CommentTag = new[] { ";" };
+        /// <summary>
+        /// ";" - commentary
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
+        internal static bool IsComment(string line)
+        {
+            foreach (var comment in CommentTag)
+            {
+                if (line.TrimStart().StartsWith(comment, StringComparison.InvariantCulture))
+                {
+                    return true;
+                }
+            }
 
-        //    return (from ModListRules SubClass in SubclassesOfModListRules
-        //                //where (SubClass.IsHardRule)
-        //            select SubClass).ToList();
-        //}
+            return false;
+        }
 
         /// <summary>
         /// Get all inherited classes of an abstract class
@@ -64,6 +68,11 @@ namespace AIHelper.Manage.Rules.ModList
             }
 
             return ListOfSubClasses;
+        }
+
+        internal static string GetDataWithNoComments(string line)
+        {
+            return line.Split(CommentTag, StringSplitOptions.None)[0].TrimEnd();
         }
     }
 }

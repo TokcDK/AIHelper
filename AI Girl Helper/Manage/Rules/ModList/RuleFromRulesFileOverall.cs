@@ -77,16 +77,17 @@ namespace AIHelper.Manage.Rules.ModList
                 while (!sr.EndOfStream)
                 {
                     var line = sr.ReadLine();
-                    if (string.IsNullOrWhiteSpace(line) || line.TrimStart().StartsWith(";", StringComparison.InvariantCulture))
+                    if (string.IsNullOrWhiteSpace(line) || ModListData.IsComment(line))
                     {
                         continue;
                     }
 
+                    line = line.Trim();
                     if (ruleReading && IsModListRule(line))
                     {
-                        ruleConditions.Add(line.Trim());
+                        ruleConditions.Add(ModListData.GetDataWithNoComments(line));
                     }
-                    else if(ruleReading && !string.IsNullOrWhiteSpace(ruleName))
+                    else if (ruleReading && !string.IsNullOrWhiteSpace(ruleName))
                     {
                         if (ruleConditions.Count > 0)
                         {
@@ -100,7 +101,7 @@ namespace AIHelper.Manage.Rules.ModList
                     {
                         if (line.StartsWith(modlistData.RulesTagFile, StringComparison.InvariantCulture))
                         {
-                            ruleName = line.Trim();
+                            ruleName = ModListData.GetDataWithNoComments(line);
                             ruleReading = true;
                         }
                     }

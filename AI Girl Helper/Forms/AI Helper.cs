@@ -176,8 +176,10 @@ namespace AIHelper
             InstallInModsButton.Text = T._("Install from 2MO");
             //button1.Text = T._("Prepare the game");
             SettingsPage.Text = T._("Settings");
-            CreateShortcutButton.Text = T._("Shortcut");
-            FixRegistryButton.Text = T._("Registry");
+            //CreateShortcutButton.Text = T._("Shortcut");
+            CreateShortcutLinkLabel.Text = T._("Shortcut");
+            //FixRegistryButton.Text = T._("Registry");
+            FixRegistryLinkLabel.Text = T._("Registry");
             DisplaySettingsGroupBox.Text = T._("Display");
             SetupXmlLinkLabel.Text = DisplaySettingsGroupBox.Text;//Тот же текст
             FullScreenCheckBox.Text = T._("fullscreen");
@@ -564,6 +566,9 @@ namespace AIHelper
                 );
             THToolTip.SetToolTip(SelectedGameLabel, T._("Selected game title"));
 
+            //Launch
+            THToolTip.SetToolTip(VRGameCheckBox, T._("Check to run VR exe instead on standart"));
+
             //Main
             //THToolTip.SetToolTip(button1, T._("Unpacking mods and resources from 'Downloads' and 'RES' folders for game when they are not installed"));
             THToolTip.SetToolTip(InstallInModsButton, T._("Automatically get required mod data, converts and moves files from 2MO folder")
@@ -579,8 +584,10 @@ namespace AIHelper
             THToolTip.SetToolTip(ResolutionComboBox, T._("Select preferred screen resolution"));
             THToolTip.SetToolTip(FullScreenCheckBox, T._("When checked game will be in fullscreen mode"));
             THToolTip.SetToolTip(QualityComboBox, T._("Select preferred graphics quality"));
-            THToolTip.SetToolTip(CreateShortcutButton, T._("Will create shortcut in Desktop if not exist"));
-            THToolTip.SetToolTip(FixRegistryButton, T._("Will set Data dir with game files as install dir in registry"));
+            //THToolTip.SetToolTip(CreateShortcutButton, T._("Will create shortcut in Desktop if not exist"));
+            THToolTip.SetToolTip(CreateShortcutLinkLabel, T._("Will create shortcut in Desktop if not exist"));
+            //THToolTip.SetToolTip(FixRegistryButton, T._("Will set Data dir with game files as install dir in registry"));
+            THToolTip.SetToolTip(FixRegistryLinkLabel, T._("Will set Data dir with game files as install dir in registry"));
             THToolTip.SetToolTip(GameButton, MOmode ? T._("Will execute the Game")
                 + T._(" from Mod Organizer with attached mods")
                 : T._("Will execute the Game")
@@ -1020,11 +1027,13 @@ namespace AIHelper
 
         private void FixRegistryButton_Click(object sender, EventArgs e)
         {
-            FixRegistryButton.Enabled = false;
+            //FixRegistryButton.Enabled = false;
+            FixRegistryLinkLabel.Enabled = false;
 
             ManageRegistry.FixRegistry(false);
 
-            FixRegistryButton.Enabled = true;
+            //FixRegistryButton.Enabled = true;
+            FixRegistryLinkLabel.Enabled = true;
         }
 
         private async void MOButton_Click(object sender, EventArgs e)

@@ -60,8 +60,11 @@
             this.SettingsButton = new System.Windows.Forms.Button();
             this.SettingsPage = new System.Windows.Forms.TabPage();
             this.SettingsPagePanel = new System.Windows.Forms.Panel();
+            this.CreateShortcutLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.FixRegistryLinkLabel = new System.Windows.Forms.LinkLabel();
             this.CurrentGameTitleTextBox = new System.Windows.Forms.TextBox();
             this.JPLauncherRunLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.FullScreenCheckBox = new System.Windows.Forms.CheckBox();
             this.ExtraSettingsLinkLabel = new System.Windows.Forms.LinkLabel();
             this.CurrentGameLabel = new System.Windows.Forms.Label();
             this.CurrentGameComboBox = new System.Windows.Forms.ComboBox();
@@ -72,12 +75,9 @@
             this.OpenModsFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenMOFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenGameFolderLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.CreateShortcutButton = new System.Windows.Forms.Button();
-            this.FixRegistryButton = new System.Windows.Forms.Button();
             this.DisplaySettingsGroupBox = new System.Windows.Forms.GroupBox();
             this.SetupXmlLinkLabel = new System.Windows.Forms.LinkLabel();
             this.QualityComboBox = new System.Windows.Forms.ComboBox();
-            this.FullScreenCheckBox = new System.Windows.Forms.CheckBox();
             this.ResolutionComboBox = new System.Windows.Forms.ComboBox();
             this.AutoShortcutRegistryCheckBox = new System.Windows.Forms.CheckBox();
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
@@ -282,17 +282,19 @@
             // VRGameCheckBox
             // 
             this.VRGameCheckBox.AutoSize = true;
+            this.VRGameCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.VRGameCheckBox.Location = new System.Drawing.Point(304, 138);
             this.VRGameCheckBox.Name = "VRGameCheckBox";
             this.VRGameCheckBox.Size = new System.Drawing.Size(36, 17);
             this.VRGameCheckBox.TabIndex = 29;
             this.VRGameCheckBox.Text = "vr";
-            this.VRGameCheckBox.UseVisualStyleBackColor = true;
+            this.VRGameCheckBox.UseVisualStyleBackColor = false;
             this.VRGameCheckBox.Visible = false;
             // 
             // OpenHelpLinkLabel
             // 
             this.OpenHelpLinkLabel.AutoSize = true;
+            this.OpenHelpLinkLabel.BackColor = System.Drawing.Color.Transparent;
             this.OpenHelpLinkLabel.LinkColor = System.Drawing.Color.White;
             this.OpenHelpLinkLabel.Location = new System.Drawing.Point(5, 34);
             this.OpenHelpLinkLabel.Name = "OpenHelpLinkLabel";
@@ -306,6 +308,7 @@
             // LaunchLinksLinkLabel
             // 
             this.LaunchLinksLinkLabel.AutoSize = true;
+            this.LaunchLinksLinkLabel.BackColor = System.Drawing.Color.Transparent;
             this.LaunchLinksLinkLabel.LinkColor = System.Drawing.Color.White;
             this.LaunchLinksLinkLabel.Location = new System.Drawing.Point(5, 21);
             this.LaunchLinksLinkLabel.Name = "LaunchLinksLinkLabel";
@@ -318,6 +321,7 @@
             // BepInExDisplayedLogLevelLabel
             // 
             this.BepInExDisplayedLogLevelLabel.AutoSize = true;
+            this.BepInExDisplayedLogLevelLabel.BackColor = System.Drawing.Color.Transparent;
             this.BepInExDisplayedLogLevelLabel.Location = new System.Drawing.Point(294, 16);
             this.BepInExDisplayedLogLevelLabel.Name = "BepInExDisplayedLogLevelLabel";
             this.BepInExDisplayedLogLevelLabel.Size = new System.Drawing.Size(27, 13);
@@ -339,6 +343,7 @@
             // SelectedGameLabel
             // 
             this.SelectedGameLabel.AutoSize = true;
+            this.SelectedGameLabel.BackColor = System.Drawing.Color.Transparent;
             this.SelectedGameLabel.Font = new System.Drawing.Font("Monotype Corsiva", 11.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.SelectedGameLabel.ForeColor = System.Drawing.Color.LightPink;
             this.SelectedGameLabel.Location = new System.Drawing.Point(101, 45);
@@ -350,7 +355,7 @@
             // ProgramNameLabelPart1
             // 
             this.ProgramNameLabelPart1.AutoSize = true;
-            this.ProgramNameLabelPart1.BackColor = System.Drawing.Color.Gray;
+            this.ProgramNameLabelPart1.BackColor = System.Drawing.Color.Transparent;
             this.ProgramNameLabelPart1.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ProgramNameLabelPart1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.ProgramNameLabelPart1.Location = new System.Drawing.Point(98, 16);
@@ -362,7 +367,7 @@
             // ProgramNameLabelPart2
             // 
             this.ProgramNameLabelPart2.AutoSize = true;
-            this.ProgramNameLabelPart2.BackColor = System.Drawing.Color.Gray;
+            this.ProgramNameLabelPart2.BackColor = System.Drawing.Color.Transparent;
             this.ProgramNameLabelPart2.Font = new System.Drawing.Font("Lucida Handwriting", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ProgramNameLabelPart2.ForeColor = System.Drawing.Color.White;
             this.ProgramNameLabelPart2.Location = new System.Drawing.Point(138, 21);
@@ -374,6 +379,7 @@
             // LaunchModeInfoLinkLabel
             // 
             this.LaunchModeInfoLinkLabel.AutoSize = true;
+            this.LaunchModeInfoLinkLabel.BackColor = System.Drawing.Color.Transparent;
             this.LaunchModeInfoLinkLabel.LinkColor = System.Drawing.Color.White;
             this.LaunchModeInfoLinkLabel.Location = new System.Drawing.Point(5, 5);
             this.LaunchModeInfoLinkLabel.Name = "LaunchModeInfoLinkLabel";
@@ -387,6 +393,7 @@
             // OpenLogLinkLabel
             // 
             this.OpenLogLinkLabel.AutoSize = true;
+            this.OpenLogLinkLabel.BackColor = System.Drawing.Color.Transparent;
             this.OpenLogLinkLabel.LinkColor = System.Drawing.Color.WhiteSmoke;
             this.OpenLogLinkLabel.Location = new System.Drawing.Point(300, 3);
             this.OpenLogLinkLabel.Name = "OpenLogLinkLabel";
@@ -400,6 +407,7 @@
             // LaunchTabLaunchLabel
             // 
             this.LaunchTabLaunchLabel.AutoSize = true;
+            this.LaunchTabLaunchLabel.BackColor = System.Drawing.Color.Transparent;
             this.LaunchTabLaunchLabel.Font = new System.Drawing.Font("Lucida Handwriting", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LaunchTabLaunchLabel.ForeColor = System.Drawing.Color.White;
             this.LaunchTabLaunchLabel.Location = new System.Drawing.Point(224, 32);
@@ -492,14 +500,15 @@
             // SettingsPagePanel
             // 
             this.SettingsPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.SettingsPagePanel.Controls.Add(this.CreateShortcutLinkLabel);
+            this.SettingsPagePanel.Controls.Add(this.FixRegistryLinkLabel);
             this.SettingsPagePanel.Controls.Add(this.CurrentGameTitleTextBox);
             this.SettingsPagePanel.Controls.Add(this.JPLauncherRunLinkLabel);
+            this.SettingsPagePanel.Controls.Add(this.FullScreenCheckBox);
             this.SettingsPagePanel.Controls.Add(this.ExtraSettingsLinkLabel);
             this.SettingsPagePanel.Controls.Add(this.CurrentGameLabel);
             this.SettingsPagePanel.Controls.Add(this.CurrentGameComboBox);
             this.SettingsPagePanel.Controls.Add(this.SettingsFoldersGroupBox);
-            this.SettingsPagePanel.Controls.Add(this.CreateShortcutButton);
-            this.SettingsPagePanel.Controls.Add(this.FixRegistryButton);
             this.SettingsPagePanel.Controls.Add(this.DisplaySettingsGroupBox);
             this.SettingsPagePanel.Controls.Add(this.AutoShortcutRegistryCheckBox);
             this.SettingsPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -507,6 +516,33 @@
             this.SettingsPagePanel.Name = "SettingsPagePanel";
             this.SettingsPagePanel.Size = new System.Drawing.Size(340, 155);
             this.SettingsPagePanel.TabIndex = 1;
+            // 
+            // CreateShortcutLinkLabel
+            // 
+            this.CreateShortcutLinkLabel.AutoSize = true;
+            this.CreateShortcutLinkLabel.BackColor = System.Drawing.Color.Transparent;
+            this.CreateShortcutLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.CreateShortcutLinkLabel.Location = new System.Drawing.Point(189, 137);
+            this.CreateShortcutLinkLabel.Name = "CreateShortcutLinkLabel";
+            this.CreateShortcutLinkLabel.Size = new System.Drawing.Size(48, 13);
+            this.CreateShortcutLinkLabel.TabIndex = 13;
+            this.CreateShortcutLinkLabel.TabStop = true;
+            this.CreateShortcutLinkLabel.Text = "Shortcut";
+            this.CreateShortcutLinkLabel.Click += new System.EventHandler(this.CreateShortcutButton_Click);
+            // 
+            // FixRegistryLinkLabel
+            // 
+            this.FixRegistryLinkLabel.AutoSize = true;
+            this.FixRegistryLinkLabel.BackColor = System.Drawing.Color.Transparent;
+            this.FixRegistryLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.FixRegistryLinkLabel.Location = new System.Drawing.Point(233, 137);
+            this.FixRegistryLinkLabel.Name = "FixRegistryLinkLabel";
+            this.FixRegistryLinkLabel.Size = new System.Drawing.Size(61, 13);
+            this.FixRegistryLinkLabel.TabIndex = 12;
+            this.FixRegistryLinkLabel.TabStop = true;
+            this.FixRegistryLinkLabel.Text = "Fix registry";
+            this.FixRegistryLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.FixRegistryButton_Click);
+            this.FixRegistryLinkLabel.Click += new System.EventHandler(this.FixRegistryButton_Click);
             // 
             // CurrentGameTitleTextBox
             // 
@@ -520,6 +556,7 @@
             // JPLauncherRunLinkLabel
             // 
             this.JPLauncherRunLinkLabel.AutoSize = true;
+            this.JPLauncherRunLinkLabel.BackColor = System.Drawing.Color.Transparent;
             this.JPLauncherRunLinkLabel.LinkColor = System.Drawing.Color.White;
             this.JPLauncherRunLinkLabel.Location = new System.Drawing.Point(2, 60);
             this.JPLauncherRunLinkLabel.Name = "JPLauncherRunLinkLabel";
@@ -529,9 +566,23 @@
             this.JPLauncherRunLinkLabel.Text = "JP Launcher";
             this.JPLauncherRunLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
+            // FullScreenCheckBox
+            // 
+            this.FullScreenCheckBox.AutoSize = true;
+            this.FullScreenCheckBox.BackColor = System.Drawing.Color.Transparent;
+            this.FullScreenCheckBox.ForeColor = System.Drawing.Color.White;
+            this.FullScreenCheckBox.Location = new System.Drawing.Point(263, 3);
+            this.FullScreenCheckBox.Name = "FullScreenCheckBox";
+            this.FullScreenCheckBox.Size = new System.Drawing.Size(72, 17);
+            this.FullScreenCheckBox.TabIndex = 4;
+            this.FullScreenCheckBox.Text = "fullscreen";
+            this.FullScreenCheckBox.UseVisualStyleBackColor = false;
+            this.FullScreenCheckBox.CheckedChanged += new System.EventHandler(this.FullScreenCheckBox_CheckedChanged);
+            // 
             // ExtraSettingsLinkLabel
             // 
             this.ExtraSettingsLinkLabel.AutoSize = true;
+            this.ExtraSettingsLinkLabel.BackColor = System.Drawing.Color.Transparent;
             this.ExtraSettingsLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.ExtraSettingsLinkLabel.Location = new System.Drawing.Point(3, 44);
             this.ExtraSettingsLinkLabel.Name = "ExtraSettingsLinkLabel";
@@ -544,6 +595,7 @@
             // CurrentGameLabel
             // 
             this.CurrentGameLabel.AutoSize = true;
+            this.CurrentGameLabel.BackColor = System.Drawing.Color.Transparent;
             this.CurrentGameLabel.ForeColor = System.Drawing.Color.White;
             this.CurrentGameLabel.Location = new System.Drawing.Point(11, 4);
             this.CurrentGameLabel.Name = "CurrentGameLabel";
@@ -564,6 +616,7 @@
             // 
             // SettingsFoldersGroupBox
             // 
+            this.SettingsFoldersGroupBox.BackColor = System.Drawing.Color.Transparent;
             this.SettingsFoldersGroupBox.Controls.Add(this.Open2MOLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenMOOverwriteFolderLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenMyUserDataFolderLinkLabel);
@@ -656,34 +709,14 @@
             this.OpenGameFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
             this.OpenGameFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenGameFolderLinkLabel_LinkClicked);
             // 
-            // CreateShortcutButton
-            // 
-            this.CreateShortcutButton.Location = new System.Drawing.Point(258, 47);
-            this.CreateShortcutButton.Name = "CreateShortcutButton";
-            this.CreateShortcutButton.Size = new System.Drawing.Size(77, 23);
-            this.CreateShortcutButton.TabIndex = 5;
-            this.CreateShortcutButton.Text = "Shortcut";
-            this.CreateShortcutButton.UseVisualStyleBackColor = true;
-            this.CreateShortcutButton.Click += new System.EventHandler(this.CreateShortcutButton_Click);
-            // 
-            // FixRegistryButton
-            // 
-            this.FixRegistryButton.Location = new System.Drawing.Point(258, 18);
-            this.FixRegistryButton.Name = "FixRegistryButton";
-            this.FixRegistryButton.Size = new System.Drawing.Size(77, 23);
-            this.FixRegistryButton.TabIndex = 4;
-            this.FixRegistryButton.Text = "Fix registry";
-            this.FixRegistryButton.UseVisualStyleBackColor = true;
-            this.FixRegistryButton.Click += new System.EventHandler(this.FixRegistryButton_Click);
-            // 
             // DisplaySettingsGroupBox
             // 
+            this.DisplaySettingsGroupBox.BackColor = System.Drawing.Color.Transparent;
             this.DisplaySettingsGroupBox.Controls.Add(this.SetupXmlLinkLabel);
             this.DisplaySettingsGroupBox.Controls.Add(this.QualityComboBox);
-            this.DisplaySettingsGroupBox.Controls.Add(this.FullScreenCheckBox);
             this.DisplaySettingsGroupBox.Controls.Add(this.ResolutionComboBox);
             this.DisplaySettingsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.DisplaySettingsGroupBox.Location = new System.Drawing.Point(190, 76);
+            this.DisplaySettingsGroupBox.Location = new System.Drawing.Point(192, 20);
             this.DisplaySettingsGroupBox.Name = "DisplaySettingsGroupBox";
             this.DisplaySettingsGroupBox.Size = new System.Drawing.Size(145, 74);
             this.DisplaySettingsGroupBox.TabIndex = 3;
@@ -714,18 +747,6 @@
             this.QualityComboBox.TabIndex = 5;
             this.QualityComboBox.SelectedIndexChanged += new System.EventHandler(this.QualityComboBox_SelectedIndexChanged);
             // 
-            // FullScreenCheckBox
-            // 
-            this.FullScreenCheckBox.AutoSize = true;
-            this.FullScreenCheckBox.ForeColor = System.Drawing.Color.White;
-            this.FullScreenCheckBox.Location = new System.Drawing.Point(50, 0);
-            this.FullScreenCheckBox.Name = "FullScreenCheckBox";
-            this.FullScreenCheckBox.Size = new System.Drawing.Size(72, 17);
-            this.FullScreenCheckBox.TabIndex = 4;
-            this.FullScreenCheckBox.Text = "fullscreen";
-            this.FullScreenCheckBox.UseVisualStyleBackColor = true;
-            this.FullScreenCheckBox.CheckedChanged += new System.EventHandler(this.FullScreenCheckBox_CheckedChanged);
-            // 
             // ResolutionComboBox
             // 
             this.ResolutionComboBox.Cursor = System.Windows.Forms.Cursors.PanSouth;
@@ -751,13 +772,14 @@
             // AutoShortcutRegistryCheckBox
             // 
             this.AutoShortcutRegistryCheckBox.AutoSize = true;
+            this.AutoShortcutRegistryCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.AutoShortcutRegistryCheckBox.ForeColor = System.Drawing.Color.White;
-            this.AutoShortcutRegistryCheckBox.Location = new System.Drawing.Point(281, 0);
+            this.AutoShortcutRegistryCheckBox.Location = new System.Drawing.Point(291, 135);
             this.AutoShortcutRegistryCheckBox.Name = "AutoShortcutRegistryCheckBox";
             this.AutoShortcutRegistryCheckBox.Size = new System.Drawing.Size(49, 17);
             this.AutoShortcutRegistryCheckBox.TabIndex = 0;
             this.AutoShortcutRegistryCheckBox.Text = "Auto";
-            this.AutoShortcutRegistryCheckBox.UseVisualStyleBackColor = true;
+            this.AutoShortcutRegistryCheckBox.UseVisualStyleBackColor = false;
             this.AutoShortcutRegistryCheckBox.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
             // 
             // ToolsTabPage
@@ -968,7 +990,6 @@
         private System.Windows.Forms.GroupBox DisplaySettingsGroupBox;
         private System.Windows.Forms.CheckBox FullScreenCheckBox;
         private System.Windows.Forms.ComboBox ResolutionComboBox;
-        private System.Windows.Forms.Button FixRegistryButton;
         private System.Windows.Forms.TabPage LaunchTabPage;
         private System.Windows.Forms.Panel LaunchPagePanel;
         private System.Windows.Forms.Button StudioButton;
@@ -977,7 +998,6 @@
         private System.Windows.Forms.Button SettingsButton;
         private System.Windows.Forms.ComboBox QualityComboBox;
         private System.Windows.Forms.Button newformButton;
-        private System.Windows.Forms.Button CreateShortcutButton;
         private System.Windows.Forms.Label LaunchTabLaunchLabel;
         private System.Windows.Forms.TabPage ToolsTabPage;
         private System.Windows.Forms.Panel ToolsPagePanel;
@@ -1013,6 +1033,8 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.CheckBox VRGameCheckBox;
+        private System.Windows.Forms.LinkLabel CreateShortcutLinkLabel;
+        private System.Windows.Forms.LinkLabel FixRegistryLinkLabel;
     }
 }
 

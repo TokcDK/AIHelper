@@ -60,6 +60,8 @@ namespace AIHelper
 
             ManageMO.RedefineGameMOData();
 
+            CleanMOFolder();
+
             VariablesINIT();
             MOmode = true;
             CurrentGame.InitActions();
@@ -74,6 +76,49 @@ namespace AIHelper
             //}
 
             Properties.Settings.Default.INITDone = true;
+        }
+
+        private static void CleanMOFolder()
+        {
+            var MOFilesForClean = new[]
+            {
+                    @"MOFolder\plugins\bsa_extractor.dll",
+                    @"MOFolder\plugins\bsa_packer.dll",
+                    @"MOFolder\plugins\check_fnis.dll",
+                    @"MOFolder\plugins\DDSPreview.py",
+                    @"MOFolder\plugins\FNISPatches.py",
+                    @"MOFolder\plugins\FNISTool.py",
+                    @"MOFolder\plugins\FNISToolReset.py",
+                    @"MOFolder\plugins\Form43Checker.py",
+                    @"MOFolder\plugins\game_enderal.dll",
+                    @"MOFolder\plugins\game_fallout3.dll",
+                    @"MOFolder\plugins\game_fallout4.dll",
+                    @"MOFolder\plugins\game_fallout4vr.dll",
+                    @"MOFolder\plugins\game_falloutNV.dll",
+                    @"MOFolder\plugins\game_morrowind.dll",
+                    @"MOFolder\plugins\game_oblivion.dll",
+                    @"MOFolder\plugins\game_skyrimse.dll",
+                    @"MOFolder\plugins\game_skyrimvr.dll",
+                    @"MOFolder\plugins\game_ttw.dll",
+                    @"MOFolder\plugins\installer_bain.dll",
+                    @"MOFolder\plugins\installer_bundle.dll",
+                    @"MOFolder\plugins\installer_fomod.dll",
+                    @"MOFolder\plugins\installer_ncc.dll",
+                    @"MOFolder\plugins\ScriptExtenderPluginChecker.py"
+            };
+            var MOfolderPath = ManageSettings.GetMOdirPath();
+            foreach(var file in MOFilesForClean)
+            {
+                var filePath = file.Replace("MOFolder", MOfolderPath);
+                if (File.Exists(filePath))
+                {
+                    try
+                    {
+                        File.Delete(filePath);
+                    }
+                    catch { }
+                }
+            }
         }
 
         private void VariablesINIT()
@@ -209,7 +254,7 @@ namespace AIHelper
 
         private void MainService_Click(object sender, EventArgs e)
         {
-            MainService.Enabled = false;
+            //MainService.Enabled = false;
 
             mode = GetModeValue();
 
@@ -231,7 +276,7 @@ namespace AIHelper
                     break;
             }
 
-            MainService.Enabled = true;
+            //MainService.Enabled = true;
         }
 
         private int GetModeValue()
@@ -250,6 +295,7 @@ namespace AIHelper
         private async void ExtractingMode()
         {
             MainService.Text = T._("Extracting") + "..";
+            MainService.Enabled = false;
 
             //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5
             await Task.Run(() => UnpackGame()).ConfigureAwait(true);
@@ -264,6 +310,7 @@ namespace AIHelper
 
             MainService.Text = T._("Game Ready");
             FoldersInit();
+            MainService.Enabled = true;
         }
 
         private void UnpackMO()
@@ -357,6 +404,7 @@ namespace AIHelper
         {
             if (compressmode)
             {
+                MainService.Enabled = false;
                 MainService.Text = "Compressing..";
 
                 //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5
@@ -371,6 +419,7 @@ namespace AIHelper
 
                 MainService.Text = T._("Prepare the game");
                 FoldersInit();
+                MainService.Enabled = true;
             }
             else
             {
@@ -1076,7 +1125,7 @@ namespace AIHelper
             await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
             string vr = string.Empty;
-            if(VRGameCheckBox.Visible && VRGameCheckBox.Checked && ManageSettings.GetCurrentGameIsHaveVR())
+            if (VRGameCheckBox.Visible && VRGameCheckBox.Checked && ManageSettings.GetCurrentGameIsHaveVR())
             {
                 vr = "VR";
             }

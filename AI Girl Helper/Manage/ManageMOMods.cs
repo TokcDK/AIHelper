@@ -17,7 +17,7 @@ namespace AIHelper.Manage
 
         public static void CleanBepInExLinksFromData()
         {
-            BepinExLoadingFix(true);
+            MOUSFSLoadingFix(true);
             ////удаление файлов BepinEx
             //ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "doorstop_config.ini"));
             //ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "winhttp.dll"));
@@ -43,12 +43,12 @@ namespace AIHelper.Manage
                            Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath() + Path.DirectorySeparatorChar + filedir)
                                        )
                        )
-                   //||
-                   //Directory.Exists(
-                   //    Path.GetFullPath(
-                   //        Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath() + Path.DirectorySeparatorChar + filedir)
-                   //                    )
-                   //                )
+              //||
+              //Directory.Exists(
+              //    Path.GetFullPath(
+              //        Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath() + Path.DirectorySeparatorChar + filedir)
+              //                    )
+              //                )
               )
             {
                 source = "overwrite";
@@ -107,20 +107,27 @@ namespace AIHelper.Manage
             }
         }
 
-        public static void BepinExLoadingFix(bool RemoveLinks = false)
+        public static void MOUSFSLoadingFix(bool RemoveLinks = false)
         {
-            if (Properties.Settings.Default.MOmode)
+            if (!Properties.Settings.Default.MOmode)
             {
-                string[,] ObjectLinkPaths = ManageSettings.GetListOfExistsGames()[Properties.Settings.Default.CurrentGameListIndex].GetObjectsForSymLinksPaths();
+                return;
+            }
 
-                int ObjectLinkPathsLength = ObjectLinkPaths.Length / 2;
-                for (int i = 0; i < ObjectLinkPathsLength; i++)
+            BepInExPreloadersFix(RemoveLinks);
+
+            string[,] ObjectLinkPaths = ManageSettings.GetListOfExistsGames()[Properties.Settings.Default.CurrentGameListIndex].GetObjectsForSymLinksPaths();
+
+            int ObjectLinkPathsLength = ObjectLinkPaths.Length / 2;
+            for (int i = 0; i < ObjectLinkPathsLength; i++)
+            {
+                if (RemoveLinks)
                 {
-                    if (RemoveLinks)
-                    {
-                        ManageSymLinks.DeleteIfSymlink(ObjectLinkPaths[i, 1]);
-                    }
-                    else
+                    ManageSymLinks.DeleteIfSymlink(ObjectLinkPaths[i, 1]);
+                }
+                else
+                {
+                    try
                     {
                         if (ManageSymLinks.Symlink
                           (
@@ -146,17 +153,91 @@ namespace AIHelper.Manage
                                 );
                         }
                     }
-                }
-
-                if (RemoveLinks)
-                {
-                    ManageFilesFolders.DeleteEmptySubfolders(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx"));
-                }
-                else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx")))
-                {
-                    ManageFilesFolders.HideFileFolder(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx"));
+                    catch { }
                 }
             }
+
+            //if (RemoveLinks)
+            //{
+            //    ManageFilesFolders.DeleteEmptySubfolders(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx"));
+            //}
+            //else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx")))
+            //{
+            //    ManageFilesFolders.HideFileFolder(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx"));
+            //}
+        }
+
+        private static void BepInExPreloadersFix(bool Remove = false)
+        {
+            string[,] BepInExFilesPaths = ManageSettings.GetListOfExistsGames()[Properties.Settings.Default.CurrentGameListIndex].GetObjectsForMove();
+
+            int BepInExFilesPathsLength = BepInExFilesPaths.Length / 2;
+            for (int i = 0; i < BepInExFilesPathsLength; i++)
+            {
+                if (Remove)
+                {
+                    try
+                    {
+                        if (File.Exists(BepInExFilesPaths[i, 1]))
+                        {
+                            File.Delete(BepInExFilesPaths[i, 1]);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ManageLogs.Log("BepInExPreloadersFix error:" + Environment.NewLine + ex);
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        if (!File.Exists(BepInExFilesPaths[i, 0]))
+                        {
+                            BepInExFilesPaths[i, 0] = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(BepInExFilesPaths[i, 0]);
+                        }
+                        if (!File.Exists(BepInExFilesPaths[i, 0]))
+                        {
+                            continue;
+                        }
+                        if (File.Exists(BepInExFilesPaths[i, 1]))
+                        {
+                            if (
+                                ManageSymLinks.IsSymLink(BepInExFilesPaths[i, 1])
+                                ||
+                                new FileInfo(BepInExFilesPaths[i, 1]).Length != new FileInfo(BepInExFilesPaths[i, 0]).Length
+                                ||
+                                FileVersionInfo.GetVersionInfo(BepInExFilesPaths[i, 1]).ProductVersion != FileVersionInfo.GetVersionInfo(BepInExFilesPaths[i, 0]).ProductVersion
+                                )
+                            {
+                                File.Delete(BepInExFilesPaths[i, 1]);
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+
+                        Directory.CreateDirectory(Path.GetDirectoryName(BepInExFilesPaths[i, 1]));
+
+                        File.Copy(BepInExFilesPaths[i, 0], BepInExFilesPaths[i, 1]);
+                    }
+                    catch (Exception ex)
+                    {
+                        ManageLogs.Log("BepInExPreloadersFix error:"+Environment.NewLine+ex);
+                    }
+                }
+            }
+
+            if (Remove)
+            {
+                ManageFilesFolders.DeleteEmptySubfolders(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx"));
+                //ManageFilesFolders.DeleteEmptySubfolders(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx"));
+            }
+            //else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx")))
+            //{
+            //    ManageFilesFolders.HideFileFolder(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx"));
+            //}
         }
 
         public static void InstallCsScriptsForScriptLoader(string WhereFromInstallDir = "")

@@ -500,17 +500,16 @@
             // SettingsPagePanel
             // 
             this.SettingsPagePanel.BackColor = System.Drawing.Color.Gray;
-            this.SettingsPagePanel.Controls.Add(this.CreateShortcutLinkLabel);
             this.SettingsPagePanel.Controls.Add(this.FixRegistryLinkLabel);
+            this.SettingsPagePanel.Controls.Add(this.CreateShortcutLinkLabel);
             this.SettingsPagePanel.Controls.Add(this.CurrentGameTitleTextBox);
+            this.SettingsPagePanel.Controls.Add(this.AutoShortcutRegistryCheckBox);
             this.SettingsPagePanel.Controls.Add(this.JPLauncherRunLinkLabel);
-            this.SettingsPagePanel.Controls.Add(this.FullScreenCheckBox);
             this.SettingsPagePanel.Controls.Add(this.ExtraSettingsLinkLabel);
             this.SettingsPagePanel.Controls.Add(this.CurrentGameLabel);
             this.SettingsPagePanel.Controls.Add(this.CurrentGameComboBox);
             this.SettingsPagePanel.Controls.Add(this.SettingsFoldersGroupBox);
             this.SettingsPagePanel.Controls.Add(this.DisplaySettingsGroupBox);
-            this.SettingsPagePanel.Controls.Add(this.AutoShortcutRegistryCheckBox);
             this.SettingsPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SettingsPagePanel.Location = new System.Drawing.Point(3, 3);
             this.SettingsPagePanel.Name = "SettingsPagePanel";
@@ -522,7 +521,7 @@
             this.CreateShortcutLinkLabel.AutoSize = true;
             this.CreateShortcutLinkLabel.BackColor = System.Drawing.Color.Transparent;
             this.CreateShortcutLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.CreateShortcutLinkLabel.Location = new System.Drawing.Point(189, 137);
+            this.CreateShortcutLinkLabel.Location = new System.Drawing.Point(265, 86);
             this.CreateShortcutLinkLabel.Name = "CreateShortcutLinkLabel";
             this.CreateShortcutLinkLabel.Size = new System.Drawing.Size(48, 13);
             this.CreateShortcutLinkLabel.TabIndex = 13;
@@ -535,7 +534,7 @@
             this.FixRegistryLinkLabel.AutoSize = true;
             this.FixRegistryLinkLabel.BackColor = System.Drawing.Color.Transparent;
             this.FixRegistryLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.FixRegistryLinkLabel.Location = new System.Drawing.Point(233, 137);
+            this.FixRegistryLinkLabel.Location = new System.Drawing.Point(265, 73);
             this.FixRegistryLinkLabel.Name = "FixRegistryLinkLabel";
             this.FixRegistryLinkLabel.Size = new System.Drawing.Size(61, 13);
             this.FixRegistryLinkLabel.TabIndex = 12;
@@ -547,10 +546,10 @@
             // CurrentGameTitleTextBox
             // 
             this.CurrentGameTitleTextBox.BackColor = System.Drawing.SystemColors.Window;
-            this.CurrentGameTitleTextBox.Location = new System.Drawing.Point(6, 20);
+            this.CurrentGameTitleTextBox.Location = new System.Drawing.Point(13, 20);
             this.CurrentGameTitleTextBox.Name = "CurrentGameTitleTextBox";
             this.CurrentGameTitleTextBox.ReadOnly = true;
-            this.CurrentGameTitleTextBox.Size = new System.Drawing.Size(102, 21);
+            this.CurrentGameTitleTextBox.Size = new System.Drawing.Size(115, 21);
             this.CurrentGameTitleTextBox.TabIndex = 11;
             // 
             // JPLauncherRunLinkLabel
@@ -558,7 +557,7 @@
             this.JPLauncherRunLinkLabel.AutoSize = true;
             this.JPLauncherRunLinkLabel.BackColor = System.Drawing.Color.Transparent;
             this.JPLauncherRunLinkLabel.LinkColor = System.Drawing.Color.White;
-            this.JPLauncherRunLinkLabel.Location = new System.Drawing.Point(2, 60);
+            this.JPLauncherRunLinkLabel.Location = new System.Drawing.Point(10, 140);
             this.JPLauncherRunLinkLabel.Name = "JPLauncherRunLinkLabel";
             this.JPLauncherRunLinkLabel.Size = new System.Drawing.Size(65, 13);
             this.JPLauncherRunLinkLabel.TabIndex = 10;
@@ -571,7 +570,7 @@
             this.FullScreenCheckBox.AutoSize = true;
             this.FullScreenCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.FullScreenCheckBox.ForeColor = System.Drawing.Color.White;
-            this.FullScreenCheckBox.Location = new System.Drawing.Point(263, 3);
+            this.FullScreenCheckBox.Location = new System.Drawing.Point(6, 67);
             this.FullScreenCheckBox.Name = "FullScreenCheckBox";
             this.FullScreenCheckBox.Size = new System.Drawing.Size(72, 17);
             this.FullScreenCheckBox.TabIndex = 4;
@@ -584,7 +583,7 @@
             this.ExtraSettingsLinkLabel.AutoSize = true;
             this.ExtraSettingsLinkLabel.BackColor = System.Drawing.Color.Transparent;
             this.ExtraSettingsLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.ExtraSettingsLinkLabel.Location = new System.Drawing.Point(3, 44);
+            this.ExtraSettingsLinkLabel.Location = new System.Drawing.Point(158, 23);
             this.ExtraSettingsLinkLabel.Name = "ExtraSettingsLinkLabel";
             this.ExtraSettingsLinkLabel.Size = new System.Drawing.Size(75, 13);
             this.ExtraSettingsLinkLabel.TabIndex = 9;
@@ -608,9 +607,9 @@
             this.CurrentGameComboBox.Cursor = System.Windows.Forms.Cursors.PanSouth;
             this.CurrentGameComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CurrentGameComboBox.FormattingEnabled = true;
-            this.CurrentGameComboBox.Location = new System.Drawing.Point(5, 20);
+            this.CurrentGameComboBox.Location = new System.Drawing.Point(12, 20);
             this.CurrentGameComboBox.Name = "CurrentGameComboBox";
-            this.CurrentGameComboBox.Size = new System.Drawing.Size(121, 21);
+            this.CurrentGameComboBox.Size = new System.Drawing.Size(134, 21);
             this.CurrentGameComboBox.TabIndex = 7;
             this.CurrentGameComboBox.SelectedIndexChanged += new System.EventHandler(this.CurrentGameComboBox_SelectedIndexChanged);
             // 
@@ -624,9 +623,9 @@
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenMOFolderLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenGameFolderLinkLabel);
             this.SettingsFoldersGroupBox.ForeColor = System.Drawing.Color.White;
-            this.SettingsFoldersGroupBox.Location = new System.Drawing.Point(5, 76);
+            this.SettingsFoldersGroupBox.Location = new System.Drawing.Point(152, 47);
             this.SettingsFoldersGroupBox.Name = "SettingsFoldersGroupBox";
-            this.SettingsFoldersGroupBox.Size = new System.Drawing.Size(107, 74);
+            this.SettingsFoldersGroupBox.Size = new System.Drawing.Size(107, 90);
             this.SettingsFoldersGroupBox.TabIndex = 6;
             this.SettingsFoldersGroupBox.TabStop = false;
             this.SettingsFoldersGroupBox.Text = "Folders";
@@ -715,10 +714,11 @@
             this.DisplaySettingsGroupBox.Controls.Add(this.SetupXmlLinkLabel);
             this.DisplaySettingsGroupBox.Controls.Add(this.QualityComboBox);
             this.DisplaySettingsGroupBox.Controls.Add(this.ResolutionComboBox);
+            this.DisplaySettingsGroupBox.Controls.Add(this.FullScreenCheckBox);
             this.DisplaySettingsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.DisplaySettingsGroupBox.Location = new System.Drawing.Point(192, 20);
+            this.DisplaySettingsGroupBox.Location = new System.Drawing.Point(6, 47);
             this.DisplaySettingsGroupBox.Name = "DisplaySettingsGroupBox";
-            this.DisplaySettingsGroupBox.Size = new System.Drawing.Size(145, 74);
+            this.DisplaySettingsGroupBox.Size = new System.Drawing.Size(145, 90);
             this.DisplaySettingsGroupBox.TabIndex = 3;
             this.DisplaySettingsGroupBox.TabStop = false;
             this.DisplaySettingsGroupBox.Text = "Display";
@@ -773,10 +773,11 @@
             // 
             this.AutoShortcutRegistryCheckBox.AutoSize = true;
             this.AutoShortcutRegistryCheckBox.BackColor = System.Drawing.Color.Transparent;
+            this.AutoShortcutRegistryCheckBox.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.AutoShortcutRegistryCheckBox.ForeColor = System.Drawing.Color.White;
-            this.AutoShortcutRegistryCheckBox.Location = new System.Drawing.Point(291, 135);
+            this.AutoShortcutRegistryCheckBox.Location = new System.Drawing.Point(268, 59);
             this.AutoShortcutRegistryCheckBox.Name = "AutoShortcutRegistryCheckBox";
-            this.AutoShortcutRegistryCheckBox.Size = new System.Drawing.Size(49, 17);
+            this.AutoShortcutRegistryCheckBox.Size = new System.Drawing.Size(49, 18);
             this.AutoShortcutRegistryCheckBox.TabIndex = 0;
             this.AutoShortcutRegistryCheckBox.Text = "Auto";
             this.AutoShortcutRegistryCheckBox.UseVisualStyleBackColor = false;

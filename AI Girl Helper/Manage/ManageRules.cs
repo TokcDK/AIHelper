@@ -29,7 +29,7 @@ namespace AIHelper.Manage
                     ApplyRules();
                 }
 
-                var ListChanged = false;
+                var ListChanged = modlistData.Report.Count > 0;
                 modlistData.Report.Add(Environment.NewLine + T._("Actions") + ":");
                 if (modlistData.ModsMustBeEnabled.Count > 0)
                 {
@@ -53,7 +53,8 @@ namespace AIHelper.Manage
 
                 if (modlistData.Report.Count > 0)
                 {
-                    MessageBox.Show(T._("Results") + ":" + Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, modlistData.Report));
+                    var report = string.Join(Environment.NewLine, modlistData.Report);
+                    MessageBox.Show(ListChanged ? T._("Results") + ":" + Environment.NewLine + Environment.NewLine + report : T._("No known issues found in the enabled mods list"));
                 }
                 if (!ListChanged && !string.IsNullOrWhiteSpace(ModlistBackupFilePath))
                 {

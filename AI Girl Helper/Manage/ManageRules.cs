@@ -53,8 +53,15 @@ namespace AIHelper.Manage
 
                 if (modlistData.Report.Count > 0)
                 {
-                    var report = string.Join(Environment.NewLine, modlistData.Report);
-                    MessageBox.Show(ListChanged ? T._("Results") + ":" + Environment.NewLine + Environment.NewLine + report : T._("No known issues found in the enabled mods list"));
+                    if (ListChanged)
+                    {
+                        var report = string.Join(Environment.NewLine, modlistData.Report);
+                        MessageBox.Show(T._("Results") + ":" + Environment.NewLine + Environment.NewLine + report);
+                    }
+                    else
+                    {
+                        MessageBox.Show(T._("No known issues found in the enabled mods list"));
+                    }
                 }
                 if (!ListChanged && !string.IsNullOrWhiteSpace(ModlistBackupFilePath))
                 {

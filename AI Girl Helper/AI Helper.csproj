@@ -304,6 +304,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="modorganizer-basic_games\game_aigirl.py" />
+    <Content Include="modorganizer-basic_games\game_aigirltrial.py" />
+    <Content Include="modorganizer-basic_games\game_honeyselect.py" />
+    <Content Include="modorganizer-basic_games\game_honeyselect2.py" />
+    <Content Include="modorganizer-basic_games\game_koikatu.py" />
     <EmbeddedResource Include="Costura32\SevenZipSharp.dll" />
     <Content Include="helpericon.ico" />
   </ItemGroup>

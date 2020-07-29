@@ -406,5 +406,17 @@ namespace AIHelper.Properties {
                 this["ExtraSettingsInitOnLoadIsInAction"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MOIsNew {
+            get {
+                return ((bool)(this["MOIsNew"]));
+            }
+            set {
+                this["MOIsNew"] = value;
+            }
+        }
     }
 }

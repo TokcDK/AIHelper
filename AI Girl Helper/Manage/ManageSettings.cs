@@ -32,6 +32,8 @@ namespace AIHelper.Manage
 
         }
 
+        internal static bool MOIsNew { get => Properties.Settings.Default.MOIsNew; }
+
         internal static string GetDefaultBepInEx5OlderVersion()
         {
             return "5.0.1";
@@ -297,12 +299,41 @@ namespace AIHelper.Manage
 
         internal static string GETMOCurrentGameName()
         {
-            return "Skyrim";
+            if (MOIsNew)
+            {
+                if (GetCurrentGameEXEName() == "Koikatu")
+                {
+                    return "Koikatu";
+                }
+                else if (GetCurrentGameEXEName().StartsWith("HoneySelect", StringComparison.InvariantCulture))
+                {
+                    return "HoneySelect";
+                }
+                else if (GetCurrentGameEXEName() == "AI-Syoujyo")
+                {
+                    return "AIGirl";
+                }
+                else if (GetCurrentGameEXEName() == "AI-SyoujyoTrial")
+                {
+                    return "AIGirlTrial";
+                }
+
+                return GetCurrentGameEXEName();
+            }
+            else
+            {
+                return "Skyrim";
+            }
+        }
+
+        internal static string GetDummyFileName()
+        {
+            return "TESV.exe";
         }
 
         internal static string GetDummyFilePath()
         {
-            return Path.Combine(GetCurrentGamePath(), "TESV.exe");
+            return Path.Combine(GetCurrentGamePath(), GetDummyFileName());
         }
 
         internal static string GetCurrentGameEXEName()
@@ -436,7 +467,7 @@ namespace AIHelper.Manage
             return Path.Combine(GetMOdirPath(), "ModOrganizer.ini");
         }
 
-        internal static string MOmodeSwitchDataDirName { get => "momode";}
+        internal static string MOmodeSwitchDataDirName { get => "momode"; }
 
         internal static string GetMOmodeSwitchDataDirPath()
         {
@@ -747,6 +778,11 @@ namespace AIHelper.Manage
         internal static bool GetCurrentGameIsHaveVR()
         {
             return File.Exists(Path.Combine(GetCurrentGameDataPath(), GetCurrentGameEXEName() + "VR" + ".exe"));
+        }
+
+        internal static string GetDummyFileRESPath()
+        {
+            return Path.Combine(ManageSettings.GetAppResDir(), "TESV.exe.dummy");
         }
     }
 }

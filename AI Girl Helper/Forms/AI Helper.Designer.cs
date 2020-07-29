@@ -60,11 +60,11 @@
             this.SettingsButton = new System.Windows.Forms.Button();
             this.SettingsPage = new System.Windows.Forms.TabPage();
             this.SettingsPagePanel = new System.Windows.Forms.Panel();
-            this.CreateShortcutLinkLabel = new System.Windows.Forms.LinkLabel();
             this.FixRegistryLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.CreateShortcutLinkLabel = new System.Windows.Forms.LinkLabel();
             this.CurrentGameTitleTextBox = new System.Windows.Forms.TextBox();
+            this.AutoShortcutRegistryCheckBox = new System.Windows.Forms.CheckBox();
             this.JPLauncherRunLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.FullScreenCheckBox = new System.Windows.Forms.CheckBox();
             this.ExtraSettingsLinkLabel = new System.Windows.Forms.LinkLabel();
             this.CurrentGameLabel = new System.Windows.Forms.Label();
             this.CurrentGameComboBox = new System.Windows.Forms.ComboBox();
@@ -79,7 +79,7 @@
             this.SetupXmlLinkLabel = new System.Windows.Forms.LinkLabel();
             this.QualityComboBox = new System.Windows.Forms.ComboBox();
             this.ResolutionComboBox = new System.Windows.Forms.ComboBox();
-            this.AutoShortcutRegistryCheckBox = new System.Windows.Forms.CheckBox();
+            this.FullScreenCheckBox = new System.Windows.Forms.CheckBox();
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
             this.ToolsPagePanel = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
@@ -283,9 +283,11 @@
             // 
             this.VRGameCheckBox.AutoSize = true;
             this.VRGameCheckBox.BackColor = System.Drawing.Color.Transparent;
-            this.VRGameCheckBox.Location = new System.Drawing.Point(304, 138);
+            this.VRGameCheckBox.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.VRGameCheckBox.ForeColor = System.Drawing.SystemColors.ScrollBar;
+            this.VRGameCheckBox.Location = new System.Drawing.Point(42, 55);
             this.VRGameCheckBox.Name = "VRGameCheckBox";
-            this.VRGameCheckBox.Size = new System.Drawing.Size(36, 17);
+            this.VRGameCheckBox.Size = new System.Drawing.Size(36, 18);
             this.VRGameCheckBox.TabIndex = 29;
             this.VRGameCheckBox.Text = "vr";
             this.VRGameCheckBox.UseVisualStyleBackColor = false;
@@ -516,19 +518,6 @@
             this.SettingsPagePanel.Size = new System.Drawing.Size(340, 155);
             this.SettingsPagePanel.TabIndex = 1;
             // 
-            // CreateShortcutLinkLabel
-            // 
-            this.CreateShortcutLinkLabel.AutoSize = true;
-            this.CreateShortcutLinkLabel.BackColor = System.Drawing.Color.Transparent;
-            this.CreateShortcutLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.CreateShortcutLinkLabel.Location = new System.Drawing.Point(265, 86);
-            this.CreateShortcutLinkLabel.Name = "CreateShortcutLinkLabel";
-            this.CreateShortcutLinkLabel.Size = new System.Drawing.Size(48, 13);
-            this.CreateShortcutLinkLabel.TabIndex = 13;
-            this.CreateShortcutLinkLabel.TabStop = true;
-            this.CreateShortcutLinkLabel.Text = "Shortcut";
-            this.CreateShortcutLinkLabel.Click += new System.EventHandler(this.CreateShortcutButton_Click);
-            // 
             // FixRegistryLinkLabel
             // 
             this.FixRegistryLinkLabel.AutoSize = true;
@@ -543,6 +532,19 @@
             this.FixRegistryLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.FixRegistryButton_Click);
             this.FixRegistryLinkLabel.Click += new System.EventHandler(this.FixRegistryButton_Click);
             // 
+            // CreateShortcutLinkLabel
+            // 
+            this.CreateShortcutLinkLabel.AutoSize = true;
+            this.CreateShortcutLinkLabel.BackColor = System.Drawing.Color.Transparent;
+            this.CreateShortcutLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.CreateShortcutLinkLabel.Location = new System.Drawing.Point(265, 86);
+            this.CreateShortcutLinkLabel.Name = "CreateShortcutLinkLabel";
+            this.CreateShortcutLinkLabel.Size = new System.Drawing.Size(48, 13);
+            this.CreateShortcutLinkLabel.TabIndex = 13;
+            this.CreateShortcutLinkLabel.TabStop = true;
+            this.CreateShortcutLinkLabel.Text = "Shortcut";
+            this.CreateShortcutLinkLabel.Click += new System.EventHandler(this.CreateShortcutButton_Click);
+            // 
             // CurrentGameTitleTextBox
             // 
             this.CurrentGameTitleTextBox.BackColor = System.Drawing.SystemColors.Window;
@@ -551,6 +553,20 @@
             this.CurrentGameTitleTextBox.ReadOnly = true;
             this.CurrentGameTitleTextBox.Size = new System.Drawing.Size(115, 21);
             this.CurrentGameTitleTextBox.TabIndex = 11;
+            // 
+            // AutoShortcutRegistryCheckBox
+            // 
+            this.AutoShortcutRegistryCheckBox.AutoSize = true;
+            this.AutoShortcutRegistryCheckBox.BackColor = System.Drawing.Color.Transparent;
+            this.AutoShortcutRegistryCheckBox.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.AutoShortcutRegistryCheckBox.ForeColor = System.Drawing.Color.White;
+            this.AutoShortcutRegistryCheckBox.Location = new System.Drawing.Point(268, 59);
+            this.AutoShortcutRegistryCheckBox.Name = "AutoShortcutRegistryCheckBox";
+            this.AutoShortcutRegistryCheckBox.Size = new System.Drawing.Size(49, 18);
+            this.AutoShortcutRegistryCheckBox.TabIndex = 0;
+            this.AutoShortcutRegistryCheckBox.Text = "Auto";
+            this.AutoShortcutRegistryCheckBox.UseVisualStyleBackColor = false;
+            this.AutoShortcutRegistryCheckBox.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
             // 
             // JPLauncherRunLinkLabel
             // 
@@ -564,19 +580,6 @@
             this.JPLauncherRunLinkLabel.TabStop = true;
             this.JPLauncherRunLinkLabel.Text = "JP Launcher";
             this.JPLauncherRunLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-            // 
-            // FullScreenCheckBox
-            // 
-            this.FullScreenCheckBox.AutoSize = true;
-            this.FullScreenCheckBox.BackColor = System.Drawing.Color.Transparent;
-            this.FullScreenCheckBox.ForeColor = System.Drawing.Color.White;
-            this.FullScreenCheckBox.Location = new System.Drawing.Point(6, 67);
-            this.FullScreenCheckBox.Name = "FullScreenCheckBox";
-            this.FullScreenCheckBox.Size = new System.Drawing.Size(72, 17);
-            this.FullScreenCheckBox.TabIndex = 4;
-            this.FullScreenCheckBox.Text = "fullscreen";
-            this.FullScreenCheckBox.UseVisualStyleBackColor = false;
-            this.FullScreenCheckBox.CheckedChanged += new System.EventHandler(this.FullScreenCheckBox_CheckedChanged);
             // 
             // ExtraSettingsLinkLabel
             // 
@@ -769,19 +772,18 @@
             this.ResolutionComboBox.TabIndex = 1;
             this.ResolutionComboBox.SelectedIndexChanged += new System.EventHandler(this.ResolutionComboBox_SelectedIndexChanged);
             // 
-            // AutoShortcutRegistryCheckBox
+            // FullScreenCheckBox
             // 
-            this.AutoShortcutRegistryCheckBox.AutoSize = true;
-            this.AutoShortcutRegistryCheckBox.BackColor = System.Drawing.Color.Transparent;
-            this.AutoShortcutRegistryCheckBox.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.AutoShortcutRegistryCheckBox.ForeColor = System.Drawing.Color.White;
-            this.AutoShortcutRegistryCheckBox.Location = new System.Drawing.Point(268, 59);
-            this.AutoShortcutRegistryCheckBox.Name = "AutoShortcutRegistryCheckBox";
-            this.AutoShortcutRegistryCheckBox.Size = new System.Drawing.Size(49, 18);
-            this.AutoShortcutRegistryCheckBox.TabIndex = 0;
-            this.AutoShortcutRegistryCheckBox.Text = "Auto";
-            this.AutoShortcutRegistryCheckBox.UseVisualStyleBackColor = false;
-            this.AutoShortcutRegistryCheckBox.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
+            this.FullScreenCheckBox.AutoSize = true;
+            this.FullScreenCheckBox.BackColor = System.Drawing.Color.Transparent;
+            this.FullScreenCheckBox.ForeColor = System.Drawing.Color.White;
+            this.FullScreenCheckBox.Location = new System.Drawing.Point(6, 67);
+            this.FullScreenCheckBox.Name = "FullScreenCheckBox";
+            this.FullScreenCheckBox.Size = new System.Drawing.Size(72, 17);
+            this.FullScreenCheckBox.TabIndex = 4;
+            this.FullScreenCheckBox.Text = "fullscreen";
+            this.FullScreenCheckBox.UseVisualStyleBackColor = false;
+            this.FullScreenCheckBox.CheckedChanged += new System.EventHandler(this.FullScreenCheckBox_CheckedChanged);
             // 
             // ToolsTabPage
             // 

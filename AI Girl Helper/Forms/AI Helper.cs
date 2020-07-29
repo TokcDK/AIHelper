@@ -58,6 +58,8 @@ namespace AIHelper
                 return;
             }
 
+            Properties.Settings.Default.MOIsNew = ManageMO.IsMO23ORNever();
+
             ManageMO.RedefineGameMOData();
 
             CleanMOFolder();
@@ -104,10 +106,22 @@ namespace AIHelper
                     @"MOFolder\plugins\installer_bundle.dll",
                     @"MOFolder\plugins\installer_fomod.dll",
                     @"MOFolder\plugins\installer_ncc.dll",
-                    @"MOFolder\plugins\ScriptExtenderPluginChecker.py"
+                    @"MOFolder\plugins\ScriptExtenderPluginChecker.py",
+                    @"MOFolder\plugins\modorganizer-basic_games\games\game_darkestdungeon.py",
+                    @"MOFolder\plugins\modorganizer-basic_games\games\game_darkmessiahofmightandmagic.py",
+                    @"MOFolder\plugins\modorganizer-basic_games\games\game_dungeonsiege2.py",
+                    @"MOFolder\plugins\modorganizer-basic_games\games\game_stalkeranomaly.py",
+                    @"MOFolder\plugins\modorganizer-basic_games\games\game_stardewvalley.py",
+                    @"MOFolder\plugins\modorganizer-basic_games\games\game_witcher3.py",
+                    @"MOFolder\plugins\modorganizer-basic_games-master\games\game_darkestdungeon.py",
+                    @"MOFolder\plugins\modorganizer-basic_games-master\games\game_darkmessiahofmightandmagic.py",
+                    @"MOFolder\plugins\modorganizer-basic_games-master\games\game_dungeonsiege2.py",
+                    @"MOFolder\plugins\modorganizer-basic_games-master\games\game_stalkeranomaly.py",
+                    @"MOFolder\plugins\modorganizer-basic_games-master\games\game_stardewvalley.py",
+                    @"MOFolder\plugins\modorganizer-basic_games-master\games\game_witcher3.py"
             };
             var MOfolderPath = ManageSettings.GetMOdirPath();
-            foreach(var file in MOFilesForClean)
+            foreach (var file in MOFilesForClean)
             {
                 var filePath = file.Replace("MOFolder", MOfolderPath);
                 if (File.Exists(filePath))
@@ -306,7 +320,7 @@ namespace AIHelper
 
             ManageOther.CreateShortcuts();
 
-            ManageMO.MakeDummyFiles();
+            ManageMO.DummyFiles();
 
             MainService.Text = T._("Game Ready");
             FoldersInit();
@@ -852,68 +866,70 @@ namespace AIHelper
 
             if (MOmode)
             {
-                //string[] Archives7z;
-                //string[] ModDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();
+                {
+                    //string[] Archives7z;
+                    //string[] ModDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();
 
-                //Archives7z = Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories);
-                //if (ModDirs.Length > 0 && Archives7z.Length > 0)
-                //{
-                //    bool NotAllModsExtracted = false;
-                //    foreach (var Archive in Archives7z)
-                //    {
-                //        if (ModDirs.Contains(Path.Combine(ModsPath, Path.GetFileNameWithoutExtension(Archive))))
-                //        {
-                //        }
-                //        else
-                //        {
-                //            NotAllModsExtracted = true;
-                //            break;
-                //        }
-                //    }
+                    //Archives7z = Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories);
+                    //if (ModDirs.Length > 0 && Archives7z.Length > 0)
+                    //{
+                    //    bool NotAllModsExtracted = false;
+                    //    foreach (var Archive in Archives7z)
+                    //    {
+                    //        if (ModDirs.Contains(Path.Combine(ModsPath, Path.GetFileNameWithoutExtension(Archive))))
+                    //        {
+                    //        }
+                    //        else
+                    //        {
+                    //            NotAllModsExtracted = true;
+                    //            break;
+                    //        }
+                    //    }
 
-                //    if (compressmode && NotAllModsExtracted && ModDirs.Length < Archives7z.Length)
-                //    {
-                //        ModsInfoLabel.Text = T._("Not all mods in Mods dir");
-                //        //button1.Enabled = false;
-                //        mode = 2;
-                //        button1.Text = T._("Extract missing");
-                //    }
-                //    else
-                //    {
-                //        ModsInfoLabel.Text = T._("Found mod folders in Mods");
-                //        //button1.Enabled = false;
-                //        mode = 1;
-                //        button1.Text = T._("Mods Ready");
-                //        //MO2StandartButton.Enabled = true;
-                //        GetEnableDisableLaunchButtons();
-                //        MOCommonModeSwitchButton.Text = T._("MOToCommon");
-                //        AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
-                //    }
-                //}
-                //else
-                //{
-                //    //если нет папок модов но есть архивы в загрузках
-                //    if (Archives7z.Length > 0 && ModDirs.Length == 0)
-                //    {
-                //        ModsInfoLabel.Text = T._("Mods Ready for extract");
-                //        mode = 2;
-                //        button1.Text = T._("Extract mods");
-                //    }
-                //}
+                    //    if (compressmode && NotAllModsExtracted && ModDirs.Length < Archives7z.Length)
+                    //    {
+                    //        ModsInfoLabel.Text = T._("Not all mods in Mods dir");
+                    //        //button1.Enabled = false;
+                    //        mode = 2;
+                    //        button1.Text = T._("Extract missing");
+                    //    }
+                    //    else
+                    //    {
+                    //        ModsInfoLabel.Text = T._("Found mod folders in Mods");
+                    //        //button1.Enabled = false;
+                    //        mode = 1;
+                    //        button1.Text = T._("Mods Ready");
+                    //        //MO2StandartButton.Enabled = true;
+                    //        GetEnableDisableLaunchButtons();
+                    //        MOCommonModeSwitchButton.Text = T._("MOToCommon");
+                    //        AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    //если нет папок модов но есть архивы в загрузках
+                    //    if (Archives7z.Length > 0 && ModDirs.Length == 0)
+                    //    {
+                    //        ModsInfoLabel.Text = T._("Mods Ready for extract");
+                    //        mode = 2;
+                    //        button1.Text = T._("Extract mods");
+                    //    }
+                    //}
 
-                ////если нет архивов в загрузках, но есть папки модов
-                //if (compressmode && Directory.Exists(DownloadsPath) && Directory.Exists(ModsPath))
-                //{
-                //    if (ModDirs.Length > 0 && Archives7z.Length == 0)
-                //    {
-                //        if (Archives7z.Length == 0)
-                //        {
-                //            ModsInfoLabel.Text = "No archives in downloads";
-                //            button1.Text = "Pack mods";
-                //            mode = 0;
-                //        }
-                //    }
-                //}
+                    ////если нет архивов в загрузках, но есть папки модов
+                    //if (compressmode && Directory.Exists(DownloadsPath) && Directory.Exists(ModsPath))
+                    //{
+                    //    if (ModDirs.Length > 0 && Archives7z.Length == 0)
+                    //    {
+                    //        if (Archives7z.Length == 0)
+                    //        {
+                    //            ModsInfoLabel.Text = "No archives in downloads";
+                    //            button1.Text = "Pack mods";
+                    //            mode = 0;
+                    //        }
+                    //    }
+                    //}
+                }
 
 
                 if (!Manage.ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Manage.ManageSettings.GetCurrentGameModsPath(), "*", new string[1] { "_separator" }))
@@ -932,25 +948,28 @@ namespace AIHelper
                     MOCommonModeSwitchButton.Text = T._("MOToCommon");
                 }
 
-                //if (Directory.Exists(Install2MODirPath))
-                //{
-                //    if (Directory.GetFiles(Install2MODirPath, "*.*").Length > 0)
-                //    {
-                //        InstallInModsButton.Visible = true;
-                //        InstallInModsButton.Enabled = true;
-                //    }
-                //    string[] InstallModDirs = Directory.GetDirectories(Install2MODirPath, "*").Where(name => !name.EndsWith("Temp", StringComparison.OrdinalIgnoreCase)).ToArray();
-                //    if (InstallModDirs.Length > 0)
-                //    {
-                //        InstallInModsButton.Visible = true;
-                //        InstallInModsButton.Enabled = true;
-                //    }
-                //}
+                {
+                    //if (Directory.Exists(Install2MODirPath))
+                    //{
+                    //    if (Directory.GetFiles(Install2MODirPath, "*.*").Length > 0)
+                    //    {
+                    //        InstallInModsButton.Visible = true;
+                    //        InstallInModsButton.Enabled = true;
+                    //    }
+                    //    string[] InstallModDirs = Directory.GetDirectories(Install2MODirPath, "*").Where(name => !name.EndsWith("Temp", StringComparison.OrdinalIgnoreCase)).ToArray();
+                    //    if (InstallModDirs.Length > 0)
+                    //    {
+                    //        InstallInModsButton.Visible = true;
+                    //        InstallInModsButton.Enabled = true;
+                    //    }
+                    //}
+                }
 
                 LaunchModeInfoLinkLabel.Text = T._("MO mode");
 
-                //создание exe-болванки
-                ManageMO.MakeDummyFiles();
+                ManageMO.DummyFiles();
+
+                ManageMO.MOINIFixes();
 
                 RunSlowActions();
 
@@ -1878,9 +1897,12 @@ namespace AIHelper
             {
                 ManageMOMods.CleanBepInExLinksFromData();
 
-                if (File.Exists(ManageSettings.GetDummyFilePath()) && /*Удалил TESV.exe, который был лаунчером, а не болванкой*/new FileInfo(ManageSettings.GetDummyFilePath()).Length < 10000)
+                if (!ManageSettings.MOIsNew)
                 {
-                    File.Delete(ManageSettings.GetDummyFilePath());
+                    if (File.Exists(ManageSettings.GetDummyFilePath()) && /*Удалил TESV.exe, который был лаунчером, а не болванкой*/new FileInfo(ManageSettings.GetDummyFilePath()).Length < 10000)
+                    {
+                        File.Delete(ManageSettings.GetDummyFilePath());
+                    }
                 }
 
                 if (!Directory.Exists(ManageSettings.GetMOmodeDataFilesBakDirPath()))

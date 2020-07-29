@@ -123,6 +123,37 @@ namespace AIHelper.Manage
         }
 
         //Читаем ini-файл и возвращаем значение указного ключа из заданной секции.
+        public Dictionary<string, string> ReadSectionKeyValuePairsToDictionary(string Section)
+        {
+            if (INIData == null)
+                return null;
+
+            if (string.IsNullOrEmpty(Section) || !INIData.Sections.ContainsSection(Section))
+            {
+                return null;
+            }
+            else
+            {
+                using (var sectionKeys = INIData[Section].GetEnumerator())
+                {
+                    var SearchQueries = new Dictionary<string, string>();
+
+                    for (int i = 0; i < INIData[Section].Count; i++)
+                    {
+                        sectionKeys.MoveNext();
+
+                        if (sectionKeys.Current.Value.Length > 0)
+                        {
+                            SearchQueries.Add(sectionKeys.Current.KeyName, sectionKeys.Current.Value);
+                        }
+                    }
+
+                    return SearchQueries;
+                }
+            }
+        }
+
+        //Читаем ini-файл и возвращаем значение указного ключа из заданной секции.
         public void WriteArrayToSectionValues(string Section, string[] Values, bool CleanSectionBeforeWrite = true, bool DoSaveINI = true)
         {
             if (INIData == null || string.IsNullOrEmpty(Section) || Values == null || Values.Length == 0)
@@ -314,6 +345,26 @@ namespace AIHelper.Manage
             //}
             //MessageBox.Show("key length="+ ReadINI(Section, Key).Length);
             //return ReadINI(Section, Key).Length > 0;
+        }
+
+        //Проверяем, есть ли указанная секция или любые значения в ней
+        public bool SectionExistsAndNotEmpty(string Section = null)
+        {
+            if (INIData == null)
+                return false;
+
+            if (string.IsNullOrEmpty(Section))
+            {
+                return false;
+            }
+            else
+            {
+                if (!INIData.Sections.ContainsSection(Section))
+                {
+                    return false;
+                }
+                return INIData[Section].Count>0;
+            }
         }
     }
 }

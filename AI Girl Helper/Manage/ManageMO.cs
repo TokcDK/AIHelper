@@ -1332,10 +1332,10 @@ namespace AIHelper.Manage
                 INFixesProgressBar.Height = 10;
                 INFixesProgressBar.Maximum = AllDirsList.Length;
 
-                using (Form INFixesForm = new Form())
+                using (Form INIFixesForm = new Form())
                 {
-                    INFixesForm.Text = T._("Meta fixes in progress")+ "...";
-                    INFixesForm.Size = new System.Drawing.Size(370, 50);
+                    INIFixesForm.Text = T._("Meta fixes in progress")+ "...";
+                    INIFixesForm.Size = new System.Drawing.Size(370, 50);
 
                     foreach (var mod in AllDirsList)
                     {
@@ -1354,6 +1354,11 @@ namespace AIHelper.Manage
                         }
 
                         var modMetaIniPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), mod, "meta.ini");
+                        if (!File.Exists(modMetaIniPath))
+                        {
+                            continue;
+                        }
+
                         INIFile INI = new INIFile(modMetaIniPath);
                         string gameName;
                         if (INI.KeyExists("gameName", "General") && (gameName = INI.ReadINI("General", "gameName")) != ManageSettings.GETMOCurrentGameName())
@@ -1366,11 +1371,11 @@ namespace AIHelper.Manage
                                     ApplyModListgameNameValueFix = true;
 
                                     //show progress bar in new form
-                                    INFixesForm.Controls.Add(INFixesProgressBar);
-                                    INFixesForm.FormBorderStyle = FormBorderStyle.FixedToolWindow;
-                                    INFixesForm.StartPosition = FormStartPosition.CenterScreen;
-                                    INFixesForm.Show();
-                                    INFixesForm.Activate();
+                                    INIFixesForm.Controls.Add(INFixesProgressBar);
+                                    INIFixesForm.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+                                    INIFixesForm.StartPosition = FormStartPosition.CenterScreen;
+                                    INIFixesForm.Show();
+                                    INIFixesForm.Activate();
                                 }
                                 else
                                 {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace AIHelper.Manage
@@ -95,6 +96,11 @@ namespace AIHelper.Manage
 
                 //return false;
             }
+        }
+
+        internal static string TrimFileVersion(this string fileVersion)
+        {
+            return fileVersion.Trim().TrimStart('v','r').TrimEnd('.', '0');
         }
 
         /// <summary>

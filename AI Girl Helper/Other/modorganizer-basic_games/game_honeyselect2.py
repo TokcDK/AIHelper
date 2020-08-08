@@ -8,7 +8,7 @@ from ..basic_game import BasicGame
 
 
 class IllusionHoneySelectGame(BasicGame):
-    Name = "Illusion Honey Select 3: Libido"
+    Name = "Illusion Honey Select 2: Libido"
     Author = "TokcDK<Denis K>"
     Version = "0.1.0"
 

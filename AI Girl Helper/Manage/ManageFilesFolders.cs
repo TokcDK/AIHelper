@@ -454,5 +454,15 @@ namespace AIHelper.Manage
         {
             return DeleteFile(fileName + ":Zone.Identifier");
         }
+
+        internal static bool IsPicture(this string filePath)
+        {
+            return IsPictureExtension(Path.GetExtension(filePath));
+        }
+
+        internal static bool IsPictureExtension(this string FileExtension)
+        {
+            return !string.IsNullOrWhiteSpace(FileExtension) && (FileExtension == ".jpg" || FileExtension == ".png" || FileExtension == ".bmp");
+        }
     }
 }

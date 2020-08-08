@@ -131,6 +131,16 @@ namespace AIHelper.Manage
             return ListOfGames;
         }
 
+        internal static string GetModsUpdateDir()
+        {
+            return Path.Combine(GetAppResDir(), "update");
+        }
+
+        internal static string GetCurrentGameModsUpdateDir()
+        {
+            return Path.Combine(GetModsUpdateDir(), GetCurrentGameFolderName());
+        }
+
         internal static string GetCurrentGameModListRulesPath()
         {
             return Path.Combine(ManageSettings.GetAppResDir(), "rules", ManageSettings.GetCurrentGameFolderName(), "modlist.txt");

@@ -47,7 +47,7 @@ namespace AIHelper.Manage.Rules.ModList
                 var metaNotes = ManageINI.GetINIValueIfExist(metaPath, "notes", "General");
                 //var metaComments = ManageINI.GetINIValueIfExist(metaPath, "comments", "General");
 
-                var mlinfo = ManageHTML.GetMLInfoTextFromHTML(metaNotes).Replace("\\\\","\\");
+                var mlinfo = ManageHTML.GetTagInfoTextFromHTML(metaNotes, "mlinfo::").Replace("\\\\","\\");
 
                 if (!string.IsNullOrWhiteSpace(mlinfo))
                 {

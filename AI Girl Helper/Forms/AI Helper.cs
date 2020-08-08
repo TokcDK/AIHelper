@@ -9,7 +9,9 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -48,12 +50,12 @@ namespace AIHelper
 
             if (string.IsNullOrWhiteSpace(Properties.Settings.Default.ApplicationStartupPath))
             {
-                ApplicationStartupPath = Application.StartupPath;
+                ApplicationStartupPath = System.Windows.Forms.Application.StartupPath;
             }
 
             if (!SetListOfGames())
             {
-                Application.Exit();
+                System.Windows.Forms.Application.Exit();
                 this.Enabled = false;
                 return;
             }
@@ -63,6 +65,17 @@ namespace AIHelper
             ManageMO.RedefineGameMOData();
 
             CleanMOFolder();
+
+            if (File.Exists(ManageLogs.LogFilePath) && new FileInfo(ManageLogs.LogFilePath).Length > 10000000)
+            {
+                try
+                {
+                    File.Delete(ManageLogs.LogFilePath);
+                }
+                catch
+                {
+                }
+            }
 
             VariablesINIT();
             MOmode = true;
@@ -623,7 +636,7 @@ namespace AIHelper
                 ShowAlways = true
             };
 
-            THToolTip.SetToolTip(ProgramNameLabelPart2, Application.ProductName + " - " + T._("Illusion games manager.\n\n"
+            THToolTip.SetToolTip(ProgramNameLabelPart2, System.Windows.Forms.Application.ProductName + " - " + T._("Illusion games manager.\n\n"
                     + "Move mouse over wished button or text to see info about it"
                     )
                 );
@@ -825,6 +838,8 @@ namespace AIHelper
 
         private void FoldersInit()
         {
+            EnableDisableSomeTools();
+
             if (File.Exists(ManageSettings.GetMOToStandartConvertationOperationsListFilePath()))
             {
                 MOmode = false;
@@ -1009,6 +1024,24 @@ namespace AIHelper
             }
 
             SelectedGameLabel.Text = CurrentGame.GetGameDisplayingName() + "❤";
+        }
+
+        bool IsDebug = false;
+        bool IsBetaTest = false;
+        private void EnableDisableSomeTools()
+        {
+            IsDebug = Path.GetFileName(Properties.Settings.Default.ApplicationStartupPath) == "Debug" && File.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "IsDevDebugMode.txt"));
+            IsBetaTest = File.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "IsBetaTest.txt"));
+
+            //Debug
+            btnCCCCPmods.Visible = IsDebug;
+            btnHTML2Text.Visible = IsDebug;
+            btnMakeSnapShot.Visible = IsDebug;
+            btnFixMOMods.Visible = IsDebug;
+            btnUpdate.Visible = IsDebug;
+
+            //Beta
+            btnUpdateMods.Visible = IsDebug || IsBetaTest;
         }
 
         private static void RunSlowActions()
@@ -2031,7 +2064,7 @@ namespace AIHelper
                                 {
                                     //skip images and txt in mod root folder
                                     var FileExtension = Path.GetExtension(FileOfMod);
-                                    if (FileExtension == ".txt" || FileExtension == ".jpg" || FileExtension == ".png")
+                                    if (FileExtension == ".txt" || FileExtension.IsPictureExtension())
                                     {
                                         if (Path.GetFileName(FileOfMod.Replace(Path.DirectorySeparatorChar + Path.GetFileName(FileOfMod), string.Empty)) == EnabledModsList[N])
                                         {
@@ -2446,6 +2479,8 @@ namespace AIHelper
 
         private void FixMOModsButton_Click(object sender, EventArgs e)
         {
+            return;
+
             foreach (var folder in Directory.GetDirectories(ManageSettings.GetCurrentGameModsPath()))
             {
                 if (!folder.EndsWith("_separator", StringComparison.InvariantCulture))
@@ -2474,6 +2509,8 @@ namespace AIHelper
 
         private void MakeSnapShot_Click(object sender, EventArgs e)
         {
+            return;
+
             //Dictionary<string, string[]> PathCRCPair = new Dictionary<string, string[]>();
             List<string> snapshotData = new List<string>();
             foreach (var file in Directory.EnumerateFiles(ManageSettings.GetCurrentGameModsPath(), "*", SearchOption.AllDirectories))
@@ -2558,6 +2595,8 @@ namespace AIHelper
 
         private void button3_Click(object sender, EventArgs e)
         {
+            return;
+
             //var htmlString = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">Patch for Koikatsu fixes. Replaces one fix from Koikatsu fixes to prevent bugs from it when abmx is enabled.</span></p>\n<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">mlinfo::</span></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">req:file:BepInEx\\plugins\\KKABMX.dll|and|file:BepInEx\\plugins\\IllusionFixes\\KK_Fix_MainGameOptimizations.dll</span></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">inc:API</span></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">::</span></p></body></html>";
 
             //MessageBox.Show(ManageHTML.GetMLInfoFromHTML(htmlString));
@@ -2565,6 +2604,8 @@ namespace AIHelper
 
         private void button1_Click(object sender, EventArgs e)
         {
+            return;
+
             var CCCCPfolderPath = @"F:\C";
             var targetFolder = @"F:\mods";
             HashSet<string> addedMods = new HashSet<string>();
@@ -2596,6 +2637,219 @@ namespace AIHelper
 
             }
             MessageBox.Show("Finished!");
+        }
+
+        Form f = new Form();
+        ProgressBar pb = new ProgressBar();
+        private async void btnUpdate_Click(object sender, EventArgs e)
+        {
+            //return;
+            //some info
+            //https://github.com/octokit/octokit.net/issues/854
+            //https://github.com/kdolan/AutoUpdater/blob/master/AutoUpdater/Updater/Program.cs
+            //https://www.codeproject.com/Articles/1277348/Using-Csharp-Code-to-Access-the-GitHub-API
+            //https://github.com/octokit/octokit.net/blob/main/docs/releases.md
+            //https://stackoverflow.com/questions/25678690/how-can-i-check-github-releases-in-c
+            //https://github.com/nixxquality/GitHubUpdate
+            //https://stackoverflow.com/questions/35281024/webclient-progress-reporting-using-tap
+
+
+            //test with https://github.com/bbepis/XUnity.AutoTranslator/releases
+            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;//включение tls12 для github
+
+            using (WebClient wc = new WebClient())
+            {
+                //https://github.com/bbepis/XUnity.AutoTranslator
+                var owner = "bbepis";
+                var name = "XUnity.AutoTranslator";
+                var filepart = "XUnity.AutoTranslator-BepIn-5x-";
+                var url = "https://github.com/" + owner + "/" + name + "/releases/latest";
+                Uri uri = new Uri(url);
+
+                //var request = (HttpWebRequest)WebRequest.Create(uri);
+                //request.CookieContainer = new CookieContainer();
+                //request.Credentials = CredentialCache.DefaultCredentials;
+                //request.Method = "Get";
+                //using (var response = (HttpWebResponse)request.GetResponse())
+                //{
+                //    var s1 = response.StatusCode;
+                //    var s2 = response.ContentType;
+                //    var s3 = response.ContentLength;
+                //    var s4 = response.Cookies.Count;
+                //    using (StreamReader sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                //    {
+                //        var str = sr.ReadToEnd();
+                //    }
+                //}
+
+                //https://github.com/ManlyMarco/Illusion_BrowserFolders/releases/latest
+                owner = "ManlyMarco";
+                name = "Illusion_BrowserFolders";
+                filepart = "KK_BrowserFolders";
+                url = "https://github.com/" + owner + "/" + name + "/releases/latest";
+                uri = new Uri(url);
+
+                var l = wc.DownloadString(uri);
+                var version = Regex.Match(l, "/releases/tag/[^\"]+\"");
+                var ver = version.Value.Remove(version.Value.Length - 1, 1).Remove(0, 14);
+                //href=\"/bbepis/XUnity.AutoTranslator/releases/download/v4.12.0/XUnity.AutoTranslator-BepIn-5x-4.12.0.zip\"
+                //https://github.com/bbepis/XUnity.AutoTranslator/releases/download/v4.12.0/XUnity.AutoTranslator-BepIn-5x-4.12.0.zip
+
+                var link2 = Regex.Match(l, @"href\=""/" + owner + "/" + name + "/releases/download/" + ver + "/" + filepart + "[^\"]+\"");
+                if (string.IsNullOrWhiteSpace(link2.Value))
+                {
+                    //<a href="https://www.patreon.com/posts/38231183" rel="nofollow">Download</a>
+                    var p = Regex.Match(l, @"<a href\=""https://www\.patreon\.com/posts/" + "[^\"]+\"" + @" rel\=""nofollow"">Download</a>");
+                    if (string.IsNullOrWhiteSpace(p.Value) && p.Value.Length > 29)
+                    {
+                        return;
+                    }
+                    var plink = p.Value.Remove(p.Value.Length - 29, 29).Remove(0, 9);
+                    uri = new Uri(plink);
+
+                    //fake browser emulation to not get 403 error
+                    //https://dejanstojanovic.net/aspnet/2014/august/faking-browser-client-in-httpwebrequest/
+                    //http://rflechner.github.io/ScrapyFSharp/NetworkExample.html
+
+                    ////////////////////////////////////////////////////////////////////////
+                    //ScrapingBrowser browser = new ScrapingBrowser
+                    //{
+                    //    UserAgent = FakeUserAgents.Chrome,
+                    //    AllowAutoRedirect = true,
+                    //    AllowMetaRedirect = true,
+                    //    DecompressionMethods = DecompressionMethods.GZip
+                    //};
+                    //var ttrry = browser.DownloadString(uri);
+                    //set UseDefaultCookiesParser as false if a website returns invalid cookies format
+                    //browser.UseDefaultCookiesParser = false;
+                    //var sssss = browser.DownloadString(uri);
+
+                    //WebPage homePage = browser.NavigateToPage(new Uri(plink));
+
+                    //PageWebForm form = homePage.FindFormById("sb_form");
+                    //form["q"] = "scrapysharp";
+                    //form.Method = HttpVerb.Get;
+                    //WebPage resultsPage = form.Submit();
+
+                    //var testS = resultsPage.Html.OuterHtml;
+
+                    //HtmlNode[] resultsLinks = resultsPage.Html.CssSelect("div.sb_tlst h3 a").ToArray();
+
+                    //WebPage blogPage = resultsPage.FindLinks(By.Text("romcyber blog | Just another WordPress site")).Single().Click();
+                    ////////////////////////////////////////////////////////////////////////
+
+                    var request = (HttpWebRequest)WebRequest.Create(uri);
+                    request.CookieContainer = new CookieContainer();
+                    request.Credentials = CredentialCache.DefaultNetworkCredentials;
+                    request.Method = "Get";
+                    request.UserAgent = "User-Agent: Other";
+                    using (var response = (HttpWebResponse)request.GetResponse())
+                    {
+                        var s1 = response.StatusCode;
+                        var s2 = response.ContentType;
+                        var s3 = response.ContentLength;
+                        var s4 = response.Cookies.Count;
+                        using (StreamReader sr = new StreamReader(response.GetResponseStream(), Encoding.UTF8))
+                        {
+                            var str = sr.ReadToEnd();
+                        }
+                    }
+
+
+                    //wc.Headers.Add(HttpRequestHeader.UserAgent, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3882.0 Safari/537.36");
+                    //CookieContainer cookieJar = new CookieContainer();
+
+                    //System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3|SecurityProtocolType.Tls11|SecurityProtocolType.Tls12;//включение tls12 для github
+                    //using (WebClient client = new WebClient())
+                    //{
+                    //    client.Headers.Add(HttpRequestHeader.Cookie, "cb1896ac88a7232496ebea6686ad5eb92472eef7-1596532316-1800-");
+                    //    string download = client.DownloadString(plink);
+                    //}
+                    var s = wc.DownloadString(plink);
+                }
+
+
+                var downloadlink = "https://github.com/" + link2.Value.Remove(link2.Value.Length - 1, 1).Remove(0, 6);
+                var fileName = Path.GetFileName(downloadlink);
+                wc.DownloadFile(downloadlink, fileName);
+            }
+
+            //using (WebClient wc = new WebClient())
+            //{
+            //    var github = new GitHubClient(new ProductHeaderValue("XUnity.AutoTranslator"));
+            //    //var releases = await github.Repository.Release.GetAll("bbepis", "XUnity.AutoTranslator").ConfigureAwait(true);
+            //    var latest = await github.Repository.Release.GetLatest("bbepis", "XUnity.AutoTranslator").ConfigureAwait(true);
+
+            //    //var latest = releases[0];
+            //    //Console.WriteLine(
+            //    //    "The latest release is tagged at {0} and is named {1}",
+            //    //    latest.TagName,
+            //    //    latest.Name);
+            //    var latestAssets = await github.Repository.Release.Get("bbepis", "XUnity.AutoTranslator", latest.Id).ConfigureAwait(true);
+            //    var archive = latestAssets.Name;
+            //    foreach (var GitAsset in latestAssets.Assets)
+            //    {
+            //        if (GitAsset.Name.StartsWith("XUnity.AutoTranslator-BepIn-5x-", StringComparison.InvariantCultureIgnoreCase))
+            //        {
+            //            Directory.CreateDirectory(Path.Combine(ManageSettings.GetAppResDir(), "update"));
+            //            pb.Dock = DockStyle.Bottom;
+            //            pb.Maximum = 100;
+            //            f.Controls.Add(pb);
+            //            f.StartPosition = FormStartPosition.CenterScreen;
+            //            f.Size = new Size(50,30);
+            //            wc.DownloadProgressChanged += (s, ea) =>
+            //            {
+            //                if (ea.ProgressPercentage <= pb.Maximum)
+            //                {
+            //                    pb.Value = ea.ProgressPercentage;
+            //                }
+            //            };
+            //            wc.DownloadFileCompleted += (s, ea) =>
+            //            {
+            //                pb.Dispose();
+            //                f.Dispose();
+            //                MessageBox.Show("Download Complete!");
+            //            };
+
+            //            await wc.DownloadFileTaskAsync(GitAsset.BrowserDownloadUrl, Path.Combine(ManageSettings.GetAppResDir(), "update", GitAsset.Name)).ConfigureAwait(true);
+            //            //var t = wc.DownloadFileTaskAsync(GitAsset.BrowserDownloadUrl, Path.Combine(ManageSettings.GetAppResDir(), "update", GitAsset.Name));
+
+            //            //t.RunSynchronously();
+            //            //t.Wait();
+            //            //if (t.IsCompleted)
+            //            //{
+            //            //    //Perform update
+            //            //}
+            //            break;
+            //        }
+            //    }
+            //}
+        }
+
+        private void btnUpdateMods_Click(object sender, EventArgs e)
+        {
+            btnUpdateMods.Enabled = false;
+            ManageUpdates.Mods.CheckMods();
+            btnUpdateMods.Enabled = true;
+        }
+
+        private void btnMessageTest_Click(object sender, EventArgs e)
+        {
+            //<div class="bg-image"></div>
+            //
+            //<div class="bg-text">
+            //  <h1>I am John Doe</h1>
+            //  <p>And I'm a Photographer</p>
+            //</div>
+
+
+            var bgimagelink = "M:/Desktop/KoikatuReportBG.jpg";
+            var ReportMessage = "<html><body style = \"background-color:gray; background-image: url(" + bgimagelink + ");\"><h1>" + T._("Update check report") + "</h2><hr><br>" + "Mod " + "Modname1" + " was updated" + " <a href=\"" + "https://github.com/" + "\">[Open Github page]</a>" + "<br>" + "Mod Modname2 was updated" + " <a href=\"" + "https://github.com/" + "\">[Open Github page]</a>" + "<hr></body></html>";
+            //ReportMessage = string.Join(/*Environment.NewLine*/"<br>", report);
+            var htmlfile = Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), "report.html");
+            File.WriteAllText(htmlfile, ReportMessage);
+            System.Diagnostics.Process.Start(htmlfile);
+            //MyErrorBox.Show("caption", "text", "details", SystemIcons.Warning);
         }
 
         //Disable close window button

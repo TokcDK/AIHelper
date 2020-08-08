@@ -6,16 +6,16 @@ namespace AIHelper.Manage
 {
     class ManageHTML
     {
-        internal static string mlInfoStartTag = "mlinfo::";
-        internal static string mlInfoEndTag = "::";
+        //internal static string mlInfoStartTag = "mlinfo::";
+        //internal static string mlInfoEndTag = "::";
         /// <summary>
-        /// get text from ыудусеув tag
+        /// get text from selected tag
         /// used info:https://stackoverflow.com/a/10366994
         /// made to get text from meta.ini notes of MO Mod
         /// </summary>
         /// <param name="htmlString"></param>
         /// <returns></returns>
-        internal static string GetMLInfoTextFromHTML(string htmlString, string tag = "span")
+        internal static string GetTagInfoTextFromHTML(string htmlString, string InfoStartTag, string InfoEndTag = "::", string Splitter = ",", string HTMLtag = "span")
         {
             try
             {
@@ -23,46 +23,47 @@ namespace AIHelper.Manage
                 html.LoadHtml(htmlString);
 
                 //html.DocumentNode.SelectNodes("//" + tag + "/text()").ToList().ForEach(x => MessageBox.Show(x.InnerHtml));
-
-                var listOfSpanTexts = html.DocumentNode.SelectNodes("//" + tag + "/text()").ToList();
-                var mlinfo = new List<string>();
+                var listOfSpanTexts = html.DocumentNode.SelectNodes("//" + HTMLtag + "/text()").ToList();
+                var info = new List<string>();
                 var loadingmlinfo = false;
                 string tx;
                 foreach (var text in listOfSpanTexts)
                 {
                     if (loadingmlinfo)
                     {
-                        if ((tx = text.InnerHtml.TrimEnd()).EndsWith(mlInfoEndTag, StringComparison.InvariantCulture))
+                        if ((tx = text.InnerHtml.TrimEnd()).EndsWith(InfoEndTag, StringComparison.InvariantCulture))
                         {
-                            mlinfo.Add(tx.TrimStart().Remove(tx.Length - mlInfoEndTag.Length));
+                            info.Add(tx.TrimStart().Remove(tx.Length - InfoEndTag.Length));
                             break;
                         }
                         else
                         {
-                            mlinfo.Add(tx.TrimStart());
+                            info.Add(tx.TrimStart());
                         }
                     }
                     else
                     {
-                        if ((tx = text.InnerHtml.Trim()).StartsWith(mlInfoStartTag, StringComparison.InvariantCulture))
+                        if ((tx = text.InnerHtml.Trim()).StartsWith(InfoStartTag, StringComparison.InvariantCulture))
                         {
-                            if (tx != mlInfoStartTag && tx.EndsWith(mlInfoEndTag, StringComparison.InvariantCulture))
+                            if (tx != InfoStartTag && tx.EndsWith(InfoEndTag, StringComparison.InvariantCulture))
                             {
-                                mlinfo.Add(tx.Remove(tx.Length - mlInfoEndTag.Length).Remove(0, mlInfoStartTag.Length));
+                                info.Add(tx.Remove(tx.Length - InfoEndTag.Length).Remove(0, InfoStartTag.Length));
+                                return string.Join(Environment.NewLine, info);
                             }
                             else
                             {
                                 loadingmlinfo = true;
-                                mlinfo.Add(tx.Replace(mlInfoStartTag, string.Empty));
+                                info.Add(tx.Replace(InfoStartTag, string.Empty));
                             }
                         }
                     }
                 }
-                return string.Join(Environment.NewLine, mlinfo);
+                return string.Join(Environment.NewLine, info) + (HTMLtag == "span" ? GetTagInfoTextFromHTML(htmlString, InfoStartTag, InfoEndTag = "::", Splitter = ",", HTMLtag = "p") : string.Empty);
             }
-            catch
+            catch (Exception ex)
             {
-                return htmlString;
+                ManageLogs.Log("GetTagInfoTextFromHTML error:"+Environment.NewLine+ex);
+                return string.Empty;
             }
         }
     }

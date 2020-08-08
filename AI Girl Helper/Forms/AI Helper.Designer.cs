@@ -82,12 +82,15 @@
             this.FullScreenCheckBox = new System.Windows.Forms.CheckBox();
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
             this.ToolsPagePanel = new System.Windows.Forms.Panel();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.btnMessageTest = new System.Windows.Forms.Button();
+            this.btnUpdateMods = new System.Windows.Forms.Button();
+            this.btnUpdate = new System.Windows.Forms.Button();
+            this.btnCCCCPmods = new System.Windows.Forms.Button();
+            this.btnHTML2Text = new System.Windows.Forms.Button();
             this.ToolsFixModListButton = new System.Windows.Forms.Button();
             this.testSubWindow = new System.Windows.Forms.Button();
-            this.MakeSnapShot = new System.Windows.Forms.Button();
-            this.FixMOModsButton = new System.Windows.Forms.Button();
+            this.btnMakeSnapShot = new System.Windows.Forms.Button();
+            this.btnFixMOMods = new System.Windows.Forms.Button();
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
@@ -799,12 +802,15 @@
             // ToolsPagePanel
             // 
             this.ToolsPagePanel.BackColor = System.Drawing.Color.Gray;
-            this.ToolsPagePanel.Controls.Add(this.button1);
-            this.ToolsPagePanel.Controls.Add(this.button3);
+            this.ToolsPagePanel.Controls.Add(this.btnMessageTest);
+            this.ToolsPagePanel.Controls.Add(this.btnUpdateMods);
+            this.ToolsPagePanel.Controls.Add(this.btnUpdate);
+            this.ToolsPagePanel.Controls.Add(this.btnCCCCPmods);
+            this.ToolsPagePanel.Controls.Add(this.btnHTML2Text);
             this.ToolsPagePanel.Controls.Add(this.ToolsFixModListButton);
             this.ToolsPagePanel.Controls.Add(this.testSubWindow);
-            this.ToolsPagePanel.Controls.Add(this.MakeSnapShot);
-            this.ToolsPagePanel.Controls.Add(this.FixMOModsButton);
+            this.ToolsPagePanel.Controls.Add(this.btnMakeSnapShot);
+            this.ToolsPagePanel.Controls.Add(this.btnFixMOMods);
             this.ToolsPagePanel.Controls.Add(this.Install2MODirPathOpenFolderLinkLabel);
             this.ToolsPagePanel.Controls.Add(this.InstallInModsButton);
             this.ToolsPagePanel.Controls.Add(this.MOCommonModeSwitchButton);
@@ -814,33 +820,74 @@
             this.ToolsPagePanel.Size = new System.Drawing.Size(340, 155);
             this.ToolsPagePanel.TabIndex = 1;
             // 
-            // button1
+            // btnMessageTest
             // 
-            this.button1.BackColor = System.Drawing.Color.Silver;
-            this.button1.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button1.ForeColor = System.Drawing.Color.Black;
-            this.button1.Location = new System.Drawing.Point(223, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(112, 30);
-            this.button1.TabIndex = 24;
-            this.button1.Text = "Get CCCCP mods";
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Visible = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnMessageTest.BackColor = System.Drawing.Color.Silver;
+            this.btnMessageTest.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnMessageTest.ForeColor = System.Drawing.Color.Black;
+            this.btnMessageTest.Location = new System.Drawing.Point(136, 86);
+            this.btnMessageTest.Name = "btnMessageTest";
+            this.btnMessageTest.Size = new System.Drawing.Size(81, 30);
+            this.btnMessageTest.TabIndex = 27;
+            this.btnMessageTest.Text = "test";
+            this.btnMessageTest.UseVisualStyleBackColor = false;
+            this.btnMessageTest.Visible = false;
+            this.btnMessageTest.Click += new System.EventHandler(this.btnMessageTest_Click);
             // 
-            // button3
+            // btnUpdateMods
             // 
-            this.button3.BackColor = System.Drawing.Color.Silver;
-            this.button3.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button3.ForeColor = System.Drawing.Color.Black;
-            this.button3.Location = new System.Drawing.Point(3, 111);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(112, 30);
-            this.button3.TabIndex = 23;
-            this.button3.Text = "html2text";
-            this.button3.UseVisualStyleBackColor = false;
-            this.button3.Visible = false;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.btnUpdateMods.BackColor = System.Drawing.Color.Silver;
+            this.btnUpdateMods.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnUpdateMods.ForeColor = System.Drawing.Color.Black;
+            this.btnUpdateMods.Location = new System.Drawing.Point(3, 111);
+            this.btnUpdateMods.Name = "btnUpdateMods";
+            this.btnUpdateMods.Size = new System.Drawing.Size(112, 30);
+            this.btnUpdateMods.TabIndex = 26;
+            this.btnUpdateMods.Text = "Update mods";
+            this.btnUpdateMods.UseVisualStyleBackColor = false;
+            this.btnUpdateMods.Click += new System.EventHandler(this.btnUpdateMods_Click);
+            // 
+            // btnUpdate
+            // 
+            this.btnUpdate.BackColor = System.Drawing.Color.Silver;
+            this.btnUpdate.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnUpdate.ForeColor = System.Drawing.Color.Black;
+            this.btnUpdate.Location = new System.Drawing.Point(121, 3);
+            this.btnUpdate.Name = "btnUpdate";
+            this.btnUpdate.Size = new System.Drawing.Size(96, 30);
+            this.btnUpdate.TabIndex = 25;
+            this.btnUpdate.Text = "UpdateTest";
+            this.btnUpdate.UseVisualStyleBackColor = false;
+            this.btnUpdate.Visible = false;
+            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
+            // 
+            // btnCCCCPmods
+            // 
+            this.btnCCCCPmods.BackColor = System.Drawing.Color.Silver;
+            this.btnCCCCPmods.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnCCCCPmods.ForeColor = System.Drawing.Color.Black;
+            this.btnCCCCPmods.Location = new System.Drawing.Point(223, 3);
+            this.btnCCCCPmods.Name = "btnCCCCPmods";
+            this.btnCCCCPmods.Size = new System.Drawing.Size(112, 30);
+            this.btnCCCCPmods.TabIndex = 24;
+            this.btnCCCCPmods.Text = "Get CCCCP mods";
+            this.btnCCCCPmods.UseVisualStyleBackColor = false;
+            this.btnCCCCPmods.Visible = false;
+            this.btnCCCCPmods.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // btnHTML2Text
+            // 
+            this.btnHTML2Text.BackColor = System.Drawing.Color.Silver;
+            this.btnHTML2Text.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnHTML2Text.ForeColor = System.Drawing.Color.Black;
+            this.btnHTML2Text.Location = new System.Drawing.Point(223, 39);
+            this.btnHTML2Text.Name = "btnHTML2Text";
+            this.btnHTML2Text.Size = new System.Drawing.Size(112, 30);
+            this.btnHTML2Text.TabIndex = 23;
+            this.btnHTML2Text.Text = "html2text";
+            this.btnHTML2Text.UseVisualStyleBackColor = false;
+            this.btnHTML2Text.Visible = false;
+            this.btnHTML2Text.Click += new System.EventHandler(this.button3_Click);
             // 
             // ToolsFixModListButton
             // 
@@ -869,33 +916,33 @@
             this.testSubWindow.Visible = false;
             this.testSubWindow.Click += new System.EventHandler(this.TestSubWindow_Click);
             // 
-            // MakeSnapShot
+            // btnMakeSnapShot
             // 
-            this.MakeSnapShot.BackColor = System.Drawing.Color.Silver;
-            this.MakeSnapShot.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MakeSnapShot.ForeColor = System.Drawing.Color.Black;
-            this.MakeSnapShot.Location = new System.Drawing.Point(223, 86);
-            this.MakeSnapShot.Name = "MakeSnapShot";
-            this.MakeSnapShot.Size = new System.Drawing.Size(112, 30);
-            this.MakeSnapShot.TabIndex = 20;
-            this.MakeSnapShot.Text = "Make SnapShot";
-            this.MakeSnapShot.UseVisualStyleBackColor = false;
-            this.MakeSnapShot.Visible = false;
-            this.MakeSnapShot.Click += new System.EventHandler(this.MakeSnapShot_Click);
+            this.btnMakeSnapShot.BackColor = System.Drawing.Color.Silver;
+            this.btnMakeSnapShot.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnMakeSnapShot.ForeColor = System.Drawing.Color.Black;
+            this.btnMakeSnapShot.Location = new System.Drawing.Point(223, 86);
+            this.btnMakeSnapShot.Name = "btnMakeSnapShot";
+            this.btnMakeSnapShot.Size = new System.Drawing.Size(112, 30);
+            this.btnMakeSnapShot.TabIndex = 20;
+            this.btnMakeSnapShot.Text = "Make SnapShot";
+            this.btnMakeSnapShot.UseVisualStyleBackColor = false;
+            this.btnMakeSnapShot.Visible = false;
+            this.btnMakeSnapShot.Click += new System.EventHandler(this.MakeSnapShot_Click);
             // 
-            // FixMOModsButton
+            // btnFixMOMods
             // 
-            this.FixMOModsButton.BackColor = System.Drawing.Color.Silver;
-            this.FixMOModsButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.FixMOModsButton.ForeColor = System.Drawing.Color.Black;
-            this.FixMOModsButton.Location = new System.Drawing.Point(223, 122);
-            this.FixMOModsButton.Name = "FixMOModsButton";
-            this.FixMOModsButton.Size = new System.Drawing.Size(112, 30);
-            this.FixMOModsButton.TabIndex = 19;
-            this.FixMOModsButton.Text = "Fix MOMods";
-            this.FixMOModsButton.UseVisualStyleBackColor = false;
-            this.FixMOModsButton.Visible = false;
-            this.FixMOModsButton.Click += new System.EventHandler(this.FixMOModsButton_Click);
+            this.btnFixMOMods.BackColor = System.Drawing.Color.Silver;
+            this.btnFixMOMods.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnFixMOMods.ForeColor = System.Drawing.Color.Black;
+            this.btnFixMOMods.Location = new System.Drawing.Point(223, 122);
+            this.btnFixMOMods.Name = "btnFixMOMods";
+            this.btnFixMOMods.Size = new System.Drawing.Size(112, 30);
+            this.btnFixMOMods.TabIndex = 19;
+            this.btnFixMOMods.Text = "Fix MOMods";
+            this.btnFixMOMods.UseVisualStyleBackColor = false;
+            this.btnFixMOMods.Visible = false;
+            this.btnFixMOMods.Click += new System.EventHandler(this.FixMOModsButton_Click);
             // 
             // Install2MODirPathOpenFolderLinkLabel
             // 
@@ -1026,18 +1073,21 @@
         private System.Windows.Forms.LinkLabel ExtraSettingsLinkLabel;
         private System.Windows.Forms.LinkLabel LaunchLinksLinkLabel;
         private System.Windows.Forms.LinkLabel JPLauncherRunLinkLabel;
-        private System.Windows.Forms.Button FixMOModsButton;
+        private System.Windows.Forms.Button btnFixMOMods;
         private System.Windows.Forms.LinkLabel SetupXmlLinkLabel;
-        private System.Windows.Forms.Button MakeSnapShot;
+        private System.Windows.Forms.Button btnMakeSnapShot;
         private System.Windows.Forms.LinkLabel OpenHelpLinkLabel;
         private System.Windows.Forms.TextBox CurrentGameTitleTextBox;
         private System.Windows.Forms.Button testSubWindow;
         private System.Windows.Forms.Button ToolsFixModListButton;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnHTML2Text;
+        private System.Windows.Forms.Button btnCCCCPmods;
         private System.Windows.Forms.CheckBox VRGameCheckBox;
         private System.Windows.Forms.LinkLabel CreateShortcutLinkLabel;
         private System.Windows.Forms.LinkLabel FixRegistryLinkLabel;
+        private System.Windows.Forms.Button btnUpdate;
+        private System.Windows.Forms.Button btnUpdateMods;
+        private System.Windows.Forms.Button btnMessageTest;
     }
 }
 

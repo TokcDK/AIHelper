@@ -7,6 +7,8 @@ namespace AIHelper.Manage
 {
     class ManageLogs
     {
+        internal readonly static string LogFilePath = Path.Combine(Properties.Settings.Default.ApplicationStartupPath, Application.ProductName + ".log");
+
         internal static void Log(string Message, int LogLevel = 0)
         {
             try
@@ -14,7 +16,7 @@ namespace AIHelper.Manage
                 if (LogLevel < 1)
                 {
                     FileWriter.WriteData(
-                    Path.Combine(Properties.Settings.Default.ApplicationStartupPath, Application.ProductName + ".log")
+                    LogFilePath
                     , DateTime.Now + " >>" +
                     Message
                     + Environment.NewLine, true);

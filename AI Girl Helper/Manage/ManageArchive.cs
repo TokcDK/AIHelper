@@ -27,7 +27,7 @@ namespace AIHelper.Manage
                     {
                         try
                         {
-                            if (extension.EndsWith("zip"))
+                            if (extension.EndsWith("zip", StringComparison.InvariantCultureIgnoreCase))
                             {
                                 using (ZipArchive archive = ZipFile.OpenRead(file))
                                 {

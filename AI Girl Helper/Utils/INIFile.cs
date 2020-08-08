@@ -280,7 +280,7 @@ namespace AIHelper.Manage
             //WriteINI(Section, null, null);
         }
 
-        internal void SaveINI(bool DoSaveINI, bool ActionWasExecuted)
+        internal void SaveINI(bool DoSaveINI = true, bool ActionWasExecuted = true)
         {
             if (DoSaveINI && ActionWasExecuted)
             {
@@ -363,7 +363,7 @@ namespace AIHelper.Manage
                 {
                     return false;
                 }
-                return INIData[Section].Count>0;
+                return INIData[Section].Count > 0;
             }
         }
     }

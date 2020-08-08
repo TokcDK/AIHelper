@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ModsUpdateReport</title>
+    <style>
+        body::before {
+            content: '';
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            z-index: -1;
+            /*https://pbs.twimg.com/media/DVj07QnVQAAal8c.jpg*/
+            background: url("%BGImageLinkPath%") center / cover no-repeat;
+            filter: blur(5px);
+        }
+
+        body {
+            color: #fff;
+        }
+
+        .bg-text {
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0, 0.4); /* Black w/opacity/see-through */
+            color: lightgreen;
+            font-weight: bold;
+            border: 3px solid #f1f1f1;
+            position: relative;
+            top: 10%;
+            bottom: 10%;
+            left: 15%;
+            z-index: 2;
+            width: 70%;
+            /*padding: 20px;*/
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-text">
+        <h1 style="font-size:50px;color:lightgray;">%ModsUpdateReportHeaderText%</h1>
+        %SingleModUpdateReportsTextSection%
+    </div>
+</body>
+</html>

@@ -1183,7 +1183,7 @@ namespace AIHelper
             }
             if (MOmode)
             {
-                RunProgram(MOexePath, "moshortcut://:" + ManageSettings.GetCurrentGameEXEName() + vr);
+                RunProgram(MOexePath, "moshortcut://:" + ManageSettings.GetCurrentGameEXEMOProfileName() + vr);
             }
             else
             {
@@ -1231,7 +1231,11 @@ namespace AIHelper
                     {
                         Program.StartInfo.Arguments = Arguments;
                     }
-                    Program.StartInfo.WorkingDirectory = Path.GetDirectoryName(ProgramPath);
+
+                    if (!Properties.Settings.Default.MOmode || string.IsNullOrWhiteSpace(Program.StartInfo.Arguments))
+                    {
+                        Program.StartInfo.WorkingDirectory = Path.GetDirectoryName(ProgramPath);
+                    }
 
                     //http://www.cyberforum.ru/windows-forms/thread31052.html
                     // свернуть
@@ -2843,12 +2847,12 @@ namespace AIHelper
             //</div>
 
 
-            var bgimagelink = "M:/Desktop/KoikatuReportBG.jpg";
-            var ReportMessage = "<html><body style = \"background-color:gray; background-image: url(" + bgimagelink + ");\"><h1>" + T._("Update check report") + "</h2><hr><br>" + "Mod " + "Modname1" + " was updated" + " <a href=\"" + "https://github.com/" + "\">[Open Github page]</a>" + "<br>" + "Mod Modname2 was updated" + " <a href=\"" + "https://github.com/" + "\">[Open Github page]</a>" + "<hr></body></html>";
+            //var bgimagelink = "M:/Desktop/KoikatuReportBG.jpg";
+            //var ReportMessage = "<html><body style = \"background-color:gray; background-image: url(" + bgimagelink + ");\"><h1>" + T._("Update check report") + "</h2><hr><br>" + "Mod " + "Modname1" + " was updated" + " <a href=\"" + "https://github.com/" + "\">[Open Github page]</a>" + "<br>" + "Mod Modname2 was updated" + " <a href=\"" + "https://github.com/" + "\">[Open Github page]</a>" + "<hr></body></html>";
             //ReportMessage = string.Join(/*Environment.NewLine*/"<br>", report);
-            var htmlfile = Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), "report.html");
-            File.WriteAllText(htmlfile, ReportMessage);
-            System.Diagnostics.Process.Start(htmlfile);
+            //var htmlfile = Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), "report.html");
+            //File.WriteAllText(htmlfile, ReportMessage);
+            //System.Diagnostics.Process.Start(htmlfile);
             //MyErrorBox.Show("caption", "text", "details", SystemIcons.Warning);
         }
 

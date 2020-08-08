@@ -207,6 +207,7 @@ namespace AIHelper.Manage
                     }
                 };
             }
+            
 
             Dictionary<string, string> IniValuesDict = new Dictionary<string, string>();
 
@@ -404,12 +405,31 @@ namespace AIHelper.Manage
                     customs.Add(executablesCount + @"\workingDirectory", ManageSettings.GetCurrentGameDataPath());
                 }
             }
+            else
+            {
+                foreach (var value in ManagePython.GetExecutableInfosFromPyPlugin())
+                {
+                    if (string.IsNullOrWhiteSpace(value.Key) || !File.Exists(value.Value))
+                    {
+                        continue;
+                    }
+
+                    executablesCount++;
+                    customs.Add(executablesCount + @"\title", value.Key);
+                    customs.Add(executablesCount + @"\binary", value.Value);
+                    customs.Add(executablesCount + @"\arguments", string.Empty);
+                    customs.Add(executablesCount + @"\workingDirectory", Path.GetDirectoryName(value.Value));
+                    customs.Add(executablesCount + @"\ownicon", "true");
+                }
+            }
 
             string[] pathExclusions =
                 {
                 "BepInEx" + Path.DirectorySeparatorChar + "plugins",
-                "Lec.ExtProtocol",
-                "Common.ExtProtocol.Executor",
+                //"Lec.ExtProtocol",
+                //"ezTransXP.ExtProtocol",
+                ".ExtProtocol",
+                //"Common.ExtProtocol.Executor",
                 "UnityCrashHandler64",
                 Path.DirectorySeparatorChar + "IPA",
                 "WideSliderPatch"
@@ -795,6 +815,35 @@ namespace AIHelper.Manage
                 //}
                 INI.WriteINI(IniValues[i, 1], IniValues[i, 2], IniValue, false);
             }
+        }
+
+        internal static Dictionary<string, string> GetMOcustomExecutablesList()
+        {
+            var INI = new INIFile(ManageSettings.GetMOiniPath());
+            var customs = INI.ReadSectionKeyValuePairsToDictionary("customExecutables");
+            var retDict = new Dictionary<string, string>();
+            foreach (var pair in customs)
+            {
+                if (pair.Key.EndsWith(@"\title", StringComparison.InvariantCulture))
+                {
+                    retDict.Add(pair.Value, customs[pair.Key.Split('\\')[0] + @"\binary"]);
+                }
+            }
+            return retDict;
+        }
+
+        internal static string GetMOcustomExecutableTitlaByExeName(string exename)
+        {
+            var customs = new INIFile(ManageSettings.GetMOiniPath()).ReadSectionKeyValuePairsToDictionary("customExecutables");
+            foreach (var pair in customs)
+            {
+                if (pair.Key.EndsWith(@"\binary", StringComparison.InvariantCulture) && Path.GetFileNameWithoutExtension(pair.Value) == exename)
+                {
+                    var s = customs[pair.Key.Split('\\')[0] + @"\title"];
+                    return customs[pair.Key.Split('\\')[0] + @"\title"];
+                }
+            }
+            return exename;
         }
 
         public static void ActivateMod(string modname)

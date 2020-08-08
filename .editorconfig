@@ -5,3 +5,6 @@ dotnet_diagnostic.CA1303.severity = none
 
 # CA1814: Используйте массивы массивов вместо многомерных массивов
 dotnet_diagnostic.CA1814.severity = none
+
+# IDE0002: Simplify Member Access
+dotnet_diagnostic.IDE0002.severity = silent

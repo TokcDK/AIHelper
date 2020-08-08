@@ -15,6 +15,14 @@ namespace AIHelper.Manage
         {
             return ManageINI.GetINIValueIfExist(GetAIHelperINIPath(), "FirstRun", "General") == "True";
         }
+
+        internal static string GetCurrentGameMOGamePyPluginPath()
+        {
+#pragma warning disable CA1308 // Normalize strings to uppercase
+            return Path.Combine(GetMOdirPath(), "plugins", "modorganizer-basic_games", "games", "game_" + GetCurrentGameEXEName().Replace("_64", string.Empty).Replace("_32", string.Empty).ToLowerInvariant() + ".py");
+#pragma warning restore CA1308 // Normalize strings to uppercase
+        }
+
         internal static void SettingsINIT()
         {
             //int index = Properties.Settings.Default.CurrentGameListIndex;
@@ -793,6 +801,11 @@ namespace AIHelper.Manage
         internal static string GetDummyFileRESPath()
         {
             return Path.Combine(ManageSettings.GetAppResDir(), "TESV.exe.dummy");
+        }
+
+        internal static string GetCurrentGameEXEMOProfileName()
+        {
+            return ManageMO.GetMOcustomExecutableTitlaByExeName(GetCurrentGameEXEName());
         }
     }
 }

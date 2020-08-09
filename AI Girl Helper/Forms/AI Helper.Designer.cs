@@ -831,6 +831,7 @@
             this.btnMessageTest.TabIndex = 27;
             this.btnMessageTest.Text = "test";
             this.btnMessageTest.UseVisualStyleBackColor = false;
+            this.btnMessageTest.Visible = false;
             this.btnMessageTest.Click += new System.EventHandler(this.btnMessageTest_Click);
             // 
             // btnUpdateMods

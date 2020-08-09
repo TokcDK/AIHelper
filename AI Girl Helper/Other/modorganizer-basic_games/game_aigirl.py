@@ -27,7 +27,7 @@ class IllusionAIGirlGame(BasicGame):
                 QFileInfo(self.gameDirectory(), "Data/AI-Syoujyo.exe"),
             ),
             mobase.ExecutableInfo(
-                "Setting",
+                "Settings",
                 QFileInfo(self.gameDirectory(), "Data/InitSetting.exe"),
             ),
             mobase.ExecutableInfo(

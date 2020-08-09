@@ -1218,6 +1218,12 @@ namespace AIHelper
         {
             if (File.Exists(ProgramPath))
             {
+                //fix mo profile name missing quotes when profile name with spaces
+                if (string.IsNullOrWhiteSpace(Arguments) && Arguments.Contains("moshortcut://:") && !Arguments.Contains("moshortcut://:\""))
+                {
+                    Arguments = Arguments.Replace("moshortcut://:", "moshortcut://:\"") + "\"";
+                }
+
                 if (Path.GetFileNameWithoutExtension(ProgramPath) == "ModOrganizer" && Arguments.Length > 0)
                 {
                     Task.Run(() => RunFreezedMOKiller(Arguments.Replace("moshortcut://:", string.Empty))).ConfigureAwait(false);
@@ -1563,13 +1569,16 @@ namespace AIHelper
         private void SwitchBackToMOMode()
         {
             StringBuilder OperationsMade = new StringBuilder();
-            string[] Operations = null;
+            string[] MOToStandartConvertationOperationsList = null;
             try
             {
-                Operations = File.ReadAllLines(ManageSettings.GetMOToStandartConvertationOperationsListFilePath());
+                MOToStandartConvertationOperationsList = File.ReadAllLines(ManageSettings.GetMOToStandartConvertationOperationsListFilePath());
+                ReplaceVarsToPaths(ref MOToStandartConvertationOperationsList);
                 var OperationsSplitString = new string[] { "|MovedTo|" };
-                var VanillaDataFiles = File.ReadAllLines(ManageSettings.GetVanillaDataFilesListFilePath());
-                var ModdedDataFiles = File.ReadAllLines(ManageSettings.GetModdedDataFilesListFilePath());
+                var VanillaDataFilesList = File.ReadAllLines(ManageSettings.GetVanillaDataFilesListFilePath());
+                ReplaceVarsToPaths(ref VanillaDataFilesList);
+                var ModdedDataFilesList = File.ReadAllLines(ManageSettings.GetModdedDataFilesListFilePath());
+                ReplaceVarsToPaths(ref ModdedDataFilesList);
                 Dictionary<string, string> ZipmodsGUIDList = new Dictionary<string, string>();
                 bool ZipmodsGUIDListNotEmpty = false;
                 if (File.Exists(ManageSettings.GetZipmodsGUIDListFilePath()))
@@ -1582,7 +1591,7 @@ namespace AIHelper
 
                             if (!string.IsNullOrWhiteSpace(line) && line.Contains("{{ZIPMOD}}"))
                             {
-                                var GUIDPathPair = line.Split(new[] { "{{ZIPMOD}}" }, StringSplitOptions.None);
+                                var GUIDPathPair = ReplaceVarsToPaths(line).Split(new[] { "{{ZIPMOD}}" }, StringSplitOptions.None);
                                 ZipmodsGUIDList.Add(GUIDPathPair[0], GUIDPathPair[1]);
                             }
                         }
@@ -1597,15 +1606,15 @@ namespace AIHelper
                 bool FilesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = false;
 
                 //Перемещение файлов модов по списку
-                int OperationsLength = Operations.Length;
+                int OperationsLength = MOToStandartConvertationOperationsList.Length;
                 for (int o = 0; o < OperationsLength; o++)
                 {
-                    if (string.IsNullOrWhiteSpace(Operations[o]))
+                    if (string.IsNullOrWhiteSpace(MOToStandartConvertationOperationsList[o]))
                     {
                         continue;
                     }
 
-                    string[] MovePaths = Operations[o].Split(OperationsSplitString, StringSplitOptions.None);
+                    string[] MovePaths = MOToStandartConvertationOperationsList[o].Split(OperationsSplitString, StringSplitOptions.None);
 
                     var FilePathInModsExists = File.Exists(MovePaths[0]);
                     var FilePathInDataExists = File.Exists(MovePaths[1]);
@@ -1628,7 +1637,7 @@ namespace AIHelper
                             File.Move(MovePaths[1], MovePaths[0]);
 
                             //запись выполненной операции для удаления из общего списка в случае ошибки при переключении из обычного режима
-                            OperationsMade.AppendLine(Operations[o]);
+                            OperationsMade.AppendLine(MOToStandartConvertationOperationsList[o]);
 
                             try
                             {
@@ -1746,7 +1755,7 @@ namespace AIHelper
                 //Перемещение новых файлов
                 //
                 //добавление всех файлов из дата, которых нет в списке файлов модов и игры в дата, что был создан сразу после перехода в обычный режим
-                string[] addedFiles = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories).Where(line => !ModdedDataFiles.Contains(line)).ToArray();
+                string[] addedFiles = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories).Where(line => !ModdedDataFilesList.Contains(line)).ToArray();
                 //задание имени целевой папки для новых модов
                 string addedFilesFolderName = "[added]UseFiles_" + DateTimeInFormat;
                 string DestFolderPath = Path.Combine(ModsPath, addedFilesFolderName);
@@ -1833,7 +1842,9 @@ namespace AIHelper
                 if (File.Exists(ManageSettings.GetVanillaDataEmptyFoldersListFilePath()))
                 {
                     //удалить все, за исключением добавленных ранее путей до пустых папок
-                    ManageFilesFolders.DeleteEmptySubfolders(DataPath, false, File.ReadAllLines(ManageSettings.GetVanillaDataEmptyFoldersListFilePath()));
+                    string[] VanillaDataEmptyFoldersList = File.ReadAllLines(ManageSettings.GetVanillaDataEmptyFoldersListFilePath());
+                    ReplaceVarsToPaths(ref VanillaDataEmptyFoldersList);
+                    ManageFilesFolders.DeleteEmptySubfolders(DataPath, false, VanillaDataEmptyFoldersList);
                 }
                 else
                 {
@@ -1858,7 +1869,7 @@ namespace AIHelper
             catch (Exception ex)
             {
                 //обновление списка операций с файлами, для удаления уже выполненных и записи обновленного списка
-                if (OperationsMade.ToString().Length > 0 && Operations != null && Operations.Length > 0)
+                if (OperationsMade.ToString().Length > 0 && MOToStandartConvertationOperationsList != null && MOToStandartConvertationOperationsList.Length > 0)
                 {
                     foreach (string OperationsMadeLine in OperationsMade.ToString().SplitToLines())
                     {
@@ -1869,14 +1880,14 @@ namespace AIHelper
                                 continue;
                             }
 
-                            Operations = Operations.Where(OperationsLine => OperationsLine != OperationsMadeLine).ToArray();
+                            MOToStandartConvertationOperationsList = MOToStandartConvertationOperationsList.Where(OperationsLine => OperationsLine != OperationsMadeLine).ToArray();
                         }
                         catch
                         {
                         }
                     }
 
-                    File.WriteAllLines(ManageSettings.GetMOToStandartConvertationOperationsListFilePath(), Operations);
+                    File.WriteAllLines(ManageSettings.GetMOToStandartConvertationOperationsListFilePath(), MOToStandartConvertationOperationsList);
                 }
 
                 //recreate normal mode identifier if failed
@@ -1890,7 +1901,7 @@ namespace AIHelper
         /// normal mode identifier switcher
         /// </summary>
         /// <param name="Create">true=Create/false=Delete</param>
-        private void SwitchNormalModeIdentifier(bool Create = true)
+        private static void SwitchNormalModeIdentifier(bool Create = true)
         {
             if (Create)
             {
@@ -1919,11 +1930,11 @@ namespace AIHelper
             }
 
             //список выполненных операций с файлами.
-            var Operations = new StringBuilder();
+            var MOToStandartConvertationOperationsList = new StringBuilder();
             //список пустых папок в data до ереноса файлов модов
-            StringBuilder EmptyFoldersPaths;
+            StringBuilder VanillaDataEmptyFoldersList;
             //список файлов в data без модов
-            string[] DataFolderFilesPaths;
+            string[] VanillaDataFilesList;
             //список guid zipmod-ов
             Dictionary<string, string> ZipmodsGUIDList = new Dictionary<string, string>();
 
@@ -1946,12 +1957,12 @@ namespace AIHelper
                 {
                     Directory.CreateDirectory(ManageSettings.GetMOmodeDataFilesBakDirPath());
                 }
-                Operations = new StringBuilder();
+                MOToStandartConvertationOperationsList = new StringBuilder();
 
-                EmptyFoldersPaths = ManageFilesFolders.GetEmptySubfoldersPaths(ManageSettings.GetCurrentGameDataPath(), new StringBuilder());
+                VanillaDataEmptyFoldersList = ManageFilesFolders.GetEmptySubfoldersPaths(ManageSettings.GetCurrentGameDataPath(), new StringBuilder());
 
                 //получение всех файлов из Data
-                DataFolderFilesPaths = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
+                VanillaDataFilesList = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
 
 
                 //получение всех файлов из папки Overwrite и их обработка
@@ -1989,7 +2000,7 @@ namespace AIHelper
                             //{
                             //    FileInBakFolderWhichIsInRES = @"\\?\" + FileInBakFolderWhichIsInRES;
                             //}
-                            if (!File.Exists(FileInBakFolderWhichIsInRES) && DataFolderFilesPaths.Contains(FileInDataFolder))
+                            if (!File.Exists(FileInBakFolderWhichIsInRES) && VanillaDataFilesList.Contains(FileInDataFolder))
                             {
                                 var bakfolder = Path.GetDirectoryName(FileInBakFolderWhichIsInRES);
 
@@ -2002,7 +2013,7 @@ namespace AIHelper
                                 {
                                     File.Move(FileInDataFolder, FileInBakFolderWhichIsInRES);//перенос файла из Data в Bak, если там не было
                                     File.Move(FileInOverwrite, FileInDataFolder);//перенос файла из папки Overwrite в Data
-                                    Operations.AppendLine(FileInOverwrite + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
+                                    MOToStandartConvertationOperationsList.AppendLine(FileInOverwrite + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
 
                                     ManageMOMods.SaveGUIDIfZipMod(FileInDataFolder, FileInOverwrite, ZipmodsGUIDList);
                                 }
@@ -2026,7 +2037,7 @@ namespace AIHelper
                             try
                             {
                                 File.Move(FileInOverwrite, FileInDataFolder);//перенос файла из папки мода в Data
-                                Operations.AppendLine(FileInOverwrite + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
+                                MOToStandartConvertationOperationsList.AppendLine(FileInOverwrite + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
 
                                 ManageMOMods.SaveGUIDIfZipMod(FileInDataFolder, FileInOverwrite, ZipmodsGUIDList);
                             }
@@ -2105,7 +2116,7 @@ namespace AIHelper
                                     //{
                                     //    FileInBakFolderWhichIsInRES = @"\\?\" + FileInBakFolderWhichIsInRES;
                                     //}
-                                    if (!File.Exists(FileInBakFolderWhichIsInRES) && DataFolderFilesPaths.Contains(FileInDataFolder))
+                                    if (!File.Exists(FileInBakFolderWhichIsInRES) && VanillaDataFilesList.Contains(FileInDataFolder))
                                     {
                                         var bakfolder = Path.GetDirectoryName(FileInBakFolderWhichIsInRES);
 
@@ -2118,7 +2129,7 @@ namespace AIHelper
                                         {
                                             File.Move(FileInDataFolder, FileInBakFolderWhichIsInRES);//перенос файла из Data в Bak, если там не было
                                             File.Move(FileOfMod, FileInDataFolder);//перенос файла из папки мода в Data
-                                            Operations.AppendLine(FileOfMod + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
+                                            MOToStandartConvertationOperationsList.AppendLine(FileOfMod + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
 
                                             ManageMOMods.SaveGUIDIfZipMod(FileInDataFolder, FileOfMod, ZipmodsGUIDList);
                                         }
@@ -2142,7 +2153,7 @@ namespace AIHelper
                                     try
                                     {
                                         File.Move(FileOfMod, FileInDataFolder);//перенос файла из папки мода в Data
-                                        Operations.AppendLine(FileOfMod + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
+                                        MOToStandartConvertationOperationsList.AppendLine(FileOfMod + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
 
                                         ManageMOMods.SaveGUIDIfZipMod(FileInDataFolder, FileOfMod, ZipmodsGUIDList);
                                     }
@@ -2159,11 +2170,17 @@ namespace AIHelper
                     }
                 }
 
-                File.WriteAllText(ManageSettings.GetMOToStandartConvertationOperationsListFilePath(), Operations.ToString());
-                Operations.Clear();
+                ReplacePathsToVars(ref MOToStandartConvertationOperationsList);
+                File.WriteAllText(ManageSettings.GetMOToStandartConvertationOperationsListFilePath(), MOToStandartConvertationOperationsList.ToString());
+                MOToStandartConvertationOperationsList.Clear();
+
                 var DataWithModsFileslist = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
+                ReplacePathsToVars(ref DataWithModsFileslist);
                 File.WriteAllLines(ManageSettings.GetModdedDataFilesListFilePath(), DataWithModsFileslist);
-                File.WriteAllLines(ManageSettings.GetVanillaDataFilesListFilePath(), DataWithModsFileslist);
+
+                ReplacePathsToVars(ref VanillaDataFilesList);
+                File.WriteAllLines(ManageSettings.GetVanillaDataFilesListFilePath(), VanillaDataFilesList);
+
                 if (ZipmodsGUIDList.Count > 0)
                 {
                     //using (var file = new StreamWriter(ManageSettings.GetZipmodsGUIDListFilePath()))
@@ -2183,9 +2200,10 @@ namespace AIHelper
 
 
                 //записать пути до пустых папок, чтобы при восстановлении восстановить и их
-                if (EmptyFoldersPaths.ToString().Length > 0)
+                if (VanillaDataEmptyFoldersList.ToString().Length > 0)
                 {
-                    File.WriteAllText(ManageSettings.GetVanillaDataEmptyFoldersListFilePath(), EmptyFoldersPaths.ToString());
+                    ReplacePathsToVars(ref VanillaDataEmptyFoldersList);
+                    File.WriteAllText(ManageSettings.GetVanillaDataEmptyFoldersListFilePath(), VanillaDataEmptyFoldersList.ToString());
                 }
 
                 MOmode = false;
@@ -2194,11 +2212,78 @@ namespace AIHelper
             catch (Exception ex)
             {
                 //восстановление файлов в первоначальные папки
-                RestoreMovedFilesLocation(Operations);
+                RestoreMovedFilesLocation(MOToStandartConvertationOperationsList);
 
                 //сообщить об ошибке
                 MessageBox.Show("Mode was not switched. Error:" + Environment.NewLine + ex);
             }
+        }
+
+        /// <summary>
+        /// replace variable to path in string
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        private static string ReplaceVarsToPaths(string str)
+        {
+            return str
+            .Replace(ManageSettings.VarCurrentGameDataPath(), ManageSettings.GetCurrentGameDataPath())
+            .Replace(ManageSettings.VarCurrentGameModsPath(), ManageSettings.GetCurrentGameModsPath())
+            .Replace(ManageSettings.VarCurrentGameMOOverwritePath(), ManageSettings.GetCurrentGameMOOverwritePath());
+        }
+
+        /// <summary>
+        /// replace path to variable in string array
+        /// </summary>
+        /// <param name="sarr"></param>
+        private static void ReplacePathsToVars(ref string[] sarr)
+        {
+            for (int i = 0; i < sarr.Length; i++)
+            {
+                sarr[i] = sarr[i]
+                .Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.VarCurrentGameDataPath())
+                .Replace(ManageSettings.GetCurrentGameModsPath(), ManageSettings.VarCurrentGameModsPath())
+                .Replace(ManageSettings.GetCurrentGameMOOverwritePath(), ManageSettings.VarCurrentGameMOOverwritePath());
+            }
+        }
+
+        /// <summary>
+        /// replace variable to path in string array
+        /// </summary>
+        /// <param name="sarr"></param>
+        private static void ReplaceVarsToPaths(ref string[] sarr)
+        {
+            for (int i = 0; i < sarr.Length; i++)
+            {
+                sarr[i] = sarr[i]
+                .Replace(ManageSettings.VarCurrentGameDataPath(), ManageSettings.GetCurrentGameDataPath())
+                .Replace(ManageSettings.VarCurrentGameModsPath(), ManageSettings.GetCurrentGameModsPath())
+                .Replace(ManageSettings.VarCurrentGameMOOverwritePath(), ManageSettings.GetCurrentGameMOOverwritePath());
+            }
+        }
+
+        /// <summary>
+        /// replace path to variable in string builder
+        /// </summary>
+        /// <param name="sb"></param>
+        private static void ReplacePathsToVars(ref StringBuilder sb)
+        {
+            sb = sb
+                .Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.VarCurrentGameDataPath())
+                .Replace(ManageSettings.GetCurrentGameModsPath(), ManageSettings.VarCurrentGameModsPath())
+                .Replace(ManageSettings.GetCurrentGameMOOverwritePath(), ManageSettings.VarCurrentGameMOOverwritePath());
+        }
+
+        /// <summary>
+        /// replace variable to path in string builder
+        /// </summary>
+        /// <param name="sb"></param>
+        private static void ReplaceVarsToPaths(ref StringBuilder sb)
+        {
+            sb = sb
+                .Replace(ManageSettings.VarCurrentGameDataPath(), ManageSettings.GetCurrentGameDataPath())
+                .Replace(ManageSettings.VarCurrentGameModsPath(), ManageSettings.GetCurrentGameModsPath())
+                .Replace(ManageSettings.VarCurrentGameMOOverwritePath(), ManageSettings.GetCurrentGameMOOverwritePath());
         }
 
         private static bool OfferToSkipTheFileConfirmed(string file)

@@ -19,7 +19,15 @@ namespace AIHelper.Manage
         internal static string GetCurrentGameMOGamePyPluginPath()
         {
 #pragma warning disable CA1308 // Normalize strings to uppercase
-            return Path.Combine(GetMOdirPath(), "plugins", "modorganizer-basic_games", "games", "game_" + GetCurrentGameEXEName().Replace("_64", string.Empty).Replace("_32", string.Empty).ToLowerInvariant() + ".py");
+            return Path.Combine(GetMOdirPath(), "plugins", "modorganizer-basic_games", "games", "game_"
+                + GetCurrentGameEXEName()
+                .Replace("_64", string.Empty)
+                .Replace("_32", string.Empty)
+                .Replace("AI-Syoujyo", "aigirl")
+                .Replace("Honey Select", "honeyselect")
+                .ToLowerInvariant()
+                + ".py"
+                );
 #pragma warning restore CA1308 // Normalize strings to uppercase
         }
 
@@ -806,6 +814,21 @@ namespace AIHelper.Manage
         internal static string GetCurrentGameEXEMOProfileName()
         {
             return ManageMO.GetMOcustomExecutableTitlaByExeName(GetCurrentGameEXEName());
+        }
+
+        internal static string VarCurrentGameDataPath()
+        {
+            return "%CurrentGameDataPath%";
+        }
+
+        internal static string VarCurrentGameModsPath()
+        {
+            return "%CurrentGameModsPath%";
+        }
+
+        internal static string VarCurrentGameMOOverwritePath()
+        {
+            return "%CurrentGameMOOverwritePath%";
         }
     }
 }

@@ -241,6 +241,9 @@
     <Compile Include="Manage\Rules\ModList\RuleModForSideloaderPlugin.cs" />
     <Compile Include="Manage\Rules\ModList\RuleModForBepInexIPA.cs" />
     <Compile Include="Manage\Rules\ModList\RuleModForBepInex.cs" />
+    <Compile Include="Manage\Update\UpdateBase.cs" />
+    <Compile Include="Manage\Update\UpdateMods\UpdateFromGithub.cs" />
+    <Compile Include="Manage\Update\UpdateMods\UpdateModsBase.cs" />
     <Compile Include="SharedData\Data.cs" />
     <Compile Include="UserData\CardframeBack.cs" />
     <Compile Include="UserData\CardframeFront.cs" />

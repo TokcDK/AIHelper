@@ -27,7 +27,7 @@ class IllusionKoikatuGame(BasicGame):
                 QFileInfo(self.gameDirectory(), "Data/Koikatu.exe"),
             ),
             mobase.ExecutableInfo(
-                "Setting",
+                "Settings",
                 QFileInfo(self.gameDirectory(), "Data/InitSetting.exe"),
             ),
             mobase.ExecutableInfo(

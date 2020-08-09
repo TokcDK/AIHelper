@@ -44,6 +44,8 @@ namespace AIHelper.Manage
             /// </summary>
             internal string GitLatestVersionFileDownloadLink;
             internal string GitLinkForVisit;
+            internal string CurrentModName;
+            internal string UpdateFilePath;
 
             public ModGitData(string[] gitinfo)
             {
@@ -91,11 +93,14 @@ namespace AIHelper.Manage
                                 //    report.Add(T._("Update report") + ":" + Environment.NewLine + Environment.NewLine);
                                 //}
 
-                                modGitData = new ModGitData(gitUpdateinfo);
+                                modGitData = new ModGitData(gitUpdateinfo)
+                                {
+                                    CurrentModName = mod
+                                };
 
                                 try
                                 {
-                                    await CheckAndUpdate(mod).ConfigureAwait(true);
+                                    await CheckAndUpdate().ConfigureAwait(true);
                                 }
                                 catch (Exception ex)
                                 {
@@ -119,12 +124,12 @@ namespace AIHelper.Manage
             const string HTMLReportStyle = " style=\"background-color:gray;\"";
             const string HTMLBegin = "<html><body" + HTMLReportStyle + "><h1>";
             const string HTMLAfterHeader = "</h2><hr><br>";
-            const string HTMLBetweenMods = "<br>";
+            const string HTMLBetweenMods = "";//<p> already make new line //"<br>";
             const string HTMLend = "<hr></body></html>";
             static string ReportModGithubPageLinkVisitText;
             private static void ShowReport()
             {
-                ReportModGithubPageLinkVisitText = T._("Visit Github page");
+                ReportModGithubPageLinkVisitText = T._("Open Github page");
                 string ReportMessage;
                 if (report != null && report.Count > 0)
                 {
@@ -134,7 +139,7 @@ namespace AIHelper.Manage
                         string[] lines = line.Split(new[] { "{{visit}}" }, StringSplitOptions.None);
                         if (lines.Length == 2)
                         {
-                            newReport.Add(lines[0].Replace("</p>", (IsHTMLReport ? " " + "<a href=\"" + lines[1] + "\">[" + ReportModGithubPageLinkVisitText + "]</a></p>" : string.Empty)));
+                            newReport.Add(lines[0].Replace("</p>", (IsHTMLReport ? " / " + "<a href=\"" + lines[1] + "\">" + ReportModGithubPageLinkVisitText + "</a></p>" : string.Empty)));
                         }
                         else
                         {
@@ -147,7 +152,7 @@ namespace AIHelper.Manage
                     {
                         IsHTMLReport = true;
                         ReportMessage = File.ReadAllText(ReportFilePath)
-                         .Replace("%BGImageLinkPath%", Path.Combine(ManageSettings.GetAppResDir(), "theme", "default", "report", ManageSettings.GetCurrentGameEXEName() + "BG.jpg").Replace(Path.DirectorySeparatorChar.ToString(),"/"))
+                         .Replace("%BGImageLinkPath%", Path.Combine(ManageSettings.GetAppResDir(), "theme", "default", "report", ManageSettings.GetCurrentGameEXEName() + "BG.jpg").Replace(Path.DirectorySeparatorChar.ToString(), "/"))
                          .Replace("%ModsUpdateReportHeaderText%", T._("Update check report"))
                          .Replace("%SingleModUpdateReportsTextSection%", string.Join(HTMLBetweenMods, newReport));
                     }
@@ -183,7 +188,7 @@ namespace AIHelper.Manage
             }
 
             //static bool RequiestsLimit = false;
-            private async static Task CheckAndUpdate(string mod)
+            private async static Task CheckAndUpdate()
             {
                 System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;//включение tls12 для github
 
@@ -207,24 +212,24 @@ namespace AIHelper.Manage
                 bool IsNewer = false;
                 if (!string.IsNullOrWhiteSpace(modGitData.GitLatestVersionFileDownloadLink) && (IsNewer = IsLatestVersionNewerOfCurrent(modGitData.GitLatestVersion, modGitData.GitCurrentVersion))/*modGitData.GitLatestVersion != modGitData.GitCurrentVersion*/)
                 {
-                    await DownloadTheFile(mod).ConfigureAwait(true);
+                    await DownloadTheFile().ConfigureAwait(true);
                 }
                 else
                 {
                     if (IsNewer /*modGitData.GitLatestVersion != modGitData.GitCurrentVersion*/)
                     {
                         report.Add(
-                            (IsHTMLReport ? "<p style=\"color=orange\">" : string.Empty)
+                            (IsHTMLReport ? "<p style=\"color:orange\">" : string.Empty)
                             + T._("Mod")
                             + " "
-                            + mod
+                            + modGitData.CurrentModName
                             + " "
                             + T._("have new version but file for update not found")
                             + (IsHTMLReport ? "</p>" : string.Empty)
                             + " "
                             + (!string.IsNullOrWhiteSpace(modGitData.GitLinkForVisit) ? "{{visit}}" + modGitData.GitLinkForVisit : string.Empty));
                     }
-                    ManageLogs.Log("GitHub updater> Mod " + mod + " skipped."
+                    ManageLogs.Log("GitHub updater> Mod " + modGitData.CurrentModName + " skipped."
                         + (string.IsNullOrWhiteSpace(modGitData.GitLatestVersionFileDownloadLink) ? " Download link not found. link(" + modGitData.GitLatestVersionFileDownloadLink + ")" : string.Empty)
                         + (!IsNewer ? " Mod versions: current(" + modGitData.GitCurrentVersion + ")/latest(" + modGitData.GitLatestVersion + ")" : string.Empty));
                 }
@@ -295,16 +300,16 @@ namespace AIHelper.Manage
 
             static Form Dwnf;
             static ProgressBar Dwnpb;
-            private async static Task DownloadTheFile(string mod)
+            private async static Task DownloadTheFile()
             {
                 //System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;//включение tls12 для github
 
                 //using (WebClient wc = new WebClient())
                 {
-                    var fileDir = Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), mod);
-                    Directory.CreateDirectory(fileDir);
+                    var UpdateDir = ManageSettings.GetCurrentGameModsUpdateDir(); //Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), modGitData.CurrentModName);
+                    Directory.CreateDirectory(UpdateDir);
 
-                    var fileName = Path.GetFileName(modGitData.GitLatestVersionFileDownloadLink);
+                    var UpdateFileName = Path.GetFileName(modGitData.GitLatestVersionFileDownloadLink);
 
                     //Octokit package Github API variant (60 connections per hour limit)
                     //var github = new GitHubClient(new ProductHeaderValue(GitName));
@@ -329,7 +334,7 @@ namespace AIHelper.Manage
                     {
                         StartPosition = FormStartPosition.CenterScreen,
                         Size = new Size(400, 50),
-                        Text = T._("Downloading") + " " + fileName,
+                        Text = T._("Downloading") + ": " + UpdateFileName,
                         FormBorderStyle = FormBorderStyle.FixedToolWindow
                     };
                     Dwnf.Controls.Add(Dwnpb);
@@ -341,86 +346,268 @@ namespace AIHelper.Manage
                             Dwnpb.Value = ea.ProgressPercentage;
                         }
                     };
-                    var filePath = Path.Combine(fileDir, fileName);
+                    modGitData.UpdateFilePath = Path.Combine(UpdateDir, UpdateFileName);
                     wc.DownloadFileCompleted += (s, ea) =>
                     {
-                        Dwnpb.Dispose();
-                        Dwnf.Dispose();
+                        if (Dwnpb != null)
+                        {
+                            Dwnpb.Dispose();
+                        }
+
+                        if (Dwnf != null)
+                        {
+                            Dwnf.Dispose();
+                        }
                         //MessageBox.Show("Download Complete!");
-                        PerformModUpdateFromArchive(filePath);
+                        PerformModUpdateFromArchive();
                     };
 
-                    await wc.DownloadFileTaskAsync(modGitData.GitLatestVersionFileDownloadLink, Path.Combine(fileDir, fileName)).ConfigureAwait(true);
+                    if (!File.Exists(modGitData.UpdateFilePath))
+                    {
+                        await wc.DownloadFileTaskAsync(modGitData.GitLatestVersionFileDownloadLink, modGitData.UpdateFilePath).ConfigureAwait(true);
+                    }
+                    else
+                    {
+                        if (Dwnpb != null)
+                        {
+                            Dwnpb.Dispose();
+                        }
+
+                        if (Dwnf != null)
+                        {
+                            Dwnf.Dispose();
+                        }
+
+                        PerformModUpdateFromArchive();
+                    }
                 }
             }
 
-            private static void PerformModUpdateFromArchive(string filePath)
+            private static void PerformModUpdateFromArchive()
             {
+                if (!Path.GetFileNameWithoutExtension(modGitData.UpdateFilePath).StartsWith(modGitData.GitFileNamePart, StringComparison.InvariantCultureIgnoreCase)
+                    || !IsLatestVersionNewerOfCurrent(modGitData.GitLatestVersion, modGitData.GitCurrentVersion)
+                    )
+                {
+                    return;
+                }
+
+                //var modname = modGitData.CurrentModName; //Path.GetFileName(Path.GetDirectoryName(filePath));
+                var UpdatingModDirPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modGitData.CurrentModName);
+
+                var OldModBuckupDirPath = Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), "old", modGitData.CurrentModName + "_" + modGitData.GitCurrentVersion);
+                if (Directory.Exists(OldModBuckupDirPath))
+                {
+                    OldModBuckupDirPath += "_" + DateTime.Now.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+                }
+
+                Directory.CreateDirectory(OldModBuckupDirPath);
+
+                bool success = false;
+
                 try
                 {
-                    var modname = Path.GetFileName(Path.GetDirectoryName(filePath));
-                    var TargetModDirPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modname);
+                    MakeBuckup(OldModBuckupDirPath, UpdatingModDirPath);
 
-                    var oldModDirPath = Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), "old", modname + modGitData.GitCurrentVersion);
-                    if (Directory.Exists(oldModDirPath))
+                    int code = 0;
+                    if (!File.Exists(modGitData.UpdateFilePath))
                     {
-                        oldModDirPath += DateTime.Now.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+                        code = 1;
+                    }
+                    else if (Path.GetExtension(modGitData.UpdateFilePath).ToUpperInvariant() != ".ZIP")
+                    {
+                        code = 2;
                     }
 
-                    Directory.CreateDirectory(oldModDirPath);
-
-                    foreach (var folder in Directory.GetDirectories(TargetModDirPath))
+                    if (code == 0)
                     {
-                        Directory.CreateDirectory(Path.GetDirectoryName(folder));
-                        Directory.Move(folder, Path.Combine(oldModDirPath, Path.GetFileName(folder)));
+                        using (ZipArchive archive = ZipFile.OpenRead(modGitData.UpdateFilePath))
+                        {
+                            archive.ExtractToDirectory(UpdatingModDirPath);
+                            success = true;
+                        }
                     }
-                    foreach (var file in Directory.GetFiles(TargetModDirPath))
+                    if (success)
+                    {
+                        //File.Delete(modGitData.UpdateFilePath);
+
+                        RestoreSomeFiles(OldModBuckupDirPath, UpdatingModDirPath);
+
+                        modGitData.GitCurrentVersion = modGitData.GitLatestVersion;
+
+                        ManageINI.WriteINIValue(Path.Combine(UpdatingModDirPath, "meta.ini"), "General", "version", modGitData.GitLatestVersion);
+
+                        report.Add(
+                            (IsHTMLReport ? "<p style=\"color:lightgreen\">" : string.Empty)
+                            + T._("Mod")
+                            + " "
+                            + modGitData.GitName
+                            + " "
+                            + T._("updated to version")
+                            + " "
+                            + modGitData.GitLatestVersion
+                            + (IsHTMLReport ? "</p>" : string.Empty)
+                            + (!string.IsNullOrWhiteSpace(modGitData.GitLinkForVisit) ? "{{visit}}" + modGitData.GitLinkForVisit : string.Empty));
+                    }
+                    else
+                    {
+                        RestoreModFromBuckup(OldModBuckupDirPath, UpdatingModDirPath);
+
+                        report.Add(
+                            (IsHTMLReport ? "<p style=\"color:orange\">" : string.Empty)
+                            + T._("Failed to update mod")
+                            + " "
+                            + modGitData.CurrentModName
+                            + " "
+                            + (code == 1 ? " " + T._("Update file not found") : string.Empty)
+                            + (code == 2 ? " " + T._("Update file not a zip") : string.Empty)
+                            + "</p>"
+                            );
+                    }
+                }
+                catch (Exception ex)
+                {
+                    RestoreModFromBuckup(OldModBuckupDirPath, UpdatingModDirPath);
+
+                    report.Add(
+                        (IsHTMLReport ? "<p style=\"color:red\">" : string.Empty)
+                        + T._("Failed to update mod")
+                        + " "
+                        + modGitData.CurrentModName
+                        + " (" + ex.Message + ") "
+                        + T._("Details in") + " " + Application.ProductName + ".log"
+                        + "</p>"
+                        );
+
+                    ManageLogs.Log("Failed to update mod" + " " + modGitData.CurrentModName + ":" + Environment.NewLine + ex);
+                }
+            }
+
+            private static void RestoreSomeFiles(string OldModBuckupDirPath, string UpdatingModDirPath)
+            {
+                //restore some files files
+                foreach (var file in Directory.GetFiles(OldModBuckupDirPath))
+                {
+                    try
                     {
                         string ext;
-                        if ((ext = Path.GetExtension(file)) == ".ini" || ext == ".cfg" || (Path.GetFileName(Path.GetDirectoryName(file)) == TargetModDirPath && ext.IsPictureExtension()))
+                        if (File.Exists(Path.Combine(UpdatingModDirPath, Path.GetFileName(file))) ||
+                            (
+                                (ext = Path.GetExtension(file)) != ".ini"
+                                && ext != ".cfg"
+                                && !ext.IsPictureExtension()
+                                )
+                            )
                         {
                             continue;
                         }
-                        Directory.CreateDirectory(Path.GetDirectoryName(file));
-                        Directory.Move(file, Path.Combine(oldModDirPath, Path.GetFileName(file)));
+                        var filePath = file.Replace(OldModBuckupDirPath, UpdatingModDirPath);
+                        Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+                        if (File.Exists(file))
+                        {
+                            File.Move(file, filePath);
+                        }
                     }
-
-                    if (Path.GetExtension(filePath) == ".zip")
+                    catch// (Exception ex)
                     {
-                        bool success = false;
-                        using (ZipArchive archive = ZipFile.OpenRead(filePath))
-                        {
-                            try
-                            {
-                                archive.ExtractToDirectory(TargetModDirPath);
-                                success = true;
-                                ManageINI.WriteINIValue(Path.Combine(TargetModDirPath, "meta.ini"), "General", "version", modGitData.GitLatestVersion);
-
-                                report.Add(
-                                    (IsHTMLReport ? "<p style=\"color=lightgreen\">" : string.Empty)
-                                    + T._("Mod")
-                                    + " "
-                                    + modGitData.GitName
-                                    + " "
-                                    + T._("updated to version")
-                                    + " "
-                                    + modGitData.GitLatestVersion
-                                    + (IsHTMLReport ? "</p>" : string.Empty)
-                                    + (!string.IsNullOrWhiteSpace(modGitData.GitLinkForVisit) ? "{{visit}}" + modGitData.GitLinkForVisit : string.Empty));
-                            }
-                            catch (Exception ex)
-                            {
-                                ManageLogs.Log("Error while perform mod update" + Environment.NewLine + ex);
-                            }
-                        }
-                        if (success)
-                        {
-                            File.Delete(filePath);
-                        }
+                        //ManageLogs.Log("Update: Failed to move file to bak dir. error:" + Environment.NewLine + ex);
                     }
                 }
-                catch { }
             }
+
+            private static void RestoreModFromBuckup(string OldModBuckupDirPath, string UpdatingModDirPath)
+            {
+                //restore old dirs
+                foreach (var folder in Directory.GetDirectories(OldModBuckupDirPath))
+                {
+                    try
+                    {
+                        var targetPath = folder.Replace(OldModBuckupDirPath, UpdatingModDirPath);
+                        if (Directory.Exists(targetPath))
+                        {
+                            Directory.Delete(targetPath, true);
+                        }
+                        Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
+                        if (Directory.Exists(folder))
+                        {
+                            Directory.Move(folder, targetPath);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ManageLogs.Log("Restore: Failed to move dir to mod dir. error:" + Environment.NewLine + ex);
+                    }
+                }
+                //restore old files
+                foreach (var file in Directory.GetFiles(OldModBuckupDirPath))
+                {
+                    try
+                    {
+                        var targetPath = file.Replace(OldModBuckupDirPath, UpdatingModDirPath);
+                        if (File.Exists(targetPath))
+                        {
+                            File.Delete(targetPath);
+                        }
+                        Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
+                        if (File.Exists(file))
+                        {
+                            File.Move(file, targetPath);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ManageLogs.Log("Restore: Failed to move file to mod dir. error:" + Environment.NewLine + ex);
+                    }
+                }
+
+                ManageFilesFolders.DeleteEmptySubfolders(OldModBuckupDirPath);
+            }
+
+            private static void MakeBuckup(string OldModBuckupDirPath, string UpdatingModDirPath)
+            {
+
+                //buckup old dirs
+                foreach (var folder in Directory.GetDirectories(UpdatingModDirPath))
+                {
+                    try
+                    {
+                        var backupPath = folder.Replace(UpdatingModDirPath, OldModBuckupDirPath);
+                        Directory.CreateDirectory(Path.GetDirectoryName(backupPath));
+                        if (Directory.Exists(folder))
+                        {
+                            Directory.Move(folder, backupPath);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ManageLogs.Log("Update: Filed to move dir to bak dir. error:" + Environment.NewLine + ex);
+                    }
+                }
+                //buckup old files
+                foreach (var file in Directory.GetFiles(UpdatingModDirPath))
+                {
+                    try
+                    {
+                        if (Path.GetFileName(file) == "meta.ini")
+                        {
+                            continue;
+                        }
+                        //string ext;
+                        //if ((ext = Path.GetExtension(file)) == ".ini" || ext == ".cfg" || (Path.GetFileName(Path.GetDirectoryName(file)) == UpdatingModDirPath && ext.IsPictureExtension()))
+                        //{
+                        //    continue;
+                        //}
+                        var backupPath = file.Replace(UpdatingModDirPath, OldModBuckupDirPath);
+                        Directory.CreateDirectory(Path.GetDirectoryName(backupPath));
+                        File.Move(file, backupPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        ManageLogs.Log("Update: Failed to move file to bak dir. error:" + Environment.NewLine + ex);
+                    }
+                }
+            }
+
             static bool ReportTitle = false;
 
             private static string[] GetIMetaInfo(string ModName)

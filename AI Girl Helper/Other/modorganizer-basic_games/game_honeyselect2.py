@@ -27,7 +27,7 @@ class IllusionHoneySelectGame(BasicGame):
                 QFileInfo(self.gameDirectory(), "Data/HoneySelect2.exe"),
             ),
             mobase.ExecutableInfo(
-                "Setting",
+                "Settings",
                 QFileInfo(self.gameDirectory(), "Data/InitSetting.exe"),
             ),
             mobase.ExecutableInfo(

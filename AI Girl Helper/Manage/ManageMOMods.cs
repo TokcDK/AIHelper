@@ -224,7 +224,7 @@ namespace AIHelper.Manage
                     }
                     catch (Exception ex)
                     {
-                        ManageLogs.Log("BepInExPreloadersFix error:"+Environment.NewLine+ex);
+                        ManageLogs.Log("BepInExPreloadersFix error:" + Environment.NewLine + ex);
                     }
                 }
             }

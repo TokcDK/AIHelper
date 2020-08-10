@@ -44,7 +44,7 @@ namespace AIHelper.Manage
             {
                 string[] FileLines = File.ReadAllLines(MOModlistPath);
                 bool IsEnabled;
-                if (!(IsEnabled=FileLines.Contains("+" + Line.Remove(0, 1))) && !FileLines.Contains("-" + Line.Remove(0, 1)))
+                if (!(IsEnabled = FileLines.Contains("+" + Line.Remove(0, 1))) && !FileLines.Contains("-" + Line.Remove(0, 1)))
                 {
                     int FileLinesLength = FileLines.Length;
                     bool InsertWithMod = InsertWithThisMod.Length > 0;

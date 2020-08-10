@@ -19,12 +19,12 @@ namespace AIHelper.Manage
                         var title = sr.ReadLine().Trim().Trim(',');
                         title = title.Trim().Trim(',');
                         var binary = sr.ReadLine();
-                        binary = binary.Trim().Trim(',', ')','"');
+                        binary = binary.Trim().Trim(',', ')', '"');
                         binary = binary.Replace('/', Path.DirectorySeparatorChar);
                         binary = binary
                             .Replace("QFileInfo(", string.Empty)
                             .Replace("self.gameDirectory(), \"", Path.GetDirectoryName(ManageSettings.GetCurrentGameDataPath()) + Path.DirectorySeparatorChar);
-                        executables.Add(title,binary);
+                        executables.Add(title, binary);
                     }
                 }
             }

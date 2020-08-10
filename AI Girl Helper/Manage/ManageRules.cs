@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AIHelper.Manage
@@ -193,12 +192,12 @@ namespace AIHelper.Manage
                                 //}
 
                                 INI.WriteINI("General", "gameName", ManageSettings.GETMOCurrentGameName(), false);
-                                if(!metainiFixesApplyed)
+                                if (!metainiFixesApplyed)
                                 {
                                     metainiFixesApplyed = true;
-                                    report.Add(Environment.NewLine+ "meta.ini fixes:");
+                                    report.Add(Environment.NewLine + "meta.ini fixes:");
                                 }
-                                report.Add(Path.GetFileName(mod)+": "+T._("fixed game name"));
+                                report.Add(Path.GetFileName(mod) + ": " + T._("fixed game name"));
                                 INIchanged = true;
 
                             }

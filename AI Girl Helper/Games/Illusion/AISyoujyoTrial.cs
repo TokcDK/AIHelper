@@ -16,5 +16,10 @@
         {
             return T._("AI-Girl") + "Trial";
         }
+
+        public override string GetGamePrefix()
+        {
+            return "AI";
+        }
     }
 }

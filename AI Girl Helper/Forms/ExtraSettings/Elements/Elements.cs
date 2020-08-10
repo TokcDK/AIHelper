@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace AIHelper.Forms.ExtraSettings.Elements
 {
@@ -25,7 +20,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements
 
         internal Form ElementToPlace;
 
-        internal abstract Form ElementToShow 
+        internal abstract Form ElementToShow
         {
             get;
             set;

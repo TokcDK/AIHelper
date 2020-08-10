@@ -30,6 +30,11 @@ namespace AIHelper.Games
             return T._("Honey Select 2: Libido");
         }
 
+        public override string GetGamePrefix()
+        {
+            return "HS2";
+        }
+
         public override string[,] GetObjectsForSymLinksPaths()
         {
             return new string[,]

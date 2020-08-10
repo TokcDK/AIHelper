@@ -62,7 +62,7 @@ namespace AIHelper.Manage
             }
             catch (Exception ex)
             {
-                ManageLogs.Log("GetTagInfoTextFromHTML error:"+Environment.NewLine+ex);
+                ManageLogs.Log("GetTagInfoTextFromHTML error:" + Environment.NewLine + ex);
                 return string.Empty;
             }
         }

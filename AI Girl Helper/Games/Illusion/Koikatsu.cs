@@ -32,6 +32,11 @@ namespace AI_Helper.Games
             return "CharaStudio";
         }
 
+        public override string GetGamePrefix()
+        {
+            return "KK";
+        }
+
         public override string[,] GetObjectsForSymLinksPaths()
         {
             return new string[,]

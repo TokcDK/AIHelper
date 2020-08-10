@@ -30,7 +30,7 @@ namespace AIHelper.Manage.Rules.ModList
                 if (!string.IsNullOrWhiteSpace(outModName) && outModName != "data" && outModName != "overwrite")
                 {
                     //ManageMO.ActivateInsertModIfPossible(outModName);
-                    if(!modlistData.EnabledModsList.Contains(outModName))
+                    if (!modlistData.EnabledModsList.Contains(outModName))
                     {
                         Result = "was enabled required mod" + " \"" + outModName + "\"";
                     }

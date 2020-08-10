@@ -40,6 +40,11 @@ namespace AIHelper.Games
             return T._("Honey Select");
         }
 
+        public override string GetGamePrefix()
+        {
+            return "HS";
+        }
+
         public override string[,] GetObjectsForSymLinksPaths()
         {
             return new string[,]

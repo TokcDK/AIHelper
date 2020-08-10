@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace AIHelper.Manage.Rules.ModList
 {
@@ -47,7 +44,7 @@ namespace AIHelper.Manage.Rules.ModList
                 var metaNotes = ManageINI.GetINIValueIfExist(metaPath, "notes", "General");
                 //var metaComments = ManageINI.GetINIValueIfExist(metaPath, "comments", "General");
 
-                var mlinfo = ManageHTML.GetTagInfoTextFromHTML(metaNotes, "mlinfo::").Replace("\\\\","\\");
+                var mlinfo = ManageHTML.GetTagInfoTextFromHTML(metaNotes, "mlinfo::").Replace("\\\\", "\\");
 
                 if (!string.IsNullOrWhiteSpace(mlinfo))
                 {

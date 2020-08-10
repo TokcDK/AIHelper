@@ -21,5 +21,10 @@
         {
             return "StudioNEOV2";
         }
+
+        public override string GetGamePrefix()
+        {
+            return "AI";
+        }
     }
 }

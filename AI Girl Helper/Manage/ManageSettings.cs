@@ -818,17 +818,17 @@ namespace AIHelper.Manage
 
         internal static string VarCurrentGameDataPath()
         {
-            return "%CurrentGameDataPath%";
+            return "%Data%";
         }
 
         internal static string VarCurrentGameModsPath()
         {
-            return "%CurrentGameModsPath%";
+            return "%Mods%";
         }
 
         internal static string VarCurrentGameMOOverwritePath()
         {
-            return "%CurrentGameMOOverwritePath%";
+            return "%Overwrite%";
         }
     }
 }

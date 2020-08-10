@@ -15,16 +15,18 @@ namespace AI_Helper.Games
 
         public void DetectRootGame()
         {
-            if (DetectedGame == null)
+            if (DetectedGame != null && File.Exists(Path.Combine(AIHelper.Properties.Settings.Default.ApplicationStartupPath, "Data", DetectedGame.GetGameEXEName() + ".exe")))
             {
-                List<Game> ListOfGames = GamesList.GetGamesList();
-                foreach (var game in ListOfGames)
+                return;
+            }
+
+            List<Game> ListOfGames = GamesList.GetGamesList();
+            foreach (var game in ListOfGames)
+            {
+                if (File.Exists(Path.Combine(AIHelper.Properties.Settings.Default.ApplicationStartupPath, "Data", game.GetGameEXEName() + ".exe")))
                 {
-                    if (File.Exists(Path.Combine(AIHelper.Properties.Settings.Default.ApplicationStartupPath, "Data", game.GetGameEXEName()+".exe")))
-                    {
-                        DetectedGame = game;
-                        break;
-                    }
+                    DetectedGame = game;
+                    break;
                 }
             }
         }
@@ -70,6 +72,12 @@ namespace AI_Helper.Games
         {
             DetectRootGame();
             return DetectedGame.GetObjectsForSymLinksPaths();
+        }
+
+        public override string GetGamePrefix()
+        {
+            DetectRootGame();
+            return DetectedGame.GetGamePrefix();
         }
     }
 }

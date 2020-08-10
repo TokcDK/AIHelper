@@ -77,7 +77,7 @@ namespace AIHelper.Manage
                             && findData.cFileName != ".."
                             && !ManageStrings.IsStringContainsAnyExclusion(findData.cFileName, exclusions)
                             && ((recursive && IsDir(findData.dwFileAttributes) && !CheckDirectoryNullOrEmpty_Fast(path + Path.DirectorySeparatorChar + findData.cFileName + Path.DirectorySeparatorChar, Mask, exclusions, recursive))
-                            || Mask.Length==1 || findData.cFileName.EndsWith(Mask.Remove(0, 1), StringComparison.InvariantCultureIgnoreCase)
+                            || Mask.Length == 1 || findData.cFileName.EndsWith(Mask.Remove(0, 1), StringComparison.InvariantCultureIgnoreCase)
                             ))
                         {
                             empty = false;

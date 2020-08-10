@@ -21,6 +21,27 @@ namespace AIHelper.Manage.Rules.ModList
         internal abstract string Description();
         internal virtual bool IsHardRule { get => true; }
 
+        protected static string GetGamePrefixByExeName()
+        {
+            if (ManageSettings.GetCurrentGameEXEName() == "Koikatu")
+            {
+                return "KK";
+            }
+            else if (ManageSettings.GetCurrentGameEXEName() == "AI-Syoujyo")
+            {
+                return "AI";
+            }
+            else if (ManageSettings.GetCurrentGameEXEName() == "HoneySelect_64" || ManageSettings.GetCurrentGameEXEName() == "HoneySelect_32")
+            {
+                return "HS";
+            }
+            else if (ManageSettings.GetCurrentGameEXEName() == "HoneySelect2")
+            {
+                return "HS2";
+            }
+            return string.Empty;
+        }
+
 
         internal string Result = string.Empty;
 
@@ -261,7 +282,7 @@ namespace AIHelper.Manage.Rules.ModList
 
         private bool ParseREQ(string modname, string rule)
         {
-            var ruleData = rule.StartsWith(modlistData.RulesTagREQ, StringComparison.InvariantCulture)?rule.Remove(0, 4).Trim() : rule;
+            var ruleData = rule.StartsWith(modlistData.RulesTagREQ, StringComparison.InvariantCulture) ? rule.Remove(0, 4).Trim() : rule;
             var or = ruleData.Contains(modlistData.RulesTagOR);
             var and = ruleData.Contains(modlistData.RulesTagAND);
             if (or && and)

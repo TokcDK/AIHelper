@@ -44,6 +44,8 @@ namespace AIHelper.Games
 
         public abstract string GetGameEXEName();
 
+        public abstract string GetGamePrefix();
+
         public virtual string GetGameEXENameVR()
         {
             return GetGameEXEName() + "VR";

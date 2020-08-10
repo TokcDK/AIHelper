@@ -32,7 +32,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements
 
         internal override string Title => "XUnity.Autotranslator";
 
-        internal override Form ElementToShow { get => XUAElement; set => XUAElement=value as XUnityAutotranslatorForm; }
+        internal override Form ElementToShow { get => XUAElement; set => XUAElement = value as XUnityAutotranslatorForm; }
 
         internal override void Show(Form parentForm)
         {

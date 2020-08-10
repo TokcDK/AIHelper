@@ -142,7 +142,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
             }
             else
             {
-                if(BepInExSettingsLogCheckedListBox.CheckedItems.Count == BepInExSettingsLogCheckedListBox.Items.Count)
+                if (BepInExSettingsLogCheckedListBox.CheckedItems.Count == BepInExSettingsLogCheckedListBox.Items.Count)
                 {
                     LevelsValue = "All";
                 }
@@ -218,19 +218,19 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
             WriteLevels();
         }
 
-        private void clbCheckAllItems(CheckedListBox clb=null)
+        private void clbCheckAllItems(CheckedListBox clb = null)
         {
             if (clb == null)
                 clb = BepInExSettingsLogCheckedListBox;
 
             var cnt = clb.Items.Count;
-            for (int i=0; i< cnt;i++)
+            for (int i = 0; i < cnt; i++)
             {
                 clb.SetItemCheckState(i, CheckState.Checked);
             }
         }
 
-        private void clbUncheckAllItems(CheckedListBox clb= null)
+        private void clbUncheckAllItems(CheckedListBox clb = null)
         {
             if (clb == null)
                 clb = BepInExSettingsLogCheckedListBox;
@@ -302,7 +302,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
         {
             if (BepInExSettingsLogCheckBox.Checked)
             {
-                ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExSettingsLogCheckBox, BepInExSettingsDisplayedLogLevelLabel,false, GetDiscConsoleSectionName());
+                ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExSettingsLogCheckBox, BepInExSettingsDisplayedLogLevelLabel, false, GetDiscConsoleSectionName());
             }
         }
     }

@@ -207,7 +207,7 @@ namespace AIHelper.Manage
                     }
                 };
             }
-            
+
 
             Dictionary<string, string> IniValuesDict = new Dictionary<string, string>();
 
@@ -1129,7 +1129,7 @@ namespace AIHelper.Manage
                         int linescount = lines.Length;
                         for (int i = 1; i < linescount; i++) // 1- означает пропуск нулевой строки, где комментарий
                         {
-                            if (lines[i].StartsWith("+",StringComparison.InvariantCulture))
+                            if (lines[i].StartsWith("+", StringComparison.InvariantCulture))
                             {
                                 string SetupXmlPath = Path.Combine(Properties.Settings.Default.ModsPath, lines[i].Remove(0, 1), "UserData", "setup.xml");
                                 if (File.Exists(SetupXmlPath))

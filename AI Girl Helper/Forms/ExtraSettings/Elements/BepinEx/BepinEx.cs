@@ -2,7 +2,7 @@
 
 namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
 {
-    class BepinEx:Elements, System.IDisposable
+    class BepinEx : Elements, System.IDisposable
     {
         public BepinEx()
         {
@@ -18,7 +18,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
 
         internal override string Title => throw new System.NotImplementedException();
 
-        internal override Form ElementToShow { get => BepinExElement; set => BepinExElement=value as BepinExForm; }
+        internal override Form ElementToShow { get => BepinExElement; set => BepinExElement = value as BepinExForm; }
 
         internal override bool Check()
         {

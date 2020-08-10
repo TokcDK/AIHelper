@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace AIHelper.Manage.Rules.ModList
 {
@@ -7,20 +6,7 @@ namespace AIHelper.Manage.Rules.ModList
     {
         public RuleModForOverlaysPlugin(ModListData modlistData) : base(modlistData)
         {
-            CurrentGamePrefix = GetGamePrefix();            
-        }
-
-        private static string GetGamePrefix()
-        {
-            if (ManageSettings.GetCurrentGameEXEName() == "Koikatu")
-            {
-                return "KK";
-            }
-            else if (ManageSettings.GetCurrentGameEXEName() == "AI-Syoujyo")
-            {
-                return "AI";
-            }
-            return string.Empty;
+            CurrentGamePrefix = GetGamePrefixByExeName();
         }
 
         string CurrentGamePrefix = string.Empty;

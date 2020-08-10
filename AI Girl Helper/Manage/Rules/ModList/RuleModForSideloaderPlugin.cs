@@ -17,7 +17,7 @@ namespace AIHelper.Manage.Rules.ModList
                 ||
                 !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(
                 Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName, "mods"), "*.zipmod", null, true
-                )) && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName, "BepInEx", "plugins", "KK_BepisPlugins", "Sideloader.dll"));
+                )) && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName, "BepInEx", "plugins", GetGamePrefixByExeName() + "_BepisPlugins", "Sideloader.dll"));
         }
 
         internal override string Description()
@@ -27,7 +27,7 @@ namespace AIHelper.Manage.Rules.ModList
 
         internal override bool Fix()
         {
-            return FindModWithThePath("BepInEx" + Path.DirectorySeparatorChar + "plugins" + Path.DirectorySeparatorChar + "KK_BepisPlugins" + Path.DirectorySeparatorChar + "Sideloader.dll", out outModName);
+            return FindModWithThePath("BepInEx" + Path.DirectorySeparatorChar + "plugins" + Path.DirectorySeparatorChar + GetGamePrefixByExeName() + "_BepisPlugins" + Path.DirectorySeparatorChar + "Sideloader.dll", out outModName);
         }
     }
 }

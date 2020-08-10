@@ -46,6 +46,7 @@ namespace AIHelper.Manage
             internal string GitLinkForVisit;
             internal string CurrentModName;
             internal string UpdateFilePath;
+            internal Dictionary<string, string> UpdateFilenameSubPathData;
 
             public ModGitData(string[] gitinfo)
             {
@@ -54,6 +55,10 @@ namespace AIHelper.Manage
                 GitFileNamePart = gitinfo[2];
                 GitCurrentVersion = gitinfo[3];
                 GitLatestVersionFileDownloadLink = string.Empty;
+                UpdateFilenameSubPathData = new Dictionary<string, string>
+                {
+                    { "ScriptLoader.dll", "BepInEx" + Path.DirectorySeparatorChar + "plugins" }
+                };
             }
         }
 
@@ -137,9 +142,9 @@ namespace AIHelper.Manage
                     foreach (var line in report)
                     {
                         string[] lines = line.Split(new[] { "{{visit}}" }, StringSplitOptions.None);
-                        if (lines.Length == 2)
+                        if (lines.Length == 2 && IsHTMLReport)
                         {
-                            newReport.Add(lines[0].Replace("</p>", (IsHTMLReport ? " / " + "<a href=\"" + lines[1] + "\">" + ReportModGithubPageLinkVisitText + "</a></p>" : string.Empty)));
+                            newReport.Add(lines[0].Replace("</p>", (IsHTMLReport ? " / " + "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"" + lines[1] + "\">" + ReportModGithubPageLinkVisitText + "</a></p>" : string.Empty)));
                         }
                         else
                         {
@@ -410,22 +415,41 @@ namespace AIHelper.Manage
                     MakeBuckup(OldModBuckupDirPath, UpdatingModDirPath);
 
                     int code = 0;
+                    string ext;
                     if (!File.Exists(modGitData.UpdateFilePath))
+                    {
+                        code = -1;
+                    }
+                    else if ((ext = Path.GetExtension(modGitData.UpdateFilePath).ToUpperInvariant()) == ".ZIP")
                     {
                         code = 1;
                     }
-                    else if (Path.GetExtension(modGitData.UpdateFilePath).ToUpperInvariant() != ".ZIP")
+                    else if (ext == ".DLL")
                     {
                         code = 2;
                     }
 
-                    if (code == 0)
+                    if (code > 0)
                     {
-                        using (ZipArchive archive = ZipFile.OpenRead(modGitData.UpdateFilePath))
+                        if (code == 1)
                         {
-                            archive.ExtractToDirectory(UpdatingModDirPath);
-                            success = true;
+                            using (ZipArchive archive = ZipFile.OpenRead(modGitData.UpdateFilePath))
+                            {
+                                archive.ExtractToDirectory(UpdatingModDirPath);
+                            }
                         }
+                        else if (code == 2)
+                        {
+                            var FullFileName = Path.GetFileName(modGitData.UpdateFilePath);
+                            if (modGitData.UpdateFilenameSubPathData.ContainsKey(FullFileName))
+                            {
+                                var targetDir = UpdatingModDirPath + Path.DirectorySeparatorChar + modGitData.UpdateFilenameSubPathData[FullFileName];
+                                Directory.CreateDirectory(targetDir);
+                                var targetFilePath = Path.Combine(targetDir, FullFileName);
+                                File.Move(modGitData.UpdateFilePath, targetFilePath);
+                            }
+                        }
+                        success = true;
                     }
                     if (success)
                     {

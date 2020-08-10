@@ -440,13 +440,27 @@ namespace AIHelper.Manage
                         }
                         else if (code == 2)
                         {
-                            var FullFileName = Path.GetFileName(modGitData.UpdateFilePath);
-                            if (modGitData.UpdateFilenameSubPathData.ContainsKey(FullFileName))
+                            var FullDllFileName = Path.GetFileName(modGitData.UpdateFilePath);
+                            if (modGitData.UpdateFilenameSubPathData.ContainsKey(FullDllFileName))
                             {
-                                var targetDir = UpdatingModDirPath + Path.DirectorySeparatorChar + modGitData.UpdateFilenameSubPathData[FullFileName];
+                                var targetDir = UpdatingModDirPath + Path.DirectorySeparatorChar + modGitData.UpdateFilenameSubPathData[FullDllFileName];
                                 Directory.CreateDirectory(targetDir);
-                                var targetFilePath = Path.Combine(targetDir, FullFileName);
+                                var targetFilePath = Path.Combine(targetDir, FullDllFileName);
                                 File.Move(modGitData.UpdateFilePath, targetFilePath);
+                            }
+                            else
+                            {
+                                foreach(var dll in Directory.EnumerateFiles(OldModBuckupDirPath, "*.dll", SearchOption.AllDirectories))
+                                {
+                                    if(Path.GetFileName(dll)== FullDllFileName)
+                                    {
+                                        var targetDir = Path.GetDirectoryName(dll).Replace(OldModBuckupDirPath, UpdatingModDirPath);
+                                        Directory.CreateDirectory(targetDir);
+                                        var targetFilePath = Path.Combine(targetDir, FullDllFileName);
+                                        File.Move(modGitData.UpdateFilePath, targetFilePath);
+                                        break;
+                                    }
+                                }
                             }
                         }
                         success = true;

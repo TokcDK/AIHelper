@@ -9,14 +9,19 @@ namespace AIHelper.Manage
         public static void ChangeXmlValue(string xmlpath, string nodename, string value)
         {
             //https://stackoverflow.com/questions/2137957/update-value-in-xml-file
+#pragma warning disable CA3075 // Insecure DTD processing in XML
             XmlDocument xmlDoc = new XmlDocument();
+#pragma warning restore CA3075 // Insecure DTD processing in XML
             if (File.Exists(xmlpath))
             {
+#pragma warning disable CA3075 // Insecure DTD processing in XML
                 xmlDoc.Load(xmlpath);
+#pragma warning restore CA3075 // Insecure DTD processing in XML
             }
             else
             {
                 //если не был создан, создать с нуля
+#pragma warning disable CA3075 // Insecure DTD processing in XML
                 xmlDoc.LoadXml("<?xml version=\"1.0\" encoding=\"utf-16\"?>"
                     + Environment.NewLine + "<Setting>"
                     + Environment.NewLine + "  <Size>1280 x 720 (16 : 9)</Size>"
@@ -27,6 +32,7 @@ namespace AIHelper.Manage
                     + Environment.NewLine + "  <Display>0</Display>"
                     + Environment.NewLine + "  <Language>0</Language>"
                     + Environment.NewLine + "</Setting>");
+#pragma warning restore CA3075 // Insecure DTD processing in XML
             }
 
             XmlNode node = xmlDoc.SelectSingleNode(nodename);
@@ -47,9 +53,13 @@ namespace AIHelper.Manage
             if (File.Exists(xmlpath))
             {
                 //https://stackoverflow.com/questions/2137957/update-value-in-xml-file
+#pragma warning disable CA3075 // Insecure DTD processing in XML
                 XmlDocument xmlDoc = new XmlDocument();
+#pragma warning restore CA3075 // Insecure DTD processing in XML
 
+#pragma warning disable CA3075 // Insecure DTD processing in XML
                 xmlDoc.Load(xmlpath);
+#pragma warning restore CA3075 // Insecure DTD processing in XML
 
                 XmlNode node = xmlDoc.SelectSingleNode(nodename);
 
@@ -71,9 +81,13 @@ namespace AIHelper.Manage
                 try
                 {
                     //https://stackoverflow.com/questions/2137957/update-value-in-xml-file
+#pragma warning disable CA3075 // Insecure DTD processing in XML
                     XmlDocument xmlDoc = new XmlDocument();
+#pragma warning restore CA3075 // Insecure DTD processing in XML
 
+#pragma warning disable CA3075 // Insecure DTD processing in XML
                     xmlDoc.Load(xmlStream);
+#pragma warning restore CA3075 // Insecure DTD processing in XML
 
                     XmlNode node = xmlDoc.SelectSingleNode(nodename);
 

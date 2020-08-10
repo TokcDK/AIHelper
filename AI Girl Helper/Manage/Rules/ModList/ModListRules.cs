@@ -21,28 +21,6 @@ namespace AIHelper.Manage.Rules.ModList
         internal abstract string Description();
         internal virtual bool IsHardRule { get => true; }
 
-        protected static string GetGamePrefixByExeName()
-        {
-            if (ManageSettings.GetCurrentGameEXEName() == "Koikatu")
-            {
-                return "KK";
-            }
-            else if (ManageSettings.GetCurrentGameEXEName() == "AI-Syoujyo")
-            {
-                return "AI";
-            }
-            else if (ManageSettings.GetCurrentGameEXEName() == "HoneySelect_64" || ManageSettings.GetCurrentGameEXEName() == "HoneySelect_32")
-            {
-                return "HS";
-            }
-            else if (ManageSettings.GetCurrentGameEXEName() == "HoneySelect2")
-            {
-                return "HS2";
-            }
-            return string.Empty;
-        }
-
-
         internal string Result = string.Empty;
 
         /// <summary>
@@ -54,10 +32,19 @@ namespace AIHelper.Manage.Rules.ModList
         /// <returns></returns>
         protected bool FindModWithThePath(string inSubPath, out string FoundModName, int modeANDOR = 0, bool DontAddCandidate = false)
         {
-            if (inSubPath.TrimStart().StartsWith(modlistData.RulesTagFile, System.StringComparison.InvariantCulture))
-            {
-                inSubPath = inSubPath.Remove(0, modlistData.RulesTagFile.Length).TrimStart();
-            }
+            return FindModWithThePath( new[] { inSubPath }, out FoundModName, modeANDOR, DontAddCandidate);
+        }
+
+        /// <summary>
+        /// True if mod with the inSubPath will be found
+        /// </summary>
+        /// <param name="inSubPath">input path for search</param>
+        /// <param name="FoundModName">mod name of found mod</param>
+        /// <param name="modeANDOR">0-none, 1-and, 2-or</param>
+        /// <returns></returns>
+        protected bool FindModWithThePath(string[] inSubPath, out string FoundModName, int modeANDOR = 0, bool DontAddCandidate = false)
+        {
+            RemoveRulesTagFile(ref inSubPath);
 
             if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName) + Path.DirectorySeparatorChar + inSubPath))
             {
@@ -65,9 +52,8 @@ namespace AIHelper.Manage.Rules.ModList
                 return true;
             }
 
-            if (ManageMOMods.IsFileDirExistsInDataOROverwrite(inSubPath, out string Source))
+            if (IsExistInDataOrOverwrite(inSubPath, out FoundModName))
             {
-                FoundModName = Source;
                 return true;
             }
 
@@ -84,51 +70,54 @@ namespace AIHelper.Manage.Rules.ModList
                     AlreadyChecked.Add(SubModName);
                 }
 
-                var filePath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), SubModName) + Path.DirectorySeparatorChar + inSubPath;
-                if (SubModName != modlistData.ModName && File.Exists(filePath))
+                for (int i = 0; i < inSubPath.Length; i++)
                 {
-                    FoundModName = SubModName;
-
-                    //when mod enabled return true and not add
-                    if (modlistData.EnabledModsList.Contains(FoundModName))
+                    var filePath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), SubModName) + Path.DirectorySeparatorChar + inSubPath[i];
+                    if (SubModName != modlistData.ModName && File.Exists(filePath))
                     {
-                        return true;
-                    }
+                        FoundModName = SubModName;
 
-                    ///Check if path not exists in rest of Enabled mods
-                    if (IsRestOfEnabledModsContainsSameFile(AlreadyChecked, inSubPath))
-                    {
-                        return true;
-                    }
-
-                    //else if mod not enabled then add it for activation
-                    if (!DontAddCandidate)
-                    {
-                        if (modeANDOR > 0)
+                        //when mod enabled return true and not add
+                        if (modlistData.EnabledModsList.Contains(FoundModName))
                         {
-                            if (!modlistData.ModsMustBeEnabledCandidates.Contains(FoundModName))
+                            return true;
+                        }
+
+                        ///Check if path not exists in rest of Enabled mods
+                        if (IsRestOfEnabledModsContainsSameFile(AlreadyChecked, inSubPath[i]))
+                        {
+                            return true;
+                        }
+
+                        //else if mod not enabled then add it for activation
+                        if (!DontAddCandidate)
+                        {
+                            if (modeANDOR > 0)
                             {
-                                modlistData.ModsMustBeEnabledCandidates.Add(FoundModName);
+                                if (!modlistData.ModsMustBeEnabledCandidates.Contains(FoundModName))
+                                {
+                                    modlistData.ModsMustBeEnabledCandidates.Add(FoundModName);
+                                }
+                            }
+                            else
+                            {
+                                if (!modlistData.ModsMustBeEnabledCandidates.Contains(FoundModName))
+                                {
+                                    modlistData.ModsMustBeEnabledCandidates.Add(FoundModName);
+                                }
+                                //if (!modlistData.ModsMustBeEnabled.Contains(FoundModName))
+                                //{
+                                //    modlistData.ModsMustBeEnabled.Add(FoundModName);
+                                //}
                             }
                         }
-                        else
-                        {
-                            if (!modlistData.ModsMustBeEnabledCandidates.Contains(FoundModName))
-                            {
-                                modlistData.ModsMustBeEnabledCandidates.Add(FoundModName);
-                            }
-                            //if (!modlistData.ModsMustBeEnabled.Contains(FoundModName))
-                            //{
-                            //    modlistData.ModsMustBeEnabled.Add(FoundModName);
-                            //}
-                        }
-                    }
 
-                    //if (!ModsMustBeEnabled.Contains(FoundModName))
-                    //{
-                    //    ModsMustBeEnabled.Add(FoundModName);
-                    //}
-                    return true;
+                        //if (!ModsMustBeEnabled.Contains(FoundModName))
+                        //{
+                        //    ModsMustBeEnabled.Add(FoundModName);
+                        //}
+                        return true;
+                    }
                 }
             }
             if (!modlistData.ModsMustBeDisabled.Contains(modlistData.ModName))
@@ -137,6 +126,31 @@ namespace AIHelper.Manage.Rules.ModList
             }
 
             return false;
+        }
+
+        private static bool IsExistInDataOrOverwrite(string[] inSubPath, out string FoundModName)
+        {
+            for (int i = 0; i < inSubPath.Length; i++)
+            {
+                if (ManageMOMods.IsFileDirExistsInDataOROverwrite(inSubPath[i], out string Source))
+                {
+                    FoundModName = Source;
+                    return true;
+                }
+            }
+            FoundModName = string.Empty;
+            return false;
+        }
+
+        private void RemoveRulesTagFile(ref string[] inSubPath)
+        {
+            for (int i = 0; i < inSubPath.Length; i++)
+            {
+                if (inSubPath[i].TrimStart().StartsWith(modlistData.RulesTagFile, System.StringComparison.InvariantCulture))
+                {
+                    inSubPath[i] = inSubPath[i].Remove(0, modlistData.RulesTagFile.Length).TrimStart();
+                }
+            }
         }
 
         private bool IsRestOfEnabledModsContainsSameFile(HashSet<string> AlreadyChecked, string inSubPath)

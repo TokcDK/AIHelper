@@ -24,10 +24,32 @@ namespace AIHelper.Manage
                 modlistData.AllModsList = ManageMO.GetModNamesListFromActiveMOProfile(false);
                 modlistData.EnabledModsList = ManageMO.GetModNamesListFromActiveMOProfile();
 
-                foreach (var ModName in modlistData.EnabledModsList)
+                using (Form CheckForm = new Form())
                 {
-                    modlistData.ModName = ModName;
-                    ApplyRules();
+                    CheckForm.Size = new System.Drawing.Size(300,50);
+                    CheckForm.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+                    CheckForm.StartPosition = FormStartPosition.CenterScreen;
+                    CheckForm.Text = T._("Modlist check/fix by known rules")+"...";
+                    using (ProgressBar CheckProgress = new ProgressBar())
+                    {
+                        CheckProgress.Dock = DockStyle.Fill;
+                        CheckProgress.Maximum = modlistData.EnabledModsList.Length;
+                        int cnt = 0;
+                        CheckForm.Controls.Add(CheckProgress);
+                        CheckForm.Show();
+                        foreach (var ModName in modlistData.EnabledModsList)
+                        {
+                            if(cnt< CheckProgress.Maximum)
+                            {
+                                CheckProgress.Value = cnt;
+                            }
+
+                            modlistData.ModName = ModName;
+                            ApplyRules();
+
+                            cnt++;
+                        }
+                    }
                 }
 
                 var ListChanged = modlistData.Report.Count > 0;
@@ -95,7 +117,31 @@ namespace AIHelper.Manage
                            + string.Join(Environment.NewLine, modlistData.Report);
                     }
 
-                    MessageBox.Show(ReportMessage);
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                    Form ReportForm = new Form
+                    {
+                        Text = T._("Modlist check report"),
+                        //ReportForm.Size = new System.Drawing.Size(500,700);
+                        AutoSize = true,
+                        FormBorderStyle = FormBorderStyle.FixedDialog,
+                        StartPosition = FormStartPosition.CenterScreen
+                    };
+#pragma warning restore CA2000 // Dispose objects before losing scope
+                    RichTextBox ReportTB = new RichTextBox
+                    {
+                        Size = new System.Drawing.Size(700, 900),
+                        WordWrap = true,
+                        Dock = DockStyle.Fill,
+                        ReadOnly = true,
+                        //ReportTB.BackColor = System.Drawing.Color.Gray;
+                        Text = ReportMessage,
+                        ScrollBars = RichTextBoxScrollBars.Both
+                    };
+
+                    ReportForm.Controls.Add(ReportTB);
+                    ReportForm.Show();
+
+                    //MessageBox.Show(ReportMessage);
                 }
                 else
                 {

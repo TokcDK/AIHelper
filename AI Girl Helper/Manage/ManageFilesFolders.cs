@@ -2,6 +2,7 @@
 using Soft160.Data.Cryptography;
 using SymbolicLinkSupport;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -413,15 +414,67 @@ namespace AIHelper.Manage
 
                     foreach (string dir in Directory.EnumerateDirectories(SourceFolder))
                     {
-                        Directory.Move(dir, Path.Combine(TargetFolder, Path.GetFileName(dir)));
+                        var targetDir = Path.Combine(TargetFolder, Path.GetFileName(dir));
+                        if (Directory.Exists(targetDir))
+                        {
+                            targetDir = GetNewNewWithCurrentDate(targetDir, false);
+                        }
+
+                        Directory.Move(dir, targetDir);
                     }
                     foreach (string file in Directory.EnumerateFiles(SourceFolder))
                     {
-                        File.Move(file, Path.Combine(TargetFolder, Path.GetFileName(file)));
+                        var sourceFile = file;
+                        var targetFile = Path.Combine(TargetFolder, Path.GetFileName(sourceFile));
+
+                        try
+                        {
+                            if (File.Exists(targetFile))
+                            {
+                                FileInfo sFile;
+                                FileInfo tFile;
+                                if ((sFile = new FileInfo(sourceFile)).LastWriteTime > (tFile=new FileInfo(targetFile)).LastWriteTime)
+                                {
+                                    File.Move(targetFile, GetNewNewWithCurrentDate(targetFile));
+                                }
+                                else if(sFile.LastWriteTime == tFile.LastWriteTime
+                                    && sFile.Length== tFile.Length
+                                    )
+                                {
+                                    File.Delete(targetFile);
+                                }
+                                else
+                                {
+                                    targetFile = GetNewNewWithCurrentDate(targetFile);
+                                }
+                            }
+
+                            File.Move(sourceFile, targetFile);
+                        }
+                        catch (IOException ex)
+                        {
+                            ManageLogs.Log("Error in MoveContentOfSourceFolderToTargetFolderAndThenCleanSource:" + Environment.NewLine + "sourceFilePath=" + sourceFile + Environment.NewLine + "targetFilePath=" + targetFile + Environment.NewLine + ex);
+                        }
                     }
                 }
 
                 DeleteEmptySubfolders(SourceFolder, true);
+            }
+        }
+
+        private static string GetNewNewWithCurrentDate(string target, bool isFile = true)
+        {
+            if (isFile)
+            {
+                return Path.Combine(Path.GetDirectoryName(target)
+                     + Path.GetFileNameWithoutExtension(target)
+                     + "_" + DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss", CultureInfo.InvariantCulture)
+                     + Path.GetExtension(target)
+                    );
+            }
+            else
+            {
+                return target + "_" + DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss", CultureInfo.InvariantCulture);
             }
         }
 

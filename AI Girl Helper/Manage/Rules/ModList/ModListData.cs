@@ -19,11 +19,15 @@ namespace AIHelper.Manage.Rules.ModList
         internal List<ModListRules> RulesList;
         internal List<string> Report = new List<string>();
         internal string ModName;
+        internal string GamePrefix;
         internal Dictionary<string, string[]> rulesDict;
         internal Dictionary<string, string[]> rulesDictOverall;
 
+
+
         public ModListData()
         {
+            GamePrefix = ManageSettings.GetListOfExistsGames()[ManageSettings.GetCurrentGameIndex()].GetGamePrefix();
             RulesList = GetListOfSubClasses<ModListRules>(this);
         }
 

@@ -23,11 +23,17 @@ namespace AIHelper.Manage
                 html.LoadHtml(htmlString);
 
                 //html.DocumentNode.SelectNodes("//" + tag + "/text()").ToList().ForEach(x => MessageBox.Show(x.InnerHtml));
-                var listOfSpanTexts = html.DocumentNode.SelectNodes("//" + HTMLtag + "/text()").ToList();
+                var nodes = html.DocumentNode.SelectNodes("//" + HTMLtag + "/text()");
+                if (nodes == null)
+                {
+                    return string.Empty;
+                }
+                var listOfTexts= nodes.ToList();
+
                 var info = new List<string>();
                 var loadingmlinfo = false;
                 string tx;
-                foreach (var text in listOfSpanTexts)
+                foreach (var text in listOfTexts)
                 {
                     if (loadingmlinfo)
                     {

@@ -43,15 +43,13 @@ namespace AIHelper.Manage
         //быстро проверить, пуста ли папка
         public static bool CheckDirectoryNullOrEmpty_Fast(string path, string Mask = "*", string[] exclusions = null, bool recursive = false)
         {
-            if (string.IsNullOrEmpty(path) || !Directory.Exists(path)
-                //|| (DirectoryInfoExtensions.IsSymbolicLink(new DirectoryInfo(path)) && !DirectoryInfoExtensions.IsSymbolicLinkValid(new DirectoryInfo(path)))
-                )
+            if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
             {
                 return true; //return true if path is empty
                 //throw new ArgumentNullException(path);
             }
-
-            if (DirectoryInfoExtensions.IsSymbolicLink(new DirectoryInfo(path)) && !DirectoryInfoExtensions.IsSymbolicLinkValid(new DirectoryInfo(path)))
+            DirectoryInfo di;
+            if ((di = new DirectoryInfo(path)).IsSymbolicLink() && !di.IsSymbolicLinkValid())
             {
                 return true;
             }
@@ -104,32 +102,20 @@ namespace AIHelper.Manage
             return dwFileAttributes == 16;
         }
 
-        public static bool IsAnyFileExistsInTheDir(string dirPath, string extension, bool AllDirectories = true)
+        public static bool IsAnyFileExistsInTheDir(string dirPath, string extension = ".*", bool AllDirectories = true)
         {
-            if (extension.Length == 0 || dirPath.Length == 0)
+            if (dirPath.Length == 0)
             {
                 return false;
             }
 
-            if (extension.Substring(0, 1) != ".")
+            if (extension.Length > 0 && extension[0] != '.')
             {
                 extension = "." + extension;
             }
 
-            if (AllDirectories)
-            {
-                foreach (var file in (Directory.EnumerateFileSystemEntries(dirPath, "*" + extension, SearchOption.AllDirectories)))
-                {
-                    return true;
-                }
-            }
-            else
-            {
-                foreach (var file in (Directory.EnumerateFileSystemEntries(dirPath, "*" + extension)))
-                {
-                    return true;
-                }
-            }
+            if (!CheckDirectoryNullOrEmpty_Fast(dirPath, "*" + extension, null, AllDirectories))
+                return true;
 
             return false;
         }
@@ -141,9 +127,10 @@ namespace AIHelper.Manage
                 return;
             }
 
+            DirectoryInfo dir = new DirectoryInfo(dirPath);
             try
             {
-                if (DirectoryInfoExtensions.IsSymbolicLink(new DirectoryInfo(dirPath)) && !DirectoryInfoExtensions.IsSymbolicLinkValid(new DirectoryInfo(dirPath)))
+                if (dir.IsSymbolicLink() && !dir.IsSymbolicLinkValid())
                 {
                     return;
                 }
@@ -166,7 +153,8 @@ namespace AIHelper.Manage
 
             if (DeleteThisDir && CheckDirectoryNullOrEmpty_Fast(dirPath)/*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)
             {
-                Directory.Delete(dirPath);
+                dir.Attributes = FileAttributes.Normal;
+                dir.Delete();
             }
         }
 
@@ -335,6 +323,11 @@ namespace AIHelper.Manage
             return string.Empty;
         }
 
+        /// <summary>
+        /// If In The Folder Only One Folder Get it Name
+        /// </summary>
+        /// <param name="folderPath"></param>
+        /// <returns></returns>
         public static string IfInTheFolderOnlyOneFolderGetItName(string folderPath)
         {
             string AloneFolderName = string.Empty;
@@ -361,6 +354,11 @@ namespace AIHelper.Manage
             return AloneFolderName;
         }
 
+        /// <summary>
+        /// Move Folder To One Level Up If It Alone And Return Moved Folder Path
+        /// </summary>
+        /// <param name="folderPath"></param>
+        /// <returns></returns>
         public static string MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(string folderPath)
         {
             string AloneFolderName = IfInTheFolderOnlyOneFolderGetItName(folderPath);
@@ -401,6 +399,11 @@ namespace AIHelper.Manage
             return folderPath;
         }
 
+        /// <summary>
+        /// Move content Of Source Folder To Target Folder And Then Clean Source
+        /// </summary>
+        /// <param name="SourceFolder"></param>
+        /// <param name="TargetFolder"></param>
         internal static void MoveContentOfSourceFolderToTargetFolderAndThenCleanSource(string SourceFolder, string TargetFolder)
         {
             if (Directory.Exists(SourceFolder))
@@ -433,12 +436,12 @@ namespace AIHelper.Manage
                             {
                                 FileInfo sFile;
                                 FileInfo tFile;
-                                if ((sFile = new FileInfo(sourceFile)).LastWriteTime > (tFile=new FileInfo(targetFile)).LastWriteTime)
+                                if ((sFile = new FileInfo(sourceFile)).LastWriteTime > (tFile = new FileInfo(targetFile)).LastWriteTime)
                                 {
                                     File.Move(targetFile, GetNewNewWithCurrentDate(targetFile));
                                 }
-                                else if(sFile.LastWriteTime == tFile.LastWriteTime
-                                    && sFile.Length== tFile.Length
+                                else if (sFile.LastWriteTime == tFile.LastWriteTime
+                                    && sFile.Length == tFile.Length
                                     )
                                 {
                                     File.Delete(targetFile);

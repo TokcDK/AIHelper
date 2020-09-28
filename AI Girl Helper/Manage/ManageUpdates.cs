@@ -17,8 +17,12 @@ namespace AIHelper.Manage
         /// <summary>
         /// GitHub mod data storing here for version checking/update time
         /// </summary>
-        class ModGitData
+        internal class UpdateData
         {
+            /// <summary>
+            /// True when mod updating else MO itself
+            /// </summary>
+            internal bool IsMod;
             /// <summary>
             /// Parent folder for repository
             /// </summary>
@@ -47,8 +51,10 @@ namespace AIHelper.Manage
             internal string CurrentModName;
             internal string UpdateFilePath;
             internal Dictionary<string, string> UpdateFilenameSubPathData;
+            internal List<string> report;
+            internal bool IsHTMLReport = true;
 
-            public ModGitData(string[] gitinfo)
+            public UpdateData(string[] gitinfo)
             {
                 GitOwner = gitinfo[0];
                 GitName = gitinfo[1];
@@ -64,7 +70,7 @@ namespace AIHelper.Manage
 
         internal static class Mods
         {
-            static ModGitData modGitData;
+            static UpdateData updateData;
             static List<string> report;
             internal async static void CheckMods()
             {
@@ -85,6 +91,11 @@ namespace AIHelper.Manage
                         ProgressForm.FormBorderStyle = FormBorderStyle.FixedToolWindow;
                         ProgressForm.Show();
                         int ind = 0;
+
+                        System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;//включение tls12 для github
+
+                        UpdateMOItself();
+
                         foreach (var mod in AllModsList)
                         {
                             PBar.Value = ind;
@@ -98,9 +109,10 @@ namespace AIHelper.Manage
                                 //    report.Add(T._("Update report") + ":" + Environment.NewLine + Environment.NewLine);
                                 //}
 
-                                modGitData = new ModGitData(gitUpdateinfo)
+                                updateData = new UpdateData(gitUpdateinfo)
                                 {
-                                    CurrentModName = mod
+                                    CurrentModName = mod,
+                                    IsMod = true
                                 };
 
                                 try
@@ -123,6 +135,10 @@ namespace AIHelper.Manage
 
                 ShowReport();
                 wc.Dispose();
+            }
+
+            private static void UpdateMOItself()
+            {
             }
 
             static bool IsHTMLReport = true;
@@ -195,15 +211,13 @@ namespace AIHelper.Manage
             //static bool RequiestsLimit = false;
             private async static Task CheckAndUpdate()
             {
-                System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;//включение tls12 для github
-
                 //var GitOwner = gitinfo[0];
                 //var GitName = gitinfo[1];
                 //var GitFileNamePart = gitinfo[2];
                 //gitinfo[3] = gitinfo[3].TrimFileVersion();
                 //var currentVersion = gitinfo[3];
 
-                modGitData.GitCurrentVersion = modGitData.GitCurrentVersion.TrimFileVersion();
+                updateData.GitCurrentVersion = updateData.GitCurrentVersion.TrimFileVersion();
 
                 //try
                 //{
@@ -212,10 +226,10 @@ namespace AIHelper.Manage
 
                 GetLatestGithubVersion();
 
-                modGitData.GitLatestVersion = modGitData.GitLatestVersion.TrimFileVersion();
+                updateData.GitLatestVersion = updateData.GitLatestVersion.TrimFileVersion();
 
                 bool IsNewer = false;
-                if (!string.IsNullOrWhiteSpace(modGitData.GitLatestVersionFileDownloadLink) && (IsNewer = IsLatestVersionNewerOfCurrent(modGitData.GitLatestVersion, modGitData.GitCurrentVersion))/*modGitData.GitLatestVersion != modGitData.GitCurrentVersion*/)
+                if (!string.IsNullOrWhiteSpace(updateData.GitLatestVersionFileDownloadLink) && (IsNewer = IsLatestVersionNewerOfCurrent(updateData.GitLatestVersion, updateData.GitCurrentVersion))/*modGitData.GitLatestVersion != modGitData.GitCurrentVersion*/)
                 {
                     await DownloadTheFile().ConfigureAwait(true);
                 }
@@ -227,16 +241,16 @@ namespace AIHelper.Manage
                             (IsHTMLReport ? "<p style=\"color:orange\">" : string.Empty)
                             + T._("Mod")
                             + " "
-                            + modGitData.CurrentModName
+                            + updateData.CurrentModName
                             + " "
                             + T._("have new version but file for update not found")
                             + (IsHTMLReport ? "</p>" : string.Empty)
                             + " "
-                            + (!string.IsNullOrWhiteSpace(modGitData.GitLinkForVisit) ? "{{visit}}" + modGitData.GitLinkForVisit : string.Empty));
+                            + (!string.IsNullOrWhiteSpace(updateData.GitLinkForVisit) ? "{{visit}}" + updateData.GitLinkForVisit : string.Empty));
                     }
-                    ManageLogs.Log("GitHub updater> Mod " + modGitData.CurrentModName + " skipped."
-                        + (string.IsNullOrWhiteSpace(modGitData.GitLatestVersionFileDownloadLink) ? " Download link not found. link(" + modGitData.GitLatestVersionFileDownloadLink + ")" : string.Empty)
-                        + (!IsNewer ? " Mod versions: current(" + modGitData.GitCurrentVersion + ")/latest(" + modGitData.GitLatestVersion + ")" : string.Empty));
+                    ManageLogs.Log("GitHub updater> Mod " + updateData.CurrentModName + " skipped."
+                        + (string.IsNullOrWhiteSpace(updateData.GitLatestVersionFileDownloadLink) ? " Download link not found. link(" + updateData.GitLatestVersionFileDownloadLink + ")" : string.Empty)
+                        + (!IsNewer ? " Mod versions: current(" + updateData.GitCurrentVersion + ")/latest(" + updateData.GitLatestVersion + ")" : string.Empty));
                 }
                 //}
                 //catch (RateLimitExceededException ex)
@@ -286,15 +300,15 @@ namespace AIHelper.Manage
             {
                 //using (WebClient wc = new WebClient())
                 {
-                    modGitData.GitLinkForVisit = "https://github.com/" + modGitData.GitOwner + "/" + modGitData.GitName + "/releases/latest";
-                    var LatestReleasePage = wc.DownloadString(modGitData.GitLinkForVisit);
+                    updateData.GitLinkForVisit = "https://github.com/" + updateData.GitOwner + "/" + updateData.GitName + "/releases/latest";
+                    var LatestReleasePage = wc.DownloadString(updateData.GitLinkForVisit);
                     var version = Regex.Match(LatestReleasePage, "/releases/tag/[^\"]+\"");
-                    modGitData.GitLatestVersion = version.Value.Remove(version.Value.Length - 1, 1).Remove(0, 14);
-                    var link2file = Regex.Match(LatestReleasePage, @"href\=""/" + modGitData.GitOwner + "/" + modGitData.GitName + "/releases/download/" + modGitData.GitLatestVersion + "/" + modGitData.GitFileNamePart + "[^\"]+\"");
+                    updateData.GitLatestVersion = version.Value.Remove(version.Value.Length - 1, 1).Remove(0, 14);
+                    var link2file = Regex.Match(LatestReleasePage, @"href\=""/" + updateData.GitOwner + "/" + updateData.GitName + "/releases/download/" + updateData.GitLatestVersion + "/" + updateData.GitFileNamePart + "[^\"]+\"");
 
                     if (link2file.Value.Length > 7 && link2file.Value.StartsWith("href=", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        modGitData.GitLatestVersionFileDownloadLink = "https://github.com/" + link2file.Value.Remove(link2file.Value.Length - 1, 1).Remove(0, 6);
+                        updateData.GitLatestVersionFileDownloadLink = "https://github.com/" + link2file.Value.Remove(link2file.Value.Length - 1, 1).Remove(0, 6);
                     }
                     else
                     {
@@ -314,7 +328,7 @@ namespace AIHelper.Manage
                     var UpdateDir = ManageSettings.GetCurrentGameModsUpdateDir(); //Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), modGitData.CurrentModName);
                     Directory.CreateDirectory(UpdateDir);
 
-                    var UpdateFileName = Path.GetFileName(modGitData.GitLatestVersionFileDownloadLink);
+                    var UpdateFileName = Path.GetFileName(updateData.GitLatestVersionFileDownloadLink);
 
                     //Octokit package Github API variant (60 connections per hour limit)
                     //var github = new GitHubClient(new ProductHeaderValue(GitName));
@@ -351,7 +365,7 @@ namespace AIHelper.Manage
                             Dwnpb.Value = ea.ProgressPercentage;
                         }
                     };
-                    modGitData.UpdateFilePath = Path.Combine(UpdateDir, UpdateFileName);
+                    updateData.UpdateFilePath = Path.Combine(UpdateDir, UpdateFileName);
                     wc.DownloadFileCompleted += (s, ea) =>
                     {
                         if (Dwnpb != null)
@@ -367,9 +381,9 @@ namespace AIHelper.Manage
                         PerformModUpdateFromArchive();
                     };
 
-                    if (!File.Exists(modGitData.UpdateFilePath))
+                    if (!File.Exists(updateData.UpdateFilePath))
                     {
-                        await wc.DownloadFileTaskAsync(modGitData.GitLatestVersionFileDownloadLink, modGitData.UpdateFilePath).ConfigureAwait(true);
+                        await wc.DownloadFileTaskAsync(updateData.GitLatestVersionFileDownloadLink, updateData.UpdateFilePath).ConfigureAwait(true);
                     }
                     else
                     {
@@ -390,17 +404,22 @@ namespace AIHelper.Manage
 
             private static void PerformModUpdateFromArchive()
             {
-                if (!Path.GetFileNameWithoutExtension(modGitData.UpdateFilePath).StartsWith(modGitData.GitFileNamePart, StringComparison.InvariantCultureIgnoreCase)
-                    || !IsLatestVersionNewerOfCurrent(modGitData.GitLatestVersion, modGitData.GitCurrentVersion)
+                if (!Path.GetFileNameWithoutExtension(updateData.UpdateFilePath).StartsWith(updateData.GitFileNamePart, StringComparison.InvariantCultureIgnoreCase)
+                    || !IsLatestVersionNewerOfCurrent(updateData.GitLatestVersion, updateData.GitCurrentVersion)
                     )
                 {
                     return;
                 }
 
-                //var modname = modGitData.CurrentModName; //Path.GetFileName(Path.GetDirectoryName(filePath));
-                var UpdatingModDirPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modGitData.CurrentModName);
+                if (!updateData.IsMod)
+                {
+                    return;
+                }
 
-                var OldModBuckupDirPath = Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), "old", modGitData.CurrentModName + "_" + modGitData.GitCurrentVersion);
+                //var modname = modGitData.CurrentModName; //Path.GetFileName(Path.GetDirectoryName(filePath));
+                var UpdatingModDirPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), updateData.CurrentModName);
+
+                var OldModBuckupDirPath = Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), "old", updateData.CurrentModName + "_" + updateData.GitCurrentVersion);
                 if (Directory.Exists(OldModBuckupDirPath))
                 {
                     OldModBuckupDirPath += "_" + DateTime.Now.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
@@ -416,11 +435,11 @@ namespace AIHelper.Manage
 
                     int code = 0;
                     string ext;
-                    if (!File.Exists(modGitData.UpdateFilePath))
+                    if (!File.Exists(updateData.UpdateFilePath))
                     {
                         code = -1;
                     }
-                    else if ((ext = Path.GetExtension(modGitData.UpdateFilePath).ToUpperInvariant()) == ".ZIP")
+                    else if ((ext = Path.GetExtension(updateData.UpdateFilePath).ToUpperInvariant()) == ".ZIP")
                     {
                         code = 1;
                     }
@@ -433,20 +452,20 @@ namespace AIHelper.Manage
                     {
                         if (code == 1)
                         {
-                            using (ZipArchive archive = ZipFile.OpenRead(modGitData.UpdateFilePath))
+                            using (ZipArchive archive = ZipFile.OpenRead(updateData.UpdateFilePath))
                             {
                                 archive.ExtractToDirectory(UpdatingModDirPath);
                             }
                         }
                         else if (code == 2)
                         {
-                            var FullDllFileName = Path.GetFileName(modGitData.UpdateFilePath);
-                            if (modGitData.UpdateFilenameSubPathData.ContainsKey(FullDllFileName))
+                            var FullDllFileName = Path.GetFileName(updateData.UpdateFilePath);
+                            if (updateData.UpdateFilenameSubPathData.ContainsKey(FullDllFileName))
                             {
-                                var targetDir = UpdatingModDirPath + Path.DirectorySeparatorChar + modGitData.UpdateFilenameSubPathData[FullDllFileName];
+                                var targetDir = UpdatingModDirPath + Path.DirectorySeparatorChar + updateData.UpdateFilenameSubPathData[FullDllFileName];
                                 Directory.CreateDirectory(targetDir);
                                 var targetFilePath = Path.Combine(targetDir, FullDllFileName);
-                                File.Move(modGitData.UpdateFilePath, targetFilePath);
+                                File.Move(updateData.UpdateFilePath, targetFilePath);
                             }
                             else
                             {
@@ -457,7 +476,7 @@ namespace AIHelper.Manage
                                         var targetDir = Path.GetDirectoryName(dll).Replace(OldModBuckupDirPath, UpdatingModDirPath);
                                         Directory.CreateDirectory(targetDir);
                                         var targetFilePath = Path.Combine(targetDir, FullDllFileName);
-                                        File.Move(modGitData.UpdateFilePath, targetFilePath);
+                                        File.Move(updateData.UpdateFilePath, targetFilePath);
                                         break;
                                     }
                                 }
@@ -471,21 +490,21 @@ namespace AIHelper.Manage
 
                         RestoreSomeFiles(OldModBuckupDirPath, UpdatingModDirPath);
 
-                        modGitData.GitCurrentVersion = modGitData.GitLatestVersion;
+                        updateData.GitCurrentVersion = updateData.GitLatestVersion;
 
-                        ManageINI.WriteINIValue(Path.Combine(UpdatingModDirPath, "meta.ini"), "General", "version", modGitData.GitLatestVersion);
+                        ManageINI.WriteINIValue(Path.Combine(UpdatingModDirPath, "meta.ini"), "General", "version", updateData.GitLatestVersion);
 
                         report.Add(
                             (IsHTMLReport ? "<p style=\"color:lightgreen\">" : string.Empty)
                             + T._("Mod")
                             + " "
-                            + modGitData.GitName
+                            + updateData.GitName
                             + " "
                             + T._("updated to version")
                             + " "
-                            + modGitData.GitLatestVersion
+                            + updateData.GitLatestVersion
                             + (IsHTMLReport ? "</p>" : string.Empty)
-                            + (!string.IsNullOrWhiteSpace(modGitData.GitLinkForVisit) ? "{{visit}}" + modGitData.GitLinkForVisit : string.Empty));
+                            + (!string.IsNullOrWhiteSpace(updateData.GitLinkForVisit) ? "{{visit}}" + updateData.GitLinkForVisit : string.Empty));
                     }
                     else
                     {
@@ -495,7 +514,7 @@ namespace AIHelper.Manage
                             (IsHTMLReport ? "<p style=\"color:orange\">" : string.Empty)
                             + T._("Failed to update mod")
                             + " "
-                            + modGitData.CurrentModName
+                            + updateData.CurrentModName
                             + " "
                             + (code == 1 ? " " + T._("Update file not found") : string.Empty)
                             + (code == 2 ? " " + T._("Update file not a zip") : string.Empty)
@@ -511,13 +530,13 @@ namespace AIHelper.Manage
                         (IsHTMLReport ? "<p style=\"color:red\">" : string.Empty)
                         + T._("Failed to update mod")
                         + " "
-                        + modGitData.CurrentModName
+                        + updateData.CurrentModName
                         + " (" + ex.Message + ") "
                         + T._("Details in") + " " + Application.ProductName + ".log"
                         + "</p>"
                         );
 
-                    ManageLogs.Log("Failed to update mod" + " " + modGitData.CurrentModName + ":" + Environment.NewLine + ex);
+                    ManageLogs.Log("Failed to update mod" + " " + updateData.CurrentModName + ":" + Environment.NewLine + ex);
                 }
             }
 

@@ -4,6 +4,18 @@ namespace AIHelper.Manage
 {
     internal static class ManageStringsExtensions
     {
+        internal static string ToLongPath(this string Path, bool IsFile = true, bool AlreadyChecked = false)
+        {
+            if (AlreadyChecked || (((IsFile && Path.Length > 259) || (!IsFile && Path.Length > 247)) && Path.Substring(0, 4) != @"\\?\"))
+            {
+                return @"\\?\" + Path;
+            }
+            else
+            {
+                return Path;
+            }
+        }
+
         internal static double GetProductVersionToFloatNumber(string FileProductVersion)
         {
             var v = FileProductVersion.Split('.');

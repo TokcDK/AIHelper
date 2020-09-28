@@ -218,8 +218,8 @@ namespace AIHelper.Games
             if (Directory.Exists(GameMPAltDirNamePath) && !Directory.Exists(GameMOPath))
             {
                 //Directory.CreateDirectory(MO);
-                CopyFolder.Copy(Path.Combine(GameMPAltDirNamePath, "Profiles"), Path.Combine(GameMOPath, "Profiles"));
-                CopyFolder.Copy(Path.Combine(GameMPAltDirNamePath, "Overwrite"), Path.Combine(GameMOPath, "Overwrite"));
+                CopyFolder.CopyAll(Path.Combine(GameMPAltDirNamePath, "Profiles"), Path.Combine(GameMOPath, "Profiles"));
+                CopyFolder.CopyAll(Path.Combine(GameMPAltDirNamePath, "Overwrite"), Path.Combine(GameMOPath, "Overwrite"));
                 File.Copy(Path.Combine(GameMPAltDirNamePath, "categories.dat"), Path.Combine(GameMOPath, "categories.dat"));
                 File.Copy(Path.Combine(GameMPAltDirNamePath, "ModOrganizer.ini"), Path.Combine(GameMOPath, "ModOrganizer.ini"));
             }

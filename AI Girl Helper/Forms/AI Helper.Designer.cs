@@ -82,11 +82,8 @@
             this.FullScreenCheckBox = new System.Windows.Forms.CheckBox();
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
             this.ToolsPagePanel = new System.Windows.Forms.Panel();
-            this.btnMessageTest = new System.Windows.Forms.Button();
             this.btnUpdateMods = new System.Windows.Forms.Button();
-            this.btnUpdate = new System.Windows.Forms.Button();
             this.ToolsFixModListButton = new System.Windows.Forms.Button();
-            this.testSubWindow = new System.Windows.Forms.Button();
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
@@ -798,11 +795,8 @@
             // ToolsPagePanel
             // 
             this.ToolsPagePanel.BackColor = System.Drawing.Color.Gray;
-            this.ToolsPagePanel.Controls.Add(this.btnMessageTest);
             this.ToolsPagePanel.Controls.Add(this.btnUpdateMods);
-            this.ToolsPagePanel.Controls.Add(this.btnUpdate);
             this.ToolsPagePanel.Controls.Add(this.ToolsFixModListButton);
-            this.ToolsPagePanel.Controls.Add(this.testSubWindow);
             this.ToolsPagePanel.Controls.Add(this.Install2MODirPathOpenFolderLinkLabel);
             this.ToolsPagePanel.Controls.Add(this.InstallInModsButton);
             this.ToolsPagePanel.Controls.Add(this.MOCommonModeSwitchButton);
@@ -811,20 +805,6 @@
             this.ToolsPagePanel.Name = "ToolsPagePanel";
             this.ToolsPagePanel.Size = new System.Drawing.Size(340, 155);
             this.ToolsPagePanel.TabIndex = 1;
-            // 
-            // btnMessageTest
-            // 
-            this.btnMessageTest.BackColor = System.Drawing.Color.Silver;
-            this.btnMessageTest.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnMessageTest.ForeColor = System.Drawing.Color.Black;
-            this.btnMessageTest.Location = new System.Drawing.Point(136, 86);
-            this.btnMessageTest.Name = "btnMessageTest";
-            this.btnMessageTest.Size = new System.Drawing.Size(81, 30);
-            this.btnMessageTest.TabIndex = 27;
-            this.btnMessageTest.Text = "test";
-            this.btnMessageTest.UseVisualStyleBackColor = false;
-            this.btnMessageTest.Visible = false;
-            this.btnMessageTest.Click += new System.EventHandler(this.btnMessageTest_Click);
             // 
             // btnUpdateMods
             // 
@@ -839,20 +819,6 @@
             this.btnUpdateMods.UseVisualStyleBackColor = false;
             this.btnUpdateMods.Click += new System.EventHandler(this.btnUpdateMods_Click);
             // 
-            // btnUpdate
-            // 
-            this.btnUpdate.BackColor = System.Drawing.Color.Silver;
-            this.btnUpdate.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnUpdate.ForeColor = System.Drawing.Color.Black;
-            this.btnUpdate.Location = new System.Drawing.Point(121, 3);
-            this.btnUpdate.Name = "btnUpdate";
-            this.btnUpdate.Size = new System.Drawing.Size(96, 30);
-            this.btnUpdate.TabIndex = 25;
-            this.btnUpdate.Text = "UpdateTest";
-            this.btnUpdate.UseVisualStyleBackColor = false;
-            this.btnUpdate.Visible = false;
-            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
-            // 
             // ToolsFixModListButton
             // 
             this.ToolsFixModListButton.BackColor = System.Drawing.Color.Silver;
@@ -865,20 +831,6 @@
             this.ToolsFixModListButton.Text = "Fix ModList";
             this.ToolsFixModListButton.UseVisualStyleBackColor = false;
             this.ToolsFixModListButton.Click += new System.EventHandler(this.ToolsFixModListButton_Click);
-            // 
-            // testSubWindow
-            // 
-            this.testSubWindow.BackColor = System.Drawing.Color.Silver;
-            this.testSubWindow.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.testSubWindow.ForeColor = System.Drawing.Color.Black;
-            this.testSubWindow.Location = new System.Drawing.Point(136, 122);
-            this.testSubWindow.Name = "testSubWindow";
-            this.testSubWindow.Size = new System.Drawing.Size(81, 30);
-            this.testSubWindow.TabIndex = 21;
-            this.testSubWindow.Text = "SubWindow";
-            this.testSubWindow.UseVisualStyleBackColor = false;
-            this.testSubWindow.Visible = false;
-            this.testSubWindow.Click += new System.EventHandler(this.TestSubWindow_Click);
             // 
             // Install2MODirPathOpenFolderLinkLabel
             // 
@@ -1012,14 +964,11 @@
         private System.Windows.Forms.LinkLabel SetupXmlLinkLabel;
         private System.Windows.Forms.LinkLabel OpenHelpLinkLabel;
         private System.Windows.Forms.TextBox CurrentGameTitleTextBox;
-        private System.Windows.Forms.Button testSubWindow;
         private System.Windows.Forms.Button ToolsFixModListButton;
         private System.Windows.Forms.CheckBox VRGameCheckBox;
         private System.Windows.Forms.LinkLabel CreateShortcutLinkLabel;
         private System.Windows.Forms.LinkLabel FixRegistryLinkLabel;
-        private System.Windows.Forms.Button btnUpdate;
         private System.Windows.Forms.Button btnUpdateMods;
-        private System.Windows.Forms.Button btnMessageTest;
     }
 }
 

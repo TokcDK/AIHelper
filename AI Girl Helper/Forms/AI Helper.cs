@@ -1034,11 +1034,6 @@ namespace AIHelper
             IsBetaTest = File.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "IsBetaTest.txt"));
 
             //Debug
-            btnCCCCPmods.Visible = IsDebug;
-            btnHTML2Text.Visible = IsDebug;
-            btnMakeSnapShot.Visible = IsDebug;
-            btnFixMOMods.Visible = IsDebug;
-            btnUpdate.Visible = IsDebug;
 
             //Beta
             btnUpdateMods.Visible = IsDebug || IsBetaTest;

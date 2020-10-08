@@ -85,12 +85,8 @@
             this.btnMessageTest = new System.Windows.Forms.Button();
             this.btnUpdateMods = new System.Windows.Forms.Button();
             this.btnUpdate = new System.Windows.Forms.Button();
-            this.btnCCCCPmods = new System.Windows.Forms.Button();
-            this.btnHTML2Text = new System.Windows.Forms.Button();
             this.ToolsFixModListButton = new System.Windows.Forms.Button();
             this.testSubWindow = new System.Windows.Forms.Button();
-            this.btnMakeSnapShot = new System.Windows.Forms.Button();
-            this.btnFixMOMods = new System.Windows.Forms.Button();
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
@@ -805,12 +801,8 @@
             this.ToolsPagePanel.Controls.Add(this.btnMessageTest);
             this.ToolsPagePanel.Controls.Add(this.btnUpdateMods);
             this.ToolsPagePanel.Controls.Add(this.btnUpdate);
-            this.ToolsPagePanel.Controls.Add(this.btnCCCCPmods);
-            this.ToolsPagePanel.Controls.Add(this.btnHTML2Text);
             this.ToolsPagePanel.Controls.Add(this.ToolsFixModListButton);
             this.ToolsPagePanel.Controls.Add(this.testSubWindow);
-            this.ToolsPagePanel.Controls.Add(this.btnMakeSnapShot);
-            this.ToolsPagePanel.Controls.Add(this.btnFixMOMods);
             this.ToolsPagePanel.Controls.Add(this.Install2MODirPathOpenFolderLinkLabel);
             this.ToolsPagePanel.Controls.Add(this.InstallInModsButton);
             this.ToolsPagePanel.Controls.Add(this.MOCommonModeSwitchButton);
@@ -861,34 +853,6 @@
             this.btnUpdate.Visible = false;
             this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
             // 
-            // btnCCCCPmods
-            // 
-            this.btnCCCCPmods.BackColor = System.Drawing.Color.Silver;
-            this.btnCCCCPmods.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnCCCCPmods.ForeColor = System.Drawing.Color.Black;
-            this.btnCCCCPmods.Location = new System.Drawing.Point(223, 3);
-            this.btnCCCCPmods.Name = "btnCCCCPmods";
-            this.btnCCCCPmods.Size = new System.Drawing.Size(112, 30);
-            this.btnCCCCPmods.TabIndex = 24;
-            this.btnCCCCPmods.Text = "Get CCCCP mods";
-            this.btnCCCCPmods.UseVisualStyleBackColor = false;
-            this.btnCCCCPmods.Visible = false;
-            this.btnCCCCPmods.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // btnHTML2Text
-            // 
-            this.btnHTML2Text.BackColor = System.Drawing.Color.Silver;
-            this.btnHTML2Text.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnHTML2Text.ForeColor = System.Drawing.Color.Black;
-            this.btnHTML2Text.Location = new System.Drawing.Point(223, 39);
-            this.btnHTML2Text.Name = "btnHTML2Text";
-            this.btnHTML2Text.Size = new System.Drawing.Size(112, 30);
-            this.btnHTML2Text.TabIndex = 23;
-            this.btnHTML2Text.Text = "html2text";
-            this.btnHTML2Text.UseVisualStyleBackColor = false;
-            this.btnHTML2Text.Visible = false;
-            this.btnHTML2Text.Click += new System.EventHandler(this.button3_Click);
-            // 
             // ToolsFixModListButton
             // 
             this.ToolsFixModListButton.BackColor = System.Drawing.Color.Silver;
@@ -915,34 +879,6 @@
             this.testSubWindow.UseVisualStyleBackColor = false;
             this.testSubWindow.Visible = false;
             this.testSubWindow.Click += new System.EventHandler(this.TestSubWindow_Click);
-            // 
-            // btnMakeSnapShot
-            // 
-            this.btnMakeSnapShot.BackColor = System.Drawing.Color.Silver;
-            this.btnMakeSnapShot.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnMakeSnapShot.ForeColor = System.Drawing.Color.Black;
-            this.btnMakeSnapShot.Location = new System.Drawing.Point(223, 86);
-            this.btnMakeSnapShot.Name = "btnMakeSnapShot";
-            this.btnMakeSnapShot.Size = new System.Drawing.Size(112, 30);
-            this.btnMakeSnapShot.TabIndex = 20;
-            this.btnMakeSnapShot.Text = "Make SnapShot";
-            this.btnMakeSnapShot.UseVisualStyleBackColor = false;
-            this.btnMakeSnapShot.Visible = false;
-            this.btnMakeSnapShot.Click += new System.EventHandler(this.MakeSnapShot_Click);
-            // 
-            // btnFixMOMods
-            // 
-            this.btnFixMOMods.BackColor = System.Drawing.Color.Silver;
-            this.btnFixMOMods.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnFixMOMods.ForeColor = System.Drawing.Color.Black;
-            this.btnFixMOMods.Location = new System.Drawing.Point(223, 122);
-            this.btnFixMOMods.Name = "btnFixMOMods";
-            this.btnFixMOMods.Size = new System.Drawing.Size(112, 30);
-            this.btnFixMOMods.TabIndex = 19;
-            this.btnFixMOMods.Text = "Fix MOMods";
-            this.btnFixMOMods.UseVisualStyleBackColor = false;
-            this.btnFixMOMods.Visible = false;
-            this.btnFixMOMods.Click += new System.EventHandler(this.FixMOModsButton_Click);
             // 
             // Install2MODirPathOpenFolderLinkLabel
             // 
@@ -1073,15 +1009,11 @@
         private System.Windows.Forms.LinkLabel ExtraSettingsLinkLabel;
         private System.Windows.Forms.LinkLabel LaunchLinksLinkLabel;
         private System.Windows.Forms.LinkLabel JPLauncherRunLinkLabel;
-        private System.Windows.Forms.Button btnFixMOMods;
         private System.Windows.Forms.LinkLabel SetupXmlLinkLabel;
-        private System.Windows.Forms.Button btnMakeSnapShot;
         private System.Windows.Forms.LinkLabel OpenHelpLinkLabel;
         private System.Windows.Forms.TextBox CurrentGameTitleTextBox;
         private System.Windows.Forms.Button testSubWindow;
         private System.Windows.Forms.Button ToolsFixModListButton;
-        private System.Windows.Forms.Button btnHTML2Text;
-        private System.Windows.Forms.Button btnCCCCPmods;
         private System.Windows.Forms.CheckBox VRGameCheckBox;
         private System.Windows.Forms.LinkLabel CreateShortcutLinkLabel;
         private System.Windows.Forms.LinkLabel FixRegistryLinkLabel;

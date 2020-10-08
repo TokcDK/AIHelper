@@ -2637,20 +2637,6 @@ namespace AIHelper
             OnOffButtons();
         }
 
-        private void FixMOModsButton_Click(object sender, EventArgs e)
-        {
-            return;
-
-            foreach (var folder in Directory.GetDirectories(ManageSettings.GetCurrentGameModsPath()))
-            {
-                if (!folder.EndsWith("_separator", StringComparison.InvariantCulture))
-                {
-                    ManageMOMods.SortFilesToSubfolders(folder);
-                }
-            }
-            MessageBox.Show("Service finished");
-        }
-
         private void AI_Helper_FormClosing(object sender, FormClosingEventArgs e)
         {
             //нашел баг, когда при открытии свойства ссылки в проводнике
@@ -2665,31 +2651,6 @@ namespace AIHelper
             {
                 Process.Start("notepad.exe", SetupXmlPath);
             }
-        }
-
-        private void MakeSnapShot_Click(object sender, EventArgs e)
-        {
-            return;
-
-            //Dictionary<string, string[]> PathCRCPair = new Dictionary<string, string[]>();
-            List<string> snapshotData = new List<string>();
-            foreach (var file in Directory.EnumerateFiles(ManageSettings.GetCurrentGameModsPath(), "*", SearchOption.AllDirectories))
-            {
-                snapshotData.Add(
-                    file.Replace(ManageSettings.GetCurrentGameModsPath(), string.Empty)
-                    + "|" +
-                    new FileInfo(file).Length
-                    + "|" +
-                    file.GetCrc32()
-                    + Environment.NewLine
-                    );
-                //if (!PathCRCPair.ContainsKey(file))
-                //{
-                //    PathCRCPair.Add(file.Replace(ManageSettings.GetModsPath(), string.Empty), new[] { new FileInfo(file).Length.ToString(),  file.GetCrc32() });
-                //}
-            }
-            File.WriteAllLines(Path.Combine(ManageSettings.GetCurrentGameInstallDirPath(), "snapshot.txt"), snapshotData);
-
         }
 
         private void OpenHelpLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -2751,52 +2712,6 @@ namespace AIHelper
             OnOffButtons();
 
             FoldersInit();
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            return;
-
-            //var htmlString = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">Patch for Koikatsu fixes. Replaces one fix from Koikatsu fixes to prevent bugs from it when abmx is enabled.</span></p>\n<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2';\"><br /></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">mlinfo::</span></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">req:file:BepInEx\\plugins\\KKABMX.dll|and|file:BepInEx\\plugins\\IllusionFixes\\KK_Fix_MainGameOptimizations.dll</span></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">inc:API</span></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'MS Shell Dlg 2';\">::</span></p></body></html>";
-
-            //MessageBox.Show(ManageHTML.GetMLInfoFromHTML(htmlString));
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            return;
-
-            var CCCCPfolderPath = @"F:\C";
-            var targetFolder = @"F:\mods";
-            HashSet<string> addedMods = new HashSet<string>();
-            if (!Directory.Exists(CCCCPfolderPath))
-                return;
-
-            foreach (var modFolder in Directory.GetDirectories(CCCCPfolderPath, "abdata*", SearchOption.AllDirectories))
-            {
-                try
-                {
-                    if (Path.GetFileName(modFolder) != "abdata" && Path.GetFileName(modFolder) != "abdata-emulated")
-                    {
-                        continue;
-                    }
-
-                    if (addedMods.Contains(Path.GetDirectoryName(modFolder)))
-                    {
-                        continue;
-                    }
-
-                    addedMods.Add(modFolder);
-                    ManageSymLinks.Symlink(Path.GetDirectoryName(modFolder),
-                        Path.Combine(targetFolder, Path.GetFileName(Path.GetDirectoryName(modFolder)))
-                        );
-                }
-                catch
-                {
-                }
-
-            }
-            MessageBox.Show("Finished!");
         }
 
         private async void btnUpdate_Click(object sender, EventArgs e)

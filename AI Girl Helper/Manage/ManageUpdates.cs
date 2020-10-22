@@ -79,10 +79,10 @@ namespace AIHelper.Manage
                 {
                     using (ProgressBar PBar = new ProgressBar())
                     {
-                        var AllModsList = ManageMO.GetModNamesListFromActiveMOProfile(false);
+                        var ModsList = ManageMO.GetModNamesListFromActiveMOProfile();
 
                         PBar.Dock = DockStyle.Bottom;
-                        PBar.Maximum = AllModsList.Length;
+                        PBar.Maximum = ModsList.Length;
                         ProgressForm.Controls.Add(PBar);
                         ProgressForm.StartPosition = FormStartPosition.CenterScreen;
                         ProgressForm.Size = new Size(300, 50);
@@ -96,7 +96,7 @@ namespace AIHelper.Manage
 
                         UpdateMOItself();
 
-                        foreach (var mod in AllModsList)
+                        foreach (var mod in ModsList)
                         {
                             PBar.Value = ind;
                             ProgressForm.Text = CheckNUpdateText + " " + mod;

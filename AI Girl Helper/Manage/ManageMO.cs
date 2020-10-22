@@ -48,7 +48,8 @@ namespace AIHelper.Manage
 
             SetCommonIniValues(INI);
 
-            await Task.Run(() => SetCustomExecutablesIniValues(INI)).ConfigureAwait(true);
+            //await Task.Run(() => SetCustomExecutablesIniValues(INI)).ConfigureAwait(true);
+            Properties.Settings.Default.SetModOrganizerINISettingsForTheGame = false;
 
             //Properties.Settings.Default.CurrentGameIsChanging = false;
         }
@@ -815,6 +816,8 @@ namespace AIHelper.Manage
                 //}
                 INI.WriteINI(IniValues[i, 1], IniValues[i, 2], IniValue, false);
             }
+
+            INI.SaveINI();
         }
 
         internal static Dictionary<string, string> GetMOcustomExecutablesList()

@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static AIHelper.Manage.ManageUpdates;
 
-namespace AIHelper.Manage.Update.UpdateMods
+namespace AIHelper.Manage.Update.Mods
 {
-    class UpdateFromGithub : UpdateModsBase
+    class Github : ModsBase
     {
-        public UpdateFromGithub(UpdateData updateData) : base(updateData)
+        public Github(UpdateData updateData) : base(updateData)
         {
         }
 
@@ -24,10 +24,10 @@ namespace AIHelper.Manage.Update.UpdateMods
             {
                 using (ProgressBar PBar = new ProgressBar())
                 {
-                    var AllModsList = ManageMO.GetModNamesListFromActiveMOProfile(false);
+                    var ModsList = ManageMO.GetModNamesListFromActiveMOProfile();
 
                     PBar.Dock = DockStyle.Bottom;
-                    PBar.Maximum = AllModsList.Length;
+                    PBar.Maximum = ModsList.Length;
                     ProgressForm.Controls.Add(PBar);
                     ProgressForm.StartPosition = FormStartPosition.CenterScreen;
                     ProgressForm.Size = new Size(300, 50);
@@ -39,7 +39,7 @@ namespace AIHelper.Manage.Update.UpdateMods
 
                     System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;//включение tls12 для github
 
-                    foreach (var mod in AllModsList)
+                    foreach (var mod in ModsList)
                     {
                         PBar.Value = ind;
                         ProgressForm.Text = CheckNUpdateText + " " + mod;

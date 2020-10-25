@@ -1,5 +1,4 @@
-﻿using System.Net;
-using static AIHelper.Manage.ManageUpdates;
+﻿using static AIHelper.Manage.ManageUpdates;
 
 namespace AIHelper.Manage.Update
 {

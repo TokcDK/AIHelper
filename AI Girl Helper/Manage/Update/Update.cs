@@ -241,7 +241,7 @@ namespace AIHelper.Manage.Update
                 return true;
             }
 
-            var VersionPartsOfLatest = LatestVersion.TrimEnd('0',',','.').Split('.', ',');
+            var VersionPartsOfLatest = LatestVersion.TrimEnd('0', ',', '.').Split('.', ',');
             var VersionPartsOfCurrent = CurrentVersion.TrimEnd('0', ',', '.').Split('.', ',');
             int dInd = 0;
             var curCount = VersionPartsOfCurrent.Length;
@@ -274,7 +274,7 @@ namespace AIHelper.Manage.Update
         static string ReportModSourcePageLinkVisitText;
         private void ShowReport(updateInfo info)
         {
-            ReportModSourcePageLinkVisitText = T._("Update info") + ">CLICK<";
+            ReportModSourcePageLinkVisitText = "[" + T._("Information") + "]";
             string ReportMessage;
             if (info.report != null && info.report.Count > 0)
             {
@@ -292,19 +292,20 @@ namespace AIHelper.Manage.Update
                     }
                 }
 
+                var reportTitle = T._("Update report");
                 var ReportFilePath = Path.Combine(ManageSettings.GetAppResDir(), "theme", "default", "report", ManageSettings.GetCurrentGameEXEName() + "Template.html");
                 if (File.Exists(ReportFilePath))
                 {
                     IsHTMLReport = true;
                     ReportMessage = File.ReadAllText(ReportFilePath)
                      .Replace("%BGImageLinkPath%", Path.Combine(ManageSettings.GetAppResDir(), "theme", "default", "report", ManageSettings.GetCurrentGameEXEName() + "BG.jpg").Replace(Path.DirectorySeparatorChar.ToString(), "/"))
-                     .Replace("%ModsUpdateReportHeaderText%", T._("Update check report"))
+                     .Replace("%ModsUpdateReportHeaderText%", reportTitle)
                      .Replace("%SingleModUpdateReportsTextSection%", string.Join(HTMLBetweenMods, newReport));
                 }
                 else
                     ReportMessage =
                         (IsHTMLReport ? HTMLBegin : string.Empty)
-                        + T._("Update check report")
+                        + reportTitle
                         + (IsHTMLReport ? HTMLAfterHeader : Environment.NewLine + Environment.NewLine)
                         + string.Join(IsHTMLReport ? HTMLBetweenMods : Environment.NewLine, newReport)
                         + (IsHTMLReport ? HTMLend : string.Empty);
@@ -322,7 +323,7 @@ namespace AIHelper.Manage.Update
             }
             else
             {
-                ReportMessage = T._("No mod updates found");
+                ReportMessage = T._("No updates found");
                 //ReportMessage = "<html><body><h2>" + T._("Update check report") + "</h2><br><br>" + T._("No updates found") + "</body></html>";
                 MessageBox.Show(ReportMessage);
             }

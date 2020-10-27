@@ -20,7 +20,7 @@ namespace AIHelper
         /// </summary>
         /// <param name="sourceDirectory"></param>
         /// <param name="targetDirectory"></param>
-        private static void CopyAll(this DirectoryInfo sourceDirectory, DirectoryInfo targetDirectory)
+        public static void CopyAll(this DirectoryInfo sourceDirectory, DirectoryInfo targetDirectory)
         {
             Directory.CreateDirectory(targetDirectory.FullName);
 

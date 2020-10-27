@@ -1,4 +1,11 @@
-﻿using AIHelper.Manage.Update.Targets;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Net;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace AIHelper.Manage.Update.Sources
 {
@@ -6,18 +13,140 @@ namespace AIHelper.Manage.Update.Sources
     {
         public Github(updateInfo info) : base(info)
         {
+            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;//включение tls12 для github
         }
 
-        internal override string ID => "updgit";
+        internal override string infoID => "updgit";
 
-        internal override string GetFile()
+        internal override string sourceName => "Github";
+
+        internal override Task<bool> GetFile()
+        {            
+            return DownloadTheFile();
+        }
+
+        static Form Dwnf;
+        static ProgressBar Dwnpb;
+        private async Task<bool> DownloadTheFile()
         {
-            throw new System.NotImplementedException();
+            if (string.IsNullOrWhiteSpace(GitLatestVersionFileDownloadLink))
+            {
+                info.NoRemoteFile = true;
+                return false;
+            }
+
+            var UpdateDir = ManageSettings.GetCurrentGameModsUpdateDir(); //Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), modGitData.CurrentModName);
+            Directory.CreateDirectory(UpdateDir);
+
+            var UpdateFileName = Path.GetFileName(GitLatestVersionFileDownloadLink);
+
+            Dwnpb = new ProgressBar
+            {
+                Dock = DockStyle.Bottom,
+                Maximum = 100
+            };
+            Dwnf = new Form
+            {
+                StartPosition = FormStartPosition.CenterScreen,
+                Size = new Size(400, 50),
+                Text = T._("Downloading") + ": " + UpdateFileName,
+                FormBorderStyle = FormBorderStyle.FixedToolWindow
+            };
+            Dwnf.Controls.Add(Dwnpb);
+            Dwnf.Show();
+            wc.DownloadProgressChanged += (s, ea) =>
+            {
+                if (ea.ProgressPercentage <= Dwnpb.Maximum)
+                {
+                    Dwnpb.Value = ea.ProgressPercentage;
+                }
+            };
+
+            info.UpdateFilePath = Path.Combine(UpdateDir, UpdateFileName);
+            wc.DownloadFileCompleted += (s, ea) =>
+            {
+                if (Dwnpb != null)
+                {
+                    Dwnpb.Dispose();
+                }
+
+                if (Dwnf != null)
+                {
+                    Dwnf.Dispose();
+                }
+                //MessageBox.Show("Download Complete!");
+                //PerformModUpdateFromArchive();
+            };
+
+            if (!File.Exists(info.UpdateFilePath))
+            {
+                await wc.DownloadFileTaskAsync(GitLatestVersionFileDownloadLink, info.UpdateFilePath).ConfigureAwait(true);
+                return  File.Exists(info.UpdateFilePath);
+            }
+            else
+            {
+                if (Dwnpb != null)
+                {
+                    Dwnpb.Dispose();
+                }
+
+                if (Dwnf != null)
+                {
+                    Dwnf.Dispose();
+                }
+
+                if (new FileInfo(info.UpdateFilePath).Length == 0)
+                {
+                    File.Delete(info.UpdateFilePath);
+                    return false;
+                }
+
+                //PerformModUpdateFromArchive();
+
+                return true;
+            }
         }
 
         internal override string GetLastVersion()
         {
-            throw new System.NotImplementedException();
+            return GetLatestGithubVersion();
+        }
+
+        static readonly WebClient wc = new WebClient();
+        internal string GitOwner;
+        internal string GitName;
+        internal string GitLatestVersion;
+        internal string GitLatestVersionFileDownloadLink;
+        private string GitFileNamePart;
+        internal Dictionary<string, string> UpdateFilenameSubPathData;
+
+        private string GetLatestGithubVersion()
+        {
+            //using (WebClient wc = new WebClient())
+            {
+                GitOwner = info.TargetFolderUpdateInfo[0];
+                GitName = info.TargetFolderUpdateInfo[1];
+                GitFileNamePart = info.TargetFolderUpdateInfo[2];
+                info.UpdateFileStartsWith = GitFileNamePart;
+                info.SourceLink = "https://github.com/" + GitOwner + "/" + GitName + "/releases/latest";
+                var LatestReleasePage = wc.DownloadString(info.SourceLink);
+                var version = Regex.Match(LatestReleasePage, "/releases/tag/[^\"]+\"");
+                GitLatestVersion = version.Value.Remove(version.Value.Length - 1, 1).Remove(0, 14);
+                var link2file = Regex.Match(LatestReleasePage, @"href\=""/" + GitOwner + "/" + GitName + "/releases/download/" + GitLatestVersion + "/" + GitFileNamePart + "[^\"]+\"");
+
+                if (link2file.Value.Length > 7 && link2file.Value.StartsWith("href=", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    GitLatestVersionFileDownloadLink = "https://github.com/" + link2file.Value.Remove(link2file.Value.Length - 1, 1).Remove(0, 6);
+
+                    return GitLatestVersion;
+                }
+                else
+                {
+                    ManageLogs.Log("GitHub sublink to file not found or incorrect. link:" + Environment.NewLine + link2file.Value);
+                }
+            }
+
+            return "";
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AI_Helper.Manage;
 using AIHelper.Games;
 using AIHelper.Manage;
+using AIHelper.Manage.Update;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -2684,7 +2685,9 @@ namespace AIHelper
         private void btnUpdateMods_Click(object sender, EventArgs e)
         {
             btnUpdateMods.Enabled = false;
-            ManageUpdates.Mods.CheckMods();
+            //ManageUpdates.Mods.CheckMods();
+            new MUpdates().update();
+
             btnUpdateMods.Enabled = true;
         }
 

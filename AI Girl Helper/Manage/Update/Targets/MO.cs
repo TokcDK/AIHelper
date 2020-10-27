@@ -8,7 +8,20 @@ namespace AIHelper.Manage.Update.Targets
         {
         }
 
+        /// <summary>
+        /// Get MO update info
+        /// </summary>
+        /// <returns></returns>
         internal override Dictionary<string, string> GetUpdateInfos()
+        {
+            return 
+        }
+
+        /// <summary>
+        /// Update MO folder with new version
+        /// </summary>
+        /// <returns></returns>
+        internal override bool UpdateFiles()
         {
             throw new System.NotImplementedException();
         }

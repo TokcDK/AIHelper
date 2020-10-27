@@ -247,8 +247,9 @@
     <Compile Include="Manage\Update\Sources\Github.cs" />
     <Compile Include="Manage\Update\Sources\SBase.cs" />
     <Compile Include="Manage\Update\Targets\MO.cs" />
-    <Compile Include="Manage\Update\Targets\ModsList.cs" />
-    <Compile Include="Manage\Update\Targets\ModsMeta.cs" />
+    <Compile Include="Manage\Update\Targets\Mods\ModsList.cs" />
+    <Compile Include="Manage\Update\Targets\Mods\ModsMeta.cs" />
+    <Compile Include="Manage\Update\Targets\Mods\ModsBase.cs" />
     <Compile Include="Manage\Update\Targets\TBase.cs" />
     <Compile Include="Manage\Update\UBase.cs" />
     <Compile Include="Manage\Update\UpdateBase.cs" />

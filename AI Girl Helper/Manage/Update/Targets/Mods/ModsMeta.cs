@@ -20,22 +20,18 @@ namespace AIHelper.Manage.Update.Targets.Mods
 
             var ModsList = ManageMO.GetModNamesListFromActiveMOProfile();
 
-            foreach(var modname in ModsList)
-            {
-                if(modname== "[D] KK_BrowserFolders")
+            if (ModsList != null)
+                foreach (var modname in ModsList)
                 {
+                    var ModPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modname);
 
+                    var modinfo = GetIMetaInfo(ModPath);
+
+                    if (!string.IsNullOrWhiteSpace(modinfo))
+                    {
+                        infos.Add(ModPath, modinfo);
+                    }
                 }
-
-                var ModPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modname);
-
-                var modinfo = GetIMetaInfo(ModPath);
-
-                if(!string.IsNullOrWhiteSpace(modinfo))
-                {
-                    infos.Add(ModPath, modinfo);
-                }
-            }
 
             return infos;
         }
@@ -48,11 +44,11 @@ namespace AIHelper.Manage.Update.Targets.Mods
                 var metaNotes = ManageINI.GetINIValueIfExist(metaPath, "notes", "General");
 
                 //updgit::BepInEx,BepInEx,BepInEx_x64::
-                string UpdateInfo = Regex.Match(metaNotes, info.SourceID+"::[^:]+::").Value;
+                string UpdateInfo = Regex.Match(metaNotes, info.SourceID + "::[^:]+::").Value;
 
                 if (!string.IsNullOrWhiteSpace(UpdateInfo) && UpdateInfo.StartsWith(info.SourceID, System.StringComparison.InvariantCultureIgnoreCase))
                 {
-                    UpdateInfo = UpdateInfo.Remove(UpdateInfo.Length - 2, 2).Remove(0, info.SourceID.Length+2);
+                    UpdateInfo = UpdateInfo.Remove(UpdateInfo.Length - 2, 2).Remove(0, info.SourceID.Length + 2);
                     //info.TargetCurrentVersion = ManageINI.GetINIValueIfExist(metaPath, "version", "General");
                     return (UpdateInfo /*+ "," + ManageINI.GetINIValueIfExist(metaPath, "version", "General")*/);
                 }

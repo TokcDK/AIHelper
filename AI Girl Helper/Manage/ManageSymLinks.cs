@@ -72,7 +72,10 @@ namespace AI_Helper.Manage
             {
                 if (targetFilePath != symlinkPath && !IsSymlinkAndValid(symlinkPath, targetFilePath, linktargetPathIsRelative))
                 {
-                    File.Delete(symlinkPath);
+                    if(File.Exists(symlinkPath))
+                    {
+                        File.Delete(symlinkPath);
+                    }
 
                     ManageSymLinks.Symlink
                       (
@@ -116,6 +119,8 @@ namespace AI_Helper.Manage
                             File.Delete(symlinkPath);
                         }
 
+                        CheckParentDirForSymLink(symlinkPath);
+
                         new FileInfo(objectPath).CreateSymbolicLink(symlinkPath, isRelative);//new from NuGet package
 
                         return true;
@@ -131,6 +136,8 @@ namespace AI_Helper.Manage
                             Directory.Delete(symlinkPath);
                         }
 
+                        CheckParentDirForSymLink(symlinkPath);
+
                         new DirectoryInfo(objectPath).CreateSymbolicLink(symlinkPath, isRelative);//new from NuGet package
                                                                                                   //CreateSymlink.Folder(file, symlink); //old
 
@@ -141,6 +148,16 @@ namespace AI_Helper.Manage
             }
 
             return false;
+        }
+
+        private static void CheckParentDirForSymLink(string symlinkPath)
+        {
+            var pdir = new DirectoryInfo(Path.GetDirectoryName(symlinkPath));
+            if (pdir.IsSymbolicLink() && !pdir.IsSymbolicLinkValid())
+            {
+                pdir.Delete();
+            }
+            pdir.Create();
         }
 
         internal static bool IsSymLink(string sourceFileFolder)

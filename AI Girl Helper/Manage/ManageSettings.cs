@@ -435,7 +435,7 @@ namespace AIHelper.Manage
             }
             else
             {
-                Properties.Settings.Default.MOSelectedProfileDirName = ManageMO.MOremoveByteArray(ManageINI.GetINIValueIfExist(ManageSettings.GetModOrganizerINIpath(), "selected_profile", "General"));
+                Properties.Settings.Default.MOSelectedProfileDirName = ManageMO.MOremoveByteArray(ManageINI.GetINIValueIfExist(File.Exists(ManageSettings.GetModOrganizerINIpath()) ? ManageSettings.GetModOrganizerINIpath():ManageSettings.GetModOrganizerINIpathForSelectedGame(), "selected_profile", "General"));
 
                 return Properties.Settings.Default.MOSelectedProfileDirName;
             }
@@ -496,6 +496,11 @@ namespace AIHelper.Manage
                 }
             }
             return 0;
+        }
+
+        internal static string GetModOrganizerINIpathForSelectedGame()
+        {
+            return Path.Combine(GetCurrentGamePath(), "ModOrganizer.ini");
         }
 
         internal static string GetModOrganizerINIpath()

@@ -63,6 +63,11 @@ namespace AIHelper
 
             Properties.Settings.Default.MOIsNew = ManageMO.IsMO23ORNever();
 
+            if(!File.Exists(Path.Combine(ManageSettings.GetMOdirPath(), "ModOrganizer.exe")))
+            {
+                new Update().update();
+            }
+
             ManageMO.RedefineGameMOData();
 
             CleanMOFolder();

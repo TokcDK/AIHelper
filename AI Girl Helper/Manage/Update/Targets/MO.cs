@@ -14,7 +14,7 @@ namespace AIHelper.Manage.Update.Targets
         /// <returns></returns>
         internal override Dictionary<string, string> GetUpdateInfos()
         {
-            return 
+            throw new System.NotImplementedException();
         }
 
         /// <summary>

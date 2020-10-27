@@ -252,6 +252,8 @@ namespace AIHelper
             this.Text = T._("AI Helper for Organized ModPack");
             CurrentGameLabel.Text = T._("Current Game") + ":";
             InstallInModsButton.Text = T._("Install from 2MO");
+            ToolsFixModListButton.Text = T._("Fix modlist");
+            btnUpdateMods.Text = T._("Update");
             //button1.Text = T._("Prepare the game");
             SettingsPage.Text = T._("Settings");
             //CreateShortcutButton.Text = T._("Shortcut");

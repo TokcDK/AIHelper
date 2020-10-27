@@ -6,7 +6,7 @@ namespace AIHelper.Manage.Update.Sources
     /// <summary>
     /// Base for sources
     /// </summary>
-    abstract class SBase : UBase
+    abstract class SBase
     {
         protected updateInfo info;
         protected SBase(updateInfo info)

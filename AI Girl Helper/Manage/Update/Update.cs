@@ -22,7 +22,10 @@ namespace AIHelper.Manage.Update
         internal bool NoRemoteFile;
         internal string UpdateFilePath;
         internal string UpdateFileStartsWith;
+        internal string UpdateFileEndsWith;
         internal string BuckupDirPath;
+        internal SBase source;
+        internal TBase target;
 
         public updateInfo()
         {
@@ -44,11 +47,12 @@ namespace AIHelper.Manage.Update
             NoRemoteFile = false;
             UpdateFilePath = "";
             UpdateFileStartsWith = "";
+            UpdateFileEndsWith = "";
         }
 
     }
 
-    class MUpdates
+    class Update
     {
         private bool IsHTMLReport = true;
 
@@ -61,9 +65,9 @@ namespace AIHelper.Manage.Update
             };
             var targets = new List<TBase> //Targets for update
             {
-                //new MO(info),
+                new MO(info),
                 new ModsMeta(info),
-                //new ModsList(info)
+                new ModsList(info)
             };
 
             using (var ProgressForm = new Form())
@@ -72,15 +76,16 @@ namespace AIHelper.Manage.Update
                 PBar.Dock = DockStyle.Bottom;
                 ProgressForm.Controls.Add(PBar);
                 ProgressForm.StartPosition = FormStartPosition.CenterScreen;
-                ProgressForm.Size = new Size(300, 50);
-                var CheckNUpdateText = T._("Update");
+                ProgressForm.Size = new Size(400, 50);
+                var CheckNUpdateText = T._("Checking");
                 ProgressForm.Text = CheckNUpdateText;
                 ProgressForm.FormBorderStyle = FormBorderStyle.FixedToolWindow;
                 ProgressForm.Show();
-                int ind = 0;
 
                 foreach (var source in sources) //enumerate sources
                 {
+                    info.source = source;
+
                     ProgressForm.Text = CheckNUpdateText + ":" + source.sourceName;
 
                     info.SourceID = source.infoID; //set source info detect ID
@@ -91,6 +96,8 @@ namespace AIHelper.Manage.Update
                         {
                             continue;
                         }
+
+                        info.target = target;
 
                         PBar.Maximum = tFolderInfos.Keys.Count;
 
@@ -106,7 +113,7 @@ namespace AIHelper.Manage.Update
                             info.reset(); // reset some infos
 
                             // get folder dir path
-                            info.TargetFolderPath = new DirectoryInfo(Path.Combine(ManageSettings.GetCurrentGameModsPath(), tFolderInfo.Key));
+                            info.TargetFolderPath = new DirectoryInfo(Path.Combine(target.GetParentFolderPath(), tFolderInfo.Key));
 
                             ProgressForm.Text = CheckNUpdateText + ":" + source.sourceName + ">" + info.TargetFolderPath.Name;
 
@@ -115,15 +122,8 @@ namespace AIHelper.Manage.Update
                                 PBar.Value += 1;
                             }
 
-                            // get version from meta ini if version is empty
-                            if (string.IsNullOrWhiteSpace(info.TargetCurrentVersion))
-                            {
-                                var metaPath = Path.Combine(info.TargetFolderPath.FullName, "meta.ini");
-                                if (File.Exists(metaPath))
-                                {
-                                    info.TargetCurrentVersion = ManageINI.GetINIValueIfExist(metaPath, "version", "General");
-                                }
-                            }
+                            // Set current version
+                            target.SetCurrentVersion();
 
                             // get info to array
                             var tInfoArray = (tFolderInfo.Value.StartsWith(source.infoID, StringComparison.InvariantCultureIgnoreCase) ? tFolderInfo.Value.Remove(tFolderInfo.Value.Length - 2, 2).Remove(0, source.infoID.Length + 2) : tFolderInfo.Value).Split(new[] { Environment.NewLine, "\n", "\r", "," }, StringSplitOptions.RemoveEmptyEntries);
@@ -311,7 +311,7 @@ namespace AIHelper.Manage.Update
                 //ReportMessage = string.Join(/*Environment.NewLine*/"<br>", report);
                 if (IsHTMLReport)
                 {
-                    var htmlfile = Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), "report.html");
+                    var htmlfile = ManageSettings.UpdateReportHTMLFilePath();
                     File.WriteAllText(htmlfile, ReportMessage);
                     System.Diagnostics.Process.Start(htmlfile);
                 }

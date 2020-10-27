@@ -21,7 +21,7 @@ namespace AIHelper.Manage.Update.Sources
         internal override string sourceName => "Github";
 
         internal override Task<bool> GetFile()
-        {            
+        {
             return DownloadTheFile();
         }
 
@@ -81,7 +81,7 @@ namespace AIHelper.Manage.Update.Sources
             if (!File.Exists(info.UpdateFilePath))
             {
                 await wc.DownloadFileTaskAsync(GitLatestVersionFileDownloadLink, info.UpdateFilePath).ConfigureAwait(true);
-                return  File.Exists(info.UpdateFilePath);
+                return File.Exists(info.UpdateFilePath);
             }
             else
             {
@@ -118,7 +118,6 @@ namespace AIHelper.Manage.Update.Sources
         internal string GitLatestVersion;
         internal string GitLatestVersionFileDownloadLink;
         private string GitFileNamePart;
-        internal Dictionary<string, string> UpdateFilenameSubPathData;
 
         private string GetLatestGithubVersion()
         {
@@ -132,7 +131,8 @@ namespace AIHelper.Manage.Update.Sources
                 var LatestReleasePage = wc.DownloadString(info.SourceLink);
                 var version = Regex.Match(LatestReleasePage, "/releases/tag/[^\"]+\"");
                 GitLatestVersion = version.Value.Remove(version.Value.Length - 1, 1).Remove(0, 14);
-                var link2file = Regex.Match(LatestReleasePage, @"href\=""/" + GitOwner + "/" + GitName + "/releases/download/" + GitLatestVersion + "/" + GitFileNamePart + "[^\"]+\"");
+                var linkPattern = @"href\=""/" + GitOwner + "/" + GitName + "/releases/download/" + GitLatestVersion + "/" + GitFileNamePart + "[^\"]+" + info.UpdateFileEndsWith + "\"";
+                var link2file = Regex.Match(LatestReleasePage, linkPattern);
 
                 if (link2file.Value.Length > 7 && link2file.Value.StartsWith("href=", StringComparison.InvariantCultureIgnoreCase))
                 {

@@ -53,7 +53,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
                 if (!string.IsNullOrWhiteSpace(UpdateInfo) && UpdateInfo.StartsWith(info.SourceID, System.StringComparison.InvariantCultureIgnoreCase))
                 {
                     UpdateInfo = UpdateInfo.Remove(UpdateInfo.Length - 2, 2).Remove(0, info.SourceID.Length+2);
-                    info.TargetCurrentVersion = ManageINI.GetINIValueIfExist(metaPath, "version", "General");
+                    //info.TargetCurrentVersion = ManageINI.GetINIValueIfExist(metaPath, "version", "General");
                     return (UpdateInfo /*+ "," + ManageINI.GetINIValueIfExist(metaPath, "version", "General")*/);
                 }
             }

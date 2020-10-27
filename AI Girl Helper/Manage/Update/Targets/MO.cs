@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 
 namespace AIHelper.Manage.Update.Targets
 {
@@ -8,13 +10,21 @@ namespace AIHelper.Manage.Update.Targets
         {
         }
 
+        string MODirPath;
+        string MOExePath;
+
         /// <summary>
         /// Get MO update info
         /// </summary>
         /// <returns></returns>
         internal override Dictionary<string, string> GetUpdateInfos()
         {
-            throw new System.NotImplementedException();
+            MODirPath = ManageSettings.GetMOdirPath();
+            return new Dictionary<string, string>()
+            {
+                { MODirPath, "ModOrganizer2,modorganizer,Mod.Organizer-"}
+            };
+
         }
 
         /// <summary>
@@ -23,7 +33,41 @@ namespace AIHelper.Manage.Update.Targets
         /// <returns></returns>
         internal override bool UpdateFiles()
         {
-            throw new System.NotImplementedException();
+            using (Process installer = new Process())
+            {
+                installer.StartInfo.FileName = info.UpdateFilePath;
+                installer.StartInfo.Arguments = "/dir=\"" + MODirPath + "\" /silent";
+                //installer.StartInfo.WorkingDirectory = Path.GetDirectoryName(info.UpdateFilePath);
+
+                installer.Start();
+                installer.WaitForExit();
+
+                RestoreSomeFiles(info.BuckupDirPath, MODirPath);
+
+                return installer.ExitCode==0;
+            }
+        }
+
+        internal override void SetCurrentVersion()
+        {
+            info.UpdateFileEndsWith = ".exe";
+            MOExePath = Path.Combine(MODirPath, "ModOrganizer.exe");
+            if(File.Exists(MOExePath))
+            {
+                info.TargetCurrentVersion = FileVersionInfo.GetVersionInfo(MOExePath).ProductVersion;
+            }
+        }
+
+        internal override string[] RestorePathsList()
+        {
+            return new[] 
+            {
+                @".\ModOrganizer.ini",
+                @".\categories.dat",
+                @".\plugins\modorganizer-basic_games",
+                @".\explorer++\Explorer++RU.dll",
+                @".\config.xml\Explorer++RU.dll",
+            };
         }
     }
 }

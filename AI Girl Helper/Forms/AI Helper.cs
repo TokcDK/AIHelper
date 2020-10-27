@@ -2686,7 +2686,7 @@ namespace AIHelper
         {
             btnUpdateMods.Enabled = false;
             //ManageUpdates.Mods.CheckMods();
-            new MUpdates().update();
+            new Update().update();
 
             btnUpdateMods.Enabled = true;
         }

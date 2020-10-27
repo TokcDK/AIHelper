@@ -372,6 +372,16 @@ namespace AIHelper.Manage
             return Properties.Settings.Default.CurrentGameFolderName;
         }
 
+        internal static string UpdateReportHTMLFileName()
+        {
+            return "report.html";
+        }
+
+        internal static string UpdateReportHTMLFilePath()
+        {
+            return Path.Combine(GetCurrentGameModsUpdateDir(), UpdateReportHTMLFileName());
+        }
+
         internal static string GetCurrentGameDisplayingName()
         {
             return Properties.Settings.Default.CurrentGameDisplayingName;

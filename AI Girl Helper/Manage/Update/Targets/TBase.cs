@@ -97,7 +97,7 @@ namespace AIHelper.Manage.Update.Targets
             //var modname = modGitData.CurrentModName; //Path.GetFileName(Path.GetDirectoryName(filePath));
             var UpdatingModDirPath = info.TargetFolderPath.FullName;
 
-            
+
             //var OldModBuckupDirPath = Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), "old", info.TargetFolderPath.Name + "_" + info.TargetCurrentVersion);
             //if (Directory.Exists(OldModBuckupDirPath))
             //{
@@ -227,29 +227,73 @@ namespace AIHelper.Manage.Update.Targets
             return true;
         }
 
-        private static void RestoreSomeFiles(string OldModBuckupDirPath, string UpdatingModDirPath)
+        internal abstract void SetCurrentVersion();
+
+        internal virtual string GetParentFolderPath()
         {
+            return "";
+        }
+
+        /// <summary>
+        /// list of files and folder which need to be restore in updated folder
+        /// </summary>
+        /// <returns></returns>
+        internal virtual string[] RestorePathsList()
+        {
+            return new[] { "" };
+        }
+
+        protected void RestoreSomeFiles(string OldModBuckupDirPath, string UpdatingModDirPath)
+        {
+            var RestoreList = new HashSet<string>();
+            foreach(var path in info.target.RestorePathsList())
+            {
+                var p = Path.GetFullPath(Path.Combine(OldModBuckupDirPath, path));
+                RestoreList.Add(p);
+            }
+
             //restore some files files
-            foreach (var file in Directory.GetFiles(OldModBuckupDirPath))
+            foreach (var dir in new DirectoryInfo(OldModBuckupDirPath).EnumerateDirectories("*", SearchOption.AllDirectories))
+            {
+                try
+                {
+                    if (!Directory.Exists(Path.Combine(UpdatingModDirPath, dir.Name)) && RestoreList.Contains(dir.FullName))
+                    {
+                        var TargetPath = dir.FullName.Replace(OldModBuckupDirPath, UpdatingModDirPath);
+                        Directory.CreateDirectory(Path.GetDirectoryName(TargetPath));
+                        if (Directory.Exists(dir.FullName))
+                        {
+                            dir.FullName.CopyAll(TargetPath);
+                        }
+                    }
+                }
+                catch// (Exception ex)
+                {
+                    //ManageLogs.Log("Update: Failed to move file to bak dir. error:" + Environment.NewLine + ex);
+                }
+            }
+
+            //restore some files files
+            foreach (var file in new DirectoryInfo(OldModBuckupDirPath).EnumerateFiles("*", SearchOption.AllDirectories))
             {
                 try
                 {
                     string ext;
-                    if (File.Exists(Path.Combine(UpdatingModDirPath, Path.GetFileName(file))) ||
+                    if (!File.Exists(Path.Combine(UpdatingModDirPath, file.Name)) &&
                         (
-                            (ext = Path.GetExtension(file)) != ".ini"
-                            && ext != ".cfg"
-                            && !ext.IsPictureExtension()
+                            file.Extension == ".ini"
+                            || file.Extension == ".cfg"
+                            || (file.DirectoryName == OldModBuckupDirPath && file.Extension.IsPictureExtension())
+                            || RestoreList.Contains(file.FullName)
                             )
                         )
                     {
-                        continue;
-                    }
-                    var filePath = file.Replace(OldModBuckupDirPath, UpdatingModDirPath);
-                    Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-                    if (File.Exists(file))
-                    {
-                        File.Move(file, filePath);
+                        var TargetFilePath = file.FullName.Replace(OldModBuckupDirPath, UpdatingModDirPath);
+                        Directory.CreateDirectory(Path.GetDirectoryName(TargetFilePath));
+                        if (File.Exists(file.FullName) && !File.Exists(TargetFilePath))
+                        {
+                            File.Copy(file.FullName, TargetFilePath);
+                        }
                     }
                 }
                 catch// (Exception ex)

@@ -59,6 +59,14 @@ namespace AIHelper.Manage.Update.Targets
                 info.BuckupDirPath = BuckupDirPath;
                 //Directory.CreateDirectory(BuckupDirPath);
 
+                //set RestoreList
+                RestoreList = new HashSet<string>();
+                foreach (var path in info.target.RestorePathsList())
+                {
+                    var p = Path.GetFullPath(Path.Combine(info.BuckupDirPath, path));
+                    RestoreList.Add(p);
+                }
+
                 //info.TargetFolderPath.FullName.CopyAll(BuckupDirPath);
                 MakeBuckup(BuckupDirPath, info.TargetFolderPath.FullName);
                 //ZipFile.CreateFromDirectory(info.TargetFolderPath.FullName, OldModBuckupDirPath);
@@ -243,15 +251,18 @@ namespace AIHelper.Manage.Update.Targets
             return new[] { "" };
         }
 
+        /// <summary>
+        /// file which need to be restored to updating dir
+        /// </summary>
+        protected HashSet<string> RestoreList;
+
+        /// <summary>
+        /// restore some files like cfg
+        /// </summary>
+        /// <param name="OldModBuckupDirPath"></param>
+        /// <param name="UpdatingModDirPath"></param>
         protected void RestoreSomeFiles(string OldModBuckupDirPath, string UpdatingModDirPath)
         {
-            var RestoreList = new HashSet<string>();
-            foreach(var path in info.target.RestorePathsList())
-            {
-                var p = Path.GetFullPath(Path.Combine(OldModBuckupDirPath, path));
-                RestoreList.Add(p);
-            }
-
             //restore some files files
             foreach (var dir in new DirectoryInfo(OldModBuckupDirPath).EnumerateDirectories("*", SearchOption.AllDirectories))
             {
@@ -351,12 +362,17 @@ namespace AIHelper.Manage.Update.Targets
             ManageFilesFolders.DeleteEmptySubfolders(OldModBuckupDirPath);
         }
 
-        private static void MakeBuckup(string OldModBuckupDirPath, string UpdatingModDirPath)
+        /// <summary>
+        /// move/copy some files to buckup dir
+        /// </summary>
+        /// <param name="OldModBuckupDirPath"></param>
+        /// <param name="UpdatingModDirPath"></param>
+        private void MakeBuckup(string OldModBuckupDirPath, string UpdatingModDirPath)
         {
             Directory.CreateDirectory(OldModBuckupDirPath);
 
             //buckup old dirs
-            foreach (var folder in Directory.GetDirectories(UpdatingModDirPath))
+            foreach (var folder in Directory.EnumerateDirectories(UpdatingModDirPath))
             {
                 try
                 {
@@ -373,14 +389,10 @@ namespace AIHelper.Manage.Update.Targets
                 }
             }
             //buckup old files
-            foreach (var file in Directory.GetFiles(UpdatingModDirPath))
+            foreach (var file in Directory.EnumerateFiles(UpdatingModDirPath))
             {
                 try
                 {
-                    if (Path.GetFileName(file) == "meta.ini")
-                    {
-                        continue;
-                    }
                     //string ext;
                     //if ((ext = Path.GetExtension(file)) == ".ini" || ext == ".cfg" || (Path.GetFileName(Path.GetDirectoryName(file)) == UpdatingModDirPath && ext.IsPictureExtension()))
                     //{
@@ -388,7 +400,14 @@ namespace AIHelper.Manage.Update.Targets
                     //}
                     var backupPath = file.Replace(UpdatingModDirPath, OldModBuckupDirPath);
                     Directory.CreateDirectory(Path.GetDirectoryName(backupPath));
-                    File.Move(file, backupPath);
+                    if (RestoreList.Contains(file))
+                    {
+                        File.Copy(file, backupPath);
+                    }
+                    else
+                    {
+                        File.Move(file, backupPath);
+                    }
                 }
                 catch (Exception ex)
                 {

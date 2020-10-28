@@ -9,15 +9,21 @@ namespace AIHelper.Manage.Update.Sources
     abstract class SBase
     {
         protected updateInfo info;
+
         protected SBase(updateInfo info)
         {
             this.info = info;
         }
 
         /// <summary>
+        /// url of selected web resource
+        /// </summary>
+        internal virtual string url { get => ""; }
+
+        /// <summary>
         /// source name for info purposes
         /// </summary>
-        internal abstract string sourceName { get; }
+        internal abstract string title { get; }
 
         /// <summary>
         /// id for identidy updateinfo like 'updgit::bbepis,XUnity.AutoTranslator,XUnity.AutoTranslator-BepIn-5x-::'

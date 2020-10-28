@@ -242,6 +242,9 @@
     <Compile Include="Manage\Rules\ModList\RuleModForSideloaderPlugin.cs" />
     <Compile Include="Manage\Rules\ModList\RuleModForBepInexIPA.cs" />
     <Compile Include="Manage\Rules\ModList\RuleModForBepInex.cs" />
+    <Compile Include="Manage\Update\Targets\Mods\ModsInfos\ModsInfosBase.cs" />
+    <Compile Include="Manage\Update\Targets\Mods\ModsInfos\XUA.cs" />
+    <Compile Include="Manage\Update\Targets\Mods\ModsMetaAuto.cs" />
     <Compile Include="Manage\Update\Update.cs" />
     <Compile Include="Manage\Update\Sources\Github.cs" />
     <Compile Include="Manage\Update\Sources\SBase.cs" />

@@ -67,7 +67,8 @@ namespace AIHelper.Manage.Update
             {
                 new MO(info),
                 new ModsMeta(info),
-                new ModsList(info)
+                new ModsList(info),
+                new ModsMetaAuto(info)
             };
 
             using (var ProgressForm = new Form())
@@ -86,7 +87,7 @@ namespace AIHelper.Manage.Update
                 {
                     info.source = source;
 
-                    ProgressForm.Text = CheckNUpdateText + ":" + source.sourceName;
+                    ProgressForm.Text = CheckNUpdateText + ":" + source.title;
 
                     info.SourceID = source.infoID; //set source info detect ID
                     foreach (var target in targets) //enumerate targets
@@ -115,7 +116,7 @@ namespace AIHelper.Manage.Update
                             // get folder dir path
                             info.TargetFolderPath = new DirectoryInfo(Path.Combine(target.GetParentFolderPath(), tFolderInfo.Key));
 
-                            ProgressForm.Text = CheckNUpdateText + ":" + source.sourceName + ">" + info.TargetFolderPath.Name;
+                            ProgressForm.Text = CheckNUpdateText + ":" + source.title + ">" + info.TargetFolderPath.Name;
 
                             if (PBar.Value < PBar.Maximum)
                             {

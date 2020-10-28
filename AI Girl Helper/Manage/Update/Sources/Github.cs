@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Net;
@@ -16,9 +15,11 @@ namespace AIHelper.Manage.Update.Sources
             System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;//включение tls12 для github
         }
 
+        internal override string url { get => "github.com"; }
+
         internal override string infoID => "updgit";
 
-        internal override string sourceName => "Github";
+        internal override string title => "Github";
 
         internal override Task<bool> GetFile()
         {
@@ -136,7 +137,7 @@ namespace AIHelper.Manage.Update.Sources
 
                 if (link2file.Value.Length > 7 && link2file.Value.StartsWith("href=", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    GitLatestVersionFileDownloadLink = "https://github.com/" + link2file.Value.Remove(link2file.Value.Length - 1, 1).Remove(0, 6);
+                    GitLatestVersionFileDownloadLink = "https://" + url + "/" + link2file.Value.Remove(link2file.Value.Length - 1, 1).Remove(0, 6);
 
                     return GitLatestVersion;
                 }

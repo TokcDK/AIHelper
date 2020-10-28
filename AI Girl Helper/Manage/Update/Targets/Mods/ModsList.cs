@@ -53,7 +53,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
                 pair[1] = "";
                 while ((line = sr.ReadLine()) != null)
                 {
-                    if (string.IsNullOrWhiteSpace(line))
+                    if (string.IsNullOrWhiteSpace(line) || line.TrimStart()[0]!=';')
                         continue;
 
                     if (pair[0].Length == 0)

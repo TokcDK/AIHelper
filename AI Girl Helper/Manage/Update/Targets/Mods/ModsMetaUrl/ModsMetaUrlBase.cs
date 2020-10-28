@@ -1,6 +1,6 @@
-﻿namespace AIHelper.Manage.Update.Targets.Mods.ModsInfos
+﻿namespace AIHelper.Manage.Update.Targets.Mods.ModsMetaUrl
 {
-    abstract class ModsInfosBase
+    abstract class ModsMetaUrlBase
     {
         protected ModInfo modinfo;
 
@@ -9,7 +9,7 @@
         protected bool AI;
         protected bool HS2;
 
-        protected ModsInfosBase(ModInfo modinfo)
+        protected ModsMetaUrlBase(ModInfo modinfo)
         {
             this.modinfo = modinfo;
 

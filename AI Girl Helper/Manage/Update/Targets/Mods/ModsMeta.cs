@@ -1,14 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using AIHelper.Manage.Update.Targets.Mods.ModsMetaUrl;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 
 namespace AIHelper.Manage.Update.Targets.Mods
 {
+    internal class ModInfo
+    {
+        internal string url;
+        internal DirectoryInfo moddir;
+    }
+
     class ModsMeta : ModsBase
     {
         public ModsMeta(updateInfo info) : base(info)
         {
         }
+
+        ModInfo targetinfo;
+        List<ModsMetaUrlBase> DBs;
 
         /// <summary>
         /// Get enabled mods list infos from meta.ini of each mod
@@ -20,12 +30,19 @@ namespace AIHelper.Manage.Update.Targets.Mods
 
             var ModsList = ManageMO.GetModNamesListFromActiveMOProfile();
 
+            targetinfo = new ModInfo();
+
+            DBs = new List<ModsMetaUrlBase>
+            {
+                new XUA(targetinfo)
+            };
+
             if (ModsList != null)
                 foreach (var modname in ModsList)
                 {
                     var ModPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modname);
 
-                    var modinfo = GetIMetaInfo(ModPath);
+                    var modinfo = GetInfoFromMeta(ModPath);
 
                     if (!string.IsNullOrWhiteSpace(modinfo))
                     {
@@ -36,21 +53,59 @@ namespace AIHelper.Manage.Update.Targets.Mods
             return infos;
         }
 
-        private string GetIMetaInfo(string ModPath)
+        private string GetInfoFromMeta(string ModPath)
         {
-            var metaPath = Path.Combine(ModPath, "meta.ini");
-            if (File.Exists(metaPath))
+            var MetaINIPath = Path.Combine(ModPath, "meta.ini");
+            if (!File.Exists(MetaINIPath))
             {
-                var metaNotes = ManageINI.GetINIValueIfExist(metaPath, "notes", "General");
+                return "";
+            }
 
-                //updgit::BepInEx,BepInEx,BepInEx_x64::
-                string UpdateInfo = Regex.Match(metaNotes, info.SourceID + "::[^:]+::").Value;
+            Manage.INIFile INI = new Manage.INIFile(MetaINIPath);
 
-                if (!string.IsNullOrWhiteSpace(UpdateInfo) && UpdateInfo.StartsWith(info.SourceID, System.StringComparison.InvariantCultureIgnoreCase))
+            string val = "";
+            if (INI.KeyExists("notes", "General"))
+            {
+                val = INI.ReadINI("General", "notes");
+            }
+
+            if (string.IsNullOrWhiteSpace(val))
+                return "";
+
+            //Get by current source ID
+            //updgit::BepInEx,BepInEx,BepInEx_x64::
+            var UpdateInfo = Regex.Match(val, info.SourceID + "::([^:]+)::");
+
+            if (UpdateInfo.Success && !string.IsNullOrWhiteSpace(UpdateInfo.Value) && UpdateInfo.Value.StartsWith(info.SourceID, System.StringComparison.InvariantCultureIgnoreCase))
+            {
+                return UpdateInfo.Result("$1");
+            }
+
+            // Get from meta.ini url
+            val = "";
+            if (INI.KeyExists("url", "General"))
+            {
+                val = INI.ReadINI("General", "url");
+            }
+
+            if (string.IsNullOrWhiteSpace(val))
+                return "";
+
+            if (!string.IsNullOrWhiteSpace(targetinfo.url))
+            {
+                targetinfo.moddir = new DirectoryInfo(ModPath);
+                targetinfo.url = val;
+
+                foreach (var db in DBs)
                 {
-                    UpdateInfo = UpdateInfo.Remove(UpdateInfo.Length - 2, 2).Remove(0, info.SourceID.Length + 2);
-                    //info.TargetCurrentVersion = ManageINI.GetINIValueIfExist(metaPath, "version", "General");
-                    return (UpdateInfo /*+ "," + ManageINI.GetINIValueIfExist(metaPath, "version", "General")*/);
+                    if (db.Check() && db.Owner.Length > 0 && db.Project.Length > 0)
+                    {
+                        var starts = db.StartsWith();
+                        if (starts.Length > 0)
+                        {
+                            return db.Owner + "," + db.Project + "," + starts;
+                        }
+                    }
                 }
             }
 

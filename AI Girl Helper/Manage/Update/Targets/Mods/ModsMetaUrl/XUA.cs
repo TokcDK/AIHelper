@@ -1,8 +1,8 @@
 ﻿using System.IO;
 
-namespace AIHelper.Manage.Update.Targets.Mods.ModsInfos
+namespace AIHelper.Manage.Update.Targets.Mods.ModsMetaUrl
 {
-    class XUA : ModsInfosBase
+    class XUA : ModsMetaUrlBase
     {
         public XUA(ModInfo modinfo) : base(modinfo)
         {

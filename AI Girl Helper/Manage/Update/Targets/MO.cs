@@ -33,10 +33,10 @@ namespace AIHelper.Manage.Update.Targets
         /// <returns></returns>
         internal override bool UpdateFiles()
         {
-            using (Process installer = new Process())
+            using (var installer = new Process())
             {
                 installer.StartInfo.FileName = info.UpdateFilePath;
-                installer.StartInfo.Arguments = "/dir=\"" + MODirPath + "\" /silent";
+                installer.StartInfo.Arguments = "/dir=\"" + MODirPath + "\" /noicons /nocancel /norestart /silent";
                 //installer.StartInfo.WorkingDirectory = Path.GetDirectoryName(info.UpdateFilePath);
 
                 installer.Start();

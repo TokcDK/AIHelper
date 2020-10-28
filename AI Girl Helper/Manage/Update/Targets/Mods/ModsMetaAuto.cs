@@ -1,11 +1,6 @@
 ﻿using AIHelper.Manage.Update.Targets.Mods.ModsInfos;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace AIHelper.Manage.Update.Targets.Mods
 {
@@ -44,14 +39,14 @@ namespace AIHelper.Manage.Update.Targets.Mods
 
                     if (!string.IsNullOrWhiteSpace(modinfo.url))
                     {
-                        foreach(var db in DBs)
+                        foreach (var db in DBs)
                         {
-                            if (db.Check() && db.Owner.Length>0 && db.Project.Length>0)
+                            if (db.Check() && db.Owner.Length > 0 && db.Project.Length > 0)
                             {
                                 var starts = db.StartsWith();
                                 if (starts.Length > 0)
                                 {
-                                    infos.Add(modname, db.Owner+","+db.Project+","+ starts);
+                                    infos.Add(modname, db.Owner + "," + db.Project + "," + starts);
                                     break;
                                 }
                             }

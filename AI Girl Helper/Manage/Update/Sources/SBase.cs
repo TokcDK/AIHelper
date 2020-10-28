@@ -1,5 +1,4 @@
-﻿using AIHelper.Manage.Update.Targets;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace AIHelper.Manage.Update.Sources
 {

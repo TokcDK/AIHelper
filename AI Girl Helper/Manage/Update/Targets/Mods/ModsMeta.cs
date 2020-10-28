@@ -63,6 +63,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
 
             Manage.INIFile INI = new Manage.INIFile(MetaINIPath);
 
+            //Get by current source ID from notes
             string val = "";
             if (INI.KeyExists("notes", "General"))
             {
@@ -72,7 +73,6 @@ namespace AIHelper.Manage.Update.Targets.Mods
             if (string.IsNullOrWhiteSpace(val))
                 return "";
 
-            //Get by current source ID
             //updgit::BepInEx,BepInEx,BepInEx_x64::
             var UpdateInfo = Regex.Match(val, info.SourceID + "::([^:]+)::");
 
@@ -88,10 +88,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
                 val = INI.ReadINI("General", "url");
             }
 
-            if (string.IsNullOrWhiteSpace(val))
-                return "";
-
-            if (!string.IsNullOrWhiteSpace(targetinfo.url))
+            if (!string.IsNullOrWhiteSpace(val))
             {
                 targetinfo.moddir = new DirectoryInfo(ModPath);
                 targetinfo.url = val;

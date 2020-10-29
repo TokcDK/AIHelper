@@ -115,29 +115,38 @@ namespace AIHelper.Manage.Update.Sources
 
         static readonly WebClient wc = new WebClient();
         internal string GitOwner;
-        internal string GitName;
+        internal string GitRepository;
         internal string GitLatestVersion;
+        internal string GitLatestVersionOfFile;
         internal string GitLatestVersionFileDownloadLink;
-        private string GitFileNamePart;
 
         private string GetLatestGithubVersion()
         {
             //using (WebClient wc = new WebClient())
             {
                 GitOwner = info.TargetFolderUpdateInfo[0];
-                GitName = info.TargetFolderUpdateInfo[1];
-                GitFileNamePart = info.TargetFolderUpdateInfo[2];
-                info.UpdateFileStartsWith = GitFileNamePart;
-                info.SourceLink = "https://github.com/" + GitOwner + "/" + GitName + "/releases/latest";
+                GitRepository = info.TargetFolderUpdateInfo[1];
+                info.UpdateFileStartsWith = info.TargetFolderUpdateInfo[2];
+                info.UpdateFileEndsWith = info.TargetFolderUpdateInfo.Length > 3 && info.TargetFolderUpdateInfo[3].ToUpperInvariant() != "TRUE" && info.TargetFolderUpdateInfo[3].ToUpperInvariant() != "FALSE" ? info.TargetFolderUpdateInfo[3] : "";
+                info.VersionFromFile = info.TargetFolderUpdateInfo[info.TargetFolderUpdateInfo.Length-1].ToUpperInvariant() == "TRUE";
+                info.SourceLink = "https://github.com/" + GitOwner + "/" + GitRepository + "/releases/latest";
                 var LatestReleasePage = wc.DownloadString(info.SourceLink);
                 var version = Regex.Match(LatestReleasePage, "/releases/tag/[^\"]+\"");
                 GitLatestVersion = version.Value.Remove(version.Value.Length - 1, 1).Remove(0, 14);
-                var linkPattern = @"href\=""/" + GitOwner + "/" + GitName + "/releases/download/" + GitLatestVersion + "/" + GitFileNamePart + "[^\"]+" + info.UpdateFileEndsWith + "\"";
+
+                var linkPattern = @"href\=""/" + GitOwner + "/" + GitRepository + "/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + "[^\"]+" + info.UpdateFileEndsWith + "\"";
                 var link2file = Regex.Match(LatestReleasePage, linkPattern);
 
                 if (link2file.Value.Length > 7 && link2file.Value.StartsWith("href=", StringComparison.InvariantCultureIgnoreCase))
                 {
                     GitLatestVersionFileDownloadLink = "https://" + url + "/" + link2file.Value.Remove(link2file.Value.Length - 1, 1).Remove(0, 6);
+
+                    if (info.VersionFromFile)
+                    {
+                        var pattern = "/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + "([^\"]+)" + (info.UpdateFileEndsWith.Length > 0 ? info.UpdateFileEndsWith : @"") + "\"";
+                        var fromfile = Regex.Match(LatestReleasePage, pattern).Result("$1");
+                        return fromfile;
+                    }
 
                     return GitLatestVersion;
                 }

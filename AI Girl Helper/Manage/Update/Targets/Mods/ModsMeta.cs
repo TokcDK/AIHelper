@@ -82,31 +82,124 @@ namespace AIHelper.Manage.Update.Targets.Mods
             }
 
             // Get from meta.ini url
-            val = "";
-            if (INI.KeyExists("url", "General"))
-            {
-                val = INI.ReadINI("General", "url");
-            }
+            //val = "";
+            //if (INI.KeyExists("url", "General"))
+            //{
+            //    val = INI.ReadINI("General", "url");
+            //}
 
-            if (!string.IsNullOrWhiteSpace(val))
-            {
-                targetinfo.moddir = new DirectoryInfo(ModPath);
-                targetinfo.url = val;
+            //if (!string.IsNullOrWhiteSpace(val))
+            //{
+            //    targetinfo.moddir = new DirectoryInfo(ModPath);
+            //    targetinfo.url = val;
 
-                foreach (var db in DBs)
+            //    //hardcoded
+            //    //foreach (var db in DBs)
+            //    //{
+            //    //    if (db.Check() && db.Owner.Length > 0 && db.Project.Length > 0)
+            //    //    {
+            //    //        var starts = db.StartsWith();
+            //    //        if (starts.Length > 0)
+            //    //        {
+            //    //            return db.Owner + "," + db.Project + "," + starts;
+            //    //        }
+            //    //    }
+            //    //}
+
+            //    //from ini plugins
+            //    foreach (var db in GetDB())
+            //    {
+            //        if (targetinfo.url.Contains(db["url.contains"]) && !ContainsFile(db) && db["gitowner"].Length > 0 && db["repository"].Length > 0)
+            //        {
+            //            var parts = GetFilePartsInfo(db);
+
+            //            if (parts[0].Length > 0)
+            //            {
+            //                return db["gitowner"] + "," + db["repository"] + "," + parts[0] + "," + parts[1].Trim() + "," + db["gitversionfromfile"];
+            //            }
+            //        }
+            //    }
+            //}
+
+            return "";
+        }
+
+        /// <summary>
+        /// true when folder contains file from db
+        /// </summary>
+        /// <param name="db"></param>
+        /// <returns></returns>
+        private bool ContainsFile(Dictionary<string, string> db)
+        {
+            var i = 0;
+            while (db.ContainsKey("skipif.contains.file" + i) && !string.IsNullOrWhiteSpace(db["skipif.contains.file" + i]))
+            {
+                if(File.Exists(Path.GetFullPath(Path.Combine(targetinfo.moddir.FullName, db["skipif.contains.file" + i]))))
                 {
-                    if (db.Check() && db.Owner.Length > 0 && db.Project.Length > 0)
+                    return true;
+                }
+                i++;
+            }
+            return false;
+        }
+
+        private string[] GetFilePartsInfo(Dictionary<string, string> db)
+        {
+            if (Directory.Exists(Path.Combine(targetinfo.moddir.FullName, "BepInEx")))
+            {
+                return new[] { db["bepinexstarts"], db["bepinexends"] };
+            }
+            else
+            {
+                return new[] { db["ipastarts"], db["ipaends"] };
+            }
+        }
+
+        List<Dictionary<string, string>> DBData;
+        string[] DBDataParams = new string[]
+        {
+            "url.contains",
+            "gitowner",
+            "repository",
+            "bepinexstarts",
+            "bepinexends",
+            "ipastarts",
+            "ipaends",
+            "gitversionfromfile",
+            "skipif.contains.file0",
+            "skipif.contains.file1",
+            "skipif.contains.file2",
+            "skipif.contains.file3",
+            "skipif.contains.file4",
+            "skipif.contains.file5"
+        };
+        private List<Dictionary<string, string>> GetDB()
+        {
+            if (DBData == null)
+            {
+                DBData = new List<Dictionary<string, string>>();
+                var iniNum = 0;
+                foreach (var ini in Directory.EnumerateFiles(ManageSettings.GetModsUpdateDBInfoDir(), "*.ini", SearchOption.AllDirectories))
+                {
+                    Manage.INIFile INI = new Manage.INIFile(ini);
+
+                    DBData.Add(new Dictionary<string, string>());
+
+                    foreach (var setting in DBDataParams)
                     {
-                        var starts = db.StartsWith();
-                        if (starts.Length > 0)
+                        var value = "";
+                        if (INI.KeyExists(setting))
                         {
-                            return db.Owner + "," + db.Project + "," + starts;
+                            value = INI.ReadINI("", setting);
                         }
+                        DBData[iniNum].Add(setting, value);
                     }
+
+                    iniNum++;
                 }
             }
 
-            return "";
+            return DBData;
         }
     }
 }

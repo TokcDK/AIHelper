@@ -21,7 +21,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
 
             var ModsList = ManageMO.GetModNamesListFromActiveMOProfile();
             var updateInfoList = GetUpdateInfosFromFile();
-            if(updateInfoList==null || updateInfoList.Count == 0)
+            if (updateInfoList == null || updateInfoList.Count == 0)
             {
                 return null;
             }
@@ -38,14 +38,14 @@ namespace AIHelper.Manage.Update.Targets.Mods
             return infos;
         }
 
-        private Dictionary<string,string> GetUpdateInfosFromFile()
+        private Dictionary<string, string> GetUpdateInfosFromFile()
         {
             var d = new Dictionary<string, string>();
 
             if (!File.Exists(updateInfosFile))
                 return null;
 
-            using(StreamReader sr = new StreamReader(updateInfosFile))
+            using (StreamReader sr = new StreamReader(updateInfosFile))
             {
                 string line;
                 string[] pair = new string[2];
@@ -53,7 +53,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
                 pair[1] = "";
                 while ((line = sr.ReadLine()) != null)
                 {
-                    if (string.IsNullOrWhiteSpace(line) || line.TrimStart()[0]!=';')
+                    if (string.IsNullOrWhiteSpace(line) || line.TrimStart()[0] != ';')
                         continue;
 
                     if (pair[0].Length == 0)
@@ -64,10 +64,10 @@ namespace AIHelper.Manage.Update.Targets.Mods
                     {
                         pair[1] = line;
                     }
-                    
+
                     if (pair[0].Length > 0 && pair[1].Length > 0)
                     {
-                        if(pair[1].StartsWith(info.SourceID, System.StringComparison.InvariantCultureIgnoreCase)
+                        if (pair[1].StartsWith(info.SourceID, System.StringComparison.InvariantCultureIgnoreCase)
                         && !d.ContainsKey(pair[0]))
                         {
                             d.Add(pair[0], pair[1]);

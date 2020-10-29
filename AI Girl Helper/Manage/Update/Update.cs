@@ -26,6 +26,7 @@ namespace AIHelper.Manage.Update
         internal string BuckupDirPath;
         internal SBase source;
         internal TBase target;
+        internal bool VersionFromFile;
 
         public updateInfo()
         {
@@ -66,9 +67,8 @@ namespace AIHelper.Manage.Update
             var targets = new List<TBase> //Targets for update
             {
                 new MO(info),
-                new ModsMeta(info),
                 new ModsList(info),
-                new ModsMetaAuto(info)
+                new ModsMeta(info)
             };
 
             using (var ProgressForm = new Form())
@@ -127,7 +127,7 @@ namespace AIHelper.Manage.Update
                             target.SetCurrentVersion();
 
                             // get info to array
-                            var tInfoArray = (tFolderInfo.Value.StartsWith(source.infoID, StringComparison.InvariantCultureIgnoreCase) ? tFolderInfo.Value.Remove(tFolderInfo.Value.Length - 2, 2).Remove(0, source.infoID.Length + 2) : tFolderInfo.Value).Split(new[] { Environment.NewLine, "\n", "\r", "," }, StringSplitOptions.RemoveEmptyEntries);
+                            var tInfoArray = (tFolderInfo.Value.StartsWith(source.infoID, StringComparison.InvariantCultureIgnoreCase) ? tFolderInfo.Value.Remove(tFolderInfo.Value.Length - 2, 2).Remove(0, source.infoID.Length + 2) : tFolderInfo.Value).Split(new[] { Environment.NewLine, "\n", "\r", "," }, StringSplitOptions.None);
 
                             if (tInfoArray == null || tInfoArray.Length == 0) // skip if info is invalid
                             {

@@ -16,7 +16,7 @@ namespace AIHelper.Manage.Rules.ModList
         internal string RulesTagFile = "file:";
         internal string RulesTagREQ = "req:";
         internal string RulesTagINC = "inc:";
-        internal List<ModListRules> RulesList;
+        internal List<ModListRulesBase> RulesList;
         internal List<string> Report = new List<string>();
         internal string ModName;
         internal string GamePrefix;
@@ -28,7 +28,7 @@ namespace AIHelper.Manage.Rules.ModList
         public ModListData()
         {
             GamePrefix = ManageSettings.GetListOfExistsGames()[ManageSettings.GetCurrentGameIndex()].GetGamePrefix();
-            RulesList = GetListOfSubClasses<ModListRules>(this);
+            RulesList = GetListOfSubClasses<ModListRulesBase>(this);
         }
 
         /// <summary>

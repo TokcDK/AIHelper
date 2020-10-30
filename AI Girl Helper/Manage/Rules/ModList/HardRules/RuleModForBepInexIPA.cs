@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace AIHelper.Manage.Rules.ModList
 {
-    internal class RuleModForBepInexIPA : ModListRules
+    internal class RuleModForBepInexIPA : ModListRulesBase
     {
         public RuleModForBepInexIPA(ModListData modlistData) : base(modlistData)
         {

@@ -4,7 +4,7 @@ using System.IO;
 
 namespace AIHelper.Manage.Rules.ModList
 {
-    class RuleFromRulesFile : ModListRules
+    class RuleFromRulesFile : ModListRulesBase
     {
         public RuleFromRulesFile(ModListData modlistData) : base(modlistData)
         {

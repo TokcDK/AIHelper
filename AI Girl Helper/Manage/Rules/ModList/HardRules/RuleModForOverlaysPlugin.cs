@@ -2,7 +2,7 @@
 
 namespace AIHelper.Manage.Rules.ModList
 {
-    internal class RuleModForOverlaysPlugin : ModListRules
+    internal class RuleModForOverlaysPlugin : ModListRulesBase
     {
         public RuleModForOverlaysPlugin(ModListData modlistData) : base(modlistData)
         {

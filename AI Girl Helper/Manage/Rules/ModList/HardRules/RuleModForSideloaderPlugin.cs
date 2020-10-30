@@ -3,7 +3,7 @@ using System.IO;
 
 namespace AIHelper.Manage.Rules.ModList
 {
-    internal class RuleModForSideloaderPlugin : ModListRules
+    internal class RuleModForSideloaderPlugin : ModListRulesBase
     {
         public RuleModForSideloaderPlugin(ModListData modlistData) : base(modlistData)
         {

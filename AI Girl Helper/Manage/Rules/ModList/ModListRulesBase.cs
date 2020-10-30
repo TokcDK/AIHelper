@@ -6,12 +6,12 @@ using System.Text.RegularExpressions;
 
 namespace AIHelper.Manage.Rules.ModList
 {
-    internal abstract class ModListRules
+    internal abstract class ModListRulesBase
     {
         protected ModListData modlistData;
 
         internal string outModName;
-        protected ModListRules(ModListData modlistData)
+        protected ModListRulesBase(ModListData modlistData)
         {
             this.modlistData = modlistData;
         }

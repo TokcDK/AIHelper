@@ -3,7 +3,7 @@ using System.IO;
 
 namespace AIHelper.Manage.Rules.ModList
 {
-    class RuleFromMeta : ModListRules
+    class RuleFromMeta : ModListRulesBase
     {
         public RuleFromMeta(ModListData modlistData) : base(modlistData)
         {

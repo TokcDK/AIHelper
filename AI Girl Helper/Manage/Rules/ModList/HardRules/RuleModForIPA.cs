@@ -2,7 +2,7 @@
 
 namespace AIHelper.Manage.Rules.ModList
 {
-    internal class RuleModForIPA : ModListRules
+    internal class RuleModForIPA : ModListRulesBase
     {
         public RuleModForIPA(ModListData modlistData) : base(modlistData)
         {

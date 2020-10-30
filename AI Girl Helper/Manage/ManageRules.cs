@@ -24,17 +24,17 @@ namespace AIHelper.Manage
                 modlistData.AllModsList = ManageMO.GetModNamesListFromActiveMOProfile(false);
                 modlistData.EnabledModsList = ManageMO.GetModNamesListFromActiveMOProfile();
 
-                using (Form CheckForm = new Form())
+                using (var CheckForm = new Form())
                 {
                     CheckForm.Size = new System.Drawing.Size(300,50);
                     CheckForm.FormBorderStyle = FormBorderStyle.FixedToolWindow;
                     CheckForm.StartPosition = FormStartPosition.CenterScreen;
                     CheckForm.Text = T._("Modlist check/fix by known rules")+"...";
-                    using (ProgressBar CheckProgress = new ProgressBar())
+                    using (var CheckProgress = new ProgressBar())
                     {
                         CheckProgress.Dock = DockStyle.Fill;
                         CheckProgress.Maximum = modlistData.EnabledModsList.Length;
-                        int cnt = 0;
+                        var cnt = 0;
                         CheckForm.Controls.Add(CheckProgress);
                         CheckForm.Show();
                         foreach (var ModName in modlistData.EnabledModsList)

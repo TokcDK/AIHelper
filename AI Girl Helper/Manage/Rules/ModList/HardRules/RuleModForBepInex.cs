@@ -2,7 +2,7 @@
 
 namespace AIHelper.Manage.Rules.ModList
 {
-    internal class RuleModForBepInex : ModListRules
+    internal class RuleModForBepInex : ModListRulesBase
     {
         public RuleModForBepInex(ModListData modlistData) : base(modlistData)
         {

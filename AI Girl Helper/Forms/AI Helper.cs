@@ -661,6 +661,12 @@ namespace AIHelper
                     ) : T._(
                         " to the game folder when possible"
                         )));
+            THToolTip.SetToolTip(ToolsFixModListButton, T._("Fix problems in current enabled mods list"));
+            THToolTip.SetToolTip(btnUpdateMods, 
+                T._("Update Mod Organizer and enabled mods\n") +
+                T._("Mod Organizer already have hardcoded info\n") +
+                T._("Mods will be updated if there exist info in meta.ini notes or in updateInfo.txt")
+                );
             THToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Open folder where you can drop/download files for autoinstallation"));
             THToolTip.SetToolTip(AutoShortcutRegistryCheckBox, T._("When checked will create shortcut for the AI Helper on Desktop and will fix registry if need"));
             THToolTip.SetToolTip(DisplaySettingsGroupBox, T._("Game Display settings"));

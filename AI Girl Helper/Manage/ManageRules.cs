@@ -19,7 +19,7 @@ namespace AIHelper.Manage
 
             internal void ModlistFixes()
             {
-                var ModlistBackupFilePath = ManageMO.MakeMOProfileModlistFileBuckup("_PreFixes");
+                var ModlistBackupFilePath = ManageMO.MakeMOProfileModlistFileBuckup("_prefixes");
 
                 modlistData.AllModsList = ManageMO.GetModNamesListFromActiveMOProfile(false);
                 modlistData.EnabledModsList = ManageMO.GetModNamesListFromActiveMOProfile();

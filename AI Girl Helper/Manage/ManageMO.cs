@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AIHelper.Manage
@@ -62,13 +61,31 @@ namespace AIHelper.Manage
         internal static string MakeMOProfileModlistFileBuckup(string suffix = "")
         {
             var modlistPath = Path.Combine(ManageSettings.GetMOSelectedProfileDirPath(), "modlist.txt");
-            if (File.Exists(modlistPath))
+            if (File.Exists(modlistPath) && File.ReadAllText(GetLastBak(suffix)) != File.ReadAllText(modlistPath))
             {
                 var targetFile = modlistPath + "." + DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss", CultureInfo.InvariantCulture) + suffix;
                 File.Copy(modlistPath, targetFile);
                 return targetFile;
             }
             return string.Empty;
+        }
+
+        /// <summary>
+        /// get last modlist buckup path
+        /// </summary>
+        /// <param name="suffix"></param>
+        /// <returns></returns>
+        private static string GetLastBak(string suffix)
+        {
+            FileInfo last = null;
+            foreach (var file in new DirectoryInfo(ManageSettings.GetMOSelectedProfileDirPath()).EnumerateFiles("modlist.txt.*" + suffix))
+            {
+                if (last == null || last.LastWriteTime < file.LastWriteTime)
+                {
+                    last = file;
+                }
+            }
+            return last.FullName;
         }
 
         private static void SetCustomExecutablesIniValues(INIFile INI)

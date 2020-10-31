@@ -26,10 +26,10 @@ namespace AIHelper.Manage
 
                 using (var CheckForm = new Form())
                 {
-                    CheckForm.Size = new System.Drawing.Size(300,50);
+                    CheckForm.Size = new System.Drawing.Size(300, 50);
                     CheckForm.FormBorderStyle = FormBorderStyle.FixedToolWindow;
                     CheckForm.StartPosition = FormStartPosition.CenterScreen;
-                    CheckForm.Text = T._("Modlist check/fix by known rules")+"...";
+                    CheckForm.Text = T._("Checking") + "...";
                     using (var CheckProgress = new ProgressBar())
                     {
                         CheckProgress.Dock = DockStyle.Fill;
@@ -39,7 +39,7 @@ namespace AIHelper.Manage
                         CheckForm.Show();
                         foreach (var ModName in modlistData.EnabledModsList)
                         {
-                            if(cnt< CheckProgress.Maximum)
+                            if (cnt < CheckProgress.Maximum)
                             {
                                 CheckProgress.Value = cnt;
                             }
@@ -68,27 +68,28 @@ namespace AIHelper.Manage
                             + Environment.NewLine
                             );
                         }
-                        modlistData.Report.Add(T._("Mod") + " " + mod + " " + T._("was activated"));
-                        ManageMO.ActivateMod(mod);
+                        modlistData.Report.Add(T._("Mod") + " " + mod.Key + " " + T._("was activated") + ": " + mod.Value);
+                        ManageMO.ActivateMod(mod.Key);
                         ListChanged = true;
                     }
                 }
 
                 if (modlistData.ModsMustBeDisabled.Count > 0)
                 {
-                    foreach (var mod in modlistData.ModsMustBeDisabled)
+                    foreach (var modinfo in modlistData.ModsMustBeDisabled)
                     {
+                        var mod = modinfo.Key;
                         if (!ActionsChanged)
                         {
                             ActionsChanged = true;
-                            modlistData.Report.Add(T._("Results") + ":"
+                            modlistData.Report.Add(T._("Results") + ": "
                             + Environment.NewLine
                             + Environment.NewLine
                             + T._("Actions") + ":"
                             + Environment.NewLine
                             );
                         }
-                        modlistData.Report.Add(T._("Mod") + " " + mod + " " + T._("was deactivated"));
+                        modlistData.Report.Add(T._("Mod") + " " + mod + " " + T._("was deactivated") + ": " + modinfo.Value);
                         ManageMO.DeactivateMod(mod);
                         ListChanged = true;
                     }
@@ -299,7 +300,7 @@ namespace AIHelper.Manage
 
                         if (rule.Fix())
                         {
-                            if (!modlistData.ModsMustBeDisabledCandidates.Contains(modlistData.ModName) && !modlistData.ModsMustBeDisabled.Contains(modlistData.ModName))
+                            if (!modlistData.ModsMustBeDisabledCandidates.ContainsKey(modlistData.ModName) && !modlistData.ModsMustBeDisabled.ContainsKey(modlistData.ModName))
                             {
                                 AddCandidates();
                             }
@@ -345,15 +346,15 @@ namespace AIHelper.Manage
                 ClearCandidates();
             }
 
-            private static void AddCandidatesToMain(List<string> candidates, List<string> parent)
+            private static void AddCandidatesToMain(Dictionary<string, string> candidates, Dictionary<string, string> parent)
             {
                 if (candidates.Count > 0)
                 {
                     foreach (var candidate in candidates)
                     {
-                        if (!parent.Contains(candidate))
+                        if (!parent.ContainsKey(candidate.Key))
                         {
-                            parent.Add(candidate);
+                            parent.Add(candidate.Key, candidate.Value);
                         }
                     }
                 }

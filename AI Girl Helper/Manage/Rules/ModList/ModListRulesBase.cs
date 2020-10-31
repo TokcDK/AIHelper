@@ -32,7 +32,7 @@ namespace AIHelper.Manage.Rules.ModList
         /// <returns></returns>
         protected bool FindModWithThePath(string inSubPath, out string FoundModName, int modeANDOR = 0, bool DontAddCandidate = false)
         {
-            return FindModWithThePath( new[] { inSubPath }, out FoundModName, modeANDOR, DontAddCandidate);
+            return FindModWithThePath(new[] { inSubPath }, out FoundModName, modeANDOR, DontAddCandidate);
         }
 
         /// <summary>
@@ -94,16 +94,16 @@ namespace AIHelper.Manage.Rules.ModList
                         {
                             if (modeANDOR > 0)
                             {
-                                if (!modlistData.ModsMustBeEnabledCandidates.Contains(FoundModName))
+                                if (!modlistData.ModsMustBeEnabledCandidates.ContainsKey(FoundModName))
                                 {
-                                    modlistData.ModsMustBeEnabledCandidates.Add(FoundModName);
+                                    modlistData.ModsMustBeEnabledCandidates.Add(FoundModName, "req:" + SubModName);
                                 }
                             }
                             else
                             {
-                                if (!modlistData.ModsMustBeEnabledCandidates.Contains(FoundModName))
+                                if (!modlistData.ModsMustBeEnabledCandidates.ContainsKey(FoundModName))
                                 {
-                                    modlistData.ModsMustBeEnabledCandidates.Add(FoundModName);
+                                    modlistData.ModsMustBeEnabledCandidates.Add(FoundModName, "req:" + SubModName);
                                 }
                                 //if (!modlistData.ModsMustBeEnabled.Contains(FoundModName))
                                 //{
@@ -120,9 +120,9 @@ namespace AIHelper.Manage.Rules.ModList
                     }
                 }
             }
-            if (!modlistData.ModsMustBeDisabled.Contains(modlistData.ModName))
+            if (!modlistData.ModsMustBeDisabled.ContainsKey(modlistData.ModName))
             {
-                modlistData.ModsMustBeDisabled.Add(modlistData.ModName);
+                modlistData.ModsMustBeDisabled.Add(modlistData.ModName, "req:" + string.Join(",", inSubPath));
             }
 
             return false;
@@ -231,9 +231,9 @@ namespace AIHelper.Manage.Rules.ModList
                 //{
                 //    modlistData.ModsMustBeDisabledCandidates.Add(modname);
                 //}
-                if (!modlistData.ModsMustBeDisabled.Contains(modname))
+                if (!modlistData.ModsMustBeDisabled.ContainsKey(modname))
                 {
-                    modlistData.ModsMustBeDisabled.Add(modname);
+                    modlistData.ModsMustBeDisabled.Add(modname, "inc:" + ruleData);
                 }
             }
             return true;
@@ -248,9 +248,9 @@ namespace AIHelper.Manage.Rules.ModList
                 //{
                 //    modlistData.ModsMustBeDisabledCandidates.Add(modname);
                 //}
-                if (!modlistData.ModsMustBeDisabled.Contains(modname))
+                if (!modlistData.ModsMustBeDisabled.ContainsKey(modname))
                 {
-                    modlistData.ModsMustBeDisabled.Add(modname);
+                    modlistData.ModsMustBeDisabled.Add(modname, "inc:" + ruleData);
                 }
                 return true;
             }
@@ -264,9 +264,9 @@ namespace AIHelper.Manage.Rules.ModList
                     //{
                     //    modlistData.ModsMustBeDisabledCandidates.Add(modname);
                     //}
-                    if (!modlistData.ModsMustBeDisabled.Contains(modname))
+                    if (!modlistData.ModsMustBeDisabled.ContainsKey(modname))
                     {
-                        modlistData.ModsMustBeDisabled.Add(modname);
+                        modlistData.ModsMustBeDisabled.Add(modname, "inc:" + ruleData);
                     }
                     return true;
                 }
@@ -280,15 +280,15 @@ namespace AIHelper.Manage.Rules.ModList
             AddCandidatesToMain(modlistData.ModsMustBeDisabledCandidates, modlistData.ModsMustBeDisabled);
         }
 
-        private static void AddCandidatesToMain(List<string> candidates, List<string> parent)
+        private static void AddCandidatesToMain(Dictionary<string, string> candidates, Dictionary<string, string> parent)
         {
             if (candidates.Count > 0)
             {
                 foreach (var candidate in candidates)
                 {
-                    if (!parent.Contains(candidate))
+                    if (!parent.ContainsKey(candidate.Key))
                     {
-                        parent.Add(candidate);
+                        parent.Add(candidate.Key, candidate.Value);
                     }
                 }
             }
@@ -434,25 +434,25 @@ namespace AIHelper.Manage.Rules.ModList
                 {
                     if (modeANDOR > 0)
                     {
-                        if (!modlistData.ModsMustBeEnabledCandidates.Contains(ruleData))
+                        if (!modlistData.ModsMustBeEnabledCandidates.ContainsKey(ruleData))
                         {
-                            modlistData.ModsMustBeEnabledCandidates.Add(ruleData);
+                            modlistData.ModsMustBeEnabledCandidates.Add(ruleData, modname + ">req:" + ruleData);
                         }
                     }
                     else
                     {
-                        if (!modlistData.ModsMustBeEnabled.Contains(ruleData))
+                        if (!modlistData.ModsMustBeEnabled.ContainsKey(ruleData))
                         {
-                            modlistData.ModsMustBeEnabled.Add(ruleData);
+                            modlistData.ModsMustBeEnabled.Add(ruleData, modname + ">req:" + ruleData);
                         }
                     }
                     return true;
                 }
                 else
                 {
-                    if (!modlistData.ModsMustBeDisabled.Contains(modname))
+                    if (!modlistData.ModsMustBeDisabled.ContainsKey(modname))
                     {
-                        modlistData.ModsMustBeDisabled.Add(modname);
+                        modlistData.ModsMustBeDisabled.Add(modname, modname + ">req:" + ruleData);
                     }
                     //if (modeANDOR > 0)
                     //{

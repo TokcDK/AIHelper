@@ -7,10 +7,10 @@ namespace AIHelper.Manage.Rules.ModList
     {
         internal string[] AllModsList;
         internal string[] EnabledModsList;
-        internal List<string> ModsMustBeEnabled = new List<string>();
-        internal List<string> ModsMustBeDisabled = new List<string>();
-        internal List<string> ModsMustBeEnabledCandidates = new List<string>();
-        internal List<string> ModsMustBeDisabledCandidates = new List<string>();
+        internal Dictionary<string, string> ModsMustBeEnabled = new Dictionary<string, string>();
+        internal Dictionary<string, string> ModsMustBeDisabled = new Dictionary<string, string>();
+        internal Dictionary<string, string> ModsMustBeEnabledCandidates = new Dictionary<string, string>();
+        internal Dictionary<string, string> ModsMustBeDisabledCandidates = new Dictionary<string, string>();
         internal string RulesTagOR = "|or|";
         internal string RulesTagAND = "|and|";
         internal string RulesTagFile = "file:";

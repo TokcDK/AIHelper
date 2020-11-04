@@ -10,6 +10,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -997,7 +998,8 @@ namespace AIHelper
 
                 ManageMO.MOINIFixes();
 
-                RunSlowActions();
+                //try start in another thread for perfomance purposes
+                new Thread(new ParameterizedThreadStart((obj) => RunSlowActions())).Start();
 
                 SetupXmlPath = ManageMO.GetSetupXmlPathForCurrentProfile();
 

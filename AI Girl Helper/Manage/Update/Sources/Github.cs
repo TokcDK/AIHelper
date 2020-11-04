@@ -36,7 +36,7 @@ namespace AIHelper.Manage.Update.Sources
                 return false;
             }
 
-            var UpdateDir = ManageSettings.GetCurrentGameModsUpdateDir(); //Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), modGitData.CurrentModName);
+            var UpdateDir = ManageSettings.GetModsUpdateDir(); //Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), modGitData.CurrentModName);
             Directory.CreateDirectory(UpdateDir);
 
             var UpdateFileName = Path.GetFileName(GitLatestVersionFileDownloadLink);
@@ -127,8 +127,9 @@ namespace AIHelper.Manage.Update.Sources
                 GitOwner = info.TargetFolderUpdateInfo[0];
                 GitRepository = info.TargetFolderUpdateInfo[1];
                 info.UpdateFileStartsWith = info.TargetFolderUpdateInfo[2];
-                info.UpdateFileEndsWith = info.TargetFolderUpdateInfo.Length > 3 && info.TargetFolderUpdateInfo[3].ToUpperInvariant() != "TRUE" && info.TargetFolderUpdateInfo[3].ToUpperInvariant() != "FALSE" ? info.TargetFolderUpdateInfo[3] : "";
-                info.VersionFromFile = info.TargetFolderUpdateInfo[info.TargetFolderUpdateInfo.Length-1].ToUpperInvariant() == "TRUE";
+                if (info.UpdateFileEndsWith.Length == 0)
+                    info.UpdateFileEndsWith = (info.TargetFolderUpdateInfo.Length > 3 && info.TargetFolderUpdateInfo[3].ToUpperInvariant() != "TRUE" && info.TargetFolderUpdateInfo[3].ToUpperInvariant() != "FALSE") ? info.TargetFolderUpdateInfo[3] : "";
+                info.VersionFromFile = info.TargetFolderUpdateInfo[info.TargetFolderUpdateInfo.Length - 1].ToUpperInvariant() == "TRUE";
                 info.SourceLink = "https://github.com/" + GitOwner + "/" + GitRepository + "/releases/latest";
                 var LatestReleasePage = wc.DownloadString(info.SourceLink);
                 var version = Regex.Match(LatestReleasePage, "/releases/tag/[^\"]+\"");

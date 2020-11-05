@@ -27,6 +27,7 @@ namespace AIHelper.Manage.Update
         internal SBase source;
         internal TBase target;
         internal bool VersionFromFile;
+        internal bool GetVersionFromLink;
 
         public updateInfo()
         {

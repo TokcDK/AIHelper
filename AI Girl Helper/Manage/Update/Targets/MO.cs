@@ -19,11 +19,18 @@ namespace AIHelper.Manage.Update.Targets
         /// <returns></returns>
         internal override Dictionary<string, string> GetUpdateInfos()
         {
-            MODirPath = ManageSettings.GetMOdirPath();
-            return new Dictionary<string, string>()
+            if (info.source.title.ToUpperInvariant().Contains("GITHUB"))
             {
-                { MODirPath, "ModOrganizer2,modorganizer,Mod.Organizer-"}
-            };
+                MODirPath = ManageSettings.GetMOdirPath();
+                return new Dictionary<string, string>()
+                {
+                    { MODirPath, "ModOrganizer2,modorganizer,Mod.Organizer-"}
+                };
+            }
+            else
+            {
+                return null;
+            }
 
         }
 

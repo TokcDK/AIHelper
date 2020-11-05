@@ -241,6 +241,7 @@
     <Compile Include="Manage\Rules\ModList\HardRules\RuleModForSideloaderPlugin.cs" />
     <Compile Include="Manage\Rules\ModList\HardRules\RuleModForBepInexIPA.cs" />
     <Compile Include="Manage\Rules\ModList\HardRules\RuleModForBepInex.cs" />
+    <Compile Include="Manage\Update\Targets\MOBaseGames.cs" />
     <Compile Include="Manage\Update\Targets\Mods\ModsMetaUrl\ModsMetaUrlBase.cs" />
     <Compile Include="Manage\Update\Targets\Mods\ModsMetaUrl\XUA.cs" />
     <Compile Include="Manage\Update\Update.cs" />

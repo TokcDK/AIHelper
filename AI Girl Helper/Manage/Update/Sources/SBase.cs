@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net;
+using System.Threading.Tasks;
 
 namespace AIHelper.Manage.Update.Sources
 {
@@ -8,6 +9,8 @@ namespace AIHelper.Manage.Update.Sources
     abstract class SBase
     {
         protected updateInfo info;
+
+        protected readonly WebClient wc = new WebClient();
 
         protected SBase(updateInfo info)
         {

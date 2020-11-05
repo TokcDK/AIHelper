@@ -110,17 +110,16 @@ namespace AIHelper.Manage.Update.Sources
 
         internal override string GetLastVersion()
         {
-            return GetLatestGithubVersion();
+            return GetLatestGithubVersionFromReleases();
         }
 
-        static readonly WebClient wc = new WebClient();
         internal string GitOwner;
         internal string GitRepository;
         internal string GitLatestVersion;
-        internal string GitLatestVersionOfFile;
+        //internal string GitLatestVersionOfFile;
         internal string GitLatestVersionFileDownloadLink;
 
-        private string GetLatestGithubVersion()
+        private string GetLatestGithubVersionFromReleases()
         {
             //using (WebClient wc = new WebClient())
             {

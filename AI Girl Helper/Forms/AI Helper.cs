@@ -2703,6 +2703,11 @@ namespace AIHelper
             btnUpdateMods.Enabled = true;
         }
 
+        private void PbDiscord_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://discord.gg/6zYNCsb2hT");//Program's discord server
+        }
+
         //Disable close window button
         //https://social.msdn.microsoft.com/Forums/en-US/b1f0d913-c603-43e9-8fe3-681fb7286d4c/c-disable-close-button-on-windows-form-application?forum=csharpgeneral
         //[DllImport("user32")]

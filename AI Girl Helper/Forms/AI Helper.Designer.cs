@@ -87,6 +87,7 @@
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
+            this.pbDiscord = new System.Windows.Forms.PictureBox();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -100,6 +101,7 @@
             this.DisplaySettingsGroupBox.SuspendLayout();
             this.ToolsTabPage.SuspendLayout();
             this.ToolsPagePanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbDiscord)).BeginInit();
             this.SuspendLayout();
             // 
             // AIGirlHelperTabControl
@@ -252,6 +254,7 @@
             // LaunchPagePanel
             // 
             this.LaunchPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.LaunchPagePanel.Controls.Add(this.pbDiscord);
             this.LaunchPagePanel.Controls.Add(this.VRGameCheckBox);
             this.LaunchPagePanel.Controls.Add(this.OpenHelpLinkLabel);
             this.LaunchPagePanel.Controls.Add(this.LaunchLinksLinkLabel);
@@ -872,6 +875,19 @@
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
             // 
+            // pbDiscord
+            // 
+            this.pbDiscord.BackColor = System.Drawing.Color.Transparent;
+            this.pbDiscord.Image = ((System.Drawing.Image)(resources.GetObject("pbDiscord.Image")));
+            this.pbDiscord.InitialImage = ((System.Drawing.Image)(resources.GetObject("pbDiscord.InitialImage")));
+            this.pbDiscord.Location = new System.Drawing.Point(6, 37);
+            this.pbDiscord.Name = "pbDiscord";
+            this.pbDiscord.Size = new System.Drawing.Size(27, 26);
+            this.pbDiscord.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbDiscord.TabIndex = 30;
+            this.pbDiscord.TabStop = false;
+            this.pbDiscord.Click += new System.EventHandler(this.PbDiscord_Click);
+            // 
             // AI_Helper
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -905,6 +921,7 @@
             this.ToolsTabPage.ResumeLayout(false);
             this.ToolsPagePanel.ResumeLayout(false);
             this.ToolsPagePanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbDiscord)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -969,6 +986,7 @@
         private System.Windows.Forms.LinkLabel CreateShortcutLinkLabel;
         private System.Windows.Forms.LinkLabel FixRegistryLinkLabel;
         private System.Windows.Forms.Button btnUpdateMods;
+        internal System.Windows.Forms.PictureBox pbDiscord;
     }
 }
 

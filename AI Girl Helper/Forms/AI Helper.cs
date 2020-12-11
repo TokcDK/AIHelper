@@ -722,6 +722,7 @@ namespace AIHelper
             THToolTip.SetToolTip(OpenMyUserDataFolderLinkLabel, T._("Open MyUserData folder in Mods if exist\n\nHere placed usual User files of Organized ModPack for selected game"));
 
             THToolTip.SetToolTip(LaunchLinksLinkLabel, T._("Open list of links for game resources"));
+            THToolTip.SetToolTip(pbDiscord, T._("Discord page. Info, links, support."));
             THToolTip.SetToolTip(ExtraSettingsLinkLabel, T._("Open extra setting window for plugins and etc"));
 
             THToolTip.SetToolTip(OpenLogLinkLabel, T._("Open BepinEx log if found"));

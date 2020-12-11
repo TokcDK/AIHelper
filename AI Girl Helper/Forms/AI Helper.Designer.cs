@@ -42,6 +42,7 @@
             this.MainService = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.LaunchPagePanel = new System.Windows.Forms.Panel();
+            this.pbDiscord = new System.Windows.Forms.PictureBox();
             this.VRGameCheckBox = new System.Windows.Forms.CheckBox();
             this.OpenHelpLinkLabel = new System.Windows.Forms.LinkLabel();
             this.LaunchLinksLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -87,7 +88,6 @@
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
-            this.pbDiscord = new System.Windows.Forms.PictureBox();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -95,13 +95,13 @@
             this.LabelPanel.SuspendLayout();
             this.LaunchTabPage.SuspendLayout();
             this.LaunchPagePanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbDiscord)).BeginInit();
             this.SettingsPage.SuspendLayout();
             this.SettingsPagePanel.SuspendLayout();
             this.SettingsFoldersGroupBox.SuspendLayout();
             this.DisplaySettingsGroupBox.SuspendLayout();
             this.ToolsTabPage.SuspendLayout();
             this.ToolsPagePanel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbDiscord)).BeginInit();
             this.SuspendLayout();
             // 
             // AIGirlHelperTabControl
@@ -277,6 +277,19 @@
             this.LaunchPagePanel.Name = "LaunchPagePanel";
             this.LaunchPagePanel.Size = new System.Drawing.Size(340, 155);
             this.LaunchPagePanel.TabIndex = 0;
+            // 
+            // pbDiscord
+            // 
+            this.pbDiscord.BackColor = System.Drawing.Color.Transparent;
+            this.pbDiscord.Image = ((System.Drawing.Image)(resources.GetObject("pbDiscord.Image")));
+            this.pbDiscord.InitialImage = ((System.Drawing.Image)(resources.GetObject("pbDiscord.InitialImage")));
+            this.pbDiscord.Location = new System.Drawing.Point(6, 37);
+            this.pbDiscord.Name = "pbDiscord";
+            this.pbDiscord.Size = new System.Drawing.Size(27, 26);
+            this.pbDiscord.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbDiscord.TabIndex = 30;
+            this.pbDiscord.TabStop = false;
+            this.pbDiscord.Click += new System.EventHandler(this.PbDiscord_Click);
             // 
             // VRGameCheckBox
             // 
@@ -875,19 +888,6 @@
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
             // 
-            // pbDiscord
-            // 
-            this.pbDiscord.BackColor = System.Drawing.Color.Transparent;
-            this.pbDiscord.Image = ((System.Drawing.Image)(resources.GetObject("pbDiscord.Image")));
-            this.pbDiscord.InitialImage = ((System.Drawing.Image)(resources.GetObject("pbDiscord.InitialImage")));
-            this.pbDiscord.Location = new System.Drawing.Point(6, 37);
-            this.pbDiscord.Name = "pbDiscord";
-            this.pbDiscord.Size = new System.Drawing.Size(27, 26);
-            this.pbDiscord.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pbDiscord.TabIndex = 30;
-            this.pbDiscord.TabStop = false;
-            this.pbDiscord.Click += new System.EventHandler(this.PbDiscord_Click);
-            // 
             // AI_Helper
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -911,6 +911,7 @@
             this.LaunchTabPage.ResumeLayout(false);
             this.LaunchPagePanel.ResumeLayout(false);
             this.LaunchPagePanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbDiscord)).EndInit();
             this.SettingsPage.ResumeLayout(false);
             this.SettingsPagePanel.ResumeLayout(false);
             this.SettingsPagePanel.PerformLayout();
@@ -921,7 +922,6 @@
             this.ToolsTabPage.ResumeLayout(false);
             this.ToolsPagePanel.ResumeLayout(false);
             this.ToolsPagePanel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbDiscord)).EndInit();
             this.ResumeLayout(false);
 
         }

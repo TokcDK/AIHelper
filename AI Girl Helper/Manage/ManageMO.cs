@@ -61,7 +61,8 @@ namespace AIHelper.Manage
         internal static string MakeMOProfileModlistFileBuckup(string suffix = "")
         {
             var modlistPath = Path.Combine(ManageSettings.GetMOSelectedProfileDirPath(), "modlist.txt");
-            if (File.Exists(modlistPath) && File.ReadAllText(GetLastBak(suffix)) != File.ReadAllText(modlistPath))
+            var lastBackup = GetLastBak(suffix);
+            if (lastBackup == null || (File.Exists(modlistPath) && File.Exists(lastBackup) && File.ReadAllText(lastBackup) != File.ReadAllText(modlistPath)))
             {
                 var targetFile = modlistPath + "." + DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss", CultureInfo.InvariantCulture) + suffix;
                 File.Copy(modlistPath, targetFile);
@@ -85,7 +86,7 @@ namespace AIHelper.Manage
                     last = file;
                 }
             }
-            return last.FullName;
+            return last != null ? last.FullName : null;
         }
 
         private static void SetCustomExecutablesIniValues(INIFile INI)

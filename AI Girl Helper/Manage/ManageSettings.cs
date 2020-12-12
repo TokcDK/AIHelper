@@ -80,10 +80,10 @@ namespace AIHelper.Manage
         internal static List<Game> GetListOfExistsGames()
         {
             List<Game> ListOfGames = GamesList.GetGamesList();
-
+            var ListOfGamesRead = new List<Game>(ListOfGames);
             if (Directory.Exists(ManageSettings.GetGamesFolderPath()))
             {
-                foreach (var game in ListOfGames)
+                foreach (var game in ListOfGamesRead)
                 {
                     if (
                             Directory.Exists(game.GetGamePath())

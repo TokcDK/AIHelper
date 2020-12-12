@@ -1192,7 +1192,8 @@ namespace AIHelper
             }
             if (MOmode)
             {
-                RunProgram(MOexePath, "moshortcut://:" + ManageSettings.GetCurrentGameEXEMOProfileName() + vr);
+                var GetCurrentGameEXEMOProfileName = ManageSettings.GetCurrentGameEXEMOProfileName();
+                RunProgram(MOexePath, "moshortcut://:" + GetCurrentGameEXEMOProfileName + vr);
             }
             else
             {

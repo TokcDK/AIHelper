@@ -858,7 +858,7 @@ namespace AIHelper.Manage
             var customs = new INIFile(ManageSettings.GetMOiniPath()).ReadSectionKeyValuePairsToDictionary("customExecutables");
             foreach (var pair in customs)
             {
-                if (pair.Key.EndsWith(@"\binary", StringComparison.InvariantCulture) && Path.GetFileNameWithoutExtension(pair.Value) == exename)
+                if (pair.Key.EndsWith(@"\binary", StringComparison.InvariantCulture) && Path.GetFileNameWithoutExtension(pair.Value) == exename && File.Exists(pair.Value))
                 {
                     var s = customs[pair.Key.Split('\\')[0] + @"\title"];
                     return customs[pair.Key.Split('\\')[0] + @"\title"];

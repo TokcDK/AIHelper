@@ -109,11 +109,11 @@ namespace AIHelper.Manage
             foreach(var record in customExecutables)
             {
                 if (record.Key.EndsWith(@"\binary", StringComparison.OrdinalIgnoreCase)//read bynary path
-                    && record.Value.StartsWith(@"../Data", StringComparison.OrdinalIgnoreCase))
+                    && record.Value.StartsWith(@"../", StringComparison.OrdinalIgnoreCase))
                 {
                     newcustomExecutables.Add(record.Key, record.Value
-                        .Remove(0,7)//remove "..\Data"
-                        .Insert(0, ManageSettings.GetCurrentGameDataPath() //add absolute path for current game's data path
+                        .Remove(0,3)//remove "../"
+                        .Insert(0, Path.GetFullPath( Path.Combine(ManageSettings.GetCurrentGameDataPath(), record.Value)) //add absolute path for current game's data path
                         .Replace(@"\\","/").Replace(@"\","/")));//replace \ to /
                     changed = true;
                 }

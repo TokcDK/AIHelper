@@ -1215,7 +1215,8 @@ namespace AIHelper
 
             if (MOmode)
             {
-                RunProgram(MOexePath, "moshortcut://:" + ManageSettings.GetStudioEXEName());
+                var studio = ManageMO.GetMOcustomExecutableTitlaByExeName(ManageSettings.GetStudioEXEName());
+                RunProgram(MOexePath, "moshortcut://:" + studio);
             }
             else
             {

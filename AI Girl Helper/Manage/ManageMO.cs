@@ -48,6 +48,7 @@ namespace AIHelper.Manage
             SetCommonIniValues(INI);
 
             //await Task.Run(() => SetCustomExecutablesIniValues(INI)).ConfigureAwait(true);
+            FixCustomExecutablesIniValues();
             Properties.Settings.Default.SetModOrganizerINISettingsForTheGame = false;
 
             //Properties.Settings.Default.CurrentGameIsChanging = false;
@@ -87,6 +88,49 @@ namespace AIHelper.Manage
                 }
             }
             return last != null ? last.FullName : null;
+        }
+
+        /// <summary>
+        /// changes incorrect relative paths "../Data" fo custom executable for absolute Data path of currents game
+        /// </summary>
+        /// <param name="INI"></param>
+        internal static void FixCustomExecutablesIniValues(INIFile INI = null)
+        {
+            if (INI == null)
+            {
+                INI = new INIFile(ManageSettings.GetModOrganizerINIpath());
+            }
+
+            var customExecutables = INI.ReadSectionKeyValuePairsToDictionary("customExecutables");
+
+            var newcustomExecutables = new Dictionary<string, string>();
+
+            var changed = false;
+            foreach(var record in customExecutables)
+            {
+                if (record.Key.EndsWith(@"\binary", StringComparison.OrdinalIgnoreCase)//read bynary path
+                    && record.Value.StartsWith(@"../Data", StringComparison.OrdinalIgnoreCase))
+                {
+                    newcustomExecutables.Add(record.Key, record.Value
+                        .Remove(0,7)//remove "..\Data"
+                        .Insert(0, ManageSettings.GetCurrentGameDataPath() //add absolute path for current game's data path
+                        .Replace(@"\\","/").Replace(@"\","/")));//replace \ to /
+                    changed = true;
+                }
+                else
+                {
+                    newcustomExecutables.Add(record.Key, record.Value);
+                }
+            }
+
+            if (changed)//write only if changed
+            {
+                foreach(var record in newcustomExecutables)
+                {
+                    INI.WriteINI("customExecutables", record.Key, record.Value, false);
+                }
+                INI.SaveINI();
+            }
         }
 
         private static void SetCustomExecutablesIniValues(INIFile INI)
@@ -858,11 +902,17 @@ namespace AIHelper.Manage
             var customs = new INIFile(ManageSettings.GetMOiniPath()).ReadSectionKeyValuePairsToDictionary("customExecutables");
             foreach (var pair in customs)
             {
-                if (pair.Key.EndsWith(@"\binary", StringComparison.InvariantCulture) && Path.GetFileNameWithoutExtension(pair.Value) == exename && File.Exists(pair.Value))
-                {
-                    var s = customs[pair.Key.Split('\\')[0] + @"\title"];
-                    return customs[pair.Key.Split('\\')[0] + @"\title"];
-                }
+                if (pair.Key.EndsWith(@"\binary", StringComparison.InvariantCulture))
+                    if (Path.GetFileNameWithoutExtension(pair.Value) == exename)
+                        if (File.Exists(pair.Value))
+                        {
+                            {
+                                {
+                                    var s = customs[pair.Key.Split('\\')[0] + @"\title"];
+                                    return customs[pair.Key.Split('\\')[0] + @"\title"];
+                                }
+                            }
+                        }
             }
             return exename;
         }

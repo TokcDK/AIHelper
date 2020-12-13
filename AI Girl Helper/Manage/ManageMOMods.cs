@@ -1827,8 +1827,8 @@ namespace AIHelper.Manage
         internal static string GetMOModPathInMods(string inputPath)
         {
             //search ModPath
-            string ModPath = inputPath;
-            string FolderPath = ModPath;
+            var ModPath = inputPath;
+            var FolderPath = ModPath;
             while (FolderPath.ToUpperInvariant() != ManageSettings.GetCurrentGameModsPath().ToUpperInvariant())
             {
                 ModPath = FolderPath;
@@ -1842,7 +1842,7 @@ namespace AIHelper.Manage
         {
             //zipmod GUID save
             string FileInDataFolderExtension;
-            if (FileInDataFolder.ToLowerInvariant().Contains("sideloader modpack") && ((FileInDataFolderExtension = Path.GetExtension(FileInDataFolder).ToLowerInvariant()) == ".zipmod" || FileInDataFolderExtension == ".zip"))
+            if (FileInDataFolder.ToUpperInvariant().Contains("SIDELOADER MODPACK") && ((FileInDataFolderExtension = Path.GetExtension(FileInDataFolder).ToUpperInvariant()) == ".ZIPMOD" || FileInDataFolderExtension == ".ZIP"))
             {
                 var guid = ManageArchive.GetZipmodGUID(FileInDataFolder);
                 if (guid.Length > 0 && !ZipmodsGUIDList.ContainsKey(guid))

@@ -1782,21 +1782,28 @@ namespace AIHelper
                         string guid;
                         if (ZipmodsGUIDListNotEmpty
                             && addedFiles[f].ToUpperInvariant().Contains("SIDELOADER MODPACK")
-                            && ((ext = Path.GetExtension(addedFiles[f])) == ".zipmod" || ext == ".zip")
+                            && ((ext = Path.GetExtension(addedFiles[f]).ToUpperInvariant()) == ".ZIPMOD" || ext == ".ZIP")
                             && !string.IsNullOrWhiteSpace(guid = ManageArchive.GetZipmodGUID(addedFiles[f]))
                             && ZipmodsGUIDList.ContainsKey(guid)
                             )
                         {
-                            if (Path.GetFileName(addedFiles[f]) == Path.GetFileName(ZipmodsGUIDList[guid]))//when zipmod has same name but moved
+                            if (ZipmodsGUIDList[guid].Contains("%"))//temp check
                             {
-                                var targetfolder = ZipmodsGUIDList[guid].IsInOverwriteFolder() ?
+                                ManageLogs.Log("zipmod cantains %VAR%:"+ZipmodsGUIDList[guid]);
+                            }
+
+                            var zipmod = ReplaceVarsToPaths(ZipmodsGUIDList[guid]);
+
+                            if (Path.GetFileName(addedFiles[f]) == Path.GetFileName(zipmod))//when zipmod has same name but moved
+                            {
+                                var targetfolder = zipmod.IsInOverwriteFolder() ?
                                     ManageSettings.GetOverwriteFolder() : ManageSettings.GetCurrentGameModsPath();
                                 DestFileName = addedFiles[f].Replace(ManageSettings.GetCurrentGameDataPath(), targetfolder
                                     );
                             }
                             else//when mod was renamed
                             {
-                                if (ZipmodsGUIDList[guid].IsInOverwriteFolder())//zipmod in overwrite
+                                if (zipmod.IsInOverwriteFolder())//zipmod in overwrite
                                 {
                                     var NewFilePath = addedFiles[f].Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetOverwriteFolder());
                                     if (Directory.Exists(Path.GetDirectoryName(NewFilePath)) && NewFilePath != addedFiles[f])
@@ -1806,7 +1813,7 @@ namespace AIHelper
                                 }
                                 else//zipmod in Mods
                                 {
-                                    var ModPath = ManageMOMods.GetMOModPathInMods(ZipmodsGUIDList[guid]);
+                                    var ModPath = ManageMOMods.GetMOModPathInMods(zipmod);
                                     if (Path.GetFileName(ModPath).ToUpperInvariant() != "MODS" && Directory.Exists(ModPath))
                                     {
                                         DestFileName = addedFiles[f].Replace(ManageSettings.GetCurrentGameDataPath(), ModPath);

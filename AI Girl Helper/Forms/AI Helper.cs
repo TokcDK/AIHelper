@@ -1789,9 +1789,10 @@ namespace AIHelper
                         {
                             if (Path.GetFileName(addedFiles[f]) == Path.GetFileName(ZipmodsGUIDList[guid]))//when zipmod has same name but moved
                             {
-                                DestFileName = addedFiles[f].Replace(ManageSettings.GetCurrentGameDataPath(),
-                                    ZipmodsGUIDList[guid].IsInOverwriteFolder() ?
-                                    ManageSettings.GetOverwriteFolder() : ManageSettings.GetCurrentGameModsPath());
+                                var targetfolder = ZipmodsGUIDList[guid].IsInOverwriteFolder() ?
+                                    ManageSettings.GetOverwriteFolder() : ManageSettings.GetCurrentGameModsPath();
+                                DestFileName = addedFiles[f].Replace(ManageSettings.GetCurrentGameDataPath(), targetfolder
+                                    );
                             }
                             else//when mod was renamed
                             {

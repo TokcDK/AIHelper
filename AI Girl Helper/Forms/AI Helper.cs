@@ -1781,7 +1781,7 @@ namespace AIHelper
                         string ext;
                         string guid;
                         if (ZipmodsGUIDListNotEmpty
-                            && addedFiles[f].ToLowerInvariant().Contains("sideloader modpack")
+                            && addedFiles[f].ToUpperInvariant().Contains("SIDELOADER MODPACK")
                             && ((ext = Path.GetExtension(addedFiles[f])) == ".zipmod" || ext == ".zip")
                             && !string.IsNullOrWhiteSpace(guid = ManageArchive.GetZipmodGUID(addedFiles[f]))
                             && ZipmodsGUIDList.ContainsKey(guid)

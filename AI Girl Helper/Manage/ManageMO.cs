@@ -108,14 +108,25 @@ namespace AIHelper.Manage
             var changed = false;
             foreach(var record in customExecutables)
             {
-                if (record.Key.EndsWith(@"\binary", StringComparison.OrdinalIgnoreCase)//read bynary path
+                if ((record.Key.EndsWith(@"\binary", StringComparison.OrdinalIgnoreCase)//read bynary path
+                   || record.Key.EndsWith(@"\workingDirectory", StringComparison.OrdinalIgnoreCase))//read \workingDirectory path
                     && record.Value.StartsWith(@"../", StringComparison.OrdinalIgnoreCase))
                 {
-                    newcustomExecutables.Add(record.Key, record.Value
-                        .Remove(0,3)//remove "../"
-                        .Insert(0, Path.GetFullPath( Path.Combine(ManageSettings.GetCurrentGameDataPath(), record.Value)) //add absolute path for current game's data path
-                        .Replace(@"\\","/").Replace(@"\","/")));//replace \ to /
-                    changed = true;
+                    try
+                    {
+                        var targetcorrectedrelative = record.Value
+                                .Replace("../", ManageSettings.GetCurrentGamePath() + "/");
+                        var targetcorrectedabsolute = Path.GetFullPath(targetcorrectedrelative);
+                        var targetcorrectedabsolutefixedslash = targetcorrectedabsolute.Replace(@"\\", "/").Replace(@"\", "/");//replace \ to /;
+                                                                                                                               //add absolute path for current game's data path
+                        newcustomExecutables.Add(record.Key, targetcorrectedabsolutefixedslash);
+                        changed = true;
+                    }
+                    catch
+                    {
+                        ManageLogs.Log("FixCustomExecutablesIniValues:Error while path fix.\r\nKey="+ record.Key+"\r\nPath="+ record.Value);
+                        newcustomExecutables.Add(record.Key, record.Value);
+                    }
                 }
                 else
                 {

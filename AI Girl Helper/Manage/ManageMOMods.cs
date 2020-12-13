@@ -1835,6 +1835,15 @@ namespace AIHelper.Manage
                 FolderPath = Path.GetDirectoryName(FolderPath);
             }
 
+            if (ModPath!=null && Path.GetFileName(ModPath).ToUpperInvariant() == "MODS")//temp debug check
+            {
+                ManageLogs.Log("warning. log path is Mods. ModPath="+ ModPath+ ". FolderPath="+ FolderPath);
+            }
+            else if(ModPath == null)
+            {
+                ManageLogs.Log("warning. ModPath is null.(" + ModPath + ") FolderPath=" + FolderPath);
+            }
+
             return ModPath;
         }
 

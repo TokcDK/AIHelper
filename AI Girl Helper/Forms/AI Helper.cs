@@ -1870,6 +1870,60 @@ namespace AIHelper
                     ManageFilesFolders.DeleteEmptySubfolders(DataPath, false);
                 }
 
+                //restore sideloader mods from Mods\Mods
+                var modsmods = Path.Combine(ManageSettings.GetCurrentGameModsPath(), "Mods");
+                var targetmodpath = modsmods;
+                if (Directory.Exists(modsmods))
+                {
+                    try//skip if was error
+                    {
+                        //scan Mods\Mods subdir
+                        foreach (var dir in new DirectoryInfo(modsmods).EnumerateDirectories())
+                        {
+                            //parse only sideloader folders
+                            if (!dir.Name.ToUpperInvariant().Contains("SIDELOADER MODPACK"))
+                            {
+                                continue;
+                            }
+
+                            //search target mod path where exists 'dir' folder
+                            foreach (var moddir in Directory.EnumerateDirectories(ManageSettings.GetCurrentGameModsPath()))
+                            {
+                                //skip separators
+                                if (moddir.EndsWith("_separator", StringComparison.InvariantCulture) || moddir == modsmods)
+                                {
+                                    continue;
+                                }
+
+                                //check if subfolder dir.name exists
+                                if (Directory.Exists(Path.Combine(moddir, dir.Name)))
+                                {
+                                    targetmodpath = moddir;
+                                    break;
+                                }
+                            }
+
+                            //move files from 'dir' to target mod
+                            if(targetmodpath!=modsmods)//skip if target mod folder not changed
+                            foreach(var file in Directory.EnumerateFiles(dir.FullName))
+                            {
+                                var targetfilepath = file.Replace(dir.FullName, targetmodpath);
+                                if (!File.Exists(targetfilepath))//skip if exists target file path
+                                {
+                                    File.Move(file, targetfilepath);
+                                }
+                            }
+                        }
+
+                        //cleanup empty dirs
+                        ManageFilesFolders.DeleteEmptySubfolders(modsmods, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        ManageLogs.Log("error occured while Mods\\Mods file sorting. Error:\r\n"+ex);
+                    }
+                }
+
                 //чистка файлов-списков
                 File.Delete(ManageSettings.GetMOToStandartConvertationOperationsListFilePath());
                 File.Delete(ManageSettings.GetVanillaDataFilesListFilePath());
@@ -2157,8 +2211,9 @@ namespace AIHelper
                                                 }
                                             }
                                         }
-                                        catch
+                                        catch (Exception ex)
                                         {
+                                            ManageLogs.Log("error while image skip. error:"+ex);
                                         }
 
                                         //skip meta.ini
@@ -2421,8 +2476,9 @@ namespace AIHelper
                             }
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        ManageLogs.Log("error while RestoreMovedFilesLocation. error:\r\n"+ex);
                     }
                 }
 

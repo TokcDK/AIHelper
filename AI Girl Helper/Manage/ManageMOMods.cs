@@ -178,7 +178,7 @@ namespace AIHelper.Manage
                 {
                     try
                     {
-                        if (File.Exists(BepInExFilesPaths[i, 1]))
+                        if (File.Exists(BepInExFilesPaths[i, 1]) && (File.Exists(BepInExFilesPaths[i, 0]) || ManageSymLinks.IsSymLink(BepInExFilesPaths[i, 1])))
                         {
                             File.Delete(BepInExFilesPaths[i, 1]);
                         }

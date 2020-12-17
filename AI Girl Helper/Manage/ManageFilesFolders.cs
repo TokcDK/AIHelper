@@ -493,7 +493,7 @@ namespace AIHelper.Manage
                     var arrayLength = array.Length;
                     for (int i = 0; i < arrayLength; i++)
                     {
-                        hash += array[i].ToString("x2")/*.ToLowerInvariant()*/;
+                        hash += array[i].ToString("x2",CultureInfo.InvariantCulture)/*.ToLowerInvariant()*/;
                     }
                 }
 

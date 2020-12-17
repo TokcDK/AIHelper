@@ -466,7 +466,7 @@
             this.GameButton.ForeColor = System.Drawing.Color.Black;
             this.GameButton.Location = new System.Drawing.Point(42, 72);
             this.GameButton.Name = "GameButton";
-            this.GameButton.Size = new System.Drawing.Size(94, 30);
+            this.GameButton.Size = new System.Drawing.Size(94, 33);
             this.GameButton.TabIndex = 15;
             this.GameButton.Text = "Game";
             this.GameButton.UseVisualStyleBackColor = false;

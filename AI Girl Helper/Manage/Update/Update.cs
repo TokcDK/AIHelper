@@ -295,23 +295,25 @@ namespace AIHelper.Manage.Update
                 }
 
                 var reportTitle = T._("Update report");
-                var ReportFilePath = Path.Combine(ManageSettings.GetAppResDir(), "theme", "default", "report", ManageSettings.GetCurrentGameEXEName() + "Template.html");
+                var ReportFilePath = Path.Combine(ManageSettings.GetAppResDir(), "theme", "default", "report", "ReportTemplate.html");
                 if (File.Exists(ReportFilePath))
                 {
                     IsHTMLReport = true;
                     ReportMessage = File.ReadAllText(ReportFilePath)
-                     .Replace("%BGImageLinkPath%", Path.Combine(ManageSettings.GetAppResDir(), "theme", "default", "report", ManageSettings.GetCurrentGameEXEName() + "BG.jpg").Replace(Path.DirectorySeparatorChar.ToString(), "/"))
+                     .Replace("%BGImageLinkPath%", Path.Combine(ManageSettings.GetAppResDir(), "theme", "default", "report", ManageSettings.GetCurrentGameEXEName() + "ReportBG.jpg").Replace(Path.DirectorySeparatorChar.ToString(), "/"))
                      .Replace("%ModsUpdateReportHeaderText%", reportTitle)
                      .Replace("%SingleModUpdateReportsTextSection%", string.Join(HTMLBetweenMods, newReport))
                      .Replace("%ModsUpdateInfoNotice%", T._("If you click on <b style=\"font-size:20px;color:blue;\">[Info]</b> link you can view update important update info include requuirements and incompatibilities for latest update."));
                 }
                 else
+                {
                     ReportMessage =
                         (IsHTMLReport ? HTMLBegin : string.Empty)
                         + reportTitle
                         + (IsHTMLReport ? HTMLAfterHeader : Environment.NewLine + Environment.NewLine)
                         + string.Join(IsHTMLReport ? HTMLBetweenMods : Environment.NewLine, newReport)
                         + (IsHTMLReport ? HTMLend : string.Empty);
+                }
                 //ReportMessage = string.Join(/*Environment.NewLine*/"<br>", report);
                 if (IsHTMLReport)
                 {

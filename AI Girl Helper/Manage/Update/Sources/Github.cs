@@ -122,6 +122,7 @@ namespace AIHelper.Manage.Update.Sources
         private string GetLatestGithubVersionFromReleases()
         {
             //using (WebClient wc = new WebClient())
+            try
             {
                 GitOwner = info.TargetFolderUpdateInfo[0];
                 GitRepository = info.TargetFolderUpdateInfo[1];
@@ -154,6 +155,10 @@ namespace AIHelper.Manage.Update.Sources
                 {
                     ManageLogs.Log("GitHub sublink to file not found or incorrect. link:" + Environment.NewLine + link2file.Value);
                 }
+            }
+            catch (Exception ex)
+            {
+                ManageLogs.Log("failed to check update. error:\r\n"+ex);
             }
 
             return "";

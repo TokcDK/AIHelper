@@ -222,14 +222,16 @@ namespace AIHelper.Manage.Update
             if (version.Length == 0)
                 return;
 
-            foreach (var prefix in new[] { "VERSION", "VER", "V" })
-            {
-                if (version.ToUpperInvariant().StartsWith(prefix, StringComparison.InvariantCulture))
-                {
-                    version = version.Remove(0, prefix.Length);
-                    break;
-                }
-            }
+            version = version.TrimFileVersion();
+
+            //foreach (var prefix in new[] { "VERSION", "VER", "V" })
+            //{
+            //    if (version.ToUpperInvariant().StartsWith(prefix, StringComparison.InvariantCulture))
+            //    {
+            //        version = version.Remove(0, prefix.Length);
+            //        break;
+            //    }
+            //}
         }
 
         private static bool IsLatestVersionNewerOfCurrent(string LatestVersion, string CurrentVersion)

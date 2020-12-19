@@ -1050,7 +1050,7 @@ namespace AIHelper
             //Debug
 
             //Beta
-            btnUpdateMods.Visible = IsDebug || IsBetaTest;
+            btnUpdateMods.Visible = true;// IsDebug || IsBetaTest;
         }
 
         private static void RunSlowActions()

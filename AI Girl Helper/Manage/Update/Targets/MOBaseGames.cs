@@ -4,6 +4,11 @@ using System.IO;
 
 namespace AIHelper.Manage.Update.Targets
 {
+    /// <summary>
+    /// basic games page https://github.com/ModOrganizer2/modorganizer-basic_games is changing with sources and releases not updating
+    /// and also it has different versions for different MO and because currently better to update it manually
+    /// </summary>
+    /// <returns></returns>
     class MOBaseGames : TBase
     {
         public MOBaseGames(updateInfo info) : base(info)
@@ -28,6 +33,8 @@ namespace AIHelper.Manage.Update.Targets
 
         internal override void SetCurrentVersion()
         {
+            var dir = Path.Combine(ManageSettings.GetMOdirPath(), "plugins", "modorganizer-basic_games");
+
             throw new NotImplementedException();
         }
 

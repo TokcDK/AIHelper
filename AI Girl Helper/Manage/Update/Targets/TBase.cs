@@ -50,7 +50,7 @@ namespace AIHelper.Manage.Update.Targets
         {
             try
             {
-                BuckupDirPath = Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), "old", info.TargetFolderPath.Name + "_" + info.TargetCurrentVersion);
+                BuckupDirPath = Path.Combine(ManageSettings.GetUpdatedModsOlderVersionsBuckupDirPath(), info.TargetFolderPath.Name + "_" + info.TargetCurrentVersion);
                 if (Directory.Exists(BuckupDirPath))
                 {
                     BuckupDirPath += "_" + DateTime.Now.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);

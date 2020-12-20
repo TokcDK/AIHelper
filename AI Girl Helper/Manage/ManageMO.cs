@@ -908,7 +908,7 @@ namespace AIHelper.Manage
             return retDict;
         }
 
-        internal static string GetMOcustomExecutableTitlaByExeName(string exename)
+        internal static string GetMOcustomExecutableTitleByExeName(string exename)
         {
             var customs = new INIFile(ManageSettings.GetMOiniPath()).ReadSectionKeyValuePairsToDictionary("customExecutables");
             foreach (var pair in customs)
@@ -917,15 +917,89 @@ namespace AIHelper.Manage
                     if (Path.GetFileNameWithoutExtension(pair.Value) == exename)
                         if (File.Exists(pair.Value))
                         {
-                            {
-                                {
-                                    var s = customs[pair.Key.Split('\\')[0] + @"\title"];
-                                    return customs[pair.Key.Split('\\')[0] + @"\title"];
-                                }
-                            }
+                            return customs[pair.Key.Split('\\')[0] + @"\title"];
                         }
             }
             return exename;
+        }
+
+        /// <summary>
+        /// inserts in MO.ini new custom executable
+        /// required exeParams 0 is exe title, required exeParams 1 is exe bynary path
+        /// optional exeParams 2 is arguments, optional exeParams 4 is working directory
+        /// </summary>
+        /// <param name="exeParams"></param>
+        internal static void InsertCustomExecutable(string[] exeParams)
+        {
+            var INI = new INIFile(ManageSettings.GetMOiniPath());
+            var customs = INI.ReadSectionKeyValuePairsToDictionary("customExecutables");
+
+            var newind = GetMOiniCustomExecutablesCount(customs)+1; //get new custom executables index
+
+            //add parameterso of new executable
+            customs.Add(newind + @"\title", exeParams[0]);
+            customs.Add(newind + @"\binary", exeParams[1].Replace(@"\\","/").Replace(@"\","/"));
+            customs.Add(newind + @"\arguments", exeParams.Length> 2 ? @"\"""+exeParams[2].Replace(@"\", @"\\").Replace("/",@"\\")+@"\""" : string.Empty);
+            customs.Add(newind + @"\workingDirectory", exeParams.Length > 3 ? exeParams[3] : Path.GetDirectoryName(exeParams[0]).Replace(@"\\", "/").Replace(@"\", "/"));
+            customs.Add(newind + @"\ownicon", "true");
+
+            //update parameters size
+            customs.Remove("size");
+            customs["size"] = newind+"";
+
+            //write customs
+            foreach (var record in customs)
+            {
+                INI.WriteINI("customExecutables", record.Key, record.Value, false);
+            }
+            INI.SaveINI();
+        }
+
+        /// <summary>
+        /// get MO custom executables count
+        /// </summary>
+        /// <param name="customs"></param>
+        /// <returns></returns>
+        internal static int GetMOiniCustomExecutablesCount(Dictionary<string, string> customs=null)
+        {
+            customs = customs?? new INIFile(ManageSettings.GetMOiniPath()).ReadSectionKeyValuePairsToDictionary("customExecutables");
+
+            if (customs.Count == 0)//check if caustoms is exists
+            {
+                return 0;
+            }
+
+            int ind = 1;
+            if(!customs.ContainsKey(ind + @"\binary"))//return 0 if there is no binary in list
+            {
+                return 0;
+            }
+
+            while (customs.ContainsKey(ind + @"\binary"))//iterate while binary with index is exist
+            {
+                ind++;
+            }
+            return ind-1;
+        }
+
+        /// <summary>
+        /// returns true if program custom exe is exists in MO list
+        /// </summary>
+        /// <param name="exename"></param>
+        /// <returns></returns>
+        internal static bool IsMOcustomExecutableTitleByExeNameExists(string exename)
+        {
+            var customs = new INIFile(ManageSettings.GetMOiniPath()).ReadSectionKeyValuePairsToDictionary("customExecutables");
+            foreach (var pair in customs)
+            {
+                if (pair.Key.EndsWith(@"\binary", StringComparison.InvariantCulture))
+                    if (Path.GetFileNameWithoutExtension(pair.Value) == exename)
+                        if (File.Exists(pair.Value))
+                        {
+                            return true;
+                        }
+            }
+            return false;
         }
 
         public static void ActivateMod(string modname)

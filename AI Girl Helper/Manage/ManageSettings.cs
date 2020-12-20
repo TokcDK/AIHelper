@@ -833,7 +833,7 @@ namespace AIHelper.Manage
 
         internal static string GetCurrentGameEXEMOProfileName()
         {
-            return ManageMO.GetMOcustomExecutableTitlaByExeName(GetCurrentGameEXEName());
+            return ManageMO.GetMOcustomExecutableTitleByExeName(GetCurrentGameEXEName());
         }
 
         internal static string VarCurrentGameDataPath()
@@ -849,6 +849,31 @@ namespace AIHelper.Manage
         internal static string VarCurrentGameMOOverwritePath()
         {
             return "%Overwrite%";
+        }
+
+        internal static string GetUpdatedModsOlderVersionsBuckupDirName()
+        {
+            return "old";
+        }
+
+        internal static string GetUpdatedModsOlderVersionsBuckupDirPath()
+        {
+            return Path.Combine(GetModsUpdateDir(), GetCurrentGameFolderName(), GetUpdatedModsOlderVersionsBuckupDirName());
+        }
+
+        internal static string GetModsUpdateDirDownloadsPath()
+        {
+            return Path.Combine(GetModsUpdateDir(), GetModsUpdateDirDownloadsName());
+        }
+
+        internal static string GetModsUpdateDirDownloadsName()
+        {
+            return "downloads";
+        }
+
+        internal static string GetKKManagerPath()
+        {
+            return Path.Combine(GetAppResDir(), "tools", "KKManager");
         }
     }
 }

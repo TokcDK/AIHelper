@@ -36,8 +36,8 @@ namespace AIHelper.Manage.Update.Sources
                 return false;
             }
 
-            var UpdateDir = ManageSettings.GetModsUpdateDir(); //Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), modGitData.CurrentModName);
-            Directory.CreateDirectory(UpdateDir);
+            var UpdateDownloadsDir = ManageSettings.GetModsUpdateDirDownloadsPath(); //Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), modGitData.CurrentModName);
+            Directory.CreateDirectory(UpdateDownloadsDir);
 
             var UpdateFileName = Path.GetFileName(GitLatestVersionFileDownloadLink);
 
@@ -63,7 +63,7 @@ namespace AIHelper.Manage.Update.Sources
                 }
             };
 
-            info.UpdateFilePath = Path.Combine(UpdateDir, UpdateFileName);
+            info.UpdateFilePath = Path.Combine(UpdateDownloadsDir, UpdateFileName);
             wc.DownloadFileCompleted += (s, ea) =>
             {
                 if (Dwnpb != null)

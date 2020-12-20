@@ -1215,7 +1215,7 @@ namespace AIHelper
 
             if (MOmode)
             {
-                var studio = ManageMO.GetMOcustomExecutableTitlaByExeName(ManageSettings.GetStudioEXEName());
+                var studio = ManageMO.GetMOcustomExecutableTitleByExeName(ManageSettings.GetStudioEXEName());
                 RunProgram(MOexePath, "moshortcut://:" + studio);
             }
             else
@@ -2765,7 +2765,43 @@ namespace AIHelper
         {
             btnUpdateMods.Enabled = false;
 
-            new Update().update();
+            //update plugins in mo mode
+            if (MOmode)
+            {
+                new Update().update();
+            }
+
+            var KKManagerStandaloneUpdaterPath = Path.Combine(ManageSettings.GetKKManagerPath(), "StandaloneUpdater.exe");
+
+            //run zipmod's check if updater found and only for KK, AI, HS2
+            if (File.Exists(KKManagerStandaloneUpdaterPath)
+                && (ManageSettings.GetCurrentGameEXEName() == "Koikatu"
+                || ManageSettings.GetCurrentGameEXEName() == "AI-Syoujyo"
+                || ManageSettings.GetCurrentGameEXEName() == "HoneySelect2"
+                )
+                )
+            {
+                if (MOmode)
+                {
+                    //add updater as new exe in mo list if not exists
+                    if (!ManageMO.IsMOcustomExecutableTitleByExeNameExists("StandaloneUpdater"))
+                    {
+                        ManageMO.InsertCustomExecutable(new string[] 
+                        {
+                            "KKManagerStandaloneUpdater",
+                            KKManagerStandaloneUpdaterPath,
+                            ManageSettings.GetCurrentGameDataPath()
+                        });
+                    }
+
+                    RunProgram(MOexePath, "moshortcut://:" + ManageMO.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
+                }
+                else
+                {
+                    //run updater normal
+                    Process.Start(KKManagerStandaloneUpdaterPath, ManageSettings.GetCurrentGameDataPath());
+                }
+            }
 
             btnUpdateMods.Enabled = true;
         }
@@ -2773,6 +2809,16 @@ namespace AIHelper
         private void PbDiscord_Click(object sender, EventArgs e)
         {
             Process.Start("https://discord.gg/6zYNCsb2hT");//Program's discord server
+        }
+
+        private void linkLabel1_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var ModUpdatesBakDir = ManageSettings.GetUpdatedModsOlderVersionsBuckupDirPath(); 
+            if (!Directory.Exists(ModUpdatesBakDir))
+            {
+                Directory.CreateDirectory(ModUpdatesBakDir);
+            }
+            Process.Start("explorer.exe", ModUpdatesBakDir);
         }
 
         //Disable close window button

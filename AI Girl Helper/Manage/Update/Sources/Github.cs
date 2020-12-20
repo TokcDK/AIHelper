@@ -153,7 +153,7 @@ namespace AIHelper.Manage.Update.Sources
                 }
                 else
                 {
-                    ManageLogs.Log("GitHub sublink to file not found or incorrect. link:" + Environment.NewLine + link2file.Value);
+                    ManageLogs.Log("GitHub sublink to file not found or incorrect. link:" + Environment.NewLine + link2file.Value+" / owner:"+ GitOwner+" / repository:"+ GitRepository);
                 }
             }
             catch (Exception ex)

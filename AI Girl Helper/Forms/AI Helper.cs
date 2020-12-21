@@ -661,9 +661,13 @@ namespace AIHelper
                         )));
             THToolTip.SetToolTip(ToolsFixModListButton, T._("Fix problems in current enabled mods list"));
             THToolTip.SetToolTip(btnUpdateMods,
-                T._("Update Mod Organizer and enabled mods\n") +
-                T._("Mod Organizer already have hardcoded info\n") +
-                T._("Mods will be updated if there exist info in meta.ini notes or in updateInfo.txt")
+                T._("Update Mod Organizer and enabled mods") + "\n" +
+                T._("Mod Organizer already have hardcoded info") + "\n" +
+                T._("Mods will be updated if there exist info in meta.ini notes or in updateInfo.txt") + "\n" +
+                T._("After plugins update check will be executed KKManager StandaloneUpdater for Sideloader modpack updates check for games where it is possible")
+                );
+            THToolTip.SetToolTip(llOpenOldPluginsBuckupFolder,
+                T._("Open older plugins buckup folder")
                 );
             THToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Open folder where you can drop/download files for autoinstallation"));
             THToolTip.SetToolTip(AutoShortcutRegistryCheckBox, T._("When checked will create shortcut for the AI Helper on Desktop and will fix registry if need"));

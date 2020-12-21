@@ -83,12 +83,12 @@
             this.FullScreenCheckBox = new System.Windows.Forms.CheckBox();
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
             this.ToolsPagePanel = new System.Windows.Forms.Panel();
+            this.llOpenOldPluginsBuckupFolder = new System.Windows.Forms.LinkLabel();
             this.btnUpdateMods = new System.Windows.Forms.Button();
             this.ToolsFixModListButton = new System.Windows.Forms.Button();
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -812,7 +812,7 @@
             // ToolsPagePanel
             // 
             this.ToolsPagePanel.BackColor = System.Drawing.Color.Gray;
-            this.ToolsPagePanel.Controls.Add(this.linkLabel1);
+            this.ToolsPagePanel.Controls.Add(this.llOpenOldPluginsBuckupFolder);
             this.ToolsPagePanel.Controls.Add(this.btnUpdateMods);
             this.ToolsPagePanel.Controls.Add(this.ToolsFixModListButton);
             this.ToolsPagePanel.Controls.Add(this.Install2MODirPathOpenFolderLinkLabel);
@@ -823,6 +823,19 @@
             this.ToolsPagePanel.Name = "ToolsPagePanel";
             this.ToolsPagePanel.Size = new System.Drawing.Size(340, 155);
             this.ToolsPagePanel.TabIndex = 1;
+            // 
+            // llOpenOldPluginsBuckupFolder
+            // 
+            this.llOpenOldPluginsBuckupFolder.AutoSize = true;
+            this.llOpenOldPluginsBuckupFolder.LinkColor = System.Drawing.Color.WhiteSmoke;
+            this.llOpenOldPluginsBuckupFolder.Location = new System.Drawing.Point(114, 120);
+            this.llOpenOldPluginsBuckupFolder.Name = "llOpenOldPluginsBuckupFolder";
+            this.llOpenOldPluginsBuckupFolder.Size = new System.Drawing.Size(15, 13);
+            this.llOpenOldPluginsBuckupFolder.TabIndex = 27;
+            this.llOpenOldPluginsBuckupFolder.TabStop = true;
+            this.llOpenOldPluginsBuckupFolder.Text = "<";
+            this.llOpenOldPluginsBuckupFolder.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.llOpenOldPluginsBuckupFolder.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked_1);
             // 
             // btnUpdateMods
             // 
@@ -889,19 +902,6 @@
             this.MOCommonModeSwitchButton.Text = "MOToCommon";
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
-            // 
-            // linkLabel1
-            // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.LinkColor = System.Drawing.Color.WhiteSmoke;
-            this.linkLabel1.Location = new System.Drawing.Point(114, 120);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(15, 13);
-            this.linkLabel1.TabIndex = 27;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "<";
-            this.linkLabel1.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked_1);
             // 
             // AI_Helper
             // 
@@ -1002,7 +1002,7 @@
         private System.Windows.Forms.LinkLabel FixRegistryLinkLabel;
         private System.Windows.Forms.Button btnUpdateMods;
         internal System.Windows.Forms.PictureBox pbDiscord;
-        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.LinkLabel llOpenOldPluginsBuckupFolder;
     }
 }
 

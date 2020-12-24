@@ -1877,7 +1877,7 @@ namespace AIHelper
                 //restore sideloader mods from Mods\Mods
                 var modsmods = Path.Combine(ManageSettings.GetCurrentGameModsPath(), "Mods");
                 var targetmodpath = modsmods;
-                if (Directory.Exists(modsmods))
+                if (false && Directory.Exists(modsmods)) //need to update overwrite check and scan only active mods or just move content to overwrite
                 {
                     try//skip if was error
                     {

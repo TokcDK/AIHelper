@@ -2803,7 +2803,7 @@ namespace AIHelper
                 else
                 {
                     //run updater normal
-                    Process.Start(KKManagerStandaloneUpdaterPath, "\""+ManageSettings.GetCurrentGameDataPath()+ "\"");
+                    RunProgram(KKManagerStandaloneUpdaterPath, "\"" + ManageSettings.GetCurrentGameDataPath() + "\"");
                 }
             }
 

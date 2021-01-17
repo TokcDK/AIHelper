@@ -27,7 +27,7 @@ namespace AIHelper.Games
 
         public override string GetGameDisplayingName()
         {
-            return T._("Honey Select 2: Libido");
+            return T._("Honey Select 2");
         }
 
         public override string GetGamePrefix()

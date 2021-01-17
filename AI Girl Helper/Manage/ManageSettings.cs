@@ -336,6 +336,10 @@ namespace AIHelper.Manage
                 {
                     return "Koikatu";
                 }
+                else if (GetCurrentGameEXEName().StartsWith("HoneySelect2", StringComparison.InvariantCulture))
+                {
+                    return "HoneySelect2";
+                }
                 else if (GetCurrentGameEXEName().StartsWith("HoneySelect", StringComparison.InvariantCulture))
                 {
                     return "HoneySelect";

@@ -21,9 +21,9 @@ namespace AIHelper.Manage.Update.Sources
 
         internal override string title => "Github";
 
-        internal override Task<bool> GetFile()
+        internal async override Task<bool> GetFile()
         {
-            return DownloadTheFile();
+            return await DownloadTheFile().ConfigureAwait(true);
         }
 
         static Form Dwnf;

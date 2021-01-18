@@ -59,30 +59,28 @@ namespace AIHelper
                 return;
             }
 
+            CheckMOAndEndInit();
+        }
+
+        private async void CheckMOAndEndInit()
+        {
+            //MO data parse
             Properties.Settings.Default.MOIsNew = ManageMO.IsMO23ORNever();
 
             if (!File.Exists(Path.Combine(ManageSettings.GetMOdirPath(), "ModOrganizer.exe")))
             {
-                new Update().update();
+                await new Update().update().ConfigureAwait(true);
             }
 
             ManageMO.RedefineGameMOData();
 
             CleanMOFolder();
+            //
 
-            if (File.Exists(ManageLogs.LogFilePath) && new FileInfo(ManageLogs.LogFilePath).Length > 10000000)
-            {
-                try
-                {
-                    File.Delete(ManageLogs.LogFilePath);
-                }
-                catch
-                {
-                }
-            }
+            CleanLog();
 
             VariablesINIT();
-            MOmode = true;
+            SetMOMode(false);
             CurrentGame.InitActions();
 
             SetLocalizationStrings();
@@ -95,6 +93,20 @@ namespace AIHelper
             //}
 
             Properties.Settings.Default.INITDone = true;
+        }
+
+        private void CleanLog()
+        {
+            if (File.Exists(ManageLogs.LogFilePath) && new FileInfo(ManageLogs.LogFilePath).Length > 10000000)
+            {
+                try
+                {
+                    File.Delete(ManageLogs.LogFilePath);
+                }
+                catch
+                {
+                }
+            }
         }
 
         private static void CleanMOFolder()
@@ -857,16 +869,7 @@ namespace AIHelper
         {
             EnableDisableSomeTools();
 
-            if (File.Exists(ManageSettings.GetMOToStandartConvertationOperationsListFilePath()))
-            {
-                MOmode = false;
-                MainService.Text = T._("Common mode");
-            }
-            else
-            {
-                MOmode = true;
-                MainService.Text = T._("MO mode");
-            }
+            SetMOMode();
 
             if (!Directory.Exists(DataPath))
             {
@@ -1042,6 +1045,26 @@ namespace AIHelper
             }
 
             SelectedGameLabel.Text = CurrentGame.GetGameDisplayingName() + "❤";
+        }
+
+        private void SetMOMode(bool setText=true)
+        {
+            if (File.Exists(ManageSettings.GetMOToStandartConvertationOperationsListFilePath()))
+            {
+                MOmode = false;
+                if (setText)
+                {
+                    MainService.Text = T._("Common mode");
+                }
+            }
+            else
+            {
+                MOmode = true;
+                if(setText)
+                {
+                    MainService.Text = T._("MO mode");
+                }
+            }
         }
 
         bool IsDebug;
@@ -2765,14 +2788,14 @@ namespace AIHelper
             FoldersInit();
         }
 
-        private void btnUpdateMods_Click(object sender, EventArgs e)
+        private async void btnUpdateMods_Click(object sender, EventArgs e)
         {
             btnUpdateMods.Enabled = false;
 
             //update plugins in mo mode
             if (MOmode)
             {
-                new Update().update();
+                await new Update().update().ConfigureAwait(true);
             }
 
             var KKManagerStandaloneUpdaterPath = Path.Combine(ManageSettings.GetKKManagerPath(), "StandaloneUpdater.exe");

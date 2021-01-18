@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AIHelper.Manage.Update
@@ -58,7 +59,7 @@ namespace AIHelper.Manage.Update
     {
         private bool IsHTMLReport = true;
 
-        internal async void update()
+        internal async Task update()
         {
             updateInfo info = new updateInfo();
             var sources = new List<SBase> //Sources of updates

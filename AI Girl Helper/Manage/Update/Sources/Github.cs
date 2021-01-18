@@ -81,7 +81,7 @@ namespace AIHelper.Manage.Update.Sources
 
             if (!File.Exists(info.UpdateFilePath))
             {
-                await wc.DownloadFileTaskAsync(GitLatestVersionFileDownloadLink, info.UpdateFilePath).ConfigureAwait(true);
+                await wc.DownloadFileTaskAsync(new Uri(GitLatestVersionFileDownloadLink), info.UpdateFilePath).ConfigureAwait(true);                
                 return File.Exists(info.UpdateFilePath);
             }
             else

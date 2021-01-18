@@ -250,31 +250,35 @@ namespace AIHelper.Manage
                             }
 
                             //Copy 1st found url from notes to url key
-                            if (!INI.KeyExists("url", "General") || string.IsNullOrWhiteSpace(INI.ReadINI("General", "url")))
+                            if (INI.KeyExists("url", "General") && !string.IsNullOrWhiteSpace(INI.ReadINI("General", "url")))
                             {
-                                var metanotes = INI.ReadINI("General", "notes");
-                                var regex = @"<a href\=\\""[^>]+\\"">";
-                                var url = Regex.Match(metanotes, regex);
-                                if (url.Success && !string.IsNullOrWhiteSpace(url.Value))
-                                {
-                                    var urlValue = url.Value.Remove(url.Value.Length - 3, 3).Remove(0, 10);
-                                    INI.WriteINI("General", "url", urlValue, false);
-                                    INI.WriteINI("General", "hasCustomURL", "true", false);
-                                    if (!metainiFixesApplyed)
-                                    {
-                                        metainiFixesApplyed = true;
-                                        report.Add(Environment.NewLine + "meta.ini fixes:");
-                                    }
-                                    report.Add(Path.GetFileName(mod) + ": " + T._("added url from notes"));
-                                    INIchanged = true;
-                                }
-                            }
-                            else if (INI.KeyExists("url", "General") && !string.IsNullOrWhiteSpace(INI.ReadINI("General", "url")))
-                            {
+                                //set hasCustomURL to true if url exists and hasCustomURL is false
                                 if (INI.KeyExists("hasCustomURL", "General") || INI.ReadINI("General", "hasCustomURL") == "false")
                                 {
                                     INI.WriteINI("General", "hasCustomURL", "true", false);
                                     INIchanged = true;
+                                }
+                            }
+                            else// if (!INI.KeyExists("url", "General") || string.IsNullOrWhiteSpace(INI.ReadINI("General", "url")))
+                            {
+                                var metanotes = INI.ReadINI("General", "notes");
+                                if (!string.IsNullOrWhiteSpace(metanotes))
+                                {
+                                    var regex = @"<a href\=\\""[^>]+\\"">";//pattern for url inside notes
+                                    var url = Regex.Match(metanotes, regex);
+                                    if (url.Success && !string.IsNullOrWhiteSpace(url.Value))
+                                    {
+                                        var urlValue = url.Value.Remove(url.Value.Length - 3, 3).Remove(0, 10);
+                                        INI.WriteINI("General", "url", urlValue, false);
+                                        INI.WriteINI("General", "hasCustomURL", "true", false);
+                                        if (!metainiFixesApplyed)
+                                        {
+                                            metainiFixesApplyed = true;
+                                            report.Add(Environment.NewLine + "meta.ini fixes:");
+                                        }
+                                        report.Add(Path.GetFileName(mod) + ": " + T._("added url from notes"));
+                                        INIchanged = true;
+                                    }
                                 }
                             }
 

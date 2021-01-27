@@ -1824,22 +1824,27 @@ namespace AIHelper.Manage
             }
         }
 
+        /// <summary>
+        /// return mod path for input path
+        /// </summary>
+        /// <param name="inputPath"></param>
+        /// <returns></returns>
         internal static string GetMOModPathInMods(string inputPath)
         {
             //search ModPath
             var ModPath = inputPath;
             var FolderPath = ModPath;
-            while (FolderPath.ToUpperInvariant() != ManageSettings.GetCurrentGameModsPath().ToUpperInvariant())
+            while (FolderPath.ToUpperInvariant()/*.TrimEnd(new char[] { '/', '\\' })*/ != ManageSettings.GetCurrentGameModsPath().ToUpperInvariant()/*.TrimEnd(new char[] { '/', '\\' })*/)
             {
                 ModPath = FolderPath;
                 FolderPath = Path.GetDirectoryName(FolderPath);
             }
 
-            if (ModPath!=null && Path.GetFileName(ModPath).ToUpperInvariant() == "MODS")//temp debug check
+            if (ModPath != null && Path.GetFileName(ModPath).ToUpperInvariant() == "MODS")//temp debug check
             {
-                ManageLogs.Log("warning. log path is Mods. ModPath="+ ModPath+ ". FolderPath="+ FolderPath);
+                ManageLogs.Log("warning. log path is Mods. ModPath=" + ModPath + ". FolderPath=" + FolderPath);
             }
-            else if(ModPath == null)
+            else if (ModPath == null)
             {
                 ManageLogs.Log("warning. ModPath is null.(" + ModPath + ") FolderPath=" + FolderPath);
             }
@@ -1847,16 +1852,42 @@ namespace AIHelper.Manage
             return ModPath;
         }
 
-        internal static void SaveGUIDIfZipMod(string FileInDataFolder, string FileInOverwrite, System.Collections.Generic.Dictionary<string, string> ZipmodsGUIDList)
+        /// <summary>
+        /// save guid-zipmodpath in dictionary if targetZipmodPath is exists
+        /// </summary>
+        /// <param name="targetZipmodPath"></param>
+        /// <param name="SourceModZipmodPath"></param>
+        /// <param name="ZipmodsGUIDList"></param>
+        internal static void SaveGUIDIfZipMod(string targetZipmodPath, string SourceModZipmodPath, System.Collections.Generic.Dictionary<string, string> ZipmodsGUIDList)
         {
             //zipmod GUID save
             string FileInDataFolderExtension;
-            if (FileInDataFolder.ToUpperInvariant().Contains("SIDELOADER MODPACK") && ((FileInDataFolderExtension = Path.GetExtension(FileInDataFolder).ToUpperInvariant()) == ".ZIPMOD" || FileInDataFolderExtension == ".ZIP"))
+            if (targetZipmodPath.ToUpperInvariant().Contains("SIDELOADER MODPACK") && ((FileInDataFolderExtension = Path.GetExtension(targetZipmodPath).ToUpperInvariant()) == ".ZIPMOD" || FileInDataFolderExtension == ".ZIP"))
             {
-                var guid = ManageArchive.GetZipmodGUID(FileInDataFolder);
+                var guid = ManageArchive.GetZipmodGUID(targetZipmodPath);
                 if (guid.Length > 0 && !ZipmodsGUIDList.ContainsKey(guid))
                 {
-                    ZipmodsGUIDList.Add(guid, FileInOverwrite);
+                    ZipmodsGUIDList.Add(guid, SourceModZipmodPath);
+                }
+            }
+        }
+
+        /// <summary>
+        /// save guid-modpath pair in dictionary
+        /// </summary>
+        /// <param name="SourceModZipmodPath"></param>
+        /// <param name="ZipmodsGUIDList"></param>
+        /// <param name="SaveFullPath">if true will be saved full zipmod path</param>
+        internal static void SaveGUIDIfZipMod(string SourceModZipmodPath, System.Collections.Generic.Dictionary<string, string> ZipmodsGUIDList, bool SaveFullPath = true)
+        {
+            //zipmod GUID save
+            string FileInDataFolderExtension;
+            if (File.Exists(SourceModZipmodPath) && SourceModZipmodPath.ToUpperInvariant().Contains("SIDELOADER MODPACK") && ((FileInDataFolderExtension = Path.GetExtension(SourceModZipmodPath).ToUpperInvariant()) == ".ZIPMOD" || FileInDataFolderExtension == ".ZIP"))
+            {
+                var guid = ManageArchive.GetZipmodGUID(SourceModZipmodPath);
+                if (guid.Length > 0 && !ZipmodsGUIDList.ContainsKey(guid))
+                {
+                    ZipmodsGUIDList.Add(guid, SaveFullPath? SourceModZipmodPath : ManageMOMods.GetMOModPathInMods(SourceModZipmodPath));
                 }
             }
         }

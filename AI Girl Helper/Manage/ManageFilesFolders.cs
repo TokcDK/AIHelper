@@ -41,6 +41,14 @@ namespace AIHelper.Manage
 
         //https://stackoverflow.com/a/757925
         //быстро проверить, пуста ли папка
+        /// <summary>
+        /// return true if path nul,aempty or not contains any dirs/files
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="Mask"></param>
+        /// <param name="exclusions"></param>
+        /// <param name="recursive"></param>
+        /// <returns></returns>
         public static bool CheckDirectoryNullOrEmpty_Fast(string path, string Mask = "*", string[] exclusions = null, bool recursive = false)
         {
             if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
@@ -102,6 +110,13 @@ namespace AIHelper.Manage
             return dwFileAttributes == 16;
         }
 
+        /// <summary>
+        /// true s ny file in dir
+        /// </summary>
+        /// <param name="dirPath"></param>
+        /// <param name="extension"></param>
+        /// <param name="AllDirectories"></param>
+        /// <returns></returns>
         public static bool IsAnyFileExistsInTheDir(string dirPath, string extension = ".*", bool AllDirectories = true)
         {
             if (dirPath.Length == 0)
@@ -120,6 +135,12 @@ namespace AIHelper.Manage
             return false;
         }
 
+        /// <summary>
+        /// will delete empty folders
+        /// </summary>
+        /// <param name="dirPath"></param>
+        /// <param name="DeleteThisDir"></param>
+        /// <param name="Exclusions"></param>
         public static void DeleteEmptySubfolders(string dirPath, bool DeleteThisDir = true, string[] Exclusions = null)
         {
             if (string.IsNullOrEmpty(dirPath) || !Directory.Exists(dirPath))
@@ -158,6 +179,12 @@ namespace AIHelper.Manage
             }
         }
 
+        /// <summary>
+        /// will return list of empty folder paths
+        /// </summary>
+        /// <param name="dirPath"></param>
+        /// <param name="retArray"></param>
+        /// <returns></returns>
         public static StringBuilder GetEmptySubfoldersPaths(string dirPath, StringBuilder retArray)
         {
             string[] subfolders = Directory.GetDirectories(dirPath, "*");
@@ -207,6 +234,12 @@ namespace AIHelper.Manage
 
         }
 
+        /// <summary>
+        /// true if any value of string array contains string
+        /// </summary>
+        /// <param name="Str"></param>
+        /// <param name="exclusions"></param>
+        /// <returns></returns>
         public static bool TrueIfStringInExclusionsList(string Str, string[] exclusions)
         {
             if (exclusions == null || Str.Length == 0)
@@ -232,6 +265,11 @@ namespace AIHelper.Manage
             return false;
         }
 
+        /// <summary>
+        /// wil move file but will delete id destination file is exists
+        /// </summary>
+        /// <param name="sourceFileName"></param>
+        /// <param name="destFileName"></param>
         public static void MoveFileWithReplace(string sourceFileName, string destFileName)
         {
 
@@ -250,6 +288,11 @@ namespace AIHelper.Manage
 
         }
 
+        /// <summary>
+        /// will change file/folder attribute to hidden
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="IsFile"></param>
         public static void HideFileFolder(string path, bool IsFile = false)
         {
             if (IsFile)
@@ -272,6 +315,11 @@ namespace AIHelper.Manage
 
         }
 
+        /// <summary>
+        /// true if string is not empty and contains invalid symbols for file/folder path
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public static bool ContainsAnyInvalidCharacters(string path)
         {
             return (path.Length > 0 && path.IndexOfAny(Path.GetInvalidPathChars()) >= 0);
@@ -295,9 +343,17 @@ namespace AIHelper.Manage
             return ResultTargetDirPath;
         }
 
-        public static string GetResultTargetFilePathWithNameCheck(string Folder, string Name, string Extension = ".*")
+        /// <summary>
+        /// return new file path from source which is not exists in Folder
+        /// return path will be with name like "Name (#).ext"
+        /// </summary>
+        /// <param name="Folder"></param>
+        /// <param name="Name"></param>
+        /// <param name="Extension"></param>
+        /// <returns></returns>
+        public static string GetResultTargetFilePathWithNameCheck(string Folder, string Name, string Extension = "")
         {
-            var ResultPath = Path.Combine(Folder, Name + (Extension.Substring(0, 1) != "." ? "." : string.Empty) + Extension);
+            var ResultPath = Path.Combine(Folder, Name + (Extension.Length>0 && Extension.Substring(0, 1) != "." ? "." : string.Empty) + Extension);
             int i = 0;
             while (File.Exists(ResultPath))
             {
@@ -465,6 +521,12 @@ namespace AIHelper.Manage
             }
         }
 
+        /// <summary>
+        /// return file name + current date in format "yyyy_MM_dd_HH_mm_ss"
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="isFile"></param>
+        /// <returns></returns>
         private static string GetNewNewWithCurrentDate(string target, bool isFile = true)
         {
             if (isFile)
@@ -481,6 +543,11 @@ namespace AIHelper.Manage
             }
         }
 
+        /// <summary>
+        /// Get crc32 of file
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         internal static string GetCrc32(this string fileName)
         {
             //https://stackoverflow.com/a/57450238
@@ -506,19 +573,49 @@ namespace AIHelper.Manage
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool DeleteFile(string name);
 
+        /// <summary>
+        /// must unlock locked file and delete after?
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         public static bool Unblock(string fileName)
         {
             return DeleteFile(fileName + ":Zone.Identifier");
         }
 
+        /// <summary>
+        /// true if file is picture
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         internal static bool IsPicture(this string filePath)
         {
             return IsPictureExtension(Path.GetExtension(filePath));
         }
 
+        /// <summary>
+        /// true if file is picture
+        /// </summary>
+        /// <param name="FileExtension"></param>
+        /// <returns></returns>
         internal static bool IsPictureExtension(this string FileExtension)
         {
             return !string.IsNullOrWhiteSpace(FileExtension) && (FileExtension == ".jpg" || FileExtension == ".png" || FileExtension == ".bmp");
+        }
+
+        /// <summary>
+        /// delete file even if it is read only
+        /// </summary>
+        /// <param name="file"></param>
+        internal static void DeleteEvenIfReadOnly(this FileInfo file)
+        {
+            if (!file.Exists)
+            {
+                return;
+            }
+
+            file.Attributes = FileAttributes.Normal;
+            file.Delete();
         }
     }
 }

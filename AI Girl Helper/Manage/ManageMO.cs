@@ -61,7 +61,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static string MakeMOProfileModlistFileBuckup(string suffix = "")
         {
-            var modlistPath = Path.Combine(ManageSettings.GetMOSelectedProfileDirPath(), "modlist.txt");
+            var modlistPath = ManageSettings.CurrentMOProfileModlistPath();
             var lastBackup = GetLastBak(suffix);
             if (lastBackup == null || (File.Exists(modlistPath) && File.Exists(lastBackup) && File.ReadAllText(lastBackup) != File.ReadAllText(modlistPath)))
             {

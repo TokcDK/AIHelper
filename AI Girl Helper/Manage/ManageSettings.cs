@@ -72,6 +72,11 @@ namespace AIHelper.Manage
             };
         }
 
+        internal static string CurrentMOProfileModlistPath()
+        {
+            return Path.Combine(ManageSettings.GetMOSelectedProfileDirPath(), "modlist.txt");
+        }
+
         private static string GetCustomRes()
         {
             throw new NotImplementedException();

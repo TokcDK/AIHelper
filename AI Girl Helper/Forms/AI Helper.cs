@@ -901,6 +901,8 @@ namespace AIHelper
 
             if (MOmode)
             {
+                RestoreModlist();
+
                 {
                     //string[] Archives7z;
                     //string[] ModDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();
@@ -1047,7 +1049,7 @@ namespace AIHelper
             SelectedGameLabel.Text = CurrentGame.GetGameDisplayingName() + "❤";
         }
 
-        private void SetMOMode(bool setText=true)
+        private void SetMOMode(bool setText = true)
         {
             if (File.Exists(ManageSettings.GetMOToStandartConvertationOperationsListFilePath()))
             {
@@ -1060,7 +1062,7 @@ namespace AIHelper
             else
             {
                 MOmode = true;
-                if(setText)
+                if (setText)
                 {
                     MainService.Text = T._("MO mode");
                 }
@@ -1816,7 +1818,7 @@ namespace AIHelper
                         {
                             if (ZipmodsGUIDList[guid].Contains("%"))//temp check
                             {
-                                ManageLogs.Log("zipmod cantains %VAR%:"+ZipmodsGUIDList[guid]);
+                                ManageLogs.Log("zipmod contains %VAR%:" + ZipmodsGUIDList[guid]);
                             }
 
                             var zipmod = ReplaceVarsToPaths(ZipmodsGUIDList[guid]);
@@ -1931,15 +1933,15 @@ namespace AIHelper
                             }
 
                             //move files from 'dir' to target mod
-                            if(targetmodpath!=modsmods)//skip if target mod folder not changed
-                            foreach(var file in Directory.EnumerateFiles(dir.FullName))
-                            {
-                                var targetfilepath = file.Replace(dir.FullName, targetmodpath);
-                                if (!File.Exists(targetfilepath))//skip if exists target file path
+                            if (targetmodpath != modsmods)//skip if target mod folder not changed
+                                foreach (var file in Directory.EnumerateFiles(dir.FullName))
                                 {
-                                    File.Move(file, targetfilepath);
+                                    var targetfilepath = file.Replace(dir.FullName, targetmodpath);
+                                    if (!File.Exists(targetfilepath))//skip if exists target file path
+                                    {
+                                        File.Move(file, targetfilepath);
+                                    }
                                 }
-                            }
                         }
 
                         //cleanup empty dirs
@@ -1947,7 +1949,7 @@ namespace AIHelper
                     }
                     catch (Exception ex)
                     {
-                        ManageLogs.Log("error occured while Mods\\Mods file sorting. Error:\r\n"+ex);
+                        ManageLogs.Log("error occured while Mods\\Mods file sorting. Error:\r\n" + ex);
                     }
                 }
 
@@ -2138,10 +2140,12 @@ namespace AIHelper
                                             Directory.CreateDirectory(bakfolder);
 
                                             File.Move(FileInDataFolder, FileInBakFolderWhichIsInRES);//перенос файла из Data в Bak, если там не было
+
+                                            ManageMOMods.SaveGUIDIfZipMod(FileInOverwrite, ZipmodsGUIDList);
+
                                             File.Move(FileInOverwrite, FileInDataFolder);//перенос файла из папки Overwrite в Data
                                             MOToStandartConvertationOperationsList.AppendLine(FileInOverwrite + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
 
-                                            ManageMOMods.SaveGUIDIfZipMod(FileInDataFolder, FileInOverwrite, ZipmodsGUIDList);
                                         }
                                         catch (Exception ex)
                                         {
@@ -2164,10 +2168,10 @@ namespace AIHelper
                                             debufStr = destFolder + ":destFolder,l2068";
                                         Directory.CreateDirectory(destFolder);
 
+                                        ManageMOMods.SaveGUIDIfZipMod(FileInOverwrite, ZipmodsGUIDList);
+
                                         File.Move(FileInOverwrite, FileInDataFolder);//перенос файла из папки мода в Data
                                         MOToStandartConvertationOperationsList.AppendLine(FileInOverwrite + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
-
-                                        ManageMOMods.SaveGUIDIfZipMod(FileInDataFolder, FileInOverwrite, ZipmodsGUIDList);
                                     }
                                     catch (Exception ex)
                                     {
@@ -2240,7 +2244,7 @@ namespace AIHelper
                                         }
                                         catch (Exception ex)
                                         {
-                                            ManageLogs.Log("error while image skip. error:"+ex);
+                                            ManageLogs.Log("error while image skip. error:" + ex);
                                         }
 
                                         //skip meta.ini
@@ -2281,10 +2285,11 @@ namespace AIHelper
                                                     Directory.CreateDirectory(bakfolder);
 
                                                     File.Move(FileInDataFolder, FileInBakFolderWhichIsInRES);//перенос файла из Data в Bak, если там не было
+
+                                                    ManageMOMods.SaveGUIDIfZipMod(FileOfMod, ZipmodsGUIDList);
+
                                                     File.Move(FileOfMod, FileInDataFolder);//перенос файла из папки мода в Data
                                                     MOToStandartConvertationOperationsList.AppendLine(FileOfMod + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
-
-                                                    ManageMOMods.SaveGUIDIfZipMod(FileInDataFolder, FileOfMod, ZipmodsGUIDList);
                                                 }
                                                 catch (Exception ex)
                                                 {
@@ -2307,10 +2312,10 @@ namespace AIHelper
                                                     debufStr = destFolder + ":destFolder,l2208";
                                                 Directory.CreateDirectory(destFolder);
 
+                                                ManageMOMods.SaveGUIDIfZipMod(FileOfMod, ZipmodsGUIDList);
+
                                                 File.Move(FileOfMod, FileInDataFolder);//перенос файла из папки мода в Data
                                                 MOToStandartConvertationOperationsList.AppendLine(FileOfMod + "|MovedTo|" + FileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
-
-                                                ManageMOMods.SaveGUIDIfZipMod(FileInDataFolder, FileOfMod, ZipmodsGUIDList);
                                             }
                                             catch (Exception ex)
                                             {
@@ -2505,7 +2510,7 @@ namespace AIHelper
                     }
                     catch (Exception ex)
                     {
-                        ManageLogs.Log("error while RestoreMovedFilesLocation. error:\r\n"+ex);
+                        ManageLogs.Log("error while RestoreMovedFilesLocation. error:\r\n" + ex);
                     }
                 }
 
@@ -2813,7 +2818,7 @@ namespace AIHelper
                     //add updater as new exe in mo list if not exists
                     if (!ManageMO.IsMOcustomExecutableTitleByExeNameExists("StandaloneUpdater"))
                     {
-                        ManageMO.InsertCustomExecutable(new string[] 
+                        ManageMO.InsertCustomExecutable(new string[]
                         {
                             "KKManagerStandaloneUpdater",
                             KKManagerStandaloneUpdaterPath,
@@ -2821,7 +2826,18 @@ namespace AIHelper
                         });
                     }
 
+                    var ZipmodsGUIDList = new Dictionary<string, string>();
+
+                    //activate all mods with Sideloader modpack inside
+                    ActivateSideloaderMods(ZipmodsGUIDList);
+
                     RunProgram(MOexePath, "moshortcut://:" + ManageMO.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
+
+                    //restore modlist
+                    RestoreModlist();
+
+                    //restore zipmods to source mods
+                    MoveZipModsFromOverwriteToSourceMod(ZipmodsGUIDList);
                 }
                 else
                 {
@@ -2833,6 +2849,113 @@ namespace AIHelper
             btnUpdateMods.Enabled = true;
         }
 
+        private static void MoveZipModsFromOverwriteToSourceMod(Dictionary<string, string> zipmodsGUIDList)
+        {
+            if (!Directory.Exists(Path.Combine(ManageSettings.GetOverwriteFolder(), "mods")))
+            {
+                return;
+            }
+
+            foreach(var dir in Directory.EnumerateDirectories(Path.Combine(ManageSettings.GetOverwriteFolder(), "mods")))
+            {
+                if (dir.ToUpperInvariant().Contains("SIDELOADER MODPACK"))
+                {
+                    foreach(var zipmod in Directory.EnumerateFiles(dir, "*.zip*", SearchOption.AllDirectories))
+                    {
+                        var guid = ManageArchive.GetZipmodGUID(zipmod);
+                        if (guid.Length > 0 && zipmodsGUIDList.ContainsKey(guid))
+                        {
+                            var targetZipmodPath = zipmod.Replace(ManageSettings.GetOverwriteFolder(), ManageMOMods.GetMOModPathInMods(zipmodsGUIDList[guid]));
+
+                            if (!File.Exists(targetZipmodPath))
+                            {
+                                File.Move(zipmod, targetZipmodPath);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// restore modlist which was not restored after zipmods update
+        /// </summary>
+        private static void RestoreModlist()
+        {
+            if (File.Exists(ManageSettings.CurrentMOProfileModlistPath() + ".prezipmodsUpdate"))
+            {
+                try
+                {
+                    File.Move(ManageSettings.CurrentMOProfileModlistPath(), ManageSettings.CurrentMOProfileModlistPath() + ".tmp");
+
+                    if (!File.Exists(ManageSettings.CurrentMOProfileModlistPath()))
+                        File.Move(ManageSettings.CurrentMOProfileModlistPath() + ".prezipmodsUpdate", ManageSettings.CurrentMOProfileModlistPath());
+
+                    if (File.Exists(ManageSettings.CurrentMOProfileModlistPath()))
+                    {
+                        new FileInfo(ManageSettings.CurrentMOProfileModlistPath() + ".tmp").DeleteEvenIfReadOnly();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ManageLogs.Log("RestoreModlist error:\r\n" + ex);
+                }
+            }
+        }
+
+        /// <summary>
+        /// activate all mods with sideloader modpack inside mods folder
+        /// </summary>
+        private static void ActivateSideloaderMods(Dictionary<string, string> ZipmodsGUIDList = null)
+        {
+            bool getZipmodID = ZipmodsGUIDList != null;
+
+            File.Copy(ManageSettings.CurrentMOProfileModlistPath(), ManageSettings.CurrentMOProfileModlistPath() + ".prezipmodsUpdate");
+
+            var modlistContent = File.ReadAllLines(ManageSettings.CurrentMOProfileModlistPath());
+
+            for (int i = 0; i < modlistContent.Length; i++)
+            {
+                if (modlistContent[i][0] == '+' || modlistContent[i].EndsWith("_separator", StringComparison.InvariantCulture))
+                {
+                    continue;
+                }
+
+                var modName = modlistContent[i].Remove(0, 1);
+                var modsPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modName, "mods");
+                if (!Directory.Exists(modsPath))
+                {
+                    continue;
+                }
+
+                foreach (var dir in Directory.EnumerateDirectories(modsPath))
+                {
+                    if (dir.ToUpperInvariant().Contains("SIDELOADER MODPACK"))
+                    {
+                        if (modlistContent[i][0] != '+')
+                        {
+                            modlistContent[i] = "+" + modName;
+                        }
+
+                        if (getZipmodID)
+                        {
+                            foreach(var zipmod in Directory.EnumerateFiles(dir,"*.zip*" ,SearchOption.AllDirectories))
+                            {
+                                ManageMOMods.SaveGUIDIfZipMod(zipmod, ZipmodsGUIDList);
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
+
+                    }
+                }
+            }
+
+            File.WriteAllLines(ManageSettings.CurrentMOProfileModlistPath(), modlistContent);
+        }
+
         private void PbDiscord_Click(object sender, EventArgs e)
         {
             Process.Start("https://discord.gg/6zYNCsb2hT");//Program's discord server
@@ -2840,7 +2963,7 @@ namespace AIHelper
 
         private void linkLabel1_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            var ModUpdatesBakDir = ManageSettings.GetUpdatedModsOlderVersionsBuckupDirPath(); 
+            var ModUpdatesBakDir = ManageSettings.GetUpdatedModsOlderVersionsBuckupDirPath();
             if (!Directory.Exists(ModUpdatesBakDir))
             {
                 Directory.CreateDirectory(ModUpdatesBakDir);

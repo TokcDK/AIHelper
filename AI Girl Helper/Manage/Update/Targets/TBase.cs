@@ -18,7 +18,9 @@ namespace AIHelper.Manage.Update.Targets
             UpdateFilenameSubPathData = new Dictionary<string, string>
                 {
                     { "ScriptLoader.dll", "BepInEx" + Path.DirectorySeparatorChar + "plugins" },
-                    { "GraphicsSettings.dll", "BepInEx" + Path.DirectorySeparatorChar + "plugins" }
+                    { "GraphicsSettings.dll", "BepInEx" + Path.DirectorySeparatorChar + "plugins" },
+                    { "HS2_Heelz.dll", "BepInEx" + Path.DirectorySeparatorChar + "plugins" },
+                    { "AI_Heelz.dll", "BepInEx" + Path.DirectorySeparatorChar + "plugins" }
                 };
         }
 

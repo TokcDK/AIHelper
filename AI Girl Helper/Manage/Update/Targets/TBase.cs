@@ -17,7 +17,8 @@ namespace AIHelper.Manage.Update.Targets
 
             UpdateFilenameSubPathData = new Dictionary<string, string>
                 {
-                    { "ScriptLoader.dll", "BepInEx" + Path.DirectorySeparatorChar + "plugins" }
+                    { "ScriptLoader.dll", "BepInEx" + Path.DirectorySeparatorChar + "plugins" },
+                    { "GraphicsSettings.dll", "BepInEx" + Path.DirectorySeparatorChar + "plugins" }
                 };
         }
 
@@ -147,29 +148,23 @@ namespace AIHelper.Manage.Update.Targets
                     else if (code == 2)
                     {
                         var FullDllFileName = Path.GetFileName(info.UpdateFilePath);
-
+                        string targetDir;
                         if (UpdateFilenameSubPathData.ContainsKey(FullDllFileName)) //get subpath from predefined list
                         {
-                            var targetDir = UpdatingModDirPath + Path.DirectorySeparatorChar + UpdateFilenameSubPathData[FullDllFileName];
-                            Directory.CreateDirectory(targetDir);
-                            var targetFilePath = Path.Combine(targetDir, FullDllFileName);
-                            File.Move(info.UpdateFilePath, targetFilePath);
+                            targetDir = UpdatingModDirPath + Path.DirectorySeparatorChar + UpdateFilenameSubPathData[FullDllFileName];
                         }
-                        else
+                        else if ((targetDir = GetDllTargetDir(FullDllFileName, UpdatingModDirPath)).Length > 0)//search dll path in buckup dir
                         {
-                            //search dll with same name and get subpath from this dll
-                            foreach (var dll in Directory.EnumerateFiles(info.BuckupDirPath, "*.dll", SearchOption.AllDirectories))
-                            {
-                                if (Path.GetFileName(dll) == FullDllFileName)
-                                {
-                                    var targetDir = Path.GetDirectoryName(dll).Replace(info.BuckupDirPath, UpdatingModDirPath);
-                                    Directory.CreateDirectory(targetDir);
-                                    var targetFilePath = Path.Combine(targetDir, FullDllFileName);
-                                    File.Move(info.UpdateFilePath, targetFilePath);
-                                    break;
-                                }
-                            }
+                            Directory.CreateDirectory(targetDir);
                         }
+                        else if (info.TargetFolderUpdateInfo[0] == "BepInEx")//default BepInEx plugins dir
+                        {
+                            targetDir = Path.Combine(UpdatingModDirPath, "BepInEx", "plugins");
+                        }
+
+                        Directory.CreateDirectory(targetDir);
+                        var targetFilePath = Path.Combine(targetDir, FullDllFileName);
+                        File.Move(info.UpdateFilePath, targetFilePath);
                     }
                     success = true;
                 }
@@ -233,6 +228,19 @@ namespace AIHelper.Manage.Update.Targets
             }
 
             return true;
+        }
+
+        private string GetDllTargetDir(string FullDllFileName, string UpdatingModDirPath)
+        {
+            //search dll with same name and get subpath from this dll
+            foreach (var dll in Directory.EnumerateFiles(info.BuckupDirPath, "*.dll", SearchOption.AllDirectories))
+            {
+                if (Path.GetFileName(dll) == FullDllFileName)
+                {
+                    return Path.GetDirectoryName(dll).Replace(info.BuckupDirPath, UpdatingModDirPath);
+                }
+            }
+            return "";
         }
 
         internal abstract void SetCurrentVersion();

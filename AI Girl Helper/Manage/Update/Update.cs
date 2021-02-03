@@ -19,13 +19,34 @@ namespace AIHelper.Manage.Update
         internal HashSet<string> Excluded;
         internal DirectoryInfo TargetFolderPath;
         internal string[] TargetFolderUpdateInfo;
+        /// <summary>
+        /// report content about update
+        /// </summary>
         internal List<string> report;
         internal bool NoRemoteFile;
+        /// <summary>
+        /// path to update file
+        /// </summary>
         internal string UpdateFilePath;
+        /// <summary>
+        /// string with wich update file name starts
+        /// </summary>
         internal string UpdateFileStartsWith;
+        /// <summary>
+        /// string with wich update file name ends
+        /// </summary>
         internal string UpdateFileEndsWith;
+        /// <summary>
+        /// buckup dir path for old versions of mods
+        /// </summary>
         internal string BuckupDirPath;
+        /// <summary>
+        /// selected source
+        /// </summary>
         internal SBase source;
+        /// <summary>
+        /// selected target
+        /// </summary>
         internal TBase target;
         internal bool VersionFromFile;
         internal bool GetVersionFromLink;

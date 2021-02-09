@@ -81,7 +81,7 @@ namespace AIHelper.Manage.Update.Sources
 
             if (!File.Exists(info.UpdateFilePath))
             {
-                await wc.DownloadFileTaskAsync(new Uri(GitLatestVersionFileDownloadLink), info.UpdateFilePath).ConfigureAwait(true);                
+                await wc.DownloadFileTaskAsync(new Uri(GitLatestVersionFileDownloadLink), info.UpdateFilePath).ConfigureAwait(true);
                 return File.Exists(info.UpdateFilePath);
             }
             else
@@ -131,6 +131,16 @@ namespace AIHelper.Manage.Update.Sources
                     info.UpdateFileEndsWith = (info.TargetFolderUpdateInfo.Length > 3 && info.TargetFolderUpdateInfo[3].ToUpperInvariant() != "TRUE" && info.TargetFolderUpdateInfo[3].ToUpperInvariant() != "FALSE") ? info.TargetFolderUpdateInfo[3] : "";
                 info.VersionFromFile = info.TargetFolderUpdateInfo[info.TargetFolderUpdateInfo.Length - 1].ToUpperInvariant() == "TRUE";
                 info.SourceLink = "https://github.com/" + GitOwner + "/" + GitRepository + "/releases/latest";
+
+                //var request = (HttpWebRequest)WebRequest.Create(new Uri(info.SourceLink));
+                //request.Method = "HEAD";
+                //var response = (HttpWebResponse)request.GetResponse();
+                //var LastContentLength = GetLastContentLength(info.SourceLink);
+                //if (LastContentLength != -1 && response.ContentLength == LastContentLength)
+                //{
+                //    return "";
+                //}
+
                 var LatestReleasePage = wc.DownloadString(info.SourceLink);
                 var version = Regex.Match(LatestReleasePage, "/releases/tag/[^\"]+\"");
                 GitLatestVersion = version.Value.Remove(version.Value.Length - 1, 1).Remove(0, 14);
@@ -146,22 +156,69 @@ namespace AIHelper.Manage.Update.Sources
                     {
                         var pattern = "/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + "([^\"]+)" + (info.UpdateFileEndsWith.Length > 0 ? info.UpdateFileEndsWith : @"") + "\"";
                         var fromfile = Regex.Match(LatestReleasePage, pattern).Result("$1");
-                        return fromfile;
+                        GitLatestVersion = fromfile;
+                        //return fromfile;
                     }
+
+                    //SetContentLength(info.SourceLink, response.ContentLength);
 
                     return GitLatestVersion;
                 }
                 else
                 {
-                    ManageLogs.Log("GitHub sublink to file not found or incorrect. link:" + Environment.NewLine + link2file.Value+" / owner:"+ GitOwner+" / repository:"+ GitRepository);
+                    ManageLogs.Log("GitHub sublink to file not found or incorrect. link:" + Environment.NewLine + link2file.Value + " / owner:" + GitOwner + " / repository:" + GitRepository);
                 }
             }
             catch (Exception ex)
             {
-                ManageLogs.Log("failed to check update. error:\r\n"+ex);
+                ManageLogs.Log("failed to check update. error:\r\n" + ex);
             }
 
             return "";
         }
+
+        //private void SetContentLength(string sourceLink, long contentLength)
+        //{
+        //    if (info.UrlSizeList.ContainsKey(sourceLink))
+        //    {
+        //        info.UrlSizeList[sourceLink] = contentLength;
+        //    }
+        //    else
+        //    {
+        //        info.UrlSizeList.Add(sourceLink, contentLength);
+        //    }
+        //}
+
+        //private long GetLastContentLength(string sourceLink)
+        //{
+        //    if (info.UrlSizeList == null)
+        //    {
+        //        info.UrlSizeList = new Dictionary<string, long>();
+
+        //        if (File.Exists(ManageSettings.UpdateLastContentLengthInfos()))
+        //        {
+        //            foreach (var line in File.ReadAllLines(ManageSettings.UpdateLastContentLengthInfos()))
+        //            {
+        //                if (line.Length == 0)
+        //                {
+        //                    continue;
+        //                }
+        //                var urldate = line.Split('|');
+        //                if (urldate.Length == 2 && !info.UrlSizeList.ContainsKey(urldate[0]))
+        //                {
+        //                    info.UrlSizeList.Add(urldate[0], long.Parse(urldate[1], CultureInfo.InvariantCulture));
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    if (info.UrlSizeList.ContainsKey(sourceLink))
+        //    {
+        //        return info.UrlSizeList[sourceLink];
+        //    }
+
+        //    return -1;
+        //}
+
     }
 }

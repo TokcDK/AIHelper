@@ -50,6 +50,7 @@ namespace AIHelper.Manage.Update
         internal TBase target;
         internal bool VersionFromFile;
         internal bool GetVersionFromLink;
+        //internal Dictionary<string, long> UrlSizeList;
 
         public updateInfo()
         {
@@ -231,9 +232,23 @@ namespace AIHelper.Manage.Update
                 }
             }
 
+            //save sizes
+            //SaveSizes(info.UrlSizeList);
+
             //Show report
             ShowReport(info);
         }
+
+        //private static void SaveSizes(Dictionary<string, long> urlSizeList)
+        //{
+        //    var sb = new StringBuilder();
+        //    foreach (var pair in urlSizeList)
+        //    {
+        //        sb.AppendLine(pair.Key + "|" + pair.Value);
+        //    }
+
+        //    File.WriteAllText(ManageSettings.UpdateLastContentLengthInfos(), sb.ToString());
+        //}
 
         /// <summary>
         /// Clean version from prefixes. change v13 to 13 and kind of

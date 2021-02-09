@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace AIHelper.Manage
@@ -72,6 +73,7 @@ namespace AIHelper.Manage
             };
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string CurrentMOProfileModlistPath()
         {
             return Path.Combine(ManageSettings.GetMOSelectedProfileDirPath(), "modlist.txt");
@@ -82,6 +84,8 @@ namespace AIHelper.Manage
             throw new NotImplementedException();
         }
 
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static List<Game> GetListOfExistsGames()
         {
             List<Game> ListOfGames = GamesList.GetGamesList();
@@ -152,24 +156,38 @@ namespace AIHelper.Manage
             return ListOfGames;
         }
 
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetModsUpdateDir()
         {
             return Path.Combine(GetAppResDir(), "update");
         }
 
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameModsUpdateDir()
         {
             return Path.Combine(GetModsUpdateDir(), GetCurrentGameFolderName());
         }
 
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetModsUpdateDBInfoDir()
         {
             return Path.Combine(GetModsUpdateDir(), "infos");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameModListRulesPath()
         {
             return Path.Combine(ManageSettings.GetAppResDir(), "rules", ManageSettings.GetCurrentGameFolderName(), "modlist.txt");
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string UpdateLastContentLengthInfos()
+        {
+            return Path.Combine(GetModsUpdateDir(), "LastContentLengthInfos.txt");
         }
 
         //internal static Dictionary<string, Game> GetListOfGames()
@@ -306,6 +324,7 @@ namespace AIHelper.Manage
             return listOfGamesString;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetGamesFolderPath()
         {
             //var GamesPath = Path.Combine(Application.StartupPath, "Games");
@@ -313,21 +332,25 @@ namespace AIHelper.Manage
             //return Directory.Exists(GamesPath) ? GamesPath : Application.StartupPath;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static int GetCurrentGameIndex()
         {
             return Properties.Settings.Default.CurrentGameListIndex;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetSettingsEXEPath()
         {
             return Path.Combine(ManageSettings.GetCurrentGameDataPath(), GetINISettingsEXEName() + ".exe");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGamePath()
         {
             return Properties.Settings.Default.CurrentGamePath;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameMOOverwritePath()
         {
             return GetOverwriteFolder();
@@ -366,76 +389,91 @@ namespace AIHelper.Manage
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetDummyFileName()
         {
             return "TESV.exe";
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetDummyFilePath()
         {
             return Path.Combine(GetCurrentGamePath(), GetDummyFileName());
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameEXEName()
         {
             return Properties.Settings.Default.CurrentGameEXEName;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameFolderName()
         {
             return Properties.Settings.Default.CurrentGameFolderName;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string UpdateReportHTMLFileName()
         {
             return "report.html";
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string UpdateReportHTMLFilePath()
         {
             return Path.Combine(GetCurrentGameModsUpdateDir(), UpdateReportHTMLFileName());
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameDisplayingName()
         {
             return Properties.Settings.Default.CurrentGameDisplayingName;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetStudioEXEName()
         {
             return Properties.Settings.Default.StudioEXEName;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetINISettingsEXEName()
         {
             return Properties.Settings.Default.INISettingsEXEName;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetAppResDir()
         {
             return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "RES");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameModsPath()
         {
             return Path.Combine(GetCurrentGamePath(), "Mods");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetDownloadsPath()
         {
             return Path.Combine(GetCurrentGamePath(), "Downloads");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameDataPath()
         {
             return Path.Combine(GetCurrentGamePath(), "Data");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetMOdirPath()
         {
             return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetMOexePath()
         {
             return Path.Combine(GetMOdirPath(), "ModOrganizer.exe");
@@ -455,46 +493,55 @@ namespace AIHelper.Manage
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetMOSelectedProfileDirPath()
         {
             return Path.Combine(GetCurrentGamePath(), "MO", "profiles", GetMOSelectedProfileDirName());
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetMOiniPath()
         {
             return Path.Combine(GetMOdirPath(), "ModOrganizer.ini");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetMOiniPathForSelectedGame()
         {
             return ManageFilesFolders.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGamePath(), "MO", "ModOrganizer.ini"));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetMOcategoriesPath()
         {
             return Path.Combine(GetMOdirPath(), "categories.dat");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetMOcategoriesPathForSelectedGame()
         {
             return ManageFilesFolders.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGamePath(), "MO", "categories.dat"));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetInstall2MODirPath()
         {
             return Path.Combine(GetCurrentGamePath(), "2MO");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetOverwriteFolder()
         {
             return ManageFilesFolders.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGamePath(), "MO", "overwrite"), true);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetOverwriteFolderLink()
         {
             return Path.Combine(GetCurrentGamePath(), "MOUserData");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetAIHelperINIPath()
         {
             return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, Application.ProductName + ".ini");
@@ -512,11 +559,13 @@ namespace AIHelper.Manage
             return 0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetModOrganizerINIpathForSelectedGame()
         {
             return Path.Combine(GetCurrentGamePath(), "ModOrganizer.ini");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetModOrganizerINIpath()
         {
             return Path.Combine(GetMOdirPath(), "ModOrganizer.ini");
@@ -524,41 +573,49 @@ namespace AIHelper.Manage
 
         internal static string MOmodeSwitchDataDirName { get => "momode"; }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetMOmodeSwitchDataDirPath()
         {
             return Path.Combine(GetAppResDir(), MOmodeSwitchDataDirName);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetMOmodeDataFilesBakDirPath()
         {
             return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName(), "MOmodeDataFilesBak");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetModdedDataFilesListFilePath()
         {
             return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName(), "ModdedDataFilesList.txt");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetVanillaDataFilesListFilePath()
         {
             return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName(), "VanillaDataFilesList.txt");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetVanillaDataEmptyFoldersListFilePath()
         {
             return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName(), "VanillaDataEmptyFoldersList.txt");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetMOToStandartConvertationOperationsListFilePath()
         {
             return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName(), "MOToStandartConvertationOperationsList.txt");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetZipmodsGUIDListFilePath()
         {
             return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName(), "ZipmodsGUIDList.txt");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetBepInExPath()
         {
             return Path.Combine(Properties.Settings.Default.MOmode ? GetCurrentGameModsPath() : GetCurrentGameDataPath(), "BepInEx");
@@ -815,6 +872,7 @@ namespace AIHelper.Manage
 
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameInstallDirPath()
         {
             return Path.Combine(GetAppResDir(), "install", GetCurrentGameFolderName());
@@ -830,56 +888,67 @@ namespace AIHelper.Manage
         /// </summary>
         internal static Dictionary<string, string> _languageModeMapReversed;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static bool GetCurrentGameIsHaveVR()
         {
             return File.Exists(Path.Combine(GetCurrentGameDataPath(), GetCurrentGameEXEName() + "VR" + ".exe"));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetDummyFileRESPath()
         {
             return Path.Combine(ManageSettings.GetAppResDir(), "TESV.exe.dummy");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameEXEMOProfileName()
         {
             return ManageMO.GetMOcustomExecutableTitleByExeName(GetCurrentGameEXEName());
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string VarCurrentGameDataPath()
         {
             return "%Data%";
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string VarCurrentGameModsPath()
         {
             return "%Mods%";
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string VarCurrentGameMOOverwritePath()
         {
             return "%Overwrite%";
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetUpdatedModsOlderVersionsBuckupDirName()
         {
             return "old";
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetUpdatedModsOlderVersionsBuckupDirPath()
         {
             return Path.Combine(GetModsUpdateDir(), GetCurrentGameFolderName(), GetUpdatedModsOlderVersionsBuckupDirName());
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetModsUpdateDirDownloadsPath()
         {
             return Path.Combine(GetModsUpdateDir(), GetModsUpdateDirDownloadsName());
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetModsUpdateDirDownloadsName()
         {
             return "downloads";
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetKKManagerPath()
         {
             return Path.Combine(GetAppResDir(), "tools", "KKManager");

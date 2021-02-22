@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace AIHelper.Manage.Update.Sources
@@ -37,6 +38,15 @@ namespace AIHelper.Manage.Update.Sources
         /// </summary>
         /// <returns></returns>
         internal abstract string GetLastVersion();
+
+        /// <summary>
+        /// function to get download file from selected link
+        /// </summary>
+        /// <returns></returns>
+        internal virtual byte[] DownloadFileFromTheLink(Uri link)
+        {
+            return null;
+        }
 
         /// <summary>
         /// function of download update of selected file

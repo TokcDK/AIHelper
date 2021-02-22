@@ -219,6 +219,7 @@
     <Compile Include="Games\Game.cs" />
     <Compile Include="Manage\ManageArchive.cs" />
     <Compile Include="Manage\ManageCFG.cs" />
+    <Compile Include="Manage\ManageFilesFoldersExtensions.cs" />
     <Compile Include="Manage\ManageHTML.cs" />
     <Compile Include="Manage\ManageINI.cs" />
     <Compile Include="Manage\ManageLogs.cs" />
@@ -337,11 +338,11 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Other\modorganizer-basic_games\game_aigirl.py" />
-    <Content Include="Other\modorganizer-basic_games\game_aigirltrial.py" />
-    <Content Include="Other\modorganizer-basic_games\game_honeyselect.py" />
-    <Content Include="Other\modorganizer-basic_games\game_honeyselect2.py" />
-    <Content Include="Other\modorganizer-basic_games\game_koikatu.py" />
+    <Content Include="Other\basic_games\game_aigirl.py" />
+    <Content Include="Other\basic_games\game_aigirltrial.py" />
+    <Content Include="Other\basic_games\game_honeyselect.py" />
+    <Content Include="Other\basic_games\game_honeyselect2.py" />
+    <Content Include="Other\basic_games\game_koikatu.py" />
     <Content Include="Other\ModUpdateReportTemplate.html" />
     <EmbeddedResource Include="Costura32\SevenZipSharp.dll" />
     <Content Include="helpericon.ico" />

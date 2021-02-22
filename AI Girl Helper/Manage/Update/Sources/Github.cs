@@ -124,6 +124,23 @@ namespace AIHelper.Manage.Update.Sources
             //using (WebClient wc = new WebClient())
             try
             {
+                //if (info.GetVersionFromLink)
+                //{
+                //    info.SourceLink = info.TargetFolderUpdateInfo[0];
+                //    var request = (HttpWebRequest)WebRequest.Create(new Uri(info.SourceLink));
+                //    request.Method = "HEAD";
+                //    var response = (HttpWebResponse)request.GetResponse();
+                //    var data = response.LastModified;
+
+                //    //var LastContentLength = GetLastContentLength(info.SourceLink);
+                //    //if (LastContentLength != -1 && response.ContentLength == LastContentLength)
+                //    //{
+                //    //    return "";
+                //    //}
+
+                //    return null;
+                //}
+
                 GitOwner = info.TargetFolderUpdateInfo[0];
                 GitRepository = info.TargetFolderUpdateInfo[1];
                 info.UpdateFileStartsWith = info.TargetFolderUpdateInfo[2];
@@ -175,6 +192,11 @@ namespace AIHelper.Manage.Update.Sources
             }
 
             return "";
+        }
+
+        internal override byte[] DownloadFileFromTheLink(Uri link)
+        {
+            return wc.DownloadData(link);
         }
 
         //private void SetContentLength(string sourceLink, long contentLength)

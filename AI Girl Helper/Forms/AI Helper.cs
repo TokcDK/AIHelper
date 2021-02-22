@@ -76,6 +76,7 @@ namespace AIHelper
 
             CleanMOFolder();
             //
+            CheckBaseGamesPy();
 
             CleanLog();
 
@@ -95,7 +96,36 @@ namespace AIHelper
             Properties.Settings.Default.INITDone = true;
         }
 
-        private void CleanLog()
+        /// <summary>
+        /// create game detection py files if missing
+        /// </summary>
+        private static void CheckBaseGamesPy()
+        {
+            var moBaseGamesPluginGamesDirPath = Path.Combine(ManageSettings.GetMOdirPath(), "plugins", "basic_games", "games");
+            if (!Directory.Exists(moBaseGamesPluginGamesDirPath))
+            {
+                return;
+            }
+            var pys = new Dictionary<string, byte[]>
+                {
+                    { nameof(Properties.Resources.game_aigirl), Properties.Resources.game_aigirl },
+                    { nameof(Properties.Resources.game_aigirltrial), Properties.Resources.game_aigirltrial },
+                    { nameof(Properties.Resources.game_honeyselect), Properties.Resources.game_honeyselect },
+                    { nameof(Properties.Resources.game_honeyselect2), Properties.Resources.game_honeyselect2},
+                    { nameof(Properties.Resources.game_koikatu), Properties.Resources.game_koikatu }
+                };
+
+            foreach(var py in pys)
+            {
+                var pypath = Path.Combine(moBaseGamesPluginGamesDirPath, py.Key + ".py");
+                if (!File.Exists(pypath))
+                {
+                    File.WriteAllBytes(pypath, py.Value);
+                }
+            }
+        }
+
+        private static void CleanLog()
         {
             if (File.Exists(ManageLogs.LogFilePath) && new FileInfo(ManageLogs.LogFilePath).Length > 10000000)
             {
@@ -136,30 +166,38 @@ namespace AIHelper
                     @"MOFolder\plugins\installer_fomod.dll",
                     @"MOFolder\plugins\installer_ncc.dll",
                     @"MOFolder\plugins\ScriptExtenderPluginChecker.py",
-                    @"MOFolder\plugins\modorganizer-basic_games\games\game_darkestdungeon.py",
-                    @"MOFolder\plugins\modorganizer-basic_games\games\game_darkmessiahofmightandmagic.py",
-                    @"MOFolder\plugins\modorganizer-basic_games\games\game_dungeonsiege2.py",
-                    @"MOFolder\plugins\modorganizer-basic_games\games\game_stalkeranomaly.py",
-                    @"MOFolder\plugins\modorganizer-basic_games\games\game_stardewvalley.py",
-                    @"MOFolder\plugins\modorganizer-basic_games\games\game_witcher3.py",
-                    @"MOFolder\plugins\modorganizer-basic_games-master\games\game_darkestdungeon.py",
-                    @"MOFolder\plugins\modorganizer-basic_games-master\games\game_darkmessiahofmightandmagic.py",
-                    @"MOFolder\plugins\modorganizer-basic_games-master\games\game_dungeonsiege2.py",
-                    @"MOFolder\plugins\modorganizer-basic_games-master\games\game_stalkeranomaly.py",
-                    @"MOFolder\plugins\modorganizer-basic_games-master\games\game_stardewvalley.py",
-                    @"MOFolder\plugins\modorganizer-basic_games-master\games\game_witcher3.py"
+                    !ManageMO.GetMOVersion().StartsWith("2.3",StringComparison.InvariantCulture)?@"MOFolder\plugins\modorganizer-basic_games\":""
             };
             var MOfolderPath = ManageSettings.GetMOdirPath();
             foreach (var file in MOFilesForClean)
             {
-                var filePath = file.Replace("MOFolder", MOfolderPath);
-                if (File.Exists(filePath))
+                var path = file.Replace("MOFolder", MOfolderPath);
+                if (!string.IsNullOrWhiteSpace(path))
                 {
-                    try
+                    if (path.EndsWith("\\", StringComparison.InvariantCulture) && Directory.Exists(path))
                     {
-                        File.Delete(filePath);
+                        try
+                        {
+                            var D = new DirectoryInfo(path)
+                            {
+                                Attributes = FileAttributes.Normal
+                            };
+                            D.DeleteRecursive();
+                        }
+                        catch { }
                     }
-                    catch { }
+                    else if (File.Exists(path))
+                    {
+                        try
+                        {
+                            var F = new FileInfo(path)
+                            {
+                                Attributes = FileAttributes.Normal
+                            };
+                            F.Delete();
+                        }
+                        catch { }
+                    }
                 }
             }
         }
@@ -2815,6 +2853,12 @@ namespace AIHelper
             {
                 if (MOmode)
                 {
+                    CleanMOFolder();
+                    //
+                    CheckBaseGamesPy();
+
+                    ManageMO.RedefineGameMOData();
+
                     //add updater as new exe in mo list if not exists
                     if (!ManageMO.IsMOcustomExecutableTitleByExeNameExists("StandaloneUpdater"))
                     {
@@ -2856,11 +2900,11 @@ namespace AIHelper
                 return;
             }
 
-            foreach(var dir in Directory.EnumerateDirectories(Path.Combine(ManageSettings.GetOverwriteFolder(), "mods")))
+            foreach (var dir in Directory.EnumerateDirectories(Path.Combine(ManageSettings.GetOverwriteFolder(), "mods")))
             {
                 if (dir.ToUpperInvariant().Contains("SIDELOADER MODPACK"))
                 {
-                    foreach(var zipmod in Directory.EnumerateFiles(dir, "*.zip*", SearchOption.AllDirectories))
+                    foreach (var zipmod in Directory.EnumerateFiles(dir, "*.zip*", SearchOption.AllDirectories))
                     {
                         var guid = ManageArchive.GetZipmodGUID(zipmod);
                         if (guid.Length > 0 && zipmodsGUIDList.ContainsKey(guid))
@@ -2939,7 +2983,7 @@ namespace AIHelper
 
                         if (getZipmodID)
                         {
-                            foreach(var zipmod in Directory.EnumerateFiles(dir,"*.zip*" ,SearchOption.AllDirectories))
+                            foreach (var zipmod in Directory.EnumerateFiles(dir, "*.zip*", SearchOption.AllDirectories))
                             {
                                 ManageMOMods.SaveGUIDIfZipMod(zipmod, ZipmodsGUIDList);
                             }

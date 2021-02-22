@@ -33,7 +33,13 @@ namespace AIHelper.Manage
             ManageSymLinks.ReCreateFileLinkWhenNotValid(ManageSettings.GetMOcategoriesPath(), ManageSettings.GetMOcategoriesPathForSelectedGame(), true);
         }
 
-        public async static void SetModOrganizerINISettingsForTheGame()
+        internal static string GetMOVersion()
+        {
+            var exeversion = System.Diagnostics.FileVersionInfo.GetVersionInfo(ManageSettings.GetMOexePath());
+            return exeversion.FileVersion;
+        }
+
+        public static void SetModOrganizerINISettingsForTheGame()
         {
             RedefineGameMOData();
 
@@ -106,7 +112,7 @@ namespace AIHelper.Manage
             var newcustomExecutables = new Dictionary<string, string>();
 
             var changed = false;
-            foreach(var record in customExecutables)
+            foreach (var record in customExecutables)
             {
                 if ((record.Key.EndsWith(@"\binary", StringComparison.OrdinalIgnoreCase)//read bynary path
                    || record.Key.EndsWith(@"\workingDirectory", StringComparison.OrdinalIgnoreCase))//read \workingDirectory path
@@ -124,7 +130,7 @@ namespace AIHelper.Manage
                     }
                     catch
                     {
-                        ManageLogs.Log("FixCustomExecutablesIniValues:Error while path fix.\r\nKey="+ record.Key+"\r\nPath="+ record.Value);
+                        ManageLogs.Log("FixCustomExecutablesIniValues:Error while path fix.\r\nKey=" + record.Key + "\r\nPath=" + record.Value);
                         newcustomExecutables.Add(record.Key, record.Value);
                     }
                 }
@@ -136,7 +142,7 @@ namespace AIHelper.Manage
 
             if (changed)//write only if changed
             {
-                foreach(var record in newcustomExecutables)
+                foreach (var record in newcustomExecutables)
                 {
                     INI.WriteINI("customExecutables", record.Key, record.Value, false);
                 }
@@ -446,7 +452,8 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool IsMO23ORNever()
         {
-            return File.Exists(Path.Combine(ManageSettings.GetMOdirPath(), "plugins", "modorganizer-basic_games", "basic_game.py")) || File.Exists(Path.Combine(ManageSettings.GetMOdirPath(), "plugins", "modorganizer-basic_games-master", "basic_game.py"));
+            var ver = GetMOVersion();
+            return ver != null && ver.Length > 2 && ver[0] == '2' && int.Parse(ver[2].ToString(), CultureInfo.InvariantCulture) > 2;
         }
 
         private static void AddCustomExecutables(INIFile INI, out Dictionary<string, string> customExecutables, ref int ExecutablesCount)
@@ -934,18 +941,18 @@ namespace AIHelper.Manage
             var INI = new INIFile(ManageSettings.GetMOiniPath());
             var customs = INI.ReadSectionKeyValuePairsToDictionary("customExecutables");
 
-            var newind = GetMOiniCustomExecutablesCount(customs)+1; //get new custom executables index
+            var newind = GetMOiniCustomExecutablesCount(customs) + 1; //get new custom executables index
 
             //add parameterso of new executable
             customs.Add(newind + @"\title", exeParams[0]);
-            customs.Add(newind + @"\binary", exeParams[1].Replace(@"\\","/").Replace(@"\","/"));
-            customs.Add(newind + @"\arguments", exeParams.Length> 2 ? @"\"""+exeParams[2].Replace(@"\", @"\\").Replace("/",@"\\")+@"\""" : string.Empty);
+            customs.Add(newind + @"\binary", exeParams[1].Replace(@"\\", "/").Replace(@"\", "/"));
+            customs.Add(newind + @"\arguments", exeParams.Length > 2 ? @"\""" + exeParams[2].Replace(@"\", @"\\").Replace("/", @"\\") + @"\""" : string.Empty);
             customs.Add(newind + @"\workingDirectory", exeParams.Length > 3 ? exeParams[3] : Path.GetDirectoryName(exeParams[0]).Replace(@"\\", "/").Replace(@"\", "/"));
             customs.Add(newind + @"\ownicon", "true");
 
             //update parameters size
             customs.Remove("size");
-            customs["size"] = newind+"";
+            customs["size"] = newind + "";
 
             //write customs
             foreach (var record in customs)
@@ -960,9 +967,9 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="customs"></param>
         /// <returns></returns>
-        internal static int GetMOiniCustomExecutablesCount(Dictionary<string, string> customs=null)
+        internal static int GetMOiniCustomExecutablesCount(Dictionary<string, string> customs = null)
         {
-            customs = customs?? new INIFile(ManageSettings.GetMOiniPath()).ReadSectionKeyValuePairsToDictionary("customExecutables");
+            customs = customs ?? new INIFile(ManageSettings.GetMOiniPath()).ReadSectionKeyValuePairsToDictionary("customExecutables");
 
             if (customs.Count == 0)//check if caustoms is exists
             {
@@ -970,7 +977,7 @@ namespace AIHelper.Manage
             }
 
             int ind = 1;
-            if(!customs.ContainsKey(ind + @"\binary"))//return 0 if there is no binary in list
+            if (!customs.ContainsKey(ind + @"\binary"))//return 0 if there is no binary in list
             {
                 return 0;
             }
@@ -979,7 +986,7 @@ namespace AIHelper.Manage
             {
                 ind++;
             }
-            return ind-1;
+            return ind - 1;
         }
 
         /// <summary>
@@ -990,15 +997,16 @@ namespace AIHelper.Manage
         internal static bool IsMOcustomExecutableTitleByExeNameExists(string exename)
         {
             var customs = new INIFile(ManageSettings.GetMOiniPath()).ReadSectionKeyValuePairsToDictionary("customExecutables");
-            foreach (var pair in customs)
-            {
-                if (pair.Key.EndsWith(@"\binary", StringComparison.InvariantCulture))
-                    if (Path.GetFileNameWithoutExtension(pair.Value) == exename)
-                        if (File.Exists(pair.Value))
-                        {
-                            return true;
-                        }
-            }
+            if (customs != null)
+                foreach (var pair in customs)
+                {
+                    if (pair.Key.EndsWith(@"\binary", StringComparison.InvariantCulture))
+                        if (Path.GetFileNameWithoutExtension(pair.Value) == exename)
+                            if (File.Exists(pair.Value))
+                            {
+                                return true;
+                            }
+                }
             return false;
         }
 
@@ -1484,9 +1492,13 @@ namespace AIHelper.Manage
             return Category;
         }
 
-        internal async static void MOINIFixes()
+        internal static void MOINIFixes()
         {
+            if (!File.Exists(ManageSettings.GetModOrganizerINIpath())) return;
+
             var INI = new INIFile(ManageSettings.GetModOrganizerINIpath());
+            if(INI==null) return;
+
             string gameName;
             //updated game name
             if (string.IsNullOrWhiteSpace(gameName = INI.ReadINI("General", "gameName")) || gameName != ManageSettings.GETMOCurrentGameName())
@@ -1501,19 +1513,23 @@ namespace AIHelper.Manage
             }
 
             //Set selected_executable number to game exe
-            foreach (var INIKeyValue in INI.ReadSectionKeyValuePairsToDictionary("customExecutables"))
+            var Customs = INI.ReadSectionKeyValuePairsToDictionary("customExecutables");
+            if (Customs != null)
             {
-                if (!INIKeyValue.Key.EndsWith("binary", StringComparison.InvariantCulture))
+                foreach (var INIKeyValue in Customs)
                 {
-                    continue;
-                }
+                    if (!INIKeyValue.Key.EndsWith("binary", StringComparison.InvariantCulture))
+                    {
+                        continue;
+                    }
 
-                if (Path.GetFileNameWithoutExtension(INIKeyValue.Value) == ManageSettings.GetCurrentGameEXEName())
-                {
-                    var index = INIKeyValue.Key.Split('\\')[0];
-                    INI.WriteINI("General", "selected_executable", index, false);
-                    INI.WriteINI("Widgets", "MainWindow_executablesListBox_index", index, false);
-                    break;
+                    if (Path.GetFileNameWithoutExtension(INIKeyValue.Value) == ManageSettings.GetCurrentGameEXEName())
+                    {
+                        var index = INIKeyValue.Key.Split('\\')[0];
+                        INI.WriteINI("General", "selected_executable", index, false);
+                        INI.WriteINI("Widgets", "MainWindow_executablesListBox_index", index, false);
+                        break;
+                    }
                 }
             }
 

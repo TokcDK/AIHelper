@@ -91,6 +91,7 @@ namespace AIHelper.Manage.Update
             var targets = new List<TBase> //Targets for update
             {
                 new MO(info),
+                //new MOBaseGames(info),
                 new ModsList(info),
                 new ModsMeta(info)
             };

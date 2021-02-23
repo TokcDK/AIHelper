@@ -100,9 +100,8 @@ namespace AIHelper.Manage.Update.Targets
             {
                 @".\ModOrganizer.ini",
                 @".\categories.dat",
-                @".\plugins\modorganizer-basic_games",
                 @".\explorer++\Explorer++RU.dll",
-                @".\config.xml\Explorer++RU.dll",
+                @".\explorer++\config.xml",
             };
         }
     }

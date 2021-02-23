@@ -2674,6 +2674,8 @@ namespace AIHelper
             Properties.Settings.Default.BepinExCfgPath = string.Empty;
             Properties.Settings.Default.MOSelectedProfileDirName = string.Empty;
 
+            CheckBaseGamesPy();
+
             CurrentGame.InitActions();
             CurrentGameTitleTextBox.Text = CurrentGame.GetGameDisplayingName();
             Properties.Settings.Default.CurrentGameDisplayingName = CurrentGame.GetGameDisplayingName();

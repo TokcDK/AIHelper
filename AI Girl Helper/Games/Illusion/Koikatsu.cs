@@ -9,6 +9,7 @@ namespace AI_Helper.Games
     {
         public override void InitActions()
         {
+            base.InitActions();
             CopyMOfiles("MOKK");
         }
 

@@ -9,6 +9,7 @@ namespace AI_Helper.Games
         public override void InitActions()
         {
             DetectRootGame();
+            DetectedGame.InitActions();
         }
 
         internal override bool isRootGame { get; set; } = true;

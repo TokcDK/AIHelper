@@ -13,7 +13,7 @@ namespace AIHelper.Games
 
         public virtual void InitActions()
         {
-
+            GetBaseGamePyFile();
         }
 
         protected string gamefolderName { get; set; } = string.Empty;

@@ -26,5 +26,13 @@
         {
             return "AI";
         }
+
+        internal override System.Collections.Generic.Dictionary<string, byte[]> GetBaseGamePyFile()
+        {
+            return new System.Collections.Generic.Dictionary<string, byte[]>
+                {
+                    { nameof(Properties.Resources.game_aigirl), Properties.Resources.game_aigirl }
+                };
+        }
     }
 }

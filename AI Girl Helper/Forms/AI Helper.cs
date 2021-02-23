@@ -99,23 +99,17 @@ namespace AIHelper
         /// <summary>
         /// create game detection py files if missing
         /// </summary>
-        private static void CheckBaseGamesPy()
+        private void CheckBaseGamesPy()
         {
             var moBaseGamesPluginGamesDirPath = Path.Combine(ManageSettings.GetMOdirPath(), "plugins", "basic_games", "games");
             if (!Directory.Exists(moBaseGamesPluginGamesDirPath))
             {
                 return;
             }
-            var pys = new Dictionary<string, byte[]>
-                {
-                    { nameof(Properties.Resources.game_aigirl), Properties.Resources.game_aigirl },
-                    { nameof(Properties.Resources.game_aigirltrial), Properties.Resources.game_aigirltrial },
-                    { nameof(Properties.Resources.game_honeyselect), Properties.Resources.game_honeyselect },
-                    { nameof(Properties.Resources.game_honeyselect2), Properties.Resources.game_honeyselect2},
-                    { nameof(Properties.Resources.game_koikatu), Properties.Resources.game_koikatu }
-                };
 
-            foreach(var py in pys)
+            var pys = CurrentGame.GetBaseGamePyFile();
+
+            foreach (var py in pys)
             {
                 var pypath = Path.Combine(moBaseGamesPluginGamesDirPath, py.Key + ".py");
                 if (!File.Exists(pypath))

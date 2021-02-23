@@ -1,4 +1,5 @@
 ﻿using AIHelper.Manage;
+using System.Collections.Generic;
 using System.IO;
 
 namespace AIHelper.Games
@@ -223,6 +224,22 @@ namespace AIHelper.Games
                 File.Copy(Path.Combine(GameMPAltDirNamePath, "categories.dat"), Path.Combine(GameMOPath, "categories.dat"));
                 File.Copy(Path.Combine(GameMPAltDirNamePath, "ModOrganizer.ini"), Path.Combine(GameMOPath, "ModOrganizer.ini"));
             }
+        }
+
+        /// <summary>
+        /// return selected game detection MO BaseGame plugin's py file or all files by default
+        /// </summary>
+        /// <returns></returns>
+        internal virtual Dictionary<string, byte[]> GetBaseGamePyFile()
+        {
+            return new Dictionary<string, byte[]>
+                {
+                    { nameof(Properties.Resources.game_aigirl), Properties.Resources.game_aigirl },
+                    { nameof(Properties.Resources.game_aigirltrial), Properties.Resources.game_aigirltrial },
+                    { nameof(Properties.Resources.game_honeyselect), Properties.Resources.game_honeyselect },
+                    { nameof(Properties.Resources.game_honeyselect2), Properties.Resources.game_honeyselect2},
+                    { nameof(Properties.Resources.game_koikatu), Properties.Resources.game_koikatu }
+                };
         }
     }
 }

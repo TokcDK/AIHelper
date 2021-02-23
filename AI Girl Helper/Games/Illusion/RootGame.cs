@@ -79,5 +79,11 @@ namespace AI_Helper.Games
             DetectRootGame();
             return DetectedGame.GetGamePrefix();
         }
+
+        internal override Dictionary<string, byte[]> GetBaseGamePyFile()
+        {
+            DetectRootGame();
+            return DetectedGame.GetBaseGamePyFile();
+        }
     }
 }

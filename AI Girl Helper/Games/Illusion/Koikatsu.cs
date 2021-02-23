@@ -78,5 +78,13 @@ namespace AI_Helper.Games
                     }
             };
         }
+
+        internal override System.Collections.Generic.Dictionary<string, byte[]> GetBaseGamePyFile()
+        {
+            return new System.Collections.Generic.Dictionary<string, byte[]>
+                {
+                    { nameof(AIHelper.Properties.Resources.game_koikatu), AIHelper.Properties.Resources.game_koikatu }
+                };
+        }
     }
 }

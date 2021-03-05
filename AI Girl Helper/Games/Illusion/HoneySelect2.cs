@@ -10,6 +10,7 @@ namespace AIHelper.Games
             base.InitActions();
             //CopyMOfiles("MOHS");
         }
+        internal override bool isHaveSideloaderMods { get; set; } = true;
 
         public override string GetGameFolderName()
         {

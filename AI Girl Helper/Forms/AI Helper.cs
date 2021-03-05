@@ -713,6 +713,10 @@ namespace AIHelper
             THToolTip.SetToolTip(llOpenOldPluginsBuckupFolder,
                 T._("Open older plugins buckup folder")
                 );
+            THToolTip.SetToolTip(cbxBleadingEdgeZipmods,
+                T._("Check also Bleeding Edge SIdeloader Modpack in KKManager") + "\n" +
+                T._("Bleeding Edge SIdeloader modpack contains test versions of zipmods which is still not added in main modpacks")
+                );
             THToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Open folder where you can drop/download files for autoinstallation"));
             THToolTip.SetToolTip(AutoShortcutRegistryCheckBox, T._("When checked will create shortcut for the AI Helper on Desktop and will fix registry if need"));
             THToolTip.SetToolTip(DisplaySettingsGroupBox, T._("Game Display settings"));
@@ -2837,15 +2841,8 @@ namespace AIHelper
                 await new Update().update().ConfigureAwait(true);
             }
 
-            var KKManagerStandaloneUpdaterPath = Path.Combine(ManageSettings.GetKKManagerPath(), "StandaloneUpdater.exe");
-
             //run zipmod's check if updater found and only for KK, AI, HS2
-            if (File.Exists(KKManagerStandaloneUpdaterPath)
-                && (ManageSettings.GetCurrentGameEXEName() == "Koikatu"
-                || ManageSettings.GetCurrentGameEXEName() == "AI-Syoujyo"
-                || ManageSettings.GetCurrentGameEXEName() == "HoneySelect2"
-                )
-                )
+            if (CurrentGame.isHaveSideloaderMods && File.Exists(ManageSettings.KKManagerStandaloneUpdaterEXEPath()))
             {
                 if (MOmode)
                 {
@@ -3009,6 +3006,51 @@ namespace AIHelper
                 Directory.CreateDirectory(ModUpdatesBakDir);
             }
             Process.Start("explorer.exe", ModUpdatesBakDir);
+        }
+
+        private void AIGirlHelperTabControl_Selected(object sender, TabControlEventArgs e)
+        {
+            if (AIGirlHelperTabControl.SelectedTab.Name == "ToolsTabPage")
+            {
+                //check bleeding edge txt
+                if (!File.Exists(ManageSettings.KKManagerStandaloneUpdaterEXEPath()))
+                {
+                    cbxBleadingEdgeZipmods.Visible = false;
+                    cbxBleadingEdgeZipmods.Checked = false;
+                }
+                else if (File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()))
+                {
+                    cbxBleadingEdgeZipmods.Visible = true;
+                    cbxBleadingEdgeZipmods.Checked = true;
+                }
+                else
+                {
+                    //do not hide checkbox if game can have it
+                    if (CurrentGame.isHaveSideloaderMods)
+                    {
+                        cbxBleadingEdgeZipmods.Visible = true;
+                    }
+                    else
+                    {
+                        cbxBleadingEdgeZipmods.Visible = false;
+                    }
+
+                    cbxBleadingEdgeZipmods.Checked = false;
+                }
+            }
+        }
+
+        private void cbxBleadingEdgeZipmods_CheckedChanged(object sender, EventArgs e)
+        {
+            if ((sender as CheckBox).Checked && !File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()));
+                File.WriteAllText(ManageSettings.ZipmodsBleedingEdgeMarkFilePath(), string.Empty);
+            }
+            else if (!(sender as CheckBox).Checked && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()))
+            {
+                File.Delete(ManageSettings.ZipmodsBleedingEdgeMarkFilePath());
+            }
         }
 
         //Disable close window button

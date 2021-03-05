@@ -83,6 +83,7 @@
             this.FullScreenCheckBox = new System.Windows.Forms.CheckBox();
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
             this.ToolsPagePanel = new System.Windows.Forms.Panel();
+            this.cbxBleadingEdgeZipmods = new System.Windows.Forms.CheckBox();
             this.llOpenOldPluginsBuckupFolder = new System.Windows.Forms.LinkLabel();
             this.btnUpdateMods = new System.Windows.Forms.Button();
             this.ToolsFixModListButton = new System.Windows.Forms.Button();
@@ -119,6 +120,7 @@
             this.AIGirlHelperTabControl.Size = new System.Drawing.Size(354, 187);
             this.AIGirlHelperTabControl.TabIndex = 0;
             this.AIGirlHelperTabControl.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.AIGirlHelperTabControl_Selecting);
+            this.AIGirlHelperTabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.AIGirlHelperTabControl_Selected);
             // 
             // MainPage
             // 
@@ -812,6 +814,7 @@
             // ToolsPagePanel
             // 
             this.ToolsPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.ToolsPagePanel.Controls.Add(this.cbxBleadingEdgeZipmods);
             this.ToolsPagePanel.Controls.Add(this.llOpenOldPluginsBuckupFolder);
             this.ToolsPagePanel.Controls.Add(this.btnUpdateMods);
             this.ToolsPagePanel.Controls.Add(this.ToolsFixModListButton);
@@ -824,11 +827,24 @@
             this.ToolsPagePanel.Size = new System.Drawing.Size(340, 155);
             this.ToolsPagePanel.TabIndex = 1;
             // 
+            // cbxBleadingEdgeZipmods
+            // 
+            this.cbxBleadingEdgeZipmods.AutoSize = true;
+            this.cbxBleadingEdgeZipmods.Location = new System.Drawing.Point(114, 127);
+            this.cbxBleadingEdgeZipmods.Margin = new System.Windows.Forms.Padding(0);
+            this.cbxBleadingEdgeZipmods.Name = "cbxBleadingEdgeZipmods";
+            this.cbxBleadingEdgeZipmods.Size = new System.Drawing.Size(15, 14);
+            this.cbxBleadingEdgeZipmods.TabIndex = 28;
+            this.cbxBleadingEdgeZipmods.UseVisualStyleBackColor = true;
+            this.cbxBleadingEdgeZipmods.Visible = false;
+            this.cbxBleadingEdgeZipmods.CheckedChanged += new System.EventHandler(this.cbxBleadingEdgeZipmods_CheckedChanged);
+            // 
             // llOpenOldPluginsBuckupFolder
             // 
             this.llOpenOldPluginsBuckupFolder.AutoSize = true;
             this.llOpenOldPluginsBuckupFolder.LinkColor = System.Drawing.Color.WhiteSmoke;
-            this.llOpenOldPluginsBuckupFolder.Location = new System.Drawing.Point(114, 120);
+            this.llOpenOldPluginsBuckupFolder.Location = new System.Drawing.Point(114, 112);
+            this.llOpenOldPluginsBuckupFolder.Margin = new System.Windows.Forms.Padding(0);
             this.llOpenOldPluginsBuckupFolder.Name = "llOpenOldPluginsBuckupFolder";
             this.llOpenOldPluginsBuckupFolder.Size = new System.Drawing.Size(15, 13);
             this.llOpenOldPluginsBuckupFolder.TabIndex = 27;
@@ -868,6 +884,7 @@
             this.Install2MODirPathOpenFolderLinkLabel.AutoSize = true;
             this.Install2MODirPathOpenFolderLinkLabel.LinkColor = System.Drawing.Color.WhiteSmoke;
             this.Install2MODirPathOpenFolderLinkLabel.Location = new System.Drawing.Point(114, 48);
+            this.Install2MODirPathOpenFolderLinkLabel.Margin = new System.Windows.Forms.Padding(0);
             this.Install2MODirPathOpenFolderLinkLabel.Name = "Install2MODirPathOpenFolderLinkLabel";
             this.Install2MODirPathOpenFolderLinkLabel.Size = new System.Drawing.Size(15, 13);
             this.Install2MODirPathOpenFolderLinkLabel.TabIndex = 18;
@@ -1003,6 +1020,7 @@
         private System.Windows.Forms.Button btnUpdateMods;
         internal System.Windows.Forms.PictureBox pbDiscord;
         private System.Windows.Forms.LinkLabel llOpenOldPluginsBuckupFolder;
+        private System.Windows.Forms.CheckBox cbxBleadingEdgeZipmods;
     }
 }
 

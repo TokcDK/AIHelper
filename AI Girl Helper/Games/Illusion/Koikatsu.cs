@@ -12,6 +12,7 @@ namespace AI_Helper.Games
             base.InitActions();
             CopyMOfiles("MOKK");
         }
+        internal override bool isHaveSideloaderMods { get; set; } = true;
 
         public override string GetGameFolderName()
         {

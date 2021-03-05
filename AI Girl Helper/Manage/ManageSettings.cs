@@ -953,5 +953,31 @@ namespace AIHelper.Manage
         {
             return Path.Combine(GetAppResDir(), "tools", "KKManager");
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string KKManagerStandaloneUpdaterEXEPath()
+        {
+            return Path.Combine(GetKKManagerPath(), "StandaloneUpdater.exe");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// <summary>
+        /// bleedingedge file indicator name
+        /// </summary>
+        /// <returns></returns>
+        internal static string ZipmodsBleedingEdgeMarkFileName()
+        {
+            return "ilikebleeding.txt";
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// <summary>
+        /// path for bleedingedge file indicator for kkmanager to also check the  bleeding edge pack
+        /// </summary>
+        /// <returns></returns>
+        internal static string ZipmodsBleedingEdgeMarkFilePath()
+        {
+            return Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "LauncherEN", ZipmodsBleedingEdgeMarkFileName());
+        }
     }
 }

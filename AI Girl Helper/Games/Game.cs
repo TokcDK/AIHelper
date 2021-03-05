@@ -16,11 +16,21 @@ namespace AIHelper.Games
             GetBaseGamePyFile();
         }
 
-        protected string gamefolderName { get; set; } = string.Empty;
-
         //internal string gamefolderPath { get; set; } = string.Empty;
+        /// <summary>
+        /// true if it is root game ie placed in same folder with game's data, mods folder
+        /// </summary>
         internal virtual bool isRootGame { get; set; } = false;
+        /// <summary>
+        /// true if game have sideloader zipmods
+        /// </summary>
+        internal virtual bool isHaveSideloaderMods { get; set; } = false;
 
+        protected string gamefolderName { get; set; } = string.Empty;
+        /// <summary>
+        /// search and return game folder name
+        /// </summary>
+        /// <returns></returns>
         public virtual string GetGameFolderName()
         {
             return SearchGameFolder();
@@ -43,35 +53,64 @@ namespace AIHelper.Games
             return GetGameFolderName();
         }
 
+        /// <summary>
+        /// main game's exe name of selected game
+        /// </summary>
+        /// <returns></returns>
         public abstract string GetGameEXEName();
 
+        /// <summary>
+        /// prefix of selected game (kk,hs,hs2...)
+        /// </summary>
+        /// <returns></returns>
         public abstract string GetGamePrefix();
 
+        /// <summary>
+        /// main game's vr exe name of selected game
+        /// </summary>
+        /// <returns></returns>
         public virtual string GetGameEXENameVR()
         {
             return GetGameEXEName() + "VR";
         }
 
+        /// <summary>
+        /// main game's x32 exe name of selected game
+        /// </summary>
+        /// <returns></returns>
         public virtual string GetGameEXENameX32()
         {
             return string.Empty;
         }
 
+        /// <summary>
+        /// game's inisettings launcher exe name of selected game
+        /// </summary>
+        /// <returns></returns>
         public virtual string GetINISettingsEXEName()
         {
             return "InitSetting";
         }
 
+        /// <summary>
+        /// game's studio exe name of selected game
+        /// </summary>
+        /// <returns></returns>
         public virtual string GetGameStudioEXEName()
         {
             return string.Empty;
         }
 
+        /// <summary>
+        /// game's studio x32 exe name of selected game
+        /// </summary>
+        /// <returns></returns>
         public virtual string GetGameStudioEXENameX32()
         {
             return string.Empty;
         }
 
+        /// game's path of selected game
         public virtual string GetGamePath()
         {
             return isRootGame ?
@@ -81,26 +120,46 @@ namespace AIHelper.Games
                 ;
         }
 
+        /// <summary>
+        /// game's Mods folder path of selected game
+        /// </summary>
+        /// <returns></returns>
         public virtual string GetModsPath()
         {
             return Path.Combine(GetGamePath(), "Mods");
         }
 
+        /// <summary>
+        /// game's Data folder path of selected game
+        /// </summary>
+        /// <returns></returns>
         public virtual string GetDataPath()
         {
             return Path.Combine(GetGamePath(), "Data");
         }
 
+        /// <summary>
+        /// game's 2MO folder path of selected game
+        /// </summary>
+        /// <returns></returns>
         public virtual string Get2MOFolderPath()
         {
             return Path.Combine(GetGamePath(), "2MO");
         }
 
+        /// <summary>
+        /// game's TESV.exe dummy path of selected game. for older versions of MO
+        /// </summary>
+        /// <returns></returns>
         public virtual string GetDummyFile()
         {
             return Path.Combine(GetGamePath(), "TESV.exe");
         }
 
+        /// <summary>
+        /// additional exe paths for selected game
+        /// </summary>
+        /// <returns></returns>
         public virtual string[] GetAdditionalExecutables()
         {
             return null;

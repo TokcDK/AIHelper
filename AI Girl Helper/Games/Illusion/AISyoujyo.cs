@@ -6,6 +6,7 @@
         {
             return GetTheGameFolderName(GetGameEXEName());
         }
+        internal override bool isHaveSideloaderMods { get; set; } = true;
 
         public override string GetGameEXEName()
         {

@@ -2858,7 +2858,7 @@ namespace AIHelper
                         ManageMO.InsertCustomExecutable(new string[]
                         {
                             "KKManagerStandaloneUpdater",
-                            KKManagerStandaloneUpdaterPath,
+                            ManageSettings.KKManagerStandaloneUpdaterEXEPath(),
                             ManageSettings.GetCurrentGameDataPath()
                         });
                     }
@@ -2879,7 +2879,7 @@ namespace AIHelper
                 else
                 {
                     //run updater normal
-                    RunProgram(KKManagerStandaloneUpdaterPath, "\"" + ManageSettings.GetCurrentGameDataPath() + "\"");
+                    RunProgram(ManageSettings.KKManagerStandaloneUpdaterEXEPath(), "\"" + ManageSettings.GetCurrentGameDataPath() + "\"");
                 }
             }
 

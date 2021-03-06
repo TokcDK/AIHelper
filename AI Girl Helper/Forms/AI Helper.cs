@@ -2906,6 +2906,7 @@ namespace AIHelper
 
                             if (!File.Exists(targetZipmodPath))
                             {
+                                Directory.CreateDirectory(Path.GetDirectoryName(targetZipmodPath));
                                 File.Move(zipmod, targetZipmodPath);
                             }
                         }

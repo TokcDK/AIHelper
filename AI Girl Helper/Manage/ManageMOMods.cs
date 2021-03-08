@@ -170,17 +170,21 @@ namespace AIHelper.Manage
         private static void BepInExPreloadersFix(bool Remove = false)
         {
             string[,] BepInExFilesPaths = ManageSettings.GetListOfExistsGames()[Properties.Settings.Default.CurrentGameListIndex].GetObjectsForMove();
+                        
+            var Done = false;
 
             int BepInExFilesPathsLength = BepInExFilesPaths.Length / 2;
             for (int i = 0; i < BepInExFilesPathsLength; i++)
             {
+                var SourceFilePath = BepInExFilesPaths[i, 0];
+                var TargetFilePath = BepInExFilesPaths[i, 1];
                 if (Remove)
                 {
                     try
                     {
-                        if (File.Exists(BepInExFilesPaths[i, 1]) && (File.Exists(BepInExFilesPaths[i, 0]) || ManageSymLinks.IsSymLink(BepInExFilesPaths[i, 1])))
+                        if (File.Exists(TargetFilePath) && (File.Exists(SourceFilePath) || ManageSymLinks.IsSymLink(TargetFilePath)))
                         {
-                            File.Delete(BepInExFilesPaths[i, 1]);
+                            File.Delete(TargetFilePath);
                         }
                     }
                     catch (Exception ex)
@@ -192,25 +196,37 @@ namespace AIHelper.Manage
                 {
                     try
                     {
-                        if (!File.Exists(BepInExFilesPaths[i, 0]))
-                        {
-                            BepInExFilesPaths[i, 0] = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(BepInExFilesPaths[i, 0]);
-                        }
-                        if (!File.Exists(BepInExFilesPaths[i, 0]))
+
+                        SourceFilePath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(SourceFilePath);
+
+                        //skip file if source not exists
+                        if (!File.Exists(SourceFilePath))
                         {
                             continue;
                         }
-                        if (File.Exists(BepInExFilesPaths[i, 1]))
+
+                        //skip file if not in enabled mod
+                        if (!File.Exists(SourceFilePath) || !ManageMOMods.IsInEnabledModOrOverwrite(SourceFilePath))//skip if no active mod found
+                        {
+                            if (File.Exists(TargetFilePath))
+                            {
+                                File.Delete(TargetFilePath);
+                            }
+
+                            continue;
+                        }
+
+                        if (File.Exists(TargetFilePath))
                         {
                             if (
-                                ManageSymLinks.IsSymLink(BepInExFilesPaths[i, 1])
+                                ManageSymLinks.IsSymLink(TargetFilePath)
                                 ||
-                                new FileInfo(BepInExFilesPaths[i, 1]).Length != new FileInfo(BepInExFilesPaths[i, 0]).Length
+                                new FileInfo(TargetFilePath).Length != new FileInfo(SourceFilePath).Length
                                 ||
-                                FileVersionInfo.GetVersionInfo(BepInExFilesPaths[i, 1]).ProductVersion != FileVersionInfo.GetVersionInfo(BepInExFilesPaths[i, 0]).ProductVersion
+                                FileVersionInfo.GetVersionInfo(TargetFilePath).ProductVersion != FileVersionInfo.GetVersionInfo(SourceFilePath).ProductVersion
                                 )
                             {
-                                File.Delete(BepInExFilesPaths[i, 1]);
+                                File.Delete(TargetFilePath);
                             }
                             else
                             {
@@ -218,9 +234,10 @@ namespace AIHelper.Manage
                             }
                         }
 
-                        Directory.CreateDirectory(Path.GetDirectoryName(BepInExFilesPaths[i, 1]));
+                        Directory.CreateDirectory(Path.GetDirectoryName(TargetFilePath));
 
-                        File.Copy(BepInExFilesPaths[i, 0], BepInExFilesPaths[i, 1]);
+                        File.Copy(SourceFilePath, TargetFilePath);
+                        Done = true;
                     }
                     catch (Exception ex)
                     {
@@ -229,15 +246,43 @@ namespace AIHelper.Manage
                 }
             }
 
-            if (Remove)
-            {
-                ManageFilesFolders.DeleteEmptySubfolders(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx"));
-                //ManageFilesFolders.DeleteEmptySubfolders(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx"));
-            }
+            ManageFilesFolders.DeleteEmptySubfolders(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx"), true);
+
             //else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx")))
             //{
             //    ManageFilesFolders.HideFileFolder(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx"));
             //}
+        }
+
+        /// <summary>
+        /// true if file in overwrite folder or in any active mod
+        /// </summary>
+        /// <param name="SourceFilePath"></param>
+        /// <returns></returns>
+        private static bool IsInEnabledModOrOverwrite(string SourceFilePath)
+        {
+            if (SourceFilePath.Contains(ManageSettings.GetOverwriteFolder()) || SourceFilePath.Contains(ManageSettings.GetCurrentGameMOOverwritePath()))
+            {
+                return true;
+            }
+
+            if (SourceFilePath.Contains(ManageSettings.GetCurrentGameModsPath()))
+            {
+                //remove Mods path slit and get 1st element as modname
+                var noModsPath = SourceFilePath.Replace(ManageSettings.GetCurrentGameModsPath(), string.Empty);
+                var SplittedPath = noModsPath.Split(new char[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
+                var modname = SplittedPath[0];
+
+                foreach (var name in ManageMO.GetModNamesListFromActiveMOProfile())
+                {
+                    if (modname == name)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         public static void InstallCsScriptsForScriptLoader(string WhereFromInstallDir = "")
@@ -1887,7 +1932,7 @@ namespace AIHelper.Manage
                 var guid = ManageArchive.GetZipmodGUID(SourceModZipmodPath);
                 if (guid.Length > 0 && !ZipmodsGUIDList.ContainsKey(guid))
                 {
-                    ZipmodsGUIDList.Add(guid, SaveFullPath? SourceModZipmodPath : ManageMOMods.GetMOModPathInMods(SourceModZipmodPath));
+                    ZipmodsGUIDList.Add(guid, SaveFullPath ? SourceModZipmodPath : ManageMOMods.GetMOModPathInMods(SourceModZipmodPath));
                 }
             }
         }

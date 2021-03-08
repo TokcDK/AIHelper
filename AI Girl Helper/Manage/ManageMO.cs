@@ -116,15 +116,19 @@ namespace AIHelper.Manage
             {
                 if ((record.Key.EndsWith(@"\binary", StringComparison.OrdinalIgnoreCase)//read bynary path
                    || record.Key.EndsWith(@"\workingDirectory", StringComparison.OrdinalIgnoreCase))//read \workingDirectory path
-                    && record.Value.StartsWith(@"../", StringComparison.OrdinalIgnoreCase))
+                    && record.Value.StartsWith("..", StringComparison.InvariantCulture))
                 {
                     try
                     {
+                        //replace .. to absolute path of current game directory
                         var targetcorrectedrelative = record.Value
-                                .Replace("../", ManageSettings.GetCurrentGamePath() + "/");
+                                .Remove(0, 2).Insert(0, ManageSettings.GetCurrentGamePath());
+
+                        //replace other slashes
                         var targetcorrectedabsolute = Path.GetFullPath(targetcorrectedrelative);
                         var targetcorrectedabsolutefixedslash = targetcorrectedabsolute.Replace(@"\\", "/").Replace(@"\", "/");//replace \ to /;
-                                                                                                                               //add absolute path for current game's data path
+
+                        //add absolute path for current game's data path
                         newcustomExecutables.Add(record.Key, targetcorrectedabsolutefixedslash);
                         changed = true;
                     }
@@ -1085,6 +1089,11 @@ namespace AIHelper.Manage
             }
         }
 
+        /// <summary>
+        /// return list of mo names in active profile folder
+        /// </summary>
+        /// <param name="OnlyEnabled"></param>
+        /// <returns></returns>
         public static string[] GetModNamesListFromActiveMOProfile(bool OnlyEnabled = true)
         {
             string currentMOprofile = ManageSettings.GetMOSelectedProfileDirName();
@@ -1189,7 +1198,7 @@ namespace AIHelper.Manage
             return path;
         }
 
-        public static string GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(string pathInMods, bool IsDir = false)
+        public static string GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(string pathInMods, bool IsDir = false, bool OnlyEnabled=true)
         {
             string ModsOverwrite = pathInMods.Contains(ManageSettings.GetCurrentGameMOOverwritePath()) ? ManageSettings.GetCurrentGameMOOverwritePath() : ManageSettings.GetCurrentGameModsPath();
 
@@ -1199,7 +1208,6 @@ namespace AIHelper.Manage
 
             //отсеивание первого элемента с именем мода
             //string subpath = string.Empty;
-            int i = 0;
 
             string[] pathInModsElements = pathInMods
                 .Replace(ModsOverwrite, string.Empty)
@@ -1247,7 +1255,7 @@ namespace AIHelper.Manage
 
             //поиск по списку активных модов
             string ModsPath = ManageSettings.GetCurrentGameModsPath();
-            foreach (var modName in GetModNamesListFromActiveMOProfile())
+            foreach (var modName in GetModNamesListFromActiveMOProfile(OnlyEnabled))
             {
                 string possiblePath = Path.Combine(ModsPath, modName) + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
                 if (IsDir)
@@ -1497,7 +1505,7 @@ namespace AIHelper.Manage
             if (!File.Exists(ManageSettings.GetModOrganizerINIpath())) return;
 
             var INI = new INIFile(ManageSettings.GetModOrganizerINIpath());
-            if(INI==null) return;
+            if (INI == null) return;
 
             string gameName;
             //updated game name

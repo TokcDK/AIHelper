@@ -83,25 +83,33 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
 
         private void InitLogSettings()
         {
-            var LogTargetSection = GetDiscConsoleSectionName();
-
-            var logLevels = ManageCFG.GetCFGValueIfExist(cfgPath, "LogLevels", LogTargetSection);
-
-            var levels = logLevels.Replace(", ", ",").Split(',');
-            CheckLevels(levels);
-
-            try
+            //Set BepInEx log data
+            var BepInExCFGPath = ManageSettings.GetBepInExCfgFilePath();
+            if (BepInExCFGPath.Length > 0 && File.Exists(BepInExCFGPath))
             {
-                BepInExSettingsLogCheckBox.Checked = bool.Parse(ManageCFG.GetCFGValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "Enabled", LogTargetSection, "false"));
-            }
-            catch
-            {
-                BepInExSettingsLogCheckBox.Checked = false;
-            }
+                BepInExSettingsLogCheckBox.Enabled = true;
 
-            if (BepInExSettingsDisplayedLogLevelLabel.Visible = BepInExSettingsLogCheckBox.Checked)
-            {
-                ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExSettingsLogCheckBox, BepInExSettingsDisplayedLogLevelLabel, true, LogTargetSection);
+                var LogTargetSection = GetDiscConsoleSectionName();
+
+                try
+                {
+                    BepInExSettingsLogCheckBox.Checked = bool.Parse(ManageCFG.GetCFGValueIfExist(BepInExCFGPath, "Enabled", LogTargetSection, "False"));
+                }
+                catch
+                {
+                    BepInExSettingsLogCheckBox.Checked = false;
+                }
+
+                if (BepInExSettingsDisplayedLogLevelLabel.Visible = BepInExSettingsLogCheckBox.Checked)
+                {
+                    var logLevels = ManageCFG.GetCFGValueIfExist(cfgPath, "LogLevels", LogTargetSection);
+
+                    ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExSettingsLogCheckBox, BepInExSettingsDisplayedLogLevelLabel, true, LogTargetSection);
+
+                    var levels = logLevels.Replace(", ", ",").Split(',');
+
+                    CheckLevels(levels);
+                }
             }
         }
 

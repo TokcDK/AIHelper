@@ -1152,7 +1152,7 @@ namespace AIHelper
 
         private void GetEnableDisableLaunchTabButtons()
         {
-            if (AIGirlHelperTabControl.SelectedTab.Text != T._("Launch"))
+            if (AIGirlHelperTabControl.SelectedTab.Name != "LaunchTabPage")
             {
                 return;
             }
@@ -1162,24 +1162,30 @@ namespace AIHelper
             JPLauncherRunLinkLabel.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"));
             GameButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetCurrentGameEXEName() + ".exe"));
             StudioButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetStudioEXEName() + ".exe"));
-            try
+
+            //Set BepInEx log data
+            var BepInExCFGPath = ManageSettings.GetBepInExCfgFilePath();
+            if (BepInExCFGPath.Length>0 && File.Exists(BepInExCFGPath))
             {
-                //BepInExConsoleCheckBox.Checked = bool.Parse(ManageINI.GetINIValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "Enabled", "Logging.Console", "False"));
-                BepInExConsoleCheckBox.Checked = bool.Parse(ManageCFG.GetCFGValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "Enabled", "Logging.Console", "False"));
-            }
-            catch
-            {
-                BepInExConsoleCheckBox.Checked = false;
+                BepInExConsoleCheckBox.Enabled = true;
+                try
+                {
+                    //BepInExConsoleCheckBox.Checked = bool.Parse(ManageINI.GetINIValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "Enabled", "Logging.Console", "False"));
+                    BepInExConsoleCheckBox.Checked = bool.Parse(ManageCFG.GetCFGValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "Enabled", "Logging.Console", "False"));
+                }
+                catch
+                {
+                    BepInExConsoleCheckBox.Checked = false;
+                }
+
+                if (BepInExDisplayedLogLevelLabel.Visible = BepInExConsoleCheckBox.Checked)
+                {
+                    ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExConsoleCheckBox, BepInExDisplayedLogLevelLabel, true);
+                }
             }
 
             //VR
             VRGameCheckBox.Visible = ManageSettings.GetCurrentGameIsHaveVR();
-
-            BepInExConsoleCheckBox.Enabled = ManageSettings.GetBepInExCfgFilePath().Length > 0;
-            if (BepInExDisplayedLogLevelLabel.Visible = BepInExConsoleCheckBox.Checked)
-            {
-                ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExConsoleCheckBox, BepInExDisplayedLogLevelLabel, true);
-            }
         }
 
         private void CheckBox1_CheckedChanged(object sender, EventArgs e)
@@ -2760,9 +2766,6 @@ namespace AIHelper
 
         private void AIGirlHelperTabControl_Selecting(object sender, TabControlCancelEventArgs e)
         {
-            newformButton.Text = @"\/";
-            GetEnableDisableLaunchTabButtons();
-            //FoldersInit();
         }
 
         private async void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -3011,6 +3014,8 @@ namespace AIHelper
 
         private void AIGirlHelperTabControl_Selected(object sender, TabControlEventArgs e)
         {
+            //FoldersInit();
+
             if (AIGirlHelperTabControl.SelectedTab.Name == "ToolsTabPage")
             {
                 //check bleeding edge txt
@@ -3038,6 +3043,14 @@ namespace AIHelper
 
                     cbxBleadingEdgeZipmods.Checked = false;
                 }
+            }
+            else if (AIGirlHelperTabControl.SelectedTab.Name == "LaunchTabPage")
+            {
+                //newformButton.Text = @"\/";
+
+                GetEnableDisableLaunchTabButtons();
+                //set bepinex log cfg
+                //BepInExDisplayedLogLevelLabel.Visible = BepInExConsoleCheckBox.Checked = ManageCFG.GetCFGValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "Enabled", "Logging.Console", "").ToUpperInvariant() == "TRUE";
             }
         }
 

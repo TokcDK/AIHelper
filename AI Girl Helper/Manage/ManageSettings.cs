@@ -401,10 +401,29 @@ namespace AIHelper.Manage
             return Path.Combine(GetCurrentGamePath(), GetDummyFileName());
         }
 
+        /// <summary>
+        /// return current game exe name
+        /// </summary>
+        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameEXEName()
         {
             return Properties.Settings.Default.CurrentGameEXEName;
+        }
+
+        /// <summary>
+        /// return current game exe name with removed suffixes like _64 or _32
+        /// </summary>
+        /// <returns></returns>
+        internal static string GetCurrentGameEXENameNoSuffixes()
+        {
+            var CurrentGameEXEName = GetCurrentGameEXEName();
+            if(CurrentGameEXEName.EndsWith("_32",StringComparison.InvariantCulture) || CurrentGameEXEName.EndsWith("_54", StringComparison.InvariantCulture))
+            {
+                CurrentGameEXEName = CurrentGameEXEName.Remove(CurrentGameEXEName.Length-3,3);
+            }
+
+            return CurrentGameEXEName;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

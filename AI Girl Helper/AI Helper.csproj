@@ -228,7 +228,7 @@
     <Compile Include="Manage\ManageNumbersExtensions.cs" />
     <Compile Include="Manage\ManagePython.cs" />
     <Compile Include="Manage\ManageRegistry.cs" />
-    <Compile Include="Manage\ManageRules.cs" />
+    <Compile Include="Manage\Rules\ManageRules.cs" />
     <Compile Include="Manage\ManageSettings.cs" />
     <Compile Include="Manage\ManageMO.cs" />
     <Compile Include="Manage\ManageStringsExtensions.cs" />

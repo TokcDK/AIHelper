@@ -220,7 +220,6 @@
     <Compile Include="Manage\ManageArchive.cs" />
     <Compile Include="Manage\ManageCFG.cs" />
     <Compile Include="Manage\ManageFilesFoldersExtensions.cs" />
-    <Compile Include="Manage\ManageHTML.cs" />
     <Compile Include="Manage\ManageINI.cs" />
     <Compile Include="Manage\ManageLogs.cs" />
     <Compile Include="Manage\ManageMOModsExtensions.cs" />

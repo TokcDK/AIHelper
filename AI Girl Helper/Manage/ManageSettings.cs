@@ -56,6 +56,32 @@ namespace AIHelper.Manage
             return "5.0.1";
         }
 
+        /// <summary>
+        /// Section name of AIHelper to store required values
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string AIMetaINISectionName()
+        {
+            return "AISettings";
+        }
+
+        /// <summary>
+        /// key name for store mod info value like requirements or incompatibilities
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string AIMetaINIKeyModlistRulesInfoName()
+        {
+            return "ModlistRulesInfo";
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string AIMetaINIKeyUpdateName()
+        {
+            return "ModUpdateInfo";
+        }
+
         internal static string[] GetScreenResolutions()
         {
             return new string[]

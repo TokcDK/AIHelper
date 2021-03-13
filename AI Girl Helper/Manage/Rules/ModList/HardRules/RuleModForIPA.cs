@@ -16,7 +16,7 @@ namespace AIHelper.Manage.Rules.ModList
                 ||
                 !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(
                 Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName, "Plugins"), "*.dll", null, true)
-                ) 
+                )
                 && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName, "IPA", "Data", "Managed", "IllusionInjector.dll"))
                 && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName, "BepInEx", "patchers", "BepInEx.IPAVirtualizer.dll"));
         }
@@ -28,12 +28,20 @@ namespace AIHelper.Manage.Rules.ModList
 
         internal override bool Fix()
         {
-            return FindModWithThePath(new[] { 
-                "IPA" + Path.DirectorySeparatorChar + "Data" + Path.DirectorySeparatorChar + "Managed" + Path.DirectorySeparatorChar + "IllusionInjector.dll" 
-                ,
-                "BepInEx" + Path.DirectorySeparatorChar + "patchers" + Path.DirectorySeparatorChar + "BepInEx.IPAVirtualizer.dll"
+            if (FindModWithThePath(new[] {
+                "IPA" + Path.DirectorySeparatorChar + "Data" + Path.DirectorySeparatorChar + "Managed" + Path.DirectorySeparatorChar + "IllusionInjector.dll"
+                }
+            , out outModName))
+            {
+                return true;
             }
-            , out outModName);
+            else
+            {
+                return FindModWithThePath(new[] {
+                "BepInEx" + Path.DirectorySeparatorChar + "patchers" + Path.DirectorySeparatorChar + "BepInEx.IPAVirtualizer.dll"
+                }
+                , out outModName);
+            }
         }
     }
 }

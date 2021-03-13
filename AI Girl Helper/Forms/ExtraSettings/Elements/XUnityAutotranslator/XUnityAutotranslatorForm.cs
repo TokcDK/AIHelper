@@ -116,6 +116,8 @@ namespace AIHelper.Forms.ExtraSettings.Elements
                     {
                     "GoogleTranslate"
                     ,
+                    "GoogleTranslateCompat"
+                    ,
                     "GoogleTranslateLegitimate"
                     ,
                     "BingTranslate"
@@ -170,6 +172,8 @@ namespace AIHelper.Forms.ExtraSettings.Elements
                 T._("From XUA documentation.\nThe supported translators are: ")
                 + "\n\n" +
                 T._("GoogleTranslate, based on the online Google translation service. Does not require authentication.")
+                + "\n\n" +
+                T._("GoogleTranslateCompat, same as the above, except requests are served out-of-process which is needed in some versions of Unity/Mono.")
                 + "\n\n" +
                 T._("GoogleTranslateLegitimate, based on the Google cloud translation API. Requires an API key.\nProvides trial period of 1 year with $300 credits. Enough for 15 million characters translations.")
                 + "\n\n" +

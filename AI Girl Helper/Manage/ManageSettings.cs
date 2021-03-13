@@ -444,7 +444,7 @@ namespace AIHelper.Manage
         internal static string GetCurrentGameEXENameNoSuffixes()
         {
             var CurrentGameEXEName = GetCurrentGameEXEName();
-            if(CurrentGameEXEName.EndsWith("_32",StringComparison.InvariantCulture) || CurrentGameEXEName.EndsWith("_54", StringComparison.InvariantCulture))
+            if(CurrentGameEXEName.EndsWith("_32",StringComparison.InvariantCulture) || CurrentGameEXEName.EndsWith("_64", StringComparison.InvariantCulture))
             {
                 CurrentGameEXEName = CurrentGameEXEName.Remove(CurrentGameEXEName.Length-3,3);
             }

@@ -78,21 +78,21 @@ namespace AIHelper.Manage.Update.Targets.Mods
 
             if (UpdateInfo.Success && !string.IsNullOrWhiteSpace(UpdateInfo.Value) && UpdateInfo.Value.StartsWith(info.SourceID, System.StringComparison.InvariantCultureIgnoreCase))
             {
-                var Info = UpdateInfo.Result("$1");
-
+                return UpdateInfo.Result("$1");
+            }
+            else
+            {
                 //read info from standalone key
                 //need to think about section and key names
-                if (string.IsNullOrWhiteSpace(Info) && INI.SectionExistsAndNotEmpty(ManageSettings.AIMetaINISectionName()))
+                if (INI.SectionExistsAndNotEmpty(ManageSettings.AIMetaINISectionName()))
                 {
-                    if (INI.KeyExists(ManageSettings.AIMetaINIKeyModlistRulesInfoName(), ManageSettings.AIMetaINISectionName()))
+                    if (INI.KeyExists(ManageSettings.AIMetaINIKeyUpdateName(), ManageSettings.AIMetaINISectionName()))
                     {
-                        Info = INI.ReadINI(ManageSettings.AIMetaINISectionName(), ManageSettings.AIMetaINIKeyModlistRulesInfoName());
-                        
-                        Info = Regex.Match(Info, info.SourceID + "::([^:]+)::").Result("$1");
+                        var Info = INI.ReadINI(ManageSettings.AIMetaINISectionName(), ManageSettings.AIMetaINIKeyUpdateName());
+                                                
+                        return Regex.Match(Info, info.SourceID + "::([^:]+)::").Result("$1");
                     }
                 }
-
-                return Info;
             }
 
             // Get from meta.ini url

@@ -218,6 +218,7 @@
     <Compile Include="Games\Illusion\AISyoujyo.cs" />
     <Compile Include="Games\Game.cs" />
     <Compile Include="Manage\ManageArchive.cs" />
+    <Compile Include="Manage\ManageArrayExtensions.cs" />
     <Compile Include="Manage\ManageCFG.cs" />
     <Compile Include="Manage\ManageFilesFoldersExtensions.cs" />
     <Compile Include="Manage\ManageINI.cs" />

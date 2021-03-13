@@ -158,7 +158,7 @@ namespace AIHelper.Manage.Update
                             {
                                 continue;
                             }
-                            info.TargetFolderUpdateInfo = tInfoArray; // get folder info
+                            info.TargetFolderUpdateInfo = tInfoArray.Trim(); // get folder info
                                                                       //info.TargetCurrentVersion = tInfoArray[tInfoArray.Length - 1]; // get current version (last element of info)
                             info.TargetLastVersion = source.GetLastVersion(); // get last version
 

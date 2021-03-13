@@ -46,7 +46,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
 
                     if (!string.IsNullOrWhiteSpace(modinfo))
                     {
-                        infos.Add(ModPath, modinfo);
+                        infos.Add(ModPath, modinfo/*>*/.Replace(", ",",")/*<fix of possible problems from space after ,*/);
                     }
                 }
 

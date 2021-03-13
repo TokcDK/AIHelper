@@ -140,7 +140,6 @@ namespace AIHelper.Manage.Update.Sources
 
                 //    return null;
                 //}
-
                 GitOwner = info.TargetFolderUpdateInfo[0];
                 GitRepository = info.TargetFolderUpdateInfo[1];
                 info.UpdateFileStartsWith = info.TargetFolderUpdateInfo[2];

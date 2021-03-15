@@ -253,7 +253,7 @@ namespace AIHelper.Manage
                             if (INI.KeyExists("url", "General") && !string.IsNullOrWhiteSpace(INI.ReadINI("General", "url")))
                             {
                                 //set hasCustomURL to true if url exists and hasCustomURL is false
-                                if (!INI.KeyExists("hasCustomURL", "General") || INI.ReadINI("General", "hasCustomURL").Length==5/*=="false"*/)
+                                if (!INI.KeyExists("hasCustomURL", "General") || INI.ReadINI("General", "hasCustomURL").Length == 5/*=="false"*/)
                                 {
                                     INI.WriteINI("General", "hasCustomURL", "true", false);
                                     INIchanged = true;
@@ -282,50 +282,42 @@ namespace AIHelper.Manage
                                 }
                             }
 
-                            var metainiinfomoved=false;
+                            var metainiinfomoved = false;
                             if (INI.KeyExists("notes", "General"))
                             {
                                 var metanotes = INI.ReadINI("General", "notes");
                                 if (!string.IsNullOrWhiteSpace(metanotes))
                                 {
-                                    var regex = @"<p style\=[^>]*>(::)?mlinfo::(?:(?!::).)+::<\/p>";//regex to capture ::mlinfo:: with html tags
-                                    var info = Regex.Match(metanotes, regex);
-                                    if (info.Success && !string.IsNullOrWhiteSpace(info.Value))
+                                    var PatternsOfInfoForMove = new string[2][]
                                     {
-                                        var mlinfoValue = Regex.Replace(info.Value.Replace(@"\n",@"\r\n"), "<[^>]*>","");//cleaned info from html tags
-                                        //write new key to meta ini with modlist rules info
-                                        INI.WriteINI(ManageSettings.AIMetaINISectionName(), ManageSettings.AIMetaINIKeyModlistRulesInfoName(), mlinfoValue, false);
-                                        
-                                        if (!metainiFixesApplyed)
-                                        {
-                                            metainiFixesApplyed = true;
-                                            report.Add(Environment.NewLine + "meta.ini fixes:");
-                                        }
-                                        report.Add(Path.GetFileName(mod) + ": " + T._("moved meta ini modlist rules info from notes in ini key"));
-                                        INIchanged = true;
-                                        metainiinfomoved = true;
-                                    }
-                                    regex = @"<p style\=[^>]*>(::)?updgit::(?:(?!::).)+::<\/p>";//regex to capture ::mlinfo:: with html tags
-                                    info = Regex.Match(metanotes, regex);
-                                    if (info.Success && !string.IsNullOrWhiteSpace(info.Value))
+                                        new string[2] { "mlinfo", ManageSettings.AIMetaINIKeyModlistRulesInfoName() },//regex to capture ::mlinfo:: with html tags
+                                        new string[2] { "updgit", ManageSettings.AIMetaINIKeyUpdateName() }//regex to capture update info with html tags
+                                    };
+
+                                    foreach (var pattern in PatternsOfInfoForMove)
                                     {
-                                        var infoValue = Regex.Replace(info.Value.Replace(@"\n",@"\r\n"), "<[^>]*>","");//cleaned info from html tags
-                                        //write new key to meta ini with modlist rules info
-                                        INI.WriteINI(ManageSettings.AIMetaINISectionName(), ManageSettings.AIMetaINIKeyUpdateName(), infoValue, false);
-                                        
-                                        if (!metainiFixesApplyed)
+                                        var regex = @"<p style\=[^>]*>(::)?" + pattern[0] + @"::(?:(?!::).)+::<\/p>";//regex to capture info with html tags
+                                        var info = Regex.Match(metanotes, regex);
+                                        if (info.Success && !string.IsNullOrWhiteSpace(info.Value))
                                         {
-                                            metainiFixesApplyed = true;
-                                            report.Add(Environment.NewLine + "meta.ini fixes:");
+                                            var infoValue = Regex.Replace(info.Value.Replace(@"\n", @"\r\n"), "<[^>]*>", "");//cleaned info from html tags
+                                                                                                                             //write new key to meta ini with info
+                                            INI.WriteINI(ManageSettings.AIMetaINISectionName(), pattern[1], infoValue, false);
+
+                                            if (!metainiFixesApplyed)
+                                            {
+                                                metainiFixesApplyed = true;
+                                                report.Add(Environment.NewLine + "meta.ini fixes:");
+                                            }
+                                            report.Add(Path.GetFileName(mod) + ": " + T._("moved meta ini info from notes in ini key") + " " + pattern[1]);
+                                            INIchanged = true;
+                                            metainiinfomoved = true;
+                                            metanotes = metanotes.Replace(info.Value, "");//remove info from notes after it was set to ini key
                                         }
-                                        report.Add(Path.GetFileName(mod) + ": " + T._("moved meta ini update info from notes in ini key"));
-                                        INIchanged = true;
-                                        metainiinfomoved = true;
                                     }
 
                                     if (metainiinfomoved)
                                     {
-                                        metanotes = metanotes.Replace(info.Value, "");
                                         INI.WriteINI("General", "notes", metanotes, false);//write notes with removed mlinfo
                                     }
                                 }

@@ -1165,7 +1165,7 @@ namespace AIHelper
 
             //Set BepInEx log data
             var BepInExCFGPath = ManageSettings.GetBepInExCfgFilePath();
-            if (BepInExCFGPath.Length>0 && File.Exists(BepInExCFGPath))
+            if (BepInExCFGPath.Length > 0 && File.Exists(BepInExCFGPath))
             {
                 BepInExConsoleCheckBox.Enabled = true;
                 try

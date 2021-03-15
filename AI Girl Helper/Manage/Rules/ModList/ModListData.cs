@@ -35,6 +35,8 @@ namespace AIHelper.Manage.Rules.ModList
         /// Comment tags: ";"
         /// </summary>
         internal static string[] CommentTag = new[] { ";" };
+        internal bool kPlugEnabled;
+
         /// <summary>
         /// ";" - commentary
         /// </summary>

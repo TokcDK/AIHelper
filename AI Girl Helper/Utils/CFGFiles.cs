@@ -5,8 +5,8 @@ namespace AI_Helper.Utils
 {
     public class CFGFiles
     {
-        Configuration config;
-        string filePath;
+        readonly Configuration config;
+        readonly string filePath;
 
         public CFGFiles(string CFGPath)
         {

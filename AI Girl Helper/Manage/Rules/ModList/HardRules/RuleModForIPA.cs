@@ -28,20 +28,11 @@ namespace AIHelper.Manage.Rules.ModList
 
         internal override bool Fix()
         {
-            if (FindModWithThePath(new[] {
-                "IPA" + Path.DirectorySeparatorChar + "Data" + Path.DirectorySeparatorChar + "Managed" + Path.DirectorySeparatorChar + "IllusionInjector.dll"
-                }
-            , out outModName))
-            {
-                return true;
-            }
-            else
-            {
-                return FindModWithThePath(new[] {
+            return FindModWithThePath(new[] {
+                "IPA" + Path.DirectorySeparatorChar + "Data" + Path.DirectorySeparatorChar + "Managed" + Path.DirectorySeparatorChar + "IllusionInjector.dll",
                 "BepInEx" + Path.DirectorySeparatorChar + "patchers" + Path.DirectorySeparatorChar + "BepInEx.IPAVirtualizer.dll"
                 }
-                , out outModName);
-            }
+            , out outModName, 2);
         }
     }
 }

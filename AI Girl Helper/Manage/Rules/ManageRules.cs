@@ -52,6 +52,8 @@ namespace AIHelper.Manage
                     }
                 }
 
+                kPlugTweaks();
+
                 var ListChanged = modlistData.Report.Count > 0;
                 bool ActionsChanged = false;
                 if (modlistData.ModsMustBeEnabled.Count > 0)
@@ -97,7 +99,7 @@ namespace AIHelper.Manage
 
                 //meta.ini fixes/tweaks
                 //var reportCntPre = modlistData.Report.Count;
-                OldMetaInfoFix(modlistData.Report);
+                OldMetaInfoFix();
                 //var metainiFixesApplyed = modlistData.Report.Count > reportCntPre;
 
                 if (modlistData.Report.Count > 0)
@@ -162,9 +164,45 @@ namespace AIHelper.Manage
             }
 
             /// <summary>
+            /// apply tweak for kplug
+            /// </summary>
+            private void kPlugTweaks()
+            {
+                var cfgpath = Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath(), "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg");
+
+                if (!File.Exists(cfgpath))
+                {
+                    foreach (var modName in modlistData.EnabledModsList)
+                    {
+                        if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), modName, "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg")))
+                        {
+                            cfgpath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modName, "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg");
+                            break;
+                        }
+                    }
+                }
+
+                if (File.Exists(cfgpath))
+                {
+                    var value = ManageCFG.GetCFGValueIfExist(cfgpath, "Async clothes loading", "Tweaks");
+                    //set Async clothes loading to false in kplug enabled
+                    if (!string.IsNullOrWhiteSpace(value) && ((modlistData.kPlugEnabled && value.Length == 4) || (!modlistData.kPlugEnabled && value.Length == 5)))
+                    {
+                        ManageCFG.WriteCFGValue(cfgpath, "Tweaks", "Async clothes loading", (!modlistData.kPlugEnabled).ToString());
+
+                        if (modlistData.kPlugEnabled)
+                        {
+                            modlistData.Report.Add(T._("kPlug tweaks:"));
+                            modlistData.Report.Add(T._("KK_Fix_MainGameOptimizations 'Async clothes loading' parameter was set to 'False' to prevent problems with kPlug"));
+                        }
+                    }
+                }
+            }
+
+            /// <summary>
             /// Fix meta.ini game name value for mods
             /// </summary>
-            internal static void OldMetaInfoFix(List<string> report)
+            internal void OldMetaInfoFix()
             {
                 var AllDirsList = Directory.GetDirectories(ManageSettings.GetCurrentGameModsPath());
                 var ApplyModListgameNameValueFix = false;
@@ -242,9 +280,9 @@ namespace AIHelper.Manage
                                 if (!metainiFixesApplyed)
                                 {
                                     metainiFixesApplyed = true;
-                                    report.Add(Environment.NewLine + "meta.ini fixes:");
+                                    modlistData.Report.Add(Environment.NewLine + "meta.ini fixes:");
                                 }
-                                report.Add(Path.GetFileName(mod) + ": " + T._("fixed game name"));
+                                modlistData.Report.Add(Path.GetFileName(mod) + ": " + T._("fixed game name"));
                                 INIchanged = true;
 
                             }
@@ -274,9 +312,9 @@ namespace AIHelper.Manage
                                         if (!metainiFixesApplyed)
                                         {
                                             metainiFixesApplyed = true;
-                                            report.Add(Environment.NewLine + "meta.ini fixes:");
+                                            modlistData.Report.Add(Environment.NewLine + "meta.ini fixes:");
                                         }
-                                        report.Add(Path.GetFileName(mod) + ": " + T._("added url from notes"));
+                                        modlistData.Report.Add(Path.GetFileName(mod) + ": " + T._("added url from notes"));
                                         INIchanged = true;
                                     }
                                 }
@@ -307,9 +345,9 @@ namespace AIHelper.Manage
                                             if (!metainiFixesApplyed)
                                             {
                                                 metainiFixesApplyed = true;
-                                                report.Add(Environment.NewLine + "meta.ini fixes:");
+                                                modlistData.Report.Add(Environment.NewLine + "meta.ini fixes:");
                                             }
-                                            report.Add(Path.GetFileName(mod) + ": " + T._("moved meta ini info from notes in ini key") + " " + pattern[1]);
+                                            modlistData.Report.Add(Path.GetFileName(mod) + ": " + T._("moved meta ini info from notes in ini key") + " " + pattern[1]);
                                             INIchanged = true;
                                             metainiinfomoved = true;
                                             metanotes = metanotes.Replace(info.Value, "");//remove info from notes after it was set to ini key

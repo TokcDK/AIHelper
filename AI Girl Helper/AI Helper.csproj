@@ -233,6 +233,7 @@
     <Compile Include="Manage\ManageMO.cs" />
     <Compile Include="Manage\ManageStringsExtensions.cs" />
     <Compile Include="Manage\ManageSymLinks.cs" />
+    <Compile Include="Manage\Rules\ModList\HardRules\RuleModForkPlug.cs" />
     <Compile Include="Manage\Rules\ModList\ModListData.cs" />
     <Compile Include="Manage\Rules\ModList\ModListRulesBase.cs" />
     <Compile Include="Manage\Rules\ModList\ModlistRulesTags.cs" />

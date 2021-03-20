@@ -1172,106 +1172,125 @@ namespace AIHelper.Manage
         {
             string path = string.Empty;
             int d = 0;
-            foreach (var pathCandidate in pathInMods)
+            try
             {
-                path = pathCandidate;
+                if (pathInMods != null)
+                    foreach (var pathCandidate in pathInMods)
+                    {
+                        path = pathCandidate;
 
-                if (!string.IsNullOrWhiteSpace(path))
-                {
-                    if ((IsDir[d] && Directory.Exists(pathCandidate)) || (!IsDir[d] && File.Exists(pathCandidate)))
-                    {
-                        return pathCandidate;
-                    }
-                    else
-                    {
-                        path = GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(pathCandidate, IsDir[d]);
-                        if (!string.IsNullOrWhiteSpace(path) && path != pathCandidate)
+                        if (!string.IsNullOrWhiteSpace(path))
                         {
-                            return path;
+                            if ((IsDir[d] && Directory.Exists(pathCandidate)) || (!IsDir[d] && File.Exists(pathCandidate)))
+                            {
+                                return pathCandidate;
+                            }
+                            else
+                            {
+                                path = GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(pathCandidate, IsDir[d]);
+                                if (!string.IsNullOrWhiteSpace(path) && path != pathCandidate)
+                                {
+                                    return path;
+                                }
+                            }
                         }
-                    }
-                }
 
-                d++;
+                        d++;
+                    }
+            }
+            catch (Exception ex)
+            {
+                ManageLogs.Log("An error occured while path get:\r\n" + ex + "\r\npath=" + path);
             }
 
             return path;
         }
 
-        public static string GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(string pathInMods, bool IsDir = false, bool OnlyEnabled=true)
+        public static string GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(string pathInMods, bool IsDir = false, bool OnlyEnabled = true)
         {
-            string ModsOverwrite = pathInMods.Contains(ManageSettings.GetCurrentGameMOOverwritePath()) ? ManageSettings.GetCurrentGameMOOverwritePath() : ManageSettings.GetCurrentGameModsPath();
-
-            //искать путь только для ссылки в Mods или в Data
-            if (!ManageStrings.IsStringAContainsStringB(pathInMods, ModsOverwrite) && !ManageStrings.IsStringAContainsStringB(pathInMods, ManageSettings.GetCurrentGameDataPath()))
+            if (string.IsNullOrWhiteSpace(pathInMods))
+            {
                 return pathInMods;
-
-            //отсеивание первого элемента с именем мода
-            //string subpath = string.Empty;
-
-            string[] pathInModsElements = pathInMods
-                .Replace(ModsOverwrite, string.Empty)
-                .Split(Path.DirectorySeparatorChar)
-                .Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
-
-            //для мода в mods пропустить имя этого мода
-            if (ModsOverwrite == ManageSettings.GetCurrentGameModsPath())
-            {
-                pathInModsElements = pathInModsElements.Skip(1).ToArray();
             }
 
-            //foreach (var element in pathInModsElements)
-            //{
-            //    if (i > 1)
-            //    {
-            //        subpath += i > 2 ? Path.DirectorySeparatorChar.ToString() : string.Empty;
-            //        subpath += element;
-            //    }
-            //    i++;
-            //}
-            string subpath = string.Join(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture), pathInModsElements);
-
-            if (!Properties.Settings.Default.MOmode)
+            try
             {
-                return Path.Combine(ManageSettings.GetCurrentGameDataPath(), subpath);
-            }
+                string ModsOverwrite = pathInMods.Contains(ManageSettings.GetCurrentGameMOOverwritePath()) ? ManageSettings.GetCurrentGameMOOverwritePath() : ManageSettings.GetCurrentGameModsPath();
 
-            //check in Overwrite 1st
-            string overwritePath = ManageSettings.GetCurrentGameMOOverwritePath() + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
-            if (IsDir)
-            {
-                if (Directory.Exists(overwritePath))
+                //искать путь только для ссылки в Mods или в Data
+                if (!ManageStrings.IsStringAContainsStringB(pathInMods, ModsOverwrite) && !ManageStrings.IsStringAContainsStringB(pathInMods, ManageSettings.GetCurrentGameDataPath()))
+                    return pathInMods;
+
+                //отсеивание первого элемента с именем мода
+                //string subpath = string.Empty;
+
+                string[] pathInModsElements = pathInMods
+                    .Replace(ModsOverwrite, string.Empty)
+                    .Split(Path.DirectorySeparatorChar)
+                    .Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+
+                //для мода в mods пропустить имя этого мода
+                if (ModsOverwrite == ManageSettings.GetCurrentGameModsPath())
                 {
-                    return overwritePath;
+                    pathInModsElements = pathInModsElements.Skip(1).ToArray();
                 }
-            }
-            else
-            {
-                if (File.Exists(overwritePath))
-                {
-                    return overwritePath;
-                }
-            }
 
-            //поиск по списку активных модов
-            string ModsPath = ManageSettings.GetCurrentGameModsPath();
-            foreach (var modName in GetModNamesListFromActiveMOProfile(OnlyEnabled))
-            {
-                string possiblePath = Path.Combine(ModsPath, modName) + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
+                //foreach (var element in pathInModsElements)
+                //{
+                //    if (i > 1)
+                //    {
+                //        subpath += i > 2 ? Path.DirectorySeparatorChar.ToString() : string.Empty;
+                //        subpath += element;
+                //    }
+                //    i++;
+                //}
+                string subpath = string.Join(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture), pathInModsElements);
+
+                if (!Properties.Settings.Default.MOmode)
+                {
+                    return Path.Combine(ManageSettings.GetCurrentGameDataPath(), subpath);
+                }
+
+                //check in Overwrite 1st
+                string overwritePath = ManageSettings.GetCurrentGameMOOverwritePath() + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
                 if (IsDir)
                 {
-                    if (Directory.Exists(possiblePath))
+                    if (Directory.Exists(overwritePath))
                     {
-                        return possiblePath;
+                        return overwritePath;
                     }
                 }
                 else
                 {
-                    if (File.Exists(possiblePath))
+                    if (File.Exists(overwritePath))
                     {
-                        return possiblePath;
+                        return overwritePath;
                     }
                 }
+
+                //поиск по списку активных модов
+                string ModsPath = ManageSettings.GetCurrentGameModsPath();
+                foreach (var modName in GetModNamesListFromActiveMOProfile(OnlyEnabled))
+                {
+                    string possiblePath = Path.Combine(ModsPath, modName) + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
+                    if (IsDir)
+                    {
+                        if (Directory.Exists(possiblePath))
+                        {
+                            return possiblePath;
+                        }
+                    }
+                    else
+                    {
+                        if (File.Exists(possiblePath))
+                        {
+                            return possiblePath;
+                        }
+                    }
+                }
+            }
+            catch
+            {
             }
 
             return pathInMods;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace AIHelper.Manage.Update.Targets.Mods
@@ -18,21 +19,25 @@ namespace AIHelper.Manage.Update.Targets.Mods
         internal override Dictionary<string, string> GetUpdateInfos()
         {
             var infos = new Dictionary<string, string>();
-
-            var ModsList = ManageMO.GetModNamesListFromActiveMOProfile();
-            var updateInfoList = GetUpdateInfosFromFile();
-            if (updateInfoList == null || updateInfoList.Count == 0)
+            string[] ModsList = null;
+            try
             {
-                return null;
+                ModsList = ManageMO.GetModNamesListFromActiveMOProfile();
+                var updateInfoList = GetUpdateInfosFromFile();
+
+                if (updateInfoList != null && updateInfoList.Count > 0 && ModsList != null)
+                    foreach (var modname in ModsList)
+                    {
+                        var ModPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modname);
+                        if (updateInfoList.ContainsKey(modname) && !infos.ContainsKey(ModPath))
+                        {
+                            infos.Add(modname, updateInfoList[modname]);
+                        }
+                    }
             }
-
-            foreach (var modname in ModsList)
+            catch (Exception ex)
             {
-                var ModPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modname);
-                if (updateInfoList.ContainsKey(modname) && !infos.ContainsKey(ModPath))
-                {
-                    infos.Add(modname, updateInfoList[modname]);
-                }
+                ManageLogs.Log("An error while get update infos:\r\n" + ex + "\r\ninfos count=" + infos.Count + (ModsList != null ? "\r\nModsList count=" + ModsList.Length : "ModsList is null"));
             }
 
             return infos;

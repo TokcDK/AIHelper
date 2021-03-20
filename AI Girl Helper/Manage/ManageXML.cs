@@ -6,8 +6,19 @@ namespace AIHelper.Manage
 {
     class ManageXML
     {
-        public static void ChangeXmlValue(string xmlpath, string nodename, string value)
+        /// <summary>
+        /// changes UserData/setup.xml values
+        /// </summary>
+        /// <param name="xmlpath"></param>
+        /// <param name="nodename"></param>
+        /// <param name="value"></param>
+        public static void ChangeSetupXmlValue(string xmlpath, string nodename, string value)
         {
+            if(string.IsNullOrWhiteSpace(xmlpath))
+            {
+                return;
+            }
+
             //https://stackoverflow.com/questions/2137957/update-value-in-xml-file
 #pragma warning disable CA3075 // Insecure DTD processing in XML
             XmlDocument xmlDoc = new XmlDocument();

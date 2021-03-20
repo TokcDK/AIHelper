@@ -817,11 +817,13 @@ namespace AIHelper
 
         private void SetScreenSettings()
         {
-            //set Settings
-            if (File.Exists(SetupXmlPath))
+            if (!MOmode)
             {
+                SetupXmlPath = Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "setup.xml");
             }
-            else
+
+            //set Settings
+            if (!File.Exists(SetupXmlPath))
             {
                 string screenWidth = Screen.PrimaryScreen.Bounds.Width.ToString(CultureInfo.GetCultureInfo("en-US"));
                 //string screenHeight = Screen.PrimaryScreen.Bounds.Height.ToString();
@@ -879,9 +881,9 @@ namespace AIHelper
                 }
             }
 
-            ManageXML.ChangeXmlValue(SetupXmlPath, "Setting/Size", Resolution);
-            ManageXML.ChangeXmlValue(SetupXmlPath, "Setting/Width", Resolution.Replace("(16 : 9)", string.Empty).Trim().Split('x')[0].Trim());
-            ManageXML.ChangeXmlValue(SetupXmlPath, "Setting/Height", Resolution.Replace("(16 : 9)", string.Empty).Trim().Split('x')[1].Trim());
+            ManageXML.ChangeSetupXmlValue(SetupXmlPath, "Setting/Size", Resolution);
+            ManageXML.ChangeSetupXmlValue(SetupXmlPath, "Setting/Width", Resolution.Replace("(16 : 9)", string.Empty).Trim().Split('x')[0].Trim());
+            ManageXML.ChangeSetupXmlValue(SetupXmlPath, "Setting/Height", Resolution.Replace("(16 : 9)", string.Empty).Trim().Split('x')[1].Trim());
         }
 
         private static void SetGraphicsQuality(string quality)
@@ -898,7 +900,7 @@ namespace AIHelper
                 CreateSymlink.Folder(OverwriteFolder, OverwriteFolderLink);
             }
 
-            ManageXML.ChangeXmlValue(SetupXmlPath, "Setting/Quality", quality);
+            ManageXML.ChangeSetupXmlValue(SetupXmlPath, "Setting/Quality", quality);
         }
 
         private void FoldersInit()
@@ -1053,6 +1055,8 @@ namespace AIHelper
             }
             else
             {
+                SetupXmlPath = Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "setup.xml");
+
                 ModsInfoLabel.Visible = false;
 
                 StudioButton.Enabled = false;
@@ -1203,7 +1207,7 @@ namespace AIHelper
         private void FullScreenCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             ManageOther.CheckBoxChangeColor(sender as CheckBox);
-            ManageXML.ChangeXmlValue(SetupXmlPath, "Setting/FullScreen", (sender as CheckBox).Checked.ToString().ToLower());
+            ManageXML.ChangeSetupXmlValue(SetupXmlPath, "Setting/FullScreen", (sender as CheckBox).Checked.ToString().ToLower());
         }
 
         private void FixRegistryButton_Click(object sender, EventArgs e)
@@ -1495,7 +1499,6 @@ namespace AIHelper
                         return;
                     }
                 }
-
 
                 await Task.Run(() => InstallModFilesAndCleanEmptyFolder()).ConfigureAwait(true);
 

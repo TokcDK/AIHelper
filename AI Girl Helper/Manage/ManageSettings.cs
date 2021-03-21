@@ -692,7 +692,7 @@ namespace AIHelper.Manage
         {
             //string curValue = ManageINI.GetINIValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "DisplayedLogLevel", "Logging.Console");
             string curValue = ManageCFG.GetCFGValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "DisplayedLogLevel", "Logging.Console");
-            if (curValue.Length == 0)
+            if (curValue.Length == 0) //in BepinEx 5.4 looks like DisplayedLogLevel was deleted 
             {
                 BepInExDisplayedLogLevelLabel.Visible = false;
             }

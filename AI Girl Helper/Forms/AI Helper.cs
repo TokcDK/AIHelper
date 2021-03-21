@@ -1181,11 +1181,6 @@ namespace AIHelper
                 {
                     BepInExConsoleCheckBox.Checked = false;
                 }
-
-                if (BepInExDisplayedLogLevelLabel.Visible = BepInExConsoleCheckBox.Checked)
-                {
-                    ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExConsoleCheckBox, BepInExDisplayedLogLevelLabel, true);
-                }
             }
 
             //VR
@@ -2714,8 +2709,10 @@ namespace AIHelper
             var BepinExcfg = ManageSettings.GetBepInExCfgFilePath();
             ManageCFG.WriteCFGValue(BepinExcfg, "Logging.Console", "Enabled", /*" " +*/ (sender as CheckBox).Checked.ToString(CultureInfo.GetCultureInfo("en-US")));
 
-            BepInExDisplayedLogLevelLabel.Visible = (sender as CheckBox).Checked;
-
+            if (BepInExDisplayedLogLevelLabel.Visible = (sender as CheckBox).Checked)
+            {
+                ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExConsoleCheckBox, BepInExDisplayedLogLevelLabel, true);
+            }
         }
 
         //private void BepInExDisplayedLogLevelLabel_VisibleChanged(object sender, EventArgs e)

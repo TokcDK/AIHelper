@@ -1304,6 +1304,8 @@ namespace AIHelper
         {
             if (File.Exists(ProgramPath))
             {
+                GC.Collect();
+
                 //fix mo profile name missing quotes when profile name with spaces
                 if (!string.IsNullOrWhiteSpace(Arguments) && Arguments.Contains("moshortcut://:") && !Arguments.Contains("moshortcut://:\""))
                 {

@@ -113,8 +113,8 @@
     <Reference Include="SharpCompress, Version=0.28.1.0, Culture=neutral, PublicKeyToken=afb0a02973931d96, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpCompress.0.28.1\lib\netstandard2.0\SharpCompress.dll</HintPath>
     </Reference>
-    <Reference Include="SharpConfig, Version=3.2.9.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpConfig.3.2.9.1\lib\net461\SharpConfig.dll</HintPath>
+    <Reference Include="SharpConfig">
+      <HintPath>K:\0 Repositories\[TokcDK]\SharpConfig\Src\bin\Release\net461\SharpConfig.dll</HintPath>
     </Reference>
     <Reference Include="Soft160.Data.Cryptography, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CRC.Fast.Net.1.1.0\lib\net40\Soft160.Data.Cryptography.dll</HintPath>

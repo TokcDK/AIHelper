@@ -12,6 +12,7 @@ namespace AI_Helper.Utils
         {
             filePath = CFGPath;
             config = Configuration.LoadFromFile(CFGPath);
+            Configuration.SpaceBetweenEquals = false;
         }
 
         public string ReadCFG(string Section, string Key)

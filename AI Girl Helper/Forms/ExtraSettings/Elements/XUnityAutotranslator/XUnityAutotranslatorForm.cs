@@ -116,14 +116,18 @@ namespace AIHelper.Forms.ExtraSettings.Elements
                     {
                     "GoogleTranslate"
                     ,
+                    "GoogleTranslateV2"
+                    ,
                     "GoogleTranslateCompat"
                     ,
-                    "GoogleTranslateLegitimate"
+                    "DeepLTranslate"
                     ,
+                    //"GoogleTranslateLegitimate"
+                    //,
                     "BingTranslate"
                     ,
-                    "BingTranslateLegitimate"
-                    ,
+                    //"BingTranslateLegitimate"
+                    //,
                     "PapagoTranslate"
                     ,
                     "BaiduTranslate"
@@ -173,7 +177,13 @@ namespace AIHelper.Forms.ExtraSettings.Elements
                 + "\n\n" +
                 T._("GoogleTranslate, based on the online Google translation service. Does not require authentication.")
                 + "\n\n" +
+                T._("GoogleTranslateV2, based on the online Google translation service. Does not require authentication.No limitations, but unstable.Currently being tested.May replace original version in future since that API is no longer used on their official translator web.")
+                + "\n\n" +
                 T._("GoogleTranslateCompat, same as the above, except requests are served out-of-process which is needed in some versions of Unity/Mono.")
+                + "\n\n" +
+                T._("DeepLTranslate, based on the online DeepL translation service. Does not require authentication. No limitations, but unstable. Remarkable quality.")
+                + "\n\n" +
+                T._("DeepLTranslateLegitimate, based on the online DeepL translation service. Requires an API Key. $4.99 per month and $20 per million characters translated that month.Expensive but remarkable quality. For now, you must subscribe to DeepL API(for Developers). - DOES NOT WORK WITH DeepL Pro(Starter, Advanced and Ultimate)")
                 + "\n\n" +
                 T._("GoogleTranslateLegitimate, based on the Google cloud translation API. Requires an API key.\nProvides trial period of 1 year with $300 credits. Enough for 15 million characters translations.")
                 + "\n\n" +

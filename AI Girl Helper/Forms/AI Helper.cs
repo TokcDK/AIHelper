@@ -2917,15 +2917,12 @@ namespace AIHelper
                 //set sideloader dir name
                 var sideloadername = Path.GetFileName(dir);
 
-                foreach (var zipmod in Directory.EnumerateFiles(dir, "*.zip*", SearchOption.AllDirectories))
+                foreach (var file in Directory.EnumerateFiles(dir, "*.*", SearchOption.AllDirectories))
                 {
-                    //subpath to zipmod
-                    var subpath = zipmod.Replace(dir, "");
-
-                    var guid = ManageArchive.GetZipmodGUID(zipmod);
+                    var guid = ManageArchive.GetZipmodGUID(file);
                     if (guid.Length > 0 && zipmodsGUIDList.ContainsKey(guid))//move by guid
                     {
-                        var targetZipmodPath = zipmod.Replace(ManageSettings.GetOverwriteFolder(), ManageMOMods.GetMOModPathInMods(zipmodsGUIDList[guid]));
+                        var targetZipmodPath = file.Replace(ManageSettings.GetOverwriteFolder(), ManageMOMods.GetMOModPathInMods(zipmodsGUIDList[guid]));
 
                         if (File.Exists(targetZipmodPath))
                         {
@@ -2933,7 +2930,7 @@ namespace AIHelper
                         }
 
                         Directory.CreateDirectory(Path.GetDirectoryName(targetZipmodPath));
-                        File.Move(zipmod, targetZipmodPath);
+                        File.Move(file, targetZipmodPath);
                     }
                     else if (modpacks.ContainsKey(sideloadername))
                     {
@@ -2941,7 +2938,7 @@ namespace AIHelper
                         var target = ManageSettings.GetCurrentGameModsPath()
                             + Path.DirectorySeparatorChar + modpacks[sideloadername]
                             + Path.DirectorySeparatorChar + "mods"
-                            + subpath;
+                            + file.Replace(dir, "");
 
                         if (File.Exists(target))// skip if already exist
                         {
@@ -2950,10 +2947,13 @@ namespace AIHelper
 
                         Directory.CreateDirectory(Path.GetDirectoryName(target));//create parent dir
 
-                        File.Move(zipmod, target);//move file to the marked mod
+                        File.Move(file, target);//move file to the marked mod
                     }
                 }
             }
+
+            //clean empty dirs
+            ManageFilesFolders.DeleteEmptySubfolders(Path.Combine(ManageSettings.GetOverwriteFolder(), "mods"), true);
         }
 
         /// <summary>

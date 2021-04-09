@@ -91,6 +91,12 @@ namespace AIHelper.Manage
                 return string.Empty;
             }
 
+            var ext = Path.GetExtension(zipmodPath).ToUpperInvariant();
+            if (ext != ".ZIPMOD" && ext != ".ZIP")
+            {
+                return string.Empty;
+            }
+
             try
             {
                 using (ZipArchive archive = ZipFile.OpenRead(zipmodPath))

@@ -2898,23 +2898,51 @@ namespace AIHelper
                 return;
             }
 
+            var modpacks = ManageMOMods.GetSideloaderModpackTargetDirs();
+            //var modpackFilters = new Dictionary<string, string>
+            //{
+            //    { "Sideloader Modpack - KK_UncensorSelector", @"^\[KK\]\[Female\].*$" }//sideloader dir name /files regex filter
+            //};
+
             foreach (var dir in Directory.EnumerateDirectories(Path.Combine(ManageSettings.GetOverwriteFolder(), "mods")))
             {
-                if (dir.ToUpperInvariant().Contains("SIDELOADER MODPACK"))
+                if (!dir.ToUpperInvariant().Contains("SIDELOADER MODPACK"))
                 {
-                    foreach (var zipmod in Directory.EnumerateFiles(dir, "*.zip*", SearchOption.AllDirectories))
-                    {
-                        var guid = ManageArchive.GetZipmodGUID(zipmod);
-                        if (guid.Length > 0 && zipmodsGUIDList.ContainsKey(guid))
-                        {
-                            var targetZipmodPath = zipmod.Replace(ManageSettings.GetOverwriteFolder(), ManageMOMods.GetMOModPathInMods(zipmodsGUIDList[guid]));
+                    continue;
+                }
 
-                            if (!File.Exists(targetZipmodPath))
-                            {
-                                Directory.CreateDirectory(Path.GetDirectoryName(targetZipmodPath));
-                                File.Move(zipmod, targetZipmodPath);
-                            }
+                //set sideloader dir name
+                var sideloadername = Path.GetFileName(dir);
+
+                foreach (var zipmod in Directory.EnumerateFiles(dir, "*.zip*", SearchOption.AllDirectories))
+                {
+                    //subpath to zipmod
+                    var subpath = zipmod.Replace(dir, "");
+
+                    var guid = ManageArchive.GetZipmodGUID(zipmod);
+                    if (guid.Length > 0 && zipmodsGUIDList.ContainsKey(guid))
+                    {
+                        var targetZipmodPath = zipmod.Replace(ManageSettings.GetOverwriteFolder(), ManageMOMods.GetMOModPathInMods(zipmodsGUIDList[guid]));
+
+                        if (!File.Exists(targetZipmodPath))
+                        {
+                            Directory.CreateDirectory(Path.GetDirectoryName(targetZipmodPath));
+                            File.Move(zipmod, targetZipmodPath);
                         }
+                    }
+                    else if (modpacks.ContainsKey(sideloadername))
+                    {
+                        var target = ManageSettings.GetCurrentGameModsPath()
+                            + Path.DirectorySeparatorChar + modpacks[sideloadername]
+                            + Path.DirectorySeparatorChar + "mods"
+                            + subpath;
+
+                        if (File.Exists(target))
+                        {
+                            continue;
+                        }
+
+                        File.Move(zipmod, target);
                     }
                 }
             }

@@ -1,5 +1,6 @@
 ﻿using AI_Helper.Manage;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -170,7 +171,7 @@ namespace AIHelper.Manage
         private static void BepInExPreloadersFix(bool Remove = false)
         {
             string[,] BepInExFilesPaths = ManageSettings.GetListOfExistsGames()[Properties.Settings.Default.CurrentGameListIndex].GetObjectsForMove();
-                        
+
             var Done = false;
 
             int BepInExFilesPathsLength = BepInExFilesPaths.Length / 2;
@@ -1935,6 +1936,49 @@ namespace AIHelper.Manage
                     ZipmodsGUIDList.Add(guid, SaveFullPath ? SourceModZipmodPath : ManageMOMods.GetMOModPathInMods(SourceModZipmodPath));
                 }
             }
+        }
+
+        /// <summary>
+        /// return list of Sideloader Modpack name/Mod path pairs list.
+        /// will be added mods which is marked as target with txt file with same name as sideloader modpack dir name.
+        /// </summary>
+        /// <returns></returns>
+        internal static Dictionary<string, string> GetSideloaderModpackTargetDirs()
+        {
+            Dictionary<string, string> packs = new Dictionary<string, string>();
+            HashSet<string> added = new HashSet<string>(10);
+            foreach (var dir in Directory.EnumerateDirectories(ManageSettings.GetCurrentGameModsPath()))
+            {
+                if (!Directory.Exists(Path.Combine(dir, "mods")))
+                {
+                    continue;
+                }
+
+                foreach (var modpackdir in Directory.EnumerateDirectories(Path.Combine(dir, "mods")))
+                {
+                    var name = Path.GetFileName(modpackdir);
+                    //skip if not sideloader modpack
+                    if (!name.ToUpperInvariant().Contains("SIDELOADER MODPACK"))
+                    {
+                        continue;
+                    }
+
+                    //skip if txt with same name is missing or modpack already added in list
+                    if (!File.Exists(Path.Combine(Path.GetDirectoryName(modpackdir), name + ".txt")) || added.Contains(name))
+                    {
+                        continue;
+                    }
+
+                    //add to list
+                    if(!packs.ContainsKey(name))
+                    {
+                        added.Add(name);
+                        packs.Add(name, Path.GetFileName(dir));
+                    }
+                }
+            }
+
+            return packs;
         }
     }
 }

@@ -133,6 +133,9 @@ namespace AIHelper
             }
         }
 
+        /// <summary>
+        /// clean MO folder from some useless files for illusion games
+        /// </summary>
         private static void CleanMOFolder()
         {
             var MOFilesForClean = new[]
@@ -2920,29 +2923,34 @@ namespace AIHelper
                     var subpath = zipmod.Replace(dir, "");
 
                     var guid = ManageArchive.GetZipmodGUID(zipmod);
-                    if (guid.Length > 0 && zipmodsGUIDList.ContainsKey(guid))
+                    if (guid.Length > 0 && zipmodsGUIDList.ContainsKey(guid))//move by guid
                     {
                         var targetZipmodPath = zipmod.Replace(ManageSettings.GetOverwriteFolder(), ManageMOMods.GetMOModPathInMods(zipmodsGUIDList[guid]));
 
-                        if (!File.Exists(targetZipmodPath))
+                        if (File.Exists(targetZipmodPath))
                         {
-                            Directory.CreateDirectory(Path.GetDirectoryName(targetZipmodPath));
-                            File.Move(zipmod, targetZipmodPath);
+                            continue;
                         }
+
+                        Directory.CreateDirectory(Path.GetDirectoryName(targetZipmodPath));
+                        File.Move(zipmod, targetZipmodPath);
                     }
                     else if (modpacks.ContainsKey(sideloadername))
                     {
+                        //get target path for the zipmod
                         var target = ManageSettings.GetCurrentGameModsPath()
                             + Path.DirectorySeparatorChar + modpacks[sideloadername]
                             + Path.DirectorySeparatorChar + "mods"
                             + subpath;
 
-                        if (File.Exists(target))
+                        if (File.Exists(target))// skip if already exist
                         {
                             continue;
                         }
 
-                        File.Move(zipmod, target);
+                        Directory.CreateDirectory(Path.GetDirectoryName(target));//create parent dir
+
+                        File.Move(zipmod, target);//move file to the marked mod
                     }
                 }
             }

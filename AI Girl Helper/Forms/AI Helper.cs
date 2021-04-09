@@ -2938,9 +2938,10 @@ namespace AIHelper
                         {
                             //get target path for the zipmod
                             var target = ManageSettings.GetCurrentGameModsPath()
-                                + Path.DirectorySeparatorChar + modpacks[sideloadername]
-                                + Path.DirectorySeparatorChar + "mods"
-                                + file.Replace(dir, "");
+                                + Path.DirectorySeparatorChar + modpacks[sideloadername]//mod path
+                                + Path.DirectorySeparatorChar + "mods"//mods dir
+                                + Path.DirectorySeparatorChar + sideloadername//sideloader dir name
+                                + file.Replace(dir, "");//file subpath in sideloader dir
 
                             if (File.Exists(target))// skip if already exist
                             {

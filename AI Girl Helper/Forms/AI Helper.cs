@@ -2901,23 +2901,56 @@ namespace AIHelper
                 return;
             }
 
-            var modpacks = ManageMOMods.GetSideloaderModpackTargetDirs();
             //var modpackFilters = new Dictionary<string, string>
             //{
             //    { "Sideloader Modpack - KK_UncensorSelector", @"^\[KK\]\[Female\].*$" }//sideloader dir name /files regex filter
             //};
 
-            foreach (var dir in Directory.EnumerateDirectories(Path.Combine(ManageSettings.GetOverwriteFolder(), "mods")))
+            var dirs = Directory.GetDirectories(Path.Combine(ManageSettings.GetOverwriteFolder(), "mods")).Where(dirpath => dirpath.ToUpperInvariant().Contains("SIDELOADER MODPACK"));
+
+            if (!dirs.Any())
+            {
+                return;
+            }
+
+            var ProgressForm = new Form
+            {
+                StartPosition = FormStartPosition.CenterScreen,
+                Size = new Size(400, 50),
+                Text = T._("Sideloader dirs sorting") + "..",
+                FormBorderStyle = FormBorderStyle.FixedToolWindow
+            };
+            var PBar = new ProgressBar
+            {
+                Dock = DockStyle.Bottom
+            };
+
+            ProgressForm.Controls.Add(PBar);
+            ProgressForm.Show();
+
+            var modpacks = ManageMOMods.GetSideloaderModpackTargetDirs();
+
+            PBar.Maximum = dirs.Count();
+            PBar.Value = 0;
+
+            foreach (var dir in dirs)
             {
                 try
                 {
-                    if (!dir.ToUpperInvariant().Contains("SIDELOADER MODPACK"))
+                    if (PBar.Value < PBar.Maximum)
                     {
-                        continue;
+                        PBar.Value++;
                     }
+
+                    //if (!dir.ToUpperInvariant().Contains("SIDELOADER MODPACK"))
+                    //{
+                    //    continue;
+                    //}
 
                     //set sideloader dir name
                     var sideloadername = Path.GetFileName(dir);
+
+                    ProgressForm.Text = T._("Sorting") + ":" + sideloadername;
 
                     foreach (var file in Directory.EnumerateFiles(dir, "*.*", SearchOption.AllDirectories))
                     {
@@ -2956,13 +2989,15 @@ namespace AIHelper
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("An error occured while zipmods sort from overwrite dir. error:\r\n"+ex);
+                    ManageLogs.Log("An error occured while zipmods sort from overwrite dir. error:\r\n" + ex);
                 }
 
             }
 
             //clean empty dirs
             ManageFilesFolders.DeleteEmptySubfolders(Path.Combine(ManageSettings.GetOverwriteFolder(), "mods"), true);
+
+            ProgressForm.Dispose();
         }
 
         /// <summary>

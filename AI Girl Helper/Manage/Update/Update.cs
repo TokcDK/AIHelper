@@ -59,6 +59,8 @@ namespace AIHelper.Manage.Update
             reset();
         }
 
+        public string DownloadLink { get; internal set; }
+
         /// <summary>
         /// vars need to be reset for each folder
         /// </summary>
@@ -159,7 +161,7 @@ namespace AIHelper.Manage.Update
                                 continue;
                             }
                             info.TargetFolderUpdateInfo = tInfoArray.Trim(); // get folder info
-                                                                      //info.TargetCurrentVersion = tInfoArray[tInfoArray.Length - 1]; // get current version (last element of info)
+                                                                             //info.TargetCurrentVersion = tInfoArray[tInfoArray.Length - 1]; // get current version (last element of info)
                             info.TargetLastVersion = source.GetLastVersion(); // get last version
 
                             if (info.TargetLastVersion.Length == 0)
@@ -172,7 +174,15 @@ namespace AIHelper.Manage.Update
 
                             if (IsLatestVersionNewerOfCurrent(info.TargetLastVersion, info.TargetCurrentVersion)) //if it is last version then run update
                             {
-                                bool getfileIsTrue = await source.GetFile().ConfigureAwait(true); // download latest file
+                                bool getfileIsTrue = false;
+                                try
+                                {
+                                    getfileIsTrue = await source.GetFile().ConfigureAwait(true); // download latest file
+                                }
+                                catch (System.Net.WebException ex)
+                                {
+                                    ManageLogs.Log("An error occured while file downloading. \r\nMod: " + tFolderInfo.Key + "\r\nLink:" + info.DownloadLink + "\r\nError:\r\n" + ex);
+                                }
 
                                 if (getfileIsTrue && target.MakeBuckup() && target.UpdateFiles() // update folder with new files
                                     )

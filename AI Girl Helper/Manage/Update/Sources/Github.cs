@@ -30,7 +30,7 @@ namespace AIHelper.Manage.Update.Sources
         static ProgressBar Dwnpb;
         private async Task<bool> DownloadTheFile()
         {
-            if (string.IsNullOrWhiteSpace(GitLatestVersionFileDownloadLink))
+            if (string.IsNullOrWhiteSpace(info.DownloadLink))
             {
                 info.NoRemoteFile = true;
                 return false;
@@ -39,7 +39,7 @@ namespace AIHelper.Manage.Update.Sources
             var UpdateDownloadsDir = ManageSettings.GetModsUpdateDirDownloadsPath(); //Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), modGitData.CurrentModName);
             Directory.CreateDirectory(UpdateDownloadsDir);
 
-            var UpdateFileName = Path.GetFileName(GitLatestVersionFileDownloadLink);
+            var UpdateFileName = Path.GetFileName(info.DownloadLink);
 
             Dwnpb = new ProgressBar
             {
@@ -81,7 +81,7 @@ namespace AIHelper.Manage.Update.Sources
 
             if (!File.Exists(info.UpdateFilePath))
             {
-                await wc.DownloadFileTaskAsync(new Uri(GitLatestVersionFileDownloadLink), info.UpdateFilePath).ConfigureAwait(true);
+                await wc.DownloadFileTaskAsync(new Uri(info.DownloadLink), info.UpdateFilePath).ConfigureAwait(true);
                 return File.Exists(info.UpdateFilePath);
             }
             else
@@ -113,11 +113,9 @@ namespace AIHelper.Manage.Update.Sources
             return GetLatestGithubVersionFromReleases();
         }
 
-        internal string GitOwner;
-        internal string GitRepository;
-        internal string GitLatestVersion;
-        //internal string GitLatestVersionOfFile;
-        internal string GitLatestVersionFileDownloadLink;
+        string GitOwner;
+        string GitRepository;
+        string GitLatestVersion;
 
         private string GetLatestGithubVersionFromReleases()
         {
@@ -166,7 +164,7 @@ namespace AIHelper.Manage.Update.Sources
 
                 if (link2file.Value.Length > 7 && link2file.Value.StartsWith("href=", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    GitLatestVersionFileDownloadLink = "https://" + url + "/" + link2file.Value.Remove(link2file.Value.Length - 1, 1).Remove(0, 6);
+                    info.DownloadLink = "https://" + url + "/" + link2file.Value.Remove(link2file.Value.Length - 1, 1).Remove(0, 6);
 
                     if (info.VersionFromFile)
                     {

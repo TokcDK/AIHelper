@@ -160,16 +160,17 @@ namespace AIHelper.Manage.Update.Sources
                 var version = Regex.Match(LatestReleasePage, "/releases/tag/[^\"]+\"");
                 GitLatestVersion = version.Value.Remove(version.Value.Length - 1, 1).Remove(0, 14);
 
-                var linkPattern = @"href\=""/" + GitOwner + "/" + GitRepository + "/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + "[^\"]+" + info.UpdateFileEndsWith + "\"";
+                var linkPattern = @"href\=\""(/" + GitOwner + "/" + GitRepository + "/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + @"[^\""]+" + info.UpdateFileEndsWith + @")\""";
                 var link2file = Regex.Match(LatestReleasePage, linkPattern);
                 if (!link2file.Success)//refind sublink to file
                 {
-                    linkPattern = @"href\=""/[^/]+/[^/]+/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + "[^\"]+" + info.UpdateFileEndsWith + "\"";
+                    linkPattern = @"href\=\""(/[^/]+/[^/]+/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + @"[^\""]+" + info.UpdateFileEndsWith + @")\""";
+                    link2file = Regex.Match(LatestReleasePage, linkPattern);
                 }
 
                 if (link2file.Success && link2file.Value.Length > 7 && link2file.Value.StartsWith("href=", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    info.DownloadLink = "https://" + url + "/" + link2file.Value.Remove(link2file.Value.Length - 1, 1).Remove(0, 6);
+                    info.DownloadLink = "https://" + url + "/" + link2file.Result("$1");
 
                     if (info.VersionFromFile)
                     {

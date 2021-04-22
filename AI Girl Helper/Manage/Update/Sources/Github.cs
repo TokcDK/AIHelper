@@ -162,8 +162,12 @@ namespace AIHelper.Manage.Update.Sources
 
                 var linkPattern = @"href\=""/" + GitOwner + "/" + GitRepository + "/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + "[^\"]+" + info.UpdateFileEndsWith + "\"";
                 var link2file = Regex.Match(LatestReleasePage, linkPattern);
+                if (!link2file.Success)//refind sublink to file
+                {
+                    linkPattern = @"href\=""/[^/]+/[^/]+/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + "[^\"]+" + info.UpdateFileEndsWith + "\"";
+                }
 
-                if (link2file.Value.Length > 7 && link2file.Value.StartsWith("href=", StringComparison.InvariantCultureIgnoreCase))
+                if (link2file.Success && link2file.Value.Length > 7 && link2file.Value.StartsWith("href=", StringComparison.InvariantCultureIgnoreCase))
                 {
                     info.DownloadLink = "https://" + url + "/" + link2file.Value.Remove(link2file.Value.Length - 1, 1).Remove(0, 6);
 
@@ -181,7 +185,7 @@ namespace AIHelper.Manage.Update.Sources
                 }
                 else
                 {
-                    ManageLogs.Log("GitHub sublink to file not found or incorrect.\r\n\tMod:" + info.TargetFolderPath.Name + "\r\n\tlink:" + info.SourceLink + "\r\n\tfile:" + info.UpdateFileStartsWith + (string.IsNullOrEmpty(info.UpdateFileEndsWith) ? "*.*" : info.UpdateFileEndsWith));
+                    ManageLogs.Log("GitHub sublink to file not found or incorrect.\r\n\tMod:" + info.TargetFolderPath.Name + "\r\n\tlink:" + info.SourceLink + "\r\n\tfile:" + info.UpdateFileStartsWith + "*" + info.UpdateFileEndsWith + " =>(Link to file" + (link2file.Success ? ": " + link2file.Value : " not found") + ")");
                 }
             }
             catch (Exception ex)

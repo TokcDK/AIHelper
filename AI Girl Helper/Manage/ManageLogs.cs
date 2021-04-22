@@ -18,7 +18,7 @@ namespace AIHelper.Manage
         {
             try
             {
-                if (LogLevel >= 0)//here must be log level check
+                if (LogLevel >= -1)//here must be log level check
                 {
                     FileWriter.WriteData(
                     LogFilePath

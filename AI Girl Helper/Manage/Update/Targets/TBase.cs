@@ -326,6 +326,11 @@ namespace AIHelper.Manage.Update.Targets
 
         private static void RestoreModFromBuckup(string OldModBuckupDirPath, string UpdatingModDirPath)
         {
+            if (string.IsNullOrWhiteSpace(OldModBuckupDirPath) || string.IsNullOrWhiteSpace(UpdatingModDirPath))
+            {
+                return;
+            }
+
             //restore old dirs
             foreach (var folder in Directory.GetDirectories(OldModBuckupDirPath))
             {

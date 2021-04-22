@@ -172,17 +172,14 @@ namespace AIHelper.Manage.Update
                             CleanVersion(ref info.TargetLastVersion);
                             CleanVersion(ref info.TargetCurrentVersion);
 
+                            if (info.TargetFolderPath.Name == "[fix] KoikatuFixes")
+                            {
+
+                            }
+
                             if (IsLatestVersionNewerOfCurrent(info.TargetLastVersion, info.TargetCurrentVersion)) //if it is last version then run update
                             {
-                                bool getfileIsTrue = false;
-                                try
-                                {
-                                    getfileIsTrue = await source.GetFile().ConfigureAwait(true); // download latest file
-                                }
-                                catch (System.Net.WebException ex)
-                                {
-                                    ManageLogs.Log("An error occured while file downloading. \r\nMod: " + tFolderInfo.Key + "\r\nLink:" + info.DownloadLink + "\r\nError:\r\n" + ex);
-                                }
+                                bool getfileIsTrue = await source.GetFile().ConfigureAwait(true); // download latest file
 
                                 if (getfileIsTrue && target.MakeBuckup() && target.UpdateFiles() // update folder with new files
                                     )

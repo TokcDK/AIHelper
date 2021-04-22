@@ -13,6 +13,24 @@ namespace AIHelper.Manage.Update.Sources
 
         protected readonly WebClient wc = new WebClient();
 
+        /// <summary>
+        /// download file
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <param name="updateFilePath"></param>
+        /// <returns></returns>
+        protected async Task DownloadFileTaskAsync(Uri uri, string updateFilePath)
+        {
+            try
+            {
+                await wc.DownloadFileTaskAsync(uri, updateFilePath).ConfigureAwait(true);
+            }
+            catch (WebException ex)
+            {
+                ManageLogs.Log("An error occured while file downloading. \r\nLink:" + info.DownloadLink + "\r\nError:\r\n" + ex);
+            }
+        }
+
         protected SBase(updateInfo info)
         {
             this.info = info;

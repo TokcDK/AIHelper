@@ -79,10 +79,11 @@ namespace AIHelper.Manage.Update.Sources
                 //PerformModUpdateFromArchive();
             };
 
-            if (!File.Exists(info.UpdateFilePath))
+            if (!File.Exists(info.UpdateFilePath) || new FileInfo(info.UpdateFilePath).Length == 0)//not exist or zero length when was failed download
             {
-                await wc.DownloadFileTaskAsync(new Uri(info.DownloadLink), info.UpdateFilePath).ConfigureAwait(true);
-                return File.Exists(info.UpdateFilePath);
+                await DownloadFileTaskAsync(new Uri(info.DownloadLink), info.UpdateFilePath).ConfigureAwait(true);
+
+                return File.Exists(info.UpdateFilePath) && new FileInfo(info.UpdateFilePath).Length != 0;
             }
             else
             {

@@ -172,11 +172,6 @@ namespace AIHelper.Manage.Update
                             CleanVersion(ref info.TargetLastVersion);
                             CleanVersion(ref info.TargetCurrentVersion);
 
-                            if (info.TargetFolderPath.Name == "[fix] KoikatuFixes")
-                            {
-
-                            }
-
                             if (IsLatestVersionNewerOfCurrent(info.TargetLastVersion, info.TargetCurrentVersion)) //if it is last version then run update
                             {
                                 bool getfileIsTrue = await source.GetFile().ConfigureAwait(true); // download latest file

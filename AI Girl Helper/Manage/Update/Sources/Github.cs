@@ -157,7 +157,7 @@ namespace AIHelper.Manage.Update.Sources
                 //}
 
                 var LatestReleasePage = wc.DownloadString(info.SourceLink);
-                var version = Regex.Match(LatestReleasePage, "/releases/tag/[^\"]+\"");
+                var version = Regex.Match(LatestReleasePage, @"/releases/tag/[^\""]+\""");
                 GitLatestVersion = version.Value.Remove(version.Value.Length - 1, 1).Remove(0, 14);
 
                 var linkPattern = @"href\=\""(/" + GitOwner + "/" + GitRepository + "/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + @"[^\""]+" + info.UpdateFileEndsWith + @")\""";

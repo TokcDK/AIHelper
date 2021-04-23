@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Net;
@@ -169,15 +170,33 @@ namespace AIHelper.Manage.Update.Sources
                     link2file = Regex.Match(LatestReleasePage, linkPattern);
                 }
 
-                if (link2file.Success && link2file.Value.Length > 7 && link2file.Value.StartsWith("href=", StringComparison.InvariantCultureIgnoreCase))
+                List<GitReleasesInfo> Releases = null;
+                if (!link2file.Success && info.VersionFromFile)
                 {
-                    info.DownloadLink = "https://" + url + "/" + link2file.Result("$1");
+                    Releases = GetGitLast10ReleasesInfo(GitOwner, GitRepository, info.UpdateFileStartsWith, info.UpdateFileEndsWith);
+                }
+
+                if ((link2file.Success && link2file.Value.Length > 7 && link2file.Value.StartsWith("href=", StringComparison.InvariantCultureIgnoreCase)) || (Releases != null && Releases.Count > 0))
+                {
+                    if (link2file.Success)
+                    {
+                        info.DownloadLink = "https://" + url + "/" + link2file.Result("$1");
+                    }
 
                     if (info.VersionFromFile)
                     {
-                        var pattern = "/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + "([^\"]+)" + (info.UpdateFileEndsWith.Length > 0 ? info.UpdateFileEndsWith : @"") + "\"";
-                        var fromfile = Regex.Match(LatestReleasePage, pattern).Result("$1");
-                        GitLatestVersion = fromfile;
+                        if (link2file.Success)
+                        {
+                            var pattern = "/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + "([^\"]+)" + (info.UpdateFileEndsWith.Length > 0 ? info.UpdateFileEndsWith : @"") + "\"";
+                            var fromfile = Regex.Match(LatestReleasePage, pattern).Result("$1");
+                            GitLatestVersion = fromfile;
+                        }
+                        else if (Releases != null && Releases.Count > 0)
+                        {
+                            //first found release usually newest
+                            info.DownloadLink = "https://" + url + "/" + Releases[0].Sublink;
+                            GitLatestVersion = Releases[0].FileVersion;
+                        }
                         //return fromfile;
                     }
 
@@ -196,6 +215,49 @@ namespace AIHelper.Manage.Update.Sources
             }
 
             return "";
+        }
+
+        /// <summary>
+        /// Get all releases info
+        /// </summary>
+        /// <param name="owner"></param>
+        /// <param name="repository"></param>
+        /// <param name="filenameStartsWith"></param>
+        /// <param name="filenameEndsWith"></param>
+        /// <returns></returns>
+        private List<GitReleasesInfo> GetGitLast10ReleasesInfo(string owner, string repository, string filenameStartsWith, string filenameEndsWith)
+        {
+            //System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            var ReleasesPage = wc.DownloadString(new Uri("https://github.com/" + owner + "/" + repository + "/releases"));
+
+            var linkPattern = @"href\=\""(/" + owner + "/" + repository + "/releases/download/([^/]+)/" + filenameStartsWith + @"([^\""]+)" + filenameEndsWith + @")\""";
+            var link2files = Regex.Matches(ReleasesPage, linkPattern);
+
+            var Releases = new List<GitReleasesInfo>();
+            if (link2files.Count > 0)
+            {
+                foreach (Match sublink in link2files)
+                {
+                    Releases.Add(new GitReleasesInfo(sublink.Result("$1"), sublink.Result("$2"), sublink.Result("$3")));
+                }
+            }
+
+            return Releases;
+        }
+
+        class GitReleasesInfo
+        {
+            public string Sublink;
+            public string ReleaseVesrion;
+            public string FileVersion;
+
+            public GitReleasesInfo(string sublink, string releaseVesrion, string fileVersion)
+            {
+                Sublink = sublink;
+                ReleaseVesrion = releaseVesrion;
+                FileVersion = fileVersion;
+            }
         }
 
         internal override byte[] DownloadFileFromTheLink(Uri link)

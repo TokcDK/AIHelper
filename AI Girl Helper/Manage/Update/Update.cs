@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AIHelper.Manage.Update;
 
 namespace AIHelper.Manage.Update
 {
@@ -169,10 +170,10 @@ namespace AIHelper.Manage.Update
                                 continue;
                             }
 
-                            CleanVersion(ref info.TargetLastVersion);
-                            CleanVersion(ref info.TargetCurrentVersion);
+                            UpdateTools.CleanVersion(ref info.TargetLastVersion);
+                            UpdateTools.CleanVersion(ref info.TargetCurrentVersion);
 
-                            if (IsLatestVersionNewerOfCurrent(info.TargetLastVersion, info.TargetCurrentVersion)) //if it is last version then run update
+                            if (info.TargetLastVersion.IsNewerOf(info.TargetCurrentVersion)) //if it is last version then run update
                             {
                                 bool getfileIsTrue = await source.GetFile().ConfigureAwait(true); // download latest file
 
@@ -252,63 +253,6 @@ namespace AIHelper.Manage.Update
 
         //    File.WriteAllText(ManageSettings.UpdateLastContentLengthInfos(), sb.ToString());
         //}
-
-        /// <summary>
-        /// Clean version from prefixes. change v13 to 13 and kind of
-        /// </summary>
-        /// <param name="version"></param>
-        private static void CleanVersion(ref string version)
-        {
-            if (version.Length == 0)
-                return;
-
-            version = version.TrimFileVersion();
-
-            //foreach (var prefix in new[] { "VERSION", "VER", "V" })
-            //{
-            //    if (version.ToUpperInvariant().StartsWith(prefix, StringComparison.InvariantCulture))
-            //    {
-            //        version = version.Remove(0, prefix.Length);
-            //        break;
-            //    }
-            //}
-        }
-
-        private static bool IsLatestVersionNewerOfCurrent(string LatestVersion, string CurrentVersion)
-        {
-            if (string.IsNullOrWhiteSpace(LatestVersion))
-            {
-                return false;
-            }
-            else if (string.IsNullOrWhiteSpace(CurrentVersion))
-            {
-                return true;
-            }
-
-            var VersionPartsOfLatest = LatestVersion.TrimEnd('0', ',', '.').Split('.', ',');
-            var VersionPartsOfCurrent = CurrentVersion.TrimEnd('0', ',', '.').Split('.', ',');
-            int dInd = 0;
-            var curCount = VersionPartsOfCurrent.Length;
-            foreach (var DigitL in VersionPartsOfLatest)
-            {
-                if (curCount == dInd)//all digits was equal but current have smaller digits count
-                {
-                    return true;
-                }
-                var DigitC = VersionPartsOfCurrent[dInd];
-                var latestParsed = int.TryParse(DigitL, out int latest);
-                var currentParsed = int.TryParse(DigitC, out int current);
-                if (latestParsed && currentParsed)
-                {
-                    if (latest > current)
-                    {
-                        return true;
-                    }
-                }
-                dInd++;
-            }
-            return false;
-        }
 
         const string HTMLReportStyle = " style=\"background-color:gray;\"";
         const string HTMLBegin = "<html><body" + HTMLReportStyle + "><h1>";

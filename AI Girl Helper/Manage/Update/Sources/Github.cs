@@ -164,7 +164,8 @@ namespace AIHelper.Manage.Update.Sources
                 var link2file = Regex.Match(LatestReleasePage, linkPattern);
                 if (!link2file.Success)//refind sublink to file
                 {
-                    linkPattern = @"href\=\""(/[^/]+/[^/]+/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + @"[^\""]+" + info.UpdateFileEndsWith + @")\""";
+                    //when author changed username on git
+                    linkPattern = @"href\=\""(/[^/]+/" + GitRepository + "/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + @"[^\""]+" + info.UpdateFileEndsWith + @")\""";
                     link2file = Regex.Match(LatestReleasePage, linkPattern);
                 }
 

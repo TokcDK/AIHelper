@@ -286,12 +286,11 @@ namespace AIHelper.Manage.Update
                 }
 
                 var reportTitle = T._("Update report");
-                var ReportFilePath = Path.Combine(ManageSettings.GetAppResDir(), "theme", "default", "report", "ReportTemplate.html");
-                if (File.Exists(ReportFilePath))
+                if (File.Exists(ManageSettings.GetReportFilePath()))
                 {
                     IsHTMLReport = true;
-                    ReportMessage = File.ReadAllText(ReportFilePath)
-                     .Replace("%BGImageLinkPath%", Path.Combine(ManageSettings.GetAppResDir(), "theme", "default", "report", ManageSettings.GetCurrentGameEXENameNoSuffixes() + "ReportBG.jpg").Replace(Path.DirectorySeparatorChar.ToString(), "/"))
+                    ReportMessage = File.ReadAllText(ManageSettings.GetReportFilePath())
+                     .Replace("%BGImageLinkPath%", ManageSettings.GetCurrentGameUpdateReportBGFilePath())
                      .Replace("%ModsUpdateReportHeaderText%", reportTitle)
                      .Replace("%SingleModUpdateReportsTextSection%", string.Join(HTMLBetweenMods, newReport))
                      .Replace("%ModsUpdateInfoNotice%", T._("If you click on <b style=\"font-size:20px;color:blue;\">[Info]</b> link you can view update important update info include requuirements and incompatibilities for latest update."));

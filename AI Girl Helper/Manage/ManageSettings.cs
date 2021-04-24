@@ -182,20 +182,21 @@ namespace AIHelper.Manage
             return ListOfGames;
         }
 
-
+        /// <summary>
+        /// Dir where will be placed update files and backups
+        /// </summary>
+        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetModsUpdateDir()
         {
             return Path.Combine(GetAppResDir(), "update");
         }
 
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameModsUpdateDir()
         {
             return Path.Combine(GetModsUpdateDir(), GetCurrentGameFolderName());
         }
-
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetModsUpdateDBInfoDir()
@@ -206,14 +207,83 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameModListRulesPath()
         {
-            return Path.Combine(ManageSettings.GetAppResDir(), "rules", ManageSettings.GetCurrentGameFolderName(), "modlist.txt");
+            return Path.Combine(GetAppResDir(), "rules", ManageSettings.GetCurrentGameFolderName(), "modlist.txt");
         }
 
+        /// <summary>
+        /// Plugins update report file path
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetThemesDirName()
+        {
+            return "theme";
+        }
+
+        /// <summary>
+        /// Plugins update report file path
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetThemesDir()
+        {
+            return Path.Combine(GetAppResDir(), GetThemesDirName());
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string UpdateLastContentLengthInfos()
+        internal static string GetDefaultThemeDirName()
         {
-            return Path.Combine(GetModsUpdateDir(), "LastContentLengthInfos.txt");
+            return "default";
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetDefaultThemeDirPath()
+        {
+            return Path.Combine(GetThemesDir(), GetDefaultThemeDirName());
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetReportDirName()
+        {
+            return "report";
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetReportDirPath()
+        {
+            return Path.Combine(GetDefaultThemeDirPath(), GetReportDirName());
+        }
+
+        /// <summary>
+        /// Plugins update report file name
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetReportFileName()
+        {
+            return "ReportTemplate.html";
+        }
+
+        /// <summary>
+        /// Plugins update report file path
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetReportFilePath()
+        {
+            return Path.Combine(GetReportDirPath(), GetReportFileName());
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetCurrentGameUpdateReportBGFileName()
+        {
+            return GetCurrentGameEXENameNoSuffixes() + "ReportBG.jpg";
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetCurrentGameUpdateReportBGFilePath()
+        {
+            return Path.Combine(GetReportDirPath(), GetCurrentGameUpdateReportBGFileName()).Replace(Path.DirectorySeparatorChar.ToString(), "/");
         }
 
         //internal static Dictionary<string, Game> GetListOfGames()

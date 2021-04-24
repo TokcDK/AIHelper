@@ -158,11 +158,6 @@ namespace AIHelper.Manage.Update.Sources
                 //    return "";
                 //}
 
-                if (info.UpdateFileStartsWith == "KK_TranslationHelper.v" || info.UpdateFileStartsWith == "KK_Subtitles.v")
-                {
-
-                }
-
                 var LatestReleasePage = wc.DownloadString(info.SourceLink);
                 var version = Regex.Match(LatestReleasePage, @"/releases/tag/([^\""]+)\""");
                 if (version.Success)

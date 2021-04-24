@@ -226,7 +226,9 @@ namespace AIHelper.Manage.Update
                                             + " "
                                             + info.TargetFolderPath.Name
                                             //+ " (" + ex.Message + ") "
+                                            +" ("
                                             + T._("Details in") + " " + Application.ProductName + ".log"
+                                            +")"
                                             + "</p>"
                                             );
 

@@ -254,36 +254,126 @@ namespace AIHelper.Manage
             return Path.Combine(GetDefaultThemeDirPath(), GetReportDirName());
         }
 
-        /// <summary>
-        /// Plugins update report file name
-        /// </summary>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetReportFileName()
+        internal class UpdateReport
         {
-            return "ReportTemplate.html";
-        }
+            /// <summary>
+            /// Plugins update report file name
+            /// </summary>
+            /// <returns></returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string GetReportFileName()
+            {
+                return "ReportTemplate.html";
+            }
 
-        /// <summary>
-        /// Plugins update report file path
-        /// </summary>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetReportFilePath()
-        {
-            return Path.Combine(GetReportDirPath(), GetReportFileName());
-        }
+            /// <summary>
+            /// Plugins update report file path
+            /// </summary>
+            /// <returns></returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string GetReportFilePath()
+            {
+                return Path.Combine(GetReportDirPath(), GetReportFileName());
+            }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetCurrentGameUpdateReportBGFileName()
-        {
-            return GetCurrentGameEXENameNoSuffixes() + "ReportBG.jpg";
-        }
+            /// <summary>
+            /// Patter to replace with BG imega path
+            /// </summary>
+            /// <returns></returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string GetBGImageLinkPathPattern()
+            {
+                return "%BGImageLinkPath%";
+            }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetCurrentGameUpdateReportBGFilePath()
-        {
-            return Path.Combine(GetReportDirPath(), GetCurrentGameUpdateReportBGFileName()).Replace(Path.DirectorySeparatorChar.ToString(), "/");
+            /// <summary>
+            /// Path to replace with Update report title
+            /// </summary>
+            /// <returns></returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string GetModsUpdateReportHeaderTextPattern()
+            {
+                return "%ModsUpdateReportHeaderText%";
+            }
+
+            /// <summary>
+            /// Pattern to replace with list of mods update reports
+            /// </summary>
+            /// <returns></returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string GetSingleModUpdateReportsTextSectionPattern()
+            {
+                return "%SingleModUpdateReportsTextSection%";
+            }
+
+            internal static string HTMLReportStyleText()
+            {
+                return " style=\"background-color:gray;\"";
+            }
+
+            /// <summary>
+            /// Pattern to replace with notice, placed under Update report title
+            /// </summary>
+            /// <returns></returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string GetModsUpdateInfoNoticePattern()
+            {
+                return "%ModsUpdateInfoNotice%";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string GetCurrentGameBGFileName()
+            {
+                return GetCurrentGameEXENameNoSuffixes() + "ReportBG.jpg";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string GetCurrentGameBGFilePath()
+            {
+                return Path.Combine(GetReportDirPath(), GetCurrentGameBGFileName()).Replace(Path.DirectorySeparatorChar.ToString(), "/");
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string ReportModSourcePageLinkVisitText()
+            {
+                return "[" + T._("Information") + "]";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string TitleText()
+            {
+                return T._("Update report");
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string ModsUpdateInfoNoticeText()
+            {
+                return T._("If you click on <b style=\"font-size:20px;color:blue;\">[Info]</b> link you can view update important update info include requuirements and incompatibilities for latest update.");
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HTMLBeginText()
+            {
+                return "<html><body" + HTMLReportStyleText() + "><h1>";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HTMLAfterHeaderText()
+            {
+                return "</h2><hr><br>";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HTMLBetweenModsText()
+            {
+                return "";//<p> already make new line //"<br>";;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HTMLendText()
+            {
+                return "<hr></body></html>";
+            }
         }
 
         //internal static Dictionary<string, Game> GetListOfGames()

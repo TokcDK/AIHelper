@@ -259,15 +259,8 @@ namespace AIHelper.Manage.Update
         //    File.WriteAllText(ManageSettings.UpdateLastContentLengthInfos(), sb.ToString());
         //}
 
-        const string HTMLReportStyle = " style=\"background-color:gray;\"";
-        const string HTMLBegin = "<html><body" + HTMLReportStyle + "><h1>";
-        const string HTMLAfterHeader = "</h2><hr><br>";
-        const string HTMLBetweenMods = "";//<p> already make new line //"<br>";
-        const string HTMLend = "<hr></body></html>";
-        static string ReportModSourcePageLinkVisitText;
         private void ShowReport(updateInfo info)
         {
-            ReportModSourcePageLinkVisitText = "[" + T._("Information") + "]";
             string ReportMessage;
             if (info.report != null && info.report.Count > 0)
             {
@@ -277,7 +270,7 @@ namespace AIHelper.Manage.Update
                     string[] lines = line.Split(new[] { "{{visit}}" }, StringSplitOptions.None);
                     if (lines.Length == 2 && IsHTMLReport)
                     {
-                        newReport.Add(lines[0].Replace("</p>", (IsHTMLReport ? " / " + "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"" + lines[1] + "\">" + ReportModSourcePageLinkVisitText + "</a></p>" : string.Empty)));
+                        newReport.Add(lines[0].Replace("</p>", (IsHTMLReport ? " / " + "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"" + lines[1] + "\">" + ManageSettings.UpdateReport.ReportModSourcePageLinkVisitText() + "</a></p>" : string.Empty)));
                     }
                     else
                     {
@@ -285,24 +278,23 @@ namespace AIHelper.Manage.Update
                     }
                 }
 
-                var reportTitle = T._("Update report");
-                if (File.Exists(ManageSettings.GetReportFilePath()))
+                if (File.Exists(ManageSettings.UpdateReport.GetReportFilePath()))
                 {
                     IsHTMLReport = true;
-                    ReportMessage = File.ReadAllText(ManageSettings.GetReportFilePath())
-                     .Replace("%BGImageLinkPath%", ManageSettings.GetCurrentGameUpdateReportBGFilePath())
-                     .Replace("%ModsUpdateReportHeaderText%", reportTitle)
-                     .Replace("%SingleModUpdateReportsTextSection%", string.Join(HTMLBetweenMods, newReport))
-                     .Replace("%ModsUpdateInfoNotice%", T._("If you click on <b style=\"font-size:20px;color:blue;\">[Info]</b> link you can view update important update info include requuirements and incompatibilities for latest update."));
+                    ReportMessage = File.ReadAllText(ManageSettings.UpdateReport.GetReportFilePath())
+                     .Replace(ManageSettings.UpdateReport.GetBGImageLinkPathPattern(), ManageSettings.UpdateReport.GetCurrentGameBGFilePath())
+                     .Replace(ManageSettings.UpdateReport.GetModsUpdateReportHeaderTextPattern(), ManageSettings.UpdateReport.TitleText())
+                     .Replace(ManageSettings.UpdateReport.GetSingleModUpdateReportsTextSectionPattern(), string.Join(ManageSettings.UpdateReport.HTMLBetweenModsText(), newReport))
+                     .Replace(ManageSettings.UpdateReport.GetModsUpdateInfoNoticePattern(), ManageSettings.UpdateReport.ModsUpdateInfoNoticeText());
                 }
                 else
                 {
                     ReportMessage =
-                        (IsHTMLReport ? HTMLBegin : string.Empty)
-                        + reportTitle
-                        + (IsHTMLReport ? HTMLAfterHeader : Environment.NewLine + Environment.NewLine)
-                        + string.Join(IsHTMLReport ? HTMLBetweenMods : Environment.NewLine, newReport)
-                        + (IsHTMLReport ? HTMLend : string.Empty);
+                        (IsHTMLReport ? ManageSettings.UpdateReport.HTMLBeginText() : string.Empty)
+                        + ManageSettings.UpdateReport.TitleText()
+                        + (IsHTMLReport ? ManageSettings.UpdateReport.HTMLAfterHeaderText() : Environment.NewLine + Environment.NewLine)
+                        + string.Join(IsHTMLReport ? ManageSettings.UpdateReport.HTMLBetweenModsText() : Environment.NewLine, newReport)
+                        + (IsHTMLReport ? ManageSettings.UpdateReport.HTMLendText() : string.Empty);
                 }
                 //ReportMessage = string.Join(/*Environment.NewLine*/"<br>", report);
                 if (IsHTMLReport)

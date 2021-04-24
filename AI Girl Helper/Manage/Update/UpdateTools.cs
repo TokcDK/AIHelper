@@ -59,6 +59,10 @@
                     {
                         return true;
                     }
+                    else if (latest < current)
+                    {
+                        return false;
+                    }
                 }
                 dInd++;
             }

@@ -50,8 +50,12 @@ namespace AIHelper.Manage.Update
         /// </summary>
         internal TBase target;
         internal bool VersionFromFile;
-        internal bool GetVersionFromLink;
+        //internal bool GetVersionFromLink;
         //internal Dictionary<string, long> UrlSizeList;
+        /// <summary>
+        /// file download link
+        /// </summary>
+        public string DownloadLink { get; internal set; }
 
         public updateInfo()
         {
@@ -59,8 +63,6 @@ namespace AIHelper.Manage.Update
             report = new List<string>();
             reset();
         }
-
-        public string DownloadLink { get; internal set; }
 
         /// <summary>
         /// vars need to be reset for each folder
@@ -76,6 +78,7 @@ namespace AIHelper.Manage.Update
             UpdateFilePath = "";
             UpdateFileStartsWith = "";
             UpdateFileEndsWith = "";
+            DownloadLink = "";
         }
 
     }

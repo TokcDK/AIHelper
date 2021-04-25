@@ -296,7 +296,7 @@ namespace AIHelper
         {
             this.Text = T._("AI Helper for Organized ModPack");
             CurrentGameLabel.Text = T._("Current Game") + ":";
-            InstallInModsButton.Text = T._("Install from 2MO");
+            InstallInModsButton.Text = T._("Install from") + " " + ManageSettings.ModsInstallDirName();
             ToolsFixModListButton.Text = T._("Fix modlist");
             btnUpdateMods.Text = T._("Update");
             //button1.Text = T._("Prepare the game");
@@ -700,7 +700,7 @@ namespace AIHelper
 
             //Main
             //THToolTip.SetToolTip(button1, T._("Unpacking mods and resources from 'Downloads' and 'RES' folders for game when they are not installed"));
-            THToolTip.SetToolTip(InstallInModsButton, T._("Automatically get required mod data, converts and moves files from 2MO folder")
+            THToolTip.SetToolTip(InstallInModsButton, T._("Install mods and userdata, placed in") + " " + ManageSettings.ModsInstallDirName()
                 + (MOmode ? T._(
                         " to MO format in Mods when possible"
                     ) : T._(
@@ -787,29 +787,30 @@ namespace AIHelper
 
             THToolTip.SetToolTip(CurrentGameComboBox, T._("List of found games. Current") + ": " + ListOfGames[CurrentGameComboBox.SelectedIndex].GetGameDisplayingName());
 
+            var toMO = ManageSettings.ModsInstallDirName();
             THToolTip.SetToolTip(Open2MOLinkLabel,
-                T._("Open 2MO folder fo selected game" +
+                T._($"Open {toMO} folder fo selected game" +
                 "\n\nHere can be placed mod files which you want to install for selected game in approriate subfolders in mods" +
                 "\nand then can be installed all by one click on") + " " + InstallInModsButton.Text + " " + T._("button") +
                 "\n" + T._("which can be found in") + " " + ToolsTabPage.Text + " " + T._("tab page") +
                 "\n\n" + T._("Helper recognize") + ":"
-                + "\n " + T._(".dll files of BepinEx plugins in \"2MO\" folder")
-                + "\n " + T._("Sideloader mod archives in \"2MO\" folder")
-                + "\n " + T._("Female character cards in \"2MO\" folder")
+                + "\n " + T._($".dll files of BepinEx plugins in \"{toMO}\" folder")
+                + "\n " + T._($"Sideloader mod archives in \"{toMO}\" folder")
+                + "\n " + T._($"Female character cards in \"{toMO}\" folder")
                 + "\n " + T._("Female character cards in \"f\" subfolder")
                 + "\n " + T._("Male character cards in \"m\" subfolder")
                 + "\n " + T._("Coordinate clothes set cards in \"c\" subfolder")
                 + "\n " + T._("Studio scene cards in \"s\" subfolder")
                 + "\n " + T._("Cardframe Front cards in \"cf\" subfolder")
                 + "\n " + T._("Cardframe Back cards in \"cf\" subfolder")
-                + "\n " + T._("Script loader scripts in \"2MO\" folder")
+                + "\n " + T._($"Script loader scripts in \"{toMO}\" folder")
                 + "\n " + T._("Housing plan cards in \"h\\01\", \"h\\02\", \"h\\03\" subfolders")
                 + "\n " + T._("Overlays cards in \"o\" subfolder")
                 + "\n " + T._("folders with overlays cards in \"o\" subfolder")
-                + "\n " + T._("Subfolders with modfiles in \"2MO\" folder")
-                + "\n " + T._("Zip archives with mod files in \"2MO\" folder")
-                + "\n " + T._("Zip archives with mod files in \"2MO\" folder")
-                + "\n\n" + T._("Any Rar and 7z archives in \"2MO\" folder will be extracted" +
+                + "\n " + T._($"Subfolders with modfiles in \"{toMO}\" folder")
+                + "\n " + T._($"Zip archives with mod files in \"{toMO}\" folder")
+                + "\n " + T._($"Zip archives with mod files in \"{toMO}\" folder")
+                + "\n\n" + T._($"Any Rar and 7z archives in \"{toMO}\" folder will be extracted" +
                 "\nSome recognized mods can be updated instead of be installed as new mod" +
                 "\nMost of mods will be automatically activated except .cs scripts" +
                 "\nwhich always optional and often it is cheats or can slowdown/break game")
@@ -1479,6 +1480,7 @@ namespace AIHelper
             }
         }
 
+        readonly string toMO = ManageSettings.ModsInstallDirName();
         private async void InstallInModsButton_Click(object sender, EventArgs e)
         {
             if (Directory.Exists(Install2MODirPath) && (Directory.GetFiles(Install2MODirPath, "*.rar").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.7z").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.cs").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zipmod").Length > 0 || Directory.GetFiles(Install2MODirPath, "*.zip").Length > 0 || Directory.GetDirectories(Install2MODirPath, "*").Length > 0))
@@ -1502,18 +1504,18 @@ namespace AIHelper
 
                 await Task.Run(() => InstallModFilesAndCleanEmptyFolder()).ConfigureAwait(true);
 
-                InstallInModsButton.Text = T._("Install from 2MO");
+                InstallInModsButton.Text = T._("Install from")+" "+ ManageSettings.ModsInstallDirName();
 
                 OnOffButtons();
 
                 //обновление информации о конфигурации папок игры
                 FoldersInit();
 
-                MessageBox.Show(T._("All possible mods installed. Install all rest in 2MO folder manually."));
+                MessageBox.Show(T._($"All possible mods installed. Install all rest in {toMO} folder manually."));
             }
             else
             {
-                MessageBox.Show(T._("No compatible for installation formats found in 2MO folder.\nFormats: zip, zipmod, png, png in subfolder, unpacked mod in subfolder"));
+                MessageBox.Show(T._($"No compatible for installation formats found in {toMO} folder.\nFormats: zip, zipmod, png, png in subfolder, unpacked mod in subfolder"));
             }
             Process.Start("explorer.exe", Install2MODirPath);
         }
@@ -1554,7 +1556,7 @@ namespace AIHelper
                 Directory.CreateDirectory(Install2MODirPath);
             }
 
-            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = T._("Install from 2MO")));
+            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = T._("Install from") + " " + ManageSettings.ModsInstallDirName()));
         }
 
         private void CreateShortcutButton_Click(object sender, EventArgs e)

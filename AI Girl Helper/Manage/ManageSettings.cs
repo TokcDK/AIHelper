@@ -150,17 +150,17 @@ namespace AIHelper.Manage
                         &&
                         !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
                         //&&
-                        //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO"))
+                        //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(GetMOdirPath())
                         &&
-                        IsMOFolderValid(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO"))
+                        IsMOFolderValid(GetMOdirPath())
                         //&&
-                        //Directory.Exists(Path.Combine(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", "Profiles")))
+                        //Directory.Exists(Path.Combine(GetMOdirPath(), "Profiles")))
                         //&&
-                        //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", "Profiles"))
+                        //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(GetMOdirPath(), "Profiles"))
                         &&
-                        !ManageSymLinks.IsSymLink(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", "ModOrganizer.ini"))
+                        !ManageSymLinks.IsSymLink(MOIniFilePath())
                         &&
-                        !ManageSymLinks.IsSymLink(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", "categories.dat"))
+                        !ManageSymLinks.IsSymLink(MOCategoriesFilePath())
                         )
                     {
                         ListOfGames.Add(new RootGame());
@@ -180,6 +180,24 @@ namespace AIHelper.Manage
             //).ToList();
 
             return ListOfGames;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static string GeneralMOPath()
+        {
+            return GetMOdirPath();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static string MOIniFilePath()
+        {
+            return Path.Combine(GeneralMOPath(), "ModOrganizer.ini");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static string MOCategoriesFilePath()
+        {
+            return Path.Combine(GeneralMOPath(), "categories.dat");
         }
 
         /// <summary>
@@ -731,7 +749,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetInstall2MODirPath()
         {
-            return Path.Combine(GetCurrentGamePath(), "2MO");
+            return Path.Combine(GetCurrentGamePath(), ModsInstallDirName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1183,6 +1201,12 @@ namespace AIHelper.Manage
         internal static string ZipmodsBleedingEdgeMarkFilePath()
         {
             return Path.Combine(GetCurrentGameDataPath(), "UserData", "LauncherEN", ZipmodsBleedingEdgeMarkFileName());
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string ModsInstallDirName()
+        {
+            return "2MO";
         }
     }
 }

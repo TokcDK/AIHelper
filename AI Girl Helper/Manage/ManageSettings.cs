@@ -102,7 +102,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string CurrentMOProfileModlistPath()
         {
-            return Path.Combine(ManageSettings.GetMOSelectedProfileDirPath(), "modlist.txt");
+            return Path.Combine(GetMOSelectedProfileDirPath(), "modlist.txt");
         }
 
         private static string GetCustomRes()
@@ -116,7 +116,7 @@ namespace AIHelper.Manage
         {
             List<Game> ListOfGames = GamesList.GetGamesList();
             var ListOfGamesRead = new List<Game>(ListOfGames);
-            if (Directory.Exists(ManageSettings.GetGamesFolderPath()))
+            if (Directory.Exists(GetGamesFolderPath()))
             {
                 foreach (var game in ListOfGamesRead)
                 {
@@ -207,7 +207,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameModListRulesPath()
         {
-            return Path.Combine(GetAppResDir(), "rules", ManageSettings.GetCurrentGameFolderName(), "modlist.txt");
+            return Path.Combine(GetAppResDir(), "rules", GetCurrentGameFolderName(), "modlist.txt");
         }
 
         /// <summary>
@@ -527,7 +527,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetSettingsEXEPath()
         {
-            return Path.Combine(ManageSettings.GetCurrentGameDataPath(), GetINISettingsEXEName() + ".exe");
+            return Path.Combine(GetCurrentGameDataPath(), GetINISettingsEXEName() + ".exe");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -692,7 +692,7 @@ namespace AIHelper.Manage
             }
             else
             {
-                Properties.Settings.Default.MOSelectedProfileDirName = ManageMO.MOremoveByteArray(ManageINI.GetINIValueIfExist(File.Exists(ManageSettings.GetModOrganizerINIpath()) ? ManageSettings.GetModOrganizerINIpath():ManageSettings.GetModOrganizerINIpathForSelectedGame(), "selected_profile", "General"));
+                Properties.Settings.Default.MOSelectedProfileDirName = ManageMO.MOremoveByteArray(ManageINI.GetINIValueIfExist(File.Exists(GetModOrganizerINIpath()) ? GetModOrganizerINIpath() : GetModOrganizerINIpathForSelectedGame(), "selected_profile", "General"));
 
                 return Properties.Settings.Default.MOSelectedProfileDirName;
             }
@@ -851,7 +851,7 @@ namespace AIHelper.Manage
         internal static void SwitchBepInExDisplayedLogLevelValue(CheckBox BepInExConsoleCheckBox, Label BepInExDisplayedLogLevelLabel, bool OnlyShow = false, string TargetSectionName = "Logging.Console")
         {
             //string curValue = ManageINI.GetINIValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "DisplayedLogLevel", "Logging.Console");
-            string curValue = ManageCFG.GetCFGValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "DisplayedLogLevel", "Logging.Console");
+            string curValue = ManageCFG.GetCFGValueIfExist(GetBepInExCfgFilePath(), "DisplayedLogLevel", "Logging.Console");
             if (curValue.Length == 0) //in BepinEx 5.4 looks like DisplayedLogLevel was deleted 
             {
                 BepInExDisplayedLogLevelLabel.Visible = false;
@@ -870,7 +870,7 @@ namespace AIHelper.Manage
                     if (setNext)
                     {
                         //ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", /*" " +*/ value);
-                        ManageCFG.WriteCFGValue(ManageSettings.GetBepInExCfgFilePath(), TargetSectionName, "DisplayedLogLevel", /*" " +*/ value);
+                        ManageCFG.WriteCFGValue(GetBepInExCfgFilePath(), TargetSectionName, "DisplayedLogLevel", /*" " +*/ value);
                         BepInExDisplayedLogLevelLabel.Text = value;
                         return;
                     }
@@ -880,7 +880,7 @@ namespace AIHelper.Manage
                     }
                 }
                 //ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", /*" " +*/ values[0]);
-                ManageCFG.WriteCFGValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", /*" " +*/ values[0]);
+                ManageCFG.WriteCFGValue(GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", /*" " +*/ values[0]);
                 BepInExDisplayedLogLevelLabel.Text = values[0];
             }
         }
@@ -1102,7 +1102,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetDummyFileRESPath()
         {
-            return Path.Combine(ManageSettings.GetAppResDir(), "TESV.exe.dummy");
+            return Path.Combine(GetAppResDir(), "TESV.exe.dummy");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1182,7 +1182,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static string ZipmodsBleedingEdgeMarkFilePath()
         {
-            return Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "LauncherEN", ZipmodsBleedingEdgeMarkFileName());
+            return Path.Combine(GetCurrentGameDataPath(), "UserData", "LauncherEN", ZipmodsBleedingEdgeMarkFileName());
         }
     }
 }

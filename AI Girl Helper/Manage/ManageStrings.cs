@@ -111,14 +111,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         public static bool IsStringAContainsStringB(string StringAWhereSearch, string StringBToSearch)
         {
-            int StringAInWhichSearchLength = StringAWhereSearch.Length;
-            if (StringAInWhichSearchLength > 0 && StringBToSearch.Length > 0)//safe check for empty values
-            {
-                //if string A contains string B then string A with replaced stringB by empty will be
-                return StringAInWhichSearchLength > StringAWhereSearch.Replace(StringBToSearch, string.Empty).Length;
-            }
-            return false;
-
+            return StringAWhereSearch.IsContains(StringBToSearch);
         }
 
         public static bool IsStringContainsAnyExclusion(string InputString, string[] exclusions)

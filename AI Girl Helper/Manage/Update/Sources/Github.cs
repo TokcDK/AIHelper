@@ -166,11 +166,6 @@ namespace AIHelper.Manage.Update.Sources
                 }
                 //GitLatestVersion = version.Value.Remove(version.Value.Length - 1, 1).Remove(0, 14);
 
-                if (info.UpdateFileStartsWith == "HS2_BetterPenetration")
-                {
-
-                }
-
                 var linkPattern = @"href\=\""(/" + GitOwner + "/" + GitRepository + "/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + @"([^\""]*)" + info.UpdateFileEndsWith + @")\""";
                 var link2file = Regex.Match(LatestReleasePage, linkPattern);
                 //var linkPattern = @"href\=\""(/" + GitOwner + "/" + GitRepository + "/releases/download/([^/]+)/" + info.UpdateFileStartsWith + @"([^\""]+)" + info.UpdateFileEndsWith + @")\""";

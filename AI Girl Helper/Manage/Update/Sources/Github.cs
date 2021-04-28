@@ -166,14 +166,19 @@ namespace AIHelper.Manage.Update.Sources
                 }
                 //GitLatestVersion = version.Value.Remove(version.Value.Length - 1, 1).Remove(0, 14);
 
-                var linkPattern = @"href\=\""(/" + GitOwner + "/" + GitRepository + "/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + @"[^\""]+" + info.UpdateFileEndsWith + @")\""";
+                if (info.UpdateFileStartsWith == "HS2_BetterPenetration")
+                {
+
+                }
+
+                var linkPattern = @"href\=\""(/" + GitOwner + "/" + GitRepository + "/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + @"([^\""]*)" + info.UpdateFileEndsWith + @")\""";
                 var link2file = Regex.Match(LatestReleasePage, linkPattern);
                 //var linkPattern = @"href\=\""(/" + GitOwner + "/" + GitRepository + "/releases/download/([^/]+)/" + info.UpdateFileStartsWith + @"([^\""]+)" + info.UpdateFileEndsWith + @")\""";
                 //var link2file = Regex.Match(LatestReleasePage, linkPattern);
                 if (!link2file.Success)//refind sublink to file
                 {
                     //when author changed username on git
-                    linkPattern = @"href\=\""(/[^/]+/" + GitRepository + "/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + @"[^\""]+" + info.UpdateFileEndsWith + @")\""";
+                    linkPattern = @"href\=\""(/[^/]+/" + GitRepository + "/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + @"([^\""]*)" + info.UpdateFileEndsWith + @")\""";
                     link2file = Regex.Match(LatestReleasePage, linkPattern);
                     //linkPattern = @"href\=\""(/[^/]+/" + GitRepository + "/releases/download/([^/]+)/" + info.UpdateFileStartsWith + @"([^\""]+)" + info.UpdateFileEndsWith + @")\""";
                     //link2file = Regex.Match(LatestReleasePage, linkPattern);
@@ -181,7 +186,7 @@ namespace AIHelper.Manage.Update.Sources
 
                 var GetFromLast10Releases = false;
                 //List<GitReleasesInfo> Releases = null;
-                if (!link2file.Success && info.VersionFromFile)
+                if (!link2file.Success)
                 {
                     GetFromLast10Releases = true;
                     info.SourceLink = "https://github.com/" + GitOwner + "/" + GitRepository + "/releases";
@@ -201,7 +206,7 @@ namespace AIHelper.Manage.Update.Sources
 
                 if ((link2file.Success && link2file.Value.Length > 7 && link2file.Value.StartsWith("href=", StringComparison.InvariantCultureIgnoreCase)) /*|| (Releases != null && Releases.Count > 0)*/)
                 {
-                    info.DownloadLink = "https://" + url + "/" + link2file.Result("$1");
+                    info.DownloadLink = "https://" + url + link2file.Result("$1");
 
                     if (info.VersionFromFile)
                     {
@@ -225,6 +230,10 @@ namespace AIHelper.Manage.Update.Sources
                         //    GitLatestVersion = Releases[0].FileVersion;
                         //}
                         //return fromfile;
+                    }
+                    else if (GetFromLast10Releases)
+                    {
+                        GitLatestVersion = link2file.Result("$2");
                     }
                     //else
                     //{

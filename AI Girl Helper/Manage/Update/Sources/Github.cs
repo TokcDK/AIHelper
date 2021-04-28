@@ -79,7 +79,9 @@ namespace AIHelper.Manage.Update.Sources
                 //PerformModUpdateFromArchive();
             };
 
-            if (!File.Exists(info.UpdateFilePath) || new FileInfo(info.UpdateFilePath).Length == 0)//not exist or zero length when was failed download
+            if (!File.Exists(info.UpdateFilePath)//not exist
+                || (File.Exists(info.UpdateFilePath) && !info.VersionFromFile)//when version from releases and filename is always same need to download it each time because exist in downloads is from older release
+                || new FileInfo(info.UpdateFilePath).Length == 0)//zero length van be when was failed previous download
             {
                 await DownloadFileTaskAsync(new Uri(info.DownloadLink), info.UpdateFilePath).ConfigureAwait(true);
 

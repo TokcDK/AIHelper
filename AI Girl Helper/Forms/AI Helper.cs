@@ -1504,7 +1504,7 @@ namespace AIHelper
 
                 await Task.Run(() => InstallModFilesAndCleanEmptyFolder()).ConfigureAwait(true);
 
-                InstallInModsButton.Text = T._("Install from")+" "+ ManageSettings.ModsInstallDirName();
+                InstallInModsButton.Text = T._("Install from") + " " + ManageSettings.ModsInstallDirName();
 
                 OnOffButtons();
 
@@ -2961,13 +2961,22 @@ namespace AIHelper
                         {
                             var targetZipmodPath = file.Replace(ManageSettings.GetOverwriteFolder(), ManageMOMods.GetMOModPathInMods(zipmodsGUIDList[guid]));
 
-                            if (File.Exists(targetZipmodPath))
+                            if (File.Exists(targetZipmodPath)
+                                || !File.Exists(file)
+                                )
                             {
                                 continue;
                             }
 
                             Directory.CreateDirectory(Path.GetDirectoryName(targetZipmodPath));
-                            File.Move(file, targetZipmodPath);
+                            try
+                            {
+                                File.Move(file, targetZipmodPath);
+                            }
+                            catch (IOException ex)
+                            {
+                                ManageLogs.Log("An error occured while file move. error:\r\n" + ex + "\r\nfile=" + file + "\r\ntarget file=" + targetZipmodPath);
+                            }
                         }
                         else if (modpacks.ContainsKey(sideloadername))
                         {
@@ -2978,14 +2987,23 @@ namespace AIHelper
                                 + Path.DirectorySeparatorChar + sideloadername//sideloader dir name
                                 + file.Replace(dir, "");//file subpath in sideloader dir
 
-                            if (File.Exists(target))// skip if already exist
+                            if (File.Exists(target)// skip if already exist
+                                || !File.Exists(file)
+                                )
                             {
                                 continue;
                             }
 
                             Directory.CreateDirectory(Path.GetDirectoryName(target));//create parent dir
 
-                            File.Move(file, target);//move file to the marked mod
+                            try
+                            {
+                                File.Move(file, target);//move file to the marked mod
+                            }
+                            catch (IOException ex)
+                            {
+                                ManageLogs.Log("An error occured while file move. error:\r\n" + ex + "\r\nfile=" + file + "\r\ntarget file=" + target);
+                            }
                         }
                     }
                 }

@@ -28,6 +28,7 @@ namespace AIHelper.Manage.Update.Sources
             catch (WebException ex)
             {
                 ManageLogs.Log("An error occured while file downloading. \r\nLink:" + info.DownloadLink + "\r\nError:\r\n" + ex);
+                info.LastErrorText.AppendLine(ex.Message);
             }
         }
 

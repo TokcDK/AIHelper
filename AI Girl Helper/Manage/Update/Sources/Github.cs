@@ -255,6 +255,7 @@ namespace AIHelper.Manage.Update.Sources
             catch (Exception ex)
             {
                 ManageLogs.Log("failed to check update. error:\r\n" + ex);
+                info.LastErrorText.AppendLine(ex.Message);
             }
 
             return "";

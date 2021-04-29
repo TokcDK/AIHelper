@@ -5,9 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using AIHelper.Manage.Update;
 
 namespace AIHelper.Manage.Update
 {
@@ -56,6 +56,10 @@ namespace AIHelper.Manage.Update
         /// file download link
         /// </summary>
         public string DownloadLink { get; internal set; }
+        /// <summary>
+        /// last error text if any
+        /// </summary>
+        public StringBuilder LastErrorText { get; internal set; }
 
         public updateInfo()
         {
@@ -79,6 +83,7 @@ namespace AIHelper.Manage.Update
             UpdateFileStartsWith = "";
             UpdateFileEndsWith = "";
             DownloadLink = "";
+            LastErrorText.Clear();
         }
 
     }
@@ -225,10 +230,10 @@ namespace AIHelper.Manage.Update
                                             + T._("Failed to update mod")
                                             + " "
                                             + info.TargetFolderPath.Name
-                                            //+ " (" + ex.Message + ") "
-                                            +" ("
+                                            + ErrorMessage(info.LastErrorText)
+                                            + " ("
                                             + T._("Details in") + " " + Application.ProductName + ".log"
-                                            +")"
+                                            + ")"
                                             + "</p>"
                                             );
 
@@ -246,6 +251,17 @@ namespace AIHelper.Manage.Update
 
             //Show report
             ShowReport(info);
+        }
+
+        private static string ErrorMessage(StringBuilder LastErrorText)
+        {
+            if (LastErrorText.Length > 0)
+            {
+                var ret = "\r\n\t" + LastErrorText.ToString() + "\r\n\t";
+                LastErrorText.Clear();
+                return ret;
+            }
+            return "";
         }
 
         //private static void SaveSizes(Dictionary<string, long> urlSizeList)

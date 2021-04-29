@@ -231,6 +231,7 @@ namespace AIHelper.Manage.Update
                                             + T._("Failed to update mod")
                                             + " "
                                             + info.TargetFolderPath.Name
+                                            + " / "
                                             + ErrorMessage(info.LastErrorText)
                                             + " ("
                                             + T._("Details in") + " " + Application.ProductName + ".log"

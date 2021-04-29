@@ -7,7 +7,7 @@ namespace AIHelper.Manage
 {
     class ManageLogs
     {
-        internal readonly static string LogFilePath = Path.Combine(Properties.Settings.Default.ApplicationStartupPath, Application.ProductName + ".log");
+        internal readonly static string LogFilePath = Path.Combine(Properties.Settings.Default.ApplicationStartupPath, Properties.Settings.Default.ApplicationProductName + ".log");
 
         /// <summary>
         /// will write message in log

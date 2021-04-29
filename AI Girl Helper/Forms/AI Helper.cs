@@ -49,7 +49,12 @@ namespace AIHelper
 
             if (string.IsNullOrWhiteSpace(Properties.Settings.Default.ApplicationStartupPath))
             {
-                ApplicationStartupPath = System.Windows.Forms.Application.StartupPath;
+                ApplicationStartupPath = Application.StartupPath;
+            }
+
+            if (string.IsNullOrWhiteSpace(Properties.Settings.Default.ApplicationProductName))
+            {
+                Properties.Settings.Default.ApplicationProductName = Application.ProductName;
             }
 
             if (!SetListOfGames())
@@ -689,7 +694,7 @@ namespace AIHelper
                 ShowAlways = true
             };
 
-            THToolTip.SetToolTip(ProgramNameLabelPart2, System.Windows.Forms.Application.ProductName + " - " + T._("Illusion games manager.\n\n"
+            THToolTip.SetToolTip(ProgramNameLabelPart2, Properties.Settings.Default.ApplicationProductName + " - " + T._("Illusion games manager.\n\n"
                     + "Move mouse over wished button or text to see info about it"
                     )
                 );

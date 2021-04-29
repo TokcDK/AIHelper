@@ -284,6 +284,42 @@ namespace AIHelper.Manage
                 return "ReportTemplate.html";
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HTMLBeforeModReportSuccessLine()
+            {
+                return "<details style=\"color:lightgreen\">";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HTMLBeforeModReportErrorLine()
+            {
+                return "<details style=\"color:red\">";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HTMLBeforeModReportWarningLine()
+            {
+                return "<details style=\"color:orange\">";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HTMLModReportInLineBeforeMainMessage()
+            {
+                return "<summary>";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HTMLModReportInLineAfterMainMessage()
+            {
+                return "</summary>";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HTMLAfterModReportLine()
+            {
+                return "</details>";
+            }
+
             /// <summary>
             /// Plugins update report file path
             /// </summary>
@@ -324,11 +360,6 @@ namespace AIHelper.Manage
                 return "%SingleModUpdateReportsTextSection%";
             }
 
-            internal static string HTMLReportStyleText()
-            {
-                return " style=\"background-color:gray;\"";
-            }
-
             /// <summary>
             /// Pattern to replace with notice, placed under Update report title
             /// </summary>
@@ -337,6 +368,40 @@ namespace AIHelper.Manage
             internal static string GetModsUpdateInfoNoticePattern()
             {
                 return "%ModsUpdateInfoNotice%";
+            }
+
+            /// <summary>
+            /// Pattern to replace with web link to page where update info can be viewed
+            /// </summary>
+            /// <returns></returns>
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string InfoLinkPattern()
+            {
+                return "{{visit}}";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HTMLPreInfoLink()
+            {
+                return "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HTMLAfterInfoLink()
+            {
+                return "\">";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HTMLAfterTextForInfoLink()
+            {
+                return "</a>";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HTMLReportStyleText()
+            {
+                return " style=\"background-color:gray;\"";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -366,7 +431,7 @@ namespace AIHelper.Manage
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal static string ModsUpdateInfoNoticeText()
             {
-                return T._("If you click on <b style=\"font-size:20px;color:blue;\">[Info]</b> link you can view update important update info include requuirements and incompatibilities for latest update.");
+                return T._("Click on line for more info");
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -767,7 +832,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetAIHelperINIPath()
         {
-            return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, Application.ProductName + ".ini");
+            return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, Properties.Settings.Default.ApplicationProductName + ".ini");
         }
 
         internal static int GetCurrentGameIndexByFolderName(List<Game> listOfGames, string FolderName)

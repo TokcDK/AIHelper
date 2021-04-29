@@ -10,7 +10,7 @@ namespace AIHelper.Utils
 
         public static void WriteData(string filePath, string data, bool DebugMode = false)
         {
-            if (string.IsNullOrEmpty(filePath) || (!DebugMode && filePath.Contains(Application.ProductName + ".log")))
+            if (string.IsNullOrEmpty(filePath) || (!DebugMode && filePath.Contains(Properties.Settings.Default.ApplicationProductName + ".log")))
             {
                 return;
             }

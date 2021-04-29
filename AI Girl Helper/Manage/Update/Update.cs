@@ -192,18 +192,20 @@ namespace AIHelper.Manage.Update
                                     info.Excluded.Add(tFolderInfo.Key); // add path to excluded to skip it next time if will be found for other source or target
 
                                     info.report.Add(
-                                        (IsHTMLReport ? "<p style=\"color:lightgreen\">" : string.Empty)
-                                        + T._("Mod")
-                                        + " "
-                                        + info.TargetFolderPath.Name
-                                        + (!info.TargetFolderPath.Name.Contains(info.TargetCurrentVersion) ? " " + info.TargetCurrentVersion : "")
-                                        + " "
-                                        + T._("updated to version")
-                                        + " "
-                                        + info.TargetLastVersion
-                                        + " "
-                                        + (IsHTMLReport ? "</p>" : string.Empty)
-                                        + (!string.IsNullOrWhiteSpace(info.SourceLink) ? "{{visit}}" + info.SourceLink : string.Empty));
+                                        (IsHTMLReport ? ManageSettings.UpdateReport.HTMLBeforeModReportSuccessLine() : string.Empty)
+                                            + ManageSettings.UpdateReport.HTMLModReportInLineBeforeMainMessage()
+                                                + T._("Mod")
+                                                + " "
+                                                + info.TargetFolderPath.Name
+                                                + (!info.TargetFolderPath.Name.Contains(info.TargetCurrentVersion) ? " " + info.TargetCurrentVersion : "")
+                                                + " "
+                                                + T._("updated to version")
+                                                + " "
+                                                + info.TargetLastVersion
+                                            + ManageSettings.UpdateReport.HTMLModReportInLineAfterMainMessage()
+                                                + (!string.IsNullOrWhiteSpace(info.SourceLink) ? ManageSettings.UpdateReport.InfoLinkPattern() + info.SourceLink : string.Empty)
+                                        + (IsHTMLReport ? ManageSettings.UpdateReport.HTMLAfterModReportLine() : string.Empty)
+                                        );
 
                                 }
                                 else
@@ -211,15 +213,17 @@ namespace AIHelper.Manage.Update
                                     if (info.NoRemoteFile)
                                     {
                                         info.report.Add(
-                                            (IsHTMLReport ? "<p style=\"color:orange\">" : string.Empty)
-                                            + T._("Mod")
-                                            + " "
-                                            + info.TargetFolderPath.Name
-                                            + " "
-                                            + T._("have new version but file for update not found")
-                                            + (IsHTMLReport ? "</p>" : string.Empty)
-                                            + " "
-                                            + (!string.IsNullOrWhiteSpace(info.SourceLink) ? "{{visit}}" + info.SourceLink : string.Empty));
+                                            (IsHTMLReport ? ManageSettings.UpdateReport.HTMLBeforeModReportWarningLine() : string.Empty)
+                                                + ManageSettings.UpdateReport.HTMLModReportInLineBeforeMainMessage()
+                                                    + T._("Mod")
+                                                    + " "
+                                                    + info.TargetFolderPath.Name
+                                                    + " "
+                                                    + T._("have new version but file for update not found")
+                                                + ManageSettings.UpdateReport.HTMLModReportInLineAfterMainMessage()
+                                                    + (!string.IsNullOrWhiteSpace(info.SourceLink) ? ManageSettings.UpdateReport.InfoLinkPattern() + info.SourceLink : string.Empty)
+                                            + (IsHTMLReport ? ManageSettings.UpdateReport.HTMLAfterModReportLine() : string.Empty)
+                                            );
                                     }
                                     else
                                     {
@@ -227,16 +231,17 @@ namespace AIHelper.Manage.Update
                                         //RestoreModFromBuckup(OldModBuckupDirPath, UpdatingModDirPath);
 
                                         info.report.Add(
-                                            (IsHTMLReport ? "<p style=\"color:red\">" : string.Empty)
-                                            + T._("Failed to update mod")
-                                            + " "
-                                            + info.TargetFolderPath.Name
-                                            + " / "
-                                            + ErrorMessage(info.LastErrorText)
-                                            + " ("
-                                            + T._("Details in") + " " + Application.ProductName + ".log"
-                                            + ")"
-                                            + "</p>"
+                                            (IsHTMLReport ? ManageSettings.UpdateReport.HTMLBeforeModReportErrorLine() : string.Empty)
+                                                + ManageSettings.UpdateReport.HTMLModReportInLineBeforeMainMessage()
+                                                    + T._("Failed to update mod")
+                                                    + " "
+                                                    + info.TargetFolderPath.Name
+                                                + ManageSettings.UpdateReport.HTMLModReportInLineAfterMainMessage()
+                                                    + ErrorMessage(info.LastErrorText)
+                                                    + " ("
+                                                    + T._("Details in") + " " + Properties.Settings.Default.ApplicationProductName + ".log"
+                                                    + ")"
+                                            + ManageSettings.UpdateReport.HTMLAfterModReportLine()
                                             );
 
                                         ManageLogs.Log("Failed to update mod" + " " + info.TargetFolderPath.Name /*+ ":" + Environment.NewLine + ex*/);
@@ -285,10 +290,20 @@ namespace AIHelper.Manage.Update
                 List<string> newReport = new List<string>();
                 foreach (var line in info.report)
                 {
-                    string[] lines = line.Split(new[] { "{{visit}}" }, StringSplitOptions.None);
+                    string[] lines = line.Split(new[] { ManageSettings.UpdateReport.InfoLinkPattern() }, StringSplitOptions.None);
                     if (lines.Length == 2 && IsHTMLReport)
                     {
-                        newReport.Add(lines[0].Replace("</p>", (IsHTMLReport ? " / " + "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"" + lines[1] + "\">" + ManageSettings.UpdateReport.ReportModSourcePageLinkVisitText() + "</a></p>" : string.Empty)));
+                        newReport.Add(lines[0].Replace(
+                              ManageSettings.UpdateReport.HTMLAfterModReportLine()
+                            , IsHTMLReport ?
+                                  ManageSettings.UpdateReport.HTMLPreInfoLink()
+                                    + lines[1]
+                                + ManageSettings.UpdateReport.HTMLAfterInfoLink()
+                                    + ManageSettings.UpdateReport.ReportModSourcePageLinkVisitText()
+                                + ManageSettings.UpdateReport.HTMLAfterTextForInfoLink()
+                            + ManageSettings.UpdateReport.HTMLAfterModReportLine()
+                              : string.Empty
+                            ));
                     }
                     else
                     {

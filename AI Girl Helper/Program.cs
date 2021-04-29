@@ -20,7 +20,7 @@ namespace AIHelper
         private const int SW_RESTORE = 9;
 
         //appname
-        private static readonly string AppName = Application.ProductName;
+        internal static readonly string AppName = Properties.Settings.Default.ApplicationProductName = Application.ProductName;
 
         /// <summary>
         /// Главная точка входа для приложения.

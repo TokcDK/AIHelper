@@ -285,31 +285,37 @@ namespace AIHelper.Manage.Update
         private void ShowReport(updateInfo info)
         {
             string ReportMessage;
-            if (info.report != null && info.report.Count > 0)
+
             {
+
                 List<string> newReport = new List<string>();
-                foreach (var line in info.report)
+                if (info.report != null && info.report.Count > 0)
                 {
-                    string[] lines = line.Split(new[] { ManageSettings.UpdateReport.InfoLinkPattern() }, StringSplitOptions.None);
-                    if (lines.Length == 2 && IsHTMLReport)
+                    foreach (var line in info.report)
                     {
-                        newReport.Add(lines[0].Replace(
-                              ManageSettings.UpdateReport.HTMLAfterModReportLine()
-                            , IsHTMLReport ?
-                                  ManageSettings.UpdateReport.HTMLPreInfoLink()
-                                    + lines[1]
-                                + ManageSettings.UpdateReport.HTMLAfterInfoLink()
-                                    + ManageSettings.UpdateReport.ReportModSourcePageLinkVisitText()
-                                + ManageSettings.UpdateReport.HTMLAfterTextForInfoLink()
-                            + ManageSettings.UpdateReport.HTMLAfterModReportLine()
-                              : string.Empty
-                            ));
-                    }
-                    else
-                    {
-                        newReport.Add(lines[0]);
+                        string[] lines = line.Split(new[] { ManageSettings.UpdateReport.InfoLinkPattern() }, StringSplitOptions.None);
+                        if (lines.Length == 2 && IsHTMLReport)
+                        {
+                            newReport.Add(lines[0].Replace(
+                                  ManageSettings.UpdateReport.HTMLAfterModReportLine()
+                                , IsHTMLReport ?
+                                      ManageSettings.UpdateReport.HTMLPreInfoLink()
+                                        + lines[1]
+                                    + ManageSettings.UpdateReport.HTMLAfterInfoLink()
+                                        + ManageSettings.UpdateReport.ReportModSourcePageLinkVisitText()
+                                    + ManageSettings.UpdateReport.HTMLAfterTextForInfoLink()
+                                + ManageSettings.UpdateReport.HTMLAfterModReportLine()
+                                  : string.Empty
+                                ));
+                        }
+                        else
+                        {
+                            newReport.Add(lines[0]);
+                        }
                     }
                 }
+
+                var NoModsInfo = newReport.Count == 0;
 
                 if (File.Exists(ManageSettings.UpdateReport.GetReportFilePath()))
                 {
@@ -317,8 +323,8 @@ namespace AIHelper.Manage.Update
                     ReportMessage = File.ReadAllText(ManageSettings.UpdateReport.GetReportFilePath())
                      .Replace(ManageSettings.UpdateReport.GetBGImageLinkPathPattern(), ManageSettings.UpdateReport.GetCurrentGameBGFilePath())
                      .Replace(ManageSettings.UpdateReport.GetModsUpdateReportHeaderTextPattern(), ManageSettings.UpdateReport.TitleText())
-                     .Replace(ManageSettings.UpdateReport.GetSingleModUpdateReportsTextSectionPattern(), string.Join(ManageSettings.UpdateReport.HTMLBetweenModsText(), newReport))
-                     .Replace(ManageSettings.UpdateReport.GetModsUpdateInfoNoticePattern(), ManageSettings.UpdateReport.ModsUpdateInfoNoticeText());
+                     .Replace(ManageSettings.UpdateReport.GetSingleModUpdateReportsTextSectionPattern(), (NoModsInfo ? ManageSettings.UpdateReport.NoModsUpdatesFoundText() : string.Join(ManageSettings.UpdateReport.HTMLBetweenModsText(), newReport)) + "<br>")
+                     .Replace(ManageSettings.UpdateReport.GetModsUpdateInfoNoticePattern(), NoModsInfo ? "" : ManageSettings.UpdateReport.ModsUpdateInfoNoticeText());
                 }
                 else
                 {
@@ -326,11 +332,12 @@ namespace AIHelper.Manage.Update
                         (IsHTMLReport ? ManageSettings.UpdateReport.HTMLBeginText() : string.Empty)
                         + ManageSettings.UpdateReport.TitleText()
                         + (IsHTMLReport ? ManageSettings.UpdateReport.HTMLAfterHeaderText() : Environment.NewLine + Environment.NewLine)
-                        + string.Join(IsHTMLReport ? ManageSettings.UpdateReport.HTMLBetweenModsText() : Environment.NewLine, newReport)
+                        + (NoModsInfo ? ManageSettings.UpdateReport.NoModsUpdatesFoundText() : string.Join(IsHTMLReport ? ManageSettings.UpdateReport.HTMLBetweenModsText() : Environment.NewLine, newReport))
+                        + "<br>"
                         + (IsHTMLReport ? ManageSettings.UpdateReport.HTMLendText() : string.Empty);
                 }
                 //ReportMessage = string.Join(/*Environment.NewLine*/"<br>", report);
-                if (IsHTMLReport)
+                //if (IsHTMLReport)
                 {
                     var htmlfile = ManageSettings.UpdateReportHTMLFilePath();
                     File.WriteAllText(htmlfile, ReportMessage);
@@ -341,12 +348,12 @@ namespace AIHelper.Manage.Update
                 //    MessageBox.Show(ReportMessage);
                 //}
             }
-            else
-            {
-                ReportMessage = T._("No updates found");
-                //ReportMessage = "<html><body><h2>" + T._("Update check report") + "</h2><br><br>" + T._("No updates found") + "</body></html>";
-                MessageBox.Show(ReportMessage);
-            }
+            //else
+            //{
+            //    ReportMessage = T._("No updates found");
+            //    //ReportMessage = "<html><body><h2>" + T._("Update check report") + "</h2><br><br>" + T._("No updates found") + "</body></html>";
+            //    MessageBox.Show(ReportMessage);
+            //}
             //if (RequiestsLimit)
             //{
             //    ReportMessage = ReportMessage + Environment.NewLine + Environment.NewLine + T._("Github API rate limit exceeded for your IP.") + Environment.NewLine + "https://developer.github.com/v3/#rate-limiting";

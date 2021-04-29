@@ -434,6 +434,11 @@ namespace AIHelper.Manage
                 return T._("Click on line for more info");
             }
 
+            internal static string NoModsUpdatesFoundText()
+            {
+                return T._("No updates found");
+            }
+
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal static string HTMLBeginText()
             {

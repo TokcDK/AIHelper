@@ -258,7 +258,7 @@ namespace AIHelper.Manage.Update
         {
             if (LastErrorText.Length > 0)
             {
-                var ret = "<br>" + LastErrorText.ToString() + " ";
+                var ret = " " + LastErrorText.ToString() + " ";
                 LastErrorText.Clear();
                 return ret;
             }

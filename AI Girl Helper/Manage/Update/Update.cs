@@ -65,6 +65,7 @@ namespace AIHelper.Manage.Update
         {
             Excluded = new HashSet<string>();
             report = new List<string>();
+            LastErrorText = new StringBuilder();
             reset();
         }
 
@@ -257,7 +258,7 @@ namespace AIHelper.Manage.Update
         {
             if (LastErrorText.Length > 0)
             {
-                var ret = "\r\n\t" + LastErrorText.ToString() + "\r\n\t";
+                var ret = "<br>" + LastErrorText.ToString() + " ";
                 LastErrorText.Clear();
                 return ret;
             }

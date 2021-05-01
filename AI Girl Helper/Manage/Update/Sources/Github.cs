@@ -198,6 +198,20 @@ namespace AIHelper.Manage.Update.Sources
                         link2file = Regex.Match(LatestReleasePage, linkPattern);
                     }
 
+                    if(link2file.Success && !info.VersionFromFile)
+                    {
+                        UpdateTools.CleanVersion(ref GitLatestVersion);
+                        UpdateTools.CleanVersion(ref info.TargetCurrentVersion);
+                        var fromReleases = link2file.Result("$2");
+                        UpdateTools.CleanVersion(ref fromReleases);
+                        //return empty when current version and release version is newer of last version from releases
+                        if (info.TargetCurrentVersion.IsNewerOf(fromReleases) && GitLatestVersion.IsNewerOf(fromReleases))
+                        {
+                            info.DownloadLink = "";
+                            return GitLatestVersion;
+                        }
+                    }
+
                     //Releases = GetGitLast10ReleasesInfo(GitOwner, GitRepository, info.UpdateFileStartsWith, info.UpdateFileEndsWith);
                 }
 

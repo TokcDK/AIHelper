@@ -80,8 +80,9 @@ namespace AIHelper.Manage.Update.Sources
             };
 
             if (!File.Exists(info.UpdateFilePath)//not exist
-                || (File.Exists(info.UpdateFilePath) && !info.VersionFromFile)//when version from releases and filename is always same need to download it each time because exist in downloads is from older release
-                || new FileInfo(info.UpdateFilePath).Length == 0)//zero length van be when was failed previous download
+                || (!info.VersionFromFile && File.Exists(info.UpdateFilePath))//when version from releases and filename is always same need to download it each time because exist in downloads is from older release
+                || new FileInfo(info.UpdateFilePath).Length == 0//zero length van be when was failed previous download
+                )
             {
                 await DownloadFileTaskAsync(new Uri(info.DownloadLink), info.UpdateFilePath).ConfigureAwait(true);
 
@@ -110,6 +111,27 @@ namespace AIHelper.Manage.Update.Sources
                 return true;
             }
         }
+
+        ///// <summary>
+        ///// when downloading file exists in install folder it will be moved in downloads dir
+        ///// </summary>
+        ///// <param name="PathInInstallDir"></param>
+        ///// <param name="UpdateFilePath"></param>
+        ///// <returns></returns>
+        //private static bool FileExistsInInstallDir(string PathInInstallDir, string UpdateFilePath)
+        //{
+        //    if (File.Exists(PathInInstallDir) && !File.Exists(UpdateFilePath))
+        //    {
+        //        if(new FileInfo(PathInInstallDir).Length == 0)
+        //        {
+        //            File.Delete(PathInInstallDir);
+        //            return false;
+        //        }
+        //        Directory.CreateDirectory(Path.GetDirectoryName(UpdateFilePath));
+        //        File.Move(PathInInstallDir, UpdateFilePath);
+        //    }
+        //    return false;
+        //}
 
         internal override string GetLastVersion()
         {

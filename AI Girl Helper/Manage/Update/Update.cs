@@ -196,15 +196,24 @@ namespace AIHelper.Manage.Update
                                             + ManageSettings.UpdateReport.HTMLModReportInLineBeforeMainMessage()
                                                 + T._("Mod")
                                                 + " "
-                                                + info.TargetFolderPath.Name
-                                                + (!info.TargetFolderPath.Name.Contains(info.TargetCurrentVersion) ? " " + info.TargetCurrentVersion : "")
+                                                + ManageSettings.UpdateReport.HTMLModReportPreModnameTags()
+                                                    + info.TargetFolderPath.Name
+                                                + ManageSettings.UpdateReport.HTMLModReportPostModnameTags()
+                                                + (!info.TargetFolderPath.Name.Contains(info.TargetCurrentVersion) ?
+                                                        " "
+                                                        + ManageSettings.UpdateReport.HTMLModReportPreVersionTags()
+                                                            + info.TargetCurrentVersion
+                                                        + ManageSettings.UpdateReport.HTMLModReportPostVersionTags()
+                                                    : "")
                                                 + " "
                                                 + T._("updated to version")
                                                 + " "
-                                                + info.TargetLastVersion
+                                                + ManageSettings.UpdateReport.HTMLModReportPreVersionTags()
+                                                    + info.TargetLastVersion
+                                                + ManageSettings.UpdateReport.HTMLModReportPostVersionTags()
                                             + ManageSettings.UpdateReport.HTMLModReportInLineAfterMainMessage()
+                                            + (IsHTMLReport ? ManageSettings.UpdateReport.HTMLAfterModReportLine() : string.Empty)
                                                 + (!string.IsNullOrWhiteSpace(info.SourceLink) ? ManageSettings.UpdateReport.InfoLinkPattern() + info.SourceLink : string.Empty)
-                                        + (IsHTMLReport ? ManageSettings.UpdateReport.HTMLAfterModReportLine() : string.Empty)
                                         );
 
                                 }
@@ -217,12 +226,14 @@ namespace AIHelper.Manage.Update
                                                 + ManageSettings.UpdateReport.HTMLModReportInLineBeforeMainMessage()
                                                     + T._("Mod")
                                                     + " "
-                                                    + info.TargetFolderPath.Name
+                                                    + ManageSettings.UpdateReport.HTMLModReportPreModnameTags()
+                                                        + info.TargetFolderPath.Name
+                                                    + ManageSettings.UpdateReport.HTMLModReportPostModnameTags()
                                                     + " "
                                                     + T._("have new version but file for update not found")
                                                 + ManageSettings.UpdateReport.HTMLModReportInLineAfterMainMessage()
+                                                + (IsHTMLReport ? ManageSettings.UpdateReport.HTMLAfterModReportLine() : string.Empty)
                                                     + (!string.IsNullOrWhiteSpace(info.SourceLink) ? ManageSettings.UpdateReport.InfoLinkPattern() + info.SourceLink : string.Empty)
-                                            + (IsHTMLReport ? ManageSettings.UpdateReport.HTMLAfterModReportLine() : string.Empty)
                                             );
                                     }
                                     else
@@ -299,11 +310,17 @@ namespace AIHelper.Manage.Update
                             newReport.Add(lines[0].Replace(
                                   ManageSettings.UpdateReport.HTMLAfterModReportLine()
                                 , IsHTMLReport ?
-                                      ManageSettings.UpdateReport.HTMLPreInfoLink()
+                                      ManageSettings.UpdateReport.HTMLModReportPreVersionTags()
+                                        + ManageSettings.UpdateReport.PreInfoLinkTitleText()
+                                    + ManageSettings.UpdateReport.HTMLModReportPostVersionTags()
+                                    + ManageSettings.UpdateReport.HTMLPreInfoLink()
                                         + lines[1]
                                     + ManageSettings.UpdateReport.HTMLAfterInfoLink()
-                                        + ManageSettings.UpdateReport.ReportModSourcePageLinkVisitText()
-                                    + ManageSettings.UpdateReport.HTMLAfterTextForInfoLink()
+                                        + ManageSettings.UpdateReport.InfoLinkText()
+                                    + ManageSettings.UpdateReport.HTMLAfterInfoLinkText()
+                                    + ManageSettings.UpdateReport.HTMLModReportPreVersionTags()
+                                        + ManageSettings.UpdateReport.PostInfoLinkTitleText()
+                                    + ManageSettings.UpdateReport.HTMLModReportPostVersionTags()
                                 + ManageSettings.UpdateReport.HTMLAfterModReportLine()
                                   : string.Empty
                                 ));

@@ -287,7 +287,7 @@ namespace AIHelper.Manage
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal static string HTMLBeforeModReportSuccessLine()
             {
-                return "<details style=\"color:lightgreen\">";
+                return "<details style=\"color:white\">";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -305,7 +305,31 @@ namespace AIHelper.Manage
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal static string HTMLModReportInLineBeforeMainMessage()
             {
-                return "<summary>";
+                return "<summary style=\"color:white\">";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HTMLModReportPreModnameTags()
+            {
+                return "<p style=\"color:lightgreen;display:inline\">";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HTMLModReportPostModnameTags()
+            {
+                return "</p>";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HTMLModReportPreVersionTags()
+            {
+                return "<p style=\"color:yellow;display:inline\">";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HTMLModReportPostVersionTags()
+            {
+                return "</p>";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -393,7 +417,7 @@ namespace AIHelper.Manage
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLAfterTextForInfoLink()
+            internal static string HTMLAfterInfoLinkText()
             {
                 return "</a>";
             }
@@ -417,9 +441,21 @@ namespace AIHelper.Manage
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string ReportModSourcePageLinkVisitText()
+            internal static string PreInfoLinkTitleText()
             {
-                return "[" + T._("Information") + "]";
+                return T._("Website") + ">";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string InfoLinkText()
+            {
+                return T._("click");
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string PostInfoLinkTitleText()
+            {
+                return "<";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

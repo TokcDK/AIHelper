@@ -299,7 +299,7 @@ namespace AIHelper
 
         private void SetLocalizationStrings()
         {
-            this.Text = T._("AI Helper for Organized ModPack");
+            this.Text = "AI Helper" + " | " + CurrentGame.GetGameDisplayingName();
             CurrentGameLabel.Text = T._("Current Game") + ":";
             InstallInModsButton.Text = T._("Install from") + " " + ManageSettings.ModsInstallDirName();
             ToolsFixModListButton.Text = T._("Fix modlist");
@@ -1096,6 +1096,7 @@ namespace AIHelper
             }
 
             SelectedGameLabel.Text = CurrentGame.GetGameDisplayingName() + "❤";
+            this.Text = "AI Helper" + " | " + CurrentGame.GetGameDisplayingName();
         }
 
         private void SetMOMode(bool setText = true)

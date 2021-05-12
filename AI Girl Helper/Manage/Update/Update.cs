@@ -194,8 +194,8 @@ namespace AIHelper.Manage.Update
                                     info.report.Add(
                                         (IsHTMLReport ? ManageSettings.UpdateReport.HTMLBeforeModReportSuccessLine() : string.Empty)
                                             + ManageSettings.UpdateReport.HTMLModReportInLineBeforeMainMessage()
-                                                + T._("Mod")
-                                                + " "
+                                                //+ T._("Mod")
+                                                //+ " "
                                                 + ManageSettings.UpdateReport.HTMLModReportPreModnameTags()
                                                     + info.TargetFolderPath.Name
                                                 + ManageSettings.UpdateReport.HTMLModReportPostModnameTags()
@@ -207,7 +207,7 @@ namespace AIHelper.Manage.Update
                                                     : "")
                                                 + " "
                                                 + T._("updated to version")
-                                                + " "
+                                                + "
                                                 + ManageSettings.UpdateReport.HTMLModReportPreVersionTags()
                                                     + info.TargetLastVersion
                                                 + ManageSettings.UpdateReport.HTMLModReportPostVersionTags()
@@ -224,8 +224,8 @@ namespace AIHelper.Manage.Update
                                         info.report.Add(
                                             (IsHTMLReport ? ManageSettings.UpdateReport.HTMLBeforeModReportWarningLine() : string.Empty)
                                                 + ManageSettings.UpdateReport.HTMLModReportInLineBeforeMainMessage()
-                                                    + T._("Mod")
-                                                    + " "
+                                                    //+ T._("Mod")
+                                                    //+ " "
                                                     + ManageSettings.UpdateReport.HTMLModReportPreModnameTags()
                                                         + info.TargetFolderPath.Name
                                                     + ManageSettings.UpdateReport.HTMLModReportPostModnameTags()
@@ -244,7 +244,7 @@ namespace AIHelper.Manage.Update
                                         info.report.Add(
                                             (IsHTMLReport ? ManageSettings.UpdateReport.HTMLBeforeModReportErrorLine() : string.Empty)
                                                 + ManageSettings.UpdateReport.HTMLModReportInLineBeforeMainMessage()
-                                                    + T._("Failed to update mod")
+                                                    + T._("Failed to update")
                                                     + " "
                                                     + info.TargetFolderPath.Name
                                                 + ManageSettings.UpdateReport.HTMLModReportInLineAfterMainMessage()
@@ -255,7 +255,7 @@ namespace AIHelper.Manage.Update
                                             + ManageSettings.UpdateReport.HTMLAfterModReportLine()
                                             );
 
-                                        ManageLogs.Log("Failed to update mod" + " " + info.TargetFolderPath.Name /*+ ":" + Environment.NewLine + ex*/);
+                                        ManageLogs.Log("Failed to update" + " " + info.TargetFolderPath.Name /*+ ":" + Environment.NewLine + ex*/);
                                     }
                                 }
                             }

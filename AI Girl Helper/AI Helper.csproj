@@ -401,11 +401,11 @@
     <Compile Include="Utils\ParallelPoorMan.cs" />
     <Compile Include="Utils\T.cs" />
     <Compile Include="Utils\Compressor.cs" />
-    <Compile Include="Forms\AI Helper.cs">
+    <Compile Include="Forms\Main.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\AI Helper.Designer.cs">
-      <DependentUpon>AI Helper.cs</DependentUpon>
+    <Compile Include="Forms\Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\CopyFolder.cs" />
     <Compile Include="Utils\crc32.cs" />
@@ -416,8 +416,8 @@
     <Compile Include="Utils\Shortcut.cs" />
     <Compile Include="Manage\ManageXML.cs" />
     <Compile Include="Manage\ManageOther.cs" />
-    <EmbeddedResource Include="Forms\AI Helper.resx">
-      <DependentUpon>AI Helper.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Main.resx">
+      <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ExtraSettings\Elements\BepinEx\BepinExForm.resx">
       <DependentUpon>BepinExForm.cs</DependentUpon>

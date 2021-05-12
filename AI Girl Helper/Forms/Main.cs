@@ -18,7 +18,7 @@ using System.Windows.Forms;
 
 namespace AIHelper
 {
-    public partial class AI_Helper : Form
+    public partial class Main : Form
     {
         private bool compressmode;
 
@@ -43,7 +43,7 @@ namespace AIHelper
         private Game CurrentGame;
         private List<Game> ListOfGames;
 
-        public AI_Helper()
+        public Main()
         {
             InitializeComponent();
 

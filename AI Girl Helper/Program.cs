@@ -34,7 +34,7 @@ namespace AIHelper
                 {
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
-                    Application.Run(new AI_Helper());
+                    Application.Run(new Main());
                 }
                 else
                 {

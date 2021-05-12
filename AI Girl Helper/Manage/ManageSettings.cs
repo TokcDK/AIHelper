@@ -405,13 +405,13 @@ namespace AIHelper.Manage
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLPreInfoLink()
+            internal static string HTMLPreInfoLinkHTML()
             {
                 return "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLAfterInfoLink()
+            internal static string HTMLAfterInfoLinkHTML()
             {
                 return "\">";
             }

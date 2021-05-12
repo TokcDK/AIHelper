@@ -313,9 +313,9 @@ namespace AIHelper.Manage.Update
                                       ManageSettings.UpdateReport.HTMLModReportPreVersionTags()
                                         + ManageSettings.UpdateReport.PreInfoLinkTitleText()
                                     + ManageSettings.UpdateReport.HTMLModReportPostVersionTags()
-                                    + ManageSettings.UpdateReport.HTMLPreInfoLink()
+                                    + ManageSettings.UpdateReport.HTMLPreInfoLinkHTML()
                                         + lines[1]
-                                    + ManageSettings.UpdateReport.HTMLAfterInfoLink()
+                                    + ManageSettings.UpdateReport.HTMLAfterInfoLinkHTML()
                                         + ManageSettings.UpdateReport.InfoLinkText()
                                     + ManageSettings.UpdateReport.HTMLAfterInfoLinkText()
                                     + ManageSettings.UpdateReport.HTMLModReportPreVersionTags()

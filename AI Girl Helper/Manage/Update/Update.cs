@@ -207,7 +207,7 @@ namespace AIHelper.Manage.Update
                                                     : "")
                                                 + " "
                                                 + T._("updated to version")
-                                                + "
+                                                + " "
                                                 + ManageSettings.UpdateReport.HTMLModReportPreVersionTags()
                                                     + info.TargetLastVersion
                                                 + ManageSettings.UpdateReport.HTMLModReportPostVersionTags()

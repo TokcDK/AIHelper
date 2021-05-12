@@ -7,11 +7,11 @@ namespace AIHelper.Manage.Update.Sources
     /// <summary>
     /// Base for sources
     /// </summary>
-    abstract class SBase
+    abstract class SBase : IDisposable
     {
         protected updateInfo info;
 
-        protected readonly WebClient wc = new WebClient();
+        protected readonly WebClient wc;
 
         /// <summary>
         /// download file
@@ -35,6 +35,7 @@ namespace AIHelper.Manage.Update.Sources
         protected SBase(updateInfo info)
         {
             this.info = info;
+            wc = new WebClient();
         }
 
         /// <summary>
@@ -72,5 +73,13 @@ namespace AIHelper.Manage.Update.Sources
         /// </summary>
         /// <returns></returns>
         internal abstract Task<bool> GetFile();
+
+        public void Dispose()
+        {
+            if (wc != null)
+            {
+                wc.Dispose();
+            }
+        }
     }
 }

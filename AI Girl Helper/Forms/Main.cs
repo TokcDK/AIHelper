@@ -2153,7 +2153,7 @@ namespace AIHelper
 
                                 var FileInOverwrite = FilesInOverwrite[N];
 
-                                if (CheckForLongPath(ref FileInOverwrite))
+                                if (ManageStrings.CheckForLongPath(ref FileInOverwrite))
                                 {
                                     LongPaths.Add(FileInOverwrite.Remove(0, 4));
                                 }
@@ -2167,7 +2167,7 @@ namespace AIHelper
                                 //}
 
                                 FileInDataFolder = FileInOverwrite.Replace(OverwriteFolder, DataPath);
-                                if (CheckForLongPath(ref FileInDataFolder))
+                                if (ManageStrings.CheckForLongPath(ref FileInDataFolder))
                                 {
                                     LongPaths.Add(FileInDataFolder.Remove(0, 4));
                                 }
@@ -2269,7 +2269,7 @@ namespace AIHelper
                                         //"\\?\" - prefix to ignore 260 path cars limit
 
                                         var FileOfMod = ModFiles[f];
-                                        if (CheckForLongPath(ref FileOfMod))
+                                        if (ManageStrings.CheckForLongPath(ref FileOfMod))
                                         {
                                             LongPaths.Add(FileOfMod.Remove(0, 4));
                                         }
@@ -2312,7 +2312,7 @@ namespace AIHelper
 
                                         //MOCommonModeSwitchButton.Text = "..." + EnabledModsLength + "/" + N + ": " + f + "/" + ModFilesLength;
                                         FileInDataFolder = FileOfMod.Replace(ModFolder, DataPath);
-                                        if (CheckForLongPath(ref FileInDataFolder))
+                                        if (ManageStrings.CheckForLongPath(ref FileInDataFolder))
                                         {
                                             LongPaths.Add(FileInDataFolder.Remove(0, 4));
                                         }
@@ -2436,17 +2436,6 @@ namespace AIHelper
                 //сообщить об ошибке
                 MessageBox.Show("Mode was not switched. Error:" + Environment.NewLine + ex + "\r\n/debufStr=" + debufStr);
             }
-        }
-
-        private static bool CheckForLongPath(ref string path)
-        {
-            if (path.Length > 259 && path.Substring(0, 4) != @"\\?\")
-            {
-                ManageLogs.Log("Warning. Path to file has more of 259 characters. It can cause errors in game. Try to make path shorter by rename filename or any folders to it. File:" + Environment.NewLine + path);
-                path = path.ToLongPath(true, true);
-                return true;
-            }
-            return false;
         }
 
         /// <summary>
@@ -2960,8 +2949,9 @@ namespace AIHelper
 
                     ProgressForm.Text = T._("Sorting") + ":" + sideloadername;
 
-                    foreach (var file in Directory.EnumerateFiles(dir, "*.*", SearchOption.AllDirectories))
+                    foreach (var f in Directory.EnumerateFiles(dir, "*.*", SearchOption.AllDirectories))
                     {
+                        var file = f;
                         var guid = ManageArchive.GetZipmodGUID(file);
                         if (guid.Length > 0 && zipmodsGUIDList.ContainsKey(guid))//move by guid
                         {
@@ -2973,6 +2963,9 @@ namespace AIHelper
                             {
                                 continue;
                             }
+
+                            ManageStrings.CheckForLongPath(ref file);
+                            ManageStrings.CheckForLongPath(ref targetZipmodPath);
 
                             Directory.CreateDirectory(Path.GetDirectoryName(targetZipmodPath));
                             try
@@ -2999,6 +2992,9 @@ namespace AIHelper
                             {
                                 continue;
                             }
+
+                            ManageStrings.CheckForLongPath(ref file);
+                            ManageStrings.CheckForLongPath(ref target);
 
                             Directory.CreateDirectory(Path.GetDirectoryName(target));//create parent dir
 

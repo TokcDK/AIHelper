@@ -4,7 +4,15 @@ namespace AIHelper.Manage
 {
     internal static class ManageStringsExtensions
     {
-        internal static string ToLongPath(this string Path, bool IsFile = true, bool AlreadyChecked = false)
+        /// <summary>
+        /// check if path is long and can cause standart io operations errors.
+        /// if path is long, will be added prefix "\\?\" for long paths.
+        /// </summary>
+        /// <param name="Path"></param>
+        /// <param name="IsFile"></param>
+        /// <param name="AlreadyChecked"></param>
+        /// <returns></returns>
+        internal static string ToLongPathWhenNeed(this string Path, bool IsFile = true, bool AlreadyChecked = false)
         {
             if (AlreadyChecked || (((IsFile && Path.Length > 259) || (!IsFile && Path.Length > 247)) && Path.Substring(0, 4) != @"\\?\"))
             {

@@ -2838,7 +2838,7 @@ namespace AIHelper
 
         private async void btnUpdateMods_Click(object sender, EventArgs e)
         {
-            btnUpdateMods.Enabled = false;
+            AIGirlHelperTabControl.Enabled = false;
 
             //update plugins in mo mode
             if (MOmode)
@@ -2888,7 +2888,7 @@ namespace AIHelper
                 }
             }
 
-            btnUpdateMods.Enabled = true;
+            AIGirlHelperTabControl.Enabled = true;
         }
 
         private static void MoveZipModsFromOverwriteToSourceMod(Dictionary<string, string> zipmodsGUIDList)

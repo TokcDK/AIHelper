@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using INIFileMan;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -13,7 +14,7 @@ namespace AIHelper.Manage
                 ManageMO.RedefineGameMOData();
             }
 
-            Manage.INIFile INI = new Manage.INIFile(INIPath);
+            INIFile INI = new INIFile(INIPath);
             if (INI.KeyExists(Key, Section))
             {
                 return INI.ReadINI(Section, Key);
@@ -26,7 +27,7 @@ namespace AIHelper.Manage
             {
                 ManageMO.RedefineGameMOData();
             }
-            (new Manage.INIFile(INIPath)).WriteINI(Section, Key, Value, DOSaveINI);
+            (new INIFile(INIPath)).WriteINI(Section, Key, Value, DOSaveINI);
             return true;
             //return false;
         }

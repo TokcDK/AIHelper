@@ -1,4 +1,5 @@
 ﻿using AIHelper.Manage.Update.Targets.Mods.ModsMetaUrl;
+using INIFileMan;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
@@ -195,7 +196,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
                 var iniNum = 0;
                 foreach (var ini in Directory.EnumerateFiles(ManageSettings.GetModsUpdateDBInfoDir(), "*.ini", SearchOption.AllDirectories))
                 {
-                    Manage.INIFile INI = new Manage.INIFile(ini);
+                    INIFile INI = new INIFile(ini);
 
                     DBData.Add(new Dictionary<string, string>());
 

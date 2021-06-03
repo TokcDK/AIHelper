@@ -18,6 +18,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AI Helper.Tests", "AI Helpe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetListOfSubClasses", "K:\0GIT\[TokcDK]\LC\LibsCollection\GetListOfSubClasses\GetListOfSubClasses.csproj", "{FD599904-9718-4FAF-A7B0-48F5D1BE39E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INIFileMan", "K:\0GIT\[TokcDK]\LC\LibsCollection\INIFileMan\INIFileMan.csproj", "{40AC8009-CECD-44D0-B564-96E07237FD1A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,14 @@ Global
 		{FD599904-9718-4FAF-A7B0-48F5D1BE39E0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FD599904-9718-4FAF-A7B0-48F5D1BE39E0}.Release|x64.ActiveCfg = Release|Any CPU
 		{FD599904-9718-4FAF-A7B0-48F5D1BE39E0}.Release|x64.Build.0 = Release|Any CPU
+		{40AC8009-CECD-44D0-B564-96E07237FD1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40AC8009-CECD-44D0-B564-96E07237FD1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40AC8009-CECD-44D0-B564-96E07237FD1A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{40AC8009-CECD-44D0-B564-96E07237FD1A}.Debug|x64.Build.0 = Debug|Any CPU
+		{40AC8009-CECD-44D0-B564-96E07237FD1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40AC8009-CECD-44D0-B564-96E07237FD1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40AC8009-CECD-44D0-B564-96E07237FD1A}.Release|x64.ActiveCfg = Release|Any CPU
+		{40AC8009-CECD-44D0-B564-96E07237FD1A}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +68,7 @@ Global
 		{6E16DB2A-586F-49D9-BFC8-FBEC0D3DF6C7} = {27E06EF2-8392-4E2C-9B2D-51614FA22584}
 		{DCBD3E15-583C-4DC3-829B-C34DFECD3D84} = {36A10CC3-496E-45CA-AA17-A5097D8FA55A}
 		{FD599904-9718-4FAF-A7B0-48F5D1BE39E0} = {27E06EF2-8392-4E2C-9B2D-51614FA22584}
+		{40AC8009-CECD-44D0-B564-96E07237FD1A} = {27E06EF2-8392-4E2C-9B2D-51614FA22584}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E6619618-7F5E-4AA7-9756-C6CA2B7BAD64}

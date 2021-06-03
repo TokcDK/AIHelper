@@ -28,7 +28,7 @@ namespace AIHelper.Manage.Rules.ModList
         public ModListData()
         {
             GamePrefix = ManageSettings.GetListOfExistsGames()[ManageSettings.GetCurrentGameIndex()].GetGamePrefix();
-            RulesList = GetListOfSubClasses<ModListRulesBase>(this);
+            RulesList = GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<ModListRulesBase>(this);
         }
 
         /// <summary>
@@ -53,27 +53,6 @@ namespace AIHelper.Manage.Rules.ModList
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// Get all inherited classes of an abstract class
-        /// non linq version of https://stackoverflow.com/a/5411981
-        /// </summary>
-        /// <typeparam name="T">type of subclasses</typeparam>
-        /// <param name="parameter">parameter required for subclass(remove if not need)</param>
-        /// <returns>List of subclasses of abstract class</returns>
-        internal static List<T> GetListOfSubClasses<T>(ModListData parameter)
-        {
-            var ListOfSubClasses = new List<T>();
-            foreach (var ClassType in typeof(T).Assembly.GetTypes())
-            {
-                if (ClassType.IsSubclassOf(typeof(T)) && !ClassType.IsAbstract)
-                {
-                    ListOfSubClasses.Add((T)Activator.CreateInstance(ClassType, parameter));
-                }
-            }
-
-            return ListOfSubClasses;
         }
 
         internal static string GetDataWithNoComments(string line)

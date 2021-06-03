@@ -189,7 +189,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
             }
         }
 
-        private void BepInExSettingsLogCheckedListBox_SelectedIndexChanged(object sender, System.EventArgs e)
+        private void BepInExSettingsLogCheckedListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
         }
 

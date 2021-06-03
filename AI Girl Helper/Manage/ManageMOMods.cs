@@ -1904,7 +1904,7 @@ namespace AIHelper.Manage
         /// <param name="targetZipmodPath"></param>
         /// <param name="SourceModZipmodPath"></param>
         /// <param name="ZipmodsGUIDList"></param>
-        internal static void SaveGUIDIfZipMod(string targetZipmodPath, string SourceModZipmodPath, System.Collections.Generic.Dictionary<string, string> ZipmodsGUIDList)
+        internal static void SaveGUIDIfZipMod(string targetZipmodPath, string SourceModZipmodPath, Dictionary<string, string> ZipmodsGUIDList)
         {
             //zipmod GUID save
             string FileInDataFolderExtension;
@@ -1924,7 +1924,7 @@ namespace AIHelper.Manage
         /// <param name="SourceModZipmodPath"></param>
         /// <param name="ZipmodsGUIDList"></param>
         /// <param name="SaveFullPath">if true will be saved full zipmod path</param>
-        internal static void SaveGUIDIfZipMod(string SourceModZipmodPath, System.Collections.Generic.Dictionary<string, string> ZipmodsGUIDList, bool SaveFullPath = true)
+        internal static void SaveGUIDIfZipMod(string SourceModZipmodPath, Dictionary<string, string> ZipmodsGUIDList, bool SaveFullPath = true)
         {
             //zipmod GUID save
             string FileInDataFolderExtension;

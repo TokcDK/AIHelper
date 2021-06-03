@@ -46,7 +46,7 @@ namespace AIHelper
         //    Process.Start("https://mega.nz/#F!XOpkWahD!d0CpOSqiwww-M9QAVBjBSw");        
         //}
 
-        private void LinksForm_Load(object sender, System.EventArgs e)
+        private void LinksForm_Load(object sender, EventArgs e)
         {
             GetLinksListAndAddLinks();
         }

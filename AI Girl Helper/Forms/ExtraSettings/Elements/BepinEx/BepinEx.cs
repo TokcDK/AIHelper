@@ -6,7 +6,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
     {
         public BepinEx()
         {
-            BepinExElement = new ExtraSettings.Elements.BepinEx.BepinExForm
+            BepinExElement = new BepinExForm
             {
                 TopLevel = false,
                 //BackColor = parentForm.BackColor

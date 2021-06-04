@@ -32,6 +32,11 @@ namespace AIHelper.Manage
 #pragma warning restore CA1308 // Normalize strings to uppercase
         }
 
+        internal static string GetAppLocaleDirPath()
+        {
+            return Path.Combine(GetAppResDir(), "locale");
+        }
+
         internal static void SettingsINIT()
         {
             //int index = Properties.Settings.Default.CurrentGameListIndex;
@@ -728,9 +733,9 @@ namespace AIHelper.Manage
         internal static string GetCurrentGameEXENameNoSuffixes()
         {
             var CurrentGameEXEName = GetCurrentGameEXEName();
-            if(CurrentGameEXEName.EndsWith("_32",StringComparison.InvariantCulture) || CurrentGameEXEName.EndsWith("_64", StringComparison.InvariantCulture))
+            if (CurrentGameEXEName.EndsWith("_32", StringComparison.InvariantCulture) || CurrentGameEXEName.EndsWith("_64", StringComparison.InvariantCulture))
             {
-                CurrentGameEXEName = CurrentGameEXEName.Remove(CurrentGameEXEName.Length-3,3);
+                CurrentGameEXEName = CurrentGameEXEName.Remove(CurrentGameEXEName.Length - 3, 3);
             }
 
             return CurrentGameEXEName;

@@ -28,7 +28,7 @@ namespace AIHelper
                 windowsApplicationShortcut.WorkingDirectory = workingdir;
                 windowsApplicationShortcut.TargetPath = targetpath;
                 windowsApplicationShortcut.Arguments = arguments;
-                if (iconlocation == string.Empty)
+                if (string.IsNullOrEmpty(iconlocation))
                 {
                 }
                 else

@@ -49,7 +49,7 @@ namespace AIHelper.Manage
         /// <param name="exclusions"></param>
         /// <param name="recursive"></param>
         /// <returns></returns>
-        public static bool CheckDirectoryNullOrEmpty_Fast(string path, string Mask = "*", string[] exclusions = null, bool recursive = false)
+        public static bool CheckDirectoryNullOrEmpty_Fast(string path, string Mask = "*", string[] exclusions = null, bool recursive = false, string nameMask = "")
         {
             if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
             {
@@ -64,11 +64,11 @@ namespace AIHelper.Manage
 
             if (path.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.InvariantCulture))
             {
-                path += Mask;
+                path += nameMask + Mask;
             }
             else
             {
-                path += Path.DirectorySeparatorChar + Mask;
+                path += Path.DirectorySeparatorChar + nameMask + Mask;
             }
 
             var findHandle = FindFirstFile(path, out WIN32_FIND_DATA findData);
@@ -117,7 +117,7 @@ namespace AIHelper.Manage
         /// <param name="extension"></param>
         /// <param name="AllDirectories"></param>
         /// <returns></returns>
-        public static bool IsAnyFileExistsInTheDir(string dirPath, string extension = ".*", bool AllDirectories = true)
+        public static bool IsAnyFileExistsInTheDir(string dirPath, string extension = ".*", bool AllDirectories = true, string nameMask = "")
         {
             if (dirPath.Length == 0)
             {
@@ -129,7 +129,7 @@ namespace AIHelper.Manage
                 extension = "." + extension;
             }
 
-            if (!CheckDirectoryNullOrEmpty_Fast(dirPath, "*" + extension, null, AllDirectories))
+            if (!CheckDirectoryNullOrEmpty_Fast(dirPath, extension, null, AllDirectories, nameMask))
                 return true;
 
             return false;
@@ -353,7 +353,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         public static string GetResultTargetFilePathWithNameCheck(string Folder, string Name, string Extension = "")
         {
-            var ResultPath = Path.Combine(Folder, Name + (Extension.Length>0 && Extension.Substring(0, 1) != "." ? "." : string.Empty) + Extension);
+            var ResultPath = Path.Combine(Folder, Name + (Extension.Length > 0 && Extension.Substring(0, 1) != "." ? "." : string.Empty) + Extension);
             int i = 0;
             while (File.Exists(ResultPath))
             {
@@ -560,7 +560,7 @@ namespace AIHelper.Manage
                     var arrayLength = array.Length;
                     for (int i = 0; i < arrayLength; i++)
                     {
-                        hash += array[i].ToString("x2",CultureInfo.InvariantCulture)/*.ToLowerInvariant()*/;
+                        hash += array[i].ToString("x2", CultureInfo.InvariantCulture)/*.ToLowerInvariant()*/;
                     }
                 }
 

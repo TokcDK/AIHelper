@@ -2950,13 +2950,25 @@ namespace AIHelper
 
                     ProgressForm.Text = T._("Sorting") + ":" + sideloadername;
 
+                    var IsUnc = ManageMOMods.IsUncensorSelector(sideloadername);
+                    var IsMaleUnc = IsUnc && modpacks.ContainsKey(sideloadername + "M");
+                    var IsFeMaleUnc = IsUnc && modpacks.ContainsKey(sideloadername + "F");
+                    var IsSortingModPack = modpacks.ContainsKey(sideloadername) || IsMaleUnc || IsFeMaleUnc;
                     foreach (var f in Directory.EnumerateFiles(dir, "*.*", SearchOption.AllDirectories))
                     {
                         var file = f;
+
+                        // Check if TargetIsInSideloader by guid
                         var guid = ManageArchive.GetZipmodGUID(file);
-                        if (guid.Length > 0 && zipmodsGUIDList.ContainsKey(guid))//move by guid
+                        bool Isguid = guid.Length > 0 && zipmodsGUIDList.ContainsKey(guid);
+                        string TargetModPath = Isguid ? ManageMOMods.GetMOModPathInMods(zipmodsGUIDList[guid]) : "";
+                        var pathElements = !string.IsNullOrWhiteSpace(TargetModPath) ? file.Replace(TargetModPath, "").Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries) : null;
+                        var TargetzipModDirName = pathElements != null && pathElements.Length > 1 ? pathElements[1] : ""; // %modpath%\mods\%sideloadermodpackdir%
+                        var TargetIsInSideloader = TargetzipModDirName.ToUpperInvariant().Contains("SIDELOADER MODPACK"); // dir in mods is sideloader
+
+                        if (Isguid && !TargetIsInSideloader/*do not touch sideloader files and let them be updated properly*/)//move by guid
                         {
-                            var targetZipmodPath = file.Replace(ManageSettings.GetOverwriteFolder(), ManageMOMods.GetMOModPathInMods(zipmodsGUIDList[guid]));
+                            var targetZipmodPath = file.Replace(ManageSettings.GetOverwriteFolder(), TargetModPath);
 
                             if (File.Exists(targetZipmodPath)
                                 || !File.Exists(file)
@@ -2978,14 +2990,19 @@ namespace AIHelper
                                 ManageLogs.Log("An error occured while file move. error:\r\n" + ex + "\r\nfile=" + file + "\r\ntarget file=" + targetZipmodPath);
                             }
                         }
-                        else if (modpacks.ContainsKey(sideloadername))
+                        else if (IsSortingModPack)
                         {
+                            var sortM = Path.GetExtension(file).StartsWith(".zip", StringComparison.CurrentCultureIgnoreCase) && (Path.GetFileNameWithoutExtension(file).Contains("[Penis]") || Path.GetFileNameWithoutExtension(file).Contains("[Balls]"));
+                            var sortF = IsFeMaleUnc && Path.GetExtension(file).StartsWith(".zip", StringComparison.CurrentCultureIgnoreCase) && Path.GetFileNameWithoutExtension(file).Contains("[Female]");
+                            
+                            var TargetModName = modpacks[sideloadername + (sortF ? "F" : sortM ? "M" : "")];
+
                             //get target path for the zipmod
                             var target = ManageSettings.GetCurrentGameModsPath()
-                                + Path.DirectorySeparatorChar + modpacks[sideloadername]//mod path
-                                + Path.DirectorySeparatorChar + "mods"//mods dir
-                                + Path.DirectorySeparatorChar + sideloadername//sideloader dir name
-                                + file.Replace(dir, "");//file subpath in sideloader dir
+                                + Path.DirectorySeparatorChar + TargetModName //mod name
+                                + Path.DirectorySeparatorChar + "mods" //mods dir
+                                + Path.DirectorySeparatorChar + sideloadername // sideloader dir name
+                                + file.Replace(dir, ""); // file subpath in sideloader dir
 
                             if (File.Exists(target)// skip if already exist
                                 || !File.Exists(file)
@@ -3018,7 +3035,7 @@ namespace AIHelper
             }
 
             //clean empty dirs
-            ManageFilesFolders.DeleteEmptySubfolders(Path.Combine(ManageSettings.GetOverwriteFolder(), "mods"), true);
+            ManageFilesFolders.DeleteEmptySubfolders(ManageSettings.GetOverwriteFolder(), false);
 
             ProgressForm.Dispose();
         }

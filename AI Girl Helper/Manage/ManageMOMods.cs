@@ -1969,8 +1969,10 @@ namespace AIHelper.Manage
                         continue;
                     }
 
+                    name += CheckFemaleMaleUncensor(modpackdir, name);
+
                     //add to list
-                    if(!packs.ContainsKey(name))
+                    if (!packs.ContainsKey(name))
                     {
                         added.Add(name);
                         packs.Add(name, Path.GetFileName(dir));
@@ -1979,6 +1981,36 @@ namespace AIHelper.Manage
             }
 
             return packs;
+        }
+
+        /// <summary>
+        /// detect female or male uncensors in dir
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>F if in dir only female uncensors, M if only male uncensors or empty, else empty</returns>
+        private static string CheckFemaleMaleUncensor(string modpackdir, string name = null)
+        {
+            if (IsUncensorSelector(!string.IsNullOrWhiteSpace(name) ? name : Path.GetFileName(modpackdir)))
+            {
+                //add female male versions
+                var HasFemale = ManageFilesFolders.IsAnyFileExistsInTheDir(modpackdir, ".zipmod", true, "*[Female]*");
+                var HasMale = ManageFilesFolders.IsAnyFileExistsInTheDir(modpackdir, ".zipmod", true, "*[Penis]*") || ManageFilesFolders.IsAnyFileExistsInTheDir(modpackdir, ".zipmod", true, "*[Balls]*");
+                if (HasFemale && !HasMale)
+                {
+                    return "F";
+                }
+                else if (!HasFemale && HasMale)
+                {
+                    return "M";
+                }
+            }
+
+            return "";
+        }
+
+        internal static bool IsUncensorSelector(string name)
+        {
+            return name.ToUpperInvariant().StartsWith("SIDELOADER MODPACK - KK_UNCENSORSELECTOR", StringComparison.InvariantCulture);
         }
     }
 }

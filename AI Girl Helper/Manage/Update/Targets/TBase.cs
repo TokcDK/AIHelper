@@ -67,12 +67,22 @@ namespace AIHelper.Manage.Update.Targets
                 RestoreList = new HashSet<string>();
                 foreach (var path in info.target.RestorePathsList())
                 {
+                    if (string.IsNullOrWhiteSpace(path))
+                    {
+                        continue;
+                    }
+
                     var p = Path.GetFullPath(Path.Combine(info.BuckupDirPath, path));
                     RestoreList.Add(p);
                 }
 
                 foreach (var path in info.target.RestorePathsListExtra())
                 {
+                    if (string.IsNullOrWhiteSpace(path))
+                    {
+                        continue;
+                    }
+
                     var dirinfo = new DirectoryInfo(path);
                     if (dirinfo.Exists && dirinfo.IsSymbolicLink() && dirinfo.IsSymbolicLinkValid())
                     {

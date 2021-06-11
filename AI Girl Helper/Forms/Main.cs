@@ -2933,7 +2933,7 @@ namespace AIHelper
 
             foreach (var dir in dirs)
             {
-                try
+                //try
                 {
                     if (PBar.Value < PBar.Maximum)
                     {
@@ -2992,7 +2992,7 @@ namespace AIHelper
                         }
                         else if (IsSortingModPack)
                         {
-                            var sortM = Path.GetExtension(file).StartsWith(".zip", StringComparison.CurrentCultureIgnoreCase) && (Path.GetFileNameWithoutExtension(file).Contains("[Penis]") || Path.GetFileNameWithoutExtension(file).Contains("[Balls]"));
+                            var sortM = IsMaleUnc && Path.GetExtension(file).StartsWith(".zip", StringComparison.CurrentCultureIgnoreCase) && (Path.GetFileNameWithoutExtension(file).Contains("[Penis]") || Path.GetFileNameWithoutExtension(file).Contains("[Balls]"));
                             var sortF = IsFeMaleUnc && Path.GetExtension(file).StartsWith(".zip", StringComparison.CurrentCultureIgnoreCase) && Path.GetFileNameWithoutExtension(file).Contains("[Female]");
                             
                             var TargetModName = modpacks[sideloadername + (sortF ? "F" : sortM ? "M" : "")];
@@ -3027,10 +3027,10 @@ namespace AIHelper
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    ManageLogs.Log("An error occured while zipmods sort from overwrite dir. error:\r\n" + ex);
-                }
+                //catch (Exception ex)
+                //{
+                //    ManageLogs.Log("An error occured while zipmods sort from overwrite dir. error:\r\n" + ex);
+                //}
 
             }
 

@@ -177,7 +177,7 @@ namespace AIHelper.Games
             }
         }
 
-        public virtual string[,] GetObjectsForSymLinksPaths()
+        public virtual string[,] GetDirLinkPaths()
         {
             return new string[,]
             {

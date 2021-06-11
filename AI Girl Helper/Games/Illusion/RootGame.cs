@@ -69,10 +69,10 @@ namespace AI_Helper.Games
             return DetectedGame.GetGameStudioEXENameX32();
         }
 
-        public override string[,] GetObjectsForSymLinksPaths()
+        public override string[,] GetDirLinkPaths()
         {
             DetectRootGame();
-            return DetectedGame.GetObjectsForSymLinksPaths();
+            return DetectedGame.GetDirLinkPaths();
         }
 
         public override string GetGamePrefix()

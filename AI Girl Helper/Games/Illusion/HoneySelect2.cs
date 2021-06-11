@@ -37,7 +37,7 @@ namespace AIHelper.Games
             return "HS2";
         }
 
-        public override string[,] GetObjectsForSymLinksPaths()
+        public override string[,] GetDirLinkPaths()
         {
             return new string[,]
             {

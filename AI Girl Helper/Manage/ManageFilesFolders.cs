@@ -460,7 +460,7 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="SourceFolder"></param>
         /// <param name="TargetFolder"></param>
-        internal static void MoveContentOfSourceFolderToTargetFolderAndThenCleanSource(string SourceFolder, string TargetFolder)
+        internal static void MoveContent(string SourceFolder, string TargetFolder)
         {
             if (Directory.Exists(SourceFolder))
             {
@@ -546,15 +546,26 @@ namespace AIHelper.Manage
         /// <summary>
         /// Get crc32 of file
         /// </summary>
-        /// <param name="fileName"></param>
+        /// <param name="FilePath"></param>
         /// <returns></returns>
-        internal static string GetCrc32(this string fileName)
+        internal static string GetCrc32(this string FilePath)
+        {
+            return GetCrc32(new FileInfo(FilePath));
+
+        }
+
+        /// <summary>
+        /// Get crc32 of file
+        /// </summary>
+        /// <param name="FilePath"></param>
+        /// <returns></returns>
+        internal static string GetCrc32(this FileInfo FilePath)
         {
             //https://stackoverflow.com/a/57450238
             using (var crc32 = new CRCServiceProvider())
             {
                 string hash = string.Empty;
-                using (var fs = File.Open(fileName, FileMode.Open))
+                using (var fs = FilePath.Open(FileMode.Open))
                 {
                     var array = crc32.ComputeHash(fs);
                     var arrayLength = array.Length;

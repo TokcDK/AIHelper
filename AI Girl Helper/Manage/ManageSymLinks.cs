@@ -72,7 +72,7 @@ namespace AI_Helper.Manage
             {
                 if (targetFilePath != symlinkPath && !IsSymlinkAndValid(symlinkPath, targetFilePath, linktargetPathIsRelative))
                 {
-                    if(File.Exists(symlinkPath))
+                    if (File.Exists(symlinkPath))
                     {
                         File.Delete(symlinkPath);
                     }
@@ -91,20 +91,31 @@ namespace AI_Helper.Manage
 
         }
 
-        public static bool Symlink(string objectFileDirPath, string symlinkPath, bool isRelative = false)
+        /// <summary>
+        /// Create symlink for file or folder if object is exists (will create empty folder if not).
+        /// Will create link if link target is invalid or link path not exists
+        /// </summary>
+        /// <param name="objectFileDirPath"></param>
+        /// <param name="symlinkPath"></param>
+        /// <param name="isRelative"></param>
+        /// <param name="OType"></param>
+        /// <returns></returns>
+        public static bool Symlink(string objectFileDirPath, string symlinkPath, bool isRelative = false, ObjectType OType = ObjectType.NotDefined)
         {
             if (symlinkPath.Length > 0 && objectFileDirPath.Length > 0)
             {
                 string parentDirPath = Path.GetDirectoryName(symlinkPath);
-                if (!Directory.Exists(parentDirPath))
-                {
-                    Directory.CreateDirectory(parentDirPath);
-                }
+                Directory.CreateDirectory(parentDirPath);
 
                 //ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(
-                string objectPath;
-                if (File.Exists(objectPath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(objectFileDirPath)))
+                string objectPath = null;
+                if ((OType == ObjectType.NotDefined && File.Exists(objectPath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(objectFileDirPath))) || OType == ObjectType.File)
                 {
+                    if (OType != ObjectType.NotDefined && !File.Exists(objectFileDirPath))
+                    {
+                        return false;
+                    }
+
                     FileInfo fi;
                     if ((objectPath != symlinkPath && !File.Exists(symlinkPath))
                         || (
@@ -119,15 +130,26 @@ namespace AI_Helper.Manage
                             File.Delete(symlinkPath);
                         }
 
-                        CheckParentDirForSymLink(symlinkPath);
+                        CheckParentDirForSymLink(symlinkPath); // prevent error of missing dir
 
                         new FileInfo(objectPath).CreateSymbolicLink(symlinkPath, isRelative);//new from NuGet package
 
                         return true;
                     }
                 }
-                else if (Directory.Exists(objectPath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(objectFileDirPath, true)))
+                else if ((OType == ObjectType.NotDefined && Directory.Exists(objectPath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(objectFileDirPath, true))) || OType == ObjectType.Dir)
                 {
+                    if (OType != ObjectType.NotDefined && !File.Exists(objectFileDirPath))
+                    {
+                        if(Directory.Exists(objectPath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(objectFileDirPath, true)))
+                        {
+                        }
+                        else
+                        {
+                            Directory.CreateDirectory(objectFileDirPath);
+                        }
+                    }
+
                     DirectoryInfo di;
                     if ((objectPath != symlinkPath && !Directory.Exists(symlinkPath)) || ((di = new DirectoryInfo(symlinkPath)).IsSymbolicLink() && !di.IsSymbolicLinkValid()))
                     {
@@ -173,5 +195,12 @@ namespace AI_Helper.Manage
 
             return false;
         }
+    }
+
+    public enum ObjectType
+    {
+        NotDefined = 0,
+        Dir = 1,
+        File = 2
     }
 }

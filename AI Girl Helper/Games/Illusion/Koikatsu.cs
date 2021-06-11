@@ -39,7 +39,7 @@ namespace AI_Helper.Games
             return "KK";
         }
 
-        public override string[,] GetObjectsForSymLinksPaths()
+        public override string[,] GetDirLinkPaths()
         {
             return new string[,]
             {

@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace AIHelper.Manage.Update.Targets.Mods
 {
@@ -40,6 +42,26 @@ namespace AIHelper.Manage.Update.Targets.Mods
             {
                 @".\meta.ini"
             };
+        }
+
+        internal override string[] RestorePathsListExtra()        
+        {
+            string[,] ObjectLinkPaths = ManageSettings.GetListOfExistsGames()[Properties.Settings.Default.CurrentGameListIndex].GetDirLinkPaths();
+
+            int ObjectLinkPathsLength = ObjectLinkPaths.Length / 2;
+            HashSet<string> links = new HashSet<string>(ObjectLinkPathsLength);
+
+            for (int i = 0; i < ObjectLinkPathsLength; i++)
+            {
+                var LinkPath = ObjectLinkPaths[i, 1];
+
+                if (links.Contains(LinkPath))
+                {
+                    links.Add(LinkPath);
+                }
+            }
+
+            return links.ToArray();
         }
     }
 }

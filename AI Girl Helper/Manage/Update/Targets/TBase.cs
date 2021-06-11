@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SymbolicLinkSupport;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -70,6 +71,20 @@ namespace AIHelper.Manage.Update.Targets
                     RestoreList.Add(p);
                 }
 
+                foreach (var path in info.target.RestorePathsListExtra())
+                {
+                    var dirinfo = new DirectoryInfo(path);
+                    if (dirinfo.Exists && dirinfo.IsSymbolicLink() && dirinfo.IsSymbolicLinkValid())
+                    {
+                        var modPath = ManageMOMods.GetMOModPathInMods(dirinfo.GetSymbolicLinkTarget());
+
+                        if (Path.GetFileName(modPath) == info.TargetFolderPath.FullName) // if parsing mod path is same then add for bak
+                        {
+                            RestoreList.Add(path);
+                        }
+                    }
+                }
+
                 //info.TargetFolderPath.FullName.CopyAll(BuckupDirPath);
                 MakeBuckup(BuckupDirPath, info.TargetFolderPath.FullName);
                 //ZipFile.CreateFromDirectory(info.TargetFolderPath.FullName, OldModBuckupDirPath);
@@ -77,8 +92,9 @@ namespace AIHelper.Manage.Update.Targets
 
                 return Directory.Exists(BuckupDirPath);
             }
-            catch
+            catch (Exception ex)
             {
+                ManageLogs.Log("An error occured while buckup creation:\r\n" + ex);
                 return false;
             }
         }
@@ -257,6 +273,15 @@ namespace AIHelper.Manage.Update.Targets
         /// </summary>
         /// <returns></returns>
         internal virtual string[] RestorePathsList()
+        {
+            return new[] { "" };
+        }
+
+        /// <summary>
+        /// list of folders from game's list of symlink target object
+        /// </summary>
+        /// <returns></returns>
+        internal virtual string[] RestorePathsListExtra()
         {
             return new[] { "" };
         }

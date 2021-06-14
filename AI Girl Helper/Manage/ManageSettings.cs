@@ -1,6 +1,7 @@
 ﻿using AI_Helper.Games;
 using AI_Helper.Manage;
 using AIHelper.Games;
+using AIHelper.SharedData;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -637,6 +638,26 @@ namespace AIHelper.Manage
             }
 
             return listOfGamesString;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// <summary>
+        /// List of found games
+        /// </summary>
+        /// <returns></returns>
+        internal static List<Game> GetListOfGames()
+        {
+            return Data.ListOfGames;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// <summary>
+        /// Currents selected game
+        /// </summary>
+        /// <returns></returns>
+        internal static Game GetCurrentGame()
+        {
+            return Data.CurrentGame;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

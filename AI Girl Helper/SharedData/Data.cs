@@ -1,17 +1,13 @@
-﻿//using AIHelper.Games;
-//using System.Collections.Generic;
+﻿using AIHelper.Games;
+using System.Collections.Generic;
 
-//namespace AIHelper.SharedData
-//{
-//    internal class Data
-//    {
-//        internal List<Game> ListOfGames = new List<Game>();
+namespace AIHelper.SharedData
+{
+    internal static class Data
+    {
+        internal static List<Game> ListOfGames;
 
-//        internal Game CurrentGame = null;
+        internal static Game CurrentGame;
+    }
 
-//        internal Data()
-//        {
-//        }
-//    }
-
-//}
+}

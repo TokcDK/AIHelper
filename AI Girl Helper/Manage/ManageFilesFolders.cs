@@ -1,4 +1,5 @@
 ﻿using AI_Helper.Manage;
+using AIHelper.SharedData;
 using Soft160.Data.Cryptography;
 using SymbolicLinkSupport;
 using System;
@@ -420,7 +421,7 @@ namespace AIHelper.Manage
             string AloneFolderName = IfInTheFolderOnlyOneFolderGetItName(folderPath);
             if (AloneFolderName.Length > 0)
             {
-                if (!ManageStrings.IsStringAContainsAnyStringFromStringArray(AloneFolderName, ManageSettings.GetListOfExistsGames()[ManageSettings.GetCurrentGameIndex()].GetGameStandartFolderNames(), true))
+                if (!ManageStrings.IsStringAContainsAnyStringFromStringArray(AloneFolderName, Data.CurrentGame.GetGameStandartFolderNames(), true))
                 {
                     string folderPathName = Path.GetFileName(folderPath);
                     string folderParentDirPath = Path.GetDirectoryName(folderPath);

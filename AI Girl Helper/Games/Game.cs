@@ -272,7 +272,7 @@ namespace AIHelper.Games
 
         protected void CopyMOfiles(string GameMPAltDirName)
         {
-            //var game = ManageSettings.GetListOfExistsGames()[ManageSettings.GetCurrentGameIndex()];
+            //var game = Data.CurrentGame.GetCurrentGameIndex()];
             string GameMOPath = Path.Combine(GetGamePath(), "MO");
             string GameMPAltDirNamePath = Path.Combine(GetGamePath(), GameMPAltDirName);
             if (Directory.Exists(GameMPAltDirNamePath) && !Directory.Exists(GameMOPath))

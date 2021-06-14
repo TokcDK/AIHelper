@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AIHelper.SharedData;
+using System;
 using System.Collections.Generic;
 
 namespace AIHelper.Manage.Rules.ModList
@@ -27,7 +28,7 @@ namespace AIHelper.Manage.Rules.ModList
 
         public ModListData()
         {
-            GamePrefix = ManageSettings.GetListOfExistsGames()[ManageSettings.GetCurrentGameIndex()].GetGamePrefix();
+            GamePrefix = Data.CurrentGame.GetGamePrefix();
             RulesList = GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<ModListRulesBase>(this);
         }
 

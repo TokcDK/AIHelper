@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using AIHelper.SharedData;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -46,7 +47,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
 
         internal override string[] RestorePathsListExtra()        
         {
-            string[,] ObjectLinkPaths = ManageSettings.GetListOfExistsGames()[Properties.Settings.Default.CurrentGameListIndex].GetDirLinkPaths();
+            string[,] ObjectLinkPaths = Data.CurrentGame.GetDirLinkPaths();
 
             int ObjectLinkPathsLength = ObjectLinkPaths.Length / 2;
             HashSet<string> links = new HashSet<string>(ObjectLinkPathsLength);

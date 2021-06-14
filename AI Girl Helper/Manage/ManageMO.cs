@@ -1,4 +1,5 @@
 ﻿using AI_Helper.Manage;
+using AIHelper.SharedData;
 using INIFileMan;
 using System;
 using System.Collections.Generic;
@@ -474,7 +475,7 @@ namespace AIHelper.Manage
 
             if (!ManageSettings.MOIsNew)
             {
-                var CurrentGame = ManageSettings.GetListOfExistsGames()[Properties.Settings.Default.CurrentGameListIndex];
+                var CurrentGame = Data.CurrentGame;
                 if (CurrentGame.GetGameEXENameX32().Length > 0 && File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), CurrentGame.GetGameEXENameX32() + ".exe")))
                 {
                     executablesCount++;

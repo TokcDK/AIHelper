@@ -22,7 +22,7 @@
             return "AI";
         }
 
-        internal override System.Collections.Generic.Dictionary<string, byte[]> GetBaseGamePyFile()
+        public override System.Collections.Generic.Dictionary<string, byte[]> GetBaseGamePyFile()
         {
             return new System.Collections.Generic.Dictionary<string, byte[]>
                 {

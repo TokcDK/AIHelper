@@ -12,7 +12,7 @@ namespace AI_Helper.Games
             DetectedGame.InitActions();
         }
 
-        internal override bool isRootGame { get; set; } = true;
+        public override bool isRootGame { get; set; } = true;
 
         public void DetectRootGame()
         {
@@ -81,7 +81,7 @@ namespace AI_Helper.Games
             return DetectedGame.GetGamePrefix();
         }
 
-        internal override Dictionary<string, byte[]> GetBaseGamePyFile()
+        public override Dictionary<string, byte[]> GetBaseGamePyFile()
         {
             DetectRootGame();
             return DetectedGame.GetBaseGamePyFile();

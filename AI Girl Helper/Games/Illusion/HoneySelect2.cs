@@ -10,7 +10,7 @@ namespace AIHelper.Games
             base.InitActions();
             //CopyMOfiles("MOHS");
         }
-        internal override bool isHaveSideloaderMods { get; set; } = true;
+        public override bool isHaveSideloaderMods { get; set; } = true;
 
         public override string GetGameFolderName()
         {
@@ -73,7 +73,7 @@ namespace AIHelper.Games
             };
         }
 
-        internal override System.Collections.Generic.Dictionary<string, byte[]> GetBaseGamePyFile()
+        public override System.Collections.Generic.Dictionary<string, byte[]> GetBaseGamePyFile()
         {
             return new System.Collections.Generic.Dictionary<string, byte[]>
                 {

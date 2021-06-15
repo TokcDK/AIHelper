@@ -16,15 +16,15 @@ namespace AIHelper.Games
             GetBaseGamePyFile();
         }
 
-        //internal string gamefolderPath { get; set; } = string.Empty;
+        //public string gamefolderPath { get; set; } = string.Empty;
         /// <summary>
         /// true if it is root game ie placed in same folder with game's data, mods folder
         /// </summary>
-        internal virtual bool isRootGame { get; set; } = false;
+        public virtual bool isRootGame { get; set; } = false;
         /// <summary>
         /// true if game have sideloader zipmods
         /// </summary>
-        internal virtual bool isHaveSideloaderMods { get; set; } = false;
+        public virtual bool isHaveSideloaderMods { get; set; } = false;
 
         protected string gamefolderName { get; set; } = string.Empty;
         /// <summary>
@@ -289,7 +289,7 @@ namespace AIHelper.Games
         /// return selected game detection MO BaseGame plugin's py file or all files by default
         /// </summary>
         /// <returns></returns>
-        internal virtual Dictionary<string, byte[]> GetBaseGamePyFile()
+        public virtual Dictionary<string, byte[]> GetBaseGamePyFile()
         {
             return new Dictionary<string, byte[]>
                 {

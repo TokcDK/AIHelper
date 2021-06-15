@@ -12,7 +12,7 @@ using NGettext;
 //  https://github.com/VitaliiTsilnyk/NGettext
 namespace AIHelper
 {
-    internal class T
+    public static class T
     {
         static Catalog GetCatalog()
         {

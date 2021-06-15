@@ -6,7 +6,7 @@
         {
             return GetTheGameFolderName(GetGameEXEName());
         }
-        internal override bool isHaveSideloaderMods { get; set; } = true;
+        public override bool isHaveSideloaderMods { get; set; } = true;
 
         public override string GetGameEXEName()
         {
@@ -28,7 +28,7 @@
             return "AI";
         }
 
-        internal override System.Collections.Generic.Dictionary<string, byte[]> GetBaseGamePyFile()
+        public override System.Collections.Generic.Dictionary<string, byte[]> GetBaseGamePyFile()
         {
             return new System.Collections.Generic.Dictionary<string, byte[]>
                 {

@@ -12,7 +12,7 @@ namespace AI_Helper.Games
             base.InitActions();
             CopyMOfiles("MOKK");
         }
-        internal override bool isHaveSideloaderMods { get; set; } = true;
+        public override bool isHaveSideloaderMods { get; set; } = true;
 
         public override string GetGameFolderName()
         {
@@ -81,7 +81,7 @@ namespace AI_Helper.Games
             };
         }
 
-        internal override System.Collections.Generic.Dictionary<string, byte[]> GetBaseGamePyFile()
+        public override System.Collections.Generic.Dictionary<string, byte[]> GetBaseGamePyFile()
         {
             return new System.Collections.Generic.Dictionary<string, byte[]>
                 {

@@ -119,7 +119,7 @@ namespace AIHelper.Manage
 
             BepInExPreloadersFix(RemoveLinks);
 
-            string[,] ObjectLinkPaths = Data.CurrentGame.GetDirLinkPaths();
+            string[,] ObjectLinkPaths = GameData.CurrentGame.GetDirLinkPaths();
 
             int ObjectLinkPathsLength = ObjectLinkPaths.Length / 2;
             for (int i = 0; i < ObjectLinkPathsLength; i++)
@@ -183,7 +183,7 @@ namespace AIHelper.Manage
 
         private static void BepInExPreloadersFix(bool Remove = false)
         {
-            string[,] BepInExFilesPaths = Data.CurrentGame.GetObjectsForMove();
+            string[,] BepInExFilesPaths = GameData.CurrentGame.GetObjectsForMove();
 
             var Done = false;
 

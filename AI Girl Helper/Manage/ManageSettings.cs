@@ -647,7 +647,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static List<Game> GetListOfGames()
         {
-            return Data.ListOfGames;
+            return GameData.ListOfGames;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -657,7 +657,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static Game GetCurrentGame()
         {
-            return Data.CurrentGame;
+            return GameData.CurrentGame;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

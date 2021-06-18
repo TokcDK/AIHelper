@@ -475,7 +475,7 @@ namespace AIHelper.Manage
 
             if (!ManageSettings.MOIsNew)
             {
-                var CurrentGame = Data.CurrentGame;
+                var CurrentGame = GameData.CurrentGame;
                 if (CurrentGame.GetGameEXENameX32().Length > 0 && File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), CurrentGame.GetGameEXENameX32() + ".exe")))
                 {
                     executablesCount++;

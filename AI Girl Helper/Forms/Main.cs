@@ -42,8 +42,8 @@ namespace AIHelper
 
         private static bool MOmode { get => Properties.Settings.Default.MOmode; set => Properties.Settings.Default.MOmode = value; }
 
-        private static Game CurrentGame { get => Data.CurrentGame; set => Data.CurrentGame = value; }
-        private static List<Game> ListOfGames { get => Data.ListOfGames; set => Data.ListOfGames = value; }
+        private static Game CurrentGame { get => GameData.CurrentGame; set => GameData.CurrentGame = value; }
+        private static List<Game> ListOfGames { get => GameData.ListOfGames; set => GameData.ListOfGames = value; }
 
         public Main()
         {
@@ -266,7 +266,7 @@ namespace AIHelper
                         ));
                 try
                 {
-                    CurrentGameTitleTextBox.Text = Data.CurrentGame.GetGameDisplayingName();
+                    CurrentGameTitleTextBox.Text = GameData.CurrentGame.GetGameDisplayingName();
                     CurrentGameTitleTextBox.Enabled = false;
                 }
                 catch { }
@@ -792,7 +792,7 @@ namespace AIHelper
                 "Only displays the specified log level and above in the console output"));
 
 
-            THToolTip.SetToolTip(CurrentGameComboBox, T._("List of found games. Current") + ": " + Data.CurrentGame.GetGameDisplayingName());
+            THToolTip.SetToolTip(CurrentGameComboBox, T._("List of found games. Current") + ": " + GameData.CurrentGame.GetGameDisplayingName());
 
             var toMO = ManageSettings.ModsInstallDirName();
             THToolTip.SetToolTip(Open2MOLinkLabel,

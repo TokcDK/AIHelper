@@ -391,7 +391,7 @@
     <Compile Include="Manage\Update\Targets\Mods\ModsBase.cs" />
     <Compile Include="Manage\Update\Targets\TBase.cs" />
     <Compile Include="Manage\Update\UpdateTools.cs" />
-    <Compile Include="SharedData\Data.cs" />
+    <Compile Include="SharedData\GameData.cs" />
     <Compile Include="UserData\CardframeBack.cs" />
     <Compile Include="UserData\CardframeFront.cs" />
     <Compile Include="UserData\CharaFemale.cs" />

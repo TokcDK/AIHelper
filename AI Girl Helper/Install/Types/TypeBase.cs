@@ -1,9 +1,11 @@
-﻿namespace AIHelper.Install.Types
-{
-    internal abstract class TypeBase
-    {
-        //internal abstract bool Detect();
+﻿using System.IO;
 
-        //internal abstract bool Install();
+namespace AIHelper.Install.Types
+{
+    public abstract class TypeBase
+    {
+        //public DirectoryInfo SourceDir { get; set; }
+
+        //public abstract bool Install();
     }
 }

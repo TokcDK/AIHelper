@@ -3180,7 +3180,7 @@ namespace AIHelper
 
         private void PbDiscord_Click(object sender, EventArgs e)
         {
-            Process.Start("https://discord.gg/6zYNCsb2hT");//Program's discord server
+            Process.Start("https://discord.gg/rKbXzrnrMs");//Program's discord server
         }
 
         private void linkLabel1_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)

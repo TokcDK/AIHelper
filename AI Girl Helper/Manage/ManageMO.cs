@@ -1628,6 +1628,9 @@ namespace AIHelper.Manage
                     @"MOFolder\plugins\installer_omod.dll",
                     @"MOFolder\plugins\preview_bsa.dll",
                     @"MOFolder\plugins\ScriptExtenderPluginChecker.py",
+                    @"MOFolder\plugins\installer_fomod_csharp.dll",
+                    @"MOFolder\plugins\data\OMODFramework*.*",
+                    @"MOFolder\plugins\data\DDS\",
                     !ManageMO.GetMOVersion().StartsWith("2.3",StringComparison.InvariantCulture)?@"MOFolder\plugins\modorganizer-basic_games\":""
             };
             var MOfolderPath = ManageSettings.GetMOdirPath();
@@ -1638,8 +1641,9 @@ namespace AIHelper.Manage
                 {
                     if (path.EndsWith("\\", StringComparison.InvariantCulture) && Directory.Exists(path))
                     {
-                        var searchDir = new DirectoryInfo(Path.GetDirectoryName(path));
-                        var searchPattern = Path.GetFileName(path);
+                        var trimmedPath = path.TrimEnd('\\');
+                        var searchDir = new DirectoryInfo(Path.GetDirectoryName(trimmedPath));
+                        var searchPattern = Path.GetFileName(trimmedPath);
                         foreach (var foundDir in searchDir.EnumerateDirectories(searchPattern))
                         {
                             try

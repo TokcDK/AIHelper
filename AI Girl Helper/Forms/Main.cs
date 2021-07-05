@@ -81,9 +81,9 @@ namespace AIHelper
 
             ManageMO.RedefineGameMOData();
 
-            CleanMOFolder();
+            ManageMO.CleanMOFolder();
             //
-            CheckBaseGamesPy();
+            ManageMO.CheckBaseGamesPy();
 
             CleanLog();
 
@@ -103,29 +103,6 @@ namespace AIHelper
             Properties.Settings.Default.INITDone = true;
         }
 
-        /// <summary>
-        /// create game detection py files if missing
-        /// </summary>
-        private void CheckBaseGamesPy()
-        {
-            var moBaseGamesPluginGamesDirPath = Path.Combine(ManageSettings.GetMOdirPath(), "plugins", "basic_games", "games");
-            if (!Directory.Exists(moBaseGamesPluginGamesDirPath))
-            {
-                return;
-            }
-
-            var pys = CurrentGame.GetBaseGamePyFile();
-
-            foreach (var py in pys)
-            {
-                var pypath = Path.Combine(moBaseGamesPluginGamesDirPath, py.Key + ".py");
-                if (!File.Exists(pypath))
-                {
-                    File.WriteAllBytes(pypath, py.Value);
-                }
-            }
-        }
-
         private static void CleanLog()
         {
             if (File.Exists(ManageLogs.LogFilePath) && new FileInfo(ManageLogs.LogFilePath).Length > 10000000)
@@ -140,73 +117,7 @@ namespace AIHelper
             }
         }
 
-        /// <summary>
-        /// clean MO folder from some useless files for illusion games
-        /// </summary>
-        private static void CleanMOFolder()
-        {
-            var MOFilesForClean = new[]
-            {
-                    @"MOFolder\plugins\bsa_extractor.dll",
-                    @"MOFolder\plugins\bsa_packer.dll",
-                    @"MOFolder\plugins\check_fnis.dll",
-                    @"MOFolder\plugins\DDSPreview.py",
-                    @"MOFolder\plugins\FNISPatches.py",
-                    @"MOFolder\plugins\FNISTool.py",
-                    @"MOFolder\plugins\FNISToolReset.py",
-                    @"MOFolder\plugins\Form43Checker.py",
-                    @"MOFolder\plugins\game_enderal.dll",
-                    @"MOFolder\plugins\game_fallout3.dll",
-                    @"MOFolder\plugins\game_fallout4.dll",
-                    @"MOFolder\plugins\game_fallout4vr.dll",
-                    @"MOFolder\plugins\game_falloutNV.dll",
-                    @"MOFolder\plugins\game_morrowind.dll",
-                    @"MOFolder\plugins\game_oblivion.dll",
-                    @"MOFolder\plugins\game_skyrimse.dll",
-                    @"MOFolder\plugins\game_skyrimvr.dll",
-                    @"MOFolder\plugins\game_ttw.dll",
-                    @"MOFolder\plugins\installer_bain.dll",
-                    @"MOFolder\plugins\installer_bundle.dll",
-                    @"MOFolder\plugins\installer_fomod.dll",
-                    @"MOFolder\plugins\installer_ncc.dll",
-                    @"MOFolder\plugins\ScriptExtenderPluginChecker.py",
-                    !ManageMO.GetMOVersion().StartsWith("2.3",StringComparison.InvariantCulture)?@"MOFolder\plugins\modorganizer-basic_games\":""
-            };
-            var MOfolderPath = ManageSettings.GetMOdirPath();
-            foreach (var file in MOFilesForClean)
-            {
-                var path = file.Replace("MOFolder", MOfolderPath);
-                if (!string.IsNullOrWhiteSpace(path))
-                {
-                    if (path.EndsWith("\\", StringComparison.InvariantCulture) && Directory.Exists(path))
-                    {
-                        try
-                        {
-                            var D = new DirectoryInfo(path)
-                            {
-                                Attributes = FileAttributes.Normal
-                            };
-                            D.DeleteRecursive();
-                        }
-                        catch { }
-                    }
-                    else if (File.Exists(path))
-                    {
-                        try
-                        {
-                            var F = new FileInfo(path)
-                            {
-                                Attributes = FileAttributes.Normal
-                            };
-                            F.Delete();
-                        }
-                        catch { }
-                    }
-                }
-            }
-        }
-
-        private void VariablesINIT()
+        private static void VariablesINIT()
         {
             Properties.Settings.Default.CurrentGamePath = CurrentGame.GetGamePath();
             //SettingsManage.SettingsINIT();
@@ -2686,7 +2597,7 @@ namespace AIHelper
             Properties.Settings.Default.BepinExCfgPath = string.Empty;
             Properties.Settings.Default.MOSelectedProfileDirName = string.Empty;
 
-            CheckBaseGamesPy();
+            ManageMO.CheckBaseGamesPy();
 
             CurrentGame.InitActions();
             CurrentGameTitleTextBox.Text = CurrentGame.GetGameDisplayingName();
@@ -2853,9 +2764,9 @@ namespace AIHelper
             {
                 if (MOmode)
                 {
-                    CleanMOFolder();
+                    ManageMO.CleanMOFolder();
                     //
-                    CheckBaseGamesPy();
+                    ManageMO.CheckBaseGamesPy();
 
                     ManageMO.RedefineGameMOData();
 

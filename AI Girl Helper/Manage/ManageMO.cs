@@ -1564,5 +1564,111 @@ namespace AIHelper.Manage
 
             INI.WriteINI("PluginPersistance", @"Python%20Proxy\tryInit", "false");
         }
+
+        /// <summary>
+        /// clean MO folder from some useless files for illusion games
+        /// </summary>
+        internal static void CleanMOFolder()
+        {
+            var MOFilesForClean = new[]
+            {
+                    @"MOFolder\plugins\bsa_*.dll",
+                    //@"MOFolder\plugins\bsa_extractor.dll",
+                    //@"MOFolder\plugins\bsa_packer.dll",
+                    @"MOFolder\plugins\check_fnis.dll",
+                    @"MOFolder\plugins\DDSPreview.py",
+                    @"MOFolder\plugins\FNIS*.py",
+                    //@"MOFolder\plugins\FNISPatches.py",
+                    //@"MOFolder\plugins\FNISTool.py",
+                    //@"MOFolder\plugins\FNISToolReset.py",
+                    @"MOFolder\plugins\Form43Checker.py",
+                    @"MOFolder\plugins\game_*.dll",
+                    //@"MOFolder\plugins\game_enderal.dll",
+                    //@"MOFolder\plugins\game_fallout3.dll",
+                    //@"MOFolder\plugins\game_fallout4.dll",
+                    //@"MOFolder\plugins\game_fallout4vr.dll",
+                    //@"MOFolder\plugins\game_falloutNV.dll",
+                    //@"MOFolder\plugins\game_morrowind.dll",
+                    //@"MOFolder\plugins\game_oblivion.dll",
+                    //@"MOFolder\plugins\game_skyrimse.dll",
+                    //@"MOFolder\plugins\game_skyrimvr.dll",
+                    //@"MOFolder\plugins\game_ttw.dll",
+                    //@"MOFolder\plugins\game_skyrim.dll",
+                    //@"MOFolder\plugins\game_enderalse.dll",
+                    @"MOFolder\plugins\installer_bain.dll",
+                    @"MOFolder\plugins\installer_bundle.dll",
+                    @"MOFolder\plugins\installer_fomod.dll",
+                    @"MOFolder\plugins\installer_ncc.dll",
+                    @"MOFolder\plugins\installer_omod.dll",
+                    @"MOFolder\plugins\preview_bsa.dll",
+                    @"MOFolder\plugins\ScriptExtenderPluginChecker.py",
+                    !ManageMO.GetMOVersion().StartsWith("2.3",StringComparison.InvariantCulture)?@"MOFolder\plugins\modorganizer-basic_games\":""
+            };
+            var MOfolderPath = ManageSettings.GetMOdirPath();
+            foreach (var file in MOFilesForClean)
+            {
+                var path = file.Replace("MOFolder", MOfolderPath);
+                if (!string.IsNullOrWhiteSpace(path))
+                {
+                    if (path.EndsWith("\\", StringComparison.InvariantCulture) && Directory.Exists(path))
+                    {
+                        var searchDir = new DirectoryInfo(Path.GetDirectoryName(path));
+                        var searchPattern = Path.GetFileName(path);
+                        foreach (var foundDir in searchDir.EnumerateDirectories(searchPattern))
+                        {
+                            try
+                            {
+                                foundDir.Attributes = FileAttributes.Normal;
+                                foundDir.Delete();
+                            }
+                            catch (Exception ex)
+                            {
+                                ManageLogs.Log("An error occured while MO dir cleaning from useless files. Error:\r\n" + ex);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var searchDir = new DirectoryInfo(Path.GetDirectoryName(path));
+                        var searchPattern = Path.GetFileName(path);
+                        foreach (var foundFile in searchDir.EnumerateFiles(searchPattern))
+                        {
+                            try
+                            {
+                                foundFile.Attributes = FileAttributes.Normal;
+                                foundFile.Delete();
+                            }
+                            catch (Exception ex)
+                            {
+                                ManageLogs.Log("An error occured while MO dir cleaning from useless files. Error:\r\n" + ex);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// create game detection py files if missing
+        /// </summary>
+        internal static void CheckBaseGamesPy()
+        {
+            var moBaseGamesPluginGamesDirPath = Path.Combine(ManageSettings.GetMOdirPath(), "plugins", "basic_games", "games");
+            if (!Directory.Exists(moBaseGamesPluginGamesDirPath))
+            {
+                return;
+            }
+
+            var pys = GameData.CurrentGame.GetBaseGamePyFile();
+
+            foreach (var py in pys)
+            {
+                var pypath = Path.Combine(moBaseGamesPluginGamesDirPath, py.Key + ".py");
+                if (!File.Exists(pypath))
+                {
+                    File.WriteAllBytes(pypath, py.Value);
+                }
+            }
+        }
     }
 }

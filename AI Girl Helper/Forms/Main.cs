@@ -861,7 +861,7 @@ namespace AIHelper
 
             if (MOmode)
             {
-                RestoreModlist();
+                ManageMO.RestoreModlist();
 
                 {
                     //string[] Archives7z;
@@ -2789,7 +2789,7 @@ namespace AIHelper
                     RunProgram(MOexePath, "moshortcut://:" + ManageMO.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
 
                     //restore modlist
-                    RestoreModlist();
+                    ManageMO.RestoreModlist();
 
                     //restore zipmods to source mods
                     MoveZipModsFromOverwriteToSourceMod(ZipmodsGUIDList);
@@ -3008,32 +3008,6 @@ namespace AIHelper
             ManageFilesFolders.DeleteEmptySubfolders(ManageSettings.GetOverwriteFolder(), false);
 
             ProgressForm.Dispose();
-        }
-
-        /// <summary>
-        /// restore modlist which was not restored after zipmods update
-        /// </summary>
-        private static void RestoreModlist()
-        {
-            if (File.Exists(ManageSettings.CurrentMOProfileModlistPath() + ".prezipmodsUpdate"))
-            {
-                try
-                {
-                    File.Move(ManageSettings.CurrentMOProfileModlistPath(), ManageSettings.CurrentMOProfileModlistPath() + ".tmp");
-
-                    if (!File.Exists(ManageSettings.CurrentMOProfileModlistPath()))
-                        File.Move(ManageSettings.CurrentMOProfileModlistPath() + ".prezipmodsUpdate", ManageSettings.CurrentMOProfileModlistPath());
-
-                    if (File.Exists(ManageSettings.CurrentMOProfileModlistPath()))
-                    {
-                        new FileInfo(ManageSettings.CurrentMOProfileModlistPath() + ".tmp").DeleteEvenIfReadOnly();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ManageLogs.Log("RestoreModlist error:\r\n" + ex);
-                }
-            }
         }
 
         /// <summary>

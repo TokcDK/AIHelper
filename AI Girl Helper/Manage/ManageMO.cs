@@ -1092,6 +1092,32 @@ namespace AIHelper.Manage
         }
 
         /// <summary>
+        /// restore modlist which was not restored after zipmods update
+        /// </summary>
+        internal static void RestoreModlist()
+        {
+            if (File.Exists(ManageSettings.CurrentMOProfileModlistPath() + ".prezipmodsUpdate"))
+            {
+                try
+                {
+                    File.Move(ManageSettings.CurrentMOProfileModlistPath(), ManageSettings.CurrentMOProfileModlistPath() + ".tmp");
+
+                    if (!File.Exists(ManageSettings.CurrentMOProfileModlistPath()))
+                        File.Move(ManageSettings.CurrentMOProfileModlistPath() + ".prezipmodsUpdate", ManageSettings.CurrentMOProfileModlistPath());
+
+                    if (File.Exists(ManageSettings.CurrentMOProfileModlistPath()))
+                    {
+                        new FileInfo(ManageSettings.CurrentMOProfileModlistPath() + ".tmp").DeleteEvenIfReadOnly();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ManageLogs.Log("RestoreModlist error:\r\n" + ex);
+                }
+            }
+        }
+
+        /// <summary>
         /// return list of mo names in active profile folder
         /// </summary>
         /// <param name="OnlyEnabled"></param>

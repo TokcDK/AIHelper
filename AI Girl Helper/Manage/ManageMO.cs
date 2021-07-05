@@ -1649,7 +1649,7 @@ namespace AIHelper.Manage
                             try
                             {
                                 foundDir.Attributes = FileAttributes.Normal;
-                                foundDir.Delete();
+                                foundDir.Delete(true);
                             }
                             catch (Exception ex)
                             {

@@ -806,8 +806,9 @@ namespace AIHelper
             }
 
             ManageXML.ChangeSetupXmlValue(SetupXmlPath, "Setting/Size", Resolution);
-            ManageXML.ChangeSetupXmlValue(SetupXmlPath, "Setting/Width", Resolution.Replace("(16 : 9)", string.Empty).Trim().Split('x')[0].Trim());
-            ManageXML.ChangeSetupXmlValue(SetupXmlPath, "Setting/Height", Resolution.Replace("(16 : 9)", string.Empty).Trim().Split('x')[1].Trim());
+            string[] WH = Resolution.Replace("(16 : 9)", string.Empty).Trim().Split('x');
+            ManageXML.ChangeSetupXmlValue(SetupXmlPath, "Setting/Width", WH[0].Trim());
+            ManageXML.ChangeSetupXmlValue(SetupXmlPath, "Setting/Height", WH[1].Trim());
         }
 
         private static void SetGraphicsQuality(string quality)

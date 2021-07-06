@@ -1092,7 +1092,7 @@ namespace AIHelper.Manage
                 foreach (var file in Directory.GetFiles(Dir, "*." + Extension, SearchOption.AllDirectories))
                 {
                     string name = Path.GetFileNameWithoutExtension(file);
-                    if (string.Compare(name, FileName, true) == 0)
+                    if (string.Compare(name, FileName, true, CultureInfo.InvariantCulture) == 0)
                     {
                         return file;
                     }
@@ -1890,24 +1890,30 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="inputPath"></param>
         /// <returns></returns>
-        internal static string GetMOModPathInMods(string inputPath)
+        internal static string GetMOModPathInMods(string inputPath, string defaultPath = null)
         {
-            //search ModPath
-            var ModPath = inputPath;
-            var FolderPath = ModPath;
-            while (FolderPath.ToUpperInvariant()/*.TrimEnd(new char[] { '/', '\\' })*/ != ManageSettings.GetCurrentGameModsPath().ToUpperInvariant()/*.TrimEnd(new char[] { '/', '\\' })*/)
+            //search Mods Path by step up to parent dir while it will be Mods path
+            string ModPath;
+            var FolderPath = ModPath = inputPath;
+            while (!string.Equals(FolderPath/*.TrimEnd(new char[] { '/', '\\' })*/ , ManageSettings.GetCurrentGameModsPath()/*.TrimEnd(new char[] { '/', '\\' })*/, StringComparison.InvariantCultureIgnoreCase))
             {
                 ModPath = FolderPath;
                 FolderPath = Path.GetDirectoryName(FolderPath);
+                if (string.Equals(FolderPath, ManageSettings.GetCurrentGamePath(), StringComparison.InvariantCultureIgnoreCase))
+                {
+                    ManageLogs.Log("Warning. Path in Mods not found."+ "\r\ninputPath="+ inputPath + "\r\nModPath=" + ModPath + "\r\nFolderPath=" + FolderPath);
+                    return defaultPath;
+                }
             }
 
-            if (ModPath != null && Path.GetFileName(ModPath).ToUpperInvariant() == "MODS")//temp debug check
+            if (ModPath != null && string.Equals(Path.GetFileName(ModPath), "Mods", StringComparison.InvariantCultureIgnoreCase))//temp debug check
             {
                 ManageLogs.Log("warning. log path is Mods. ModPath=" + ModPath + ". FolderPath=" + FolderPath);
             }
             else if (ModPath == null)
             {
-                ManageLogs.Log("warning. ModPath is null.(" + ModPath + ") FolderPath=" + FolderPath);
+                ManageLogs.Log("warning. ModPath is null, set to default.(" + ModPath + ") FolderPath=" + FolderPath);
+                ModPath = defaultPath;// set to default if null
             }
 
             return ModPath;

@@ -771,7 +771,7 @@ namespace AIHelper
             }
 
             ResolutionComboBox.Text = ManageXML.ReadXmlValue(SetupXmlPath, "Setting/Size", ResolutionComboBox.Text);
-            FullScreenCheckBox.Checked = bool.Parse(ManageXML.ReadXmlValue(SetupXmlPath, "Setting/FullScreen", FullScreenCheckBox.Checked.ToString(CultureInfo.InvariantCulture).ToLower(CultureInfo.InvariantCulture)));
+            FullScreenCheckBox.Checked = bool.Parse(ManageXML.ReadXmlValue(SetupXmlPath, "Setting/FullScreen", FullScreenCheckBox.Checked + ""));
 
             string Quality = ManageXML.ReadXmlValue(SetupXmlPath, "Setting/Quality", "2");
             //если качество будет за пределами диапазона 0-2, тогда будет равно 1 - нормально
@@ -797,8 +797,10 @@ namespace AIHelper
                 {
                     Directory.CreateDirectory(OverwriteFolder);
                 }
-                if (!Directory.Exists(OverwriteFolderLink))
+                var OverwriteFolderLinkInfo = new DirectoryInfo(OverwriteFolderLink);
+                if (!OverwriteFolderLinkInfo.Exists || (SymbolicLinkSupport.DirectoryInfoExtensions.IsSymbolicLink(OverwriteFolderLinkInfo) && !SymbolicLinkSupport.DirectoryInfoExtensions.IsSymbolicLinkValid(OverwriteFolderLinkInfo)))
                 {
+                    OverwriteFolderLinkInfo.Delete();
                     CreateSymlink.Folder(OverwriteFolder, OverwriteFolderLink);
                 }
             }

@@ -23,7 +23,8 @@ namespace AIHelper.Manage
 #pragma warning disable CA3075 // Insecure DTD processing in XML
             XmlDocument xmlDoc = new XmlDocument();
 #pragma warning restore CA3075 // Insecure DTD processing in XML
-            if (File.Exists(xmlpath))
+            var XmlFound = File.Exists(xmlpath);
+            if (XmlFound)
             {
 #pragma warning disable CA3075 // Insecure DTD processing in XML
                 xmlDoc.Load(xmlpath);
@@ -48,12 +49,17 @@ namespace AIHelper.Manage
 
             XmlNode node = xmlDoc.SelectSingleNode(nodename);
 
-            if (node == null || node.InnerText == value)
+            if (node == null || (node.InnerText == value && XmlFound))
             {
             }
             else
             {
                 node.InnerText = value;
+
+                if (!XmlFound)
+                {
+                    xmlpath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(xmlpath, false, true);
+                }
 
                 xmlDoc.Save(xmlpath);
             }

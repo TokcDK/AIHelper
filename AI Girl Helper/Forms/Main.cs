@@ -557,13 +557,13 @@ namespace AIHelper
             {
                 //Subcategory from meta
                 categoryvalue = categoryvalue.Split(',')[0];//взять только первое значение
-                int categiryindex = int.Parse(categoryvalue, CultureInfo.GetCultureInfo("en-US")) - 1;//В List индекс идет от нуля
+                int categiryindex = int.Parse(categoryvalue, CultureInfo.InvariantCulture) - 1;//В List индекс идет от нуля
                 if (categiryindex > 0)
                 {
                     if (categiryindex < categories.Count)//на всякий, защита от ошибки выхода за диапазон
                     {
                         //Проверить родительскую категорию
-                        int ParentIDindex = int.Parse(categories[categiryindex].ParentID, CultureInfo.GetCultureInfo("en-US")) - 1;//В List индекс идет от нуля
+                        int ParentIDindex = int.Parse(categories[categiryindex].ParentID, CultureInfo.InvariantCulture) - 1;//В List индекс идет от нуля
                         if (ParentIDindex > 0 && ParentIDindex < categories.Count)
                         {
                             targetdir = Path.Combine(targetdir, categories[ParentIDindex].Name);
@@ -747,10 +747,10 @@ namespace AIHelper
             //set Settings
             if (!File.Exists(SetupXmlPath))
             {
-                string screenWidth = Screen.PrimaryScreen.Bounds.Width.ToString(CultureInfo.GetCultureInfo("en-US"));
+                string screenWidth = Screen.PrimaryScreen.Bounds.Width.ToString(CultureInfo.InvariantCulture);
                 //string screenHeight = Screen.PrimaryScreen.Bounds.Height.ToString();
                 int[] width = { 1280, 1366, 1536, 1600, 1920, 2048, 2560, 3200, 3840 };
-                if (int.Parse(screenWidth, CultureInfo.GetCultureInfo("en-US")) > width[width.Length - 1])
+                if (int.Parse(screenWidth, CultureInfo.InvariantCulture) > width[width.Length - 1])
                 {
                     ResolutionComboBox.SelectedItem = width.Length - 1;
                     SetScreenResolution(ResolutionComboBox.Items[width.Length - 1].ToString());
@@ -759,7 +759,7 @@ namespace AIHelper
                 {
                     for (int w = 0; w < width.Length; w++)
                     {
-                        if (int.Parse(screenWidth, CultureInfo.GetCultureInfo("en-US")) <= width[w])
+                        if (int.Parse(screenWidth, CultureInfo.InvariantCulture) <= width[w])
                         {
                             string SelectedRes = ResolutionComboBox.Items[w].ToString();
                             ResolutionComboBox.Text = SelectedRes;
@@ -771,7 +771,7 @@ namespace AIHelper
             }
 
             ResolutionComboBox.Text = ManageXML.ReadXmlValue(SetupXmlPath, "Setting/Size", ResolutionComboBox.Text);
-            FullScreenCheckBox.Checked = bool.Parse(ManageXML.ReadXmlValue(SetupXmlPath, "Setting/FullScreen", FullScreenCheckBox.Checked.ToString(CultureInfo.GetCultureInfo("en-US")).ToLower(CultureInfo.GetCultureInfo("en-US"))));
+            FullScreenCheckBox.Checked = bool.Parse(ManageXML.ReadXmlValue(SetupXmlPath, "Setting/FullScreen", FullScreenCheckBox.Checked.ToString(CultureInfo.InvariantCulture).ToLower(CultureInfo.InvariantCulture)));
 
             string Quality = ManageXML.ReadXmlValue(SetupXmlPath, "Setting/Quality", "2");
             //если качество будет за пределами диапазона 0-2, тогда будет равно 1 - нормально
@@ -783,7 +783,7 @@ namespace AIHelper
                 Quality = "1";
             }
 
-            QualityComboBox.SelectedIndex = int.Parse(Quality, CultureInfo.GetCultureInfo("en-US"));
+            QualityComboBox.SelectedIndex = int.Parse(Quality, CultureInfo.InvariantCulture);
         }
 
         private static void SetScreenResolution(string Resolution)
@@ -2618,9 +2618,9 @@ namespace AIHelper
 
         private void ConsoleCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            //ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "Enabled", /*" " +*/ (sender as CheckBox).Checked.ToString(CultureInfo.GetCultureInfo("en-US")));
+            //ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "Enabled", /*" " +*/ (sender as CheckBox).Checked.ToString(CultureInfo.InvariantCulture));
             var BepinExcfg = ManageSettings.GetBepInExCfgFilePath();
-            ManageCFG.WriteCFGValue(BepinExcfg, "Logging.Console", "Enabled", /*" " +*/ (sender as CheckBox).Checked.ToString(CultureInfo.GetCultureInfo("en-US")));
+            ManageCFG.WriteCFGValue(BepinExcfg, "Logging.Console", "Enabled", /*" " +*/ (sender as CheckBox).Checked.ToString(CultureInfo.InvariantCulture));
 
             if (BepInExDisplayedLogLevelLabel.Visible = (sender as CheckBox).Checked)
             {

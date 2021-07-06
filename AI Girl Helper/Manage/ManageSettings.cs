@@ -164,9 +164,9 @@ namespace AIHelper.Manage
                         //&&
                         //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(GetMOdirPath(), "Profiles"))
                         &&
-                        !ManageSymLinks.IsSymLink(MOIniFilePath())
+                        !ManageSymLinkExtensions.IsSymLink(MOIniFilePath())
                         &&
-                        !ManageSymLinks.IsSymLink(MOCategoriesFilePath())
+                        !ManageSymLinkExtensions.IsSymLink(MOCategoriesFilePath())
                         )
                     {
                         ListOfGames.Add(new RootGame());
@@ -1225,6 +1225,16 @@ namespace AIHelper.Manage
                 }
             }
 
+        }
+
+        /// <summary>
+        /// True when mo mode activated
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static bool IsMOMode()
+        {
+            return Properties.Settings.Default.MOmode;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

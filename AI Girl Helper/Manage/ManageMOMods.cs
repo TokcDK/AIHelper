@@ -129,13 +129,13 @@ namespace AIHelper.Manage
 
                 if (RemoveLinks)
                 {
-                    ManageSymLinks.DeleteIfSymlink(LinkPath);
+                    ManageSymLinkExtensions.DeleteIfSymlink(LinkPath);
                 }
                 else
                 {
                     try
                     {
-                        if (ManageSymLinks.Symlink
+                        if (ManageSymLinkExtensions.CreateSymlink
                           (
                            ObjectPath
                            ,
@@ -152,7 +152,7 @@ namespace AIHelper.Manage
                             // need when dir in data exists and have content, then content will be move to target
                             ManageFilesFolders.MoveContent(LinkPath, ObjectPath);
 
-                            ManageSymLinks.Symlink
+                            ManageSymLinkExtensions.CreateSymlink
                                 (
                                  ObjectPath
                                  ,
@@ -196,7 +196,7 @@ namespace AIHelper.Manage
                 {
                     try
                     {
-                        if (File.Exists(TargetFilePath) && (File.Exists(SourceFilePath) || ManageSymLinks.IsSymLink(TargetFilePath)))
+                        if (File.Exists(TargetFilePath) && (File.Exists(SourceFilePath) || ManageSymLinkExtensions.IsSymLink(TargetFilePath)))
                         {
                             File.Delete(TargetFilePath);
                         }
@@ -233,7 +233,7 @@ namespace AIHelper.Manage
                         if (File.Exists(TargetFilePath))
                         {
                             if (
-                                ManageSymLinks.IsSymLink(TargetFilePath)
+                                ManageSymLinkExtensions.IsSymLink(TargetFilePath)
                                 ||
                                 new FileInfo(TargetFilePath).Length != new FileInfo(SourceFilePath).Length
                                 ||
@@ -1901,7 +1901,7 @@ namespace AIHelper.Manage
                 FolderPath = Path.GetDirectoryName(FolderPath);
                 if (string.Equals(FolderPath, ManageSettings.GetCurrentGamePath(), StringComparison.InvariantCultureIgnoreCase))
                 {
-                    ManageLogs.Log("Warning. Path in Mods not found."+ "\r\ninputPath="+ inputPath + "\r\nModPath=" + ModPath + "\r\nFolderPath=" + FolderPath);
+                    ManageLogs.Log("Warning. Path in Mods not found." + "\r\ninputPath=" + inputPath + "\r\nModPath=" + ModPath + "\r\nFolderPath=" + FolderPath);
                     return defaultPath;
                 }
             }

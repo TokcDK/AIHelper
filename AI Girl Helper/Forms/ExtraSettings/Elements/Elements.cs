@@ -6,10 +6,9 @@ namespace AIHelper.Forms.ExtraSettings.Elements
     {
         internal Elements()
         {
-            ElementInit();
         }
 
-        internal virtual void ElementInit()
+        internal virtual void Init()
         {
         }
 

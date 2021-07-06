@@ -788,22 +788,7 @@ namespace AIHelper
 
         private static void SetScreenResolution(string Resolution)
         {
-            if (MOmode)
-            {
-                if (Directory.Exists(OverwriteFolder))
-                {
-                }
-                else
-                {
-                    Directory.CreateDirectory(OverwriteFolder);
-                }
-                var OverwriteFolderLinkInfo = new DirectoryInfo(OverwriteFolderLink);
-                if (!OverwriteFolderLinkInfo.Exists || (SymbolicLinkSupport.DirectoryInfoExtensions.IsSymbolicLink(OverwriteFolderLinkInfo) && !SymbolicLinkSupport.DirectoryInfoExtensions.IsSymbolicLinkValid(OverwriteFolderLinkInfo)))
-                {
-                    OverwriteFolderLinkInfo.Delete();
-                    CreateSymlink.Folder(OverwriteFolder, OverwriteFolderLink);
-                }
-            }
+            ManageMO.CheckMOUserdata();
 
             ManageXML.ChangeSetupXmlValue(SetupXmlPath, "Setting/Size", Resolution);
             string[] WH = Resolution.Replace("(16 : 9)", string.Empty).Trim().Split('x');
@@ -813,17 +798,7 @@ namespace AIHelper
 
         private static void SetGraphicsQuality(string quality)
         {
-            if (Directory.Exists(OverwriteFolder))
-            {
-            }
-            else
-            {
-                Directory.CreateDirectory(OverwriteFolder);
-            }
-            if (!Directory.Exists(OverwriteFolderLink))
-            {
-                CreateSymlink.Folder(OverwriteFolder, OverwriteFolderLink);
-            }
+            ManageMO.CheckMOUserdata();
 
             ManageXML.ChangeSetupXmlValue(SetupXmlPath, "Setting/Quality", quality);
         }

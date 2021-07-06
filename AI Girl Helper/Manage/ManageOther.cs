@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AI_Helper.Manage;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Threading;
@@ -78,10 +79,8 @@ namespace AIHelper.Manage
                 //description = shortcutname;
                 //Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description);
 
-                if (!Directory.Exists(Properties.Settings.Default.OverwriteFolderLink) && Directory.Exists(Properties.Settings.Default.OverwriteFolder))
-                {
-                    CreateSymlink.Folder(Properties.Settings.Default.OverwriteFolder, Properties.Settings.Default.OverwriteFolderLink);
-                }
+                ManageMO.CheckMOUserdata();
+
                 if (!auto)
                 {
                     MessageBox.Show(T._("Shortcut") + " " + T._("created") + "!");

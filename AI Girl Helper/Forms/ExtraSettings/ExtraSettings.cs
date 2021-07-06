@@ -36,6 +36,7 @@ namespace AIHelper
 
             foreach (var element in elements)
             {
+                element.Init();
                 if (element.Check() && element.ElementToShow != null)
                 {
                     //element.ElementInit();

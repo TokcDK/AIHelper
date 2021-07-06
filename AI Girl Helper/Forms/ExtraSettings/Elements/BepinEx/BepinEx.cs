@@ -16,7 +16,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
 
         BepinExForm BepinExElement;
 
-        internal override string Title => throw new System.NotImplementedException();
+        internal override string Title => "Bepinex settings";
 
         internal override Form ElementToShow { get => BepinExElement; set => BepinExElement = value as BepinExForm; }
 

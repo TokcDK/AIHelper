@@ -30,9 +30,9 @@ namespace AIHelper.Manage
         public static void RedefineGameMOData()
         {
             //MOini
-            ManageSymLinks.ReCreateFileLinkWhenNotValid(ManageSettings.GetMOiniPath(), ManageSettings.GetMOiniPathForSelectedGame(), true);
+            ManageSymLinkExtensions.ReCreateFileLinkWhenNotValid(ManageSettings.GetMOiniPath(), ManageSettings.GetMOiniPathForSelectedGame(), true);
             //Categories
-            ManageSymLinks.ReCreateFileLinkWhenNotValid(ManageSettings.GetMOcategoriesPath(), ManageSettings.GetMOcategoriesPathForSelectedGame(), true);
+            ManageSymLinkExtensions.ReCreateFileLinkWhenNotValid(ManageSettings.GetMOcategoriesPath(), ManageSettings.GetMOcategoriesPathForSelectedGame(), true);
         }
 
         internal static string GetMOVersion()
@@ -1019,6 +1019,39 @@ namespace AIHelper.Manage
         public static void ActivateMod(string modname)
         {
             ActivateDeactivateInsertMod(modname);
+        }
+
+        /// <summary>
+        /// check symlink for usedata dir when target is not exists or symlink is not valid. overwrite for mo mode and data for common mode
+        /// </summary>
+        internal static void CheckMOUserdata()
+        {
+            DirectoryInfo objectDir;
+            //overwrite dir of mo folder for mo mode and data folder for common mode
+            if (ManageSettings.IsMOMode())
+            {
+                objectDir = new DirectoryInfo(ManageSettings.GetCurrentGameMOOverwritePath());
+            }
+            else
+            {
+                objectDir = new DirectoryInfo(ManageSettings.GetCurrentGameDataPath());
+            }
+
+            //create target object dir when it is not exists
+            if (!objectDir.Exists)
+            {
+                objectDir.Create();
+            }
+
+            //symlink path for MOUserData in game's dir
+            DirectoryInfo symlinkPath = new DirectoryInfo(Properties.Settings.Default.OverwriteFolderLink);
+
+            //delete if target is not exists or not symlink and recreate
+            if (!symlinkPath.IsValidSymlinkTargetEquals(objectDir.FullName))
+            {
+                symlinkPath.Delete();
+                objectDir.CreateSymlink(symlinkPath.FullName, true);
+            }
         }
 
         public static void DeactivateMod(string modname)

@@ -465,7 +465,7 @@ namespace AIHelper.Manage
         {
             if (Directory.Exists(SourceFolder))
             {
-                if (!CheckDirectoryNullOrEmpty_Fast(SourceFolder) && !ManageSymLinks.IsSymLink(SourceFolder))
+                if (!CheckDirectoryNullOrEmpty_Fast(SourceFolder) && !ManageSymLinkExtensions.IsSymLink(SourceFolder))
                 {
                     if (!Directory.Exists(TargetFolder))
                     {

@@ -4,9 +4,9 @@ using System.IO;
 
 namespace AI_Helper.Manage
 {
-    class ManageSymLinks
+    static class ManageSymLinkExtensions
     {
-        public static bool DeleteIfSymlink(string LinkPath, bool IsFolder = false)
+        public static bool DeleteIfSymlink(this string LinkPath, bool IsFolder = false)
         {
             if (IsFolder || Directory.Exists(LinkPath))
             {
@@ -33,7 +33,7 @@ namespace AI_Helper.Manage
             return false;
         }
 
-        internal static bool IsSymlinkAndValid(string symlinkPath, string linkTargetPath, bool IsLinkTargetPathRelative = false)
+        internal static bool IsValidSymlink(this string symlinkPath, string linkTargetPath, bool IsLinkTargetPathRelative = false)
         {
             var symlinkPathInfo = new FileInfo(symlinkPath);
             //ссылка вообще существует
@@ -58,26 +58,74 @@ namespace AI_Helper.Manage
         }
 
         /// <summary>
+        /// true when object is symbolic link and simbolic link target is exists
+        /// </summary>
+        /// <param name="symlinkPath"></param>
+        /// <returns></returns>
+        internal static bool IsValidSymlink(this FileInfo symlinkPath)
+        {
+            //ссылка вообще существует
+            if (symlinkPath.Exists)
+            {
+                //файл является ссылкой
+                if (symlinkPath.IsSymbolicLink())
+                {
+                    //ссылка валидная
+                    if (symlinkPath.IsSymbolicLinkValid())
+                    {
+                        return true;
+                    };
+                };
+            };
+
+            return false;
+        }
+
+        /// <summary>
+        /// true when object is symbolic link and simbolic link target is exists
+        /// </summary>
+        /// <param name="symlinkPath"></param>
+        /// <returns></returns>
+        internal static bool IsValidSymlink(this DirectoryInfo symlinkPath)
+        {
+            //ссылка вообще существует
+            if (symlinkPath.Exists)
+            {
+                //файл является ссылкой
+                if (symlinkPath.IsSymbolicLink())
+                {
+                    //ссылка валидная
+                    if (symlinkPath.IsSymbolicLinkValid())
+                    {
+                        return true;
+                    };
+                };
+            };
+
+            return false;
+        }
+
+        /// <summary>
         /// Will recreate Symlink for target file if it is not a link or not valid link
         /// </summary>
         /// <param name="symlinkPath"></param>
         /// <param name="targetFilePath"></param>
         /// <param name="linktargetPathIsRelative"></param>
-        internal static void ReCreateFileLinkWhenNotValid(string symlinkPath, string targetFilePath, bool linktargetPathIsRelative = false)
+        internal static void ReCreateFileLinkWhenNotValid(this string symlinkPath, string targetFilePath, bool linktargetPathIsRelative = false)
         {
             if (
                 //если целевой файл выбранной игры существует
                 File.Exists(targetFilePath)
                )
             {
-                if (targetFilePath != symlinkPath && !IsSymlinkAndValid(symlinkPath, targetFilePath, linktargetPathIsRelative))
+                if (targetFilePath != symlinkPath && !IsValidSymlink(symlinkPath, targetFilePath, linktargetPathIsRelative))
                 {
                     if (File.Exists(symlinkPath))
                     {
                         File.Delete(symlinkPath);
                     }
 
-                    ManageSymLinks.Symlink
+                    ManageSymLinkExtensions.CreateSymlink
                       (
                        targetFilePath
                        ,
@@ -91,6 +139,33 @@ namespace AI_Helper.Manage
 
         }
 
+
+        /// <summary>
+        /// Create symlink for file or folder if object is exists (will create empty folder if not).
+        /// Will create link if link target is invalid or link path not exists
+        /// </summary>
+        /// <param name="objectDirPath"></param>
+        /// <param name="symlinkPath"></param>
+        /// <param name="isRelative"></param>
+        /// <returns></returns>
+        public static bool CreateSymlink(this DirectoryInfo objectDirPath, string symlinkPath, bool isRelative = false)
+        {
+            return objectDirPath.FullName.CreateSymlink(symlinkPath, isRelative, ObjectType.Dir);
+        }
+
+        /// <summary>
+        /// Create symlink for file or folder if object is exists (will create empty folder if not).
+        /// Will create link if link target is invalid or link path not exists
+        /// </summary>
+        /// <param name="objectFilePath"></param>
+        /// <param name="symlinkPath"></param>
+        /// <param name="isRelative"></param>
+        /// <returns></returns>
+        public static bool CreateSymlink(this FileInfo objectFilePath, string symlinkPath, bool isRelative = false)
+        {
+            return objectFilePath.FullName.CreateSymlink(symlinkPath, isRelative, ObjectType.File);
+        }
+
         /// <summary>
         /// Create symlink for file or folder if object is exists (will create empty folder if not).
         /// Will create link if link target is invalid or link path not exists
@@ -100,7 +175,7 @@ namespace AI_Helper.Manage
         /// <param name="isRelative"></param>
         /// <param name="OType"></param>
         /// <returns></returns>
-        public static bool Symlink(string objectFileDirPath, string symlinkPath, bool isRelative = false, ObjectType OType = ObjectType.NotDefined)
+        public static bool CreateSymlink(this string objectFileDirPath, string symlinkPath, bool isRelative = false, ObjectType OType = ObjectType.NotDefined)
         {
             if (symlinkPath.Length > 0 && objectFileDirPath.Length > 0)
             {
@@ -172,7 +247,7 @@ namespace AI_Helper.Manage
             return false;
         }
 
-        private static void CheckParentDirForSymLink(string symlinkPath)
+        private static void CheckParentDirForSymLink(this string symlinkPath)
         {
             var pdir = new DirectoryInfo(Path.GetDirectoryName(symlinkPath));
             if (pdir.IsSymbolicLink() && !pdir.IsSymbolicLinkValid())
@@ -182,7 +257,7 @@ namespace AI_Helper.Manage
             pdir.Create();
         }
 
-        internal static bool IsSymLink(string sourceFileFolder)
+        internal static bool IsSymLink(this string sourceFileFolder)
         {
             if (File.Exists(sourceFileFolder))
             {
@@ -194,6 +269,28 @@ namespace AI_Helper.Manage
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// true when object path is valid symbolic link and it's target path is equal required target path
+        /// </summary>
+        /// <param name="symlink"></param>
+        /// <param name="requiredTargetPath"></param>
+        /// <returns></returns>
+        internal static bool IsValidSymlinkTargetEquals(this DirectoryInfo symlink, string requiredTargetPath)
+        {
+            return symlink.IsValidSymlink() && symlink.GetSymbolicLinkTarget() == requiredTargetPath;
+        }
+
+        /// <summary>
+        /// true when object path is valid symbolic link and it's target path is equal required target path
+        /// </summary>
+        /// <param name="symlink"></param>
+        /// <param name="requiredTargetPath"></param>
+        /// <returns></returns>
+        internal static bool IsSymlinkTargetEquals(this FileInfo symlink, string requiredTargetPath)
+        {
+            return symlink.IsValidSymlink() && symlink.GetSymbolicLinkTarget() == requiredTargetPath;
         }
     }
 

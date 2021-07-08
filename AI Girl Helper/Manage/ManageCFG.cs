@@ -1,4 +1,4 @@
-﻿using AI_Helper.Utils;
+﻿using AIHelper.Utils;
 using System.IO;
 
 namespace AIHelper.Manage

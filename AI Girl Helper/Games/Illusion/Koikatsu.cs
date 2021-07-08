@@ -3,7 +3,7 @@ using AIHelper.Games;
 using AIHelper.Manage;
 using System.IO;
 
-namespace AI_Helper.Games
+namespace AIHelper.Games
 {
     class Koikatsu : Game
     {

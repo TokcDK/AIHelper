@@ -2,7 +2,7 @@
 using SymbolicLinkSupport;
 using System.IO;
 
-namespace AI_Helper.Manage
+namespace AIHelper.Manage
 {
     static class ManageSymLinkExtensions
     {

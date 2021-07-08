@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace AI_Helper.Games
+namespace AIHelper.Games
 {
     class RootGame : Game
     {

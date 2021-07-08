@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace AI_Helper.Tests
+namespace AIHelper.Tests
 {
     public class Tests
     {

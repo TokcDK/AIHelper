@@ -1,5 +1,5 @@
-﻿using AI_Helper.Games;
-using AI_Helper.Manage;
+﻿using AIHelper.Games;
+using AIHelper.Manage;
 using AIHelper.Games;
 using AIHelper.SharedData;
 using System;

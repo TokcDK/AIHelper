@@ -1,7 +1,7 @@
 ﻿using AIHelper.Games;
 using System.Collections.Generic;
 
-namespace AI_Helper.Games
+namespace AIHelper.Games
 {
     internal class GamesList
     {

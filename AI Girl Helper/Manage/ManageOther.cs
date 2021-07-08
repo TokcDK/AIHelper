@@ -1,4 +1,4 @@
-﻿using AI_Helper.Manage;
+﻿using AIHelper.Manage;
 using System;
 using System.Drawing;
 using System.IO;

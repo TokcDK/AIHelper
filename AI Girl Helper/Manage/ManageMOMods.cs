@@ -1,4 +1,4 @@
-﻿using AI_Helper.Manage;
+﻿using AIHelper.Manage;
 using AIHelper.SharedData;
 using System;
 using System.Collections.Generic;

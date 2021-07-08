@@ -1,7 +1,7 @@
 ﻿//https://github.com/cemdervis/SharpConfig
 using SharpConfig;
 
-namespace AI_Helper.Utils
+namespace AIHelper.Utils
 {
     public class CFGFiles
     {

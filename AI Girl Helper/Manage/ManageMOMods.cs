@@ -820,7 +820,7 @@ namespace AIHelper.Manage
                         string entryFullName = archive.Entries[entrieNum].FullName;
 
                         int entryFullNameLength = entryFullName.Length;
-                        if (!FoundZipMod && entryFullNameLength >= 12 && string.Compare(entryFullName.Substring(entryFullNameLength - 12, 12), "manifest.xml", true) == 0) //entryFullName=="manifest.xml"
+                        if (!FoundZipMod && entryFullNameLength >= 12 && string.Compare(entryFullName.Substring(entryFullNameLength - 12, 12), "manifest.xml", true, CultureInfo.InvariantCulture) == 0) //entryFullName=="manifest.xml"
                         {
                             FoundZipMod = true;
                             break;
@@ -829,10 +829,10 @@ namespace AIHelper.Manage
                         if (!FoundStandardModInZip)
                         {
                             if (
-                                   (entryFullNameLength >= 7 && (string.Compare(entryFullName.Substring(entryFullNameLength - 7, 6), "abdata", true) == 0 || string.Compare(entryFullName.Substring(0, 6), "abdata", true) == 0)) //entryFullName=="abdata/"
-                                || (entryFullNameLength >= 6 && (string.Compare(entryFullName.Substring(entryFullNameLength - 6, 5), "_data", true) == 0/*тут только проверка на окончание нужна || string.Compare(entryFullName.Substring(0, 5), "_data", true) == 0*/)) //entryFullName=="_data/"
-                                || (entryFullNameLength >= 8 && (string.Compare(entryFullName.Substring(entryFullNameLength - 8, 7), "bepinex", true) == 0 || string.Compare(entryFullName.Substring(0, 7), "bepinex", true) == 0)) //entryFullName=="bepinex/"
-                                || (entryFullNameLength >= 9 && (string.Compare(entryFullName.Substring(entryFullNameLength - 9, 8), "userdata", true) == 0 || string.Compare(entryFullName.Substring(0, 8), "userdata", true) == 0)) //entryFullName=="userdata/"
+                                   (entryFullNameLength >= 7 && (string.Compare(entryFullName.Substring(entryFullNameLength - 7, 6), "abdata", true, CultureInfo.InvariantCulture) == 0 || string.Compare(entryFullName.Substring(0, 6), "abdata", true, CultureInfo.InvariantCulture) == 0)) //entryFullName=="abdata/"
+                                || (entryFullNameLength >= 6 && (string.Compare(entryFullName.Substring(entryFullNameLength - 6, 5), "_data", true, CultureInfo.InvariantCulture) == 0/*тут только проверка на окончание нужна || string.Compare(entryFullName.Substring(0, 5), "_data", true, CultureInfo.InvariantCulture) == 0*/)) //entryFullName=="_data/"
+                                || (entryFullNameLength >= 8 && (string.Compare(entryFullName.Substring(entryFullNameLength - 8, 7), "bepinex", true, CultureInfo.InvariantCulture) == 0 || string.Compare(entryFullName.Substring(0, 7), "bepinex", true, CultureInfo.InvariantCulture) == 0)) //entryFullName=="bepinex/"
+                                || (entryFullNameLength >= 9 && (string.Compare(entryFullName.Substring(entryFullNameLength - 9, 8), "userdata", true, CultureInfo.InvariantCulture) == 0 || string.Compare(entryFullName.Substring(0, 8), "userdata", true, CultureInfo.InvariantCulture) == 0)) //entryFullName=="userdata/"
                                )
                             {
                                 FoundStandardModInZip = true;
@@ -842,7 +842,7 @@ namespace AIHelper.Manage
                         //когда найдена папка mods, если найден zipmod
                         if (FoundModsDir && !FoundStandardModInZip)
                         {
-                            if (entryFullNameLength >= 7 && string.Compare(entryFullName.Substring(entryFullNameLength - 7, 7), ".zipmod", true) == 0)//entryFullName==".zipmod"
+                            if (entryFullNameLength >= 7 && string.Compare(entryFullName.Substring(entryFullNameLength - 7, 7), ".zipmod", true, CultureInfo.InvariantCulture) == 0)//entryFullName==".zipmod"
                             {
                                 if (filesCount > 1)
                                 {
@@ -854,7 +854,7 @@ namespace AIHelper.Manage
                                 }
                                 break;
                             }
-                            else if (entryFullNameLength >= 4 && string.Compare(entryFullName.Substring(entryFullNameLength - 4, 4), ".zip", true) == 0)
+                            else if (entryFullNameLength >= 4 && string.Compare(entryFullName.Substring(entryFullNameLength - 4, 4), ".zip", true, CultureInfo.InvariantCulture) == 0)
                             {
                                 if (filesCount > 1)
                                 {
@@ -869,13 +869,13 @@ namespace AIHelper.Manage
                         }
 
                         //если найдена папка mods
-                        if (!FoundModsDir && entryFullNameLength >= 5 && (string.Compare(entryFullName.Substring(entryFullNameLength - 5, 4), "mods", true) == 0 || string.Compare(entryFullName.Substring(0, 4), "mods", true) == 0))
+                        if (!FoundModsDir && entryFullNameLength >= 5 && (string.Compare(entryFullName.Substring(entryFullNameLength - 5, 4), "mods", true, CultureInfo.InvariantCulture) == 0 || string.Compare(entryFullName.Substring(0, 4), "mods", true, CultureInfo.InvariantCulture) == 0))
                         {
                             FoundModsDir = true;
                         }
 
                         //если найден cs
-                        if (!FoundcsFiles && entryFullNameLength >= 3 && string.Compare(entryFullName.Substring(entryFullNameLength - 3, 3), ".cs", true) == 0)
+                        if (!FoundcsFiles && entryFullNameLength >= 3 && string.Compare(entryFullName.Substring(entryFullNameLength - 3, 3), ".cs", true, CultureInfo.InvariantCulture) == 0)
                         {
                             FoundStandardModInZip = false;
                             FoundcsFiles = true;
@@ -883,7 +883,7 @@ namespace AIHelper.Manage
                         }
 
                         //получение информации о моде из dll
-                        if (entryFullNameLength >= 4 && string.Compare(entryFullName.Substring(entryFullNameLength - 4, 4), ".dll", true) == 0)
+                        if (entryFullNameLength >= 4 && string.Compare(entryFullName.Substring(entryFullNameLength - 4, 4), ".dll", true, CultureInfo.InvariantCulture) == 0)
                         {
                             if (description.Length == 0 && version.Length == 0 && author.Length == 0)
                             {

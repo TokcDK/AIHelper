@@ -1554,7 +1554,7 @@ namespace AIHelper
             OnOffButtons();
         }
 
-        private void SwitchBackToMOMode()
+        private static void SwitchBackToMOMode()
         {
             StringBuilder OperationsMade = new StringBuilder();
             string[] MOToStandartConvertationOperationsList = null;
@@ -2200,7 +2200,7 @@ namespace AIHelper
                                         if (metaskipped)
                                         {
                                         }
-                                        else if (Path.GetFileName(FileOfMod) == "meta.ini" /*ModFile.Length >= 8 && string.Compare(ModFile.Substring(ModFile.Length - 8, 8), "meta.ini", true) == 0*/)
+                                        else if (Path.GetFileName(FileOfMod) == "meta.ini" /*ModFile.Length >= 8 && string.Compare(ModFile.Substring(ModFile.Length - 8, 8), "meta.ini", true, CultureInfo.InvariantCulture) == 0*/)
                                         {
                                             metaskipped = true;//для ускорения проверки, когда meta будет найден, будет делать быструю проверку bool переменной
                                             continue;
@@ -2413,7 +2413,7 @@ namespace AIHelper
             return result == DialogResult.Yes;
         }
 
-        private void RestoreMovedFilesLocation(StringBuilder Operations)
+        private static void RestoreMovedFilesLocation(StringBuilder Operations)
         {
             if (Operations.Length > 0)
             {

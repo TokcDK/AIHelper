@@ -9,7 +9,7 @@ namespace AIHelper
 {
     public partial class ExtraSettings : Form
     {
-        private bool ExtraSettingsInitOnLoadIsInAction { get => Properties.Settings.Default.ExtraSettingsInitOnLoadIsInAction; set => Properties.Settings.Default.ExtraSettingsInitOnLoadIsInAction = value; }
+        private static bool ExtraSettingsInitOnLoadIsInAction { get => Properties.Settings.Default.ExtraSettingsInitOnLoadIsInAction; set => Properties.Settings.Default.ExtraSettingsInitOnLoadIsInAction = value; }
 
         public ExtraSettings()
         {

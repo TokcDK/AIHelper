@@ -112,31 +112,31 @@ namespace AIHelper.Manage
             }
         }
 
-        internal static void ReportMessageForm(string title, string message)
-        {
-//#pragma warning disable CA2000 // Dispose objects before losing scope
-//            Form ReportForm = new Form
-//            {
-//                Text = title,
-//                //ReportForm.Size = new System.Drawing.Size(500,700);
-//                AutoSize = true,
-//                FormBorderStyle = FormBorderStyle.FixedDialog,
-//                StartPosition = FormStartPosition.CenterScreen
-//            };
-//#pragma warning restore CA2000 // Dispose objects before losing scope
-//            RichTextBox ReportTB = new RichTextBox
-//            {
-//                Size = new System.Drawing.Size(700, 900),
-//                WordWrap = true,
-//                Dock = DockStyle.Fill,
-//                ReadOnly = true,
-//                //ReportTB.BackColor = System.Drawing.Color.Gray;
-//                Text = message,
-//                ScrollBars = RichTextBoxScrollBars.Both
-//            };
+//        internal static void ReportMessageForm(string title, string message)
+//        {
+////#pragma warning disable CA2000 // Dispose objects before losing scope
+////            Form ReportForm = new Form
+////            {
+////                Text = title,
+////                //ReportForm.Size = new System.Drawing.Size(500,700);
+////                AutoSize = true,
+////                FormBorderStyle = FormBorderStyle.FixedDialog,
+////                StartPosition = FormStartPosition.CenterScreen
+////            };
+////#pragma warning restore CA2000 // Dispose objects before losing scope
+////            RichTextBox ReportTB = new RichTextBox
+////            {
+////                Size = new System.Drawing.Size(700, 900),
+////                WordWrap = true,
+////                Dock = DockStyle.Fill,
+////                ReadOnly = true,
+////                //ReportTB.BackColor = System.Drawing.Color.Gray;
+////                Text = message,
+////                ScrollBars = RichTextBoxScrollBars.Both
+////            };
 
-//            ReportForm.Controls.Add(ReportTB);
-//            ReportForm.Show();
-        }
+////            ReportForm.Controls.Add(ReportTB);
+////            ReportForm.Show();
+//        }
     }
 }

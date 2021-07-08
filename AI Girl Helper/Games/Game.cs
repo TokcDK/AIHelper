@@ -264,24 +264,25 @@ namespace AIHelper.Games
                     }
                 }
             }
-            catch
+            catch (System.Exception ex)
             {
+                ManageLogs.Log("An error occured while SearchGameFolder. error:\r\n" + ex);
             }
             return string.Empty;
         }
 
-        protected void CopyMOfiles(string GameMPAltDirName)
+        protected void CopyMOfiles(string MODirAltName)
         {
             //var game = Data.CurrentGame.GetCurrentGameIndex()];
-            string GameMOPath = Path.Combine(GetGamePath(), "MO");
-            string GameMPAltDirNamePath = Path.Combine(GetGamePath(), GameMPAltDirName);
-            if (Directory.Exists(GameMPAltDirNamePath) && !Directory.Exists(GameMOPath))
+            string GameMODirPath = Path.Combine(GetGamePath(), "MO");
+            string GameMODirPathAlt = Path.Combine(GetGamePath(), MODirAltName);
+            if (Directory.Exists(GameMODirPathAlt) && !Directory.Exists(GameMODirPath))
             {
                 //Directory.CreateDirectory(MO);
-                CopyFolder.CopyAll(Path.Combine(GameMPAltDirNamePath, "Profiles"), Path.Combine(GameMOPath, "Profiles"));
-                CopyFolder.CopyAll(Path.Combine(GameMPAltDirNamePath, "Overwrite"), Path.Combine(GameMOPath, "Overwrite"));
-                File.Copy(Path.Combine(GameMPAltDirNamePath, "categories.dat"), Path.Combine(GameMOPath, "categories.dat"));
-                File.Copy(Path.Combine(GameMPAltDirNamePath, "ModOrganizer.ini"), Path.Combine(GameMOPath, "ModOrganizer.ini"));
+                CopyFolder.CopyAll(Path.Combine(GameMODirPathAlt, "Profiles"), Path.Combine(GameMODirPath, "Profiles"));
+                CopyFolder.CopyAll(Path.Combine(GameMODirPathAlt, "Overwrite"), Path.Combine(GameMODirPath, "Overwrite"));
+                File.Copy(Path.Combine(GameMODirPathAlt, "categories.dat"), Path.Combine(GameMODirPath, "categories.dat"));
+                File.Copy(Path.Combine(GameMODirPathAlt, "ModOrganizer.ini"), Path.Combine(GameMODirPath, "ModOrganizer.ini"));
             }
         }
 

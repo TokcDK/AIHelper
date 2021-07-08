@@ -111,8 +111,9 @@ namespace AIHelper
                 {
                     File.Delete(ManageLogs.LogFilePath);
                 }
-                catch
+                catch (Exception ex)
                 {
+                    ManageLogs.Log("An error occured whil tried to CleanLog. error:" + ex);
                 }
             }
         }
@@ -182,8 +183,9 @@ namespace AIHelper
                 }
                 catch { }
             }
-            catch
+            catch (Exception ex)
             {
+                ManageLogs.Log("An error occured while SetListOfGames. error:\r\n" + ex);
                 return false;
             }
 
@@ -589,8 +591,9 @@ namespace AIHelper
                     THToolTip.RemoveAll();
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                ManageLogs.Log("An error occured while SetTooltips. error:\r\n" + ex);
             }
 
             //http://qaru.site/questions/47162/c-how-do-i-add-a-tooltip-to-a-control
@@ -1078,8 +1081,9 @@ namespace AIHelper
                     //BepInExConsoleCheckBox.Checked = bool.Parse(ManageINI.GetINIValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "Enabled", "Logging.Console", "False"));
                     BepInExConsoleCheckBox.Checked = bool.Parse(ManageCFG.GetCFGValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "Enabled", "Logging.Console", "False"));
                 }
-                catch
+                catch (Exception ex)
                 {
+                    ManageLogs.Log("An error occured while GetEnableDisableLaunchTabButtons. error:\r\n" + ex);
                     BepInExConsoleCheckBox.Checked = false;
                 }
             }
@@ -1633,8 +1637,9 @@ namespace AIHelper
                                 //запись выполненной операции для удаления из общего списка в случае ошибки при переключении из обычного режима
                                 OperationsMade.AppendLine(MovePaths[1] + ".bonemod.txt" + "|MovedTo|" + MovePaths[0] + ".bonemod.txt");
                             }
-                            catch
+                            catch (Exception ex)
                             {
+                                ManageLogs.Log("An error occured while file moving."+ "MovePaths[0]=" + MovePaths[0]+ ";MovePaths[1]="+ MovePaths[0] + ".error:\r\n" + ex);
                             }
                         }
                         catch (Exception ex)

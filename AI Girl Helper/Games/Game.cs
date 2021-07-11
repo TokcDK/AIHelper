@@ -1,4 +1,5 @@
 ﻿using AIHelper.Manage;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -289,15 +290,22 @@ namespace AIHelper.Games
 
             foreach (var subpath in subpaths)
             {
-                var altpath = Path.GetFullPath(Path.Combine(GameMODirPathAlt, subpath.Key));
-                var workpath = Path.GetFullPath(Path.Combine(GameMODirPath, subpath.Key));
-                if (subpath.Value == ManageFilesFolders.ObjectType.Directory && Directory.Exists(altpath) && (!Directory.Exists(workpath) || !ManageFilesFolders.IsAnyFileExistsInTheDir(workpath, AllDirectories: true)))
+                try
                 {
-                    CopyFolder.CopyAll(altpath, workpath);
+                    var altpath = Path.GetFullPath(Path.Combine(GameMODirPathAlt, subpath.Key));
+                    var workpath = Path.GetFullPath(Path.Combine(GameMODirPath, subpath.Key));
+                    if (subpath.Value == ManageFilesFolders.ObjectType.Directory && Directory.Exists(altpath) && (!Directory.Exists(workpath) || !ManageFilesFolders.IsAnyFileExistsInTheDir(workpath, AllDirectories: true)))
+                    {
+                        CopyFolder.CopyAll(altpath, workpath);
+                    }
+                    else if (subpath.Value == ManageFilesFolders.ObjectType.File && File.Exists(altpath) && !File.Exists(workpath))
+                    {
+                        File.Copy(altpath, workpath);
+                    }
                 }
-                else if (subpath.Value == ManageFilesFolders.ObjectType.File && File.Exists(altpath) && !File.Exists(workpath))
+                catch (Exception ex)
                 {
-                    File.Copy(altpath, workpath);
+                    ManageLogs.Log("An error occured while MO files coping. error:\r\n" + ex);
                 }
             }
         }

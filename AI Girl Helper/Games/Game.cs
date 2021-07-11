@@ -265,7 +265,7 @@ namespace AIHelper.Games
                     }
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 ManageLogs.Log("An error occured while SearchGameFolder. error:\r\n" + ex);
             }

@@ -8,7 +8,7 @@ namespace AIHelper.Games
     {
         public Game()
         {
-            InitActions();
+            //InitActions();
         }
 
         public virtual void InitActions()
@@ -20,11 +20,11 @@ namespace AIHelper.Games
         /// <summary>
         /// true if it is root game ie placed in same folder with game's data, mods folder
         /// </summary>
-        public virtual bool isRootGame { get; set; } = false;
+        public virtual bool isRootGame { get; set; }
         /// <summary>
         /// true if game have sideloader zipmods
         /// </summary>
-        public virtual bool isHaveSideloaderMods { get; set; } = false;
+        public virtual bool isHaveSideloaderMods { get; set; }
 
         protected string gamefolderName { get; set; } = string.Empty;
         /// <summary>

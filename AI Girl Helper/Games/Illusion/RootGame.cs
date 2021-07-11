@@ -32,7 +32,7 @@ namespace AIHelper.Games
             }
         }
 
-        Game DetectedGame = null;
+        Game DetectedGame;
         public override string GetGameFolderName()
         {
             DetectRootGame();

@@ -73,7 +73,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
             return ManageSettings.GetDefaultBepInEx5OlderVersion();
         }
 
-        bool IsInit = false;
+        bool IsInit;
         private void InitSettings()
         {
             IsInit = true;

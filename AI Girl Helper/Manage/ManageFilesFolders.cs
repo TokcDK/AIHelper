@@ -12,6 +12,16 @@ namespace AIHelper.Manage
 {
     internal static class ManageFilesFolders
     {
+        /// <summary>
+        /// object (file or folder or any)
+        /// </summary>
+        public enum ObjectType
+        {
+            Any = 0,
+            File = 1,
+            Directory = 2
+        }
+
         private static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]

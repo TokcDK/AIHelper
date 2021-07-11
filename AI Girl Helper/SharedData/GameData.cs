@@ -8,6 +8,7 @@ namespace AIHelper.SharedData
         internal static List<Game> ListOfGames;
 
         internal static Game CurrentGame;
-    }
 
+
+    }
 }

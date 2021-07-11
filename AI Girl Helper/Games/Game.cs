@@ -271,18 +271,34 @@ namespace AIHelper.Games
             return string.Empty;
         }
 
+
         protected void CopyMOfiles(string MODirAltName)
         {
             //var game = Data.CurrentGame.GetCurrentGameIndex()];
             string GameMODirPath = Path.Combine(GetGamePath(), "MO");
             string GameMODirPathAlt = Path.Combine(GetGamePath(), MODirAltName);
-            if (Directory.Exists(GameMODirPathAlt) && !Directory.Exists(GameMODirPath))
+
+            // dirs and files required for work
+            var subpaths = new Dictionary<string, ManageFilesFolders.ObjectType>
             {
-                //Directory.CreateDirectory(MO);
-                CopyFolder.CopyAll(Path.Combine(GameMODirPathAlt, "Profiles"), Path.Combine(GameMODirPath, "Profiles"));
-                CopyFolder.CopyAll(Path.Combine(GameMODirPathAlt, "Overwrite"), Path.Combine(GameMODirPath, "Overwrite"));
-                File.Copy(Path.Combine(GameMODirPathAlt, "categories.dat"), Path.Combine(GameMODirPath, "categories.dat"));
-                File.Copy(Path.Combine(GameMODirPathAlt, "ModOrganizer.ini"), Path.Combine(GameMODirPath, "ModOrganizer.ini"));
+                { "Profiles", ManageFilesFolders.ObjectType.Directory },
+                { "Overwrite", ManageFilesFolders.ObjectType.Directory },
+                { "categories.dat", ManageFilesFolders.ObjectType.File },
+                { "ModOrganizer.ini", ManageFilesFolders.ObjectType.File }
+            };
+
+            foreach (var subpath in subpaths)
+            {
+                var altpath = Path.GetFullPath(Path.Combine(GameMODirPathAlt, subpath.Key));
+                var workpath = Path.GetFullPath(Path.Combine(GameMODirPath, subpath.Key));
+                if (subpath.Value == ManageFilesFolders.ObjectType.Directory && Directory.Exists(altpath) && (!Directory.Exists(workpath) || !ManageFilesFolders.IsAnyFileExistsInTheDir(workpath, AllDirectories: true)))
+                {
+                    CopyFolder.CopyAll(altpath, workpath);
+                }
+                else if (subpath.Value == ManageFilesFolders.ObjectType.File && File.Exists(altpath) && !File.Exists(workpath))
+                {
+                    File.Copy(altpath, workpath);
+                }
             }
         }
 

@@ -25,11 +25,11 @@ namespace AIHelper
         //private static readonly ICatalog _Catalog = new Catalog("Example", "./locale");
         private static readonly ICatalog _Catalog = GetCatalog();
 
+
+#pragma warning disable IDE1006 // Стили именования
         public static string _(string text) => _Catalog.GetString(text);
 
         public static string _(string text, params object[] args) => _Catalog.GetString(text, args);
-
-#pragma warning disable IDE1006 // Стили именования
         public static string _n(string text, string pluralText, long n) => _Catalog.GetPluralString(text, pluralText, n);
 
 

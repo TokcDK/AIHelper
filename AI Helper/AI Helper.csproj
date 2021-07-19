@@ -98,11 +98,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\CustomResolution.cs">
+    <Compile Include="Forms\CustomResolutionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\CustomResolution.Designer.cs">
-      <DependentUpon>CustomResolution.cs</DependentUpon>
+    <Compile Include="Forms\CustomResolutionForm.Designer.cs">
+      <DependentUpon>CustomResolutionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ExtraSettings\Elements\BepinEx\BepinEx.cs" />
     <Compile Include="Forms\ExtraSettings\Elements\BepinEx\BepinExForm.cs">
@@ -153,11 +153,11 @@
     <Compile Include="Forms\LinksForm.Designer.cs">
       <DependentUpon>LinksForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ExtraSettings\ExtraSettings.cs">
+    <Compile Include="Forms\ExtraSettings\ExtraSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ExtraSettings\ExtraSettings.Designer.cs">
-      <DependentUpon>ExtraSettings.cs</DependentUpon>
+    <Compile Include="Forms\ExtraSettings\ExtraSettingsForm.Designer.cs">
+      <DependentUpon>ExtraSettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Games\Illusion\AISyoujyoTrial.cs" />
     <Compile Include="Games\Illusion\HoneySelect.cs" />
@@ -220,11 +220,11 @@
     <Compile Include="Utils\ParallelPoorMan.cs" />
     <Compile Include="Utils\T.cs" />
     <Compile Include="Utils\Compressor.cs" />
-    <Compile Include="Forms\Main.cs">
+    <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Main.Designer.cs">
-      <DependentUpon>Main.cs</DependentUpon>
+    <Compile Include="Forms\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\CopyFolder.cs" />
     <Compile Include="Utils\crc32.cs" />
@@ -234,8 +234,8 @@
     <Compile Include="Utils\Shortcut.cs" />
     <Compile Include="Manage\ManageXML.cs" />
     <Compile Include="Manage\ManageOther.cs" />
-    <EmbeddedResource Include="Forms\Main.resx">
-      <DependentUpon>Main.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ExtraSettings\Elements\BepinEx\BepinExForm.resx">
       <DependentUpon>BepinExForm.cs</DependentUpon>
@@ -247,11 +247,11 @@
       <DependentUpon>LinksForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ExtraSettings\ExtraSettings.resx">
-      <DependentUpon>ExtraSettings.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ExtraSettings\ExtraSettingsForm.resx">
+      <DependentUpon>ExtraSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\CustomResolution.resx">
-      <DependentUpon>CustomResolution.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\CustomResolutionForm.resx">
+      <DependentUpon>CustomResolutionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\LogLevelselectionForm.resx">
       <DependentUpon>LogLevelselectionForm.cs</DependentUpon>

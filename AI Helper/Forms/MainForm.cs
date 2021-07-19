@@ -20,7 +20,7 @@ using System.Windows.Forms;
 
 namespace AIHelper
 {
-    public partial class Main : Form
+    public partial class MainForm : Form
     {
         private bool compressmode;
 
@@ -45,7 +45,7 @@ namespace AIHelper
         private static Game CurrentGame { get => GameData.CurrentGame; set => GameData.CurrentGame = value; }
         private static List<Game> ListOfGames { get => GameData.ListOfGames; set => GameData.ListOfGames = value; }
 
-        public Main()
+        public MainForm()
         {
             InitializeComponent();
 
@@ -2627,14 +2627,14 @@ namespace AIHelper
             }
         }
 
-        ExtraSettings extraSettingsForm;
+        ExtraSettingsForm extraSettingsForm;
         private void ExtraSettingsLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             if (extraSettingsForm == null || extraSettingsForm.IsDisposed)
             {
                 //show and reposition of form
                 //https://stackoverflow.com/questions/31492787/how-to-set-position-second-form-depend-on-first-form
-                extraSettingsForm = new ExtraSettings
+                extraSettingsForm = new ExtraSettingsForm
                 {
                     //LinksForm.Text = T._("Links");
                     StartPosition = FormStartPosition.Manual

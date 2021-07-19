@@ -1,6 +1,6 @@
 ﻿namespace AIHelper
 {
-    partial class ExtraSettings
+    partial class ExtraSettingsForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExtraSettings));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExtraSettingsForm));
             this.ExtraSettingsPanel = new System.Windows.Forms.Panel();
             this.ExtraSettingsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.ExtraSettingsPanel.SuspendLayout();

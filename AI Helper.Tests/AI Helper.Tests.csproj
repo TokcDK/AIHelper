@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AI Girl Helper\AI Helper.csproj" />
+    <ProjectReference Include="..\AI Helper\AI Helper.csproj" />
   </ItemGroup>
 
 </Project>

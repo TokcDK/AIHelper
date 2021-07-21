@@ -1,5 +1,4 @@
-﻿using AIHelper.Manage;
-using AIHelper.SharedData;
+﻿using AIHelper.SharedData;
 using INIFileMan;
 using System;
 using System.Collections.Generic;
@@ -109,50 +108,196 @@ namespace AIHelper.Manage
                 INI = new INIFile(ManageSettings.GetModOrganizerINIpath());
             }
 
-            var customExecutables = INI.ReadSectionKeyValuePairsToDictionary("customExecutables");
+            var customExecutables = new CustomExecutables(INI);
 
-            var newcustomExecutables = new Dictionary<string, string>();
-
-            var changed = false;
-            foreach (var record in customExecutables)
+            foreach (var record in customExecutables.list)
             {
-                if ((record.Key.EndsWith(@"\binary", StringComparison.OrdinalIgnoreCase)//read bynary path
-                   || record.Key.EndsWith(@"\workingDirectory", StringComparison.OrdinalIgnoreCase))//read \workingDirectory path
-                    && record.Value.StartsWith("..", StringComparison.InvariantCulture))
+                foreach (var attribute in new[] { "binary", "workingDirectory" })
                 {
                     try
                     {
-                        //replace .. to absolute path of current game directory
-                        var targetcorrectedrelative = record.Value
-                                .Remove(0, 2).Insert(0, ManageSettings.GetCurrentGamePath());
+                        var fullPath = Path.GetFullPath(record.Value.attribute[attribute]);
+                        bool isFile = attribute == "binary";
+                        if ((isFile && File.Exists(fullPath)) || (!isFile && Directory.Exists(fullPath)))
+                        {
+                            //not need to change if path is exists
+                        }
+                        else
+                        {
+                            if (record.Value.attribute[attribute].StartsWith("..", StringComparison.InvariantCulture))
+                            {
+                                //suppose relative path was from MO dir ..\%MODir%
+                                //replace .. to absolute path of current game directory
+                                var targetcorrectedrelative = record.Value.attribute[attribute]
+                                        .Remove(0, 2).Insert(0, ManageSettings.GetCurrentGamePath());
 
-                        //replace other slashes
-                        var targetcorrectedabsolute = Path.GetFullPath(targetcorrectedrelative);
-                        var targetcorrectedabsolutefixedslash = targetcorrectedabsolute.Replace(@"\\", "/").Replace(@"\", "/");//replace \ to /;
+                                //replace other slashes
+                                var targetcorrectedabsolute = Path.GetFullPath(targetcorrectedrelative);
+                                record.Value.attribute[attribute] = targetcorrectedabsolute.Replace(@"\\", "/").Replace(@"\", "/");//replace \ to /;
+                                //changed = true;
 
-                        //add absolute path for current game's data path
-                        newcustomExecutables.Add(record.Key, targetcorrectedabsolutefixedslash);
-                        changed = true;
+                                //add absolute path for current game's data path
+                                //newcustomExecutables.Add(record.Key, targetcorrectedabsolutefixedslash);
+                                continue;
+                            }
+                        }
                     }
                     catch
                     {
                         ManageLogs.Log("FixCustomExecutablesIniValues:Error while path fix.\r\nKey=" + record.Key + "\r\nPath=" + record.Value);
-                        newcustomExecutables.Add(record.Key, record.Value);
                     }
-                }
-                else
-                {
-                    newcustomExecutables.Add(record.Key, record.Value);
                 }
             }
 
-            if (changed)//write only if changed
+            customExecutables.Save();
+        }
+
+        internal class CustomExecutables
+        {
+            /// <summary>
+            /// list of custom executables
+            /// </summary>
+            internal Dictionary<string, CustomExecutable> list;
+            INIFile ini;
+
+            internal CustomExecutables()
             {
-                foreach (var record in newcustomExecutables)
+            }
+
+            internal CustomExecutables(INIFile ini)
+            {
+                LoadFrom(ini);
+            }
+
+            internal void LoadFrom(INIFile ini)
+            {
+                if (list != null && list.Count > 0) // already loaded
                 {
-                    INI.WriteINI("customExecutables", record.Key, record.Value, false);
+                    return;
                 }
-                INI.SaveINI();
+
+                this.ini = ini; // set ini reference
+
+                var ListToLoad = ini.ReadSectionKeyValuePairsToDictionary("customExecutables");
+
+                list = new Dictionary<string, CustomExecutable>();
+
+                foreach (var entry in ListToLoad)
+                {
+                    var numName = entry.Key.Split('\\');//numName[0] - number of customexecutable , numName[0] - name of attribute
+                    if (numName.Length != 2)
+                    {
+                        continue;
+                    }
+
+                    if (!list.ContainsKey(numName[0]))
+                    {
+                        list.Add(numName[0], new CustomExecutable());
+                    }
+
+                    list[numName[0]].attribute[numName[1]] = entry.Value;
+                }
+            }
+
+            internal void Save()
+            {
+                if (ini == null)
+                {
+                    return;
+                }
+
+                bool changed = false;
+                foreach (var customExecutable in list)
+                {
+                    foreach (var attribute in customExecutable.Value.attribute)
+                    {
+                        string keyName = customExecutable.Key + "\\" + attribute.Key;
+
+                        if (ini.ReadINI("customExecutables", keyName) != attribute.Value) // write only if not equal
+                        {
+                            changed = true;
+                            ini.WriteINI("customExecutables", keyName, attribute.Value);
+                        }
+                    }
+                }
+
+                if (changed)
+                {
+                    ini.WriteINI("customExecutables", "size", list.Count + "");
+                }
+            }
+
+            protected static string NormalizeBool(string value)
+            {
+                if (string.Equals(value, "true", StringComparison.OrdinalIgnoreCase) && !string.Equals(value, "true", StringComparison.OrdinalIgnoreCase))
+                {
+                    //false if value not one of false or true
+                    return "false";
+                }
+
+                return value.Trim();
+            }
+
+            protected static string NormalizePath(string value)
+            {
+                return value.Replace('\\', '/');
+            }
+
+            protected static string NormalizeArguments(string value)
+            {
+                if (value == "\\\"\\\"")
+                {
+                    return string.Empty;
+                }
+
+                value = value.Replace("\\", "\\\\").Replace("/", "\\\\").Replace("\\\\\\\\", "\\\\");
+
+                if (!value.StartsWith("\\\"", StringComparison.InvariantCulture))
+                {
+                    value = "\\\"" + value;
+                }
+                if (!value.Remove(0, 2).EndsWith("\\\"", StringComparison.InvariantCulture))
+                {
+                    value += "\\\"";
+                }
+
+                return value;
+            }
+
+            internal class CustomExecutable
+            {
+                internal Dictionary<string, string> attribute = new Dictionary<string, string>()
+                {
+                    { "title" , title},
+                    { "binary" , binary},
+                    { "workingDirectory" , workingDirectory},
+                    { "arguments" , arguments},
+                    { "toolbar" , toolbar},
+                    { "ownicon" , ownicon},
+                    { "hide" , hide},
+                    { "steamAppID" , steamAppID},
+                };
+
+#pragma warning disable IDE1006 // Naming Styles
+                static string Title;
+                internal static string title { get => Title; set => Title = NormalizePath(value); }
+                static string Binary;
+                internal static string binary { get => Binary; set => Binary = NormalizePath(value); }
+                static string WorkingDirectory = string.Empty;
+                internal static string workingDirectory { get => WorkingDirectory; set => WorkingDirectory = NormalizePath(value); }
+                static string Arguments = string.Empty;
+                internal static string arguments { get => Arguments; set => Arguments = NormalizeArguments(value); }
+
+                internal static string Toolbar = "false";
+                internal static string toolbar { get => Toolbar; set => Toolbar = NormalizeBool(value); }
+
+                internal static string Ownicon = "false";
+                internal static string ownicon { get => Ownicon; set => Ownicon = NormalizeBool(value); }
+                internal static string Hide = "false";
+                internal static string hide { get => Ownicon; set => Hide = NormalizeBool(value); }
+
+                internal static string steamAppID = string.Empty;
+#pragma warning restore IDE1006 // Naming Styles
             }
         }
 

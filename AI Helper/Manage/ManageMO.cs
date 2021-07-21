@@ -213,7 +213,7 @@ namespace AIHelper.Manage
                     {
                         string keyName = customExecutable.Key + "\\" + attribute.Key;
 
-                        if (ini.ReadINI("customExecutables", keyName) != attribute.Value) // write only if not equal
+                        if (!ini.KeyExists(keyName, "customExecutables") || ini.ReadINI("customExecutables", keyName) != attribute.Value) // write only if not equal
                         {
                             changed = true;
                             ini.WriteINI("customExecutables", keyName, attribute.Value);
@@ -266,37 +266,121 @@ namespace AIHelper.Manage
 
             internal class CustomExecutable
             {
+                /// <summary>
+                /// <list type="s">
+                ///     <listheader>
+                ///         <description>List of possible attributes:</description>
+                ///     </listheader>
+                ///     <item>
+                ///         <term>title</term>
+                ///         <description>(Required!) title of custom executable</description>
+                ///     </item>
+                ///     <item>
+                ///         <term>binary</term>
+                ///         <description>(Required!) path to the exe</description>
+                ///     </item>
+                ///     <item>
+                ///         <term>workingDirectory</term>
+                ///         <description>(Optional) Working directory. By defaule willbe directory where is binary located.</description>
+                ///     </item>
+                ///     <item>
+                ///         <term>arguments</term>
+                ///         <description>(Optional) Arguments for binary. Empty by default.</description>
+                ///     </item>
+                ///     <item>
+                ///         <term>toolbar</term>
+                ///         <description>(Optional) Enable toolbar. False by default.</description>
+                ///     </item>
+                ///     <item>
+                ///         <term>ownicon</term>
+                ///         <description>(Optional) Use own icon for the exe, else will be icon of MO. False by default.</description>
+                ///     </item>
+                ///     <item>
+                ///         <term>hide</term>
+                ///         <description>(Optional) Hide the custom exe? False by default.</description>
+                ///     </item>
+                ///     <item>
+                ///         <term>steamAppID</term>
+                ///         <description>(Optional) Steam app id for binary. Empty by default.</description>
+                ///     </item>
+                /// </list>
+                /// </summary>
+                /// <example>
+                ///     example of use:
+                ///     <code>
+                ///         customExecutable.attribute["title"] = "New custom exe"
+                ///     </code>
+                /// </example>
                 internal Dictionary<string, string> attribute = new Dictionary<string, string>()
                 {
-                    { "title" , title},
-                    { "binary" , binary},
-                    { "workingDirectory" , workingDirectory},
-                    { "arguments" , arguments},
-                    { "toolbar" , toolbar},
-                    { "ownicon" , ownicon},
-                    { "hide" , hide},
-                    { "steamAppID" , steamAppID},
+                    { "title" , NormalizedTitle},
+                    { "binary" , NormalizedBinary},
+                    { "workingDirectory" , NormalizedWorkingDirectory},
+                    { "arguments" , NormalizedArguments},
+                    { "toolbar" , NormalizedToolbar},
+                    { "ownicon" , NormalizedOwnicon},
+                    { "hide" , NormalizedHide},
+                    { "steamAppID" , NormalizedSteamAppID},
                 };
 
 #pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable CA1822 // Mark members as static
                 static string Title;
-                internal static string title { get => Title; set => Title = NormalizePath(value); }
+                static string NormalizedTitle { get => Title; set => Title = NormalizePath(value); }
+                /// <summary>
+                /// (Required!) title of custom executable
+                /// </summary>
+                internal string title { get => NormalizedTitle; set => NormalizedTitle = value; }
+
                 static string Binary;
-                internal static string binary { get => Binary; set => Binary = NormalizePath(value); }
+                static string NormalizedBinary { get => Binary; set => Binary = NormalizePath(value); }
+                /// <summary>
+                /// (Required!) path to the exe
+                /// </summary>
+                internal string binary { get => NormalizedBinary; set => NormalizedBinary = value; }
+
                 static string WorkingDirectory = string.Empty;
-                internal static string workingDirectory { get => WorkingDirectory; set => WorkingDirectory = NormalizePath(value); }
+                static string NormalizedWorkingDirectory { get => WorkingDirectory; set => WorkingDirectory = NormalizePath(value); }
+                /// <summary>
+                /// (Optional) Working directory. By defaule willbe directory where is binary located.
+                /// </summary>
+                internal string workingDirectory { get => NormalizedWorkingDirectory; set => NormalizedWorkingDirectory = value; }
+
                 static string Arguments = string.Empty;
-                internal static string arguments { get => Arguments; set => Arguments = NormalizeArguments(value); }
+                static string NormalizedArguments { get => Arguments; set => Arguments = NormalizeArguments(value); }
+                /// <summary>
+                /// (Optional) Arguments for binary. Empty by default.
+                /// </summary>
+                internal string arguments { get => NormalizedArguments; set => NormalizedArguments = value; }
 
-                internal static string Toolbar = "false";
-                internal static string toolbar { get => Toolbar; set => Toolbar = NormalizeBool(value); }
+                static string Toolbar = "false";
+                static string NormalizedToolbar { get => Toolbar; set => Toolbar = NormalizeBool(value); }
+                /// <summary>
+                /// (Optional) Enable toolbar. False by default.
+                /// </summary>
+                internal string toolbar { get => NormalizedToolbar; set => NormalizedToolbar = value; }
 
-                internal static string Ownicon = "false";
-                internal static string ownicon { get => Ownicon; set => Ownicon = NormalizeBool(value); }
-                internal static string Hide = "false";
-                internal static string hide { get => Ownicon; set => Hide = NormalizeBool(value); }
+                static string Ownicon = "false";
+                static string NormalizedOwnicon { get => Ownicon; set => Ownicon = NormalizeBool(value); }
+                /// <summary>
+                /// (Optional) Use own icon for the exe, else will be icon of MO. False by default.
+                /// </summary>
+                internal string ownicon { get => NormalizedOwnicon; set => NormalizedOwnicon = value; }
 
-                internal static string steamAppID = string.Empty;
+                static string Hide = "false";
+                static string NormalizedHide { get => Hide; set => Hide = NormalizeBool(value); }
+                /// <summary>
+                /// (Optional) Hide the custom exe? False by default.
+                /// </summary>
+                internal string hide { get => NormalizedHide; set => NormalizedHide = value; }
+
+                static string NormalizedSteamAppID = string.Empty;
+                /// <summary>
+                /// (Optional) Steam app id for binary. Empty by default.
+                /// </summary>
+                internal string steamAppID { get => NormalizedSteamAppID; set => NormalizedSteamAppID = NormalizeBool(value); }
+
+#pragma warning restore CA1822 // Mark members as static
 #pragma warning restore IDE1006 // Naming Styles
             }
         }
@@ -1111,6 +1195,37 @@ namespace AIHelper.Manage
                 INI.WriteINI("customExecutables", record.Key, record.Value, false);
             }
             INI.SaveINI();
+        }
+
+        /// <summary>
+        /// inserts in MO.ini new custom executable
+        /// required exeParams 0 is exe title, required exeParams 1 is exe bynary path
+        /// optional exeParams 2 is arguments, optional exeParams 4 is working directory
+        /// </summary>
+        /// <param name="newCustomExecutable"></param>
+        internal static void InsertCustomExecutable(CustomExecutables.CustomExecutable newCustomExecutable, INIFile INI = null, bool insertOnlyMissingBinary = true)
+        {
+            if (INI == null)
+            {
+                INI = new INIFile(ManageSettings.GetMOiniPath());
+            }
+
+            var customExcutables = new CustomExecutables(INI);
+
+            if (insertOnlyMissingBinary)
+            {
+                foreach (var exe in customExcutables.list)
+                {
+                    if (exe.Value.binary == newCustomExecutable.binary) // return if exe found
+                    {
+                        return;
+                    }
+                }
+            }
+
+            customExcutables.list.Add(customExcutables.list.Count + 1 + "", newCustomExecutable);
+
+            customExcutables.Save();
         }
 
         /// <summary>

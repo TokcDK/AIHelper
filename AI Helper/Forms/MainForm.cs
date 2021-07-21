@@ -2754,14 +2754,13 @@ namespace AIHelper
                     ManageMO.RedefineGameMOData();
 
                     //add updater as new exe in mo list if not exists
-                    if (!ManageMO.IsMOcustomExecutableTitleByExeNameExists("StandaloneUpdater"))
+                    //if (!ManageMO.IsMOcustomExecutableTitleByExeNameExists("StandaloneUpdater"))
                     {
-                        ManageMO.InsertCustomExecutable(new string[]
-                        {
-                            "KKManagerStandaloneUpdater",
-                            ManageSettings.KKManagerStandaloneUpdaterEXEPath(),
-                            ManageSettings.GetCurrentGameDataPath()
-                        });
+                        var KKManagerStandaloneUpdater = new ManageMO.CustomExecutables.CustomExecutable();
+                        KKManagerStandaloneUpdater.attribute["title"] = "KKManagerStandaloneUpdater";
+                        KKManagerStandaloneUpdater.attribute["binary"] = ManageSettings.KKManagerStandaloneUpdaterEXEPath();
+                        KKManagerStandaloneUpdater.attribute["workingDirectory"] = ManageSettings.GetCurrentGameDataPath();
+                        ManageMO.InsertCustomExecutable(KKManagerStandaloneUpdater);
                     }
 
                     var ZipmodsGUIDList = new Dictionary<string, string>();

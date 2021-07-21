@@ -117,16 +117,9 @@ namespace AIHelper.Manage
                     try
                     {
                         string fullPath = "";
-                        try
+                        if (record.Value.attribute[attribute].Length > 0)
                         {
-                            if (record.Value.attribute[attribute].Length > 0)
-                            {
-                                fullPath = Path.GetFullPath(record.Value.attribute[attribute]);
-                            }
-                        }
-                        catch
-                        {
-
+                            fullPath = Path.GetFullPath(record.Value.attribute[attribute]);
                         }
                         bool isFile = attribute == "binary";
                         if ((isFile && File.Exists(fullPath)) || (!isFile && Directory.Exists(fullPath)))

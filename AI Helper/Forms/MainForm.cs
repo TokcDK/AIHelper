@@ -806,6 +806,9 @@ namespace AIHelper
             ManageXML.ChangeSetupXmlValue(SetupXmlPath, "Setting/Quality", quality);
         }
 
+        /// <summary>
+        /// reinit some parameters
+        /// </summary>
         private void FoldersInit()
         {
             EnableDisableSomeTools();
@@ -2782,6 +2785,8 @@ namespace AIHelper
                     RunProgram(ManageSettings.KKManagerStandaloneUpdaterEXEPath(), "\"" + ManageSettings.GetCurrentGameDataPath() + "\"");
                 }
             }
+
+            FoldersInit();
 
             AIGirlHelperTabControl.Enabled = true;
         }

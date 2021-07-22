@@ -166,33 +166,40 @@ namespace AIHelper.Manage.Update.Targets
 
                 if (code > 0)
                 {
-                    if (code == 1)
+                    switch (code)
                     {
-                        using (ZipArchive archive = ZipFile.OpenRead(info.UpdateFilePath))
-                        {
-                            archive.ExtractToDirectory(UpdatingModDirPath);
-                        }
-                    }
-                    else if (code == 2)
-                    {
-                        var FullDllFileName = Path.GetFileName(info.UpdateFilePath);
-                        string targetDir;
-                        if (UpdateFilenameSubPathData.ContainsKey(FullDllFileName)) //get subpath from predefined list
-                        {
-                            targetDir = UpdatingModDirPath + Path.DirectorySeparatorChar + UpdateFilenameSubPathData[FullDllFileName];
-                        }
-                        else if ((targetDir = GetDllTargetDir(FullDllFileName, UpdatingModDirPath)).Length > 0)//search dll path in buckup dir
-                        {
-                            Directory.CreateDirectory(targetDir);
-                        }
-                        else if (info.TargetFolderUpdateInfo[0] == "BepInEx")//default BepInEx plugins dir
-                        {
-                            targetDir = Path.Combine(UpdatingModDirPath, "BepInEx", "plugins");
-                        }
+                        case 1:
+                            {
+                                using (ZipArchive archive = ZipFile.OpenRead(info.UpdateFilePath))
+                                {
+                                    archive.ExtractToDirectory(UpdatingModDirPath);
+                                }
 
-                        Directory.CreateDirectory(targetDir);
-                        var targetFilePath = Path.Combine(targetDir, FullDllFileName);
-                        File.Move(info.UpdateFilePath, targetFilePath);
+                                break;
+                            }
+
+                        case 2:
+                            {
+                                var FullDllFileName = Path.GetFileName(info.UpdateFilePath);
+                                string targetDir;
+                                if (UpdateFilenameSubPathData.ContainsKey(FullDllFileName)) //get subpath from predefined list
+                                {
+                                    targetDir = UpdatingModDirPath + Path.DirectorySeparatorChar + UpdateFilenameSubPathData[FullDllFileName];
+                                }
+                                else if ((targetDir = GetDllTargetDir(FullDllFileName, UpdatingModDirPath)).Length > 0)//search dll path in buckup dir
+                                {
+                                    Directory.CreateDirectory(targetDir);
+                                }
+                                else if (info.TargetFolderUpdateInfo[0] == "BepInEx")//default BepInEx plugins dir
+                                {
+                                    targetDir = Path.Combine(UpdatingModDirPath, "BepInEx", "plugins");
+                                }
+
+                                Directory.CreateDirectory(targetDir);
+                                var targetFilePath = Path.Combine(targetDir, FullDllFileName);
+                                File.Move(info.UpdateFilePath, targetFilePath);
+                                break;
+                            }
                     }
                     success = true;
                 }

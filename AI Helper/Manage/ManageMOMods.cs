@@ -1513,7 +1513,7 @@ namespace AIHelper.Manage
                     }
                 }
 
-                if (author.Length == 0 && ManageFilesFolders.IsAnyFileExistsInTheDir(subdir, ".dll"))
+                if (/*author.Length == 0 &&*/ ManageFilesFolders.IsAnyFileExistsInTheDir(subdir, ".dll"))
                 {
                     foreach (var dllFilePath in Directory.GetFiles(subdir, "*.dll", SearchOption.AllDirectories))
                     {

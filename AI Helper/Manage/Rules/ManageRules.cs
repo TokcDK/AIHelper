@@ -12,7 +12,7 @@ namespace AIHelper.Manage
     {
         internal class ModList
         {
-            ModListData modlistData;
+            readonly ModListData modlistData;
             public ModList()
             {
                 modlistData = new ModListData();

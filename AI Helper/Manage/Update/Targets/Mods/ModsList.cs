@@ -10,7 +10,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
         {
         }
 
-        string updateInfosFile = Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), "updateinfo.txt");
+        readonly string updateInfosFile = ManageSettings.GetUpdateInfosFilePath();
 
         /// <summary>
         /// Get enabled and exists Mods list from updateinfos file

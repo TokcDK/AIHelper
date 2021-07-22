@@ -16,6 +16,12 @@ namespace AIHelper.Manage
             return ManageINI.GetINIValueIfExist(GetAIHelperINIPath(), "FirstRun", "General") == "True";
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetUpdateInfosFilePath()
+        {
+            return Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), "updateinfo.txt");
+        }
+
         internal static string GetCurrentGameMOGamePyPluginPath()
         {
 #pragma warning disable CA1308 // Normalize strings to uppercase

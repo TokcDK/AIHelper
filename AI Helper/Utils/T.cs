@@ -27,6 +27,7 @@ namespace AIHelper
 
 
 #pragma warning disable IDE1006 // Стили именования
+#pragma warning disable CA1707 // Identifiers should not contain underscores
         public static string _(string text) => _Catalog.GetString(text);
 
         public static string _(string text, params object[] args) => _Catalog.GetString(text, args);
@@ -42,6 +43,7 @@ namespace AIHelper
         public static string _pn(string context, string text, string pluralText, long n) => _Catalog.GetParticularPluralString(context, text, pluralText, n);
 
         public static string _pn(string context, string text, string pluralText, long n, params object[] args) => _Catalog.GetParticularPluralString(context, text, pluralText, n, args);
+#pragma warning restore CA1707 // Identifiers should not contain underscores
 #pragma warning restore IDE1006 // Стили именования
     }
 }

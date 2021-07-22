@@ -94,7 +94,7 @@ namespace AIHelper.Manage
                     last = file;
                 }
             }
-            return last != null ? last.FullName : null;
+            return last?.FullName;
         }
 
         /// <summary>

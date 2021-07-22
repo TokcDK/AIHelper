@@ -161,7 +161,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
                     {
                         levels.Add(item.ToString());
                     }
-                    if (levels.Count > 0)
+                    //if (levels.Count > 0)
                     {
                         LevelsValue = string.Join(", ", levels.ToArray());
                     }

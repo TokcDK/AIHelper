@@ -93,7 +93,7 @@ namespace AIHelper.Manage
             //return inputString.Contains("\n");
 
             ///old
-            {
+            //{
                 //0.0035x100000
                 //if (input != null)
                 //{
@@ -112,7 +112,7 @@ namespace AIHelper.Manage
                 //}
 
                 //return false;
-            }
+            //}
         }
 
         internal static string TrimFileVersion(this string fileVersion)

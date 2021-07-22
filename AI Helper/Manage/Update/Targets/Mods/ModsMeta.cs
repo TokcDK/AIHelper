@@ -38,18 +38,17 @@ namespace AIHelper.Manage.Update.Targets.Mods
                 new XUA(targetinfo)
             };
 
-            if (ModsList != null)
-                foreach (var modname in ModsList)
+            foreach (var modname in ModsList)
+            {
+                var ModPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modname);
+
+                var modinfo = GetInfoFromMeta(ModPath);
+
+                if (!string.IsNullOrWhiteSpace(modinfo))
                 {
-                    var ModPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modname);
-
-                    var modinfo = GetInfoFromMeta(ModPath);
-
-                    if (!string.IsNullOrWhiteSpace(modinfo))
-                    {
-                        infos.Add(ModPath, modinfo/*>*/.Replace(", ",",")/*<fix of possible problems from space after ,*/);
-                    }
+                    infos.Add(ModPath, modinfo/*>*/.Replace(", ", ",")/*<fix of possible problems from space after ,*/);
                 }
+            }
 
             return infos;
         }
@@ -90,7 +89,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
                     if (INI.KeyExists(ManageSettings.AIMetaINIKeyUpdateName(), ManageSettings.AIMetaINISectionName()))
                     {
                         var Info = INI.ReadINI(ManageSettings.AIMetaINISectionName(), ManageSettings.AIMetaINIKeyUpdateName());
-                                                
+
                         return Regex.Match(Info, info.SourceID + "::([^:]+)::").Result("$1");
                     }
                 }
@@ -149,7 +148,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
             var i = 0;
             while (db.ContainsKey("skipif.contains.file" + i) && !string.IsNullOrWhiteSpace(db["skipif.contains.file" + i]))
             {
-                if(File.Exists(Path.GetFullPath(Path.Combine(targetinfo.moddir.FullName, db["skipif.contains.file" + i]))))
+                if (File.Exists(Path.GetFullPath(Path.Combine(targetinfo.moddir.FullName, db["skipif.contains.file" + i]))))
                 {
                     return true;
                 }

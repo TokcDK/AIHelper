@@ -1625,7 +1625,7 @@ namespace AIHelper.Manage
                 //string version = dllInfo.ProductVersion;
                 string copyright = dllInfo.LegalCopyright;
 
-                if (name.Length == 0)
+                if (name==null || name.Length == 0)
                 {
                     name = Path.GetFileNameWithoutExtension(dllfile);
                 }

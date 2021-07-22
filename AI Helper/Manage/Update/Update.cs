@@ -166,7 +166,7 @@ namespace AIHelper.Manage.Update
                             // get info to array
                             var tInfoArray = (tFolderInfo.Value.StartsWith(source.infoID, StringComparison.InvariantCultureIgnoreCase) ? tFolderInfo.Value.Remove(tFolderInfo.Value.Length - 2, 2).Remove(0, source.infoID.Length + 2) : tFolderInfo.Value).Split(new[] { Environment.NewLine, "\n", "\r", "," }, StringSplitOptions.None);
 
-                            if (tInfoArray == null || tInfoArray.Length == 0) // skip if info is invalid
+                            if (tInfoArray.Length == 0) // skip if info is invalid
                             {
                                 continue;
                             }

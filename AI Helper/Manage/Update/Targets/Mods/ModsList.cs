@@ -25,7 +25,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
                 ModsList = ManageMO.GetModNamesListFromActiveMOProfile();
                 var updateInfoList = GetUpdateInfosFromFile();
 
-                if (updateInfoList != null && updateInfoList.Count > 0 && ModsList != null)
+                if (updateInfoList != null && updateInfoList.Count > 0)
                     foreach (var modname in ModsList)
                     {
                         var ModPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modname);

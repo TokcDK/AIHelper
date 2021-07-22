@@ -1627,7 +1627,6 @@ namespace AIHelper.Manage
                 //поиск по списку активных модов
                 string ModsPath = ManageSettings.GetCurrentGameModsPath();
                 var modNames = GetModNamesListFromActiveMOProfile(OnlyEnabled);
-                if (modNames != null)
                     foreach (var modName in modNames)
                     {
                         string possiblePath = Path.Combine(ModsPath, modName) + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;

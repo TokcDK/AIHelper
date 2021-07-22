@@ -2882,7 +2882,7 @@ namespace AIHelper
                             {
                                 continue;
                             }
-                            else if (IsTargetExists && IsSourceExists)
+                            else if (IsTargetExists)
                             {
                                 var targetinfo = new FileInfo(target);
                                 var sourceinfo = new FileInfo(file);
@@ -2939,7 +2939,7 @@ namespace AIHelper
                             {
                                 continue;
                             }
-                            else if (IsTargetExists && IsSourceExists)
+                            else if (IsTargetExists)
                             {
                                 var targetinfo = new FileInfo(target);
                                 var sourceinfo = new FileInfo(file);

@@ -18,7 +18,7 @@ namespace AIHelper.Manage
                 extension = "." + extension;
             }
 
-            if (dirForSearch.Length > 0 && extension.Length > 0 && Directory.Exists(dirForSearch))
+            if (extension.Length > 0 && Directory.Exists(dirForSearch))
             {
                 foreach (var file in Directory.GetFiles(dirForSearch, "*" + extension, SearchOption.AllDirectories))
                 {

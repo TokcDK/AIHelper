@@ -92,24 +92,29 @@ namespace AIHelper.Manage.Rules.ModList
                         //else if mod not enabled then add it for activation
                         if (!DontAddCandidate)
                         {
-                            if (modeANDOR > 0)
+                            if (!modlistData.ModsMustBeEnabledCandidates.ContainsKey(FoundModName))
                             {
-                                if (!modlistData.ModsMustBeEnabledCandidates.ContainsKey(FoundModName))
-                                {
-                                    modlistData.ModsMustBeEnabledCandidates.Add(FoundModName, "req:" + SubModName);
-                                }
+                                modlistData.ModsMustBeEnabledCandidates.Add(FoundModName, "req:" + SubModName);
                             }
-                            else
-                            {
-                                if (!modlistData.ModsMustBeEnabledCandidates.ContainsKey(FoundModName))
-                                {
-                                    modlistData.ModsMustBeEnabledCandidates.Add(FoundModName, "req:" + SubModName);
-                                }
-                                //if (!modlistData.ModsMustBeEnabled.Contains(FoundModName))
-                                //{
-                                //    modlistData.ModsMustBeEnabled.Add(FoundModName);
-                                //}
-                            }
+
+                            //if (modeANDOR > 0)
+                            //{
+                            //    if (!modlistData.ModsMustBeEnabledCandidates.ContainsKey(FoundModName))
+                            //    {
+                            //        modlistData.ModsMustBeEnabledCandidates.Add(FoundModName, "req:" + SubModName);
+                            //    }
+                            //}
+                            //else
+                            //{
+                            //    if (!modlistData.ModsMustBeEnabledCandidates.ContainsKey(FoundModName))
+                            //    {
+                            //        modlistData.ModsMustBeEnabledCandidates.Add(FoundModName, "req:" + SubModName);
+                            //    }
+                            //    //if (!modlistData.ModsMustBeEnabled.Contains(FoundModName))
+                            //    //{
+                            //    //    modlistData.ModsMustBeEnabled.Add(FoundModName);
+                            //    //}
+                            //}
                         }
 
                         //if (!ModsMustBeEnabled.Contains(FoundModName))
@@ -235,8 +240,9 @@ namespace AIHelper.Manage.Rules.ModList
                 {
                     modlistData.ModsMustBeDisabled.Add(modname, "inc:" + ruleData);
                 }
+                return true;
             }
-            return true;
+            return false;
         }
 
         private bool ParseINCSearchFileInEnabledMods(string modname, string ruleData)
@@ -271,7 +277,7 @@ namespace AIHelper.Manage.Rules.ModList
                     return true;
                 }
             }
-            return true;
+            return false;
         }
 
         protected void AddCandidates()
@@ -470,7 +476,7 @@ namespace AIHelper.Manage.Rules.ModList
                     //}
                 }
             }
-            return true;
+            return false;
         }
 
         private bool ParseREQSearchFileInMods(string modname, string ruleData, int modeANDOR = 0)

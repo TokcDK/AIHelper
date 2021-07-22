@@ -57,10 +57,7 @@ namespace AIHelper.Manage.Rules.ModList
                 return modlistData.rulesDictOverall.Count > 0;
             }
 
-            if (modlistData.rulesDictOverall == null)
-            {
-                modlistData.rulesDictOverall = new Dictionary<string, string[]>();
-            }
+            modlistData.rulesDictOverall = new Dictionary<string, string[]>();
 
             var modlistRulesPath = ManageSettings.GetCurrentGameModListRulesPath();
             if (!File.Exists(modlistRulesPath))

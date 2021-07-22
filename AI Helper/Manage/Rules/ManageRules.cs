@@ -40,6 +40,11 @@ namespace AIHelper.Manage
                         CheckForm.Show();
                         foreach (var ModName in modlistData.EnabledModsList)
                         {
+                            if (string.IsNullOrWhiteSpace(ModName))
+                            {
+                                continue;
+                            }
+
                             if (cnt < CheckProgress.Maximum)
                             {
                                 CheckProgress.Value = cnt;

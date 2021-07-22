@@ -186,21 +186,22 @@ namespace AIHelper.Manage
 
                 list = new Dictionary<string, CustomExecutable>();
 
-                foreach (var entry in ListToLoad)
-                {
-                    var numName = entry.Key.Split('\\');//numName[0] - number of customexecutable , numName[0] - name of attribute
-                    if (numName.Length != 2)
+                if (ListToLoad != null)
+                    foreach (var entry in ListToLoad)
                     {
-                        continue;
-                    }
+                        var numName = entry.Key.Split('\\');//numName[0] - number of customexecutable , numName[0] - name of attribute
+                        if (numName.Length != 2)
+                        {
+                            continue;
+                        }
 
-                    if (!list.ContainsKey(numName[0]))
-                    {
-                        list.Add(numName[0], new CustomExecutable());
-                    }
+                        if (!list.ContainsKey(numName[0]))
+                        {
+                            list.Add(numName[0], new CustomExecutable());
+                        }
 
-                    list[numName[0]].attribute[numName[1]] = entry.Value;
-                }
+                        list[numName[0]].attribute[numName[1]] = entry.Value;
+                    }
             }
 
             internal void Save()
@@ -233,7 +234,7 @@ namespace AIHelper.Manage
 
             protected static string NormalizeBool(string value)
             {
-                if (string.Equals(value, "true", StringComparison.OrdinalIgnoreCase) && !string.Equals(value, "true", StringComparison.OrdinalIgnoreCase))
+                if (!string.Equals(value, "true", StringComparison.OrdinalIgnoreCase) && !string.Equals(value, "false", StringComparison.OrdinalIgnoreCase))
                 {
                     //false if value not one of false or true
                     return "false";
@@ -1154,18 +1155,48 @@ namespace AIHelper.Manage
         //    return retDict;
         //}
 
-        internal static string GetMOcustomExecutableTitleByExeName(string exename)
+        /// <summary>
+        /// get title of custom executable by it exe name
+        /// </summary>
+        /// <param name="exename"></param>
+        /// <param name="INI"></param>
+        /// <returns></returns>
+        internal static string GetMOcustomExecutableTitleByExeName(string exename, INIFile INI = null, bool newMethod = false)
         {
-            var customs = new INIFile(ManageSettings.GetMOiniPath()).ReadSectionKeyValuePairsToDictionary("customExecutables");
-            foreach (var pair in customs)
+            if (INI == null)
             {
-                if (pair.Key.EndsWith(@"\binary", StringComparison.InvariantCulture))
-                    if (Path.GetFileNameWithoutExtension(pair.Value) == exename)
-                        if (File.Exists(pair.Value))
-                        {
-                            return customs[pair.Key.Split('\\')[0] + @"\title"];
-                        }
+                INI = new INIFile(ManageSettings.GetMOiniPath());
             }
+
+            if (newMethod)
+            {
+                var customs = new CustomExecutables(INI);
+                foreach (var customExe in customs.list)
+                {
+                    if (Path.GetFileNameWithoutExtension(customExe.Value.binary) == exename)
+                    {
+                        if (File.Exists(customExe.Value.binary))
+                        {
+                            return customExe.Value.title;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                var customs = INI.ReadSectionKeyValuePairsToDictionary("customExecutables");
+                if (customs != null)
+                    foreach (var pair in customs)
+                    {
+                        if (pair.Key.EndsWith(@"\binary", StringComparison.InvariantCulture))
+                            if (Path.GetFileNameWithoutExtension(pair.Value) == exename)
+                                if (File.Exists(pair.Value))
+                                {
+                                    return customs[pair.Key.Split('\\')[0] + @"\title"];
+                                }
+                    }
+            }
+
             return exename;
         }
 
@@ -1362,7 +1393,7 @@ namespace AIHelper.Manage
                 INIFile INI = new INIFile(metaPath);
 
                 bool IsKeyExists = INI.KeyExists("category", "General");
-                if (!IsKeyExists || (IsKeyExists && categoryIDIndex.Length > 0 && INI.ReadINI("General", "category").Replace("\"", string.Empty).Length == 0))
+                if (!IsKeyExists || (categoryIDIndex.Length > 0 && INI.ReadINI("General", "category").Replace("\"", string.Empty).Length == 0))
                 {
                     INI.WriteINI("General", "category", "\"" + categoryIDIndex + "\"");
                 }
@@ -1461,7 +1492,7 @@ namespace AIHelper.Manage
                 }
             }
 
-            return null;
+            return new string[1];
         }
 
         private static string ReGetcurrentMOprofile(string currentMOprofile)
@@ -1595,24 +1626,26 @@ namespace AIHelper.Manage
 
                 //поиск по списку активных модов
                 string ModsPath = ManageSettings.GetCurrentGameModsPath();
-                foreach (var modName in GetModNamesListFromActiveMOProfile(OnlyEnabled))
-                {
-                    string possiblePath = Path.Combine(ModsPath, modName) + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
-                    if (IsDir)
+                var modNames = GetModNamesListFromActiveMOProfile(OnlyEnabled);
+                if (modNames != null)
+                    foreach (var modName in modNames)
                     {
-                        if (Directory.Exists(possiblePath))
+                        string possiblePath = Path.Combine(ModsPath, modName) + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
+                        if (IsDir)
                         {
-                            return possiblePath;
+                            if (Directory.Exists(possiblePath))
+                            {
+                                return possiblePath;
+                            }
+                        }
+                        else
+                        {
+                            if (File.Exists(possiblePath))
+                            {
+                                return possiblePath;
+                            }
                         }
                     }
-                    else
-                    {
-                        if (File.Exists(possiblePath))
-                        {
-                            return possiblePath;
-                        }
-                    }
-                }
             }
             catch
             {
@@ -1849,7 +1882,7 @@ namespace AIHelper.Manage
             if (!File.Exists(ManageSettings.GetModOrganizerINIpath())) return;
 
             var INI = new INIFile(ManageSettings.GetModOrganizerINIpath());
-            if (INI == null) return;
+            //if (INI == null) return;
 
             string gameName;
             //updated game name

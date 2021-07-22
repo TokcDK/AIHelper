@@ -90,15 +90,9 @@ namespace AIHelper.Manage.Update.Sources
             }
             else
             {
-                if (Dwnpb != null)
-                {
-                    Dwnpb.Dispose();
-                }
+                Dwnpb.Dispose();
 
-                if (Dwnf != null)
-                {
-                    Dwnf.Dispose();
-                }
+                Dwnf.Dispose();
 
                 if (new FileInfo(info.UpdateFilePath).Length == 0)
                 {

@@ -70,7 +70,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static string MakeMoProfileModlistFileBuckup(string suffix = "")
         {
-            var modlistPath = ManageSettings.CurrentMoProfileModlistPath();
+            var modlistPath = ManageSettings.GetCurrentMoProfileModlistPath();
             var lastBackup = GetLastBak(suffix);
             if (lastBackup == null || (File.Exists(modlistPath) && File.Exists(lastBackup) && File.ReadAllText(lastBackup) != File.ReadAllText(modlistPath)))
             {
@@ -1354,7 +1354,7 @@ namespace AIHelper.Manage
                 }
                 else
                 {
-                    string profilemodlistpath = Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", currentMOprofile, "modlist.txt");
+                    string profilemodlistpath = ManageSettings.GetCurrentMoProfileModlistPath();
 
                     ManageIni.InsertLineInFile(profilemodlistpath, (activate ? "+" : "-") + modname, 1, modAfterWhichInsert, placeAfter);
                 }
@@ -1408,18 +1408,18 @@ namespace AIHelper.Manage
         /// </summary>
         internal static void RestoreModlist()
         {
-            if (File.Exists(ManageSettings.CurrentMoProfileModlistPath() + ".prezipmodsUpdate"))
+            if (File.Exists(ManageSettings.GetCurrentMoProfileModlistPath() + ".prezipmodsUpdate"))
             {
                 try
                 {
-                    File.Move(ManageSettings.CurrentMoProfileModlistPath(), ManageSettings.CurrentMoProfileModlistPath() + ".tmp");
+                    File.Move(ManageSettings.GetCurrentMoProfileModlistPath(), ManageSettings.GetCurrentMoProfileModlistPath() + ".tmp");
 
-                    if (!File.Exists(ManageSettings.CurrentMoProfileModlistPath()))
-                        File.Move(ManageSettings.CurrentMoProfileModlistPath() + ".prezipmodsUpdate", ManageSettings.CurrentMoProfileModlistPath());
+                    if (!File.Exists(ManageSettings.GetCurrentMoProfileModlistPath()))
+                        File.Move(ManageSettings.GetCurrentMoProfileModlistPath() + ".prezipmodsUpdate", ManageSettings.GetCurrentMoProfileModlistPath());
 
-                    if (File.Exists(ManageSettings.CurrentMoProfileModlistPath()))
+                    if (File.Exists(ManageSettings.GetCurrentMoProfileModlistPath()))
                     {
-                        new FileInfo(ManageSettings.CurrentMoProfileModlistPath() + ".tmp").DeleteEvenIfReadOnly();
+                        new FileInfo(ManageSettings.GetCurrentMoProfileModlistPath() + ".tmp").DeleteEvenIfReadOnly();
                     }
                 }
                 catch (Exception ex)
@@ -1440,7 +1440,7 @@ namespace AIHelper.Manage
 
             if (currentMOprofile.Length > 0)
             {
-                string profilemodlistpath = Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", currentMOprofile, "modlist.txt");
+                string profilemodlistpath = ManageSettings.GetCurrentMoProfileModlistPath();
 
                 //фикс на случай несовпадения выбранной игры и профиля в MO ini
                 if (!File.Exists(profilemodlistpath))
@@ -1448,7 +1448,7 @@ namespace AIHelper.Manage
                     ManageMo.RedefineGameMoData();
                     currentMOprofile = ReGetcurrentMOprofile(currentMOprofile);
 
-                    profilemodlistpath = Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", currentMOprofile, "modlist.txt");
+                    profilemodlistpath = ManageSettings.GetCurrentMoProfileModlistPath();
                 }
 
                 if (File.Exists(profilemodlistpath))
@@ -1652,7 +1652,7 @@ namespace AIHelper.Manage
                 }
                 else
                 {
-                    string profilemodlistpath = Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", currentMOprofile, "modlist.txt");
+                    string profilemodlistpath = ManageSettings.GetCurrentMoProfileModlistPath();
 
                     if (File.Exists(profilemodlistpath))
                     {

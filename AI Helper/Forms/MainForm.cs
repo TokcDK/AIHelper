@@ -3004,9 +3004,9 @@ namespace AIHelper
         {
             bool getZipmodId = zipmodsGuidList != null;
 
-            File.Copy(ManageSettings.CurrentMoProfileModlistPath(), ManageSettings.CurrentMoProfileModlistPath() + ".prezipmodsUpdate");
+            File.Copy(ManageSettings.GetCurrentMoProfileModlistPath(), ManageSettings.GetCurrentMoProfileModlistPath() + ".prezipmodsUpdate");
 
-            var modlistContent = File.ReadAllLines(ManageSettings.CurrentMoProfileModlistPath());
+            var modlistContent = File.ReadAllLines(ManageSettings.GetCurrentMoProfileModlistPath());
 
             for (int i = 0; i < modlistContent.Length; i++)
             {
@@ -3047,7 +3047,7 @@ namespace AIHelper
                 }
             }
 
-            File.WriteAllLines(ManageSettings.CurrentMoProfileModlistPath(), modlistContent);
+            File.WriteAllLines(ManageSettings.GetCurrentMoProfileModlistPath(), modlistContent);
         }
 
         private void PbDiscord_Click(object sender, EventArgs e)

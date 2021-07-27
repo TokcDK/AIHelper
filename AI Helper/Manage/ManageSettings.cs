@@ -110,7 +110,7 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string CurrentMoProfileModlistPath()
+        internal static string GetCurrentMoProfileModlistPath()
         {
             return Path.Combine(GetMoSelectedProfileDirPath(), "modlist.txt");
         }

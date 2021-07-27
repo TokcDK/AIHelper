@@ -292,7 +292,7 @@ namespace AIHelper.Manage
                 return value.Trim();
             }
 
-            protected static string NormalizePath(string value)
+            internal static string NormalizePath(string value)
             {
                 return value.Replace('\\', '/');
             }
@@ -1906,7 +1906,7 @@ namespace AIHelper.Manage
             var customs = new CustomExecutables(ini);
             foreach (var custom in customs.List)
             {
-                if (Path.GetFileNameWithoutExtension(custom.Value.Binary) == ManageSettings.GetCurrentGameExeName())
+                if (Path.GetFileNameWithoutExtension(custom.Value.Binary) == CustomExecutables.NormalizePath(ManageSettings.GetCurrentGameExeName()))
                 {
                     var index = custom.Key;
                     ini.WriteINI("General", "selected_executable", index, false);

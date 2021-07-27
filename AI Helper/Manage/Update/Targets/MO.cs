@@ -8,7 +8,7 @@ namespace AIHelper.Manage.Update.Targets
 {
     class MO : TBase
     {
-        public MO(updateInfo info) : base(info)
+        public MO(UpdateInfo info) : base(info)
         {
         }
 
@@ -21,7 +21,7 @@ namespace AIHelper.Manage.Update.Targets
         /// <returns></returns>
         internal override Dictionary<string, string> GetUpdateInfos()
         {
-            if (info.source.title.ToUpperInvariant().Contains("GITHUB"))
+            if (info.Source.title.ToUpperInvariant().Contains("GITHUB"))
             {
                 MODirPath = ManageSettings.GetMOdirPath();
                 return new Dictionary<string, string>()

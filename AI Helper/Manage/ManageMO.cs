@@ -1792,76 +1792,76 @@ namespace AIHelper.Manage
             return string.Empty;
         }
 
-        public static string GetCategoriesForTheFolder(string moddir, string category, string[] categoriesList = null)
+        public static string GetCategoriesForTheFolder(string modDir, string defaultCategory, string[] categoriesList = null)
         {
-            string Category = category;
+            string resultCategory = defaultCategory;
 
             if (categoriesList == null)
             {
                 categoriesList = File.ReadAllLines(ManageSettings.GetMOcategoriesPathForSelectedGame());
             }
 
-            string[,] Categories =
+            string[,] categorieRules =
             {
-                { Path.Combine(moddir, "BepInEx", "Plugins"), ManageMO.GetCategoryIndexForTheName("Plugins",categoriesList), "dll" } //Plug-ins 51
+                { Path.Combine(modDir, "BepInEx", "Plugins"), ManageMO.GetCategoryIndexForTheName("Plugins",categoriesList), "dll" } //Plug-ins 51
                 ,
-                { Path.Combine(moddir, "UserData"), ManageMO.GetCategoryIndexForTheName("UserFiles",categoriesList), "*" } //UserFiles 53
+                { Path.Combine(modDir, "UserData"), ManageMO.GetCategoryIndexForTheName("UserFiles",categoriesList), "*" } //UserFiles 53
                 ,
-                { Path.Combine(moddir, "UserData", "chara"), ManageMO.GetCategoryIndexForTheName("Characters",categoriesList), "png" } //Characters 54
+                { Path.Combine(modDir, "UserData", "chara"), ManageMO.GetCategoryIndexForTheName("Characters",categoriesList), "png" } //Characters 54
                 ,
-                { Path.Combine(moddir, "UserData", "studio", "scene"), ManageMO.GetCategoryIndexForTheName("Studio scenes",categoriesList), "png"} //Studio scenes 57
+                { Path.Combine(modDir, "UserData", "studio", "scene"), ManageMO.GetCategoryIndexForTheName("Studio scenes",categoriesList), "png"} //Studio scenes 57
                 ,
-                { Path.Combine(moddir, "Mods"), ManageMO.GetCategoryIndexForTheName("Sideloader",categoriesList), "zip" } //Sideloader 60
+                { Path.Combine(modDir, "Mods"), ManageMO.GetCategoryIndexForTheName("Sideloader",categoriesList), "zip" } //Sideloader 60
                 ,
-                { Path.Combine(moddir, "scripts"), ManageMO.GetCategoryIndexForTheName("ScriptLoader scripts",categoriesList), "cs"} //ScriptLoader scripts 86
+                { Path.Combine(modDir, "scripts"), ManageMO.GetCategoryIndexForTheName("ScriptLoader scripts",categoriesList), "cs"} //ScriptLoader scripts 86
                 ,
-                { Path.Combine(moddir, "UserData", "coordinate"), ManageMO.GetCategoryIndexForTheName("Coordinate",categoriesList), "png"} //Coordinate 87
+                { Path.Combine(modDir, "UserData", "coordinate"), ManageMO.GetCategoryIndexForTheName("Coordinate",categoriesList), "png"} //Coordinate 87
                 ,
-                { Path.Combine(moddir, "UserData", "Overlays"), ManageMO.GetCategoryIndexForTheName("Overlay",categoriesList), "png"} //Overlay 88
+                { Path.Combine(modDir, "UserData", "Overlays"), ManageMO.GetCategoryIndexForTheName("Overlay",categoriesList), "png"} //Overlay 88
                 ,
-                { Path.Combine(moddir, "UserData", "housing"), ManageMO.GetCategoryIndexForTheName("Housing",categoriesList), "png"} //Housing 89
+                { Path.Combine(modDir, "UserData", "housing"), ManageMO.GetCategoryIndexForTheName("Housing",categoriesList), "png"} //Housing 89
                 ,
-                { Path.Combine(moddir, "UserData", "housing"), ManageMO.GetCategoryIndexForTheName("Cardframe",categoriesList), "png"} //Cardframe 90
+                { Path.Combine(modDir, "UserData", "housing"), ManageMO.GetCategoryIndexForTheName("Cardframe",categoriesList), "png"} //Cardframe 90
             };
 
-            int CategoriesLength = Categories.Length / 3;
-            for (int i = 0; i < CategoriesLength; i++)
+            int categorieRulesLength = categorieRules.Length / 3;
+            for (int i = 0; i < categorieRulesLength; i++)
             {
-                string dir = Categories[i, 0];
-                string categorieNum = Categories[i, 1];
-                string extension = Categories[i, 2];
+                string dir = categorieRules[i, 0];
+                string categorieNum = categorieRules[i, 1];
+                string extension = categorieRules[i, 2];
                 if (
                     (
-                        (category.Length > 0
-                        && !category.Contains("," + categorieNum)
-                        && !category.Contains(categorieNum + ",")
+                        (defaultCategory.Length > 0
+                        && !defaultCategory.Contains("," + categorieNum)
+                        && !defaultCategory.Contains(categorieNum + ",")
                         )
-                     || category.Length == 0
+                     || defaultCategory.Length == 0
                     )
                     && Directory.Exists(dir)
                     && !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(dir)
                     && ManageFilesFolders.IsAnyFileExistsInTheDir(dir, extension)
                    )
                 {
-                    if (Category.Length > 0)
+                    if (resultCategory.Length > 0)
                     {
-                        if (Category.Substring(Category.Length - 1, 1) == ",")
+                        if (resultCategory.Substring(resultCategory.Length - 1, 1) == ",")
                         {
-                            Category += categorieNum;
+                            resultCategory += categorieNum;
                         }
                         else
                         {
-                            Category += "," + categorieNum;
+                            resultCategory += "," + categorieNum;
                         }
                     }
                     else
                     {
-                        Category = categorieNum + ",";
+                        resultCategory = categorieNum + ",";
                     }
                 }
             }
 
-            return Category;
+            return resultCategory;
         }
 
         internal static void MOINIFixes()

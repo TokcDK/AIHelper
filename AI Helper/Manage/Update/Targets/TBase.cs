@@ -10,9 +10,9 @@ namespace AIHelper.Manage.Update.Targets
     //Base for targets
     abstract class TBase
     {
-        protected updateInfo info;
+        protected UpdateInfo info;
 
-        protected TBase(updateInfo info)
+        protected TBase(UpdateInfo info)
         {
             this.info = info;
 
@@ -65,7 +65,7 @@ namespace AIHelper.Manage.Update.Targets
 
                 //set RestoreList
                 RestoreList = new HashSet<string>();
-                foreach (var path in info.target.RestorePathsList())
+                foreach (var path in info.Target.RestorePathsList())
                 {
                     if (string.IsNullOrWhiteSpace(path))
                     {
@@ -76,7 +76,7 @@ namespace AIHelper.Manage.Update.Targets
                     RestoreList.Add(p);
                 }
 
-                foreach (var path in info.target.RestorePathsListExtra())
+                foreach (var path in info.Target.RestorePathsListExtra())
                 {
                     if (string.IsNullOrWhiteSpace(path))
                     {

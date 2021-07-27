@@ -14,7 +14,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
 
     class ModsMeta : ModsBase
     {
-        public ModsMeta(updateInfo info) : base(info)
+        public ModsMeta(UpdateInfo info) : base(info)
         {
         }
 
@@ -193,18 +193,18 @@ namespace AIHelper.Manage.Update.Targets.Mods
             {
                 DBData = new List<Dictionary<string, string>>();
                 var iniNum = 0;
-                foreach (var ini in Directory.EnumerateFiles(ManageSettings.GetModsUpdateDBInfoDir(), "*.ini", SearchOption.AllDirectories))
+                foreach (var iniFile in Directory.EnumerateFiles(ManageSettings.GetModsUpdateDBInfoDir(), "*.ini", SearchOption.AllDirectories))
                 {
-                    INIFile INI = new INIFile(ini);
+                    INIFile ini = new INIFile(iniFile);
 
                     DBData.Add(new Dictionary<string, string>());
 
                     foreach (var setting in DBDataParams)
                     {
                         var value = "";
-                        if (INI.KeyExists(setting))
+                        if (ini.KeyExists(setting))
                         {
-                            value = INI.ReadINI("", setting);
+                            value = ini.ReadINI("", setting);
                         }
                         DBData[iniNum].Add(setting, value);
                     }

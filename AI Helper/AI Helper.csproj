@@ -194,7 +194,7 @@
     <Compile Include="Manage\Update\Targets\MOBaseGames.cs" />
     <Compile Include="Manage\Update\Targets\Mods\ModsMetaUrl\ModsMetaUrlBase.cs" />
     <Compile Include="Manage\Update\Targets\Mods\ModsMetaUrl\XUA.cs" />
-    <Compile Include="Manage\Update\Update.cs" />
+    <Compile Include="Manage\Update\UpdateInfo.cs" />
     <Compile Include="Manage\Update\Sources\Github.cs" />
     <Compile Include="Manage\Update\Sources\SBase.cs" />
     <Compile Include="Manage\Update\Targets\MO.cs" />

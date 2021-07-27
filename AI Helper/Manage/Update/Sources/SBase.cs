@@ -9,7 +9,7 @@ namespace AIHelper.Manage.Update.Sources
     /// </summary>
     abstract class SBase : IDisposable
     {
-        protected updateInfo info;
+        protected UpdateInfo info;
 
         protected readonly WebClient wc;
 
@@ -32,7 +32,7 @@ namespace AIHelper.Manage.Update.Sources
             }
         }
 
-        protected SBase(updateInfo info)
+        protected SBase(UpdateInfo info)
         {
             this.info = info;
             wc = new WebClient();

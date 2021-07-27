@@ -76,7 +76,7 @@ namespace AIHelper
 
             if (!File.Exists(Path.Combine(ManageSettings.GetMOdirPath(), "ModOrganizer.exe")))
             {
-                await new Update().update().ConfigureAwait(true);
+                await new Updater().Update().ConfigureAwait(true);
             }
 
             ManageMO.RedefineGameMOData();
@@ -2742,7 +2742,7 @@ namespace AIHelper
             //update plugins in mo mode
             if (MOmode)
             {
-                await new Update().update().ConfigureAwait(true);
+                await new Updater().Update().ConfigureAwait(true);
             }
 
             //run zipmod's check if updater found and only for KK, AI, HS2

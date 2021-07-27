@@ -10,7 +10,7 @@ namespace AIHelper.Manage.Update.Sources
 {
     class Github : SBase
     {
-        public Github(updateInfo info) : base(info)
+        public Github(UpdateInfo info) : base(info)
         {
             System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;//включение tls12 для github
         }

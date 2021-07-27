@@ -6,7 +6,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
 {
     class ModsList : ModsBase
     {
-        public ModsList(updateInfo info) : base(info)
+        public ModsList(UpdateInfo info) : base(info)
         {
         }
 

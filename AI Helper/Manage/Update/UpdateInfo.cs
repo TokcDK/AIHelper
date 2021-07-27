@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace AIHelper.Manage.Update
 {
-    internal class updateInfo
+    internal class UpdateInfo
     {
         internal string SourceID;
         internal string TargetCurrentVersion;
@@ -44,11 +44,11 @@ namespace AIHelper.Manage.Update
         /// <summary>
         /// selected source
         /// </summary>
-        internal SBase source;
+        internal SBase Source;
         /// <summary>
         /// selected target
         /// </summary>
-        internal TBase target;
+        internal TBase Target;
         internal bool VersionFromFile;
         //internal bool GetVersionFromLink;
         //internal Dictionary<string, long> UrlSizeList;
@@ -61,18 +61,18 @@ namespace AIHelper.Manage.Update
         /// </summary>
         public StringBuilder LastErrorText { get; internal set; }
 
-        public updateInfo()
+        public UpdateInfo()
         {
             Excluded = new HashSet<string>();
             report = new List<string>();
             LastErrorText = new StringBuilder();
-            reset();
+            Reset();
         }
 
         /// <summary>
         /// vars need to be reset for each folder
         /// </summary>
-        internal void reset()
+        internal void Reset()
         {
             TargetCurrentVersion = "";
             SourceLink = "";
@@ -89,13 +89,13 @@ namespace AIHelper.Manage.Update
 
     }
 
-    class Update
+    class Updater
     {
         private bool IsHTMLReport = true;
 
-        internal async Task update()
+        internal async Task Update()
         {
-            updateInfo info = new updateInfo();
+            UpdateInfo info = new UpdateInfo();
             var sources = new List<SBase> //Sources of updates
             {
                 new Github(info)
@@ -122,7 +122,7 @@ namespace AIHelper.Manage.Update
 
                 foreach (var source in sources) //enumerate sources
                 {
-                    info.source = source;
+                    info.Source = source;
 
                     ProgressForm.Text = CheckNUpdateText + ":" + source.title;
 
@@ -135,7 +135,7 @@ namespace AIHelper.Manage.Update
                             continue;
                         }
 
-                        info.target = target;
+                        info.Target = target;
 
                         PBar.Maximum = tFolderInfos.Keys.Count;
 
@@ -148,7 +148,7 @@ namespace AIHelper.Manage.Update
                                 continue;
                             }
 
-                            info.reset(); // reset some infos
+                            info.Reset(); // reset some infos
 
                             // get folder dir path
                             info.TargetFolderPath = new DirectoryInfo(Path.Combine(target.GetParentFolderPath(), tFolderInfo.Key));
@@ -293,7 +293,7 @@ namespace AIHelper.Manage.Update
         //    File.WriteAllText(ManageSettings.UpdateLastContentLengthInfos(), sb.ToString());
         //}
 
-        private void ShowReport(updateInfo info)
+        private void ShowReport(UpdateInfo info)
         {
             string ReportMessage;
 

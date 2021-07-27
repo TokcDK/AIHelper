@@ -913,7 +913,7 @@ namespace AIHelper
                 }
 
 
-                if (!Manage.ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Manage.ManageSettings.GetCurrentGameModsPath(), "*", new string[1] { "_separator" }))
+                if (!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Manage.ManageSettings.GetCurrentGameModsPath(), "*", new string[1] { "_separator" }))
                 {
                     ModsInfoLabel.Text = T._("Found mod folders in Mods");
                     //button1.Enabled = false;
@@ -1642,7 +1642,7 @@ namespace AIHelper
                             }
                             catch (Exception ex)
                             {
-                                ManageLogs.Log("An error occured while file moving."+ "MovePaths[0]=" + movePaths[0]+ ";MovePaths[1]="+ movePaths[0] + ".error:\r\n" + ex);
+                                ManageLogs.Log("An error occured while file moving." + "MovePaths[0]=" + movePaths[0] + ";MovePaths[1]=" + movePaths[0] + ".error:\r\n" + ex);
                             }
                         }
                         catch (Exception ex)

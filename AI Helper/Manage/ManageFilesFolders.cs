@@ -67,10 +67,11 @@ namespace AIHelper.Manage
                 //throw new ArgumentNullException(path);
             }
 
-            if (path.IsSymLink() && !path.IsValidSymlink()) // check if target is symlink and it is invalid. perfomance issue here
-            {
-                return true;
-            }
+            // commented because perfomance issues and even with commented invalid link will be parsed as InvalidHandleValue and wil return true as for empty dir
+            //if (path.IsSymLink() && !path.IsValidSymlink()) // check if target is symlink and it is invalid. perfomance issue here
+            //{
+            //    return true;
+            //}
 
             bool endsWithDirSeparator = path.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.InvariantCulture);
             var findHandle = FindFirstFile(path + (endsWithDirSeparator ? "" : Path.DirectorySeparatorChar + "") + mask, out Win32FindData findData);
@@ -109,10 +110,16 @@ namespace AIHelper.Manage
 
         const uint CommonDirectory = 16;
         const uint CompressedDirectory = 10256; // suppose
+        const uint SymlinkDirectory = 9232; // suppose
 
+        /// <summary>
+        /// is with one of directory attribute
+        /// </summary>
+        /// <param name="dwFileAttributes"></param>
+        /// <returns></returns>
         private static bool IsDir(uint dwFileAttributes)
         {
-            return dwFileAttributes == CommonDirectory || dwFileAttributes == CompressedDirectory;
+            return dwFileAttributes == CommonDirectory || dwFileAttributes == CompressedDirectory || dwFileAttributes == SymlinkDirectory;
         }
 
         /// <summary>

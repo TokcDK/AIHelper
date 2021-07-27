@@ -52,7 +52,7 @@ namespace AIHelper.Manage
                 return;
             }
 
-            INIFile ini = new INIFile(ManageSettings.GetModOrganizerInIpath());
+            INIFile ini = new INIFile(ManageSettings.GetModOrganizerIniPath());
 
             SetCommonIniValues(ini);
 
@@ -107,7 +107,7 @@ namespace AIHelper.Manage
         {
             if (ini == null)
             {
-                ini = new INIFile(ManageSettings.GetModOrganizerInIpath());
+                ini = new INIFile(ManageSettings.GetModOrganizerIniPath());
             }
 
             var customExecutables = new CustomExecutables(ini);
@@ -189,6 +189,10 @@ namespace AIHelper.Manage
 
             private int _loadedListCustomsCount;
 
+            /// <summary>
+            /// load customs in list
+            /// </summary>
+            /// <param name="ini"></param>
             internal void LoadFrom(INIFile ini)
             {
                 if (List != null && List.Count > 0) // already loaded
@@ -222,6 +226,14 @@ namespace AIHelper.Manage
                 _loadedListCustomsCount = List.Count;
             }
 
+            /// <summary>
+            /// keys frol custom executables list to remove while Save execution
+            /// </summary>
+            internal HashSet<string> listToRemoveKeys = new HashSet<string>();
+
+            /// <summary>
+            /// Save ini with changed customs
+            /// </summary>
             internal void Save()
             {
                 if (_ini == null)
@@ -230,7 +242,7 @@ namespace AIHelper.Manage
                 }
 
                 bool changed = false;
-                bool sectionCleared = _loadedListCustomsCount != List.Count;
+                bool sectionCleared = _loadedListCustomsCount != List.Count || listToRemoveKeys.Count > 0;
                 if (sectionCleared)
                 {
                     changed = true;
@@ -240,6 +252,12 @@ namespace AIHelper.Manage
                 int customExecutableNumber = 0; // use new executable number when section was cleared and need to renumber executable numbers
                 foreach (var customExecutable in List)
                 {
+                    if (listToRemoveKeys.Contains(customExecutable.Key))
+                    {
+                        changed = true;
+                        continue;
+                    }
+
                     if (sectionCleared)
                     {
                         customExecutableNumber++;
@@ -259,7 +277,7 @@ namespace AIHelper.Manage
 
                 if (changed)
                 {
-                    _ini.WriteINI("customExecutables", "size", List.Count + "");
+                    _ini.WriteINI("customExecutables", "size", (sectionCleared ? customExecutableNumber : List.Count) + "");
                 }
             }
 
@@ -1710,8 +1728,11 @@ namespace AIHelper.Manage
                     File.Delete(ManageSettings.GetDummyFilePath());
                 }
 
+                var ini = new INIFile(ManageSettings.GetModOrganizerIniPath());
+
+                RemoveCustomExecutable("Skyrim", ini);
+
                 // change gameName to specific mo plugin set
-                var ini = new INIFile(ManageSettings.GetModOrganizerInIpath());
                 if (ini.ReadINI("General", "gameName") == "Skyrim")
                 {
                     ini.WriteINI("General", "gameName", GetMoBasicGamePluginGameName());
@@ -1728,6 +1749,30 @@ namespace AIHelper.Manage
                     ManageFilesFolders.HideFileFolder(ManageSettings.GetDummyFilePath(), true);
                 }
             }
+        }
+
+        /// <summary>
+        /// remove custom executable by selected attribute
+        /// </summary>
+        /// <param name="ini"></param>
+        /// <param name="AttributeToCheck"></param>
+        private static void RemoveCustomExecutable(string keyToFind, INIFile ini = null, string AttributeToCheck = "title")
+        {
+            if (ini == null)
+            {
+                ini = new INIFile(ManageSettings.GetModOrganizerIniPath());
+            }
+
+            var customs = new CustomExecutables(ini);
+            foreach (var custom in customs.List)
+            {
+                if (custom.Value.Attribute[AttributeToCheck] == keyToFind)
+                {
+                    customs.listToRemoveKeys.Add(custom.Key);
+                }
+            }
+
+            customs.Save();
         }
 
         public static string GetCategoryNameForTheIndex(string inputCategoryIndex, string[] categoriesList = null)
@@ -1837,11 +1882,11 @@ namespace AIHelper.Manage
             return resultCategory;
         }
 
-        internal static void MoiniFixes()
+        internal static void MoIniFixes()
         {
-            if (!File.Exists(ManageSettings.GetModOrganizerInIpath())) return;
+            if (!File.Exists(ManageSettings.GetModOrganizerIniPath())) return;
 
-            var ini = new INIFile(ManageSettings.GetModOrganizerInIpath());
+            var ini = new INIFile(ManageSettings.GetModOrganizerIniPath());
             //if (INI == null) return;
 
             string gameName;

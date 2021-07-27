@@ -128,7 +128,7 @@ namespace AIHelper
             //DataPath = ManageSettings.GetDataPath();
             MoDirPath = ManageSettings.GetMOdirPath();
             MOexePath = ManageSettings.GetMOexePath();
-            Properties.Settings.Default.ModOrganizerINIpath = ManageSettings.GetModOrganizerInIpath();
+            Properties.Settings.Default.ModOrganizerINIpath = ManageSettings.GetModOrganizerIniPath();
             Install2MoDirPath = ManageSettings.GetInstall2MoDirPath();
             OverwriteFolder = ManageSettings.GetOverwriteFolder();
             OverwriteFolderLink = ManageSettings.GetOverwriteFolderLink();
@@ -913,7 +913,7 @@ namespace AIHelper
                 }
 
 
-                if (!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Manage.ManageSettings.GetCurrentGameModsPath(), "*", new string[1] { "_separator" }))
+                if (!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(ManageSettings.GetCurrentGameModsPath(), "*", new string[1] { "_separator" }))
                 {
                     ModsInfoLabel.Text = T._("Found mod folders in Mods");
                     //button1.Enabled = false;
@@ -950,7 +950,7 @@ namespace AIHelper
 
                 ManageModOrganizer.DummyFiles();
 
-                ManageModOrganizer.MoiniFixes();
+                ManageModOrganizer.MoIniFixes();
 
                 //try start in another thread for perfomance purposes
                 new Thread(new ParameterizedThreadStart((obj) => RunSlowActions())).Start();

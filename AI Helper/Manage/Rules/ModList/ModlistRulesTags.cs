@@ -4,15 +4,15 @@
     {
         internal class Main : ModlistRulesTags
         {
-            internal string REQ = "req:";
-            internal string INC = "inc:";
+            internal string Req = "req:";
+            internal string Inc = "inc:";
         }
 
         internal class Sub : ModlistRulesTags
         {
             internal string File = "file:";
-            internal string OR = "|or|";
-            internal string AND = "|and|";
+            internal string Or = "|or|";
+            internal string And = "|and|";
         }
     }
 }

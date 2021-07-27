@@ -3,36 +3,36 @@ using SharpConfig;
 
 namespace AIHelper.Utils
 {
-    public class CFGFiles
+    public class CfgFiles
     {
-        readonly Configuration config;
-        readonly string filePath;
+        readonly Configuration _config;
+        readonly string _filePath;
 
-        public CFGFiles(string CFGPath)
+        public CfgFiles(string cfgPath)
         {
-            filePath = CFGPath;
-            config = Configuration.LoadFromFile(CFGPath);
+            _filePath = cfgPath;
+            _config = Configuration.LoadFromFile(cfgPath);
             Configuration.SpaceBetweenEquals = false;
         }
 
-        public string ReadCFG(string Section, string Key)
+        public string ReadCfg(string section, string key)
         {
-            return config[Section][Key].StringValue;
+            return _config[section][key].StringValue;
         }
 
-        public void WriteCFG(string Section, string Key, string Value, bool DoSaveCFG = true)
+        public void WriteCfg(string section, string key, string value, bool doSaveCfg = true)
         {
-            config[Section][Key].StringValue = Value;
+            _config[section][key].StringValue = value;
 
-            if (DoSaveCFG)
+            if (doSaveCfg)
             {
-                config.SaveToFile(filePath);
+                _config.SaveToFile(_filePath);
             }
         }
 
-        public bool KeyExists(string Key, string Section = null)
+        public bool KeyExists(string key, string section = null)
         {
-            return config[Section].Contains(Key);
+            return _config[section].Contains(key);
         }
     }
 }

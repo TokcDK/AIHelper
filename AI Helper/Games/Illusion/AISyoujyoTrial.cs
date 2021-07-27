@@ -1,13 +1,13 @@
 ﻿namespace AIHelper.Games
 {
-    public class AISyoujyoTrial : Game
+    public class AiSyoujyoTrial : Game
     {
         public override string GetGameFolderName()
         {
-            return GetTheGameFolderName(GetGameEXEName());
+            return GetTheGameFolderName(GetGameExeName());
         }
 
-        public override string GetGameEXEName()
+        public override string GetGameExeName()
         {
             return "AI-SyoujyoTrial";
         }

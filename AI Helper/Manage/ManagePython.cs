@@ -9,7 +9,7 @@ namespace AIHelper.Manage
         {
             string line;
             Dictionary<string, string> executables = new Dictionary<string, string>();
-            using (StreamReader sr = new StreamReader(ManageSettings.GetCurrentGameMOGamePyPluginPath()))
+            using (StreamReader sr = new StreamReader(ManageSettings.GetCurrentGameMoGamePyPluginPath()))
             {
                 while (!sr.EndOfStream)
                 {

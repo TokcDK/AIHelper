@@ -21,13 +21,13 @@ namespace AIHelper.Games
         /// <summary>
         /// true if it is root game ie placed in same folder with game's data, mods folder
         /// </summary>
-        public virtual bool isRootGame { get; set; }
+        public virtual bool IsRootGame { get; set; }
         /// <summary>
         /// true if game have sideloader zipmods
         /// </summary>
-        public virtual bool isHaveSideloaderMods { get; set; }
+        public virtual bool IsHaveSideloaderMods { get; set; }
 
-        protected string gamefolderName { get; set; } = string.Empty;
+        protected string GamefolderName { get; set; } = string.Empty;
         /// <summary>
         /// search and return game folder name
         /// </summary>
@@ -37,15 +37,15 @@ namespace AIHelper.Games
             return SearchGameFolder();
         }
 
-        protected string GetTheGameFolderName(string DefaultGameFolderName)
+        protected string GetTheGameFolderName(string defaultGameFolderName)
         {
-            if (gamefolderName.Length > 0 || (gamefolderName = SearchGameFolder()).Length > 0)
+            if (GamefolderName.Length > 0 || (GamefolderName = SearchGameFolder()).Length > 0)
             {
-                return gamefolderName;
+                return GamefolderName;
             }
             else
             {
-                return DefaultGameFolderName;
+                return defaultGameFolderName;
             }
         }
 
@@ -58,7 +58,7 @@ namespace AIHelper.Games
         /// main game's exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public abstract string GetGameEXEName();
+        public abstract string GetGameExeName();
 
         /// <summary>
         /// prefix of selected game (kk,hs,hs2...)
@@ -70,16 +70,16 @@ namespace AIHelper.Games
         /// main game's vr exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string GetGameEXENameVR()
+        public virtual string GetGameExeNameVr()
         {
-            return GetGameEXEName() + "VR";
+            return GetGameExeName() + "VR";
         }
 
         /// <summary>
         /// main game's x32 exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string GetGameEXENameX32()
+        public virtual string GetGameExeNameX32()
         {
             return string.Empty;
         }
@@ -88,7 +88,7 @@ namespace AIHelper.Games
         /// game's inisettings launcher exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string GetINISettingsEXEName()
+        public virtual string GetIniSettingsExeName()
         {
             return "InitSetting";
         }
@@ -97,7 +97,7 @@ namespace AIHelper.Games
         /// game's studio exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string GetGameStudioEXEName()
+        public virtual string GetGameStudioExeName()
         {
             return string.Empty;
         }
@@ -106,7 +106,7 @@ namespace AIHelper.Games
         /// game's studio x32 exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string GetGameStudioEXENameX32()
+        public virtual string GetGameStudioExeNameX32()
         {
             return string.Empty;
         }
@@ -114,7 +114,7 @@ namespace AIHelper.Games
         /// game's path of selected game
         public virtual string GetGamePath()
         {
-            return isRootGame ?
+            return IsRootGame ?
                 Properties.Settings.Default.ApplicationStartupPath
                 :
                 Path.Combine(ManageSettings.GetGamesFolderPath(), GetGameFolderName())
@@ -143,7 +143,7 @@ namespace AIHelper.Games
         /// game's 2MO folder path of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string Get2MOFolderPath()
+        public virtual string Get2MoFolderPath()
         {
             return Path.Combine(GetGamePath(), "2MO");
         }
@@ -168,13 +168,13 @@ namespace AIHelper.Games
 
         public virtual string[] GetGameStandartFolderNames()
         {
-            if (GetGameEXENameX32().Length > 0 && GetGameStudioEXENameX32().Length > 0)
+            if (GetGameExeNameX32().Length > 0 && GetGameStudioExeNameX32().Length > 0)
             {
-                return new string[] { "abdata", "UserData", GetGameEXEName() + "_Data", GetGameEXENameX32() + "_Data", GetGameStudioEXEName() + "_Data", GetGameStudioEXENameX32() + "_Data", "BepInEx" };
+                return new string[] { "abdata", "UserData", GetGameExeName() + "_Data", GetGameExeNameX32() + "_Data", GetGameStudioExeName() + "_Data", GetGameStudioExeNameX32() + "_Data", "BepInEx" };
             }
             else
             {
-                return new string[] { "abdata", "UserData", GetGameEXEName() + "_Data", GetGameStudioEXEName() + "_Data", "BepInEx" };
+                return new string[] { "abdata", "UserData", GetGameExeName() + "_Data", GetGameStudioExeName() + "_Data", "BepInEx" };
             }
         }
 
@@ -258,7 +258,7 @@ namespace AIHelper.Games
                 {
                     foreach (var folder in Directory.EnumerateDirectories(ManageSettings.GetGamesFolderPath()))
                     {
-                        if (File.Exists(Path.Combine(folder, "Data", GetGameEXEName() + ".exe")))
+                        if (File.Exists(Path.Combine(folder, "Data", GetGameExeName() + ".exe")))
                         {
                             return Path.GetFileName(folder);
                         }
@@ -273,11 +273,11 @@ namespace AIHelper.Games
         }
 
 
-        protected void CopyMOfiles(string MODirAltName)
+        protected void CopyMOfiles(string moDirAltName)
         {
             //var game = Data.CurrentGame.GetCurrentGameIndex()];
-            string GameMODirPath = Path.Combine(GetGamePath(), "MO");
-            string GameMODirPathAlt = Path.Combine(GetGamePath(), MODirAltName);
+            string gameMoDirPath = Path.Combine(GetGamePath(), "MO");
+            string gameMoDirPathAlt = Path.Combine(GetGamePath(), moDirAltName);
 
             // dirs and files required for work
             var subpaths = new Dictionary<string, ManageFilesFolders.ObjectType>
@@ -292,9 +292,9 @@ namespace AIHelper.Games
             {
                 try
                 {
-                    var altpath = Path.GetFullPath(Path.Combine(GameMODirPathAlt, subpath.Key));
-                    var workpath = Path.GetFullPath(Path.Combine(GameMODirPath, subpath.Key));
-                    if (subpath.Value == ManageFilesFolders.ObjectType.Directory && Directory.Exists(altpath) && (!Directory.Exists(workpath) || !ManageFilesFolders.IsAnyFileExistsInTheDir(workpath, AllDirectories: true)))
+                    var altpath = Path.GetFullPath(Path.Combine(gameMoDirPathAlt, subpath.Key));
+                    var workpath = Path.GetFullPath(Path.Combine(gameMoDirPath, subpath.Key));
+                    if (subpath.Value == ManageFilesFolders.ObjectType.Directory && Directory.Exists(altpath) && (!Directory.Exists(workpath) || !ManageFilesFolders.IsAnyFileExistsInTheDir(workpath, allDirectories: true)))
                     {
                         CopyFolder.CopyAll(altpath, workpath);
                     }

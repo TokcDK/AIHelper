@@ -8,12 +8,12 @@ namespace AIHelper.Manage.Rules.ModList
 {
     internal abstract class ModListRulesBase
     {
-        protected ModListData modlistData;
+        protected ModListData ModlistData;
 
-        internal string outModName;
+        internal string OutModName;
         protected ModListRulesBase(ModListData modlistData)
         {
-            this.modlistData = modlistData;
+            this.ModlistData = modlistData;
         }
 
         internal abstract bool Condition();
@@ -27,32 +27,32 @@ namespace AIHelper.Manage.Rules.ModList
         /// True if mod with the inSubPath will be found
         /// </summary>
         /// <param name="inSubPath">input path for search</param>
-        /// <param name="FoundModName">mod name of found mod</param>
-        /// <param name="modeANDOR">0-none, 1-and, 2-or</param>
+        /// <param name="foundModName">mod name of found mod</param>
+        /// <param name="modeAndor">0-none, 1-and, 2-or</param>
         /// <returns></returns>
-        protected bool FindModWithThePath(string inSubPath, out string FoundModName, int modeANDOR = 0, bool DontAddCandidate = false)
+        protected bool FindModWithThePath(string inSubPath, out string foundModName, int modeAndor = 0, bool dontAddCandidate = false)
         {
-            return FindModWithThePath(new[] { inSubPath }, out FoundModName, modeANDOR, DontAddCandidate);
+            return FindModWithThePath(new[] { inSubPath }, out foundModName, modeAndor, dontAddCandidate);
         }
 
         /// <summary>
         /// True if mod with the inSubPath will be found
         /// </summary>
         /// <param name="inSubPath">input path for search</param>
-        /// <param name="FoundModName">mod name of found mod</param>
-        /// <param name="modeANDOR">0-none, 1-and, 2-or</param>
+        /// <param name="foundModName">mod name of found mod</param>
+        /// <param name="modeAndor">0-none, 1-and, 2-or</param>
         /// <returns></returns>
-        protected bool FindModWithThePath(string[] inSubPath, out string FoundModName, int modeANDOR = 0, bool DontAddCandidate = false)
+        protected bool FindModWithThePath(string[] inSubPath, out string foundModName, int modeAndor = 0, bool dontAddCandidate = false)
         {
             RemoveRulesTagFile(ref inSubPath);
 
-            if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName) + Path.DirectorySeparatorChar + inSubPath))
+            if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName) + Path.DirectorySeparatorChar + inSubPath))
             {
-                FoundModName = modlistData.ModName;
+                foundModName = ModlistData.ModName;
                 return true;
             }
 
-            if (IsExistInDataOrOverwrite(inSubPath, out FoundModName))
+            if (IsExistInDataOrOverwrite(inSubPath, out foundModName))
             {
                 return true;
             }
@@ -60,41 +60,41 @@ namespace AIHelper.Manage.Rules.ModList
             //AllModsList = ManageMO.GetModNamesListFromActiveMOProfile(false);
             //EnabledModsList = ManageMO.GetModNamesListFromActiveMOProfile();
 
-            FoundModName = string.Empty;
-            HashSet<string> AlreadyChecked = new HashSet<string>();
-            foreach (var SubModName in modlistData.AllModsList)
+            foundModName = string.Empty;
+            HashSet<string> alreadyChecked = new HashSet<string>();
+            foreach (var subModName in ModlistData.AllModsList)
             {
                 ///add modname to already checked
-                if (!AlreadyChecked.Contains(SubModName))
+                if (!alreadyChecked.Contains(subModName))
                 {
-                    AlreadyChecked.Add(SubModName);
+                    alreadyChecked.Add(subModName);
                 }
 
                 for (int i = 0; i < inSubPath.Length; i++)
                 {
-                    var filePath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), SubModName) + Path.DirectorySeparatorChar + inSubPath[i];
-                    if (SubModName != modlistData.ModName && File.Exists(filePath))
+                    var filePath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), subModName) + Path.DirectorySeparatorChar + inSubPath[i];
+                    if (subModName != ModlistData.ModName && File.Exists(filePath))
                     {
-                        FoundModName = SubModName;
+                        foundModName = subModName;
 
                         //when mod enabled return true and not add
-                        if (modlistData.EnabledModsList.Contains(FoundModName))
+                        if (ModlistData.EnabledModsList.Contains(foundModName))
                         {
                             return true;
                         }
 
                         ///Check if path not exists in rest of Enabled mods
-                        if (IsRestOfEnabledModsContainsSameFile(AlreadyChecked, inSubPath[i]))
+                        if (IsRestOfEnabledModsContainsSameFile(alreadyChecked, inSubPath[i]))
                         {
                             return true;
                         }
 
                         //else if mod not enabled then add it for activation
-                        if (!DontAddCandidate)
+                        if (!dontAddCandidate)
                         {
-                            if (!modlistData.ModsMustBeEnabledCandidates.ContainsKey(FoundModName))
+                            if (!ModlistData.ModsMustBeEnabledCandidates.ContainsKey(foundModName))
                             {
-                                modlistData.ModsMustBeEnabledCandidates.Add(FoundModName, "req:" + SubModName);
+                                ModlistData.ModsMustBeEnabledCandidates.Add(foundModName, "req:" + subModName);
                             }
 
                             //if (modeANDOR > 0)
@@ -125,25 +125,25 @@ namespace AIHelper.Manage.Rules.ModList
                     }
                 }
             }
-            if (!modlistData.ModsMustBeDisabled.ContainsKey(modlistData.ModName))
+            if (!ModlistData.ModsMustBeDisabled.ContainsKey(ModlistData.ModName))
             {
-                modlistData.ModsMustBeDisabled.Add(modlistData.ModName, "req:" + string.Join(",", inSubPath));
+                ModlistData.ModsMustBeDisabled.Add(ModlistData.ModName, "req:" + string.Join(",", inSubPath));
             }
 
             return false;
         }
 
-        private static bool IsExistInDataOrOverwrite(string[] inSubPath, out string FoundModName)
+        private static bool IsExistInDataOrOverwrite(string[] inSubPath, out string foundModName)
         {
             for (int i = 0; i < inSubPath.Length; i++)
             {
-                if (ManageMOMods.IsFileDirExistsInDataOROverwrite(inSubPath[i], out string Source))
+                if (ManageMoMods.IsFileDirExistsInDataOrOverwrite(inSubPath[i], out string source))
                 {
-                    FoundModName = Source;
+                    foundModName = source;
                     return true;
                 }
             }
-            FoundModName = string.Empty;
+            foundModName = string.Empty;
             return false;
         }
 
@@ -151,19 +151,19 @@ namespace AIHelper.Manage.Rules.ModList
         {
             for (int i = 0; i < inSubPath.Length; i++)
             {
-                if (inSubPath[i].TrimStart().StartsWith(modlistData.RulesTagFile, System.StringComparison.InvariantCulture))
+                if (inSubPath[i].TrimStart().StartsWith(ModlistData.RulesTagFile, System.StringComparison.InvariantCulture))
                 {
-                    inSubPath[i] = inSubPath[i].Remove(0, modlistData.RulesTagFile.Length).TrimStart();
+                    inSubPath[i] = inSubPath[i].Remove(0, ModlistData.RulesTagFile.Length).TrimStart();
                 }
             }
         }
 
-        private bool IsRestOfEnabledModsContainsSameFile(HashSet<string> AlreadyChecked, string inSubPath)
+        private bool IsRestOfEnabledModsContainsSameFile(HashSet<string> alreadyChecked, string inSubPath)
         {
-            foreach (var ModFile in modlistData.EnabledModsList)
+            foreach (var modFile in ModlistData.EnabledModsList)
             {
-                var mFilePath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModFile) + Path.DirectorySeparatorChar + inSubPath;
-                if (!AlreadyChecked.Contains(ModFile) && File.Exists(mFilePath))
+                var mFilePath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modFile) + Path.DirectorySeparatorChar + inSubPath;
+                if (!alreadyChecked.Contains(modFile) && File.Exists(mFilePath))
                 {
                     //when one of other enabled mods already have same file
                     return true;
@@ -174,36 +174,36 @@ namespace AIHelper.Manage.Rules.ModList
 
         protected bool ParseRules(string[] rules)
         {
-            bool AllIsTrue = false;
+            bool allIsTrue = false;
             foreach (var rule in rules)
             {
-                if (rule.StartsWith(modlistData.RulesTagREQ, StringComparison.InvariantCulture))
+                if (rule.StartsWith(ModlistData.RulesTagReq, StringComparison.InvariantCulture))
                 {
-                    AllIsTrue = ParseREQ(modlistData.ModName, rule);
+                    allIsTrue = ParseReq(ModlistData.ModName, rule);
                 }
-                else if (rule.StartsWith(modlistData.RulesTagINC, StringComparison.InvariantCulture))
+                else if (rule.StartsWith(ModlistData.RulesTagInc, StringComparison.InvariantCulture))
                 {
-                    AllIsTrue = ParseINC(modlistData.ModName, rule);
+                    allIsTrue = ParseInc(ModlistData.ModName, rule);
                 }
-                if (!AllIsTrue)
+                if (!allIsTrue)
                 {
                     break;
                 }
             }
-            return AllIsTrue;
+            return allIsTrue;
         }
 
-        private bool ParseINC(string modname, string rule)
+        private bool ParseInc(string modname, string rule)
         {
-            bool AllIsTrue = false;
+            bool allIsTrue = false;
             var ruleData = rule.Remove(0, 4).Trim();
-            if (ruleData.Contains(modlistData.RulesTagOR) || ruleData.Contains(modlistData.RulesTagAND))
+            if (ruleData.Contains(ModlistData.RulesTagOr) || ruleData.Contains(ModlistData.RulesTagAnd))
             {
-                var ruleDatas = ruleData.Split(new[] { modlistData.RulesTagOR, modlistData.RulesTagAND }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var SubRule in ruleDatas)
+                var ruleDatas = ruleData.Split(new[] { ModlistData.RulesTagOr, ModlistData.RulesTagAnd }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var subRule in ruleDatas)
                 {
-                    AllIsTrue = ParseINCSearchInEnabledMods(modname, SubRule);
-                    if (!AllIsTrue)
+                    allIsTrue = ParseIncSearchInEnabledMods(modname, subRule);
+                    if (!allIsTrue)
                     {
                         return false;
                     }
@@ -211,58 +211,58 @@ namespace AIHelper.Manage.Rules.ModList
             }
             else
             {
-                AllIsTrue = ParseINCSearchInEnabledMods(modname, ruleData);
+                allIsTrue = ParseIncSearchInEnabledMods(modname, ruleData);
             }
-            return AllIsTrue;
+            return allIsTrue;
         }
 
-        private bool ParseINCSearchInEnabledMods(string modname, string ruleData)
+        private bool ParseIncSearchInEnabledMods(string modname, string ruleData)
         {
-            if (ruleData.StartsWith(modlistData.RulesTagFile, StringComparison.InvariantCulture))
+            if (ruleData.StartsWith(ModlistData.RulesTagFile, StringComparison.InvariantCulture))
             {
-                return ParseINCSearchFileInEnabledMods(modname, ruleData);
+                return ParseIncSearchFileInEnabledMods(modname, ruleData);
             }
             else
             {
-                return ParseINCSearchModNameInEnabledMods(modname, ruleData);
+                return ParseIncSearchModNameInEnabledMods(modname, ruleData);
             }
         }
 
-        private bool ParseINCSearchModNameInEnabledMods(string modname, string ruleData)
+        private bool ParseIncSearchModNameInEnabledMods(string modname, string ruleData)
         {
-            if (modlistData.EnabledModsList.Contains(ruleData))
+            if (ModlistData.EnabledModsList.Contains(ruleData))
             {
                 //if (!modlistData.ModsMustBeDisabledCandidates.Contains(modname))
                 //{
                 //    modlistData.ModsMustBeDisabledCandidates.Add(modname);
                 //}
-                if (!modlistData.ModsMustBeDisabled.ContainsKey(modname))
+                if (!ModlistData.ModsMustBeDisabled.ContainsKey(modname))
                 {
-                    modlistData.ModsMustBeDisabled.Add(modname, "inc:" + ruleData);
+                    ModlistData.ModsMustBeDisabled.Add(modname, "inc:" + ruleData);
                 }
                 return true;
             }
             return false;
         }
 
-        private bool ParseINCSearchFileInEnabledMods(string modname, string ruleData)
+        private bool ParseIncSearchFileInEnabledMods(string modname, string ruleData)
         {
             ruleData = ruleData.Remove(0, 5).TrimStart();
-            if (ManageMOMods.IsFileDirExistsInDataOROverwrite(ruleData, out _))
+            if (ManageMoMods.IsFileDirExistsInDataOrOverwrite(ruleData, out _))
             {
                 //if (!modlistData.ModsMustBeDisabledCandidates.Contains(modname))
                 //{
                 //    modlistData.ModsMustBeDisabledCandidates.Add(modname);
                 //}
-                if (!modlistData.ModsMustBeDisabled.ContainsKey(modname))
+                if (!ModlistData.ModsMustBeDisabled.ContainsKey(modname))
                 {
-                    modlistData.ModsMustBeDisabled.Add(modname, "inc:" + ruleData);
+                    ModlistData.ModsMustBeDisabled.Add(modname, "inc:" + ruleData);
                 }
                 return true;
             }
-            foreach (var EnabledModName in modlistData.EnabledModsList)
+            foreach (var enabledModName in ModlistData.EnabledModsList)
             {
-                var modPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), EnabledModName);
+                var modPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), enabledModName);
                 var targetfilePath = Path.GetFullPath(modPath + Path.DirectorySeparatorChar + ruleData);
                 if (File.Exists(targetfilePath) || Directory.Exists(targetfilePath))
                 {
@@ -270,9 +270,9 @@ namespace AIHelper.Manage.Rules.ModList
                     //{
                     //    modlistData.ModsMustBeDisabledCandidates.Add(modname);
                     //}
-                    if (!modlistData.ModsMustBeDisabled.ContainsKey(modname))
+                    if (!ModlistData.ModsMustBeDisabled.ContainsKey(modname))
                     {
-                        modlistData.ModsMustBeDisabled.Add(modname, "inc:" + ruleData);
+                        ModlistData.ModsMustBeDisabled.Add(modname, "inc:" + ruleData);
                     }
                     return true;
                 }
@@ -282,8 +282,8 @@ namespace AIHelper.Manage.Rules.ModList
 
         protected void AddCandidates()
         {
-            AddCandidatesToMain(modlistData.ModsMustBeEnabledCandidates, modlistData.ModsMustBeEnabled);
-            AddCandidatesToMain(modlistData.ModsMustBeDisabledCandidates, modlistData.ModsMustBeDisabled);
+            AddCandidatesToMain(ModlistData.ModsMustBeEnabledCandidates, ModlistData.ModsMustBeEnabled);
+            AddCandidatesToMain(ModlistData.ModsMustBeDisabledCandidates, ModlistData.ModsMustBeDisabled);
         }
 
         private static void AddCandidatesToMain(Dictionary<string, string> candidates, Dictionary<string, string> parent)
@@ -300,30 +300,30 @@ namespace AIHelper.Manage.Rules.ModList
             }
         }
 
-        private bool ParseREQ(string modname, string rule)
+        private bool ParseReq(string modname, string rule)
         {
-            var ruleData = rule.StartsWith(modlistData.RulesTagREQ, StringComparison.InvariantCulture) ? rule.Remove(0, 4).Trim() : rule;
-            var or = ruleData.Contains(modlistData.RulesTagOR);
-            var and = ruleData.Contains(modlistData.RulesTagAND);
+            var ruleData = rule.StartsWith(ModlistData.RulesTagReq, StringComparison.InvariantCulture) ? rule.Remove(0, 4).Trim() : rule;
+            var or = ruleData.Contains(ModlistData.RulesTagOr);
+            var and = ruleData.Contains(ModlistData.RulesTagAnd);
             if (or && and)
             {
-                return ParseREQORAND(ruleData, modname);
+                return ParseReqorand(ruleData, modname);
             }
             else if (or)
             {
-                return ParseREQOR(ruleData, modname);
+                return ParseReqor(ruleData, modname);
             }
             else if (and)
             {
-                return ParseREQAND(ruleData, modname);
+                return ParseReqand(ruleData, modname);
             }
             else
             {
-                return ParseREQSearchFileModNameInMods(modname, ruleData);
+                return ParseReqSearchFileModNameInMods(modname, ruleData);
             }
         }
 
-        private bool ParseREQORAND(string ruleData, string modname)
+        private bool ParseReqorand(string ruleData, string modname)
         {
             //"modsA|or|modB|and|modC"
             //"modsA|and|modB|or|modC"
@@ -335,35 +335,35 @@ namespace AIHelper.Manage.Rules.ModList
 
             //минимум 3 части для OR и AND
             //минимум 2 нахождения OR и AND
-            var ruleDatas = ruleData.Split(new[] { modlistData.RulesTagOR, modlistData.RulesTagAND }, StringSplitOptions.RemoveEmptyEntries);
-            var ORANDMatches = Regex.Matches(ruleData, "(" + FixForRegex(modlistData.RulesTagOR) + ")|(" + FixForRegex(modlistData.RulesTagAND) + ")");
-            var MaxParts = ruleDatas.Length;
-            var MatchesCount = ORANDMatches.Count;
-            var PartNumber = 0;
+            var ruleDatas = ruleData.Split(new[] { ModlistData.RulesTagOr, ModlistData.RulesTagAnd }, StringSplitOptions.RemoveEmptyEntries);
+            var orandMatches = Regex.Matches(ruleData, "(" + FixForRegex(ModlistData.RulesTagOr) + ")|(" + FixForRegex(ModlistData.RulesTagAnd) + ")");
+            var maxParts = ruleDatas.Length;
+            var matchesCount = orandMatches.Count;
+            var partNumber = 0;
             string rule = string.Empty;
-            for (int n = 0; n < MatchesCount; n++)
+            for (int n = 0; n < matchesCount; n++)
             {
                 //"modsA|or|modB|and|modC"
                 //"modsA|and|modB|or|modC"
-                if (ORANDMatches[n].Value == modlistData.RulesTagOR)
+                if (orandMatches[n].Value == ModlistData.RulesTagOr)
                 {
-                    rule += ruleDatas[PartNumber] + modlistData.RulesTagOR;
-                    PartNumber++;
+                    rule += ruleDatas[partNumber] + ModlistData.RulesTagOr;
+                    partNumber++;
                 }
-                else if (ORANDMatches[n].Value == modlistData.RulesTagAND)
+                else if (orandMatches[n].Value == ModlistData.RulesTagAnd)
                 {
-                    rule += ruleDatas[PartNumber];
-                    if (!ParseREQ(modname, rule))
+                    rule += ruleDatas[partNumber];
+                    if (!ParseReq(modname, rule))
                     {
                         return false;
                     }
                     rule = string.Empty;
-                    PartNumber++;
+                    partNumber++;
                 }
 
-                if (PartNumber == MaxParts - 1)
+                if (partNumber == maxParts - 1)
                 {
-                    if (!ParseREQ(modname, rule += ruleDatas[PartNumber]))
+                    if (!ParseReq(modname, rule += ruleDatas[partNumber]))
                     {
                         return false;
                     }
@@ -377,12 +377,12 @@ namespace AIHelper.Manage.Rules.ModList
             return str.Replace("|", "\\|");
         }
 
-        private bool ParseREQAND(string ruleData, string modname, bool addCandidates = false)
+        private bool ParseReqand(string ruleData, string modname, bool addCandidates = false)
         {
-            var ruleDatas = ruleData.Split(new[] { modlistData.RulesTagAND }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var SubRule in ruleDatas)
+            var ruleDatas = ruleData.Split(new[] { ModlistData.RulesTagAnd }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var subRule in ruleDatas)
             {
-                if (!ParseREQSearchFileModNameInMods(modname, SubRule, 1))
+                if (!ParseReqSearchFileModNameInMods(modname, subRule, 1))
                 {
                     return false;
                 }
@@ -394,12 +394,12 @@ namespace AIHelper.Manage.Rules.ModList
             return true;
         }
 
-        private bool ParseREQOR(string ruleData, string modname, bool addCandidates = false)
+        private bool ParseReqor(string ruleData, string modname, bool addCandidates = false)
         {
-            var ruleDatas = ruleData.Split(new[] { modlistData.RulesTagOR }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var SubRule in ruleDatas)
+            var ruleDatas = ruleData.Split(new[] { ModlistData.RulesTagOr }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var subRule in ruleDatas)
             {
-                if (ParseREQSearchFileModNameInMods(modname, SubRule, 2))
+                if (ParseReqSearchFileModNameInMods(modname, subRule, 2))
                 {
                     //if (addCandidates)
                     //{
@@ -416,49 +416,49 @@ namespace AIHelper.Manage.Rules.ModList
         /// </summary>
         /// <param name="modname"></param>
         /// <param name="ruleData"></param>
-        /// <param name="modeANDOR">0 - none, 1 - AND, 2 - OR</param>
+        /// <param name="modeAndor">0 - none, 1 - AND, 2 - OR</param>
         /// <returns></returns>
-        private bool ParseREQSearchFileModNameInMods(string modname, string ruleData, int modeANDOR = 0)
+        private bool ParseReqSearchFileModNameInMods(string modname, string ruleData, int modeAndor = 0)
         {
-            bool IsAnyTrue;
-            if (ruleData.StartsWith(modlistData.RulesTagFile, StringComparison.InvariantCulture))
+            bool isAnyTrue;
+            if (ruleData.StartsWith(ModlistData.RulesTagFile, StringComparison.InvariantCulture))
             {
-                IsAnyTrue = ParseREQSearchFileInMods(modname, ruleData, modeANDOR);
+                isAnyTrue = ParseReqSearchFileInMods(modname, ruleData, modeAndor);
             }
             else
             {
-                IsAnyTrue = ParseREQSearchModNameInMods(modname, ruleData, modeANDOR);
+                isAnyTrue = ParseReqSearchModNameInMods(modname, ruleData, modeAndor);
             }
-            return IsAnyTrue;
+            return isAnyTrue;
         }
 
-        private bool ParseREQSearchModNameInMods(string modname, string ruleData, int modeANDOR = 0)
+        private bool ParseReqSearchModNameInMods(string modname, string ruleData, int modeAndor = 0)
         {
-            if (!modlistData.EnabledModsList.Contains(ruleData))
+            if (!ModlistData.EnabledModsList.Contains(ruleData))
             {
-                if (modlistData.AllModsList.Contains(ruleData))
+                if (ModlistData.AllModsList.Contains(ruleData))
                 {
-                    if (modeANDOR > 0)
+                    if (modeAndor > 0)
                     {
-                        if (!modlistData.ModsMustBeEnabledCandidates.ContainsKey(ruleData))
+                        if (!ModlistData.ModsMustBeEnabledCandidates.ContainsKey(ruleData))
                         {
-                            modlistData.ModsMustBeEnabledCandidates.Add(ruleData, modname + ">req:" + ruleData);
+                            ModlistData.ModsMustBeEnabledCandidates.Add(ruleData, modname + ">req:" + ruleData);
                         }
                     }
                     else
                     {
-                        if (!modlistData.ModsMustBeEnabled.ContainsKey(ruleData))
+                        if (!ModlistData.ModsMustBeEnabled.ContainsKey(ruleData))
                         {
-                            modlistData.ModsMustBeEnabled.Add(ruleData, modname + ">req:" + ruleData);
+                            ModlistData.ModsMustBeEnabled.Add(ruleData, modname + ">req:" + ruleData);
                         }
                     }
                     return true;
                 }
                 else
                 {
-                    if (!modlistData.ModsMustBeDisabled.ContainsKey(modname))
+                    if (!ModlistData.ModsMustBeDisabled.ContainsKey(modname))
                     {
-                        modlistData.ModsMustBeDisabled.Add(modname, modname + ">req:" + ruleData);
+                        ModlistData.ModsMustBeDisabled.Add(modname, modname + ">req:" + ruleData);
                     }
                     //if (modeANDOR > 0)
                     //{
@@ -479,9 +479,9 @@ namespace AIHelper.Manage.Rules.ModList
             return false;
         }
 
-        private bool ParseREQSearchFileInMods(string modname, string ruleData, int modeANDOR = 0)
+        private bool ParseReqSearchFileInMods(string modname, string ruleData, int modeAndor = 0)
         {
-            return FindModWithThePath(ruleData, out _, modeANDOR);
+            return FindModWithThePath(ruleData, out _, modeAndor);
 
             //ruleData = ruleData.Remove(0, 5).TrimStart();
             //if (ManageMOMods.IsFileDirExistsInDataOROverwrite(ruleData, out _))
@@ -519,9 +519,9 @@ namespace AIHelper.Manage.Rules.ModList
 
         protected bool IsModListRule(string line)
         {
-            return line.StartsWith(modlistData.RulesTagREQ, StringComparison.InvariantCulture)
+            return line.StartsWith(ModlistData.RulesTagReq, StringComparison.InvariantCulture)
                         ||
-                   line.StartsWith(modlistData.RulesTagINC, StringComparison.InvariantCulture);
+                   line.StartsWith(ModlistData.RulesTagInc, StringComparison.InvariantCulture);
         }
     }
 }

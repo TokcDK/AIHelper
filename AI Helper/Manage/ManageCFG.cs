@@ -3,25 +3,25 @@ using System.IO;
 
 namespace AIHelper.Manage
 {
-    internal static class ManageCFG
+    internal static class ManageCfg
     {
-        public static string GetCFGValueIfExist(string CFGPath, string Key, string Section, string defaultValue = "")
+        public static string GetCfgValueIfExist(string cfgPath, string key, string section, string defaultValue = "")
         {
-            if (File.Exists(CFGPath))
+            if (File.Exists(cfgPath))
             {
-                CFGFiles CFG = new CFGFiles(CFGPath);
-                if (CFG.KeyExists(Key, Section))
+                CfgFiles cfg = new CfgFiles(cfgPath);
+                if (cfg.KeyExists(key, section))
                 {
-                    return CFG.ReadCFG(Section, Key);
+                    return cfg.ReadCfg(section, key);
                 }
             }
             return defaultValue;
         }
-        public static bool WriteCFGValue(string CFGPath, string Section, string Key, string Value, bool DOSaveINI = true)
+        public static bool WriteCfgValue(string cfgPath, string section, string key, string value, bool doSaveIni = true)
         {
-            if (File.Exists(CFGPath))
+            if (File.Exists(cfgPath))
             {
-                (new CFGFiles(CFGPath)).WriteCFG(Section, Key, Value, DOSaveINI);
+                (new CfgFiles(cfgPath)).WriteCfg(section, key, value, doSaveIni);
                 return true;
             }
 

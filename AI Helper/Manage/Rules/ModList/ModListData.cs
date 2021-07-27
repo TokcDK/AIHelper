@@ -12,17 +12,17 @@ namespace AIHelper.Manage.Rules.ModList
         internal Dictionary<string, string> ModsMustBeDisabled = new Dictionary<string, string>();
         internal Dictionary<string, string> ModsMustBeEnabledCandidates = new Dictionary<string, string>();
         internal Dictionary<string, string> ModsMustBeDisabledCandidates = new Dictionary<string, string>();
-        internal string RulesTagOR = "|or|";
-        internal string RulesTagAND = "|and|";
+        internal string RulesTagOr = "|or|";
+        internal string RulesTagAnd = "|and|";
         internal string RulesTagFile = "file:";
-        internal string RulesTagREQ = "req:";
-        internal string RulesTagINC = "inc:";
+        internal string RulesTagReq = "req:";
+        internal string RulesTagInc = "inc:";
         internal List<ModListRulesBase> RulesList;
         internal List<string> Report = new List<string>();
         internal string ModName;
         internal string GamePrefix;
-        internal Dictionary<string, string[]> rulesDict;
-        internal Dictionary<string, string[]> rulesDictOverall;
+        internal Dictionary<string, string[]> RulesDict;
+        internal Dictionary<string, string[]> RulesDictOverall;
 
 
 
@@ -36,7 +36,7 @@ namespace AIHelper.Manage.Rules.ModList
         /// Comment tags: ";"
         /// </summary>
         internal static string[] CommentTag = new[] { ";" };
-        internal bool kPlugEnabled;
+        internal bool KPlugEnabled;
 
         /// <summary>
         /// ";" - commentary

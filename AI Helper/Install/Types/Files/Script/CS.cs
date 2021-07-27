@@ -1,6 +1,6 @@
 ﻿namespace AIHelper.Install.Types.Files.Script
 {
-    class CS : FilesBase
+    class Cs : FilesBase
     {
         //public override string[] Extensions => new string[] { ".cs" };
 

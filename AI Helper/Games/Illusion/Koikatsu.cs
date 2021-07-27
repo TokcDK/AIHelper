@@ -12,14 +12,14 @@ namespace AIHelper.Games
             base.InitActions();
             CopyMOfiles("MOKK");
         }
-        public override bool isHaveSideloaderMods { get; set; } = true;
+        public override bool IsHaveSideloaderMods { get; set; } = true;
 
         public override string GetGameFolderName()
         {
             return GetTheGameFolderName("Koikatsu");
         }
 
-        public override string GetGameEXEName()
+        public override string GetGameExeName()
         {
             return "Koikatu";
         }
@@ -29,7 +29,7 @@ namespace AIHelper.Games
             return T._("Koikatsu");
         }
 
-        public override string GetGameStudioEXEName()
+        public override string GetGameStudioExeName()
         {
             return "CharaStudio";
         }
@@ -62,19 +62,19 @@ namespace AIHelper.Games
                     //}
                     //,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath(), "UserData", "MaterialEditor")
+                        Path.Combine(ManageSettings.GetCurrentGameMoOverwritePath(), "UserData", "MaterialEditor")
                         ,
                         Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "MaterialEditor")
                     }
                     ,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath(), "UserData", "Overlays")
+                        Path.Combine(ManageSettings.GetCurrentGameMoOverwritePath(), "UserData", "Overlays")
                         ,
                         Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "Overlays")
                     }
                     ,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath(), "UserData", "cap")
+                        Path.Combine(ManageSettings.GetCurrentGameMoOverwritePath(), "UserData", "cap")
                         ,
                         Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "cap")
                     }

@@ -2,9 +2,9 @@
 
 namespace AIHelper.Manage.Update.Targets.Mods.ModsMetaUrl
 {
-    class XUA : ModsMetaUrlBase
+    class Xua : ModsMetaUrlBase
     {
-        public XUA(ModInfo modinfo) : base(modinfo)
+        public Xua(ModInfo modinfo) : base(modinfo)
         {
         }
 
@@ -14,16 +14,16 @@ namespace AIHelper.Manage.Update.Targets.Mods.ModsMetaUrl
 
         internal override bool Check()
         {
-            return modinfo.url.Contains("github.com/bbepis/XUnity.AutoTranslator");
+            return Modinfo.Url.Contains("github.com/bbepis/XUnity.AutoTranslator");
         }
 
         internal override string StartsWith()
         {
-            if(File.Exists(Path.Combine(modinfo.moddir.FullName, "BepInEx", "plugins", "XUnity.AutoTranslator", "XUnity.AutoTranslator.Plugin.Core.dll")))
+            if(File.Exists(Path.Combine(Modinfo.Moddir.FullName, "BepInEx", "plugins", "XUnity.AutoTranslator", "XUnity.AutoTranslator.Plugin.Core.dll")))
             {
                 return "XUnity.AutoTranslator-BepIn-5x-";
             }
-            else if (File.Exists(Path.Combine(modinfo.moddir.FullName, "Plugins", "XUnity.AutoTranslator.Plugin.Core.dll")))
+            else if (File.Exists(Path.Combine(Modinfo.Moddir.FullName, "Plugins", "XUnity.AutoTranslator.Plugin.Core.dll")))
             {
                 return "XUnity.AutoTranslator-IPA-";
             }

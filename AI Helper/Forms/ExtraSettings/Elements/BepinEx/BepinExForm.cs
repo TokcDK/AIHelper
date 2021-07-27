@@ -16,22 +16,22 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
             InitializeComponent();
         }
 
-        double Version;
-        string cfgPath;
+        double _version;
+        string _cfgPath;
         private void BepinExForm_Load(object sender, EventArgs e)
         {
-            Version = ManageStringsExtensions.GetProductVersionToFloatNumber(GetBepInExVersionString());
+            _version = ManageStringsExtensions.GetProductVersionToFloatNumber(GetBepInExVersionString());
             SetLocalization();
             InitSettings();
             SetTooltips();
         }
 
-        ToolTip THToolTip;
+        ToolTip _thToolTip;
         private void SetTooltips()
         {
             //http://qaru.site/questions/47162/c-how-do-i-add-a-tooltip-to-a-control
             //THMainResetTableButton
-            THToolTip = new ToolTip
+            _thToolTip = new ToolTip
             {
                 // Set up the delays for the ToolTip.
                 AutoPopDelay = 32000,
@@ -43,57 +43,57 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
                 //ShowAlways = true
             };
 
-            THToolTip.SetToolTip(BepinExLogTargetLinkLabel, T._("Log target selection.\n\n" +
+            _thToolTip.SetToolTip(BepinExLogTargetLinkLabel, T._("Log target selection.\n\n" +
                 "Show logs in console window or to file on disk.\nOther log parameters depend on selected target"));
-            THToolTip.SetToolTip(label1, T._("Select all log levels"));
-            THToolTip.SetToolTip(label2, T._("Clear selection of log levels"));
-            THToolTip.SetToolTip(BepInExSettingsLogCheckedListBox, T._("Log levels. How many messages will be displayed"));
+            _thToolTip.SetToolTip(label1, T._("Select all log levels"));
+            _thToolTip.SetToolTip(label2, T._("Clear selection of log levels"));
+            _thToolTip.SetToolTip(BepInExSettingsLogCheckedListBox, T._("Log levels. How many messages will be displayed"));
 
-            THToolTip.SetToolTip(OpenLogLinkLabel, T._("Open BepinEx log if found"));
-            THToolTip.SetToolTip(BepInExSettingsDisplayedLogLevelLabel, T._("Click here to select log level\n" +
+            _thToolTip.SetToolTip(OpenLogLinkLabel, T._("Open BepinEx log if found"));
+            _thToolTip.SetToolTip(BepInExSettingsDisplayedLogLevelLabel, T._("Click here to select log level\n" +
                 "Only displays the specified log level and above in the console output"));
-            THToolTip.SetToolTip(BepInExSettingsLogCheckBox, T._("Click to enable log"));
+            _thToolTip.SetToolTip(BepInExSettingsLogCheckBox, T._("Click to enable log"));
 
-            THToolTip.SetToolTip(BepinExHelpLinkLabel, T._("Open BepInEx documentation"));
-            THToolTip.SetToolTip(BepinExLogOpenConfigFileLinkLabel, T._("Open BepInEx configuration file in Notepad"));
+            _thToolTip.SetToolTip(BepinExHelpLinkLabel, T._("Open BepInEx documentation"));
+            _thToolTip.SetToolTip(BepinExLogOpenConfigFileLinkLabel, T._("Open BepInEx configuration file in Notepad"));
             ////////////////////////////
         }
 
         private string GetBepInExVersionString()
         {
-            cfgPath = ManageSettings.GetBepInExCfgFilePath();
-            var fullPath = Path.GetFullPath(Path.Combine(cfgPath, "..", "..", "core", "BepInEx.dll"));
-            var BepInExDllPath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(fullPath);
-            if (File.Exists(BepInExDllPath))
+            _cfgPath = ManageSettings.GetBepInExCfgFilePath();
+            var fullPath = Path.GetFullPath(Path.Combine(_cfgPath, "..", "..", "core", "BepInEx.dll"));
+            var bepInExDllPath = ManageMo.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(fullPath);
+            if (File.Exists(bepInExDllPath))
             {
-                var ver = FileVersionInfo.GetVersionInfo(BepInExDllPath).ProductVersion;
+                var ver = FileVersionInfo.GetVersionInfo(bepInExDllPath).ProductVersion;
                 return ver;
             }
 
             return ManageSettings.GetDefaultBepInEx5OlderVersion();
         }
 
-        bool IsInit;
+        bool _isInit;
         private void InitSettings()
         {
-            IsInit = true;
+            _isInit = true;
             InitLogSettings();
-            IsInit = false;
+            _isInit = false;
         }
 
         private void InitLogSettings()
         {
             //Set BepInEx log data
-            var BepInExCFGPath = ManageSettings.GetBepInExCfgFilePath();
-            if (BepInExCFGPath.Length > 0 && File.Exists(BepInExCFGPath))
+            var bepInExCfgPath = ManageSettings.GetBepInExCfgFilePath();
+            if (bepInExCfgPath.Length > 0 && File.Exists(bepInExCfgPath))
             {
                 BepInExSettingsLogCheckBox.Enabled = true;
 
-                var LogTargetSection = GetDiscConsoleSectionName();
+                var logTargetSection = GetDiscConsoleSectionName();
 
                 try
                 {
-                    BepInExSettingsLogCheckBox.Checked = bool.Parse(ManageCFG.GetCFGValueIfExist(BepInExCFGPath, "Enabled", LogTargetSection, "False"));
+                    BepInExSettingsLogCheckBox.Checked = bool.Parse(ManageCfg.GetCfgValueIfExist(bepInExCfgPath, "Enabled", logTargetSection, "False"));
                 }
                 catch
                 {
@@ -102,9 +102,9 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
 
                 if (BepInExSettingsDisplayedLogLevelLabel.Visible = BepInExSettingsLogCheckBox.Checked)
                 {
-                    var logLevels = ManageCFG.GetCFGValueIfExist(cfgPath, "LogLevels", LogTargetSection);
+                    var logLevels = ManageCfg.GetCfgValueIfExist(_cfgPath, "LogLevels", logTargetSection);
 
-                    ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExSettingsLogCheckBox, BepInExSettingsDisplayedLogLevelLabel, true, LogTargetSection);
+                    ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExSettingsLogCheckBox, BepInExSettingsDisplayedLogLevelLabel, true, logTargetSection);
 
                     var levels = logLevels.Replace(", ", ",").Split(',');
 
@@ -115,12 +115,12 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
 
         private string GetDiscConsoleSectionName()
         {
-            var LogTargetSection = "Logging.Disk";
+            var logTargetSection = "Logging.Disk";
             if (BepinExLogTargetLinkLabel.Text == T._("Console"))
             {
-                LogTargetSection = "Logging.Console";
+                logTargetSection = "Logging.Console";
             }
-            return LogTargetSection;
+            return logTargetSection;
         }
 
         private void SetLocalization()
@@ -143,8 +143,8 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
             //else
             //    checkedItems.Remove(BepInExSettingsLogCheckedListBox.Items[e.Index].ToString());
 
-            var LogTargetSection = GetDiscConsoleSectionName();
-            var LevelsValue = "None";
+            var logTargetSection = GetDiscConsoleSectionName();
+            var levelsValue = "None";
             if (BepInExSettingsLogCheckedListBox.CheckedItems.Count == 0)
             {
             }
@@ -152,7 +152,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
             {
                 if (BepInExSettingsLogCheckedListBox.CheckedItems.Count == BepInExSettingsLogCheckedListBox.Items.Count)
                 {
-                    LevelsValue = "All";
+                    levelsValue = "All";
                 }
                 else
                 {
@@ -163,12 +163,12 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
                     }
                     //if (levels.Count > 0)
                     {
-                        LevelsValue = string.Join(", ", levels.ToArray());
+                        levelsValue = string.Join(", ", levels.ToArray());
                     }
                 }
             }
             //MessageBox.Show("LevelsValue=" + Environment.NewLine + LevelsValue);
-            ManageCFG.WriteCFGValue(cfgPath, LogTargetSection, "LogLevels", LevelsValue);
+            ManageCfg.WriteCfgValue(_cfgPath, logTargetSection, "LogLevels", levelsValue);
         }
 
         private void CheckLevels(string[] levels)
@@ -195,7 +195,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
 
         private void BepInExSettingsLogCheckedListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            if (IsInit)
+            if (_isInit)
                 return;
 
             //None
@@ -226,7 +226,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
             WriteLevels();
         }
 
-        private void clbCheckAllItems(CheckedListBox clb = null)
+        private void ClbCheckAllItems(CheckedListBox clb = null)
         {
             if (clb == null)
                 clb = BepInExSettingsLogCheckedListBox;
@@ -238,7 +238,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
             }
         }
 
-        private void clbUncheckAllItems(CheckedListBox clb = null)
+        private void ClbUncheckAllItems(CheckedListBox clb = null)
         {
             if (clb == null)
                 clb = BepInExSettingsLogCheckedListBox;
@@ -251,15 +251,15 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
 
         private void BepinExLogOpenConfigFileLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (File.Exists(cfgPath))
+            if (File.Exists(_cfgPath))
             {
-                Process.Start("notepad.exe", cfgPath);
+                Process.Start("notepad.exe", _cfgPath);
             }
         }
 
         private void BepinExLogTargetLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            IsInit = true;
+            _isInit = true;
             if ((sender as LinkLabel).Text == T._("Disk"))
             {
                 (sender as LinkLabel).Text = T._("Console");
@@ -269,7 +269,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
                 (sender as LinkLabel).Text = T._("Disk");
             }
             InitLogSettings();
-            IsInit = false;
+            _isInit = false;
         }
 
         private void BepinExHelpLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -279,31 +279,31 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
 
         private void label1_Click(object sender, EventArgs e)
         {
-            IsInit = true;
-            clbCheckAllItems();
+            _isInit = true;
+            ClbCheckAllItems();
             WriteLevels();
-            IsInit = false;
+            _isInit = false;
         }
 
         private void label2_Click(object sender, EventArgs e)
         {
-            IsInit = true;
-            clbUncheckAllItems();
+            _isInit = true;
+            ClbUncheckAllItems();
             WriteLevels();
-            IsInit = false;
+            _isInit = false;
         }
 
         private void BepInExSettingsLogCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (IsInit)
+            if (_isInit)
                 return;
 
-            ManageCFG.WriteCFGValue(cfgPath, "Logging.Console", "Enabled", /*" " +*/ (sender as CheckBox).Checked.ToString(CultureInfo.InvariantCulture));
+            ManageCfg.WriteCfgValue(_cfgPath, "Logging.Console", "Enabled", /*" " +*/ (sender as CheckBox).Checked.ToString(CultureInfo.InvariantCulture));
         }
 
         private void OpenLogLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            ManageMOMods.OpenBepinexLog();
+            ManageMoMods.OpenBepinexLog();
         }
 
         private void BepInExSettingsDisplayedLogLevelLabel_Click(object sender, EventArgs e)

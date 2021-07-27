@@ -16,22 +16,22 @@ namespace AIHelper.Games
             return GetTheGameFolderName("HoneySelect");
         }
 
-        public override string GetGameEXEName()
+        public override string GetGameExeName()
         {
             return "HoneySelect_64";
         }
 
-        public override string GetGameEXENameX32()
+        public override string GetGameExeNameX32()
         {
             return "HoneySelect_32";
         }
 
-        public override string GetGameStudioEXEName()
+        public override string GetGameStudioExeName()
         {
             return "StudioNEO_64";
         }
 
-        public override string GetGameStudioEXENameX32()
+        public override string GetGameStudioExeNameX32()
         {
             return "StudioNEO_32";
         }

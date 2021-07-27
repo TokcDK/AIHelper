@@ -6,19 +6,19 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
     {
         public BepinEx()
         {
-            BepinExElement = new BepinExForm
+            _bepinExElement = new BepinExForm
             {
                 TopLevel = false,
                 //BackColor = parentForm.BackColor
             };
-            ElementToPlace = BepinExElement;
+            ElementToPlace = _bepinExElement;
         }
 
-        BepinExForm BepinExElement;
+        BepinExForm _bepinExElement;
 
         internal override string Title => "Bepinex settings";
 
-        internal override Form ElementToShow { get => BepinExElement; set => BepinExElement = value as BepinExForm; }
+        internal override Form ElementToShow { get => _bepinExElement; set => _bepinExElement = value as BepinExForm; }
 
         internal override bool Check()
         {
@@ -32,7 +32,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
 
         public void Dispose()
         {
-            BepinExElement.Dispose();
+            _bepinExElement.Dispose();
         }
     }
 }

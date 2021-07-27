@@ -43,7 +43,7 @@ namespace AIHelper.Manage
             }
 
             //Fix of last newline \n symbol was not returned 
-            bool EndsWithNewLine = input.EndsWith("\n", System.StringComparison.InvariantCulture);
+            bool endsWithNewLine = input.EndsWith("\n", System.StringComparison.InvariantCulture);
 
             using (System.IO.StringReader reader = new System.IO.StringReader(input))
             {
@@ -52,7 +52,7 @@ namespace AIHelper.Manage
                 {
                     yield return line;
                 }
-                if (EndsWithNewLine)//if string endswith \n then last line will be null
+                if (endsWithNewLine)//if string endswith \n then last line will be null
                 {
                     yield return string.Empty;
                 }
@@ -124,22 +124,22 @@ namespace AIHelper.Manage
         /// Check if string A contains string B (if length of A > length of A with replaced B by "")<br></br><br></br>
         /// Speed check tests: https://cc.davelozinski.com/c-sharp/fastest-way-to-check-if-a-string-occurs-within-a-string
         /// </summary>
-        /// <param name="StringAWhereSearch"></param>
-        /// <param name="StringBToSearch"></param>
+        /// <param name="stringAWhereSearch"></param>
+        /// <param name="stringBToSearch"></param>
         /// <returns></returns>
-        public static bool IsStringAContainsStringB(string StringAWhereSearch, string StringBToSearch)
+        public static bool IsStringAContainsStringB(string stringAWhereSearch, string stringBToSearch)
         {
-            return StringAWhereSearch.IsContains(StringBToSearch);
+            return stringAWhereSearch.IsContains(stringBToSearch);
         }
 
-        public static bool IsStringContainsAnyExclusion(string InputString, string[] exclusions)
+        public static bool IsStringContainsAnyExclusion(string inputString, string[] exclusions)
         {
-            if (InputString.Length > 0 && exclusions != null)
+            if (inputString.Length > 0 && exclusions != null)
             {
                 int exclusionsLength = exclusions.Length;
                 for (int i = 0; i < exclusionsLength; i++)
                 {
-                    if (IsStringAContainsStringB(InputString, exclusions[i]))
+                    if (IsStringAContainsStringB(inputString, exclusions[i]))
                     {
                         return true;
                     }
@@ -149,53 +149,53 @@ namespace AIHelper.Manage
             return false;
         }
 
-        public static bool IsStringAequalsStringB(string StringA, string StringB, bool ignoreCase = false)
+        public static bool IsStringAequalsStringB(string stringA, string stringB, bool ignoreCase = false)
         {
             if (ignoreCase)
             {
-                return string.Compare(StringA, StringB, ignoreCase, CultureInfo.InvariantCulture) == 0;
+                return string.Compare(stringA, stringB, ignoreCase, CultureInfo.InvariantCulture) == 0;
             }
             else
             {
-                return string.CompareOrdinal(StringA, StringB) == 0;
+                return string.CompareOrdinal(stringA, stringB) == 0;
             }
         }
 
-        public static string AddStringBToAIfValid(string StringA, string StringB)
+        public static string AddStringBToAIfValid(string stringA, string stringB)
         {
             //добавление имени автора в начало имени папки
-            if (StringA.StartsWith("[AI][", System.StringComparison.InvariantCulture) || (StringA.StartsWith("[", System.StringComparison.InvariantCulture) && !StringA.StartsWith("[AI]", System.StringComparison.InvariantCulture)) || ManageStrings.IsStringAContainsStringB(StringA, StringB))
+            if (stringA.StartsWith("[AI][", System.StringComparison.InvariantCulture) || (stringA.StartsWith("[", System.StringComparison.InvariantCulture) && !stringA.StartsWith("[AI]", System.StringComparison.InvariantCulture)) || ManageStrings.IsStringAContainsStringB(stringA, stringB))
             {
             }
-            else if (StringB.Length > 0)
+            else if (stringB.Length > 0)
             {
                 //проверка на любые невалидные для имени папки символы
-                if (ManageFilesFolders.ContainsAnyInvalidCharacters(StringB))
+                if (ManageFilesFolders.ContainsAnyInvalidCharacters(stringB))
                 {
                 }
                 else
                 {
-                    StringA = "[" + StringB + "]" + StringA;
+                    stringA = "[" + stringB + "]" + stringA;
                 }
             }
 
-            return StringA;
+            return stringA;
         }
 
-        public static bool IsStringAContainsAnyStringFromStringArray(string StringA, string[] StringArray, bool IgnoreCase = false)
+        public static bool IsStringAContainsAnyStringFromStringArray(string stringA, string[] stringArray, bool ignoreCase = false)
         {
-            foreach (var StringB in StringArray)
+            foreach (var stringB in stringArray)
             {
-                if (IgnoreCase)
+                if (ignoreCase)
                 {
-                    if (IsStringAContainsStringB(StringA, StringB) || IsStringAContainsStringB(StringA.ToUpperInvariant(), StringB.ToUpperInvariant()))
+                    if (IsStringAContainsStringB(stringA, stringB) || IsStringAContainsStringB(stringA.ToUpperInvariant(), stringB.ToUpperInvariant()))
                     {
                         return true;
                     }
                 }
                 else
                 {
-                    if (IsStringAContainsStringB(StringA, StringB))
+                    if (IsStringAContainsStringB(stringA, stringB))
                     {
                         return true;
                     }

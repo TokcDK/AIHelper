@@ -16,15 +16,15 @@ namespace AIHelper.Manage.Rules.ModList
 
         internal override bool Condition()
         {
-            var ModPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName);
+            var modPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName);
 
-            var metaPath = Path.Combine(ModPath, "meta.ini");
+            var metaPath = Path.Combine(modPath, "meta.ini");
             if (!File.Exists(metaPath))
                 return false;
 
-            var INI = new INIFile(metaPath);
+            var ini = new INIFile(metaPath);
 
-            var metaNotes = INI.ReadINI("General", "notes");
+            var metaNotes = ini.ReadINI("General", "notes");
 
             return metaNotes!=null && metaNotes.Contains("mlinfo::");
         }
@@ -41,17 +41,17 @@ namespace AIHelper.Manage.Rules.ModList
 
         private bool ParseRulesFromMeta()
         {
-            var ModPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName);
+            var modPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName);
 
-            var metaPath = Path.Combine(ModPath, "meta.ini");
+            var metaPath = Path.Combine(modPath, "meta.ini");
             if (File.Exists(metaPath))
             {
-                var INI = new INIFile(metaPath);
+                var ini = new INIFile(metaPath);
 
-                var metaNotes = INI.ReadINI("General", "notes");
+                var metaNotes = ini.ReadINI("General", "notes");
                 //var metaComments = ManageINI.GetINIValueIfExist(metaPath, "comments", "General");
 
-                var mlinfo = GetTagInfoTextFromHTML(metaNotes, "mlinfo::").Replace("\\\\", "\\");
+                var mlinfo = GetTagInfoTextFromHtml(metaNotes, "mlinfo::").Replace("\\\\", "\\");
 
                 if (!string.IsNullOrWhiteSpace(mlinfo))
                 {
@@ -63,11 +63,11 @@ namespace AIHelper.Manage.Rules.ModList
 
                 //read info from standalone key
                 //need to think about section and key names
-                if (INI.SectionExistsAndNotEmpty(ManageSettings.AIMetaINISectionName()))
+                if (ini.SectionExistsAndNotEmpty(ManageSettings.AiMetaIniSectionName()))
                 {
-                    if(INI.KeyExists(ManageSettings.AIMetaINIKeyModlistRulesInfoName(), ManageSettings.AIMetaINISectionName()))
+                    if(ini.KeyExists(ManageSettings.AiMetaIniKeyModlistRulesInfoName(), ManageSettings.AiMetaIniSectionName()))
                     {
-                        mlinfo = INI.ReadINI(ManageSettings.AIMetaINISectionName(), ManageSettings.AIMetaINIKeyModlistRulesInfoName());
+                        mlinfo = ini.ReadINI(ManageSettings.AiMetaIniSectionName(), ManageSettings.AiMetaIniKeyModlistRulesInfoName());
                     }
                     if (!string.IsNullOrWhiteSpace(mlinfo))
                     {
@@ -88,7 +88,7 @@ namespace AIHelper.Manage.Rules.ModList
         /// </summary>
         /// <param name="htmlString"></param>
         /// <returns></returns>
-        internal static string GetTagInfoTextFromHTML(string htmlString, string InfoStartTag, string InfoEndTag = "::", string Splitter = ",", string HTMLtag = "span")
+        internal static string GetTagInfoTextFromHtml(string htmlString, string infoStartTag, string infoEndTag = "::", string splitter = ",", string htmLtag = "span")
         {
             try
             {
@@ -96,7 +96,7 @@ namespace AIHelper.Manage.Rules.ModList
                 html.LoadHtml(htmlString);
 
                 //html.DocumentNode.SelectNodes("//" + tag + "/text()").ToList().ForEach(x => MessageBox.Show(x.InnerHtml));
-                var nodes = html.DocumentNode.SelectNodes("//" + HTMLtag + "/text()");
+                var nodes = html.DocumentNode.SelectNodes("//" + htmLtag + "/text()");
                 if (nodes == null)
                 {
                     return string.Empty;
@@ -110,9 +110,9 @@ namespace AIHelper.Manage.Rules.ModList
                 {
                     if (loadingmlinfo)
                     {
-                        if ((tx = text.InnerHtml.TrimEnd()).EndsWith(InfoEndTag, StringComparison.InvariantCulture))
+                        if ((tx = text.InnerHtml.TrimEnd()).EndsWith(infoEndTag, StringComparison.InvariantCulture))
                         {
-                            info.Add(tx.TrimStart().Remove(tx.Length - InfoEndTag.Length));
+                            info.Add(tx.TrimStart().Remove(tx.Length - infoEndTag.Length));
                             break;
                         }
                         else
@@ -122,22 +122,22 @@ namespace AIHelper.Manage.Rules.ModList
                     }
                     else
                     {
-                        if ((tx = text.InnerHtml.Trim()).StartsWith(InfoStartTag, StringComparison.InvariantCulture))
+                        if ((tx = text.InnerHtml.Trim()).StartsWith(infoStartTag, StringComparison.InvariantCulture))
                         {
-                            if (tx != InfoStartTag && tx.EndsWith(InfoEndTag, StringComparison.InvariantCulture))
+                            if (tx != infoStartTag && tx.EndsWith(infoEndTag, StringComparison.InvariantCulture))
                             {
-                                info.Add(tx.Remove(tx.Length - InfoEndTag.Length).Remove(0, InfoStartTag.Length));
+                                info.Add(tx.Remove(tx.Length - infoEndTag.Length).Remove(0, infoStartTag.Length));
                                 return string.Join(Environment.NewLine, info);
                             }
                             else
                             {
                                 loadingmlinfo = true;
-                                info.Add(tx.Replace(InfoStartTag, string.Empty));
+                                info.Add(tx.Replace(infoStartTag, string.Empty));
                             }
                         }
                     }
                 }
-                return string.Join(Environment.NewLine, info) + (HTMLtag == "span" ? GetTagInfoTextFromHTML(htmlString, InfoStartTag, InfoEndTag = "::", Splitter = ",", HTMLtag = "p") : string.Empty);
+                return string.Join(Environment.NewLine, info) + (htmLtag == "span" ? GetTagInfoTextFromHtml(htmlString, infoStartTag, infoEndTag = "::", splitter = ",", htmLtag = "p") : string.Empty);
             }
             catch (Exception ex)
             {

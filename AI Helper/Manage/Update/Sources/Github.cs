@@ -15,88 +15,88 @@ namespace AIHelper.Manage.Update.Sources
             System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;//включение tls12 для github
         }
 
-        internal override string url { get => "github.com"; }
+        internal override string Url { get => "github.com"; }
 
-        internal override string infoID => "updgit";
+        internal override string InfoId => "updgit";
 
-        internal override string title => "Github";
+        internal override string Title => "Github";
 
         internal async override Task<bool> GetFile()
         {
             return await DownloadTheFile().ConfigureAwait(true);
         }
 
-        static Form Dwnf;
-        static ProgressBar Dwnpb;
+        static Form _dwnf;
+        static ProgressBar _dwnpb;
         private async Task<bool> DownloadTheFile()
         {
-            if (string.IsNullOrWhiteSpace(info.DownloadLink))
+            if (string.IsNullOrWhiteSpace(Info.DownloadLink))
             {
-                info.NoRemoteFile = true;
+                Info.NoRemoteFile = true;
                 return false;
             }
 
-            var UpdateDownloadsDir = ManageSettings.GetModsUpdateDirDownloadsPath(); //Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), modGitData.CurrentModName);
-            Directory.CreateDirectory(UpdateDownloadsDir);
+            var updateDownloadsDir = ManageSettings.GetModsUpdateDirDownloadsPath(); //Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), modGitData.CurrentModName);
+            Directory.CreateDirectory(updateDownloadsDir);
 
-            var UpdateFileName = Path.GetFileName(info.DownloadLink);
+            var updateFileName = Path.GetFileName(Info.DownloadLink);
 
-            Dwnpb = new ProgressBar
+            _dwnpb = new ProgressBar
             {
                 Dock = DockStyle.Bottom,
                 Maximum = 100
             };
-            Dwnf = new Form
+            _dwnf = new Form
             {
                 StartPosition = FormStartPosition.CenterScreen,
                 Size = new Size(400, 50),
-                Text = T._("Downloading") + ": " + UpdateFileName,
+                Text = T._("Downloading") + ": " + updateFileName,
                 FormBorderStyle = FormBorderStyle.FixedToolWindow
             };
-            Dwnf.Controls.Add(Dwnpb);
-            Dwnf.Show();
-            wc.DownloadProgressChanged += (s, ea) =>
+            _dwnf.Controls.Add(_dwnpb);
+            _dwnf.Show();
+            Wc.DownloadProgressChanged += (s, ea) =>
             {
-                if (ea.ProgressPercentage <= Dwnpb.Maximum)
+                if (ea.ProgressPercentage <= _dwnpb.Maximum)
                 {
-                    Dwnpb.Value = ea.ProgressPercentage;
+                    _dwnpb.Value = ea.ProgressPercentage;
                 }
             };
 
-            info.UpdateFilePath = Path.Combine(UpdateDownloadsDir, UpdateFileName);
-            wc.DownloadFileCompleted += (s, ea) =>
+            Info.UpdateFilePath = Path.Combine(updateDownloadsDir, updateFileName);
+            Wc.DownloadFileCompleted += (s, ea) =>
             {
-                if (Dwnpb != null)
+                if (_dwnpb != null)
                 {
-                    Dwnpb.Dispose();
+                    _dwnpb.Dispose();
                 }
 
-                if (Dwnf != null)
+                if (_dwnf != null)
                 {
-                    Dwnf.Dispose();
+                    _dwnf.Dispose();
                 }
                 //MessageBox.Show("Download Complete!");
                 //PerformModUpdateFromArchive();
             };
 
-            if (!File.Exists(info.UpdateFilePath)//not exist
-                || (!info.VersionFromFile && File.Exists(info.UpdateFilePath))//when version from releases and filename is always same need to download it each time because exist in downloads is from older release
-                || new FileInfo(info.UpdateFilePath).Length == 0//zero length van be when was failed previous download
+            if (!File.Exists(Info.UpdateFilePath)//not exist
+                || (!Info.VersionFromFile && File.Exists(Info.UpdateFilePath))//when version from releases and filename is always same need to download it each time because exist in downloads is from older release
+                || new FileInfo(Info.UpdateFilePath).Length == 0//zero length van be when was failed previous download
                 )
             {
-                await DownloadFileTaskAsync(new Uri(info.DownloadLink), info.UpdateFilePath).ConfigureAwait(true);
+                await DownloadFileTaskAsync(new Uri(Info.DownloadLink), Info.UpdateFilePath).ConfigureAwait(true);
 
-                return File.Exists(info.UpdateFilePath) && new FileInfo(info.UpdateFilePath).Length != 0;
+                return File.Exists(Info.UpdateFilePath) && new FileInfo(Info.UpdateFilePath).Length != 0;
             }
             else
             {
-                Dwnpb.Dispose();
+                _dwnpb.Dispose();
 
-                Dwnf.Dispose();
+                _dwnf.Dispose();
 
-                if (new FileInfo(info.UpdateFilePath).Length == 0)
+                if (new FileInfo(Info.UpdateFilePath).Length == 0)
                 {
-                    File.Delete(info.UpdateFilePath);
+                    File.Delete(Info.UpdateFilePath);
                     return false;
                 }
 
@@ -132,9 +132,9 @@ namespace AIHelper.Manage.Update.Sources
             return GetLatestGithubVersionFromReleases();
         }
 
-        string GitOwner;
-        string GitRepository;
-        string GitLatestVersion;
+        string _gitOwner;
+        string _gitRepository;
+        string _gitLatestVersion;
 
         private string GetLatestGithubVersionFromReleases()
         {
@@ -158,13 +158,13 @@ namespace AIHelper.Manage.Update.Sources
                 //    return null;
                 //}
 
-                GitOwner = info.TargetFolderUpdateInfo[0];
-                GitRepository = info.TargetFolderUpdateInfo[1];
-                info.UpdateFileStartsWith = info.TargetFolderUpdateInfo[2];
-                if (info.UpdateFileEndsWith.Length == 0)
-                    info.UpdateFileEndsWith = (info.TargetFolderUpdateInfo.Length > 3 && info.TargetFolderUpdateInfo[3].ToUpperInvariant() != "TRUE" && info.TargetFolderUpdateInfo[3].ToUpperInvariant() != "FALSE") ? info.TargetFolderUpdateInfo[3] : "";
-                info.VersionFromFile = info.TargetFolderUpdateInfo[info.TargetFolderUpdateInfo.Length - 1].ToUpperInvariant() == "TRUE";
-                info.SourceLink = "https://github.com/" + GitOwner + "/" + GitRepository + "/releases/latest";
+                _gitOwner = Info.TargetFolderUpdateInfo[0];
+                _gitRepository = Info.TargetFolderUpdateInfo[1];
+                Info.UpdateFileStartsWith = Info.TargetFolderUpdateInfo[2];
+                if (Info.UpdateFileEndsWith.Length == 0)
+                    Info.UpdateFileEndsWith = (Info.TargetFolderUpdateInfo.Length > 3 && Info.TargetFolderUpdateInfo[3].ToUpperInvariant() != "TRUE" && Info.TargetFolderUpdateInfo[3].ToUpperInvariant() != "FALSE") ? Info.TargetFolderUpdateInfo[3] : "";
+                Info.VersionFromFile = Info.TargetFolderUpdateInfo[Info.TargetFolderUpdateInfo.Length - 1].ToUpperInvariant() == "TRUE";
+                Info.SourceLink = "https://github.com/" + _gitOwner + "/" + _gitRepository + "/releases/latest";
                 //info.SourceLink = "https://github.com/" + GitOwner + "/" + GitRepository + "/releases";
 
                 //var request = (HttpWebRequest)WebRequest.Create(new Uri(info.SourceLink));
@@ -176,79 +176,79 @@ namespace AIHelper.Manage.Update.Sources
                 //    return "";
                 //}
 
-                var LatestReleasePage = wc.DownloadString(info.SourceLink);
-                var version = Regex.Match(LatestReleasePage, @"/releases/tag/([^\""]+)\""");
+                var latestReleasePage = Wc.DownloadString(Info.SourceLink);
+                var version = Regex.Match(latestReleasePage, @"/releases/tag/([^\""]+)\""");
                 if (version.Success)
                 {
-                    GitLatestVersion = version.Result("$1");
+                    _gitLatestVersion = version.Result("$1");
                 }
                 //GitLatestVersion = version.Value.Remove(version.Value.Length - 1, 1).Remove(0, 14);
 
-                var linkPattern = @"href\=\""(/" + GitOwner + "/" + GitRepository + "/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + @"([^\""]*)" + info.UpdateFileEndsWith + @")\""";
-                var link2file = Regex.Match(LatestReleasePage, linkPattern);
+                var linkPattern = @"href\=\""(/" + _gitOwner + "/" + _gitRepository + "/releases/download/" + _gitLatestVersion + "/" + Info.UpdateFileStartsWith + @"([^\""]*)" + Info.UpdateFileEndsWith + @")\""";
+                var link2File = Regex.Match(latestReleasePage, linkPattern);
                 //var linkPattern = @"href\=\""(/" + GitOwner + "/" + GitRepository + "/releases/download/([^/]+)/" + info.UpdateFileStartsWith + @"([^\""]+)" + info.UpdateFileEndsWith + @")\""";
                 //var link2file = Regex.Match(LatestReleasePage, linkPattern);
-                if (!link2file.Success)//refind sublink to file
+                if (!link2File.Success)//refind sublink to file
                 {
                     //when author changed username on git
-                    linkPattern = @"href\=\""(/[^/]+/" + GitRepository + "/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + @"([^\""]*)" + info.UpdateFileEndsWith + @")\""";
-                    link2file = Regex.Match(LatestReleasePage, linkPattern);
+                    linkPattern = @"href\=\""(/[^/]+/" + _gitRepository + "/releases/download/" + _gitLatestVersion + "/" + Info.UpdateFileStartsWith + @"([^\""]*)" + Info.UpdateFileEndsWith + @")\""";
+                    link2File = Regex.Match(latestReleasePage, linkPattern);
                     //linkPattern = @"href\=\""(/[^/]+/" + GitRepository + "/releases/download/([^/]+)/" + info.UpdateFileStartsWith + @"([^\""]+)" + info.UpdateFileEndsWith + @")\""";
                     //link2file = Regex.Match(LatestReleasePage, linkPattern);
                 }
 
-                var GetFromLast10Releases = false;
+                var getFromLast10Releases = false;
                 //List<GitReleasesInfo> Releases = null;
-                if (!link2file.Success)
+                if (!link2File.Success)
                 {
-                    GetFromLast10Releases = true;
-                    info.SourceLink = "https://github.com/" + GitOwner + "/" + GitRepository + "/releases";
-                    LatestReleasePage = wc.DownloadString(info.SourceLink);
-                    linkPattern = @"href\=\""(/" + GitOwner + "/" + GitRepository + "/releases/download/([^/]+)/" + info.UpdateFileStartsWith + @"([^\""]+)" + info.UpdateFileEndsWith + @")\""";
-                    link2file = Regex.Match(LatestReleasePage, linkPattern);
+                    getFromLast10Releases = true;
+                    Info.SourceLink = "https://github.com/" + _gitOwner + "/" + _gitRepository + "/releases";
+                    latestReleasePage = Wc.DownloadString(Info.SourceLink);
+                    linkPattern = @"href\=\""(/" + _gitOwner + "/" + _gitRepository + "/releases/download/([^/]+)/" + Info.UpdateFileStartsWith + @"([^\""]+)" + Info.UpdateFileEndsWith + @")\""";
+                    link2File = Regex.Match(latestReleasePage, linkPattern);
 
-                    if (!link2file.Success)//refind sublink to file
+                    if (!link2File.Success)//refind sublink to file
                     {
                         //when author changed username on git
-                        linkPattern = @"href\=\""(/[^/]+/" + GitRepository + "/releases/download/([^/]+)/" + info.UpdateFileStartsWith + @"([^\""]+)" + info.UpdateFileEndsWith + @")\""";
-                        link2file = Regex.Match(LatestReleasePage, linkPattern);
+                        linkPattern = @"href\=\""(/[^/]+/" + _gitRepository + "/releases/download/([^/]+)/" + Info.UpdateFileStartsWith + @"([^\""]+)" + Info.UpdateFileEndsWith + @")\""";
+                        link2File = Regex.Match(latestReleasePage, linkPattern);
                     }
 
-                    if(link2file.Success && !info.VersionFromFile)
+                    if(link2File.Success && !Info.VersionFromFile)
                     {
-                        UpdateTools.CleanVersion(ref GitLatestVersion);
-                        UpdateTools.CleanVersion(ref info.TargetCurrentVersion);
-                        var fromReleases = link2file.Result("$2");
+                        UpdateTools.CleanVersion(ref _gitLatestVersion);
+                        UpdateTools.CleanVersion(ref Info.TargetCurrentVersion);
+                        var fromReleases = link2File.Result("$2");
                         UpdateTools.CleanVersion(ref fromReleases);
                         //return empty when current version and release version is newer of last version from releases
-                        if (info.TargetCurrentVersion.IsNewerOf(fromReleases) && GitLatestVersion.IsNewerOf(fromReleases))
+                        if (Info.TargetCurrentVersion.IsNewerOf(fromReleases) && _gitLatestVersion.IsNewerOf(fromReleases))
                         {
-                            info.DownloadLink = "";
-                            return GitLatestVersion;
+                            Info.DownloadLink = "";
+                            return _gitLatestVersion;
                         }
                     }
 
                     //Releases = GetGitLast10ReleasesInfo(GitOwner, GitRepository, info.UpdateFileStartsWith, info.UpdateFileEndsWith);
                 }
 
-                if ((link2file.Success && link2file.Value.Length > 7 && link2file.Value.StartsWith("href=", StringComparison.InvariantCultureIgnoreCase)) /*|| (Releases != null && Releases.Count > 0)*/)
+                if ((link2File.Success && link2File.Value.Length > 7 && link2File.Value.StartsWith("href=", StringComparison.InvariantCultureIgnoreCase)) /*|| (Releases != null && Releases.Count > 0)*/)
                 {
-                    info.DownloadLink = "https://" + url + link2file.Result("$1");
+                    Info.DownloadLink = "https://" + Url + link2File.Result("$1");
 
-                    if (info.VersionFromFile)
+                    if (Info.VersionFromFile)
                     {
-                        if (!GetFromLast10Releases)
+                        if (!getFromLast10Releases)
                         {
-                            var pattern = "/releases/download/" + GitLatestVersion + "/" + info.UpdateFileStartsWith + "([^\"]+)" + info.UpdateFileEndsWith + "\"";
-                            var fromfile = Regex.Match(LatestReleasePage, pattern);
+                            var pattern = "/releases/download/" + _gitLatestVersion + "/" + Info.UpdateFileStartsWith + "([^\"]+)" + Info.UpdateFileEndsWith + "\"";
+                            var fromfile = Regex.Match(latestReleasePage, pattern);
                             if (fromfile.Success)
                             {
-                                GitLatestVersion = fromfile.Result("$1");
+                                _gitLatestVersion = fromfile.Result("$1");
                             }
                         }
                         else
                         {
-                            GitLatestVersion = link2file.Result("$3");
+                            _gitLatestVersion = link2File.Result("$3");
                         }
                         //else if (Releases != null && Releases.Count > 0)
                         //{
@@ -258,9 +258,9 @@ namespace AIHelper.Manage.Update.Sources
                         //}
                         //return fromfile;
                     }
-                    else if (GetFromLast10Releases)
+                    else if (getFromLast10Releases)
                     {
-                        GitLatestVersion = link2file.Result("$2");
+                        _gitLatestVersion = link2File.Result("$2");
                     }
                     //else
                     //{
@@ -269,23 +269,23 @@ namespace AIHelper.Manage.Update.Sources
 
                     //SetContentLength(info.SourceLink, response.ContentLength);
 
-                    return GitLatestVersion;
+                    return _gitLatestVersion;
                 }
                 else
                 {
-                    ManageLogs.Log("GitHub sublink to file not found or incorrect.\r\n\tMod:" + info.TargetFolderPath.Name + "\r\n\tlink:" + info.SourceLink + "\r\n\tfile:" + info.UpdateFileStartsWith + "*" + info.UpdateFileEndsWith + " =>(Link to file" + (link2file.Success ? ": " + link2file.Value : " not found") + ")");
+                    ManageLogs.Log("GitHub sublink to file not found or incorrect.\r\n\tMod:" + Info.TargetFolderPath.Name + "\r\n\tlink:" + Info.SourceLink + "\r\n\tfile:" + Info.UpdateFileStartsWith + "*" + Info.UpdateFileEndsWith + " =>(Link to file" + (link2File.Success ? ": " + link2File.Value : " not found") + ")");
 
-                    if (!info.VersionFromFile && GitLatestVersion.Length > 0)
+                    if (!Info.VersionFromFile && _gitLatestVersion.Length > 0)
                     {
-                        info.DownloadLink = "";
-                        return GitLatestVersion;
+                        Info.DownloadLink = "";
+                        return _gitLatestVersion;
                     }
                 }
             }
             catch (Exception ex)
             {
                 ManageLogs.Log("failed to check update. error:\r\n" + ex);
-                info.LastErrorText.Append(" >"+ex.Message);
+                Info.LastErrorText.Append(" >"+ex.Message);
             }
 
             return "";
@@ -336,7 +336,7 @@ namespace AIHelper.Manage.Update.Sources
 
         internal override byte[] DownloadFileFromTheLink(Uri link)
         {
-            return wc.DownloadData(link);
+            return Wc.DownloadData(link);
         }
 
         //private void SetContentLength(string sourceLink, long contentLength)

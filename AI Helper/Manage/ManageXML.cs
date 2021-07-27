@@ -4,7 +4,7 @@ using System.Xml;
 
 namespace AIHelper.Manage
 {
-    class ManageXML
+    class ManageXml
     {
         /// <summary>
         /// changes UserData/setup.xml values
@@ -23,8 +23,8 @@ namespace AIHelper.Manage
 #pragma warning disable CA3075 // Insecure DTD processing in XML
             XmlDocument xmlDoc = new XmlDocument();
 #pragma warning restore CA3075 // Insecure DTD processing in XML
-            var XmlFound = File.Exists(xmlpath);
-            if (XmlFound)
+            var xmlFound = File.Exists(xmlpath);
+            if (xmlFound)
             {
 #pragma warning disable CA3075 // Insecure DTD processing in XML
                 xmlDoc.Load(xmlpath);
@@ -49,16 +49,16 @@ namespace AIHelper.Manage
 
             XmlNode node = xmlDoc.SelectSingleNode(nodename);
 
-            if (node == null || (node.InnerText == value && XmlFound))
+            if (node == null || (node.InnerText == value && xmlFound))
             {
             }
             else
             {
                 node.InnerText = value;
 
-                if (!XmlFound)
+                if (!xmlFound)
                 {
-                    xmlpath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(xmlpath, false, true);
+                    xmlpath = ManageMo.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(xmlpath, false, true);
                 }
 
                 xmlDoc.Save(xmlpath);

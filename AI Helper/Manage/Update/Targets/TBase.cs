@@ -8,13 +8,13 @@ using System.IO.Compression;
 namespace AIHelper.Manage.Update.Targets
 {
     //Base for targets
-    abstract class TBase
+    abstract class Base
     {
-        protected UpdateInfo info;
+        protected UpdateInfo Info;
 
-        protected TBase(UpdateInfo info)
+        protected Base(UpdateInfo info)
         {
-            this.info = info;
+            this.Info = info;
 
             UpdateFilenameSubPathData = new Dictionary<string, string>
                 {
@@ -54,29 +54,29 @@ namespace AIHelper.Manage.Update.Targets
         {
             try
             {
-                BuckupDirPath = Path.Combine(ManageSettings.GetUpdatedModsOlderVersionsBuckupDirPath(), info.TargetFolderPath.Name + "_" + info.TargetCurrentVersion);
+                BuckupDirPath = Path.Combine(ManageSettings.GetUpdatedModsOlderVersionsBuckupDirPath(), Info.TargetFolderPath.Name + "_" + Info.TargetCurrentVersion);
                 if (Directory.Exists(BuckupDirPath))
                 {
                     BuckupDirPath += "_" + DateTime.Now.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
                 }
 
-                info.BuckupDirPath = BuckupDirPath;
+                Info.BuckupDirPath = BuckupDirPath;
                 //Directory.CreateDirectory(BuckupDirPath);
 
                 //set RestoreList
                 RestoreList = new HashSet<string>();
-                foreach (var path in info.Target.RestorePathsList())
+                foreach (var path in Info.Target.RestorePathsList())
                 {
                     if (string.IsNullOrWhiteSpace(path))
                     {
                         continue;
                     }
 
-                    var p = Path.GetFullPath(Path.Combine(info.BuckupDirPath, path));
+                    var p = Path.GetFullPath(Path.Combine(Info.BuckupDirPath, path));
                     RestoreList.Add(p);
                 }
 
-                foreach (var path in info.Target.RestorePathsListExtra())
+                foreach (var path in Info.Target.RestorePathsListExtra())
                 {
                     if (string.IsNullOrWhiteSpace(path))
                     {
@@ -86,9 +86,9 @@ namespace AIHelper.Manage.Update.Targets
                     var dirinfo = new DirectoryInfo(path);
                     if (dirinfo.Exists && dirinfo.IsSymbolicLink() && dirinfo.IsSymbolicLinkValid())
                     {
-                        var modPath = ManageMOMods.GetMOModPathInMods(dirinfo.GetSymbolicLinkTarget());
+                        var modPath = ManageMoMods.GetMoModPathInMods(dirinfo.GetSymbolicLinkTarget());
 
-                        if (Path.GetFileName(modPath) == info.TargetFolderPath.FullName) // if parsing mod path is same then add for bak
+                        if (Path.GetFileName(modPath) == Info.TargetFolderPath.FullName) // if parsing mod path is same then add for bak
                         {
                             RestoreList.Add(path);
                         }
@@ -96,7 +96,7 @@ namespace AIHelper.Manage.Update.Targets
                 }
 
                 //info.TargetFolderPath.FullName.CopyAll(BuckupDirPath);
-                MakeBuckup(BuckupDirPath, info.TargetFolderPath.FullName);
+                MakeBuckup(BuckupDirPath, Info.TargetFolderPath.FullName);
                 //ZipFile.CreateFromDirectory(info.TargetFolderPath.FullName, OldModBuckupDirPath);
 
 
@@ -114,12 +114,12 @@ namespace AIHelper.Manage.Update.Targets
         /// </summary>
         internal virtual void RestoreBuckup()
         {
-            RestoreModFromBuckup(BuckupDirPath, info.TargetFolderPath.FullName);
+            RestoreModFromBuckup(BuckupDirPath, Info.TargetFolderPath.FullName);
         }
 
         protected bool PerformUpdate()
         {
-            if (!Path.GetFileNameWithoutExtension(info.UpdateFilePath).StartsWith(info.UpdateFileStartsWith, StringComparison.InvariantCultureIgnoreCase)
+            if (!Path.GetFileNameWithoutExtension(Info.UpdateFilePath).StartsWith(Info.UpdateFileStartsWith, StringComparison.InvariantCultureIgnoreCase)
                 //|| !IsLatestVersionNewerOfCurrent(GitLatestVersion, GitCurrentVersion)
                 )
             {
@@ -132,7 +132,7 @@ namespace AIHelper.Manage.Update.Targets
             //}
 
             //var modname = modGitData.CurrentModName; //Path.GetFileName(Path.GetDirectoryName(filePath));
-            var UpdatingModDirPath = info.TargetFolderPath.FullName;
+            var updatingModDirPath = Info.TargetFolderPath.FullName;
 
 
             //var OldModBuckupDirPath = Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), "old", info.TargetFolderPath.Name + "_" + info.TargetCurrentVersion);
@@ -151,11 +151,11 @@ namespace AIHelper.Manage.Update.Targets
 
                 int code = 0;
                 string ext;
-                if (!File.Exists(info.UpdateFilePath))
+                if (!File.Exists(Info.UpdateFilePath))
                 {
                     code = -1;
                 }
-                else if ((ext = Path.GetExtension(info.UpdateFilePath).ToUpperInvariant()) == ".ZIP")
+                else if ((ext = Path.GetExtension(Info.UpdateFilePath).ToUpperInvariant()) == ".ZIP")
                 {
                     code = 1;
                 }
@@ -170,9 +170,9 @@ namespace AIHelper.Manage.Update.Targets
                     {
                         case 1:
                             {
-                                using (ZipArchive archive = ZipFile.OpenRead(info.UpdateFilePath))
+                                using (ZipArchive archive = ZipFile.OpenRead(Info.UpdateFilePath))
                                 {
-                                    archive.ExtractToDirectory(UpdatingModDirPath);
+                                    archive.ExtractToDirectory(updatingModDirPath);
                                 }
 
                                 break;
@@ -180,24 +180,24 @@ namespace AIHelper.Manage.Update.Targets
 
                         case 2:
                             {
-                                var FullDllFileName = Path.GetFileName(info.UpdateFilePath);
+                                var fullDllFileName = Path.GetFileName(Info.UpdateFilePath);
                                 string targetDir;
-                                if (UpdateFilenameSubPathData.ContainsKey(FullDllFileName)) //get subpath from predefined list
+                                if (UpdateFilenameSubPathData.ContainsKey(fullDllFileName)) //get subpath from predefined list
                                 {
-                                    targetDir = UpdatingModDirPath + Path.DirectorySeparatorChar + UpdateFilenameSubPathData[FullDllFileName];
+                                    targetDir = updatingModDirPath + Path.DirectorySeparatorChar + UpdateFilenameSubPathData[fullDllFileName];
                                 }
-                                else if ((targetDir = GetDllTargetDir(FullDllFileName, UpdatingModDirPath)).Length > 0)//search dll path in buckup dir
+                                else if ((targetDir = GetDllTargetDir(fullDllFileName, updatingModDirPath)).Length > 0)//search dll path in buckup dir
                                 {
                                     Directory.CreateDirectory(targetDir);
                                 }
-                                else if (info.TargetFolderUpdateInfo[0] == "BepInEx")//default BepInEx plugins dir
+                                else if (Info.TargetFolderUpdateInfo[0] == "BepInEx")//default BepInEx plugins dir
                                 {
-                                    targetDir = Path.Combine(UpdatingModDirPath, "BepInEx", "plugins");
+                                    targetDir = Path.Combine(updatingModDirPath, "BepInEx", "plugins");
                                 }
 
                                 Directory.CreateDirectory(targetDir);
-                                var targetFilePath = Path.Combine(targetDir, FullDllFileName);
-                                File.Move(info.UpdateFilePath, targetFilePath);
+                                var targetFilePath = Path.Combine(targetDir, fullDllFileName);
+                                File.Move(Info.UpdateFilePath, targetFilePath);
                                 break;
                             }
                     }
@@ -207,11 +207,11 @@ namespace AIHelper.Manage.Update.Targets
                 {
                     //File.Delete(modGitData.UpdateFilePath);
 
-                    RestoreSomeFiles(info.BuckupDirPath, UpdatingModDirPath);
+                    RestoreSomeFiles(Info.BuckupDirPath, updatingModDirPath);
 
                     //info.TargetCurrentVersion = info.TargetLastVersion;
 
-                    ManageINI.WriteINIValue(Path.Combine(UpdatingModDirPath, "meta.ini"), "General", "version", info.TargetLastVersion);
+                    ManageIni.WriteIniValue(Path.Combine(updatingModDirPath, "meta.ini"), "General", "version", Info.TargetLastVersion);
 
                     //report.Add(
                     //    (IsHTMLReport ? "<p style=\"color:lightgreen\">" : string.Empty)
@@ -257,7 +257,7 @@ namespace AIHelper.Manage.Update.Targets
                 //    + "</p>"
                 //    );
 
-                ManageLogs.Log("Failed to update mod" + " " + info.TargetFolderPath.Name + ":" + Environment.NewLine + ex);
+                ManageLogs.Log("Failed to update mod" + " " + Info.TargetFolderPath.Name + ":" + Environment.NewLine + ex);
 
                 return false;
             }
@@ -265,14 +265,14 @@ namespace AIHelper.Manage.Update.Targets
             return true;
         }
 
-        private string GetDllTargetDir(string FullDllFileName, string UpdatingModDirPath)
+        private string GetDllTargetDir(string fullDllFileName, string updatingModDirPath)
         {
             //search dll with same name and get subpath from this dll
-            foreach (var dll in Directory.EnumerateFiles(info.BuckupDirPath, "*.dll", SearchOption.AllDirectories))
+            foreach (var dll in Directory.EnumerateFiles(Info.BuckupDirPath, "*.dll", SearchOption.AllDirectories))
             {
-                if (Path.GetFileName(dll) == FullDllFileName)
+                if (Path.GetFileName(dll) == fullDllFileName)
                 {
-                    return Path.GetDirectoryName(dll).Replace(info.BuckupDirPath, UpdatingModDirPath);
+                    return Path.GetDirectoryName(dll).Replace(Info.BuckupDirPath, updatingModDirPath);
                 }
             }
             return "";
@@ -311,22 +311,22 @@ namespace AIHelper.Manage.Update.Targets
         /// <summary>
         /// restore some files like cfg
         /// </summary>
-        /// <param name="OldModBuckupDirPath"></param>
-        /// <param name="UpdatingModDirPath"></param>
-        protected void RestoreSomeFiles(string OldModBuckupDirPath, string UpdatingModDirPath)
+        /// <param name="oldModBuckupDirPath"></param>
+        /// <param name="updatingModDirPath"></param>
+        protected void RestoreSomeFiles(string oldModBuckupDirPath, string updatingModDirPath)
         {
             //restore some files files
-            foreach (var dir in new DirectoryInfo(OldModBuckupDirPath).EnumerateDirectories("*", SearchOption.AllDirectories))
+            foreach (var dir in new DirectoryInfo(oldModBuckupDirPath).EnumerateDirectories("*", SearchOption.AllDirectories))
             {
                 try
                 {
-                    if (!Directory.Exists(Path.Combine(UpdatingModDirPath, dir.Name)) && RestoreList.Contains(dir.FullName))
+                    if (!Directory.Exists(Path.Combine(updatingModDirPath, dir.Name)) && RestoreList.Contains(dir.FullName))
                     {
-                        var TargetPath = dir.FullName.Replace(OldModBuckupDirPath, UpdatingModDirPath);
-                        Directory.CreateDirectory(Path.GetDirectoryName(TargetPath));
+                        var targetPath = dir.FullName.Replace(oldModBuckupDirPath, updatingModDirPath);
+                        Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
                         if (Directory.Exists(dir.FullName))
                         {
-                            dir.FullName.CopyAll(TargetPath);
+                            dir.FullName.CopyAll(targetPath);
                         }
                     }
                 }
@@ -337,25 +337,25 @@ namespace AIHelper.Manage.Update.Targets
             }
 
             //restore some files files
-            foreach (var file in new DirectoryInfo(OldModBuckupDirPath).EnumerateFiles("*", SearchOption.AllDirectories))
+            foreach (var file in new DirectoryInfo(oldModBuckupDirPath).EnumerateFiles("*", SearchOption.AllDirectories))
             {
                 try
                 {
                     string ext;
-                    if (!File.Exists(Path.Combine(UpdatingModDirPath, file.Name)) &&
+                    if (!File.Exists(Path.Combine(updatingModDirPath, file.Name)) &&
                         (
                             file.Extension == ".ini"
                             || file.Extension == ".cfg"
-                            || (file.DirectoryName == OldModBuckupDirPath && file.Extension.IsPictureExtension())
+                            || (file.DirectoryName == oldModBuckupDirPath && file.Extension.IsPictureExtension())
                             || RestoreList.Contains(file.FullName)
                             )
                         )
                     {
-                        var TargetFilePath = file.FullName.Replace(OldModBuckupDirPath, UpdatingModDirPath);
-                        Directory.CreateDirectory(Path.GetDirectoryName(TargetFilePath));
-                        if (File.Exists(file.FullName) && !File.Exists(TargetFilePath))
+                        var targetFilePath = file.FullName.Replace(oldModBuckupDirPath, updatingModDirPath);
+                        Directory.CreateDirectory(Path.GetDirectoryName(targetFilePath));
+                        if (File.Exists(file.FullName) && !File.Exists(targetFilePath))
                         {
-                            File.Copy(file.FullName, TargetFilePath);
+                            File.Copy(file.FullName, targetFilePath);
                         }
                     }
                 }
@@ -366,19 +366,19 @@ namespace AIHelper.Manage.Update.Targets
             }
         }
 
-        private static void RestoreModFromBuckup(string OldModBuckupDirPath, string UpdatingModDirPath)
+        private static void RestoreModFromBuckup(string oldModBuckupDirPath, string updatingModDirPath)
         {
-            if (string.IsNullOrWhiteSpace(OldModBuckupDirPath) || string.IsNullOrWhiteSpace(UpdatingModDirPath))
+            if (string.IsNullOrWhiteSpace(oldModBuckupDirPath) || string.IsNullOrWhiteSpace(updatingModDirPath))
             {
                 return;
             }
 
             //restore old dirs
-            foreach (var folder in Directory.GetDirectories(OldModBuckupDirPath))
+            foreach (var folder in Directory.GetDirectories(oldModBuckupDirPath))
             {
                 try
                 {
-                    var targetPath = folder.Replace(OldModBuckupDirPath, UpdatingModDirPath);
+                    var targetPath = folder.Replace(oldModBuckupDirPath, updatingModDirPath);
                     if (Directory.Exists(targetPath))
                     {
                         Directory.Delete(targetPath, true);
@@ -395,11 +395,11 @@ namespace AIHelper.Manage.Update.Targets
                 }
             }
             //restore old files
-            foreach (var file in Directory.GetFiles(OldModBuckupDirPath))
+            foreach (var file in Directory.GetFiles(oldModBuckupDirPath))
             {
                 try
                 {
-                    var targetPath = file.Replace(OldModBuckupDirPath, UpdatingModDirPath);
+                    var targetPath = file.Replace(oldModBuckupDirPath, updatingModDirPath);
                     if (File.Exists(targetPath))
                     {
                         File.Delete(targetPath);
@@ -416,24 +416,24 @@ namespace AIHelper.Manage.Update.Targets
                 }
             }
 
-            ManageFilesFolders.DeleteEmptySubfolders(OldModBuckupDirPath);
+            ManageFilesFolders.DeleteEmptySubfolders(oldModBuckupDirPath);
         }
 
         /// <summary>
         /// move/copy some files to buckup dir
         /// </summary>
-        /// <param name="OldModBuckupDirPath"></param>
-        /// <param name="UpdatingModDirPath"></param>
-        private void MakeBuckup(string OldModBuckupDirPath, string UpdatingModDirPath)
+        /// <param name="oldModBuckupDirPath"></param>
+        /// <param name="updatingModDirPath"></param>
+        private void MakeBuckup(string oldModBuckupDirPath, string updatingModDirPath)
         {
-            Directory.CreateDirectory(OldModBuckupDirPath);
+            Directory.CreateDirectory(oldModBuckupDirPath);
 
             //buckup old dirs
-            foreach (var folder in Directory.EnumerateDirectories(UpdatingModDirPath))
+            foreach (var folder in Directory.EnumerateDirectories(updatingModDirPath))
             {
                 try
                 {
-                    var backupPath = folder.Replace(UpdatingModDirPath, OldModBuckupDirPath);
+                    var backupPath = folder.Replace(updatingModDirPath, oldModBuckupDirPath);
                     Directory.CreateDirectory(Path.GetDirectoryName(backupPath));
                     if (Directory.Exists(folder))
                     {
@@ -446,7 +446,7 @@ namespace AIHelper.Manage.Update.Targets
                 }
             }
             //buckup old files
-            foreach (var file in Directory.EnumerateFiles(UpdatingModDirPath))
+            foreach (var file in Directory.EnumerateFiles(updatingModDirPath))
             {
                 try
                 {
@@ -455,7 +455,7 @@ namespace AIHelper.Manage.Update.Targets
                     //{
                     //    continue;
                     //}
-                    var backupPath = file.Replace(UpdatingModDirPath, OldModBuckupDirPath);
+                    var backupPath = file.Replace(updatingModDirPath, oldModBuckupDirPath);
                     Directory.CreateDirectory(Path.GetDirectoryName(backupPath));
                     if (RestoreList.Contains(file))
                     {

@@ -11,10 +11,10 @@ namespace AIHelper.Manage.Rules.ModList
         internal override bool Condition()
         {
             return (!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(
-                Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName, "BepInEx", "plugins"), "*.dll", null, true
+                Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "plugins"), "*.dll", null, true
                 ) || !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(
-                Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName, "BepInEx", "patchers"), "*.dll", null, true
-                )) && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName, "BepInEx", "core", "BepInEx.dll"));
+                Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "patchers"), "*.dll", null, true
+                )) && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "core", "BepInEx.dll"));
         }
 
         internal override string Description()
@@ -24,7 +24,7 @@ namespace AIHelper.Manage.Rules.ModList
 
         internal override bool Fix()
         {
-            return FindModWithThePath("BepInEx" + Path.DirectorySeparatorChar + "core" + Path.DirectorySeparatorChar + "BepInEx.dll", out outModName);
+            return FindModWithThePath("BepInEx" + Path.DirectorySeparatorChar + "core" + Path.DirectorySeparatorChar + "BepInEx.dll", out OutModName);
         }
     }
 }

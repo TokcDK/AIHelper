@@ -9,82 +9,82 @@ namespace AIHelper.Games
         public override void InitActions()
         {
             DetectRootGame();
-            DetectedGame.InitActions();
+            _detectedGame.InitActions();
         }
 
-        public override bool isRootGame { get; set; } = true;
+        public override bool IsRootGame { get; set; } = true;
 
         public void DetectRootGame()
         {
-            if (DetectedGame != null && File.Exists(Path.Combine(AIHelper.Properties.Settings.Default.ApplicationStartupPath, "Data", DetectedGame.GetGameEXEName() + ".exe")))
+            if (_detectedGame != null && File.Exists(Path.Combine(AIHelper.Properties.Settings.Default.ApplicationStartupPath, "Data", _detectedGame.GetGameExeName() + ".exe")))
             {
                 return;
             }
 
-            List<Game> ListOfGames = GamesList.GetGamesList();
-            foreach (var game in ListOfGames)
+            List<Game> listOfGames = GamesList.GetGamesList();
+            foreach (var game in listOfGames)
             {
-                if (File.Exists(Path.Combine(AIHelper.Properties.Settings.Default.ApplicationStartupPath, "Data", game.GetGameEXEName() + ".exe")))
+                if (File.Exists(Path.Combine(AIHelper.Properties.Settings.Default.ApplicationStartupPath, "Data", game.GetGameExeName() + ".exe")))
                 {
-                    DetectedGame = game;
+                    _detectedGame = game;
                     break;
                 }
             }
         }
 
-        Game DetectedGame;
+        Game _detectedGame;
         public override string GetGameFolderName()
         {
             DetectRootGame();
             return "RootGame";
         }
 
-        public override string GetGameEXEName()
+        public override string GetGameExeName()
         {
             DetectRootGame();
-            return DetectedGame.GetGameEXEName();
+            return _detectedGame.GetGameExeName();
         }
 
         public override string GetGameDisplayingName()
         {
             DetectRootGame();
-            return DetectedGame.GetGameDisplayingName();
+            return _detectedGame.GetGameDisplayingName();
         }
 
-        public override string GetGameStudioEXEName()
+        public override string GetGameStudioExeName()
         {
             DetectRootGame();
-            return DetectedGame.GetGameStudioEXEName();
+            return _detectedGame.GetGameStudioExeName();
         }
 
-        public override string GetGameEXENameX32()
+        public override string GetGameExeNameX32()
         {
             DetectRootGame();
-            return DetectedGame.GetGameEXENameX32();
+            return _detectedGame.GetGameExeNameX32();
         }
 
-        public override string GetGameStudioEXENameX32()
+        public override string GetGameStudioExeNameX32()
         {
             DetectRootGame();
-            return DetectedGame.GetGameStudioEXENameX32();
+            return _detectedGame.GetGameStudioExeNameX32();
         }
 
         public override string[,] GetDirLinkPaths()
         {
             DetectRootGame();
-            return DetectedGame.GetDirLinkPaths();
+            return _detectedGame.GetDirLinkPaths();
         }
 
         public override string GetGamePrefix()
         {
             DetectRootGame();
-            return DetectedGame.GetGamePrefix();
+            return _detectedGame.GetGamePrefix();
         }
 
         public override Dictionary<string, byte[]> GetBaseGamePyFile()
         {
             DetectRootGame();
-            return DetectedGame.GetBaseGamePyFile();
+            return _detectedGame.GetBaseGamePyFile();
         }
     }
 }

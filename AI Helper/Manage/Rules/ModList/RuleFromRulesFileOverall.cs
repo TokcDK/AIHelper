@@ -14,9 +14,9 @@ namespace AIHelper.Manage.Rules.ModList
 
         internal override bool Condition()
         {
-            var RulesFilePath = ManageSettings.GetCurrentGameModListRulesPath();
+            var rulesFilePath = ManageSettings.GetCurrentGameModListRulesPath();
 
-            if (!File.Exists(RulesFilePath))
+            if (!File.Exists(rulesFilePath))
             {
                 return false;
             }
@@ -31,38 +31,38 @@ namespace AIHelper.Manage.Rules.ModList
 
         internal override bool Fix()
         {
-            var IsAllTrue = false;
-            foreach (var file in modlistData.rulesDictOverall)
+            var isAllTrue = false;
+            foreach (var file in ModlistData.RulesDictOverall)
             {
-                var targetPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName, file.Key.Remove(0, modlistData.RulesTagFile.Length));
+                var targetPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, file.Key.Remove(0, ModlistData.RulesTagFile.Length));
                 if (File.Exists(targetPath)
                     ||
                     Directory.Exists(targetPath)
                     )
                 {
-                    IsAllTrue = ParseRules(file.Value);
+                    isAllTrue = ParseRules(file.Value);
                 }
-                if (!IsAllTrue)
+                if (!isAllTrue)
                 {
                     return false;
                 }
             }
-            return IsAllTrue;
+            return isAllTrue;
         }
 
         private bool FillrulesDictOverall()
         {
-            if (modlistData.rulesDictOverall != null)
+            if (ModlistData.RulesDictOverall != null)
             {
-                return modlistData.rulesDictOverall.Count > 0;
+                return ModlistData.RulesDictOverall.Count > 0;
             }
 
-            modlistData.rulesDictOverall = new Dictionary<string, string[]>();
+            ModlistData.RulesDictOverall = new Dictionary<string, string[]>();
 
             var modlistRulesPath = ManageSettings.GetCurrentGameModListRulesPath();
             if (!File.Exists(modlistRulesPath))
             {
-                modlistData.rulesDictOverall = null;
+                ModlistData.RulesDictOverall = null;
                 return false;
             }
 
@@ -88,7 +88,7 @@ namespace AIHelper.Manage.Rules.ModList
                     {
                         if (ruleConditions.Count > 0)
                         {
-                            modlistData.rulesDictOverall.Add(ruleName, ruleConditions.ToArray());
+                            ModlistData.RulesDictOverall.Add(ruleName, ruleConditions.ToArray());
                             ruleConditions.Clear();
                         }
                         ruleName = string.Empty;
@@ -96,7 +96,7 @@ namespace AIHelper.Manage.Rules.ModList
                     }
                     if (!ruleReading)
                     {
-                        if (line.StartsWith(modlistData.RulesTagFile, StringComparison.InvariantCulture))
+                        if (line.StartsWith(ModlistData.RulesTagFile, StringComparison.InvariantCulture))
                         {
                             ruleName = ModListData.GetDataWithNoComments(line);
                             ruleReading = true;
@@ -106,11 +106,11 @@ namespace AIHelper.Manage.Rules.ModList
 
                 if (!string.IsNullOrWhiteSpace(ruleName) && ruleConditions.Count > 0)
                 {
-                    modlistData.rulesDictOverall.Add(ruleName, ruleConditions.ToArray());
+                    ModlistData.RulesDictOverall.Add(ruleName, ruleConditions.ToArray());
                 }
             }
 
-            return modlistData.rulesDictOverall.Count > 0;
+            return ModlistData.RulesDictOverall.Count > 0;
         }
     }
 }

@@ -26,33 +26,33 @@
         /// <summary>
         /// check if last version newer of current
         /// </summary>
-        /// <param name="LatestVersion"></param>
-        /// <param name="CurrentVersion"></param>
+        /// <param name="latestVersion"></param>
+        /// <param name="currentVersion"></param>
         /// <returns></returns>
-        public static bool IsNewerOf(this string LatestVersion, string CurrentVersion)
+        public static bool IsNewerOf(this string latestVersion, string currentVersion)
         {
-            if (string.IsNullOrWhiteSpace(LatestVersion))
+            if (string.IsNullOrWhiteSpace(latestVersion))
             {
                 return false;
             }
-            else if (string.IsNullOrWhiteSpace(CurrentVersion))
+            else if (string.IsNullOrWhiteSpace(currentVersion))
             {
                 return true;
             }
 
-            var VersionPartsOfLatest = LatestVersion.TrimEnd('0', ',', '.').Split('.', ',');
-            var VersionPartsOfCurrent = CurrentVersion.TrimEnd('0', ',', '.').Split('.', ',');
+            var versionPartsOfLatest = latestVersion.TrimEnd('0', ',', '.').Split('.', ',');
+            var versionPartsOfCurrent = currentVersion.TrimEnd('0', ',', '.').Split('.', ',');
             int dInd = 0;
-            var curCount = VersionPartsOfCurrent.Length;
-            foreach (var DigitL in VersionPartsOfLatest)
+            var curCount = versionPartsOfCurrent.Length;
+            foreach (var digitL in versionPartsOfLatest)
             {
                 if (curCount == dInd)//all digits was equal but current have smaller digits count
                 {
                     return true;
                 }
-                var DigitC = VersionPartsOfCurrent[dInd];
-                var latestParsed = int.TryParse(DigitL, out int latest);
-                var currentParsed = int.TryParse(DigitC, out int current);
+                var digitC = versionPartsOfCurrent[dInd];
+                var latestParsed = int.TryParse(digitL, out int latest);
+                var currentParsed = int.TryParse(digitC, out int current);
                 if (latestParsed && currentParsed)
                 {
                     if (latest > current)

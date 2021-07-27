@@ -17,7 +17,7 @@ namespace AIHelper
         static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         // Pinvoke declaration for ShowWindow
-        private const int SW_RESTORE = 9;
+        private const int SwRestore = 9;
 
         //appname
         internal static readonly string AppName = Properties.Settings.Default.ApplicationProductName = Application.ProductName;
@@ -43,7 +43,7 @@ namespace AIHelper
                     {
                         if (process.Id != current.Id)
                         {
-                            ShowWindow(process.MainWindowHandle, SW_RESTORE);
+                            ShowWindow(process.MainWindowHandle, SwRestore);
                             //SetForegroundWindow(process.MainWindowHandle);
                             break;
                         }

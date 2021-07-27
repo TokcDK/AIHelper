@@ -1,6 +1,6 @@
 ﻿namespace AIHelper.Install.Types.Files.Image
 {
-    class png : ImageBase
+    class Png : ImageBase
     {
     }
 }

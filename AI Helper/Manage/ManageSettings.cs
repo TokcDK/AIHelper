@@ -13,7 +13,7 @@ namespace AIHelper.Manage
     {
         internal static bool IsFirstRun()
         {
-            return ManageINI.GetINIValueIfExist(GetAIHelperINIPath(), "FirstRun", "General") == "True";
+            return ManageIni.GetIniValueIfExist(GetAiHelperIniPath(), "FirstRun", "General") == "True";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -22,11 +22,11 @@ namespace AIHelper.Manage
             return Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), "updateinfo.txt");
         }
 
-        internal static string GetCurrentGameMOGamePyPluginPath()
+        internal static string GetCurrentGameMoGamePyPluginPath()
         {
 #pragma warning disable CA1308 // Normalize strings to uppercase
             return Path.Combine(GetMOdirPath(), "plugins", "modorganizer-basic_games", "games", "game_"
-                + GetCurrentGameEXEName()
+                + GetCurrentGameExeName()
                 .Replace("_64", string.Empty)
                 .Replace("_32", string.Empty)
                 .Replace("AI-Syoujyo", "aigirl")
@@ -42,7 +42,7 @@ namespace AIHelper.Manage
             return Path.Combine(GetAppResDir(), "locale");
         }
 
-        internal static void SettingsINIT()
+        internal static void SettingsInit()
         {
             //int index = Properties.Settings.Default.CurrentGameListIndex;
             //Properties.Settings.Default.CurrentGamePath = ListOfGames[index].GetGamePath();
@@ -59,7 +59,7 @@ namespace AIHelper.Manage
 
         }
 
-        internal static bool MOIsNew { get => Properties.Settings.Default.MOIsNew; }
+        internal static bool MoIsNew { get => Properties.Settings.Default.MOIsNew; }
 
         internal static string GetDefaultBepInEx5OlderVersion()
         {
@@ -71,7 +71,7 @@ namespace AIHelper.Manage
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string AIMetaINISectionName()
+        internal static string AiMetaIniSectionName()
         {
             return "AISettings";
         }
@@ -81,13 +81,13 @@ namespace AIHelper.Manage
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string AIMetaINIKeyModlistRulesInfoName()
+        internal static string AiMetaIniKeyModlistRulesInfoName()
         {
             return "ModlistRulesInfo";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string AIMetaINIKeyUpdateName()
+        internal static string AiMetaIniKeyUpdateName()
         {
             return "ModUpdateInfo";
         }
@@ -110,9 +110,9 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string CurrentMOProfileModlistPath()
+        internal static string CurrentMoProfileModlistPath()
         {
-            return Path.Combine(GetMOSelectedProfileDirPath(), "modlist.txt");
+            return Path.Combine(GetMoSelectedProfileDirPath(), "modlist.txt");
         }
 
         private static string GetCustomRes()
@@ -124,11 +124,11 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static List<Game> GetListOfExistsGames()
         {
-            List<Game> ListOfGames = GamesList.GetGamesList();
-            var ListOfGamesRead = new List<Game>(ListOfGames);
+            List<Game> listOfGames = GamesList.GetGamesList();
+            var listOfGamesRead = new List<Game>(listOfGames);
             if (Directory.Exists(GetGamesFolderPath()))
             {
-                foreach (var game in ListOfGamesRead)
+                foreach (var game in listOfGamesRead)
                 {
                     if (
                             Directory.Exists(game.GetGamePath())
@@ -140,17 +140,17 @@ namespace AIHelper.Manage
                     }
                     else
                     {
-                        ListOfGames.Remove(game);
+                        listOfGames.Remove(game);
                     }
                 }
             }
             else
             {
-                ListOfGames.Clear();
+                listOfGames.Clear();
             }
 
 
-            if (ListOfGames.Count == 0)
+            if (listOfGames.Count == 0)
             {
                 try
                 {
@@ -162,18 +162,18 @@ namespace AIHelper.Manage
                         //&&
                         //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(GetMOdirPath())
                         &&
-                        IsMOFolderValid(GetMOdirPath())
+                        IsMoFolderValid(GetMOdirPath())
                         //&&
                         //Directory.Exists(Path.Combine(GetMOdirPath(), "Profiles")))
                         //&&
                         //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(GetMOdirPath(), "Profiles"))
                         &&
-                        !ManageSymLinkExtensions.IsSymLink(MOIniFilePath())
+                        !ManageSymLinkExtensions.IsSymLink(MoIniFilePath())
                         &&
-                        !ManageSymLinkExtensions.IsSymLink(MOCategoriesFilePath())
+                        !ManageSymLinkExtensions.IsSymLink(MoCategoriesFilePath())
                         )
                     {
-                        ListOfGames.Add(new RootGame());
+                        listOfGames.Add(new RootGame());
                     }
                 }
                 catch (Exception ex)
@@ -189,25 +189,25 @@ namespace AIHelper.Manage
             //    !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(game.GetGamePath(), "MO", "Profiles"))
             //).ToList();
 
-            return ListOfGames;
+            return listOfGames;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static string GeneralMOPath()
+        private static string GeneralMoPath()
         {
             return GetMOdirPath();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static string MOIniFilePath()
+        private static string MoIniFilePath()
         {
-            return Path.Combine(GeneralMOPath(), "ModOrganizer.ini");
+            return Path.Combine(GeneralMoPath(), "ModOrganizer.ini");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static string MOCategoriesFilePath()
+        private static string MoCategoriesFilePath()
         {
-            return Path.Combine(GeneralMOPath(), "categories.dat");
+            return Path.Combine(GeneralMoPath(), "categories.dat");
         }
 
         /// <summary>
@@ -227,7 +227,7 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetModsUpdateDBInfoDir()
+        internal static string GetModsUpdateDbInfoDir()
         {
             return Path.Combine(GetModsUpdateDir(), "infos");
         }
@@ -295,61 +295,61 @@ namespace AIHelper.Manage
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLBeforeModReportSuccessLine()
+            internal static string HtmlBeforeModReportSuccessLine()
             {
                 return "<details style=\"color:white\">";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLBeforeModReportErrorLine()
+            internal static string HtmlBeforeModReportErrorLine()
             {
                 return "<details style=\"color:red\">";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLBeforeModReportWarningLine()
+            internal static string HtmlBeforeModReportWarningLine()
             {
                 return "<details style=\"color:orange\">";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLModReportInLineBeforeMainMessage()
+            internal static string HtmlModReportInLineBeforeMainMessage()
             {
                 return "<summary style=\"color:white\">";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLModReportPreModnameTags()
+            internal static string HtmlModReportPreModnameTags()
             {
                 return "<p style=\"color:lightgreen;display:inline\">";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLModReportPostModnameTags()
+            internal static string HtmlModReportPostModnameTags()
             {
                 return "</p>";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLModReportPreVersionTags()
+            internal static string HtmlModReportPreVersionTags()
             {
                 return "<p style=\"color:yellow;display:inline\">";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLModReportPostVersionTags()
+            internal static string HtmlModReportPostVersionTags()
             {
                 return "</p>";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLModReportInLineAfterMainMessage()
+            internal static string HtmlModReportInLineAfterMainMessage()
             {
                 return "</summary>";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLAfterModReportLine()
+            internal static string HtmlAfterModReportLine()
             {
                 return "</details>";
             }
@@ -369,7 +369,7 @@ namespace AIHelper.Manage
             /// </summary>
             /// <returns></returns>
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string GetBGImageLinkPathPattern()
+            internal static string GetBgImageLinkPathPattern()
             {
                 return "%BGImageLinkPath%";
             }
@@ -415,39 +415,39 @@ namespace AIHelper.Manage
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLPreInfoLinkHTML()
+            internal static string HtmlPreInfoLinkHtml()
             {
                 return "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLAfterInfoLinkHTML()
+            internal static string HtmlAfterInfoLinkHtml()
             {
                 return "\">";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLAfterInfoLinkText()
+            internal static string HtmlAfterInfoLinkText()
             {
                 return "</a>";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLReportStyleText()
+            internal static string HtmlReportStyleText()
             {
                 return " style=\"background-color:gray;\"";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string GetCurrentGameBGFileName()
+            internal static string GetCurrentGameBgFileName()
             {
-                return GetCurrentGameEXENameNoSuffixes() + "ReportBG.jpg";
+                return GetCurrentGameExeNameNoSuffixes() + "ReportBG.jpg";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string GetCurrentGameBGFilePath()
+            internal static string GetCurrentGameBgFilePath()
             {
-                return Path.Combine(GetReportDirPath(), GetCurrentGameBGFileName()).Replace(Path.DirectorySeparatorChar.ToString(), "/");
+                return Path.Combine(GetReportDirPath(), GetCurrentGameBgFileName()).Replace(Path.DirectorySeparatorChar.ToString(), "/");
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -486,25 +486,25 @@ namespace AIHelper.Manage
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLBeginText()
+            internal static string HtmlBeginText()
             {
-                return "<html><body" + HTMLReportStyleText() + "><h1>";
+                return "<html><body" + HtmlReportStyleText() + "><h1>";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLAfterHeaderText()
+            internal static string HtmlAfterHeaderText()
             {
                 return "</h2><hr><br>";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLBetweenModsText()
+            internal static string HtmlBetweenModsText()
             {
                 return "";//<p> already make new line //"<br>";;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            internal static string HTMLendText()
+            internal static string HtmLendText()
             {
                 return "<hr></body></html>";
             }
@@ -618,7 +618,7 @@ namespace AIHelper.Manage
         //    return false;
         //}
 
-        private static bool IsMOFolderValid(string folder)
+        private static bool IsMoFolderValid(string folder)
         {
             if (Directory.Exists(Path.Combine(folder, "Profiles"))
                     && File.Exists(Path.Combine(folder, "ModOrganizer.ini"))
@@ -633,10 +633,10 @@ namespace AIHelper.Manage
 
         internal static string GetStringListOfAllGames()
         {
-            List<Game> ListOfGames = GamesList.GetGamesList();
+            List<Game> listOfGames = GamesList.GetGamesList();
 
             string listOfGamesString = string.Empty;
-            foreach (var game in ListOfGames)
+            foreach (var game in listOfGames)
             {
                 listOfGamesString += game.GetGameFolderName() + Environment.NewLine;
             }
@@ -679,9 +679,9 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetSettingsEXEPath()
+        internal static string GetSettingsExePath()
         {
-            return Path.Combine(GetCurrentGameDataPath(), GetINISettingsEXEName() + ".exe");
+            return Path.Combine(GetCurrentGameDataPath(), GetIniSettingsExeName() + ".exe");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -691,37 +691,37 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetCurrentGameMOOverwritePath()
+        internal static string GetCurrentGameMoOverwritePath()
         {
             return GetOverwriteFolder();
         }
 
-        internal static string GETMOCurrentGameName()
+        internal static string GetmoCurrentGameName()
         {
-            if (MOIsNew)
+            if (MoIsNew)
             {
-                if (GetCurrentGameEXEName() == "Koikatu")
+                if (GetCurrentGameExeName() == "Koikatu")
                 {
                     return "Koikatu";
                 }
-                else if (GetCurrentGameEXEName().StartsWith("HoneySelect2", StringComparison.InvariantCulture))
+                else if (GetCurrentGameExeName().StartsWith("HoneySelect2", StringComparison.InvariantCulture))
                 {
                     return "HoneySelect2";
                 }
-                else if (GetCurrentGameEXEName().StartsWith("HoneySelect", StringComparison.InvariantCulture))
+                else if (GetCurrentGameExeName().StartsWith("HoneySelect", StringComparison.InvariantCulture))
                 {
                     return "HoneySelect";
                 }
-                else if (GetCurrentGameEXEName() == "AI-Syoujyo")
+                else if (GetCurrentGameExeName() == "AI-Syoujyo")
                 {
                     return "AIGirl";
                 }
-                else if (GetCurrentGameEXEName() == "AI-SyoujyoTrial")
+                else if (GetCurrentGameExeName() == "AI-SyoujyoTrial")
                 {
                     return "AIGirlTrial";
                 }
 
-                return GetCurrentGameEXEName();
+                return GetCurrentGameExeName();
             }
             else
             {
@@ -746,7 +746,7 @@ namespace AIHelper.Manage
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetCurrentGameEXEName()
+        internal static string GetCurrentGameExeName()
         {
             return Properties.Settings.Default.CurrentGameEXEName;
         }
@@ -755,15 +755,15 @@ namespace AIHelper.Manage
         /// return current game exe name with removed suffixes like _64 or _32
         /// </summary>
         /// <returns></returns>
-        internal static string GetCurrentGameEXENameNoSuffixes()
+        internal static string GetCurrentGameExeNameNoSuffixes()
         {
-            var CurrentGameEXEName = GetCurrentGameEXEName();
-            if (CurrentGameEXEName.EndsWith("_32", StringComparison.InvariantCulture) || CurrentGameEXEName.EndsWith("_64", StringComparison.InvariantCulture))
+            var currentGameExeName = GetCurrentGameExeName();
+            if (currentGameExeName.EndsWith("_32", StringComparison.InvariantCulture) || currentGameExeName.EndsWith("_64", StringComparison.InvariantCulture))
             {
-                CurrentGameEXEName = CurrentGameEXEName.Remove(CurrentGameEXEName.Length - 3, 3);
+                currentGameExeName = currentGameExeName.Remove(currentGameExeName.Length - 3, 3);
             }
 
-            return CurrentGameEXEName;
+            return currentGameExeName;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -773,15 +773,15 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string UpdateReportHTMLFileName()
+        internal static string UpdateReportHtmlFileName()
         {
             return "report.html";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string UpdateReportHTMLFilePath()
+        internal static string UpdateReportHtmlFilePath()
         {
-            return Path.Combine(GetCurrentGameModsUpdateDir(), UpdateReportHTMLFileName());
+            return Path.Combine(GetCurrentGameModsUpdateDir(), UpdateReportHtmlFileName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -791,13 +791,13 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetStudioEXEName()
+        internal static string GetStudioExeName()
         {
             return Properties.Settings.Default.StudioEXEName;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetINISettingsEXEName()
+        internal static string GetIniSettingsExeName()
         {
             return Properties.Settings.Default.INISettingsEXEName;
         }
@@ -838,7 +838,7 @@ namespace AIHelper.Manage
             return Path.Combine(GetMOdirPath(), "ModOrganizer.exe");
         }
 
-        internal static string GetMOSelectedProfileDirName()
+        internal static string GetMoSelectedProfileDirName()
         {
             if (Properties.Settings.Default.MOSelectedProfileDirName.Length > 0)
             {
@@ -846,16 +846,16 @@ namespace AIHelper.Manage
             }
             else
             {
-                Properties.Settings.Default.MOSelectedProfileDirName = ManageMO.MOremoveByteArray(ManageINI.GetINIValueIfExist(File.Exists(GetModOrganizerINIpath()) ? GetModOrganizerINIpath() : GetModOrganizerINIpathForSelectedGame(), "selected_profile", "General"));
+                Properties.Settings.Default.MOSelectedProfileDirName = ManageMo.MOremoveByteArray(ManageIni.GetIniValueIfExist(File.Exists(GetModOrganizerInIpath()) ? GetModOrganizerInIpath() : GetModOrganizerInIpathForSelectedGame(), "selected_profile", "General"));
 
                 return Properties.Settings.Default.MOSelectedProfileDirName;
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetMOSelectedProfileDirPath()
+        internal static string GetMoSelectedProfileDirPath()
         {
-            return Path.Combine(GetCurrentGamePath(), "MO", "profiles", GetMOSelectedProfileDirName());
+            return Path.Combine(GetCurrentGamePath(), "MO", "profiles", GetMoSelectedProfileDirName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -883,7 +883,7 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetInstall2MODirPath()
+        internal static string GetInstall2MoDirPath()
         {
             return Path.Combine(GetCurrentGamePath(), ModsInstallDirName());
         }
@@ -901,16 +901,16 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetAIHelperINIPath()
+        internal static string GetAiHelperIniPath()
         {
             return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, Properties.Settings.Default.ApplicationProductName + ".ini");
         }
 
-        internal static int GetCurrentGameIndexByFolderName(List<Game> listOfGames, string FolderName)
+        internal static int GetCurrentGameIndexByFolderName(List<Game> listOfGames, string folderName)
         {
             for (var i = 0; i < listOfGames.Count; i++)
             {
-                if (listOfGames[i].GetGameFolderName() == FolderName)
+                if (listOfGames[i].GetGameFolderName() == folderName)
                 {
                     return i;
                 }
@@ -919,13 +919,13 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetModOrganizerINIpathForSelectedGame()
+        internal static string GetModOrganizerInIpathForSelectedGame()
         {
             return Path.Combine(GetCurrentGamePath(), "ModOrganizer.ini");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetModOrganizerINIpath()
+        internal static string GetModOrganizerInIpath()
         {
             return Path.Combine(GetMOdirPath(), "ModOrganizer.ini");
         }
@@ -963,13 +963,13 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetMOToStandartConvertationOperationsListFilePath()
+        internal static string GetMoToStandartConvertationOperationsListFilePath()
         {
             return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName(), "MOToStandartConvertationOperationsList.txt");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetZipmodsGUIDListFilePath()
+        internal static string GetZipmodsGuidListFilePath()
         {
             return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName(), "ZipmodsGUIDList.txt");
         }
@@ -986,7 +986,7 @@ namespace AIHelper.Manage
             {
                 return Path.Combine(GetBepInExPath(), "BepInEx", "config");
             }
-            return ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(Path.Combine(GetBepInExPath(), "BepInEx", "config"), true);
+            return ManageMo.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(Path.Combine(GetBepInExPath(), "BepInEx", "config"), true);
         }
 
         internal static string GetBepInExCfgFilePath()
@@ -999,20 +999,20 @@ namespace AIHelper.Manage
             {
                 return Properties.Settings.Default.BepinExCfgPath;
             }
-            return ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(Path.Combine(GetBepInExCfgDirPath(), "BepInEx.cfg"));
+            return ManageMo.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(Path.Combine(GetBepInExCfgDirPath(), "BepInEx.cfg"));
         }
 
-        internal static void SwitchBepInExDisplayedLogLevelValue(CheckBox BepInExConsoleCheckBox, Label BepInExDisplayedLogLevelLabel, bool OnlyShow = false, string TargetSectionName = "Logging.Console")
+        internal static void SwitchBepInExDisplayedLogLevelValue(CheckBox bepInExConsoleCheckBox, Label bepInExDisplayedLogLevelLabel, bool onlyShow = false, string targetSectionName = "Logging.Console")
         {
             //string curValue = ManageINI.GetINIValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "DisplayedLogLevel", "Logging.Console");
-            string curValue = ManageCFG.GetCFGValueIfExist(GetBepInExCfgFilePath(), "DisplayedLogLevel", "Logging.Console");
+            string curValue = ManageCfg.GetCfgValueIfExist(GetBepInExCfgFilePath(), "DisplayedLogLevel", "Logging.Console");
             if (curValue.Length == 0) //in BepinEx 5.4 looks like DisplayedLogLevel was deleted 
             {
-                BepInExDisplayedLogLevelLabel.Visible = false;
+                bepInExDisplayedLogLevelLabel.Visible = false;
             }
-            if (OnlyShow)
+            if (onlyShow)
             {
-                BepInExDisplayedLogLevelLabel.Text = curValue;
+                bepInExDisplayedLogLevelLabel.Text = curValue;
             }
             else //switch
             {
@@ -1024,8 +1024,8 @@ namespace AIHelper.Manage
                     if (setNext)
                     {
                         //ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", /*" " +*/ value);
-                        ManageCFG.WriteCFGValue(GetBepInExCfgFilePath(), TargetSectionName, "DisplayedLogLevel", /*" " +*/ value);
-                        BepInExDisplayedLogLevelLabel.Text = value;
+                        ManageCfg.WriteCfgValue(GetBepInExCfgFilePath(), targetSectionName, "DisplayedLogLevel", /*" " +*/ value);
+                        bepInExDisplayedLogLevelLabel.Text = value;
                         return;
                     }
                     if (value == curValue)
@@ -1034,8 +1034,8 @@ namespace AIHelper.Manage
                     }
                 }
                 //ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", /*" " +*/ values[0]);
-                ManageCFG.WriteCFGValue(GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", /*" " +*/ values[0]);
-                BepInExDisplayedLogLevelLabel.Text = values[0];
+                ManageCfg.WriteCfgValue(GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", /*" " +*/ values[0]);
+                bepInExDisplayedLogLevelLabel.Text = values[0];
             }
         }
 
@@ -1047,7 +1047,7 @@ namespace AIHelper.Manage
             get
             {
                 EnsureInitialized();
-                return _languageModeMap.Keys.OrderBy(p => p);
+                return LanguageModeMap.Keys.OrderBy(p => p);
             }
         }
 
@@ -1060,7 +1060,7 @@ namespace AIHelper.Manage
                 (string language)
         {
             EnsureInitialized();
-            _languageModeMap.TryGetValue(language, out string mode);
+            LanguageModeMap.TryGetValue(language, out string mode);
             return mode;
         }
 
@@ -1073,7 +1073,7 @@ namespace AIHelper.Manage
                 (string identifier)
         {
             EnsureInitialized(true);
-            _languageModeMapReversed.TryGetValue(identifier, out string language);
+            LanguageModeMapReversed.TryGetValue(identifier, out string language);
             return language;
         }
 
@@ -1084,9 +1084,9 @@ namespace AIHelper.Manage
         {
             if (reversed)
             {
-                if (_languageModeMapReversed == null)
+                if (LanguageModeMapReversed == null)
                 {
-                    _languageModeMapReversed = new Dictionary<string, string>
+                    LanguageModeMapReversed = new Dictionary<string, string>
                 {
                     { "auto", T._("Auto") },
                     { "af", T._("Afrikaans") },
@@ -1157,9 +1157,9 @@ namespace AIHelper.Manage
             }
             else
             {
-                if (_languageModeMap == null)
+                if (LanguageModeMap == null)
                 {
-                    _languageModeMap = new Dictionary<string, string>
+                    LanguageModeMap = new Dictionary<string, string>
                 {
                     { T._("Auto"), "auto" },
                     { T._("Afrikaans"), "af" },
@@ -1236,7 +1236,7 @@ namespace AIHelper.Manage
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool IsMOMode()
+        internal static bool IsMoMode()
         {
             return Properties.Settings.Default.MOmode;
         }
@@ -1250,29 +1250,29 @@ namespace AIHelper.Manage
         /// <summary>
         /// The language to translation mode map.
         /// </summary>
-        internal static Dictionary<string, string> _languageModeMap;
+        internal static Dictionary<string, string> LanguageModeMap;
 
         /// <summary>
         /// The language to translation mode map. (Reversed)
         /// </summary>
-        internal static Dictionary<string, string> _languageModeMapReversed;
+        internal static Dictionary<string, string> LanguageModeMapReversed;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool GetCurrentGameIsHaveVR()
+        internal static bool GetCurrentGameIsHaveVr()
         {
-            return File.Exists(Path.Combine(GetCurrentGameDataPath(), GetCurrentGameEXEName() + "VR" + ".exe"));
+            return File.Exists(Path.Combine(GetCurrentGameDataPath(), GetCurrentGameExeName() + "VR" + ".exe"));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetDummyFileRESPath()
+        internal static string GetDummyFileResPath()
         {
             return Path.Combine(GetAppResDir(), "TESV.exe.dummy");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetCurrentGameEXEMOProfileName()
+        internal static string GetCurrentGameExemoProfileName()
         {
-            return ManageMO.GetMOcustomExecutableTitleByExeName(GetCurrentGameEXEName());
+            return ManageMo.GetMOcustomExecutableTitleByExeName(GetCurrentGameExeName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1288,7 +1288,7 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string VarCurrentGameMOOverwritePath()
+        internal static string VarCurrentGameMoOverwritePath()
         {
             return "%Overwrite%";
         }
@@ -1318,15 +1318,15 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetKKManagerPath()
+        internal static string GetKkManagerPath()
         {
             return Path.Combine(GetAppResDir(), "tools", "KKManager");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string KKManagerStandaloneUpdaterEXEPath()
+        internal static string KkManagerStandaloneUpdaterExePath()
         {
-            return Path.Combine(GetKKManagerPath(), "StandaloneUpdater.exe");
+            return Path.Combine(GetKkManagerPath(), "StandaloneUpdater.exe");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

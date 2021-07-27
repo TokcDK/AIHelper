@@ -19,13 +19,13 @@ namespace AIHelper
             //string sourceCodeFolder = @"C:\Dev\Clients\cupofdev";
             Directory.CreateDirectory(targetFolder);
 
-            string target7zipfile = Path.Combine(targetFolder, Path.GetFileName(sourceCodeFolder) + ".7z");
+            string target7Zipfile = Path.Combine(targetFolder, Path.GetFileName(sourceCodeFolder) + ".7z");
 
-            if (!File.Exists(target7zipfile))
+            if (!File.Exists(target7Zipfile))
             {
                 // Specify where 7z.dll DLL is located
                 //var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Environment.Is64BitProcess ? "MO\\dlls" : "x86", "7z.dll");                
-                string path = Get7zdllPath();
+                string path = Get7ZdllPath();
                 if (path == null)
                 {
                     return;//return if path was not found
@@ -38,7 +38,7 @@ namespace AIHelper
                 };
 
                 // Compress the directory and save the file in a yyyyMMdd_project-files.7z format (eg. 20141024_project-files.7z
-                sevenZipCompressor.CompressDirectory(sourceCodeFolder, target7zipfile);
+                sevenZipCompressor.CompressDirectory(sourceCodeFolder, target7Zipfile);
             }
         }
 
@@ -47,7 +47,7 @@ namespace AIHelper
             if (File.Exists(sourceFile))
             {
                 //Specify where 7z.dll DLL is located
-                string path = Get7zdllPath();
+                string path = Get7ZdllPath();
                 if (path == null)
                 {
                     return;//return if path was not found
@@ -90,7 +90,7 @@ namespace AIHelper
             }
         }
 
-        private static string Get7zdllPath()
+        private static string Get7ZdllPath()
         {
             string path = Path.Combine(ManageSettings.GetAppResDir(), "dlls", "x86", "7z.dll");
             if (File.Exists(path))

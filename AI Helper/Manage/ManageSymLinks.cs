@@ -6,25 +6,25 @@ namespace AIHelper.Manage
 {
     static class ManageSymLinkExtensions
     {
-        public static bool DeleteIfSymlink(this string LinkPath, bool IsFolder = false)
+        public static bool DeleteIfSymlink(this string linkPath, bool isFolder = false)
         {
-            if (IsFolder || Directory.Exists(LinkPath))
+            if (isFolder || Directory.Exists(linkPath))
             {
-                if (new DirectoryInfo(LinkPath).IsSymbolicLink())
+                if (new DirectoryInfo(linkPath).IsSymbolicLink())
                 {
-                    Directory.Delete(LinkPath);
+                    Directory.Delete(linkPath);
 
                     return true;
                 }
             }
-            else if (File.Exists(LinkPath))
+            else if (File.Exists(linkPath))
             {
-                if (new FileInfo(LinkPath).IsSymbolicLink())
+                if (new FileInfo(linkPath).IsSymbolicLink())
                 {
                     //https://stackoverflow.com/a/6375373
                     //ManageFilesFolders.Unblock(LinkPath);
 
-                    File.Delete(LinkPath);
+                    File.Delete(linkPath);
 
                     return true;
                 }
@@ -33,7 +33,7 @@ namespace AIHelper.Manage
             return false;
         }
 
-        internal static bool IsValidSymlink(this string symlinkPath, string linkTargetPath, bool IsLinkTargetPathRelative = false)
+        internal static bool IsValidSymlink(this string symlinkPath, string linkTargetPath, bool isLinkTargetPathRelative = false)
         {
             var symlinkPathInfo = new FileInfo(symlinkPath);
             //ссылка вообще существует
@@ -173,9 +173,9 @@ namespace AIHelper.Manage
         /// <param name="objectFileDirPath"></param>
         /// <param name="symlinkPath"></param>
         /// <param name="isRelative"></param>
-        /// <param name="OType"></param>
+        /// <param name="oType"></param>
         /// <returns></returns>
-        public static bool CreateSymlink(this string objectFileDirPath, string symlinkPath, bool isRelative = false, ObjectType OType = ObjectType.NotDefined)
+        public static bool CreateSymlink(this string objectFileDirPath, string symlinkPath, bool isRelative = false, ObjectType oType = ObjectType.NotDefined)
         {
             if (symlinkPath.Length > 0 && objectFileDirPath.Length > 0)
             {
@@ -184,9 +184,9 @@ namespace AIHelper.Manage
 
                 //ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(
                 string objectPath = null;
-                if ((OType == ObjectType.NotDefined && File.Exists(objectPath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(objectFileDirPath))) || OType == ObjectType.File)
+                if ((oType == ObjectType.NotDefined && File.Exists(objectPath = ManageMo.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(objectFileDirPath))) || oType == ObjectType.File)
                 {
-                    if (OType != ObjectType.NotDefined && !File.Exists(objectFileDirPath))
+                    if (oType != ObjectType.NotDefined && !File.Exists(objectFileDirPath))
                     {
                         return false;
                     }
@@ -212,11 +212,11 @@ namespace AIHelper.Manage
                         return true;
                     }
                 }
-                else if ((OType == ObjectType.NotDefined && Directory.Exists(objectPath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(objectFileDirPath, true))) || OType == ObjectType.Dir)
+                else if ((oType == ObjectType.NotDefined && Directory.Exists(objectPath = ManageMo.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(objectFileDirPath, true))) || oType == ObjectType.Dir)
                 {
-                    if (OType != ObjectType.NotDefined && !File.Exists(objectFileDirPath))
+                    if (oType != ObjectType.NotDefined && !File.Exists(objectFileDirPath))
                     {
-                        if(Directory.Exists(objectPath = ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(objectFileDirPath, true)))
+                        if(Directory.Exists(objectPath = ManageMo.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(objectFileDirPath, true)))
                         {
                         }
                         else

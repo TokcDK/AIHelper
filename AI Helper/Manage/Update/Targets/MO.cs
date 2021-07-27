@@ -6,14 +6,14 @@ using System.IO.Compression;
 
 namespace AIHelper.Manage.Update.Targets
 {
-    class MO : TBase
+    class Mo : Base
     {
-        public MO(UpdateInfo info) : base(info)
+        public Mo(UpdateInfo info) : base(info)
         {
         }
 
-        string MODirPath;
-        string MOExePath;
+        string _moDirPath;
+        string _moExePath;
 
         /// <summary>
         /// Get MO update info
@@ -21,12 +21,12 @@ namespace AIHelper.Manage.Update.Targets
         /// <returns></returns>
         internal override Dictionary<string, string> GetUpdateInfos()
         {
-            if (info.Source.title.ToUpperInvariant().Contains("GITHUB"))
+            if (Info.Source.Title.ToUpperInvariant().Contains("GITHUB"))
             {
-                MODirPath = ManageSettings.GetMOdirPath();
+                _moDirPath = ManageSettings.GetMOdirPath();
                 return new Dictionary<string, string>()
                 {
-                    { MODirPath, "ModOrganizer2,modorganizer,Mod.Organizer-"}
+                    { _moDirPath, "ModOrganizer2,modorganizer,Mod.Organizer-"}
                 };
             }
             else
@@ -44,8 +44,8 @@ namespace AIHelper.Manage.Update.Targets
         {
             using (var installer = new Process())
             {
-                installer.StartInfo.FileName = info.UpdateFilePath;
-                installer.StartInfo.Arguments = "/dir=\"" + MODirPath + "\" /noicons /nocancel /norestart /silent";
+                installer.StartInfo.FileName = Info.UpdateFilePath;
+                installer.StartInfo.Arguments = "/dir=\"" + _moDirPath + "\" /noicons /nocancel /norestart /silent";
                 //installer.StartInfo.WorkingDirectory = Path.GetDirectoryName(info.UpdateFilePath);
 
                 installer.Start();
@@ -53,7 +53,7 @@ namespace AIHelper.Manage.Update.Targets
 
                 //UpdateBaseGamesPlugin();
 
-                RestoreSomeFiles(info.BuckupDirPath, MODirPath);
+                RestoreSomeFiles(Info.BuckupDirPath, _moDirPath);
 
                 return installer.ExitCode == 0;
             }
@@ -86,11 +86,11 @@ namespace AIHelper.Manage.Update.Targets
 
         internal override void SetCurrentVersion()
         {
-            info.UpdateFileEndsWith = ".exe";
-            MOExePath = Path.Combine(MODirPath, "ModOrganizer.exe");
-            if (File.Exists(MOExePath))
+            Info.UpdateFileEndsWith = ".exe";
+            _moExePath = Path.Combine(_moDirPath, "ModOrganizer.exe");
+            if (File.Exists(_moExePath))
             {
-                info.TargetCurrentVersion = FileVersionInfo.GetVersionInfo(MOExePath).ProductVersion;
+                Info.TargetCurrentVersion = FileVersionInfo.GetVersionInfo(_moExePath).ProductVersion;
             }
         }
 

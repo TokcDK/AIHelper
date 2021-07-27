@@ -10,7 +10,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
         {
         }
 
-        readonly string updateInfosFile = ManageSettings.GetUpdateInfosFilePath();
+        readonly string _updateInfosFile = ManageSettings.GetUpdateInfosFilePath();
 
         /// <summary>
         /// Get enabled and exists Mods list from updateinfos file
@@ -19,17 +19,17 @@ namespace AIHelper.Manage.Update.Targets.Mods
         internal override Dictionary<string, string> GetUpdateInfos()
         {
             var infos = new Dictionary<string, string>();
-            string[] ModsList = null;
+            string[] modsList = null;
             try
             {
-                ModsList = ManageMO.GetModNamesListFromActiveMOProfile();
+                modsList = ManageMo.GetModNamesListFromActiveMoProfile();
                 var updateInfoList = GetUpdateInfosFromFile();
 
                 if (updateInfoList != null && updateInfoList.Count > 0)
-                    foreach (var modname in ModsList)
+                    foreach (var modname in modsList)
                     {
-                        var ModPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modname);
-                        if (updateInfoList.ContainsKey(modname) && !infos.ContainsKey(ModPath))
+                        var modPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modname);
+                        if (updateInfoList.ContainsKey(modname) && !infos.ContainsKey(modPath))
                         {
                             infos.Add(modname, updateInfoList[modname]);
                         }
@@ -37,7 +37,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
             }
             catch (Exception ex)
             {
-                ManageLogs.Log("An error while get update infos:\r\n" + ex + "\r\ninfos count=" + infos.Count + (ModsList != null ? "\r\nModsList count=" + ModsList.Length : "ModsList is null"));
+                ManageLogs.Log("An error while get update infos:\r\n" + ex + "\r\ninfos count=" + infos.Count + (modsList != null ? "\r\nModsList count=" + modsList.Length : "ModsList is null"));
             }
 
             return infos;
@@ -47,10 +47,10 @@ namespace AIHelper.Manage.Update.Targets.Mods
         {
             var d = new Dictionary<string, string>();
 
-            if (!File.Exists(updateInfosFile))
+            if (!File.Exists(_updateInfosFile))
                 return null;
 
-            using (StreamReader sr = new StreamReader(updateInfosFile))
+            using (StreamReader sr = new StreamReader(_updateInfosFile))
             {
                 string line;
                 string[] pair = new string[2];
@@ -72,7 +72,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
 
                     if (pair[0].Length > 0 && pair[1].Length > 0)
                     {
-                        if (pair[1].StartsWith(info.SourceID, System.StringComparison.InvariantCultureIgnoreCase)
+                        if (pair[1].StartsWith(Info.SourceId, System.StringComparison.InvariantCultureIgnoreCase)
                         && !d.ContainsKey(pair[0]))
                         {
                             d.Add(pair[0], pair[1]);

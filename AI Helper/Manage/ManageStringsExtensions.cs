@@ -8,34 +8,34 @@ namespace AIHelper.Manage
         /// check if path is long and can cause standart io operations errors.
         /// if path is long, will be added prefix "\\?\" for long paths.
         /// </summary>
-        /// <param name="Path"></param>
-        /// <param name="IsFile"></param>
-        /// <param name="AlreadyChecked"></param>
+        /// <param name="path"></param>
+        /// <param name="isFile"></param>
+        /// <param name="alreadyChecked"></param>
         /// <returns></returns>
-        internal static string ToLongPathWhenNeed(this string Path, bool IsFile = true, bool AlreadyChecked = false)
+        internal static string ToLongPathWhenNeed(this string path, bool isFile = true, bool alreadyChecked = false)
         {
-            if (AlreadyChecked || (((IsFile && Path.Length > 259) || (!IsFile && Path.Length > 247)) && Path.Substring(0, 4) != @"\\?\"))
+            if (alreadyChecked || (((isFile && path.Length > 259) || (!isFile && path.Length > 247)) && path.Substring(0, 4) != @"\\?\"))
             {
-                return @"\\?\" + Path;
+                return @"\\?\" + path;
             }
             else
             {
-                return Path;
+                return path;
             }
         }
 
-        internal static double GetProductVersionToFloatNumber(string FileProductVersion)
+        internal static double GetProductVersionToFloatNumber(string fileProductVersion)
         {
-            var v = FileProductVersion.Split('.');
-            var Dot = false;
+            var v = fileProductVersion.Split('.');
+            var dot = false;
             var doubleString = string.Empty;
             foreach (var d in v)
             {
                 doubleString += d;
-                if (!Dot)
+                if (!dot)
                 {
                     doubleString += '.';
-                    Dot = true;
+                    dot = true;
                 }
             }
             doubleString = doubleString.TrimEnd('0');
@@ -45,48 +45,48 @@ namespace AIHelper.Manage
         /// <summary>
         /// replace element of the array
         /// </summary>
-        /// <param name="ArrayWhereReplace"></param>
-        /// <param name="ReplaceWhat"></param>
-        /// <param name="ReplaceWith"></param>
-        /// <param name="IsEqual">true=full value , false=contains</param>
+        /// <param name="arrayWhereReplace"></param>
+        /// <param name="replaceWhat"></param>
+        /// <param name="replaceWith"></param>
+        /// <param name="isEqual">true=full value , false=contains</param>
         /// <returns></returns>
-        internal static string[] Replace(this string[] ArrayWhereReplace, string ReplaceWhat, string ReplaceWith, bool IsEqual = true)
+        internal static string[] Replace(this string[] arrayWhereReplace, string replaceWhat, string replaceWith, bool isEqual = true)
         {
-            for (int i = 0; i < ArrayWhereReplace.Length; i++)
+            for (int i = 0; i < arrayWhereReplace.Length; i++)
             {
-                if (IsEqual)
+                if (isEqual)
                 {
-                    if (ArrayWhereReplace[i] == ReplaceWhat)
+                    if (arrayWhereReplace[i] == replaceWhat)
                     {
-                        ArrayWhereReplace[i] = ReplaceWith;
+                        arrayWhereReplace[i] = replaceWith;
                     }
                 }
                 else
                 {
-                    if (ManageStrings.IsStringAContainsStringB(ArrayWhereReplace[i], ReplaceWhat))
+                    if (ManageStrings.IsStringAContainsStringB(arrayWhereReplace[i], replaceWhat))
                     {
-                        ArrayWhereReplace[i] = ArrayWhereReplace[i].Replace(ReplaceWhat, ReplaceWith);
+                        arrayWhereReplace[i] = arrayWhereReplace[i].Replace(replaceWhat, replaceWith);
                     }
                 }
             }
 
-            return ArrayWhereReplace;
+            return arrayWhereReplace;
         }
 
         /// <summary>
         /// Check if string A contains string B (if length of A > length of A with replaced B by "")<br></br><br></br>
         /// Speed check tests: https://cc.davelozinski.com/c-sharp/fastest-way-to-check-if-a-string-occurs-within-a-string
         /// </summary>
-        /// <param name="StringAWhereSearch"></param>
-        /// <param name="StringBToSearch"></param>
+        /// <param name="stringAWhereSearch"></param>
+        /// <param name="stringBToSearch"></param>
         /// <returns></returns>
-        public static bool IsContains(this string StringAWhereSearch, string StringBToSearch)
+        public static bool IsContains(this string stringAWhereSearch, string stringBToSearch)
         {
-            int StringAInWhichSearchLength = StringAWhereSearch.Length;
-            if (StringAInWhichSearchLength > 0 && StringBToSearch.Length > 0)//safe check for empty values
+            int stringAInWhichSearchLength = stringAWhereSearch.Length;
+            if (stringAInWhichSearchLength > 0 && stringBToSearch.Length > 0)//safe check for empty values
             {
                 //if string A contains string B then string A with replaced stringB by empty will be
-                return StringAInWhichSearchLength > StringAWhereSearch.Replace(StringBToSearch, string.Empty).Length;
+                return stringAInWhichSearchLength > stringAWhereSearch.Replace(stringBToSearch, string.Empty).Length;
             }
             return false;
 

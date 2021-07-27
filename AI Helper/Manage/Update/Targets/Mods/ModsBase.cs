@@ -8,7 +8,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
     /// <summary>
     /// Base for mods
     /// </summary>
-    abstract class ModsBase : TBase
+    abstract class ModsBase : Base
     {
         protected ModsBase(UpdateInfo info) : base(info)
         {
@@ -30,10 +30,10 @@ namespace AIHelper.Manage.Update.Targets.Mods
 
         internal override void SetCurrentVersion()
         {
-            var metaPath = Path.Combine(info.TargetFolderPath.FullName, "meta.ini");
+            var metaPath = Path.Combine(Info.TargetFolderPath.FullName, "meta.ini");
             if (File.Exists(metaPath))
             {
-                info.TargetCurrentVersion = ManageINI.GetINIValueIfExist(metaPath, "version", "General");
+                Info.TargetCurrentVersion = ManageIni.GetIniValueIfExist(metaPath, "version", "General");
             }
         }
 
@@ -47,18 +47,18 @@ namespace AIHelper.Manage.Update.Targets.Mods
 
         internal override string[] RestorePathsListExtra()        
         {
-            string[,] ObjectLinkPaths = GameData.CurrentGame.GetDirLinkPaths();
+            string[,] objectLinkPaths = GameData.CurrentGame.GetDirLinkPaths();
 
-            int ObjectLinkPathsLength = ObjectLinkPaths.Length / 2;
-            HashSet<string> links = new HashSet<string>(ObjectLinkPathsLength);
+            int objectLinkPathsLength = objectLinkPaths.Length / 2;
+            HashSet<string> links = new HashSet<string>(objectLinkPathsLength);
 
-            for (int i = 0; i < ObjectLinkPathsLength; i++)
+            for (int i = 0; i < objectLinkPathsLength; i++)
             {
-                var LinkPath = ObjectLinkPaths[i, 1];
+                var linkPath = objectLinkPaths[i, 1];
 
-                if (links.Contains(LinkPath))
+                if (links.Contains(linkPath))
                 {
-                    links.Add(LinkPath);
+                    links.Add(linkPath);
                 }
             }
 

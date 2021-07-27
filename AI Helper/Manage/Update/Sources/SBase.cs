@@ -9,9 +9,9 @@ namespace AIHelper.Manage.Update.Sources
     /// </summary>
     abstract class SBase : IDisposable
     {
-        protected UpdateInfo info;
+        protected UpdateInfo Info;
 
-        protected readonly WebClient wc;
+        protected readonly WebClient Wc;
 
         /// <summary>
         /// download file
@@ -23,35 +23,35 @@ namespace AIHelper.Manage.Update.Sources
         {
             try
             {
-                await wc.DownloadFileTaskAsync(uri, updateFilePath).ConfigureAwait(true);
+                await Wc.DownloadFileTaskAsync(uri, updateFilePath).ConfigureAwait(true);
             }
             catch (WebException ex)
             {
-                ManageLogs.Log("An error occured while file downloading. \r\nLink:" + info.DownloadLink + "\r\nError:\r\n" + ex);
-                info.LastErrorText.AppendLine(" >" + ex.Message);
+                ManageLogs.Log("An error occured while file downloading. \r\nLink:" + Info.DownloadLink + "\r\nError:\r\n" + ex);
+                Info.LastErrorText.AppendLine(" >" + ex.Message);
             }
         }
 
         protected SBase(UpdateInfo info)
         {
-            this.info = info;
-            wc = new WebClient();
+            this.Info = info;
+            Wc = new WebClient();
         }
 
         /// <summary>
         /// url of selected web resource
         /// </summary>
-        internal virtual string url { get => ""; }
+        internal virtual string Url { get => ""; }
 
         /// <summary>
         /// source name for info purposes
         /// </summary>
-        internal abstract string title { get; }
+        internal abstract string Title { get; }
 
         /// <summary>
         /// id for identidy updateinfo like 'updgit::bbepis,XUnity.AutoTranslator,XUnity.AutoTranslator-BepIn-5x-::'
         /// </summary>
-        internal abstract string infoID { get; }
+        internal abstract string InfoId { get; }
 
         /// <summary>
         /// function to get version of selected target
@@ -76,9 +76,9 @@ namespace AIHelper.Manage.Update.Sources
 
         public void Dispose()
         {
-            if (wc != null)
+            if (Wc != null)
             {
-                wc.Dispose();
+                Wc.Dispose();
             }
         }
     }

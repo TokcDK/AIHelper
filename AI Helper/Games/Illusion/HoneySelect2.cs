@@ -10,19 +10,19 @@ namespace AIHelper.Games
             base.InitActions();
             //CopyMOfiles("MOHS");
         }
-        public override bool isHaveSideloaderMods { get; set; } = true;
+        public override bool IsHaveSideloaderMods { get; set; } = true;
 
         public override string GetGameFolderName()
         {
             return GetTheGameFolderName("HoneySelect2");
         }
 
-        public override string GetGameEXEName()
+        public override string GetGameExeName()
         {
             return "HoneySelect2";
         }
 
-        public override string GetGameStudioEXEName()
+        public override string GetGameStudioExeName()
         {
             return "StudioNEOV2";
         }

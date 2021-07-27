@@ -2,16 +2,16 @@
 {
     internal class CategoriesList
     {
-        internal string ID;
+        internal string Id;
         internal string Name;
-        internal string NexusID;
-        internal string ParentID;
-        internal CategoriesList(string id, string name, string nID, string pID)
+        internal string NexusId;
+        internal string ParentId;
+        internal CategoriesList(string id, string name, string nId, string pId)
         {
-            ID = id;
+            Id = id;
             Name = name;
-            NexusID = nID;
-            ParentID = pID;
+            NexusId = nId;
+            ParentId = pId;
         }
     }
 }

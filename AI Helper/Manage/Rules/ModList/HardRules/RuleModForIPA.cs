@@ -2,9 +2,9 @@
 
 namespace AIHelper.Manage.Rules.ModList
 {
-    internal class RuleModForIPA : ModListRulesBase
+    internal class RuleModForIpa : ModListRulesBase
     {
-        public RuleModForIPA(ModListData modlistData) : base(modlistData)
+        public RuleModForIpa(ModListData modlistData) : base(modlistData)
         {
         }
 
@@ -12,13 +12,13 @@ namespace AIHelper.Manage.Rules.ModList
         {
             //exists dll in Mod\IPA or in Mod\Plugins folder but not exists loader IllusionInjector.dll or BepInEx.IPAVirtualizer.dll
             return (!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(
-                Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName, "IPA"), "*.dll", null, true)
+                Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "IPA"), "*.dll", null, true)
                 ||
                 !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(
-                Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName, "Plugins"), "*.dll", null, true)
+                Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "Plugins"), "*.dll", null, true)
                 )
-                && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName, "IPA", "Data", "Managed", "IllusionInjector.dll"))
-                && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName, "BepInEx", "patchers", "BepInEx.IPAVirtualizer.dll"));
+                && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "IPA", "Data", "Managed", "IllusionInjector.dll"))
+                && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "patchers", "BepInEx.IPAVirtualizer.dll"));
         }
 
         internal override string Description()
@@ -32,7 +32,7 @@ namespace AIHelper.Manage.Rules.ModList
                 "IPA" + Path.DirectorySeparatorChar + "Data" + Path.DirectorySeparatorChar + "Managed" + Path.DirectorySeparatorChar + "IllusionInjector.dll",
                 "BepInEx" + Path.DirectorySeparatorChar + "patchers" + Path.DirectorySeparatorChar + "BepInEx.IPAVirtualizer.dll"
                 }
-            , out outModName, 2);
+            , out OutModName, 2);
         }
     }
 }

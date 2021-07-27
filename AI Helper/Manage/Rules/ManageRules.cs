@@ -12,45 +12,45 @@ namespace AIHelper.Manage
     {
         internal class ModList
         {
-            readonly ModListData modlistData;
+            readonly ModListData _modlistData;
             public ModList()
             {
-                modlistData = new ModListData();
+                _modlistData = new ModListData();
             }
 
             internal void ModlistFixes()
             {
-                var ModlistBackupFilePath = ManageMO.MakeMOProfileModlistFileBuckup("_prefixes");
+                var modlistBackupFilePath = ManageMo.MakeMoProfileModlistFileBuckup("_prefixes");
 
-                modlistData.AllModsList = ManageMO.GetModNamesListFromActiveMOProfile(false);
-                modlistData.EnabledModsList = ManageMO.GetModNamesListFromActiveMOProfile();
+                _modlistData.AllModsList = ManageMo.GetModNamesListFromActiveMoProfile(false);
+                _modlistData.EnabledModsList = ManageMo.GetModNamesListFromActiveMoProfile();
 
-                using (var CheckForm = new Form())
+                using (var checkForm = new Form())
                 {
-                    CheckForm.Size = new System.Drawing.Size(300, 50);
-                    CheckForm.FormBorderStyle = FormBorderStyle.FixedToolWindow;
-                    CheckForm.StartPosition = FormStartPosition.CenterScreen;
-                    CheckForm.Text = T._("Checking") + "...";
-                    using (var CheckProgress = new ProgressBar())
+                    checkForm.Size = new System.Drawing.Size(300, 50);
+                    checkForm.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+                    checkForm.StartPosition = FormStartPosition.CenterScreen;
+                    checkForm.Text = T._("Checking") + "...";
+                    using (var checkProgress = new ProgressBar())
                     {
-                        CheckProgress.Dock = DockStyle.Fill;
-                        CheckProgress.Maximum = modlistData.EnabledModsList.Length;
+                        checkProgress.Dock = DockStyle.Fill;
+                        checkProgress.Maximum = _modlistData.EnabledModsList.Length;
                         var cnt = 0;
-                        CheckForm.Controls.Add(CheckProgress);
-                        CheckForm.Show();
-                        foreach (var ModName in modlistData.EnabledModsList)
+                        checkForm.Controls.Add(checkProgress);
+                        checkForm.Show();
+                        foreach (var modName in _modlistData.EnabledModsList)
                         {
-                            if (string.IsNullOrWhiteSpace(ModName))
+                            if (string.IsNullOrWhiteSpace(modName))
                             {
                                 continue;
                             }
 
-                            if (cnt < CheckProgress.Maximum)
+                            if (cnt < checkProgress.Maximum)
                             {
-                                CheckProgress.Value = cnt;
+                                checkProgress.Value = cnt;
                             }
 
-                            modlistData.ModName = ModName;
+                            _modlistData.ModName = modName;
                             ApplyRules();
 
                             cnt++;
@@ -58,48 +58,48 @@ namespace AIHelper.Manage
                     }
                 }
 
-                kPlugTweaks();
+                KPlugTweaks();
 
-                var ListChanged = modlistData.Report.Count > 0;
-                bool ActionsChanged = false;
-                if (modlistData.ModsMustBeEnabled.Count > 0)
+                var listChanged = _modlistData.Report.Count > 0;
+                bool actionsChanged = false;
+                if (_modlistData.ModsMustBeEnabled.Count > 0)
                 {
-                    foreach (var mod in modlistData.ModsMustBeEnabled)
+                    foreach (var mod in _modlistData.ModsMustBeEnabled)
                     {
-                        if (!ActionsChanged)
+                        if (!actionsChanged)
                         {
-                            ActionsChanged = true;
-                            modlistData.Report.Add(T._("Results") + ":"
+                            actionsChanged = true;
+                            _modlistData.Report.Add(T._("Results") + ":"
                             + Environment.NewLine
                             + Environment.NewLine
                             + T._("Actions") + ":"
                             + Environment.NewLine
                             );
                         }
-                        modlistData.Report.Add(T._("Mod") + " " + mod.Key + " " + T._("was activated") + ": " + mod.Value);
-                        ManageMO.ActivateMod(mod.Key);
-                        ListChanged = true;
+                        _modlistData.Report.Add(T._("Mod") + " " + mod.Key + " " + T._("was activated") + ": " + mod.Value);
+                        ManageMo.ActivateMod(mod.Key);
+                        listChanged = true;
                     }
                 }
 
-                if (modlistData.ModsMustBeDisabled.Count > 0)
+                if (_modlistData.ModsMustBeDisabled.Count > 0)
                 {
-                    foreach (var modinfo in modlistData.ModsMustBeDisabled)
+                    foreach (var modinfo in _modlistData.ModsMustBeDisabled)
                     {
                         var mod = modinfo.Key;
-                        if (!ActionsChanged)
+                        if (!actionsChanged)
                         {
-                            ActionsChanged = true;
-                            modlistData.Report.Add(T._("Results") + ": "
+                            actionsChanged = true;
+                            _modlistData.Report.Add(T._("Results") + ": "
                             + Environment.NewLine
                             + Environment.NewLine
                             + T._("Actions") + ":"
                             + Environment.NewLine
                             );
                         }
-                        modlistData.Report.Add(T._("Mod") + " " + mod + " " + T._("was deactivated") + ": " + modinfo.Value);
-                        ManageMO.DeactivateMod(mod);
-                        ListChanged = true;
+                        _modlistData.Report.Add(T._("Mod") + " " + mod + " " + T._("was deactivated") + ": " + modinfo.Value);
+                        ManageMo.DeactivateMod(mod);
+                        listChanged = true;
                     }
                 }
 
@@ -108,12 +108,12 @@ namespace AIHelper.Manage
                 OldMetaInfoFix();
                 //var metainiFixesApplyed = modlistData.Report.Count > reportCntPre;
 
-                if (modlistData.Report.Count > 0)
+                if (_modlistData.Report.Count > 0)
                 {
-                    var ReportMessage = string.Empty;
-                    if (ListChanged)
+                    var reportMessage = string.Empty;
+                    if (listChanged)
                     {
-                        ReportMessage += string.Join(Environment.NewLine, modlistData.Report);
+                        reportMessage += string.Join(Environment.NewLine, _modlistData.Report);
                         //ReportMessage += T._("Results") + ":"
                         //    + Environment.NewLine
                         //    + Environment.NewLine
@@ -121,13 +121,13 @@ namespace AIHelper.Manage
                     }
                     else
                     {
-                        ReportMessage += T._("No known issues found in the enabled mods list")
+                        reportMessage += T._("No known issues found in the enabled mods list")
                            + Environment.NewLine
-                           + string.Join(Environment.NewLine, modlistData.Report);
+                           + string.Join(Environment.NewLine, _modlistData.Report);
                     }
 
 #pragma warning disable CA2000 // Dispose objects before losing scope
-                    Form ReportForm = new Form
+                    Form reportForm = new Form
                     {
                         Text = T._("Modlist check report"),
                         //ReportForm.Size = new System.Drawing.Size(500,700);
@@ -136,19 +136,19 @@ namespace AIHelper.Manage
                         StartPosition = FormStartPosition.CenterScreen
                     };
 #pragma warning restore CA2000 // Dispose objects before losing scope
-                    RichTextBox ReportTB = new RichTextBox
+                    RichTextBox reportTb = new RichTextBox
                     {
                         Size = new System.Drawing.Size(700, 900),
                         WordWrap = true,
                         Dock = DockStyle.Fill,
                         ReadOnly = true,
                         //ReportTB.BackColor = System.Drawing.Color.Gray;
-                        Text = ReportMessage,
+                        Text = reportMessage,
                         ScrollBars = RichTextBoxScrollBars.Both
                     };
 
-                    ReportForm.Controls.Add(ReportTB);
-                    ReportForm.Show();
+                    reportForm.Controls.Add(reportTb);
+                    reportForm.Show();
 
                     //MessageBox.Show(ReportMessage);
                 }
@@ -157,11 +157,11 @@ namespace AIHelper.Manage
                     MessageBox.Show(T._("No known problems found"));
                 }
 
-                if (!ListChanged && !string.IsNullOrWhiteSpace(ModlistBackupFilePath))
+                if (!listChanged && !string.IsNullOrWhiteSpace(modlistBackupFilePath))
                 {
                     try
                     {
-                        File.Delete(ModlistBackupFilePath);
+                        File.Delete(modlistBackupFilePath);
                     }
                     catch
                     {
@@ -172,13 +172,13 @@ namespace AIHelper.Manage
             /// <summary>
             /// apply tweak for kplug
             /// </summary>
-            private void kPlugTweaks()
+            private void KPlugTweaks()
             {
-                var cfgpath = Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath(), "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg");
+                var cfgpath = Path.Combine(ManageSettings.GetCurrentGameMoOverwritePath(), "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg");
 
                 if (!File.Exists(cfgpath))
                 {
-                    foreach (var modName in modlistData.EnabledModsList)
+                    foreach (var modName in _modlistData.EnabledModsList)
                     {
                         if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), modName, "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg")))
                         {
@@ -190,16 +190,16 @@ namespace AIHelper.Manage
 
                 if (File.Exists(cfgpath))
                 {
-                    var value = ManageCFG.GetCFGValueIfExist(cfgpath, "Async clothes loading", "Tweaks");
+                    var value = ManageCfg.GetCfgValueIfExist(cfgpath, "Async clothes loading", "Tweaks");
                     //set Async clothes loading to false in kplug enabled
-                    if (!string.IsNullOrWhiteSpace(value) && ((modlistData.kPlugEnabled && value.Length == 4) || (!modlistData.kPlugEnabled && value.Length == 5)))
+                    if (!string.IsNullOrWhiteSpace(value) && ((_modlistData.KPlugEnabled && value.Length == 4) || (!_modlistData.KPlugEnabled && value.Length == 5)))
                     {
-                        ManageCFG.WriteCFGValue(cfgpath, "Tweaks", "Async clothes loading", (!modlistData.kPlugEnabled).ToString());
+                        ManageCfg.WriteCfgValue(cfgpath, "Tweaks", "Async clothes loading", (!_modlistData.KPlugEnabled).ToString());
 
-                        if (modlistData.kPlugEnabled)
+                        if (_modlistData.KPlugEnabled)
                         {
-                            modlistData.Report.Add(T._("kPlug tweaks:"));
-                            modlistData.Report.Add(T._("KK_Fix_MainGameOptimizations 'Async clothes loading' parameter was set to 'False' to prevent problems with kPlug"));
+                            _modlistData.Report.Add(T._("kPlug tweaks:"));
+                            _modlistData.Report.Add(T._("KK_Fix_MainGameOptimizations 'Async clothes loading' parameter was set to 'False' to prevent problems with kPlug"));
                         }
                     }
                 }
@@ -210,34 +210,34 @@ namespace AIHelper.Manage
             /// </summary>
             internal void OldMetaInfoFix()
             {
-                var AllDirsList = Directory.GetDirectories(ManageSettings.GetCurrentGameModsPath());
-                var ApplyModListgameNameValueFix = false;
+                var allDirsList = Directory.GetDirectories(ManageSettings.GetCurrentGameModsPath());
+                var applyModListgameNameValueFix = false;
                 var cnt = 0;
-                using (var INIFixesProgressBar = new ProgressBar())
+                using (var iniFixesProgressBar = new ProgressBar())
                 {
-                    INIFixesProgressBar.Style = ProgressBarStyle.Blocks;
-                    INIFixesProgressBar.Dock = DockStyle.Bottom;
-                    INIFixesProgressBar.Height = 10;
-                    INIFixesProgressBar.Maximum = AllDirsList.Length;
+                    iniFixesProgressBar.Style = ProgressBarStyle.Blocks;
+                    iniFixesProgressBar.Dock = DockStyle.Bottom;
+                    iniFixesProgressBar.Height = 10;
+                    iniFixesProgressBar.Maximum = allDirsList.Length;
 
-                    using (var INIFixesForm = new Form())
+                    using (var iniFixesForm = new Form())
                     {
-                        INIFixesForm.Text = T._("Meta info refreshing in progress") + "...";
-                        INIFixesForm.Size = new System.Drawing.Size(370, 50);
+                        iniFixesForm.Text = T._("Meta info refreshing in progress") + "...";
+                        iniFixesForm.Size = new System.Drawing.Size(370, 50);
                         bool metainiFixesApplyed = false;
-                        foreach (var mod in AllDirsList)
+                        foreach (var mod in allDirsList)
                         {
                             cnt++;
-                            if (!ApplyModListgameNameValueFix)
+                            if (!applyModListgameNameValueFix)
                             {
-                                ApplyModListgameNameValueFix = true;
+                                applyModListgameNameValueFix = true;
 
                                 //show progress bar in new form
-                                INIFixesForm.Controls.Add(INIFixesProgressBar);
-                                INIFixesForm.FormBorderStyle = FormBorderStyle.FixedToolWindow;
-                                INIFixesForm.StartPosition = FormStartPosition.CenterScreen;
-                                INIFixesForm.Show();
-                                INIFixesForm.Activate();
+                                iniFixesForm.Controls.Add(iniFixesProgressBar);
+                                iniFixesForm.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+                                iniFixesForm.StartPosition = FormStartPosition.CenterScreen;
+                                iniFixesForm.Show();
+                                iniFixesForm.Activate();
 
                                 //if (cnt == 10)
                                 //{
@@ -245,9 +245,9 @@ namespace AIHelper.Manage
                                 //}
                             }
 
-                            if (cnt < INIFixesProgressBar.Maximum)
+                            if (cnt < iniFixesProgressBar.Maximum)
                             {
-                                INIFixesProgressBar.Value = cnt;
+                                iniFixesProgressBar.Value = cnt;
                             }
 
                             var modMetaIniPath = Path.Combine(mod, "meta.ini");
@@ -255,12 +255,12 @@ namespace AIHelper.Manage
                             {
                                 continue;
                             }
-                            var INI = new INIFile(modMetaIniPath);
-                            var INIchanged = false;
+                            var ini = new INIFile(modMetaIniPath);
+                            var inIchanged = false;
 
                             //string gameName;
                             //fix for incorrect gameName set for the mod
-                            if (INI.KeyExists("gameName", "General") && (/*gameName =*/ INI.ReadINI("General", "gameName")) != ManageSettings.GETMOCurrentGameName())
+                            if (ini.KeyExists("gameName", "General") && (/*gameName =*/ ini.ReadINI("General", "gameName")) != ManageSettings.GetmoCurrentGameName())
                             {
                                 //if (!ApplyModListgameNameValueFix)
                                 //{
@@ -282,30 +282,30 @@ namespace AIHelper.Manage
                                 //    }
                                 //}
 
-                                INI.WriteINI("General", "gameName", ManageSettings.GETMOCurrentGameName(), false);
+                                ini.WriteINI("General", "gameName", ManageSettings.GetmoCurrentGameName(), false);
                                 if (!metainiFixesApplyed)
                                 {
                                     metainiFixesApplyed = true;
-                                    modlistData.Report.Add(Environment.NewLine + "meta.ini fixes:");
+                                    _modlistData.Report.Add(Environment.NewLine + "meta.ini fixes:");
                                 }
-                                modlistData.Report.Add(Path.GetFileName(mod) + ": " + T._("fixed game name"));
-                                INIchanged = true;
+                                _modlistData.Report.Add(Path.GetFileName(mod) + ": " + T._("fixed game name"));
+                                inIchanged = true;
 
                             }
 
                             //Copy 1st found url from notes to url key
-                            if (INI.KeyExists("url", "General") && !string.IsNullOrWhiteSpace(INI.ReadINI("General", "url")))
+                            if (ini.KeyExists("url", "General") && !string.IsNullOrWhiteSpace(ini.ReadINI("General", "url")))
                             {
                                 //set hasCustomURL to true if url exists and hasCustomURL is false
-                                if (!INI.KeyExists("hasCustomURL", "General") || INI.ReadINI("General", "hasCustomURL").Length == 5/*=="false"*/)
+                                if (!ini.KeyExists("hasCustomURL", "General") || ini.ReadINI("General", "hasCustomURL").Length == 5/*=="false"*/)
                                 {
-                                    INI.WriteINI("General", "hasCustomURL", "true", false);
-                                    INIchanged = true;
+                                    ini.WriteINI("General", "hasCustomURL", "true", false);
+                                    inIchanged = true;
                                 }
                             }
                             else// if (!INI.KeyExists("url", "General") || string.IsNullOrWhiteSpace(INI.ReadINI("General", "url")))
                             {
-                                var metanotes = INI.ReadINI("General", "notes");
+                                var metanotes = ini.ReadINI("General", "notes");
                                 if (!string.IsNullOrWhiteSpace(metanotes))
                                 {
                                     var regex = @"<a href\=\\""[^>]+\\"">";//pattern for url inside notes
@@ -313,32 +313,32 @@ namespace AIHelper.Manage
                                     if (url.Success && !string.IsNullOrWhiteSpace(url.Value))
                                     {
                                         var urlValue = url.Value.Remove(url.Value.Length - 3, 3).Remove(0, 10);
-                                        INI.WriteINI("General", "url", urlValue, false);
-                                        INI.WriteINI("General", "hasCustomURL", "true", false);
+                                        ini.WriteINI("General", "url", urlValue, false);
+                                        ini.WriteINI("General", "hasCustomURL", "true", false);
                                         if (!metainiFixesApplyed)
                                         {
                                             metainiFixesApplyed = true;
-                                            modlistData.Report.Add(Environment.NewLine + "meta.ini fixes:");
+                                            _modlistData.Report.Add(Environment.NewLine + "meta.ini fixes:");
                                         }
-                                        modlistData.Report.Add(Path.GetFileName(mod) + ": " + T._("added url from notes"));
-                                        INIchanged = true;
+                                        _modlistData.Report.Add(Path.GetFileName(mod) + ": " + T._("added url from notes"));
+                                        inIchanged = true;
                                     }
                                 }
                             }
 
                             var metainiinfomoved = false;
-                            if (INI.KeyExists("notes", "General"))
+                            if (ini.KeyExists("notes", "General"))
                             {
-                                var metanotes = INI.ReadINI("General", "notes");
+                                var metanotes = ini.ReadINI("General", "notes");
                                 if (!string.IsNullOrWhiteSpace(metanotes))
                                 {
-                                    var PatternsOfInfoForMove = new string[2][]
+                                    var patternsOfInfoForMove = new string[2][]
                                     {
-                                        new string[2] { "mlinfo", ManageSettings.AIMetaINIKeyModlistRulesInfoName() },//regex to capture ::mlinfo:: with html tags
-                                        new string[2] { "updgit", ManageSettings.AIMetaINIKeyUpdateName() }//regex to capture update info with html tags
+                                        new string[2] { "mlinfo", ManageSettings.AiMetaIniKeyModlistRulesInfoName() },//regex to capture ::mlinfo:: with html tags
+                                        new string[2] { "updgit", ManageSettings.AiMetaIniKeyUpdateName() }//regex to capture update info with html tags
                                     };
 
-                                    foreach (var pattern in PatternsOfInfoForMove)
+                                    foreach (var pattern in patternsOfInfoForMove)
                                     {
                                         var regex = @"<p style\=[^>]*>(::)?" + pattern[0] + @"::(?:(?!::).)+::<\/p>";//regex to capture info with html tags
                                         var info = Regex.Match(metanotes, regex);
@@ -346,15 +346,15 @@ namespace AIHelper.Manage
                                         {
                                             var infoValue = Regex.Replace(info.Value.Replace(@"\n", @"\r\n"), "<[^>]*>", "");//cleaned info from html tags
                                                                                                                              //write new key to meta ini with info
-                                            INI.WriteINI(ManageSettings.AIMetaINISectionName(), pattern[1], infoValue, false);
+                                            ini.WriteINI(ManageSettings.AiMetaIniSectionName(), pattern[1], infoValue, false);
 
                                             if (!metainiFixesApplyed)
                                             {
                                                 metainiFixesApplyed = true;
-                                                modlistData.Report.Add(Environment.NewLine + "meta.ini fixes:");
+                                                _modlistData.Report.Add(Environment.NewLine + "meta.ini fixes:");
                                             }
-                                            modlistData.Report.Add(Path.GetFileName(mod) + ": " + T._("moved meta ini info from notes in ini key") + " " + pattern[1]);
-                                            INIchanged = true;
+                                            _modlistData.Report.Add(Path.GetFileName(mod) + ": " + T._("moved meta ini info from notes in ini key") + " " + pattern[1]);
+                                            inIchanged = true;
                                             metainiinfomoved = true;
                                             metanotes = metanotes.Replace(info.Value, "");//remove info from notes after it was set to ini key
                                         }
@@ -362,14 +362,14 @@ namespace AIHelper.Manage
 
                                     if (metainiinfomoved)
                                     {
-                                        INI.WriteINI("General", "notes", metanotes, false);//write notes with removed mlinfo
+                                        ini.WriteINI("General", "notes", metanotes, false);//write notes with removed mlinfo
                                     }
                                 }
                             }
 
-                            if (INIchanged)
+                            if (inIchanged)
                             {
-                                INI.SaveINI();
+                                ini.SaveINI();
                             }
                         }
                     }
@@ -378,39 +378,39 @@ namespace AIHelper.Manage
 
             private void ApplyRules()
             {
-                foreach (var rule in modlistData.RulesList)
+                foreach (var rule in _modlistData.RulesList)
                 {
                     if (rule.Condition())
                     {
-                        var oldMustEnabledCount = modlistData.ModsMustBeEnabled.Count;
-                        var oldMustEnabledCandidatesCount = modlistData.ModsMustBeEnabledCandidates.Count;
-                        var oldMustDisaledCount = modlistData.ModsMustBeDisabled.Count;
-                        var oldMustDisaledCandidatesCount = modlistData.ModsMustBeDisabledCandidates.Count;
+                        var oldMustEnabledCount = _modlistData.ModsMustBeEnabled.Count;
+                        var oldMustEnabledCandidatesCount = _modlistData.ModsMustBeEnabledCandidates.Count;
+                        var oldMustDisaledCount = _modlistData.ModsMustBeDisabled.Count;
+                        var oldMustDisaledCandidatesCount = _modlistData.ModsMustBeDisabledCandidates.Count;
 
                         if (rule.Fix())
                         {
-                            if (!modlistData.ModsMustBeDisabledCandidates.ContainsKey(modlistData.ModName) && !modlistData.ModsMustBeDisabled.ContainsKey(modlistData.ModName))
+                            if (!_modlistData.ModsMustBeDisabledCandidates.ContainsKey(_modlistData.ModName) && !_modlistData.ModsMustBeDisabled.ContainsKey(_modlistData.ModName))
                             {
                                 AddCandidates();
                             }
                             else
                             {
-                                modlistData.ModsMustBeEnabledCandidates.Clear();
+                                _modlistData.ModsMustBeEnabledCandidates.Clear();
                                 AddCandidates();
                             }
-                            if (oldMustEnabledCount != modlistData.ModsMustBeEnabled.Count
+                            if (oldMustEnabledCount != _modlistData.ModsMustBeEnabled.Count
                                 ||
-                                oldMustEnabledCandidatesCount != modlistData.ModsMustBeEnabledCandidates.Count
+                                oldMustEnabledCandidatesCount != _modlistData.ModsMustBeEnabledCandidates.Count
                                 ||
-                                oldMustDisaledCount != modlistData.ModsMustBeDisabled.Count
+                                oldMustDisaledCount != _modlistData.ModsMustBeDisabled.Count
                                 ||
-                                oldMustDisaledCandidatesCount != modlistData.ModsMustBeDisabledCandidates.Count
+                                oldMustDisaledCandidatesCount != _modlistData.ModsMustBeDisabledCandidates.Count
                                 )
                             {
-                                var report = T._("For mod") + " \"" + modlistData.ModName + "\" " + T._("was applied rule") + " \"" + rule.Description() + "\"" + (rule.Result.Length > 0 ? (" " + T._("with result") + ":" + " \" " + rule.Result) : rule.Result);
-                                if (!modlistData.Report.Contains(report))
+                                var report = T._("For mod") + " \"" + _modlistData.ModName + "\" " + T._("was applied rule") + " \"" + rule.Description() + "\"" + (rule.Result.Length > 0 ? (" " + T._("with result") + ":" + " \" " + rule.Result) : rule.Result);
+                                if (!_modlistData.Report.Contains(report))
                                 {
-                                    modlistData.Report.Add(report);
+                                    _modlistData.Report.Add(report);
                                 }
                             }
                         }
@@ -424,14 +424,14 @@ namespace AIHelper.Manage
 
             private void ClearCandidates()
             {
-                modlistData.ModsMustBeEnabledCandidates.Clear();
-                modlistData.ModsMustBeDisabledCandidates.Clear();
+                _modlistData.ModsMustBeEnabledCandidates.Clear();
+                _modlistData.ModsMustBeDisabledCandidates.Clear();
             }
 
             private void AddCandidates()
             {
-                AddCandidatesToMain(modlistData.ModsMustBeEnabledCandidates, modlistData.ModsMustBeEnabled);
-                AddCandidatesToMain(modlistData.ModsMustBeDisabledCandidates, modlistData.ModsMustBeDisabled);
+                AddCandidatesToMain(_modlistData.ModsMustBeEnabledCandidates, _modlistData.ModsMustBeEnabled);
+                AddCandidatesToMain(_modlistData.ModsMustBeDisabledCandidates, _modlistData.ModsMustBeDisabled);
                 ClearCandidates();
             }
 

@@ -22,10 +22,10 @@ namespace AIHelper.Manage
             Directory = 2
         }
 
-        private static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
+        private static readonly IntPtr InvalidHandleValue = new IntPtr(-1);
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        private struct WIN32_FIND_DATA
+        private struct Win32FindData
         {
             public uint dwFileAttributes;
             public System.Runtime.InteropServices.ComTypes.FILETIME ftCreationTime;
@@ -42,10 +42,10 @@ namespace AIHelper.Manage
         }
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern IntPtr FindFirstFile(string lpFileName, out WIN32_FIND_DATA lpFindFileData);
+        private static extern IntPtr FindFirstFile(string lpFileName, out Win32FindData lpFindFileData);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
-        private static extern bool FindNextFile(IntPtr hFindFile, out WIN32_FIND_DATA lpFindFileData);
+        private static extern bool FindNextFile(IntPtr hFindFile, out Win32FindData lpFindFileData);
 
         [DllImport("kernel32.dll")]
         private static extern bool FindClose(IntPtr hFindFile);
@@ -56,11 +56,11 @@ namespace AIHelper.Manage
         /// return true if path nul,aempty or not contains any dirs/files
         /// </summary>
         /// <param name="path"></param>
-        /// <param name="Mask"></param>
+        /// <param name="mask"></param>
         /// <param name="exclusions"></param>
         /// <param name="recursive"></param>
         /// <returns></returns>
-        public static bool CheckDirectoryNullOrEmpty_Fast(string path, string Mask = "*", string[] exclusions = null, bool recursive = false, string nameMask = "")
+        public static bool CheckDirectoryNullOrEmpty_Fast(string path, string mask = "*", string[] exclusions = null, bool recursive = false, string nameMask = "")
         {
             if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
             {
@@ -75,16 +75,16 @@ namespace AIHelper.Manage
 
             if (path.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.InvariantCulture))
             {
-                path += nameMask + Mask;
+                path += nameMask + mask;
             }
             else
             {
-                path += Path.DirectorySeparatorChar + nameMask + Mask;
+                path += Path.DirectorySeparatorChar + nameMask + mask;
             }
 
-            var findHandle = FindFirstFile(path, out WIN32_FIND_DATA findData);
+            var findHandle = FindFirstFile(path, out Win32FindData findData);
 
-            if (findHandle != INVALID_HANDLE_VALUE)
+            if (findHandle != InvalidHandleValue)
             {
                 try
                 {
@@ -94,8 +94,8 @@ namespace AIHelper.Manage
                         if (findData.cFileName != "."
                             && findData.cFileName != ".."
                             && !ManageStrings.IsStringContainsAnyExclusion(findData.cFileName, exclusions)
-                            && ((recursive && IsDir(findData.dwFileAttributes) && !CheckDirectoryNullOrEmpty_Fast(path + Path.DirectorySeparatorChar + findData.cFileName + Path.DirectorySeparatorChar, Mask, exclusions, recursive))
-                            || Mask.Length == 1 || findData.cFileName.EndsWith(Mask.Remove(0, 1), StringComparison.InvariantCultureIgnoreCase)
+                            && ((recursive && IsDir(findData.dwFileAttributes) && !CheckDirectoryNullOrEmpty_Fast(path + Path.DirectorySeparatorChar + findData.cFileName + Path.DirectorySeparatorChar, mask, exclusions, recursive))
+                            || mask.Length == 1 || findData.cFileName.EndsWith(mask.Remove(0, 1), StringComparison.InvariantCultureIgnoreCase)
                             ))
                         {
                             empty = false;
@@ -126,9 +126,9 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="dirPath"></param>
         /// <param name="extension"></param>
-        /// <param name="AllDirectories"></param>
+        /// <param name="allDirectories"></param>
         /// <returns></returns>
-        public static bool IsAnyFileExistsInTheDir(string dirPath, string extension = ".*", bool AllDirectories = true, string nameMask = "")
+        public static bool IsAnyFileExistsInTheDir(string dirPath, string extension = ".*", bool allDirectories = true, string nameMask = "")
         {
             if (dirPath.Length == 0)
             {
@@ -140,7 +140,7 @@ namespace AIHelper.Manage
                 extension = "." + extension;
             }
 
-            if (!CheckDirectoryNullOrEmpty_Fast(dirPath, extension, null, AllDirectories, nameMask))
+            if (!CheckDirectoryNullOrEmpty_Fast(dirPath, extension, null, allDirectories, nameMask))
                 return true;
 
             return false;
@@ -150,9 +150,9 @@ namespace AIHelper.Manage
         /// will delete empty folders
         /// </summary>
         /// <param name="dirPath"></param>
-        /// <param name="DeleteThisDir"></param>
-        /// <param name="Exclusions"></param>
-        public static void DeleteEmptySubfolders(string dirPath, bool DeleteThisDir = true, string[] Exclusions = null)
+        /// <param name="deleteThisDir"></param>
+        /// <param name="exclusions"></param>
+        public static void DeleteEmptySubfolders(string dirPath, bool deleteThisDir = true, string[] exclusions = null)
         {
             if (string.IsNullOrEmpty(dirPath) || !Directory.Exists(dirPath))
             {
@@ -179,11 +179,11 @@ namespace AIHelper.Manage
             {
                 for (int d = 0; d < subfoldersLength; d++)
                 {
-                    DeleteEmptySubfolders(subfolders[d], !TrueIfStringInExclusionsList(subfolders[d], Exclusions), Exclusions);
+                    DeleteEmptySubfolders(subfolders[d], !TrueIfStringInExclusionsList(subfolders[d], exclusions), exclusions);
                 }
             }
 
-            if (DeleteThisDir && CheckDirectoryNullOrEmpty_Fast(dirPath)/*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)
+            if (deleteThisDir && CheckDirectoryNullOrEmpty_Fast(dirPath)/*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)
             {
                 dir.Attributes = FileAttributes.Normal;
                 dir.Delete();
@@ -222,11 +222,11 @@ namespace AIHelper.Manage
         /// If input file\folder not exists it will create empty. Will return inputPath
         /// </summary>
         /// <param name="inputPath"></param>
-        /// <param name="IsFolder"></param>
+        /// <param name="isFolder"></param>
         /// <returns></returns>
-        internal static string GreateFileFolderIfNotExists(string inputPath, bool IsFolder = false)
+        internal static string GreateFileFolderIfNotExists(string inputPath, bool isFolder = false)
         {
-            if (IsFolder)
+            if (isFolder)
             {
                 if (!Directory.Exists(inputPath))
                 {
@@ -248,12 +248,12 @@ namespace AIHelper.Manage
         /// <summary>
         /// true if any value of string array contains string
         /// </summary>
-        /// <param name="Str"></param>
+        /// <param name="str"></param>
         /// <param name="exclusions"></param>
         /// <returns></returns>
-        public static bool TrueIfStringInExclusionsList(string Str, string[] exclusions)
+        public static bool TrueIfStringInExclusionsList(string str, string[] exclusions)
         {
-            if (exclusions == null || Str.Length == 0)
+            if (exclusions == null || str.Length == 0)
             {
                 return false;
             }
@@ -266,7 +266,7 @@ namespace AIHelper.Manage
                     {
                         continue;
                     }
-                    if (ManageStrings.IsStringAContainsStringB(Str, exclusions[i]))
+                    if (ManageStrings.IsStringAContainsStringB(str, exclusions[i]))
                     {
                         return true;
                     }
@@ -303,10 +303,10 @@ namespace AIHelper.Manage
         /// will change file/folder attribute to hidden
         /// </summary>
         /// <param name="path"></param>
-        /// <param name="IsFile"></param>
-        public static void HideFileFolder(string path, bool IsFile = false)
+        /// <param name="isFile"></param>
+        public static void HideFileFolder(string path, bool isFile = false)
         {
-            if (IsFile)
+            if (isFile)
             {
                 if (File.Exists(path))
                 {
@@ -339,39 +339,39 @@ namespace AIHelper.Manage
         /// <summary>
         /// Проверки существования целевой папки и модификация имени на уникальное
         /// </summary>
-        /// <param name="ParentFolderPath"></param>
-        /// <param name="TargetFolderName"></param>
+        /// <param name="parentFolderPath"></param>
+        /// <param name="targetFolderName"></param>
         /// <returns></returns>
-        public static string GetResultTargetDirPathWithNameCheck(string ParentFolderPath, string TargetFolderName)
+        public static string GetResultTargetDirPathWithNameCheck(string parentFolderPath, string targetFolderName)
         {
-            string ResultTargetDirPath = Path.Combine(ParentFolderPath, TargetFolderName);
+            string resultTargetDirPath = Path.Combine(parentFolderPath, targetFolderName);
             int i = 0;
-            while (Directory.Exists(ResultTargetDirPath))
+            while (Directory.Exists(resultTargetDirPath))
             {
                 i++;
-                ResultTargetDirPath = Path.Combine(ParentFolderPath, TargetFolderName + " (" + i + ")");
+                resultTargetDirPath = Path.Combine(parentFolderPath, targetFolderName + " (" + i + ")");
             }
-            return ResultTargetDirPath;
+            return resultTargetDirPath;
         }
 
         /// <summary>
         /// return new file path from source which is not exists in Folder
         /// return path will be with name like "Name (#).ext"
         /// </summary>
-        /// <param name="Folder"></param>
-        /// <param name="Name"></param>
-        /// <param name="Extension"></param>
+        /// <param name="folder"></param>
+        /// <param name="name"></param>
+        /// <param name="extension"></param>
         /// <returns></returns>
-        public static string GetResultTargetFilePathWithNameCheck(string Folder, string Name, string Extension = "")
+        public static string GetResultTargetFilePathWithNameCheck(string folder, string name, string extension = "")
         {
-            var ResultPath = Path.Combine(Folder, Name + (Extension.Length > 0 && Extension.Substring(0, 1) != "." ? "." : string.Empty) + Extension);
+            var resultPath = Path.Combine(folder, name + (extension.Length > 0 && extension.Substring(0, 1) != "." ? "." : string.Empty) + extension);
             int i = 0;
-            while (File.Exists(ResultPath))
+            while (File.Exists(resultPath))
             {
                 i++;
-                ResultPath = Path.Combine(Folder, Name + " (" + i + ")" + Extension);
+                resultPath = Path.Combine(folder, name + " (" + i + ")" + extension);
             }
-            return ResultPath;
+            return resultPath;
         }
 
         public static string IsAnyFileWithSameExtensionContainsNameOfTheFile(string zipmoddirmodspath, string zipname, string extension)
@@ -397,7 +397,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         public static string IfInTheFolderOnlyOneFolderGetItName(string folderPath)
         {
-            string AloneFolderName = string.Empty;
+            string aloneFolderName = string.Empty;
             int cnt = 1;
             foreach (var file in Directory.GetFiles(folderPath))
             {
@@ -415,10 +415,10 @@ namespace AIHelper.Manage
                 {
                     return string.Empty;
                 }
-                AloneFolderName = Path.GetFileName(dir);
+                aloneFolderName = Path.GetFileName(dir);
             }
 
-            return AloneFolderName;
+            return aloneFolderName;
         }
 
         /// <summary>
@@ -428,28 +428,28 @@ namespace AIHelper.Manage
         /// <returns></returns>
         public static string MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(string folderPath)
         {
-            string AloneFolderName = IfInTheFolderOnlyOneFolderGetItName(folderPath);
-            if (AloneFolderName.Length > 0)
+            string aloneFolderName = IfInTheFolderOnlyOneFolderGetItName(folderPath);
+            if (aloneFolderName.Length > 0)
             {
-                if (!ManageStrings.IsStringAContainsAnyStringFromStringArray(AloneFolderName, GameData.CurrentGame.GetGameStandartFolderNames(), true))
+                if (!ManageStrings.IsStringAContainsAnyStringFromStringArray(aloneFolderName, GameData.CurrentGame.GetGameStandartFolderNames(), true))
                 {
                     string folderPathName = Path.GetFileName(folderPath);
                     string folderParentDirPath = Path.GetDirectoryName(folderPath);
-                    string oDirSubdir = Path.Combine(folderPath, AloneFolderName);
+                    string oDirSubdir = Path.Combine(folderPath, aloneFolderName);
                     string newDirPath;
-                    if (AloneFolderName == folderPathName)
+                    if (aloneFolderName == folderPathName)
                     {
-                        newDirPath = GetResultTargetDirPathWithNameCheck(folderParentDirPath, AloneFolderName);
+                        newDirPath = GetResultTargetDirPathWithNameCheck(folderParentDirPath, aloneFolderName);
                         Directory.Move(oDirSubdir, newDirPath);
                         Directory.Delete(folderPath);
                         Directory.Move(newDirPath, folderPath);
                     }
                     else
                     {
-                        newDirPath = Path.Combine(folderParentDirPath, AloneFolderName);
+                        newDirPath = Path.Combine(folderParentDirPath, aloneFolderName);
                         Directory.Move(oDirSubdir, newDirPath);
                         Directory.Delete(folderPath);
-                        if (folderPathName.Length > AloneFolderName.Length)//если изначальное имя было длиннее, то переименовать имя субпапки на него
+                        if (folderPathName.Length > aloneFolderName.Length)//если изначальное имя было длиннее, то переименовать имя субпапки на него
                         {
                             Directory.Move(newDirPath, folderPath);
                         }
@@ -469,22 +469,22 @@ namespace AIHelper.Manage
         /// <summary>
         /// Move content Of Source Folder To Target Folder And Then Clean Source
         /// </summary>
-        /// <param name="SourceFolder"></param>
-        /// <param name="TargetFolder"></param>
-        internal static void MoveContent(string SourceFolder, string TargetFolder)
+        /// <param name="sourceFolder"></param>
+        /// <param name="targetFolder"></param>
+        internal static void MoveContent(string sourceFolder, string targetFolder)
         {
-            if (Directory.Exists(SourceFolder))
+            if (Directory.Exists(sourceFolder))
             {
-                if (!CheckDirectoryNullOrEmpty_Fast(SourceFolder) && !ManageSymLinkExtensions.IsSymLink(SourceFolder))
+                if (!CheckDirectoryNullOrEmpty_Fast(sourceFolder) && !ManageSymLinkExtensions.IsSymLink(sourceFolder))
                 {
-                    if (!Directory.Exists(TargetFolder))
+                    if (!Directory.Exists(targetFolder))
                     {
-                        Directory.CreateDirectory(TargetFolder);
+                        Directory.CreateDirectory(targetFolder);
                     }
 
-                    foreach (string dir in Directory.EnumerateDirectories(SourceFolder))
+                    foreach (string dir in Directory.EnumerateDirectories(sourceFolder))
                     {
-                        var targetDir = Path.Combine(TargetFolder, Path.GetFileName(dir));
+                        var targetDir = Path.Combine(targetFolder, Path.GetFileName(dir));
                         if (Directory.Exists(targetDir))
                         {
                             targetDir = GetNewNewWithCurrentDate(targetDir, false);
@@ -492,10 +492,10 @@ namespace AIHelper.Manage
 
                         Directory.Move(dir, targetDir);
                     }
-                    foreach (string file in Directory.EnumerateFiles(SourceFolder))
+                    foreach (string file in Directory.EnumerateFiles(sourceFolder))
                     {
                         var sourceFile = file;
-                        var targetFile = Path.Combine(TargetFolder, Path.GetFileName(sourceFile));
+                        var targetFile = Path.Combine(targetFolder, Path.GetFileName(sourceFile));
 
                         try
                         {
@@ -528,7 +528,7 @@ namespace AIHelper.Manage
                     }
                 }
 
-                DeleteEmptySubfolders(SourceFolder, true);
+                DeleteEmptySubfolders(sourceFolder, true);
             }
         }
 
@@ -557,26 +557,26 @@ namespace AIHelper.Manage
         /// <summary>
         /// Get crc32 of file
         /// </summary>
-        /// <param name="FilePath"></param>
+        /// <param name="filePath"></param>
         /// <returns></returns>
-        internal static string GetCrc32(this string FilePath)
+        internal static string GetCrc32(this string filePath)
         {
-            return GetCrc32(new FileInfo(FilePath));
+            return GetCrc32(new FileInfo(filePath));
 
         }
 
         /// <summary>
         /// Get crc32 of file
         /// </summary>
-        /// <param name="FilePath"></param>
+        /// <param name="filePath"></param>
         /// <returns></returns>
-        internal static string GetCrc32(this FileInfo FilePath)
+        internal static string GetCrc32(this FileInfo filePath)
         {
             //https://stackoverflow.com/a/57450238
             using (var crc32 = new CRCServiceProvider())
             {
                 string hash = string.Empty;
-                using (var fs = FilePath.Open(FileMode.Open))
+                using (var fs = filePath.Open(FileMode.Open))
                 {
                     var array = crc32.ComputeHash(fs);
                     var arrayLength = array.Length;
@@ -618,11 +618,11 @@ namespace AIHelper.Manage
         /// <summary>
         /// true if file is picture
         /// </summary>
-        /// <param name="FileExtension"></param>
+        /// <param name="fileExtension"></param>
         /// <returns></returns>
-        internal static bool IsPictureExtension(this string FileExtension)
+        internal static bool IsPictureExtension(this string fileExtension)
         {
-            return !string.IsNullOrWhiteSpace(FileExtension) && (FileExtension == ".jpg" || FileExtension == ".png" || FileExtension == ".bmp");
+            return !string.IsNullOrWhiteSpace(fileExtension) && (fileExtension == ".jpg" || fileExtension == ".png" || fileExtension == ".bmp");
         }
 
         /// <summary>

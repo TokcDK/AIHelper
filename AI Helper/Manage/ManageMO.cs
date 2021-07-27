@@ -11,12 +11,12 @@ using System.Windows.Forms;
 
 namespace AIHelper.Manage
 {
-    class ManageMO
+    class ManageMo
     {
 
         internal static string MOremoveByteArray(string mOSelectedProfileDirPath)
         {
-            if (mOSelectedProfileDirPath.StartsWith("@ByteArray("))
+            if (mOSelectedProfileDirPath.StartsWith("@ByteArray(", StringComparison.InvariantCulture))
             {
                 return mOSelectedProfileDirPath
                     .Remove(mOSelectedProfileDirPath.Length - 1, 1)
@@ -28,7 +28,7 @@ namespace AIHelper.Manage
             }
         }
 
-        public static void RedefineGameMOData()
+        public static void RedefineGameMoData()
         {
             //MOini
             ManageSettings.GetMOiniPath().ReCreateFileLinkWhenNotValid(ManageSettings.GetMOiniPathForSelectedGame(), true);
@@ -36,15 +36,15 @@ namespace AIHelper.Manage
             ManageSettings.GetMOcategoriesPath().ReCreateFileLinkWhenNotValid(ManageSettings.GetMOcategoriesPathForSelectedGame(), true);
         }
 
-        internal static string GetMOVersion()
+        internal static string GetMoVersion()
         {
             var exeversion = System.Diagnostics.FileVersionInfo.GetVersionInfo(ManageSettings.GetMOexePath());
             return exeversion.FileVersion;
         }
 
-        public static void SetModOrganizerINISettingsForTheGame()
+        public static void SetModOrganizerIniSettingsForTheGame()
         {
-            RedefineGameMOData();
+            RedefineGameMoData();
 
             //менять настройки МО только когда игра меняется
             if (!Properties.Settings.Default.CurrentGameIsChanging && Path.GetDirectoryName(ManageSettings.GetMOdirPath()) != Properties.Settings.Default.ApplicationStartupPath)
@@ -52,9 +52,9 @@ namespace AIHelper.Manage
                 return;
             }
 
-            INIFile INI = new INIFile(ManageSettings.GetModOrganizerINIpath());
+            INIFile ini = new INIFile(ManageSettings.GetModOrganizerInIpath());
 
-            SetCommonIniValues(INI);
+            SetCommonIniValues(ini);
 
             //await Task.Run(() => SetCustomExecutablesIniValues(INI)).ConfigureAwait(true);
             FixCustomExecutablesIniValues();
@@ -68,9 +68,9 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="suffix"></param>
         /// <returns></returns>
-        internal static string MakeMOProfileModlistFileBuckup(string suffix = "")
+        internal static string MakeMoProfileModlistFileBuckup(string suffix = "")
         {
-            var modlistPath = ManageSettings.CurrentMOProfileModlistPath();
+            var modlistPath = ManageSettings.CurrentMoProfileModlistPath();
             var lastBackup = GetLastBak(suffix);
             if (lastBackup == null || (File.Exists(modlistPath) && File.Exists(lastBackup) && File.ReadAllText(lastBackup) != File.ReadAllText(modlistPath)))
             {
@@ -89,7 +89,7 @@ namespace AIHelper.Manage
         private static string GetLastBak(string suffix)
         {
             FileInfo last = null;
-            foreach (var file in new DirectoryInfo(ManageSettings.GetMOSelectedProfileDirPath()).EnumerateFiles("modlist.txt.*" + suffix))
+            foreach (var file in new DirectoryInfo(ManageSettings.GetMoSelectedProfileDirPath()).EnumerateFiles("modlist.txt.*" + suffix))
             {
                 if (last == null || last.LastWriteTime < file.LastWriteTime)
                 {
@@ -102,19 +102,19 @@ namespace AIHelper.Manage
         /// <summary>
         /// changes incorrect relative paths "../Data" fo custom executable for absolute Data path of currents game
         /// </summary>
-        /// <param name="INI"></param>
-        internal static void FixCustomExecutablesIniValues(INIFile INI = null)
+        /// <param name="ini"></param>
+        internal static void FixCustomExecutablesIniValues(INIFile ini = null)
         {
-            if (INI == null)
+            if (ini == null)
             {
-                INI = new INIFile(ManageSettings.GetModOrganizerINIpath());
+                ini = new INIFile(ManageSettings.GetModOrganizerInIpath());
             }
 
-            var customExecutables = new CustomExecutables(INI);
+            var customExecutables = new CustomExecutables(ini);
             var customsToRemove = new List<string>();
-            foreach (var record in customExecutables.list)
+            foreach (var record in customExecutables.List)
             {
-                if (string.IsNullOrWhiteSpace(record.Value.binary))
+                if (string.IsNullOrWhiteSpace(record.Value.Binary))
                 {
                     customsToRemove.Add(record.Key); // add invalid custom to remove list
                     continue;
@@ -125,9 +125,9 @@ namespace AIHelper.Manage
                     try
                     {
                         string fullPath = "";
-                        if (record.Value.attribute[attribute].Length > 0)
+                        if (record.Value.Attribute[attribute].Length > 0)
                         {
-                            fullPath = Path.GetFullPath(record.Value.attribute[attribute]);
+                            fullPath = Path.GetFullPath(record.Value.Attribute[attribute]);
                         }
                         bool isFile = attribute == "binary";
                         if ((isFile && File.Exists(fullPath)) || (!isFile && Directory.Exists(fullPath)))
@@ -136,16 +136,16 @@ namespace AIHelper.Manage
                         }
                         else
                         {
-                            if (record.Value.attribute[attribute].StartsWith("..", StringComparison.InvariantCulture))
+                            if (record.Value.Attribute[attribute].StartsWith("..", StringComparison.InvariantCulture))
                             {
                                 //suppose relative path was from MO dir ..\%MODir%
                                 //replace .. to absolute path of current game directory
-                                var targetcorrectedrelative = record.Value.attribute[attribute]
+                                var targetcorrectedrelative = record.Value.Attribute[attribute]
                                         .Remove(0, 2).Insert(0, ManageSettings.GetCurrentGamePath());
 
                                 //replace other slashes
                                 var targetcorrectedabsolute = Path.GetFullPath(targetcorrectedrelative);
-                                record.Value.attribute[attribute] = targetcorrectedabsolute.Replace(@"\\", "/").Replace(@"\", "/");//replace \ to /;
+                                record.Value.Attribute[attribute] = targetcorrectedabsolute.Replace(@"\\", "/").Replace(@"\", "/");//replace \ to /;
                                 //changed = true;
 
                                 //add absolute path for current game's data path
@@ -164,7 +164,7 @@ namespace AIHelper.Manage
             //remove invalid customs
             foreach (var custom in customsToRemove)
             {
-                customExecutables.list.Remove(custom);
+                customExecutables.List.Remove(custom);
             }
 
             customExecutables.Save();
@@ -175,8 +175,8 @@ namespace AIHelper.Manage
             /// <summary>
             /// list of custom executables
             /// </summary>
-            internal Dictionary<string, CustomExecutable> list;
-            INIFile ini;
+            internal Dictionary<string, CustomExecutable> List;
+            INIFile _ini;
 
             internal CustomExecutables()
             {
@@ -187,23 +187,23 @@ namespace AIHelper.Manage
                 LoadFrom(ini);
             }
 
-            private int loadedListCustomsCount;
+            private int _loadedListCustomsCount;
 
             internal void LoadFrom(INIFile ini)
             {
-                if (list != null && list.Count > 0) // already loaded
+                if (List != null && List.Count > 0) // already loaded
                 {
                     return;
                 }
 
-                this.ini = ini; // set ini reference
+                this._ini = ini; // set ini reference
 
-                var ListToLoad = ini.ReadSectionKeyValuePairsToDictionary("customExecutables");
+                var listToLoad = ini.ReadSectionKeyValuePairsToDictionary("customExecutables");
 
-                list = new Dictionary<string, CustomExecutable>();
+                List = new Dictionary<string, CustomExecutable>();
 
-                if (ListToLoad == null) return;
-                foreach (var entry in ListToLoad)
+                if (listToLoad == null) return;
+                foreach (var entry in listToLoad)
                 {
                     var numName = entry.Key.Split('\\');//numName[0] - number of customexecutable , numName[0] - name of attribute
                     if (numName.Length != 2)
@@ -211,55 +211,55 @@ namespace AIHelper.Manage
                         continue;
                     }
 
-                    if (!list.ContainsKey(numName[0]))
+                    if (!List.ContainsKey(numName[0]))
                     {
-                        list.Add(numName[0], new CustomExecutable());
+                        List.Add(numName[0], new CustomExecutable());
                     }
 
-                    list[numName[0]].attribute[numName[1]] = entry.Value;
+                    List[numName[0]].Attribute[numName[1]] = entry.Value;
                 }
 
-                loadedListCustomsCount = list.Count;
+                _loadedListCustomsCount = List.Count;
             }
 
             internal void Save()
             {
-                if (ini == null)
+                if (_ini == null)
                 {
                     return;
                 }
 
                 bool changed = false;
-                bool sectionCleared = loadedListCustomsCount != list.Count;
+                bool sectionCleared = _loadedListCustomsCount != List.Count;
                 if (sectionCleared)
                 {
                     changed = true;
-                    ini.ClearSection("customExecutables");
+                    _ini.ClearSection("customExecutables");
                 }
 
                 int customExecutableNumber = 0; // use new executable number when section was cleared and need to renumber executable numbers
-                foreach (var customExecutable in list)
+                foreach (var customExecutable in List)
                 {
                     if (sectionCleared)
                     {
                         customExecutableNumber++;
                     }
 
-                    foreach (var attribute in customExecutable.Value.attribute)
+                    foreach (var attribute in customExecutable.Value.Attribute)
                     {
                         string keyName = (sectionCleared ? customExecutableNumber + "" : customExecutable.Key) + "\\" + attribute.Key;
 
-                        if (sectionCleared || !ini.KeyExists(keyName, "customExecutables") || ini.ReadINI("customExecutables", keyName) != attribute.Value) // write only if not equal
+                        if (sectionCleared || !_ini.KeyExists(keyName, "customExecutables") || _ini.ReadINI("customExecutables", keyName) != attribute.Value) // write only if not equal
                         {
                             changed = true;
-                            ini.WriteINI("customExecutables", keyName, attribute.Value);
+                            _ini.WriteINI("customExecutables", keyName, attribute.Value);
                         }
                     }
                 }
 
                 if (changed)
                 {
-                    ini.WriteINI("customExecutables", "size", list.Count + "");
+                    _ini.WriteINI("customExecutables", "size", List.Count + "");
                 }
             }
 
@@ -347,7 +347,7 @@ namespace AIHelper.Manage
                 ///         customExecutable.attribute["title"] = "New custom exe"
                 ///     </code>
                 /// </example>
-                internal Dictionary<string, string> attribute = new Dictionary<string, string>()
+                internal Dictionary<string, string> Attribute = new Dictionary<string, string>()
                 {
                     { "title" , null},
                     { "binary" , null},
@@ -364,42 +364,42 @@ namespace AIHelper.Manage
                 /// <summary>
                 /// (Required!) title of custom executable
                 /// </summary>
-                internal string title { get => attribute["title"]; set => attribute["title"] = NormalizePath(value); }
+                internal string Title { get => Attribute["title"]; set => Attribute["title"] = NormalizePath(value); }
 
                 /// <summary>
                 /// (Required!) path to the exe
                 /// </summary>
-                internal string binary { get => attribute["binary"]; set => attribute["binary"] = NormalizePath(value); }
+                internal string Binary { get => Attribute["binary"]; set => Attribute["binary"] = NormalizePath(value); }
 
                 /// <summary>
                 /// (Optional) Working directory. By defaule willbe directory where is binary located.
                 /// </summary>
-                internal string workingDirectory { get => attribute["workingDirectory"]; set => attribute["workingDirectory"] = NormalizeBool(value); }
+                internal string WorkingDirectory { get => Attribute["workingDirectory"]; set => Attribute["workingDirectory"] = NormalizeBool(value); }
 
                 /// <summary>
                 /// (Optional) Arguments for binary. Empty by default.
                 /// </summary>
-                internal string arguments { get => attribute["arguments"]; set => attribute["arguments"] = NormalizeBool(value); }
+                internal string Arguments { get => Attribute["arguments"]; set => Attribute["arguments"] = NormalizeBool(value); }
 
                 /// <summary>
                 /// (Optional) Enable toolbar. False by default.
                 /// </summary>
-                internal string toolbar { get => attribute["toolbar"]; set => attribute["toolbar"] = NormalizeBool(value); }
+                internal string Toolbar { get => Attribute["toolbar"]; set => Attribute["toolbar"] = NormalizeBool(value); }
 
                 /// <summary>
                 /// (Optional) Use own icon for the exe, else will be icon of MO. False by default.
                 /// </summary>
-                internal string ownicon { get => attribute["ownicon"]; set => attribute["ownicon"] = NormalizeBool(value); }
+                internal string Ownicon { get => Attribute["ownicon"]; set => Attribute["ownicon"] = NormalizeBool(value); }
 
                 /// <summary>
                 /// (Optional) Hide the custom exe? False by default.
                 /// </summary>
-                internal string hide { get => attribute["hide"]; set => attribute["hide"] = NormalizeBool(value); }
+                internal string Hide { get => Attribute["hide"]; set => Attribute["hide"] = NormalizeBool(value); }
 
                 /// <summary>
                 /// (Optional) Steam app id for binary. Empty by default.
                 /// </summary>
-                internal string steamAppID { get => attribute["steamAppID"]; set => attribute["steamAppID"] = NormalizeBool(value); }
+                internal string SteamAppId { get => Attribute["steamAppID"]; set => Attribute["steamAppID"] = NormalizeBool(value); }
 
 #pragma warning restore CA1822 // Mark members as static
 #pragma warning restore IDE1006 // Naming Styles
@@ -706,9 +706,9 @@ namespace AIHelper.Manage
         /// true if MO have base plugin
         /// </summary>
         /// <returns></returns>
-        internal static bool IsMO23ORNever()
+        internal static bool IsMo23OrNever()
         {
-            var ver = GetMOVersion();
+            var ver = GetMoVersion();
             return ver != null && ver.Length > 2 && ver[0] == '2' && int.Parse(ver[2].ToString(), CultureInfo.InvariantCulture) > 2;
         }
 
@@ -951,9 +951,9 @@ namespace AIHelper.Manage
         //    ExecutablesCount = executablesCount;
         //}
 
-        private static void SetCommonIniValues(INIFile INI)
+        private static void SetCommonIniValues(INIFile ini)
         {
-            string[,] IniValues =
+            string[,] iniValues =
                 {
                     //General
                     {
@@ -1140,20 +1140,20 @@ namespace AIHelper.Manage
 
                 };
 
-            int IniValuesLength = IniValues.Length / 3;
+            int iniValuesLength = iniValues.Length / 3;
 
-            for (int i = 0; i < IniValuesLength; i++)
+            for (int i = 0; i < iniValuesLength; i++)
             {
-                string subquote = IniValues[i, 2].EndsWith(@"\arguments", StringComparison.InvariantCulture) ? "\\\"" : string.Empty;
-                string IniValue = subquote + IniValues[i, 0].Replace(@"\", @"\\") + subquote;
+                string subquote = iniValues[i, 2].EndsWith(@"\arguments", StringComparison.InvariantCulture) ? "\\\"" : string.Empty;
+                string iniValue = subquote + iniValues[i, 0].Replace(@"\", @"\\") + subquote;
                 //if (INIManage.GetINIValueIfExist(SettingsManage.GetModOrganizerINIpath(), IniValues[i, 2], IniValues[i, 1]) != IniValue)
                 //{
                 //    INI.WriteINI(IniValues[i, 1], IniValues[i, 2], IniValue);
                 //}
-                INI.WriteINI(IniValues[i, 1], IniValues[i, 2], IniValue, false);
+                ini.WriteINI(iniValues[i, 1], iniValues[i, 2], iniValue, false);
             }
 
-            INI.SaveINI();
+            ini.SaveINI();
         }
 
         //internal static Dictionary<string, string> GetMOcustomExecutablesList()
@@ -1175,32 +1175,32 @@ namespace AIHelper.Manage
         /// get title of custom executable by it exe name
         /// </summary>
         /// <param name="exename"></param>
-        /// <param name="INI"></param>
+        /// <param name="ini"></param>
         /// <returns></returns>
-        internal static string GetMOcustomExecutableTitleByExeName(string exename, INIFile INI = null, bool newMethod = false)
+        internal static string GetMOcustomExecutableTitleByExeName(string exename, INIFile ini = null, bool newMethod = false)
         {
-            if (INI == null)
+            if (ini == null)
             {
-                INI = new INIFile(ManageSettings.GetMOiniPath());
+                ini = new INIFile(ManageSettings.GetMOiniPath());
             }
 
             if (newMethod)
             {
-                var customs = new CustomExecutables(INI);
-                foreach (var customExe in customs.list)
+                var customs = new CustomExecutables(ini);
+                foreach (var customExe in customs.List)
                 {
-                    if (Path.GetFileNameWithoutExtension(customExe.Value.binary) == exename)
+                    if (Path.GetFileNameWithoutExtension(customExe.Value.Binary) == exename)
                     {
-                        if (File.Exists(customExe.Value.binary))
+                        if (File.Exists(customExe.Value.Binary))
                         {
-                            return customExe.Value.title;
+                            return customExe.Value.Title;
                         }
                     }
                 }
             }
             else
             {
-                var customs = INI.ReadSectionKeyValuePairsToDictionary("customExecutables");
+                var customs = ini.ReadSectionKeyValuePairsToDictionary("customExecutables");
                 if (customs != null)
                     foreach (var pair in customs)
                     {
@@ -1222,27 +1222,27 @@ namespace AIHelper.Manage
         /// optional exeParams 2 is arguments, optional exeParams 4 is working directory
         /// </summary>
         /// <param name="newCustomExecutable"></param>
-        internal static void InsertCustomExecutable(CustomExecutables.CustomExecutable newCustomExecutable, INIFile INI = null, bool insertOnlyMissingBinary = true)
+        internal static void InsertCustomExecutable(CustomExecutables.CustomExecutable newCustomExecutable, INIFile ini = null, bool insertOnlyMissingBinary = true)
         {
-            if (INI == null)
+            if (ini == null)
             {
-                INI = new INIFile(ManageSettings.GetMOiniPath());
+                ini = new INIFile(ManageSettings.GetMOiniPath());
             }
 
-            var customExcutables = new CustomExecutables(INI);
+            var customExcutables = new CustomExecutables(ini);
 
             if (insertOnlyMissingBinary)
             {
-                foreach (var exe in customExcutables.list)
+                foreach (var exe in customExcutables.List)
                 {
-                    if (exe.Value.binary == newCustomExecutable.binary) // return if exe found
+                    if (exe.Value.Binary == newCustomExecutable.Binary) // return if exe found
                     {
                         return;
                     }
                 }
             }
 
-            customExcutables.list.Add(customExcutables.list.Count + 1 + "", newCustomExecutable);
+            customExcutables.List.Add(customExcutables.List.Count + 1 + "", newCustomExecutable);
 
             customExcutables.Save();
         }
@@ -1303,13 +1303,13 @@ namespace AIHelper.Manage
         /// <summary>
         /// check symlink for usedata dir when target is not exists or symlink is not valid. overwrite for mo mode and data for common mode
         /// </summary>
-        internal static void CheckMOUserdata()
+        internal static void CheckMoUserdata()
         {
             DirectoryInfo objectDir;
             //overwrite dir of mo folder for mo mode and data folder for common mode
-            if (ManageSettings.IsMOMode())
+            if (ManageSettings.IsMoMode())
             {
-                objectDir = new DirectoryInfo(ManageSettings.GetCurrentGameMOOverwritePath());
+                objectDir = new DirectoryInfo(ManageSettings.GetCurrentGameMoOverwritePath());
             }
             else
             {
@@ -1338,16 +1338,16 @@ namespace AIHelper.Manage
             ActivateDeactivateInsertMod(modname, false);
         }
 
-        public static void InsertMod(string modname, bool Activate = true, string modAfterWhichInsert = "", bool PlaceAfter = true)
+        public static void InsertMod(string modname, bool activate = true, string modAfterWhichInsert = "", bool placeAfter = true)
         {
-            ActivateDeactivateInsertMod(modname, Activate, modAfterWhichInsert, PlaceAfter);
+            ActivateDeactivateInsertMod(modname, activate, modAfterWhichInsert, placeAfter);
         }
 
-        public static void ActivateDeactivateInsertMod(string modname, bool Activate = true, string modAfterWhichInsert = "", bool PlaceAfter = true)
+        public static void ActivateDeactivateInsertMod(string modname, bool activate = true, string modAfterWhichInsert = "", bool placeAfter = true)
         {
             if (modname.Length > 0)
             {
-                string currentMOprofile = ManageSettings.GetMOSelectedProfileDirName();
+                string currentMOprofile = ManageSettings.GetMoSelectedProfileDirName();
 
                 if (currentMOprofile.Length == 0)
                 {
@@ -1356,7 +1356,7 @@ namespace AIHelper.Manage
                 {
                     string profilemodlistpath = Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", currentMOprofile, "modlist.txt");
 
-                    ManageINI.InsertLineInFile(profilemodlistpath, (Activate ? "+" : "-") + modname, 1, modAfterWhichInsert, PlaceAfter);
+                    ManageIni.InsertLineInFile(profilemodlistpath, (activate ? "+" : "-") + modname, 1, modAfterWhichInsert, placeAfter);
                 }
             }
         }
@@ -1365,41 +1365,41 @@ namespace AIHelper.Manage
         /// Writes required parameters in meta.ini
         /// </summary>
         /// <param name="moddir"></param>
-        /// <param name="categoryIDIndex"></param>
+        /// <param name="categoryIdIndex"></param>
         /// <param name="version"></param>
         /// <param name="comments"></param>
         /// <param name="notes"></param>
-        public static void WriteMetaINI(string moddir, string categoryIDIndex = "", string version = "", string comments = "", string notes = "")
+        public static void WriteMetaIni(string moddir, string categoryIdIndex = "", string version = "", string comments = "", string notes = "")
         {
             if (Directory.Exists(moddir))
             {
                 string metaPath = Path.Combine(moddir, "meta.ini");
-                INIFile INI = new INIFile(metaPath);
+                INIFile ini = new INIFile(metaPath);
 
-                bool IsKeyExists = INI.KeyExists("category", "General");
-                if (!IsKeyExists || (categoryIDIndex.Length > 0 && INI.ReadINI("General", "category").Replace("\"", string.Empty).Length == 0))
+                bool isKeyExists = ini.KeyExists("category", "General");
+                if (!isKeyExists || (categoryIdIndex.Length > 0 && ini.ReadINI("General", "category").Replace("\"", string.Empty).Length == 0))
                 {
-                    INI.WriteINI("General", "category", "\"" + categoryIDIndex + "\"");
+                    ini.WriteINI("General", "category", "\"" + categoryIdIndex + "\"");
                 }
 
                 if (version.Length > 0)
                 {
-                    INI.WriteINI("General", "version", version);
+                    ini.WriteINI("General", "version", version);
                 }
 
-                INI.WriteINI("General", "gameName", ManageSettings.GETMOCurrentGameName());
+                ini.WriteINI("General", "gameName", ManageSettings.GetmoCurrentGameName());
 
                 if (comments.Length > 0)
                 {
-                    INI.WriteINI("General", "comments", comments);
+                    ini.WriteINI("General", "comments", comments);
                 }
 
                 if (notes.Length > 0)
                 {
-                    INI.WriteINI("General", "notes", "\"" + notes.Replace(Environment.NewLine, "<br>") + "\"");
+                    ini.WriteINI("General", "notes", "\"" + notes.Replace(Environment.NewLine, "<br>") + "\"");
                 }
 
-                INI.WriteINI("General", "validated", "true");
+                ini.WriteINI("General", "validated", "true");
             }
         }
 
@@ -1408,18 +1408,18 @@ namespace AIHelper.Manage
         /// </summary>
         internal static void RestoreModlist()
         {
-            if (File.Exists(ManageSettings.CurrentMOProfileModlistPath() + ".prezipmodsUpdate"))
+            if (File.Exists(ManageSettings.CurrentMoProfileModlistPath() + ".prezipmodsUpdate"))
             {
                 try
                 {
-                    File.Move(ManageSettings.CurrentMOProfileModlistPath(), ManageSettings.CurrentMOProfileModlistPath() + ".tmp");
+                    File.Move(ManageSettings.CurrentMoProfileModlistPath(), ManageSettings.CurrentMoProfileModlistPath() + ".tmp");
 
-                    if (!File.Exists(ManageSettings.CurrentMOProfileModlistPath()))
-                        File.Move(ManageSettings.CurrentMOProfileModlistPath() + ".prezipmodsUpdate", ManageSettings.CurrentMOProfileModlistPath());
+                    if (!File.Exists(ManageSettings.CurrentMoProfileModlistPath()))
+                        File.Move(ManageSettings.CurrentMoProfileModlistPath() + ".prezipmodsUpdate", ManageSettings.CurrentMoProfileModlistPath());
 
-                    if (File.Exists(ManageSettings.CurrentMOProfileModlistPath()))
+                    if (File.Exists(ManageSettings.CurrentMoProfileModlistPath()))
                     {
-                        new FileInfo(ManageSettings.CurrentMOProfileModlistPath() + ".tmp").DeleteEvenIfReadOnly();
+                        new FileInfo(ManageSettings.CurrentMoProfileModlistPath() + ".tmp").DeleteEvenIfReadOnly();
                     }
                 }
                 catch (Exception ex)
@@ -1432,11 +1432,11 @@ namespace AIHelper.Manage
         /// <summary>
         /// return list of mo names in active profile folder
         /// </summary>
-        /// <param name="OnlyEnabled"></param>
+        /// <param name="onlyEnabled"></param>
         /// <returns></returns>
-        public static string[] GetModNamesListFromActiveMOProfile(bool OnlyEnabled = true)
+        public static string[] GetModNamesListFromActiveMoProfile(bool onlyEnabled = true)
         {
-            string currentMOprofile = ManageSettings.GetMOSelectedProfileDirName();
+            string currentMOprofile = ManageSettings.GetMoSelectedProfileDirName();
 
             if (currentMOprofile.Length > 0)
             {
@@ -1445,7 +1445,7 @@ namespace AIHelper.Manage
                 //фикс на случай несовпадения выбранной игры и профиля в MO ini
                 if (!File.Exists(profilemodlistpath))
                 {
-                    ManageMO.RedefineGameMOData();
+                    ManageMo.RedefineGameMoData();
                     currentMOprofile = ReGetcurrentMOprofile(currentMOprofile);
 
                     profilemodlistpath = Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", currentMOprofile, "modlist.txt");
@@ -1454,7 +1454,7 @@ namespace AIHelper.Manage
                 if (File.Exists(profilemodlistpath))
                 {
                     string[] lines;
-                    if (OnlyEnabled)
+                    if (onlyEnabled)
                     {
                         //все строки с + в начале
                         lines = File.ReadAllLines(profilemodlistpath).Where(line => line.Length > 0 && string.CompareOrdinal(line.Substring(0, 1), "#") != 0 && string.CompareOrdinal(line.Substring(0, 1), "+") == 0).ToArray();
@@ -1483,9 +1483,9 @@ namespace AIHelper.Manage
         {
             while (!Directory.Exists(Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", currentMOprofile)))
             {
-                if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", ManageSettings.GetCurrentGameEXEName())))
+                if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", ManageSettings.GetCurrentGameExeName())))
                 {
-                    return ManageSettings.GetCurrentGameEXEName();
+                    return ManageSettings.GetCurrentGameExeName();
                 }
                 else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", ManageSettings.GetCurrentGameDisplayingName())))
                 {
@@ -1508,7 +1508,7 @@ namespace AIHelper.Manage
             return "Default";
         }
 
-        public static string GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(string[] pathInMods, bool[] IsDir)
+        public static string GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(string[] pathInMods, bool[] isDir)
         {
             string path = string.Empty;
             int d = 0;
@@ -1521,13 +1521,13 @@ namespace AIHelper.Manage
 
                         if (!string.IsNullOrWhiteSpace(path))
                         {
-                            if ((IsDir[d] && Directory.Exists(pathCandidate)) || (!IsDir[d] && File.Exists(pathCandidate)))
+                            if ((isDir[d] && Directory.Exists(pathCandidate)) || (!isDir[d] && File.Exists(pathCandidate)))
                             {
                                 return pathCandidate;
                             }
                             else
                             {
-                                path = GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(pathCandidate, IsDir[d]);
+                                path = GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(pathCandidate, isDir[d]);
                                 if (!string.IsNullOrWhiteSpace(path) && path != pathCandidate)
                                 {
                                     return path;
@@ -1546,7 +1546,7 @@ namespace AIHelper.Manage
             return path;
         }
 
-        public static string GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(string pathInMods, bool IsDir = false, bool OnlyEnabled = true)
+        public static string GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(string pathInMods, bool isDir = false, bool onlyEnabled = true)
         {
             if (string.IsNullOrWhiteSpace(pathInMods))
             {
@@ -1555,22 +1555,22 @@ namespace AIHelper.Manage
 
             try
             {
-                string ModsOverwrite = pathInMods.Contains(ManageSettings.GetCurrentGameMOOverwritePath()) ? ManageSettings.GetCurrentGameMOOverwritePath() : ManageSettings.GetCurrentGameModsPath();
+                string modsOverwrite = pathInMods.Contains(ManageSettings.GetCurrentGameMoOverwritePath()) ? ManageSettings.GetCurrentGameMoOverwritePath() : ManageSettings.GetCurrentGameModsPath();
 
                 //искать путь только для ссылки в Mods или в Data
-                if (!ManageStrings.IsStringAContainsStringB(pathInMods, ModsOverwrite) && !ManageStrings.IsStringAContainsStringB(pathInMods, ManageSettings.GetCurrentGameDataPath()))
+                if (!ManageStrings.IsStringAContainsStringB(pathInMods, modsOverwrite) && !ManageStrings.IsStringAContainsStringB(pathInMods, ManageSettings.GetCurrentGameDataPath()))
                     return pathInMods;
 
                 //отсеивание первого элемента с именем мода
                 //string subpath = string.Empty;
 
                 string[] pathInModsElements = pathInMods
-                    .Replace(ModsOverwrite, string.Empty)
+                    .Replace(modsOverwrite, string.Empty)
                     .Split(Path.DirectorySeparatorChar)
                     .Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
 
                 //для мода в mods пропустить имя этого мода
-                if (ModsOverwrite == ManageSettings.GetCurrentGameModsPath())
+                if (modsOverwrite == ManageSettings.GetCurrentGameModsPath())
                 {
                     pathInModsElements = pathInModsElements.Skip(1).ToArray();
                 }
@@ -1592,8 +1592,8 @@ namespace AIHelper.Manage
                 }
 
                 //check in Overwrite 1st
-                string overwritePath = ManageSettings.GetCurrentGameMOOverwritePath() + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
-                if (IsDir)
+                string overwritePath = ManageSettings.GetCurrentGameMoOverwritePath() + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
+                if (isDir)
                 {
                     if (Directory.Exists(overwritePath))
                     {
@@ -1609,12 +1609,12 @@ namespace AIHelper.Manage
                 }
 
                 //поиск по списку активных модов
-                string ModsPath = ManageSettings.GetCurrentGameModsPath();
-                var modNames = GetModNamesListFromActiveMOProfile(OnlyEnabled);
+                string modsPath = ManageSettings.GetCurrentGameModsPath();
+                var modNames = GetModNamesListFromActiveMoProfile(onlyEnabled);
                 foreach (var modName in modNames)
                 {
-                    string possiblePath = Path.Combine(ModsPath, modName) + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
-                    if (IsDir)
+                    string possiblePath = Path.Combine(modsPath, modName) + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
+                    if (isDir)
                     {
                         if (Directory.Exists(possiblePath))
                         {
@@ -1645,7 +1645,7 @@ namespace AIHelper.Manage
         {
             if (Properties.Settings.Default.MOmode)
             {
-                string currentMOprofile = ManageSettings.GetMOSelectedProfileDirName();
+                string currentMOprofile = ManageSettings.GetMoSelectedProfileDirName();
 
                 if (currentMOprofile.Length == 0)
                 {
@@ -1663,10 +1663,10 @@ namespace AIHelper.Manage
                         {
                             if (lines[i].StartsWith("+", StringComparison.InvariantCulture))
                             {
-                                string SetupXmlPath = Path.Combine(Properties.Settings.Default.ModsPath, lines[i].Remove(0, 1), "UserData", "setup.xml");
-                                if (File.Exists(SetupXmlPath))
+                                string setupXmlPath = Path.Combine(Properties.Settings.Default.ModsPath, lines[i].Remove(0, 1), "UserData", "setup.xml");
+                                if (File.Exists(setupXmlPath))
                                 {
-                                    return SetupXmlPath;
+                                    return setupXmlPath;
                                 }
                             }
                         }
@@ -1681,9 +1681,9 @@ namespace AIHelper.Manage
             }
         }
 
-        public static string GetMetaParameterValue(string MetaFilePath, string NeededValue)
+        public static string GetMetaParameterValue(string metaFilePath, string neededValue)
         {
-            return ManageINI.GetINIValueIfExist(MetaFilePath, NeededValue);
+            return ManageIni.GetIniValueIfExist(metaFilePath, neededValue);
 
             //using (StreamReader sr = new StreamReader(MetaFilePath))
             //{
@@ -1705,11 +1705,11 @@ namespace AIHelper.Manage
             //return string.Empty;
         }
 
-        public static string GetModFromModListContainsTheName(string name, bool OnlyFromEnabledMods = true)
+        public static string GetModFromModListContainsTheName(string name, bool onlyFromEnabledMods = true)
         {
             if (!string.IsNullOrWhiteSpace(name))
             {
-                string[] modList = ManageMO.GetModNamesListFromActiveMOProfile(OnlyFromEnabledMods);
+                string[] modList = ManageMo.GetModNamesListFromActiveMoProfile(onlyFromEnabledMods);
                 int nameLength = name.Length;
                 int modListLength = modList.Length;
                 for (int modlineNumber = 0; modlineNumber < modListLength; modlineNumber++)
@@ -1729,7 +1729,7 @@ namespace AIHelper.Manage
         /// </summary>
         public static void DummyFiles()
         {
-            if (ManageSettings.MOIsNew)
+            if (ManageSettings.MoIsNew)
             {
                 // remove dummy file
                 if (File.Exists(ManageSettings.GetDummyFilePath()))
@@ -1738,10 +1738,10 @@ namespace AIHelper.Manage
                 }
 
                 // change gameName to specific mo plugin set
-                var ini = new INIFile(ManageSettings.GetModOrganizerINIpath());
+                var ini = new INIFile(ManageSettings.GetModOrganizerInIpath());
                 if (ini.ReadINI("General", "gameName") == "Skyrim")
                 {
-                    ini.WriteINI("General", "gameName", GetMOBasicGamePluginGameName());
+                    ini.WriteINI("General", "gameName", GetMoBasicGamePluginGameName());
                 }
             }
             else
@@ -1749,7 +1749,7 @@ namespace AIHelper.Manage
                 //Create dummy file and add hidden attribute
                 if (!File.Exists(ManageSettings.GetDummyFilePath()))
                 {
-                    File.Copy(ManageSettings.GetDummyFileRESPath(), ManageSettings.GetDummyFilePath());
+                    File.Copy(ManageSettings.GetDummyFileResPath(), ManageSettings.GetDummyFilePath());
                     //new FileInfo(ManageSettings.GetDummyFilePath()).Create().Close();
                     //File.WriteAllText(ManageSettings.GetDummyFilePath(), "dummy file need to execute mod organizer");
                     ManageFilesFolders.HideFileFolder(ManageSettings.GetDummyFilePath(), true);
@@ -1772,9 +1772,9 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="input"></param>
         /// <param name="categoriesList"></param>
-        /// <param name="GetName"></param>
+        /// <param name="getName"></param>
         /// <returns></returns>
-        public static string GetCategoryIndexNameBase(string input, string[] categoriesList = null, bool GetName = true)
+        public static string GetCategoryIndexNameBase(string input, string[] categoriesList = null, bool getName = true)
         {
             if (categoriesList == null)
             {
@@ -1783,9 +1783,9 @@ namespace AIHelper.Manage
             foreach (var category in categoriesList)
             {
                 string[] categoryData = category.Split('|');
-                if (categoryData[GetName ? 0 : 1] == input)
+                if (categoryData[getName ? 0 : 1] == input)
                 {
-                    return categoryData[GetName ? 1 : 0];
+                    return categoryData[getName ? 1 : 0];
                 }
             }
 
@@ -1803,25 +1803,25 @@ namespace AIHelper.Manage
 
             string[,] categorieRules =
             {
-                { Path.Combine(modDir, "BepInEx", "Plugins"), ManageMO.GetCategoryIndexForTheName("Plugins",categoriesList), "dll" } //Plug-ins 51
+                { Path.Combine(modDir, "BepInEx", "Plugins"), ManageMo.GetCategoryIndexForTheName("Plugins",categoriesList), "dll" } //Plug-ins 51
                 ,
-                { Path.Combine(modDir, "UserData"), ManageMO.GetCategoryIndexForTheName("UserFiles",categoriesList), "*" } //UserFiles 53
+                { Path.Combine(modDir, "UserData"), ManageMo.GetCategoryIndexForTheName("UserFiles",categoriesList), "*" } //UserFiles 53
                 ,
-                { Path.Combine(modDir, "UserData", "chara"), ManageMO.GetCategoryIndexForTheName("Characters",categoriesList), "png" } //Characters 54
+                { Path.Combine(modDir, "UserData", "chara"), ManageMo.GetCategoryIndexForTheName("Characters",categoriesList), "png" } //Characters 54
                 ,
-                { Path.Combine(modDir, "UserData", "studio", "scene"), ManageMO.GetCategoryIndexForTheName("Studio scenes",categoriesList), "png"} //Studio scenes 57
+                { Path.Combine(modDir, "UserData", "studio", "scene"), ManageMo.GetCategoryIndexForTheName("Studio scenes",categoriesList), "png"} //Studio scenes 57
                 ,
-                { Path.Combine(modDir, "Mods"), ManageMO.GetCategoryIndexForTheName("Sideloader",categoriesList), "zip" } //Sideloader 60
+                { Path.Combine(modDir, "Mods"), ManageMo.GetCategoryIndexForTheName("Sideloader",categoriesList), "zip" } //Sideloader 60
                 ,
-                { Path.Combine(modDir, "scripts"), ManageMO.GetCategoryIndexForTheName("ScriptLoader scripts",categoriesList), "cs"} //ScriptLoader scripts 86
+                { Path.Combine(modDir, "scripts"), ManageMo.GetCategoryIndexForTheName("ScriptLoader scripts",categoriesList), "cs"} //ScriptLoader scripts 86
                 ,
-                { Path.Combine(modDir, "UserData", "coordinate"), ManageMO.GetCategoryIndexForTheName("Coordinate",categoriesList), "png"} //Coordinate 87
+                { Path.Combine(modDir, "UserData", "coordinate"), ManageMo.GetCategoryIndexForTheName("Coordinate",categoriesList), "png"} //Coordinate 87
                 ,
-                { Path.Combine(modDir, "UserData", "Overlays"), ManageMO.GetCategoryIndexForTheName("Overlay",categoriesList), "png"} //Overlay 88
+                { Path.Combine(modDir, "UserData", "Overlays"), ManageMo.GetCategoryIndexForTheName("Overlay",categoriesList), "png"} //Overlay 88
                 ,
-                { Path.Combine(modDir, "UserData", "housing"), ManageMO.GetCategoryIndexForTheName("Housing",categoriesList), "png"} //Housing 89
+                { Path.Combine(modDir, "UserData", "housing"), ManageMo.GetCategoryIndexForTheName("Housing",categoriesList), "png"} //Housing 89
                 ,
-                { Path.Combine(modDir, "UserData", "housing"), ManageMO.GetCategoryIndexForTheName("Cardframe",categoriesList), "png"} //Cardframe 90
+                { Path.Combine(modDir, "UserData", "housing"), ManageMo.GetCategoryIndexForTheName("Cardframe",categoriesList), "png"} //Cardframe 90
             };
 
             int categorieRulesLength = categorieRules.Length / 3;
@@ -1864,48 +1864,48 @@ namespace AIHelper.Manage
             return resultCategory;
         }
 
-        internal static void MOINIFixes()
+        internal static void MoiniFixes()
         {
-            if (!File.Exists(ManageSettings.GetModOrganizerINIpath())) return;
+            if (!File.Exists(ManageSettings.GetModOrganizerInIpath())) return;
 
-            var INI = new INIFile(ManageSettings.GetModOrganizerINIpath());
+            var ini = new INIFile(ManageSettings.GetModOrganizerInIpath());
             //if (INI == null) return;
 
             string gameName;
             //updated game name
-            if (string.IsNullOrWhiteSpace(gameName = INI.ReadINI("General", "gameName")) || gameName != ManageSettings.GETMOCurrentGameName())
+            if (string.IsNullOrWhiteSpace(gameName = ini.ReadINI("General", "gameName")) || gameName != ManageSettings.GetmoCurrentGameName())
             {
-                INI.WriteINI("General", "gameName", ManageSettings.GETMOCurrentGameName(), false);
+                ini.WriteINI("General", "gameName", ManageSettings.GetmoCurrentGameName(), false);
             }
 
             //clear pluginBlacklist section of MO ini to prevent plugin_python.dll exist there
-            if (INI.SectionExistsAndNotEmpty("pluginBlacklist"))
+            if (ini.SectionExistsAndNotEmpty("pluginBlacklist"))
             {
-                INI.DeleteSection("pluginBlacklist", false);
+                ini.DeleteSection("pluginBlacklist", false);
             }
 
             //Set selected_executable number to game exe
-            var Customs = new CustomExecutables(INI);
-            foreach (var custom in Customs.list)
+            var customs = new CustomExecutables(ini);
+            foreach (var custom in customs.List)
             {
-                if (Path.GetFileNameWithoutExtension(custom.Value.binary) == ManageSettings.GetCurrentGameEXEName())
+                if (Path.GetFileNameWithoutExtension(custom.Value.Binary) == ManageSettings.GetCurrentGameExeName())
                 {
                     var index = custom.Key;
-                    INI.WriteINI("General", "selected_executable", index, false);
-                    INI.WriteINI("Widgets", "MainWindow_executablesListBox_index", index, false);
+                    ini.WriteINI("General", "selected_executable", index, false);
+                    ini.WriteINI("Widgets", "MainWindow_executablesListBox_index", index, false);
                     break;
                 }
             }
 
-            INI.WriteINI("PluginPersistance", @"Python%20Proxy\tryInit", "false");
+            ini.WriteINI("PluginPersistance", @"Python%20Proxy\tryInit", "false");
         }
 
         /// <summary>
         /// clean MO folder from some useless files for illusion games
         /// </summary>
-        internal static void CleanMOFolder()
+        internal static void CleanMoFolder()
         {
-            var MOFilesForClean = new[]
+            var moFilesForClean = new[]
             {
                     @"MOFolder\plugins\bsa_*.dll",
                     //@"MOFolder\plugins\bsa_extractor.dll",
@@ -1940,12 +1940,12 @@ namespace AIHelper.Manage
                     @"MOFolder\plugins\installer_fomod_csharp.dll",
                     @"MOFolder\plugins\data\OMODFramework*.*",
                     @"MOFolder\plugins\data\DDS\",
-                    !ManageMO.GetMOVersion().StartsWith("2.3",StringComparison.InvariantCulture)?@"MOFolder\plugins\modorganizer-basic_games\":""
+                    !ManageMo.GetMoVersion().StartsWith("2.3",StringComparison.InvariantCulture)?@"MOFolder\plugins\modorganizer-basic_games\":""
             };
-            var MOfolderPath = ManageSettings.GetMOdirPath();
-            foreach (var file in MOFilesForClean)
+            var mOfolderPath = ManageSettings.GetMOdirPath();
+            foreach (var file in moFilesForClean)
             {
-                var path = file.Replace("MOFolder", MOfolderPath);
+                var path = file.Replace("MOFolder", mOfolderPath);
                 if (!string.IsNullOrWhiteSpace(path))
                 {
                     if (path.EndsWith("\\", StringComparison.InvariantCulture) && Directory.Exists(path))
@@ -2014,7 +2014,7 @@ namespace AIHelper.Manage
         /// get GameName value frome basicgame plugin
         /// </summary>
         /// <returns></returns>
-        internal static string GetMOBasicGamePluginGameName()
+        internal static string GetMoBasicGamePluginGameName()
         {
             var pys = GameData.CurrentGame.GetBaseGamePyFile();
             Match gameName = null;

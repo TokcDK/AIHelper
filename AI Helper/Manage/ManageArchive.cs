@@ -51,14 +51,14 @@ namespace AIHelper.Manage
         }
 
         // Number of files within zip archive
-        public static int GetFilesCountInZipArchive(ZipArchive InputArchive = null, string zipFilePath = "")
+        public static int GetFilesCountInZipArchive(ZipArchive inputArchive = null, string zipFilePath = "")
         {
             int count = 0;
 
-            if (InputArchive != null)
+            if (inputArchive != null)
             {
                 // We count only named (i.e. that are with files) entries
-                foreach (var entry in InputArchive.Entries)
+                foreach (var entry in inputArchive.Entries)
                 {
                     if (!string.IsNullOrEmpty(entry.Name))
                     {
@@ -84,7 +84,7 @@ namespace AIHelper.Manage
             return count;
         }
 
-        internal static string GetZipmodGUID(string zipmodPath)
+        internal static string GetZipmodGuid(string zipmodPath)
         {
             if (string.IsNullOrWhiteSpace(zipmodPath) || !File.Exists(zipmodPath))
             {
@@ -105,7 +105,7 @@ namespace AIHelper.Manage
                     {
                         if (entry.FullName.EndsWith("manifest.xml", StringComparison.OrdinalIgnoreCase))
                         {
-                            return ManageXML.ReadXmlValue(entry.Open(), "manifest/guid");
+                            return ManageXml.ReadXmlValue(entry.Open(), "manifest/guid");
                         }
                     }
                 }

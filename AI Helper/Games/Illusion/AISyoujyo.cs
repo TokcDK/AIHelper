@@ -1,14 +1,14 @@
 ﻿namespace AIHelper.Games
 {
-    public class AISyoujyo : Game
+    public class AiSyoujyo : Game
     {
         public override string GetGameFolderName()
         {
-            return GetTheGameFolderName(GetGameEXEName());
+            return GetTheGameFolderName(GetGameExeName());
         }
-        public override bool isHaveSideloaderMods { get; set; } = true;
+        public override bool IsHaveSideloaderMods { get; set; } = true;
 
-        public override string GetGameEXEName()
+        public override string GetGameExeName()
         {
             return "AI-Syoujyo";
         }
@@ -18,7 +18,7 @@
             return T._("AI-Girl");
         }
 
-        public override string GetGameStudioEXEName()
+        public override string GetGameStudioExeName()
         {
             return "StudioNEOV2";
         }

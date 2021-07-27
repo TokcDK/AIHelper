@@ -17,14 +17,14 @@ namespace AIHelper.Forms.ExtraSettings.Elements
 
         private void XUnityAutotranslatorForm_Load(object sender, EventArgs e)
         {
-            AddXUASettings();
+            AddXuaSettings();
 
             SetLocalizationStrings();
 
             SetTooltips();
         }
 
-        private void AddXUASettings()
+        private void AddXuaSettings()
         {
             //Properties.Settings.Default.XUAiniPath =
             //    ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(new string[2] { Path.Combine(ManageSettings.GetModsPath(), "XUnity.AutoTranslator", "BepInEx", "config", "AutoTranslatorConfig.ini"), Path.Combine(ManageSettings.GetModsPath(), "XUnity.AutoTranslator", "Plugins", "AutoTranslatorConfig.ini") }, new bool[2] { false, false })
@@ -43,7 +43,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements
 
             if (Properties.Settings.Default.XUAiniPath.Length > 0)
             {
-                var iniValue = ManageINI.GetINIValueIfExist(
+                var iniValue = ManageIni.GetIniValueIfExist(
                     Properties.Settings.Default.XUAiniPath,
                     "FromLanguage",
                     "General"
@@ -69,7 +69,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements
                 }
                 else
                 {
-                    iniValue = ManageINI.GetINIValueIfExist(
+                    iniValue = ManageIni.GetIniValueIfExist(
                         Properties.Settings.Default.XUAiniPath,
                         "Language",
                         "General"
@@ -84,7 +84,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements
 
                 XUAEndpointComboBox.Items.AddRange(GetTranslationServicesList());
 
-                iniValue = ManageINI.GetINIValueIfExist(
+                iniValue = ManageIni.GetIniValueIfExist(
                     Properties.Settings.Default.XUAiniPath,
                     "Endpoint",
                     "Service"
@@ -140,7 +140,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements
                     };
         }
 
-        ToolTip THToolTip;
+        ToolTip _thToolTip;
 
         private void SetLocalizationStrings()
         {
@@ -154,7 +154,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements
         {
             //http://qaru.site/questions/47162/c-how-do-i-add-a-tooltip-to-a-control
             //THMainResetTableButton
-            THToolTip = new ToolTip
+            _thToolTip = new ToolTip
             {
                 // Set up the delays for the ToolTip.
                 AutoPopDelay = 32000,
@@ -166,13 +166,13 @@ namespace AIHelper.Forms.ExtraSettings.Elements
                 //ShowAlways = true
             };
 
-            THToolTip.SetToolTip(XUAcfgFileOpenLinkLabel, T._("Open file with all settings"));
-            THToolTip.SetToolTip(XUAHelpLinkLabel, T._("Open XUA documentation"));
-            THToolTip.SetToolTip(XUAFromLanguageComboBox, T._("List of source languages. From which translate"));
-            THToolTip.SetToolTip(XUALanguageComboBox, T._("List of target languages. To which translate"));
-            THToolTip.SetToolTip(XUAEndpointComboBox, T._("List of translation services"));
+            _thToolTip.SetToolTip(XUAcfgFileOpenLinkLabel, T._("Open file with all settings"));
+            _thToolTip.SetToolTip(XUAHelpLinkLabel, T._("Open XUA documentation"));
+            _thToolTip.SetToolTip(XUAFromLanguageComboBox, T._("List of source languages. From which translate"));
+            _thToolTip.SetToolTip(XUALanguageComboBox, T._("List of target languages. To which translate"));
+            _thToolTip.SetToolTip(XUAEndpointComboBox, T._("List of translation services"));
 
-            THToolTip.SetToolTip(XUAEndpointComboBox,
+            _thToolTip.SetToolTip(XUAEndpointComboBox,
                 T._("From XUA documentation.\nThe supported translators are: ")
                 + "\n\n" +
                 T._("GoogleTranslate, based on the online Google translation service. Does not require authentication.")
@@ -216,7 +216,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements
             if (!Properties.Settings.Default.ExtraSettingsInitOnLoadIsInAction)
             {
                 string value = ManageSettings.LanguageEnumToIdentifier((sender as ComboBox).SelectedItem.ToString());
-                ManageINI.WriteINIValue(Properties.Settings.Default.XUAiniPath, "General", "FromLanguage", value);
+                ManageIni.WriteIniValue(Properties.Settings.Default.XUAiniPath, "General", "FromLanguage", value);
             }
         }
 
@@ -225,7 +225,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements
             if (!Properties.Settings.Default.ExtraSettingsInitOnLoadIsInAction)
             {
                 string value = ManageSettings.LanguageEnumToIdentifier((sender as ComboBox).SelectedItem.ToString());
-                ManageINI.WriteINIValue(Properties.Settings.Default.XUAiniPath, "General", "Language", value);
+                ManageIni.WriteIniValue(Properties.Settings.Default.XUAiniPath, "General", "Language", value);
             }
         }
 
@@ -234,7 +234,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements
             if (!Properties.Settings.Default.ExtraSettingsInitOnLoadIsInAction)
             {
                 string value = (sender as ComboBox).SelectedItem.ToString();
-                ManageINI.WriteINIValue(Properties.Settings.Default.XUAiniPath, "Service", "Endpoint", value);
+                ManageIni.WriteIniValue(Properties.Settings.Default.XUAiniPath, "Service", "Endpoint", value);
             }
         }
 

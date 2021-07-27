@@ -8,44 +8,44 @@ namespace AIHelper.Forms.ExtraSettings.Elements
     {
         public XUnityAutotranslator()
         {
-            XUAElement = new XUnityAutotranslatorForm
+            _xuaElement = new XUnityAutotranslatorForm
             {
                 TopLevel = false,
                 //BackColor = parentForm.BackColor
             };
-            ElementToPlace = XUAElement;
+            ElementToPlace = _xuaElement;
         }
 
         internal override bool Check()
         {
             Properties.Settings.Default.XUAiniPath =
-                ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(new string[2] { Path.Combine(ManageSettings.GetCurrentGameModsPath(), "XUnity.AutoTranslator", "BepInEx", "config", "AutoTranslatorConfig.ini"), Path.Combine(ManageSettings.GetCurrentGameModsPath(), "XUnity.AutoTranslator", "Plugins", "AutoTranslatorConfig.ini") }, new bool[2] { false, false })
+                ManageMo.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(new string[2] { Path.Combine(ManageSettings.GetCurrentGameModsPath(), "XUnity.AutoTranslator", "BepInEx", "config", "AutoTranslatorConfig.ini"), Path.Combine(ManageSettings.GetCurrentGameModsPath(), "XUnity.AutoTranslator", "Plugins", "AutoTranslatorConfig.ini") }, new bool[2] { false, false })
                 ;
 
             //return false;
             return !string.IsNullOrWhiteSpace(Properties.Settings.Default.XUAiniPath) && File.Exists(Properties.Settings.Default.XUAiniPath);
         }
 
-        XUnityAutotranslatorForm XUAElement;
+        XUnityAutotranslatorForm _xuaElement;
 
         //internal override T ElementToPlace { get => XUAElement; set => XUAElement = value; }
 
         internal override string Title => "XUnity.Autotranslator";
 
-        internal override Form ElementToShow { get => XUAElement; set => XUAElement = value as XUnityAutotranslatorForm; }
+        internal override Form ElementToShow { get => _xuaElement; set => _xuaElement = value as XUnityAutotranslatorForm; }
 
         internal override void Show(Form parentForm)
         {
             if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.XUAiniPath))
             {
-                parentForm.Controls.Add(XUAElement);
-                XUAElement.Show();
+                parentForm.Controls.Add(_xuaElement);
+                _xuaElement.Show();
             }
         }
 
         public void Dispose()
         {
-            XUAElement.Dispose();
+            _xuaElement.Dispose();
         }
     }
 }

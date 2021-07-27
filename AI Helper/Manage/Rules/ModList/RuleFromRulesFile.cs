@@ -14,9 +14,9 @@ namespace AIHelper.Manage.Rules.ModList
 
         internal override bool Condition()
         {
-            var RulesFilePath = ManageSettings.GetCurrentGameModListRulesPath();
+            var rulesFilePath = ManageSettings.GetCurrentGameModListRulesPath();
 
-            if (!File.Exists(RulesFilePath))
+            if (!File.Exists(rulesFilePath))
             {
                 return false;
             }
@@ -30,7 +30,7 @@ namespace AIHelper.Manage.Rules.ModList
             //    var t = modlistData.rulesDict[modlistData.ModName][1];
             //}
 
-            return modlistData.rulesDict.ContainsKey(modlistData.ModName);
+            return ModlistData.RulesDict.ContainsKey(ModlistData.ModName);
         }
 
         internal override string Description()
@@ -45,22 +45,22 @@ namespace AIHelper.Manage.Rules.ModList
 
         private bool ParseRulesFromFile()
         {
-            return ParseRules(modlistData.rulesDict[modlistData.ModName]);
+            return ParseRules(ModlistData.RulesDict[ModlistData.ModName]);
         }
 
         private bool FillrulesDict()
         {
-            if (modlistData.rulesDict != null)
+            if (ModlistData.RulesDict != null)
             {
-                return modlistData.rulesDict.Count > 0;
+                return ModlistData.RulesDict.Count > 0;
             }
 
-            modlistData.rulesDict = new Dictionary<string, string[]>();
+            ModlistData.RulesDict = new Dictionary<string, string[]>();
 
             var modlistRulesPath = ManageSettings.GetCurrentGameModListRulesPath();
             if (!File.Exists(modlistRulesPath))
             {
-                modlistData.rulesDict = null;
+                ModlistData.RulesDict = null;
                 return false;
             }
 
@@ -86,7 +86,7 @@ namespace AIHelper.Manage.Rules.ModList
                     {
                         if (ruleConditions.Count > 0)
                         {
-                            modlistData.rulesDict.Add(ruleName, ruleConditions.ToArray());
+                            ModlistData.RulesDict.Add(ruleName, ruleConditions.ToArray());
                             ruleConditions.Clear();
                         }
                         ruleName = string.Empty;
@@ -94,7 +94,7 @@ namespace AIHelper.Manage.Rules.ModList
                     }
                     if (!ruleReading)
                     {
-                        if (!line.StartsWith(modlistData.RulesTagFile, StringComparison.InvariantCulture))
+                        if (!line.StartsWith(ModlistData.RulesTagFile, StringComparison.InvariantCulture))
                         {
                             ruleName = ModListData.GetDataWithNoComments(line);
                             ruleReading = true;
@@ -104,11 +104,11 @@ namespace AIHelper.Manage.Rules.ModList
 
                 if (!string.IsNullOrWhiteSpace(ruleName) && ruleConditions.Count > 0)
                 {
-                    modlistData.rulesDict.Add(ruleName, ruleConditions.ToArray());
+                    ModlistData.RulesDict.Add(ruleName, ruleConditions.ToArray());
                 }
             }
 
-            return modlistData.rulesDict.Count > 0;
+            return ModlistData.RulesDict.Count > 0;
         }
     }
 }

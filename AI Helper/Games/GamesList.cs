@@ -9,8 +9,8 @@ namespace AIHelper.Games
         {
             return new List<Game>(4)
             {
-                new AISyoujyo(),
-                new AISyoujyoTrial(),
+                new AiSyoujyo(),
+                new AiSyoujyoTrial(),
                 new HoneySelect(),
                 new HoneySelect2(),
                 new Koikatsu()

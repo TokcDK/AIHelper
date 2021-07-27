@@ -2,16 +2,16 @@
 {
     abstract class ModsMetaUrlBase
     {
-        protected ModInfo modinfo;
+        protected ModInfo Modinfo;
 
-        protected bool KK;
-        protected bool HS;
-        protected bool AI;
-        protected bool HS2;
+        protected bool Kk;
+        protected bool Hs;
+        protected bool Ai;
+        protected bool Hs2;
 
         protected ModsMetaUrlBase(ModInfo modinfo)
         {
-            this.modinfo = modinfo;
+            this.Modinfo = modinfo;
 
             //switch (ManageSettings.GetCurrentGameEXEName())
             //{

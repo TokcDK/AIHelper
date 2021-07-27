@@ -51,10 +51,10 @@ namespace AIHelper
             GetLinksListAndAddLinks();
         }
 
-        private readonly string linksSeparator = "{{link}}";
+        private readonly string _linksSeparator = "{{link}}";
         private void GetLinksListAndAddLinks()
         {
-            Dictionary<string, string> GroupNames = new Dictionary<string, string>
+            Dictionary<string, string> groupNames = new Dictionary<string, string>
             {
                 { "Characters", T._("Characters") },
                 { "Mods", T._("Mods") },
@@ -63,20 +63,20 @@ namespace AIHelper
                 { "Other", T._("Other") }
             };
 
-            string GameLinksPath = Path.Combine(Properties.Settings.Default.AppResDir, "links", ManageSettings.GetCurrentGameFolderName() + ".txt");
-            if (!File.Exists(GameLinksPath))
+            string gameLinksPath = Path.Combine(Properties.Settings.Default.AppResDir, "links", ManageSettings.GetCurrentGameFolderName() + ".txt");
+            if (!File.Exists(gameLinksPath))
             {
-                GameLinksPath = Path.Combine(Properties.Settings.Default.AppResDir, "links", "Default.txt");
+                gameLinksPath = Path.Combine(Properties.Settings.Default.AppResDir, "links", "Default.txt");
             }
-            if (File.Exists(GameLinksPath))
+            if (File.Exists(gameLinksPath))
             {
                 //https://stackoverflow.com/questions/16959122/displaying-multiple-linklabels-in-a-form
-                string[] links = File.ReadAllLines(GameLinksPath).Where(line => !line.StartsWith(";", StringComparison.InvariantCulture)).ToArray();
+                string[] links = File.ReadAllLines(gameLinksPath).Where(line => !line.StartsWith(";", StringComparison.InvariantCulture)).ToArray();
                 int groupcnt = 0;
                 string lastgroup = string.Empty;
                 foreach (var line in links)
                 {
-                    string group = line.Split(new string[] { linksSeparator }, StringSplitOptions.None)[0];
+                    string group = line.Split(new string[] { _linksSeparator }, StringSplitOptions.None)[0];
                     if (lastgroup != group)
                     {
                         lastgroup = group;
@@ -95,7 +95,7 @@ namespace AIHelper
 
                 foreach (var link in links)
                 {
-                    string[] linkParts = link.Split(new string[] { linksSeparator }, StringSplitOptions.None);
+                    string[] linkParts = link.Split(new string[] { _linksSeparator }, StringSplitOptions.None);
 
                     LinkLabel linkLabel = new LinkLabel
                     {
@@ -109,7 +109,7 @@ namespace AIHelper
                         lastgroup = linkParts[0];
                         Label lblGroup = new Label
                         {
-                            Text = GroupNames.Keys.Contains(linkParts[0]) ? GroupNames[linkParts[0]] : linkParts[0]
+                            Text = groupNames.Keys.Contains(linkParts[0]) ? groupNames[linkParts[0]] : linkParts[0]
                         };
 
                         panel.Controls.Add(lblGroup, 0, currentRow++);

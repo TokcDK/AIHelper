@@ -1219,38 +1219,6 @@ namespace AIHelper.Manage
         /// required exeParams 0 is exe title, required exeParams 1 is exe bynary path
         /// optional exeParams 2 is arguments, optional exeParams 4 is working directory
         /// </summary>
-        /// <param name="exeParams"></param>
-        internal static void InsertCustomExecutable(string[] exeParams)
-        {
-            var INI = new INIFile(ManageSettings.GetMOiniPath());
-            var customs = INI.ReadSectionKeyValuePairsToDictionary("customExecutables");
-
-            var newind = GetMOiniCustomExecutablesCount(customs) + 1; //get new custom executables index
-
-            //add parameterso of new executable
-            customs.Add(newind + @"\title", exeParams[0]);
-            customs.Add(newind + @"\binary", exeParams[1].Replace(@"\\", "/").Replace(@"\", "/"));
-            customs.Add(newind + @"\arguments", exeParams.Length > 2 ? @"\""" + exeParams[2].Replace(@"\", @"\\").Replace("/", @"\\") + @"\""" : string.Empty);
-            customs.Add(newind + @"\workingDirectory", exeParams.Length > 3 ? exeParams[3] : Path.GetDirectoryName(exeParams[0]).Replace(@"\\", "/").Replace(@"\", "/"));
-            customs.Add(newind + @"\ownicon", "true");
-
-            //update parameters size
-            customs.Remove("size");
-            customs["size"] = newind + "";
-
-            //write customs
-            foreach (var record in customs)
-            {
-                INI.WriteINI("customExecutables", record.Key, record.Value, false);
-            }
-            INI.SaveINI();
-        }
-
-        /// <summary>
-        /// inserts in MO.ini new custom executable
-        /// required exeParams 0 is exe title, required exeParams 1 is exe bynary path
-        /// optional exeParams 2 is arguments, optional exeParams 4 is working directory
-        /// </summary>
         /// <param name="newCustomExecutable"></param>
         internal static void InsertCustomExecutable(CustomExecutables.CustomExecutable newCustomExecutable, INIFile INI = null, bool insertOnlyMissingBinary = true)
         {

@@ -1354,5 +1354,11 @@ namespace AIHelper.Manage
         {
             return "2MO";
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetMoBaseGamesPluginGamesDirPath()
+        {
+            return Path.Combine(GetMOdirPath(), "plugins", "basic_games", "games");
+        }
     }
 }

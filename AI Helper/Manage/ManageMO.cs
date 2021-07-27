@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace AIHelper.Manage
@@ -29,9 +31,9 @@ namespace AIHelper.Manage
         public static void RedefineGameMOData()
         {
             //MOini
-            ManageSymLinkExtensions.ReCreateFileLinkWhenNotValid(ManageSettings.GetMOiniPath(), ManageSettings.GetMOiniPathForSelectedGame(), true);
+            ManageSettings.GetMOiniPath().ReCreateFileLinkWhenNotValid(ManageSettings.GetMOiniPathForSelectedGame(), true);
             //Categories
-            ManageSymLinkExtensions.ReCreateFileLinkWhenNotValid(ManageSettings.GetMOcategoriesPath(), ManageSettings.GetMOcategoriesPathForSelectedGame(), true);
+            ManageSettings.GetMOcategoriesPath().ReCreateFileLinkWhenNotValid(ManageSettings.GetMOcategoriesPathForSelectedGame(), true);
         }
 
         internal static string GetMOVersion()
@@ -1729,13 +1731,17 @@ namespace AIHelper.Manage
         {
             if (ManageSettings.MOIsNew)
             {
+                // remove dummy file
                 if (File.Exists(ManageSettings.GetDummyFilePath()))
                 {
                     File.Delete(ManageSettings.GetDummyFilePath());
                 }
-                if (File.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "")))
+
+                // change gameName to specific mo plugin set
+                var ini = new INIFile(ManageSettings.GetModOrganizerINIpath());
+                if (ini.ReadINI("General", "gameName") == "Skyrim")
                 {
-                    File.Delete(ManageSettings.GetDummyFilePath());
+                    ini.WriteINI("General", "gameName", GetMOBasicGamePluginGameName());
                 }
             }
             else
@@ -1879,23 +1885,15 @@ namespace AIHelper.Manage
             }
 
             //Set selected_executable number to game exe
-            var Customs = INI.ReadSectionKeyValuePairsToDictionary("customExecutables");
-            if (Customs != null)
+            var Customs = new CustomExecutables(INI);
+            foreach (var custom in Customs.list)
             {
-                foreach (var INIKeyValue in Customs)
+                if (Path.GetFileNameWithoutExtension(custom.Value.binary) == ManageSettings.GetCurrentGameEXEName())
                 {
-                    if (!INIKeyValue.Key.EndsWith("binary", StringComparison.InvariantCulture))
-                    {
-                        continue;
-                    }
-
-                    if (Path.GetFileNameWithoutExtension(INIKeyValue.Value) == ManageSettings.GetCurrentGameEXEName())
-                    {
-                        var index = INIKeyValue.Key.Split('\\')[0];
-                        INI.WriteINI("General", "selected_executable", index, false);
-                        INI.WriteINI("Widgets", "MainWindow_executablesListBox_index", index, false);
-                        break;
-                    }
+                    var index = custom.Key;
+                    INI.WriteINI("General", "selected_executable", index, false);
+                    INI.WriteINI("Widgets", "MainWindow_executablesListBox_index", index, false);
+                    break;
                 }
             }
 
@@ -1994,7 +1992,7 @@ namespace AIHelper.Manage
         /// </summary>
         internal static void CheckBaseGamesPy()
         {
-            var moBaseGamesPluginGamesDirPath = Path.Combine(ManageSettings.GetMOdirPath(), "plugins", "basic_games", "games");
+            var moBaseGamesPluginGamesDirPath = ManageSettings.GetMoBaseGamesPluginGamesDirPath();
             if (!Directory.Exists(moBaseGamesPluginGamesDirPath))
             {
                 return;
@@ -2010,6 +2008,23 @@ namespace AIHelper.Manage
                     File.WriteAllBytes(pypath, py.Value);
                 }
             }
+        }
+
+        /// <summary>
+        /// get GameName value frome basicgame plugin
+        /// </summary>
+        /// <returns></returns>
+        internal static string GetMOBasicGamePluginGameName()
+        {
+            var pys = GameData.CurrentGame.GetBaseGamePyFile();
+            Match gameName = null;
+            foreach (var py in pys)
+            {
+                gameName = Regex.Match(Encoding.UTF8.GetString(py.Value), @"GameName \= \""([^\""]+)\""");
+                break;
+            }
+
+            return gameName.Result("$1");
         }
     }
 }

@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace AIHelper.Manage
 {
-    class ManageMo
+    class ManageModOrganizer
     {
 
         internal static string MOremoveByteArray(string mOSelectedProfileDirPath)
@@ -1445,7 +1445,7 @@ namespace AIHelper.Manage
                 //фикс на случай несовпадения выбранной игры и профиля в MO ini
                 if (!File.Exists(profilemodlistpath))
                 {
-                    ManageMo.RedefineGameMoData();
+                    ManageModOrganizer.RedefineGameMoData();
                     currentMOprofile = ReGetcurrentMOprofile(currentMOprofile);
 
                     profilemodlistpath = ManageSettings.GetCurrentMoProfileModlistPath();
@@ -1645,29 +1645,21 @@ namespace AIHelper.Manage
         {
             if (Properties.Settings.Default.MOmode)
             {
-                string currentMOprofile = ManageSettings.GetMoSelectedProfileDirName();
+                string profilemodlistpath = ManageSettings.GetCurrentMoProfileModlistPath();
 
-                if (currentMOprofile.Length == 0)
+                if (File.Exists(profilemodlistpath))
                 {
-                }
-                else
-                {
-                    string profilemodlistpath = ManageSettings.GetCurrentMoProfileModlistPath();
+                    string[] lines = File.ReadAllLines(profilemodlistpath);
 
-                    if (File.Exists(profilemodlistpath))
+                    int linescount = lines.Length;
+                    for (int i = 1; i < linescount; i++) // 1- означает пропуск нулевой строки, где комментарий
                     {
-                        string[] lines = File.ReadAllLines(profilemodlistpath);
-
-                        int linescount = lines.Length;
-                        for (int i = 1; i < linescount; i++) // 1- означает пропуск нулевой строки, где комментарий
+                        if (lines[i].StartsWith("+", StringComparison.InvariantCulture))
                         {
-                            if (lines[i].StartsWith("+", StringComparison.InvariantCulture))
+                            string setupXmlPath = Path.Combine(Properties.Settings.Default.ModsPath, lines[i].Remove(0, 1), "UserData", "setup.xml");
+                            if (File.Exists(setupXmlPath))
                             {
-                                string setupXmlPath = Path.Combine(Properties.Settings.Default.ModsPath, lines[i].Remove(0, 1), "UserData", "setup.xml");
-                                if (File.Exists(setupXmlPath))
-                                {
-                                    return setupXmlPath;
-                                }
+                                return setupXmlPath;
                             }
                         }
                     }
@@ -1709,7 +1701,7 @@ namespace AIHelper.Manage
         {
             if (!string.IsNullOrWhiteSpace(name))
             {
-                string[] modList = ManageMo.GetModNamesListFromActiveMoProfile(onlyFromEnabledMods);
+                string[] modList = ManageModOrganizer.GetModNamesListFromActiveMoProfile(onlyFromEnabledMods);
                 int nameLength = name.Length;
                 int modListLength = modList.Length;
                 for (int modlineNumber = 0; modlineNumber < modListLength; modlineNumber++)
@@ -1803,25 +1795,25 @@ namespace AIHelper.Manage
 
             string[,] categorieRules =
             {
-                { Path.Combine(modDir, "BepInEx", "Plugins"), ManageMo.GetCategoryIndexForTheName("Plugins",categoriesList), "dll" } //Plug-ins 51
+                { Path.Combine(modDir, "BepInEx", "Plugins"), ManageModOrganizer.GetCategoryIndexForTheName("Plugins",categoriesList), "dll" } //Plug-ins 51
                 ,
-                { Path.Combine(modDir, "UserData"), ManageMo.GetCategoryIndexForTheName("UserFiles",categoriesList), "*" } //UserFiles 53
+                { Path.Combine(modDir, "UserData"), ManageModOrganizer.GetCategoryIndexForTheName("UserFiles",categoriesList), "*" } //UserFiles 53
                 ,
-                { Path.Combine(modDir, "UserData", "chara"), ManageMo.GetCategoryIndexForTheName("Characters",categoriesList), "png" } //Characters 54
+                { Path.Combine(modDir, "UserData", "chara"), ManageModOrganizer.GetCategoryIndexForTheName("Characters",categoriesList), "png" } //Characters 54
                 ,
-                { Path.Combine(modDir, "UserData", "studio", "scene"), ManageMo.GetCategoryIndexForTheName("Studio scenes",categoriesList), "png"} //Studio scenes 57
+                { Path.Combine(modDir, "UserData", "studio", "scene"), ManageModOrganizer.GetCategoryIndexForTheName("Studio scenes",categoriesList), "png"} //Studio scenes 57
                 ,
-                { Path.Combine(modDir, "Mods"), ManageMo.GetCategoryIndexForTheName("Sideloader",categoriesList), "zip" } //Sideloader 60
+                { Path.Combine(modDir, "Mods"), ManageModOrganizer.GetCategoryIndexForTheName("Sideloader",categoriesList), "zip" } //Sideloader 60
                 ,
-                { Path.Combine(modDir, "scripts"), ManageMo.GetCategoryIndexForTheName("ScriptLoader scripts",categoriesList), "cs"} //ScriptLoader scripts 86
+                { Path.Combine(modDir, "scripts"), ManageModOrganizer.GetCategoryIndexForTheName("ScriptLoader scripts",categoriesList), "cs"} //ScriptLoader scripts 86
                 ,
-                { Path.Combine(modDir, "UserData", "coordinate"), ManageMo.GetCategoryIndexForTheName("Coordinate",categoriesList), "png"} //Coordinate 87
+                { Path.Combine(modDir, "UserData", "coordinate"), ManageModOrganizer.GetCategoryIndexForTheName("Coordinate",categoriesList), "png"} //Coordinate 87
                 ,
-                { Path.Combine(modDir, "UserData", "Overlays"), ManageMo.GetCategoryIndexForTheName("Overlay",categoriesList), "png"} //Overlay 88
+                { Path.Combine(modDir, "UserData", "Overlays"), ManageModOrganizer.GetCategoryIndexForTheName("Overlay",categoriesList), "png"} //Overlay 88
                 ,
-                { Path.Combine(modDir, "UserData", "housing"), ManageMo.GetCategoryIndexForTheName("Housing",categoriesList), "png"} //Housing 89
+                { Path.Combine(modDir, "UserData", "housing"), ManageModOrganizer.GetCategoryIndexForTheName("Housing",categoriesList), "png"} //Housing 89
                 ,
-                { Path.Combine(modDir, "UserData", "housing"), ManageMo.GetCategoryIndexForTheName("Cardframe",categoriesList), "png"} //Cardframe 90
+                { Path.Combine(modDir, "UserData", "housing"), ManageModOrganizer.GetCategoryIndexForTheName("Cardframe",categoriesList), "png"} //Cardframe 90
             };
 
             int categorieRulesLength = categorieRules.Length / 3;
@@ -1940,7 +1932,7 @@ namespace AIHelper.Manage
                     @"MOFolder\plugins\installer_fomod_csharp.dll",
                     @"MOFolder\plugins\data\OMODFramework*.*",
                     @"MOFolder\plugins\data\DDS\",
-                    !ManageMo.GetMoVersion().StartsWith("2.3",StringComparison.InvariantCulture)?@"MOFolder\plugins\modorganizer-basic_games\":""
+                    !ManageModOrganizer.GetMoVersion().StartsWith("2.3",StringComparison.InvariantCulture)?@"MOFolder\plugins\modorganizer-basic_games\":""
             };
             var mOfolderPath = ManageSettings.GetMOdirPath();
             foreach (var file in moFilesForClean)

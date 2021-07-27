@@ -211,7 +211,7 @@ namespace AIHelper.Manage
                     try
                     {
 
-                        sourceFilePath = ManageMo.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(sourceFilePath);
+                        sourceFilePath = ManageModOrganizer.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(sourceFilePath);
 
                         //skip file if source not exists
                         if (!File.Exists(sourceFilePath))
@@ -287,7 +287,7 @@ namespace AIHelper.Manage
                 var splittedPath = noModsPath.Split(new char[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
                 var modname = splittedPath[0];
 
-                foreach (var name in ManageMo.GetModNamesListFromActiveMoProfile())
+                foreach (var name in ManageModOrganizer.GetModNamesListFromActiveMoProfile())
                 {
                     if (modname == name)
                     {
@@ -381,10 +381,10 @@ namespace AIHelper.Manage
 
                     string fileLastModificationTime = File.GetLastWriteTime(csFile).ToString("yyyyMMddHHmm", CultureInfo.InvariantCulture);
                     //запись meta.ini
-                    ManageMo.WriteMetaIni(
+                    ManageModOrganizer.WriteMetaIni(
                         moddir
                         ,
-                        isUpdate ? string.Empty : ManageMo.GetCategoryIndexForTheName("ScriptLoader scripts") + ","
+                        isUpdate ? string.Empty : ManageModOrganizer.GetCategoryIndexForTheName("ScriptLoader scripts") + ","
                         ,
                         "0." + fileLastModificationTime
                         ,
@@ -393,7 +393,7 @@ namespace AIHelper.Manage
                         isUpdate ? string.Empty : "<br>" + "Author" + ": " + author + "<br><br>" + (description.Length > 0 ? description : name)
                         );
 
-                    ManageMo.ActivateDeactivateInsertMod(modname, false, "ScriptLoader scripts_separator");
+                    ManageModOrganizer.ActivateDeactivateInsertMod(modname, false, "ScriptLoader scripts_separator");
 
                     string[] extrafiles = Directory.GetFiles(whereFromInstallDir, name + "*.*");
                     if (extrafiles.Length > 0)
@@ -563,10 +563,10 @@ namespace AIHelper.Manage
                         }
 
                         //запись meta.ini
-                        ManageMo.WriteMetaIni(
+                        ManageModOrganizer.WriteMetaIni(
                             cardsModDir
                             ,
-                            ManageMo.GetCategoryIndexForTheName("Characters") + ","
+                            ManageModOrganizer.GetCategoryIndexForTheName("Characters") + ","
                             ,
                             string.Empty
                             ,
@@ -575,7 +575,7 @@ namespace AIHelper.Manage
                             "<br>Author: " + string.Empty + "<br><br>" + Path.GetFileNameWithoutExtension(cardsModDir) + " character cards<br><br>"
                             );
 
-                        ManageMo.ActivateDeactivateInsertMod(Path.GetFileName(cardsModDir), true, "UserCharacters_separator");
+                        ManageModOrganizer.ActivateDeactivateInsertMod(Path.GetFileName(cardsModDir), true, "UserCharacters_separator");
                     }
                 }
             }
@@ -911,7 +911,7 @@ namespace AIHelper.Manage
                                         author = copyright.Remove(copyright.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim();
                                     }
 
-                                    string[] modsList = ManageMo.GetModNamesListFromActiveMoProfile(false);
+                                    string[] modsList = ManageModOrganizer.GetModNamesListFromActiveMoProfile(false);
 
                                     foreach (var modFolder in modsList)
                                     {
@@ -1050,7 +1050,7 @@ namespace AIHelper.Manage
                     }
 
                     //запись meta.ini
-                    ManageMo.WriteMetaIni(
+                    ManageModOrganizer.WriteMetaIni(
                         targetModDirPath
                         ,
                         foundUpdateName ? string.Empty : category
@@ -1062,7 +1062,7 @@ namespace AIHelper.Manage
                         foundUpdateName ? string.Empty : "<br>Author: " + author + "<br><br>" + (description.Length > 0 ? description : Path.GetFileNameWithoutExtension(zipfile)) + "<br><br>"
                         );
 
-                    ManageMo.ActivateDeactivateInsertMod(Path.GetFileName(targetModDirPath));
+                    ManageModOrganizer.ActivateDeactivateInsertMod(Path.GetFileName(targetModDirPath));
                 }
                 else if (foundModsDir)
                 {
@@ -1288,7 +1288,7 @@ namespace AIHelper.Manage
                             {
                                 comment += " Requires: ScriptLoader";
                             }
-                            string categoryIndex = ManageMo.GetCategoryIndexForTheName("ScriptLoader scripts");
+                            string categoryIndex = ManageModOrganizer.GetCategoryIndexForTheName("ScriptLoader scripts");
                             if (categoryIndex.Length > 0 && (category.Length == 0 || !ManageStrings.IsStringAContainsStringB(category, categoryIndex)))
                             {
                                 if (category.Length == 0 || category == "-1,")
@@ -1441,10 +1441,10 @@ namespace AIHelper.Manage
                     }
 
                     //Задание доп. категорий по наличию папок
-                    category = ManageMo.GetCategoriesForTheFolder(moddir, category);
+                    category = ManageModOrganizer.GetCategoriesForTheFolder(moddir, category);
 
                     //запись meta.ini
-                    ManageMo.WriteMetaIni(
+                    ManageModOrganizer.WriteMetaIni(
                         moddir
                         ,
                         category
@@ -1463,7 +1463,7 @@ namespace AIHelper.Manage
                     //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \"");
                     //INI.WriteINI("General", "validated", "true");
 
-                    ManageMo.ActivateDeactivateInsertMod(Path.GetFileName(moddir));
+                    ManageModOrganizer.ActivateDeactivateInsertMod(Path.GetFileName(moddir));
                 }
             }
         }
@@ -1675,11 +1675,11 @@ namespace AIHelper.Manage
                 else
                 {
                     //найти имя мода из списка модов
-                    string modNameWithAuthor = ManageMo.GetModFromModListContainsTheName(name, false);
+                    string modNameWithAuthor = ManageModOrganizer.GetModFromModListContainsTheName(name, false);
                     if (modNameWithAuthor.Length == 0)
                     {
                         //если пусто, поискать также имя по имени дллки
-                        modNameWithAuthor = ManageMo.GetModFromModListContainsTheName(dllName.Remove(dllName.Length - 4, 4), false);
+                        modNameWithAuthor = ManageModOrganizer.GetModFromModListContainsTheName(dllName.Remove(dllName.Length - 4, 4), false);
                     }
                     if (modNameWithAuthor.Length > 0)
                     {
@@ -1711,10 +1711,10 @@ namespace AIHelper.Manage
 
 
                 //запись meta.ini
-                ManageMo.WriteMetaIni(
+                ManageModOrganizer.WriteMetaIni(
                     dllTargetModDirPath
                     ,
-                    isUpdate ? string.Empty : ManageMo.GetCategoryIndexForTheName("Plugins") + ","
+                    isUpdate ? string.Empty : ManageModOrganizer.GetCategoryIndexForTheName("Plugins") + ","
                     ,
                     version
                     ,
@@ -1730,7 +1730,7 @@ namespace AIHelper.Manage
                 //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \"");
                 //INI.WriteINI("General", "validated", "true");
 
-                ManageMo.ActivateDeactivateInsertMod(Path.GetFileName(dllTargetModDirPath));
+                ManageModOrganizer.ActivateDeactivateInsertMod(Path.GetFileName(dllTargetModDirPath));
             }
         }
 
@@ -1861,7 +1861,7 @@ namespace AIHelper.Manage
                     }
 
                     //запись meta.ini
-                    ManageMo.WriteMetaIni(
+                    ManageModOrganizer.WriteMetaIni(
                         zipmoddirpath
                         ,
                         string.Empty
@@ -1880,7 +1880,7 @@ namespace AIHelper.Manage
                     //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + website + " \"");
                     //INI.WriteINI("General", "validated", "true");
 
-                    ManageMo.ActivateDeactivateInsertMod(Path.GetFileName(zipmoddirpath), true);
+                    ManageModOrganizer.ActivateDeactivateInsertMod(Path.GetFileName(zipmoddirpath), true);
                 }
             }
         }

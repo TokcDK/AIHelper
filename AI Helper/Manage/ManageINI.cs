@@ -11,7 +11,7 @@ namespace AIHelper.Manage
         {
             if (!File.Exists(iniPath))
             {
-                ManageMo.RedefineGameMoData();
+                ManageModOrganizer.RedefineGameMoData();
             }
 
             INIFile ini = new INIFile(iniPath);
@@ -25,7 +25,7 @@ namespace AIHelper.Manage
         {
             if (!File.Exists(iniPath))
             {
-                ManageMo.RedefineGameMoData();
+                ManageModOrganizer.RedefineGameMoData();
             }
             (new INIFile(iniPath)).WriteINI(section, key, value, doSaveIni);
             return true;

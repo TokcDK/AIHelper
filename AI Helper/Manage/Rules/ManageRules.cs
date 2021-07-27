@@ -20,10 +20,10 @@ namespace AIHelper.Manage
 
             internal void ModlistFixes()
             {
-                var modlistBackupFilePath = ManageMo.MakeMoProfileModlistFileBuckup("_prefixes");
+                var modlistBackupFilePath = ManageModOrganizer.MakeMoProfileModlistFileBuckup("_prefixes");
 
-                _modlistData.AllModsList = ManageMo.GetModNamesListFromActiveMoProfile(false);
-                _modlistData.EnabledModsList = ManageMo.GetModNamesListFromActiveMoProfile();
+                _modlistData.AllModsList = ManageModOrganizer.GetModNamesListFromActiveMoProfile(false);
+                _modlistData.EnabledModsList = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
 
                 using (var checkForm = new Form())
                 {
@@ -77,7 +77,7 @@ namespace AIHelper.Manage
                             );
                         }
                         _modlistData.Report.Add(T._("Mod") + " " + mod.Key + " " + T._("was activated") + ": " + mod.Value);
-                        ManageMo.ActivateMod(mod.Key);
+                        ManageModOrganizer.ActivateMod(mod.Key);
                         listChanged = true;
                     }
                 }
@@ -98,7 +98,7 @@ namespace AIHelper.Manage
                             );
                         }
                         _modlistData.Report.Add(T._("Mod") + " " + mod + " " + T._("was deactivated") + ": " + modinfo.Value);
-                        ManageMo.DeactivateMod(mod);
+                        ManageModOrganizer.DeactivateMod(mod);
                         listChanged = true;
                     }
                 }

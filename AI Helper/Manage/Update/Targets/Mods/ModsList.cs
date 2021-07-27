@@ -22,7 +22,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
             string[] modsList = null;
             try
             {
-                modsList = ManageMo.GetModNamesListFromActiveMoProfile();
+                modsList = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
                 var updateInfoList = GetUpdateInfosFromFile();
 
                 if (updateInfoList != null && updateInfoList.Count > 0)

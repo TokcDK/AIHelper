@@ -846,7 +846,7 @@ namespace AIHelper.Manage
             }
             else
             {
-                Properties.Settings.Default.MOSelectedProfileDirName = ManageMo.MOremoveByteArray(ManageIni.GetIniValueIfExist(File.Exists(GetModOrganizerInIpath()) ? GetModOrganizerInIpath() : GetModOrganizerInIpathForSelectedGame(), "selected_profile", "General"));
+                Properties.Settings.Default.MOSelectedProfileDirName = ManageModOrganizer.MOremoveByteArray(ManageIni.GetIniValueIfExist(File.Exists(GetModOrganizerInIpath()) ? GetModOrganizerInIpath() : GetModOrganizerInIpathForSelectedGame(), "selected_profile", "General"));
 
                 return Properties.Settings.Default.MOSelectedProfileDirName;
             }
@@ -986,7 +986,7 @@ namespace AIHelper.Manage
             {
                 return Path.Combine(GetBepInExPath(), "BepInEx", "config");
             }
-            return ManageMo.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(Path.Combine(GetBepInExPath(), "BepInEx", "config"), true);
+            return ManageModOrganizer.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(Path.Combine(GetBepInExPath(), "BepInEx", "config"), true);
         }
 
         internal static string GetBepInExCfgFilePath()
@@ -999,7 +999,7 @@ namespace AIHelper.Manage
             {
                 return Properties.Settings.Default.BepinExCfgPath;
             }
-            return ManageMo.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(Path.Combine(GetBepInExCfgDirPath(), "BepInEx.cfg"));
+            return ManageModOrganizer.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(Path.Combine(GetBepInExCfgDirPath(), "BepInEx.cfg"));
         }
 
         internal static void SwitchBepInExDisplayedLogLevelValue(CheckBox bepInExConsoleCheckBox, Label bepInExDisplayedLogLevelLabel, bool onlyShow = false, string targetSectionName = "Logging.Console")
@@ -1272,7 +1272,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameExemoProfileName()
         {
-            return ManageMo.GetMOcustomExecutableTitleByExeName(GetCurrentGameExeName());
+            return ManageModOrganizer.GetMOcustomExecutableTitleByExeName(GetCurrentGameExeName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

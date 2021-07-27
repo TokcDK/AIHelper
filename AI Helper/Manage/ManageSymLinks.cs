@@ -184,7 +184,7 @@ namespace AIHelper.Manage
 
                 //ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(
                 string objectPath = null;
-                if ((oType == ObjectType.NotDefined && File.Exists(objectPath = ManageMo.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(objectFileDirPath))) || oType == ObjectType.File)
+                if ((oType == ObjectType.NotDefined && File.Exists(objectPath = ManageModOrganizer.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(objectFileDirPath))) || oType == ObjectType.File)
                 {
                     if (oType != ObjectType.NotDefined && !File.Exists(objectFileDirPath))
                     {
@@ -212,11 +212,11 @@ namespace AIHelper.Manage
                         return true;
                     }
                 }
-                else if ((oType == ObjectType.NotDefined && Directory.Exists(objectPath = ManageMo.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(objectFileDirPath, true))) || oType == ObjectType.Dir)
+                else if ((oType == ObjectType.NotDefined && Directory.Exists(objectPath = ManageModOrganizer.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(objectFileDirPath, true))) || oType == ObjectType.Dir)
                 {
                     if (oType != ObjectType.NotDefined && !File.Exists(objectFileDirPath))
                     {
-                        if(Directory.Exists(objectPath = ManageMo.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(objectFileDirPath, true)))
+                        if(Directory.Exists(objectPath = ManageModOrganizer.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(objectFileDirPath, true)))
                         {
                         }
                         else

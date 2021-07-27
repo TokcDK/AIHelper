@@ -72,18 +72,18 @@ namespace AIHelper
         private async void CheckMoAndEndInit()
         {
             //MO data parse
-            Properties.Settings.Default.MOIsNew = ManageMo.IsMo23OrNever();
+            Properties.Settings.Default.MOIsNew = ManageModOrganizer.IsMo23OrNever();
 
             if (!File.Exists(Path.Combine(ManageSettings.GetMOdirPath(), "ModOrganizer.exe")))
             {
                 await new Updater().Update().ConfigureAwait(true);
             }
 
-            ManageMo.RedefineGameMoData();
+            ManageModOrganizer.RedefineGameMoData();
 
-            ManageMo.CleanMoFolder();
+            ManageModOrganizer.CleanMoFolder();
             //
-            ManageMo.CheckBaseGamesPy();
+            ManageModOrganizer.CheckBaseGamesPy();
 
             CleanLog();
 
@@ -306,7 +306,7 @@ namespace AIHelper
 
             ManageOther.CreateShortcuts();
 
-            ManageMo.DummyFiles();
+            ManageModOrganizer.DummyFiles();
 
             MainService.Text = T._("Game Ready");
             FoldersInit();
@@ -551,7 +551,7 @@ namespace AIHelper
                 targetdir = Path.Combine(targetdir, "Sideloader");
             }
 
-            string categoryvalue = ManageMo.GetMetaParameterValue(Path.Combine(inputmoddir, "meta.ini"), "category").Replace("\"", string.Empty);
+            string categoryvalue = ManageModOrganizer.GetMetaParameterValue(Path.Combine(inputmoddir, "meta.ini"), "category").Replace("\"", string.Empty);
             if (categoryvalue.Length == 0)
             {
             }
@@ -791,7 +791,7 @@ namespace AIHelper
 
         private static void SetScreenResolution(string resolution)
         {
-            ManageMo.CheckMoUserdata();
+            ManageModOrganizer.CheckMoUserdata();
 
             ManageXml.ChangeSetupXmlValue(SetupXmlPath, "Setting/Size", resolution);
             string[] wh = resolution.Replace("(16 : 9)", string.Empty).Trim().Split('x');
@@ -801,7 +801,7 @@ namespace AIHelper
 
         private static void SetGraphicsQuality(string quality)
         {
-            ManageMo.CheckMoUserdata();
+            ManageModOrganizer.CheckMoUserdata();
 
             ManageXml.ChangeSetupXmlValue(SetupXmlPath, "Setting/Quality", quality);
         }
@@ -845,7 +845,7 @@ namespace AIHelper
 
             if (MOmode)
             {
-                ManageMo.RestoreModlist();
+                ManageModOrganizer.RestoreModlist();
 
                 {
                     //string[] Archives7z;
@@ -948,14 +948,14 @@ namespace AIHelper
 
                 LaunchModeInfoLinkLabel.Text = T._("MO mode");
 
-                ManageMo.DummyFiles();
+                ManageModOrganizer.DummyFiles();
 
-                ManageMo.MoiniFixes();
+                ManageModOrganizer.MoiniFixes();
 
                 //try start in another thread for perfomance purposes
                 new Thread(new ParameterizedThreadStart((obj) => RunSlowActions())).Start();
 
-                SetupXmlPath = ManageMo.GetSetupXmlPathForCurrentProfile();
+                SetupXmlPath = ManageModOrganizer.GetSetupXmlPathForCurrentProfile();
 
                 ManageMoMods.SetMoModsVariables();
             }
@@ -1047,7 +1047,7 @@ namespace AIHelper
 
             //НА ЭТО ТРАТИТСЯ БОЛЬШЕ ВСЕГО ВРЕМЕНИ
 
-            ManageMo.SetModOrganizerIniSettingsForTheGame();
+            ManageModOrganizer.SetModOrganizerIniSettingsForTheGame();
             //await Task.Run(() => ManageMO.SetModOrganizerINISettingsForTheGame()).ConfigureAwait(false);
             //MOButton.Enabled = false;
             //Task t2 = new Task(() =>
@@ -1193,7 +1193,7 @@ namespace AIHelper
 
             if (MOmode)
             {
-                var studio = ManageMo.GetMOcustomExecutableTitleByExeName(ManageSettings.GetStudioExeName());
+                var studio = ManageModOrganizer.GetMOcustomExecutableTitleByExeName(ManageSettings.GetStudioExeName());
                 RunProgram(MOexePath, "moshortcut://:" + studio);
             }
             else
@@ -1729,7 +1729,7 @@ namespace AIHelper
                         File.WriteAllText(Path.Combine(newModPath, "NOTE!.txt"), note);
 
                         //запись meta.ini с замечанием
-                        ManageMo.WriteMetaIni(
+                        ManageModOrganizer.WriteMetaIni(
                             newModPath
                             ,
                             string.Empty
@@ -1740,7 +1740,7 @@ namespace AIHelper
                             ,
                             note.Replace("\n", "<br>")
                             );
-                        ManageMo.ActivateDeactivateInsertMod(newModName, false, modName, false);
+                        ManageModOrganizer.ActivateDeactivateInsertMod(newModName, false, modName, false);
                     }
                 }
 
@@ -1820,7 +1820,7 @@ namespace AIHelper
                 if (Directory.Exists(destFolderPath))
                 {
                     //запись meta.ini
-                    ManageMo.WriteMetaIni(
+                    ManageModOrganizer.WriteMetaIni(
                         destFolderPath
                         ,
                         "53,"
@@ -1832,7 +1832,7 @@ namespace AIHelper
                         T._("<br>This files was added in Common mode<br>and moved as mod after convertation in MO mode.<br>Date: ") + dateTimeInFormat
                         );
 
-                    ManageMo.ActivateDeactivateInsertMod(addedFilesFolderName);
+                    ManageModOrganizer.ActivateDeactivateInsertMod(addedFilesFolderName);
                 }
 
                 //перемещение ванильных файлов назад в дата
@@ -1975,7 +1975,7 @@ namespace AIHelper
 
         private void SwitchToCommonMode()
         {
-            var enabledModsList = ManageMo.GetModNamesListFromActiveMoProfile();
+            var enabledModsList = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
 
             if (enabledModsList.Length == 0)
             {
@@ -2579,11 +2579,11 @@ namespace AIHelper
             //cleaning previous game data
             //File.Delete(ManageSettings.GetModOrganizerINIpath());
             //File.Delete(ManageSettings.GetMOcategoriesPath());
-            ManageMo.RedefineGameMoData();
+            ManageModOrganizer.RedefineGameMoData();
             Properties.Settings.Default.BepinExCfgPath = string.Empty;
             Properties.Settings.Default.MOSelectedProfileDirName = string.Empty;
 
-            ManageMo.CheckBaseGamesPy();
+            ManageModOrganizer.CheckBaseGamesPy();
 
             CurrentGame.InitActions();
             CurrentGameTitleTextBox.Text = CurrentGame.GetGameDisplayingName();
@@ -2750,20 +2750,20 @@ namespace AIHelper
             {
                 if (MOmode)
                 {
-                    ManageMo.CleanMoFolder();
+                    ManageModOrganizer.CleanMoFolder();
                     //
-                    ManageMo.CheckBaseGamesPy();
+                    ManageModOrganizer.CheckBaseGamesPy();
 
-                    ManageMo.RedefineGameMoData();
+                    ManageModOrganizer.RedefineGameMoData();
 
                     //add updater as new exe in mo list if not exists
                     //if (!ManageMO.IsMOcustomExecutableTitleByExeNameExists("StandaloneUpdater"))
                     {
-                        var kkManagerStandaloneUpdater = new ManageMo.CustomExecutables.CustomExecutable();
+                        var kkManagerStandaloneUpdater = new ManageModOrganizer.CustomExecutables.CustomExecutable();
                         kkManagerStandaloneUpdater.Attribute["title"] = "KKManagerStandaloneUpdater";
                         kkManagerStandaloneUpdater.Attribute["binary"] = ManageSettings.KkManagerStandaloneUpdaterExePath();
                         kkManagerStandaloneUpdater.Attribute["workingDirectory"] = ManageSettings.GetCurrentGameDataPath();
-                        ManageMo.InsertCustomExecutable(kkManagerStandaloneUpdater);
+                        ManageModOrganizer.InsertCustomExecutable(kkManagerStandaloneUpdater);
                     }
 
                     var zipmodsGuidList = new Dictionary<string, string>();
@@ -2771,10 +2771,10 @@ namespace AIHelper
                     //activate all mods with Sideloader modpack inside
                     ActivateSideloaderMods(zipmodsGuidList);
 
-                    RunProgram(MOexePath, "moshortcut://:" + ManageMo.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
+                    RunProgram(MOexePath, "moshortcut://:" + ManageModOrganizer.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
 
                     //restore modlist
-                    ManageMo.RestoreModlist();
+                    ManageModOrganizer.RestoreModlist();
 
                     //restore zipmods to source mods
                     MoveZipModsFromOverwriteToSourceMod(zipmodsGuidList);

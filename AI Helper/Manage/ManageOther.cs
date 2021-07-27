@@ -79,7 +79,7 @@ namespace AIHelper.Manage
                 //description = shortcutname;
                 //Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description);
 
-                ManageMo.CheckMoUserdata();
+                ManageModOrganizer.CheckMoUserdata();
 
                 if (!auto)
                 {

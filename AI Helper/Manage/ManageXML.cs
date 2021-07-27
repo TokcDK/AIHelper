@@ -58,7 +58,7 @@ namespace AIHelper.Manage
 
                 if (!xmlFound)
                 {
-                    xmlpath = ManageMo.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(xmlpath, false, true);
+                    xmlpath = ManageModOrganizer.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(xmlpath, false, true);
                 }
 
                 xmlDoc.Save(xmlpath);

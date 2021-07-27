@@ -109,9 +109,15 @@ namespace AIHelper.Manage
             }
 
             var customExecutables = new CustomExecutables(INI);
-
+            var customsToRemove = new List<string>();
             foreach (var record in customExecutables.list)
             {
+                if (string.IsNullOrWhiteSpace(record.Value.binary))
+                {
+                    customsToRemove.Add(record.Key); // add invalid custom to remove list
+                    continue;
+                }
+
                 foreach (var attribute in new[] { "binary", "workingDirectory" })
                 {
                     try
@@ -153,6 +159,12 @@ namespace AIHelper.Manage
                 }
             }
 
+            //remove invalid customs
+            foreach (var custom in customsToRemove)
+            {
+                customExecutables.list.Remove(custom);
+            }
+
             customExecutables.Save();
         }
 
@@ -173,6 +185,8 @@ namespace AIHelper.Manage
                 LoadFrom(ini);
             }
 
+            private int loadedListCustomsCount;
+
             internal void LoadFrom(INIFile ini)
             {
                 if (list != null && list.Count > 0) // already loaded
@@ -186,22 +200,24 @@ namespace AIHelper.Manage
 
                 list = new Dictionary<string, CustomExecutable>();
 
-                if (ListToLoad != null)
-                    foreach (var entry in ListToLoad)
+                if (ListToLoad == null) return;
+                foreach (var entry in ListToLoad)
+                {
+                    var numName = entry.Key.Split('\\');//numName[0] - number of customexecutable , numName[0] - name of attribute
+                    if (numName.Length != 2)
                     {
-                        var numName = entry.Key.Split('\\');//numName[0] - number of customexecutable , numName[0] - name of attribute
-                        if (numName.Length != 2)
-                        {
-                            continue;
-                        }
-
-                        if (!list.ContainsKey(numName[0]))
-                        {
-                            list.Add(numName[0], new CustomExecutable());
-                        }
-
-                        list[numName[0]].attribute[numName[1]] = entry.Value;
+                        continue;
                     }
+
+                    if (!list.ContainsKey(numName[0]))
+                    {
+                        list.Add(numName[0], new CustomExecutable());
+                    }
+
+                    list[numName[0]].attribute[numName[1]] = entry.Value;
+                }
+
+                loadedListCustomsCount = list.Count;
             }
 
             internal void Save()
@@ -212,13 +228,26 @@ namespace AIHelper.Manage
                 }
 
                 bool changed = false;
+                bool sectionCleared = loadedListCustomsCount != list.Count;
+                if (sectionCleared)
+                {
+                    changed = true;
+                    ini.ClearSection("customExecutables");
+                }
+
+                int customExecutableNumber = 0; // use new executable number when section was cleared and need to renumber executable numbers
                 foreach (var customExecutable in list)
                 {
+                    if (sectionCleared)
+                    {
+                        customExecutableNumber++;
+                    }
+
                     foreach (var attribute in customExecutable.Value.attribute)
                     {
-                        string keyName = customExecutable.Key + "\\" + attribute.Key;
+                        string keyName = (sectionCleared ? customExecutableNumber + "" : customExecutable.Key) + "\\" + attribute.Key;
 
-                        if (!ini.KeyExists(keyName, "customExecutables") || ini.ReadINI("customExecutables", keyName) != attribute.Value) // write only if not equal
+                        if (sectionCleared || !ini.KeyExists(keyName, "customExecutables") || ini.ReadINI("customExecutables", keyName) != attribute.Value) // write only if not equal
                         {
                             changed = true;
                             ini.WriteINI("customExecutables", keyName, attribute.Value);
@@ -318,72 +347,57 @@ namespace AIHelper.Manage
                 /// </example>
                 internal Dictionary<string, string> attribute = new Dictionary<string, string>()
                 {
-                    { "title" , NormalizedTitle},
-                    { "binary" , NormalizedBinary},
-                    { "workingDirectory" , NormalizedWorkingDirectory},
-                    { "arguments" , NormalizedArguments},
-                    { "toolbar" , NormalizedToolbar},
-                    { "ownicon" , NormalizedOwnicon},
-                    { "hide" , NormalizedHide},
-                    { "steamAppID" , NormalizedSteamAppID},
+                    { "title" , null},
+                    { "binary" , null},
+                    { "workingDirectory" , string.Empty},
+                    { "arguments" , string.Empty},
+                    { "toolbar" , "false"},
+                    { "ownicon" , "false"},
+                    { "hide" , "false"},
+                    { "steamAppID" , string.Empty},
                 };
 
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable CA1822 // Mark members as static
-                static string Title;
-                static string NormalizedTitle { get => Title; set => Title = NormalizePath(value); }
                 /// <summary>
                 /// (Required!) title of custom executable
                 /// </summary>
-                internal string title { get => NormalizedTitle; set => NormalizedTitle = value; }
+                internal string title { get => attribute["title"]; set => attribute["title"] = NormalizePath(value); }
 
-                static string Binary;
-                static string NormalizedBinary { get => Binary; set => Binary = NormalizePath(value); }
                 /// <summary>
                 /// (Required!) path to the exe
                 /// </summary>
-                internal string binary { get => NormalizedBinary; set => NormalizedBinary = value; }
+                internal string binary { get => attribute["binary"]; set => attribute["binary"] = NormalizePath(value); }
 
-                static string WorkingDirectory = string.Empty;
-                static string NormalizedWorkingDirectory { get => WorkingDirectory; set => WorkingDirectory = NormalizePath(value); }
                 /// <summary>
                 /// (Optional) Working directory. By defaule willbe directory where is binary located.
                 /// </summary>
-                internal string workingDirectory { get => NormalizedWorkingDirectory; set => NormalizedWorkingDirectory = value; }
+                internal string workingDirectory { get => attribute["workingDirectory"]; set => attribute["workingDirectory"] = NormalizeBool(value); }
 
-                static string Arguments = string.Empty;
-                static string NormalizedArguments { get => Arguments; set => Arguments = NormalizeArguments(value); }
                 /// <summary>
                 /// (Optional) Arguments for binary. Empty by default.
                 /// </summary>
-                internal string arguments { get => NormalizedArguments; set => NormalizedArguments = value; }
+                internal string arguments { get => attribute["arguments"]; set => attribute["arguments"] = NormalizeBool(value); }
 
-                static string Toolbar = "false";
-                static string NormalizedToolbar { get => Toolbar; set => Toolbar = NormalizeBool(value); }
                 /// <summary>
                 /// (Optional) Enable toolbar. False by default.
                 /// </summary>
-                internal string toolbar { get => NormalizedToolbar; set => NormalizedToolbar = value; }
+                internal string toolbar { get => attribute["toolbar"]; set => attribute["toolbar"] = NormalizeBool(value); }
 
-                static string Ownicon = "false";
-                static string NormalizedOwnicon { get => Ownicon; set => Ownicon = NormalizeBool(value); }
                 /// <summary>
                 /// (Optional) Use own icon for the exe, else will be icon of MO. False by default.
                 /// </summary>
-                internal string ownicon { get => NormalizedOwnicon; set => NormalizedOwnicon = value; }
+                internal string ownicon { get => attribute["ownicon"]; set => attribute["ownicon"] = NormalizeBool(value); }
 
-                static string Hide = "false";
-                static string NormalizedHide { get => Hide; set => Hide = NormalizeBool(value); }
                 /// <summary>
                 /// (Optional) Hide the custom exe? False by default.
                 /// </summary>
-                internal string hide { get => NormalizedHide; set => NormalizedHide = value; }
+                internal string hide { get => attribute["hide"]; set => attribute["hide"] = NormalizeBool(value); }
 
-                static string NormalizedSteamAppID = string.Empty;
                 /// <summary>
                 /// (Optional) Steam app id for binary. Empty by default.
                 /// </summary>
-                internal string steamAppID { get => NormalizedSteamAppID; set => NormalizedSteamAppID = NormalizeBool(value); }
+                internal string steamAppID { get => attribute["steamAppID"]; set => attribute["steamAppID"] = NormalizeBool(value); }
 
 #pragma warning restore CA1822 // Mark members as static
 #pragma warning restore IDE1006 // Naming Styles
@@ -1627,24 +1641,24 @@ namespace AIHelper.Manage
                 //поиск по списку активных модов
                 string ModsPath = ManageSettings.GetCurrentGameModsPath();
                 var modNames = GetModNamesListFromActiveMOProfile(OnlyEnabled);
-                    foreach (var modName in modNames)
+                foreach (var modName in modNames)
+                {
+                    string possiblePath = Path.Combine(ModsPath, modName) + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
+                    if (IsDir)
                     {
-                        string possiblePath = Path.Combine(ModsPath, modName) + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
-                        if (IsDir)
+                        if (Directory.Exists(possiblePath))
                         {
-                            if (Directory.Exists(possiblePath))
-                            {
-                                return possiblePath;
-                            }
-                        }
-                        else
-                        {
-                            if (File.Exists(possiblePath))
-                            {
-                                return possiblePath;
-                            }
+                            return possiblePath;
                         }
                     }
+                    else
+                    {
+                        if (File.Exists(possiblePath))
+                        {
+                            return possiblePath;
+                        }
+                    }
+                }
             }
             catch
             {

@@ -12,7 +12,7 @@ namespace AIHelper.Manage
     {
         internal static async void WaitIfGameIsChanging()
         {
-            if (!Properties.Settings.Default.MOmode)
+            if (!ManageSettings.IsMoMode())
             {
                 return;
             }
@@ -23,7 +23,7 @@ namespace AIHelper.Manage
         private static void WaitIfGameIsChanging(int waittime, int maxLoops = 60)
         {
             int loopsCount = 0;
-            while (Properties.Settings.Default.MOmode && (Properties.Settings.Default.SetModOrganizerINISettingsForTheGame || Properties.Settings.Default.CurrentGameIsChanging) && loopsCount < maxLoops)
+            while (ManageSettings.IsMoMode() && (Properties.Settings.Default.SetModOrganizerINISettingsForTheGame || Properties.Settings.Default.CurrentGameIsChanging) && loopsCount < maxLoops)
             {
                 Thread.Sleep(waittime);
                 loopsCount++;

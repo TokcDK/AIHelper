@@ -1,5 +1,4 @@
-﻿using AIHelper.Manage;
-using AIHelper.SharedData;
+﻿using AIHelper.SharedData;
 using Soft160.Data.Cryptography;
 using SymbolicLinkSupport;
 using System;
@@ -60,29 +59,21 @@ namespace AIHelper.Manage
         /// <param name="exclusions"></param>
         /// <param name="recursive"></param>
         /// <returns></returns>
-        public static bool CheckDirectoryNullOrEmpty_Fast(string path, string mask = "*", string[] exclusions = null, bool recursive = false, string nameMask = "")
+        public static bool CheckDirectoryNullOrEmpty_Fast(string path, string mask = "*", string[] exclusions = null, bool recursive = false)
         {
             if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
             {
                 return true; //return true if path is empty
                 //throw new ArgumentNullException(path);
             }
-            DirectoryInfo di;
-            if ((di = new DirectoryInfo(path)).IsSymbolicLink() && !di.IsSymbolicLinkValid())
+
+            if (path.IsSymLink() && !path.IsValidSymlink()) // check if target is symlink and it is invalid. perfomance issue here
             {
                 return true;
             }
 
-            if (path.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.InvariantCulture))
-            {
-                path += nameMask + mask;
-            }
-            else
-            {
-                path += Path.DirectorySeparatorChar + nameMask + mask;
-            }
-
-            var findHandle = FindFirstFile(path, out Win32FindData findData);
+            bool endsWithDirSeparator = path.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.InvariantCulture);
+            var findHandle = FindFirstFile(path + (endsWithDirSeparator ? "" : Path.DirectorySeparatorChar + "") + mask, out Win32FindData findData);
 
             if (findHandle != InvalidHandleValue)
             {
@@ -91,15 +82,15 @@ namespace AIHelper.Manage
                     bool empty = true;
                     do
                     {
-                        if (findData.cFileName != "."
-                            && findData.cFileName != ".."
-                            && !ManageStrings.IsStringContainsAnyExclusion(findData.cFileName, exclusions)
-                            && ((recursive && IsDir(findData.dwFileAttributes) && !CheckDirectoryNullOrEmpty_Fast(path + Path.DirectorySeparatorChar + findData.cFileName + Path.DirectorySeparatorChar, mask, exclusions, recursive))
-                            || mask.Length == 1 || findData.cFileName.EndsWith(mask.Remove(0, 1), StringComparison.InvariantCultureIgnoreCase)
-                            ))
+                        if (findData.cFileName == "." // root dir
+                            || findData.cFileName == ".." // parent dir
+                            || ManageStrings.IsStringContainsAnyExclusion(findData.cFileName, exclusions)
+                            || (recursive && IsDir(findData.dwFileAttributes) && CheckDirectoryNullOrEmpty_Fast(path + Path.DirectorySeparatorChar + findData.cFileName + Path.DirectorySeparatorChar, mask, exclusions, recursive))) // recursive and subfolder is empty
+                                                                                                                                                                                                                                         //&& mask.Length != 1 && !findData.cFileName.EndsWith(mask.Remove(0, 1), StringComparison.InvariantCultureIgnoreCase))
                         {
-                            empty = false;
+                            continue;
                         }
+                        empty = false;
                     } while (empty && FindNextFile(findHandle, out findData));
 
                     return empty;
@@ -116,31 +107,34 @@ namespace AIHelper.Manage
             //throw new DirectoryNotFoundException();
         }
 
+        const uint CommonDirectory = 16;
+        const uint CompressedDirectory = 10256; // suppose
+
         private static bool IsDir(uint dwFileAttributes)
         {
-            return dwFileAttributes == 16;
+            return dwFileAttributes == CommonDirectory || dwFileAttributes == CompressedDirectory;
         }
 
         /// <summary>
         /// true s ny file in dir
         /// </summary>
         /// <param name="dirPath"></param>
-        /// <param name="extension"></param>
+        /// <param name="Mask"></param>
         /// <param name="allDirectories"></param>
         /// <returns></returns>
-        public static bool IsAnyFileExistsInTheDir(string dirPath, string extension = ".*", bool allDirectories = true, string nameMask = "")
+        public static bool IsAnyFileExistsInTheDir(string dirPath, string Mask = "*", bool allDirectories = true)
         {
             if (dirPath.Length == 0)
             {
                 return false;
             }
 
-            if (extension.Length > 0 && extension[0] != '.')
-            {
-                extension = "." + extension;
-            }
+            //if (Mask.Length > 0 && Mask[0] != '.')
+            //{
+            //    Mask = "." + Mask;
+            //}
 
-            if (!CheckDirectoryNullOrEmpty_Fast(dirPath, extension, null, allDirectories, nameMask))
+            if (!CheckDirectoryNullOrEmpty_Fast(dirPath, Mask, null, allDirectories))
                 return true;
 
             return false;

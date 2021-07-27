@@ -1457,12 +1457,12 @@ namespace AIHelper.Manage
                     if (onlyEnabled)
                     {
                         //все строки с + в начале
-                        lines = File.ReadAllLines(profilemodlistpath).Where(line => line.Length > 0 && string.CompareOrdinal(line.Substring(0, 1), "#") != 0 && string.CompareOrdinal(line.Substring(0, 1), "+") == 0).ToArray();
+                        lines = File.ReadAllLines(profilemodlistpath).Where(line => line.Length > 0 && line[0] == '+').ToArray();
                     }
                     else
                     {
                         //все строки кроме сепараторов
-                        lines = File.ReadAllLines(profilemodlistpath).Where(line => line.Length > 0 && string.CompareOrdinal(line.Substring(0, 1), "#") != 0 && (line.Length < 10 || string.CompareOrdinal(line.Substring(line.Length - 10, 10), "_separator") != 0)).ToArray();
+                        lines = File.ReadAllLines(profilemodlistpath).Where(line => line.Length > 0 && line[0] != '#' && (line.Length < 10 || !line.EndsWith("_separator", StringComparison.InvariantCulture))).ToArray();
                     }
                     //Array.Reverse(lines); //убрал, т.к. дулаю архив с резервными копиями
                     int linesLength = lines.Length;
@@ -1586,7 +1586,7 @@ namespace AIHelper.Manage
                 //}
                 string subpath = string.Join(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture), pathInModsElements);
 
-                if (!Properties.Settings.Default.MOmode)
+                if (!ManageSettings.IsMoMode())
                 {
                     return Path.Combine(ManageSettings.GetCurrentGameDataPath(), subpath);
                 }
@@ -1643,29 +1643,10 @@ namespace AIHelper.Manage
         /// <returns></returns>
         public static string GetSetupXmlPathForCurrentProfile()
         {
-            if (Properties.Settings.Default.MOmode)
+            if (ManageSettings.IsMoMode())
             {
-                string profilemodlistpath = ManageSettings.GetCurrentMoProfileModlistPath();
 
-                if (File.Exists(profilemodlistpath))
-                {
-                    string[] lines = File.ReadAllLines(profilemodlistpath);
-
-                    int linescount = lines.Length;
-                    for (int i = 1; i < linescount; i++) // 1- означает пропуск нулевой строки, где комментарий
-                    {
-                        if (lines[i].StartsWith("+", StringComparison.InvariantCulture))
-                        {
-                            string setupXmlPath = Path.Combine(Properties.Settings.Default.ModsPath, lines[i].Remove(0, 1), "UserData", "setup.xml");
-                            if (File.Exists(setupXmlPath))
-                            {
-                                return setupXmlPath;
-                            }
-                        }
-                    }
-                }
-
-                return Path.Combine(Properties.Settings.Default.OverwriteFolderLink, "UserData", "setup.xml");
+                return GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(Path.Combine(ManageSettings.GetOverwriteFolder(), "UserData", "setup.xml"));
             }
             else
             {

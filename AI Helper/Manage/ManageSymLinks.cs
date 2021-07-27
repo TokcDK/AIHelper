@@ -1,5 +1,4 @@
-﻿using AIHelper.Manage;
-using SymbolicLinkSupport;
+﻿using SymbolicLinkSupport;
 using System.IO;
 
 namespace AIHelper.Manage
@@ -33,23 +32,52 @@ namespace AIHelper.Manage
             return false;
         }
 
-        internal static bool IsValidSymlink(this string symlinkPath, string linkTargetPath, bool isLinkTargetPathRelative = false)
+        /// <summary>
+        /// true if is symbolic link and target is exists.
+        /// when linkTargetPath not null also will check if symlink target equal to linkTargetPath
+        /// </summary>
+        /// <param name="symlinkPath"></param>
+        /// <param name="linkTargetPath"></param>
+        /// <returns></returns>
+        internal static bool IsValidSymlink(this string symlinkPath, string linkTargetPath = null)
         {
-            var symlinkPathInfo = new FileInfo(symlinkPath);
             //ссылка вообще существует
             if (File.Exists(symlinkPath))
             {
+                return new FileInfo(symlinkPath).IsValidSymlink(linkTargetPath);
+            }
+            else if (Directory.Exists(symlinkPath))
+            {
+                return new DirectoryInfo(symlinkPath).IsValidSymlink(linkTargetPath);
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// true when object is symbolic link and simbolic link target is exists
+        /// </summary>
+        /// <param name="symlinkPath"></param>
+        /// <returns></returns>
+        internal static bool IsValidSymlink(this FileInfo symlinkPath, string linkTargetPath = null)
+        {
+            //ссылка вообще существует
+            if (symlinkPath.Exists)
+            {
                 //файл является ссылкой
-                if (symlinkPathInfo.IsSymbolicLink())
+                if (symlinkPath.IsSymbolicLink())
                 {
                     //ссылка валидная
-                    if (symlinkPathInfo.IsSymbolicLinkValid())
+                    if (symlinkPath.IsSymbolicLinkValid())
                     {
-                        //целевой файл ссылки равен целевому файлу игры
-                        if (symlinkPathInfo.GetSymbolicLinkTarget() == linkTargetPath)
+                        if(linkTargetPath==null)
                         {
                             return true;
-                        };
+                        }
+                        else if(symlinkPath.IsSymlinkTargetEquals(linkTargetPath))
+                        {
+                            return true;
+                        }
                     };
                 };
             };
@@ -62,7 +90,7 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="symlinkPath"></param>
         /// <returns></returns>
-        internal static bool IsValidSymlink(this FileInfo symlinkPath)
+        internal static bool IsValidSymlink(this DirectoryInfo symlinkPath, string linkTargetPath = null)
         {
             //ссылка вообще существует
             if (symlinkPath.Exists)
@@ -73,31 +101,14 @@ namespace AIHelper.Manage
                     //ссылка валидная
                     if (symlinkPath.IsSymbolicLinkValid())
                     {
-                        return true;
-                    };
-                };
-            };
-
-            return false;
-        }
-
-        /// <summary>
-        /// true when object is symbolic link and simbolic link target is exists
-        /// </summary>
-        /// <param name="symlinkPath"></param>
-        /// <returns></returns>
-        internal static bool IsValidSymlink(this DirectoryInfo symlinkPath)
-        {
-            //ссылка вообще существует
-            if (symlinkPath.Exists)
-            {
-                //файл является ссылкой
-                if (symlinkPath.IsSymbolicLink())
-                {
-                    //ссылка валидная
-                    if (symlinkPath.IsSymbolicLinkValid())
-                    {
-                        return true;
+                        if (linkTargetPath == null)
+                        {
+                            return true;
+                        }
+                        else if (symlinkPath.IsSymlinkTargetEquals(linkTargetPath))
+                        {
+                            return true;
+                        }
                     };
                 };
             };
@@ -118,7 +129,7 @@ namespace AIHelper.Manage
                 File.Exists(targetFilePath)
                )
             {
-                if (targetFilePath != symlinkPath && !IsValidSymlink(symlinkPath, targetFilePath, linktargetPathIsRelative))
+                if (targetFilePath != symlinkPath && !IsValidSymlink(symlinkPath, targetFilePath))
                 {
                     if (File.Exists(symlinkPath))
                     {
@@ -216,7 +227,7 @@ namespace AIHelper.Manage
                 {
                     if (oType != ObjectType.NotDefined && !File.Exists(objectFileDirPath))
                     {
-                        if(Directory.Exists(objectPath = ManageModOrganizer.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(objectFileDirPath, true)))
+                        if (Directory.Exists(objectPath = ManageModOrganizer.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(objectFileDirPath, true)))
                         {
                         }
                         else
@@ -289,6 +300,17 @@ namespace AIHelper.Manage
         /// <param name="requiredTargetPath"></param>
         /// <returns></returns>
         internal static bool IsSymlinkTargetEquals(this FileInfo symlink, string requiredTargetPath)
+        {
+            return symlink.IsValidSymlink() && symlink.GetSymbolicLinkTarget() == requiredTargetPath;
+        }
+
+        /// <summary>
+        /// true when object path is valid symbolic link and it's target path is equal required target path
+        /// </summary>
+        /// <param name="symlink"></param>
+        /// <param name="requiredTargetPath"></param>
+        /// <returns></returns>
+        internal static bool IsSymlinkTargetEquals(this DirectoryInfo symlink, string requiredTargetPath)
         {
             return symlink.IsValidSymlink() && symlink.GetSymbolicLinkTarget() == requiredTargetPath;
         }

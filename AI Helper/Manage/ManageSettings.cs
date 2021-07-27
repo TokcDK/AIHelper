@@ -977,12 +977,12 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetBepInExPath()
         {
-            return Path.Combine(Properties.Settings.Default.MOmode ? GetCurrentGameModsPath() : GetCurrentGameDataPath(), "BepInEx");
+            return Path.Combine(IsMoMode() ? GetCurrentGameModsPath() : GetCurrentGameDataPath(), "BepInEx");
         }
 
         internal static string GetBepInExCfgDirPath()
         {
-            if (!Properties.Settings.Default.MOmode)
+            if (!IsMoMode())
             {
                 return Path.Combine(GetBepInExPath(), "BepInEx", "config");
             }
@@ -991,7 +991,7 @@ namespace AIHelper.Manage
 
         internal static string GetBepInExCfgFilePath()
         {
-            if (!Properties.Settings.Default.MOmode)
+            if (!IsMoMode())
             {
                 return Path.Combine(GetBepInExPath(), "config", "BepInEx.cfg");
             }

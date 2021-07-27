@@ -40,7 +40,7 @@ namespace AIHelper
         //private static string ModOrganizerINIpath { get => Properties.Settings.Default.ModOrganizerINIpath; set => Properties.Settings.Default.ModOrganizerINIpath = value; }
         private static string Install2MoDirPath { get => Properties.Settings.Default.Install2MODirPath; set => Properties.Settings.Default.Install2MODirPath = value; }
 
-        private static bool MOmode { get => Properties.Settings.Default.MOmode; set => Properties.Settings.Default.MOmode = value; }
+        private static bool MOmode { get => ManageSettings.IsMoMode(); set => Properties.Settings.Default.MOmode = value; }
 
         private static Game CurrentGame { get => GameData.CurrentGame; set => GameData.CurrentGame = value; }
         private static List<Game> ListOfGames { get => GameData.ListOfGames; set => GameData.ListOfGames = value; }
@@ -74,7 +74,7 @@ namespace AIHelper
             //MO data parse
             Properties.Settings.Default.MOIsNew = ManageModOrganizer.IsMo23OrNever();
 
-            if (!File.Exists(Path.Combine(ManageSettings.GetMOdirPath(), "ModOrganizer.exe")))
+            if (!File.Exists(ManageSettings.GetMOexePath()))
             {
                 await new Updater().Update().ConfigureAwait(true);
             }
@@ -957,7 +957,7 @@ namespace AIHelper
 
                 SetupXmlPath = ManageModOrganizer.GetSetupXmlPathForCurrentProfile();
 
-                ManageMoMods.SetMoModsVariables();
+                ManageModOrganizerMods.SetMoModsVariables();
             }
             else
             {
@@ -1032,7 +1032,7 @@ namespace AIHelper
         private static void RunSlowActions()
         {
             //создание ссылок на файлы bepinex, НА ЭТО ТРАТИТСЯ МНОГО ВРЕМЕНИ
-            ManageMoMods.MousfsLoadingFix();
+            ManageModOrganizerMods.MousfsLoadingFix();
             //GameButton.Enabled = false;
             //Task t1 = new Task(() =>
             //ManageMOMods.BepinExLoadingFix()
@@ -1229,7 +1229,7 @@ namespace AIHelper
                         program.StartInfo.Arguments = arguments;
                     }
 
-                    if (!Properties.Settings.Default.MOmode || string.IsNullOrWhiteSpace(program.StartInfo.Arguments))
+                    if (!ManageSettings.IsMoMode() || string.IsNullOrWhiteSpace(program.StartInfo.Arguments))
                     {
                         program.StartInfo.WorkingDirectory = Path.GetDirectoryName(programPath);
                     }
@@ -1392,7 +1392,7 @@ namespace AIHelper
                 OnOffButtons(false);
 
                 //impossible to correctly update mods in common mode
-                if (!Properties.Settings.Default.MOmode)
+                if (!ManageSettings.IsMoMode())
                 {
                     DialogResult result = MessageBox.Show(T._("Attention") + "\n\n" + T._("Impossible to correctly install/update mods\n\n in standart mode because files was moved in Data.") + "\n\n" + T._("Switch to MO mode?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
                     if (result == DialogResult.OK)
@@ -1432,25 +1432,25 @@ namespace AIHelper
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "."));
             ManageArchive.UnpackArchivesToSubfoldersWithSameName(Install2MoDirPath, ".7z");
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + ".."));
-            ManageMoMods.InstallCsScriptsForScriptLoader();
+            ManageModOrganizerMods.InstallCsScriptsForScriptLoader();
 
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "..."));
-            ManageMoMods.InstallZipArchivesToMods();
+            ManageModOrganizerMods.InstallZipArchivesToMods();
 
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage));
-            ManageMoMods.InstallBepinExModsToMods();
+            ManageModOrganizerMods.InstallBepinExModsToMods();
 
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "."));
-            ManageMoMods.InstallZipModsToMods();
+            ManageModOrganizerMods.InstallZipModsToMods();
 
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + ".."));
-            ManageMoMods.InstallCardsFrom2Mo();
+            ManageModOrganizerMods.InstallCardsFrom2Mo();
 
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "..."));
-            ManageMoMods.InstallModFilesFromSubfolders();
+            ManageModOrganizerMods.InstallModFilesFromSubfolders();
 
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage));
-            ManageMoMods.InstallImagesFromSubfolders();
+            ManageModOrganizerMods.InstallImagesFromSubfolders();
 
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "."));
             ManageFilesFolders.DeleteEmptySubfolders(Install2MoDirPath, false);
@@ -1794,7 +1794,7 @@ namespace AIHelper
                                 }
                                 else//zipmod in Mods
                                 {
-                                    var modPath = ManageMoMods.GetMoModPathInMods(zipmod);
+                                    var modPath = ManageModOrganizerMods.GetMoModPathInMods(zipmod);
                                     if (Path.GetFileName(modPath).ToUpperInvariant() != "MODS" && Directory.Exists(modPath))
                                     {
                                         destFileName = addedFiles[f].Replace(ManageSettings.GetCurrentGameDataPath(), modPath);
@@ -1999,7 +1999,7 @@ namespace AIHelper
             var debufStr = "";
             try
             {
-                ManageMoMods.CleanBepInExLinksFromData();
+                ManageModOrganizerMods.CleanBepInExLinksFromData();
 
                 if (!ManageSettings.MoIsNew)
                 {
@@ -2093,7 +2093,7 @@ namespace AIHelper
 
                                             File.Move(fileInDataFolder, fileInBakFolderWhichIsInRes);//перенос файла из Data в Bak, если там не было
 
-                                            ManageMoMods.SaveGuidIfZipMod(fileInOverwrite, zipmodsGuidList);
+                                            ManageModOrganizerMods.SaveGuidIfZipMod(fileInOverwrite, zipmodsGuidList);
 
                                             File.Move(fileInOverwrite, fileInDataFolder);//перенос файла из папки Overwrite в Data
                                             moToStandartConvertationOperationsList.AppendLine(fileInOverwrite + "|MovedTo|" + fileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
@@ -2120,7 +2120,7 @@ namespace AIHelper
                                             debufStr = destFolder + ":destFolder,l2068";
                                         Directory.CreateDirectory(destFolder);
 
-                                        ManageMoMods.SaveGuidIfZipMod(fileInOverwrite, zipmodsGuidList);
+                                        ManageModOrganizerMods.SaveGuidIfZipMod(fileInOverwrite, zipmodsGuidList);
 
                                         File.Move(fileInOverwrite, fileInDataFolder);//перенос файла из папки мода в Data
                                         moToStandartConvertationOperationsList.AppendLine(fileInOverwrite + "|MovedTo|" + fileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
@@ -2238,7 +2238,7 @@ namespace AIHelper
 
                                                     File.Move(fileInDataFolder, fileInBakFolderWhichIsInRes);//перенос файла из Data в Bak, если там не было
 
-                                                    ManageMoMods.SaveGuidIfZipMod(fileOfMod, zipmodsGuidList);
+                                                    ManageModOrganizerMods.SaveGuidIfZipMod(fileOfMod, zipmodsGuidList);
 
                                                     File.Move(fileOfMod, fileInDataFolder);//перенос файла из папки мода в Data
                                                     moToStandartConvertationOperationsList.AppendLine(fileOfMod + "|MovedTo|" + fileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
@@ -2264,7 +2264,7 @@ namespace AIHelper
                                                     debufStr = destFolder + ":destFolder,l2208";
                                                 Directory.CreateDirectory(destFolder);
 
-                                                ManageMoMods.SaveGuidIfZipMod(fileOfMod, zipmodsGuidList);
+                                                ManageModOrganizerMods.SaveGuidIfZipMod(fileOfMod, zipmodsGuidList);
 
                                                 File.Move(fileOfMod, fileInDataFolder);//перенос файла из папки мода в Data
                                                 moToStandartConvertationOperationsList.AppendLine(fileOfMod + "|MovedTo|" + fileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
@@ -2545,7 +2545,7 @@ namespace AIHelper
 
         private void OpenLogLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            ManageMoMods.OpenBepinexLog();
+            ManageModOrganizerMods.OpenBepinexLog();
         }
 
         private void CurrentGameComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -2714,7 +2714,7 @@ namespace AIHelper
         {
             OnOffButtons(false);
             //impossible to correctly update mods in common mode
-            if (!Properties.Settings.Default.MOmode)
+            if (!ManageSettings.IsMoMode())
             {
                 DialogResult result = MessageBox.Show(T._("Attention") + "\n\n" + T._("Correct modlist fixes possible only in MO mode") + "\n\n" + T._("Switch to MO mode?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
                 if (result == DialogResult.OK)
@@ -2825,7 +2825,7 @@ namespace AIHelper
             progressForm.Controls.Add(pBar);
             progressForm.Show();
 
-            var modpacks = ManageMoMods.GetSideloaderModpackTargetDirs();
+            var modpacks = ManageModOrganizerMods.GetSideloaderModpackTargetDirs();
 
             pBar.Maximum = dirs.Count();
             pBar.Value = 0;
@@ -2851,7 +2851,7 @@ namespace AIHelper
 
                     progressForm.Text = T._("Sorting") + ":" + sideloadername;
 
-                    var isUnc = ManageMoMods.IsUncensorSelector(sideloadername);
+                    var isUnc = ManageModOrganizerMods.IsUncensorSelector(sideloadername);
                     var isMaleUnc = isUnc && modpacks.ContainsKey(sideloadername + "M");
                     var isFeMaleUnc = isUnc && modpacks.ContainsKey(sideloadername + "F");
                     var isSortingModPack = modpacks.ContainsKey(sideloadername) || isMaleUnc || isFeMaleUnc;
@@ -2862,7 +2862,7 @@ namespace AIHelper
                         // Check if TargetIsInSideloader by guid
                         var guid = ManageArchive.GetZipmodGuid(file);
                         bool isguid = guid.Length > 0 && zipmodsGuidList.ContainsKey(guid);
-                        string targetModPath = isguid ? ManageMoMods.GetMoModPathInMods(zipmodsGuidList[guid]) : "";
+                        string targetModPath = isguid ? ManageModOrganizerMods.GetMoModPathInMods(zipmodsGuidList[guid]) : "";
                         var pathElements = !string.IsNullOrWhiteSpace(targetModPath) ? file.Replace(targetModPath, "").Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries) : null;
                         var targetzipModDirName = pathElements != null && pathElements.Length > 1 ? pathElements[1] : ""; // %modpath%\mods\%sideloadermodpackdir%
                         var targetIsInSideloader = targetzipModDirName.ToUpperInvariant().Contains("SIDELOADER MODPACK"); // dir in mods is sideloader
@@ -3035,7 +3035,7 @@ namespace AIHelper
                         {
                             foreach (var zipmod in Directory.EnumerateFiles(dir, "*.zip*", SearchOption.AllDirectories))
                             {
-                                ManageMoMods.SaveGuidIfZipMod(zipmod, zipmodsGuidList);
+                                ManageModOrganizerMods.SaveGuidIfZipMod(zipmod, zipmodsGuidList);
                             }
                         }
                         else

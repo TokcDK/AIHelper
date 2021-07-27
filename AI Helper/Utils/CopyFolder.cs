@@ -10,9 +10,9 @@ namespace AIHelper
         /// </summary>
         /// <param name="sourceDirectory"></param>
         /// <param name="targetDirectory"></param>
-        public static void CopyAll(this string sourceDirectory, string targetDirectory)
+        public static void CopyAll(this string sourceDirectory, string targetDirectory, bool overwriteFiles = false)
         {
-            new DirectoryInfo(sourceDirectory).CopyAll(new DirectoryInfo(targetDirectory));
+            new DirectoryInfo(sourceDirectory).CopyAll(new DirectoryInfo(targetDirectory), overwriteFiles);
         }
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace AIHelper
         /// </summary>
         /// <param name="sourceDirectory"></param>
         /// <param name="targetDirectory"></param>
-        public static void CopyAll(this DirectoryInfo sourceDirectory, DirectoryInfo targetDirectory)
+        public static void CopyAll(this DirectoryInfo sourceDirectory, DirectoryInfo targetDirectory, bool overwriteFiles = false)
         {
             Directory.CreateDirectory(targetDirectory.FullName);
 
@@ -28,7 +28,7 @@ namespace AIHelper
             foreach (FileInfo fi in sourceDirectory.GetFiles())
             {
                 //Console.WriteLine(@"Copying {0}\{1}", target.FullName, fi.Name);
-                fi.CopyTo(Path.Combine(targetDirectory.FullName, fi.Name), true);
+                fi.CopyTo(Path.Combine(targetDirectory.FullName, fi.Name), overwriteFiles);
             }
 
             // Copy each subdirectory using recursion.
@@ -36,7 +36,7 @@ namespace AIHelper
             {
                 DirectoryInfo nextTargetSubDir =
                     targetDirectory.CreateSubdirectory(diSourceSubDir.Name);
-                CopyAll(diSourceSubDir, nextTargetSubDir);
+                CopyAll(diSourceSubDir, nextTargetSubDir, overwriteFiles);
             }
         }
     }

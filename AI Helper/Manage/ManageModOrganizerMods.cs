@@ -1,5 +1,4 @@
-﻿using AIHelper.Manage;
-using AIHelper.SharedData;
+﻿using AIHelper.SharedData;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,7 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace AIHelper.Manage
 {
-    class ManageMoMods
+    class ManageModOrganizerMods
     {
         public static void SetMoModsVariables()
         {
@@ -112,7 +111,7 @@ namespace AIHelper.Manage
 
         public static void MousfsLoadingFix(bool removeLinks = false)
         {
-            if (!Properties.Settings.Default.MOmode)
+            if (!ManageSettings.IsMoMode())
             {
                 return;
             }
@@ -220,7 +219,7 @@ namespace AIHelper.Manage
                         }
 
                         //skip file if not in enabled mod
-                        if (!File.Exists(sourceFilePath) || !ManageMoMods.IsInEnabledModOrOverwrite(sourceFilePath))//skip if no active mod found
+                        if (!File.Exists(sourceFilePath) || !ManageModOrganizerMods.IsInEnabledModOrOverwrite(sourceFilePath))//skip if no active mod found
                         {
                             if (File.Exists(targetFilePath))
                             {
@@ -1625,7 +1624,7 @@ namespace AIHelper.Manage
                 //string version = dllInfo.ProductVersion;
                 string copyright = dllInfo.LegalCopyright;
 
-                if (name==null || name.Length == 0)
+                if (name == null || name.Length == 0)
                 {
                     name = Path.GetFileNameWithoutExtension(dllfile);
                 }
@@ -1954,7 +1953,7 @@ namespace AIHelper.Manage
                 var guid = ManageArchive.GetZipmodGuid(sourceModZipmodPath);
                 if (guid.Length > 0 && !zipmodsGuidList.ContainsKey(guid))
                 {
-                    zipmodsGuidList.Add(guid, saveFullPath ? sourceModZipmodPath : ManageMoMods.GetMoModPathInMods(sourceModZipmodPath));
+                    zipmodsGuidList.Add(guid, saveFullPath ? sourceModZipmodPath : ManageModOrganizerMods.GetMoModPathInMods(sourceModZipmodPath));
                 }
             }
         }
@@ -2014,8 +2013,8 @@ namespace AIHelper.Manage
             if (IsUncensorSelector(!string.IsNullOrWhiteSpace(name) ? name : Path.GetFileName(modpackdir)))
             {
                 //add female male versions
-                var hasFemale = ManageFilesFolders.IsAnyFileExistsInTheDir(modpackdir, ".zipmod", true, "*[Female]*");
-                var hasMale = ManageFilesFolders.IsAnyFileExistsInTheDir(modpackdir, ".zipmod", true, "*[Penis]*") || ManageFilesFolders.IsAnyFileExistsInTheDir(modpackdir, ".zipmod", true, "*[Balls]*");
+                var hasFemale = ManageFilesFolders.IsAnyFileExistsInTheDir(modpackdir, "*[Female]*.zipmod", true);
+                var hasMale = ManageFilesFolders.IsAnyFileExistsInTheDir(modpackdir, "*[Penis]*.zipmod", true) || ManageFilesFolders.IsAnyFileExistsInTheDir(modpackdir, "*[Balls]*.zipmod", true);
                 if (hasFemale && !hasMale)
                 {
                     return "F";

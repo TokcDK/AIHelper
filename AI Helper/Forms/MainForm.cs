@@ -951,7 +951,7 @@ namespace AIHelper
                 ManageModOrganizer.MoIniFixes();
 
                 //try start in another thread for perfomance purposes
-                new Thread(new ParameterizedThreadStart((obj) => RunSlowActions())).Start();
+                new Thread(obj => RunSlowActions()).Start();
 
                 SetupXmlPath = ManageModOrganizer.GetSetupXmlPathForCurrentProfile();
 
@@ -1108,7 +1108,7 @@ namespace AIHelper
         private void FullScreenCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             ManageOther.CheckBoxChangeColor(sender as CheckBox);
-            ManageXml.ChangeSetupXmlValue(SetupXmlPath, "Setting/FullScreen", (sender as CheckBox).Checked.ToString().ToLower());
+            ManageXml.ChangeSetupXmlValue(SetupXmlPath, "Setting/FullScreen", (sender as CheckBox).Checked.ToString(CultureInfo.InvariantCulture).ToLowerInvariant());
         }
 
         private void FixRegistryButton_Click(object sender, EventArgs e)

@@ -239,7 +239,7 @@ namespace AIHelper.Manage
                     DirectoryInfo di;
                     if ((objectPath != symlinkPath && !Directory.Exists(symlinkPath)) || ((di = new DirectoryInfo(symlinkPath)).IsSymbolicLink() && !di.IsSymbolicLinkValid()))
                     {
-                        if (Directory.Exists(symlinkPath) && ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(symlinkPath))
+                        if (Directory.Exists(symlinkPath) && ManageFilesFolders.IsDirectoryNullOrEmpty(symlinkPath))
                         {
                             Directory.Delete(symlinkPath);
                         }

@@ -10,7 +10,7 @@ namespace AIHelper.Games
         public override void InitActions()
         {
             base.InitActions();
-            CopyMOfiles("MOKK");
+            CopyModOrganizerUserFiles("MOKK");
         }
         public override bool IsHaveSideloaderMods { get; set; } = true;
 

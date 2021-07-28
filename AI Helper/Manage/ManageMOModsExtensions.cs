@@ -1,6 +1,6 @@
 ﻿namespace AIHelper.Manage
 {
-    static class ManageMoModsExtensions
+    static class ManageModOrganizerModsExtensions
     {
         internal static bool IsInOverwriteFolder(this string filePath)
         {

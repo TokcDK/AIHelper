@@ -10,9 +10,9 @@ namespace AIHelper.Manage.Rules.ModList
 
         internal override bool Condition()
         {
-            return (!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(
+            return (!ManageFilesFolders.IsDirectoryNullOrEmpty(
                 Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "plugins"), "*.dll", null, true
-                ) || !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(
+                ) || !ManageFilesFolders.IsDirectoryNullOrEmpty(
                 Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "patchers"), "*.dll", null, true
                 )) && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "core", "BepInEx.dll"));
         }

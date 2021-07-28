@@ -12,11 +12,11 @@ namespace AIHelper.Manage.Rules.ModList
         internal override bool Condition()
         {
             return (
-                !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(
+                !ManageFilesFolders.IsDirectoryNullOrEmpty(
                 Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "mods"), "*.zip", null, true
                 )
                 ||
-                !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(
+                !ManageFilesFolders.IsDirectoryNullOrEmpty(
                 Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "mods"), "*.zipmod", null, true
                 )) 
                 && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "plugins", ModlistData.GamePrefix + "_BepisPlugins", "Sideloader.dll"))

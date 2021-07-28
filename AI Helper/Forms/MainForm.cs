@@ -913,7 +913,7 @@ namespace AIHelper
                 }
 
 
-                if (!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(ManageSettings.GetCurrentGameModsPath(), "*", new string[1] { "_separator" }))
+                if (!ManageFilesFolders.IsDirectoryNullOrEmpty(ManageSettings.GetCurrentGameModsPath(), "*", new string[1] { "_separator" }))
                 {
                     ModsInfoLabel.Text = T._("Found mod folders in Mods");
                     //button1.Enabled = false;

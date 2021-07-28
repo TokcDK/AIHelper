@@ -21,19 +21,19 @@ namespace AIHelper.Manage
             Directory = 2
         }
 
-        private static readonly IntPtr InvalidHandleValue = new IntPtr(-1);
+        static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        private struct Win32FindData
+        private struct WIN32_FIND_DATA
         {
-            public uint dwFileAttributes;
-            public System.Runtime.InteropServices.ComTypes.FILETIME ftCreationTime;
-            public System.Runtime.InteropServices.ComTypes.FILETIME ftLastAccessTime;
-            public System.Runtime.InteropServices.ComTypes.FILETIME ftLastWriteTime;
-            public uint nFileSizeHigh;
-            public uint nFileSizeLow;
-            public uint dwReserved0;
-            public uint dwReserved1;
+            public FileAttributes dwFileAttributes;
+            internal System.Runtime.InteropServices.ComTypes.FILETIME ftCreationTime;
+            internal System.Runtime.InteropServices.ComTypes.FILETIME ftLastAccessTime;
+            internal System.Runtime.InteropServices.ComTypes.FILETIME ftLastWriteTime;
+            public int nFileSizeHigh;
+            public int nFileSizeLow;
+            public int dwReserved0;
+            public int dwReserved1;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
             public string cFileName;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
@@ -41,15 +41,15 @@ namespace AIHelper.Manage
         }
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern IntPtr FindFirstFile(string lpFileName, out Win32FindData lpFindFileData);
+        private static extern IntPtr FindFirstFile(string lpFileName, out WIN32_FIND_DATA lpFindFileData);
 
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
-        private static extern bool FindNextFile(IntPtr hFindFile, out Win32FindData lpFindFileData);
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        private static extern bool FindNextFile(IntPtr hFindFile, out WIN32_FIND_DATA lpFindFileData);
 
         [DllImport("kernel32.dll")]
         private static extern bool FindClose(IntPtr hFindFile);
 
-        //https://stackoverflow.com/a/757925
+        //info: https://stackoverflow.com/a/757925
         //быстро проверить, пуста ли папка
         /// <summary>
         /// return true if path nul,aempty or not contains any dirs/files
@@ -59,67 +59,61 @@ namespace AIHelper.Manage
         /// <param name="exclusions"></param>
         /// <param name="recursive"></param>
         /// <returns></returns>
-        public static bool CheckDirectoryNullOrEmpty_Fast(string path, string mask = "*", string[] exclusions = null, bool recursive = false)
+        public static bool IsDirectoryNullOrEmpty(string path, string mask = "*", string[] exclusions = null, bool recursive = false, bool isSubDir = false)
         {
-            if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
+            if (!isSubDir) // make it only 1st time
             {
-                return true; //return true if path is empty
-                //throw new ArgumentNullException(path);
+                if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
+                {
+                    return true; //return true if path is empty
+                                 //throw new ArgumentNullException(path);
+                }
+
+                // commented because perfomance issues and even with commented invalid link will be parsed as InvalidHandleValue and wil return true as for empty dir
+                //if (path.IsSymLink() && !path.IsValidSymlink()) // check if target is symlink and it is invalid. perfomance issue here
+                //{
+                //    return true;
+                //}
+
+                path = path.TrimEnd(Path.DirectorySeparatorChar);
             }
 
-            // commented because perfomance issues and even with commented invalid link will be parsed as InvalidHandleValue and wil return true as for empty dir
-            //if (path.IsSymLink() && !path.IsValidSymlink()) // check if target is symlink and it is invalid. perfomance issue here
-            //{
-            //    return true;
-            //}
+            var findHandle = FindFirstFile(path + Path.DirectorySeparatorChar + mask, out WIN32_FIND_DATA findData);
 
-            bool endsWithDirSeparator = path.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.InvariantCulture);
-            var findHandle = FindFirstFile(path + (endsWithDirSeparator ? "" : Path.DirectorySeparatorChar + "") + mask, out Win32FindData findData);
-
-            if (findHandle != InvalidHandleValue)
+            if (findHandle == INVALID_HANDLE_VALUE) return true;
+            try
             {
-                try
+                bool empty = true;
+                int skipCnt = 2; // for skip root and parent dirs without need to compare strings
+                do
                 {
-                    bool empty = true;
-                    do
+                    if ((isSubDir && (skipCnt--) > 0) // replace of 2 checks below for . and ..
+                        || (!isSubDir && findData.cFileName == "." /*root dir*/ || findData.cFileName == ".." /*parent dir*/)
+                        //|| ManageStrings.IsStringContainsAnyExclusion(findData.cFileName, exclusions)
+                        || (recursive && IsDir(findData.dwFileAttributes) && IsDirectoryNullOrEmpty(path + Path.DirectorySeparatorChar + findData.cFileName, mask, exclusions, recursive, true))) // recursive and subfolder is empty
+                                                                                                                                                                                       //&& mask.Length != 1 && !findData.cFileName.EndsWith(mask.Remove(0, 1), StringComparison.InvariantCultureIgnoreCase))
                     {
-                        if (findData.cFileName == "." // root dir
-                            || findData.cFileName == ".." // parent dir
-                            || ManageStrings.IsStringContainsAnyExclusion(findData.cFileName, exclusions)
-                            || (recursive && IsDir(findData.dwFileAttributes) && CheckDirectoryNullOrEmpty_Fast(path + Path.DirectorySeparatorChar + findData.cFileName + Path.DirectorySeparatorChar, mask, exclusions, recursive))) // recursive and subfolder is empty
-                                                                                                                                                                                                                                         //&& mask.Length != 1 && !findData.cFileName.EndsWith(mask.Remove(0, 1), StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            continue;
-                        }
-                        empty = false;
-                    } while (empty && FindNextFile(findHandle, out findData));
+                        continue;
+                    }
+                    empty = false;
+                } while (empty && FindNextFile(findHandle, out findData));
 
-                    return empty;
-                }
-                finally
-                {
-                    FindClose(findHandle);
-                }
+                return empty;
             }
-            return true;
-
-            //throw new Exception("Failed to get directory first file",
-            //    Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
-            //throw new DirectoryNotFoundException();
+            finally
+            {
+                FindClose(findHandle);
+            }
         }
 
-        const uint CommonDirectory = 16;
-        const uint CompressedDirectory = 10256; // suppose
-        const uint SymlinkDirectory = 9232; // suppose
-
         /// <summary>
-        /// is with one of directory attribute
+        /// true if directory attributes
         /// </summary>
         /// <param name="dwFileAttributes"></param>
         /// <returns></returns>
-        private static bool IsDir(uint dwFileAttributes)
+        static bool IsDir(FileAttributes dwFileAttributes)
         {
-            return dwFileAttributes == CommonDirectory || dwFileAttributes == CompressedDirectory || dwFileAttributes == SymlinkDirectory;
+            return (dwFileAttributes & FileAttributes.Directory) != 0;
         }
 
         /// <summary>
@@ -131,20 +125,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         public static bool IsAnyFileExistsInTheDir(string dirPath, string Mask = "*", bool allDirectories = true)
         {
-            if (dirPath.Length == 0)
-            {
-                return false;
-            }
-
-            //if (Mask.Length > 0 && Mask[0] != '.')
-            //{
-            //    Mask = "." + Mask;
-            //}
-
-            if (!CheckDirectoryNullOrEmpty_Fast(dirPath, Mask, null, allDirectories))
-                return true;
-
-            return false;
+            return !IsDirectoryNullOrEmpty(dirPath, Mask, null, allDirectories);
         }
 
         /// <summary>
@@ -184,7 +165,7 @@ namespace AIHelper.Manage
                 }
             }
 
-            if (deleteThisDir && CheckDirectoryNullOrEmpty_Fast(dirPath)/*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)
+            if (deleteThisDir && IsDirectoryNullOrEmpty(dirPath)/*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)
             {
                 dir.Attributes = FileAttributes.Normal;
                 dir.Delete();
@@ -209,7 +190,7 @@ namespace AIHelper.Manage
                 }
             }
 
-            if (CheckDirectoryNullOrEmpty_Fast(dirPath)/*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)
+            if (IsDirectoryNullOrEmpty(dirPath)/*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)
             {
                 return retArray.AppendLine(dirPath);
             }
@@ -476,7 +457,7 @@ namespace AIHelper.Manage
         {
             if (Directory.Exists(sourceFolder))
             {
-                if (!CheckDirectoryNullOrEmpty_Fast(sourceFolder) && !ManageSymLinkExtensions.IsSymLink(sourceFolder))
+                if (!IsDirectoryNullOrEmpty(sourceFolder) && !ManageSymLinkExtensions.IsSymLink(sourceFolder))
                 {
                     if (!Directory.Exists(targetFolder))
                     {

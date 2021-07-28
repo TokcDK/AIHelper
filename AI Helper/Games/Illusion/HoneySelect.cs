@@ -8,7 +8,7 @@ namespace AIHelper.Games
         public override void InitActions()
         {
             base.InitActions();
-            CopyMOfiles("MOHS");
+            CopyModOrganizerUserFiles("MOHS");
         }
 
         public override string GetGameFolderName()

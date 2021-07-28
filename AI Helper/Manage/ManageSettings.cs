@@ -133,7 +133,7 @@ namespace AIHelper.Manage
                     if (
                             Directory.Exists(game.GetGamePath())
                             &&
-                            !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(game.GetGamePath(), "MO", "Profiles"))
+                            !ManageFilesFolders.IsDirectoryNullOrEmpty(Path.Combine(game.GetGamePath(), "MO", "Profiles"))
                         )
                     {
 
@@ -158,7 +158,7 @@ namespace AIHelper.Manage
                         &&
                         Directory.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
                         &&
-                        !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
+                        !ManageFilesFolders.IsDirectoryNullOrEmpty(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
                         //&&
                         //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(GetMOdirPath())
                         &&
@@ -623,7 +623,7 @@ namespace AIHelper.Manage
             if (Directory.Exists(Path.Combine(folder, "Profiles"))
                     && File.Exists(Path.Combine(folder, "ModOrganizer.ini"))
                     && File.Exists(Path.Combine(folder, "categories.dat"))
-                    && !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(folder, "Profiles"))
+                    && !ManageFilesFolders.IsDirectoryNullOrEmpty(Path.Combine(folder, "Profiles"))
                     )
             {
                 return true;

@@ -1857,7 +1857,7 @@ namespace AIHelper.Manage
                      || defaultCategory.Length == 0
                     )
                     && Directory.Exists(dir)
-                    && !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(dir)
+                    && !ManageFilesFolders.IsDirectoryNullOrEmpty(dir)
                     && ManageFilesFolders.IsAnyFileExistsInTheDir(dir, extension)
                    )
                 {

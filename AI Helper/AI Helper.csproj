@@ -171,7 +171,7 @@
     <Compile Include="Manage\ManageLogs.cs" />
     <Compile Include="Manage\ManageMOModsExtensions.cs" />
     <Compile Include="Manage\ManageModOrganizerMods.cs" />
-    <Compile Include="Manage\ManageNumbersExtensions.cs" />
+    <Compile Include="Manage\ManageDigitalsExtensions.cs" />
     <Compile Include="Manage\ManagePython.cs" />
     <Compile Include="Manage\ManageRegistry.cs" />
     <Compile Include="Manage\Rules\ManageRules.cs" />

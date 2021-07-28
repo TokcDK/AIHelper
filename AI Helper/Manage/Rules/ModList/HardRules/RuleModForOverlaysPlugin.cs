@@ -11,7 +11,7 @@ namespace AIHelper.Manage.Rules.ModList
         internal override bool Condition()
         {
             return ModlistData.GamePrefix.Length > 0 && (
-                !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(
+                !ManageFilesFolders.IsDirectoryNullOrEmpty(
                 Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "Overlays"), "*.png", null, true
                 )
                     )

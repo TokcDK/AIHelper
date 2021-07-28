@@ -1360,5 +1360,10 @@ namespace AIHelper.Manage
         {
             return Path.Combine(GetMOdirPath(), "plugins", "basic_games", "games");
         }
+
+        internal static string GetDiscordGroupLink()
+        {
+            return "https://discord.gg/rKbXzrnrMs";
+        }
     }
 }

@@ -461,44 +461,42 @@ namespace AIHelper
 
         private void PackMods()
         {
-            if (Directory.Exists(ModsPath))
+            if (!Directory.Exists(ModsPath)) return;
+            string[] dirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();//с игнором сепараторов
+            if (dirs.Length == 0)
             {
-                string[] dirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();//с игнором сепараторов
-                if (dirs.Length == 0)
+            }
+            else
+            {
+                //Read categories.dat
+                List<CategoriesList> categories = new List<CategoriesList>();
+                foreach (string line in File.ReadAllLines(ManageSettings.GetMOcategoriesPath()))
                 {
-                }
-                else
-                {
-                    //Read categories.dat
-                    List<CategoriesList> categories = new List<CategoriesList>();
-                    foreach (string line in File.ReadAllLines(ManageSettings.GetMOcategoriesPath()))
+                    if (line.Length == 0)
                     {
-                        if (line.Length == 0)
-                        {
-                        }
-                        else
-                        {
-                            string[] linevalues = line.Split('|');
-                            categories.Add(new CategoriesList(linevalues[0], linevalues[1], linevalues[2], linevalues[3]));
-                        }
                     }
+                    else
+                    {
+                        string[] linevalues = line.Split('|');
+                        categories.Add(new CategoriesList(linevalues[0], linevalues[1], linevalues[2], linevalues[3]));
+                    }
+                }
 
-                    int i = 1;
-                    progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
-                    progressBar1.Invoke((Action)(() => progressBar1.Maximum = dirs.Length));
+                int i = 1;
+                progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
+                progressBar1.Invoke((Action)(() => progressBar1.Maximum = dirs.Length));
+                progressBar1.Invoke((Action)(() => progressBar1.Value = i));
+                foreach (string dir in dirs)
+                {
+                    DataInfoLabel.Invoke((Action)(() => DataInfoLabel.Text = "Compressing " + i + "/" + dirs.Length));
+                    ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = "Folder: " + Path.GetFileNameWithoutExtension(dir)));
+
+                    Compressor.Compress(dir, GetResultTargetName(categories, dir));
+
                     progressBar1.Invoke((Action)(() => progressBar1.Value = i));
-                    foreach (string dir in dirs)
-                    {
-                        DataInfoLabel.Invoke((Action)(() => DataInfoLabel.Text = "Compressing " + i + "/" + dirs.Length));
-                        ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = "Folder: " + Path.GetFileNameWithoutExtension(dir)));
-
-                        Compressor.Compress(dir, GetResultTargetName(categories, dir));
-
-                        progressBar1.Invoke((Action)(() => progressBar1.Value = i));
-                        i++;
-                    }
-                    progressBar1.Invoke((Action)(() => progressBar1.Visible = false));
+                    i++;
                 }
+                progressBar1.Invoke((Action)(() => progressBar1.Visible = false));
             }
         }
 

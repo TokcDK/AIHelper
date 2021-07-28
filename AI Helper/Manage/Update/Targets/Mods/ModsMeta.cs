@@ -170,8 +170,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
         }
 
         List<Dictionary<string, string>> _dbData;
-        readonly string[] _dbDataParams = new string[]
-        {
+        readonly string[] _dbDataParams = {
             "url.contains",
             "gitowner",
             "repository",

@@ -224,6 +224,15 @@ namespace AIHelper.Manage
                 }
 
                 _loadedListCustomsCount = List.Count;
+
+                //Normalize values
+                foreach (var customExecutable in List)
+                {
+                    foreach (var attributeKey in customExecutable.Value.Attribute.Keys.ToList())
+                    {
+                        ApplyNormalize(customExecutable.Value, attributeKey);
+                    }
+                }
             }
 
             /// <summary>
@@ -252,25 +261,29 @@ namespace AIHelper.Manage
                 int customExecutableNumber = 0; // use new executable number when section was cleared and need to renumber executable numbers
                 foreach (var customExecutable in List)
                 {
-                    if (listToRemoveKeys.Contains(customExecutable.Key))
-                    {
-                        changed = true;
-                        continue;
-                    }
-
                     if (sectionCleared)
                     {
+                        if (listToRemoveKeys.Contains(customExecutable.Key)) // skip custom exe to be saved
+                        {
+                            changed = true;
+                            continue;
+                        }
+
                         customExecutableNumber++;
                     }
 
-                    foreach (var attribute in customExecutable.Value.Attribute)
+                    foreach (var attributeKey in customExecutable.Value.Attribute.Keys.ToList())
                     {
-                        string keyName = (sectionCleared ? customExecutableNumber + "" : customExecutable.Key) + "\\" + attribute.Key;
+                        string keyName = (sectionCleared ? customExecutableNumber + "" : customExecutable.Key) + "\\" + attributeKey;
 
-                        if (sectionCleared || !_ini.KeyExists(keyName, "customExecutables") || _ini.ReadINI("customExecutables", keyName) != attribute.Value) // write only if not equal
+                        //Normalize values
+                        var valueBeforeNormalize = customExecutable.Value.Attribute[attributeKey];
+                        ApplyNormalize(customExecutable.Value, attributeKey);
+
+                        if (sectionCleared || customExecutable.Value.Attribute[attributeKey] != valueBeforeNormalize || !_ini.KeyExists(keyName, "customExecutables") || _ini.ReadINI("customExecutables", keyName) != customExecutable.Value.Attribute[attributeKey]) // write only if not equal
                         {
                             changed = true;
-                            _ini.WriteINI("customExecutables", keyName, attribute.Value);
+                            _ini.WriteINI("customExecutables", keyName, customExecutable.Value.Attribute[attributeKey]);
                         }
                     }
                 }
@@ -278,6 +291,30 @@ namespace AIHelper.Manage
                 if (changed)
                 {
                     _ini.WriteINI("customExecutables", "size", (sectionCleared ? customExecutableNumber : List.Count) + "");
+                }
+            }
+
+            /// <summary>
+            /// apply normalization of values
+            /// </summary>
+            /// <param name="customExecutable"></param>
+            /// <param name="attributeKey"></param>
+            private static void ApplyNormalize(CustomExecutable customExecutable, string attributeKey)
+            {
+                switch (attributeKey)
+                {
+                    case "binary":
+                    case "workingDirectory":
+                        customExecutable.Attribute[attributeKey] = NormalizePath(customExecutable.Attribute[attributeKey]);
+                        break;
+                    case "arguments":
+                        customExecutable.Attribute[attributeKey] = NormalizeArguments(customExecutable.Attribute[attributeKey]);
+                        break;
+                    case "toolbar":
+                    case "ownicon":
+                    case "hide":
+                        customExecutable.Attribute[attributeKey] = NormalizeBool(customExecutable.Attribute[attributeKey]);
+                        break;
                 }
             }
 
@@ -299,23 +336,23 @@ namespace AIHelper.Manage
 
             protected static string NormalizeArguments(string value)
             {
-                if (value == "\\\"\\\"")
+                if (string.IsNullOrEmpty(value) || value == "\\\"\\\"")
                 {
-                    return string.Empty;
+                    return value;
                 }
 
-                value = value.Replace("\\", "\\\\").Replace("/", "\\\\").Replace("\\\\\\\\", "\\\\");
-
-                if (!value.StartsWith("\\\"", StringComparison.InvariantCulture))
+                if (value.StartsWith("\\\"", StringComparison.InvariantCulture))
                 {
-                    value = "\\\"" + value;
+                    value = value.Remove(0, 2);
                 }
-                if (!value.Remove(0, 2).EndsWith("\\\"", StringComparison.InvariantCulture))
+                if (value.EndsWith("\\\"", StringComparison.InvariantCulture))
                 {
-                    value += "\\\"";
+                    value = value.Remove(value.Length - 2, 2);
                 }
 
-                return value;
+                var splitted = value.Split(new[] { "\\" }, StringSplitOptions.RemoveEmptyEntries);
+
+                return "\\\"" + string.Join("\\\\", splitted) + "\\\"";
             }
 
             internal class CustomExecutable
@@ -382,7 +419,7 @@ namespace AIHelper.Manage
                 /// <summary>
                 /// (Required!) title of custom executable
                 /// </summary>
-                internal string Title { get => Attribute["title"]; set => Attribute["title"] = NormalizePath(value); }
+                internal string Title { get => Attribute["title"]; set => Attribute["title"] = value; }
 
                 /// <summary>
                 /// (Required!) path to the exe
@@ -392,12 +429,12 @@ namespace AIHelper.Manage
                 /// <summary>
                 /// (Optional) Working directory. By defaule willbe directory where is binary located.
                 /// </summary>
-                internal string WorkingDirectory { get => Attribute["workingDirectory"]; set => Attribute["workingDirectory"] = NormalizeBool(value); }
+                internal string WorkingDirectory { get => Attribute["workingDirectory"]; set => Attribute["workingDirectory"] = NormalizePath(value); }
 
                 /// <summary>
                 /// (Optional) Arguments for binary. Empty by default.
                 /// </summary>
-                internal string Arguments { get => Attribute["arguments"]; set => Attribute["arguments"] = NormalizeBool(value); }
+                internal string Arguments { get => Attribute["arguments"]; set => Attribute["arguments"] = NormalizeArguments(value); }
 
                 /// <summary>
                 /// (Optional) Enable toolbar. False by default.
@@ -417,7 +454,7 @@ namespace AIHelper.Manage
                 /// <summary>
                 /// (Optional) Steam app id for binary. Empty by default.
                 /// </summary>
-                internal string SteamAppId { get => Attribute["steamAppID"]; set => Attribute["steamAppID"] = NormalizeBool(value); }
+                internal string SteamAppId { get => Attribute["steamAppID"]; set => Attribute["steamAppID"] = value; }
 
 #pragma warning restore CA1822 // Mark members as static
 #pragma warning restore IDE1006 // Naming Styles
@@ -1195,7 +1232,7 @@ namespace AIHelper.Manage
         /// <param name="exename"></param>
         /// <param name="ini"></param>
         /// <returns></returns>
-        internal static string GetMOcustomExecutableTitleByExeName(string exename, INIFile ini = null, bool newMethod = false)
+        internal static string GetMOcustomExecutableTitleByExeName(string exename, INIFile ini = null, bool newMethod = true)
         {
             if (ini == null)
             {
@@ -1248,19 +1285,34 @@ namespace AIHelper.Manage
             }
 
             var customExcutables = new CustomExecutables(ini);
-
+            string customToUpdate = "";
             if (insertOnlyMissingBinary)
             {
                 foreach (var exe in customExcutables.List)
                 {
-                    if (exe.Value.Binary == newCustomExecutable.Binary) // return if exe found
+                    if (exe.Value.Binary == newCustomExecutable.Binary && exe.Value.Title == newCustomExecutable.Title) // return if exe found and have same title
                     {
-                        return;
+                        customToUpdate = exe.Key; // memorize found custom exe number
+                        break;
                     }
                 }
             }
 
-            customExcutables.List.Add(customExcutables.List.Count + 1 + "", newCustomExecutable);
+            if (customToUpdate.Length == 0)
+            {
+                customExcutables.List.Add(customExcutables.List.Count + 1 + "", newCustomExecutable);
+            }
+            else
+            {
+                // update same record from input instead of add new
+                foreach (var attributeName in customExcutables.List[customToUpdate].Attribute.Keys.ToList())
+                {
+                    if (customExcutables.List[customToUpdate].Attribute[attributeName] != newCustomExecutable.Attribute[attributeName])
+                    {
+                        customExcutables.List[customToUpdate].Attribute[attributeName] = newCustomExecutable.Attribute[attributeName];
+                    }
+                }
+            }
 
             customExcutables.Save();
         }

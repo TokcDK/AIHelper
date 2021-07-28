@@ -2737,10 +2737,12 @@ namespace AIHelper
         {
             AIGirlHelperTabControl.Enabled = false;
 
+            var updater = new Updater();
+
             //update plugins in mo mode
             if (MOmode)
             {
-                await new Updater().Update().ConfigureAwait(true);
+                await updater.Update().ConfigureAwait(true);
             }
 
             //run zipmod's check if updater found and only for KK, AI, HS2
@@ -2748,19 +2750,24 @@ namespace AIHelper
             {
                 if (MOmode)
                 {
-                    ManageModOrganizer.CleanMoFolder();
-                    //
-                    ManageModOrganizer.CheckBaseGamesPy();
-
-                    ManageModOrganizer.RedefineGameMoData();
+                    if (updater.UpdatedAny) // make data update only when was updated any. Maybe required after update of MO or BepinEx
+                    {
+                        ManageModOrganizer.CleanMoFolder();
+                        //
+                        ManageModOrganizer.CheckBaseGamesPy();
+                        //
+                        ManageModOrganizer.RedefineGameMoData();
+                    }
 
                     //add updater as new exe in mo list if not exists
                     //if (!ManageMO.IsMOcustomExecutableTitleByExeNameExists("StandaloneUpdater"))
                     {
-                        var kkManagerStandaloneUpdater = new ManageModOrganizer.CustomExecutables.CustomExecutable();
-                        kkManagerStandaloneUpdater.Attribute["title"] = "KKManagerStandaloneUpdater";
-                        kkManagerStandaloneUpdater.Attribute["binary"] = ManageSettings.KkManagerStandaloneUpdaterExePath();
-                        kkManagerStandaloneUpdater.Attribute["workingDirectory"] = ManageSettings.GetCurrentGameDataPath();
+                        var kkManagerStandaloneUpdater = new ManageModOrganizer.CustomExecutables.CustomExecutable
+                        {
+                            Title = "KKManagerStandaloneUpdater",
+                            Binary = ManageSettings.KkManagerStandaloneUpdaterExePath(),
+                            Arguments = ManageSettings.GetCurrentGameDataPath()
+                        };
                         ManageModOrganizer.InsertCustomExecutable(kkManagerStandaloneUpdater);
                     }
 

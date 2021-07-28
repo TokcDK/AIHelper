@@ -93,6 +93,11 @@ namespace AIHelper.Manage.Update
     {
         private bool _isHtmlReport = true;
 
+        /// <summary>
+        /// true if any plugin or MO was updated
+        /// </summary>
+        internal bool UpdatedAny;
+
         internal async Task Update()
         {
             UpdateInfo info = new UpdateInfo();
@@ -189,6 +194,8 @@ namespace AIHelper.Manage.Update
                                 if (getfileIsTrue && target.MakeBuckup() && target.UpdateFiles() // update folder with new files
                                     )
                                 {
+                                    UpdatedAny = true;
+
                                     info.Excluded.Add(tFolderInfo.Key); // add path to excluded to skip it next time if will be found for other source or target
 
                                     info.Report.Add(

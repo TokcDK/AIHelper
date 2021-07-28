@@ -1,6 +1,6 @@
 ﻿namespace AIHelper
 {
-    partial class ExtraSettingsForm
+    internal partial class ExtraSettingsForm
     {
         /// <summary>
         /// Required designer variable.

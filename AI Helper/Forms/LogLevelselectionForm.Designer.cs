@@ -1,6 +1,6 @@
 ﻿namespace AIHelper.Forms
 {
-    partial class LogLevelselectionForm
+    internal partial class LogLevelselectionForm
     {
         /// <summary>
         /// Required designer variable.

@@ -2,7 +2,7 @@
 
 namespace AIHelper.Forms
 {
-    public partial class LogLevelselectionForm : Form
+    internal partial class LogLevelselectionForm : Form
     {
         public LogLevelselectionForm()
         {

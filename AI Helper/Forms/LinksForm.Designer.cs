@@ -1,6 +1,6 @@
 ﻿namespace AIHelper
 {
-    partial class LinksForm
+    internal partial class LinksForm
     {
         /// <summary>
         /// Required designer variable.

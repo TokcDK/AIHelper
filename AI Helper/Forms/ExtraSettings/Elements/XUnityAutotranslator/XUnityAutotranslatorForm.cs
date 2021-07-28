@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace AIHelper.Forms.ExtraSettings.Elements
 {
-    public partial class XUnityAutotranslatorForm : Form
+    internal partial class XUnityAutotranslatorForm : Form
     {
         public XUnityAutotranslatorForm()
         {

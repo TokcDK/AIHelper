@@ -1,6 +1,6 @@
 ﻿namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
 {
-    partial class BepinExForm
+    internal partial class BepinExForm
     {
         /// <summary>
         /// Required designer variable.

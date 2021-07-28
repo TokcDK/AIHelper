@@ -1,6 +1,6 @@
 ﻿namespace AIHelper
 {
-    partial class MainForm
+    internal partial class MainForm
     {
         /// <summary>
         /// Обязательная переменная конструктора.

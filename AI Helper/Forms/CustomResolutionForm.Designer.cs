@@ -1,6 +1,6 @@
 ﻿namespace AIHelper.Forms
 {
-    partial class CustomResolutionForm
+    internal partial class CustomResolutionForm
     {
         /// <summary>
         /// Required designer variable.

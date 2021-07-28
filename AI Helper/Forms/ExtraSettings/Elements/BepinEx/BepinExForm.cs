@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
 {
-    public partial class BepinExForm : Form
+    internal partial class BepinExForm : Form
     {
         public BepinExForm()
         {

@@ -2,7 +2,7 @@
 
 namespace AIHelper.Forms
 {
-    public partial class CustomResolutionForm : Form
+    internal partial class CustomResolutionForm : Form
     {
         public CustomResolutionForm()
         {

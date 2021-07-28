@@ -1,6 +1,6 @@
 ﻿namespace AIHelper.Forms.ExtraSettings.Elements
 {
-    partial class XUnityAutotranslatorForm
+    internal partial class XUnityAutotranslatorForm
     {
         /// <summary>
         /// Required designer variable.

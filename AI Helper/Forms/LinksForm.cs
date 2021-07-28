@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace AIHelper
 {
-    public partial class LinksForm : Form
+    internal partial class LinksForm : Form
     {
         public LinksForm()
         {

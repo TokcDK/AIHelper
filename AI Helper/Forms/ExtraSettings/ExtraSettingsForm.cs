@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace AIHelper
 {
-    public partial class ExtraSettingsForm : Form
+    internal partial class ExtraSettingsForm : Form
     {
         private static bool ExtraSettingsInitOnLoadIsInAction { get => Properties.Settings.Default.ExtraSettingsInitOnLoadIsInAction; set => Properties.Settings.Default.ExtraSettingsInitOnLoadIsInAction = value; }
 

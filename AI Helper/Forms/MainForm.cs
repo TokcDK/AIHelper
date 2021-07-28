@@ -20,7 +20,7 @@ using System.Windows.Forms;
 
 namespace AIHelper
 {
-    public partial class MainForm : Form
+    internal partial class MainForm : Form
     {
         private bool _compressmode;
 

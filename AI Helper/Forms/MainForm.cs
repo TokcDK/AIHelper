@@ -2,6 +2,7 @@
 using AIHelper.Manage;
 using AIHelper.Manage.Update;
 using AIHelper.SharedData;
+using CheckForEmptyDir;
 using INIFileMan;
 using System;
 using System.Collections.Generic;
@@ -911,7 +912,7 @@ namespace AIHelper
                 }
 
 
-                if (!ManageFilesFolders.IsDirectoryNullOrEmpty(ManageSettings.GetCurrentGameModsPath(), "*", new string[1] { "_separator" }))
+                if (!ManageSettings.GetCurrentGameModsPath().IsNullOrEmptyDirectory("*", new string[1] { "_separator" }))
                 {
                     ModsInfoLabel.Text = T._("Found mod folders in Mods");
                     //button1.Enabled = false;

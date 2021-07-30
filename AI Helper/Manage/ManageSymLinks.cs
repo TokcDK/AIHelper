@@ -1,4 +1,5 @@
-﻿using SymbolicLinkSupport;
+﻿using CheckForEmptyDir;
+using SymbolicLinkSupport;
 using System.IO;
 
 namespace AIHelper.Manage
@@ -70,11 +71,11 @@ namespace AIHelper.Manage
                     //ссылка валидная
                     if (symlinkPath.IsSymbolicLinkValid())
                     {
-                        if(linkTargetPath==null)
+                        if (linkTargetPath == null)
                         {
                             return true;
                         }
-                        else if(symlinkPath.IsSymlinkTargetEquals(linkTargetPath))
+                        else if (symlinkPath.IsSymlinkTargetEquals(linkTargetPath))
                         {
                             return true;
                         }
@@ -239,7 +240,7 @@ namespace AIHelper.Manage
                     DirectoryInfo di;
                     if ((objectPath != symlinkPath && !Directory.Exists(symlinkPath)) || ((di = new DirectoryInfo(symlinkPath)).IsSymbolicLink() && !di.IsSymbolicLinkValid()))
                     {
-                        if (Directory.Exists(symlinkPath) && ManageFilesFolders.IsDirectoryNullOrEmpty(symlinkPath))
+                        if (Directory.Exists(symlinkPath) && symlinkPath.IsNullOrEmptyDirectory())
                         {
                             Directory.Delete(symlinkPath);
                         }

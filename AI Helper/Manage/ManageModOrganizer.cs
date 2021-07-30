@@ -1,4 +1,5 @@
 ﻿using AIHelper.SharedData;
+using CheckForEmptyDir;
 using INIFileMan;
 using System;
 using System.Collections.Generic;
@@ -145,18 +146,15 @@ namespace AIHelper.Manage
 
                                 //replace other slashes
                                 var targetcorrectedabsolute = Path.GetFullPath(targetcorrectedrelative);
-                                record.Value.Attribute[attribute] = targetcorrectedabsolute.Replace(@"\\", "/").Replace(@"\", "/");//replace \ to /;
-                                //changed = true;
+                                record.Value.Attribute[attribute] = CustomExecutables.NormalizePath(targetcorrectedabsolute);
 
-                                //add absolute path for current game's data path
-                                //newcustomExecutables.Add(record.Key, targetcorrectedabsolutefixedslash);
                                 continue;
                             }
                         }
                     }
                     catch
                     {
-                        ManageLogs.Log("FixCustomExecutablesIniValues:Error while path fix.\r\nKey=" + record.Key + "\r\nPath=" + record.Value);
+                        ManageLogs.Log("FixCustomExecutablesIniValues:Error while path fix.\r\nKey=" + record.Key + "\r\nPath=" + record.Value.Binary);
                     }
                 }
             }
@@ -318,6 +316,11 @@ namespace AIHelper.Manage
                 }
             }
 
+            /// <summary>
+            /// normalize boolean for mod organizer ini custom executable
+            /// </summary>
+            /// <param name="value"></param>
+            /// <returns></returns>
             protected static string NormalizeBool(string value)
             {
                 if (!string.Equals(value, "true", StringComparison.OrdinalIgnoreCase) && !string.Equals(value, "false", StringComparison.OrdinalIgnoreCase))
@@ -329,11 +332,21 @@ namespace AIHelper.Manage
                 return value.Trim();
             }
 
+            /// <summary>
+            /// normalize path for mod organizer ini custom executable
+            /// </summary>
+            /// <param name="value"></param>
+            /// <returns></returns>
             internal static string NormalizePath(string value)
             {
                 return value.Replace('\\', '/');
             }
 
+            /// <summary>
+            /// normalize argumants for mod organizer ini custom executable
+            /// </summary>
+            /// <param name="value"></param>
+            /// <returns></returns>
             protected static string NormalizeArguments(string value)
             {
                 if (string.IsNullOrEmpty(value) || value == "\\\"\\\"")
@@ -1909,7 +1922,7 @@ namespace AIHelper.Manage
                      || defaultCategory.Length == 0
                     )
                     && Directory.Exists(dir)
-                    && !ManageFilesFolders.IsDirectoryNullOrEmpty(dir)
+                    && !dir.IsNullOrEmptyDirectory()
                     && ManageFilesFolders.IsAnyFileExistsInTheDir(dir, extension)
                    )
                 {

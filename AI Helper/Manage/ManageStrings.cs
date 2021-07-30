@@ -132,23 +132,6 @@ namespace AIHelper.Manage
             return stringAWhereSearch.IsContains(stringBToSearch);
         }
 
-        public static bool IsStringContainsAnyExclusion(string inputString, string[] exclusions)
-        {
-            if (inputString.Length > 0 && exclusions != null)
-            {
-                int exclusionsLength = exclusions.Length;
-                for (int i = 0; i < exclusionsLength; i++)
-                {
-                    if (IsStringAContainsStringB(inputString, exclusions[i]))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
         public static bool IsStringAequalsStringB(string stringA, string stringB, bool ignoreCase = false)
         {
             if (ignoreCase)

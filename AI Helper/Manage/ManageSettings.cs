@@ -1,5 +1,6 @@
 ﻿using AIHelper.Games;
 using AIHelper.SharedData;
+using CheckForEmptyDir;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -133,7 +134,7 @@ namespace AIHelper.Manage
                     if (
                             Directory.Exists(game.GetGamePath())
                             &&
-                            !ManageFilesFolders.IsDirectoryNullOrEmpty(Path.Combine(game.GetGamePath(), "MO", "Profiles"))
+                            !Path.Combine(game.GetGamePath(), "MO", "Profiles").IsNullOrEmptyDirectory()
                         )
                     {
 
@@ -158,7 +159,7 @@ namespace AIHelper.Manage
                         &&
                         Directory.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
                         &&
-                        !ManageFilesFolders.IsDirectoryNullOrEmpty(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
+                        !Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data").IsNullOrEmptyDirectory()
                         //&&
                         //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(GetMOdirPath())
                         &&
@@ -623,7 +624,7 @@ namespace AIHelper.Manage
             if (Directory.Exists(Path.Combine(folder, "Profiles"))
                     && File.Exists(Path.Combine(folder, "ModOrganizer.ini"))
                     && File.Exists(Path.Combine(folder, "categories.dat"))
-                    && !ManageFilesFolders.IsDirectoryNullOrEmpty(Path.Combine(folder, "Profiles"))
+                    && !Path.Combine(folder, "Profiles").IsNullOrEmptyDirectory()
                     )
             {
                 return true;

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using CheckForEmptyDir;
+using System.IO;
 
 namespace AIHelper.Manage.Rules.ModList
 {
@@ -11,8 +12,7 @@ namespace AIHelper.Manage.Rules.ModList
         internal override bool Condition()
         {
             return ModlistData.GamePrefix.Length > 0 && (
-                !ManageFilesFolders.IsDirectoryNullOrEmpty(
-                Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "Overlays"), "*.png", null, true
+                !Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "Overlays").IsNullOrEmptyDirectory("*.png", null, true
                 )
                     )
                     && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "plugins", ModlistData.GamePrefix + "_OverlayMods.dll"));

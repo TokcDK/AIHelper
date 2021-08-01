@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CheckForEmptyDir;
+using System;
 using System.IO;
 
 namespace AIHelper.Manage.Rules.ModList
@@ -12,12 +13,10 @@ namespace AIHelper.Manage.Rules.ModList
         internal override bool Condition()
         {
             return (
-                !ManageFilesFolders.IsDirectoryNullOrEmpty(
-                Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "mods"), "*.zip", null, true
+                !Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "mods").IsNullOrEmptyDirectory("*.zip", null, true
                 )
                 ||
-                !ManageFilesFolders.IsDirectoryNullOrEmpty(
-                Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "mods"), "*.zipmod", null, true
+                !Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "mods").IsNullOrEmptyDirectory("*.zipmod", null, true
                 )) 
                 && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "plugins", ModlistData.GamePrefix + "_BepisPlugins", "Sideloader.dll"))
                 && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "plugins", ModlistData.GamePrefix + "_BepisPlugins", ModlistData.GamePrefix + "_Sideloader.dll"));

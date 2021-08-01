@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using CheckForEmptyDir;
+using System.IO;
 
 namespace AIHelper.Manage.Rules.ModList
 {
@@ -10,10 +11,8 @@ namespace AIHelper.Manage.Rules.ModList
 
         internal override bool Condition()
         {
-            return (!ManageFilesFolders.IsDirectoryNullOrEmpty(
-                Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "plugins"), "*.dll", null, true
-                ) || !ManageFilesFolders.IsDirectoryNullOrEmpty(
-                Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "patchers"), "*.dll", null, true
+            return (!Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "plugins").IsNullOrEmptyDirectory("*.dll", null, true
+                ) || !Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "patchers").IsNullOrEmptyDirectory("*.dll", null, true
                 )) && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "core", "BepInEx.dll"));
         }
 

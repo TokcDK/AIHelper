@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using CheckForEmptyDir;
+using System.IO;
 
 namespace AIHelper.Manage.Rules.ModList
 {
@@ -11,11 +12,9 @@ namespace AIHelper.Manage.Rules.ModList
         internal override bool Condition()
         {
             //exists dll in Mod\IPA or in Mod\Plugins folder but not exists loader IllusionInjector.dll or BepInEx.IPAVirtualizer.dll
-            return (!ManageFilesFolders.IsDirectoryNullOrEmpty(
-                Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "IPA"), "*.dll", null, true)
+            return (!Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "IPA").IsNullOrEmptyDirectory("*.dll", null, true)
                 ||
-                !ManageFilesFolders.IsDirectoryNullOrEmpty(
-                Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "Plugins"), "*.dll", null, true)
+                !Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "Plugins").IsNullOrEmptyDirectory("*.dll", null, true)
                 )
                 && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "IPA", "Data", "Managed", "IllusionInjector.dll"))
                 && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "patchers", "BepInEx.IPAVirtualizer.dll"));

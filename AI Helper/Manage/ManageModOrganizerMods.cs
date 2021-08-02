@@ -1895,7 +1895,7 @@ namespace AIHelper.Manage
             string modPath;
             var folderPath = modPath = inputPath;
             while (!string.Equals(folderPath/*.TrimEnd(new char[] { '/', '\\' })*/ , ManageSettings.GetCurrentGameModsPath()/*.TrimEnd(new char[] { '/', '\\' })*/, StringComparison.InvariantCultureIgnoreCase)
-                    //&& !string.Equals(folderPath, ManageSettings.GetOverwriteFolder(), StringComparison.InvariantCultureIgnoreCase)
+                //&& !string.Equals(folderPath, ManageSettings.GetOverwriteFolder(), StringComparison.InvariantCultureIgnoreCase)
                 )
             {
                 modPath = folderPath;
@@ -1907,9 +1907,9 @@ namespace AIHelper.Manage
                 }
             }
 
-            if (modPath != null && 
+            if (modPath != null &&
                 (string.Equals(Path.GetFileName(modPath), Path.GetFileName(ManageSettings.GetCurrentGameModsPath()), StringComparison.InvariantCultureIgnoreCase)//temp debug check
-                //|| string.Equals(Path.GetFileName(modPath), Path.GetFileName(ManageSettings.GetOverwriteFolder()), StringComparison.InvariantCultureIgnoreCase)
+                                                                                                                                                                 //|| string.Equals(Path.GetFileName(modPath), Path.GetFileName(ManageSettings.GetOverwriteFolder()), StringComparison.InvariantCultureIgnoreCase)
                 )
                 )
             {
@@ -2174,22 +2174,25 @@ namespace AIHelper.Manage
             }
 
             /// <summary>
-            /// get list of mods from all items by selected mod type
+            /// get mods from all items by selected mod type
             /// </summary>
-            /// <param name="modType">Enabled, Disabled, Separator</param>
+            /// <param name="modType">Enabled, Disabled, Separators</param>
             /// <param name="exists">True by default. Determines if add only existing mod folders</param>
             /// <returns>list of mods by mod type</returns>
             internal IEnumerable<ProfileModlistRecord> GetBy(ModType modType, bool exists = true)
             {
                 foreach (var mod in Items)
                 {
-                    if ((modType == ModType.Separator && mod.IsSeparator)
-                        || (modType == ModType.Enabled && mod.IsEnabled)
-                        || (modType == ModType.Disabled && !mod.IsEnabled)
-                        )
+                    switch (modType)
                     {
-                        if (!exists || mod.IsExist) // mod exists or exists is false
-                            yield return mod;
+                        case ModType.Separator when mod.IsSeparator:
+                        case ModType.EnabledAny when mod.IsEnabled:
+                        case ModType.ModsAny when !mod.IsSeparator:
+                        case ModType.EnabledMods when !mod.IsSeparator && mod.IsEnabled:
+                        case ModType.DisabledMods when !mod.IsSeparator && !mod.IsEnabled:
+                            if (!exists || mod.IsExist) // mod exists or exists is false
+                                yield return mod;
+                            break;
                     }
                 }
             }
@@ -2199,9 +2202,26 @@ namespace AIHelper.Manage
             /// </summary>
             internal enum ModType
             {
-                Enabled = 0,
-                Disabled = 1,
-                Separator = 2
+                /// <summary>
+                /// enabled mods and separators
+                /// </summary>
+                EnabledAny = 0,
+                /// <summary>
+                /// any enabled or disabled mods
+                /// </summary>
+                ModsAny = 1,
+                /// <summary>
+                /// only separators
+                /// </summary>
+                Separator = 2,
+                /// <summary>
+                /// only enabled mods
+                /// </summary>
+                EnabledMods = 3,
+                /// <summary>
+                /// only disabled mods
+                /// </summary>
+                DisabledMods = 4
             }
 
             /// <summary>
@@ -2250,7 +2270,7 @@ namespace AIHelper.Manage
             public ZipmodGUIIds(bool LoadInfos = true)
             {
                 GUIDList = new Dictionary<string, ZipmodInfo>();
-                if(LoadInfos)
+                if (LoadInfos)
                 {
                     LoadAll();
                 }

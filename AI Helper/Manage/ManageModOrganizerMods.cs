@@ -1885,7 +1885,7 @@ namespace AIHelper.Manage
         }
 
         /// <summary>
-        /// return mod path for input path
+        /// return mod path for input path in Mods
         /// </summary>
         /// <param name="inputPath"></param>
         /// <returns></returns>
@@ -1894,7 +1894,9 @@ namespace AIHelper.Manage
             //search Mods Path by step up to parent dir while it will be Mods path
             string modPath;
             var folderPath = modPath = inputPath;
-            while (!string.Equals(folderPath/*.TrimEnd(new char[] { '/', '\\' })*/ , ManageSettings.GetCurrentGameModsPath()/*.TrimEnd(new char[] { '/', '\\' })*/, StringComparison.InvariantCultureIgnoreCase))
+            while (!string.Equals(folderPath/*.TrimEnd(new char[] { '/', '\\' })*/ , ManageSettings.GetCurrentGameModsPath()/*.TrimEnd(new char[] { '/', '\\' })*/, StringComparison.InvariantCultureIgnoreCase)
+                    //&& !string.Equals(folderPath, ManageSettings.GetOverwriteFolder(), StringComparison.InvariantCultureIgnoreCase)
+                )
             {
                 modPath = folderPath;
                 folderPath = Path.GetDirectoryName(folderPath);
@@ -1905,7 +1907,11 @@ namespace AIHelper.Manage
                 }
             }
 
-            if (modPath != null && string.Equals(Path.GetFileName(modPath), "Mods", StringComparison.InvariantCultureIgnoreCase))//temp debug check
+            if (modPath != null && 
+                (string.Equals(Path.GetFileName(modPath), Path.GetFileName(ManageSettings.GetCurrentGameModsPath()), StringComparison.InvariantCultureIgnoreCase)//temp debug check
+                //|| string.Equals(Path.GetFileName(modPath), Path.GetFileName(ManageSettings.GetOverwriteFolder()), StringComparison.InvariantCultureIgnoreCase)
+                )
+                )
             {
                 ManageLogs.Log("warning. log path is Mods. ModPath=" + modPath + ". FolderPath=" + folderPath);
             }
@@ -2235,42 +2241,75 @@ namespace AIHelper.Manage
 
         internal class ZipmodGUIIds
         {
-            internal Dictionary<string, ZipmodInfo> ZipmodInfos;
+            internal Dictionary<string, ZipmodInfo> ZipmodGuidsList;
 
-            public ZipmodGUIIds()
+            public ZipmodGUIIds(bool LoadInfos = true)
             {
-                ZipmodInfos = new Dictionary<string, ZipmodInfo>();
-                Load();
+                ZipmodGuidsList = new Dictionary<string, ZipmodInfo>();
+                if(LoadInfos)
+                {
+                    LoadAll();
+                }
             }
 
-            void Load()
+            void LoadAll()
             {
-                //var modlist = new ProfileModlist();
+                var modlist = new ProfileModlist();
 
-                //foreach (var item in modlist.Items)
-                //{
-                //    if (!item.IsExist || item.IsSeparator)
-                //    {
-                //        continue;
-                //    }
+                foreach (var item in modlist.Items)
+                {
+                    if (!item.IsExist || item.IsSeparator)
+                    {
+                        continue;
+                    }
 
-                //    if (Directory.Exists(Path.Combine(item.Path, "mods")))
-                //    {
-                //        foreach (var packDir in Directory.EnumerateDirectories(Path.Combine(item.Path, "mods"), "Sideloader Modpack*"))
-                //        {
-                //            foreach (var zipmod in Directory.EnumerateFiles(packDir, "*.zip*", SearchOption.AllDirectories))
-                //            {
-                //                SaveGuidIfZipMod(zipmod, zipmodsGuidList);
-                //            }
-                //        }
-                //    }
-                //}
+                    if (Directory.Exists(Path.Combine(item.Path, "mods")))
+                    {
+                        foreach (var packDir in Directory.EnumerateDirectories(Path.Combine(item.Path, "mods"), "Sideloader Modpack*"))
+                        {
+                            foreach (var zipmod in Directory.EnumerateFiles(packDir, "*.zip*", SearchOption.AllDirectories))
+                            {
+                                Load(zipmod);
+                            }
+                        }
+                    }
+                }
+            }
+
+            internal void Load(string zipmodPath)
+            {
+                //zipmod GUID save
+                if (File.Exists(zipmodPath) && (string.Equals(Path.GetExtension(zipmodPath), ".ZIPMOD", StringComparison.CurrentCultureIgnoreCase) || string.Equals(Path.GetExtension(zipmodPath), ".ZIPMOD", StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    var guid = ManageArchive.GetZipmodGuid(zipmodPath);
+                    if (guid.Length > 0 && !ZipmodGuidsList.ContainsKey(guid))
+                    {
+                        var zipmodInfo = new ZipmodInfo();
+                        zipmodInfo.GUID = guid;
+                        zipmodInfo.FileInfo = new FileInfo(zipmodPath);
+                        zipmodInfo.SubPath = GetRelativeSubPathInMods(zipmodPath);
+
+                        ZipmodGuidsList.Add(guid, zipmodInfo);
+                    }
+                }
             }
         }
 
         internal class ZipmodInfo
         {
+            internal string GUID;
+            internal FileInfo FileInfo;
+            internal string SubPath;
+        }
 
+        /// <summary>
+        /// return relative subpath for input path
+        /// </summary>
+        /// <param name="zipmodPath"></param>
+        /// <returns></returns>
+        private static string GetRelativeSubPathInMods(string zipmodPath)
+        {
+            return zipmodPath.Replace(GetMoModPathInMods(zipmodPath), "");
         }
     }
 }

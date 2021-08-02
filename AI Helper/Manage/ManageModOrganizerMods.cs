@@ -2232,5 +2232,45 @@ namespace AIHelper.Manage
             internal ProfileModlistRecord ParentSeparator;
             internal List<ProfileModlistRecord> Items = new List<ProfileModlistRecord>();
         }
+
+        internal class ZipmodGUIIds
+        {
+            internal Dictionary<string, ZipmodInfo> ZipmodInfos;
+
+            public ZipmodGUIIds()
+            {
+                ZipmodInfos = new Dictionary<string, ZipmodInfo>();
+                Load();
+            }
+
+            void Load()
+            {
+                //var modlist = new ProfileModlist();
+
+                //foreach (var item in modlist.Items)
+                //{
+                //    if (!item.IsExist || item.IsSeparator)
+                //    {
+                //        continue;
+                //    }
+
+                //    if (Directory.Exists(Path.Combine(item.Path, "mods")))
+                //    {
+                //        foreach (var packDir in Directory.EnumerateDirectories(Path.Combine(item.Path, "mods"), "Sideloader Modpack*"))
+                //        {
+                //            foreach (var zipmod in Directory.EnumerateFiles(packDir, "*.zip*", SearchOption.AllDirectories))
+                //            {
+                //                SaveGuidIfZipMod(zipmod, zipmodsGuidList);
+                //            }
+                //        }
+                //    }
+                //}
+            }
+        }
+
+        internal class ZipmodInfo
+        {
+
+        }
     }
 }

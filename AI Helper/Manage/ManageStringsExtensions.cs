@@ -99,7 +99,7 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="targetFileInfo">Input FileInfo of existing file</param>
         /// <returns></returns>
-        public static FileInfo GetNewTargetName(this FileInfo targetFileInfo, bool checkExists = true)
+        public static FileInfo GetNewTargetName(this FileInfo targetFileInfo)
         {
             if (!targetFileInfo.Exists)
             {

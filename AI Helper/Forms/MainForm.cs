@@ -16,6 +16,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static AIHelper.Manage.ManageModOrganizerMods;
 
 //using Crc32C;
 
@@ -2799,7 +2800,6 @@ namespace AIHelper
 
         private static void MoveZipModsFromOverwriteToSourceMod(Dictionary<string, string> zipmodsGuidList)
         {
-
             var progressForm = new Form
             {
                 StartPosition = FormStartPosition.CenterScreen,
@@ -2874,23 +2874,7 @@ namespace AIHelper
                         {
                             var targetPath = new FileInfo(charaFile.FullName.Replace(ManageSettings.GetOverwriteFolder(), communityUserDataPack.FullName));
 
-                            if (targetPath.Exists)
-                            {
-                                if (targetPath.Length == charaFile.Length && targetPath.GetCrc32() == charaFile.GetCrc32())
-                                {
-                                    charaFile.DeleteReadOnly();
-                                }
-                                else
-                                {
-                                    targetPath = targetPath.GetNewTargetName(false);
-                                }
-                            }
-
-                            if (!targetPath.Directory.Exists)
-                            {
-                                targetPath.Directory.Create();
-                            }
-                            charaFile.MoveTo(targetPath.FullName);
+                            MoveSideloaderPackFile(charaFile, targetPath);
                         }
                         catch (Exception ex)
                         {
@@ -2898,7 +2882,43 @@ namespace AIHelper
                         }
                     }
                 }
+
+                var infoFile = new FileInfo(Path.Combine(genderDir.FullName, "Want your cards or scenes in BetterRepack.txt"));
+                if(infoFile.Exists)
+                {
+                    try
+                    {
+                        var targetPath = new FileInfo(infoFile.FullName.Replace(ManageSettings.GetOverwriteFolder(), communityUserDataPack.FullName));
+
+                        MoveSideloaderPackFile(infoFile, targetPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        ManageLogs.Log("Failed to sort chara card: " + infoFile.FullName + "\r\nerror:\r\n" + ex);
+                    }
+                }
             }
+        }
+
+        private static void MoveSideloaderPackFile(FileInfo sourcePath, FileInfo targetPath)
+        {
+            if (targetPath.Exists)
+            {
+                if (targetPath.Length == sourcePath.Length && targetPath.GetCrc32() == sourcePath.GetCrc32())
+                {
+                    sourcePath.DeleteReadOnly();
+                }
+                else
+                {
+                    targetPath = targetPath.GetNewTargetName();
+                }
+            }
+
+            if (!targetPath.Directory.Exists)
+            {
+                targetPath.Directory.Create();
+            }
+            sourcePath.MoveTo(targetPath.FullName);
         }
 
         private static void SortZipmodsPacks(Dictionary<string, string> zipmodsGuidList, Form progressForm, ProgressBar pBar)
@@ -3098,50 +3118,44 @@ namespace AIHelper
         {
             bool getZipmodId = zipmodsGuidList != null;
 
+            // buckup modlist
             File.Copy(ManageSettings.GetCurrentMoProfileModlistPath(), ManageSettings.GetCurrentMoProfileModlistPath() + ".prezipmodsUpdate");
 
-            var modlistContent = File.ReadAllLines(ManageSettings.GetCurrentMoProfileModlistPath());
+            var modlist = new ProfileModlist();
 
-            for (int i = 0; i < modlistContent.Length; i++)
+            foreach (var item in modlist.Items)
             {
-                if (modlistContent[i][0] == '+' || modlistContent[i].EndsWith("_separator", StringComparison.InvariantCulture))
+                if (!item.IsExist || item.IsSeparator)
                 {
                     continue;
                 }
 
-                var modName = modlistContent[i].Remove(0, 1);
-                var modsPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modName, "mods");
-                if (!Directory.Exists(modsPath))
+                if (Directory.Exists(Path.Combine(item.Path, "mods")))
                 {
-                    continue;
-                }
+                    item.IsEnabled = true;
 
-                foreach (var dir in Directory.EnumerateDirectories(modsPath))
-                {
-                    if (dir.ToUpperInvariant().Contains("SIDELOADER MODPACK"))
+                    if (getZipmodId)
                     {
-                        if (modlistContent[i][0] != '+')
+                        foreach (var packDir in Directory.EnumerateDirectories(Path.Combine(item.Path, "mods"), "Sideloader Modpack*"))
                         {
-                            modlistContent[i] = "+" + modName;
-                        }
-
-                        if (getZipmodId)
-                        {
-                            foreach (var zipmod in Directory.EnumerateFiles(dir, "*.zip*", SearchOption.AllDirectories))
+                            foreach (var zipmod in Directory.EnumerateFiles(packDir, "*.zip*", SearchOption.AllDirectories))
                             {
-                                ManageModOrganizerMods.SaveGuidIfZipMod(zipmod, zipmodsGuidList);
+                                SaveGuidIfZipMod(zipmod, zipmodsGuidList);
                             }
                         }
-                        else
-                        {
-                            break;
-                        }
-
                     }
+                    else
+                    {
+                        break;
+                    }
+                }
+                else if (!item.IsEnabled && Directory.Exists(Path.Combine(item.Path, "UserData", "chara")))
+                {
+                    item.IsEnabled = true;
                 }
             }
 
-            File.WriteAllLines(ManageSettings.GetCurrentMoProfileModlistPath(), modlistContent);
+            modlist.Save();
         }
 
         private void PbDiscord_Click(object sender, EventArgs e)

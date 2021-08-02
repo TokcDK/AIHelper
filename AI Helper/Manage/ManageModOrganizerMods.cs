@@ -2032,5 +2032,153 @@ namespace AIHelper.Manage
         {
             return name.ToUpperInvariant().StartsWith("SIDELOADER MODPACK - KK_UNCENSORSELECTOR", StringComparison.InvariantCulture);
         }
+
+        internal class ProfileModlist
+        {
+            internal List<ProfileModlistRecord> Items;
+
+            public ProfileModlist()
+            {
+                Items = new List<ProfileModlistRecord>();
+                Load();
+            }
+
+            void Load()
+            {
+                var modlistContent = File.ReadAllLines(ManageSettings.GetCurrentMoProfileModlistPath());
+                Array.Reverse(modlistContent);
+
+                var modPriority = 0;
+                ProfileModlistRecord lastSeparator = null;
+                foreach (var line in modlistContent)
+                {
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#", StringComparison.InvariantCulture))
+                    {
+                        continue;
+                    }
+
+                    var mod = new ProfileModlistRecord();
+                    mod.Priority = modPriority;
+                    mod.Name = line.Substring(1);
+                    mod.Path = Path.Combine(ManageSettings.GetCurrentGameModsPath(), mod.Name);
+                    mod.IsExist = Directory.Exists(mod.Path);
+                    mod.IsEnabled = line[0] == '+';
+                    mod.IsSeparator = line.EndsWith("_separator", StringComparison.InvariantCulture);
+                    mod.ParentSeparator = lastSeparator;
+
+
+                    if (!mod.IsSeparator && lastSeparator != null)
+                    {
+                        lastSeparator.Items.Add(mod); // add subitems references to understand which items is under the group separator
+                    }
+
+                    // reset separator if was changed
+                    if (mod.IsSeparator && lastSeparator != mod.ParentSeparator)
+                    {
+                        lastSeparator = mod;
+                    }
+
+
+                    Items.Add(mod);
+
+                    modPriority++;
+                }
+            }
+
+            internal void Insert(ProfileModlistRecord profileModlistRecord)
+            {
+                if (profileModlistRecord.ParentSeparator != null && profileModlistRecord.ParentSeparator.Name.Length > 0)
+                {
+                    var modPriority = 0;
+                    bool groupFound = false;
+                    bool added = false;
+                    var newItems = new List<ProfileModlistRecord>();
+                    ProfileModlistRecord foundGroup = null;
+                    foreach (var item in Items)
+                    {
+                        if (!added && !groupFound && item.IsSeparator && item.Name == profileModlistRecord.ParentSeparator.Name)
+                        {
+                            foundGroup = item;
+                               groupFound = true;
+                        }
+                        else if (!added && groupFound && item.IsSeparator && item.Name != profileModlistRecord.ParentSeparator.Name)
+                        {
+                            // set parent group, new priority and increase priority number
+                            foundGroup.Items.Add(profileModlistRecord); // add inserting item in list of under separator
+                            profileModlistRecord.ParentSeparator = foundGroup;
+                            profileModlistRecord.Priority = modPriority;
+                            modPriority++;
+
+                            newItems.Add(profileModlistRecord);
+                        }
+
+                        item.Priority = modPriority;
+                        newItems.Add(item);
+
+                        modPriority++;
+                    }
+                }
+
+                // insert at the end if mod priority is not set or more of max
+                if (profileModlistRecord.Priority == -1 || profileModlistRecord.Priority >= Items.Count)
+                {
+                    profileModlistRecord.Priority = Items[Items.Count - 1].Priority + 1; // correct priority
+                    Items.Add(profileModlistRecord);
+                    return;
+                }
+
+                Items.Insert(profileModlistRecord.Priority - 1, profileModlistRecord);
+            }
+
+            /// <summary>
+            /// get list of mods from all items by selected mod type
+            /// </summary>
+            /// <param name="modType">Enabled, Disabled, Separator</param>
+            /// <returns>list of mods by mod type</returns>
+            internal List<ProfileModlistRecord> GetListBy(ModType modType)
+            {
+                return GetBy(modType).ToList();
+            }
+
+            /// <summary>
+            /// get list of mods from all items by selected mod type
+            /// </summary>
+            /// <param name="modType">Enabled, Disabled, Separator</param>
+            /// <param name="exists">True by default. Determines if add only existing mod folders</param>
+            /// <returns>list of mods by mod type</returns>
+            internal IEnumerable<ProfileModlistRecord> GetBy(ModType modType, bool exists = true)
+            {
+                foreach (var mod in Items)
+                {
+                    if ((modType == ModType.Separator && mod.IsSeparator)
+                        || (modType == ModType.Enabled && mod.IsEnabled)
+                        || (modType == ModType.Disabled && !mod.IsEnabled)
+                        )
+                    {
+                        if (!exists || mod.IsExist) // mod exists or exists is false
+                            yield return mod;
+                    }
+                }
+            }
+
+            internal enum ModType
+            {
+                Enabled = 0,
+                Disabled = 1,
+                Separator = 2
+            }
+        }
+
+        internal class ProfileModlistRecord
+        {
+            internal int Priority = -1;
+            internal string Name;
+            internal string Path;
+            internal bool IsEnabled;
+            internal bool IsSeparator;
+            internal bool IsExist;
+            internal ProfileModlistRecord ParentSeparator;
+            internal List<ProfileModlistRecord> Items = new List<ProfileModlistRecord>();
+        }
     }
 }

@@ -2743,7 +2743,7 @@ namespace AIHelper
             //update plugins in mo mode
             if (MOmode)
             {
-                //await updater.Update().ConfigureAwait(true);
+                await updater.Update().ConfigureAwait(true);
             }
 
             //run zipmod's check if updater found and only for KK, AI, HS2
@@ -2777,7 +2777,7 @@ namespace AIHelper
                     //activate all mods with Sideloader modpack inside
                     ActivateSideloaderMods(zipmodsGuidList);
 
-                    //RunProgram(MOexePath, "moshortcut://:" + ManageModOrganizer.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
+                    RunProgram(MOexePath, "moshortcut://:" + ManageModOrganizer.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
 
                     //restore modlist
                     ManageModOrganizer.RestoreModlist();

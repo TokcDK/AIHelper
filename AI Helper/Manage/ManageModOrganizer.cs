@@ -1388,31 +1388,38 @@ namespace AIHelper.Manage
         /// </summary>
         internal static void CheckMoUserdata()
         {
-            DirectoryInfo objectDir;
-            //overwrite dir of mo folder for mo mode and data folder for common mode
-            if (ManageSettings.IsMoMode())
+            try
             {
-                objectDir = new DirectoryInfo(ManageSettings.GetCurrentGameMoOverwritePath());
-            }
-            else
-            {
-                objectDir = new DirectoryInfo(ManageSettings.GetCurrentGameDataPath());
-            }
+                DirectoryInfo objectDir;
+                //overwrite dir of mo folder for mo mode and data folder for common mode
+                if (ManageSettings.IsMoMode())
+                {
+                    objectDir = new DirectoryInfo(ManageSettings.GetCurrentGameMoOverwritePath());
+                }
+                else
+                {
+                    objectDir = new DirectoryInfo(ManageSettings.GetCurrentGameDataPath());
+                }
 
-            //create target object dir when it is not exists
-            if (!objectDir.Exists)
-            {
-                objectDir.Create();
+                //create target object dir when it is not exists
+                if (!objectDir.Exists)
+                {
+                    objectDir.Create();
+                }
+
+                //symlink path for MOUserData in game's dir
+                DirectoryInfo symlinkPath = new DirectoryInfo(Properties.Settings.Default.OverwriteFolderLink);
+
+                //delete if target is not exists or not symlink and recreate
+                if (!symlinkPath.IsValidSymlinkTargetEquals(objectDir.FullName))
+                {
+                    symlinkPath.Delete();
+                    objectDir.CreateSymlink(symlinkPath.FullName, true);
+                }
             }
-
-            //symlink path for MOUserData in game's dir
-            DirectoryInfo symlinkPath = new DirectoryInfo(Properties.Settings.Default.OverwriteFolderLink);
-
-            //delete if target is not exists or not symlink and recreate
-            if (!symlinkPath.IsValidSymlinkTargetEquals(objectDir.FullName))
+            catch (Exception ex)
             {
-                symlinkPath.Delete();
-                objectDir.CreateSymlink(symlinkPath.FullName, true);
+                ManageLogs.Log("An error occered in CheckMoUserdata. error:" + ex);
             }
         }
 

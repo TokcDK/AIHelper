@@ -517,7 +517,7 @@ namespace AIHelper.Manage
         /// delete file even if it is read only
         /// </summary>
         /// <param name="file"></param>
-        internal static void DeleteEvenIfReadOnly(this FileInfo file)
+        internal static void DeleteReadOnly(this FileInfo file)
         {
             if (!file.Exists)
             {

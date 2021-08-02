@@ -191,6 +191,12 @@
     <Compile Include="Manage\Rules\ModList\HardRules\RuleModForSideloaderPlugin.cs" />
     <Compile Include="Manage\Rules\ModList\HardRules\RuleModForBepInexIPA.cs" />
     <Compile Include="Manage\Rules\ModList\HardRules\RuleModForBepInex.cs" />
+    <Compile Include="Manage\Update\Sort\SideloaderModPackCommunityUserdata.cs" />
+    <Compile Include="Manage\Update\Sort\UncensorSelectorBase.cs" />
+    <Compile Include="Manage\Update\Sort\SideloaderModPack.cs" />
+    <Compile Include="Manage\Update\Sort\SideloaderPackBase.cs" />
+    <Compile Include="Manage\Update\Sort\UncensorSelectorFemale.cs" />
+    <Compile Include="Manage\Update\Sort\UncensorSelectorMale.cs" />
     <Compile Include="Manage\Update\Targets\MOBaseGames.cs" />
     <Compile Include="Manage\Update\Targets\Mods\ModsMetaUrl\ModsMetaUrlBase.cs" />
     <Compile Include="Manage\Update\Targets\Mods\ModsMetaUrl\XUA.cs" />

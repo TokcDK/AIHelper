@@ -2743,7 +2743,7 @@ namespace AIHelper
             //update plugins in mo mode
             if (MOmode)
             {
-                await updater.Update().ConfigureAwait(true);
+                //await updater.Update().ConfigureAwait(true);
             }
 
             //run zipmod's check if updater found and only for KK, AI, HS2
@@ -2777,7 +2777,7 @@ namespace AIHelper
                     //activate all mods with Sideloader modpack inside
                     ActivateSideloaderMods(zipmodsGuidList);
 
-                    RunProgram(MOexePath, "moshortcut://:" + ManageModOrganizer.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
+                    //RunProgram(MOexePath, "moshortcut://:" + ManageModOrganizer.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
 
                     //restore modlist
                     ManageModOrganizer.RestoreModlist();
@@ -2799,7 +2799,113 @@ namespace AIHelper
 
         private static void MoveZipModsFromOverwriteToSourceMod(Dictionary<string, string> zipmodsGuidList)
         {
-            if (!Directory.Exists(Path.Combine(ManageSettings.GetOverwriteFolder(), "mods")))
+
+            var progressForm = new Form
+            {
+                StartPosition = FormStartPosition.CenterScreen,
+                Size = new Size(400, 50),
+                Text = T._("Sideloader dirs sorting") + "..",
+                FormBorderStyle = FormBorderStyle.FixedToolWindow
+            };
+
+            var pBar = new ProgressBar
+            {
+                Dock = DockStyle.Bottom
+            };
+
+            progressForm.Controls.Add(pBar);
+            progressForm.Show();
+
+            SortZipmodsPacks(zipmodsGuidList, progressForm, pBar);
+
+            if (pBar.Value < pBar.Maximum)
+            {
+                pBar.Value = pBar.Maximum == 100 ? pBar.Maximum - 1 : pBar.Value + 1;
+            }
+            progressForm.Text = T._("Sorting") + ":" + "Sideloader ModPack - Community UserData";
+            SortCommunityUserDataPack();
+
+            //clean empty dirs
+            ManageFilesFolders.DeleteEmptySubfolders(ManageSettings.GetOverwriteFolder(), false);
+
+            progressForm.Dispose();
+
+            progressForm.Text = T._("Cleaning KKManager temp dir");
+            // clean temp dir
+            CleanKKManagerTempDir();
+        }
+
+        private static void CleanKKManagerTempDir()
+        {
+            var tempDir = new DirectoryInfo(Path.Combine(ManageSettings.GetOverwriteFolder(), "temp"));
+            if (tempDir.Exists)
+            {
+                try
+                {
+                    tempDir.DeleteRecursive();
+                }
+                catch { }
+            }
+        }
+
+        private static void SortCommunityUserDataPack()
+        {
+            //sort community userdata
+            var communityUserDataPack = new DirectoryInfo(Path.Combine(ManageSettings.GetCurrentGameModsPath(), "Sideloader ModPack - Community UserData"));
+            var charaDir = new DirectoryInfo(Path.Combine(ManageSettings.GetOverwriteFolder(), "UserData", "chara"));
+            if (!charaDir.Exists)
+            {
+                return;
+            }
+
+            foreach (var genderDirName in new[] { "female", "male" })
+            {
+                var genderDir = new DirectoryInfo(Path.Combine(charaDir.FullName, genderDirName));
+                if (!genderDir.Exists)
+                {
+                    continue;
+                }
+
+                foreach (var charaCommunityDir in genderDir.EnumerateDirectories("[Community] *"))
+                {
+                    foreach (var charaFile in charaCommunityDir.EnumerateFiles("*.*", searchOption: SearchOption.AllDirectories))
+                    {
+                        try
+                        {
+                            var targetPath = new FileInfo(charaFile.FullName.Replace(ManageSettings.GetOverwriteFolder(), communityUserDataPack.FullName));
+
+                            if (targetPath.Exists)
+                            {
+                                if (targetPath.Length == charaFile.Length && targetPath.GetCrc32() == charaFile.GetCrc32())
+                                {
+                                    charaFile.DeleteReadOnly();
+                                }
+                                else
+                                {
+                                    targetPath = targetPath.GetNewTargetName(false);
+                                }
+                            }
+
+                            if (!targetPath.Directory.Exists)
+                            {
+                                targetPath.Directory.Create();
+                            }
+                            charaFile.MoveTo(targetPath.FullName);
+                        }
+                        catch (Exception ex)
+                        {
+                            ManageLogs.Log("Failed to sort chara card: " + charaFile.FullName + "\r\nerror:\r\n" + ex);
+                        }
+                    }
+                }
+            }
+        }
+
+        private static void SortZipmodsPacks(Dictionary<string, string> zipmodsGuidList, Form progressForm, ProgressBar pBar)
+        {
+            var overwriteModsDir = new DirectoryInfo(Path.Combine(ManageSettings.GetOverwriteFolder(), "mods"));
+
+            if (!overwriteModsDir.Exists)
             {
                 return;
             }
@@ -2809,31 +2915,16 @@ namespace AIHelper
             //    { "Sideloader Modpack - KK_UncensorSelector", @"^\[KK\]\[Female\].*$" }//sideloader dir name /files regex filter
             //};
 
-            var dirs = Directory.GetDirectories(Path.Combine(ManageSettings.GetOverwriteFolder(), "mods")).Where(dirpath => dirpath.ToUpperInvariant().Contains("SIDELOADER MODPACK"));
+            var dirs = overwriteModsDir.GetDirectories().Where(dirpath => dirpath.Name.StartsWith("Sideloader Modpack", comparisonType: StringComparison.InvariantCultureIgnoreCase));
 
             if (!dirs.Any())
             {
                 return;
             }
 
-            var progressForm = new Form
-            {
-                StartPosition = FormStartPosition.CenterScreen,
-                Size = new Size(400, 50),
-                Text = T._("Sideloader dirs sorting") + "..",
-                FormBorderStyle = FormBorderStyle.FixedToolWindow
-            };
-            var pBar = new ProgressBar
-            {
-                Dock = DockStyle.Bottom
-            };
-
-            progressForm.Controls.Add(pBar);
-            progressForm.Show();
-
             var modpacks = ManageModOrganizerMods.GetSideloaderModpackTargetDirs();
 
-            pBar.Maximum = dirs.Count();
+            pBar.Maximum = dirs.Count() + 1;
             pBar.Value = 0;
 
             var timeInfo = DateTime.Now.ToString("yyyyMMddHHmm", CultureInfo.InvariantCulture);
@@ -2853,19 +2944,19 @@ namespace AIHelper
                     //}
 
                     //set sideloader dir name
-                    var sideloadername = Path.GetFileName(dir);
+                    var sideloaderDirName = dir.Name;
 
-                    progressForm.Text = T._("Sorting") + ":" + sideloadername;
+                    progressForm.Text = T._("Sorting") + ":" + sideloaderDirName;
 
-                    var isUnc = ManageModOrganizerMods.IsUncensorSelector(sideloadername);
-                    var isMaleUnc = isUnc && modpacks.ContainsKey(sideloadername + "M");
-                    var isFeMaleUnc = isUnc && modpacks.ContainsKey(sideloadername + "F");
-                    var isSortingModPack = modpacks.ContainsKey(sideloadername) || isMaleUnc || isFeMaleUnc;
-                    foreach (var f in Directory.EnumerateFiles(dir, "*.*", SearchOption.AllDirectories))
+                    var isUnc = ManageModOrganizerMods.IsUncensorSelector(sideloaderDirName);
+                    var isMaleUnc = isUnc && modpacks.ContainsKey(sideloaderDirName + "M");
+                    var isFeMaleUnc = isUnc && modpacks.ContainsKey(sideloaderDirName + "F");
+                    var isSortingModPack = modpacks.ContainsKey(sideloaderDirName) || isMaleUnc || isFeMaleUnc;
+                    foreach (var f in dir.EnumerateFiles("*.*", SearchOption.AllDirectories))
                     {
                         try
                         {
-                            var file = f;
+                            var file = f.FullName;
 
                             // Check if TargetIsInSideloader by guid
                             var guid = ManageArchive.GetZipmodGuid(file);
@@ -2928,14 +3019,14 @@ namespace AIHelper
                                 var sortM = isMaleUnc && Path.GetExtension(file).StartsWith(".zip", StringComparison.CurrentCultureIgnoreCase) && (Path.GetFileNameWithoutExtension(file).Contains("[Penis]") || Path.GetFileNameWithoutExtension(file).Contains("[Balls]"));
                                 var sortF = isFeMaleUnc && Path.GetExtension(file).StartsWith(".zip", StringComparison.CurrentCultureIgnoreCase) && Path.GetFileNameWithoutExtension(file).Contains("[Female]");
 
-                                var targetModName = modpacks[sideloadername + (sortF ? "F" : sortM ? "M" : "")];
+                                var targetModName = modpacks[sideloaderDirName + (sortF ? "F" : sortM ? "M" : "")];
 
                                 //get target path for the zipmod
                                 var target = ManageSettings.GetCurrentGameModsPath()
                                     + Path.DirectorySeparatorChar + targetModName //mod name
                                     + Path.DirectorySeparatorChar + "mods" //mods dir
-                                    + Path.DirectorySeparatorChar + sideloadername // sideloader dir name
-                                    + file.Replace(dir, ""); // file subpath in sideloader dir
+                                    + Path.DirectorySeparatorChar + sideloaderDirName // sideloader dir name
+                                    + file.Replace(dir.FullName, ""); // file subpath in sideloader dir
 
                                 bool isTargetExists = File.Exists(target);
                                 bool isSourceExists = File.Exists(file);
@@ -2961,8 +3052,8 @@ namespace AIHelper
                                         var tfiletarget = ManageSettings.GetCurrentGameModsPath()
                                             + Path.DirectorySeparatorChar + targetModName + "_" + timeInfo //mod name
                                             + Path.DirectorySeparatorChar + "mods" //mods dir
-                                            + Path.DirectorySeparatorChar + sideloadername // sideloader dir name
-                                            + file.Replace(dir, ""); // file subpath in sideloader dir
+                                            + Path.DirectorySeparatorChar + sideloaderDirName // sideloader dir name
+                                            + file.Replace(dir.FullName, ""); // file subpath in sideloader dir
 
                                         Directory.CreateDirectory(Path.GetDirectoryName(tfiletarget));
                                         if (!File.Exists(tfiletarget))
@@ -2973,8 +3064,8 @@ namespace AIHelper
                                         target = ManageSettings.GetCurrentGameModsPath()
                                             + Path.DirectorySeparatorChar + targetModName + "_" + timeInfo //mod name
                                             + Path.DirectorySeparatorChar + "mods" //mods dir
-                                            + Path.DirectorySeparatorChar + sideloadername // sideloader dir name
-                                            + file.Replace(dir, ""); // file subpath in sideloader dir
+                                            + Path.DirectorySeparatorChar + sideloaderDirName // sideloader dir name
+                                            + file.Replace(dir.FullName, ""); // file subpath in sideloader dir
                                     }
                                 }
 
@@ -2997,27 +3088,6 @@ namespace AIHelper
                         }
                     }
                 }
-                //catch (Exception ex)
-                //{
-                //    ManageLogs.Log("An error occured while zipmods sort from overwrite dir. error:\r\n" + ex);
-                //}
-
-            }
-
-            //clean empty dirs
-            ManageFilesFolders.DeleteEmptySubfolders(ManageSettings.GetOverwriteFolder(), false);
-
-            progressForm.Dispose();
-
-            // clean temp dir
-            var tempDir = new DirectoryInfo(Path.Combine(ManageSettings.GetOverwriteFolder()));
-            if (tempDir.Exists)
-            {
-                try
-                {
-                    tempDir.DeleteRecursive();
-                }
-                catch { }
             }
         }
 

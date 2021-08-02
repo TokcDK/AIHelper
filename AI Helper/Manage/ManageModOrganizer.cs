@@ -1509,7 +1509,7 @@ namespace AIHelper.Manage
 
                     if (File.Exists(ManageSettings.GetCurrentMoProfileModlistPath()))
                     {
-                        new FileInfo(ManageSettings.GetCurrentMoProfileModlistPath() + ".tmp").DeleteEvenIfReadOnly();
+                        new FileInfo(ManageSettings.GetCurrentMoProfileModlistPath() + ".tmp").DeleteReadOnly();
                     }
                 }
                 catch (Exception ex)

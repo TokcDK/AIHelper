@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.IO;
 
 namespace AIHelper.Manage
 {
@@ -90,6 +91,31 @@ namespace AIHelper.Manage
             }
             return false;
 
+        }
+
+        /// <summary>
+        /// Renames the file name so that the target path does not exist. 
+        /// Name will be like "filename (#)"
+        /// </summary>
+        /// <param name="targetFileInfo">Input FileInfo of existing file</param>
+        /// <returns></returns>
+        public static FileInfo GetNewTargetName(this FileInfo targetFileInfo, bool checkExists = true)
+        {
+            if (!targetFileInfo.Exists)
+            {
+                return targetFileInfo;
+            }
+
+            string name = Path.GetFileNameWithoutExtension(targetFileInfo.Name);
+            int nameIndex = 1;
+            string targetName = name;
+            while (Directory.Exists(Path.Combine(targetFileInfo.DirectoryName, targetName, targetFileInfo.Extension)))
+            {
+                targetName = name + " (" + nameIndex + ")";
+                nameIndex++;
+            }
+
+            return new FileInfo(Path.Combine(targetFileInfo.DirectoryName, targetName, targetFileInfo.Extension));
         }
     }
 }

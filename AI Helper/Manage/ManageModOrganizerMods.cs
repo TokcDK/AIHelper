@@ -2243,6 +2243,10 @@ namespace AIHelper.Manage
         {
             internal Dictionary<string, ZipmodInfo> GUIDList;
 
+            /// <summary>
+            /// Sideloader modpacks zipmod file infos are storing here
+            /// </summary>
+            /// <param name="LoadInfos">Load infos from active modlist right after init</param>
             public ZipmodGUIIds(bool LoadInfos = true)
             {
                 GUIDList = new Dictionary<string, ZipmodInfo>();

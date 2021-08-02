@@ -2241,11 +2241,11 @@ namespace AIHelper.Manage
 
         internal class ZipmodGUIIds
         {
-            internal Dictionary<string, ZipmodInfo> ZipmodGuidsList;
+            internal Dictionary<string, ZipmodInfo> GUIDList;
 
             public ZipmodGUIIds(bool LoadInfos = true)
             {
-                ZipmodGuidsList = new Dictionary<string, ZipmodInfo>();
+                GUIDList = new Dictionary<string, ZipmodInfo>();
                 if(LoadInfos)
                 {
                     LoadAll();
@@ -2282,14 +2282,14 @@ namespace AIHelper.Manage
                 if (File.Exists(zipmodPath) && (string.Equals(Path.GetExtension(zipmodPath), ".ZIPMOD", StringComparison.CurrentCultureIgnoreCase) || string.Equals(Path.GetExtension(zipmodPath), ".ZIPMOD", StringComparison.CurrentCultureIgnoreCase)))
                 {
                     var guid = ManageArchive.GetZipmodGuid(zipmodPath);
-                    if (guid.Length > 0 && !ZipmodGuidsList.ContainsKey(guid))
+                    if (guid.Length > 0 && !GUIDList.ContainsKey(guid))
                     {
                         var zipmodInfo = new ZipmodInfo();
                         zipmodInfo.GUID = guid;
                         zipmodInfo.FileInfo = new FileInfo(zipmodPath);
                         zipmodInfo.SubPath = GetRelativeSubPathInMods(zipmodPath);
 
-                        ZipmodGuidsList.Add(guid, zipmodInfo);
+                        GUIDList.Add(guid, zipmodInfo);
                     }
                 }
             }

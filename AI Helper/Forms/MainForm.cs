@@ -2773,7 +2773,7 @@ namespace AIHelper
                         ManageModOrganizer.InsertCustomExecutable(kkManagerStandaloneUpdater);
                     }
 
-                    var zipmodsGuidList = new Dictionary<string, string>();
+                    var zipmodsGuidList = new ZipmodGUIIds(false);
 
                     //activate all mods with Sideloader modpack inside
                     ActivateSideloaderMods(zipmodsGuidList);
@@ -2798,7 +2798,7 @@ namespace AIHelper
             AIGirlHelperTabControl.Enabled = true;
         }
 
-        private static void MoveZipModsFromOverwriteToSourceMod(Dictionary<string, string> zipmodsGuidList)
+        private static void MoveZipModsFromOverwriteToSourceMod(ZipmodGUIIds zipmodsGuidList)
         {
             var progressForm = new Form
             {
@@ -2921,7 +2921,7 @@ namespace AIHelper
             sourcePath.MoveTo(targetPath.FullName);
         }
 
-        private static void SortZipmodsPacks(Dictionary<string, string> zipmodsGuidList, Form progressForm, ProgressBar pBar)
+        private static void SortZipmodsPacks(ZipmodGUIIds zipmodsGuidList, Form progressForm, ProgressBar pBar)
         {
             var overwriteModsDir = new DirectoryInfo(Path.Combine(ManageSettings.GetOverwriteFolder(), "mods"));
 
@@ -2980,8 +2980,8 @@ namespace AIHelper
 
                             // Check if TargetIsInSideloader by guid
                             var guid = ManageArchive.GetZipmodGuid(file);
-                            bool isguid = guid.Length > 0 && zipmodsGuidList.ContainsKey(guid);
-                            string targetModPath = isguid ? ManageModOrganizerMods.GetMoModPathInMods(zipmodsGuidList[guid]) : "";
+                            bool isguid = guid.Length > 0 && zipmodsGuidList.GUIDList.ContainsKey(guid);
+                            string targetModPath = isguid ? ManageModOrganizerMods.GetMoModPathInMods(zipmodsGuidList.GUIDList[guid].FileInfo.FullName) : "";
                             var pathElements = !string.IsNullOrWhiteSpace(targetModPath) ? file.Replace(targetModPath, "").Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries) : null;
                             var targetzipModDirName = pathElements != null && pathElements.Length > 1 ? pathElements[1] : ""; // %modpath%\mods\%sideloadermodpackdir%
                             var targetIsInSideloader = targetzipModDirName.ToUpperInvariant().Contains("SIDELOADER MODPACK"); // dir in mods is sideloader
@@ -3114,7 +3114,7 @@ namespace AIHelper
         /// <summary>
         /// activate all mods with sideloader modpack inside mods folder
         /// </summary>
-        private static void ActivateSideloaderMods(Dictionary<string, string> zipmodsGuidList = null)
+        private static void ActivateSideloaderMods(ZipmodGUIIds zipmodsGuidList = null)
         {
             bool getZipmodId = zipmodsGuidList != null;
 
@@ -3140,7 +3140,8 @@ namespace AIHelper
                         {
                             foreach (var zipmod in Directory.EnumerateFiles(packDir, "*.zip*", SearchOption.AllDirectories))
                             {
-                                SaveGuidIfZipMod(zipmod, zipmodsGuidList);
+                                zipmodsGuidList.Load(zipmod);
+                                //SaveGuidIfZipMod(zipmod, zipmodsGuidList);
                             }
                         }
                     }

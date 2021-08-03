@@ -260,7 +260,7 @@ namespace AIHelper.Manage
 
                             //string gameName;
                             //fix for incorrect gameName set for the mod
-                            if (ini.KeyExists("gameName", "General") && (/*gameName =*/ ini.ReadINI("General", "gameName")) != ManageSettings.GetmoCurrentGameName())
+                            if (ini.KeyExists("gameName", "General") && (/*gameName =*/ ini.ReadKey("General", "gameName")) != ManageSettings.GetmoCurrentGameName())
                             {
                                 //if (!ApplyModListgameNameValueFix)
                                 //{
@@ -282,7 +282,7 @@ namespace AIHelper.Manage
                                 //    }
                                 //}
 
-                                ini.WriteINI("General", "gameName", ManageSettings.GetmoCurrentGameName(), false);
+                                ini.SetKey("General", "gameName", ManageSettings.GetmoCurrentGameName(), false);
                                 if (!metainiFixesApplyed)
                                 {
                                     metainiFixesApplyed = true;
@@ -294,18 +294,18 @@ namespace AIHelper.Manage
                             }
 
                             //Copy 1st found url from notes to url key
-                            if (ini.KeyExists("url", "General") && !string.IsNullOrWhiteSpace(ini.ReadINI("General", "url")))
+                            if (ini.KeyExists("url", "General") && !string.IsNullOrWhiteSpace(ini.ReadKey("General", "url")))
                             {
                                 //set hasCustomURL to true if url exists and hasCustomURL is false
-                                if (!ini.KeyExists("hasCustomURL", "General") || ini.ReadINI("General", "hasCustomURL").Length == 5/*=="false"*/)
+                                if (!ini.KeyExists("hasCustomURL", "General") || ini.ReadKey("General", "hasCustomURL").Length == 5/*=="false"*/)
                                 {
-                                    ini.WriteINI("General", "hasCustomURL", "true", false);
+                                    ini.SetKey("General", "hasCustomURL", "true", false);
                                     inIchanged = true;
                                 }
                             }
                             else// if (!INI.KeyExists("url", "General") || string.IsNullOrWhiteSpace(INI.ReadINI("General", "url")))
                             {
-                                var metanotes = ini.ReadINI("General", "notes");
+                                var metanotes = ini.ReadKey("General", "notes");
                                 if (!string.IsNullOrWhiteSpace(metanotes))
                                 {
                                     var regex = @"<a href\=\\""[^>]+\\"">";//pattern for url inside notes
@@ -313,8 +313,8 @@ namespace AIHelper.Manage
                                     if (url.Success && !string.IsNullOrWhiteSpace(url.Value))
                                     {
                                         var urlValue = url.Value.Remove(url.Value.Length - 3, 3).Remove(0, 10);
-                                        ini.WriteINI("General", "url", urlValue, false);
-                                        ini.WriteINI("General", "hasCustomURL", "true", false);
+                                        ini.SetKey("General", "url", urlValue, false);
+                                        ini.SetKey("General", "hasCustomURL", "true", false);
                                         if (!metainiFixesApplyed)
                                         {
                                             metainiFixesApplyed = true;
@@ -329,7 +329,7 @@ namespace AIHelper.Manage
                             var metainiinfomoved = false;
                             if (ini.KeyExists("notes", "General"))
                             {
-                                var metanotes = ini.ReadINI("General", "notes");
+                                var metanotes = ini.ReadKey("General", "notes");
                                 if (!string.IsNullOrWhiteSpace(metanotes))
                                 {
                                     var patternsOfInfoForMove = new string[2][]
@@ -346,7 +346,7 @@ namespace AIHelper.Manage
                                         {
                                             var infoValue = Regex.Replace(info.Value.Replace(@"\n", @"\r\n"), "<[^>]*>", "");//cleaned info from html tags
                                                                                                                              //write new key to meta ini with info
-                                            ini.WriteINI(ManageSettings.AiMetaIniSectionName(), pattern[1], infoValue, false);
+                                            ini.SetKey(ManageSettings.AiMetaIniSectionName(), pattern[1], infoValue, false);
 
                                             if (!metainiFixesApplyed)
                                             {
@@ -362,14 +362,14 @@ namespace AIHelper.Manage
 
                                     if (metainiinfomoved)
                                     {
-                                        ini.WriteINI("General", "notes", metanotes, false);//write notes with removed mlinfo
+                                        ini.SetKey("General", "notes", metanotes, false);//write notes with removed mlinfo
                                     }
                                 }
                             }
 
                             if (inIchanged)
                             {
-                                ini.SaveINI();
+                                ini.Write();
                             }
                         }
                     }

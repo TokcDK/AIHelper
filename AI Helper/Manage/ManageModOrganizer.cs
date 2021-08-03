@@ -202,14 +202,10 @@ namespace AIHelper.Manage
 
                 this._ini = ini; // set ini reference
 
-                var listToLoad = ini.ReadSectionKeyValuePairsToDictionary("customExecutables");
-
                 List = new Dictionary<string, CustomExecutable>();
-
-                if (listToLoad == null) return;
-                foreach (var entry in listToLoad)
+                foreach (var entry in ini.ReadSectionValues("customExecutables"))
                 {
-                    var numName = entry.Key.Split('\\');//numName[0] - number of customexecutable , numName[0] - name of attribute
+                    var numName = entry.Split('\\');//numName[0] - number of customexecutable , numName[0] - name of attribute
                     if (numName.Length != 2)
                     {
                         continue;
@@ -220,7 +216,7 @@ namespace AIHelper.Manage
                         List.Add(numName[0], new CustomExecutable());
                     }
 
-                    List[numName[0]].Attribute[numName[1]] = entry.Value;
+                    List[numName[0]].Attribute[numName[1]] = entry;
                 }
 
                 _loadedListCustomsCount = List.Count;
@@ -280,17 +276,17 @@ namespace AIHelper.Manage
                         var valueBeforeNormalize = customExecutable.Value.Attribute[attributeKey];
                         ApplyNormalize(customExecutable.Value, attributeKey);
 
-                        if (sectionCleared || customExecutable.Value.Attribute[attributeKey] != valueBeforeNormalize || !_ini.KeyExists(keyName, "customExecutables") || _ini.ReadINI("customExecutables", keyName) != customExecutable.Value.Attribute[attributeKey]) // write only if not equal
+                        if (sectionCleared || customExecutable.Value.Attribute[attributeKey] != valueBeforeNormalize || !_ini.KeyExists(keyName, "customExecutables") || _ini.ReadKey("customExecutables", keyName) != customExecutable.Value.Attribute[attributeKey]) // write only if not equal
                         {
                             changed = true;
-                            _ini.WriteINI("customExecutables", keyName, customExecutable.Value.Attribute[attributeKey]);
+                            _ini.SetKey("customExecutables", keyName, customExecutable.Value.Attribute[attributeKey]);
                         }
                     }
                 }
 
                 if (changed)
                 {
-                    _ini.WriteINI("customExecutables", "size", (sectionCleared ? customExecutableNumber : List.Count) + "");
+                    _ini.SetKey("customExecutables", "size", (sectionCleared ? customExecutableNumber : List.Count) + "");
                 }
             }
 
@@ -1276,16 +1272,16 @@ namespace AIHelper.Manage
                 string sectionName = iniValues[i, 1];
                 string keyName = iniValues[i, 2];
 
-                if (ini.ReadINI(sectionName, keyName) != keyValue)
+                if (ini.ReadKey(sectionName, keyName) != keyValue)
                 {
                     changed = true;
-                    ini.WriteINI(sectionName, keyName, keyValue, false);
+                    ini.SetKey(sectionName, keyName, keyValue, false);
                 }
             }
 
             if (changed)
             {
-                ini.SaveINI();
+                ini.Write();
             }
         }
 
@@ -1333,7 +1329,7 @@ namespace AIHelper.Manage
             }
             else
             {
-                var customs = ini.ReadSectionKeyValuePairsToDictionary("customExecutables");
+                var customs = ini.ReadSectionValuesToDictionary("customExecutables");
                 if (customs != null)
                     foreach (var pair in customs)
                     {
@@ -1402,7 +1398,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static int GetMOiniCustomExecutablesCount(Dictionary<string, string> customs = null)
         {
-            customs = customs ?? new INIFile(ManageSettings.GetMOiniPath()).ReadSectionKeyValuePairsToDictionary("customExecutables");
+            customs = customs ?? new INIFile(ManageSettings.GetMOiniPath()).ReadSectionValuesToDictionary("customExecutables");
 
             if (customs.Count == 0)//check if caustoms is exists
             {
@@ -1429,7 +1425,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool IsMOcustomExecutableTitleByExeNameExists(string exename)
         {
-            var customs = new INIFile(ManageSettings.GetMOiniPath()).ReadSectionKeyValuePairsToDictionary("customExecutables");
+            var customs = new INIFile(ManageSettings.GetMOiniPath()).ReadSectionValuesToDictionary("customExecutables");
             if (customs != null)
                 foreach (var pair in customs)
                 {
@@ -1532,29 +1528,29 @@ namespace AIHelper.Manage
                 INIFile ini = new INIFile(metaPath);
 
                 bool isKeyExists = ini.KeyExists("category", "General");
-                if (!isKeyExists || (categoryIdIndex.Length > 0 && ini.ReadINI("General", "category").Replace("\"", string.Empty).Length == 0))
+                if (!isKeyExists || (categoryIdIndex.Length > 0 && ini.ReadKey("General", "category").Replace("\"", string.Empty).Length == 0))
                 {
-                    ini.WriteINI("General", "category", "\"" + categoryIdIndex + "\"");
+                    ini.SetKey("General", "category", "\"" + categoryIdIndex + "\"");
                 }
 
                 if (version.Length > 0)
                 {
-                    ini.WriteINI("General", "version", version);
+                    ini.SetKey("General", "version", version);
                 }
 
-                ini.WriteINI("General", "gameName", ManageSettings.GetmoCurrentGameName());
+                ini.SetKey("General", "gameName", ManageSettings.GetmoCurrentGameName());
 
                 if (comments.Length > 0)
                 {
-                    ini.WriteINI("General", "comments", comments);
+                    ini.SetKey("General", "comments", comments);
                 }
 
                 if (notes.Length > 0)
                 {
-                    ini.WriteINI("General", "notes", "\"" + notes.Replace(Environment.NewLine, "<br>") + "\"");
+                    ini.SetKey("General", "notes", "\"" + notes.Replace(Environment.NewLine, "<br>") + "\"");
                 }
 
-                ini.WriteINI("General", "validated", "true");
+                ini.SetKey("General", "validated", "true");
             }
         }
 
@@ -1870,9 +1866,9 @@ namespace AIHelper.Manage
                 RemoveCustomExecutable("Skyrim", ini);
 
                 // change gameName to specific mo plugin set
-                if (ini.ReadINI("General", "gameName") == "Skyrim")
+                if (ini.ReadKey("General", "gameName") == "Skyrim")
                 {
-                    ini.WriteINI("General", "gameName", GetMoBasicGamePluginGameName());
+                    ini.SetKey("General", "gameName", GetMoBasicGamePluginGameName());
                 }
             }
             else
@@ -2028,9 +2024,9 @@ namespace AIHelper.Manage
 
             string gameName;
             //updated game name
-            if (string.IsNullOrWhiteSpace(gameName = ini.ReadINI("General", "gameName")) || gameName != ManageSettings.GetmoCurrentGameName())
+            if (string.IsNullOrWhiteSpace(gameName = ini.ReadKey("General", "gameName")) || gameName != ManageSettings.GetmoCurrentGameName())
             {
-                ini.WriteINI("General", "gameName", ManageSettings.GetmoCurrentGameName(), false);
+                ini.SetKey("General", "gameName", ManageSettings.GetmoCurrentGameName(), false);
             }
 
             //clear pluginBlacklist section of MO ini to prevent plugin_python.dll exist there
@@ -2046,13 +2042,13 @@ namespace AIHelper.Manage
                 if (Path.GetFileNameWithoutExtension(custom.Value.Binary) == CustomExecutables.NormalizePath(ManageSettings.GetCurrentGameExeName()))
                 {
                     var index = custom.Key;
-                    ini.WriteINI("General", "selected_executable", index, false);
-                    ini.WriteINI("Widgets", "MainWindow_executablesListBox_index", index, false);
+                    ini.SetKey("General", "selected_executable", index, false);
+                    ini.SetKey("Widgets", "MainWindow_executablesListBox_index", index, false);
                     break;
                 }
             }
 
-            ini.WriteINI("PluginPersistance", @"Python%20Proxy\tryInit", "false");
+            ini.SetKey("PluginPersistance", @"Python%20Proxy\tryInit", "false");
         }
 
         /// <summary>

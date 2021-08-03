@@ -17,7 +17,7 @@ namespace AIHelper.Manage
             INIFile ini = new INIFile(iniPath);
             if (ini.KeyExists(key, section))
             {
-                return ini.ReadINI(section, key);
+                return ini.ReadKey(section, key);
             }
             return defaultValue;
         }
@@ -27,7 +27,7 @@ namespace AIHelper.Manage
             {
                 ManageModOrganizer.RedefineGameMoData();
             }
-            (new INIFile(iniPath)).WriteINI(section, key, value, doSaveIni);
+            (new INIFile(iniPath)).SetKey(section, key, value, doSaveIni);
             return true;
             //return false;
         }

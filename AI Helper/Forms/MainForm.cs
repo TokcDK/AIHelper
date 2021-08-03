@@ -176,7 +176,7 @@ namespace AIHelper
                 SetSelectedGameIndexAndBasicVariables(ManageSettings.GetCurrentGameIndexByFolderName(
                         ListOfGames
                         ,
-                        new INIFile(ManageSettings.GetAiHelperIniPath()).ReadINI("Settings", "selected_game")
+                        new INIFile(ManageSettings.GetAiHelperIniPath()).ReadKey("Settings", "selected_game")
                         ));
                 try
                 {
@@ -1099,7 +1099,7 @@ namespace AIHelper
         {
             ManageOther.CheckBoxChangeColor(sender as CheckBox);
             Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked = AutoShortcutRegistryCheckBox.Checked;
-            new INIFile(ManageSettings.GetAiHelperIniPath()).WriteINI("Settings", "autoCreateShortcutAndFixRegystry", Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked.ToString(CultureInfo.InvariantCulture));
+            new INIFile(ManageSettings.GetAiHelperIniPath()).SetKey("Settings", "autoCreateShortcutAndFixRegystry", Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked.ToString(CultureInfo.InvariantCulture));
         }
 
         private void ResolutionComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -2561,7 +2561,7 @@ namespace AIHelper
                 Properties.Settings.Default.CurrentGameListIndex = (sender as ComboBox).SelectedIndex;
                 ActionsOnGameChanged();
 
-                new INIFile(ManageSettings.GetAiHelperIniPath()).WriteINI("Settings", "selected_game", ManageSettings.GetCurrentGameFolderName());
+                new INIFile(ManageSettings.GetAiHelperIniPath()).SetKey("Settings", "selected_game", ManageSettings.GetCurrentGameFolderName());
 
                 FoldersInit();
 

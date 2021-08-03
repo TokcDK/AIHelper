@@ -24,7 +24,7 @@ namespace AIHelper.Manage.Rules.ModList
 
             var ini = new INIFile(metaPath);
 
-            var metaNotes = ini.ReadINI("General", "notes");
+            var metaNotes = ini.ReadKey("General", "notes");
 
             return metaNotes!=null && metaNotes.Contains("mlinfo::");
         }
@@ -48,7 +48,7 @@ namespace AIHelper.Manage.Rules.ModList
             {
                 var ini = new INIFile(metaPath);
 
-                var metaNotes = ini.ReadINI("General", "notes");
+                var metaNotes = ini.ReadKey("General", "notes");
                 //var metaComments = ManageINI.GetINIValueIfExist(metaPath, "comments", "General");
 
                 var mlinfo = GetTagInfoTextFromHtml(metaNotes, "mlinfo::").Replace("\\\\", "\\");
@@ -67,7 +67,7 @@ namespace AIHelper.Manage.Rules.ModList
                 {
                     if(ini.KeyExists(ManageSettings.AiMetaIniKeyModlistRulesInfoName(), ManageSettings.AiMetaIniSectionName()))
                     {
-                        mlinfo = ini.ReadINI(ManageSettings.AiMetaIniSectionName(), ManageSettings.AiMetaIniKeyModlistRulesInfoName());
+                        mlinfo = ini.ReadKey(ManageSettings.AiMetaIniSectionName(), ManageSettings.AiMetaIniKeyModlistRulesInfoName());
                     }
                     if (!string.IsNullOrWhiteSpace(mlinfo))
                     {

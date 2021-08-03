@@ -198,6 +198,8 @@ namespace AIHelper.Manage
                     return;
                 }
 
+                ini.Configuration.AssigmentSpacer = ""; // no spaces for mo ini
+
                 this._ini = ini; // set ini reference
 
                 var listToLoad = ini.ReadSectionKeyValuePairsToDictionary("customExecutables");
@@ -1021,6 +1023,195 @@ namespace AIHelper.Manage
 
         private static void SetCommonIniValues(INIFile ini)
         {
+            {
+                //string[,] iniValuesOld =
+                //    {
+                //        //General
+                //        {
+                //            "@ByteArray("+ManageSettings.GetCurrentGamePath()+")"
+                //            ,
+                //            "General"
+                //            ,
+                //            "gamePath"
+                //        }
+                //    //,
+                //    //    {
+                //    //        GetSelectedProfileName()
+                //    //        ,
+                //    //        "General"
+                //    //        ,
+                //    //        "@ByteArray("+"selected_profile"+")"
+                //    //    }
+
+
+                //    //,
+                //    //    {
+                //    //        "1"
+                //    //        ,
+                //    //        "General"
+                //    //        ,
+                //    //        @"selected_executable"
+                //    //    }
+
+
+                //    //,
+                //    //    //customExecutables
+                //    //    {
+                //    //        SettingsManage.GetCurrentGameEXEName()
+                //    //        ,
+                //    //        "customExecutables"
+                //    //        ,
+                //    //        @"1\title"
+                //    //    }
+                //    //,
+                //    //    {
+                //    //        Path.Combine(SettingsManage.GetDataPath(), SettingsManage.GetCurrentGameEXEName() + ".exe")
+                //    //        ,
+                //    //        "customExecutables"
+                //    //        ,
+                //    //        @"1\binary"
+                //    //    }
+                //    //,
+                //    //    {
+                //    //        SettingsManage.GetDataPath()
+                //    //        ,
+                //    //        "customExecutables"
+                //    //        ,
+                //    //        @"1\workingDirectory"
+                //    //    }
+                //    //,
+                //    //    {
+                //    //        SettingsManage.GetINISettingsEXEName()
+                //    //        ,
+                //    //        "customExecutables"
+                //    //        ,
+                //    //        @"2\title"
+                //    //    }
+                //    //,
+                //    //    {
+                //    //        SettingsManage.GetSettingsEXEPath()
+                //    //        ,
+                //    //        "customExecutables"
+                //    //        ,
+                //    //        @"2\binary"
+                //    //    }
+                //    //,
+                //    //    {
+                //    //        SettingsManage.GetDataPath()
+                //    //        ,
+                //    //        "customExecutables"
+                //    //        ,
+                //    //        @"2\workingDirectory"
+                //    //    }
+                //    //,
+                //    //    {
+                //    //        Path.Combine(SettingsManage.GetMOdirPath(), "explorer++", "Explorer++.exe")
+                //    //        ,
+                //    //        "customExecutables"
+                //    //        ,
+                //    //        @"3\binary"
+                //    //    }
+                //    //,
+                //    //    {
+                //    //        SettingsManage.GetDataPath()
+                //    //        ,
+                //    //        "customExecutables"
+                //    //        ,
+                //    //        @"3\arguments"
+                //    //    }
+                //    //,
+                //    //    {
+                //    //        Path.Combine(SettingsManage.GetMOdirPath(), "explorer++")
+                //    //        ,
+                //    //        "customExecutables"
+                //    //        ,
+                //    //        @"3\workingDirectory"
+                //    //    }
+                //    //,
+                //    //    {
+                //    //        Path.Combine(SettingsManage.GetCurrentGamePath(), "TESV.exe")
+                //    //        ,
+                //    //        "customExecutables"
+                //    //        ,
+                //    //        @"4\binary"
+                //    //    }
+                //    //,
+                //    //    {
+                //    //        SettingsManage.GetCurrentGamePath()
+                //    //        ,
+                //    //        "customExecutables"
+                //    //        ,
+                //    //        @"4\workingDirectory"
+                //    //    }
+                //    //,
+                //    //    {
+                //    //        Path.Combine(SettingsManage.GetStudioEXEName())
+                //    //        ,
+                //    //        "customExecutables"
+                //    //        ,
+                //    //        @"5\title"
+                //    //    }
+                //    //,
+                //    //    {
+                //    //        Path.Combine(SettingsManage.GetDataPath(),SettingsManage.GetStudioEXEName()+".exe")
+                //    //        ,
+                //    //        "customExecutables"
+                //    //        ,
+                //    //        @"5\binary"
+                //    //    }
+                //    //,
+                //    //    {
+                //    //        SettingsManage.GetDataPath()
+                //    //        ,
+                //    //        "customExecutables"
+                //    //        ,
+                //    //        @"5\workingDirectory"
+                //    //    }
+                //    ,
+                //        //Settings
+                //        {
+                //            ManageSettings.GetCurrentGameModsPath()
+                //            ,
+                //            "Settings"
+                //            ,
+                //            @"mod_directory"
+                //        }
+                //    ,
+                //        {
+                //            Path.Combine(ManageSettings.GetCurrentGamePath(), "Downloads")
+                //            ,
+                //            "Settings"
+                //            ,
+                //            @"download_directory"
+                //        }
+                //    ,
+                //        {
+                //            Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles")
+                //            ,
+                //            "Settings"
+                //            ,
+                //            @"profiles_directory"
+                //        }
+                //    ,
+                //        {
+                //            Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "overwrite")
+                //            ,
+                //            "Settings"
+                //            ,
+                //            @"overwrite_directory"
+                //        }
+                //    ,
+                //        {
+                //            CultureInfo.CurrentCulture.Name.Split('-')[0]
+                //            ,
+                //            "Settings"
+                //            ,
+                //            @"language"
+                //        }
+
+                //    };
+            }
+
             string[,] iniValues =
                 {
                     //General
@@ -1031,139 +1222,6 @@ namespace AIHelper.Manage
                         ,
                         "gamePath"
                     }
-                //,
-                //    {
-                //        GetSelectedProfileName()
-                //        ,
-                //        "General"
-                //        ,
-                //        "@ByteArray("+"selected_profile"+")"
-                //    }
-
-
-                //,
-                //    {
-                //        "1"
-                //        ,
-                //        "General"
-                //        ,
-                //        @"selected_executable"
-                //    }
-
-
-                //,
-                //    //customExecutables
-                //    {
-                //        SettingsManage.GetCurrentGameEXEName()
-                //        ,
-                //        "customExecutables"
-                //        ,
-                //        @"1\title"
-                //    }
-                //,
-                //    {
-                //        Path.Combine(SettingsManage.GetDataPath(), SettingsManage.GetCurrentGameEXEName() + ".exe")
-                //        ,
-                //        "customExecutables"
-                //        ,
-                //        @"1\binary"
-                //    }
-                //,
-                //    {
-                //        SettingsManage.GetDataPath()
-                //        ,
-                //        "customExecutables"
-                //        ,
-                //        @"1\workingDirectory"
-                //    }
-                //,
-                //    {
-                //        SettingsManage.GetINISettingsEXEName()
-                //        ,
-                //        "customExecutables"
-                //        ,
-                //        @"2\title"
-                //    }
-                //,
-                //    {
-                //        SettingsManage.GetSettingsEXEPath()
-                //        ,
-                //        "customExecutables"
-                //        ,
-                //        @"2\binary"
-                //    }
-                //,
-                //    {
-                //        SettingsManage.GetDataPath()
-                //        ,
-                //        "customExecutables"
-                //        ,
-                //        @"2\workingDirectory"
-                //    }
-                //,
-                //    {
-                //        Path.Combine(SettingsManage.GetMOdirPath(), "explorer++", "Explorer++.exe")
-                //        ,
-                //        "customExecutables"
-                //        ,
-                //        @"3\binary"
-                //    }
-                //,
-                //    {
-                //        SettingsManage.GetDataPath()
-                //        ,
-                //        "customExecutables"
-                //        ,
-                //        @"3\arguments"
-                //    }
-                //,
-                //    {
-                //        Path.Combine(SettingsManage.GetMOdirPath(), "explorer++")
-                //        ,
-                //        "customExecutables"
-                //        ,
-                //        @"3\workingDirectory"
-                //    }
-                //,
-                //    {
-                //        Path.Combine(SettingsManage.GetCurrentGamePath(), "TESV.exe")
-                //        ,
-                //        "customExecutables"
-                //        ,
-                //        @"4\binary"
-                //    }
-                //,
-                //    {
-                //        SettingsManage.GetCurrentGamePath()
-                //        ,
-                //        "customExecutables"
-                //        ,
-                //        @"4\workingDirectory"
-                //    }
-                //,
-                //    {
-                //        Path.Combine(SettingsManage.GetStudioEXEName())
-                //        ,
-                //        "customExecutables"
-                //        ,
-                //        @"5\title"
-                //    }
-                //,
-                //    {
-                //        Path.Combine(SettingsManage.GetDataPath(),SettingsManage.GetStudioEXEName()+".exe")
-                //        ,
-                //        "customExecutables"
-                //        ,
-                //        @"5\binary"
-                //    }
-                //,
-                //    {
-                //        SettingsManage.GetDataPath()
-                //        ,
-                //        "customExecutables"
-                //        ,
-                //        @"5\workingDirectory"
-                //    }
                 ,
                     //Settings
                     {
@@ -1213,12 +1271,11 @@ namespace AIHelper.Manage
             for (int i = 0; i < iniValuesLength; i++)
             {
                 string subquote = iniValues[i, 2].EndsWith(@"\arguments", StringComparison.InvariantCulture) ? "\\\"" : string.Empty;
-                string iniValue = subquote + iniValues[i, 0].Replace(@"\", @"\\") + subquote;
-                //if (INIManage.GetINIValueIfExist(SettingsManage.GetModOrganizerINIpath(), IniValues[i, 2], IniValues[i, 1]) != IniValue)
-                //{
-                //    INI.WriteINI(IniValues[i, 1], IniValues[i, 2], IniValue);
-                //}
-                ini.WriteINI(iniValues[i, 1], iniValues[i, 2], iniValue, false);
+                string keyValue = iniValues[i, 0].Replace(@"\", @"\\") + subquote;
+                string sectionName = iniValues[i, 1];
+                string keyName = iniValues[i, 2];
+
+                ini.WriteINI(sectionName, keyName, keyValue, false);
             }
 
             ini.SaveINI();

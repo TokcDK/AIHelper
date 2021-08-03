@@ -2186,9 +2186,9 @@ namespace AIHelper.Manage
                     switch (modType)
                     {
                         case ModType.Separator when mod.IsSeparator:
-                        case ModType.ModsAny when !mod.IsSeparator:
-                        case ModType.EnabledMods when !mod.IsSeparator && mod.IsEnabled:
-                        case ModType.DisabledMods when !mod.IsSeparator && !mod.IsEnabled:
+                        case ModType.ModAny when !mod.IsSeparator:
+                        case ModType.ModEnabled when !mod.IsSeparator && mod.IsEnabled:
+                        case ModType.ModDisabled when !mod.IsSeparator && !mod.IsEnabled:
                             if (!exists || mod.IsExist) // mod exists or exists is false
                                 yield return mod;
                             break;
@@ -2204,19 +2204,19 @@ namespace AIHelper.Manage
                 /// <summary>
                 /// any enabled or disabled mods
                 /// </summary>
-                ModsAny = 0,
-                /// <summary>
-                /// only separators
-                /// </summary>
-                Separator = 1,
+                ModAny,
                 /// <summary>
                 /// only enabled mods
                 /// </summary>
-                EnabledMods = 2,
+                ModEnabled,
                 /// <summary>
                 /// only disabled mods
                 /// </summary>
-                DisabledMods = 3
+                ModDisabled,
+                /// <summary>
+                /// only separators
+                /// </summary>
+                Separator
             }
 
             /// <summary>

@@ -2569,7 +2569,7 @@ namespace AIHelper
             }
             else
             {
-                CurrentGameComboBox.SelectedItem = Properties.Settings.Default.CurrentGameFolderName;
+                CurrentGameComboBox.SelectedItem = ManageSettings.GetCurrentGameFolderName();
             }
         }
 

@@ -770,7 +770,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameFolderName()
         {
-            return Properties.Settings.Default.CurrentGameFolderName;
+            return GameData.CurrentGame.GetGameFolderName();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

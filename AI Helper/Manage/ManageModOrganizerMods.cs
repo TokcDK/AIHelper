@@ -2186,7 +2186,6 @@ namespace AIHelper.Manage
                     switch (modType)
                     {
                         case ModType.Separator when mod.IsSeparator:
-                        case ModType.EnabledAny when mod.IsEnabled:
                         case ModType.ModsAny when !mod.IsSeparator:
                         case ModType.EnabledMods when !mod.IsSeparator && mod.IsEnabled:
                         case ModType.DisabledMods when !mod.IsSeparator && !mod.IsEnabled:
@@ -2203,25 +2202,21 @@ namespace AIHelper.Manage
             internal enum ModType
             {
                 /// <summary>
-                /// enabled mods and separators
-                /// </summary>
-                EnabledAny = 0,
-                /// <summary>
                 /// any enabled or disabled mods
                 /// </summary>
-                ModsAny = 1,
+                ModsAny = 0,
                 /// <summary>
                 /// only separators
                 /// </summary>
-                Separator = 2,
+                Separator = 1,
                 /// <summary>
                 /// only enabled mods
                 /// </summary>
-                EnabledMods = 3,
+                EnabledMods = 2,
                 /// <summary>
                 /// only disabled mods
                 /// </summary>
-                DisabledMods = 4
+                DisabledMods = 3
             }
 
             /// <summary>

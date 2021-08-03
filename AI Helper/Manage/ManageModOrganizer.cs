@@ -1268,6 +1268,7 @@ namespace AIHelper.Manage
 
             int iniValuesLength = iniValues.Length / 3;
 
+            bool changed = false;
             for (int i = 0; i < iniValuesLength; i++)
             {
                 string subquote = iniValues[i, 2].EndsWith(@"\arguments", StringComparison.InvariantCulture) ? "\\\"" : string.Empty;
@@ -1275,10 +1276,17 @@ namespace AIHelper.Manage
                 string sectionName = iniValues[i, 1];
                 string keyName = iniValues[i, 2];
 
-                ini.WriteINI(sectionName, keyName, keyValue, false);
+                if (ini.ReadINI(sectionName, keyName) != keyValue)
+                {
+                    changed = true;
+                    ini.WriteINI(sectionName, keyName, keyValue, false);
+                }
             }
 
-            ini.SaveINI();
+            if (changed)
+            {
+                ini.SaveINI();
+            }
         }
 
         //internal static Dictionary<string, string> GetMOcustomExecutablesList()

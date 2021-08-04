@@ -22,7 +22,7 @@ namespace AIHelper.Manage.Rules.ModList
             if (!File.Exists(metaPath))
                 return false;
 
-            var ini = new INIFile(metaPath);
+            var ini = ManageIni.GetINIFile(metaPath);
 
             var metaNotes = ini.GetKey("General", "notes");
 
@@ -46,7 +46,7 @@ namespace AIHelper.Manage.Rules.ModList
             var metaPath = Path.Combine(modPath, "meta.ini");
             if (File.Exists(metaPath))
             {
-                var ini = new INIFile(metaPath);
+                var ini = ManageIni.GetINIFile(metaPath);
 
                 var metaNotes = ini.GetKey("General", "notes");
                 //var metaComments = ManageINI.GetINIValueIfExist(metaPath, "comments", "General");

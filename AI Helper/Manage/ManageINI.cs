@@ -7,6 +7,18 @@ namespace AIHelper.Manage
 {
     internal static class ManageIni
     {
+        /// <summary>
+        /// init ini file and set required settings for it
+        /// </summary>
+        /// <param name="iniPath"></param>
+        /// <returns></returns>
+        public static INIFile GetINIFile(string iniPath)
+        {
+            var ini = new INIFile(iniPath);
+            ini.Configuration.AssigmentSpacer = "";
+            return ini;
+        }
+
         public static string GetIniValueIfExist(string iniPath, string key, string section = null, string defaultValue = "")
         {
             if (!File.Exists(iniPath))
@@ -14,7 +26,7 @@ namespace AIHelper.Manage
                 ManageModOrganizer.RedefineGameMoData();
             }
 
-            INIFile ini = new INIFile(iniPath);
+            INIFile ini = GetINIFile(iniPath);
             if (ini.KeyExists(key, section))
             {
                 return ini.GetKey(section, key);
@@ -27,7 +39,7 @@ namespace AIHelper.Manage
             {
                 ManageModOrganizer.RedefineGameMoData();
             }
-            (new INIFile(iniPath)).SetKey(section, key, value, doSaveIni);
+            GetINIFile(iniPath).SetKey(section, key, value, doSaveIni);
             return true;
             //return false;
         }

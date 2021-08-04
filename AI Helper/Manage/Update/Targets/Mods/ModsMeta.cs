@@ -61,7 +61,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
                 return "";
             }
 
-            var ini = new INIFile(metaIniPath);
+            var ini = ManageIni.GetINIFile(metaIniPath);
 
             //Get by current source ID from notes
             string val = "";
@@ -194,7 +194,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
                 var iniNum = 0;
                 foreach (var iniFile in Directory.EnumerateFiles(ManageSettings.GetModsUpdateDbInfoDir(), "*.ini", SearchOption.AllDirectories))
                 {
-                    INIFile ini = new INIFile(iniFile);
+                    INIFile ini = ManageIni.GetINIFile(iniFile);
 
                     _dbData.Add(new Dictionary<string, string>());
 

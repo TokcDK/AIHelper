@@ -53,7 +53,7 @@ namespace AIHelper.Manage
                 return;
             }
 
-            INIFile ini = new INIFile(ManageSettings.GetModOrganizerIniPath());
+            INIFile ini = ManageIni.GetINIFile(ManageSettings.GetModOrganizerIniPath());
 
             SetCommonIniValues(ini);
 
@@ -108,7 +108,7 @@ namespace AIHelper.Manage
         {
             if (ini == null)
             {
-                ini = new INIFile(ManageSettings.GetModOrganizerIniPath());
+                ini = ManageIni.GetINIFile(ManageSettings.GetModOrganizerIniPath());
             }
 
             var customExecutables = new CustomExecutables(ini);
@@ -1287,7 +1287,7 @@ namespace AIHelper.Manage
 
         //internal static Dictionary<string, string> GetMOcustomExecutablesList()
         //{
-        //    var INI = new INIFile(ManageSettings.GetMOiniPath());
+        //    var INI = ManageIni.GetINIFile(ManageSettings.GetMOiniPath());
         //    var customs = INI.ReadSectionKeyValuePairsToDictionary("customExecutables");
         //    var retDict = new Dictionary<string, string>();
         //    foreach (var pair in customs)
@@ -1310,7 +1310,7 @@ namespace AIHelper.Manage
         {
             if (ini == null)
             {
-                ini = new INIFile(ManageSettings.GetMOiniPath());
+                ini = ManageIni.GetINIFile(ManageSettings.GetMOiniPath());
             }
 
             if (newMethod)
@@ -1355,7 +1355,7 @@ namespace AIHelper.Manage
         {
             if (ini == null)
             {
-                ini = new INIFile(ManageSettings.GetMOiniPath());
+                ini = ManageIni.GetINIFile(ManageSettings.GetMOiniPath());
             }
 
             var customExcutables = new CustomExecutables(ini);
@@ -1398,7 +1398,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static int GetMOiniCustomExecutablesCount(Dictionary<string, string> customs = null)
         {
-            customs = customs ?? new INIFile(ManageSettings.GetMOiniPath()).GetSectionValuesToDictionary("customExecutables");
+            customs = customs ?? ManageIni.GetINIFile(ManageSettings.GetMOiniPath()).GetSectionValuesToDictionary("customExecutables");
 
             if (customs.Count == 0)//check if caustoms is exists
             {
@@ -1425,7 +1425,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool IsMOcustomExecutableTitleByExeNameExists(string exename)
         {
-            var customs = new INIFile(ManageSettings.GetMOiniPath()).GetSectionValuesToDictionary("customExecutables");
+            var customs = ManageIni.GetINIFile(ManageSettings.GetMOiniPath()).GetSectionValuesToDictionary("customExecutables");
             if (customs != null)
                 foreach (var pair in customs)
                 {
@@ -1525,7 +1525,7 @@ namespace AIHelper.Manage
             if (Directory.Exists(moddir))
             {
                 string metaPath = Path.Combine(moddir, "meta.ini");
-                INIFile ini = new INIFile(metaPath);
+                INIFile ini = ManageIni.GetINIFile(metaPath);
 
                 bool isKeyExists = ini.KeyExists("category", "General");
                 if (!isKeyExists || (categoryIdIndex.Length > 0 && ini.GetKey("General", "category").Replace("\"", string.Empty).Length == 0))
@@ -1861,7 +1861,7 @@ namespace AIHelper.Manage
                     File.Delete(ManageSettings.GetDummyFilePath());
                 }
 
-                var ini = new INIFile(ManageSettings.GetModOrganizerIniPath());
+                var ini = ManageIni.GetINIFile(ManageSettings.GetModOrganizerIniPath());
 
                 RemoveCustomExecutable("Skyrim", ini);
 
@@ -1893,7 +1893,7 @@ namespace AIHelper.Manage
         {
             if (ini == null)
             {
-                ini = new INIFile(ManageSettings.GetModOrganizerIniPath());
+                ini = ManageIni.GetINIFile(ManageSettings.GetModOrganizerIniPath());
             }
 
             var customs = new CustomExecutables(ini);
@@ -2019,7 +2019,7 @@ namespace AIHelper.Manage
         {
             if (!File.Exists(ManageSettings.GetModOrganizerIniPath())) return;
 
-            var ini = new INIFile(ManageSettings.GetModOrganizerIniPath());
+            var ini = ManageIni.GetINIFile(ManageSettings.GetModOrganizerIniPath());
             //if (INI == null) return;
 
             string gameName;

@@ -255,7 +255,7 @@ namespace AIHelper.Manage
                             {
                                 continue;
                             }
-                            var ini = new INIFile(modMetaIniPath);
+                            var ini = ManageIni.GetINIFile(modMetaIniPath);
                             var inIchanged = false;
 
                             //string gameName;

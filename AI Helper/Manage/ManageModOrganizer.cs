@@ -146,9 +146,18 @@ namespace AIHelper.Manage
 
                                 //replace other slashes
                                 var targetcorrectedabsolute = Path.GetFullPath(targetcorrectedrelative);
-                                record.Value.Attribute[attribute] = CustomExecutables.NormalizePath(targetcorrectedabsolute);
 
-                                continue;
+                                FixExplorerPlusPlusPath(ref targetcorrectedabsolute);
+
+                                record.Value.Attribute[attribute] = CustomExecutables.NormalizePath(targetcorrectedabsolute);
+                            }
+                            else
+                            {
+                                var newPath = record.Value.Attribute[attribute].Replace("/", "\\");
+                                if (FixExplorerPlusPlusPath(ref newPath))
+                                {
+                                    record.Value.Attribute[attribute] = CustomExecutables.NormalizePath(newPath);
+                                }
                             }
                         }
                     }
@@ -166,6 +175,27 @@ namespace AIHelper.Manage
             }
 
             customExecutables.Save();
+        }
+
+        /// <summary>
+        /// fixes alternative path for explorer++ to path to native mo dir
+        /// </summary>
+        /// <param name="inputPath"></param>
+        private static bool FixExplorerPlusPlusPath(ref string inputPath)
+        {
+            var altModOrganizerDirNameForEpp = Regex.Match(inputPath, @"\\([^\\]+)\\explorer\+\+");
+            if (altModOrganizerDirNameForEpp.Success && altModOrganizerDirNameForEpp.Result("$1").StartsWith("MO", StringComparison.InvariantCultureIgnoreCase))
+            {
+                inputPath = inputPath
+                    .Remove(altModOrganizerDirNameForEpp.Index, altModOrganizerDirNameForEpp.Length)
+                    .Insert(altModOrganizerDirNameForEpp.Index, @"\..\..\MO\explorer++");
+
+                inputPath = Path.GetFullPath(inputPath);
+
+                return true;
+            }
+
+            return false;
         }
 
         internal class CustomExecutables
@@ -203,20 +233,22 @@ namespace AIHelper.Manage
                 this._ini = ini; // set ini reference
 
                 List = new Dictionary<string, CustomExecutable>();
-                foreach (var entry in ini.GetSectionValues("customExecutables"))
+                foreach (var keyData in ini.GetSectionKeyValuePairs("customExecutables"))
                 {
-                    var numName = entry.Split('\\');//numName[0] - number of customexecutable , numName[0] - name of attribute
+                    var numName = keyData.Key.Split('\\');//numName[0] - number of customexecutable , numName[0] - name of attribute
                     if (numName.Length != 2)
                     {
                         continue;
                     }
+                    var customNumber = numName[0];
+                    var customKeyName = numName[1];
 
-                    if (!List.ContainsKey(numName[0]))
+                    if (!List.ContainsKey(customNumber))
                     {
-                        List.Add(numName[0], new CustomExecutable());
+                        List.Add(customNumber, new CustomExecutable());
                     }
 
-                    List[numName[0]].Attribute[numName[1]] = entry;
+                    List[customNumber].Attribute[customKeyName] = keyData.Value;
                 }
 
                 _loadedListCustomsCount = List.Count;

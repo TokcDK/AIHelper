@@ -208,6 +208,7 @@
     <Compile Include="Manage\Update\Targets\Mods\ModsMeta.cs" />
     <Compile Include="Manage\Update\Targets\Mods\ModsBase.cs" />
     <Compile Include="Manage\Update\Targets\TBase.cs" />
+    <Compile Include="Manage\Update\Updater.cs" />
     <Compile Include="Manage\Update\UpdateTools.cs" />
     <Compile Include="SharedData\GameData.cs" />
     <Compile Include="UserData\CardframeBack.cs" />

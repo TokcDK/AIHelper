@@ -1225,7 +1225,7 @@ namespace AIHelper.Manage
                         ,
                         "Settings"
                         ,
-                        @"mod_directory"
+                        "mod_directory"
                     }
                 ,
                     {
@@ -1233,7 +1233,7 @@ namespace AIHelper.Manage
                         ,
                         "Settings"
                         ,
-                        @"download_directory"
+                        "download_directory"
                     }
                 ,
                     {
@@ -1241,7 +1241,7 @@ namespace AIHelper.Manage
                         ,
                         "Settings"
                         ,
-                        @"profiles_directory"
+                        "profiles_directory"
                     }
                 ,
                     {
@@ -1249,7 +1249,7 @@ namespace AIHelper.Manage
                         ,
                         "Settings"
                         ,
-                        @"overwrite_directory"
+                        "overwrite_directory"
                     }
                 ,
                     {
@@ -1257,7 +1257,15 @@ namespace AIHelper.Manage
                         ,
                         "Settings"
                         ,
-                        @"language"
+                        "language"
+                    }
+                ,
+                    {
+                        "false"
+                        ,
+                        "Settings"
+                        ,
+                        "check_for_updates" // disable check for updates by mo to prevent autoupdate and possible data lost. Update button will make buckups before update and will update more safe.
                     }
 
                 };

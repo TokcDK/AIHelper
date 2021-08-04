@@ -80,7 +80,7 @@ namespace AIHelper.Manage.Update.Sources
             };
 
             if (!File.Exists(Info.UpdateFilePath)//not exist
-                || (!Info.VersionFromFile && File.Exists(Info.UpdateFilePath))//when version from releases and filename is always same need to download it each time because exist in downloads is from older release
+                || (!Info.VersionFromFile && File.Exists(Info.UpdateFilePath) && !updateFileName.Contains(Info.TargetLastVersion))//when version from releases and filename is always same need to download it each time because exist in downloads is from older release
                 || new FileInfo(Info.UpdateFilePath).Length == 0//zero length van be when was failed previous download
                 )
             {

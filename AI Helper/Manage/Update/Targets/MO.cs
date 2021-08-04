@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 
 namespace AIHelper.Manage.Update.Targets
 {
@@ -42,20 +40,33 @@ namespace AIHelper.Manage.Update.Targets
         /// <returns></returns>
         internal override bool UpdateFiles()
         {
-            using (var installer = new Process())
+            try
             {
-                installer.StartInfo.FileName = Info.UpdateFilePath;
-                installer.StartInfo.Arguments = "/dir=\"" + _moDirPath + "\" /noicons /nocancel /norestart /silent";
-                //installer.StartInfo.WorkingDirectory = Path.GetDirectoryName(info.UpdateFilePath);
+                using (var installer = new Process())
+                {
+                    installer.StartInfo.FileName = Info.UpdateFilePath;
+                    installer.StartInfo.Arguments = "/dir=\"" + _moDirPath + "\" /noicons /nocancel /norestart /silent";
+                    //installer.StartInfo.WorkingDirectory = Path.GetDirectoryName(info.UpdateFilePath);
 
-                installer.Start();
-                installer.WaitForExit();
+                    installer.Start();
+                    installer.WaitForExit();
 
-                //UpdateBaseGamesPlugin();
+                    //UpdateBaseGamesPlugin();
 
-                RestoreSomeFiles(Info.BuckupDirPath, _moDirPath);
+                    RestoreSomeFiles(Info.BuckupDirPath, _moDirPath);
 
-                return installer.ExitCode == 0;
+                    if (installer.ExitCode != 0)
+                    {
+                        File.Delete(Info.UpdateFilePath);//maybe corrupted
+                    }
+
+                    return installer.ExitCode == 0;
+                }
+            }
+            catch
+            {
+                File.Delete(Info.UpdateFilePath);//maybe corrupted
+                return false;
             }
         }
 

@@ -203,7 +203,7 @@ namespace AIHelper.Manage
                 this._ini = ini; // set ini reference
 
                 List = new Dictionary<string, CustomExecutable>();
-                foreach (var entry in ini.ReadSectionValues("customExecutables"))
+                foreach (var entry in ini.GetSectionValues("customExecutables"))
                 {
                     var numName = entry.Split('\\');//numName[0] - number of customexecutable , numName[0] - name of attribute
                     if (numName.Length != 2)
@@ -276,7 +276,7 @@ namespace AIHelper.Manage
                         var valueBeforeNormalize = customExecutable.Value.Attribute[attributeKey];
                         ApplyNormalize(customExecutable.Value, attributeKey);
 
-                        if (sectionCleared || customExecutable.Value.Attribute[attributeKey] != valueBeforeNormalize || !_ini.KeyExists(keyName, "customExecutables") || _ini.ReadKey("customExecutables", keyName) != customExecutable.Value.Attribute[attributeKey]) // write only if not equal
+                        if (sectionCleared || customExecutable.Value.Attribute[attributeKey] != valueBeforeNormalize || !_ini.KeyExists(keyName, "customExecutables") || _ini.GetKey("customExecutables", keyName) != customExecutable.Value.Attribute[attributeKey]) // write only if not equal
                         {
                             changed = true;
                             _ini.SetKey("customExecutables", keyName, customExecutable.Value.Attribute[attributeKey]);
@@ -1272,7 +1272,7 @@ namespace AIHelper.Manage
                 string sectionName = iniValues[i, 1];
                 string keyName = iniValues[i, 2];
 
-                if (ini.ReadKey(sectionName, keyName) != keyValue)
+                if (ini.GetKey(sectionName, keyName) != keyValue)
                 {
                     changed = true;
                     ini.SetKey(sectionName, keyName, keyValue, false);
@@ -1329,7 +1329,7 @@ namespace AIHelper.Manage
             }
             else
             {
-                var customs = ini.ReadSectionValuesToDictionary("customExecutables");
+                var customs = ini.GetSectionValuesToDictionary("customExecutables");
                 if (customs != null)
                     foreach (var pair in customs)
                     {
@@ -1398,7 +1398,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static int GetMOiniCustomExecutablesCount(Dictionary<string, string> customs = null)
         {
-            customs = customs ?? new INIFile(ManageSettings.GetMOiniPath()).ReadSectionValuesToDictionary("customExecutables");
+            customs = customs ?? new INIFile(ManageSettings.GetMOiniPath()).GetSectionValuesToDictionary("customExecutables");
 
             if (customs.Count == 0)//check if caustoms is exists
             {
@@ -1425,7 +1425,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool IsMOcustomExecutableTitleByExeNameExists(string exename)
         {
-            var customs = new INIFile(ManageSettings.GetMOiniPath()).ReadSectionValuesToDictionary("customExecutables");
+            var customs = new INIFile(ManageSettings.GetMOiniPath()).GetSectionValuesToDictionary("customExecutables");
             if (customs != null)
                 foreach (var pair in customs)
                 {
@@ -1528,7 +1528,7 @@ namespace AIHelper.Manage
                 INIFile ini = new INIFile(metaPath);
 
                 bool isKeyExists = ini.KeyExists("category", "General");
-                if (!isKeyExists || (categoryIdIndex.Length > 0 && ini.ReadKey("General", "category").Replace("\"", string.Empty).Length == 0))
+                if (!isKeyExists || (categoryIdIndex.Length > 0 && ini.GetKey("General", "category").Replace("\"", string.Empty).Length == 0))
                 {
                     ini.SetKey("General", "category", "\"" + categoryIdIndex + "\"");
                 }
@@ -1866,7 +1866,7 @@ namespace AIHelper.Manage
                 RemoveCustomExecutable("Skyrim", ini);
 
                 // change gameName to specific mo plugin set
-                if (ini.ReadKey("General", "gameName") == "Skyrim")
+                if (ini.GetKey("General", "gameName") == "Skyrim")
                 {
                     ini.SetKey("General", "gameName", GetMoBasicGamePluginGameName());
                 }
@@ -2024,7 +2024,7 @@ namespace AIHelper.Manage
 
             string gameName;
             //updated game name
-            if (string.IsNullOrWhiteSpace(gameName = ini.ReadKey("General", "gameName")) || gameName != ManageSettings.GetmoCurrentGameName())
+            if (string.IsNullOrWhiteSpace(gameName = ini.GetKey("General", "gameName")) || gameName != ManageSettings.GetmoCurrentGameName())
             {
                 ini.SetKey("General", "gameName", ManageSettings.GetmoCurrentGameName(), false);
             }

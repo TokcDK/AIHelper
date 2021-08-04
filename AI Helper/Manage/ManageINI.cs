@@ -17,7 +17,7 @@ namespace AIHelper.Manage
             INIFile ini = new INIFile(iniPath);
             if (ini.KeyExists(key, section))
             {
-                return ini.ReadKey(section, key);
+                return ini.GetKey(section, key);
             }
             return defaultValue;
         }

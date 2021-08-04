@@ -260,7 +260,7 @@ namespace AIHelper.Manage
 
                             //string gameName;
                             //fix for incorrect gameName set for the mod
-                            if (ini.KeyExists("gameName", "General") && (/*gameName =*/ ini.ReadKey("General", "gameName")) != ManageSettings.GetmoCurrentGameName())
+                            if (ini.KeyExists("gameName", "General") && (/*gameName =*/ ini.GetKey("General", "gameName")) != ManageSettings.GetmoCurrentGameName())
                             {
                                 //if (!ApplyModListgameNameValueFix)
                                 //{
@@ -294,10 +294,10 @@ namespace AIHelper.Manage
                             }
 
                             //Copy 1st found url from notes to url key
-                            if (ini.KeyExists("url", "General") && !string.IsNullOrWhiteSpace(ini.ReadKey("General", "url")))
+                            if (ini.KeyExists("url", "General") && !string.IsNullOrWhiteSpace(ini.GetKey("General", "url")))
                             {
                                 //set hasCustomURL to true if url exists and hasCustomURL is false
-                                if (!ini.KeyExists("hasCustomURL", "General") || ini.ReadKey("General", "hasCustomURL").Length == 5/*=="false"*/)
+                                if (!ini.KeyExists("hasCustomURL", "General") || ini.GetKey("General", "hasCustomURL").Length == 5/*=="false"*/)
                                 {
                                     ini.SetKey("General", "hasCustomURL", "true", false);
                                     inIchanged = true;
@@ -305,7 +305,7 @@ namespace AIHelper.Manage
                             }
                             else// if (!INI.KeyExists("url", "General") || string.IsNullOrWhiteSpace(INI.ReadINI("General", "url")))
                             {
-                                var metanotes = ini.ReadKey("General", "notes");
+                                var metanotes = ini.GetKey("General", "notes");
                                 if (!string.IsNullOrWhiteSpace(metanotes))
                                 {
                                     var regex = @"<a href\=\\""[^>]+\\"">";//pattern for url inside notes
@@ -329,7 +329,7 @@ namespace AIHelper.Manage
                             var metainiinfomoved = false;
                             if (ini.KeyExists("notes", "General"))
                             {
-                                var metanotes = ini.ReadKey("General", "notes");
+                                var metanotes = ini.GetKey("General", "notes");
                                 if (!string.IsNullOrWhiteSpace(metanotes))
                                 {
                                     var patternsOfInfoForMove = new string[2][]

@@ -67,7 +67,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
             string val = "";
             if (ini.KeyExists("notes", "General"))
             {
-                val = ini.ReadKey("General", "notes");
+                val = ini.GetKey("General", "notes");
             }
 
             if (string.IsNullOrWhiteSpace(val))
@@ -88,7 +88,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
                 {
                     if (ini.KeyExists(ManageSettings.AiMetaIniKeyUpdateName(), ManageSettings.AiMetaIniSectionName()))
                     {
-                        var info = ini.ReadKey(ManageSettings.AiMetaIniSectionName(), ManageSettings.AiMetaIniKeyUpdateName());
+                        var info = ini.GetKey(ManageSettings.AiMetaIniSectionName(), ManageSettings.AiMetaIniKeyUpdateName());
 
                         return Regex.Match(info, Info.SourceId + "::([^:]+)::").Result("$1");
                     }
@@ -203,7 +203,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
                         var value = "";
                         if (ini.KeyExists(setting))
                         {
-                            value = ini.ReadKey("", setting);
+                            value = ini.GetKey("", setting);
                         }
                         _dbData[iniNum].Add(setting, value);
                     }

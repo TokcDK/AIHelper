@@ -429,15 +429,26 @@ namespace AIHelper.Manage.Update.Targets
             Directory.CreateDirectory(oldModBuckupDirPath);
 
             //buckup old dirs
-            foreach (var folder in Directory.EnumerateDirectories(updatingModDirPath))
+            foreach (var folderPath in new DirectoryInfo(updatingModDirPath).EnumerateDirectories())
             {
                 try
                 {
-                    var backupPath = folder.Replace(updatingModDirPath, oldModBuckupDirPath);
-                    Directory.CreateDirectory(Path.GetDirectoryName(backupPath));
-                    if (Directory.Exists(folder))
+                    var folder = folderPath;
+                    if (folder.IsSymbolicLink())
                     {
-                        Directory.Move(folder, backupPath);
+                        if (!folder.IsValidSymlink())
+                        {
+                            continue;
+                        }
+
+                        folder = new DirectoryInfo(folder.GetSymbolicLinkTarget());
+                    }
+
+                    var backupPath = folder.FullName.Replace(updatingModDirPath, oldModBuckupDirPath);
+                    Directory.CreateDirectory(Path.GetDirectoryName(backupPath));
+                    if (folder.Exists)
+                    {
+                        folder.MoveTo(backupPath);
                     }
                 }
                 catch (Exception ex)
@@ -446,24 +457,35 @@ namespace AIHelper.Manage.Update.Targets
                 }
             }
             //buckup old files
-            foreach (var file in Directory.EnumerateFiles(updatingModDirPath))
+            foreach (var filePath in new DirectoryInfo(updatingModDirPath).EnumerateFiles())
             {
                 try
                 {
+                    var file = filePath;
+                    if (file.IsSymbolicLink())
+                    {
+                        if (!file.IsValidSymlink())
+                        {
+                            continue;
+                        }
+
+                        file = new FileInfo(filePath.GetSymbolicLinkTarget());
+                    }
+
                     //string ext;
                     //if ((ext = Path.GetExtension(file)) == ".ini" || ext == ".cfg" || (Path.GetFileName(Path.GetDirectoryName(file)) == UpdatingModDirPath && ext.IsPictureExtension()))
                     //{
                     //    continue;
                     //}
-                    var backupPath = file.Replace(updatingModDirPath, oldModBuckupDirPath);
+                    var backupPath = file.FullName.Replace(updatingModDirPath, oldModBuckupDirPath);
                     Directory.CreateDirectory(Path.GetDirectoryName(backupPath));
-                    if (RestoreList.Contains(file))
+                    if (RestoreList.Contains(file.FullName))
                     {
-                        File.Copy(file, backupPath);
+                        file.CopyTo(backupPath);
                     }
                     else
                     {
-                        File.Move(file, backupPath);
+                        file.MoveTo(backupPath);
                     }
                 }
                 catch (Exception ex)

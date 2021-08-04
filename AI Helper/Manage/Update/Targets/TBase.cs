@@ -433,6 +433,7 @@ namespace AIHelper.Manage.Update.Targets
             {
                 try
                 {
+                    bool isSynlinkTarget = false;
                     var folder = folderPath;
                     if (folder.IsSymbolicLink())
                     {
@@ -441,14 +442,22 @@ namespace AIHelper.Manage.Update.Targets
                             continue;
                         }
 
+                        isSynlinkTarget = true;
                         folder = new DirectoryInfo(folder.GetSymbolicLinkTarget());
                     }
 
-                    var backupPath = folder.FullName.Replace(updatingModDirPath, oldModBuckupDirPath);
-                    Directory.CreateDirectory(Path.GetDirectoryName(backupPath));
+                    var backupPath = new DirectoryInfo(folder.FullName.Replace(updatingModDirPath, oldModBuckupDirPath));
+                    Directory.CreateDirectory(Path.GetDirectoryName(backupPath.FullName));
                     if (folder.Exists)
                     {
-                        folder.MoveTo(backupPath);
+                        if (isSynlinkTarget)
+                        {
+                            folder.CopyAll(backupPath);
+                        }
+                        else
+                        {
+                            folder.MoveTo(backupPath.FullName);
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -461,6 +470,7 @@ namespace AIHelper.Manage.Update.Targets
             {
                 try
                 {
+                    bool isSynlinkTarget = false;
                     var file = filePath;
                     if (file.IsSymbolicLink())
                     {
@@ -469,6 +479,7 @@ namespace AIHelper.Manage.Update.Targets
                             continue;
                         }
 
+                        isSynlinkTarget = true;
                         file = new FileInfo(filePath.GetSymbolicLinkTarget());
                     }
 
@@ -479,7 +490,7 @@ namespace AIHelper.Manage.Update.Targets
                     //}
                     var backupPath = file.FullName.Replace(updatingModDirPath, oldModBuckupDirPath);
                     Directory.CreateDirectory(Path.GetDirectoryName(backupPath));
-                    if (RestoreList.Contains(file.FullName))
+                    if (RestoreList.Contains(file.FullName) || isSynlinkTarget)
                     {
                         file.CopyTo(backupPath);
                     }

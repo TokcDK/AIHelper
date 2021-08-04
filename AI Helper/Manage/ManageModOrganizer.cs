@@ -1338,16 +1338,15 @@ namespace AIHelper.Manage
             else
             {
                 var customs = ini.GetSectionValuesToDictionary("customExecutables");
-                if (customs != null)
-                    foreach (var pair in customs)
-                    {
-                        if (pair.Key.EndsWith(@"\binary", StringComparison.InvariantCulture))
-                            if (Path.GetFileNameWithoutExtension(pair.Value) == exename)
-                                if (File.Exists(pair.Value))
-                                {
-                                    return customs[pair.Key.Split('\\')[0] + @"\title"];
-                                }
-                    }
+                foreach (var pair in customs)
+                {
+                    if (pair.Key.EndsWith(@"\binary", StringComparison.InvariantCulture))
+                        if (Path.GetFileNameWithoutExtension(pair.Value) == exename)
+                            if (File.Exists(pair.Value))
+                            {
+                                return customs[pair.Key.Split('\\')[0] + @"\title"];
+                            }
+                }
             }
 
             return exename;
@@ -1434,16 +1433,15 @@ namespace AIHelper.Manage
         internal static bool IsMOcustomExecutableTitleByExeNameExists(string exename)
         {
             var customs = ManageIni.GetINIFile(ManageSettings.GetMOiniPath()).GetSectionValuesToDictionary("customExecutables");
-            if (customs != null)
-                foreach (var pair in customs)
-                {
-                    if (pair.Key.EndsWith(@"\binary", StringComparison.InvariantCulture))
-                        if (Path.GetFileNameWithoutExtension(pair.Value) == exename)
-                            if (File.Exists(pair.Value))
-                            {
-                                return true;
-                            }
-                }
+            foreach (var pair in customs)
+            {
+                if (pair.Key.EndsWith(@"\binary", StringComparison.InvariantCulture))
+                    if (Path.GetFileNameWithoutExtension(pair.Value) == exename)
+                        if (File.Exists(pair.Value))
+                        {
+                            return true;
+                        }
+            }
             return false;
         }
 

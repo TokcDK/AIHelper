@@ -176,7 +176,7 @@ namespace AIHelper
                 SetSelectedGameIndexAndBasicVariables(ManageSettings.GetCurrentGameIndexByFolderName(
                         ListOfGames
                         ,
-                        GetINIFile(ManageSettings.GetAiHelperIniPath()).GetKey("Settings", "selected_game")
+                        ManageIni.GetINIFile(ManageSettings.GetAiHelperIniPath()).GetKey("Settings", "selected_game")
                         ));
                 try
                 {

@@ -1321,7 +1321,7 @@ namespace AIHelper.Manage
 
             if (changed)
             {
-                ini.Write();
+                ini.WriteFile();
             }
         }
 

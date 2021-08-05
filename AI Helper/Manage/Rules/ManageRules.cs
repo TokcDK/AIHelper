@@ -369,7 +369,7 @@ namespace AIHelper.Manage
 
                             if (inIchanged)
                             {
-                                ini.Write();
+                                ini.WriteFile();
                             }
                         }
                     }

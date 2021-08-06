@@ -5,6 +5,8 @@ namespace AIHelper.Games
 {
     public class HoneySelect : Game
     {
+        public override string ManifestGame => "honeyselect";
+
         public override void InitActions()
         {
             base.InitActions();

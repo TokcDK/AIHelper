@@ -86,5 +86,7 @@ namespace AIHelper.Games
             DetectRootGame();
             return _detectedGame.GetBaseGamePyFile();
         }
+
+        public override string ManifestGame => _detectedGame.ManifestGame;
     }
 }

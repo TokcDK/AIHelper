@@ -3,7 +3,6 @@ using AIHelper.Manage;
 using AIHelper.Manage.Update;
 using AIHelper.SharedData;
 using CheckForEmptyDir;
-using INIFileMan;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -173,11 +172,24 @@ namespace AIHelper
                     CurrentGameComboBox.Enabled = false;
                 }
 
+                var ini = ManageIni.GetINIFile(ManageSettings.GetAiHelperIniPath());
+
+                string selected_game;
+                if (ini.Configuration == null)
+                {
+                    selected_game = "";
+                }
+                else
+                {
+                    selected_game = ini.GetKey("Settings", "selected_game");
+                }
+
                 SetSelectedGameIndexAndBasicVariables(ManageSettings.GetCurrentGameIndexByFolderName(
                         ListOfGames
                         ,
-                        ManageIni.GetINIFile(ManageSettings.GetAiHelperIniPath()).GetKey("Settings", "selected_game")
+                        selected_game
                         ));
+
                 try
                 {
                     CurrentGameTitleTextBox.Text = GameData.CurrentGame.GetGameDisplayingName();
@@ -187,7 +199,7 @@ namespace AIHelper
             }
             catch (Exception ex)
             {
-                ManageLogs.Log("An error occured while SetListOfGames. error:\r\n" + ex);
+                ManageLogs.Log("An error occured while SetListOfGames.path=" + ManageSettings.GetAiHelperIniPath() + "\r\n error:\r\n" + ex);
                 return false;
             }
 
@@ -2688,6 +2700,15 @@ namespace AIHelper
 
         private void AI_Helper_FormClosing(object sender, FormClosingEventArgs e)
         {
+            try
+            {
+                //write last game folder name
+                ManageIni.GetINIFile(ManageSettings.GetAiHelperIniPath()).SetKey("Settings", "selected_game", ManageSettings.GetCurrentGameFolderName());
+            }
+            catch (Exception ex)
+            {
+                ManageLogs.Log("An error occered in time of the app closing. error:\r\n" + ex);
+            }
             //нашел баг, когда при открытии свойства ссылки в проводнике
             //, с последующим закрытием свойств и закрытием AI Helper происходит блокировка папки проводником и при следующем запуске происходит ошибка AI Helper, до разблокировки папки
             //также если пользователь решит запускать МО без помощника, игра не запустится, т.к. фикса бепинекс нет
@@ -2884,7 +2905,7 @@ namespace AIHelper
                 }
 
                 var infoFile = new FileInfo(Path.Combine(genderDir.FullName, "Want your cards or scenes in BetterRepack.txt"));
-                if(infoFile.Exists)
+                if (infoFile.Exists)
                 {
                     try
                     {

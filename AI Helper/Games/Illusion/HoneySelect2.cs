@@ -12,6 +12,8 @@ namespace AIHelper.Games
         }
         public override bool IsHaveSideloaderMods { get; set; } = true;
 
+        public override string ManifestGame => "honeyselect2";
+
         public override string GetGameFolderName()
         {
             return GetTheGameFolderName("HoneySelect2");

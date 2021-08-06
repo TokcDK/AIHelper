@@ -12,10 +12,26 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="iniPath"></param>
         /// <returns></returns>
-        public static INIFile GetINIFile(string iniPath)
+        public static INIFile GetINIFile(string iniPath, bool createIfNoIni = true)
         {
             var ini = new INIFile(iniPath);
-            ini.Configuration.AssigmentSpacer = "";
+            if (ini.Configuration == null)
+            {
+                if (createIfNoIni)
+                {
+                    File.WriteAllText(iniPath, string.Empty);
+                    ini = new INIFile(iniPath);
+                }
+                else
+                {
+                    ManageLogs.Log("GetINIFile error. ini is null. iniPath=" + iniPath);
+                }
+            }
+            else
+            {
+                ini.Configuration.AssigmentSpacer = "";
+            }
+
             return ini;
         }
 

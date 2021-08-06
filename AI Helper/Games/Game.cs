@@ -27,7 +27,16 @@ namespace AIHelper.Games
         /// </summary>
         public virtual bool IsHaveSideloaderMods { get; set; }
 
+        /// <summary>
+        /// name of the game's folder
+        /// </summary>
         protected string GamefolderName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// manifest/game name
+        /// </summary>
+        public abstract string ManifestGame { get; }
+
         /// <summary>
         /// search and return game folder name
         /// </summary>

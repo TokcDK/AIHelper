@@ -2,6 +2,7 @@
 {
     public class AiSyoujyoTrial : Game
     {
+        public override string ManifestGame => "AI Girl";
         public override string GetGameFolderName()
         {
             return GetTheGameFolderName(GetGameExeName());

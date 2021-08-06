@@ -1743,6 +1743,9 @@ namespace AIHelper.Manage
                     continue;
                 }
 
+
+                SideloaderZipmodInfo zipmod = null;
+
                 string guid = string.Empty;
                 string name = string.Empty;
                 string version = string.Empty;
@@ -1771,13 +1774,14 @@ namespace AIHelper.Manage
 
                             isManifestFound = true;
 
-                            guid = ManageXml.ReadXmlValue(xmlpath, "manifest/name", string.Empty);
-                            name = ManageXml.ReadXmlValue(xmlpath, "manifest/name", string.Empty);
-                            version = ManageXml.ReadXmlValue(xmlpath, "manifest/version", "0");
-                            author = ManageXml.ReadXmlValue(xmlpath, "manifest/author", "Unknown author");
-                            description = ManageXml.ReadXmlValue(xmlpath, "manifest/description", "Unknown description");
-                            website = ManageXml.ReadXmlValue(xmlpath, "manifest/website", string.Empty);
-                            game = ManageXml.ReadXmlValue(xmlpath, "manifest/game", "AI Girl"); //установил умолчание как "AI Girl"
+                            zipmod = new SideloaderZipmodInfo(xmlpath);
+                            guid = zipmod.guid;
+                            name = zipmod.name;
+                            version = zipmod.version;
+                            author = zipmod.author;
+                            description = zipmod.description;
+                            website = zipmod.website;
+                            game = zipmod.game; //установил умолчание как "AI Girl"
                             File.Delete(xmlpath);
                             break;
                         }
@@ -1786,7 +1790,7 @@ namespace AIHelper.Manage
 
                 string zipArchiveName = Path.GetFileNameWithoutExtension(zipfile);
                 bool gameEmpty = game.Length == 0;
-                if (isManifestFound && (gameEmpty || game == "AI Girl"))
+                if (isManifestFound && (gameEmpty || string.Equals(game, ManageSettings.GetZipmodManifestGameNameByCurrentGame(), StringComparison.InvariantCultureIgnoreCase)))
                 {
                     if (name.Length == 0)
                     {
@@ -1881,6 +1885,29 @@ namespace AIHelper.Manage
 
                     ManageModOrganizer.ActivateDeactivateInsertMod(Path.GetFileName(zipmoddirpath), true);
                 }
+            }
+        }
+
+        internal class SideloaderZipmodInfo
+        {
+
+            internal string guid;
+            internal string name;
+            internal string version;
+            internal string author;
+            internal string description;
+            internal string website;
+            internal string game;
+
+            public SideloaderZipmodInfo(string manifestCmlPath)
+            {
+                guid = ManageXml.ReadXmlValue(manifestCmlPath, "manifest/name", string.Empty);
+                name = ManageXml.ReadXmlValue(manifestCmlPath, "manifest/name", string.Empty);
+                version = ManageXml.ReadXmlValue(manifestCmlPath, "manifest/version", "0");
+                author = ManageXml.ReadXmlValue(manifestCmlPath, "manifest/author", "Unknown author");
+                description = ManageXml.ReadXmlValue(manifestCmlPath, "manifest/description", "Unknown description");
+                website = ManageXml.ReadXmlValue(manifestCmlPath, "manifest/website", string.Empty);
+                game = ManageXml.ReadXmlValue(manifestCmlPath, "manifest/game", ManageSettings.GetZipmodManifestGameNameByCurrentGame()); //установил умолчание как "AI Girl"
             }
         }
 

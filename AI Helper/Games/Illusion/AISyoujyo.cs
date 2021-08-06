@@ -8,6 +8,8 @@
         }
         public override bool IsHaveSideloaderMods { get; set; } = true;
 
+        public override string ManifestGame => "AI Girl";
+
         public override string GetGameExeName()
         {
             return "AI-Syoujyo";

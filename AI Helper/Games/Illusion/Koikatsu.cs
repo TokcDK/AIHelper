@@ -14,6 +14,8 @@ namespace AIHelper.Games
         }
         public override bool IsHaveSideloaderMods { get; set; } = true;
 
+        public override string ManifestGame => "koikatsu";
+
         public override string GetGameFolderName()
         {
             return GetTheGameFolderName("Koikatsu");

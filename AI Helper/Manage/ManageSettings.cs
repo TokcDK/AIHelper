@@ -909,6 +909,12 @@ namespace AIHelper.Manage
 
         internal static int GetCurrentGameIndexByFolderName(List<Game> listOfGames, string folderName)
         {
+            // return first game index if was not found game folder name in ini or ini was empty
+            if (string.IsNullOrWhiteSpace(folderName))
+            {
+                return 0;
+            }
+
             for (var i = 0; i < listOfGames.Count; i++)
             {
                 if (listOfGames[i].GetGameFolderName() == folderName)
@@ -1366,6 +1372,12 @@ namespace AIHelper.Manage
         internal static string GetDiscordGroupLink()
         {
             return "https://discord.gg/rKbXzrnrMs";
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetZipmodManifestGameNameByCurrentGame()
+        {
+            return GameData.CurrentGame.ManifestGame;
         }
     }
 }

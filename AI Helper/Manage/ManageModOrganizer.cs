@@ -1563,6 +1563,11 @@ namespace AIHelper.Manage
             if (Directory.Exists(moddir))
             {
                 string metaPath = Path.Combine(moddir, "meta.ini");
+                if (!File.Exists(metaPath))
+                {
+                    File.WriteAllText(metaPath, "[General]\r\n");
+                }
+
                 INIFile ini = ManageIni.GetINIFile(metaPath);
 
                 bool isKeyExists = ini.KeyExists("category", "General");
@@ -2211,6 +2216,11 @@ namespace AIHelper.Manage
             {
                 gameName = Regex.Match(Encoding.UTF8.GetString(py.Value), @"GameName \= \""([^\""]+)\""");
                 break;
+            }
+
+            if (gameName == null)
+            {
+                return "";
             }
 
             return gameName.Result("$1");

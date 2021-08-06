@@ -1,4 +1,5 @@
-﻿using AIHelper.SharedData;
+﻿using AIHelper.Games;
+using AIHelper.SharedData;
 using CheckForEmptyDir;
 using INIFileMan;
 using System;
@@ -12,7 +13,7 @@ using System.Windows.Forms;
 
 namespace AIHelper.Manage
 {
-    class ManageModOrganizer
+    static class ManageModOrganizer
     {
 
         internal static string MOremoveByteArray(string mOSelectedProfileDirPath)
@@ -175,6 +176,76 @@ namespace AIHelper.Manage
             }
 
             customExecutables.Save();
+        }
+
+        /// <summary>
+        /// check if the <paramref name="game"/> is valid to use with the app
+        /// </summary>
+        /// <param name="game"></param>
+        /// <returns></returns>
+        internal static bool IsValidGame(this Game game)
+        {
+            return game != null
+                   &&
+                   Directory.Exists(game.GetGamePath())
+                   &&
+                   game.HasModOrganizerIni() // has mo ini
+                   &&
+                   game.HasAnyWorkProfile() // has atleast one profile
+                   &&
+                   game.HasMainGameExe() // has main exe to play
+                   ;
+        }
+
+        /// <summary>
+        /// check if the <paramref name="game"/> has ModOrganizer.ini file in MO folder
+        /// </summary>
+        /// <param name="game"></param>
+        /// <returns></returns>
+        internal static bool HasModOrganizerIni(this Game game)
+        {
+            return File.Exists(Path.Combine(game.GetGamePath(), "MO", "ModOrganizer.ini"));
+        }
+
+        /// <summary>
+        /// will create categories.dat file in mo folder of the <paramref name="game"/> if missing
+        /// </summary>
+        /// <param name="game"></param>
+        internal static void CheckCategoriesDat(this Game game)
+        {
+            string categories;
+            if (!File.Exists(categories = Path.Combine(game.GetGamePath(), "MO", "categories.dat")))
+            {
+                File.WriteAllText(categories, string.Empty);
+            }
+        }
+
+        /// <summary>
+        /// check if the <paramref name="game"/> has main execute file
+        /// </summary>
+        /// <param name="game"></param>
+        /// <returns></returns>
+        internal static bool HasMainGameExe(this Game game)
+        {
+            return File.Exists(Path.Combine(ManageSettings.GetGamesFolderPath(), game.GetDataPath(), game.GetGameExeName() + ".exe"));
+        }
+
+        /// <summary>
+        /// check if MO dir of input <paramref name="game"/> has any profile with modlist.txt
+        /// </summary>
+        /// <param name="game"></param>
+        /// <returns></returns>
+        internal static bool HasAnyWorkProfile(this Game game)
+        {
+            foreach (var profileDir in Directory.EnumerateDirectories(Path.Combine(game.GetGamePath(), "MO", "Profiles")))
+            {
+                if (File.Exists(Path.Combine(profileDir, "modlist.txt")))
+                {
+                    return true;
+                }
+            }
+            return false;
+            //!Path.Combine(game.GetGamePath(), "MO", "Profiles").IsNullOrEmptyDirectory(mask: "modlist.txt", recursive: true, preciseMask: true) // modlist.txt must exist atleast one
         }
 
         /// <summary>

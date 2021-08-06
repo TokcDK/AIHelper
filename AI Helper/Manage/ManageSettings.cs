@@ -131,18 +131,12 @@ namespace AIHelper.Manage
             {
                 foreach (var game in listOfGamesRead)
                 {
-                    if (
-                            Directory.Exists(game.GetGamePath())
-                            &&
-                            !Path.Combine(game.GetGamePath(), "MO", "Profiles").IsNullOrEmptyDirectory()
-                        )
-                    {
-
-                    }
-                    else
+                    if (!game.IsValidGame())
                     {
                         listOfGames.Remove(game);
                     }
+
+                    game.CheckCategoriesDat();
                 }
             }
             else

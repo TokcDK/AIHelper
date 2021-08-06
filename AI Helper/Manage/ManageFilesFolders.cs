@@ -52,6 +52,7 @@ namespace AIHelper.Manage
             {
                 if (dir.IsSymbolicLink() && !dir.IsSymbolicLinkValid())
                 {
+                    dir.Delete(); // remove invalid symlink
                     return;
                 }
             }
@@ -63,15 +64,12 @@ namespace AIHelper.Manage
 
             string[] subfolders = Directory.GetDirectories(dirPath, "*");
             int subfoldersLength = subfolders.Length;
-            if (subfoldersLength > 0)
+            for (int d = 0; d < subfoldersLength; d++)
             {
-                for (int d = 0; d < subfoldersLength; d++)
-                {
-                    DeleteEmptySubfolders(subfolders[d], !TrueIfStringInExclusionsList(subfolders[d], exclusions), exclusions);
-                }
+                DeleteEmptySubfolders(subfolders[d], !TrueIfStringInExclusionsList(subfolders[d], exclusions), exclusions);
             }
 
-            if (deleteThisDir && dir.IsNullOrEmptyDirectory()/*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)
+            if (deleteThisDir && dir.IsNullOrEmptyDirectory(recursive: false)/*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)
             {
                 dir.Attributes = FileAttributes.Normal;
                 dir.Delete();

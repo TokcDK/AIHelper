@@ -1738,7 +1738,6 @@ namespace AIHelper.Manage
         /// </summary>
         public static void InstallZipMods()
         {
-            string tempDir = Path.Combine(ManageSettings.GetInstall2MoDirPath(), "Temp");
             foreach (var zipfile in Directory.GetFiles(ManageSettings.GetInstall2MoDirPath(), "*.zipmod"))
             {
                 if (!File.Exists(zipfile)) // skip missing by any reason
@@ -1842,7 +1841,7 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="zipfile"></param>
         /// <returns></returns>
-        private static SideloaderZipmodInfo GetManifestFromZipFile(string zipfile)
+        internal static SideloaderZipmodInfo GetManifestFromZipFile(string zipfile)
         {
             using (ZipArchive archive = ZipFile.OpenRead(zipfile))
             {

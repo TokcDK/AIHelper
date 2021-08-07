@@ -130,22 +130,9 @@
     <Compile Include="Games\Illusion\RootGame.cs" />
     <Compile Include="Games\Illusion\Koikatsu.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Install\Types\Files\Archive\7z.cs" />
-    <Compile Include="Install\Types\Files\Archive\ArchivesBase.cs" />
-    <Compile Include="Install\Types\Files\Document\DocumentBase.cs" />
-    <Compile Include="Install\Types\Files\FilesBase.cs" />
-    <Compile Include="Install\Types\Files\Script\CS.cs" />
-    <Compile Include="Install\Types\Folders\FoldersBase.cs" />
-    <Compile Include="Install\Types\Folders\Folder\FolderBase.cs" />
-    <Compile Include="Install\Types\Files\Archive\RAR.cs" />
-    <Compile Include="Install\Types\Files\Image\bmp.cs" />
-    <Compile Include="Install\Types\Files\Image\ImageBase.cs" />
-    <Compile Include="Install\Types\Files\Image\jpg.cs" />
-    <Compile Include="Install\Types\Files\Image\png.cs" />
-    <Compile Include="Install\Types\Files\Document\doc.cs" />
-    <Compile Include="Install\Types\Files\Document\txt.cs" />
-    <Compile Include="Install\Types\TypeBase.cs" />
-    <Compile Include="Install\Types\Files\Archive\zip.cs" />
+    <Compile Include="Install\Types\Files\Archive\SideloaderZipmod.cs" />
+    <Compile Include="Install\Types\Files\Archive\ZipToMod.cs" />
+    <Compile Include="Install\Types\InstallBase.cs" />
     <Compile Include="Lists\CategoriesList.cs" />
     <Compile Include="Forms\LinksForm.cs">
       <SubType>Form</SubType>

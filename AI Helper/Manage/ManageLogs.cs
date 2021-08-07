@@ -1,7 +1,6 @@
 ﻿using AIHelper.Utils;
 using System;
 using System.IO;
-using System.Windows.Forms;
 
 namespace AIHelper.Manage
 {
@@ -30,6 +29,11 @@ namespace AIHelper.Manage
             catch
             {
             }
+        }
+
+        internal static void Error(string message)
+        {
+            Log(message: "An error occured - " + message, logLevel: 2);
         }
     }
 }

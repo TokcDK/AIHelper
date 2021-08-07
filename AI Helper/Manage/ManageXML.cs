@@ -14,7 +14,7 @@ namespace AIHelper.Manage
         /// <param name="value"></param>
         public static void ChangeSetupXmlValue(string xmlpath, string nodename, string value)
         {
-            if(string.IsNullOrWhiteSpace(xmlpath))
+            if (string.IsNullOrWhiteSpace(xmlpath))
             {
                 return;
             }
@@ -65,9 +65,9 @@ namespace AIHelper.Manage
             }
         }
 
-        public static string ReadXmlValue(string xmlpath, string nodename, string defaultresult = "")
+        public static string ReadXmlValue(string xml, string nodename, string defaultresult = "", bool isXmlString = false)
         {
-            if (File.Exists(xmlpath))
+            if ((isXmlString && !string.IsNullOrWhiteSpace(xml)) || File.Exists(xml))
             {
                 //https://stackoverflow.com/questions/2137957/update-value-in-xml-file
 #pragma warning disable CA3075 // Insecure DTD processing in XML
@@ -75,15 +75,19 @@ namespace AIHelper.Manage
 #pragma warning restore CA3075 // Insecure DTD processing in XML
 
 #pragma warning disable CA3075 // Insecure DTD processing in XML
-                xmlDoc.Load(xmlpath);
+                if (isXmlString)
+                {
+                    xmlDoc.LoadXml(xml);
+                }
+                else
+                {
+                    xmlDoc.Load(xml);
+                }
 #pragma warning restore CA3075 // Insecure DTD processing in XML
 
                 XmlNode node = xmlDoc.SelectSingleNode(nodename);
 
-                if (node == null || node.InnerText == defaultresult)
-                {
-                }
-                else
+                if (node != null && node.InnerText != defaultresult)
                 {
                     return node.InnerText;
                 }
@@ -108,16 +112,14 @@ namespace AIHelper.Manage
 
                     XmlNode node = xmlDoc.SelectSingleNode(nodename);
 
-                    if (node == null || node.InnerText == defaultresult)
-                    {
-                    }
-                    else
+                    if (node != null && node.InnerText != defaultresult)
                     {
                         return node.InnerText;
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    ManageLogs.Log("An error occured while ReadXmlValue. error:\r\n" + ex);
                 }
             }
             return defaultresult;

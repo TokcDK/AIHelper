@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using static AIHelper.Manage.ManageModOrganizerMods;
 
 namespace AIHelper.Manage
 {
@@ -189,11 +190,13 @@ namespace AIHelper.Manage
                    &&
                    Directory.Exists(game.GetGamePath())
                    &&
+                   game.HasMainGameExe() // has main exe to play
+                   &&
                    game.HasModOrganizerIni() // has mo ini
                    &&
                    game.HasAnyWorkProfile() // has atleast one profile
                    &&
-                   game.HasMainGameExe() // has main exe to play
+                   game.CheckCategoriesDat()
                    ;
         }
 
@@ -211,13 +214,17 @@ namespace AIHelper.Manage
         /// will create categories.dat file in mo folder of the <paramref name="game"/> if missing
         /// </summary>
         /// <param name="game"></param>
-        internal static void CheckCategoriesDat(this Game game)
+        internal static bool CheckCategoriesDat(this Game game)
         {
             string categories;
             if (!File.Exists(categories = Path.Combine(game.GetGamePath(), "MO", "categories.dat")))
             {
+                Directory.CreateDirectory(Path.Combine(game.GetGamePath(), "MO"));
+
                 File.WriteAllText(categories, string.Empty);
             }
+
+            return true;
         }
 
         /// <summary>
@@ -1603,20 +1610,122 @@ namespace AIHelper.Manage
             ActivateDeactivateInsertMod(modname, activate, modAfterWhichInsert, placeAfter);
         }
 
-        public static void ActivateDeactivateInsertMod(string modname, bool activate = true, string modAfterWhichInsert = "", bool placeAfter = true)
+        public static void ActivateDeactivateInsertMod(string modname, bool activate = true, string recordWithWhichInsert = "", bool placeAfter = true)
         {
-            if (modname.Length > 0)
-            {
-                string currentMOprofile = ManageSettings.GetMoSelectedProfileDirName();
+            // insert new
+            var modList = new ProfileModlist();
 
-                if (currentMOprofile.Length == 0)
+            // just activate/deactivate if exists
+            if (modList.ItemByName.ContainsKey(modname))
+            {
+                modList.ItemByName[modname].IsEnabled = activate;
+                modList.Save();
+                return;
+            }
+
+            var record = new ProfileModlistRecord
+            {
+                IsEnabled = activate,
+                IsSeparator = false,
+                Name = modname,
+                Path = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modname)
+            };
+            record.IsExist = Directory.Exists(record.Path);
+
+
+            if (!string.IsNullOrWhiteSpace(recordWithWhichInsert)
+                && recordWithWhichInsert.EndsWith("_separator", comparisonType: StringComparison.InvariantCulture))
+            {
+                record.ParentSeparator = new ProfileModlistRecord
                 {
+                    IsSeparator = true,
+                    Name = recordWithWhichInsert,
+                    Path = Path.Combine(ManageSettings.GetCurrentGameModsPath(), recordWithWhichInsert)
+                };
+                record.ParentSeparator.IsExist = Directory.Exists(record.ParentSeparator.Path);
+            }
+
+            modList.Insert(record, (record.ParentSeparator == null && !string.IsNullOrWhiteSpace(recordWithWhichInsert) ? recordWithWhichInsert : ""), placeAfter);
+            modList.Save();
+
+            //if (modname.Length > 0)
+            //{
+            //    string currentMOprofile = ManageSettings.GetMoSelectedProfileDirName();
+
+            //    if (currentMOprofile.Length == 0)
+            //    {
+            //    }
+            //    else
+            //    {
+            //        string profilemodlistpath = ManageSettings.GetCurrentMoProfileModlistPath();
+
+            //        InsertLineInModlistFile(profilemodlistpath, (activate ? "+" : "-") + modname, 1, recordWithWhichInsert, placeAfter);
+            //    }
+            //}
+        }
+
+        //https://social.msdn.microsoft.com/Forums/vstudio/en-US/8f713e50-0789-4bf6-865f-c87cdebd0b4f/insert-line-to-text-file-using-streamwriter-using-csharp?forum=csharpgeneral
+        /// <summary>
+        /// Inserts line in file in set position
+        /// </summary>
+        /// <param name="moModlistPath"></param>
+        /// <param name="line"></param>
+        /// <param name="position"></param>
+        public static void InsertLineInModlistFile(string moModlistPath, string line, int position = 1, string insertWithThisMod = "", bool placeAfter = true)
+        {
+            if (moModlistPath.Length > 0 && File.Exists(moModlistPath) && line.Length > 0)
+            {
+                string[] fileLines = File.ReadAllLines(moModlistPath);
+                bool isEnabled;
+                if (!(isEnabled = fileLines.Contains("+" + line.Remove(0, 1))) && !fileLines.Contains("-" + line.Remove(0, 1)))
+                {
+                    int fileLinesLength = fileLines.Length;
+                    bool insertWithMod = insertWithThisMod.Length > 0;
+                    position = insertWithMod ? fileLinesLength : position;
+                    using (StreamWriter writer = new StreamWriter(moModlistPath))
+                    {
+                        for (int lineNumber = 0; lineNumber < position; lineNumber++)
+                        {
+                            if (insertWithMod && fileLines[lineNumber].Length > 0 && string.Compare(fileLines[lineNumber].Remove(0, 1), insertWithThisMod, true, CultureInfo.InvariantCulture) == 0)
+                            {
+                                if (placeAfter)
+                                {
+                                    position = lineNumber;
+                                }
+                                else
+                                {
+                                    writer.WriteLine(fileLines[lineNumber]);
+                                    position = lineNumber + 1;
+                                }
+                                break;
+
+                            }
+                            else
+                            {
+                                writer.WriteLine(fileLines[lineNumber]);
+                            }
+                        }
+
+                        writer.WriteLine(line);
+
+                        if (position < fileLinesLength)
+                        {
+                            for (int lineNumber = position; lineNumber < fileLinesLength; lineNumber++)
+                            {
+                                writer.WriteLine(fileLines[lineNumber]);
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    string profilemodlistpath = ManageSettings.GetCurrentMoProfileModlistPath();
-
-                    ManageIni.InsertLineInFile(profilemodlistpath, (activate ? "+" : "-") + modname, 1, modAfterWhichInsert, placeAfter);
+                    var prefix = "-";
+                    if (isEnabled)
+                    {
+                        prefix = "+";
+                    }
+                    fileLines = fileLines.Replace(prefix + line.Remove(0, 1), line);
+                    File.WriteAllLines(moModlistPath, fileLines);
                 }
             }
         }

@@ -965,7 +965,7 @@ namespace AIHelper.Manage
                     {
                         File.Move(zipfile, zipfile + "mod");
                     }
-                    InstallZipModsToMods();//будет после установлено соответствующей функцией
+                    InstallZipMods();//будет после установлено соответствующей функцией
                 }
                 else if (foundStandardModInZip)
                 {
@@ -1235,7 +1235,7 @@ namespace AIHelper.Manage
                         {
                             string newpath = Path.Combine(ManageSettings.GetInstall2MoDirPath(), Path.GetFileName(file));
                             File.Move(file, newpath);
-                            InstallZipModsToMods();
+                            InstallZipMods();
                         }
                         else if (Path.GetExtension(file) == ".dll")
                         {
@@ -1733,181 +1733,184 @@ namespace AIHelper.Manage
             }
         }
 
-        public static void InstallZipModsToMods()
+        /// <summary>
+        /// Will install zipmods from 2MO folder of selected game
+        /// </summary>
+        public static void InstallZipMods()
         {
-            string tempDir = Path.Combine(Properties.Settings.Default.Install2MODirPath, "Temp");
-            foreach (var zipfile in Directory.GetFiles(Properties.Settings.Default.Install2MODirPath, "*.zipmod"))
+            string tempDir = Path.Combine(ManageSettings.GetInstall2MoDirPath(), "Temp");
+            foreach (var zipfile in Directory.GetFiles(ManageSettings.GetInstall2MoDirPath(), "*.zipmod"))
             {
-                if (!File.Exists(zipfile))
+                if (!File.Exists(zipfile)) // skip missing by any reason
                 {
                     continue;
                 }
 
+                SideloaderZipmodInfo zipmod = GetManifestFromZipFile(zipfile);                
 
-                SideloaderZipmodInfo zipmod = null;
-
-                string guid = string.Empty;
-                string name = string.Empty;
-                string version = string.Empty;
-                string author = string.Empty;
-                string description = string.Empty;
-                string website = string.Empty;
-                string game = string.Empty;
-
-                bool isManifestFound = false;
-                using (ZipArchive archive = ZipFile.OpenRead(zipfile))
+                if (zipmod == null)
                 {
-                    foreach (ZipArchiveEntry entry in archive.Entries)
-                    {
-                        if (entry.FullName.EndsWith("manifest.xml", StringComparison.OrdinalIgnoreCase))
-                        {
-                            if (Directory.Exists(tempDir))
-                            {
-                            }
-                            else
-                            {
-                                Directory.CreateDirectory(tempDir);
-                            }
-
-                            string xmlpath = Path.Combine(Properties.Settings.Default.Install2MODirPath, "Temp", entry.FullName);
-                            entry.ExtractToFile(xmlpath);
-
-                            isManifestFound = true;
-
-                            zipmod = new SideloaderZipmodInfo(xmlpath);
-                            guid = zipmod.guid;
-                            name = zipmod.name;
-                            version = zipmod.version;
-                            author = zipmod.author;
-                            description = zipmod.description;
-                            website = zipmod.website;
-                            game = zipmod.game; //установил умолчание как "AI Girl"
-                            File.Delete(xmlpath);
-                            break;
-                        }
-                    }
+                    continue;
                 }
 
                 string zipArchiveName = Path.GetFileNameWithoutExtension(zipfile);
-                bool gameEmpty = game.Length == 0;
-                if (isManifestFound && (gameEmpty || string.Equals(game, ManageSettings.GetZipmodManifestGameNameByCurrentGame(), StringComparison.InvariantCultureIgnoreCase)))
+                bool gameEmpty = zipmod.game.Length == 0;
+
+                if (!gameEmpty && !string.Equals(zipmod.game, ManageSettings.GetZipmodManifestGameNameByCurrentGame(), StringComparison.InvariantCultureIgnoreCase))
                 {
-                    if (name.Length == 0)
-                    {
-                        name = Path.GetFileNameWithoutExtension(zipfile);
-                    }
+                    continue;
+                }
 
-                    //добавление имени автора в начало имени папки
-                    name = ManageStrings.AddStringBToAIfValid(name, author);
-                    //if (name.StartsWith("[AI][") || (name.StartsWith("[") && !name.StartsWith("[AI]")) || ManageStrings.IsStringAContainsStringB(name, author))
-                    //{
-                    //}
-                    //else if (author.Length > 0)
-                    //{
-                    //    //проверка на любые невалидные для имени папки символы
-                    //    if (ManageFilesFolders.ContainsAnyInvalidCharacters(author))
-                    //    {
-                    //    }
-                    //    else
-                    //    {
-                    //        name = "[" + author + "]" + name;
-                    //    }
-                    //}
+                // mod name create
+                string modName = zipmod.name.Length == 0 ? zipArchiveName : zipmod.name.RemoveInvalidPathChars();
+                // add author name to mod name like '[author] modname'
+                modName = ManageStrings.AddAuthorToNameIfNeed(modName, zipmod.author);
+                //устанавливать имя папки из имени архива, если оно длиннее
+                // заархивировано, т.к. имя из манифеста обычно чище
+                //if (zipArchiveName.Length > modName.Length)
+                //{
+                //    modName = zipArchiveName;
+                //    //добавление автора к имени папки, если не пустое и валидное
+                //    modName = ManageStrings.AddAuthorToNameIfNeed(zipmod.name, zipmod.author);
+                //}
 
-                    //устанавливать имя папки из имени архива, если оно длиннее
-                    if (zipArchiveName.Length > name.Length)
+                // paths setup
+                //string zipmoddirpath = GetResultTargetDirPathWithNameCheck(Properties.Settings.Default.ModsPath, name);
+                string modDirPath = Path.Combine(Properties.Settings.Default.ModsPath, modName);
+                string modsSubDirPath = Path.Combine(modDirPath, "mods");
+                string targetZipFile = Path.Combine(modsSubDirPath, zipArchiveName + ".zipmod");
+
+                // check, if target zipmod is exists and if so then just update it
+                bool update = false;
+                string anyFileName = string.Empty;
+                if (Directory.Exists(modDirPath))
+                {
+                    if (File.Exists(targetZipFile) || (anyFileName = ManageFilesFolders.IsAnyFileWithSameExtensionContainsNameOfTheFile(modsSubDirPath, zipArchiveName, "*.zip")).Length > 0)
                     {
-                        name = zipArchiveName;
-                        //добавление автора к имени папки, если не пустое и валидное
-                        name = ManageStrings.AddStringBToAIfValid(name, author);
-                    }
-                    //string zipmoddirpath = GetResultTargetDirPathWithNameCheck(Properties.Settings.Default.ModsPath, name);
-                    string zipmoddirpath = Path.Combine(Properties.Settings.Default.ModsPath, name);
-                    string zipmoddirmodspath = Path.Combine(zipmoddirpath, "mods");
-                    string targetZipFile = Path.Combine(zipmoddirmodspath, zipArchiveName + ".zipmod");
-                    bool update = false;
-                    string anyfname = string.Empty;
-                    if (Directory.Exists(zipmoddirpath))
-                    {
-                        if (File.Exists(targetZipFile) || (anyfname = ManageFilesFolders.IsAnyFileWithSameExtensionContainsNameOfTheFile(zipmoddirmodspath, zipArchiveName, "*.zip")).Length > 0)
+                        if (File.GetLastWriteTime(zipfile) > File.GetLastWriteTime(targetZipFile))
                         {
-                            if (File.GetLastWriteTime(zipfile) > File.GetLastWriteTime(targetZipFile))
-                            {
-                                update = true;
-                                File.Delete(anyfname.Length > 0 ? anyfname : targetZipFile);
-                            }
+                            update = true;
+                            File.Delete(anyFileName.Length > 0 ? anyFileName : targetZipFile);
                         }
                     }
-                    else
-                    {
-                        zipmoddirpath = ManageFilesFolders.GetResultTargetDirPathWithNameCheck(Properties.Settings.Default.ModsPath, name);
-                        zipmoddirmodspath = Path.Combine(zipmoddirpath, "mods");
-                        targetZipFile = Path.Combine(zipmoddirmodspath, zipArchiveName + ".zipmod");
-                    }
+                }
+                else
+                {
+                    modDirPath = ManageFilesFolders.GetResultTargetDirPathWithNameCheck(Properties.Settings.Default.ModsPath, modName);
+                    modsSubDirPath = Path.Combine(modDirPath, "mods");
+                    targetZipFile = Path.Combine(modsSubDirPath, zipArchiveName + ".zipmod");
+                }
 
-                    //перемещение zipmod-а в свою подпапку в Mods
-                    Directory.CreateDirectory(zipmoddirmodspath);
-                    File.Move(zipfile, targetZipFile);
+                // move zipmod in it mod dir in Mods
+                Directory.CreateDirectory(modsSubDirPath);
+                File.Move(zipfile, targetZipFile);
 
-                    //Перемещение файлов мода, начинающихся с того же имени в папку этого мода
-                    string[] possibleFilesOfTheMod = Directory.GetFiles(Properties.Settings.Default.Install2MODirPath, "*.*").Where(file => Path.GetFileName(file).Trim().StartsWith(zipArchiveName, StringComparison.InvariantCultureIgnoreCase) && ManageStrings.IsStringAContainsAnyStringFromStringArray(Path.GetExtension(file), new string[7] { ".txt", ".png", ".jpg", ".jpeg", ".bmp", ".doc", ".rtf" })).ToArray();
-                    int possibleFilesOfTheModLength = possibleFilesOfTheMod.Length;
-                    if (possibleFilesOfTheModLength > 0)
+                // Move files starting with same name to the same mod folder
+                string[] possibleFilesOfTheMod = Directory.GetFiles(Properties.Settings.Default.Install2MODirPath, "*.*").Where(file => Path.GetFileName(file).Trim().StartsWith(zipArchiveName, StringComparison.InvariantCultureIgnoreCase) && ManageStrings.IsStringAContainsAnyStringFromStringArray(Path.GetExtension(file), new string[7] { ".txt", ".png", ".jpg", ".jpeg", ".bmp", ".doc", ".rtf" })).ToArray();
+                int possibleFilesOfTheModLength = possibleFilesOfTheMod.Length;
+                if (possibleFilesOfTheModLength > 0)
+                {
+                    for (int n = 0; n < possibleFilesOfTheModLength; n++)
                     {
-                        for (int n = 0; n < possibleFilesOfTheModLength; n++)
+                        if (File.Exists(possibleFilesOfTheMod[n]))
                         {
-                            if (File.Exists(possibleFilesOfTheMod[n]))
-                            {
-                                File.Move(possibleFilesOfTheMod[n], Path.Combine(zipmoddirpath, Path.GetFileName(possibleFilesOfTheMod[n]).Replace(zipArchiveName, Path.GetFileNameWithoutExtension(zipmoddirpath))));
-                            }
+                            File.Move(possibleFilesOfTheMod[n], Path.Combine(modDirPath, Path.GetFileName(possibleFilesOfTheMod[n]).Replace(zipArchiveName, Path.GetFileNameWithoutExtension(modDirPath))));
                         }
                     }
+                }
 
-                    //запись meta.ini
-                    ManageModOrganizer.WriteMetaIni(
-                        zipmoddirpath
-                        ,
-                        string.Empty
-                        ,
-                        version
-                        ,
-                        update ? string.Empty : "Requires: Sideloader plugin"
-                        ,
-                        update ? string.Empty : "<br>Author: " + author + "<br><br>" + description + "<br><br>" + website + (gameEmpty ? "<br>WARNING: Game field for the Sideloader plugin was empty. Check the plugin manually if need." : string.Empty)
-                        );
-                    //Utils.IniFile INI = new Utils.IniFile(Path.Combine(zipmoddirpath, "meta.ini"));
-                    //INI.WriteINI("General", "category", string.Empty);
-                    //INI.WriteINI("General", "version", version);
-                    //INI.WriteINI("General", "gameName", "Skyrim");
-                    //INI.WriteINI("General", "comments", "Requires: Sideloader plugin");
-                    //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + website + " \"");
-                    //INI.WriteINI("General", "validated", "true");
+                // write meta.ini in thetarget mod's dir
+                ManageModOrganizer.WriteMetaIni(
+                    modDirPath
+                    ,
+                    string.Empty
+                    ,
+                    zipmod.version
+                    ,
+                    update ? string.Empty : "Requires: Sideloader plugin"
+                    ,
+                    update ? string.Empty : "<br>Author: " + zipmod.author + "<br><br>" + zipmod.description + "<br><br>" + zipmod.website + (gameEmpty ? "<br>WARNING: Game field for the Sideloader plugin was empty. Check the plugin manually if need." : string.Empty)
+                    );
 
-                    ManageModOrganizer.ActivateDeactivateInsertMod(Path.GetFileName(zipmoddirpath), true);
+                // insert modlist record of the mod
+                ManageModOrganizer.ActivateDeactivateInsertMod(Path.GetFileName(modDirPath), true);
+            }
+        }
+
+        /// <summary>
+        /// will get instance of SideloaderZipmodInfo from <paramref name="zipfile"/>'s manifest.xml if it is exists there
+        /// </summary>
+        /// <param name="zipfile"></param>
+        /// <returns></returns>
+        private static SideloaderZipmodInfo GetManifestFromZipFile(string zipfile)
+        {
+            using (ZipArchive archive = ZipFile.OpenRead(zipfile))
+            {
+                using (var manifest = archive.GetZipEntryStream("manifest.xml"))
+                {
+                    if (manifest != null)
+                    {
+                        return new SideloaderZipmodInfo(manifest);
+                    }
                 }
             }
+
+            return null;
         }
 
         internal class SideloaderZipmodInfo
         {
-
+            /// <summary>
+            /// zipmod unique id
+            /// </summary>
             internal string guid;
+            /// <summary>
+            /// name of mod
+            /// </summary>
             internal string name;
+            /// <summary>
+            /// varsion of mod
+            /// </summary>
             internal string version;
+            /// <summary>
+            /// mod author
+            /// </summary>
             internal string author;
+            /// <summary>
+            /// mod's description
+            /// </summary>
             internal string description;
+            /// <summary>
+            /// author's website
+            /// </summary>
             internal string website;
+            /// <summary>
+            /// game id for whichthis zipmod is
+            /// </summary>
             internal string game;
 
-            public SideloaderZipmodInfo(string manifestCmlPath)
+            public SideloaderZipmodInfo(string manifestXmlPath)
             {
-                guid = ManageXml.ReadXmlValue(manifestCmlPath, "manifest/name", string.Empty);
-                name = ManageXml.ReadXmlValue(manifestCmlPath, "manifest/name", string.Empty);
-                version = ManageXml.ReadXmlValue(manifestCmlPath, "manifest/version", "0");
-                author = ManageXml.ReadXmlValue(manifestCmlPath, "manifest/author", "Unknown author");
-                description = ManageXml.ReadXmlValue(manifestCmlPath, "manifest/description", "Unknown description");
-                website = ManageXml.ReadXmlValue(manifestCmlPath, "manifest/website", string.Empty);
-                game = ManageXml.ReadXmlValue(manifestCmlPath, "manifest/game", ManageSettings.GetZipmodManifestGameNameByCurrentGame()); //установил умолчание как "AI Girl"
+                ReadManifestValues(manifestXmlPath);
+            }
+
+            public SideloaderZipmodInfo(Stream manifest)
+            {
+                using (var reader = new StreamReader(manifest))
+                {
+                    ReadManifestValues(reader.ReadToEnd(), true);
+                }
+            }
+
+            void ReadManifestValues(string manifestXml, bool isXmlString = false)
+            {
+                guid = ManageXml.ReadXmlValue(manifestXml, "manifest/name", string.Empty, isXmlString: isXmlString);
+                name = ManageXml.ReadXmlValue(manifestXml, "manifest/name", string.Empty, isXmlString: isXmlString);
+                version = ManageXml.ReadXmlValue(manifestXml, "manifest/version", "0", isXmlString: isXmlString);
+                author = ManageXml.ReadXmlValue(manifestXml, "manifest/author", "Unknown author", isXmlString: isXmlString);
+                description = ManageXml.ReadXmlValue(manifestXml, "manifest/description", "Unknown description", isXmlString: isXmlString);
+                website = ManageXml.ReadXmlValue(manifestXml, "manifest/website", string.Empty, isXmlString: isXmlString);
+                game = ManageXml.ReadXmlValue(manifestXml, "manifest/game", ManageSettings.GetZipmodManifestGameNameByCurrentGame(), isXmlString: isXmlString); //установил умолчание как "AI Girl"
             }
         }
 
@@ -2070,6 +2073,7 @@ namespace AIHelper.Manage
         {
             internal string ModlistPath = "";
             internal List<ProfileModlistRecord> Items;
+            internal Dictionary<string, ProfileModlistRecord> ItemByName;
 
             internal const string ListDescriptionMarker = "# This file was automatically generated by Mod Organizer.";
             internal const string SeparatorMarker = "_separator";
@@ -2080,6 +2084,7 @@ namespace AIHelper.Manage
             public ProfileModlist()
             {
                 Items = new List<ProfileModlistRecord>();
+                ItemByName = new Dictionary<string, ProfileModlistRecord>();
                 Load();
             }
 
@@ -2089,6 +2094,7 @@ namespace AIHelper.Manage
             public ProfileModlist(string modListPath)
             {
                 Items = new List<ProfileModlistRecord>();
+                ItemByName = new Dictionary<string, ProfileModlistRecord>();
                 Load(modListPath);
             }
 
@@ -2121,8 +2127,8 @@ namespace AIHelper.Manage
                     mod.IsEnabled = line[0] == '+';
                     var indexOfSeparatorMarker = line.IndexOf(SeparatorMarker, StringComparison.InvariantCulture);
                     mod.IsSeparator = indexOfSeparatorMarker > -1;
-                    mod.Name = line.Substring(1, (mod.IsSeparator ? indexOfSeparatorMarker : line.Length) - 1);
-                    mod.Path = Path.Combine(ManageSettings.GetCurrentGameModsPath(), mod.Name + (mod.IsSeparator ? SeparatorMarker : ""));
+                    mod.Name = line.Substring(1);
+                    mod.Path = Path.Combine(ManageSettings.GetCurrentGameModsPath(), mod.Name);
                     mod.IsExist = Directory.Exists(mod.Path);
                     mod.ParentSeparator = lastSeparator;
 
@@ -2140,18 +2146,29 @@ namespace AIHelper.Manage
 
 
                     Items.Add(mod);
+                    ItemByName.Add(mod.Name, mod);
 
                     modPriority++;
                 }
             }
 
-            internal void Insert(ProfileModlistRecord profileModlistRecord)
+            internal void Insert(ProfileModlistRecord profileModlistRecord, string modToPlaceWith = "", bool placeAfter = true)
             {
+                ProfileModlistRecord existsItem = GetItemByName(profileModlistRecord.Name);
+                if (existsItem != null)
+                {
+                    // activate or deactivate item if it already exists
+                    existsItem.IsEnabled = profileModlistRecord.IsEnabled;
+                    return;
+                }
+
+                // add by parent separator
                 if (profileModlistRecord.ParentSeparator != null && profileModlistRecord.ParentSeparator.Name.Length > 0)
                 {
-                    var modPriority = 0;
-                    bool groupFound = false;
                     bool added = false;
+                    var modPriority = 0;
+
+                    bool groupFound = false;
                     var newItems = new List<ProfileModlistRecord>();
                     ProfileModlistRecord foundGroup = null;
                     foreach (var item in Items)
@@ -2166,10 +2183,10 @@ namespace AIHelper.Manage
                             // set parent group, new priority and increase priority number
                             foundGroup.Items.Add(profileModlistRecord); // add inserting item in list of under separator
                             profileModlistRecord.ParentSeparator = foundGroup;
-                            profileModlistRecord.Priority = modPriority;
-                            modPriority++;
+                            profileModlistRecord.Priority = modPriority++;
 
                             newItems.Add(profileModlistRecord);
+                            added = true;
                         }
 
                         item.Priority = modPriority;
@@ -2177,8 +2194,67 @@ namespace AIHelper.Manage
 
                         modPriority++;
                     }
+
+                    if (!added) // add in the end when was not added
+                    {
+                        profileModlistRecord.Priority = modPriority;
+                        profileModlistRecord.ParentSeparator = null;
+                        newItems.Add(profileModlistRecord);
+                    }
+
+                    Items = newItems;
+
+                    return;
                 }
 
+                //add by modToPlaceWith
+                if (!string.IsNullOrWhiteSpace(modToPlaceWith))
+                {
+                    bool added = false;
+                    var modPriority = 0;
+                    bool placeMeNow = false;
+
+                    var newItems = new List<ProfileModlistRecord>();
+                    foreach (var item in Items)
+                    {
+                        if (!added && placeMeNow)
+                        {
+                            profileModlistRecord.Priority = modPriority++;
+                            newItems.Add(profileModlistRecord);
+                            added = true;
+                        }
+                        else if (!added && !placeMeNow && item.Name == profileModlistRecord.Name)
+                        {
+                            if (placeAfter)
+                            {
+                                placeMeNow = true;
+                            }
+                            else
+                            {
+                                profileModlistRecord.Priority = modPriority++;
+                                newItems.Add(profileModlistRecord);
+                                added = true;
+                            }
+                        }
+
+                        item.Priority = modPriority++;
+                        newItems.Add(item);
+                    }
+
+                    if (!added) // add in the end when was not added
+                    {
+                        profileModlistRecord.Priority = modPriority;
+                        profileModlistRecord.ParentSeparator = null;
+                        newItems.Add(profileModlistRecord);
+                    }
+
+                    Items = newItems;
+
+                    return;
+                }
+
+
+                // add by priority
                 // insert at the end if mod priority is not set or more of max
                 if (profileModlistRecord.Priority == -1 || profileModlistRecord.Priority >= Items.Count)
                 {
@@ -2186,8 +2262,17 @@ namespace AIHelper.Manage
                     Items.Add(profileModlistRecord);
                     return;
                 }
-
                 Items.Insert(profileModlistRecord.Priority - 1, profileModlistRecord);
+            }
+
+            private ProfileModlistRecord GetItemByName(string itemName)
+            {
+                if (ItemByName.ContainsKey(itemName))
+                {
+                    return ItemByName[itemName];
+                }
+
+                return null;
             }
 
             /// <summary>
@@ -2263,7 +2348,7 @@ namespace AIHelper.Manage
                     newModlist.WriteLine(ListDescriptionMarker);
                     foreach (var item in writeItems)
                     {
-                        newModlist.WriteLine((item.IsEnabled ? "+" : "-") + item.Name + (item.IsSeparator ? SeparatorMarker : ""));
+                        newModlist.WriteLine((item.IsEnabled ? "+" : "-") + item.Name);
                     }
                 }
             }
@@ -2271,13 +2356,38 @@ namespace AIHelper.Manage
 
         internal class ProfileModlistRecord
         {
+            /// <summary>
+            /// priority in modlist
+            /// </summary>
             internal int Priority = -1;
+            /// <summary>
+            /// name of mod dir or name of separator dir
+            /// </summary>
             internal string Name;
+            /// <summary>
+            /// path to folder
+            /// </summary>
             internal string Path;
+            /// <summary>
+            /// true when enabled. separators is always disabled
+            /// </summary>
             internal bool IsEnabled;
+            /// <summary>
+            /// true for separators
+            /// </summary>
             internal bool IsSeparator;
+            /// <summary>
+            /// true when folder is exists in mods
+            /// </summary>
             internal bool IsExist;
+
+            /// <summary>
+            /// parent separator
+            /// </summary>
             internal ProfileModlistRecord ParentSeparator;
+            /// <summary>
+            /// child items for separator
+            /// </summary>
             internal List<ProfileModlistRecord> Items = new List<ProfileModlistRecord>();
         }
 

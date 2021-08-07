@@ -94,24 +94,24 @@ namespace AIHelper.Manage
 
             ///old
             //{
-                //0.0035x100000
-                //if (input != null)
-                //{
-                //    using (System.IO.StringReader reader = new System.IO.StringReader(input))
-                //    {
-                //        int i = 0;
-                //        while (reader.ReadLine() != null)
-                //        {
-                //            i++;
-                //            if (i > 1)
-                //            {
-                //                return true;
-                //            }
-                //        }
-                //    }
-                //}
+            //0.0035x100000
+            //if (input != null)
+            //{
+            //    using (System.IO.StringReader reader = new System.IO.StringReader(input))
+            //    {
+            //        int i = 0;
+            //        while (reader.ReadLine() != null)
+            //        {
+            //            i++;
+            //            if (i > 1)
+            //            {
+            //                return true;
+            //            }
+            //        }
+            //    }
+            //}
 
-                //return false;
+            //return false;
             //}
         }
 
@@ -144,25 +144,25 @@ namespace AIHelper.Manage
             }
         }
 
-        public static string AddStringBToAIfValid(string stringA, string stringB)
+        public static string AddAuthorToNameIfNeed(string name, string author)
         {
             //добавление имени автора в начало имени папки
-            if (stringA.StartsWith("[AI][", System.StringComparison.InvariantCulture) || (stringA.StartsWith("[", System.StringComparison.InvariantCulture) && !stringA.StartsWith("[AI]", System.StringComparison.InvariantCulture)) || ManageStrings.IsStringAContainsStringB(stringA, stringB))
+            if (name.StartsWith("[" + ManageSettings.GetCurrentGame().GetGamePrefix() + "][", System.StringComparison.InvariantCulture) || (name.StartsWith("[", System.StringComparison.InvariantCulture) && !name.StartsWith("[" + ManageSettings.GetCurrentGame().GetGamePrefix() + "]", System.StringComparison.InvariantCulture)) || ManageStrings.IsStringAContainsStringB(name, author))
             {
             }
-            else if (stringB.Length > 0)
+            else if (author.Length > 0)
             {
                 //проверка на любые невалидные для имени папки символы
-                if (ManageFilesFolders.ContainsAnyInvalidCharacters(stringB))
+                if (ManageFilesFolders.ContainsAnyInvalidCharacters(author))
                 {
                 }
                 else
                 {
-                    stringA = "[" + stringB + "]" + stringA;
+                    name = "[" + author + "] " + name;
                 }
             }
 
-            return stringA;
+            return name;
         }
 
         public static bool IsStringAContainsAnyStringFromStringArray(string stringA, string[] stringArray, bool ignoreCase = false)

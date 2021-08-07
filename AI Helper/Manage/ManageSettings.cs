@@ -135,8 +135,6 @@ namespace AIHelper.Manage
                     {
                         listOfGames.Remove(game);
                     }
-
-                    game.CheckCategoriesDat();
                 }
             }
             else

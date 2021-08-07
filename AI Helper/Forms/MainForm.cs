@@ -1453,7 +1453,7 @@ namespace AIHelper
             ManageModOrganizerMods.InstallBepinExModsToMods();
 
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "."));
-            ManageModOrganizerMods.InstallZipModsToMods();
+            ManageModOrganizerMods.InstallZipMods();
 
             InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + ".."));
             ManageModOrganizerMods.InstallCardsFrom2Mo();

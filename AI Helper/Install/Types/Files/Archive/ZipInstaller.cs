@@ -8,14 +8,11 @@ using System.Text.RegularExpressions;
 
 namespace AIHelper.Install.Types.Files.Archive
 {
-    class ZipToMod : InstallerByTypeBase
+    class ZipInstaller : ArchiveInstallerBase
     {
-        public override bool Install()
-        {
-            return true;
-        }
+        public override string Mask => "*.zip";
 
-        protected override void GetFile(FileInfo zipfile)
+        protected override void Get(FileInfo zipfile)
         {
             bool foundZipMod = false;
             bool foundStandardModInZip = false;
@@ -198,7 +195,7 @@ namespace AIHelper.Install.Types.Files.Archive
                 {
                     zipfile.MoveTo(zipfile + "mod");
                 }
-                _ = new SideloaderZipmod();//будет после установлено соответствующей функцией
+                new SideloaderZipmodInstaller().Install();//будет после установлено соответствующей функцией
             }
             else if (foundStandardModInZip)
             {

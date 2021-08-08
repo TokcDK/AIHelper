@@ -6,14 +6,14 @@ using static AIHelper.Manage.ManageModOrganizerMods;
 
 namespace AIHelper.Install.Types.Files.Archive
 {
-    class SideloaderZipmod : InstallerByTypeBase
+    class SideloaderZipmodInstaller : ArchiveInstallerBase
     {
-        public override bool Install()
-        {
-            return true;
-        }
+        // zipmods it is archives but they will not be extracted
+        public override int Order => base.Order * 5;
 
-        protected override void GetFile(FileInfo zipfile)
+        public override string Mask => "*.zipmod";
+
+        protected override void Get(FileInfo zipfile)
         {
             SideloaderZipmodInfo zipmod = GetManifestFromZipFile(zipfile.FullName);
 

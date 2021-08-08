@@ -130,9 +130,21 @@
     <Compile Include="Games\Illusion\RootGame.cs" />
     <Compile Include="Games\Illusion\Koikatsu.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Install\Types\Files\Archive\SideloaderZipmod.cs" />
-    <Compile Include="Install\Types\Files\Archive\ZipToMod.cs" />
-    <Compile Include="Install\Types\InstallBase.cs" />
+    <Compile Include="Install\Types\Directories\DirectoriesInstallerBase.cs" />
+    <Compile Include="Install\Types\Directories\ModFilesFromDirInstaller.cs" />
+    <Compile Include="Install\Types\Files\Archive\Extractors\ArchiveExtractorBase.cs" />
+    <Compile Include="Install\Types\Files\Archive\ArchiveInstallerBase.cs" />
+    <Compile Include="Install\Types\Files\Archive\Extractors\RarExtractor.cs" />
+    <Compile Include="Install\Types\Files\Archive\Extractors\SevenZipExtractor.cs" />
+    <Compile Include="Install\Types\Files\BebInExDllInstaller.cs" />
+    <Compile Include="Install\Types\Directories\CardsFromDirsInstaller.cs" />
+    <Compile Include="Install\Types\Files\Cards\CardsInstallerBase.cs" />
+    <Compile Include="Install\Types\Files\CsScriptsInstaller.cs" />
+    <Compile Include="Install\Types\Files\FilesInstallerBase.cs" />
+    <Compile Include="Install\Types\Files\Archive\SideloaderZipmodInstaller.cs" />
+    <Compile Include="Install\Types\Files\Archive\ZipInstaller.cs" />
+    <Compile Include="Install\Types\Files\Cards\PngInstaller.cs" />
+    <Compile Include="Install\Types\ModInstallerBase.cs" />
     <Compile Include="Lists\CategoriesList.cs" />
     <Compile Include="Forms\LinksForm.cs">
       <SubType>Form</SubType>

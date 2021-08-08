@@ -1,4 +1,5 @@
 ﻿using AIHelper.Games;
+using AIHelper.Install.Types;
 using AIHelper.Manage;
 using AIHelper.Manage.Update;
 using AIHelper.SharedData;
@@ -1399,7 +1400,10 @@ namespace AIHelper
         readonly string _toMo = ManageSettings.ModsInstallDirName();
         private async void InstallInModsButton_Click(object sender, EventArgs e)
         {
-            if (Directory.Exists(Install2MoDirPath) && (Directory.GetFiles(Install2MoDirPath, "*.rar").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.7z").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.cs").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.zipmod").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.zip").Length > 0 || Directory.GetDirectories(Install2MoDirPath, "*").Length > 0))
+            List<ModInstallerBase> installers = GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<ModInstallerBase>().OrderBy(o => o.Order).ToList();
+
+            //if (Directory.Exists(Install2MoDirPath) && (Directory.GetFiles(Install2MoDirPath, "*.rar").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.7z").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.cs").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.zipmod").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.zip").Length > 0 || Directory.GetDirectories(Install2MoDirPath, "*").Length > 0))
+            if (IsInstallDirHasAnyRequiredFileFrom(installers))
             {
                 OnOffButtons(false);
 
@@ -1418,7 +1422,7 @@ namespace AIHelper
                     }
                 }
 
-                await Task.Run(() => InstallModFilesAndCleanEmptyFolder()).ConfigureAwait(true);
+                await Task.Run(() => InstallModFilesAndCleanEmptyFolder(installers)).ConfigureAwait(true);
 
                 InstallInModsButton.Text = T._("Install from") + " " + ManageSettings.ModsInstallDirName();
 
@@ -1436,35 +1440,54 @@ namespace AIHelper
             Process.Start("explorer.exe", Install2MoDirPath);
         }
 
-        private void InstallModFilesAndCleanEmptyFolder()
+        private static bool IsInstallDirHasAnyRequiredFileFrom(List<ModInstallerBase> installers)
         {
-            string installMessage = T._("Installing");
-            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage));
-            ManageArchive.UnpackArchivesToSubfoldersWithSameName(Install2MoDirPath, ".rar");
-            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "."));
-            ManageArchive.UnpackArchivesToSubfoldersWithSameName(Install2MoDirPath, ".7z");
-            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + ".."));
-            ManageModOrganizerMods.InstallCsScriptsForScriptLoader();
+            foreach (var installer in installers)
+            {
+                if ((installer.Mask == "*" && ManageFilesFolders.IsAnySubDirExistsInTheDir(ManageSettings.GetInstall2MoDirPath(), installer.Mask)) || (installer.Mask != "*.*" && installer.Mask != "*" && ManageFilesFolders.IsAnyFileExistsInTheDir(ManageSettings.GetInstall2MoDirPath(), installer.Mask, allDirectories: false)))
+                {
+                    return true;
+                }
+            }
 
-            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "..."));
-            ManageModOrganizerMods.InstallZipArchivesToMods();
+            return false;
+        }
 
-            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage));
-            ManageModOrganizerMods.InstallBepinExModsToMods();
+        private static void InstallModFilesAndCleanEmptyFolder(List<ModInstallerBase> installers)
+        {
 
-            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "."));
-            ManageModOrganizerMods.InstallZipMods();
+            foreach (var installer in installers)
+            {
+                installer.Install();
+            }
 
-            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + ".."));
-            ManageModOrganizerMods.InstallCardsFrom2Mo();
+            //string installMessage = T._("Installing");
+            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage));
+            //new RarExtractor().Install();
+            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "."));
+            //new SevenZipExtractor().Install();
+            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + ".."));
+            //new CsScriptsInstaller().Install();
 
-            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "..."));
-            ManageModOrganizerMods.InstallModFilesFromSubfolders();
+            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "..."));
+            //new ZipInstaller().Install();
 
-            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage));
-            ManageModOrganizerMods.InstallImagesFromSubfolders();
+            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage));
+            //new BebInExDllInstaller().Install();
 
-            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "."));
+            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "."));
+            //new SideloaderZipmod().Install();
+
+            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + ".."));
+            //new PngInstaller().Install();
+
+            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "..."));
+            //new ModFilesFromDir().Install();
+
+            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage));
+            //new CardsFromDirsInstaller().Install();
+
+            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "."));
             ManageFilesFolders.DeleteEmptySubfolders(Install2MoDirPath, false);
 
             if (!Directory.Exists(Install2MoDirPath))
@@ -1472,7 +1495,7 @@ namespace AIHelper
                 Directory.CreateDirectory(Install2MoDirPath);
             }
 
-            InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = T._("Install from") + " " + ManageSettings.ModsInstallDirName()));
+            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = T._("Install from") + " " + ManageSettings.ModsInstallDirName()));
         }
 
         private void CreateShortcutButton_Click(object sender, EventArgs e)

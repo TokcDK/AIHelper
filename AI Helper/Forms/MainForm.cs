@@ -1445,7 +1445,7 @@ namespace AIHelper
         {
             foreach (var installer in installers)
             {
-                var IsDirInstaller = installer is IDirectoryInstaller;
+                var IsDirInstaller = installer is DirectoriesInstallerBase;
                 foreach (var mask in installer.Masks)
                 {
                     if ((IsDirInstaller && ManageFilesFolders.IsAnySubDirExistsInTheDir(ManageSettings.GetInstall2MoDirPath(), mask))

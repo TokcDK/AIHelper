@@ -2,7 +2,7 @@
 
 namespace AIHelper.Install.Types.Directories
 {
-    abstract class DirectoriesInstallerBase : ModInstallerBase, IDirectoryInstaller
+    abstract class DirectoriesInstallerBase : ModInstallerBase
     {
         public override string[] Masks => new[] { "*" };
 

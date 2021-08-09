@@ -21,6 +21,11 @@
         /// <summary>
         /// mask of installer's objects
         /// </summary>
-        public abstract string Mask { get; }
+        public abstract string[] Masks { get; }
+
+        /// <summary>
+        /// currently selected mask
+        /// </summary>
+        protected string Mask;
     }
 }

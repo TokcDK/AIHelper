@@ -10,7 +10,7 @@ namespace AIHelper.Install.Types.Files.Archive
 {
     class ZipInstaller : ArchiveInstallerBase
     {
-        public override string Mask => "*.zip";
+        public override string[] Masks => new[] { "*.zip" };
 
         protected override void Get(FileInfo zipfile)
         {

@@ -7,7 +7,7 @@ namespace AIHelper.Install.Types.Files
 {
     class BebInExDllInstaller : FilesInstallerBase
     {
-        public override string Mask => "*.dll";
+        public override string[] Masks => new[] { "*.dll" };
 
         protected override void Get(FileInfo dllfile)
         {

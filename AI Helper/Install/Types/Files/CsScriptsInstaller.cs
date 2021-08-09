@@ -6,7 +6,7 @@ namespace AIHelper.Install.Types.Files
 {
     class CsScriptsInstaller : FilesInstallerBase
     {
-        public override string Mask => "*.cs";
+        public override string[] Masks => new[] { "*.cs" };
 
         protected override void Get(FileInfo csFile)
         {

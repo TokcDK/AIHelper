@@ -1,5 +1,6 @@
 ﻿using AIHelper.Games;
 using AIHelper.Install.Types;
+using AIHelper.Install.Types.Directories;
 using AIHelper.Manage;
 using AIHelper.Manage.Update;
 using AIHelper.SharedData;
@@ -1444,9 +1445,14 @@ namespace AIHelper
         {
             foreach (var installer in installers)
             {
-                if ((installer.Mask == "*" && ManageFilesFolders.IsAnySubDirExistsInTheDir(ManageSettings.GetInstall2MoDirPath(), installer.Mask)) || (installer.Mask != "*.*" && installer.Mask != "*" && ManageFilesFolders.IsAnyFileExistsInTheDir(ManageSettings.GetInstall2MoDirPath(), installer.Mask, allDirectories: false)))
+                var IsDirInstaller = installer is IDirectoryInstaller;
+                foreach (var mask in installer.Masks)
                 {
-                    return true;
+                    if ((IsDirInstaller && ManageFilesFolders.IsAnySubDirExistsInTheDir(ManageSettings.GetInstall2MoDirPath(), mask))
+                        || (!IsDirInstaller && ManageFilesFolders.IsAnyFileExistsInTheDir(ManageSettings.GetInstall2MoDirPath(), mask, allDirectories: false)))
+                    {
+                        return true;
+                    }
                 }
             }
 

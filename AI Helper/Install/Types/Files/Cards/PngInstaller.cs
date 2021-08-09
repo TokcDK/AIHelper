@@ -5,7 +5,7 @@ namespace AIHelper.Install.Types.Files.Cards
 {
     class PngInstaller : FilesInstallerBase
     {
-        public override string Mask => "*" + ext;
+        public override string[] Masks => new[] { "*" + ext };
 
         const string ext = ".png";
 

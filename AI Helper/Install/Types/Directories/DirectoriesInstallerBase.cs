@@ -2,9 +2,9 @@
 
 namespace AIHelper.Install.Types.Directories
 {
-    abstract class DirectoriesInstallerBase : ModInstallerBase
+    abstract class DirectoriesInstallerBase : ModInstallerBase, IDirectoryInstaller
     {
-        public override string Mask => "*";
+        public override string[] Masks => new[] { "*" };
 
         public override void Install()
         {
@@ -23,12 +23,17 @@ namespace AIHelper.Install.Types.Directories
                 return;
             }
 
-            var list = directoryInfo.GetDirectories(Mask);
-            for (int i = 0; i < list.Length; i++)
+            foreach (var mask in Masks)
             {
-                if (list[i].Exists)
+                Mask = mask;
+
+                var list = directoryInfo.GetDirectories(mask);
+                for (int i = 0; i < list.Length; i++)
                 {
-                    Get(list[i]);
+                    if (list[i].Exists)
+                    {
+                        Get(list[i]);
+                    }
                 }
             }
         }

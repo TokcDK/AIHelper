@@ -2,6 +2,6 @@
 {
     class RarExtractor : ArchiveExtractorBase
     {
-        public override string Mask => "*.rar";
+        public override string[] Masks => new[] { "*.rar" };
     }
 }

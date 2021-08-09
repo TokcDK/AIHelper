@@ -308,50 +308,44 @@ namespace AIHelper.Manage
 
             string typeFolder = string.Empty;
             string targetFolderName = string.Empty;
-            if (type == "f")
+            switch (type)
             {
-                typeFolder = "chara";
-                targetFolderName = "female";
-            }
-            else if (type == "m")
-            {
-                typeFolder = "chara";
-                targetFolderName = "male";
-            }
-            else if (type == "c")
-            {
-                targetFolderName = "coordinate";
-                //TypeFolder = "";
-            }
-            else if (type == "h"
-                || type == "h1"
-                || type == "h2"
-                || type == "h3"
-                || type == "h4"
-                )
-            {
-                typeFolder = "housing";
-                targetFolderName = type.Length == 2 ? "0" + type.Remove(0, 1) : string.Empty;
-            }
-            else if (type == "cf")
-            {
-                typeFolder = "cardframe";
-                targetFolderName = "Front";
-            }
-            else if (type == "cb")
-            {
-                typeFolder = "cardframe";
-                targetFolderName = "Back";
-            }
-            else if (type == "o")
-            {
-                //TypeFolder = "";
-                targetFolderName = "Overlays";
-            }
-            else if (type == "s")
-            {
-                typeFolder = "studio";
-                targetFolderName = "scene";
+                case "f":
+                    typeFolder = "chara";
+                    targetFolderName = "female";
+                    break;
+                case "m":
+                    typeFolder = "chara";
+                    targetFolderName = "male";
+                    break;
+                case "c":
+                    targetFolderName = "coordinate";
+                    //TypeFolder = "";
+                    break;
+                case "h":
+                case "h1":
+                case "h2":
+                case "h3":
+                case "h4":
+                    typeFolder = "housing";
+                    targetFolderName = type.Length == 2 ? "0" + type.Remove(0, 1) : string.Empty;
+                    break;
+                case "cf":
+                    typeFolder = "cardframe";
+                    targetFolderName = "Front";
+                    break;
+                case "cb":
+                    typeFolder = "cardframe";
+                    targetFolderName = "Back";
+                    break;
+                case "o":
+                    //TypeFolder = "";
+                    targetFolderName = "Overlays";
+                    break;
+                case "s":
+                    typeFolder = "studio";
+                    targetFolderName = "scene";
+                    break;
             }
 
             int targetFoldersLength = targetFolders.Length;

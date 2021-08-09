@@ -11,7 +11,7 @@ namespace AIHelper.Install.Types.Files.Archive
         // zipmods it is archives but they will not be extracted
         public override int Order => base.Order * 5;
 
-        public override string Mask => "*.zipmod";
+        public override string[] Masks => new[] { "*.zipmod" };
 
         protected override void Get(FileInfo zipfile)
         {

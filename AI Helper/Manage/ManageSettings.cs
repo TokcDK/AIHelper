@@ -151,7 +151,7 @@ namespace AIHelper.Manage
                         &&
                         Directory.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
                         &&
-                        !Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data").IsNullOrEmptyDirectory()
+                        !Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data").IsNullOrEmptyDirectory(mask: "*.exe", searchForFiles: true, searchForDirs: false, recursive: false)
                         //&&
                         //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(GetMOdirPath())
                         &&
@@ -616,7 +616,7 @@ namespace AIHelper.Manage
             if (Directory.Exists(Path.Combine(folder, "Profiles"))
                     && File.Exists(Path.Combine(folder, "ModOrganizer.ini"))
                     && File.Exists(Path.Combine(folder, "categories.dat"))
-                    && !Path.Combine(folder, "Profiles").IsNullOrEmptyDirectory()
+                    && !Path.Combine(folder, "Profiles").IsNullOrEmptyDirectory(mask: "modlist.txt", searchForFiles: true, searchForDirs: false, recursive: false, preciseMask: true)
                     )
             {
                 return true;

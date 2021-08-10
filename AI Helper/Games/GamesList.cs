@@ -7,7 +7,7 @@ namespace AIHelper.Games
     {
         internal static List<Game> GetGamesList()
         {
-            return new List<Game>(4)
+            return new List<Game>()
             {
                 new AiSyoujyo(),
                 new AiSyoujyoTrial(),

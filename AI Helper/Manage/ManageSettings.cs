@@ -1363,7 +1363,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetDiscordGroupLink()
         {
-            return "https://discord.gg/rKbXzrnrMs";
+            return "https://bit.ly/AIHelperDiscord";
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

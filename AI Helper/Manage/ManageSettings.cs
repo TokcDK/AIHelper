@@ -823,6 +823,16 @@ namespace AIHelper.Manage
         }
 
         /// <summary>
+        /// return current game exe path
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetCurrentGameExePath()
+        {
+            return Path.Combine(GetCurrentGameDataPath(), GetCurrentGameExeName() + ".exe");
+        }
+
+        /// <summary>
         /// return current game exe name
         /// </summary>
         /// <returns></returns>

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using static AIHelper.Manage.ManageModOrganizer;
 using static AIHelper.Manage.ManageModOrganizerMods;
 
 namespace AIHelper.Manage
@@ -284,10 +285,18 @@ namespace AIHelper.Manage
             internal Dictionary<string, CustomExecutable> List;
             INIFile _ini;
 
+            /// <summary>
+            /// Init new custom executables and load from default ModOrganizer.ini path for the selected game.
+            /// </summary>
             internal CustomExecutables()
             {
+                LoadFrom(ManageIni.GetINIFile(ManageSettings.GetMOiniPath()));
             }
 
+            /// <summary>
+            /// Init new custom executables and load from specified ini.
+            /// </summary>
+            /// <param name="ini"></param>
             internal CustomExecutables(INIFile ini)
             {
                 LoadFrom(ini);
@@ -457,23 +466,51 @@ namespace AIHelper.Manage
             /// <returns></returns>
             protected static string NormalizeArguments(string value)
             {
+                value = value.Trim();
+
                 if (string.IsNullOrEmpty(value) || value == "\\\"\\\"")
                 {
                     return value;
                 }
 
+                int startIndex = 0;
+                int endIndex = value.Length - 1;
+
                 if (value.StartsWith("\\\"", StringComparison.InvariantCulture))
                 {
-                    value = value.Remove(0, 2);
+                    startIndex = 2;
                 }
                 if (value.EndsWith("\\\"", StringComparison.InvariantCulture))
                 {
-                    value = value.Remove(value.Length - 2, 2);
+                    endIndex = value.Length - 3;
                 }
 
-                var splitted = value.Split(new[] { "\\" }, StringSplitOptions.RemoveEmptyEntries);
+                bool IsBackSlashOrQuote = false;
+                for (int i = endIndex; i >= startIndex; i--)
+                {
+                    if (value[i] == '\\' || (!IsBackSlashOrQuote && value[i] == '\"'))
+                    {
+                        IsBackSlashOrQuote = !IsBackSlashOrQuote;
 
-                return "\\\"" + string.Join("\\\\", splitted) + "\\\"";
+                        if (i == 0 && value[i] == '\"')
+                        {
+                            value = value.Insert(i, "\\");
+                        }
+                    }
+                    else
+                    {
+                        if (IsBackSlashOrQuote)
+                        {
+                            value = value.Insert(i + 1, "\\");
+                            IsBackSlashOrQuote = !IsBackSlashOrQuote;
+                        }
+                    }
+                }
+
+                var startsQuoted = value.StartsWith("\\\"", StringComparison.InvariantCulture);
+                var endsQuoted = value.EndsWith("\\\"", StringComparison.InvariantCulture);
+
+                return (startsQuoted ? "" : "\\\"") + value + (endsQuoted ? "" : "\\\"");
             }
 
             internal class CustomExecutable
@@ -1590,7 +1627,7 @@ namespace AIHelper.Manage
                 //delete if target is not exists or not symlink and recreate
                 if (!symlinkPath.IsValidSymlinkTargetEquals(objectDir.FullName))
                 {
-                    if(symlinkPath.Exists)
+                    if (symlinkPath.Exists)
                     {
                         symlinkPath.Delete();
                     }
@@ -2416,6 +2453,72 @@ namespace AIHelper.Manage
             }
 
             return gameName.Result("$1");
+        }
+    }
+
+    internal static class CustomExecutablesExtensions
+    {
+        /// <summary>
+        /// Add new <paramref name="customExecutable"/> in the <paramref name="customExecutables"/>.
+        /// </summary>
+        /// <param name="customExecutables">Custom executables</param>
+        /// <param name="customExecutable">Executable to add.</param>
+        /// <param name="performSave">True if need to save right after add.</param>
+        internal static void Add(this CustomExecutables customExecutables, CustomExecutables.CustomExecutable customExecutable, bool performSave = false)
+        {
+            customExecutables.List.Add((customExecutables.List.Count + 1) + "", customExecutable);
+            if (performSave)
+            {
+                customExecutables.Save();
+            }
+        }
+
+        /// <summary>
+        /// Check if <paramref name="customExecutables"/> contains <paramref name="binaryPath"/>
+        /// </summary>
+        /// <param name="customExecutables"></param>
+        /// <param name="binaryPath"></param>
+        /// <returns></returns>
+        internal static bool ContainsBinary(this CustomExecutables customExecutables, string binaryPath)
+        {
+            if (customExecutables == null || customExecutables.List == null || string.IsNullOrWhiteSpace(binaryPath))
+            {
+                return false;
+            }
+
+            foreach (var custom in customExecutables.List)
+            {
+                if (custom.Value.Binary == CustomExecutables.NormalizePath(binaryPath))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Check if <paramref name="customExecutables"/> contains <paramref name="titleName"/>
+        /// </summary>
+        /// <param name="customExecutables"></param>
+        /// <param name="titleName"></param>
+        /// <returns></returns>
+        internal static bool ContainsTitle(this CustomExecutables customExecutables, string titleName)
+        {
+            if (customExecutables == null || customExecutables.List == null || string.IsNullOrWhiteSpace(titleName))
+            {
+                return false;
+            }
+
+            foreach (var custom in customExecutables.List)
+            {
+                if (custom.Value.Binary == CustomExecutables.NormalizePath(titleName))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

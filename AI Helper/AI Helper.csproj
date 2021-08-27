@@ -127,6 +127,7 @@
     </Compile>
     <Compile Include="Games\GamesList.cs" />
     <Compile Include="Games\Illusion\HoneySelect2.cs" />
+    <Compile Include="Games\Illusion\KoikatsuSunshine.cs" />
     <Compile Include="Games\Illusion\RootGame.cs" />
     <Compile Include="Games\Illusion\Koikatsu.cs" />
     <Compile Include="GlobalSuppressions.cs" />
@@ -304,6 +305,7 @@
     <Content Include="Other\basic_games\game_aigirltrial.py" />
     <Content Include="Other\basic_games\game_honeyselect.py" />
     <Content Include="Other\basic_games\game_honeyselect2.py" />
+    <Content Include="Other\basic_games\game_koikatusunshine.py" />
     <Content Include="Other\basic_games\game_koikatu.py" />
     <Content Include="Other\ModUpdateReportTemplate.html" />
     <EmbeddedResource Include="Costura32\SevenZipSharp.dll" />

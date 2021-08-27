@@ -61,6 +61,35 @@ namespace AIHelper.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to [General]
+        ///gameName=
+        ///gamePath=@ByteArray()
+        ///selected_profile=999-KoikPlug Base (My)
+        ///version=2.4.2
+        ///first_start=false
+        ///group_state=0
+        ///selected_executable=1
+        ///previousSeparatorColor=@Variant(\0\0\0\x43\x1\xff\xff\0\0UU\x7f\x7f\0\0)
+        ///
+        ///[PluginPersistance]
+        ///Python%20Proxy\tryInit=false
+        ///
+        ///[customExecutables]
+        ///size=0
+        ///
+        ///[recentDirectories]
+        ///size=0
+        ///
+        ///[geometry]
+        ///modList=@ByteArray(\0\0\0\xff\0\0\0\0\0\0\0\x1\0\0\0\0\0\0\0\b\x1\0\0\0\0\0\0\0\0\0\0\0\n\xb4\x2\0\0\0\x5\0\0\0\t\0\0\0\x1f\0\0\0\x4\0\0\0\x1f\0\0\0\x5 [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string defmoini {
+            get {
+                return ResourceManager.GetString("defmoini", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] game_aigirl {

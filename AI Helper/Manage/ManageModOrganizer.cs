@@ -1590,13 +1590,17 @@ namespace AIHelper.Manage
                 //delete if target is not exists or not symlink and recreate
                 if (!symlinkPath.IsValidSymlinkTargetEquals(objectDir.FullName))
                 {
-                    symlinkPath.Delete();
+                    if(symlinkPath.Exists)
+                    {
+                        symlinkPath.Delete();
+                    }
+
                     objectDir.CreateSymlink(symlinkPath.FullName, true);
                 }
             }
             catch (Exception ex)
             {
-                ManageLogs.Log("An error occered in CheckMoUserdata. error:" + ex);
+                ManageLogs.Log("An error occured in CheckMoUserdata. error:" + ex);
             }
         }
 
@@ -2258,10 +2262,16 @@ namespace AIHelper.Manage
                 ini.DeleteSection("pluginBlacklist", false);
             }
 
-            //Set selected_executable number to game exe
             var customs = new CustomExecutables(ini);
             foreach (var custom in customs.List)
             {
+                // fix spaces in exe title to prevent errors because it
+                if (custom.Value.Title.IndexOf(' ') != -1)
+                {
+                    custom.Value.Title = custom.Value.Title.Replace(' ', '_');
+                }
+
+                // Set selected_executable number to game exe
                 if (Path.GetFileNameWithoutExtension(custom.Value.Binary) == CustomExecutables.NormalizePath(ManageSettings.GetCurrentGameExeName()))
                 {
                     var index = custom.Key;
@@ -2270,6 +2280,8 @@ namespace AIHelper.Manage
                     break;
                 }
             }
+
+            customs.Save();
 
             ini.SetKey("PluginPersistance", @"Python%20Proxy\tryInit", "false");
         }
@@ -2377,7 +2389,7 @@ namespace AIHelper.Manage
             foreach (var py in pys)
             {
                 var pypath = Path.Combine(moBaseGamesPluginGamesDirPath, py.Key + ".py");
-                if (!File.Exists(pypath))
+                if (!File.Exists(pypath) || py.Value.Length != new FileInfo(pypath).Length)
                 {
                     File.WriteAllBytes(pypath, py.Value);
                 }

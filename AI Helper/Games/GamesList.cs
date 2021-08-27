@@ -13,7 +13,8 @@ namespace AIHelper.Games
                 new AiSyoujyoTrial(),
                 new HoneySelect(),
                 new HoneySelect2(),
-                new Koikatsu()
+                new Koikatsu(),
+                new KoikatsuSunshine()
             };
         }
     }

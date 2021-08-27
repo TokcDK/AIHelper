@@ -8,7 +8,7 @@ namespace AIHelper.Games
         public override void InitActions()
         {
             base.InitActions();
-            CopyModOrganizerUserFiles("MOKKS");
+            //CopyModOrganizerUserFiles("MOKKS");
         }
         public override bool IsHaveSideloaderMods { get; set; } = true;
 
@@ -16,7 +16,9 @@ namespace AIHelper.Games
 
         public override string GetGameFolderName()
         {
-            return GetTheGameFolderName("KoikatsuSunshine");
+            return base.GetGameFolderName();
+
+            //return GetTheGameFolderName("KoikatsuSunshine");
         }
 
         public override string GetGameExeName()
@@ -85,7 +87,7 @@ namespace AIHelper.Games
         {
             return new System.Collections.Generic.Dictionary<string, byte[]>
                 {
-                    { nameof(Properties.Resources.game_koikatu), AIHelper.Properties.Resources.game_koikatu }
+                    { nameof(Properties.Resources.game_koikatusunshine), AIHelper.Properties.Resources.game_koikatusunshine }
                 };
         }
     }

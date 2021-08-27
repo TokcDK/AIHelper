@@ -12,27 +12,27 @@ class IllusionKoikatuGame(BasicGame):
     Author = "TokcDK<Denis K>"
     Version = "0.1.0"
 
-    GameName = "Koikatu Sunshine"
-    GameShortName = "koikatusunshine"
+    GameName = "KoikatsuSunshine"
+    GameShortName = "koikatsusunshine"
     GameNexusName = ""
     GameNexusId = 0
     GameSteamId = 0
-    GameBinary = "Data/KoikatuSunshine.exe"
+    GameBinary = "Data/KoikatsuSunshine.exe"
     GameDataPath = ""
 
     def executables(self):
         return [
             mobase.ExecutableInfo(
-                "Koikatu Sunshine",
-                QFileInfo(self.gameDirectory(), "Data/KoikatuSunshine.exe"),
+                "Koikatu_Sunshine",
+                QFileInfo(self.gameDirectory(), "Data/KoikatsuSunshine.exe"),
             ),
             mobase.ExecutableInfo(
                 "Settings",
                 QFileInfo(self.gameDirectory(), "Data/InitSetting.exe"),
             ),
             mobase.ExecutableInfo(
-                "Koikatu Sunshine VR",
-                QFileInfo(self.gameDirectory(), "Data/KoikatuSunshineVR.exe"),
+                "Koikatu_Sunshine_VR",
+                QFileInfo(self.gameDirectory(), "Data/KoikatsuSunshineVR.exe"),
             ),
             mobase.ExecutableInfo(
                 "Studio",

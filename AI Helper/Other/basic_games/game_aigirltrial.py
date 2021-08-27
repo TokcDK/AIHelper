@@ -23,11 +23,11 @@ class IllusionAIGirlTrialGame(BasicGame):
     def executables(self):
         return [
             mobase.ExecutableInfo(
-                "AI Girl Trial (Editor only)",
+                "Editor",
                 QFileInfo(self.gameDirectory(), "Data/AI-SyoujyoTrial.exe"),
             ),
             mobase.ExecutableInfo(
-                "Settings AI Girl Trial",
+                "Settings",
                 QFileInfo(self.gameDirectory(), "Data/InitSetting.exe"),
             )
         ]

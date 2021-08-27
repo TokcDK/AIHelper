@@ -31,7 +31,7 @@ class IllusionKoikatuGame(BasicGame):
                 QFileInfo(self.gameDirectory(), "Data/InitSetting.exe"),
             ),
             mobase.ExecutableInfo(
-                "Koikatu VR",
+                "Koikatu_VR",
                 QFileInfo(self.gameDirectory(), "Data/KoikatuVR.exe"),
             ),
             mobase.ExecutableInfo(

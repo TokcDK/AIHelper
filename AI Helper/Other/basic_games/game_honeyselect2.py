@@ -23,7 +23,7 @@ class IllusionHoneySelectGame(BasicGame):
     def executables(self):
         return [
             mobase.ExecutableInfo(
-                "HoneySelect x64",
+                "HoneySelect_x64",
                 QFileInfo(self.gameDirectory(), "Data/HoneySelect2.exe"),
             ),
             mobase.ExecutableInfo(
@@ -31,7 +31,7 @@ class IllusionHoneySelectGame(BasicGame):
                 QFileInfo(self.gameDirectory(), "Data/InitSetting.exe"),
             ),
             mobase.ExecutableInfo(
-                "Studio NEO",
+                "Studio_NEO",
                 QFileInfo(self.gameDirectory(), "Data/StudioNEOV2.exe"),
             ),
         ]

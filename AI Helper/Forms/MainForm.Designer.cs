@@ -90,6 +90,7 @@
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
+            this.cbxNtlea = new System.Windows.Forms.CheckBox();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -517,6 +518,7 @@
             // SettingsPagePanel
             // 
             this.SettingsPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.SettingsPagePanel.Controls.Add(this.cbxNtlea);
             this.SettingsPagePanel.Controls.Add(this.FixRegistryLinkLabel);
             this.SettingsPagePanel.Controls.Add(this.CreateShortcutLinkLabel);
             this.SettingsPagePanel.Controls.Add(this.CurrentGameTitleTextBox);
@@ -920,7 +922,19 @@
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
             // 
-            // AI_Helper
+            // cbxNtlea
+            // 
+            this.cbxNtlea.AutoSize = true;
+            this.cbxNtlea.BackColor = System.Drawing.Color.Transparent;
+            this.cbxNtlea.ForeColor = System.Drawing.Color.White;
+            this.cbxNtlea.Location = new System.Drawing.Point(155, 139);
+            this.cbxNtlea.Name = "cbxNtlea";
+            this.cbxNtlea.Size = new System.Drawing.Size(50, 17);
+            this.cbxNtlea.TabIndex = 7;
+            this.cbxNtlea.Text = "ntlea";
+            this.cbxNtlea.UseVisualStyleBackColor = false;
+            // 
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -930,7 +944,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
-            this.Name = "AI_Helper";
+            this.Name = "MainForm";
             this.Text = "AI Helper [Organized modpack]";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AI_Helper_FormClosing);
             this.LocationChanged += new System.EventHandler(this.AIHelper_LocationChanged);
@@ -1021,6 +1035,7 @@
         internal System.Windows.Forms.PictureBox pbDiscord;
         private System.Windows.Forms.LinkLabel llOpenOldPluginsBuckupFolder;
         private System.Windows.Forms.CheckBox cbxBleadingEdgeZipmods;
+        internal System.Windows.Forms.CheckBox cbxNtlea;
     }
 }
 

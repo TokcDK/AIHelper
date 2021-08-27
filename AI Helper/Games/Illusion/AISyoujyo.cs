@@ -4,7 +4,9 @@
     {
         public override string GetGameFolderName()
         {
-            return GetTheGameFolderName(GetGameExeName());
+            return base.GetGameFolderName();
+
+            //return GetTheGameFolderName(GetGameExeName());
         }
         public override bool IsHaveSideloaderMods { get; set; } = true;
 

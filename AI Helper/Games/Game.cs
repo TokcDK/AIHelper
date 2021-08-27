@@ -37,13 +37,24 @@ namespace AIHelper.Games
         /// </summary>
         public abstract string ManifestGame { get; }
 
+        string GameFolderName;
+        /// <summary>
+        /// search and return game folder name
+        /// </summary>
+        /// <returns></returns>
+        public virtual void SetGameFolderName(string folderName)
+        {
+            GameFolderName = folderName;
+            //return SearchGameFolder();
+        }
         /// <summary>
         /// search and return game folder name
         /// </summary>
         /// <returns></returns>
         public virtual string GetGameFolderName()
         {
-            return SearchGameFolder();
+            return GameFolderName;
+            //return SearchGameFolder();
         }
 
         protected string GetTheGameFolderName(string defaultGameFolderName)

@@ -36,7 +36,8 @@ namespace AIHelper.Games
         public override string GetGameFolderName()
         {
             DetectRootGame();
-            return "RootGame";
+
+            return _detectedGame.GetGameFolderName();
         }
 
         public override string GetGameExeName()

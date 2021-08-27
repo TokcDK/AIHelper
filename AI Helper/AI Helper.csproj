@@ -287,6 +287,7 @@
       <Link>.editorconfig</Link>
     </None>
     <None Include="app.manifest" />
+    <None Include="Other\DefaultModOrganizer.ini" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

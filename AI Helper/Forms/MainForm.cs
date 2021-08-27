@@ -184,6 +184,11 @@ namespace AIHelper
                 else
                 {
                     selected_game = ini.GetKey("Settings", "selected_game");
+                    if (string.IsNullOrWhiteSpace(selected_game))
+                    {
+                        var game = ListOfGames[0];
+                        selected_game = game.GetGameFolderName();
+                    }
                 }
 
                 SetSelectedGameIndexAndBasicVariables(ManageSettings.GetCurrentGameIndexByFolderName(
@@ -861,6 +866,8 @@ namespace AIHelper
             {
                 ManageModOrganizer.RestoreModlist();
 
+                ManageModOrganizer.CheckBaseGamesPy();
+
                 {
                     //string[] Archives7z;
                     //string[] ModDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();
@@ -1182,15 +1189,39 @@ namespace AIHelper
             {
                 vr = "VR";
             }
+
+            string exePath;
+            string arguments;
             if (MOmode)
             {
                 var getCurrentGameExemoProfileName = ManageSettings.GetCurrentGameExemoProfileName();
-                RunProgram(MOexePath, "moshortcut://:" + getCurrentGameExemoProfileName + vr);
+                if (cbxNtlea.Checked)
+                {
+                    exePath = ManageSettings.NtleaExePath();
+                    arguments = "\"" + MOexePath + "\"" + " " + "\"Amoshortcut://:" + getCurrentGameExemoProfileName + vr + "\"" + " " + "\"C932\" \"L0411\"";
+                }
+                else
+                {
+                    exePath = MOexePath;
+                    arguments = "moshortcut://:\"" + getCurrentGameExemoProfileName + vr + "\"";
+                }
             }
             else
             {
-                RunProgram(Path.Combine(DataPath, ManageSettings.GetCurrentGameExeName() + vr + ".exe"), string.Empty);
+                if (cbxNtlea.Checked)
+                {
+                    exePath = ManageSettings.NtleaExePath();
+                    arguments = "\"" + Path.Combine(DataPath, ManageSettings.GetCurrentGameExeName() + vr + ".exe") + "\"" + "\"A-nolog\" \"C932\" \"L0411\"";
+                }
+                else
+                {
+                    exePath = Path.Combine(DataPath, ManageSettings.GetCurrentGameExeName() + vr + ".exe");
+                    arguments = string.Empty;
+                }
             }
+
+            RunProgram(exePath, arguments);
+
             OnOffButtons();
         }
 
@@ -1219,75 +1250,77 @@ namespace AIHelper
 
         private void RunProgram(string programPath, string arguments = "")
         {
-            if (File.Exists(programPath))
+            if (!File.Exists(programPath))
             {
-                GC.Collect();//reduce memory usage before run a program
+                return;
+            }
 
-                //fix mo profile name missing quotes when profile name with spaces
-                if (!string.IsNullOrWhiteSpace(arguments) && arguments.Contains("moshortcut://:") && !arguments.Contains("moshortcut://:\""))
+            GC.Collect();//reduce memory usage before run a program
+
+            //fix mo profile name missing quotes when profile name with spaces
+            //if (!string.IsNullOrWhiteSpace(arguments) && arguments.Contains("moshortcut://:") && !arguments.Contains("moshortcut://:\""))
+            //{
+            //    arguments = arguments.Replace("moshortcut://:", "moshortcut://:\"") + "\"";
+            //}
+
+            if (Path.GetFileNameWithoutExtension(programPath) == "ModOrganizer" && arguments.Length > 0)
+            {
+                Task.Run(() => RunFreezedMoKiller(arguments.Replace("moshortcut://:", string.Empty))).ConfigureAwait(false);
+            }
+
+            using (Process program = new Process())
+            {
+                //MessageBox.Show("outdir=" + outdir);
+                program.StartInfo.FileName = programPath;
+                if (arguments.Length > 0)
                 {
-                    arguments = arguments.Replace("moshortcut://:", "moshortcut://:\"") + "\"";
+                    program.StartInfo.Arguments = arguments;
                 }
 
-                if (Path.GetFileNameWithoutExtension(programPath) == "ModOrganizer" && arguments.Length > 0)
+                if (!ManageSettings.IsMoMode() || string.IsNullOrWhiteSpace(program.StartInfo.Arguments))
                 {
-                    Task.Run(() => RunFreezedMoKiller(arguments.Replace("moshortcut://:", string.Empty))).ConfigureAwait(false);
+                    program.StartInfo.WorkingDirectory = Path.GetDirectoryName(programPath);
                 }
 
-                using (Process program = new Process())
-                {
-                    //MessageBox.Show("outdir=" + outdir);
-                    program.StartInfo.FileName = programPath;
-                    if (arguments.Length > 0)
-                    {
-                        program.StartInfo.Arguments = arguments;
-                    }
+                //http://www.cyberforum.ru/windows-forms/thread31052.html
+                // свернуть
+                ManageOther.SwitchFormMinimizedNormalAll(new Form[3] { this, _linksForm, _extraSettingsForm });
+                //WindowState = FormWindowState.Minimized;
+                //if (LinksForm == null || LinksForm.IsDisposed)
+                //{
+                //}
+                //else
+                //{
+                //    LinksForm.WindowState = FormWindowState.Minimized;
+                //}
+                //if (extraSettingsForm == null || extraSettingsForm.IsDisposed)
+                //{
+                //}
+                //else
+                //{
+                //    extraSettingsForm.WindowState = FormWindowState.Minimized;
+                //}
 
-                    if (!ManageSettings.IsMoMode() || string.IsNullOrWhiteSpace(program.StartInfo.Arguments))
-                    {
-                        program.StartInfo.WorkingDirectory = Path.GetDirectoryName(programPath);
-                    }
+                _ = program.Start();
+                program.WaitForExit();
 
-                    //http://www.cyberforum.ru/windows-forms/thread31052.html
-                    // свернуть
-                    ManageOther.SwitchFormMinimizedNormalAll(new Form[3] { this, _linksForm, _extraSettingsForm });
-                    //WindowState = FormWindowState.Minimized;
-                    //if (LinksForm == null || LinksForm.IsDisposed)
-                    //{
-                    //}
-                    //else
-                    //{
-                    //    LinksForm.WindowState = FormWindowState.Minimized;
-                    //}
-                    //if (extraSettingsForm == null || extraSettingsForm.IsDisposed)
-                    //{
-                    //}
-                    //else
-                    //{
-                    //    extraSettingsForm.WindowState = FormWindowState.Minimized;
-                    //}
-
-                    _ = program.Start();
-                    program.WaitForExit();
-
-                    // Показать
-                    ManageOther.SwitchFormMinimizedNormalAll(new Form[3] { this, _linksForm, _extraSettingsForm });
-                    //WindowState = FormWindowState.Normal;
-                    //if (LinksForm == null || LinksForm.IsDisposed)
-                    //{
-                    //}
-                    //else
-                    //{
-                    //    LinksForm.WindowState = FormWindowState.Normal;
-                    //}
-                    //if (extraSettingsForm == null || extraSettingsForm.IsDisposed)
-                    //{
-                    //}
-                    //else
-                    //{
-                    //    extraSettingsForm.WindowState = FormWindowState.Normal;
-                    //}
-                }
+                // Показать
+                ManageOther.SwitchFormMinimizedNormalAll(new Form[3] { this, _linksForm, _extraSettingsForm });
+                //WindowState = FormWindowState.Normal;
+                //if (LinksForm == null || LinksForm.IsDisposed)
+                //{
+                //}
+                //else
+                //{
+                //    LinksForm.WindowState = FormWindowState.Normal;
+                //}
+                //if (extraSettingsForm == null || extraSettingsForm.IsDisposed)
+                //{
+                //}
+                //else
+                //{
+                //    extraSettingsForm.WindowState = FormWindowState.Normal;
+                //}
             }
         }
 

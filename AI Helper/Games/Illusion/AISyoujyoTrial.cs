@@ -5,7 +5,9 @@
         public override string ManifestGame => "AI Girl";
         public override string GetGameFolderName()
         {
-            return GetTheGameFolderName(GetGameExeName());
+            return base.GetGameFolderName();
+
+            //return GetTheGameFolderName(GetGameExeName());
         }
 
         public override string GetGameExeName()

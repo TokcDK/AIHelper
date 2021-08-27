@@ -18,7 +18,9 @@ namespace AIHelper.Games
 
         public override string GetGameFolderName()
         {
-            return GetTheGameFolderName("Koikatsu");
+            return base.GetGameFolderName();
+
+            //return GetTheGameFolderName("Koikatsu");
         }
 
         public override string GetGameExeName()

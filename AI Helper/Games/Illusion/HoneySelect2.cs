@@ -16,7 +16,9 @@ namespace AIHelper.Games
 
         public override string GetGameFolderName()
         {
-            return GetTheGameFolderName("HoneySelect2");
+            return base.GetGameFolderName();
+
+            //return GetTheGameFolderName("HoneySelect2");
         }
 
         public override string GetGameExeName()

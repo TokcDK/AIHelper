@@ -149,7 +149,7 @@ namespace AIHelper
                         + Environment.NewLine + T._("Need atleast one game in subfolder in Games folder") + "."
                         + Environment.NewLine + "----------------"
                         + Environment.NewLine + T._("List of games") + ":"
-                        + Environment.NewLine + ManageSettings.GetStringListOfAllGames()
+                        + Environment.NewLine + ManageSettings.GetFolderNamesOfFoundGame()
                         + Environment.NewLine + "----------------"
                         + Environment.NewLine + T._("The game folder must contain") + ":"
                         + Environment.NewLine + "Data" + " - " + T._("main game data")

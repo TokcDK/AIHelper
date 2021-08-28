@@ -714,12 +714,10 @@ namespace AIHelper.Manage
             return false;
         }
 
-        internal static string GetStringListOfAllGames()
+        internal static string GetFolderNamesOfFoundGame()
         {
-            List<Game> listOfGames = GamesList.GetGamesList();
-
             string listOfGamesString = string.Empty;
-            foreach (var game in listOfGames)
+            foreach (var game in GameData.ListOfGames)
             {
                 listOfGamesString += game.GetGameFolderName() + Environment.NewLine;
             }

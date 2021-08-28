@@ -1,5 +1,4 @@
-﻿using AIHelper.Games;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace AIHelper.Games
@@ -21,12 +20,16 @@ namespace AIHelper.Games
                 return;
             }
 
-            List<Game> listOfGames = GamesList.GetGamesList();
+            List<Game> listOfGames = SharedData.GameData.ListOfGames != null ? SharedData.GameData.ListOfGames : GamesList.GetGamesList();
             foreach (var game in listOfGames)
             {
                 if (File.Exists(Path.Combine(AIHelper.Properties.Settings.Default.ApplicationStartupPath, "Data", game.GetGameExeName() + ".exe")))
                 {
+                    // set game's folder name
+                    game.SetGameFolderName(AIHelper.Properties.Settings.Default.ApplicationStartupPath);
+
                     _detectedGame = game;
+
                     break;
                 }
             }

@@ -342,7 +342,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Costura.Fody">
-      <Version>5.3.0</Version>
+      <Version>5.5.0</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -364,7 +364,7 @@
       <Version>5.0.2</Version>
     </PackageReference>
     <PackageReference Include="HtmlAgilityPack">
-      <Version>1.11.34</Version>
+      <Version>1.11.36</Version>
     </PackageReference>
     <PackageReference Include="ini-parser">
       <Version>2.5.2</Version>

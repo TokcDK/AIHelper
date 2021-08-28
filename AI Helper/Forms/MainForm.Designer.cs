@@ -61,6 +61,7 @@
             this.SettingsButton = new System.Windows.Forms.Button();
             this.SettingsPage = new System.Windows.Forms.TabPage();
             this.SettingsPagePanel = new System.Windows.Forms.Panel();
+            this.cbxNtlea = new System.Windows.Forms.CheckBox();
             this.FixRegistryLinkLabel = new System.Windows.Forms.LinkLabel();
             this.CreateShortcutLinkLabel = new System.Windows.Forms.LinkLabel();
             this.CurrentGameTitleTextBox = new System.Windows.Forms.TextBox();
@@ -90,7 +91,6 @@
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
-            this.cbxNtlea = new System.Windows.Forms.CheckBox();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -535,6 +535,19 @@
             this.SettingsPagePanel.Size = new System.Drawing.Size(340, 155);
             this.SettingsPagePanel.TabIndex = 1;
             // 
+            // cbxNtlea
+            // 
+            this.cbxNtlea.AutoSize = true;
+            this.cbxNtlea.BackColor = System.Drawing.Color.Transparent;
+            this.cbxNtlea.ForeColor = System.Drawing.Color.White;
+            this.cbxNtlea.Location = new System.Drawing.Point(155, 139);
+            this.cbxNtlea.Name = "cbxNtlea";
+            this.cbxNtlea.Size = new System.Drawing.Size(50, 17);
+            this.cbxNtlea.TabIndex = 7;
+            this.cbxNtlea.Text = "ntlea";
+            this.cbxNtlea.UseVisualStyleBackColor = false;
+            this.cbxNtlea.Visible = false;
+            // 
             // FixRegistryLinkLabel
             // 
             this.FixRegistryLinkLabel.AutoSize = true;
@@ -921,18 +934,6 @@
             this.MOCommonModeSwitchButton.Text = "MOToCommon";
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
-            // 
-            // cbxNtlea
-            // 
-            this.cbxNtlea.AutoSize = true;
-            this.cbxNtlea.BackColor = System.Drawing.Color.Transparent;
-            this.cbxNtlea.ForeColor = System.Drawing.Color.White;
-            this.cbxNtlea.Location = new System.Drawing.Point(155, 139);
-            this.cbxNtlea.Name = "cbxNtlea";
-            this.cbxNtlea.Size = new System.Drawing.Size(50, 17);
-            this.cbxNtlea.TabIndex = 7;
-            this.cbxNtlea.Text = "ntlea";
-            this.cbxNtlea.UseVisualStyleBackColor = false;
             // 
             // MainForm
             // 

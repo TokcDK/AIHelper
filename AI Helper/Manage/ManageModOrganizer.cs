@@ -476,15 +476,6 @@ namespace AIHelper.Manage
                 int startIndex = 0;
                 int endIndex = value.Length - 1;
 
-                if (value.StartsWith("\\\"", StringComparison.InvariantCulture))
-                {
-                    startIndex = 2;
-                }
-                if (value.EndsWith("\\\"", StringComparison.InvariantCulture))
-                {
-                    endIndex = value.Length - 3;
-                }
-
                 bool IsBackSlashOrQuote = false;
                 for (int i = endIndex; i >= startIndex; i--)
                 {

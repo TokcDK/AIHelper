@@ -20,7 +20,7 @@ namespace AIHelper.Games
                 return;
             }
 
-            List<Game> listOfGames = SharedData.GameData.ListOfGames != null ? SharedData.GameData.ListOfGames : GamesList.GetGamesList();
+            List<Game> listOfGames = SharedData.GameData.ListOfGames != null ? SharedData.GameData.ListOfGames : GamesList.GetCompatibleGamePresetsList();
             foreach (var game in listOfGames)
             {
                 if (File.Exists(Path.Combine(AIHelper.Properties.Settings.Default.ApplicationStartupPath, "Data", game.GetGameExeName() + ".exe")))

@@ -5,7 +5,7 @@ namespace AIHelper.Games
 {
     internal class GamesList
     {
-        internal static List<Game> GetGamesList()
+        internal static List<Game> GetCompatibleGamePresetsList()
         {
             return new List<Game>()
             {

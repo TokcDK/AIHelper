@@ -62,7 +62,7 @@ namespace AIHelper
                 Properties.Settings.Default.ApplicationProductName = Application.ProductName;
             }
 
-            if (!SetListOfGames())
+            if (!SetListOfAddedGames())
             {
                 System.Windows.Forms.Application.Exit();
                 this.Enabled = false;
@@ -137,7 +137,7 @@ namespace AIHelper
             OverwriteFolderLink = ManageSettings.GetOverwriteFolderLink();
         }
 
-        private bool SetListOfGames()
+        private bool SetListOfAddedGames()
         {
             try
             {

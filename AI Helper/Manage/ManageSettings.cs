@@ -593,6 +593,16 @@ namespace AIHelper.Manage
             }
         }
 
+        /// <summary>
+        /// Path to setting.ini of current selected MO profile from current game.
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetMoSelectedProfileSettingsPath()
+        {
+            return Path.Combine(GetMoSelectedProfileDirPath(), "settings.ini");
+        }
+
         //internal static Dictionary<string, Game> GetListOfGames()
         //{
         //    List<Game> ListOfGames = GamesList.GetGamesList();

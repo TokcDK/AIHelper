@@ -304,6 +304,9 @@ namespace AIHelper.Manage
 
             private int _loadedListCustomsCount;
 
+            bool NeedSetCurrentProfileSettingsIniSet = true;
+            INIFile settingsIni;
+
             /// <summary>
             /// load customs in list
             /// </summary>
@@ -347,7 +350,22 @@ namespace AIHelper.Manage
                     {
                         ApplyNormalize(customExecutable.Value, attributeKey);
                     }
+
+                    if (NeedSetCurrentProfileSettingsIniSet)
+                    {
+                        NeedSetCurrentProfileSettingsIniSet = false;
+
+                        settingsIni = ManageIni.GetINIFile(ManageSettings.GetMoSelectedProfileSettingsPath());
+                    }
+                    if (!NeedSetCurrentProfileSettingsIniSet)
+                    {
+                        if (settingsIni.KeyExists(customExecutable.Value.Title, "custom_overwrites"))
+                        {
+                            customExecutable.Value.MoTargetMod = settingsIni.GetKey("custom_overwrites", customExecutable.Value.Title);
+                        }
+                    }
                 }
+
             }
 
             /// <summary>
@@ -391,7 +409,7 @@ namespace AIHelper.Manage
                     {
                         string keyName = (sectionCleared ? customExecutableNumber + "" : customExecutable.Key) + "\\" + attributeKey;
 
-                        //Normalize values
+                        // normalize values
                         var valueBeforeNormalize = customExecutable.Value.Attribute[attributeKey];
                         ApplyNormalize(customExecutable.Value, attributeKey);
 
@@ -400,6 +418,12 @@ namespace AIHelper.Manage
                             changed = true;
                             _ini.SetKey("customExecutables", keyName, customExecutable.Value.Attribute[attributeKey]);
                         }
+                    }
+
+                    // set target mod if exists
+                    if (!string.IsNullOrWhiteSpace(customExecutable.Value.MoTargetMod) && settingsIni.GetKey(customExecutable.Value.Title, "custom_overwrites") != customExecutable.Value.MoTargetMod)
+                    {
+                        settingsIni.SetKey("custom_overwrites", customExecutable.Value.Title, customExecutable.Value.MoTargetMod);
                     }
                 }
 
@@ -507,6 +531,11 @@ namespace AIHelper.Manage
             internal class CustomExecutable
             {
                 /// <summary>
+                /// target mod for mod organizer new created files of the exe file
+                /// </summary>
+                internal string MoTargetMod = "";
+
+                /// <summary>
                 /// <list type="s">
                 ///     <listheader>
                 ///         <description>List of possible attributes:</description>
@@ -562,6 +591,7 @@ namespace AIHelper.Manage
                     { "hide" , "false"},
                     { "steamAppID" , string.Empty},
                 };
+
 
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable CA1822 // Mark members as static

@@ -1667,11 +1667,26 @@ namespace AIHelper.Manage
             ActivateDeactivateInsertMod(modname, false);
         }
 
+        /// <summary>
+        /// Insert <paramref name="modname"/> in the current mod organizer's profile's modlist.txt.
+        /// If <paramref name="modAfterWhichInsert"/> is not set new <paramref name="modname"/> will be placed at the end of modlist.
+        /// </summary>
+        /// <param name="modname"></param>
+        /// <param name="activate">If need the <paramref name="modname"/> was activated in modlist</param>
+        /// <param name="modAfterWhichInsert">Name of mod after which must be inserted else will me inserted in the end od list.</param>
+        /// <param name="placeAfter"> Will determine before or after of <paramref name="modAfterWhichInsert"/> new <paramref name="modname"/> must be inserted</param>
         public static void InsertMod(string modname, bool activate = true, string modAfterWhichInsert = "", bool placeAfter = true)
         {
             ActivateDeactivateInsertMod(modname, activate, modAfterWhichInsert, placeAfter);
         }
 
+        /// <summary>
+        /// Insert <paramref name="modname"/> in the current mod organizer's profile's modlist.txt.
+        /// </summary>
+        /// <param name="modname"></param>
+        /// <param name="activate">If need the <paramref name="modname"/> was activated in modlist</param>
+        /// <param name="recordWithWhichInsert">Name of mod after which must be inserted else will me inserted in the end od list.</param>
+        /// <param name="placeAfter"> Will determine before or after of <paramref name="recordWithWhichInsert"/> new <paramref name="modname"/> must be inserted</param>
         public static void ActivateDeactivateInsertMod(string modname, bool activate = true, string recordWithWhichInsert = "", bool placeAfter = true)
         {
             // insert new
@@ -2336,6 +2351,18 @@ namespace AIHelper.Manage
                     ini.SetKey("General", "selected_executable", index, false);
                     ini.SetKey("Widgets", "MainWindow_executablesListBox_index", index, false);
                     break;
+                }
+
+                // set target mod for kkmanager exe's
+                if (string.Equals(custom.Value.MoTargetMod, ManageSettings.KKManagerFilesModName(), StringComparison.InvariantCultureIgnoreCase) &&
+                    (
+                    Path.GetFileName(custom.Value.Binary) == ManageSettings.GetKkManagerExeName()
+                    || 
+                    Path.GetFileName(custom.Value.Binary) == ManageSettings.KkManagerStandaloneUpdaterExeName()
+                    )
+                    )
+                {
+                    custom.Value.MoTargetMod = ManageSettings.KKManagerFilesModName();
                 }
             }
 

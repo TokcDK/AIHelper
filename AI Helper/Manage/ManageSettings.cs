@@ -1425,15 +1425,33 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetKkManagerPath()
+        internal static string GetKkManagerDirPath()
         {
             return Path.Combine(GetAppResDir(), "tools", "KKManager");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetKkManagerExeName()
+        {
+            return "KKManager.exe";
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetKkManagerExePath()
+        {
+            return Path.Combine(GetKkManagerDirPath(), GetKkManagerExeName());
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string KkManagerStandaloneUpdaterExeName()
+        {
+            return "StandaloneUpdater.exe";
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string KkManagerStandaloneUpdaterExePath()
         {
-            return Path.Combine(GetKkManagerPath(), "StandaloneUpdater.exe");
+            return Path.Combine(GetKkManagerDirPath(), KkManagerStandaloneUpdaterExeName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1494,6 +1512,16 @@ namespace AIHelper.Manage
         internal static string NtleaExePath()
         {
             return Path.Combine(GetAppResToolsDirPath(), "ntlea", "x64", "ntleas.exe");
+        }
+
+        /// <summary>
+        /// Name of KKManager's target mod
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string KKManagerFilesModName()
+        {
+            return "KKManagerFiles";
         }
     }
 }

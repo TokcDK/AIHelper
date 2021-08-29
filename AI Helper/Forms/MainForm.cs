@@ -2831,9 +2831,14 @@ namespace AIHelper
             FoldersInit();
         }
 
-        private async void btnUpdateMods_Click(object sender, EventArgs e)
+        private void btnUpdateMods_Click(object sender, EventArgs e)
         {
-            AIGirlHelperTabControl.Enabled = false;
+            UpdateMods();
+        }
+
+        private async void UpdateMods()
+        {
+            UpdateModsInit();
 
             var updater = new Updater();
 
@@ -2844,51 +2849,83 @@ namespace AIHelper
             }
 
             //run zipmod's check if updater found and only for KK, AI, HS2
-            if (CurrentGame.IsHaveSideloaderMods && File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath()))
+            if (!CurrentGame.IsHaveSideloaderMods || !File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath()))
             {
-                if (MOmode)
-                {
-                    if (updater.UpdatedAny) // make data update only when was updated any. Maybe required after update of MO or BepinEx
-                    {
-                        ManageModOrganizer.CleanMoFolder();
-                        //
-                        ManageModOrganizer.CheckBaseGamesPy();
-                        //
-                        ManageModOrganizer.RedefineGameMoData();
-                    }
-
-                    //add updater as new exe in mo list if not exists
-                    //if (!ManageMO.IsMOcustomExecutableTitleByExeNameExists("StandaloneUpdater"))
-                    {
-                        var kkManagerStandaloneUpdater = new ManageModOrganizer.CustomExecutables.CustomExecutable
-                        {
-                            Title = "KKManagerStandaloneUpdater",
-                            Binary = ManageSettings.KkManagerStandaloneUpdaterExePath(),
-                            Arguments = ManageSettings.GetCurrentGameDataPath()
-                        };
-                        ManageModOrganizer.InsertCustomExecutable(kkManagerStandaloneUpdater);
-                    }
-
-                    var zipmodsGuidList = new ZipmodGUIIds(false);
-
-                    //activate all mods with Sideloader modpack inside
-                    ActivateSideloaderMods(zipmodsGuidList);
-
-                    RunProgram(MOexePath, "moshortcut://:" + ManageModOrganizer.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
-
-                    //restore modlist
-                    ManageModOrganizer.RestoreModlist();
-
-                    //restore zipmods to source mods
-                    MoveZipModsFromOverwriteToSourceMod(zipmodsGuidList);
-                }
-                else
-                {
-                    //run updater normal
-                    RunProgram(ManageSettings.KkManagerStandaloneUpdaterExePath(), "\"" + ManageSettings.GetCurrentGameDataPath() + "\"");
-                }
+                UpdateModsFinalize();
+                return;
             }
 
+            if (!MOmode)
+            {
+                //run updater normal
+                RunProgram(ManageSettings.KkManagerStandaloneUpdaterExePath(), "\"" + ManageSettings.GetCurrentGameDataPath() + "\"");
+                UpdateModsFinalize();
+                return;
+            }
+
+            if (updater.UpdatedAny) // make data update only when was updated any. Maybe required after update of MO or BepinEx
+            {
+                ManageModOrganizer.CleanMoFolder();
+                //
+                ManageModOrganizer.CheckBaseGamesPy();
+                //
+                ManageModOrganizer.RedefineGameMoData();
+            }
+
+            //add updater as new exe in mo list if not exists
+            //if (!ManageMO.IsMOcustomExecutableTitleByExeNameExists("StandaloneUpdater"))
+            {
+                var kkManagerStandaloneUpdater = new ManageModOrganizer.CustomExecutables.CustomExecutable
+                {
+                    Title = "KKManagerStandaloneUpdater",
+                    Binary = ManageSettings.KkManagerStandaloneUpdaterExePath(),
+                    Arguments = ManageSettings.GetCurrentGameDataPath(),
+                    MoTargetMod = ManageSettings.KKManagerFilesModName()
+                };
+
+                var kkManagerFilesModPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), ManageSettings.KKManagerFilesModName());
+                if (!Directory.Exists(kkManagerFilesModPath))
+                {
+                    Directory.CreateDirectory(kkManagerFilesModPath);
+                    ManageModOrganizer.WriteMetaIni(
+                        kkManagerFilesModPath,
+                        categoryIdIndex: "",
+                        version: "1.0",
+                        comments: "",
+                        notes: T._("KKManager's and it's Standalone Updater's new created files stored here")
+                        );
+
+                    ManageModOrganizer.InsertMod(
+                        modname: ManageSettings.KKManagerFilesModName()
+                        );
+                }
+
+                ManageModOrganizer.InsertCustomExecutable(kkManagerStandaloneUpdater);
+            }
+
+            var zipmodsGuidList = new ZipmodGUIIds(false);
+
+            //activate all mods with Sideloader modpack inside
+            ActivateSideloaderMods(zipmodsGuidList);
+
+            RunProgram(MOexePath, "moshortcut://:" + ManageModOrganizer.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
+
+            //restore modlist
+            ManageModOrganizer.RestoreModlist();
+
+            //restore zipmods to source mods
+            MoveZipModsFromOverwriteToSourceMod(zipmodsGuidList);
+
+            UpdateModsFinalize();
+        }
+
+        private void UpdateModsInit()
+        {
+            AIGirlHelperTabControl.Enabled = false;
+        }
+
+        private void UpdateModsFinalize()
+        {
             FoldersInit();
 
             AIGirlHelperTabControl.Enabled = true;
@@ -3019,35 +3056,40 @@ namespace AIHelper
 
         private static void SortZipmodsPacks(ZipmodGUIIds zipmodsGuidList, Form progressForm, ProgressBar pBar)
         {
-            var overwriteModsDir = new DirectoryInfo(Path.Combine(ManageSettings.GetOverwriteFolder(), "mods"));
-
-            if (!overwriteModsDir.Exists)
+            foreach(var sortingDirPath in new[] {
+                ManageSettings.GetOverwriteFolder()
+                ,
+                Path.Combine(ManageSettings.GetCurrentGameModsPath(), ManageSettings.KKManagerFilesModName())
+                })
             {
-                return;
-            }
 
-            //var modpackFilters = new Dictionary<string, string>
-            //{
-            //    { "Sideloader Modpack - KK_UncensorSelector", @"^\[KK\]\[Female\].*$" }//sideloader dir name /files regex filter
-            //};
+                var sortingDir = new DirectoryInfo(Path.Combine(sortingDirPath, "mods"));
 
-            var dirs = overwriteModsDir.GetDirectories().Where(dirpath => dirpath.Name.StartsWith("Sideloader Modpack", comparisonType: StringComparison.InvariantCultureIgnoreCase));
+                if (!sortingDir.Exists)
+                {
+                    continue;
+                }
 
-            if (!dirs.Any())
-            {
-                return;
-            }
+                //var modpackFilters = new Dictionary<string, string>
+                //{
+                //    { "Sideloader Modpack - KK_UncensorSelector", @"^\[KK\]\[Female\].*$" }//sideloader dir name /files regex filter
+                //};
 
-            var modpacks = ManageModOrganizerMods.GetSideloaderModpackTargetDirs();
+                var dirs = sortingDir.GetDirectories().Where(dirpath => dirpath.Name.StartsWith("Sideloader Modpack", comparisonType: StringComparison.InvariantCultureIgnoreCase));
 
-            pBar.Maximum = dirs.Count() + 1;
-            pBar.Value = 0;
+                if (!dirs.Any())
+                {
+                    return;
+                }
 
-            var timeInfo = DateTime.Now.ToString("yyyyMMddHHmm", CultureInfo.InvariantCulture);
+                var modpacks = ManageModOrganizerMods.GetSideloaderModpackTargetDirs();
 
-            foreach (var dir in dirs)
-            {
-                //try
+                pBar.Maximum = dirs.Count() + 1;
+                pBar.Value = 0;
+
+                var timeInfo = DateTime.Now.ToString("yyyyMMddHHmm", CultureInfo.InvariantCulture);
+
+                foreach (var dir in dirs)
                 {
                     if (pBar.Value < pBar.Maximum)
                     {

@@ -111,6 +111,11 @@ namespace AIHelper.Manage
             };
         }
 
+        internal static string GetModOrganizerGithubLink()
+        {
+            return "https://github.com/Modorganizer2/modorganizer/releases/latest";
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentMoProfileModlistPath()
         {
@@ -1085,6 +1090,11 @@ namespace AIHelper.Manage
         internal static string GetBepInExPath()
         {
             return Path.Combine(IsMoMode() ? GetCurrentGameModsPath() : GetCurrentGameDataPath(), "BepInEx");
+        }
+
+        internal static string GetDefaultSetupXmlValue()
+        {
+            return "<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<Setting>\r\n  <Size>1280 x 720 (16 : 9)</Size>\r\n  <Width>1280</Width>\r\n  <Height>720</Height>\r\n  <Quality>2</Quality>\r\n  <FullScreen>false</FullScreen>\r\n  <Display>0</Display>\r\n  <Language>0</Language>\r\n</Setting>";
         }
 
         internal static string GetBepInExCfgDirPath()

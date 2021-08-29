@@ -2335,6 +2335,7 @@ namespace AIHelper.Manage
                 ini.DeleteSection("pluginBlacklist", false);
             }
 
+            bool selectedExecutableNeedToSet = true;
             var customs = new CustomExecutables(ini);
             foreach (var custom in customs.List)
             {
@@ -2345,16 +2346,16 @@ namespace AIHelper.Manage
                 }
 
                 // Set selected_executable number to game exe
-                if (Path.GetFileNameWithoutExtension(custom.Value.Binary) == CustomExecutables.NormalizePath(ManageSettings.GetCurrentGameExeName()))
+                if (selectedExecutableNeedToSet && Path.GetFileNameWithoutExtension(custom.Value.Binary) == CustomExecutables.NormalizePath(ManageSettings.GetCurrentGameExeName()))
                 {
+                    selectedExecutableNeedToSet = false;
                     var index = custom.Key;
                     ini.SetKey("General", "selected_executable", index, false);
                     ini.SetKey("Widgets", "MainWindow_executablesListBox_index", index, false);
-                    break;
                 }
 
                 // set target mod for kkmanager exe's
-                if (string.Equals(custom.Value.MoTargetMod, ManageSettings.KKManagerFilesModName(), StringComparison.InvariantCultureIgnoreCase) &&
+                if (!string.Equals(custom.Value.MoTargetMod, ManageSettings.KKManagerFilesModName(), StringComparison.InvariantCultureIgnoreCase) &&
                     (
                     Path.GetFileName(custom.Value.Binary) == ManageSettings.GetKkManagerExeName()
                     || 

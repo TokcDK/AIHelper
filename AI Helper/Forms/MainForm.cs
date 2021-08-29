@@ -74,6 +74,17 @@ namespace AIHelper
 
         private async void CheckMoAndEndInit()
         {
+            if (!File.Exists(Path.Combine(ManageSettings.GetMOexePath())))
+            {
+                MessageBox.Show("Mod Organizer not found!");
+
+                Process.Start(ManageSettings.GetModOrganizerGithubLink());
+
+                System.Windows.Forms.Application.Exit();
+                this.Enabled = false;
+                return;
+            }
+
             //MO data parse
             Properties.Settings.Default.MOIsNew = ManageModOrganizer.IsMo23OrNever();
 
@@ -811,6 +822,13 @@ namespace AIHelper
         private static void SetScreenResolution(string resolution)
         {
             ManageModOrganizer.CheckMoUserdata();
+
+            if (!File.Exists(SetupXmlPath))
+            {
+                // write default setup.xml
+                Directory.CreateDirectory(Path.GetDirectoryName(SetupXmlPath));
+                File.WriteAllText(SetupXmlPath, ManageSettings.GetDefaultSetupXmlValue(), Encoding.GetEncoding("UTF-16"));
+            }
 
             ManageXml.ChangeSetupXmlValue(SetupXmlPath, "Setting/Size", resolution);
             string[] wh = resolution.Replace("(16 : 9)", string.Empty).Trim().Split('x');

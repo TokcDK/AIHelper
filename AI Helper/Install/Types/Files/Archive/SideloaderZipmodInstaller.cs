@@ -75,7 +75,7 @@ namespace AIHelper.Install.Types.Files.Archive
             File.Move(zipfile.FullName, targetZipFile);
 
             // Move files starting with same name to the same mod folder
-            string[] possibleFilesOfTheMod = Directory.GetFiles(Properties.Settings.Default.Install2MODirPath, "*.*").Where(file => Path.GetFileName(file).Trim().StartsWith(zipArchiveName, StringComparison.InvariantCultureIgnoreCase) && ManageStrings.IsStringAContainsAnyStringFromStringArray(Path.GetExtension(file), new string[7] { ".txt", ".png", ".jpg", ".jpeg", ".bmp", ".doc", ".rtf" })).ToArray();
+            string[] possibleFilesOfTheMod = Directory.GetFiles(ManageSettings.GetInstall2MoDirPath(), "*.*").Where(file => Path.GetFileName(file).Trim().StartsWith(zipArchiveName, StringComparison.InvariantCultureIgnoreCase) && ManageStrings.IsStringAContainsAnyStringFromStringArray(Path.GetExtension(file), new string[7] { ".txt", ".png", ".jpg", ".jpeg", ".bmp", ".doc", ".rtf" })).ToArray();
             int possibleFilesOfTheModLength = possibleFilesOfTheMod.Length;
             if (possibleFilesOfTheModLength > 0)
             {

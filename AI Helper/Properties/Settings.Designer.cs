@@ -38,90 +38,6 @@ namespace AIHelper.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string ModsPath {
-            get {
-                return ((string)(this["ModsPath"]));
-            }
-            set {
-                this["ModsPath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string DownloadsPath {
-            get {
-                return ((string)(this["DownloadsPath"]));
-            }
-            set {
-                this["DownloadsPath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string DataPath {
-            get {
-                return ((string)(this["DataPath"]));
-            }
-            set {
-                this["DataPath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string MODirPath {
-            get {
-                return ((string)(this["MODirPath"]));
-            }
-            set {
-                this["MODirPath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string MOexePath {
-            get {
-                return ((string)(this["MOexePath"]));
-            }
-            set {
-                this["MOexePath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string OverwriteFolder {
-            get {
-                return ((string)(this["OverwriteFolder"]));
-            }
-            set {
-                this["OverwriteFolder"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string OverwriteFolderLink {
-            get {
-                return ((string)(this["OverwriteFolderLink"]));
-            }
-            set {
-                this["OverwriteFolderLink"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string SetupXmlPath {
             get {
                 return ((string)(this["SetupXmlPath"]));
@@ -152,42 +68,6 @@ namespace AIHelper.Properties {
             }
             set {
                 this["ApplicationStartupPath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string CurrentGamePath {
-            get {
-                return ((string)(this["CurrentGamePath"]));
-            }
-            set {
-                this["CurrentGamePath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string ModOrganizerINIpath {
-            get {
-                return ((string)(this["ModOrganizerINIpath"]));
-            }
-            set {
-                this["ModOrganizerINIpath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Install2MODirPath {
-            get {
-                return ((string)(this["Install2MODirPath"]));
-            }
-            set {
-                this["Install2MODirPath"] = value;
             }
         }
         
@@ -253,54 +133,6 @@ namespace AIHelper.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string CurrentGameEXEName {
-            get {
-                return ((string)(this["CurrentGameEXEName"]));
-            }
-            set {
-                this["CurrentGameEXEName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string CurrentGameFolderName {
-            get {
-                return ((string)(this["CurrentGameFolderName"]));
-            }
-            set {
-                this["CurrentGameFolderName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string StudioEXEName {
-            get {
-                return ((string)(this["StudioEXEName"]));
-            }
-            set {
-                this["StudioEXEName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string INISettingsEXEName {
-            get {
-                return ((string)(this["INISettingsEXEName"]));
-            }
-            set {
-                this["INISettingsEXEName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public int CurrentGameListIndex {
             get {
@@ -356,18 +188,6 @@ namespace AIHelper.Properties {
             }
             set {
                 this["XUAiniPath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string CurrentGameDisplayingName {
-            get {
-                return ((string)(this["CurrentGameDisplayingName"]));
-            }
-            set {
-                this["CurrentGameDisplayingName"] = value;
             }
         }
         

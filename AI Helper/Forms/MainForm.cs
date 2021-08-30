@@ -228,8 +228,6 @@ namespace AIHelper
             QualityComboBox.Items.Add(T._("Perfomance"));
             QualityComboBox.Items.Add(T._("Normal"));
             QualityComboBox.Items.Add(T._("Quality"));
-
-            Properties.Settings.Default.CurrentGameDisplayingName = GameData.CurrentGame.GetGameDisplayingName();
         }
 
         private int _mode;
@@ -2367,7 +2365,6 @@ namespace AIHelper
 
             GameData.CurrentGame.InitActions();
             CurrentGameTitleTextBox.Text = GameData.CurrentGame.GetGameDisplayingName();
-            Properties.Settings.Default.CurrentGameDisplayingName = GameData.CurrentGame.GetGameDisplayingName();
         }
 
         private void CloseExtraForms()

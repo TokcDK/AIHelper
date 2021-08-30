@@ -303,7 +303,7 @@ namespace AIHelper.Manage
             {
                 firstCandidateFolder.Substring(0,1)== " " ? Path.Combine(ManageSettings.GetCurrentGameModsPath(), "OrganizedModPack Downloaded"+firstCandidateFolder) : firstCandidateFolder,
                 Path.Combine(ManageSettings.GetCurrentGameModsPath(), "MyUserData"),
-                Properties.Settings.Default.OverwriteFolder
+                ManageSettings.GetOverwriteFolder()
             };
 
             string typeFolder = string.Empty;
@@ -363,7 +363,7 @@ namespace AIHelper.Manage
                 }
             }
 
-            return Path.Combine(Properties.Settings.Default.OverwriteFolder, "UserData", typeFolder, targetFolderName);
+            return Path.Combine(ManageSettings.GetOverwriteFolder(), "UserData", typeFolder, targetFolderName);
         }
 
         public static string GetTheDllFromSubfolders(string dir, string fileName, string extension)

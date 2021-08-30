@@ -899,7 +899,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameDisplayingName()
         {
-            return Properties.Settings.Default.CurrentGameDisplayingName;
+            return GameData.CurrentGame.GetGameDisplayingName();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -137,7 +137,7 @@ namespace AIHelper.Install.Types.Directories
 
             if (!anyModFound)
             {
-                moddir = dir.Replace(Properties.Settings.Default.Install2MODirPath, ManageSettings.GetCurrentGameModsPath());
+                moddir = dir.Replace(ManageSettings.GetInstall2MoDirPath(), ManageSettings.GetCurrentGameModsPath());
                 string targetfilepath = "readme.txt";
                 foreach (var file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
                 {

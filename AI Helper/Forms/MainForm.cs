@@ -313,20 +313,32 @@ namespace AIHelper
             //MainService.Enabled = true;
         }
 
-        ToolTip _thToolTip;
-        private void SetTooltips()
+        /// <summary>
+        /// remove all tooltips and dispose resources
+        /// </summary>
+        internal void DisposeTooltips()
         {
             try
             {
                 if (_thToolTip != null)
                 {
                     _thToolTip.RemoveAll();
+                    _thToolTip.Dispose();
                 }
             }
             catch (Exception ex)
             {
                 ManageLogs.Log("An error occured while SetTooltips. error:\r\n" + ex);
             }
+        }
+
+        /// <summary>
+        /// App's tooltips
+        /// </summary>
+        private ToolTip _thToolTip;
+        internal void SetTooltips()
+        {
+            DisposeTooltips();
 
             //http://qaru.site/questions/47162/c-how-do-i-add-a-tooltip-to-a-control
             //THMainResetTableButton

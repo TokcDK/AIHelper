@@ -81,19 +81,19 @@ namespace AIHelper.Install.Types.Directories
                     || string.Compare(subdirname, "mods", true, invariantCulture) == 0
                     )
                 {
-                    //CopyFolder.Copy(dir, Path.Combine(Properties.Settings.Default.ModsPath, dir));
+                    //CopyFolder.Copy(dir, Path.Combine(ManageSettings.GetCurrentGameModsPath(), dir));
                     //Directory.Move(dir, "[installed]" + dir);
 
                     //имя папки без GetResultTargetDirPathWithNameCheck для того, чтобы обновить существующую, если такая найдется
                     var targetModDIr = Path.Combine(
-                        Properties.Settings.Default.ModsPath,
+                        ManageSettings.GetCurrentGameModsPath(),
                         (author.Length > 0 && !ManageStrings.IsStringAContainsStringB(name, author))
                             ?
                             "[" + author + "]" + name
                             :
                             name);
                     //var TargetModDIr = ManageFilesFolders.GetResultTargetDirPathWithNameCheck(
-                    //    Properties.Settings.Default.ModsPath, 
+                    //    ManageSettings.GetCurrentGameModsPath(), 
                     //    (author.Length > 0 && !ManageStrings.IsStringAContainsStringB(name, author))
                     //        ?
                     //        "[" + author + "]" + name
@@ -137,7 +137,7 @@ namespace AIHelper.Install.Types.Directories
 
             if (!anyModFound)
             {
-                moddir = dir.Replace(Properties.Settings.Default.Install2MODirPath, Properties.Settings.Default.ModsPath);
+                moddir = dir.Replace(Properties.Settings.Default.Install2MODirPath, ManageSettings.GetCurrentGameModsPath());
                 string targetfilepath = "readme.txt";
                 foreach (var file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
                 {

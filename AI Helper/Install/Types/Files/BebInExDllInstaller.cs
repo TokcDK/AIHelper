@@ -47,7 +47,7 @@ namespace AIHelper.Install.Types.Files
             }
 
             string dllName = dllfile.Name;
-            string dllTargetModDirPath = Path.Combine(Properties.Settings.Default.ModsPath, name);
+            string dllTargetModDirPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), name);
             string dllTargetModPluginsSubdirPath = Path.Combine(dllTargetModDirPath, "BepInEx", "Plugins");
             string dllTargetPath = Path.Combine(dllTargetModPluginsSubdirPath, dllName);
             bool isUpdate = false;
@@ -62,7 +62,7 @@ namespace AIHelper.Install.Types.Files
                 else
                 {
                     //Проверки существования целевой папки и модификация имени на более уникальное
-                    dllTargetModDirPath = ManageFilesFolders.GetResultTargetDirPathWithNameCheck(Properties.Settings.Default.ModsPath, name);
+                    dllTargetModDirPath = ManageFilesFolders.GetResultTargetDirPathWithNameCheck(ManageSettings.GetCurrentGameModsPath(), name);
                 }
             }
             else
@@ -76,7 +76,7 @@ namespace AIHelper.Install.Types.Files
                 }
                 if (modNameWithAuthor.Length > 0)
                 {
-                    string newModDirPath = Path.Combine(Properties.Settings.Default.ModsPath, modNameWithAuthor);
+                    string newModDirPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modNameWithAuthor);
                     if (Directory.Exists(newModDirPath))
                     {
                         dllTargetModDirPath = newModDirPath;

@@ -47,13 +47,13 @@ namespace AIHelper.Manage
         internal static void SettingsInit()
         {
             //int index = Properties.Settings.Default.CurrentGameListIndex;
-            //Properties.Settings.Default.CurrentGamePath = ListOfGames[index].GetGamePath();
+            //ManageSettings.GetCurrentGamePath() = ListOfGames[index].GetGamePath();
             //ModsPath = SettingsManage.GetModsPath();
             //DownloadsPath = SettingsManage.GetDownloadsPath();
             //DataPath = SettingsManage.GetDataPath();
             //MODirPath = SettingsManage.GetMOdirPath();
             //MOexePath = SettingsManage.GetMOexePath();
-            //Properties.Settings.Default.ModOrganizerINIpath = SettingsManage.GetModOrganizerINIpath();
+            //ManageSettings.GetModOrganizerIniPath() = SettingsManage.GetModOrganizerINIpath();
             //Install2MODirPath = SettingsManage.GetInstall2MODirPath();
             //OverwriteFolder = SettingsManage.GetOverwriteFolder();
             //OverwriteFolderLink = SettingsManage.GetOverwriteFolderLink();
@@ -608,6 +608,12 @@ namespace AIHelper.Manage
             return Path.Combine(GetMoSelectedProfileDirPath(), "settings.ini");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetCurrentGameSetupXmlFilePathinData()
+        {
+            return Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "setup.xml");
+        }
+
         //internal static Dictionary<string, Game> GetListOfGames()
         //{
         //    List<Game> ListOfGames = GamesList.GetGamesList();
@@ -783,7 +789,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGamePath()
         {
-            return Properties.Settings.Default.CurrentGamePath;
+            return Path.Combine(GetGamesFolderPath(), ManageSettings.GetCurrentGameFolderName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -854,7 +860,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameExeName()
         {
-            return Properties.Settings.Default.CurrentGameEXEName;
+            return GameData.CurrentGame.GetGameExeName();
         }
 
         /// <summary>
@@ -899,13 +905,13 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetStudioExeName()
         {
-            return Properties.Settings.Default.StudioEXEName;
+            return GameData.CurrentGame.GetGameStudioExeName();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetIniSettingsExeName()
         {
-            return Properties.Settings.Default.INISettingsEXEName;
+            return GameData.CurrentGame.GetIniSettingsExeName();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

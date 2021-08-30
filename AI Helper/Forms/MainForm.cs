@@ -25,41 +25,22 @@ namespace AIHelper
     internal partial class MainForm : Form
     {
         internal bool _compressmode;
-
-        //constants
-        private static string AppResDir { get => Properties.Settings.Default.AppResDir; set => Properties.Settings.Default.AppResDir = value; }
-
-        private static string ModsPath { get => Properties.Settings.Default.ModsPath; set => Properties.Settings.Default.ModsPath = value; }
-        private static string DownloadsPath { get => Properties.Settings.Default.DownloadsPath; set => Properties.Settings.Default.DownloadsPath = value; }
-        private static string DataPath { get => ManageSettings.GetCurrentGameDataPath(); /*set => Properties.Settings.Default.DataPath = value;*/ }
-        private static string MoDirPath { get => Properties.Settings.Default.MODirPath; set => Properties.Settings.Default.MODirPath = value; }
-        private static string MOexePath { get => Properties.Settings.Default.MOexePath; set => Properties.Settings.Default.MOexePath = value; }
-        private static string OverwriteFolder { get => Properties.Settings.Default.OverwriteFolder; set => Properties.Settings.Default.OverwriteFolder = value; }
-        //private static string OverwriteFolderLink { get => Properties.Settings.Default.OverwriteFolderLink; set => Properties.Settings.Default.OverwriteFolderLink = value; }
+        
+        /// <summary>
+        /// Get or set path to setup.xml graphic settings for current game
+        /// </summary>
         private static string SetupXmlPath { get => Properties.Settings.Default.SetupXmlPath; set => Properties.Settings.Default.SetupXmlPath = value; }
-        private static string ApplicationStartupPath { /*get => Properties.Settings.Default.ApplicationStartupPath; */set => Properties.Settings.Default.ApplicationStartupPath = value; }
-
-        //private static string ModOrganizerINIpath { get => Properties.Settings.Default.ModOrganizerINIpath; set => Properties.Settings.Default.ModOrganizerINIpath = value; }
-        private static string Install2MoDirPath { get => Properties.Settings.Default.Install2MODirPath; set => Properties.Settings.Default.Install2MODirPath = value; }
-
+        /// <summary>
+        /// Get or set MO mode for current game
+        /// </summary>
         private static bool MOmode { get => ManageSettings.IsMoMode(); set => Properties.Settings.Default.MOmode = value; }
-
-        private static Game CurrentGame { get => GameData.CurrentGame; set => GameData.CurrentGame = value; }
-        private static List<Game> ListOfGames { get => GameData.ListOfGames; set => GameData.ListOfGames = value; }
 
         public MainForm()
         {
             InitializeComponent();
 
-            if (string.IsNullOrWhiteSpace(Properties.Settings.Default.ApplicationStartupPath))
-            {
-                ApplicationStartupPath = Application.StartupPath;
-            }
-
-            if (string.IsNullOrWhiteSpace(Properties.Settings.Default.ApplicationProductName))
-            {
-                Properties.Settings.Default.ApplicationProductName = Application.ProductName;
-            }
+            Properties.Settings.Default.ApplicationStartupPath = Application.StartupPath;
+            Properties.Settings.Default.ApplicationProductName = Application.ProductName;
 
             if (!SetListOfAddedGames())
             {
@@ -95,9 +76,8 @@ namespace AIHelper
 
             CleanLog();
 
-            VariablesInit();
             SetMoMode(false);
-            CurrentGame.InitActions();
+            GameData.CurrentGame.InitActions();
 
             SetLocalizationStrings();
 
@@ -126,29 +106,13 @@ namespace AIHelper
             }
         }
 
-        private static void VariablesInit()
-        {
-            Properties.Settings.Default.CurrentGamePath = CurrentGame.GetGamePath();
-            //SettingsManage.SettingsINIT();
-            AppResDir = ManageSettings.GetAppResDir();
-            ModsPath = ManageSettings.GetCurrentGameModsPath();
-            DownloadsPath = ManageSettings.GetDownloadsPath();
-            //DataPath = ManageSettings.GetDataPath();
-            MoDirPath = ManageSettings.GetMOdirPath();
-            MOexePath = ManageSettings.GetMOexePath();
-            Properties.Settings.Default.ModOrganizerINIpath = ManageSettings.GetModOrganizerIniPath();
-            Install2MoDirPath = ManageSettings.GetInstall2MoDirPath();
-            OverwriteFolder = ManageSettings.GetOverwriteFolder();
-            //OverwriteFolderLink = ManageSettings.GetOverwriteFolderLink();
-        }
-
         private bool SetListOfAddedGames()
         {
             try
             {
-                ListOfGames = ManageSettings.GetListOfExistsGames();
+                GameData.ListOfGames = ManageSettings.GetListOfExistsGames();
 
-                if (ListOfGames == null || ListOfGames.Count == 0)
+                if (GameData.ListOfGames == null || GameData.ListOfGames.Count == 0)
                 {
                     MessageBox.Show(T._("Games not found") + "."
                         + Environment.NewLine + T._("Need atleast one game in subfolder in Games folder") + "."
@@ -169,7 +133,7 @@ namespace AIHelper
                     return false;
                 }
 
-                foreach (var game in ListOfGames)
+                foreach (var game in GameData.ListOfGames)
                 {
                     CurrentGameComboBox.Items.Add(game.GetGameFolderName());
                 }
@@ -191,13 +155,13 @@ namespace AIHelper
                     selected_game = ini.GetKey("Settings", "selected_game");
                     if (string.IsNullOrWhiteSpace(selected_game))
                     {
-                        var game = ListOfGames[0];
+                        var game = GameData.ListOfGames[0];
                         selected_game = game.GetGameFolderName();
                     }
                 }
 
                 SetSelectedGameIndexAndBasicVariables(ManageSettings.GetCurrentGameIndexByFolderName(
-                        ListOfGames
+                        GameData.ListOfGames
                         ,
                         selected_game
                         ));
@@ -222,16 +186,8 @@ namespace AIHelper
         private void SetSelectedGameIndexAndBasicVariables(int index = 0)
         {
             Properties.Settings.Default.CurrentGameListIndex = index;
-            CurrentGame = ListOfGames[Properties.Settings.Default.CurrentGameListIndex];
+            GameData.CurrentGame = GameData.ListOfGames[Properties.Settings.Default.CurrentGameListIndex];
             CurrentGameComboBox.SelectedIndex = index;
-
-            Properties.Settings.Default.CurrentGameEXEName = CurrentGame.GetGameExeName();
-            Properties.Settings.Default.CurrentGameFolderName = CurrentGame.GetGameFolderName();
-            Properties.Settings.Default.StudioEXEName = CurrentGame.GetGameStudioExeName();
-            Properties.Settings.Default.INISettingsEXEName = CurrentGame.GetIniSettingsExeName();
-            Properties.Settings.Default.CurrentGamePath = CurrentGame.GetGamePath();
-            //Properties.Settings.Default.DataPath = Path.Combine(CurrentGame.GetGamePath(), "Data");
-            Properties.Settings.Default.ModsPath = Path.Combine(CurrentGame.GetGamePath(), "Mods");
 
             //set checkbox
             Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked = bool.Parse(ManageIni.GetIniValueIfExist(ManageSettings.GetAiHelperIniPath(), "autoCreateShortcutAndFixRegystry", "Settings", "False"));
@@ -240,7 +196,7 @@ namespace AIHelper
 
         private void SetLocalizationStrings()
         {
-            this.Text = "AI Helper" + " | " + CurrentGame.GetGameDisplayingName();
+            this.Text = "AI Helper" + " | " + GameData.CurrentGame.GetGameDisplayingName();
             CurrentGameLabel.Text = T._("Current Game") + ":";
             InstallInModsButton.Text = T._("Install from") + " " + ManageSettings.ModsInstallDirName();
             ToolsFixModListButton.Text = T._("Fix modlist");
@@ -273,7 +229,7 @@ namespace AIHelper
             QualityComboBox.Items.Add(T._("Normal"));
             QualityComboBox.Items.Add(T._("Quality"));
 
-            Properties.Settings.Default.CurrentGameDisplayingName = CurrentGame.GetGameDisplayingName();
+            Properties.Settings.Default.CurrentGameDisplayingName = GameData.CurrentGame.GetGameDisplayingName();
         }
 
         private int _mode;
@@ -496,7 +452,7 @@ namespace AIHelper
         {
             if (!MOmode)
             {
-                SetupXmlPath = Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "setup.xml");
+                SetupXmlPath = ManageSettings.GetCurrentGameSetupXmlFilePathinData();
             }
 
             //set Settings
@@ -574,31 +530,31 @@ namespace AIHelper
 
             SetMoMode();
 
-            if (!Directory.Exists(DataPath))
+            if (!Directory.Exists(ManageSettings.GetCurrentGameDataPath()))
             {
-                Directory.CreateDirectory(DataPath);
+                Directory.CreateDirectory(ManageSettings.GetCurrentGameDataPath());
             }
-            if (MOmode && !Directory.Exists(ModsPath))
+            if (MOmode && !Directory.Exists(ManageSettings.GetCurrentGameModsPath()))
             {
-                Directory.CreateDirectory(ModsPath);
+                Directory.CreateDirectory(ManageSettings.GetCurrentGameModsPath());
                 ModsInfoLabel.Text = T._("Mods dir created");
             }
 
-            if (File.Exists(Path.Combine(DataPath, ManageSettings.GetCurrentGameExeName() + ".exe")))
+            if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameExeName() + ".exe")))
             {
                 DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} game installed in {1}"), ManageSettings.GetCurrentGameDisplayingName(), "Data");
             }
-            else if (File.Exists(Path.Combine(AppResDir, ManageSettings.GetCurrentGameExeName() + ".7z")))
+            else if (File.Exists(Path.Combine(ManageSettings.GetAppResDir(), ManageSettings.GetCurrentGameExeName() + ".7z")))
             {
                 DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} archive in {1}"), "AIGirl", "Data");
             }
-            else if (Directory.Exists(DataPath))
+            else if (Directory.Exists(ManageSettings.GetCurrentGameDataPath()))
             {
                 DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} files not in {1}. Move {0} game files there."), ManageSettings.GetCurrentGameFolderName(), "Data");
             }
             else
             {
-                Directory.CreateDirectory(DataPath);
+                Directory.CreateDirectory(ManageSettings.GetCurrentGameDataPath());
                 DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} dir created. Move {1} game files there."), "Data", ManageSettings.GetCurrentGameFolderName());
             }
 
@@ -735,11 +691,8 @@ namespace AIHelper
                 //AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
             }
 
-            //Обновление пути к setup.xml с настройками графики
-            VariablesInit();
-
             AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
-            CurrentGameComboBox.Text = CurrentGame.GetGameFolderName();
+            CurrentGameComboBox.Text = GameData.CurrentGame.GetGameFolderName();
             CurrentGameComboBox.SelectedIndex = ManageSettings.GetCurrentGameIndex();
 
             GetEnableDisableLaunchTabButtons();
@@ -753,8 +706,8 @@ namespace AIHelper
                 ManageOther.AutoShortcutAndRegystry();
             }
 
-            SelectedGameLabel.Text = CurrentGame.GetGameDisplayingName() + "❤";
-            this.Text = "AI Helper" + " | " + CurrentGame.GetGameDisplayingName();
+            SelectedGameLabel.Text = GameData.CurrentGame.GetGameDisplayingName() + "❤";
+            this.Text = "AI Helper" + " | " + GameData.CurrentGame.GetGameDisplayingName();
         }
 
         private void SetMoMode(bool setText = true)
@@ -831,9 +784,9 @@ namespace AIHelper
 
             //MOButton.Enabled = /*Properties.Settings.Default.MOmode && */File.Exists(ManageSettings.GetMOexePath());
             //SettingsButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"));
-            JPLauncherRunLinkLabel.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetIniSettingsExeName() + ".exe"));
-            GameButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetCurrentGameExeName() + ".exe"));
-            StudioButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetStudioExeName() + ".exe"));
+            JPLauncherRunLinkLabel.Enabled = File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetIniSettingsExeName() + ".exe"));
+            GameButton.Enabled = File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameExeName() + ".exe"));
+            StudioButton.Enabled = File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetStudioExeName() + ".exe"));
 
             //Set BepInEx log data
             var bepInExCfgPath = ManageSettings.GetBepInExCfgFilePath();
@@ -893,7 +846,7 @@ namespace AIHelper
 
             if (MOmode)
             {
-                RunProgram(MOexePath, string.Empty);
+                RunProgram(ManageSettings.GetMOexePath(), string.Empty);
             }
             else
             {
@@ -936,7 +889,7 @@ namespace AIHelper
             {
                 var getCurrentGameExemoProfileName = ManageSettings.GetCurrentGameExemoProfileName();
                 var customExeTitleName = getCurrentGameExemoProfileName + vr;
-                exePath = MOexePath;
+                exePath = ManageSettings.GetMOexePath();
 
                 if (cbxNtlea.Checked)
                 {
@@ -962,11 +915,11 @@ namespace AIHelper
                 if (cbxNtlea.Checked)
                 {
                     exePath = ManageSettings.NtleaExePath();
-                    arguments = "\"" + Path.Combine(DataPath, ManageSettings.GetCurrentGameExeName() + vr + ".exe") + "\"" + " \"C932\" \"L0411\"";
+                    arguments = "\"" + Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameExeName() + vr + ".exe") + "\"" + " \"C932\" \"L0411\"";
                 }
                 else
                 {
-                    exePath = Path.Combine(DataPath, ManageSettings.GetCurrentGameExeName() + vr + ".exe");
+                    exePath = Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameExeName() + vr + ".exe");
                 }
             }
 
@@ -989,11 +942,11 @@ namespace AIHelper
             if (MOmode)
             {
                 var studio = ManageModOrganizer.GetMOcustomExecutableTitleByExeName(ManageSettings.GetStudioExeName());
-                RunProgram(MOexePath, "moshortcut://:" + studio);
+                RunProgram(ManageSettings.GetMOexePath(), "moshortcut://:" + studio);
             }
             else
             {
-                RunProgram(Path.Combine(DataPath, ManageSettings.GetStudioExeName() + ".exe"), string.Empty);
+                RunProgram(Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetStudioExeName() + ".exe"), string.Empty);
             }
             OnOffButtons();
         }
@@ -1224,7 +1177,7 @@ namespace AIHelper
             {
                 MessageBox.Show(T._($"No compatible for installation formats found in {_toMo} folder.\nFormats: zip, zipmod, png, png in subfolder, unpacked mod in subfolder"));
             }
-            Process.Start("explorer.exe", Install2MoDirPath);
+            Process.Start("explorer.exe", ManageSettings.GetInstall2MoDirPath());
         }
 
         private static bool IsInstallDirHasAnyRequiredFileFrom(List<ModInstallerBase> installers)
@@ -1280,11 +1233,11 @@ namespace AIHelper
             //new CardsFromDirsInstaller().Install();
 
             //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "."));
-            ManageFilesFolders.DeleteEmptySubfolders(Install2MoDirPath, false);
+            ManageFilesFolders.DeleteEmptySubfolders(ManageSettings.GetInstall2MoDirPath(), false);
 
-            if (!Directory.Exists(Install2MoDirPath))
+            if (!Directory.Exists(ManageSettings.GetInstall2MoDirPath()))
             {
-                Directory.CreateDirectory(Install2MoDirPath);
+                Directory.CreateDirectory(ManageSettings.GetInstall2MoDirPath());
             }
 
             //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = T._("Install from") + " " + ManageSettings.ModsInstallDirName()));
@@ -1503,16 +1456,16 @@ namespace AIHelper
 
                         string targetFolderPath = Path.GetDirectoryName(fromToPaths[1]);
 
-                        bool isForOverwriteFolder = ManageStrings.IsStringAContainsStringB(targetFolderPath, OverwriteFolder);
+                        bool isForOverwriteFolder = ManageStrings.IsStringAContainsStringB(targetFolderPath, ManageSettings.GetOverwriteFolder());
                         //поиск имени мода с учетом обработки файлов папки Overwrite
                         string modName = targetFolderPath;
                         if (isForOverwriteFolder)
                         {
-                            modName = Path.GetFileName(OverwriteFolder);
+                            modName = Path.GetFileName(ManageSettings.GetOverwriteFolder());
                         }
                         else
                         {
-                            while (Path.GetDirectoryName(modName) != ModsPath)
+                            while (Path.GetDirectoryName(modName) != ManageSettings.GetCurrentGameModsPath())
                             {
                                 modName = Path.GetDirectoryName(modName);
                             }
@@ -1520,9 +1473,9 @@ namespace AIHelper
                         }
 
                         //Новое имя для новой целевой папки мода
-                        string originalModPath = isForOverwriteFolder ? OverwriteFolder : Path.Combine(ModsPath, modName);
+                        string originalModPath = isForOverwriteFolder ? ManageSettings.GetOverwriteFolder() : Path.Combine(ManageSettings.GetCurrentGameModsPath(), modName);
                         string newModName = modName + "_" + dateTimeInFormat;
-                        string newModPath = Path.Combine(ModsPath, newModName);
+                        string newModPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), newModName);
                         targetFolderPath = targetFolderPath.Replace(originalModPath, newModPath);
 
                         string targetFileName = Path.GetFileNameWithoutExtension(fromToPaths[1]);
@@ -1574,10 +1527,10 @@ namespace AIHelper
                 //Перемещение новых файлов
                 //
                 //добавление всех файлов из дата, которых нет в списке файлов модов и игры в дата, что был создан сразу после перехода в обычный режим
-                string[] addedFiles = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories).Where(line => !moddedDataFilesList.Contains(line)).ToArray();
+                string[] addedFiles = Directory.GetFiles(ManageSettings.GetCurrentGameDataPath(), "*.*", SearchOption.AllDirectories).Where(line => !moddedDataFilesList.Contains(line)).ToArray();
                 //задание имени целевой папки для новых модов
                 string addedFilesFolderName = "[added]UseFiles_" + dateTimeInFormat;
-                string destFolderPath = Path.Combine(ModsPath, addedFilesFolderName);
+                string destFolderPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), addedFilesFolderName);
 
                 int addedFilesLength = addedFiles.Length;
                 for (int f = 0; f < addedFilesLength; f++)
@@ -1637,7 +1590,7 @@ namespace AIHelper
 
                     if (string.IsNullOrEmpty(destFileName))
                     {
-                        destFileName = addedFiles[f].Replace(DataPath, destFolderPath);
+                        destFileName = addedFiles[f].Replace(ManageSettings.GetCurrentGameDataPath(), destFolderPath);
                     }
                     Directory.CreateDirectory(Path.GetDirectoryName(destFileName));
                     File.Move(addedFiles[f], destFileName);
@@ -1671,11 +1624,11 @@ namespace AIHelper
                     //удалить все, за исключением добавленных ранее путей до пустых папок
                     string[] vanillaDataEmptyFoldersList = File.ReadAllLines(ManageSettings.GetVanillaDataEmptyFoldersListFilePath());
                     ReplaceVarsToPaths(ref vanillaDataEmptyFoldersList);
-                    ManageFilesFolders.DeleteEmptySubfolders(DataPath, false, vanillaDataEmptyFoldersList);
+                    ManageFilesFolders.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataPath(), false, vanillaDataEmptyFoldersList);
                 }
                 else
                 {
-                    ManageFilesFolders.DeleteEmptySubfolders(DataPath, false);
+                    ManageFilesFolders.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataPath(), false);
                 }
 
                 //restore sideloader mods from Mods\Mods
@@ -1843,11 +1796,11 @@ namespace AIHelper
                 vanillaDataEmptyFoldersList = ManageFilesFolders.GetEmptySubfoldersPaths(ManageSettings.GetCurrentGameDataPath(), new StringBuilder());
 
                 //получение всех файлов из Data
-                vanillaDataFilesList = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
+                vanillaDataFilesList = Directory.GetFiles(ManageSettings.GetCurrentGameDataPath(), "*.*", SearchOption.AllDirectories);
 
 
                 //получение всех файлов из папки Overwrite и их обработка
-                var filesInOverwrite = Directory.GetFiles(OverwriteFolder, "*.*", SearchOption.AllDirectories);
+                var filesInOverwrite = Directory.GetFiles(ManageSettings.GetOverwriteFolder(), "*.*", SearchOption.AllDirectories);
                 if (filesInOverwrite.Length > 0)
                 {
                     //if (Path.GetFileName(FilesInOverwrite[0]).Contains("Overwrite"))
@@ -1892,7 +1845,7 @@ namespace AIHelper
                                 //    //    FileInOverwrite = @"\\?\" + FileInOverwrite;
                                 //}
 
-                                fileInDataFolder = fileInOverwrite.Replace(OverwriteFolder, DataPath);
+                                fileInDataFolder = fileInOverwrite.Replace(ManageSettings.GetOverwriteFolder(), ManageSettings.GetCurrentGameDataPath());
                                 if (ManageStrings.CheckForLongPath(ref fileInDataFolder))
                                 {
                                     longPaths.Add(fileInDataFolder.Remove(0, 4));
@@ -1903,7 +1856,7 @@ namespace AIHelper
                                 //}
                                 if (File.Exists(fileInDataFolder))
                                 {
-                                    var fileInBakFolderWhichIsInRes = fileInDataFolder.Replace(DataPath, ManageSettings.GetMOmodeDataFilesBakDirPath());
+                                    var fileInBakFolderWhichIsInRes = fileInDataFolder.Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetMOmodeDataFilesBakDirPath());
                                     //if (FileInBakFolderWhichIsInRES.Length > 259)
                                     //{
                                     //    FileInBakFolderWhichIsInRES = @"\\?\" + FileInBakFolderWhichIsInRES;
@@ -1980,7 +1933,7 @@ namespace AIHelper
                                 pbProgress.Value = n;
                             }
 
-                            var modFolder = Path.Combine(ModsPath, enabledModsList[n]);
+                            var modFolder = Path.Combine(ManageSettings.GetCurrentGameModsPath(), enabledModsList[n]);
                             if (modFolder.Length > 0 && Directory.Exists(modFolder))
                             {
                                 var modFiles = Directory.GetFiles(modFolder, "*.*", SearchOption.AllDirectories);
@@ -2037,7 +1990,7 @@ namespace AIHelper
                                         }
 
                                         //MOCommonModeSwitchButton.Text = "..." + EnabledModsLength + "/" + N + ": " + f + "/" + ModFilesLength;
-                                        fileInDataFolder = fileOfMod.Replace(modFolder, DataPath);
+                                        fileInDataFolder = fileOfMod.Replace(modFolder, ManageSettings.GetCurrentGameDataPath());
                                         if (ManageStrings.CheckForLongPath(ref fileInDataFolder))
                                         {
                                             longPaths.Add(fileInDataFolder.Remove(0, 4));
@@ -2049,7 +2002,7 @@ namespace AIHelper
 
                                         if (File.Exists(fileInDataFolder))
                                         {
-                                            var fileInBakFolderWhichIsInRes = fileInDataFolder.Replace(DataPath, ManageSettings.GetMOmodeDataFilesBakDirPath());
+                                            var fileInBakFolderWhichIsInRes = fileInDataFolder.Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetMOmodeDataFilesBakDirPath());
                                             //if (FileInBakFolderWhichIsInRES.Length > 259)
                                             //{
                                             //    FileInBakFolderWhichIsInRES = @"\\?\" + FileInBakFolderWhichIsInRES;
@@ -2115,7 +2068,7 @@ namespace AIHelper
                 File.WriteAllText(ManageSettings.GetMoToStandartConvertationOperationsListFilePath(), moToStandartConvertationOperationsList.ToString());
                 moToStandartConvertationOperationsList.Clear();
 
-                var dataWithModsFileslist = Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories);
+                var dataWithModsFileslist = Directory.GetFiles(ManageSettings.GetCurrentGameDataPath(), "*.*", SearchOption.AllDirectories);
                 ReplacePathsToVars(ref dataWithModsFileslist);
                 File.WriteAllLines(ManageSettings.GetModdedDataFilesListFilePath(), dataWithModsFileslist);
 
@@ -2157,7 +2110,7 @@ namespace AIHelper
                 RestoreMovedFilesLocation(moToStandartConvertationOperationsList);
 
                 //clean empty folders except whose was already in Data
-                ManageFilesFolders.DeleteEmptySubfolders(DataPath, false, vanillaDataEmptyFoldersList.ToString().SplitToLines().ToArray());
+                ManageFilesFolders.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataPath(), false, vanillaDataEmptyFoldersList.ToString().SplitToLines().ToArray());
 
                 //сообщить об ошибке
                 MessageBox.Show("Mode was not switched. Error:" + Environment.NewLine + ex + "\r\n/debufStr=" + debufStr);
@@ -2301,7 +2254,7 @@ namespace AIHelper
                         continue;
                     }
 
-                    var destFileInDataFolderPath = filesInMOmodeDataFilesBak[f].Replace(mOmodeDataFilesBakDirPath, DataPath);
+                    var destFileInDataFolderPath = filesInMOmodeDataFilesBak[f].Replace(mOmodeDataFilesBakDirPath, ManageSettings.GetCurrentGameDataPath());
                     if (!File.Exists(destFileInDataFolderPath))
                     {
                         var destFileInDataFolderPathFolder = Path.GetDirectoryName(destFileInDataFolderPath);
@@ -2320,37 +2273,37 @@ namespace AIHelper
 
         private void OpenGameFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (Directory.Exists(DataPath))
-                Process.Start("explorer.exe", DataPath);
+            if (Directory.Exists(ManageSettings.GetCurrentGameDataPath()))
+                Process.Start("explorer.exe", ManageSettings.GetCurrentGameDataPath());
         }
 
         private void OpenMOFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (Directory.Exists(MoDirPath))
-                Process.Start("explorer.exe", MoDirPath);
+            if (Directory.Exists(ManageSettings.GetMOdirPath()))
+                Process.Start("explorer.exe", ManageSettings.GetMOdirPath());
         }
 
         private void OpenModsFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (Directory.Exists(ModsPath))
-                Process.Start("explorer.exe", ModsPath);
+            if (Directory.Exists(ManageSettings.GetCurrentGameModsPath()))
+                Process.Start("explorer.exe", ManageSettings.GetCurrentGameModsPath());
         }
 
         private void Install2MODirPathOpenFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (!Directory.Exists(Install2MoDirPath))
+            if (!Directory.Exists(ManageSettings.GetInstall2MoDirPath()))
             {
-                Directory.CreateDirectory(Install2MoDirPath);
+                Directory.CreateDirectory(ManageSettings.GetInstall2MoDirPath());
             }
-            Process.Start("explorer.exe", Install2MoDirPath);
+            Process.Start("explorer.exe", ManageSettings.GetInstall2MoDirPath());
         }
 
         private void OpenMyUserDataFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            string userFilesFolder = Path.Combine(ModsPath, "MyUserData");
+            string userFilesFolder = Path.Combine(ManageSettings.GetCurrentGameModsPath(), "MyUserData");
             if (!Directory.Exists(userFilesFolder))
             {
-                userFilesFolder = Path.Combine(ModsPath, "MyUserFiles");
+                userFilesFolder = Path.Combine(ManageSettings.GetCurrentGameModsPath(), "MyUserFiles");
             }
             if (!Directory.Exists(userFilesFolder))
             {
@@ -2364,9 +2317,9 @@ namespace AIHelper
 
         private void OpenMOOverwriteFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (Directory.Exists(OverwriteFolder))
+            if (Directory.Exists(ManageSettings.GetOverwriteFolder()))
             {
-                Process.Start("explorer.exe", OverwriteFolder);
+                Process.Start("explorer.exe", ManageSettings.GetOverwriteFolder());
             }
         }
 
@@ -2412,9 +2365,9 @@ namespace AIHelper
 
             ManageModOrganizer.CheckBaseGamesPy();
 
-            CurrentGame.InitActions();
-            CurrentGameTitleTextBox.Text = CurrentGame.GetGameDisplayingName();
-            Properties.Settings.Default.CurrentGameDisplayingName = CurrentGame.GetGameDisplayingName();
+            GameData.CurrentGame.InitActions();
+            CurrentGameTitleTextBox.Text = GameData.CurrentGame.GetGameDisplayingName();
+            Properties.Settings.Default.CurrentGameDisplayingName = GameData.CurrentGame.GetGameDisplayingName();
         }
 
         private void CloseExtraForms()
@@ -2504,11 +2457,11 @@ namespace AIHelper
 
             if (MOmode)
             {
-                RunProgram(MOexePath, "moshortcut://:" + ManageSettings.GetIniSettingsExeName());
+                RunProgram(ManageSettings.GetMOexePath(), "moshortcut://:" + ManageSettings.GetIniSettingsExeName());
             }
             else
             {
-                RunProgram(Path.Combine(DataPath, ManageSettings.GetIniSettingsExeName() + ".exe"), string.Empty);
+                RunProgram(Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetIniSettingsExeName() + ".exe"), string.Empty);
             }
             OnOffButtons();
         }
@@ -2589,7 +2542,7 @@ namespace AIHelper
             }
 
             //run zipmod's check if updater found and only for KK, AI, HS2
-            if (!CurrentGame.IsHaveSideloaderMods || !File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath()))
+            if (!GameData.CurrentGame.IsHaveSideloaderMods || !File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath()))
             {
                 UpdateModsFinalize();
                 return;
@@ -2648,7 +2601,7 @@ namespace AIHelper
             //activate all mods with Sideloader modpack inside
             ActivateSideloaderMods(zipmodsGuidList);
 
-            RunProgram(MOexePath, "moshortcut://:" + ManageModOrganizer.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
+            RunProgram(ManageSettings.GetMOexePath(), "moshortcut://:" + ManageModOrganizer.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
 
             //restore modlist
             ManageModOrganizer.RestoreModlist();
@@ -3072,7 +3025,7 @@ namespace AIHelper
                 else
                 {
                     //do not hide checkbox if game can have it
-                    if (CurrentGame.IsHaveSideloaderMods)
+                    if (GameData.CurrentGame.IsHaveSideloaderMods)
                     {
                         cbxBleadingEdgeZipmods.Visible = true;
                     }

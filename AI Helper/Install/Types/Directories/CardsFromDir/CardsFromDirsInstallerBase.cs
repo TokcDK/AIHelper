@@ -101,15 +101,15 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
                 //    //}
 
                 //    //string theDirName = Path.GetFileName(dir);
-                //    var cardsModDir = Path.Combine(Properties.Settings.Default.ModsPath, theDirName);
-                //    //var cardsModDir = GetResultTargetDirPathWithNameCheck(Properties.Settings.Default.ModsPath, Path.GetFileName(dir));
+                //    var cardsModDir = Path.Combine(ManageSettings.GetCurrentGameModsPath(), theDirName);
+                //    //var cardsModDir = GetResultTargetDirPathWithNameCheck(ManageSettings.GetCurrentGameModsPath(), Path.GetFileName(dir));
 
                 //    //Перемещение файлов в ту же папку, если она существует, вместо создания новой
                 //    if (Directory.Exists(cardsModDir))
                 //    {
                 //        foreach (var file in dir.GetFiles("*.*", SearchOption.AllDirectories))
                 //        {
-                //            string fileTarget = file.FullName.Replace(Properties.Settings.Default.Install2MODirPath, Properties.Settings.Default.ModsPath);
+                //            string fileTarget = file.FullName.Replace(Properties.Settings.Default.Install2MODirPath, ManageSettings.GetCurrentGameModsPath());
 
                 //            if (File.Exists(fileTarget))
                 //            {
@@ -192,8 +192,8 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
         {
             string[] targetFolders = new string[3]
             {
-                firstCandidateFolder.Substring(0,1)== " " ? Path.Combine(Properties.Settings.Default.ModsPath, "OrganizedModPack Downloaded"+firstCandidateFolder) : firstCandidateFolder,
-                Path.Combine(Properties.Settings.Default.ModsPath, "MyUserData"),
+                firstCandidateFolder.Substring(0,1)== " " ? Path.Combine(ManageSettings.GetCurrentGameModsPath(), "OrganizedModPack Downloaded"+firstCandidateFolder) : firstCandidateFolder,
+                Path.Combine(ManageSettings.GetCurrentGameModsPath(), "MyUserData"),
                 Properties.Settings.Default.OverwriteFolder
             };
 

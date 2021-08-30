@@ -301,8 +301,8 @@ namespace AIHelper.Manage
         {
             string[] targetFolders = new string[3]
             {
-                firstCandidateFolder.Substring(0,1)== " " ? Path.Combine(Properties.Settings.Default.ModsPath, "OrganizedModPack Downloaded"+firstCandidateFolder) : firstCandidateFolder,
-                Path.Combine(Properties.Settings.Default.ModsPath, "MyUserData"),
+                firstCandidateFolder.Substring(0,1)== " " ? Path.Combine(ManageSettings.GetCurrentGameModsPath(), "OrganizedModPack Downloaded"+firstCandidateFolder) : firstCandidateFolder,
+                Path.Combine(ManageSettings.GetCurrentGameModsPath(), "MyUserData"),
                 Properties.Settings.Default.OverwriteFolder
             };
 

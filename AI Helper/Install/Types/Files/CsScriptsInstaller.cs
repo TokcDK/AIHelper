@@ -14,7 +14,7 @@ namespace AIHelper.Install.Types.Files
             string author = string.Empty;
             string description = string.Empty;
             string modname = "[script]" + name;
-            string moddir = Path.Combine(Properties.Settings.Default.ModsPath, modname);
+            string moddir = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modname);
 
             using (StreamReader sReader = new StreamReader(csFile.FullName))
             {

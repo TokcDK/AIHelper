@@ -1643,7 +1643,7 @@ namespace AIHelper.Manage
                 }
 
                 //symlink path for MOUserData in game's dir
-                DirectoryInfo symlinkPath = new DirectoryInfo(Properties.Settings.Default.OverwriteFolderLink);
+                DirectoryInfo symlinkPath = new DirectoryInfo(ManageSettings.GetOverwriteFolderLink());
 
                 //delete if target is not exists or not symlink and recreate
                 if (!symlinkPath.IsValidSymlinkTargetEquals(objectDir.FullName))

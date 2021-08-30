@@ -8,3 +8,6 @@ dotnet_diagnostic.CA1814.severity = none
 
 # IDE0002: Simplify Member Access
 dotnet_diagnostic.IDE0002.severity = silent
+
+# IDE0040: Add accessibility modifiers
+dotnet_style_require_accessibility_modifiers = always

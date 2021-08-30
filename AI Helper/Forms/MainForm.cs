@@ -254,7 +254,7 @@ namespace AIHelper
             ToolsFixModListButton.Text = T._("Fix modlist");
             btnUpdateMods.Text = T._("Update");
             //button1.Text = T._("Prepare the game");
-            SettingsPage.Text = T._("Settings");
+            SettingsTabPage.Text = T._("Settings");
             //CreateShortcutButton.Text = T._("Shortcut");
             CreateShortcutLinkLabel.Text = T._("Shortcut");
             //FixRegistryButton.Text = T._("Registry");
@@ -266,7 +266,7 @@ namespace AIHelper
             SettingsFoldersGroupBox.Text = T._("Folders");
             OpenGameFolderLinkLabel.Text = T._("Game");
             OpenModsFolderLinkLabel.Text = T._("Mods");
-            MainPage.Text = T._("Info");
+            MainTabPage.Text = T._("Info");
             LaunchTabPage.Text = T._("Launch");
             LaunchTabLaunchLabel.Text = T._("Launch");
             ToolsTabPage.Text = T._("Tools");
@@ -354,133 +354,147 @@ namespace AIHelper
                 ShowAlways = true
             };
 
-            _thToolTip.SetToolTip(ProgramNameLabelPart2, Properties.Settings.Default.ApplicationProductName + " - " + T._("Illusion games manager.\n\n"
-                    + "Move mouse over wished button or text to see info about it"
-                    )
-                );
-            _thToolTip.SetToolTip(SelectedGameLabel, T._("Selected game title"));
+            if (AIGirlHelperTabControl.SelectedTab == MainTabPage)
+            {
+                //Main
+                //THToolTip.SetToolTip(button1, T._("Unpacking mods and resources from 'Downloads' and 'RES' folders for game when they are not installed"));              
 
-            //Launch
-            _thToolTip.SetToolTip(VRGameCheckBox, T._("Check to run VR exe instead on standart"));
 
-            //Main
-            //THToolTip.SetToolTip(button1, T._("Unpacking mods and resources from 'Downloads' and 'RES' folders for game when they are not installed"));
-            _thToolTip.SetToolTip(InstallInModsButton, T._("Install mods and userdata, placed in") + " " + ManageSettings.ModsInstallDirName()
-                + (MOmode ? T._(
-                        " to MO format in Mods when possible"
+            }
+            else if (AIGirlHelperTabControl.SelectedTab == LaunchTabPage)
+            {
+                _thToolTip.SetToolTip(ProgramNameLabelPart2, Properties.Settings.Default.ApplicationProductName + " - " + T._("Illusion games manager.\n\n"
+                        + "Move mouse over wished button or text to see info about it"
+                        )
+                    );
+                _thToolTip.SetToolTip(SelectedGameLabel, T._("Selected game title"));
+
+                //Launch
+                _thToolTip.SetToolTip(VRGameCheckBox, T._("Check to run VR exe instead on standart"));
+
+                _thToolTip.SetToolTip(GameButton, MOmode ? T._("Will execute the Game")
+                    + T._(" from Mod Organizer with attached mods")
+                    : T._("Will execute the Game")
+                    );
+                _thToolTip.SetToolTip(StudioButton, MOmode ? T._("Will execute Studio")
+                    + T._(" from Mod Organizer with attached mods")
+                    : T._("Will execute Studio")
+                    );
+                _thToolTip.SetToolTip(MOButton, T._("Will execute Mod Organizer mod manager where you can manage your mods"));
+                _thToolTip.SetToolTip(JPLauncherRunLinkLabel, MOmode ?
+                      T._("Will execute original game launcher")
+                    + T._(" from Mod Organizer with attached mods")
+                    : T._("Will execute original game launcher")
+                    );
+                _thToolTip.SetToolTip(SettingsButton, T._("Will be opened Settings tab"));
+                _thToolTip.SetToolTip(LaunchModeInfoLinkLabel, T._("Same as button in Tool tab.\n")
+                    + (MOmode ? T._(
+                        "Will convert game from MO Mode to Common mode\n" +
+                        " when you can run exes from Data folder without Mod Organizer.\n" +
+                        " You can convert game back to MO mode\n" +
+                        " when it will be need to install new mods or test your mod config"
                     ) : T._(
-                        " to the game folder when possible"
-                        )));
-            _thToolTip.SetToolTip(ToolsFixModListButton, T._("Fix problems in current enabled mods list"));
-            _thToolTip.SetToolTip(btnUpdateMods,
-                T._("Update Mod Organizer and enabled mods") + "\n" +
-                T._("Mod Organizer already have hardcoded info") + "\n" +
-                T._("Mods will be updated if there exist info in meta.ini notes or in updateInfo.txt") + "\n" +
-                T._("After plugins update check will be executed KKManager StandaloneUpdater for Sideloader modpack updates check for games where it is possible")
-                );
-            _thToolTip.SetToolTip(llOpenOldPluginsBuckupFolder,
-                T._("Open older plugins buckup folder")
-                );
-            _thToolTip.SetToolTip(cbxBleadingEdgeZipmods,
-                T._("Check also Bleeding Edge SIdeloader Modpack in KKManager") + "\n" +
-                T._("Bleeding Edge SIdeloader modpack contains test versions of zipmods which is still not added in main modpacks")
-                );
-            _thToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Open folder where you can drop/download files for autoinstallation"));
-            _thToolTip.SetToolTip(AutoShortcutRegistryCheckBox, T._("When checked will create shortcut for the AI Helper on Desktop and will fix registry if need"));
-            _thToolTip.SetToolTip(DisplaySettingsGroupBox, T._("Game Display settings"));
-            _thToolTip.SetToolTip(SetupXmlLinkLabel, T._("Open Setup.xml in notepad"));
-            _thToolTip.SetToolTip(ResolutionComboBox, T._("Select preferred screen resolution"));
-            _thToolTip.SetToolTip(FullScreenCheckBox, T._("When checked game will be in fullscreen mode"));
-            _thToolTip.SetToolTip(QualityComboBox, T._("Select preferred graphics quality"));
-            //THToolTip.SetToolTip(CreateShortcutButton, T._("Will create shortcut in Desktop if not exist"));
-            _thToolTip.SetToolTip(CreateShortcutLinkLabel, T._("Will create shortcut in Desktop if not exist"));
-            //THToolTip.SetToolTip(FixRegistryButton, T._("Will set Data dir with game files as install dir in registry"));
-            _thToolTip.SetToolTip(FixRegistryLinkLabel, T._("Will set Data dir with game files as install dir in registry"));
-            _thToolTip.SetToolTip(GameButton, MOmode ? T._("Will execute the Game")
-                + T._(" from Mod Organizer with attached mods")
-                : T._("Will execute the Game")
-                );
-            _thToolTip.SetToolTip(StudioButton, MOmode ? T._("Will execute Studio")
-                + T._(" from Mod Organizer with attached mods")
-                : T._("Will execute Studio")
-                );
-            _thToolTip.SetToolTip(MOButton, T._("Will execute Mod Organizer mod manager where you can manage your mods"));
-            _thToolTip.SetToolTip(JPLauncherRunLinkLabel, MOmode ?
-                  T._("Will execute original game launcher")
-                + T._(" from Mod Organizer with attached mods")
-                : T._("Will execute original game launcher")
-                );
-            _thToolTip.SetToolTip(SettingsButton, T._("Will be opened Settings tab"));
-            _thToolTip.SetToolTip(MOCommonModeSwitchButton, MOmode ? T._(
-                    "Will convert game from MO Mode to Common mode\n" +
-                    " when you can run exes from Data folder without Mod Organizer.\n You can convert game back to MO mode\n" +
-                    " when it will be need to install new mods or test your mod config"
-                ) : T._(
-                    "Will convert the game to MO mode\n" +
-                    " when all mod files will be moved back to Mods folder\n" +
-                    " in their folders and vanilla files restored"
-                )
-                );
-            _thToolTip.SetToolTip(LaunchModeInfoLinkLabel, T._("Same as button in Tool tab.\n")
-                + (MOmode ? T._(
-                    "Will convert game from MO Mode to Common mode\n" +
-                    " when you can run exes from Data folder without Mod Organizer.\n" +
-                    " You can convert game back to MO mode\n" +
-                    " when it will be need to install new mods or test your mod config"
-                ) : T._(
-                    "Will convert the game to MO mode\n when all mod files will be moved back to Mods folder\n" +
-                    " in their folders and vanilla files restored"
-                )
-                )
-                );
+                        "Will convert the game to MO mode\n when all mod files will be moved back to Mods folder\n" +
+                        " in their folders and vanilla files restored"
+                    )
+                    )
+                    );
 
-            //Open Folders
-            _thToolTip.SetToolTip(OpenGameFolderLinkLabel, T._("Open Data folder of selected game"));
-            _thToolTip.SetToolTip(OpenModsFolderLinkLabel, T._("Open Mods folder of selected game"));
-            _thToolTip.SetToolTip(OpenMOFolderLinkLabel, T._("Open Mod Organizer folder"));
-            _thToolTip.SetToolTip(OpenMOOverwriteFolderLinkLabel, T._("Open Overwrite folder of Mod Organizer with possible new generated files for selected game\n\nFiles here have highest priority and will be loaded over any enabled mod files"));
-            _thToolTip.SetToolTip(OpenMyUserDataFolderLinkLabel, T._("Open MyUserData folder in Mods if exist\n\nHere placed usual User files of Organized ModPack for selected game"));
+                _thToolTip.SetToolTip(pbDiscord, T._("Discord page. Info, links, support."));
+                _thToolTip.SetToolTip(OpenLogLinkLabel, T._("Open BepinEx log if found"));
+                _thToolTip.SetToolTip(BepInExDisplayedLogLevelLabel, T._("Click here to select log level\n" +
+                    "Only displays the specified log level and above in the console output"));
+            }
+            else if (AIGirlHelperTabControl.SelectedTab == SettingsTabPage)
+            {
+                _thToolTip.SetToolTip(AutoShortcutRegistryCheckBox, T._("When checked will create shortcut for the AI Helper on Desktop and will fix registry if need"));
+                _thToolTip.SetToolTip(DisplaySettingsGroupBox, T._("Game Display settings"));
+                _thToolTip.SetToolTip(SetupXmlLinkLabel, T._("Open Setup.xml in notepad"));
+                _thToolTip.SetToolTip(ResolutionComboBox, T._("Select preferred screen resolution"));
+                _thToolTip.SetToolTip(FullScreenCheckBox, T._("When checked game will be in fullscreen mode"));
+                _thToolTip.SetToolTip(QualityComboBox, T._("Select preferred graphics quality"));
+                //THToolTip.SetToolTip(CreateShortcutButton, T._("Will create shortcut in Desktop if not exist"));
+                _thToolTip.SetToolTip(CreateShortcutLinkLabel, T._("Will create shortcut in Desktop if not exist"));
+                //THToolTip.SetToolTip(FixRegistryButton, T._("Will set Data dir with game files as install dir in registry"));
+                _thToolTip.SetToolTip(FixRegistryLinkLabel, T._("Will set Data dir with game files as install dir in registry"));
 
-            _thToolTip.SetToolTip(LaunchLinksLinkLabel, T._("Open list of links for game resources"));
-            _thToolTip.SetToolTip(pbDiscord, T._("Discord page. Info, links, support."));
-            _thToolTip.SetToolTip(ExtraSettingsLinkLabel, T._("Open extra setting window for plugins and etc"));
+                //Open Folders
+                _thToolTip.SetToolTip(OpenGameFolderLinkLabel, T._("Open Data folder of selected game"));
+                _thToolTip.SetToolTip(OpenModsFolderLinkLabel, T._("Open Mods folder of selected game"));
+                _thToolTip.SetToolTip(OpenMOFolderLinkLabel, T._("Open Mod Organizer folder"));
+                _thToolTip.SetToolTip(OpenMOOverwriteFolderLinkLabel, T._("Open Overwrite folder of Mod Organizer with possible new generated files for selected game\n\nFiles here have highest priority and will be loaded over any enabled mod files"));
+                _thToolTip.SetToolTip(OpenMyUserDataFolderLinkLabel, T._("Open MyUserData folder in Mods if exist\n\nHere placed usual User files of Organized ModPack for selected game"));
 
-            _thToolTip.SetToolTip(OpenLogLinkLabel, T._("Open BepinEx log if found"));
-            _thToolTip.SetToolTip(BepInExDisplayedLogLevelLabel, T._("Click here to select log level\n" +
-                "Only displays the specified log level and above in the console output"));
+                _thToolTip.SetToolTip(LaunchLinksLinkLabel, T._("Open list of links for game resources"));
+                _thToolTip.SetToolTip(ExtraSettingsLinkLabel, T._("Open extra setting window for plugins and etc"));
 
+                _thToolTip.SetToolTip(CurrentGameComboBox, T._("List of found games. Current") + ": " + GameData.CurrentGame.GetGameDisplayingName());
+            }
+            else if (AIGirlHelperTabControl.SelectedTab == ToolsTabPage)
+            {
+                _thToolTip.SetToolTip(ToolsFixModListButton, T._("Fix problems in current enabled mods list"));
+                _thToolTip.SetToolTip(btnUpdateMods,
+                    T._("Update Mod Organizer and enabled mods") + "\n" +
+                    T._("Mod Organizer already have hardcoded info") + "\n" +
+                    T._("Mods will be updated if there exist info in meta.ini notes or in updateInfo.txt") + "\n" +
+                    T._("After plugins update check will be executed KKManager StandaloneUpdater for Sideloader modpack updates check for games where it is possible")
+                    );
+                _thToolTip.SetToolTip(llOpenOldPluginsBuckupFolder,
+                    T._("Open older plugins buckup folder")
+                    );
+                _thToolTip.SetToolTip(cbxBleadingEdgeZipmods,
+                    T._("Check also Bleeding Edge SIdeloader Modpack in KKManager") + "\n" +
+                    T._("Bleeding Edge SIdeloader modpack contains test versions of zipmods which is still not added in main modpacks")
+                    );
+                _thToolTip.SetToolTip(MOCommonModeSwitchButton, MOmode ? T._(
+                        "Will convert game from MO Mode to Common mode\n" +
+                        " when you can run exes from Data folder without Mod Organizer.\n You can convert game back to MO mode\n" +
+                        " when it will be need to install new mods or test your mod config"
+                    ) : T._(
+                        "Will convert the game to MO mode\n" +
+                        " when all mod files will be moved back to Mods folder\n" +
+                        " in their folders and vanilla files restored"
+                    )
+                    );
 
-            _thToolTip.SetToolTip(CurrentGameComboBox, T._("List of found games. Current") + ": " + GameData.CurrentGame.GetGameDisplayingName());
+                var toMo = ManageSettings.ModsInstallDirName();
+                _thToolTip.SetToolTip(Open2MOLinkLabel,
+                    T._($"Open {toMo} folder fo selected game" +
+                    "\n\nHere can be placed mod files which you want to install for selected game in approriate subfolders in mods" +
+                    "\nand then can be installed all by one click on") + " " + InstallInModsButton.Text + " " + T._("button") +
+                    "\n" + T._("which can be found in") + " " + ToolsTabPage.Text + " " + T._("tab page") +
+                    "\n\n" + T._("Helper recognize") + ":"
+                    + "\n " + T._($".dll files of BepinEx plugins in \"{toMo}\" folder")
+                    + "\n " + T._($"Sideloader mod archives in \"{toMo}\" folder")
+                    + "\n " + T._($"Female character cards in \"{toMo}\" folder")
+                    + "\n " + T._("Female character cards in \"f\" subfolder")
+                    + "\n " + T._("Male character cards in \"m\" subfolder")
+                    + "\n " + T._("Coordinate clothes set cards in \"c\" subfolder")
+                    + "\n " + T._("Studio scene cards in \"s\" subfolder")
+                    + "\n " + T._("Cardframe Front cards in \"cf\" subfolder")
+                    + "\n " + T._("Cardframe Back cards in \"cf\" subfolder")
+                    + "\n " + T._($"Script loader scripts in \"{toMo}\" folder")
+                    + "\n " + T._("Housing plan cards in \"h\\01\", \"h\\02\", \"h\\03\" subfolders")
+                    + "\n " + T._("Overlays cards in \"o\" subfolder")
+                    + "\n " + T._("folders with overlays cards in \"o\" subfolder")
+                    + "\n " + T._($"Subfolders with modfiles in \"{toMo}\" folder")
+                    + "\n " + T._($"Zip archives with mod files in \"{toMo}\" folder")
+                    + "\n " + T._($"Zip archives with mod files in \"{toMo}\" folder")
+                    + "\n\n" + T._($"Any Rar and 7z archives in \"{toMo}\" folder will be extracted" +
+                    "\nSome recognized mods can be updated instead of be installed as new mod" +
+                    "\nMost of mods will be automatically activated except .cs scripts" +
+                    "\nwhich always optional and often it is cheats or can slowdown/break game")
 
-            var toMo = ManageSettings.ModsInstallDirName();
-            _thToolTip.SetToolTip(Open2MOLinkLabel,
-                T._($"Open {toMo} folder fo selected game" +
-                "\n\nHere can be placed mod files which you want to install for selected game in approriate subfolders in mods" +
-                "\nand then can be installed all by one click on") + " " + InstallInModsButton.Text + " " + T._("button") +
-                "\n" + T._("which can be found in") + " " + ToolsTabPage.Text + " " + T._("tab page") +
-                "\n\n" + T._("Helper recognize") + ":"
-                + "\n " + T._($".dll files of BepinEx plugins in \"{toMo}\" folder")
-                + "\n " + T._($"Sideloader mod archives in \"{toMo}\" folder")
-                + "\n " + T._($"Female character cards in \"{toMo}\" folder")
-                + "\n " + T._("Female character cards in \"f\" subfolder")
-                + "\n " + T._("Male character cards in \"m\" subfolder")
-                + "\n " + T._("Coordinate clothes set cards in \"c\" subfolder")
-                + "\n " + T._("Studio scene cards in \"s\" subfolder")
-                + "\n " + T._("Cardframe Front cards in \"cf\" subfolder")
-                + "\n " + T._("Cardframe Back cards in \"cf\" subfolder")
-                + "\n " + T._($"Script loader scripts in \"{toMo}\" folder")
-                + "\n " + T._("Housing plan cards in \"h\\01\", \"h\\02\", \"h\\03\" subfolders")
-                + "\n " + T._("Overlays cards in \"o\" subfolder")
-                + "\n " + T._("folders with overlays cards in \"o\" subfolder")
-                + "\n " + T._($"Subfolders with modfiles in \"{toMo}\" folder")
-                + "\n " + T._($"Zip archives with mod files in \"{toMo}\" folder")
-                + "\n " + T._($"Zip archives with mod files in \"{toMo}\" folder")
-                + "\n\n" + T._($"Any Rar and 7z archives in \"{toMo}\" folder will be extracted" +
-                "\nSome recognized mods can be updated instead of be installed as new mod" +
-                "\nMost of mods will be automatically activated except .cs scripts" +
-                "\nwhich always optional and often it is cheats or can slowdown/break game")
-
-                );
+                    ); 
+                
+                _thToolTip.SetToolTip(InstallInModsButton, T._("Install mods and userdata, placed in") + " " + ManageSettings.ModsInstallDirName()
+                     + (MOmode ? T._(
+                             " to MO format in Mods when possible"
+                         ) : T._(
+                             " to the game folder when possible"
+                             )));
+                _thToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Open folder where you can drop/download files for autoinstallation"));
+            }
             ////////////////////////////
         }
 
@@ -897,7 +911,7 @@ namespace AIHelper
 
         private void SettingsButton_Click(object sender, EventArgs e)
         {
-            AIGirlHelperTabControl.SelectedTab = SettingsPage;
+            AIGirlHelperTabControl.SelectedTab = SettingsTabPage;
             //OnOffButtons(false);
             //if (MOmode)
             //{
@@ -2788,7 +2802,7 @@ namespace AIHelper
 
         private static void SortZipmodsPacks(ZipmodGUIIds zipmodsGuidList, Form progressForm, ProgressBar pBar)
         {
-            foreach(var sortingDirPath in new[] {
+            foreach (var sortingDirPath in new[] {
                 ManageSettings.GetOverwriteFolder()
                 ,
                 Path.Combine(ManageSettings.GetCurrentGameModsPath(), ManageSettings.KKManagerFilesModName())
@@ -3097,6 +3111,15 @@ namespace AIHelper
             {
                 File.Delete(ManageSettings.ZipmodsBleedingEdgeMarkFilePath());
             }
+        }
+
+        private void AIGirlHelperTabControl_TabIndexChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void AIGirlHelperTabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SetTooltips();
         }
 
         //Disable close window button

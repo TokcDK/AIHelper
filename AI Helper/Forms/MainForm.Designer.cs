@@ -30,7 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.AIGirlHelperTabControl = new System.Windows.Forms.TabControl();
-            this.MainPage = new System.Windows.Forms.TabPage();
+            this.MainTabPage = new System.Windows.Forms.TabPage();
             this.InfoPagePanel = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -59,7 +59,7 @@
             this.GameButton = new System.Windows.Forms.Button();
             this.MOButton = new System.Windows.Forms.Button();
             this.SettingsButton = new System.Windows.Forms.Button();
-            this.SettingsPage = new System.Windows.Forms.TabPage();
+            this.SettingsTabPage = new System.Windows.Forms.TabPage();
             this.SettingsPagePanel = new System.Windows.Forms.Panel();
             this.cbxNtlea = new System.Windows.Forms.CheckBox();
             this.FixRegistryLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -92,14 +92,14 @@
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
             this.AIGirlHelperTabControl.SuspendLayout();
-            this.MainPage.SuspendLayout();
+            this.MainTabPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
             this.LabelPanel2.SuspendLayout();
             this.LabelPanel.SuspendLayout();
             this.LaunchTabPage.SuspendLayout();
             this.LaunchPagePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbDiscord)).BeginInit();
-            this.SettingsPage.SuspendLayout();
+            this.SettingsTabPage.SuspendLayout();
             this.SettingsPagePanel.SuspendLayout();
             this.SettingsFoldersGroupBox.SuspendLayout();
             this.DisplaySettingsGroupBox.SuspendLayout();
@@ -109,9 +109,9 @@
             // 
             // AIGirlHelperTabControl
             // 
-            this.AIGirlHelperTabControl.Controls.Add(this.MainPage);
+            this.AIGirlHelperTabControl.Controls.Add(this.MainTabPage);
             this.AIGirlHelperTabControl.Controls.Add(this.LaunchTabPage);
-            this.AIGirlHelperTabControl.Controls.Add(this.SettingsPage);
+            this.AIGirlHelperTabControl.Controls.Add(this.SettingsTabPage);
             this.AIGirlHelperTabControl.Controls.Add(this.ToolsTabPage);
             this.AIGirlHelperTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.AIGirlHelperTabControl.HotTrack = true;
@@ -120,20 +120,21 @@
             this.AIGirlHelperTabControl.SelectedIndex = 0;
             this.AIGirlHelperTabControl.Size = new System.Drawing.Size(354, 187);
             this.AIGirlHelperTabControl.TabIndex = 0;
+            this.AIGirlHelperTabControl.SelectedIndexChanged += new System.EventHandler(this.AIGirlHelperTabControl_SelectedIndexChanged);
             this.AIGirlHelperTabControl.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.AIGirlHelperTabControl_Selecting);
             this.AIGirlHelperTabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.AIGirlHelperTabControl_Selected);
             // 
-            // MainPage
+            // MainTabPage
             // 
-            this.MainPage.Controls.Add(this.InfoPagePanel);
-            this.MainPage.ForeColor = System.Drawing.Color.Black;
-            this.MainPage.Location = new System.Drawing.Point(4, 22);
-            this.MainPage.Name = "MainPage";
-            this.MainPage.Padding = new System.Windows.Forms.Padding(3);
-            this.MainPage.Size = new System.Drawing.Size(346, 161);
-            this.MainPage.TabIndex = 0;
-            this.MainPage.Text = "Info";
-            this.MainPage.UseVisualStyleBackColor = true;
+            this.MainTabPage.Controls.Add(this.InfoPagePanel);
+            this.MainTabPage.ForeColor = System.Drawing.Color.Black;
+            this.MainTabPage.Location = new System.Drawing.Point(4, 22);
+            this.MainTabPage.Name = "MainTabPage";
+            this.MainTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.MainTabPage.Size = new System.Drawing.Size(346, 161);
+            this.MainTabPage.TabIndex = 0;
+            this.MainTabPage.Text = "Info";
+            this.MainTabPage.UseVisualStyleBackColor = true;
             // 
             // InfoPagePanel
             // 
@@ -504,16 +505,16 @@
             this.SettingsButton.UseVisualStyleBackColor = false;
             this.SettingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
             // 
-            // SettingsPage
+            // SettingsTabPage
             // 
-            this.SettingsPage.Controls.Add(this.SettingsPagePanel);
-            this.SettingsPage.Location = new System.Drawing.Point(4, 22);
-            this.SettingsPage.Name = "SettingsPage";
-            this.SettingsPage.Padding = new System.Windows.Forms.Padding(3);
-            this.SettingsPage.Size = new System.Drawing.Size(346, 161);
-            this.SettingsPage.TabIndex = 1;
-            this.SettingsPage.Text = "Settings";
-            this.SettingsPage.UseVisualStyleBackColor = true;
+            this.SettingsTabPage.Controls.Add(this.SettingsPagePanel);
+            this.SettingsTabPage.Location = new System.Drawing.Point(4, 22);
+            this.SettingsTabPage.Name = "SettingsTabPage";
+            this.SettingsTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.SettingsTabPage.Size = new System.Drawing.Size(346, 161);
+            this.SettingsTabPage.TabIndex = 1;
+            this.SettingsTabPage.Text = "Settings";
+            this.SettingsTabPage.UseVisualStyleBackColor = true;
             // 
             // SettingsPagePanel
             // 
@@ -950,7 +951,7 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AI_Helper_FormClosing);
             this.LocationChanged += new System.EventHandler(this.AIHelper_LocationChanged);
             this.AIGirlHelperTabControl.ResumeLayout(false);
-            this.MainPage.ResumeLayout(false);
+            this.MainTabPage.ResumeLayout(false);
             this.InfoPagePanel.ResumeLayout(false);
             this.InfoPagePanel.PerformLayout();
             this.LabelPanel2.ResumeLayout(false);
@@ -959,7 +960,7 @@
             this.LaunchPagePanel.ResumeLayout(false);
             this.LaunchPagePanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbDiscord)).EndInit();
-            this.SettingsPage.ResumeLayout(false);
+            this.SettingsTabPage.ResumeLayout(false);
             this.SettingsPagePanel.ResumeLayout(false);
             this.SettingsPagePanel.PerformLayout();
             this.SettingsFoldersGroupBox.ResumeLayout(false);
@@ -974,13 +975,13 @@
         }
 
         #endregion
-        private System.Windows.Forms.TabPage MainPage;
+        private System.Windows.Forms.TabPage MainTabPage;
         private System.Windows.Forms.Panel InfoPagePanel;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel LabelPanel;
         private System.Windows.Forms.Panel LabelPanel2;
-        private System.Windows.Forms.TabPage SettingsPage;
+        private System.Windows.Forms.TabPage SettingsTabPage;
         private System.Windows.Forms.Panel SettingsPagePanel;
         private System.Windows.Forms.CheckBox AutoShortcutRegistryCheckBox;
         private System.Windows.Forms.GroupBox DisplaySettingsGroupBox;

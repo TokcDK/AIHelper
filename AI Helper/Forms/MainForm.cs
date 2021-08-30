@@ -433,9 +433,9 @@ namespace AIHelper
 
                 var toMo = ManageSettings.ModsInstallDirName();
                 _thToolTip.SetToolTip(SettingsOpen2MOLinkLabel,
-                    T._($"Open {toMo} folder fo selected game" +
-                    "\n\nHere can be placed mod files which you want to install for selected game in approriate subfolders in mods" +
-                    "\nand then can be installed all by one click on") + " " + InstallInModsButton.Text + " " + T._("button") +
+                    T._($"Open {toMo} folder fo selected game") +
+                    T._("\n\nHere can be placed mod files which you want to install for selected game in approriate subfolders in mods") +
+                    T._("\nand then can be installed all by one click on") + " " + InstallInModsButton.Text + " " + T._("button") +
                     "\n" + T._("which can be found in") + " " + ToolsTabPage.Text + " " + T._("tab page") +
                     "\n\n" + T._("Helper recognize") + ":"
                     + "\n " + T._($".dll files of BepinEx plugins in \"{toMo}\" folder")
@@ -454,10 +454,10 @@ namespace AIHelper
                     + "\n " + T._($"Subfolders with modfiles in \"{toMo}\" folder")
                     + "\n " + T._($"Zip archives with mod files in \"{toMo}\" folder")
                     + "\n " + T._($"Zip archives with mod files in \"{toMo}\" folder")
-                    + "\n\n" + T._($"Any Rar and 7z archives in \"{toMo}\" folder will be extracted" +
-                    "\nSome recognized mods can be updated instead of be installed as new mod" +
-                    "\nMost of mods will be automatically activated except .cs scripts" +
-                    "\nwhich always optional and often it is cheats or can slowdown/break game")
+                    + "\n\n" + T._($"Any Rar and 7z archives in \"{toMo}\" folder will be extracted") +
+                    T._("\nSome recognized mods can be updated instead of be installed as new mod") +
+                    T._("\nMost of mods will be automatically activated except .cs scripts") +
+                    T._("\nwhich always optional and often it is cheats or can slowdown/break game")
 
                     );
 

@@ -7,7 +7,6 @@ using AIHelper.SharedData;
 using CheckForEmptyDir;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -36,7 +35,7 @@ namespace AIHelper
         private static string MoDirPath { get => Properties.Settings.Default.MODirPath; set => Properties.Settings.Default.MODirPath = value; }
         private static string MOexePath { get => Properties.Settings.Default.MOexePath; set => Properties.Settings.Default.MOexePath = value; }
         private static string OverwriteFolder { get => Properties.Settings.Default.OverwriteFolder; set => Properties.Settings.Default.OverwriteFolder = value; }
-        private static string OverwriteFolderLink { get => Properties.Settings.Default.OverwriteFolderLink; set => Properties.Settings.Default.OverwriteFolderLink = value; }
+        //private static string OverwriteFolderLink { get => Properties.Settings.Default.OverwriteFolderLink; set => Properties.Settings.Default.OverwriteFolderLink = value; }
         private static string SetupXmlPath { get => Properties.Settings.Default.SetupXmlPath; set => Properties.Settings.Default.SetupXmlPath = value; }
         private static string ApplicationStartupPath { /*get => Properties.Settings.Default.ApplicationStartupPath; */set => Properties.Settings.Default.ApplicationStartupPath = value; }
 
@@ -76,23 +75,16 @@ namespace AIHelper
 
         private async void CheckMoAndEndInit()
         {
-            if (!File.Exists(Path.Combine(ManageSettings.GetMOexePath())))
+            //MO data parse
+            if (!Directory.Exists(ManageSettings.GetMOdirPath()))
             {
-                MessageBox.Show("Mod Organizer not found!");
-
-                Process.Start(ManageSettings.GetModOrganizerGithubLink());
-
-                Application.Exit();
-                this.Enabled = false;
-                return;
+                Directory.CreateDirectory(ManageSettings.GetMOdirPath());
             }
-
             if (!File.Exists(ManageSettings.GetMOexePath()))
             {
                 await new Updater().Update().ConfigureAwait(true);
             }
 
-            //MO data parse
             Properties.Settings.Default.MOIsNew = ManageModOrganizer.IsMo23OrNever();
 
             ManageModOrganizer.RedefineGameMoData();
@@ -147,7 +139,7 @@ namespace AIHelper
             Properties.Settings.Default.ModOrganizerINIpath = ManageSettings.GetModOrganizerIniPath();
             Install2MoDirPath = ManageSettings.GetInstall2MoDirPath();
             OverwriteFolder = ManageSettings.GetOverwriteFolder();
-            OverwriteFolderLink = ManageSettings.GetOverwriteFolderLink();
+            //OverwriteFolderLink = ManageSettings.GetOverwriteFolderLink();
         }
 
         private bool SetListOfAddedGames()

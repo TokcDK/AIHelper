@@ -378,31 +378,30 @@ namespace AIHelper
 
                 var toMo = ManageSettings.ModsInstallDirName();
                 _thToolTip.SetToolTip(SettingsOpen2MOLinkLabel,
-                    T._($"Open {toMo} folder fo selected game") +
-                    T._("\n\nHere can be placed mod files which you want to install for selected game in approriate subfolders in mods") +
-                    T._("\nand then can be installed all by one click on") + " " + InstallInModsButton.Text + " " + T._("button") +
+                    T._("Open folder, where from mod files can be installed fo selected game") +
+                    T._("\n\nHere can be placed mod files which you want to install for selected game in approriate subfolders in mods" +
+                    "\nand then can be installed all by one click on") + " " + InstallInModsButton.Text + " " + T._("button") +
                     "\n" + T._("which can be found in") + " " + ToolsTabPage.Text + " " + T._("tab page") +
                     "\n\n" + T._("Helper recognize") + ":"
-                    + "\n " + T._($".dll files of BepinEx plugins in \"{toMo}\" folder")
-                    + "\n " + T._($"Sideloader mod archives in \"{toMo}\" folder")
-                    + "\n " + T._($"Female character cards in \"{toMo}\" folder")
+                    + "\n " + T._(".dll files of BepinEx plugins")
+                    + "\n " + T._("Sideloader mod archives")
+                    + "\n " + T._("Female character cards")
                     + "\n " + T._("Female character cards in \"f\" subfolder")
                     + "\n " + T._("Male character cards in \"m\" subfolder")
                     + "\n " + T._("Coordinate clothes set cards in \"c\" subfolder")
                     + "\n " + T._("Studio scene cards in \"s\" subfolder")
                     + "\n " + T._("Cardframe Front cards in \"cf\" subfolder")
                     + "\n " + T._("Cardframe Back cards in \"cf\" subfolder")
-                    + "\n " + T._($"Script loader scripts in \"{toMo}\" folder")
+                    + "\n " + T._("Script loader scripts")
                     + "\n " + T._("Housing plan cards in \"h\\01\", \"h\\02\", \"h\\03\" subfolders")
                     + "\n " + T._("Overlays cards in \"o\" subfolder")
                     + "\n " + T._("folders with overlays cards in \"o\" subfolder")
-                    + "\n " + T._($"Subfolders with modfiles in \"{toMo}\" folder")
-                    + "\n " + T._($"Zip archives with mod files in \"{toMo}\" folder")
-                    + "\n " + T._($"Zip archives with mod files in \"{toMo}\" folder")
-                    + "\n\n" + T._($"Any Rar and 7z archives in \"{toMo}\" folder will be extracted") +
+                    + "\n " + T._("Subfolders with modfiles")
+                    + "\n " + T._("Zip archives with mod files")
+                    + "\n\n" + T._("Any Rar and 7z archives will be extracted for install") +
                     T._("\nSome recognized mods can be updated instead of be installed as new mod") +
-                    T._("\nMost of mods will be automatically activated except .cs scripts") +
-                    T._("\nwhich always optional and often it is cheats or can slowdown/break game")
+                    T._("\nMost of mods will be automatically activated except .cs scripts" +
+                    "\nwhich always optional and often it is cheats or can slowdown/break game")
 
                     );
 
@@ -428,7 +427,7 @@ namespace AIHelper
                 _thToolTip.SetToolTip(UpdatePluginsCheckBox, T._("Check if need to run update check for plugins and Mod Organizer.")
                     );
                 _thToolTip.SetToolTip(cbxBleadingEdgeZipmods,
-                    T._("Check also Bleeding Edge Sideloader Modpack in KKManager") + "\n" +
+                    T._("Check also updates of Bleeding Edge Sideloader Modpack in KKManager") + "\n" +
                     T._("Bleeding Edge Sideloader modpack contains test versions of zipmods which is still not added in main modpacks") + "\n\n" +
                     sideloaderPacksWarning
                     );

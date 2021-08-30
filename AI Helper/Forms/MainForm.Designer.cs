@@ -71,7 +71,7 @@
             this.CurrentGameLabel = new System.Windows.Forms.Label();
             this.CurrentGameComboBox = new System.Windows.Forms.ComboBox();
             this.SettingsFoldersGroupBox = new System.Windows.Forms.GroupBox();
-            this.Open2MOLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.SettingsOpen2MOLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenMOOverwriteFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenMyUserDataFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenModsFolderLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -650,7 +650,7 @@
             // SettingsFoldersGroupBox
             // 
             this.SettingsFoldersGroupBox.BackColor = System.Drawing.Color.Transparent;
-            this.SettingsFoldersGroupBox.Controls.Add(this.Open2MOLinkLabel);
+            this.SettingsFoldersGroupBox.Controls.Add(this.SettingsOpen2MOLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenMOOverwriteFolderLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenMyUserDataFolderLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenModsFolderLinkLabel);
@@ -666,16 +666,16 @@
             // 
             // Open2MOLinkLabel
             // 
-            this.Open2MOLinkLabel.AutoSize = true;
-            this.Open2MOLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.Open2MOLinkLabel.Location = new System.Drawing.Point(46, 39);
-            this.Open2MOLinkLabel.Name = "Open2MOLinkLabel";
-            this.Open2MOLinkLabel.Size = new System.Drawing.Size(29, 13);
-            this.Open2MOLinkLabel.TabIndex = 5;
-            this.Open2MOLinkLabel.TabStop = true;
-            this.Open2MOLinkLabel.Text = "2MO";
-            this.Open2MOLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
-            this.Open2MOLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.Install2MODirPathOpenFolderLinkLabel_LinkClicked);
+            this.SettingsOpen2MOLinkLabel.AutoSize = true;
+            this.SettingsOpen2MOLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.SettingsOpen2MOLinkLabel.Location = new System.Drawing.Point(46, 39);
+            this.SettingsOpen2MOLinkLabel.Name = "Open2MOLinkLabel";
+            this.SettingsOpen2MOLinkLabel.Size = new System.Drawing.Size(29, 13);
+            this.SettingsOpen2MOLinkLabel.TabIndex = 5;
+            this.SettingsOpen2MOLinkLabel.TabStop = true;
+            this.SettingsOpen2MOLinkLabel.Text = "2MO";
+            this.SettingsOpen2MOLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
+            this.SettingsOpen2MOLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.Install2MODirPathOpenFolderLinkLabel_LinkClicked);
             // 
             // OpenMOOverwriteFolderLinkLabel
             // 
@@ -1012,7 +1012,7 @@
         private System.Windows.Forms.ComboBox CurrentGameComboBox;
         private System.Windows.Forms.Label ProgramNameLabelPart1;
         private System.Windows.Forms.Label ProgramNameLabelPart2;
-        private System.Windows.Forms.LinkLabel Open2MOLinkLabel;
+        private System.Windows.Forms.LinkLabel SettingsOpen2MOLinkLabel;
         private System.Windows.Forms.Label SelectedGameLabel;
         private System.Windows.Forms.CheckBox BepInExConsoleCheckBox;
         private System.Windows.Forms.Label BepInExDisplayedLogLevelLabel;

@@ -86,7 +86,7 @@ namespace AIHelper.Manage
             }
         }
 
-        internal static void SwitchFormMinimizedNormalAll(Form[] forms)
+        internal static void SwitchFormMinimizedNormalAll(Form[] forms, bool forceMinimize = false, bool forceMaximize = false)
         {
             foreach (var form in forms)
             {
@@ -94,19 +94,19 @@ namespace AIHelper.Manage
             }
         }
 
-        internal static void SwitchFormMinimizedNormal(Form form)
+        internal static void SwitchFormMinimizedNormal(Form form, bool forceMinimize = false, bool forceMaximize = false)
         {
             //http://www.cyberforum.ru/windows-forms/thread31052.html
             if (form == null || form.IsDisposed)
             {
             }
-            else if (form.WindowState == FormWindowState.Normal)
+            else if (forceMinimize || form.WindowState == FormWindowState.Normal)
             {
                 form.WindowState = FormWindowState.Minimized;
 
                 SharedData.GameData.MainForm.DisposeTooltips(); // tooltips is not need here
             }
-            else if (form.WindowState == FormWindowState.Minimized)
+            else if (forceMaximize || form.WindowState == FormWindowState.Minimized)
             {
                 form.WindowState = FormWindowState.Normal;
 

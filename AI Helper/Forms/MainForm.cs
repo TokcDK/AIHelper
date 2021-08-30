@@ -984,10 +984,8 @@ namespace AIHelper
                 program.StartInfo.WorkingDirectory = Path.GetDirectoryName(programPath);
             }
 
-            //http://www.cyberforum.ru/windows-forms/thread31052.html
-            var formsToMinimize = new Form[3] { this, _linksForm, _extraSettingsForm };
             // свернуть
-            ManageOther.SwitchFormMinimizedNormalAll(formsToMinimize);
+            ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize());
             //WindowState = FormWindowState.Minimized;
             //if (LinksForm == null || LinksForm.IsDisposed)
             //{
@@ -1008,7 +1006,7 @@ namespace AIHelper
             program.WaitForExit();
 
             // Показать
-            ManageOther.SwitchFormMinimizedNormalAll(formsToMinimize);
+            ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize());
             //WindowState = FormWindowState.Normal;
             //if (LinksForm == null || LinksForm.IsDisposed)
             //{
@@ -1071,7 +1069,7 @@ namespace AIHelper
             SetGraphicsQuality((sender as ComboBox).SelectedIndex.ToString(CultureInfo.InvariantCulture));
         }
 
-        private LinksForm _linksForm;
+        internal LinksForm _linksForm;
 
         private void NewformButton_Click(object sender, EventArgs e)
         {
@@ -2407,7 +2405,7 @@ namespace AIHelper
             }
         }
 
-        ExtraSettingsForm _extraSettingsForm;
+        internal ExtraSettingsForm _extraSettingsForm;
         private void ExtraSettingsLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             if (_extraSettingsForm == null || _extraSettingsForm.IsDisposed)
@@ -2526,9 +2524,20 @@ namespace AIHelper
             UpdateMods();
         }
 
-        private async void UpdateMods()
+        private void UpdateMods()
         {
             UpdateModsInit();
+
+            UpdateZipmods();
+
+            UpdateByUpdater();
+
+            UpdateModsFinalize();
+        }
+
+        private async void UpdateByUpdater()
+        {
+            ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize());
 
             var updater = new Updater();
 
@@ -2537,6 +2546,21 @@ namespace AIHelper
             {
                 await updater.Update().ConfigureAwait(true);
             }
+
+            if (updater.UpdatedAny) // make data update only when was updated any. Maybe required after update of MO or BepinEx
+            {
+                ManageModOrganizer.CleanMoFolder();
+                //
+                ManageModOrganizer.CheckBaseGamesPy();
+                //
+                ManageModOrganizer.RedefineGameMoData();
+            }
+
+            ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize());
+        }
+
+        private void UpdateZipmods()
+        {
 
             //run zipmod's check if updater found and only for KK, AI, HS2
             if (!GameData.CurrentGame.IsHaveSideloaderMods || !File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath()))
@@ -2551,15 +2575,6 @@ namespace AIHelper
                 RunProgram(ManageSettings.KkManagerStandaloneUpdaterExePath(), "\"" + ManageSettings.GetCurrentGameDataPath() + "\"");
                 UpdateModsFinalize();
                 return;
-            }
-
-            if (updater.UpdatedAny) // make data update only when was updated any. Maybe required after update of MO or BepinEx
-            {
-                ManageModOrganizer.CleanMoFolder();
-                //
-                ManageModOrganizer.CheckBaseGamesPy();
-                //
-                ManageModOrganizer.RedefineGameMoData();
             }
 
             //add updater as new exe in mo list if not exists
@@ -2605,8 +2620,6 @@ namespace AIHelper
 
             //restore zipmods to source mods
             MoveZipModsFromOverwriteToSourceMod(zipmodsGuidList);
-
-            UpdateModsFinalize();
         }
 
         private void UpdateModsInit()

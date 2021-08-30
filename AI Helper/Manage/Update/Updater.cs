@@ -45,6 +45,7 @@ namespace AIHelper.Manage.Update
                 var checkNUpdateText = T._("Checking");
                 progressForm.Text = checkNUpdateText;
                 progressForm.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+                progressForm.TopMost = true;
                 progressForm.Show();
 
                 foreach (var source in sources) //enumerate sources

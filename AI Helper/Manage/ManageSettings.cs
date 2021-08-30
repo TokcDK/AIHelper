@@ -1175,6 +1175,16 @@ namespace AIHelper.Manage
         }
 
         /// <summary>
+        /// List of forms which need to be minimized
+        /// </summary>
+        /// <returns></returns>
+        internal static Form[] ListOfFormsForMinimize()
+        {
+            //info: http://www.cyberforum.ru/windows-forms/thread31052.html
+            return new Form[3] { GameData.MainForm._linksForm, GameData.MainForm._extraSettingsForm, GameData.MainForm };
+        }
+
+        /// <summary>
         /// Converts a language to its identifier.
         /// </summary>
         /// <param name="language">The language."</param>

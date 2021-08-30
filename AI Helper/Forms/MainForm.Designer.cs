@@ -83,13 +83,20 @@
             this.ResolutionComboBox = new System.Windows.Forms.ComboBox();
             this.FullScreenCheckBox = new System.Windows.Forms.CheckBox();
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
-            this.ToolsPagePanel = new System.Windows.Forms.Panel();
-            this.cbxBleadingEdgeZipmods = new System.Windows.Forms.CheckBox();
-            this.llOpenOldPluginsBuckupFolder = new System.Windows.Forms.LinkLabel();
-            this.btnUpdateMods = new System.Windows.Forms.Button();
+            this.ToolsTabPagePanel = new System.Windows.Forms.Panel();
+            this.ToolsTabPageTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.ToolsFixModListButton = new System.Windows.Forms.Button();
-            this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.UpdateButtonTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.btnUpdateMods = new System.Windows.Forms.Button();
+            this.UpdateButtonOptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.llOpenOldPluginsBuckupFolder = new System.Windows.Forms.LinkLabel();
+            this.UpdatePluginsCheckBox = new System.Windows.Forms.CheckBox();
+            this.UseKKmanagerUpdaterCheckBox = new System.Windows.Forms.CheckBox();
+            this.cbxBleadingEdgeZipmods = new System.Windows.Forms.CheckBox();
+            this.Install2MOTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
+            this.Install2MOOptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
@@ -104,7 +111,12 @@
             this.SettingsFoldersGroupBox.SuspendLayout();
             this.DisplaySettingsGroupBox.SuspendLayout();
             this.ToolsTabPage.SuspendLayout();
-            this.ToolsPagePanel.SuspendLayout();
+            this.ToolsTabPagePanel.SuspendLayout();
+            this.ToolsTabPageTableLayoutPanel.SuspendLayout();
+            this.UpdateButtonTableLayoutPanel.SuspendLayout();
+            this.UpdateButtonOptionsFlowLayoutPanel.SuspendLayout();
+            this.Install2MOTableLayoutPanel.SuspendLayout();
+            this.Install2MOOptionsFlowLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // AIGirlHelperTabControl
@@ -664,12 +676,12 @@
             this.SettingsFoldersGroupBox.TabStop = false;
             this.SettingsFoldersGroupBox.Text = "Folders";
             // 
-            // Open2MOLinkLabel
+            // SettingsOpen2MOLinkLabel
             // 
             this.SettingsOpen2MOLinkLabel.AutoSize = true;
             this.SettingsOpen2MOLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.SettingsOpen2MOLinkLabel.Location = new System.Drawing.Point(46, 39);
-            this.SettingsOpen2MOLinkLabel.Name = "Open2MOLinkLabel";
+            this.SettingsOpen2MOLinkLabel.Name = "SettingsOpen2MOLinkLabel";
             this.SettingsOpen2MOLinkLabel.Size = new System.Drawing.Size(29, 13);
             this.SettingsOpen2MOLinkLabel.TabIndex = 5;
             this.SettingsOpen2MOLinkLabel.TabStop = true;
@@ -818,7 +830,7 @@
             // 
             // ToolsTabPage
             // 
-            this.ToolsTabPage.Controls.Add(this.ToolsPagePanel);
+            this.ToolsTabPage.Controls.Add(this.ToolsTabPagePanel);
             this.ToolsTabPage.Location = new System.Drawing.Point(4, 22);
             this.ToolsTabPage.Name = "ToolsTabPage";
             this.ToolsTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -827,100 +839,196 @@
             this.ToolsTabPage.Text = "Tools";
             this.ToolsTabPage.UseVisualStyleBackColor = true;
             // 
-            // ToolsPagePanel
+            // ToolsTabPagePanel
             // 
-            this.ToolsPagePanel.BackColor = System.Drawing.Color.Gray;
-            this.ToolsPagePanel.Controls.Add(this.cbxBleadingEdgeZipmods);
-            this.ToolsPagePanel.Controls.Add(this.llOpenOldPluginsBuckupFolder);
-            this.ToolsPagePanel.Controls.Add(this.btnUpdateMods);
-            this.ToolsPagePanel.Controls.Add(this.ToolsFixModListButton);
-            this.ToolsPagePanel.Controls.Add(this.Install2MODirPathOpenFolderLinkLabel);
-            this.ToolsPagePanel.Controls.Add(this.InstallInModsButton);
-            this.ToolsPagePanel.Controls.Add(this.MOCommonModeSwitchButton);
-            this.ToolsPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ToolsPagePanel.Location = new System.Drawing.Point(3, 3);
-            this.ToolsPagePanel.Name = "ToolsPagePanel";
-            this.ToolsPagePanel.Size = new System.Drawing.Size(340, 155);
-            this.ToolsPagePanel.TabIndex = 1;
+            this.ToolsTabPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.ToolsTabPagePanel.Controls.Add(this.ToolsTabPageTableLayoutPanel);
+            this.ToolsTabPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ToolsTabPagePanel.Location = new System.Drawing.Point(3, 3);
+            this.ToolsTabPagePanel.Margin = new System.Windows.Forms.Padding(0);
+            this.ToolsTabPagePanel.Name = "ToolsTabPagePanel";
+            this.ToolsTabPagePanel.Size = new System.Drawing.Size(340, 155);
+            this.ToolsTabPagePanel.TabIndex = 1;
             // 
-            // cbxBleadingEdgeZipmods
+            // ToolsTabPageTableLayoutPanel
             // 
-            this.cbxBleadingEdgeZipmods.AutoSize = true;
-            this.cbxBleadingEdgeZipmods.Location = new System.Drawing.Point(114, 127);
-            this.cbxBleadingEdgeZipmods.Margin = new System.Windows.Forms.Padding(0);
-            this.cbxBleadingEdgeZipmods.Name = "cbxBleadingEdgeZipmods";
-            this.cbxBleadingEdgeZipmods.Size = new System.Drawing.Size(15, 14);
-            this.cbxBleadingEdgeZipmods.TabIndex = 28;
-            this.cbxBleadingEdgeZipmods.UseVisualStyleBackColor = true;
-            this.cbxBleadingEdgeZipmods.Visible = false;
-            this.cbxBleadingEdgeZipmods.CheckedChanged += new System.EventHandler(this.cbxBleadingEdgeZipmods_CheckedChanged);
-            // 
-            // llOpenOldPluginsBuckupFolder
-            // 
-            this.llOpenOldPluginsBuckupFolder.AutoSize = true;
-            this.llOpenOldPluginsBuckupFolder.LinkColor = System.Drawing.Color.WhiteSmoke;
-            this.llOpenOldPluginsBuckupFolder.Location = new System.Drawing.Point(114, 112);
-            this.llOpenOldPluginsBuckupFolder.Margin = new System.Windows.Forms.Padding(0);
-            this.llOpenOldPluginsBuckupFolder.Name = "llOpenOldPluginsBuckupFolder";
-            this.llOpenOldPluginsBuckupFolder.Size = new System.Drawing.Size(15, 13);
-            this.llOpenOldPluginsBuckupFolder.TabIndex = 27;
-            this.llOpenOldPluginsBuckupFolder.TabStop = true;
-            this.llOpenOldPluginsBuckupFolder.Text = "<";
-            this.llOpenOldPluginsBuckupFolder.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.llOpenOldPluginsBuckupFolder.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked_1);
-            // 
-            // btnUpdateMods
-            // 
-            this.btnUpdateMods.BackColor = System.Drawing.Color.Silver;
-            this.btnUpdateMods.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnUpdateMods.ForeColor = System.Drawing.Color.Black;
-            this.btnUpdateMods.Location = new System.Drawing.Point(3, 111);
-            this.btnUpdateMods.Name = "btnUpdateMods";
-            this.btnUpdateMods.Size = new System.Drawing.Size(112, 30);
-            this.btnUpdateMods.TabIndex = 26;
-            this.btnUpdateMods.Text = "Update mods";
-            this.btnUpdateMods.UseVisualStyleBackColor = false;
-            this.btnUpdateMods.Click += new System.EventHandler(this.btnUpdateMods_Click);
+            this.ToolsTabPageTableLayoutPanel.ColumnCount = 2;
+            this.ToolsTabPageTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.ToolsTabPageTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.ToolsTabPageTableLayoutPanel.Controls.Add(this.ToolsFixModListButton, 0, 2);
+            this.ToolsTabPageTableLayoutPanel.Controls.Add(this.UpdateButtonTableLayoutPanel, 0, 3);
+            this.ToolsTabPageTableLayoutPanel.Controls.Add(this.Install2MOTableLayoutPanel, 0, 1);
+            this.ToolsTabPageTableLayoutPanel.Controls.Add(this.MOCommonModeSwitchButton, 0, 0);
+            this.ToolsTabPageTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ToolsTabPageTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.ToolsTabPageTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.ToolsTabPageTableLayoutPanel.Name = "ToolsTabPageTableLayoutPanel";
+            this.ToolsTabPageTableLayoutPanel.RowCount = 4;
+            this.ToolsTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.ToolsTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.ToolsTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.ToolsTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.ToolsTabPageTableLayoutPanel.Size = new System.Drawing.Size(340, 155);
+            this.ToolsTabPageTableLayoutPanel.TabIndex = 0;
             // 
             // ToolsFixModListButton
             // 
             this.ToolsFixModListButton.BackColor = System.Drawing.Color.Silver;
             this.ToolsFixModListButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.ToolsFixModListButton.ForeColor = System.Drawing.Color.Black;
-            this.ToolsFixModListButton.Location = new System.Drawing.Point(3, 75);
+            this.ToolsFixModListButton.Location = new System.Drawing.Point(3, 79);
             this.ToolsFixModListButton.Name = "ToolsFixModListButton";
-            this.ToolsFixModListButton.Size = new System.Drawing.Size(112, 30);
+            this.ToolsFixModListButton.Size = new System.Drawing.Size(129, 30);
             this.ToolsFixModListButton.TabIndex = 22;
             this.ToolsFixModListButton.Text = "Fix ModList";
             this.ToolsFixModListButton.UseVisualStyleBackColor = false;
             this.ToolsFixModListButton.Click += new System.EventHandler(this.ToolsFixModListButton_Click);
             // 
-            // Install2MODirPathOpenFolderLinkLabel
+            // UpdateButtonTableLayoutPanel
             // 
-            this.Install2MODirPathOpenFolderLinkLabel.AutoSize = true;
-            this.Install2MODirPathOpenFolderLinkLabel.LinkColor = System.Drawing.Color.WhiteSmoke;
-            this.Install2MODirPathOpenFolderLinkLabel.Location = new System.Drawing.Point(114, 48);
-            this.Install2MODirPathOpenFolderLinkLabel.Margin = new System.Windows.Forms.Padding(0);
-            this.Install2MODirPathOpenFolderLinkLabel.Name = "Install2MODirPathOpenFolderLinkLabel";
-            this.Install2MODirPathOpenFolderLinkLabel.Size = new System.Drawing.Size(15, 13);
-            this.Install2MODirPathOpenFolderLinkLabel.TabIndex = 18;
-            this.Install2MODirPathOpenFolderLinkLabel.TabStop = true;
-            this.Install2MODirPathOpenFolderLinkLabel.Text = "<";
-            this.Install2MODirPathOpenFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.Install2MODirPathOpenFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.Install2MODirPathOpenFolderLinkLabel_LinkClicked);
+            this.UpdateButtonTableLayoutPanel.ColumnCount = 2;
+            this.UpdateButtonTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 79.41177F));
+            this.UpdateButtonTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.58824F));
+            this.UpdateButtonTableLayoutPanel.Controls.Add(this.btnUpdateMods, 0, 0);
+            this.UpdateButtonTableLayoutPanel.Controls.Add(this.UpdateButtonOptionsFlowLayoutPanel, 1, 0);
+            this.UpdateButtonTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.UpdateButtonTableLayoutPanel.Location = new System.Drawing.Point(0, 114);
+            this.UpdateButtonTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.UpdateButtonTableLayoutPanel.Name = "UpdateButtonTableLayoutPanel";
+            this.UpdateButtonTableLayoutPanel.RowCount = 1;
+            this.UpdateButtonTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.UpdateButtonTableLayoutPanel.Size = new System.Drawing.Size(170, 41);
+            this.UpdateButtonTableLayoutPanel.TabIndex = 29;
+            // 
+            // btnUpdateMods
+            // 
+            this.btnUpdateMods.BackColor = System.Drawing.Color.Silver;
+            this.btnUpdateMods.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnUpdateMods.ForeColor = System.Drawing.Color.Black;
+            this.btnUpdateMods.Location = new System.Drawing.Point(3, 3);
+            this.btnUpdateMods.Name = "btnUpdateMods";
+            this.btnUpdateMods.Size = new System.Drawing.Size(128, 30);
+            this.btnUpdateMods.TabIndex = 26;
+            this.btnUpdateMods.Text = "Update mods";
+            this.btnUpdateMods.UseVisualStyleBackColor = false;
+            this.btnUpdateMods.Click += new System.EventHandler(this.btnUpdateMods_Click);
+            // 
+            // UpdateButtonOptionsFlowLayoutPanel
+            // 
+            this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.llOpenOldPluginsBuckupFolder);
+            this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.UpdatePluginsCheckBox);
+            this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.UseKKmanagerUpdaterCheckBox);
+            this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.cbxBleadingEdgeZipmods);
+            this.UpdateButtonOptionsFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.UpdateButtonOptionsFlowLayoutPanel.Location = new System.Drawing.Point(134, 0);
+            this.UpdateButtonOptionsFlowLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.UpdateButtonOptionsFlowLayoutPanel.Name = "UpdateButtonOptionsFlowLayoutPanel";
+            this.UpdateButtonOptionsFlowLayoutPanel.Size = new System.Drawing.Size(36, 41);
+            this.UpdateButtonOptionsFlowLayoutPanel.TabIndex = 27;
+            // 
+            // llOpenOldPluginsBuckupFolder
+            // 
+            this.llOpenOldPluginsBuckupFolder.AutoSize = true;
+            this.llOpenOldPluginsBuckupFolder.LinkColor = System.Drawing.Color.WhiteSmoke;
+            this.llOpenOldPluginsBuckupFolder.Location = new System.Drawing.Point(0, 0);
+            this.llOpenOldPluginsBuckupFolder.Margin = new System.Windows.Forms.Padding(0);
+            this.llOpenOldPluginsBuckupFolder.Name = "llOpenOldPluginsBuckupFolder";
+            this.llOpenOldPluginsBuckupFolder.Size = new System.Drawing.Size(14, 13);
+            this.llOpenOldPluginsBuckupFolder.TabIndex = 27;
+            this.llOpenOldPluginsBuckupFolder.TabStop = true;
+            this.llOpenOldPluginsBuckupFolder.Text = "D";
+            this.llOpenOldPluginsBuckupFolder.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.llOpenOldPluginsBuckupFolder.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked_1);
+            // 
+            // UpdatePluginsCheckBox
+            // 
+            this.UpdatePluginsCheckBox.AutoSize = true;
+            this.UpdatePluginsCheckBox.Checked = true;
+            this.UpdatePluginsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.UpdatePluginsCheckBox.Location = new System.Drawing.Point(14, 0);
+            this.UpdatePluginsCheckBox.Margin = new System.Windows.Forms.Padding(0);
+            this.UpdatePluginsCheckBox.Name = "UpdatePluginsCheckBox";
+            this.UpdatePluginsCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.UpdatePluginsCheckBox.TabIndex = 30;
+            this.UpdatePluginsCheckBox.UseVisualStyleBackColor = true;
+            this.UpdatePluginsCheckBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.UpdatePluginsCheckBox_MouseClick);
+            // 
+            // UseKKmanagerUpdaterCheckBox
+            // 
+            this.UseKKmanagerUpdaterCheckBox.AutoSize = true;
+            this.UseKKmanagerUpdaterCheckBox.Checked = true;
+            this.UseKKmanagerUpdaterCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.UseKKmanagerUpdaterCheckBox.Location = new System.Drawing.Point(0, 14);
+            this.UseKKmanagerUpdaterCheckBox.Margin = new System.Windows.Forms.Padding(0);
+            this.UseKKmanagerUpdaterCheckBox.Name = "UseKKmanagerUpdaterCheckBox";
+            this.UseKKmanagerUpdaterCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.UseKKmanagerUpdaterCheckBox.TabIndex = 29;
+            this.UseKKmanagerUpdaterCheckBox.UseVisualStyleBackColor = true;
+            this.UseKKmanagerUpdaterCheckBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.UseKKmanagerUpdaterCheckBox_MouseClick);
+            // 
+            // cbxBleadingEdgeZipmods
+            // 
+            this.cbxBleadingEdgeZipmods.AutoSize = true;
+            this.cbxBleadingEdgeZipmods.Location = new System.Drawing.Point(15, 14);
+            this.cbxBleadingEdgeZipmods.Margin = new System.Windows.Forms.Padding(0);
+            this.cbxBleadingEdgeZipmods.Name = "cbxBleadingEdgeZipmods";
+            this.cbxBleadingEdgeZipmods.Size = new System.Drawing.Size(15, 14);
+            this.cbxBleadingEdgeZipmods.TabIndex = 28;
+            this.cbxBleadingEdgeZipmods.UseVisualStyleBackColor = true;
+            this.cbxBleadingEdgeZipmods.CheckedChanged += new System.EventHandler(this.cbxBleadingEdgeZipmods_CheckedChanged);
+            // 
+            // Install2MOTableLayoutPanel
+            // 
+            this.Install2MOTableLayoutPanel.ColumnCount = 2;
+            this.Install2MOTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 80F));
+            this.Install2MOTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.Install2MOTableLayoutPanel.Controls.Add(this.InstallInModsButton, 0, 0);
+            this.Install2MOTableLayoutPanel.Controls.Add(this.Install2MOOptionsFlowLayoutPanel, 1, 0);
+            this.Install2MOTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Install2MOTableLayoutPanel.Location = new System.Drawing.Point(0, 38);
+            this.Install2MOTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.Install2MOTableLayoutPanel.Name = "Install2MOTableLayoutPanel";
+            this.Install2MOTableLayoutPanel.RowCount = 1;
+            this.Install2MOTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.Install2MOTableLayoutPanel.Size = new System.Drawing.Size(170, 38);
+            this.Install2MOTableLayoutPanel.TabIndex = 30;
             // 
             // InstallInModsButton
             // 
             this.InstallInModsButton.BackColor = System.Drawing.Color.Silver;
             this.InstallInModsButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.InstallInModsButton.ForeColor = System.Drawing.Color.Black;
-            this.InstallInModsButton.Location = new System.Drawing.Point(3, 39);
+            this.InstallInModsButton.Location = new System.Drawing.Point(3, 3);
             this.InstallInModsButton.Name = "InstallInModsButton";
-            this.InstallInModsButton.Size = new System.Drawing.Size(112, 30);
+            this.InstallInModsButton.Size = new System.Drawing.Size(129, 30);
             this.InstallInModsButton.TabIndex = 17;
             this.InstallInModsButton.Text = "Install from 2MO";
             this.InstallInModsButton.UseVisualStyleBackColor = false;
             this.InstallInModsButton.Click += new System.EventHandler(this.InstallInModsButton_Click);
+            // 
+            // Install2MOOptionsFlowLayoutPanel
+            // 
+            this.Install2MOOptionsFlowLayoutPanel.Controls.Add(this.Install2MODirPathOpenFolderLinkLabel);
+            this.Install2MOOptionsFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Install2MOOptionsFlowLayoutPanel.Location = new System.Drawing.Point(136, 0);
+            this.Install2MOOptionsFlowLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.Install2MOOptionsFlowLayoutPanel.Name = "Install2MOOptionsFlowLayoutPanel";
+            this.Install2MOOptionsFlowLayoutPanel.Size = new System.Drawing.Size(34, 38);
+            this.Install2MOOptionsFlowLayoutPanel.TabIndex = 18;
+            // 
+            // Install2MODirPathOpenFolderLinkLabel
+            // 
+            this.Install2MODirPathOpenFolderLinkLabel.AutoSize = true;
+            this.Install2MODirPathOpenFolderLinkLabel.LinkColor = System.Drawing.Color.WhiteSmoke;
+            this.Install2MODirPathOpenFolderLinkLabel.Location = new System.Drawing.Point(0, 0);
+            this.Install2MODirPathOpenFolderLinkLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.Install2MODirPathOpenFolderLinkLabel.Name = "Install2MODirPathOpenFolderLinkLabel";
+            this.Install2MODirPathOpenFolderLinkLabel.Size = new System.Drawing.Size(14, 13);
+            this.Install2MODirPathOpenFolderLinkLabel.TabIndex = 18;
+            this.Install2MODirPathOpenFolderLinkLabel.TabStop = true;
+            this.Install2MODirPathOpenFolderLinkLabel.Text = "D";
+            this.Install2MODirPathOpenFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.Install2MODirPathOpenFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.Install2MODirPathOpenFolderLinkLabel_LinkClicked);
             // 
             // MOCommonModeSwitchButton
             // 
@@ -930,7 +1038,7 @@
             this.MOCommonModeSwitchButton.ForeColor = System.Drawing.Color.Black;
             this.MOCommonModeSwitchButton.Location = new System.Drawing.Point(3, 3);
             this.MOCommonModeSwitchButton.Name = "MOCommonModeSwitchButton";
-            this.MOCommonModeSwitchButton.Size = new System.Drawing.Size(112, 30);
+            this.MOCommonModeSwitchButton.Size = new System.Drawing.Size(129, 30);
             this.MOCommonModeSwitchButton.TabIndex = 16;
             this.MOCommonModeSwitchButton.Text = "MOToCommon";
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
@@ -968,8 +1076,14 @@
             this.DisplaySettingsGroupBox.ResumeLayout(false);
             this.DisplaySettingsGroupBox.PerformLayout();
             this.ToolsTabPage.ResumeLayout(false);
-            this.ToolsPagePanel.ResumeLayout(false);
-            this.ToolsPagePanel.PerformLayout();
+            this.ToolsTabPagePanel.ResumeLayout(false);
+            this.ToolsTabPageTableLayoutPanel.ResumeLayout(false);
+            this.UpdateButtonTableLayoutPanel.ResumeLayout(false);
+            this.UpdateButtonOptionsFlowLayoutPanel.ResumeLayout(false);
+            this.UpdateButtonOptionsFlowLayoutPanel.PerformLayout();
+            this.Install2MOTableLayoutPanel.ResumeLayout(false);
+            this.Install2MOOptionsFlowLayoutPanel.ResumeLayout(false);
+            this.Install2MOOptionsFlowLayoutPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -996,15 +1110,11 @@
         private System.Windows.Forms.Button newformButton;
         private System.Windows.Forms.Label LaunchTabLaunchLabel;
         private System.Windows.Forms.TabPage ToolsTabPage;
-        private System.Windows.Forms.Panel ToolsPagePanel;
-        private System.Windows.Forms.Button MOCommonModeSwitchButton;
-        private System.Windows.Forms.Button InstallInModsButton;
         private System.Windows.Forms.GroupBox SettingsFoldersGroupBox;
         private System.Windows.Forms.LinkLabel OpenModsFolderLinkLabel;
         private System.Windows.Forms.LinkLabel OpenMOFolderLinkLabel;
         private System.Windows.Forms.LinkLabel OpenGameFolderLinkLabel;
         private System.Windows.Forms.LinkLabel OpenLogLinkLabel;
-        private System.Windows.Forms.LinkLabel Install2MODirPathOpenFolderLinkLabel;
         private System.Windows.Forms.LinkLabel LaunchModeInfoLinkLabel;
         private System.Windows.Forms.LinkLabel OpenMyUserDataFolderLinkLabel;
         private System.Windows.Forms.LinkLabel OpenMOOverwriteFolderLinkLabel;
@@ -1022,14 +1132,10 @@
         private System.Windows.Forms.LinkLabel SetupXmlLinkLabel;
         private System.Windows.Forms.LinkLabel OpenHelpLinkLabel;
         private System.Windows.Forms.TextBox CurrentGameTitleTextBox;
-        private System.Windows.Forms.Button ToolsFixModListButton;
         private System.Windows.Forms.CheckBox VRGameCheckBox;
         private System.Windows.Forms.LinkLabel CreateShortcutLinkLabel;
         private System.Windows.Forms.LinkLabel FixRegistryLinkLabel;
-        private System.Windows.Forms.Button btnUpdateMods;
         internal System.Windows.Forms.PictureBox pbDiscord;
-        private System.Windows.Forms.LinkLabel llOpenOldPluginsBuckupFolder;
-        private System.Windows.Forms.CheckBox cbxBleadingEdgeZipmods;
         internal System.Windows.Forms.CheckBox cbxNtlea;
         internal System.Windows.Forms.Button MainService;
         internal System.Windows.Forms.Label DataInfoLabel;
@@ -1037,6 +1143,21 @@
         internal System.Windows.Forms.Label ModsInfoLabel;
         internal System.Windows.Forms.TabControl AIGirlHelperTabControl;
         internal System.Windows.Forms.TabPage LaunchTabPage;
+        private System.Windows.Forms.Panel ToolsTabPagePanel;
+        private System.Windows.Forms.TableLayoutPanel ToolsTabPageTableLayoutPanel;
+        private System.Windows.Forms.Button ToolsFixModListButton;
+        private System.Windows.Forms.TableLayoutPanel UpdateButtonTableLayoutPanel;
+        private System.Windows.Forms.Button btnUpdateMods;
+        private System.Windows.Forms.FlowLayoutPanel UpdateButtonOptionsFlowLayoutPanel;
+        private System.Windows.Forms.LinkLabel llOpenOldPluginsBuckupFolder;
+        private System.Windows.Forms.CheckBox cbxBleadingEdgeZipmods;
+        private System.Windows.Forms.CheckBox UseKKmanagerUpdaterCheckBox;
+        private System.Windows.Forms.TableLayoutPanel Install2MOTableLayoutPanel;
+        private System.Windows.Forms.Button InstallInModsButton;
+        private System.Windows.Forms.FlowLayoutPanel Install2MOOptionsFlowLayoutPanel;
+        private System.Windows.Forms.LinkLabel Install2MODirPathOpenFolderLinkLabel;
+        private System.Windows.Forms.Button MOCommonModeSwitchButton;
+        private System.Windows.Forms.CheckBox UpdatePluginsCheckBox;
     }
 }
 

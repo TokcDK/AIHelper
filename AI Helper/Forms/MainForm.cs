@@ -1,5 +1,4 @@
-﻿using AIHelper.Games;
-using AIHelper.Install.Types;
+﻿using AIHelper.Install.Types;
 using AIHelper.Install.Types.Directories;
 using AIHelper.Manage;
 using AIHelper.Manage.Update;
@@ -25,7 +24,7 @@ namespace AIHelper
     internal partial class MainForm : Form
     {
         internal bool _compressmode;
-        
+
         /// <summary>
         /// Get or set path to setup.xml graphic settings for current game
         /// </summary>
@@ -411,18 +410,27 @@ namespace AIHelper
             else if (AIGirlHelperTabControl.SelectedTab == ToolsTabPage)
             {
                 _thToolTip.SetToolTip(ToolsFixModListButton, T._("Fix problems in current enabled mods list"));
+
+                _thToolTip.SetToolTip(llOpenOldPluginsBuckupFolder,
+                    T._("Open older plugins buckup folder")
+                    );
                 _thToolTip.SetToolTip(btnUpdateMods,
                     T._("Update Mod Organizer and enabled mods") + "\n" +
                     T._("Mod Organizer already have hardcoded info") + "\n" +
                     T._("Mods will be updated if there exist info in meta.ini notes or in updateInfo.txt") + "\n" +
                     T._("After plugins update check will be executed KKManager StandaloneUpdater for Sideloader modpack updates check for games where it is possible")
                     );
-                _thToolTip.SetToolTip(llOpenOldPluginsBuckupFolder,
-                    T._("Open older plugins buckup folder")
+                var sideloaderPacksWarning = T._("Warning! More of packs you check more of memory game will consume.") + "\n" +
+                    T._("Check only what you really using or you can 16+ gb of memory.");
+                _thToolTip.SetToolTip(UseKKmanagerUpdaterCheckBox, T._("Check if need to run update check for sideloader modpacks.") + "\n\n" +
+                    sideloaderPacksWarning
+                    );
+                _thToolTip.SetToolTip(UpdatePluginsCheckBox, T._("Check if need to run update check for plugins and Mod Organizer.")
                     );
                 _thToolTip.SetToolTip(cbxBleadingEdgeZipmods,
-                    T._("Check also Bleeding Edge SIdeloader Modpack in KKManager") + "\n" +
-                    T._("Bleeding Edge SIdeloader modpack contains test versions of zipmods which is still not added in main modpacks")
+                    T._("Check also Bleeding Edge Sideloader Modpack in KKManager") + "\n" +
+                    T._("Bleeding Edge Sideloader modpack contains test versions of zipmods which is still not added in main modpacks") + "\n\n" +
+                    sideloaderPacksWarning
                     );
                 _thToolTip.SetToolTip(MOCommonModeSwitchButton, MOmode ? T._(
                         "Will convert game from MO Mode to Common mode\n" +
@@ -2528,9 +2536,11 @@ namespace AIHelper
         {
             UpdateModsInit();
 
-            UpdateZipmods();
+            if (UseKKmanagerUpdaterCheckBox.Checked)
+                UpdateZipmods();
 
-            UpdateByUpdater();
+            if (UpdatePluginsCheckBox.Checked)
+                UpdateByUpdater();
 
             UpdateModsFinalize();
         }
@@ -3021,31 +3031,6 @@ namespace AIHelper
 
             if (AIGirlHelperTabControl.SelectedTab.Name == "ToolsTabPage")
             {
-                //check bleeding edge txt
-                if (!File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath()))
-                {
-                    cbxBleadingEdgeZipmods.Visible = false;
-                    cbxBleadingEdgeZipmods.Checked = false;
-                }
-                else if (File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()))
-                {
-                    cbxBleadingEdgeZipmods.Visible = true;
-                    cbxBleadingEdgeZipmods.Checked = true;
-                }
-                else
-                {
-                    //do not hide checkbox if game can have it
-                    if (GameData.CurrentGame.IsHaveSideloaderMods)
-                    {
-                        cbxBleadingEdgeZipmods.Visible = true;
-                    }
-                    else
-                    {
-                        cbxBleadingEdgeZipmods.Visible = false;
-                    }
-
-                    cbxBleadingEdgeZipmods.Checked = false;
-                }
             }
             else if (AIGirlHelperTabControl.SelectedTab.Name == "LaunchTabPage")
             {
@@ -3055,6 +3040,36 @@ namespace AIHelper
                 //set bepinex log cfg
                 //BepInExDisplayedLogLevelLabel.Visible = BepInExConsoleCheckBox.Checked = ManageCFG.GetCFGValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "Enabled", "Logging.Console", "").ToUpperInvariant() == "TRUE";
             }
+        }
+
+        /// <summary>
+        /// update status of update button options and button itself
+        /// </summary>
+        private void UpdateButtonOptionsRefresh()
+        {
+            var b = File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath());
+            UseKKmanagerUpdaterCheckBox.Visible = b && GameData.CurrentGame.IsHaveSideloaderMods;
+            cbxBleadingEdgeZipmods.Visible = UseKKmanagerUpdaterCheckBox.Visible;
+
+            btnUpdateMods.Enabled = (UpdatePluginsCheckBox.Visible && UpdatePluginsCheckBox.Checked) || (UseKKmanagerUpdaterCheckBox.Visible && UseKKmanagerUpdaterCheckBox.Checked);
+
+            //check bleeding edge txt
+            cbxBleadingEdgeZipmods.Checked = cbxBleadingEdgeZipmods.Visible && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath());
+        }
+
+        private void AIGirlHelperTabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SetTooltips();
+        }
+
+        private void UseKKmanagerUpdaterCheckBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            UpdateButtonOptionsRefresh();
+        }
+
+        private void UpdatePluginsCheckBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            UpdateButtonOptionsRefresh();
         }
 
         private void cbxBleadingEdgeZipmods_CheckedChanged(object sender, EventArgs e)
@@ -3068,15 +3083,8 @@ namespace AIHelper
             {
                 File.Delete(ManageSettings.ZipmodsBleedingEdgeMarkFilePath());
             }
-        }
 
-        private void AIGirlHelperTabControl_TabIndexChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void AIGirlHelperTabControl_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SetTooltips();
+            UpdateButtonOptionsRefresh();
         }
 
         //Disable close window button

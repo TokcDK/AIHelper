@@ -974,25 +974,18 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.TabControl AIGirlHelperTabControl;
         private System.Windows.Forms.TabPage MainPage;
         private System.Windows.Forms.Panel InfoPagePanel;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button MainService;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel LabelPanel;
-        private System.Windows.Forms.Label DataInfoLabel;
-        private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Panel LabelPanel2;
-        private System.Windows.Forms.Label ModsInfoLabel;
         private System.Windows.Forms.TabPage SettingsPage;
         private System.Windows.Forms.Panel SettingsPagePanel;
         private System.Windows.Forms.CheckBox AutoShortcutRegistryCheckBox;
         private System.Windows.Forms.GroupBox DisplaySettingsGroupBox;
         private System.Windows.Forms.CheckBox FullScreenCheckBox;
         private System.Windows.Forms.ComboBox ResolutionComboBox;
-        private System.Windows.Forms.TabPage LaunchTabPage;
         private System.Windows.Forms.Panel LaunchPagePanel;
         private System.Windows.Forms.Button StudioButton;
         private System.Windows.Forms.Button GameButton;
@@ -1037,6 +1030,12 @@
         private System.Windows.Forms.LinkLabel llOpenOldPluginsBuckupFolder;
         private System.Windows.Forms.CheckBox cbxBleadingEdgeZipmods;
         internal System.Windows.Forms.CheckBox cbxNtlea;
+        internal System.Windows.Forms.Button MainService;
+        internal System.Windows.Forms.Label DataInfoLabel;
+        internal System.Windows.Forms.ProgressBar progressBar1;
+        internal System.Windows.Forms.Label ModsInfoLabel;
+        internal System.Windows.Forms.TabControl AIGirlHelperTabControl;
+        internal System.Windows.Forms.TabPage LaunchTabPage;
     }
 }
 

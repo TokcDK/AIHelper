@@ -25,7 +25,7 @@ namespace AIHelper
 {
     internal partial class MainForm : Form
     {
-        private bool _compressmode;
+        internal bool _compressmode;
 
         //constants
         private static string AppResDir { get => Properties.Settings.Default.AppResDir; set => Properties.Settings.Default.AppResDir = value; }
@@ -64,10 +64,12 @@ namespace AIHelper
 
             if (!SetListOfAddedGames())
             {
-                System.Windows.Forms.Application.Exit();
+                Application.Exit();
                 this.Enabled = false;
                 return;
             }
+
+            GameData.MainForm = this; // set reference to the form for controls use
 
             CheckMoAndEndInit();
         }
@@ -80,18 +82,18 @@ namespace AIHelper
 
                 Process.Start(ManageSettings.GetModOrganizerGithubLink());
 
-                System.Windows.Forms.Application.Exit();
+                Application.Exit();
                 this.Enabled = false;
                 return;
             }
-
-            //MO data parse
-            Properties.Settings.Default.MOIsNew = ManageModOrganizer.IsMo23OrNever();
 
             if (!File.Exists(ManageSettings.GetMOexePath()))
             {
                 await new Updater().Update().ConfigureAwait(true);
             }
+
+            //MO data parse
+            Properties.Settings.Default.MOIsNew = ManageModOrganizer.IsMo23OrNever();
 
             ManageModOrganizer.RedefineGameMoData();
 
@@ -288,12 +290,12 @@ namespace AIHelper
         {
             //MainService.Enabled = false;
 
-            _mode = GetModeValue();
+            _mode = ManageGameUnPacker.GetModeValue();
 
             switch (_mode)
             {
                 case 0:
-                    CompressingMode();
+                    ManageGameUnPacker.CompressingMode();
                     break;
 
                 case 1:
@@ -301,7 +303,7 @@ namespace AIHelper
                     break;
 
                 case 2:
-                    ExtractingMode();
+                    ManageGameUnPacker.ExtractingMode();
                     break;
 
                 default:
@@ -309,306 +311,6 @@ namespace AIHelper
             }
 
             //MainService.Enabled = true;
-        }
-
-        private int GetModeValue()
-        {
-            if (File.Exists("PackMe!.txt"))
-            {
-                _compressmode = true;
-            }
-            else
-            {
-                _compressmode = false;
-            }
-            return 0;
-        }
-
-        private async void ExtractingMode()
-        {
-            MainService.Text = T._("Extracting") + "..";
-            MainService.Enabled = false;
-
-            //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5
-            await Task.Run(() => UnpackGame()).ConfigureAwait(true);
-            await Task.Run(() => UnpackMo()).ConfigureAwait(true);
-            await Task.Run(() => UnpackMods()).ConfigureAwait(true);
-
-            //BepinExLoadingFix();//добавлено в folderinit
-
-            ManageOther.CreateShortcuts();
-
-            ManageModOrganizer.DummyFiles();
-
-            MainService.Text = T._("Game Ready");
-            FoldersInit();
-            MainService.Enabled = true;
-        }
-
-        private void UnpackMo()
-        {
-            if (MOmode)
-            {
-                string mo7Zip = Path.Combine(AppResDir, "MO.7z");
-                if (File.Exists(mo7Zip) && !File.Exists(Path.Combine(MoDirPath, "ModOrganizer.exe")))
-                {
-                    _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
-                    _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
-                    _ = DataInfoLabel.Invoke((Action)(() => DataInfoLabel.Text = T._("Extracting")));
-                    _ = ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = T._("MO archive") + ": " + Path.GetFileNameWithoutExtension(mo7Zip)));
-                    Compressor.Decompress(mo7Zip, MoDirPath);
-                    _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
-                }
-            }
-        }
-
-        private void UnpackGame()
-        {
-            if (Directory.Exists(DataPath))
-            {
-                string aiGirlTrial = Path.Combine(AppResDir, "AIGirlTrial.7z");
-                string aiGirl = Path.Combine(AppResDir, "AIGirl.7z");
-                if (File.Exists(aiGirlTrial) && !File.Exists(Path.Combine(DataPath, "AI-SyoujyoTrial.exe")))
-                {
-                    _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
-                    _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
-                    _ = DataInfoLabel.Invoke((Action)(() => DataInfoLabel.Text = T._("Extracting")));
-                    _ = ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = T._("Game archive") + ": " + Path.GetFileNameWithoutExtension(aiGirlTrial)));
-                    Compressor.Decompress(aiGirlTrial, DataPath);
-                    _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
-                }
-                else if (File.Exists(aiGirl) && !File.Exists(Path.Combine(DataPath, "AI-Syoujyo.exe")))
-                {
-                    _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
-                    _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
-                    _ = DataInfoLabel.Invoke((Action)(() => DataInfoLabel.Text = T._("Extracting")));
-                    _ = ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = T._("Game archive") + ": " + Path.GetFileNameWithoutExtension(aiGirl)));
-                    Compressor.Decompress(aiGirl, DataPath);
-                    _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
-                }
-            }
-        }
-
-        private void UnpackMods()
-        {
-            if (Directory.Exists(ModsPath) && Directory.Exists(DownloadsPath))
-            {
-                if (Directory.Exists(DownloadsPath))
-                {
-                    string[] modDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();
-                    string[] files = Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories).Where(name => !modDirs.Contains(Path.Combine(ModsPath, Path.GetFileNameWithoutExtension(name)))).ToArray();
-                    if (files.Length == 0)
-                    {
-                    }
-                    else
-                    {
-                        int i = 1;
-                        progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
-                        progressBar1.Invoke((Action)(() => progressBar1.Maximum = files.Length));
-                        progressBar1.Invoke((Action)(() => progressBar1.Value = i));
-                        foreach (string file in files)
-                        {
-                            string filename = Path.GetFileNameWithoutExtension(file);
-                            DataInfoLabel.Invoke((Action)(() => DataInfoLabel.Text = T._("Extracting") + " " + +i + "/" + files.Length));
-                            ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = T._("Mod") + ": " + filename));
-                            string moddirpath = Path.Combine(ModsPath, filename);
-                            if (!Directory.Exists(moddirpath))
-                            {
-                                Compressor.Decompress(file, moddirpath);
-                            }
-                            progressBar1.Invoke((Action)(() => progressBar1.Value = i));
-                            i++;
-                        }
-                        progressBar1.Invoke((Action)(() => progressBar1.Visible = false));
-                    }
-                }
-
-                //Unpack separators
-                string separators = Path.Combine(AppResDir, "MOModsSeparators.7z");
-                if (File.Exists(separators))
-                {
-                    Compressor.Decompress(separators, ModsPath);
-                }
-            }
-        }
-
-        private async void CompressingMode()
-        {
-            if (_compressmode)
-            {
-                MainService.Enabled = false;
-                MainService.Text = "Compressing..";
-
-                //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5
-                //await Task.Run(() => PackGame());
-                //await Task.Run(() => PackMO());
-                await Task.Run(() => PackMods()).ConfigureAwait(true);
-                await Task.Run(() => PackSeparators()).ConfigureAwait(true);
-
-                ////http://www.sql.ru/forum/1149655/kak-peredat-parametr-s-metodom-delegatom
-                //Thread open = new Thread(new ParameterizedThreadStart((obj) => PackMods()));
-                //open.Start();
-
-                MainService.Text = T._("Prepare the game");
-                FoldersInit();
-                MainService.Enabled = true;
-            }
-            else
-            {
-                AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
-            }
-        }
-
-        private void PackMo()
-        {
-            if (Directory.Exists(MoDirPath) && Directory.Exists(AppResDir))
-            {
-                _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
-                _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
-                _ = DataInfoLabel.Invoke((Action)(() => DataInfoLabel.Text = "Compressing"));
-                _ = ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = "MO archive.."));
-                Compressor.Compress(MoDirPath, AppResDir);
-                _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
-            }
-        }
-
-        private void PackGame()
-        {
-            if (Directory.Exists(DataPath) && Directory.Exists(AppResDir))
-            {
-                string aiGirlTrial = Path.Combine(AppResDir, "AIGirlTrial.7z");
-                string aiGirl = Path.Combine(AppResDir, "AIGirl.7z");
-                if (!File.Exists(aiGirlTrial)
-                    && (File.Exists(Path.Combine(DataPath, ManageSettings.GetCurrentGameExeName() + ".exe"))))
-                {
-                    _ = progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
-                    _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Marquee));
-                    _ = DataInfoLabel.Invoke((Action)(() => DataInfoLabel.Text = "Compressing"));
-                    _ = ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = "Game archive: " + Path.GetFileNameWithoutExtension(aiGirlTrial)));
-                    Compressor.Compress(DataPath, AppResDir);
-                    _ = progressBar1.Invoke((Action)(() => progressBar1.Style = ProgressBarStyle.Blocks));
-                }
-            }
-        }
-
-        private void PackMods()
-        {
-            if (!Directory.Exists(ModsPath)) return;
-            string[] dirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();//с игнором сепараторов
-            if (dirs.Length == 0)
-            {
-            }
-            else
-            {
-                //Read categories.dat
-                List<CategoriesList> categories = new List<CategoriesList>();
-                foreach (string line in File.ReadAllLines(ManageSettings.GetMOcategoriesPath()))
-                {
-                    if (line.Length == 0)
-                    {
-                    }
-                    else
-                    {
-                        string[] linevalues = line.Split('|');
-                        categories.Add(new CategoriesList(linevalues[0], linevalues[1], linevalues[2], linevalues[3]));
-                    }
-                }
-
-                int i = 1;
-                progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
-                progressBar1.Invoke((Action)(() => progressBar1.Maximum = dirs.Length));
-                progressBar1.Invoke((Action)(() => progressBar1.Value = i));
-                foreach (string dir in dirs)
-                {
-                    DataInfoLabel.Invoke((Action)(() => DataInfoLabel.Text = "Compressing " + i + "/" + dirs.Length));
-                    ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = "Folder: " + Path.GetFileNameWithoutExtension(dir)));
-
-                    Compressor.Compress(dir, GetResultTargetName(categories, dir));
-
-                    progressBar1.Invoke((Action)(() => progressBar1.Value = i));
-                    i++;
-                }
-                progressBar1.Invoke((Action)(() => progressBar1.Visible = false));
-            }
-        }
-
-        private void PackSeparators()
-        {
-            if (Directory.Exists(ModsPath))
-            {
-                string[] dirs = Directory.GetDirectories(ModsPath, "*").Where(name => name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();//с игнором сепараторов
-                if (dirs.Length == 0)
-                {
-                }
-                else
-                {
-                    //progressBar1.Invoke((Action)(() => progressBar1.Visible = true));
-                    //progressBar1.Invoke((Action)(() => progressBar1.Maximum = dirs.Length));
-                    //progressBar1.Invoke((Action)(() => progressBar1.Value = 0));
-                    string tempdir = Path.Combine(ModsPath, "MOModsSeparators");
-
-                    DataInfoLabel.Invoke((Action)(() => DataInfoLabel.Text = "Compressing"));
-                    ModsInfoLabel.Invoke((Action)(() => ModsInfoLabel.Text = "Folder: " + Path.GetFileNameWithoutExtension(tempdir)));
-
-                    Directory.CreateDirectory(tempdir);
-                    foreach (string dir in dirs)
-                    {
-                        CopyFolder.CopyAll(dir, Path.Combine(tempdir, Path.GetFileName(dir)));
-                    }
-
-                    Compressor.Compress(tempdir, AppResDir);
-                    Directory.Delete(tempdir, true);
-
-                    //progressBar1.Invoke((Action)(() => progressBar1.Visible = false));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Get result subfolder in Downloads dir as set for mod in categories.dat
-        /// </summary>
-        /// <param name="categories"></param>
-        /// <param name="inputmoddir"></param>
-        /// <returns></returns>
-        private static string GetResultTargetName(List<CategoriesList> categories, string inputmoddir)
-        {
-            string targetdir = DownloadsPath;
-            targetdir = ManageSettings.GetCurrentGameInstallDirPath();
-
-            //Sideloader mods
-            if (Directory.Exists(Path.Combine(inputmoddir, "mods")))
-            {
-                targetdir = Path.Combine(targetdir, "Sideloader");
-            }
-
-            string categoryvalue = ManageModOrganizer.GetMetaParameterValue(Path.Combine(inputmoddir, "meta.ini"), "category").Replace("\"", string.Empty);
-            if (categoryvalue.Length == 0)
-            {
-            }
-            else
-            {
-                //Subcategory from meta
-                categoryvalue = categoryvalue.Split(',')[0];//взять только первое значение
-                int categiryindex = int.Parse(categoryvalue, CultureInfo.InvariantCulture) - 1;//В List индекс идет от нуля
-                if (categiryindex > 0)
-                {
-                    if (categiryindex < categories.Count)//на всякий, защита от ошибки выхода за диапазон
-                    {
-                        //Проверить родительскую категорию
-                        int parentIDindex = int.Parse(categories[categiryindex].ParentId, CultureInfo.InvariantCulture) - 1;//В List индекс идет от нуля
-                        if (parentIDindex > 0 && parentIDindex < categories.Count)
-                        {
-                            targetdir = Path.Combine(targetdir, categories[parentIDindex].Name);
-                        }
-
-                        targetdir = Path.Combine(targetdir, categories[categiryindex].Name);
-
-                        Directory.CreateDirectory(targetdir);
-                    }
-                }
-            }
-
-            return targetdir;
         }
 
         ToolTip _thToolTip;
@@ -846,7 +548,7 @@ namespace AIHelper
         /// <summary>
         /// reinit some parameters
         /// </summary>
-        private void FoldersInit()
+        internal void FoldersInit()
         {
             EnableDisableSomeTools();
 
@@ -996,7 +698,7 @@ namespace AIHelper
 
                 SetupXmlPath = ManageModOrganizer.GetSetupXmlPathForCurrentProfile();
 
-                ManageModOrganizerMods.SetMoModsVariables();
+                SetMoModsVariables();
             }
             else
             {
@@ -1071,7 +773,7 @@ namespace AIHelper
         private static void RunSlowActions()
         {
             //создание ссылок на файлы bepinex, НА ЭТО ТРАТИТСЯ МНОГО ВРЕМЕНИ
-            ManageModOrganizerMods.MousfsLoadingFix();
+            MousfsLoadingFix();
             //GameButton.Enabled = false;
             //Task t1 = new Task(() =>
             //ManageMOMods.BepinExLoadingFix()
@@ -1899,7 +1601,7 @@ namespace AIHelper
                                 }
                                 else//zipmod in Mods
                                 {
-                                    var modPath = ManageModOrganizerMods.GetMoModPathInMods(zipmod);
+                                    var modPath = GetMoModPathInMods(zipmod);
                                     if (Path.GetFileName(modPath).ToUpperInvariant() != "MODS" && Directory.Exists(modPath))
                                     {
                                         destFileName = addedFiles[f].Replace(ManageSettings.GetCurrentGameDataPath(), modPath);
@@ -2104,7 +1806,7 @@ namespace AIHelper
             var debufStr = "";
             try
             {
-                ManageModOrganizerMods.CleanBepInExLinksFromData();
+                CleanBepInExLinksFromData();
 
                 if (!ManageSettings.MoIsNew)
                 {
@@ -2198,7 +1900,7 @@ namespace AIHelper
 
                                             File.Move(fileInDataFolder, fileInBakFolderWhichIsInRes);//перенос файла из Data в Bak, если там не было
 
-                                            ManageModOrganizerMods.SaveGuidIfZipMod(fileInOverwrite, zipmodsGuidList);
+                                            SaveGuidIfZipMod(fileInOverwrite, zipmodsGuidList);
 
                                             File.Move(fileInOverwrite, fileInDataFolder);//перенос файла из папки Overwrite в Data
                                             moToStandartConvertationOperationsList.AppendLine(fileInOverwrite + "|MovedTo|" + fileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
@@ -2225,7 +1927,7 @@ namespace AIHelper
                                             debufStr = destFolder + ":destFolder,l2068";
                                         Directory.CreateDirectory(destFolder);
 
-                                        ManageModOrganizerMods.SaveGuidIfZipMod(fileInOverwrite, zipmodsGuidList);
+                                        SaveGuidIfZipMod(fileInOverwrite, zipmodsGuidList);
 
                                         File.Move(fileInOverwrite, fileInDataFolder);//перенос файла из папки мода в Data
                                         moToStandartConvertationOperationsList.AppendLine(fileInOverwrite + "|MovedTo|" + fileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
@@ -2343,7 +2045,7 @@ namespace AIHelper
 
                                                     File.Move(fileInDataFolder, fileInBakFolderWhichIsInRes);//перенос файла из Data в Bak, если там не было
 
-                                                    ManageModOrganizerMods.SaveGuidIfZipMod(fileOfMod, zipmodsGuidList);
+                                                    SaveGuidIfZipMod(fileOfMod, zipmodsGuidList);
 
                                                     File.Move(fileOfMod, fileInDataFolder);//перенос файла из папки мода в Data
                                                     moToStandartConvertationOperationsList.AppendLine(fileOfMod + "|MovedTo|" + fileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
@@ -2369,7 +2071,7 @@ namespace AIHelper
                                                     debufStr = destFolder + ":destFolder,l2208";
                                                 Directory.CreateDirectory(destFolder);
 
-                                                ManageModOrganizerMods.SaveGuidIfZipMod(fileOfMod, zipmodsGuidList);
+                                                SaveGuidIfZipMod(fileOfMod, zipmodsGuidList);
 
                                                 File.Move(fileOfMod, fileInDataFolder);//перенос файла из папки мода в Data
                                                 moToStandartConvertationOperationsList.AppendLine(fileOfMod + "|MovedTo|" + fileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
@@ -2650,7 +2352,7 @@ namespace AIHelper
 
         private void OpenLogLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            ManageModOrganizerMods.OpenBepinexLog();
+            OpenBepinexLog();
         }
 
         private void CurrentGameComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -3100,7 +2802,7 @@ namespace AIHelper
                     return;
                 }
 
-                var modpacks = ManageModOrganizerMods.GetSideloaderModpackTargetDirs();
+                var modpacks = GetSideloaderModpackTargetDirs();
 
                 pBar.Maximum = dirs.Count() + 1;
                 pBar.Value = 0;
@@ -3124,7 +2826,7 @@ namespace AIHelper
 
                     progressForm.Text = T._("Sorting") + ":" + sideloaderDirName;
 
-                    var isUnc = ManageModOrganizerMods.IsUncensorSelector(sideloaderDirName);
+                    var isUnc = IsUncensorSelector(sideloaderDirName);
                     var isMaleUnc = isUnc && modpacks.ContainsKey(sideloaderDirName + "M");
                     var isFeMaleUnc = isUnc && modpacks.ContainsKey(sideloaderDirName + "F");
                     var isSortingModPack = modpacks.ContainsKey(sideloaderDirName) || isMaleUnc || isFeMaleUnc;
@@ -3137,7 +2839,7 @@ namespace AIHelper
                             // Check if TargetIsInSideloader by guid
                             var guid = ManageArchive.GetZipmodGuid(file);
                             bool isguid = guid.Length > 0 && zipmodsGuidList.GUIDList.ContainsKey(guid);
-                            string targetModPath = isguid ? ManageModOrganizerMods.GetMoModPathInMods(zipmodsGuidList.GUIDList[guid].FileInfo.FullName) : "";
+                            string targetModPath = isguid ? GetMoModPathInMods(zipmodsGuidList.GUIDList[guid].FileInfo.FullName) : "";
                             var pathElements = !string.IsNullOrWhiteSpace(targetModPath) ? file.Replace(targetModPath, "").Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries) : null;
                             var targetzipModDirName = pathElements != null && pathElements.Length > 1 ? pathElements[1] : ""; // %modpath%\mods\%sideloadermodpackdir%
                             var targetIsInSideloader = targetzipModDirName.ToUpperInvariant().Contains("SIDELOADER MODPACK"); // dir in mods is sideloader

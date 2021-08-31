@@ -14,7 +14,6 @@ namespace AIHelper.Games
 
         public virtual void InitActions()
         {
-            GetBaseGamePyFile();
         }
 
         //public string gamefolderPath { get; set; } = string.Empty;
@@ -36,6 +35,11 @@ namespace AIHelper.Games
         /// manifest/game name
         /// </summary>
         public abstract string ManifestGame { get; }
+
+        /// <summary>
+        /// title of current game. GameName value for MO ini GameName parameter
+        /// </summary>
+        public string GameName { get; internal set; }
 
         string GameFolderName;
         /// <summary>
@@ -81,7 +85,7 @@ namespace AIHelper.Games
         public abstract string GetGameExeName();
 
         /// <summary>
-        /// prefix of selected game (kk,hs,hs2...)
+        /// prefix of selected game (kk,hs,hs2,ai,kks)
         /// </summary>
         /// <returns></returns>
         public abstract string GetGamePrefix();
@@ -334,16 +338,18 @@ namespace AIHelper.Games
         /// return selected game detection MO BaseGame plugin's py file or all files by default
         /// </summary>
         /// <returns></returns>
-        public virtual Dictionary<string, byte[]> GetBaseGamePyFile()
+        public abstract BaseGamePyFileInfo GetBaseGamePyFile();
+    }
+
+    public class BaseGamePyFileInfo
+    {
+        public string Name;
+        public byte[] Value;
+
+        public BaseGamePyFileInfo(string filename, byte[] value)
         {
-            return new Dictionary<string, byte[]>
-                {
-                    { nameof(Properties.Resources.game_aigirl), Properties.Resources.game_aigirl },
-                    { nameof(Properties.Resources.game_aigirltrial), Properties.Resources.game_aigirltrial },
-                    { nameof(Properties.Resources.game_honeyselect), Properties.Resources.game_honeyselect },
-                    { nameof(Properties.Resources.game_honeyselect2), Properties.Resources.game_honeyselect2},
-                    { nameof(Properties.Resources.game_koikatu), Properties.Resources.game_koikatu }
-                };
+            Name = filename;
+            Value = value;
         }
     }
 }

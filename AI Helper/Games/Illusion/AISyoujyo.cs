@@ -32,12 +32,9 @@
             return "AI";
         }
 
-        public override System.Collections.Generic.Dictionary<string, byte[]> GetBaseGamePyFile()
+        public override BaseGamePyFileInfo GetBaseGamePyFile()
         {
-            return new System.Collections.Generic.Dictionary<string, byte[]>
-                {
-                    { nameof(Properties.Resources.game_aigirl), Properties.Resources.game_aigirl }
-                };
+            return new BaseGamePyFileInfo ( nameof(Properties.Resources.game_aigirl),  Properties.Resources.game_aigirl );
         }
     }
 }

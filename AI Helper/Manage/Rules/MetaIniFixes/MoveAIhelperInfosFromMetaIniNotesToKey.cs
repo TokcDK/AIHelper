@@ -18,12 +18,12 @@ namespace AIHelper.Manage.Rules.MetaIniFixes
 
         internal override bool Apply()
         {
-            if (!ini.KeyExists("gameName", "General") || (/*gameName =*/ ini.GetKey("General", "gameName")) == ManageSettings.GetmoCurrentGameName())
+            if (!ini.KeyExists("gameName", "General") || (/*gameName =*/ ini.GetKey("General", "gameName")) == ManageSettings.GetMoCurrentGameName())
             {
                 return false;
             }
 
-            ini.SetKey("General", "gameName", ManageSettings.GetmoCurrentGameName(), false);
+            ini.SetKey("General", "gameName", ManageSettings.GetMoCurrentGameName(), false);
 
             modlistData.Report.Add(Path.GetFileName(mod) + ": " + T._("fixed game name"));
 

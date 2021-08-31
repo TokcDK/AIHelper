@@ -85,7 +85,7 @@ namespace AIHelper.Install.Types.Files
             ManageModOrganizer.WriteMetaIni(
                 moddir
                 ,
-                isUpdate ? string.Empty : ManageModOrganizer.GetCategoryIndexForTheName("ScriptLoader scripts") + ","
+                isUpdate ? string.Empty : "ScriptLoader scripts"
                 ,
                 "0." + fileLastModificationTime
                 ,

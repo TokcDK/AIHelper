@@ -1811,47 +1811,13 @@ namespace AIHelper.Manage
         /// Writes required parameters in meta.ini
         /// </summary>
         /// <param name="moddir"></param>
-        /// <param name="categoryIdIndex"></param>
+        /// <param name="categoryNames">names of categories splitted by ','</param>
         /// <param name="version"></param>
         /// <param name="comments"></param>
         /// <param name="notes"></param>
-        public static void WriteMetaIni(string moddir, string categoryIdIndex = "", string version = "", string comments = "", string notes = "")
+        public static void WriteMetaIni(string moddir, string categoryNames = "", string version = "", string comments = "", string notes = "")
         {
-            if (Directory.Exists(moddir))
-            {
-                string metaPath = Path.Combine(moddir, "meta.ini");
-                if (!File.Exists(metaPath))
-                {
-                    File.WriteAllText(metaPath, "[General]\r\n");
-                }
-
-                INIFile ini = ManageIni.GetINIFile(metaPath);
-
-                bool isKeyExists = ini.KeyExists("category", "General");
-                if (!isKeyExists || (categoryIdIndex.Length > 0 && ini.GetKey("General", "category").Replace("\"", string.Empty).Length == 0))
-                {
-                    ini.SetKey("General", "category", "\"" + categoryIdIndex + "\"");
-                }
-
-                if (version.Length > 0)
-                {
-                    ini.SetKey("General", "version", version);
-                }
-
-                ini.SetKey("General", "gameName", ManageSettings.GetmoCurrentGameName());
-
-                if (comments.Length > 0)
-                {
-                    ini.SetKey("General", "comments", comments);
-                }
-
-                if (notes.Length > 0)
-                {
-                    ini.SetKey("General", "notes", "\"" + notes.Replace(Environment.NewLine, "<br>") + "\"");
-                }
-
-                ini.SetKey("General", "validated", "true");
-            }
+            new MetaIniInfo().Set(moddir, categoryNames, version, comments, notes);
         }
 
         /// <summary>
@@ -2208,48 +2174,49 @@ namespace AIHelper.Manage
             customs.Save();
         }
 
-        public static string GetCategoryNameForTheIndex(string inputCategoryIndex, string[] categoriesList = null)
+        public static string GetCategoryNameForTheIndex(string inputCategoryIndex, CategoriesInfo categoriesList = null)
         {
             return GetCategoryIndexNameBase(inputCategoryIndex, categoriesList, true);
         }
 
-        public static string GetCategoryIndexForTheName(string inputCategoryName, string[] categoriesList = null)
+        public static string GetCategoryIndexForTheName(string inputCategoryNames, CategoriesInfo categoriesList = null)
         {
-            return GetCategoryIndexNameBase(inputCategoryName, categoriesList, false);
+            return GetCategoryIndexNameBase(inputCategoryNames, categoriesList, false);
         }
 
         /// <summary>
         /// GetName = true means will be returned categorie name by index else will be returned index by name
         /// </summary>
-        /// <param name="input"></param>
-        /// <param name="categoriesList"></param>
+        /// <param name="inputNamesOrIds"></param>
+        /// <param name="inputCategoriesList"></param>
         /// <param name="getName"></param>
         /// <returns></returns>
-        public static string GetCategoryIndexNameBase(string input, string[] categoriesList = null, bool getName = true)
+        public static string GetCategoryIndexNameBase(string inputNamesOrIds, CategoriesInfo inputCategoriesList = null, bool getName = false)
         {
-            if (categoriesList == null)
+            var categoriesList = inputCategoriesList ?? new CategoriesInfo();
+
+            List<string> categoryParts = new List<string>();
+            foreach (var part in inputNamesOrIds.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
             {
-                categoriesList = File.ReadAllLines(ManageSettings.GetMOcategoriesPathForSelectedGame());
-            }
-            foreach (var category in categoriesList)
-            {
-                string[] categoryData = category.Split('|');
-                if (categoryData[getName ? 0 : 1] == input)
+                foreach (var category in categoriesList.Records)
                 {
-                    return categoryData[getName ? 1 : 0];
+                    if ((getName ? category.ID : category.Name) == part)
+                    {
+                        categoryParts.Add(getName ? category.Name : category.ID);
+                    }
                 }
             }
 
-            return string.Empty;
+            return categoryParts.Count == 0 ? "" : categoryParts.Count > 1 ? string.Join(",", categoryParts) : categoryParts[0].Length > 0 ? categoryParts[0] + "," : "";
         }
 
-        public static string GetCategoriesForTheFolder(string modDir, string defaultCategory, string[] categoriesList = null)
+        public static string GetCategorieNamesForTheFolder(string modDir, string defaultCategory, CategoriesInfo categoriesList = null)
         {
             string resultCategory = defaultCategory;
 
             if (categoriesList == null)
             {
-                categoriesList = File.ReadAllLines(ManageSettings.GetMOcategoriesPath());
+                categoriesList = new CategoriesInfo();
             }
 
             string[,] categorieRules =
@@ -2324,9 +2291,9 @@ namespace AIHelper.Manage
 
             string gameName;
             //updated game name
-            if (string.IsNullOrWhiteSpace(gameName = ini.GetKey("General", "gameName")) || gameName != ManageSettings.GetmoCurrentGameName())
+            if (string.IsNullOrWhiteSpace(gameName = ini.GetKey("General", "gameName")) || gameName != ManageSettings.GetMoCurrentGameName())
             {
-                ini.SetKey("General", "gameName", ManageSettings.GetmoCurrentGameName(), false);
+                ini.SetKey("General", "gameName", ManageSettings.GetMoCurrentGameName(), false);
             }
 
             //clear pluginBlacklist section of MO ini to prevent plugin_python.dll exist there
@@ -2358,7 +2325,7 @@ namespace AIHelper.Manage
                 if (!string.Equals(custom.Value.MoTargetMod, ManageSettings.KKManagerFilesModName(), StringComparison.InvariantCultureIgnoreCase) &&
                     (
                     Path.GetFileName(custom.Value.Binary) == ManageSettings.GetKkManagerExeName()
-                    || 
+                    ||
                     Path.GetFileName(custom.Value.Binary) == ManageSettings.KkManagerStandaloneUpdaterExeName()
                     )
                     )
@@ -2470,15 +2437,11 @@ namespace AIHelper.Manage
                 return;
             }
 
-            var pys = GameData.CurrentGame.GetBaseGamePyFile();
-
-            foreach (var py in pys)
+            var py = GameData.CurrentGame.GetBaseGamePyFile();
+            var pypath = Path.Combine(moBaseGamesPluginGamesDirPath, py.Name + ".py");
+            if (!File.Exists(pypath) || py.Value.Length != new FileInfo(pypath).Length)
             {
-                var pypath = Path.Combine(moBaseGamesPluginGamesDirPath, py.Key + ".py");
-                if (!File.Exists(pypath) || py.Value.Length != new FileInfo(pypath).Length)
-                {
-                    File.WriteAllBytes(pypath, py.Value);
-                }
+                File.WriteAllBytes(pypath, py.Value);
             }
         }
 
@@ -2488,13 +2451,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static string GetMoBasicGamePluginGameName()
         {
-            var pys = GameData.CurrentGame.GetBaseGamePyFile();
-            Match gameName = null;
-            foreach (var py in pys)
-            {
-                gameName = Regex.Match(Encoding.UTF8.GetString(py.Value), @"GameName \= \""([^\""]+)\""");
-                break;
-            }
+            Match gameName = Regex.Match(Encoding.UTF8.GetString(GameData.CurrentGame.GetBaseGamePyFile().Value), @"GameName \= \""([^\""]+)\""");
 
             if (gameName == null)
             {
@@ -2568,6 +2525,174 @@ namespace AIHelper.Manage
             }
 
             return false;
+        }
+    }
+
+    class MetaIniInfo
+    {
+        INIFile _ini;
+        public MetaIniParams Get(string moddir)
+        {
+            string metaPath = Path.Combine(moddir, "meta.ini");
+            if (!File.Exists(metaPath))
+            {
+                return null;
+            }
+
+            _ini = ManageIni.GetINIFile(metaPath);
+
+            return new MetaIniParams(
+                _ini.GetKey("General", "gameName"),
+                _ini.GetKey("General", "category").Trim('\"'),
+                _ini.GetKey("General", "version"),
+                _ini.GetKey("General", "comments"),
+                _ini.GetKey("General", "notes"),
+                _ini.GetKey("General", "url")
+                );
+        }
+
+        public void Set(string moddir, string categoryNames = "", string version = "", string comments = "", string notes = "")
+        {
+            if (!Directory.Exists(moddir))
+            {
+                return;
+            }
+
+            string metaPath = Path.Combine(moddir, "meta.ini");
+            if (!File.Exists(metaPath))
+            {
+                File.WriteAllText(metaPath, ManageSettings.GetDefaultMetaIni());
+            }
+
+            INIFile ini = ManageIni.GetINIFile(metaPath);
+
+            if (!ini.KeyExists("category", "General") || (categoryNames.Replace(",", "").Length > 0 && ini.GetKey("General", "category").Trim('\"').Length == 0))
+            {
+                ini.SetKey("General", "category", "\"" + GetCategoryIndexForTheName(categoryNames) + "\"");
+            }
+
+            if (version.Length > 0)
+            {
+                ini.SetKey("General", "version", version);
+            }
+
+            ini.SetKey("General", "gameName", ManageSettings.GetMoCurrentGameName());
+
+            if (comments.Length > 0)
+            {
+                ini.SetKey("General", "comments", BitConverter.ToString(Encoding.Default.GetBytes(comments)));
+            }
+
+            if (notes.Length > 0)
+            {
+                ini.SetKey("General", "notes", "\"" + BitConverter.ToString(Encoding.Default.GetBytes(notes.Replace(Environment.NewLine, "<br>"))) + "\"");
+            }
+
+            ini.SetKey("General", "validated", "true");
+        }
+
+        public class MetaIniParams
+        {
+            public string GameName;
+            public string Category;
+            public string Version;
+            public string Comments;
+            public string Notes;
+            public string Url;
+
+            public MetaIniParams(string gameName, string category, string version, string comments, string notes, string url)
+            {
+                GameName = gameName;
+                Category = category;
+                Version = version;
+                Comments = comments;
+                Notes = notes;
+                Url = url;
+            }
+        }
+    }
+
+    class CategoriesInfo
+    {
+        public List<CategoryLineInfo> Records = new List<CategoryLineInfo>();
+
+        string _categoriesFilePath;
+        int RecordsInitCount;
+
+        public CategoriesInfo(string categoriesFilePath = null)
+        {
+            Get(categoriesFilePath ?? ManageSettings.GetMOcategoriesPathForSelectedGame());
+        }
+
+        public string Add(string categoryName, bool doSave = false)
+        {
+            Records.Add(new CategoryLineInfo(new[] { Records.Count + 1 + "", categoryName, "", "0" }));
+
+            return Records.Count + 1 + "";
+        }
+
+        private void Get(string categoriesFilePath)
+        {
+            if (!File.Exists(categoriesFilePath))
+            {
+                return;
+            }
+
+            _categoriesFilePath = categoriesFilePath;
+
+            using (StreamReader reader = new StreamReader(categoriesFilePath))
+            {
+                string[] lineData;
+                while (!reader.EndOfStream)
+                {
+                    lineData = reader.ReadLine().Split('|');
+                    if (lineData == null || lineData.Length != 4)
+                    {
+                        continue;
+                    }
+
+                    Records.Add(new CategoryLineInfo(lineData));
+                }
+            }
+
+            RecordsInitCount = Records.Count;
+        }
+
+        internal void Save()
+        {
+            if (RecordsInitCount == Records.Count)
+            {
+                // not changed
+                return;
+            }
+
+            using (StreamWriter writer = new StreamWriter(_categoriesFilePath))
+            {
+                foreach (var record in Records)
+                {
+                    writer.WriteLine(record.ID + "|" + record.Name + "|" + record.NexisID + "|" + record.ParentID);
+                }
+            }
+        }
+
+        public class CategoryLineInfo
+        {
+            public string ID;
+            public string Name;
+            public string NexisID = "";
+            public string ParentID = "0";
+
+            /// <summary>
+            /// ID + Name + NexisID + ParentID
+            /// </summary>
+            /// <param name="categoryInfo"></param>
+            public CategoryLineInfo(string[] categoryInfo)
+            {
+                ID = categoryInfo[0];
+                Name = categoryInfo[1];
+                NexisID = categoryInfo[2];
+                ParentID = categoryInfo[3];
+            }
         }
     }
 }

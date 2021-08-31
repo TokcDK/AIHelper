@@ -83,12 +83,9 @@ namespace AIHelper.Games
             };
         }
 
-        public override System.Collections.Generic.Dictionary<string, byte[]> GetBaseGamePyFile()
+        public override BaseGamePyFileInfo GetBaseGamePyFile()
         {
-            return new System.Collections.Generic.Dictionary<string, byte[]>
-                {
-                    { nameof(Properties.Resources.game_koikatusunshine), AIHelper.Properties.Resources.game_koikatusunshine }
-                };
+            return new BaseGamePyFileInfo(nameof(Properties.Resources.game_koikatusunshine), Properties.Resources.game_koikatusunshine);
         }
     }
 }

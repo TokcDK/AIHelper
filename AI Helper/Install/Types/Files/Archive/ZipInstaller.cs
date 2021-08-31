@@ -20,7 +20,7 @@ namespace AIHelper.Install.Types.Files.Archive
             bool foundcsFiles = false;
 
             string author = string.Empty;
-            string category = string.Empty;
+            string category = "Mods";
             string version = string.Empty;
             string comment = string.Empty;
             string description = string.Empty;

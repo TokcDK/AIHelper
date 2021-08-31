@@ -38,56 +38,55 @@ namespace AIHelper.Games
         Game _detectedGame;
         public override string GetGameFolderName()
         {
-            DetectRootGame();
-
+            //DetectRootGame();
             return _detectedGame.GetGameFolderName();
         }
 
         public override string GetGameExeName()
         {
-            DetectRootGame();
+            //DetectRootGame();
             return _detectedGame.GetGameExeName();
         }
 
         public override string GetGameDisplayingName()
         {
-            DetectRootGame();
+            //DetectRootGame();
             return _detectedGame.GetGameDisplayingName();
         }
 
         public override string GetGameStudioExeName()
         {
-            DetectRootGame();
+            //DetectRootGame();
             return _detectedGame.GetGameStudioExeName();
         }
 
         public override string GetGameExeNameX32()
         {
-            DetectRootGame();
+            //DetectRootGame();
             return _detectedGame.GetGameExeNameX32();
         }
 
         public override string GetGameStudioExeNameX32()
         {
-            DetectRootGame();
+            //DetectRootGame();
             return _detectedGame.GetGameStudioExeNameX32();
         }
 
         public override string[,] GetDirLinkPaths()
         {
-            DetectRootGame();
+            //DetectRootGame();
             return _detectedGame.GetDirLinkPaths();
         }
 
         public override string GetGamePrefix()
         {
-            DetectRootGame();
+            //DetectRootGame();
             return _detectedGame.GetGamePrefix();
         }
 
-        public override Dictionary<string, byte[]> GetBaseGamePyFile()
+        public override BaseGamePyFileInfo GetBaseGamePyFile()
         {
-            DetectRootGame();
+            //DetectRootGame();
             return _detectedGame.GetBaseGamePyFile();
         }
 

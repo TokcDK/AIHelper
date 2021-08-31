@@ -107,7 +107,7 @@ namespace AIHelper.Install.Types.Files
             ManageModOrganizer.WriteMetaIni(
                 dllTargetModDirPath
                 ,
-                isUpdate ? string.Empty : ManageModOrganizer.GetCategoryIndexForTheName("Plugins") + ","
+                isUpdate ? string.Empty : "Plugins"
                 ,
                 version
                 ,

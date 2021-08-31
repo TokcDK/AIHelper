@@ -350,7 +350,7 @@ namespace AIHelper.Install.Types.Directories
                 }
 
                 //Задание доп. категорий по наличию папок
-                category = ManageModOrganizer.GetCategoriesForTheFolder(moddir, category);
+                category = ManageModOrganizer.GetCategorieNamesForTheFolder(moddir, category);
 
                 //запись meta.ini
                 ManageModOrganizer.WriteMetaIni(

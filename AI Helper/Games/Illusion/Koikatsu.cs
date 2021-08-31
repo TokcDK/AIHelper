@@ -1,6 +1,4 @@
-﻿using AIHelper;
-using AIHelper.Games;
-using AIHelper.Manage;
+﻿using AIHelper.Manage;
 using System.IO;
 
 namespace AIHelper.Games
@@ -85,12 +83,9 @@ namespace AIHelper.Games
             };
         }
 
-        public override System.Collections.Generic.Dictionary<string, byte[]> GetBaseGamePyFile()
+        public override BaseGamePyFileInfo GetBaseGamePyFile()
         {
-            return new System.Collections.Generic.Dictionary<string, byte[]>
-                {
-                    { nameof(AIHelper.Properties.Resources.game_koikatu), AIHelper.Properties.Resources.game_koikatu }
-                };
+            return new BaseGamePyFileInfo(nameof(AIHelper.Properties.Resources.game_koikatu), Properties.Resources.game_koikatu);
         }
     }
 }

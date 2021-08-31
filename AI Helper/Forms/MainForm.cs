@@ -71,6 +71,8 @@ namespace AIHelper
 
             ManageModOrganizer.CleanMoFolder();
             //
+            GameData.CurrentGame.GameName = ManageModOrganizer.GetMoBasicGamePluginGameName();
+            //
             ManageModOrganizer.CheckBaseGamesPy();
 
             CleanLog();
@@ -1606,7 +1608,7 @@ namespace AIHelper
                     ManageModOrganizer.WriteMetaIni(
                         destFolderPath
                         ,
-                        "53,"
+                        "UserFiles"
                         ,
                         dateTimeInFormat
                         ,
@@ -2603,7 +2605,7 @@ namespace AIHelper
                     Directory.CreateDirectory(kkManagerFilesModPath);
                     ManageModOrganizer.WriteMetaIni(
                         kkManagerFilesModPath,
-                        categoryIdIndex: "",
+                        categoryNames: "",
                         version: "1.0",
                         comments: "",
                         notes: T._("KKManager's and it's Standalone Updater's new created files stored here")

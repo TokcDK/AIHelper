@@ -77,12 +77,9 @@ namespace AIHelper.Games
             };
         }
 
-        public override System.Collections.Generic.Dictionary<string, byte[]> GetBaseGamePyFile()
+        public override BaseGamePyFileInfo GetBaseGamePyFile()
         {
-            return new System.Collections.Generic.Dictionary<string, byte[]>
-                {
-                    { nameof(Properties.Resources.game_honeyselect2), Properties.Resources.game_honeyselect2}
-                };
+            return new BaseGamePyFileInfo(nameof(Properties.Resources.game_honeyselect2), Properties.Resources.game_honeyselect2);
         }
     }
 }

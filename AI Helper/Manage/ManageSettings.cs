@@ -798,32 +798,11 @@ namespace AIHelper.Manage
             return GetOverwriteFolder();
         }
 
-        internal static string GetmoCurrentGameName()
+        internal static string GetMoCurrentGameName()
         {
             if (MoIsNew)
             {
-                if (GetCurrentGameExeName() == "Koikatu")
-                {
-                    return "Koikatu";
-                }
-                else if (GetCurrentGameExeName().StartsWith("HoneySelect2", StringComparison.InvariantCulture))
-                {
-                    return "HoneySelect2";
-                }
-                else if (GetCurrentGameExeName().StartsWith("HoneySelect", StringComparison.InvariantCulture))
-                {
-                    return "HoneySelect";
-                }
-                else if (GetCurrentGameExeName() == "AI-Syoujyo")
-                {
-                    return "AIGirl";
-                }
-                else if (GetCurrentGameExeName() == "AI-SyoujyoTrial")
-                {
-                    return "AIGirlTrial";
-                }
-
-                return GetCurrentGameExeName();
+                return GameData.CurrentGame.GameName;
             }
             else
             {
@@ -1548,6 +1527,16 @@ namespace AIHelper.Manage
         internal static string KKManagerFilesModName()
         {
             return "KKManagerFiles";
+        }
+
+        /// <summary>
+        /// default meta ini value
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetDefaultMetaIni()
+        {
+            return "[General]\r\ncategory=\"\"\r\nversion=0.0.0.0\r\ngameName="+GetMoCurrentGameName()+"\r\nnotes=\"\"\r\nvalidated=true\r\nnewestVersion=\r\nignoredVersion=\r\ninstallationFile=\r\nrepository=\r\nmodid=-1\r\ncomments=\r\nnexusDescription=\r\nurl=\r\nhasCustomURL=false\r\nnexusFileStatus=1\r\nlastNexusQuery=\r\nlastNexusUpdate=\r\nnexusLastModified=2021-08-29T18:55:44Z\r\nconverted=false\r\ncolor=@Variant(\0\0\0\x43\0\xff\xff\0\0\0\0\0\0\0\0)\r\ntracked=0";
         }
     }
 }

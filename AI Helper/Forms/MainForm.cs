@@ -197,7 +197,7 @@ namespace AIHelper
         {
             this.Text = "AI Helper" + " | " + GameData.CurrentGame.GetGameDisplayingName();
             CurrentGameLabel.Text = T._("Current Game") + ":";
-            InstallInModsButton.Text = T._("Install from") + " " + ManageSettings.ModsInstallDirName();
+            InstallInModsButton.Text = T._("Install");// + " " + ManageSettings.ModsInstallDirName();
             ToolsFixModListButton.Text = T._("Fix modlist");
             btnUpdateMods.Text = T._("Update");
             //button1.Text = T._("Prepare the game");
@@ -1174,11 +1174,11 @@ namespace AIHelper
                 //обновление информации о конфигурации папок игры
                 FoldersInit();
 
-                MessageBox.Show(T._($"All possible mods installed. Install all rest in {_toMo} folder manually."));
+                MessageBox.Show(T._("All possible mods installed. Install all rest in install folder manually."));
             }
             else
             {
-                MessageBox.Show(T._($"No compatible for installation formats found in {_toMo} folder.\nFormats: zip, zipmod, png, png in subfolder, unpacked mod in subfolder"));
+                MessageBox.Show(T._("No compatible for installation formats found in install folder.\n\nIt must be archvives, game files or folders with game files.\n\nWill be opened installation dir where you can drop files for installation."));
             }
             Process.Start("explorer.exe", ManageSettings.GetInstall2MoDirPath());
         }

@@ -1002,7 +1002,7 @@
             this.InstallInModsButton.Name = "InstallInModsButton";
             this.InstallInModsButton.Size = new System.Drawing.Size(129, 30);
             this.InstallInModsButton.TabIndex = 17;
-            this.InstallInModsButton.Text = "Install from 2MO";
+            this.InstallInModsButton.Text = "Install";
             this.InstallInModsButton.UseVisualStyleBackColor = false;
             this.InstallInModsButton.Click += new System.EventHandler(this.InstallInModsButton_Click);
             // 

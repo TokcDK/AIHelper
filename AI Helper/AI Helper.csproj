@@ -136,6 +136,7 @@
     <Compile Include="Install\Types\Directories\CardsFromDir\Characters\MaleCharacterCardInstaller.cs" />
     <Compile Include="Install\Types\Directories\CardsFromDir\Characters\FemaleCharacterCardInstaller.cs" />
     <Compile Include="Install\Types\Directories\DirectoriesInstallerBase.cs" />
+    <Compile Include="Install\Types\Directories\GameUpdateInstaller.cs" />
     <Compile Include="Install\Types\Directories\ModFilesFromDirInstaller.cs" />
     <Compile Include="Install\Types\Files\Archive\Extractors\ArchiveExtractorBase.cs" />
     <Compile Include="Install\Types\Files\Archive\ArchiveInstallerBase.cs" />

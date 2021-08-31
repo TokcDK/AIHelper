@@ -184,6 +184,11 @@
     <Compile Include="Manage\ManageModOrganizer.cs" />
     <Compile Include="Manage\ManageStringsExtensions.cs" />
     <Compile Include="Manage\ManageSymLinks.cs" />
+    <Compile Include="Manage\Rules\MetaIniFixes\Copy1stNotesUrlToUrlKey.cs" />
+    <Compile Include="Manage\Rules\MetaIniFixes\MetaIniFixesBase.cs" />
+    <Compile Include="Manage\Rules\MetaIniFixes\ModlistDataMetaIniFixesTools.cs" />
+    <Compile Include="Manage\Rules\MetaIniFixes\MoveAIhelperInfosFromMetaIniNotesToKey1.cs" />
+    <Compile Include="Manage\Rules\MetaIniFixes\MoveAIhelperInfosFromMetaIniNotesToKey.cs" />
     <Compile Include="Manage\Rules\ModList\HardRules\RuleModForkPlug.cs" />
     <Compile Include="Manage\Rules\ModList\ModListData.cs" />
     <Compile Include="Manage\Rules\ModList\ModListRulesBase.cs" />

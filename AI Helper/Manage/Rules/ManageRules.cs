@@ -1,4 +1,5 @@
-﻿using AIHelper.Manage.Rules.ModList;
+﻿using AIHelper.Manage.Rules.MetaIniFixes;
+using AIHelper.Manage.Rules.ModList;
 using INIFileMan;
 using System;
 using System.Collections.Generic;
@@ -105,7 +106,7 @@ namespace AIHelper.Manage
 
                 //meta.ini fixes/tweaks
                 //var reportCntPre = modlistData.Report.Count;
-                OldMetaInfoFix();
+                MetaInfoFixes();
                 //var metainiFixesApplyed = modlistData.Report.Count > reportCntPre;
 
                 if (_modlistData.Report.Count > 0)
@@ -206,174 +207,11 @@ namespace AIHelper.Manage
             }
 
             /// <summary>
-            /// Fix meta.ini game name value for mods
+            /// Fix meta.ini issues
             /// </summary>
-            internal void OldMetaInfoFix()
+            internal void MetaInfoFixes()
             {
-                var allDirsList = Directory.GetDirectories(ManageSettings.GetCurrentGameModsPath());
-                var applyModListgameNameValueFix = false;
-                var cnt = 0;
-                using (var iniFixesProgressBar = new ProgressBar())
-                {
-                    iniFixesProgressBar.Style = ProgressBarStyle.Blocks;
-                    iniFixesProgressBar.Dock = DockStyle.Bottom;
-                    iniFixesProgressBar.Height = 10;
-                    iniFixesProgressBar.Maximum = allDirsList.Length;
-
-                    using (var iniFixesForm = new Form())
-                    {
-                        iniFixesForm.Text = T._("Meta info refreshing in progress") + "...";
-                        iniFixesForm.Size = new System.Drawing.Size(370, 50);
-                        bool metainiFixesApplyed = false;
-                        foreach (var mod in allDirsList)
-                        {
-                            cnt++;
-                            if (!applyModListgameNameValueFix)
-                            {
-                                applyModListgameNameValueFix = true;
-
-                                //show progress bar in new form
-                                iniFixesForm.Controls.Add(iniFixesProgressBar);
-                                iniFixesForm.FormBorderStyle = FormBorderStyle.FixedToolWindow;
-                                iniFixesForm.StartPosition = FormStartPosition.CenterScreen;
-                                iniFixesForm.Show();
-                                iniFixesForm.Activate();
-
-                                //if (cnt == 10)
-                                //{
-                                //break;
-                                //}
-                            }
-
-                            if (cnt < iniFixesProgressBar.Maximum)
-                            {
-                                iniFixesProgressBar.Value = cnt;
-                            }
-
-                            var modMetaIniPath = Path.Combine(mod, "meta.ini");
-                            if (!File.Exists(modMetaIniPath))
-                            {
-                                continue;
-                            }
-                            var ini = ManageIni.GetINIFile(modMetaIniPath);
-                            var inIchanged = false;
-
-                            //string gameName;
-                            //fix for incorrect gameName set for the mod
-                            if (ini.KeyExists("gameName", "General") && (/*gameName =*/ ini.GetKey("General", "gameName")) != ManageSettings.GetmoCurrentGameName())
-                            {
-                                //if (!ApplyModListgameNameValueFix)
-                                //{
-                                //    var result = MessageBox.Show(T._("Attention") + "\n\n" + T._("Found old mods meta gameName info") + "\n\n" + T._("Refresh it?"), T._("Confirmation"), MessageBoxButtons.YesNo);
-                                //    if (result == DialogResult.Yes)
-                                //    {
-                                //        ApplyModListgameNameValueFix = true;
-
-                                //        //show progress bar in new form
-                                //        INIFixesForm.Controls.Add(INFixesProgressBar);
-                                //        INIFixesForm.FormBorderStyle = FormBorderStyle.FixedToolWindow;
-                                //        INIFixesForm.StartPosition = FormStartPosition.CenterScreen;
-                                //        INIFixesForm.Show();
-                                //        INIFixesForm.Activate();
-                                //    }
-                                //    else
-                                //    {
-                                //        break;
-                                //    }
-                                //}
-
-                                ini.SetKey("General", "gameName", ManageSettings.GetmoCurrentGameName(), false);
-                                if (!metainiFixesApplyed)
-                                {
-                                    metainiFixesApplyed = true;
-                                    _modlistData.Report.Add(Environment.NewLine + "meta.ini fixes:");
-                                }
-                                _modlistData.Report.Add(Path.GetFileName(mod) + ": " + T._("fixed game name"));
-                                inIchanged = true;
-
-                            }
-
-                            //Copy 1st found url from notes to url key
-                            if (ini.KeyExists("url", "General") && !string.IsNullOrWhiteSpace(ini.GetKey("General", "url")))
-                            {
-                                //set hasCustomURL to true if url exists and hasCustomURL is false
-                                if (!ini.KeyExists("hasCustomURL", "General") || ini.GetKey("General", "hasCustomURL").Length == 5/*=="false"*/)
-                                {
-                                    ini.SetKey("General", "hasCustomURL", "true", false);
-                                    inIchanged = true;
-                                }
-                            }
-                            else// if (!INI.KeyExists("url", "General") || string.IsNullOrWhiteSpace(INI.ReadINI("General", "url")))
-                            {
-                                var metanotes = ini.GetKey("General", "notes");
-                                if (!string.IsNullOrWhiteSpace(metanotes))
-                                {
-                                    var regex = @"<a href\=\\""[^>]+\\"">";//pattern for url inside notes
-                                    var url = Regex.Match(metanotes, regex);
-                                    if (url.Success && !string.IsNullOrWhiteSpace(url.Value))
-                                    {
-                                        var urlValue = url.Value.Remove(url.Value.Length - 3, 3).Remove(0, 10);
-                                        ini.SetKey("General", "url", urlValue, false);
-                                        ini.SetKey("General", "hasCustomURL", "true", false);
-                                        if (!metainiFixesApplyed)
-                                        {
-                                            metainiFixesApplyed = true;
-                                            _modlistData.Report.Add(Environment.NewLine + "meta.ini fixes:");
-                                        }
-                                        _modlistData.Report.Add(Path.GetFileName(mod) + ": " + T._("added url from notes"));
-                                        inIchanged = true;
-                                    }
-                                }
-                            }
-
-                            var metainiinfomoved = false;
-                            if (ini.KeyExists("notes", "General"))
-                            {
-                                var metanotes = ini.GetKey("General", "notes");
-                                if (!string.IsNullOrWhiteSpace(metanotes))
-                                {
-                                    var patternsOfInfoForMove = new string[2][]
-                                    {
-                                        new string[2] { "mlinfo", ManageSettings.AiMetaIniKeyModlistRulesInfoName() },//regex to capture ::mlinfo:: with html tags
-                                        new string[2] { "updgit", ManageSettings.AiMetaIniKeyUpdateName() }//regex to capture update info with html tags
-                                    };
-
-                                    foreach (var pattern in patternsOfInfoForMove)
-                                    {
-                                        var regex = @"<p style\=[^>]*>(::)?" + pattern[0] + @"::(?:(?!::).)+::<\/p>";//regex to capture info with html tags
-                                        var info = Regex.Match(metanotes, regex);
-                                        if (info.Success && !string.IsNullOrWhiteSpace(info.Value))
-                                        {
-                                            var infoValue = Regex.Replace(info.Value.Replace(@"\n", @"\r\n"), "<[^>]*>", "");//cleaned info from html tags
-                                                                                                                             //write new key to meta ini with info
-                                            ini.SetKey(ManageSettings.AiMetaIniSectionName(), pattern[1], infoValue, false);
-
-                                            if (!metainiFixesApplyed)
-                                            {
-                                                metainiFixesApplyed = true;
-                                                _modlistData.Report.Add(Environment.NewLine + "meta.ini fixes:");
-                                            }
-                                            _modlistData.Report.Add(Path.GetFileName(mod) + ": " + T._("moved meta ini info from notes in ini key") + " " + pattern[1]);
-                                            inIchanged = true;
-                                            metainiinfomoved = true;
-                                            metanotes = metanotes.Replace(info.Value, "");//remove info from notes after it was set to ini key
-                                        }
-                                    }
-
-                                    if (metainiinfomoved)
-                                    {
-                                        ini.SetKey("General", "notes", metanotes, false);//write notes with removed mlinfo
-                                    }
-                                }
-                            }
-
-                            if (inIchanged)
-                            {
-                                ini.WriteFile();
-                            }
-                        }
-                    }
-                }
+                ModlistDataMetaIniFixesTools.ApplyFixes(_modlistData);
             }
 
             private void ApplyRules()

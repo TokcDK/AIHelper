@@ -287,6 +287,9 @@ namespace AIHelper.Manage.Update
                 //if (IsHTMLReport)
                 {
                     var htmlfile = ManageSettings.UpdateReportHtmlFilePath();
+
+                    Directory.CreateDirectory(Path.GetDirectoryName(htmlfile));// fix missing parent directory error
+
                     File.WriteAllText(htmlfile, reportMessage);
                     System.Diagnostics.Process.Start(htmlfile);
                 }

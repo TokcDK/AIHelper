@@ -37,12 +37,12 @@ namespace AIHelper.Manage
             //MOini
             ManageSettings.GetMOiniPath().ReCreateFileLinkWhenNotValid(ManageSettings.GetMOiniPathForSelectedGame(), true);
             //Categories
-            ManageSettings.GetMOcategoriesPath().ReCreateFileLinkWhenNotValid(ManageSettings.GetMOcategoriesPathForSelectedGame(), true);
+            ManageSettings.GetMOcategoriesPath().ReCreateFileLinkWhenNotValid(ManageSettings.GetAppMOcategoriesPath(), true);
         }
 
         internal static string GetMoVersion()
         {
-            var exeversion = System.Diagnostics.FileVersionInfo.GetVersionInfo(ManageSettings.GetMOexePath());
+            var exeversion = System.Diagnostics.FileVersionInfo.GetVersionInfo(ManageSettings.GetAppMOexePath());
             return exeversion.FileVersion;
         }
 
@@ -51,7 +51,7 @@ namespace AIHelper.Manage
             RedefineGameMoData();
 
             //менять настройки МО только когда игра меняется
-            if (!Properties.Settings.Default.CurrentGameIsChanging && Path.GetDirectoryName(ManageSettings.GetMOdirPath()) != Properties.Settings.Default.ApplicationStartupPath)
+            if (!Properties.Settings.Default.CurrentGameIsChanging && Path.GetDirectoryName(ManageSettings.GetCurrentGameModOrganizerIniPath()) != Properties.Settings.Default.ApplicationStartupPath)
             {
                 return;
             }
@@ -1350,7 +1350,7 @@ namespace AIHelper.Manage
                 //        }
                 //    ,
                 //        {
-                //            Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles")
+                //            Path.Combine(ManageSettings.GetCurrentGameMOPath(), "profiles")
                 //            ,
                 //            "Settings"
                 //            ,
@@ -1358,7 +1358,7 @@ namespace AIHelper.Manage
                 //        }
                 //    ,
                 //        {
-                //            Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "overwrite")
+                //            Path.Combine(ManageSettings.GetCurrentGameMOPath(), "overwrite")
                 //            ,
                 //            "Settings"
                 //            ,
@@ -1405,7 +1405,7 @@ namespace AIHelper.Manage
                     }
                 ,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles")
+                        Path.Combine(ManageSettings.GetCurrentGameMOPath(), "profiles")
                         ,
                         "Settings"
                         ,
@@ -1413,7 +1413,7 @@ namespace AIHelper.Manage
                     }
                 ,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "overwrite")
+                        Path.Combine(ManageSettings.GetCurrentGameMOPath(), "overwrite")
                         ,
                         "Settings"
                         ,
@@ -1898,27 +1898,27 @@ namespace AIHelper.Manage
 
         private static string ReGetcurrentMOprofile(string currentMOprofile)
         {
-            while (!Directory.Exists(Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", currentMOprofile)))
+            while (!Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameMOPath(), "profiles", currentMOprofile)))
             {
-                if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", ManageSettings.GetCurrentGameExeName())))
+                if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameMOPath(), "profiles", ManageSettings.GetCurrentGameExeName())))
                 {
                     return ManageSettings.GetCurrentGameExeName();
                 }
-                else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", ManageSettings.GetCurrentGameDisplayingName())))
+                else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameMOPath(), "profiles", ManageSettings.GetCurrentGameDisplayingName())))
                 {
                     return ManageSettings.GetCurrentGameDisplayingName();
                 }
-                else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles", ManageSettings.GetCurrentGameFolderName())))
+                else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameMOPath(), "profiles", ManageSettings.GetCurrentGameFolderName())))
                 {
                     return ManageSettings.GetCurrentGameFolderName();
                 }
-                else if (Directory.GetDirectories(Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles")).Length == 0)
+                else if (Directory.GetDirectories(Path.Combine(ManageSettings.GetCurrentGameMOPath(), "profiles")).Length == 0)
                 {
                     MessageBox.Show(T._("No profiles found for Current game") + " " + ManageSettings.GetCurrentGameDisplayingName());
                 }
                 else
                 {
-                    return Path.GetDirectoryName(Directory.GetDirectories(Path.Combine(ManageSettings.GetCurrentGamePath(), "MO", "profiles"))[0]);
+                    return Path.GetDirectoryName(Directory.GetDirectories(Path.Combine(ManageSettings.GetCurrentGameMOPath(), "profiles"))[0]);
                 }
             }
             Application.Exit();
@@ -2381,7 +2381,7 @@ namespace AIHelper.Manage
                     @"MOFolder\plugins\data\DDS\",
                     !GetMoVersion().StartsWith("2.3",StringComparison.InvariantCulture)?@"MOFolder\plugins\modorganizer-basic_games\":""
             };
-            var mOfolderPath = ManageSettings.GetMOdirPath();
+            var mOfolderPath = ManageSettings.GetCurrentGameModOrganizerIniPath();
             foreach (var file in moFilesForClean)
             {
                 var path = file.Replace("MOFolder", mOfolderPath);
@@ -2621,7 +2621,7 @@ namespace AIHelper.Manage
 
         public CategoriesInfo(string categoriesFilePath = null)
         {
-            Get(categoriesFilePath ?? ManageSettings.GetMOcategoriesPathForSelectedGame());
+            Get(categoriesFilePath ?? ManageSettings.GetAppMOcategoriesPath());
         }
 
         public string Add(string categoryName, bool doSave = false)

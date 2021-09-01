@@ -22,7 +22,7 @@ namespace AIHelper.Install.Types.Directories
         protected override void Get(DirectoryInfo dir)
         {
             _dir = dir;
-            var updateInfoIniFilePath = Path.Combine(dir.FullName, "gameupdateinfo.ini");
+            var updateInfoIniFilePath = Path.Combine(dir.FullName, "gameupdate.ini");
             if (!File.Exists(updateInfoIniFilePath))
             {
                 // not update

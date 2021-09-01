@@ -1,5 +1,6 @@
 ﻿using AIHelper.Install.Types;
 using AIHelper.Install.Types.Directories;
+using AIHelper.Install.UpdateMaker;
 using AIHelper.Manage;
 using AIHelper.Manage.Update;
 using AIHelper.SharedData;
@@ -56,11 +57,11 @@ namespace AIHelper
         private async void CheckMoAndEndInit()
         {
             //MO data parse
-            if (!Directory.Exists(ManageSettings.GetMOdirPath()))
+            if (!Directory.Exists(ManageSettings.GetCurrentGameModOrganizerIniPath()))
             {
-                Directory.CreateDirectory(ManageSettings.GetMOdirPath());
+                Directory.CreateDirectory(ManageSettings.GetCurrentGameModOrganizerIniPath());
             }
-            if (!File.Exists(ManageSettings.GetMOexePath()))
+            if (!File.Exists(ManageSettings.GetAppMOexePath()))
             {
                 await new Updater().Update().ConfigureAwait(true);
             }
@@ -853,7 +854,7 @@ namespace AIHelper
 
             if (MOmode)
             {
-                RunProgram(ManageSettings.GetMOexePath(), string.Empty);
+                RunProgram(ManageSettings.GetAppMOexePath(), string.Empty);
             }
             else
             {
@@ -896,7 +897,7 @@ namespace AIHelper
             {
                 var getCurrentGameExemoProfileName = ManageSettings.GetCurrentGameExemoProfileName();
                 var customExeTitleName = getCurrentGameExemoProfileName + vr;
-                exePath = ManageSettings.GetMOexePath();
+                exePath = ManageSettings.GetAppMOexePath();
 
                 if (cbxNtlea.Checked)
                 {
@@ -949,7 +950,7 @@ namespace AIHelper
             if (MOmode)
             {
                 var studio = ManageModOrganizer.GetMOcustomExecutableTitleByExeName(ManageSettings.GetStudioExeName());
-                RunProgram(ManageSettings.GetMOexePath(), "moshortcut://:" + studio);
+                RunProgram(ManageSettings.GetAppMOexePath(), "moshortcut://:" + studio);
             }
             else
             {
@@ -1145,6 +1146,13 @@ namespace AIHelper
         readonly string _toMo = ManageSettings.ModsInstallDirName();
         private async void InstallInModsButton_Click(object sender, EventArgs e)
         {
+            if (new UpdateMaker().MakeUpdate())
+            {
+                MessageBox.Show("Made update instead");
+                return;
+            }
+
+
             List<ModInstallerBase> installers = GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<ModInstallerBase>().OrderBy(o => o.Order).ToList();
 
             //if (Directory.Exists(Install2MoDirPath) && (Directory.GetFiles(Install2MoDirPath, "*.rar").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.7z").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.cs").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.zipmod").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.zip").Length > 0 || Directory.GetDirectories(Install2MoDirPath, "*").Length > 0))
@@ -2286,8 +2294,8 @@ namespace AIHelper
 
         private void OpenMOFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (Directory.Exists(ManageSettings.GetMOdirPath()))
-                Process.Start("explorer.exe", ManageSettings.GetMOdirPath());
+            if (Directory.Exists(ManageSettings.GetCurrentGameModOrganizerIniPath()))
+                Process.Start("explorer.exe", ManageSettings.GetCurrentGameModOrganizerIniPath());
         }
 
         private void OpenModsFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -2463,7 +2471,7 @@ namespace AIHelper
 
             if (MOmode)
             {
-                RunProgram(ManageSettings.GetMOexePath(), "moshortcut://:" + ManageSettings.GetIniSettingsExeName());
+                RunProgram(ManageSettings.GetAppMOexePath(), "moshortcut://:" + ManageSettings.GetIniSettingsExeName());
             }
             else
             {
@@ -2627,7 +2635,7 @@ namespace AIHelper
             //activate all mods with Sideloader modpack inside
             ActivateSideloaderMods(zipmodsGuidList);
 
-            RunProgram(ManageSettings.GetMOexePath(), "moshortcut://:" + ManageModOrganizer.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
+            RunProgram(ManageSettings.GetAppMOexePath(), "moshortcut://:" + ManageModOrganizer.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
 
             //restore modlist
             ManageModOrganizer.RestoreModlist();

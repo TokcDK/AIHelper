@@ -27,7 +27,7 @@ namespace AIHelper.Manage
         internal static string GetCurrentGameMoGamePyPluginPath()
         {
 #pragma warning disable CA1308 // Normalize strings to uppercase
-            return Path.Combine(GetMOdirPath(), "plugins", "modorganizer-basic_games", "games", "game_"
+            return Path.Combine(GetCurrentGameModOrganizerIniPath(), "plugins", "modorganizer-basic_games", "games", "game_"
                 + GetCurrentGameExeName()
                 .Replace("_64", string.Empty)
                 .Replace("_32", string.Empty)
@@ -232,7 +232,7 @@ namespace AIHelper.Manage
                         //&&
                         //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(GetMOdirPath())
                         &&
-                        IsMoFolderValid(GetMOdirPath())
+                        IsMoFolderValid(GetCurrentGameModOrganizerIniPath())
                         //&&
                         //Directory.Exists(Path.Combine(GetMOdirPath(), GetMoProfilesDirName())))
                         //&&
@@ -271,7 +271,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static string GeneralMoPath()
         {
-            return GetMOdirPath();
+            return GetCurrentGameModOrganizerIniPath();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -792,6 +792,16 @@ namespace AIHelper.Manage
             return Path.Combine(GetGamesFolderPath(), ManageSettings.GetCurrentGameFolderName());
         }
 
+        /// <summary>
+        /// Current game Mod Organizer dir path
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetCurrentGameMOPath()
+        {
+            return Path.Combine(GetCurrentGamePath(), "MO");
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameMoOverwritePath()
         {
@@ -918,15 +928,15 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetMOdirPath()
+        internal static string GetCurrentGameModOrganizerIniPath()
         {
             return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetMOexePath()
+        internal static string GetAppMOexePath()
         {
-            return Path.Combine(GetMOdirPath(), "ModOrganizer.exe");
+            return Path.Combine(GetCurrentGameModOrganizerIniPath(), "ModOrganizer.exe");
         }
 
         internal static string GetMoSelectedProfileDirName()
@@ -946,31 +956,31 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetMoSelectedProfileDirPath()
         {
-            return Path.Combine(GetCurrentGamePath(), "MO", GetMoProfilesDirName(), GetMoSelectedProfileDirName());
+            return Path.Combine(GetCurrentGameMOPath(), GetMoProfilesDirName(), GetMoSelectedProfileDirName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetMOiniPath()
         {
-            return Path.Combine(GetMOdirPath(), MoIniFileName());
+            return Path.Combine(GetCurrentGameModOrganizerIniPath(), MoIniFileName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetMOiniPathForSelectedGame()
         {
-            return ManageFilesFolders.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGamePath(), "MO", MoIniFileName()));
+            return ManageFilesFolders.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGameMOPath(), MoIniFileName()));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetMOcategoriesPath()
         {
-            return Path.Combine(GetMOdirPath(), MoCategoriesFileName());
+            return Path.Combine(GetCurrentGameModOrganizerIniPath(), MoCategoriesFileName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetMOcategoriesPathForSelectedGame()
+        internal static string GetAppMOcategoriesPath()
         {
-            return ManageFilesFolders.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGamePath(), "MO", MoCategoriesFileName()));
+            return ManageFilesFolders.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGameMOPath(), MoCategoriesFileName()));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -982,7 +992,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetOverwriteFolder()
         {
-            return ManageFilesFolders.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGamePath(), "MO", "overwrite"), true);
+            return ManageFilesFolders.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGameMOPath(), "overwrite"), true);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1024,7 +1034,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetModOrganizerIniPath()
         {
-            return Path.Combine(GetMOdirPath(), MoIniFileName());
+            return Path.Combine(GetCurrentGameModOrganizerIniPath(), MoIniFileName());
         }
 
         internal static string MOmodeSwitchDataDirName { get => "momode"; }
@@ -1488,7 +1498,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetMoBaseGamesPluginGamesDirPath()
         {
-            return Path.Combine(GetMOdirPath(), "plugins", "basic_games", "games");
+            return Path.Combine(GetCurrentGameModOrganizerIniPath(), "plugins", "basic_games", "games");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

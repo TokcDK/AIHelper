@@ -151,6 +151,12 @@
     <Compile Include="Install\Types\Files\Cards\PngInstaller.cs" />
     <Compile Include="Install\Types\Files\FilesInstallerBase.cs" />
     <Compile Include="Install\Types\ModInstallerBase.cs" />
+    <Compile Include="Install\UpdateMaker\LogConsole.cs" />
+    <Compile Include="Install\UpdateMaker\UpdateMaker.cs" />
+    <Compile Include="Install\UpdateMaker\UpdateMakerBase.cs" />
+    <Compile Include="Install\UpdateMaker\UpdateMakerMO.cs" />
+    <Compile Include="Install\UpdateMaker\UpdateMakerData.cs" />
+    <Compile Include="Install\UpdateMaker\UpdateMakerMods.cs" />
     <Compile Include="Lists\CategoriesList.cs" />
     <Compile Include="Forms\LinksForm.cs">
       <SubType>Form</SubType>

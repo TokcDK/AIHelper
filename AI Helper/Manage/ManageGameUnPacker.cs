@@ -54,13 +54,13 @@ namespace AIHelper.Manage
             if (ManageSettings.IsMoMode())
             {
                 string mo7Zip = Path.Combine(ManageSettings.GetAppResDir(), "MO.7z");
-                if (File.Exists(mo7Zip) && !File.Exists(Path.Combine(ManageSettings.GetMOdirPath(), "ModOrganizer.exe")))
+                if (File.Exists(mo7Zip) && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModOrganizerIniPath(), "ModOrganizer.exe")))
                 {
                     _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Visible = true));
                     _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Style = ProgressBarStyle.Marquee));
                     _ = GameData.MainForm.DataInfoLabel.Invoke((Action)(() => GameData.MainForm.DataInfoLabel.Text = T._("Extracting")));
                     _ = GameData.MainForm.ModsInfoLabel.Invoke((Action)(() => GameData.MainForm.ModsInfoLabel.Text = T._("MO archive") + ": " + Path.GetFileNameWithoutExtension(mo7Zip)));
-                    Compressor.Decompress(mo7Zip, ManageSettings.GetMOdirPath());
+                    Compressor.Decompress(mo7Zip, ManageSettings.GetCurrentGameModOrganizerIniPath());
                     _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Style = ProgressBarStyle.Blocks));
                 }
             }
@@ -165,13 +165,13 @@ namespace AIHelper.Manage
 
         private void PackMo()
         {
-            if (Directory.Exists(ManageSettings.GetMOdirPath()) && Directory.Exists(ManageSettings.GetAppResDir()))
+            if (Directory.Exists(ManageSettings.GetCurrentGameModOrganizerIniPath()) && Directory.Exists(ManageSettings.GetAppResDir()))
             {
                 _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Visible = true));
                 _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Style = ProgressBarStyle.Marquee));
                 _ = GameData.MainForm.DataInfoLabel.Invoke((Action)(() => GameData.MainForm.DataInfoLabel.Text = "Compressing"));
                 _ = GameData.MainForm.ModsInfoLabel.Invoke((Action)(() => GameData.MainForm.ModsInfoLabel.Text = "MO archive.."));
-                Compressor.Compress(ManageSettings.GetMOdirPath(), ManageSettings.GetAppResDir());
+                Compressor.Compress(ManageSettings.GetCurrentGameModOrganizerIniPath(), ManageSettings.GetAppResDir());
                 _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Style = ProgressBarStyle.Blocks));
             }
         }

@@ -28,7 +28,12 @@ namespace AIHelper
             foreach (FileInfo fi in sourceDirectory.GetFiles())
             {
                 //Console.WriteLine(@"Copying {0}\{1}", target.FullName, fi.Name);
-                fi.CopyTo(Path.Combine(targetDirectory.FullName, fi.Name), overwriteFiles);
+                var targetPath = Path.Combine(targetDirectory.FullName, fi.Name);
+                if (File.Exists(targetPath))
+                {
+                    continue;
+                }
+                fi.CopyTo(targetPath, overwriteFiles);
             }
 
             // Copy each subdirectory using recursion.

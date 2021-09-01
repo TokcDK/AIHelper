@@ -64,13 +64,13 @@ namespace AIHelper.Games
                     //}
                     //,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGameModsPath(), "MyUserData", "UserData", "cap")
+                        Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserData", "UserData", "cap")
                         ,
                         Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "cap")
                     }
                     ,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGameModsPath(), "MyUserData", "UserData", "studioneo", "BetterSceneLoader")
+                        Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserData", "UserData", "studioneo", "BetterSceneLoader")
                         ,
                         Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "studioneo", "BetterSceneLoader")
                     }

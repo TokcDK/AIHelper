@@ -45,7 +45,7 @@ namespace AIHelper.Install.Types.Files.Archive
 
             // paths setup
             //string zipmoddirpath = GetResultTargetDirPathWithNameCheck(ManageSettings.GetCurrentGameModsPath(), name);
-            string modDirPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modName);
+            string modDirPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modName);
             string modsSubDirPath = Path.Combine(modDirPath, "mods");
             string targetZipFile = Path.Combine(modsSubDirPath, zipArchiveName + ".zipmod");
 
@@ -65,7 +65,7 @@ namespace AIHelper.Install.Types.Files.Archive
             }
             else
             {
-                modDirPath = ManageFilesFolders.GetResultTargetDirPathWithNameCheck(ManageSettings.GetCurrentGameModsPath(), modName);
+                modDirPath = ManageFilesFolders.GetResultTargetDirPathWithNameCheck(ManageSettings.GetCurrentGameModsDirPath(), modName);
                 modsSubDirPath = Path.Combine(modDirPath, "mods");
                 targetZipFile = Path.Combine(modsSubDirPath, zipArchiveName + ".zipmod");
             }

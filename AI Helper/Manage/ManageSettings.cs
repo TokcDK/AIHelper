@@ -900,7 +900,7 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetCurrentGameModsPath()
+        internal static string GetCurrentGameModsDirPath()
         {
             return Path.Combine(GetCurrentGamePath(), "Mods");
         }
@@ -1074,7 +1074,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetBepInExPath()
         {
-            return Path.Combine(IsMoMode() ? GetCurrentGameModsPath() : GetCurrentGameDataPath(), "BepInEx");
+            return Path.Combine(IsMoMode() ? GetCurrentGameModsDirPath() : GetCurrentGameDataPath(), "BepInEx");
         }
 
         internal static string GetDefaultSetupXmlValue()

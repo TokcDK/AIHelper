@@ -192,8 +192,8 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
         {
             string[] targetFolders = new string[3]
             {
-                firstCandidateFolder.Substring(0,1)== " " ? Path.Combine(ManageSettings.GetCurrentGameModsPath(), "OrganizedModPack Downloaded"+firstCandidateFolder) : firstCandidateFolder,
-                Path.Combine(ManageSettings.GetCurrentGameModsPath(), "MyUserData"),
+                firstCandidateFolder.Substring(0,1)== " " ? Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "OrganizedModPack Downloaded"+firstCandidateFolder) : firstCandidateFolder,
+                Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserData"),
                 ManageSettings.GetOverwriteFolder()
             };
 

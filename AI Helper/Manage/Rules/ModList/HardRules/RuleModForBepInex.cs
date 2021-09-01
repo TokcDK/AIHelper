@@ -11,9 +11,9 @@ namespace AIHelper.Manage.Rules.ModList
 
         internal override bool Condition()
         {
-            return (!Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "plugins").IsNullOrEmptyDirectory("*.dll", null, true
-                ) || !Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "patchers").IsNullOrEmptyDirectory("*.dll", null, true
-                )) && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "core", "BepInEx.dll"));
+            return (!Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ModlistData.ModName, "BepInEx", "plugins").IsNullOrEmptyDirectory("*.dll", null, true
+                ) || !Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ModlistData.ModName, "BepInEx", "patchers").IsNullOrEmptyDirectory("*.dll", null, true
+                )) && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ModlistData.ModName, "BepInEx", "core", "BepInEx.dll"));
         }
 
         internal override string Description()

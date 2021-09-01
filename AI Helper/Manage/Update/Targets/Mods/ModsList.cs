@@ -28,7 +28,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
                 if (updateInfoList != null && updateInfoList.Count > 0)
                     foreach (var modname in modsList)
                     {
-                        var modPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modname);
+                        var modPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modname);
                         if (updateInfoList.ContainsKey(modname) && !infos.ContainsKey(modPath))
                         {
                             infos.Add(modname, updateInfoList[modname]);

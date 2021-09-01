@@ -40,7 +40,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
 
             foreach (var modname in modsList)
             {
-                var modPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modname);
+                var modPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modname);
 
                 var modinfo = GetInfoFromMeta(modPath);
 

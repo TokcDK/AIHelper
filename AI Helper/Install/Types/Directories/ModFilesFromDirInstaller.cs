@@ -86,7 +86,7 @@ namespace AIHelper.Install.Types.Directories
 
                     //имя папки без GetResultTargetDirPathWithNameCheck для того, чтобы обновить существующую, если такая найдется
                     var targetModDIr = Path.Combine(
-                        ManageSettings.GetCurrentGameModsPath(),
+                        ManageSettings.GetCurrentGameModsDirPath(),
                         (author.Length > 0 && !ManageStrings.IsStringAContainsStringB(name, author))
                             ?
                             "[" + author + "]" + name
@@ -137,7 +137,7 @@ namespace AIHelper.Install.Types.Directories
 
             if (!anyModFound)
             {
-                moddir = dir.Replace(ManageSettings.GetInstall2MoDirPath(), ManageSettings.GetCurrentGameModsPath());
+                moddir = dir.Replace(ManageSettings.GetInstall2MoDirPath(), ManageSettings.GetCurrentGameModsDirPath());
                 string targetfilepath = "readme.txt";
                 foreach (var file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
                 {

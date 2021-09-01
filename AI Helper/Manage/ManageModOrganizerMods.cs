@@ -278,10 +278,10 @@ namespace AIHelper.Manage
                 return true;
             }
 
-            if (sourceFilePath.Contains(ManageSettings.GetCurrentGameModsPath()))
+            if (sourceFilePath.Contains(ManageSettings.GetCurrentGameModsDirPath()))
             {
                 //remove Mods path slit and get 1st element as modname
-                var noModsPath = sourceFilePath.Replace(ManageSettings.GetCurrentGameModsPath(), string.Empty);
+                var noModsPath = sourceFilePath.Replace(ManageSettings.GetCurrentGameModsDirPath(), string.Empty);
                 var splittedPath = noModsPath.Split(new char[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
                 var modname = splittedPath[0];
 
@@ -301,8 +301,8 @@ namespace AIHelper.Manage
         {
             string[] targetFolders = new string[3]
             {
-                firstCandidateFolder.Substring(0,1)== " " ? Path.Combine(ManageSettings.GetCurrentGameModsPath(), "OrganizedModPack Downloaded"+firstCandidateFolder) : firstCandidateFolder,
-                Path.Combine(ManageSettings.GetCurrentGameModsPath(), "MyUserData"),
+                firstCandidateFolder.Substring(0,1)== " " ? Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "OrganizedModPack Downloaded"+firstCandidateFolder) : firstCandidateFolder,
+                Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserData"),
                 ManageSettings.GetOverwriteFolder()
             };
 
@@ -615,7 +615,7 @@ namespace AIHelper.Manage
             //search Mods Path by step up to parent dir while it will be Mods path
             string modPath;
             var folderPath = modPath = inputPath;
-            while (!string.Equals(folderPath/*.TrimEnd(new char[] { '/', '\\' })*/ , ManageSettings.GetCurrentGameModsPath()/*.TrimEnd(new char[] { '/', '\\' })*/, StringComparison.InvariantCultureIgnoreCase)
+            while (!string.Equals(folderPath/*.TrimEnd(new char[] { '/', '\\' })*/ , ManageSettings.GetCurrentGameModsDirPath()/*.TrimEnd(new char[] { '/', '\\' })*/, StringComparison.InvariantCultureIgnoreCase)
                 //&& !string.Equals(folderPath, ManageSettings.GetOverwriteFolder(), StringComparison.InvariantCultureIgnoreCase)
                 )
             {
@@ -629,7 +629,7 @@ namespace AIHelper.Manage
             }
 
             if (modPath != null &&
-                (string.Equals(Path.GetFileName(modPath), Path.GetFileName(ManageSettings.GetCurrentGameModsPath()), StringComparison.InvariantCultureIgnoreCase)//temp debug check
+                (string.Equals(Path.GetFileName(modPath), Path.GetFileName(ManageSettings.GetCurrentGameModsDirPath()), StringComparison.InvariantCultureIgnoreCase)//temp debug check
                                                                                                                                                                  //|| string.Equals(Path.GetFileName(modPath), Path.GetFileName(ManageSettings.GetOverwriteFolder()), StringComparison.InvariantCultureIgnoreCase)
                 )
                 )
@@ -694,7 +694,7 @@ namespace AIHelper.Manage
         {
             Dictionary<string, string> packs = new Dictionary<string, string>();
             HashSet<string> added = new HashSet<string>(10);
-            foreach (var dir in Directory.EnumerateDirectories(ManageSettings.GetCurrentGameModsPath()))
+            foreach (var dir in Directory.EnumerateDirectories(ManageSettings.GetCurrentGameModsDirPath()))
             {
                 if (!Directory.Exists(Path.Combine(dir, "mods")))
                 {
@@ -819,7 +819,7 @@ namespace AIHelper.Manage
                     var indexOfSeparatorMarker = line.IndexOf(SeparatorMarker, StringComparison.InvariantCulture);
                     mod.IsSeparator = indexOfSeparatorMarker > -1;
                     mod.Name = line.Substring(1);
-                    mod.Path = Path.Combine(ManageSettings.GetCurrentGameModsPath(), mod.Name);
+                    mod.Path = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), mod.Name);
                     mod.IsExist = Directory.Exists(mod.Path);
                     mod.ParentSeparator = lastSeparator;
 

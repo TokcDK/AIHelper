@@ -95,12 +95,12 @@ namespace AIHelper.Manage
 
         private static void UnpackMods()
         {
-            if (Directory.Exists(ManageSettings.GetCurrentGameModsPath()) && Directory.Exists(ManageSettings.GetDownloadsPath()))
+            if (Directory.Exists(ManageSettings.GetCurrentGameModsDirPath()) && Directory.Exists(ManageSettings.GetDownloadsPath()))
             {
                 if (Directory.Exists(ManageSettings.GetDownloadsPath()))
                 {
-                    string[] modDirs = Directory.GetDirectories(ManageSettings.GetCurrentGameModsPath(), "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();
-                    string[] files = Directory.GetFiles(ManageSettings.GetDownloadsPath(), "*.7z", SearchOption.AllDirectories).Where(name => !modDirs.Contains(Path.Combine(ManageSettings.GetCurrentGameModsPath(), Path.GetFileNameWithoutExtension(name)))).ToArray();
+                    string[] modDirs = Directory.GetDirectories(ManageSettings.GetCurrentGameModsDirPath(), "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();
+                    string[] files = Directory.GetFiles(ManageSettings.GetDownloadsPath(), "*.7z", SearchOption.AllDirectories).Where(name => !modDirs.Contains(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), Path.GetFileNameWithoutExtension(name)))).ToArray();
                     if (files.Length == 0)
                     {
                     }
@@ -115,7 +115,7 @@ namespace AIHelper.Manage
                             string filename = Path.GetFileNameWithoutExtension(file);
                             GameData.MainForm.DataInfoLabel.Invoke((Action)(() => GameData.MainForm.DataInfoLabel.Text = T._("Extracting") + " " + +i + "/" + files.Length));
                             GameData.MainForm.ModsInfoLabel.Invoke((Action)(() => GameData.MainForm.ModsInfoLabel.Text = T._("Mod") + ": " + filename));
-                            string moddirpath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), filename);
+                            string moddirpath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), filename);
                             if (!Directory.Exists(moddirpath))
                             {
                                 Compressor.Decompress(file, moddirpath);
@@ -131,7 +131,7 @@ namespace AIHelper.Manage
                 string separators = Path.Combine(ManageSettings.GetAppResDir(), "MOModsSeparators.7z");
                 if (File.Exists(separators))
                 {
-                    Compressor.Decompress(separators, ManageSettings.GetCurrentGameModsPath());
+                    Compressor.Decompress(separators, ManageSettings.GetCurrentGameModsDirPath());
                 }
             }
         }
@@ -197,8 +197,8 @@ namespace AIHelper.Manage
 
         private static void PackMods()
         {
-            if (!Directory.Exists(ManageSettings.GetCurrentGameModsPath())) return;
-            string[] dirs = Directory.GetDirectories(ManageSettings.GetCurrentGameModsPath(), "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();//с игнором сепараторов
+            if (!Directory.Exists(ManageSettings.GetCurrentGameModsDirPath())) return;
+            string[] dirs = Directory.GetDirectories(ManageSettings.GetCurrentGameModsDirPath(), "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();//с игнором сепараторов
             if (dirs.Length == 0)
             {
             }
@@ -285,12 +285,12 @@ namespace AIHelper.Manage
 
         private static void PackSeparators()
         {
-            if (!Directory.Exists(ManageSettings.GetCurrentGameModsPath()))
+            if (!Directory.Exists(ManageSettings.GetCurrentGameModsDirPath()))
             {
                 return;
             }
 
-            string[] dirs = Directory.GetDirectories(ManageSettings.GetCurrentGameModsPath(), "*").Where(name => name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();//с игнором сепараторов
+            string[] dirs = Directory.GetDirectories(ManageSettings.GetCurrentGameModsDirPath(), "*").Where(name => name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();//с игнором сепараторов
             if (dirs.Length == 0)
             {
             }
@@ -299,7 +299,7 @@ namespace AIHelper.Manage
                 //GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Visible = true));
                 //GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Maximum = dirs.Length));
                 //GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Value = 0));
-                string tempdir = Path.Combine(ManageSettings.GetCurrentGameModsPath(), "MOModsSeparators");
+                string tempdir = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MOModsSeparators");
 
                 GameData.MainForm.DataInfoLabel.Invoke((Action)(() => GameData.MainForm.DataInfoLabel.Text = "Compressing"));
                 GameData.MainForm.ModsInfoLabel.Invoke((Action)(() => GameData.MainForm.ModsInfoLabel.Text = "Folder: " + Path.GetFileNameWithoutExtension(tempdir)));

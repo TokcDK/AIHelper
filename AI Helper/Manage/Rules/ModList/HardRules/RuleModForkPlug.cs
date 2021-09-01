@@ -10,7 +10,7 @@ namespace AIHelper.Manage.Rules.ModList
 
         internal override bool Condition()
         {
-            return File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "Plugins", "kPlug.dll"))
+            return File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ModlistData.ModName, "Plugins", "kPlug.dll"))
                 ;
         }
 

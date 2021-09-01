@@ -144,7 +144,7 @@ namespace AIHelper.Install.Types.Files.Archive
 
                                 foreach (var modFolder in modsList)
                                 {
-                                    modFolderForUpdate = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modFolder);
+                                    modFolderForUpdate = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modFolder);
                                     string targetfile = Path.Combine(modFolderForUpdate, entryFullName);
                                     targetFileAny = ManageModOrganizerMods.GetTheDllFromSubfolders(modFolderForUpdate, entryName.Remove(entryName.Length - 4, 4), "dll");
                                     if (File.Exists(targetfile) || (targetFileAny.Length > 0 && File.Exists(targetFileAny)))
@@ -206,7 +206,7 @@ namespace AIHelper.Install.Types.Files.Archive
                 }
                 else
                 {
-                    targetModDirPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), zipName);
+                    targetModDirPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), zipName);
                 }
 
                 Compressor.Decompress(zipfile.FullName, targetModDirPath);

@@ -12,12 +12,12 @@ namespace AIHelper.Manage.Rules.ModList
         internal override bool Condition()
         {
             //exists dll in Mod\IPA or in Mod\Plugins folder but not exists loader IllusionInjector.dll or BepInEx.IPAVirtualizer.dll
-            return (!Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "IPA").IsNullOrEmptyDirectory("*.dll", null, true)
+            return (!Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ModlistData.ModName, "IPA").IsNullOrEmptyDirectory("*.dll", null, true)
                 ||
-                !Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "Plugins").IsNullOrEmptyDirectory("*.dll", null, true)
+                !Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ModlistData.ModName, "Plugins").IsNullOrEmptyDirectory("*.dll", null, true)
                 )
-                && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "IPA", "Data", "Managed", "IllusionInjector.dll"))
-                && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "patchers", "BepInEx.IPAVirtualizer.dll"));
+                && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ModlistData.ModName, "IPA", "Data", "Managed", "IllusionInjector.dll"))
+                && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ModlistData.ModName, "BepInEx", "patchers", "BepInEx.IPAVirtualizer.dll"));
         }
 
         internal override string Description()

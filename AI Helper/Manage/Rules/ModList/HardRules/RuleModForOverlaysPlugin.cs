@@ -12,10 +12,10 @@ namespace AIHelper.Manage.Rules.ModList
         internal override bool Condition()
         {
             return ModlistData.GamePrefix.Length > 0 && (
-                !Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "Overlays").IsNullOrEmptyDirectory("*.png", null, true
+                !Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ModlistData.ModName, "Overlays").IsNullOrEmptyDirectory("*.png", null, true
                 )
                     )
-                    && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.ModName, "BepInEx", "plugins", ModlistData.GamePrefix + "_OverlayMods.dll"));
+                    && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ModlistData.ModName, "BepInEx", "plugins", ModlistData.GamePrefix + "_OverlayMods.dll"));
         }
 
         internal override string Description()

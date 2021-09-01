@@ -541,9 +541,9 @@ namespace AIHelper
             {
                 Directory.CreateDirectory(ManageSettings.GetCurrentGameDataPath());
             }
-            if (MOmode && !Directory.Exists(ManageSettings.GetCurrentGameModsPath()))
+            if (MOmode && !Directory.Exists(ManageSettings.GetCurrentGameModsDirPath()))
             {
-                Directory.CreateDirectory(ManageSettings.GetCurrentGameModsPath());
+                Directory.CreateDirectory(ManageSettings.GetCurrentGameModsDirPath());
                 ModsInfoLabel.Text = T._("Mods dir created");
             }
 
@@ -637,7 +637,7 @@ namespace AIHelper
                 }
 
 
-                if (!ManageSettings.GetCurrentGameModsPath().IsNullOrEmptyDirectory("*", new string[1] { "_separator" }))
+                if (!ManageSettings.GetCurrentGameModsDirPath().IsNullOrEmptyDirectory("*", new string[1] { "_separator" }))
                 {
                     ModsInfoLabel.Text = T._("Found mod folders in Mods");
                     //button1.Enabled = false;
@@ -1182,6 +1182,8 @@ namespace AIHelper
             {
                 MessageBox.Show(T._("No compatible for installation formats found in install folder.\n\nIt must be archvives, game files or folders with game files.\n\nWill be opened installation dir where you can drop files for installation."));
             }
+
+            Directory.CreateDirectory(ManageSettings.GetInstall2MoDirPath());
             Process.Start("explorer.exe", ManageSettings.GetInstall2MoDirPath());
         }
 
@@ -1470,7 +1472,7 @@ namespace AIHelper
                         }
                         else
                         {
-                            while (Path.GetDirectoryName(modName) != ManageSettings.GetCurrentGameModsPath())
+                            while (Path.GetDirectoryName(modName) != ManageSettings.GetCurrentGameModsDirPath())
                             {
                                 modName = Path.GetDirectoryName(modName);
                             }
@@ -1478,9 +1480,9 @@ namespace AIHelper
                         }
 
                         //Новое имя для новой целевой папки мода
-                        string originalModPath = isForOverwriteFolder ? ManageSettings.GetOverwriteFolder() : Path.Combine(ManageSettings.GetCurrentGameModsPath(), modName);
+                        string originalModPath = isForOverwriteFolder ? ManageSettings.GetOverwriteFolder() : Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modName);
                         string newModName = modName + "_" + dateTimeInFormat;
-                        string newModPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), newModName);
+                        string newModPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), newModName);
                         targetFolderPath = targetFolderPath.Replace(originalModPath, newModPath);
 
                         string targetFileName = Path.GetFileNameWithoutExtension(fromToPaths[1]);
@@ -1535,7 +1537,7 @@ namespace AIHelper
                 string[] addedFiles = Directory.GetFiles(ManageSettings.GetCurrentGameDataPath(), "*.*", SearchOption.AllDirectories).Where(line => !moddedDataFilesList.Contains(line)).ToArray();
                 //задание имени целевой папки для новых модов
                 string addedFilesFolderName = "[added]UseFiles_" + dateTimeInFormat;
-                string destFolderPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), addedFilesFolderName);
+                string destFolderPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), addedFilesFolderName);
 
                 int addedFilesLength = addedFiles.Length;
                 for (int f = 0; f < addedFilesLength; f++)
@@ -1563,7 +1565,7 @@ namespace AIHelper
                             if (Path.GetFileName(addedFiles[f]) == Path.GetFileName(zipmod))//when zipmod has same name but moved
                             {
                                 var targetfolder = zipmod.IsInOverwriteFolder() ?
-                                    ManageSettings.GetOverwriteFolder() : ManageSettings.GetCurrentGameModsPath();
+                                    ManageSettings.GetOverwriteFolder() : ManageSettings.GetCurrentGameModsDirPath();
                                 destFileName = addedFiles[f].Replace(ManageSettings.GetCurrentGameDataPath(), targetfolder
                                     );
                             }
@@ -1637,7 +1639,7 @@ namespace AIHelper
                 }
 
                 //restore sideloader mods from Mods\Mods
-                var modsmods = Path.Combine(ManageSettings.GetCurrentGameModsPath(), "Mods");
+                var modsmods = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "Mods");
                 var targetmodpath = modsmods;
                 if (false && Directory.Exists(modsmods)) //need to update overwrite check and scan only active mods or just move content to overwrite
                 {
@@ -1653,7 +1655,7 @@ namespace AIHelper
                             }
 
                             //search target mod path where exists 'dir' folder
-                            foreach (var moddir in Directory.EnumerateDirectories(ManageSettings.GetCurrentGameModsPath()))
+                            foreach (var moddir in Directory.EnumerateDirectories(ManageSettings.GetCurrentGameModsDirPath()))
                             {
                                 //skip separators
                                 if (moddir.EndsWith("_separator", StringComparison.InvariantCulture) || moddir == modsmods)
@@ -1938,7 +1940,7 @@ namespace AIHelper
                                 pbProgress.Value = n;
                             }
 
-                            var modFolder = Path.Combine(ManageSettings.GetCurrentGameModsPath(), enabledModsList[n]);
+                            var modFolder = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), enabledModsList[n]);
                             if (modFolder.Length > 0 && Directory.Exists(modFolder))
                             {
                                 var modFiles = Directory.GetFiles(modFolder, "*.*", SearchOption.AllDirectories);
@@ -2131,7 +2133,7 @@ namespace AIHelper
         {
             return str
             .Replace(ManageSettings.VarCurrentGameDataPath(), ManageSettings.GetCurrentGameDataPath())
-            .Replace(ManageSettings.VarCurrentGameModsPath(), ManageSettings.GetCurrentGameModsPath())
+            .Replace(ManageSettings.VarCurrentGameModsPath(), ManageSettings.GetCurrentGameModsDirPath())
             .Replace(ManageSettings.VarCurrentGameMoOverwritePath(), ManageSettings.GetCurrentGameMoOverwritePath());
         }
 
@@ -2145,7 +2147,7 @@ namespace AIHelper
             {
                 sarr[i] = sarr[i]
                 .Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.VarCurrentGameDataPath())
-                .Replace(ManageSettings.GetCurrentGameModsPath(), ManageSettings.VarCurrentGameModsPath())
+                .Replace(ManageSettings.GetCurrentGameModsDirPath(), ManageSettings.VarCurrentGameModsPath())
                 .Replace(ManageSettings.GetCurrentGameMoOverwritePath(), ManageSettings.VarCurrentGameMoOverwritePath());
             }
         }
@@ -2160,7 +2162,7 @@ namespace AIHelper
             {
                 sarr[i] = sarr[i]
                 .Replace(ManageSettings.VarCurrentGameDataPath(), ManageSettings.GetCurrentGameDataPath())
-                .Replace(ManageSettings.VarCurrentGameModsPath(), ManageSettings.GetCurrentGameModsPath())
+                .Replace(ManageSettings.VarCurrentGameModsPath(), ManageSettings.GetCurrentGameModsDirPath())
                 .Replace(ManageSettings.VarCurrentGameMoOverwritePath(), ManageSettings.GetCurrentGameMoOverwritePath());
             }
         }
@@ -2173,7 +2175,7 @@ namespace AIHelper
         {
             sb = sb
                 .Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.VarCurrentGameDataPath())
-                .Replace(ManageSettings.GetCurrentGameModsPath(), ManageSettings.VarCurrentGameModsPath())
+                .Replace(ManageSettings.GetCurrentGameModsDirPath(), ManageSettings.VarCurrentGameModsPath())
                 .Replace(ManageSettings.GetCurrentGameMoOverwritePath(), ManageSettings.VarCurrentGameMoOverwritePath());
         }
 
@@ -2185,7 +2187,7 @@ namespace AIHelper
         {
             sb = sb
                 .Replace(ManageSettings.VarCurrentGameDataPath(), ManageSettings.GetCurrentGameDataPath())
-                .Replace(ManageSettings.VarCurrentGameModsPath(), ManageSettings.GetCurrentGameModsPath())
+                .Replace(ManageSettings.VarCurrentGameModsPath(), ManageSettings.GetCurrentGameModsDirPath())
                 .Replace(ManageSettings.VarCurrentGameMoOverwritePath(), ManageSettings.GetCurrentGameMoOverwritePath());
         }
 
@@ -2290,8 +2292,8 @@ namespace AIHelper
 
         private void OpenModsFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (Directory.Exists(ManageSettings.GetCurrentGameModsPath()))
-                Process.Start("explorer.exe", ManageSettings.GetCurrentGameModsPath());
+            if (Directory.Exists(ManageSettings.GetCurrentGameModsDirPath()))
+                Process.Start("explorer.exe", ManageSettings.GetCurrentGameModsDirPath());
         }
 
         private void Install2MODirPathOpenFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -2305,10 +2307,10 @@ namespace AIHelper
 
         private void OpenMyUserDataFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            string userFilesFolder = Path.Combine(ManageSettings.GetCurrentGameModsPath(), "MyUserData");
+            string userFilesFolder = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserData");
             if (!Directory.Exists(userFilesFolder))
             {
-                userFilesFolder = Path.Combine(ManageSettings.GetCurrentGameModsPath(), "MyUserFiles");
+                userFilesFolder = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserFiles");
             }
             if (!Directory.Exists(userFilesFolder))
             {
@@ -2599,7 +2601,7 @@ namespace AIHelper
                     MoTargetMod = ManageSettings.KKManagerFilesModName()
                 };
 
-                var kkManagerFilesModPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), ManageSettings.KKManagerFilesModName());
+                var kkManagerFilesModPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ManageSettings.KKManagerFilesModName());
                 if (!Directory.Exists(kkManagerFilesModPath))
                 {
                     Directory.CreateDirectory(kkManagerFilesModPath);
@@ -2612,7 +2614,8 @@ namespace AIHelper
                         );
 
                     ManageModOrganizer.InsertMod(
-                        modname: ManageSettings.KKManagerFilesModName()
+                        modname: ManageSettings.KKManagerFilesModName(),
+                        modAfterWhichInsert:"Low priority"
                         );
                 }
 
@@ -2698,7 +2701,7 @@ namespace AIHelper
         private static void SortCommunityUserDataPack()
         {
             //sort community userdata
-            var communityUserDataPack = new DirectoryInfo(Path.Combine(ManageSettings.GetCurrentGameModsPath(), "Sideloader ModPack - Community UserData"));
+            var communityUserDataPack = new DirectoryInfo(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "Sideloader ModPack - Community UserData"));
             var charaDir = new DirectoryInfo(Path.Combine(ManageSettings.GetOverwriteFolder(), "UserData", "chara"));
             if (!charaDir.Exists)
             {
@@ -2773,7 +2776,7 @@ namespace AIHelper
             foreach (var sortingDirPath in new[] {
                 ManageSettings.GetOverwriteFolder()
                 ,
-                Path.Combine(ManageSettings.GetCurrentGameModsPath(), ManageSettings.KKManagerFilesModName())
+                Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ManageSettings.KKManagerFilesModName())
                 })
             {
 
@@ -2894,7 +2897,7 @@ namespace AIHelper
                                 var targetModName = modpacks[sideloaderDirName + (sortF ? "F" : sortM ? "M" : "")];
 
                                 //get target path for the zipmod
-                                var target = ManageSettings.GetCurrentGameModsPath()
+                                var target = ManageSettings.GetCurrentGameModsDirPath()
                                     + Path.DirectorySeparatorChar + targetModName //mod name
                                     + Path.DirectorySeparatorChar + "mods" //mods dir
                                     + Path.DirectorySeparatorChar + sideloaderDirName // sideloader dir name
@@ -2921,7 +2924,7 @@ namespace AIHelper
                                     }
                                     else if (targetinfo.LastWriteTime < sourceinfo.LastWriteTime)
                                     {
-                                        var tfiletarget = ManageSettings.GetCurrentGameModsPath()
+                                        var tfiletarget = ManageSettings.GetCurrentGameModsDirPath()
                                             + Path.DirectorySeparatorChar + targetModName + "_" + timeInfo //mod name
                                             + Path.DirectorySeparatorChar + "mods" //mods dir
                                             + Path.DirectorySeparatorChar + sideloaderDirName // sideloader dir name
@@ -2933,7 +2936,7 @@ namespace AIHelper
                                     }
                                     else
                                     {
-                                        target = ManageSettings.GetCurrentGameModsPath()
+                                        target = ManageSettings.GetCurrentGameModsDirPath()
                                             + Path.DirectorySeparatorChar + targetModName + "_" + timeInfo //mod name
                                             + Path.DirectorySeparatorChar + "mods" //mods dir
                                             + Path.DirectorySeparatorChar + sideloaderDirName // sideloader dir name

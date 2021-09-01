@@ -1389,7 +1389,7 @@ namespace AIHelper.Manage
                 ,
                     //Settings
                     {
-                        ManageSettings.GetCurrentGameModsPath()
+                        ManageSettings.GetCurrentGameModsDirPath()
                         ,
                         "Settings"
                         ,
@@ -1705,7 +1705,7 @@ namespace AIHelper.Manage
                 IsEnabled = activate,
                 IsSeparator = false,
                 Name = modname,
-                Path = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modname)
+                Path = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modname)
             };
             record.IsExist = Directory.Exists(record.Path);
 
@@ -1717,7 +1717,7 @@ namespace AIHelper.Manage
                 {
                     IsSeparator = true,
                     Name = recordWithWhichInsert,
-                    Path = Path.Combine(ManageSettings.GetCurrentGameModsPath(), recordWithWhichInsert)
+                    Path = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), recordWithWhichInsert)
                 };
                 record.ParentSeparator.IsExist = Directory.Exists(record.ParentSeparator.Path);
             }
@@ -1972,7 +1972,7 @@ namespace AIHelper.Manage
 
             try
             {
-                string modsOverwrite = pathInMods.Contains(ManageSettings.GetCurrentGameMoOverwritePath()) ? ManageSettings.GetCurrentGameMoOverwritePath() : ManageSettings.GetCurrentGameModsPath();
+                string modsOverwrite = pathInMods.Contains(ManageSettings.GetCurrentGameMoOverwritePath()) ? ManageSettings.GetCurrentGameMoOverwritePath() : ManageSettings.GetCurrentGameModsDirPath();
 
                 //искать путь только для ссылки в Mods или в Data
                 if (!ManageStrings.IsStringAContainsStringB(pathInMods, modsOverwrite) && !ManageStrings.IsStringAContainsStringB(pathInMods, ManageSettings.GetCurrentGameDataPath()))
@@ -1987,7 +1987,7 @@ namespace AIHelper.Manage
                     .Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
 
                 //для мода в mods пропустить имя этого мода
-                if (modsOverwrite == ManageSettings.GetCurrentGameModsPath())
+                if (modsOverwrite == ManageSettings.GetCurrentGameModsDirPath())
                 {
                     pathInModsElements = pathInModsElements.Skip(1).ToArray();
                 }
@@ -2026,7 +2026,7 @@ namespace AIHelper.Manage
                 }
 
                 //поиск по списку активных модов
-                string modsPath = ManageSettings.GetCurrentGameModsPath();
+                string modsPath = ManageSettings.GetCurrentGameModsDirPath();
                 var modNames = GetModNamesListFromActiveMoProfile(onlyEnabled);
                 foreach (var modName in modNames)
                 {
@@ -2580,12 +2580,12 @@ namespace AIHelper.Manage
 
             if (comments.Length > 0)
             {
-                ini.SetKey("General", "comments", BitConverter.ToString(Encoding.Default.GetBytes(comments)));
+                ini.SetKey("General", "comments", comments);
             }
 
             if (notes.Length > 0)
             {
-                ini.SetKey("General", "notes", "\"" + BitConverter.ToString(Encoding.Default.GetBytes(notes.Replace(Environment.NewLine, "<br>"))) + "\"");
+                ini.SetKey("General", "notes", "\"" + notes.Replace(Environment.NewLine, "<br>") + "\"");
             }
 
             ini.SetKey("General", "validated", "true");

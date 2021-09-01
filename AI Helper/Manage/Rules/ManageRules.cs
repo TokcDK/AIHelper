@@ -181,9 +181,9 @@ namespace AIHelper.Manage
                 {
                     foreach (var modName in _modlistData.EnabledModsList)
                     {
-                        if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), modName, "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg")))
+                        if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modName, "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg")))
                         {
-                            cfgpath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), modName, "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg");
+                            cfgpath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modName, "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg");
                             break;
                         }
                     }

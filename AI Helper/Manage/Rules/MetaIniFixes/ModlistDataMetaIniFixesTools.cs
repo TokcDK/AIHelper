@@ -12,7 +12,7 @@ namespace AIHelper.Manage.Rules.MetaIniFixes
         {
             modlistData.Report.Add(Environment.NewLine + "meta.ini fixes:");
 
-            var allDirsList = Directory.GetDirectories(ManageSettings.GetCurrentGameModsPath());
+            var allDirsList = Directory.GetDirectories(ManageSettings.GetCurrentGameModsDirPath());
             var cnt = 0;
             using (var iniFixesProgressBar = new ProgressBar())
             {

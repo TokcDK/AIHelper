@@ -14,7 +14,7 @@ namespace AIHelper.Install.UpdateMaker
 
         public bool MakeUpdate()
         {
-            var updateMakeInfoFilePath = Path.Combine(ManageSettings.GetCurrentGamePath(), "makeupdate.ini");
+            var updateMakeInfoFilePath = Path.Combine(ManageSettings.GetCurrentGameDirPath(), "makeupdate.ini");
             if (!File.Exists(updateMakeInfoFilePath))
             {
                 return false;
@@ -37,7 +37,7 @@ namespace AIHelper.Install.UpdateMaker
 
             var dateTimeSuffix = ManageSettings.GetDateTimeBasedSuffix();
 
-            var updateDir = Path.Combine(ManageSettings.GetCurrentGamePath(), "Updates", "Update");
+            var updateDir = Path.Combine(ManageSettings.GetCurrentGameDirPath(), "Updates", "Update");
             if (Directory.Exists(updateDir))
             {
                 try
@@ -57,7 +57,7 @@ namespace AIHelper.Install.UpdateMaker
             {
                 _parameter = parameter;
 
-                var parameterGameDir = Path.Combine(ManageSettings.GetCurrentGamePath(), parameter.DirName);
+                var parameterGameDir = Path.Combine(ManageSettings.GetCurrentGameDirPath(), parameter.DirName);
                 var parameterUpdateDir = Path.Combine(updateGameDir, parameter.DirName);
 
                 if (infoIni.KeyExists(parameter.DirsKey))

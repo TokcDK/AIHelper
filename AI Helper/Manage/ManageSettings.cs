@@ -99,6 +99,12 @@ namespace AIHelper.Manage
             return "ModUpdateInfo";
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetApplicationStartupPath()
+        {
+            return Properties.Settings.Default.ApplicationStartupPath;
+        }
+
         internal static string[] GetScreenResolutions()
         {
             return new string[]
@@ -792,7 +798,7 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetCurrentGamePath()
+        internal static string GetCurrentGameDirPath()
         {
             return Path.Combine(GetGamesFolderPath(), ManageSettings.GetCurrentGameFolderName());
         }
@@ -804,7 +810,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameMOPath()
         {
-            return Path.Combine(GetCurrentGamePath(), "MO");
+            return Path.Combine(GetCurrentGameDirPath(), "MO");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -834,7 +840,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetDummyFilePath()
         {
-            return Path.Combine(GetCurrentGamePath(), GetDummyFileName());
+            return Path.Combine(GetCurrentGameDirPath(), GetDummyFileName());
         }
 
         /// <summary>
@@ -917,19 +923,19 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameModsDirPath()
         {
-            return Path.Combine(GetCurrentGamePath(), "Mods");
+            return Path.Combine(GetCurrentGameDirPath(), "Mods");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetDownloadsPath()
         {
-            return Path.Combine(GetCurrentGamePath(), "Downloads");
+            return Path.Combine(GetCurrentGameDirPath(), "Downloads");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameDataPath()
         {
-            return Path.Combine(GetCurrentGamePath(), "Data");
+            return Path.Combine(GetCurrentGameDirPath(), "Data");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -991,7 +997,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetInstall2MoDirPath()
         {
-            return Path.Combine(GetCurrentGamePath(), ModsInstallDirName());
+            return Path.Combine(GetCurrentGameDirPath(), ModsInstallDirName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1003,7 +1009,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetOverwriteFolderLink()
         {
-            return Path.Combine(GetCurrentGamePath(), "MOUserData");
+            return Path.Combine(GetCurrentGameDirPath(), "MOUserData");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1033,7 +1039,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetModOrganizerInIpathForSelectedGame()
         {
-            return Path.Combine(GetCurrentGamePath(), MoIniFileName());
+            return Path.Combine(GetCurrentGameDirPath(), MoIniFileName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

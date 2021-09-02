@@ -618,7 +618,7 @@ namespace AIHelper.Manage
             {
                 modPath = folderPath;
                 folderPath = Path.GetDirectoryName(folderPath);
-                if (string.Equals(folderPath, ManageSettings.GetCurrentGamePath(), StringComparison.InvariantCultureIgnoreCase))
+                if (string.Equals(folderPath, ManageSettings.GetCurrentGameDirPath(), StringComparison.InvariantCultureIgnoreCase))
                 {
                     ManageLogs.Log("Warning. Path in Mods not found." + "\r\ninputPath=" + inputPath + "\r\nModPath=" + modPath + "\r\nFolderPath=" + folderPath);
                     return defaultPath;

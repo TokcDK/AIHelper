@@ -51,7 +51,7 @@ namespace AIHelper.Install.Types.Directories
 
             _dateTimeSuffix = ManageSettings.GetDateTimeBasedSuffix();
 
-            _backupsDir = Path.Combine(ManageSettings.GetCurrentGamePath(), "Buckups");
+            _backupsDir = Path.Combine(ManageSettings.GetCurrentGameDirPath(), "Buckups");
             _bakDir = Path.Combine(_backupsDir, "Backup");
             if (Directory.Exists(_bakDir))
             {
@@ -77,6 +77,18 @@ namespace AIHelper.Install.Types.Directories
                 ProceedUpdateMO();
             }
 
+            if (updateInfo.RemoveDirs.Length > 0)
+            {
+                updated = true;
+                ProceedRemoveDirs();
+            }
+
+            if (updateInfo.RemoveFiles.Length > 0)
+            {
+                updated = true;
+                ProceedRemoveFiles();
+            }
+
             // clean update info and folder
             File.Delete(Path.Combine(dir.FullName, _gameUpdateInfoFileName));
             ManageFilesFolders.DeleteEmptySubfolders(dirPath: dir.FullName, deleteThisDir: true);
@@ -89,6 +101,38 @@ namespace AIHelper.Install.Types.Directories
             else
             {
                 MessageBox.Show(updateInfo.GameFolderName + ": " + T._("Update not required."));
+            }
+        }
+
+        private void ProceedRemoveFiles()
+        {
+            ProceedRemove();
+        }
+
+        private void ProceedRemoveDirs()
+        {
+            ProceedRemove(false);
+        }
+
+        private void ProceedRemove(bool files = true)
+        {
+            string rootDir = IsRoot ? ManageSettings.GetApplicationStartupPath() : ManageSettings.GetCurrentGameDirPath();
+            foreach (var SubPath in updateInfo.RemoveDirs.Split(','))
+            {
+                var sourcePath = rootDir + Path.DirectorySeparatorChar + SubPath;
+                var buckupPath = _bakDir + Path.DirectorySeparatorChar + SubPath;
+                if ((files && File.Exists(sourcePath)) || (!files && Directory.Exists(sourcePath)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(buckupPath));
+                    if (files)
+                    {
+                        File.Move(sourcePath, buckupPath);
+                    }
+                    else
+                    {
+                        Directory.Move(sourcePath, buckupPath);
+                    }
+                }
             }
         }
 
@@ -121,7 +165,7 @@ namespace AIHelper.Install.Types.Directories
             // replace files by newer
             foreach (var fileInfo in new DirectoryInfo(updateTargetSubDir).EnumerateFiles("*", SearchOption.AllDirectories))
             {
-                var targetFileInfo = new FileInfo(fileInfo.FullName.Replace(updateGameDir, ManageSettings.GetCurrentGamePath()));
+                var targetFileInfo = new FileInfo(fileInfo.FullName.Replace(updateGameDir, ManageSettings.GetCurrentGameDirPath()));
 
                 var targetPath = targetFileInfo.FullName;// default target path in game's target subdir
 
@@ -210,6 +254,8 @@ namespace AIHelper.Install.Types.Directories
             { nameof(UpdateMods), "false" },
             { nameof(IsRoot), "false" },
             { nameof(UpdateMO), "false" },
+            { nameof(RemoveFiles), string.Empty },
+            { nameof(RemoveDirs), string.Empty },
         };
 
         /// <summary>
@@ -232,6 +278,14 @@ namespace AIHelper.Install.Types.Directories
         /// Root means aihelper root dir as update dir root
         /// </summary>
         internal string IsRoot { get => _keys[nameof(IsRoot)]; set => _keys[nameof(IsRoot)] = value; }
+        /// <summary>
+        /// List of files to remove
+        /// </summary>
+        public string RemoveFiles { get => _keys[nameof(RemoveFiles)]; set => _keys[nameof(RemoveFiles)] = value; }
+        /// <summary>
+        /// List of dirs to remove
+        /// </summary>
+        public string RemoveDirs { get => _keys[nameof(RemoveDirs)]; set => _keys[nameof(RemoveDirs)] = value; }
 
         public GameUpdateInfo(string updateInfoPath)
         {

@@ -145,7 +145,7 @@ namespace AIHelper.Manage
                                 //suppose relative path was from MO dir ..\%MODir%
                                 //replace .. to absolute path of current game directory
                                 var targetcorrectedrelative = record.Value.Attribute[attribute]
-                                        .Remove(0, 2).Insert(0, ManageSettings.GetCurrentGamePath());
+                                        .Remove(0, 2).Insert(0, ManageSettings.GetCurrentGameDirPath());
 
                                 //replace other slashes
                                 var targetcorrectedabsolute = Path.GetFullPath(targetcorrectedrelative);
@@ -1380,7 +1380,7 @@ namespace AIHelper.Manage
                 {
                     //General
                     {
-                        "@ByteArray("+ManageSettings.GetCurrentGamePath()+")"
+                        "@ByteArray("+ManageSettings.GetCurrentGameDirPath()+")"
                         ,
                         "General"
                         ,
@@ -1397,7 +1397,7 @@ namespace AIHelper.Manage
                     }
                 ,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGamePath(), "Downloads")
+                        Path.Combine(ManageSettings.GetCurrentGameDirPath(), "Downloads")
                         ,
                         "Settings"
                         ,

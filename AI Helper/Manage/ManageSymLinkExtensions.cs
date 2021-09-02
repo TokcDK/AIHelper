@@ -288,15 +288,16 @@ namespace AIHelper.Manage
                 }
 
                 var fi = new FileInfo(symlinkPath);
+                bool IsInvalidSymlink = false;
                 if ((objectPath != symlinkPath && !File.Exists(symlinkPath))
-                    || (
-                            fi.IsSymlink()
+                    || (IsInvalidSymlink =
+                            (fi.IsSymlink()
                             &&
-                            !fi.IsValidSymlink()
+                            !fi.IsValidSymlink())
                         )
                    )
                 {
-                    if (File.Exists(symlinkPath))
+                    if (IsInvalidSymlink && File.Exists(symlinkPath))
                     {
                         File.Delete(symlinkPath);
                     }

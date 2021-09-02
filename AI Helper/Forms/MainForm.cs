@@ -426,12 +426,12 @@ namespace AIHelper
                     );
                 var sideloaderPacksWarning = T._("Warning! More of packs you check more of memory game will consume.") + "\n" +
                     T._("Check only what you really using or you can 16+ gb of memory.");
-                _thToolTip.SetToolTip(UseKKmanagerUpdaterCheckBox, T._("Check if need to run update check for sideloader modpacks.") + "\n\n" +
+                _thToolTip.SetToolTip(UseKKmanagerUpdaterLabel, T._("Check if need to run update check for sideloader modpacks.") + "\n\n" +
                     sideloaderPacksWarning
                     );
-                _thToolTip.SetToolTip(UpdatePluginsCheckBox, T._("Check if need to run update check for plugins and Mod Organizer.")
+                _thToolTip.SetToolTip(UpdatePluginsLabel, T._("Check if need to run update check for plugins and Mod Organizer.")
                     );
-                _thToolTip.SetToolTip(cbxBleadingEdgeZipmods,
+                _thToolTip.SetToolTip(BleadingEdgeZipmodsLabel,
                     T._("Check also updates of Bleeding Edge Sideloader Modpack in KKManager") + "\n" +
                     T._("Bleeding Edge Sideloader modpack contains test versions of zipmods which is still not added in main modpacks") + "\n\n" +
                     sideloaderPacksWarning
@@ -2549,10 +2549,10 @@ namespace AIHelper
         {
             UpdateModsInit();
 
-            if (UseKKmanagerUpdaterCheckBox.Checked)
+            if (UseKKmanagerUpdaterLabel.IsChecked())
                 UpdateZipmods();
 
-            if (UpdatePluginsCheckBox.Checked)
+            if (UpdatePluginsLabel.IsChecked())
                 UpdateByUpdater();
 
             UpdateModsFinalize();
@@ -3062,13 +3062,18 @@ namespace AIHelper
         private void UpdateButtonOptionsRefresh()
         {
             var b = File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath());
-            UseKKmanagerUpdaterCheckBox.Visible = b && GameData.CurrentGame.IsHaveSideloaderMods;
-            cbxBleadingEdgeZipmods.Visible = UseKKmanagerUpdaterCheckBox.Visible;
+            //UseKKmanagerUpdaterLabel.SetCheck();
+            UseKKmanagerUpdaterLabel.Visible = b && GameData.CurrentGame.IsHaveSideloaderMods;
+            //UseKKmanagerUpdaterCheckBox.Visible = b && GameData.CurrentGame.IsHaveSideloaderMods;
+            BleadingEdgeZipmodsLabel.Visible = UseKKmanagerUpdaterLabel.Visible;
+            //cbxBleadingEdgeZipmods.Visible = UseKKmanagerUpdaterCheckBox.Visible;
 
-            btnUpdateMods.Enabled = (UpdatePluginsCheckBox.Visible && UpdatePluginsCheckBox.Checked) || (UseKKmanagerUpdaterCheckBox.Visible && UseKKmanagerUpdaterCheckBox.Checked);
+            btnUpdateMods.Enabled = (UpdatePluginsLabel.Visible && UpdatePluginsLabel.IsChecked()) || (UseKKmanagerUpdaterLabel.Visible && UseKKmanagerUpdaterLabel.IsChecked());
+            //btnUpdateMods.Enabled = (UpdatePluginsCheckBox.Visible && UpdatePluginsCheckBox.Checked) || (UseKKmanagerUpdaterCheckBox.Visible && UseKKmanagerUpdaterCheckBox.Checked);
 
             //check bleeding edge txt
-            cbxBleadingEdgeZipmods.Checked = cbxBleadingEdgeZipmods.Visible && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath());
+            //cbxBleadingEdgeZipmods.Checked = cbxBleadingEdgeZipmods.Visible && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath());
+            BleadingEdgeZipmodsLabel.SetCheck(BleadingEdgeZipmodsLabel.Visible && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()));
         }
 
         private void AIGirlHelperTabControl_SelectedIndexChanged(object sender, EventArgs e)
@@ -3076,28 +3081,61 @@ namespace AIHelper
             SetTooltips();
         }
 
-        private void UseKKmanagerUpdaterCheckBox_MouseClick(object sender, MouseEventArgs e)
+        //private void UseKKmanagerUpdaterCheckBox_MouseClick(object sender, MouseEventArgs e)
+        //{
+        //    UpdateButtonOptionsRefresh();
+        //}
+
+        //private void UpdatePluginsCheckBox_MouseClick(object sender, MouseEventArgs e)
+        //{
+        //    UpdateButtonOptionsRefresh();
+        //}
+
+        //private void cbxBleadingEdgeZipmods_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    if ((sender as CheckBox).Checked && !File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()))
+        //    {
+        //        Directory.CreateDirectory(Path.GetDirectoryName(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()));
+        //        File.WriteAllText(ManageSettings.ZipmodsBleedingEdgeMarkFilePath(), string.Empty);
+        //    }
+        //    else if (!(sender as CheckBox).Checked && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()))
+        //    {
+        //        File.Delete(ManageSettings.ZipmodsBleedingEdgeMarkFilePath());
+        //    }
+
+        //    UpdateButtonOptionsRefresh();
+        //}
+
+        private void UpdatePluginsLabel_Click(object sender, EventArgs e)
         {
-            UpdateButtonOptionsRefresh();
+            RefreshLabelCheckState(sender);
         }
 
-        private void UpdatePluginsCheckBox_MouseClick(object sender, MouseEventArgs e)
+        private void UseKKmanagerUpdaterLabel_Click(object sender, EventArgs e)
         {
-            UpdateButtonOptionsRefresh();
+            RefreshLabelCheckState(sender);
         }
 
-        private void cbxBleadingEdgeZipmods_CheckedChanged(object sender, EventArgs e)
+        private void BleadingEdgeZipmodsLabel_Click(object sender, EventArgs e)
         {
-            if ((sender as CheckBox).Checked && !File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()))
+            (sender as Label).SetCheck(!(sender as Label).IsChecked());
+
+            if ((sender as Label).IsChecked() && !File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()))
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()));
                 File.WriteAllText(ManageSettings.ZipmodsBleedingEdgeMarkFilePath(), string.Empty);
             }
-            else if (!(sender as CheckBox).Checked && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()))
+            else if (!(sender as Label).IsChecked() && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()))
             {
                 File.Delete(ManageSettings.ZipmodsBleedingEdgeMarkFilePath());
             }
 
+            UpdateButtonOptionsRefresh();
+        }
+
+        private void RefreshLabelCheckState(object sender)
+        {
+            (sender as Label).SetCheck(!(sender as Label).IsChecked());
             UpdateButtonOptionsRefresh();
         }
 

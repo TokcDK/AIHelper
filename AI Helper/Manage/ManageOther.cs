@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace AIHelper.Manage
 {
-    class ManageOther
+    static class ManageOther
     {
         internal static async void WaitIfGameIsChanging()
         {

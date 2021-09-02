@@ -181,6 +181,7 @@
     <Compile Include="Manage\ManageFilesFoldersExtensions.cs" />
     <Compile Include="Manage\ManageGameUnPacker.cs" />
     <Compile Include="Manage\ManageINI.cs" />
+    <Compile Include="Manage\ManageLabelExtensions.cs" />
     <Compile Include="Manage\ManageLogs.cs" />
     <Compile Include="Manage\ManageMOModsExtensions.cs" />
     <Compile Include="Manage\ManageModOrganizerMods.cs" />

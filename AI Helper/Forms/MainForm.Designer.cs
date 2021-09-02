@@ -90,9 +90,9 @@
             this.btnUpdateMods = new System.Windows.Forms.Button();
             this.UpdateButtonOptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.llOpenOldPluginsBuckupFolder = new System.Windows.Forms.LinkLabel();
-            this.UpdatePluginsCheckBox = new System.Windows.Forms.CheckBox();
-            this.UseKKmanagerUpdaterCheckBox = new System.Windows.Forms.CheckBox();
-            this.cbxBleadingEdgeZipmods = new System.Windows.Forms.CheckBox();
+            this.UpdatePluginsLabel = new System.Windows.Forms.Label();
+            this.UseKKmanagerUpdaterLabel = new System.Windows.Forms.Label();
+            this.BleadingEdgeZipmodsLabel = new System.Windows.Forms.Label();
             this.Install2MOTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.Install2MOOptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -915,10 +915,10 @@
             // 
             // UpdateButtonOptionsFlowLayoutPanel
             // 
+            this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.UpdatePluginsLabel);
             this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.llOpenOldPluginsBuckupFolder);
-            this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.UpdatePluginsCheckBox);
-            this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.UseKKmanagerUpdaterCheckBox);
-            this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.cbxBleadingEdgeZipmods);
+            this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.UseKKmanagerUpdaterLabel);
+            this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.BleadingEdgeZipmodsLabel);
             this.UpdateButtonOptionsFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.UpdateButtonOptionsFlowLayoutPanel.Location = new System.Drawing.Point(134, 0);
             this.UpdateButtonOptionsFlowLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
@@ -929,53 +929,54 @@
             // llOpenOldPluginsBuckupFolder
             // 
             this.llOpenOldPluginsBuckupFolder.AutoSize = true;
+            this.llOpenOldPluginsBuckupFolder.BackColor = System.Drawing.Color.Transparent;
             this.llOpenOldPluginsBuckupFolder.LinkColor = System.Drawing.Color.WhiteSmoke;
-            this.llOpenOldPluginsBuckupFolder.Location = new System.Drawing.Point(0, 0);
+            this.llOpenOldPluginsBuckupFolder.Location = new System.Drawing.Point(19, 0);
             this.llOpenOldPluginsBuckupFolder.Margin = new System.Windows.Forms.Padding(0);
             this.llOpenOldPluginsBuckupFolder.Name = "llOpenOldPluginsBuckupFolder";
             this.llOpenOldPluginsBuckupFolder.Size = new System.Drawing.Size(14, 13);
             this.llOpenOldPluginsBuckupFolder.TabIndex = 27;
             this.llOpenOldPluginsBuckupFolder.TabStop = true;
             this.llOpenOldPluginsBuckupFolder.Text = "D";
+            this.llOpenOldPluginsBuckupFolder.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.llOpenOldPluginsBuckupFolder.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.llOpenOldPluginsBuckupFolder.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked_1);
             // 
-            // UpdatePluginsCheckBox
+            // UpdatePluginsLabel
             // 
-            this.UpdatePluginsCheckBox.AutoSize = true;
-            this.UpdatePluginsCheckBox.Checked = true;
-            this.UpdatePluginsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.UpdatePluginsCheckBox.Location = new System.Drawing.Point(14, 0);
-            this.UpdatePluginsCheckBox.Margin = new System.Windows.Forms.Padding(0);
-            this.UpdatePluginsCheckBox.Name = "UpdatePluginsCheckBox";
-            this.UpdatePluginsCheckBox.Size = new System.Drawing.Size(15, 14);
-            this.UpdatePluginsCheckBox.TabIndex = 30;
-            this.UpdatePluginsCheckBox.UseVisualStyleBackColor = true;
-            this.UpdatePluginsCheckBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.UpdatePluginsCheckBox_MouseClick);
+            this.UpdatePluginsLabel.AutoSize = true;
+            this.UpdatePluginsLabel.BackColor = System.Drawing.Color.Transparent;
+            this.UpdatePluginsLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.UpdatePluginsLabel.Location = new System.Drawing.Point(3, 0);
+            this.UpdatePluginsLabel.Name = "UpdatePluginsLabel";
+            this.UpdatePluginsLabel.Size = new System.Drawing.Size(13, 13);
+            this.UpdatePluginsLabel.TabIndex = 31;
+            this.UpdatePluginsLabel.Text = "P";
+            this.UpdatePluginsLabel.Click += new System.EventHandler(this.UpdatePluginsLabel_Click);
             // 
-            // UseKKmanagerUpdaterCheckBox
+            // UseKKmanagerUpdaterLabel
             // 
-            this.UseKKmanagerUpdaterCheckBox.AutoSize = true;
-            this.UseKKmanagerUpdaterCheckBox.Checked = true;
-            this.UseKKmanagerUpdaterCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.UseKKmanagerUpdaterCheckBox.Location = new System.Drawing.Point(0, 14);
-            this.UseKKmanagerUpdaterCheckBox.Margin = new System.Windows.Forms.Padding(0);
-            this.UseKKmanagerUpdaterCheckBox.Name = "UseKKmanagerUpdaterCheckBox";
-            this.UseKKmanagerUpdaterCheckBox.Size = new System.Drawing.Size(15, 14);
-            this.UseKKmanagerUpdaterCheckBox.TabIndex = 29;
-            this.UseKKmanagerUpdaterCheckBox.UseVisualStyleBackColor = true;
-            this.UseKKmanagerUpdaterCheckBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.UseKKmanagerUpdaterCheckBox_MouseClick);
+            this.UseKKmanagerUpdaterLabel.AutoSize = true;
+            this.UseKKmanagerUpdaterLabel.BackColor = System.Drawing.Color.Transparent;
+            this.UseKKmanagerUpdaterLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.UseKKmanagerUpdaterLabel.Location = new System.Drawing.Point(3, 13);
+            this.UseKKmanagerUpdaterLabel.Name = "UseKKmanagerUpdaterLabel";
+            this.UseKKmanagerUpdaterLabel.Size = new System.Drawing.Size(13, 13);
+            this.UseKKmanagerUpdaterLabel.TabIndex = 32;
+            this.UseKKmanagerUpdaterLabel.Text = "Z";
+            this.UseKKmanagerUpdaterLabel.Click += new System.EventHandler(this.UseKKmanagerUpdaterLabel_Click);
             // 
-            // cbxBleadingEdgeZipmods
+            // BleadingEdgeZipmodsLabel
             // 
-            this.cbxBleadingEdgeZipmods.AutoSize = true;
-            this.cbxBleadingEdgeZipmods.Location = new System.Drawing.Point(15, 14);
-            this.cbxBleadingEdgeZipmods.Margin = new System.Windows.Forms.Padding(0);
-            this.cbxBleadingEdgeZipmods.Name = "cbxBleadingEdgeZipmods";
-            this.cbxBleadingEdgeZipmods.Size = new System.Drawing.Size(15, 14);
-            this.cbxBleadingEdgeZipmods.TabIndex = 28;
-            this.cbxBleadingEdgeZipmods.UseVisualStyleBackColor = true;
-            this.cbxBleadingEdgeZipmods.CheckedChanged += new System.EventHandler(this.cbxBleadingEdgeZipmods_CheckedChanged);
+            this.BleadingEdgeZipmodsLabel.AutoSize = true;
+            this.BleadingEdgeZipmodsLabel.BackColor = System.Drawing.Color.Transparent;
+            this.BleadingEdgeZipmodsLabel.ForeColor = System.Drawing.Color.LightGray;
+            this.BleadingEdgeZipmodsLabel.Location = new System.Drawing.Point(3, 26);
+            this.BleadingEdgeZipmodsLabel.Name = "BleadingEdgeZipmodsLabel";
+            this.BleadingEdgeZipmodsLabel.Size = new System.Drawing.Size(13, 13);
+            this.BleadingEdgeZipmodsLabel.TabIndex = 32;
+            this.BleadingEdgeZipmodsLabel.Text = "T";
+            this.BleadingEdgeZipmodsLabel.Click += new System.EventHandler(this.BleadingEdgeZipmodsLabel_Click);
             // 
             // Install2MOTableLayoutPanel
             // 
@@ -1150,14 +1151,14 @@
         private System.Windows.Forms.Button btnUpdateMods;
         private System.Windows.Forms.FlowLayoutPanel UpdateButtonOptionsFlowLayoutPanel;
         private System.Windows.Forms.LinkLabel llOpenOldPluginsBuckupFolder;
-        private System.Windows.Forms.CheckBox cbxBleadingEdgeZipmods;
-        private System.Windows.Forms.CheckBox UseKKmanagerUpdaterCheckBox;
         private System.Windows.Forms.TableLayoutPanel Install2MOTableLayoutPanel;
         private System.Windows.Forms.Button InstallInModsButton;
         private System.Windows.Forms.FlowLayoutPanel Install2MOOptionsFlowLayoutPanel;
         private System.Windows.Forms.LinkLabel Install2MODirPathOpenFolderLinkLabel;
         private System.Windows.Forms.Button MOCommonModeSwitchButton;
-        private System.Windows.Forms.CheckBox UpdatePluginsCheckBox;
+        private System.Windows.Forms.Label UpdatePluginsLabel;
+        private System.Windows.Forms.Label UseKKmanagerUpdaterLabel;
+        private System.Windows.Forms.Label BleadingEdgeZipmodsLabel;
     }
 }
 

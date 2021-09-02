@@ -7,22 +7,24 @@ namespace AIHelper.Install.Types.Directories
     {
         public override string[] Masks => new[] { "*" };
 
-        public override void Install()
+        public override bool Install()
         {
-            GetAll(new DirectoryInfo(Manage.ManageSettings.GetInstall2MoDirPath()));
+            return GetAll(new DirectoryInfo(Manage.ManageSettings.GetInstall2MoDirPath()));
         }
 
-        public override void InstallFrom(string path)
+        public override bool InstallFrom(string path)
         {
-            GetAll(new DirectoryInfo(path));
+            return GetAll(new DirectoryInfo(path));
         }
 
-        protected void GetAll(DirectoryInfo directoryInfo)
+        protected bool GetAll(DirectoryInfo directoryInfo)
         {
             if (!directoryInfo.Exists)
             {
-                return;
+                return false;
             }
+
+            bool ret = false;
 
             ProgressForm progress = new ProgressForm();
 
@@ -42,14 +44,19 @@ namespace AIHelper.Install.Types.Directories
                     {
                         progress.SetInfo(list[i].Name);
 
-                        Get(list[i]);
+                        if (Get(list[i]))
+                        {
+                            ret = true;
+                        }
                     }
                 }
             }
 
             progress.Dispose();
+
+            return ret;
         }
 
-        protected abstract void Get(DirectoryInfo directoryInfo);
+        protected abstract bool Get(DirectoryInfo directoryInfo);
     }
 }

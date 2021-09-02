@@ -12,8 +12,10 @@ namespace AIHelper.Install.Types.Files.Archive
     {
         public override string[] Masks => new[] { "*.zip" };
 
-        protected override void Get(FileInfo zipfile)
+        protected override bool Get(FileInfo zipfile)
         {
+            var ret = false; 
+
             bool foundZipMod = false;
             bool foundStandardModInZip = false;
             bool foundModsDir = false;
@@ -187,6 +189,7 @@ namespace AIHelper.Install.Types.Files.Archive
             if (filesCount == 1)
             {
                 zipfile.MoveTo(zipfile + ".ExtractedToSubdirAndMustBeInstalled");
+                ret = true;
             }
             else if (foundZipMod)
             {
@@ -195,7 +198,7 @@ namespace AIHelper.Install.Types.Files.Archive
                 {
                     zipfile.MoveTo(zipfile + "mod");
                 }
-                new SideloaderZipmodInstaller().Install();//будет после установлено соответствующей функцией
+                ret = new SideloaderZipmodInstaller().Install();//будет после установлено соответствующей функцией
             }
             else if (foundStandardModInZip)
             {
@@ -292,6 +295,8 @@ namespace AIHelper.Install.Types.Files.Archive
                     );
 
                 ManageModOrganizer.ActivateDeactivateInsertMod(Path.GetFileName(targetModDirPath));
+
+                ret = true;
             }
             else if (foundModsDir)
             {
@@ -303,6 +308,8 @@ namespace AIHelper.Install.Types.Files.Archive
                 {
                     zipfile.MoveTo(zipfile.FullName + ".InstalledExtractedZipmod");
                 }
+
+                ret = true;
             }
             else if (foundcsFiles)
             {
@@ -310,7 +317,11 @@ namespace AIHelper.Install.Types.Files.Archive
                 string extractpath = Path.Combine(ManageSettings.GetInstall2MoDirPath(), zipName);
                 Compressor.Decompress(zipfile.FullName, extractpath);
                 zipfile.MoveTo(zipfile.FullName + ".InstalledExtractedAsSubfolder");
+
+                ret = true;
             }
+
+            return ret;
         }
     }
 }

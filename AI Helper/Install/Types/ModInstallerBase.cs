@@ -10,13 +10,13 @@
         /// <summary>
         /// install from default 2MO folder
         /// </summary>
-        public abstract void Install();
+        public abstract bool Install();
 
         /// <summary>
         /// install from specific folder
         /// </summary>
         /// <param name="path"></param>
-        public abstract void InstallFrom(string path);
+        public abstract bool InstallFrom(string path);
 
         /// <summary>
         /// mask of installer's objects

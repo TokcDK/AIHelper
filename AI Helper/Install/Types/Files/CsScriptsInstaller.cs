@@ -8,7 +8,7 @@ namespace AIHelper.Install.Types.Files
     {
         public override string[] Masks => new[] { "*.cs" };
 
-        protected override void Get(FileInfo csFile)
+        protected override bool Get(FileInfo csFile)
         {
             string name = Path.GetFileNameWithoutExtension(csFile.Name);
             string author = string.Empty;
@@ -95,6 +95,8 @@ namespace AIHelper.Install.Types.Files
                 );
 
             ManageModOrganizer.ActivateDeactivateInsertMod(modname, false, "ScriptLoader scripts_separator");
+
+            return true;
 
             //string[] extrafiles = Directory.GetFiles(whereFromInstallDir, name + "*.*");
             //if (extrafiles.Length > 0)

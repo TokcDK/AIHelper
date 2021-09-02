@@ -20,14 +20,14 @@ namespace AIHelper.Install.Types.Directories
         string _bakDir;
         string _gameUpdateInfoFileName { get => "gameupdate.ini"; }
 
-        protected override void Get(DirectoryInfo dir)
+        protected override bool Get(DirectoryInfo dir)
         {
             _dir = dir;
             var updateInfoIniFilePath = Path.Combine(dir.FullName, _gameUpdateInfoFileName);
             if (!File.Exists(updateInfoIniFilePath))
             {
                 // not update
-                return;
+                return false;
             }
 
             updateInfo = new GameUpdateInfo(updateInfoIniFilePath);
@@ -35,14 +35,14 @@ namespace AIHelper.Install.Types.Directories
             if (string.IsNullOrWhiteSpace(updateInfo.GameFolderName))
             {
                 // empty game folder name
-                return;
+                return false;
             }
 
             if (ManageSettings.GetCurrentGameFolderName() != updateInfo.GameFolderName)
             {
                 // incorrect game
                 MessageBox.Show(updateInfo.GameFolderName + ": " + T._("Incorrect current game"));
-                return;
+                return false;
             }
 
             bool updated = false;
@@ -102,6 +102,8 @@ namespace AIHelper.Install.Types.Directories
             {
                 MessageBox.Show(updateInfo.GameFolderName + ": " + T._("Update not required."));
             }
+
+            return updated;
         }
 
         private void ProceedRemoveFiles()

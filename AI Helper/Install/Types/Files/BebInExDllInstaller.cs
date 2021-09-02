@@ -9,8 +9,10 @@ namespace AIHelper.Install.Types.Files
     {
         public override string[] Masks => new[] { "*.dll" };
 
-        protected override void Get(FileInfo dllfile)
+        protected override bool Get(FileInfo dllfile)
         {
+            var ret = false;
+
             FileVersionInfo dllInfo = FileVersionInfo.GetVersionInfo(dllfile.FullName);
             string name = dllInfo.ProductName;
             string description = dllInfo.FileDescription;
@@ -124,6 +126,8 @@ namespace AIHelper.Install.Types.Files
             //INI.WriteINI("General", "validated", "true");
 
             ManageModOrganizer.ActivateDeactivateInsertMod(Path.GetFileName(dllTargetModDirPath));
+
+            return ret;
         }
     }
 }

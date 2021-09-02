@@ -16,12 +16,15 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
 
         protected override string TargetSuffix => "Housing";
 
-        protected override void MoveByContentType(string contentType, string dir, string targetFolder, bool moveInThisFolder = false)
+        protected override bool MoveByContentType(string contentType, string dir, string targetFolder, bool moveInThisFolder = false)
         {
+            var ret = false;
+
             if (contentType.Length == 2)
             {
                 foreach (var file in Directory.GetFiles(dir))
                 {
+                    ret = true;
                     File.Move(file, ManageFilesFolders.GetResultTargetFilePathWithNameCheck(targetFolder, Path.GetFileNameWithoutExtension(file), ".png"));
                 }
             }
@@ -32,10 +35,13 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
                     string hSubDirName = Path.GetFileName(typeDir);
                     foreach (var file in Directory.GetFiles(typeDir))
                     {
+                        ret = true;
                         File.Move(file, ManageFilesFolders.GetResultTargetFilePathWithNameCheck(Path.Combine(targetFolder, hSubDirName), Path.GetFileNameWithoutExtension(file), ".png"));
                     }
                 }
             }
+
+            return ret;
         }
     }
 }

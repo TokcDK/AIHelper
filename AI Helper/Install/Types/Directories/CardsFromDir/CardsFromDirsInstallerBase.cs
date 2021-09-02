@@ -5,12 +5,18 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
 {
     abstract class CardsFromDirsInstallerBase : DirectoriesInstallerBase
     {
-        protected override void Get(DirectoryInfo dir)
+        protected override bool Get(DirectoryInfo dir)
         {
+            var ret = false;
             foreach (var mask in Masks)
             {
-                MoveImagesToTargetContentFolder(dir.FullName, mask);
+                if(MoveImagesToTargetContentFolder(dir.FullName, mask))
+                {
+                    ret = true;
+                }
             }
+
+            return ret;
 
             {
                 //string[] folderTypes = 
@@ -165,14 +171,17 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
         /// <param name="dir"></param>
         /// <param name="targetFolder"></param>
         /// <param name="moveInThisFolder"></param>
-        protected virtual void MoveByContentType(string contentType, string dir, string targetFolder, bool moveInThisFolder = false)
+        protected virtual bool MoveByContentType(string contentType, string dir, string targetFolder, bool moveInThisFolder = false)
         {
+            return false;
         }
 
         protected string extension = ".png";
 
-        protected void MoveImagesToTargetContentFolder(string dir, string contentType, bool moveInThisFolder = false)
+        protected bool MoveImagesToTargetContentFolder(string dir, string contentType, bool moveInThisFolder = false)
         {
+            var ret = false;
+            
             string targetFolder = GetUserDataSubFolder(moveInThisFolder ? dir : " " + TargetSuffix, contentType);
 
             //Для всех, сброс png из корневой папки в целевую
@@ -180,12 +189,15 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
             {
                 var cardframeTargetFolder = ManageFilesFolders.GetResultTargetFilePathWithNameCheck(targetFolder, Path.GetFileNameWithoutExtension(target), extension);
 
+                ret = true;
                 File.Move(target, cardframeTargetFolder);
             }
 
             MoveByContentType(contentType, dir, targetFolder, moveInThisFolder);
 
             ManageFilesFolders.DeleteEmptySubfolders(dir);
+
+            return ret;
         }
 
         public static string GetUserDataSubFolder(string firstCandidateFolder, string type)

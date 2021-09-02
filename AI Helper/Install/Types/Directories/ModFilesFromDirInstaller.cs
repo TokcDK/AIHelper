@@ -12,26 +12,28 @@ namespace AIHelper.Install.Types.Directories
     {
         public override int Order => base.Order / 3;
 
-        protected override void Get(DirectoryInfo directoryInfo)
+        protected override bool Get(DirectoryInfo directoryInfo)
         {
             string name = directoryInfo.Name;
-            if (ManageStrings.IsStringAequalsStringB(name, "Temp", true)
-                || ManageStrings.IsStringAequalsStringB(name, "f")
-                || ManageStrings.IsStringAequalsStringB(name, "m")
-                || ManageStrings.IsStringAequalsStringB(name, "c")
-                || ManageStrings.IsStringAequalsStringB(name, "cf")
-                || ManageStrings.IsStringAequalsStringB(name, "cb")
-                || ManageStrings.IsStringAequalsStringB(name, "h")
-                || ManageStrings.IsStringAequalsStringB(name, "h1")
-                || ManageStrings.IsStringAequalsStringB(name, "h2")
-                || ManageStrings.IsStringAequalsStringB(name, "h3")
-                || ManageStrings.IsStringAequalsStringB(name, "h4")
-                || ManageStrings.IsStringAequalsStringB(name, "o")
-                || ManageStrings.IsStringAequalsStringB(name, "s")
+            if (!ManageStrings.IsStringAequalsStringB(name, "Temp", true)
+                && !ManageStrings.IsStringAequalsStringB(name, "f")
+                && !ManageStrings.IsStringAequalsStringB(name, "m")
+                && !ManageStrings.IsStringAequalsStringB(name, "c")
+                && !ManageStrings.IsStringAequalsStringB(name, "cf")
+                && !ManageStrings.IsStringAequalsStringB(name, "cb")
+                && !ManageStrings.IsStringAequalsStringB(name, "h")
+                && !ManageStrings.IsStringAequalsStringB(name, "h1")
+                && !ManageStrings.IsStringAequalsStringB(name, "h2")
+                && !ManageStrings.IsStringAequalsStringB(name, "h3")
+                && !ManageStrings.IsStringAequalsStringB(name, "h4")
+                && !ManageStrings.IsStringAequalsStringB(name, "o")
+                && !ManageStrings.IsStringAequalsStringB(name, "s")
                 )//path ends with 'Temp'
             {
-                return;
+                return false;
             }
+
+            var ret = false;
 
             //сортировка по подпапкам и переименование файлов
             ManageModOrganizerMods.SortFilesToSubfolders(directoryInfo.FullName);
@@ -373,7 +375,11 @@ namespace AIHelper.Install.Types.Directories
                 //INI.WriteINI("General", "validated", "true");
 
                 ManageModOrganizer.ActivateDeactivateInsertMod(Path.GetFileName(moddir));
+
+                ret = true;
             }
+
+            return ret;
         }
     }
 }

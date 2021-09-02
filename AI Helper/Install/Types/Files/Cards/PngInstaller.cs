@@ -9,7 +9,7 @@ namespace AIHelper.Install.Types.Files.Cards
 
         const string ext = ".png";
 
-        protected override void Get(FileInfo pngInfo)
+        protected override bool Get(FileInfo pngInfo)
         {
             //var imgdata = Image.FromFile(img);
 
@@ -18,9 +18,18 @@ namespace AIHelper.Install.Types.Files.Cards
             //    IsCharaCard = true;
             //}
 
-            var targetImagePath = ManageFilesFolders.GetResultTargetFilePathWithNameCheck(ManageModOrganizerMods.GetUserDataSubFolder(" Chars", "f"), Path.GetFileNameWithoutExtension(pngInfo.Name), ext);
+            try
+            {
+                var targetImagePath = ManageFilesFolders.GetResultTargetFilePathWithNameCheck(ManageModOrganizerMods.GetUserDataSubFolder(" Chars", "f"), Path.GetFileNameWithoutExtension(pngInfo.Name), ext);
 
-            pngInfo.MoveTo(targetImagePath);
+                pngInfo.MoveTo(targetImagePath);
+            }
+            catch
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

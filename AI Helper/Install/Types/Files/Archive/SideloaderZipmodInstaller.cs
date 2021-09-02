@@ -13,13 +13,13 @@ namespace AIHelper.Install.Types.Files.Archive
 
         public override string[] Masks => new[] { "*.zipmod" };
 
-        protected override void Get(FileInfo zipfile)
+        protected override bool Get(FileInfo zipfile)
         {
             SideloaderZipmodInfo zipmod = GetManifestFromZipFile(zipfile.FullName);
 
             if (zipmod == null)
             {
-                return;
+                return false;
             }
 
             string zipArchiveName = Path.GetFileNameWithoutExtension(zipfile.FullName);
@@ -27,7 +27,7 @@ namespace AIHelper.Install.Types.Files.Archive
 
             if (!gameEmpty && !string.Equals(zipmod.game, ManageSettings.GetZipmodManifestGameNameByCurrentGame(), StringComparison.InvariantCultureIgnoreCase))
             {
-                return;
+                return false;
             }
 
             // mod name create
@@ -103,6 +103,8 @@ namespace AIHelper.Install.Types.Files.Archive
 
             // insert modlist record of the mod
             ManageModOrganizer.ActivateDeactivateInsertMod(Path.GetFileName(modDirPath), true);
+
+            return true;
         }
     }
 }

@@ -14,17 +14,22 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
 
         protected override string TargetSuffix => "Overlays";
 
-        protected override void MoveByContentType(string contentType, string dir, string targetFolder, bool moveInThisFolder = false)
+        protected override bool MoveByContentType(string contentType, string dir, string targetFolder, bool moveInThisFolder = false)
         {
+            var ret = false;
             ManageArchive.UnpackArchivesToSubfoldersWithSameName(dir, ".zip");
             foreach (var oSubDir in Directory.GetDirectories(dir, "*"))
             {
+                ret = true;
+
                 string newTarget = ManageFilesFolders.MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(oSubDir);
                 string targetDirName = Path.GetFileName(newTarget);
                 var resultTargetPath = ManageFilesFolders.GetResultTargetDirPathWithNameCheck(targetFolder, targetDirName);
 
                 Directory.Move(newTarget, resultTargetPath);
             }
+
+            return ret;
         }
     }
 }

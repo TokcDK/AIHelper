@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using AIHelper.Forms.Other;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
 
 namespace AIHelper.Install.Types.Directories
 {
@@ -23,19 +26,30 @@ namespace AIHelper.Install.Types.Directories
                 return;
             }
 
+            ProgressForm progress = new ProgressForm();
+
             foreach (var mask in Masks)
             {
                 Mask = mask;
 
                 var list = directoryInfo.GetDirectories(mask);
+
+                progress.SetMax(list.Length);
+
                 for (int i = 0; i < list.Length; i++)
                 {
+                    progress.SetProgress(i);
+
                     if (list[i].Exists)
                     {
+                        progress.SetInfo(list[i].Name);
+
                         Get(list[i]);
                     }
                 }
             }
+
+            progress.Dispose();
         }
 
         protected abstract void Get(DirectoryInfo directoryInfo);

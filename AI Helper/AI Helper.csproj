@@ -119,6 +119,7 @@
     <Compile Include="Forms\LogLevelselectionForm.Designer.cs">
       <DependentUpon>LogLevelselectionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Other\ProgressForm\ProgressForm.cs" />
     <Compile Include="Games\GamesList.cs" />
     <Compile Include="Games\Illusion\HoneySelect2.cs" />
     <Compile Include="Games\Illusion\KoikatsuSunshine.cs" />
@@ -190,7 +191,7 @@
     <Compile Include="Manage\ManageSettings.cs" />
     <Compile Include="Manage\ManageModOrganizer.cs" />
     <Compile Include="Manage\ManageStringsExtensions.cs" />
-    <Compile Include="Manage\ManageSymLinks.cs" />
+    <Compile Include="Manage\ManageSymLinkExtensions.cs" />
     <Compile Include="Manage\Rules\MetaIniFixes\Copy1stNotesUrlToUrlKey.cs" />
     <Compile Include="Manage\Rules\MetaIniFixes\MetaIniFixesBase.cs" />
     <Compile Include="Manage\Rules\MetaIniFixes\ModlistDataMetaIniFixesTools.cs" />

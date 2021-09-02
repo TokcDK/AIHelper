@@ -1,4 +1,4 @@
-﻿using SymbolicLinkSupport;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -57,7 +57,7 @@ namespace AIHelper.Manage.Update.Targets
                 BuckupDirPath = Path.Combine(ManageSettings.GetUpdatedModsOlderVersionsBuckupDirPath(), Info.TargetFolderPath.Name + "_" + Info.TargetCurrentVersion);
                 if (Directory.Exists(BuckupDirPath))
                 {
-                    BuckupDirPath += "_" + DateTime.Now.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+                    BuckupDirPath += ManageSettings.GetDateTimeBasedSuffix();
                 }
 
                 Info.BuckupDirPath = BuckupDirPath;
@@ -84,9 +84,9 @@ namespace AIHelper.Manage.Update.Targets
                     }
 
                     var dirinfo = new DirectoryInfo(path);
-                    if (dirinfo.Exists && dirinfo.IsSymbolicLink() && dirinfo.IsSymbolicLinkValid())
+                    if (dirinfo.Exists && dirinfo.IsSymlink() && dirinfo.IsValidSymlink())
                     {
-                        var modPath = ManageModOrganizerMods.GetMoModPathInMods(dirinfo.GetSymbolicLinkTarget());
+                        var modPath = ManageModOrganizerMods.GetMoModPathInMods(dirinfo.GetSymlinkTarget());
 
                         if (Path.GetFileName(modPath) == Info.TargetFolderPath.FullName) // if parsing mod path is same then add for bak
                         {
@@ -138,7 +138,7 @@ namespace AIHelper.Manage.Update.Targets
             //var OldModBuckupDirPath = Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), "old", info.TargetFolderPath.Name + "_" + info.TargetCurrentVersion);
             //if (Directory.Exists(OldModBuckupDirPath))
             //{
-            //    OldModBuckupDirPath += "_" + DateTime.Now.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+            //    OldModBuckupDirPath += ManageSettings.GetDateTimeBasedSuffix();
             //}
 
             //Directory.CreateDirectory(OldModBuckupDirPath);
@@ -435,7 +435,7 @@ namespace AIHelper.Manage.Update.Targets
                 {
                     bool isSynlinkTarget = false;
                     var folder = folderPath;
-                    if (folder.IsSymbolicLink())
+                    if (folder.IsSymlink())
                     {
                         if (!folder.IsValidSymlink())
                         {
@@ -443,7 +443,7 @@ namespace AIHelper.Manage.Update.Targets
                         }
 
                         isSynlinkTarget = true;
-                        folder = new DirectoryInfo(folder.GetSymbolicLinkTarget());
+                        folder = new DirectoryInfo(folder.GetSymlinkTarget());
                     }
 
                     var backupPath = new DirectoryInfo(folder.FullName.Replace(updatingModDirPath, oldModBuckupDirPath));
@@ -472,7 +472,7 @@ namespace AIHelper.Manage.Update.Targets
                 {
                     bool isSynlinkTarget = false;
                     var file = filePath;
-                    if (file.IsSymbolicLink())
+                    if (file.IsSymlink())
                     {
                         if (!file.IsValidSymlink())
                         {
@@ -480,7 +480,7 @@ namespace AIHelper.Manage.Update.Targets
                         }
 
                         isSynlinkTarget = true;
-                        file = new FileInfo(filePath.GetSymbolicLinkTarget());
+                        file = new FileInfo(filePath.GetSymlinkTarget());
                     }
 
                     //string ext;

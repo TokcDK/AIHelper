@@ -37,7 +37,7 @@ namespace AIHelper.Install.UpdateMaker
             var blValueFiles = infoIni.GetKey("", "BlacklistFiles");
             var blacklistFiles = blValueFiles.Split(',').ToHashSet();
 
-            var dateTimeSuffix = "_" + DateTime.Now.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+            var dateTimeSuffix = ManageSettings.GetDateTimeBasedSuffix();
 
             var updateDir = Path.Combine(ManageSettings.GetCurrentGamePath(), "Updates", "Update");
             if (Directory.Exists(updateDir))

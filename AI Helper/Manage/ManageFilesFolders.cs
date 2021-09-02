@@ -1,7 +1,7 @@
 ﻿using AIHelper.SharedData;
 using CheckForEmptyDir;
 using Soft160.Data.Cryptography;
-using SymbolicLinkSupport;
+
 using System;
 using System.Globalization;
 using System.IO;
@@ -60,12 +60,20 @@ namespace AIHelper.Manage
             }
 
             DirectoryInfo dir = new DirectoryInfo(dirPath);
+
             try
             {
-                if (dir.IsSymbolicLink() && !dir.IsSymbolicLinkValid())
+                if (dir.IsSymlink())
                 {
-                    dir.Delete(); // remove invalid symlink
-                    return;
+                    if(!dir.IsValidSymlink())
+                    {
+                        dir.Delete(); // remove invalid symlink
+                        return;
+                    }
+                    else
+                    {
+                        dirPath = Path.GetFullPath(dir.GetSymlinkTarget());
+                    }
                 }
             }
             catch (Exception ex)
@@ -74,11 +82,24 @@ namespace AIHelper.Manage
                 return;
             }
 
-            string[] subfolders = Directory.GetDirectories(dirPath, "*");
-            int subfoldersLength = subfolders.Length;
-            for (int d = 0; d < subfoldersLength; d++)
+            // NOTE
+            // here is exist problem when for example from disc D: was created symlink for dir "Data" on disc C:
+            // and inside Data dir was another symlink with relative path. And even if relative path is working
+            // and Directory.Exists will be true the link can be not able to be opened with explorer or will throw
+            // exception for methods like Directory.GetDirectories
+            string[] subfolders;
+            try
             {
-                DeleteEmptySubfolders(subfolders[d], !TrueIfStringInExclusionsList(subfolders[d], exclusions), exclusions);
+                subfolders = Directory.GetDirectories(dirPath, "*");
+                int subfoldersLength = subfolders.Length;
+                for (int d = 0; d < subfoldersLength; d++)
+                {
+                    DeleteEmptySubfolders(subfolders[d], !TrueIfStringInExclusionsList(subfolders[d], exclusions), exclusions);
+                }
+            }
+            catch
+            {
+
             }
 
             if (deleteThisDir && dir.IsNullOrEmptyDirectory(recursive: false)/*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)

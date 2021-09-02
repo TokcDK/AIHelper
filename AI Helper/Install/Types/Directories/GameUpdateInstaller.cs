@@ -1,9 +1,11 @@
-﻿using AIHelper.Manage.Update;
+﻿using AIHelper.Manage;
+using AIHelper.Manage.Update;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace AIHelper.Install.Types.Directories
@@ -18,11 +20,12 @@ namespace AIHelper.Install.Types.Directories
         string _dateTimeSuffix;
         string _backupsDir;
         string _bakDir;
+        string _gameUpdateInfoFileName { get => "gameupdate.ini"; }
 
         protected override void Get(DirectoryInfo dir)
         {
             _dir = dir;
-            var updateInfoIniFilePath = Path.Combine(dir.FullName, "gameupdate.ini");
+            var updateInfoIniFilePath = Path.Combine(dir.FullName, _gameUpdateInfoFileName);
             if (!File.Exists(updateInfoIniFilePath))
             {
                 // not update
@@ -37,7 +40,7 @@ namespace AIHelper.Install.Types.Directories
                 return;
             }
 
-            if (Manage.ManageSettings.GetCurrentGameFolderName() != updateInfo.GameFolderName)
+            if (ManageSettings.GetCurrentGameFolderName() != updateInfo.GameFolderName)
             {
                 // incorrect game
                 MessageBox.Show(updateInfo.GameFolderName + ": " + T._("Incorrect current game"));
@@ -48,9 +51,9 @@ namespace AIHelper.Install.Types.Directories
 
             IsRoot = updateInfo.IsRoot == "true";
 
-            _dateTimeSuffix = "_" + DateTime.Now.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
+            _dateTimeSuffix = ManageSettings.GetDateTimeBasedSuffix();
 
-            _backupsDir = Path.Combine(Manage.ManageSettings.GetCurrentGameFolderName(), "Buckups");
+            _backupsDir = Path.Combine(ManageSettings.GetCurrentGamePath(), "Buckups");
             _bakDir = Path.Combine(_backupsDir, "Backup");
             if (Directory.Exists(_bakDir))
             {
@@ -76,7 +79,11 @@ namespace AIHelper.Install.Types.Directories
                 ProceedUpdateMO();
             }
 
-            if(updated)
+            // clean update info and folder
+            File.Delete(Path.Combine(dir.FullName, _gameUpdateInfoFileName));
+            ManageFilesFolders.DeleteEmptySubfolders(dirPath: dir.FullName, deleteThisDir: true);
+
+            if (updated)
             {
                 MessageBox.Show(updateInfo.GameFolderName + ": " + T._("Update applied.\n\nWill be opened Backup folder.\nCheck content and remove files and dirs which not need for you animore."));
                 Process.Start(_bakDir);
@@ -99,33 +106,45 @@ namespace AIHelper.Install.Types.Directories
 
         private void ProceedUpdateFiles(string targetDirName)
         {
-            var dataDir = IsRoot ? Path.Combine(_dir.FullName, "Games", updateInfo.GameFolderName, targetDirName) : Path.Combine(_dir.FullName, targetDirName);
+            var updateGameDir = IsRoot ? Path.Combine(_dir.FullName, "Games", updateInfo.GameFolderName) : Path.Combine(_dir.FullName);
+            var updateTargetSubDir = Path.Combine(updateGameDir, targetDirName);
 
-            if (!Directory.Exists(dataDir))
+            if (!Directory.Exists(updateTargetSubDir))
             {
                 return;
             }
 
-            var dataBuckupDir = Path.Combine(_bakDir, targetDirName);
-            if (!Directory.Exists(dataBuckupDir))
+            var updateTargetBuckupSubDir = Path.Combine(_bakDir, targetDirName);
+            if (!Directory.Exists(updateTargetBuckupSubDir))
             {
-                Directory.CreateDirectory(dataBuckupDir);
+                Directory.CreateDirectory(updateTargetBuckupSubDir);
             }
 
             // replace files by newer
-            foreach (var fileInfo in new DirectoryInfo(dataDir).EnumerateFiles("*", SearchOption.AllDirectories))
+            foreach (var fileInfo in new DirectoryInfo(updateTargetSubDir).EnumerateFiles("*", SearchOption.AllDirectories))
             {
-                var targetFileInfo = new FileInfo(fileInfo.Name.Replace(dataDir, Manage.ManageSettings.GetCurrentGameDataPath()));
-                var targetPath = targetFileInfo.FullName;
+                var targetFileInfo = new FileInfo(fileInfo.FullName.Replace(updateGameDir, ManageSettings.GetCurrentGamePath()));
+
+                var targetPath = targetFileInfo.FullName;// default target path in game's target subdir
+
                 if (targetFileInfo.Exists)
                 {
-                    targetPath = fileInfo.LastWriteTimeUtc > targetFileInfo.LastWriteTimeUtc
-                        ? targetPath.Replace(Manage.ManageSettings.GetCurrentGameDataPath(), dataBuckupDir)
-                        : fileInfo.FullName.Replace(dataDir, dataBuckupDir);
+                    var fileBakBath = fileInfo.FullName.Replace(updateGameDir, _bakDir);// file's path in bak dir
+
+                    if (fileInfo.LastWriteTimeUtc > targetFileInfo.LastWriteTimeUtc)
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(fileBakBath));// create parent dir
+                        targetFileInfo.MoveTo(fileBakBath); // move exist older target file to bak dir
+                    }
+                    else
+                    {
+                        targetPath = fileBakBath; // set bak dir path for older target file
+                    }
                 }
 
-                Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
-                fileInfo.MoveTo(targetPath);
+                Directory.CreateDirectory(Path.GetDirectoryName(targetPath));// create parent dir
+
+                fileInfo.MoveTo(targetPath); // move update file to target if it is newer or to bak dir if older
             }
         }
 
@@ -148,7 +167,7 @@ namespace AIHelper.Install.Types.Directories
             // replace folders by updated
             foreach (var modDir in Directory.EnumerateDirectories(modsDir))
             {
-                var targetGameModDir = Path.Combine(Manage.ManageSettings.GetCurrentGameModsDirPath(), Path.GetFileName(modDir));
+                var targetGameModDir = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), Path.GetFileName(modDir));
                 if (Directory.Exists(targetGameModDir))
                 {
                     if (!IsNewer(modDir, targetGameModDir))
@@ -157,7 +176,7 @@ namespace AIHelper.Install.Types.Directories
                         continue;
                     }
 
-                    Directory.Move(targetGameModDir, targetGameModDir.Replace(Manage.ManageSettings.GetCurrentGameModsDirPath(), modsBuckupDir));
+                    Directory.Move(targetGameModDir, targetGameModDir.Replace(ManageSettings.GetCurrentGameModsDirPath(), modsBuckupDir));
                 }
                 else
                 {
@@ -176,8 +195,8 @@ namespace AIHelper.Install.Types.Directories
                 return true;
             }
 
-            var UpdateVersion = Manage.ManageIni.GetINIFile(metaIniUpdatePath, false).GetKey("General", "version");
-            var GameVersion = Manage.ManageIni.GetINIFile(metaIniGamePath, false).GetKey("General", "version");
+            var UpdateVersion = ManageIni.GetINIFile(metaIniUpdatePath, false).GetKey("General", "version");
+            var GameVersion = ManageIni.GetINIFile(metaIniGamePath, false).GetKey("General", "version");
 
             return UpdateVersion.IsNewerOf(GameVersion);
         }
@@ -186,7 +205,7 @@ namespace AIHelper.Install.Types.Directories
     class GameUpdateInfo
     {
 
-        Dictionary<string, string> keys = new Dictionary<string, string>()
+        Dictionary<string, string> _keys = new Dictionary<string, string>()
         {
             { nameof(GameFolderName), string.Empty },
             { nameof(UpdateData), "false" },
@@ -198,23 +217,23 @@ namespace AIHelper.Install.Types.Directories
         /// <summary>
         /// Name of game's folder name which need to update
         /// </summary>
-        internal string GameFolderName { get => keys[nameof(GameFolderName)]; set => keys[nameof(GameFolderName)] = value; }
+        internal string GameFolderName { get => _keys[nameof(GameFolderName)]; set => _keys[nameof(GameFolderName)] = value; }
         /// <summary>
         /// Update Data folder
         /// </summary>
-        internal string UpdateData { get => keys[nameof(UpdateData)]; set => keys[nameof(UpdateData)] = value; }
+        internal string UpdateData { get => _keys[nameof(UpdateData)]; set => _keys[nameof(UpdateData)] = value; }
         /// <summary>
         /// Update mod dirs in Mods folder
         /// </summary>
-        internal string UpdateMods { get => keys[nameof(UpdateMods)]; set => keys[nameof(UpdateMods)] = value; }
+        internal string UpdateMods { get => _keys[nameof(UpdateMods)]; set => _keys[nameof(UpdateMods)] = value; }
         /// <summary>
         /// Update files in MO dir of the game to newer
         /// </summary>
-        internal string UpdateMO { get => keys[nameof(UpdateMO)]; set => keys[nameof(UpdateMO)] = value; }
+        internal string UpdateMO { get => _keys[nameof(UpdateMO)]; set => _keys[nameof(UpdateMO)] = value; }
         /// <summary>
         /// Root means aihelper root dir as update dir root
         /// </summary>
-        internal string IsRoot { get => keys[nameof(IsRoot)]; set => keys[nameof(IsRoot)] = value; }
+        internal string IsRoot { get => _keys[nameof(IsRoot)]; set => _keys[nameof(IsRoot)] = value; }
 
         public GameUpdateInfo(string updateInfoPath)
         {
@@ -223,13 +242,15 @@ namespace AIHelper.Install.Types.Directories
 
         void Get(string updateInfoPath)
         {
-            var updateInfoIni = Manage.ManageIni.GetINIFile(updateInfoPath);
+            var updateInfoIni = ManageIni.GetINIFile(updateInfoPath);
 
-            foreach (var key in keys)
+            var keys = _keys.Keys.ToArray();
+            for (int i = 0; i < keys.Length; i++)
             {
-                if (updateInfoIni.KeyExists(key.Key))
+                var keyName = keys[i];
+                if (updateInfoIni.KeyExists(keyName))
                 {
-                    keys[key.Key] = updateInfoIni.GetKey("", key.Key);
+                    _keys[keyName] = updateInfoIni.GetKey("", keyName);
                 }
             }
         }

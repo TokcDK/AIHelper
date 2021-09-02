@@ -61,6 +61,11 @@ namespace AIHelper.Manage
 
         }
 
+        internal static string GetDateTimeBasedSuffix()
+        {
+            return "_" + DateTime.Now.ToString("yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
+        }
+
         internal static bool MoIsNew { get => Properties.Settings.Default.MOIsNew; }
 
         internal static string GetDefaultBepInEx5OlderVersion()

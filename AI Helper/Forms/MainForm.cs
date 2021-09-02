@@ -238,12 +238,13 @@ namespace AIHelper
         {
             //MainService.Enabled = false;
 
-            _mode = ManageGameUnPacker.GetModeValue();
+            _mode = 1;
+            //_mode = ManageGameUnPacker.GetModeValue();
 
             switch (_mode)
             {
                 case 0:
-                    ManageGameUnPacker.CompressingMode();
+                    //ManageGameUnPacker.CompressingMode();
                     break;
 
                 case 1:
@@ -251,7 +252,7 @@ namespace AIHelper
                     break;
 
                 case 2:
-                    ManageGameUnPacker.ExtractingMode();
+                    //ManageGameUnPacker.ExtractingMode();
                     break;
 
                 default:

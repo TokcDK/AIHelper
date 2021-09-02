@@ -12,35 +12,35 @@ namespace AIHelper
     //https://www.cupofdev.com/compress-files-7zip-csharp/
     class Compressor
     {
-        internal static void Compress(string sourceCodeFolder, string targetFolder)
-        {
-            // Set source and target folders
-            //string targetFolder = @"E:\CodeDumps";
-            //string sourceCodeFolder = @"C:\Dev\Clients\cupofdev";
-            Directory.CreateDirectory(targetFolder);
+        //internal static void Compress(string sourceCodeFolder, string targetFolder)
+        //{
+        //    // Set source and target folders
+        //    //string targetFolder = @"E:\CodeDumps";
+        //    //string sourceCodeFolder = @"C:\Dev\Clients\cupofdev";
+        //    Directory.CreateDirectory(targetFolder);
 
-            string target7Zipfile = Path.Combine(targetFolder, Path.GetFileName(sourceCodeFolder) + ".7z");
+        //    string target7Zipfile = Path.Combine(targetFolder, Path.GetFileName(sourceCodeFolder) + ".7z");
 
-            if (!File.Exists(target7Zipfile))
-            {
-                // Specify where 7z.dll DLL is located
-                //var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Environment.Is64BitProcess ? "MO\\dlls" : "x86", "7z.dll");                
-                string path = Get7ZdllPath();
-                if (path == null)
-                {
-                    return;//return if path was not found
-                }
-                SevenZipBase.SetLibraryPath(path);
-                SevenZipCompressor sevenZipCompressor = new SevenZipCompressor
-                {
-                    CompressionLevel = CompressionLevel.Ultra,
-                    CompressionMethod = CompressionMethod.Lzma2
-                };
+        //    if (!File.Exists(target7Zipfile))
+        //    {
+        //        // Specify where 7z.dll DLL is located
+        //        //var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Environment.Is64BitProcess ? "MO\\dlls" : "x86", "7z.dll");                
+        //        string path = Get7ZdllPath();
+        //        if (path == null)
+        //        {
+        //            return;//return if path was not found
+        //        }
+        //        SevenZipBase.SetLibraryPath(path);
+        //        SevenZipCompressor sevenZipCompressor = new SevenZipCompressor
+        //        {
+        //            CompressionLevel = CompressionLevel.Ultra,
+        //            CompressionMethod = CompressionMethod.Lzma2
+        //        };
 
-                // Compress the directory and save the file in a yyyyMMdd_project-files.7z format (eg. 20141024_project-files.7z
-                sevenZipCompressor.CompressDirectory(sourceCodeFolder, target7Zipfile);
-            }
-        }
+        //        // Compress the directory and save the file in a yyyyMMdd_project-files.7z format (eg. 20141024_project-files.7z
+        //        sevenZipCompressor.CompressDirectory(sourceCodeFolder, target7Zipfile);
+        //    }
+        //}
 
         internal static void Decompress(string sourceFile, string targetFolder)
         {
@@ -98,7 +98,7 @@ namespace AIHelper
             }
             else
             {
-                path = Path.Combine("C:", "Program Files (x86)", "7-Zip", "7z.dll");
+                path = "C:\\Program Files (x86)\\7-Zip\\7z.dll";
                 if (File.Exists(path))
                 {
                 }

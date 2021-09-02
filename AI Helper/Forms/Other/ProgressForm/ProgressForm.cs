@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace AIHelper.Forms.Other
 {
     class ProgressForm : IDisposable
     {
-        Form _progressForm;
+        internal readonly Form PForm;
         ProgressBar _progressBar;
-        Label _progressInfoLabel;
 
         int Max;
 
@@ -16,27 +14,25 @@ namespace AIHelper.Forms.Other
         {
             Title = T._("Parse") + ":";
 
-            _progressForm = new Form
+            PForm = new Form
             {
                 StartPosition = FormStartPosition.CenterScreen,
-                Size = new Size(400, 100),
+                Width = 400,
+                Height = 50,
                 Text = Title,
                 FormBorderStyle = FormBorderStyle.FixedToolWindow,
                 TopMost = true
             };
-            _progressInfoLabel = new Label
-            {
-                Dock = DockStyle.Top,
-                Text = ""
-            };
             _progressBar = new ProgressBar
             {
                 Dock = DockStyle.Bottom,
+                Height = PForm.Height / 2,
+                Width = PForm.Width - 2,
                 Value = 0
             };
 
-            _progressForm.Controls.Add(_progressBar);
-            _progressForm.Show();
+            PForm.Controls.Add(_progressBar);
+            PForm.Show();
         }
 
         bool IsSet;
@@ -73,19 +69,23 @@ namespace AIHelper.Forms.Other
         }
 
         /// <summary>
+        /// Current progress value
+        /// </summary>
+        internal int Value { get => _progressBar.Value; }
+
+        /// <summary>
         /// Info displaying in label
         /// </summary>
         /// <param name="infoText"></param>
         internal void SetInfo(string infoText)
         {
-            _progressInfoLabel.Text = infoText;
+            PForm.Text = Title + ":" + infoText;
         }
 
         public void Dispose()
         {
-            _progressForm.Dispose();
             _progressBar.Dispose();
-            _progressInfoLabel.Dispose();
+            PForm.Dispose();
         }
     }
 }

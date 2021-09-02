@@ -236,28 +236,29 @@ namespace AIHelper
 
         private void MainService_Click(object sender, EventArgs e)
         {
+            AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
+            return;
             //MainService.Enabled = false;
 
-            _mode = 1;
             //_mode = ManageGameUnPacker.GetModeValue();
 
-            switch (_mode)
-            {
-                case 0:
-                    //ManageGameUnPacker.CompressingMode();
-                    break;
+            //switch (_mode)
+            //{
+            //    case 0:
+            //        //ManageGameUnPacker.CompressingMode();
+            //        break;
 
-                case 1:
-                    AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
-                    break;
+            //    case 1:
+            //        AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
+            //        break;
 
-                case 2:
-                    //ManageGameUnPacker.ExtractingMode();
-                    break;
+            //    case 2:
+            //        //ManageGameUnPacker.ExtractingMode();
+            //        break;
 
-                default:
-                    break;
-            }
+            //    default:
+            //        break;
+            //}
 
             //MainService.Enabled = true;
         }

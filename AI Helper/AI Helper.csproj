@@ -351,7 +351,7 @@
   <ItemGroup>
     <PackageReference Include="Costura.Fody">
       <Version>5.5.0</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <!-- <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets> -->
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="CRC.Fast.Net">

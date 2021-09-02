@@ -183,8 +183,6 @@ namespace AIHelper.Manage
         {
             string[,] bepInExFilesPaths = GameData.CurrentGame.GetObjectsForMove();
 
-            var done = false;
-
             int bepInExFilesPathsLength = bepInExFilesPaths.Length / 2;
             for (int i = 0; i < bepInExFilesPathsLength; i++)
             {
@@ -249,7 +247,6 @@ namespace AIHelper.Manage
                         Directory.CreateDirectory(Path.GetDirectoryName(targetFilePath));
 
                         File.Copy(sourceFilePath, targetFilePath);
-                        done = true;
                     }
                     catch (Exception ex)
                     {

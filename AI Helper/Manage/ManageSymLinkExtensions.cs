@@ -48,11 +48,13 @@ namespace AIHelper.Manage
             //ссылка вообще существует
             if (File.Exists(symlinkPath))
             {
-                return new FileInfo(symlinkPath).IsValidSymlink(linkTargetPath);
+                var i = new FileInfo(symlinkPath);
+                return i.IsSymlink() && i.IsValidSymlink(linkTargetPath);
             }
             else if (Directory.Exists(symlinkPath))
             {
-                return new DirectoryInfo(symlinkPath).IsValidSymlink(linkTargetPath);
+                var i = new FileInfo(symlinkPath);
+                return i.IsSymlink() && i.IsValidSymlink(linkTargetPath);
             }
 
             return false;
@@ -321,15 +323,11 @@ namespace AIHelper.Manage
             {
                 if (oType != ObjectType.NotDefined && !File.Exists(objectFileDirPath))
                 {
-                    if (Directory.Exists(objectPath = ManageModOrganizer.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(objectFileDirPath, true)))
-                    {
-                    }
-                    else
+                    if (!Directory.Exists(objectPath = ManageModOrganizer.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(objectFileDirPath, true)))
                     {
                         Directory.CreateDirectory(objectFileDirPath);
                     }
                 }
-
 
                 // NOTE
                 // here is exist problem when for example from disc D: was created symlink for dir "Data" on disc C:
@@ -337,11 +335,19 @@ namespace AIHelper.Manage
                 // and Directory.Exists will be true the link can be not able to be opened with explorer or will throw
                 // exception for methods like Directory.GetFiles
                 var di = new DirectoryInfo(symlinkPath);
-                if ((objectPath != symlinkPath && !Directory.Exists(symlinkPath)) || (di.IsSymlink() && !di.IsValidSymlink()))
+                bool IsInvalidSymlink = false;
+                if ((objectPath != symlinkPath && !Directory.Exists(symlinkPath)) || (IsInvalidSymlink=(di.IsSymlink() && !di.IsValidSymlink())))
                 {
-                    if (Directory.Exists(symlinkPath) && symlinkPath.IsNullOrEmptyDirectory())
+                    if (Directory.Exists(symlinkPath))
                     {
-                        Directory.Delete(symlinkPath);
+                        if(IsInvalidSymlink || symlinkPath.IsNullOrEmptyDirectory())
+                        {
+                            Directory.Delete(symlinkPath);
+                        }
+                        else
+                        {
+                            di.MoveAll(new DirectoryInfo(objectPath));
+                        }
                     }
 
                     CheckParentDirForSymLink(symlinkPath);
@@ -389,7 +395,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool IsValidSymlinkTargetEquals(this DirectoryInfo symlink, string requiredTargetPath)
         {
-            return symlink.IsValidSymlink() && symlink.GetSymlinkTarget() == requiredTargetPath;
+            return symlink.IsSymlink() && symlink.IsValidSymlink() && symlink.GetSymlinkTarget() == requiredTargetPath;
         }
 
         /// <summary>

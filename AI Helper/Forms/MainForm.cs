@@ -2685,19 +2685,26 @@ namespace AIHelper
             progressForm.Text = T._("Sorting") + ":" + "Sideloader ModPack - Community UserData";
             SortCommunityUserDataPack();
 
-            //clean empty dirs
-            ManageFilesFolders.DeleteEmptySubfolders(ManageSettings.GetOverwriteFolder(), false);
+            AfterZipmodsUpdateCleanDirs();
 
             progressForm.Dispose();
-
-            progressForm.Text = T._("Cleaning KKManager temp dir");
-            // clean temp dir
-            CleanKKManagerTempDir();
         }
 
-        private static void CleanKKManagerTempDir()
+        private static void AfterZipmodsUpdateCleanDirs()
         {
-            var tempDir = new DirectoryInfo(Path.Combine(ManageSettings.GetOverwriteFolder(), "temp"));
+            foreach (var sortingDirPath in ManageSettings.GetKKManagerUpdateSortDirs())
+            {
+                //clean empty dirs
+                ManageFilesFolders.DeleteEmptySubfolders(sortingDirPath, false);
+
+                // clean temp dir
+                CleanKKManagerTempDir(sortingDirPath);
+            }
+        }
+
+        private static void CleanKKManagerTempDir(string targetDir)
+        {
+            var tempDir = new DirectoryInfo(Path.Combine(targetDir, "temp"));
             if (tempDir.Exists)
             {
                 try
@@ -2712,49 +2719,53 @@ namespace AIHelper
         {
             //sort community userdata
             var communityUserDataPack = new DirectoryInfo(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "Sideloader ModPack - Community UserData"));
-            var charaDir = new DirectoryInfo(Path.Combine(ManageSettings.GetOverwriteFolder(), "UserData", "chara"));
-            if (!charaDir.Exists)
-            {
-                return;
-            }
 
-            foreach (var genderDirName in new[] { "female", "male" })
+            foreach (var sortingDirPath in ManageSettings.GetKKManagerUpdateSortDirs())
             {
-                var genderDir = new DirectoryInfo(Path.Combine(charaDir.FullName, genderDirName));
-                if (!genderDir.Exists)
+                var charaDir = new DirectoryInfo(Path.Combine(sortingDirPath, "UserData", "chara"));
+                if (!charaDir.Exists)
                 {
-                    continue;
+                    return;
                 }
 
-                foreach (var charaCommunityDir in genderDir.EnumerateDirectories("[Community] *"))
+                foreach (var genderDirName in new[] { "female", "male" })
                 {
-                    foreach (var charaFile in charaCommunityDir.EnumerateFiles("*.*", searchOption: SearchOption.AllDirectories))
+                    var genderDir = new DirectoryInfo(Path.Combine(charaDir.FullName, genderDirName));
+                    if (!genderDir.Exists)
+                    {
+                        continue;
+                    }
+
+                    foreach (var charaCommunityDir in genderDir.EnumerateDirectories("[Community] *"))
+                    {
+                        foreach (var charaFile in charaCommunityDir.EnumerateFiles("*.*", searchOption: SearchOption.AllDirectories))
+                        {
+                            try
+                            {
+                                var targetPath = new FileInfo(charaFile.FullName.Replace(sortingDirPath, communityUserDataPack.FullName));
+
+                                MoveSideloaderPackFile(charaFile, targetPath);
+                            }
+                            catch (Exception ex)
+                            {
+                                ManageLogs.Log("Failed to sort chara card: " + charaFile.FullName + "\r\nerror:\r\n" + ex);
+                            }
+                        }
+                    }
+
+                    var infoFile = new FileInfo(Path.Combine(genderDir.FullName, "Want your cards or scenes in BetterRepack.txt"));
+                    if (infoFile.Exists)
                     {
                         try
                         {
-                            var targetPath = new FileInfo(charaFile.FullName.Replace(ManageSettings.GetOverwriteFolder(), communityUserDataPack.FullName));
+                            var targetPath = new FileInfo(infoFile.FullName.Replace(sortingDirPath, communityUserDataPack.FullName));
 
-                            MoveSideloaderPackFile(charaFile, targetPath);
+                            MoveSideloaderPackFile(infoFile, targetPath);
                         }
                         catch (Exception ex)
                         {
-                            ManageLogs.Log("Failed to sort chara card: " + charaFile.FullName + "\r\nerror:\r\n" + ex);
+                            ManageLogs.Log("Failed to sort chara card: " + infoFile.FullName + "\r\nerror:\r\n" + ex);
                         }
-                    }
-                }
-
-                var infoFile = new FileInfo(Path.Combine(genderDir.FullName, "Want your cards or scenes in BetterRepack.txt"));
-                if (infoFile.Exists)
-                {
-                    try
-                    {
-                        var targetPath = new FileInfo(infoFile.FullName.Replace(ManageSettings.GetOverwriteFolder(), communityUserDataPack.FullName));
-
-                        MoveSideloaderPackFile(infoFile, targetPath);
-                    }
-                    catch (Exception ex)
-                    {
-                        ManageLogs.Log("Failed to sort chara card: " + infoFile.FullName + "\r\nerror:\r\n" + ex);
                     }
                 }
             }
@@ -2783,11 +2794,7 @@ namespace AIHelper
 
         private static void SortZipmodsPacks(ZipmodGUIIds zipmodsGuidList, Form progressForm, ProgressBar pBar)
         {
-            foreach (var sortingDirPath in new[] {
-                ManageSettings.GetOverwriteFolder()
-                ,
-                Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ManageSettings.KKManagerFilesModName())
-                })
+            foreach (var sortingDirPath in ManageSettings.GetKKManagerUpdateSortDirs())
             {
 
                 var sortingDir = new DirectoryInfo(Path.Combine(sortingDirPath, "mods"));

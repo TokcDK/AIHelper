@@ -1559,5 +1559,19 @@ namespace AIHelper.Manage
         {
             return "[General]\r\ncategory=\"\"\r\nversion=0.0.0.0\r\ngameName=" + GetMoCurrentGameName() + "\r\nnotes=\"\"\r\nvalidated=true\r\nnewestVersion=\r\nignoredVersion=\r\ninstallationFile=\r\nrepository=\r\nmodid=-1\r\ncomments=\r\nnexusDescription=\r\nurl=\r\nhasCustomURL=false\r\nnexusFileStatus=1\r\nlastNexusQuery=\r\nlastNexusUpdate=\r\nnexusLastModified=2021-08-29T18:55:44Z\r\nconverted=false\r\ncolor=@Variant(\0\0\0\x43\0\xff\xff\0\0\0\0\0\0\0\0)\r\ntracked=0";
         }
+
+        /// <summary>
+        /// Dirs where frm need to search kkmanager's created files
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static IEnumerable<string> GetKKManagerUpdateSortDirs()
+        {
+            return new[] {
+                ManageSettings.GetOverwriteFolder()
+                ,
+                Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ManageSettings.KKManagerFilesModName())
+                };
+        }
     }
 }

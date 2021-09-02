@@ -252,7 +252,6 @@
     <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utils\CopyFolder.cs" />
     <Compile Include="Utils\crc32.cs" />
     <Compile Include="Utils\CreateSymlink.cs" />
     <Compile Include="Program.cs" />

@@ -320,7 +320,7 @@ namespace AIHelper.Games
                     var workpath = Path.GetFullPath(Path.Combine(gameMoDirPath, subPath.Key));
                     if (subPath.Value == ManageFilesFolders.ObjectType.Directory && Directory.Exists(altpath) && (!Directory.Exists(workpath) || !ManageFilesFolders.IsAnyFileExistsInTheDir(workpath, allDirectories: true)))
                     {
-                        CopyFolder.CopyAll(altpath, workpath);
+                        ManageFilesFoldersExtensions.CopyAll(altpath, workpath);
                     }
                     else if (subPath.Value == ManageFilesFolders.ObjectType.File && File.Exists(altpath) && !File.Exists(workpath))
                     {

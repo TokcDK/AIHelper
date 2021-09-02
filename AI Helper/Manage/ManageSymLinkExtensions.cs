@@ -65,19 +65,26 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool IsValidSymlink(this FileInfo symlinkPath, string linkTargetPath = null)
         {
-            //ссылка вообще существует
-            if (!symlinkPath.Exists || !symlinkPath.IsSymlink() || !symlinkPath.IsSymbolicLinkValid())
+            try
+            {
+                //ссылка вообще существует
+                if (!symlinkPath.IsSymbolicLinkValid())
+                {
+                    return false;
+                };
+
+                if (linkTargetPath == null)
+                {
+                    return File.Exists(symlinkPath.GetSymlinkTarget());
+                }
+                else
+                {
+                    return symlinkPath.IsSymlinkTargetEquals(linkTargetPath);
+                }
+            }
+            catch (IOException)
             {
                 return false;
-            };
-
-            if (linkTargetPath == null)
-            {
-                return File.Exists(symlinkPath.GetSymlinkTarget());
-            }
-            else
-            {
-                return symlinkPath.IsSymlinkTargetEquals(linkTargetPath);
             }
         }
 
@@ -88,19 +95,26 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool IsValidSymlink(this DirectoryInfo symlinkPath, string linkTargetPath = null)
         {
-            //ссылка вообще существует
-            if (!symlinkPath.Exists || !symlinkPath.IsSymlink() || !symlinkPath.IsSymbolicLinkValid())
+            try
+            {
+                //ссылка вообще существует
+                if (!symlinkPath.IsSymbolicLinkValid())
+                {
+                    return false;
+                };
+
+                if (linkTargetPath == null)
+                {
+                    return Directory.Exists(symlinkPath.GetSymlinkTarget());
+                }
+                else
+                {
+                    return symlinkPath.IsSymlinkTargetEquals(linkTargetPath);
+                }
+            }
+            catch (IOException)
             {
                 return false;
-            };
-
-            if (linkTargetPath == null)
-            {
-                return Directory.Exists(symlinkPath.GetSymlinkTarget());
-            }
-            else
-            {
-                return symlinkPath.IsSymlinkTargetEquals(linkTargetPath);
             }
         }
 
@@ -302,7 +316,8 @@ namespace AIHelper.Manage
                     return true;
                 }
             }
-            else if ((oType == ObjectType.NotDefined && Directory.Exists(objectPath = ManageModOrganizer.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(objectFileDirPath, true))) || oType == ObjectType.Dir)
+            else if ((oType == ObjectType.NotDefined && Directory.Exists(objectPath = ManageModOrganizer.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(objectFileDirPath, true)))
+                || oType == ObjectType.Dir)
             {
                 if (oType != ObjectType.NotDefined && !File.Exists(objectFileDirPath))
                 {
@@ -322,12 +337,7 @@ namespace AIHelper.Manage
                 // and Directory.Exists will be true the link can be not able to be opened with explorer or will throw
                 // exception for methods like Directory.GetFiles
                 var di = new DirectoryInfo(symlinkPath);
-                bool b1 = (objectPath != symlinkPath && !Directory.Exists(symlinkPath));
-                bool issm = di.IsSymlink();
-                bool isvsm = di.IsValidSymlink();
-
-                bool b2 = (issm && !isvsm);
-                if (b1 || b2)
+                if ((objectPath != symlinkPath && !Directory.Exists(symlinkPath)) || (di.IsSymlink() && !di.IsValidSymlink()))
                 {
                     if (Directory.Exists(symlinkPath) && symlinkPath.IsNullOrEmptyDirectory())
                     {

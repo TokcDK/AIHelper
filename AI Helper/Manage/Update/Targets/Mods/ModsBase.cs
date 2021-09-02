@@ -45,7 +45,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
             };
         }
 
-        internal override string[] RestorePathsListExtra()        
+        internal override string[] RestorePathsListExtra()
         {
             string[,] objectLinkPaths = GameData.CurrentGame.GetDirLinkPaths();
 

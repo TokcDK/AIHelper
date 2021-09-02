@@ -1,5 +1,4 @@
-﻿using AIHelper.Games;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace AIHelper.Games
 {

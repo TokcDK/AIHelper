@@ -1,5 +1,4 @@
-﻿using INIFileMan;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,7 +25,7 @@ namespace AIHelper.Manage.Rules.ModList
 
             var metaNotes = ini.GetKey("General", "notes");
 
-            return metaNotes!=null && metaNotes.Contains("mlinfo::");
+            return metaNotes != null && metaNotes.Contains("mlinfo::");
         }
 
         internal override string Description()
@@ -65,7 +64,7 @@ namespace AIHelper.Manage.Rules.ModList
                 //need to think about section and key names
                 if (ini.SectionExistsAndNotEmpty(ManageSettings.AiMetaIniSectionName()))
                 {
-                    if(ini.KeyExists(ManageSettings.AiMetaIniKeyModlistRulesInfoName(), ManageSettings.AiMetaIniSectionName()))
+                    if (ini.KeyExists(ManageSettings.AiMetaIniKeyModlistRulesInfoName(), ManageSettings.AiMetaIniSectionName()))
                     {
                         mlinfo = ini.GetKey(ManageSettings.AiMetaIniSectionName(), ManageSettings.AiMetaIniKeyModlistRulesInfoName());
                     }

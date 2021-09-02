@@ -65,7 +65,7 @@ namespace AIHelper.Manage
             {
                 if (dir.IsSymlink())
                 {
-                    if(!dir.IsValidSymlink())
+                    if (!dir.IsValidSymlink())
                     {
                         dir.Delete(); // remove invalid symlink
                         return;

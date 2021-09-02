@@ -19,7 +19,7 @@ namespace AIHelper.Manage.Update.Targets.Mods.ModsMetaUrl
 
         internal override string StartsWith()
         {
-            if(File.Exists(Path.Combine(Modinfo.Moddir.FullName, "BepInEx", "plugins", "XUnity.AutoTranslator", "XUnity.AutoTranslator.Plugin.Core.dll")))
+            if (File.Exists(Path.Combine(Modinfo.Moddir.FullName, "BepInEx", "plugins", "XUnity.AutoTranslator", "XUnity.AutoTranslator.Plugin.Core.dll")))
             {
                 return "XUnity.AutoTranslator-BepIn-5x-";
             }

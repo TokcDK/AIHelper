@@ -1,8 +1,6 @@
 ﻿using AIHelper.Manage;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -265,7 +263,7 @@ namespace AIHelper.Install.UpdateMaker
 
             path.CopyAll(targetPath);
 
-            if(subPath== "GameUserData")
+            if (subPath == "GameUserData")
             {
 
             }

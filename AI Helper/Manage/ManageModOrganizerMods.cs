@@ -627,7 +627,7 @@ namespace AIHelper.Manage
 
             if (modPath != null &&
                 (string.Equals(Path.GetFileName(modPath), Path.GetFileName(ManageSettings.GetCurrentGameModsDirPath()), StringComparison.InvariantCultureIgnoreCase)//temp debug check
-                                                                                                                                                                 //|| string.Equals(Path.GetFileName(modPath), Path.GetFileName(ManageSettings.GetOverwriteFolder()), StringComparison.InvariantCultureIgnoreCase)
+                                                                                                                                                                    //|| string.Equals(Path.GetFileName(modPath), Path.GetFileName(ManageSettings.GetOverwriteFolder()), StringComparison.InvariantCultureIgnoreCase)
                 )
                 )
             {

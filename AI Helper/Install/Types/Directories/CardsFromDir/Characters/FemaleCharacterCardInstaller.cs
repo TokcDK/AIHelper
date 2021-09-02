@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace AIHelper.Install.Types.Directories.CardsFromDir.Characters
+﻿namespace AIHelper.Install.Types.Directories.CardsFromDir.Characters
 {
     /// <summary>
     /// папка с женскими карточками внутри

@@ -48,7 +48,7 @@ namespace AIHelper.Manage.Rules.MetaIniFixes
                     ini.SetKey(ManageSettings.AiMetaIniSectionName(), pattern[1], infoValue, false);
 
                     modlistData.Report.Add(Path.GetFileName(mod) + ": " + T._("moved meta ini info from notes in ini key") + " " + pattern[1]);
-                    
+
                     metainiinfomoved = true;
                     metanotes = metanotes.Replace(info.Value, "");//remove info from notes after it was set to ini key
                 }

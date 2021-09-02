@@ -1,7 +1,5 @@
 ﻿using AIHelper.Forms.Other;
-using System.Drawing;
 using System.IO;
-using System.Windows.Forms;
 
 namespace AIHelper.Install.Types.Directories
 {

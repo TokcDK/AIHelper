@@ -2625,7 +2625,7 @@ namespace AIHelper
 
                     ManageModOrganizer.InsertMod(
                         modname: ManageSettings.KKManagerFilesModName(),
-                        modAfterWhichInsert:"Low priority"
+                        modAfterWhichInsert: "Low priority"
                         );
                 }
 

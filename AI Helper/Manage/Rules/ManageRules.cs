@@ -1,10 +1,8 @@
 ﻿using AIHelper.Manage.Rules.MetaIniFixes;
 using AIHelper.Manage.Rules.ModList;
-using INIFileMan;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace AIHelper.Manage

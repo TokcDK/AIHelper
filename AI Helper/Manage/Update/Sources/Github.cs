@@ -214,7 +214,7 @@ namespace AIHelper.Manage.Update.Sources
                         link2File = Regex.Match(latestReleasePage, linkPattern);
                     }
 
-                    if(link2File.Success && !Info.VersionFromFile)
+                    if (link2File.Success && !Info.VersionFromFile)
                     {
                         UpdateTools.CleanVersion(ref _gitLatestVersion);
                         UpdateTools.CleanVersion(ref Info.TargetCurrentVersion);
@@ -285,7 +285,7 @@ namespace AIHelper.Manage.Update.Sources
             catch (Exception ex)
             {
                 ManageLogs.Log("failed to check update. error:\r\n" + ex);
-                Info.LastErrorText.Append(" >"+ex.Message);
+                Info.LastErrorText.Append(" >" + ex.Message);
             }
 
             return "";

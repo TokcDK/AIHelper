@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AIHelper.Manage
+﻿namespace AIHelper.Manage
 {
     static class ManageArrayExtensions
     {
@@ -15,7 +9,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static string[] Trim(this string[] array)
         {
-            for(int i = 0; i < array.Length; i++)
+            for (int i = 0; i < array.Length; i++)
             {
                 array[i] = array[i].Trim();
             }

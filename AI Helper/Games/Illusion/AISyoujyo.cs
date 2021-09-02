@@ -34,7 +34,7 @@
 
         public override BaseGamePyFileInfo GetBaseGamePyFile()
         {
-            return new BaseGamePyFileInfo ( nameof(Properties.Resources.game_aigirl),  Properties.Resources.game_aigirl );
+            return new BaseGamePyFileInfo(nameof(Properties.Resources.game_aigirl), Properties.Resources.game_aigirl);
         }
     }
 }

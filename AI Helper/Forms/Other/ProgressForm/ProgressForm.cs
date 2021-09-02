@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace AIHelper.Forms.Other
 {
-    class ProgressForm:IDisposable
+    class ProgressForm : IDisposable
     {
         Form _progressForm;
         ProgressBar _progressBar;

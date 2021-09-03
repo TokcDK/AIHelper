@@ -157,10 +157,10 @@ namespace AIHelper.Install.Types.Directories
         private bool ProceedRemove(bool files = true)
         {
             var ret = false;
-            string rootDir = IsRoot ? ManageSettings.GetApplicationStartupPath() : ManageSettings.GetCurrentGameDirPath();
+            string gameDir = ManageSettings.GetCurrentGameDirPath();
             foreach (var SubPath in updateInfo.RemoveDirs.Split(','))
             {
-                var sourcePath = rootDir + Path.DirectorySeparatorChar + SubPath;
+                var sourcePath = gameDir + Path.DirectorySeparatorChar + SubPath;
                 var buckupPath = _bakDir + Path.DirectorySeparatorChar + SubPath;
                 if ((files && File.Exists(sourcePath)) || (!files && Directory.Exists(sourcePath)))
                 {

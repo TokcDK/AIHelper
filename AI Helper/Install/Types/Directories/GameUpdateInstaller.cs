@@ -103,6 +103,24 @@ namespace AIHelper.Install.Types.Directories
                 updated = true;
             }
 
+            // proceed update actions
+            if (ProceedCreateDirs())
+            {
+                updated = true;
+            }
+
+            // proceed update actions
+            if (ProceedCreateFiles())
+            {
+                updated = true;
+            }
+
+            // proceed update actions
+            if (ProceedFixes())
+            {
+                updated = true;
+            }
+
             // clean update info and folder
             //File.Delete(Path.Combine(dir.FullName, _gameUpdateInfoFileName));
             //ManageFilesFolders.DeleteEmptySubfolders(dirPath: dir.FullName, deleteThisDir: true);
@@ -122,9 +140,129 @@ namespace AIHelper.Install.Types.Directories
             return updated;
         }
 
+        private bool ProceedFixes()
+        {
+            return FixIniValues();
+        }
+
+        private bool FixIniValues()
+        {
+            return MetaIniNotesTweaks();
+        }
+
+        private bool MetaIniNotesTweaks()
+        {
+            Dictionary<string, string> modDirNamesValues = new Dictionary<string, string>()
+            {
+                { ManageSettings.KKManagerFilesModName(), ManageSettings.KKManagerFilesNotes()},
+                { "GameUserData", "<!DOCTYPE HTML PUBLIC \\\"-//W3C//DTD HTML 4.0//EN\\\" \\\"http://www.w3.org/TR/REC-html40/strict.dtd\\\">\\n<html><head><meta name=\\\"qrichtext\\\" content=\\\"1\\\" /><style type=\\\"text/css\\\">\\np, li { white-space: pre-wrap; }\\n</style></head><body style=\\\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\\\">\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">New files created by the game will be stored here. Saves, plugins configs and other.</p>\\n<p style=\\\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\"><br /></p>\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">\\x41d\\x43e\\x432\\x44b\\x435 \\x444\\x430\\x439\\x43b\\x44b \\x441\\x43e\\x437\\x434\\x430\\x43d\\x43d\\x44b\\x435 \\x438\\x433\\x440\\x43e\\x439 \\x431\\x443\\x434\\x443\\x442 \\x434\\x43e\\x431\\x430\\x432\\x43b\\x44f\\x442\\x44c\\x441\\x44f \\x441\\x44e\\x434\\x430. \\x421\\x43e\\x445\\x440\\x430\\x43d\\x435\\x43d\\x438\\x44f, \\x43d\\x430\\x441\\x442\\x440\\x43e\\x439\\x43a\\x438 \\x43f\\x43b\\x430\\x433\\x438\\x43d\\x43e\\x432 \\x438 \\x434\\x440.</p></body></html>"},
+            };
+
+            var ret = false;
+
+            foreach (var modDirNameValue in modDirNamesValues)
+            {
+                var targetDir = new DirectoryInfo(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modDirNameValue.Key));
+                if (targetDir.Exists)
+                {
+                    continue;
+                }
+                var metainiPath = Path.Combine(targetDir.FullName, "meta.ini");
+
+                if (!File.Exists(metainiPath))
+                {
+                    continue;
+                }
+
+                var ini = ManageIni.GetINIFile(metainiPath);
+
+                if (ini.GetKey("General", "notes") != modDirNameValue.Value)
+                {
+                    ini.SetKey("General", "notes", modDirNameValue.Value);
+                    ret = true;
+                    ini.WriteFile();
+                }
+            }
+
+            return ret;
+        }
+
+        private bool ProceedCreateFiles()
+        {
+            return !string.IsNullOrWhiteSpace(updateInfo.CreateFiles) && ProceedCreateRemove(files: true, create: true);
+        }
+
+        private bool ProceedCreateDirs()
+        {
+            return !string.IsNullOrWhiteSpace(updateInfo.CreateDirs) && ProceedCreateRemove(files: false, create: true);
+        }
+
+        private bool ProceedCreateRemove(bool files = true, bool create = true)
+        {
+            var ret = false;
+            string gameDir = ManageSettings.GetCurrentGameDirPath();
+            string value;
+            if (create)
+            {
+                value = (files ? updateInfo.CreateFiles : updateInfo.CreateDirs);
+            }
+            else
+            {
+                value = (files ? updateInfo.RemoveFiles : updateInfo.RemoveDirs);
+            }
+
+            foreach (var subPath in value.Split(','))
+            {
+                if (string.IsNullOrWhiteSpace(subPath))
+                {
+                    continue;
+                }
+
+                var targetPath = gameDir + Path.DirectorySeparatorChar + subPath;
+                if (create)
+                {
+                    if (ProceedCreate(targetPath, files))
+                    {
+                        ret = true;
+                    }
+                }
+                else
+                {
+                    if (ProceedRemove(targetPath, subPath, files))
+                    {
+                        ret = true;
+                    }
+                }
+            }
+
+            return ret;
+        }
+
+        private bool ProceedCreate(string targetPath, bool files = true)
+        {
+            var ret = false;
+
+            if ((files && !File.Exists(targetPath)) || (!files && !Directory.Exists(targetPath)))
+            {
+                if (files)
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
+                    File.WriteAllText(targetPath, "");
+                    ret = true;
+                }
+                else
+                {
+                    Directory.CreateDirectory(targetPath);
+                    ret = true;
+                }
+            }
+
+            return ret;
+        }
+
         private void SetSkipLists()
         {
-            if (updateInfo.SkipExistDirs.Length > 0 && updateInfo.SkipExistDirs.IndexOf(",") != -1)
+            if (!string.IsNullOrWhiteSpace(updateInfo.SkipExistDirs))
             {
                 _skipExistDirs = updateInfo.SkipExistDirs.Split(',').ToHashSet();
             }
@@ -132,7 +270,7 @@ namespace AIHelper.Install.Types.Directories
             {
                 _skipExistDirs = new HashSet<string>();
             }
-            if (updateInfo.SkipExistFiles.Length > 0 && updateInfo.SkipExistFiles.IndexOf(",") != -1)
+            if (!string.IsNullOrWhiteSpace(updateInfo.SkipExistFiles))
             {
                 _skipExistFiles = updateInfo.SkipExistFiles.Split(',').ToHashSet();
             }
@@ -175,35 +313,31 @@ namespace AIHelper.Install.Types.Directories
 
         private bool ProceedRemoveFiles()
         {
-            return updateInfo.RemoveFiles.Length > 0 && ProceedRemove();
+            return !string.IsNullOrWhiteSpace(updateInfo.RemoveFiles) && ProceedCreateRemove(files: true, create: false);
         }
 
         private bool ProceedRemoveDirs()
         {
-            return updateInfo.RemoveDirs.Length > 0 && ProceedRemove(false);
+            return !string.IsNullOrWhiteSpace(updateInfo.RemoveDirs) && ProceedCreateRemove(files: false, create: false);
         }
 
-        private bool ProceedRemove(bool files = true)
+        private bool ProceedRemove(string targetPath, string subPath, bool files = true)
         {
             var ret = false;
-            string gameDir = ManageSettings.GetCurrentGameDirPath();
-            foreach (var SubPath in updateInfo.RemoveDirs.Split(','))
+
+            var buckupPath = _bakDir + Path.DirectorySeparatorChar + subPath;
+            if ((files && File.Exists(targetPath)) || (!files && Directory.Exists(targetPath)))
             {
-                var sourcePath = gameDir + Path.DirectorySeparatorChar + SubPath;
-                var buckupPath = _bakDir + Path.DirectorySeparatorChar + SubPath;
-                if ((files && File.Exists(sourcePath)) || (!files && Directory.Exists(sourcePath)))
+                Directory.CreateDirectory(Path.GetDirectoryName(buckupPath));
+                if (files)
                 {
-                    Directory.CreateDirectory(Path.GetDirectoryName(buckupPath));
-                    if (files)
-                    {
-                        ret = true;
-                        File.Move(sourcePath, buckupPath);
-                    }
-                    else
-                    {
-                        ret = true;
-                        Directory.Move(sourcePath, buckupPath);
-                    }
+                    ret = true;
+                    File.Move(targetPath, buckupPath);
+                }
+                else
+                {
+                    ret = true;
+                    Directory.Move(targetPath, buckupPath);
                 }
             }
 
@@ -381,6 +515,8 @@ namespace AIHelper.Install.Types.Directories
             { nameof(RemoveUnusedSeparators), "true" },
             { nameof(SkipExistDirs), string.Empty },
             { nameof(SkipExistFiles), string.Empty },
+            { nameof(CreateDirs), string.Empty },
+            { nameof(CreateFiles), string.Empty },
         };
 
         /// <summary>
@@ -423,6 +559,15 @@ namespace AIHelper.Install.Types.Directories
         /// List of subpaths for files which must be skipped and not touched if already exist in current game
         /// </summary>
         public string SkipExistFiles { get => _keys[nameof(SkipExistFiles)]; set => _keys[nameof(SkipExistFiles)] = value; }
+
+        /// <summary>
+        /// Dirs which must be created after update
+        /// </summary>
+        public string CreateDirs { get => _keys[nameof(CreateDirs)]; set => _keys[nameof(CreateDirs)] = value; }
+        /// <summary>
+        /// Files which must be created after update
+        /// </summary>
+        public string CreateFiles { get => _keys[nameof(CreateFiles)]; set => _keys[nameof(CreateFiles)] = value; }
 
         public GameUpdateInfo(string updateInfoPath)
         {

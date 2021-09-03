@@ -164,25 +164,32 @@ namespace AIHelper.Install.Types.Directories
 
             foreach (var modDirNameValue in modDirNamesValues)
             {
-                var targetDir = new DirectoryInfo(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modDirNameValue.Key));
-                if (targetDir.Exists)
+                try
                 {
-                    continue;
+                    var targetDir = new DirectoryInfo(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modDirNameValue.Key));
+                    if (targetDir.Exists)
+                    {
+                        continue;
+                    }
+                    var metainiPath = Path.Combine(targetDir.FullName, "meta.ini");
+
+                    if (!File.Exists(metainiPath))
+                    {
+                        continue;
+                    }
+
+                    var ini = ManageIni.GetINIFile(metainiPath);
+
+                    if (ini.GetKey("General", "notes") != "\"" + modDirNameValue.Value + "\"")
+                    {
+                        ini.SetKey("General", "notes", "\"" + modDirNameValue.Value + "\"");
+                        ini.WriteFile();
+                        ret = true;
+                    }
                 }
-                var metainiPath = Path.Combine(targetDir.FullName, "meta.ini");
-
-                if (!File.Exists(metainiPath))
+                catch (Exception ex)
                 {
-                    continue;
-                }
-
-                var ini = ManageIni.GetINIFile(metainiPath);
-
-                if (ini.GetKey("General", "notes") != "\"" + modDirNameValue.Value + "\"")
-                {
-                    ini.SetKey("General", "notes", "\"" + modDirNameValue.Value + "\"");
-                    ret = true;
-                    ini.WriteFile();
+                    ManageLogs.Log("Failed to apply notes default value. Mod name:" + modDirNameValue.Value + "\r\nError:" + ex);
                 }
             }
 
@@ -220,20 +227,27 @@ namespace AIHelper.Install.Types.Directories
                     continue;
                 }
 
-                var targetPath = gameDir + Path.DirectorySeparatorChar + subPath;
-                if (create)
+                try
                 {
-                    if (ProceedCreate(targetPath, files))
+                    var targetPath = gameDir + Path.DirectorySeparatorChar + subPath;
+                    if (create)
                     {
-                        ret = true;
+                        if (ProceedCreate(targetPath, files))
+                        {
+                            ret = true;
+                        }
+                    }
+                    else
+                    {
+                        if (ProceedRemove(targetPath, subPath, files))
+                        {
+                            ret = true;
+                        }
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    if (ProceedRemove(targetPath, subPath, files))
-                    {
-                        ret = true;
-                    }
+                    ManageLogs.Log("Failed to " + (create ? "create" : "remove") + " " + (files ? "file" : "dir") + ". SubPath:" + subPath + "\r\nError:" + ex);
                 }
             }
 

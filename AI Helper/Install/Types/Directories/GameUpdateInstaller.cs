@@ -217,7 +217,7 @@ namespace AIHelper.Install.Types.Directories
                 value = (files ? updateInfo.RemoveFiles : updateInfo.RemoveDirs);
             }
 
-            foreach (var subPath in value.Split(','))
+            foreach (var subPath in value.Split(new[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries))
             {
                 if (string.IsNullOrWhiteSpace(subPath))
                 {
@@ -277,7 +277,7 @@ namespace AIHelper.Install.Types.Directories
         {
             if (!string.IsNullOrWhiteSpace(updateInfo.SkipExistDirs))
             {
-                _skipExistDirs = updateInfo.SkipExistDirs.Split(',').ToHashSet();
+                _skipExistDirs = updateInfo.SkipExistDirs.Split(new[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries).ToHashSet();
             }
             else
             {
@@ -285,7 +285,7 @@ namespace AIHelper.Install.Types.Directories
             }
             if (!string.IsNullOrWhiteSpace(updateInfo.SkipExistFiles))
             {
-                _skipExistFiles = updateInfo.SkipExistFiles.Split(',').ToHashSet();
+                _skipExistFiles = updateInfo.SkipExistFiles.Split(new[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries).ToHashSet();
             }
             else
             {

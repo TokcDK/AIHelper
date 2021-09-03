@@ -1117,6 +1117,11 @@ namespace AIHelper
 
         private void AIHelper_LocationChanged(object sender, EventArgs e)
         {
+            if (GameData.CurrentGame == null)
+            {
+                return;
+            }
+
             //move second form with main form
             //https://stackoverflow.com/questions/3429445/how-to-move-two-windows-forms-together
             if (_linksForm == null || _linksForm.IsDisposed)
@@ -2484,6 +2489,11 @@ namespace AIHelper
 
         private void AI_Helper_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (GameData.CurrentGame == null)
+            {
+                return;
+            }
+
             try
             {
                 //write last game folder name

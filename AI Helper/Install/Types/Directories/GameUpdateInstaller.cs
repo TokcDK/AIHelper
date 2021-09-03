@@ -61,13 +61,36 @@ namespace AIHelper.Install.Types.Directories
             Directory.CreateDirectory(_bakDir);
 
             // proceed update actions
-            if (   ProceedUpdateMods()
-                || ProceedUpdateData()
-                || ProceedUpdateMO()
-                || ProceedRemoveDirs()
-                || ProceedRemoveFiles()
-                || ProceedRemoveUnusedSeparators()
-                )
+            if (ProceedUpdateMods())
+            {
+                updated = true;
+            }
+            // proceed update actions
+            if (ProceedUpdateData())
+            {
+                updated = true;
+            }
+
+            // proceed update actions
+            if (ProceedUpdateMO())
+            {
+                updated = true;
+            }
+
+            // proceed update actions
+            if (ProceedRemoveDirs())
+            {
+                updated = true;
+            }
+
+            // proceed update actions
+            if (ProceedRemoveFiles())
+            {
+                updated = true;
+            }
+
+            // proceed update actions
+            if (ProceedRemoveUnusedSeparators())
             {
                 updated = true;
             }
@@ -95,7 +118,7 @@ namespace AIHelper.Install.Types.Directories
             var bakModsDirPath = Path.Combine(_bakDir, "Mods");
 
             var ret = false;
-            foreach(var separator in new DirectoryInfo(ManageSettings.GetCurrentGameModsDirPath()).GetFiles("*_separator"))
+            foreach(var separator in new DirectoryInfo(ManageSettings.GetCurrentGameModsDirPath()).GetDirectories("*_separator"))
             {
                 if (!modlist.ItemByName.ContainsKey(separator.Name))
                 {

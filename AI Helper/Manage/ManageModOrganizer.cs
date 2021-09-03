@@ -1968,17 +1968,19 @@ namespace AIHelper.Manage
         /// Can be set <paramref name="isDir"/> if object path is directory (file path by default).
         /// Can be set <paramref name="onlyEnabled"/> to determine if need to search only in enabled or all mods.
         /// </summary>
-        /// <param name="inputPath"></param>
-        /// <param name="isDir"></param>
-        /// <param name="onlyEnabled"></param>
-        /// <returns></returns>
-        public static string GetLastPath(string inputPath, bool isDir = false, bool onlyEnabled = true)
+        /// <param name="inputPath">input path to dir or file</param>
+        /// <param name="isDir">search dir else file</param>
+        /// <param name="onlyEnabled">find only in enabled mods</param>
+        /// <param name="tryFindWithContent">try to find not empty dir</param>
+        /// <returns>Path in mod with hightest priority. When <paramref name="isDir"/> and <paramref name="tryFindWithContent"/> will try to find not empty dir. When not found will return <paramref name="inputPath"/></returns>
+        public static string GetLastPath(string inputPath, bool isDir = false, bool onlyEnabled = true, bool tryFindWithContent = false)
         {
             if (string.IsNullOrWhiteSpace(inputPath))
             {
                 return inputPath;
             }
 
+            string firstFoundPath = string.Empty;
             try
             {
                 string modsOverwrite = inputPath.Contains(ManageSettings.GetCurrentGameMoOverwritePath()) ? ManageSettings.GetCurrentGameMoOverwritePath() : ManageSettings.GetCurrentGameModsDirPath();
@@ -2019,11 +2021,20 @@ namespace AIHelper.Manage
 
                 //check in Overwrite 1st
                 string overwritePath = ManageSettings.GetCurrentGameMoOverwritePath() + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
+
                 if (isDir)
                 {
                     if (Directory.Exists(overwritePath))
                     {
-                        return overwritePath;
+                        if (tryFindWithContent)
+                        {
+                            // set found path
+                            firstFoundPath = overwritePath;
+                        }
+                        else
+                        {
+                            return overwritePath;
+                        }
                     }
                 }
                 else
@@ -2034,7 +2045,7 @@ namespace AIHelper.Manage
                     }
                 }
 
-                //поиск по списку активных модов
+                //поиск по списку модов
                 string modsPath = ManageSettings.GetCurrentGameModsDirPath();
                 var modNames = GetModNamesListFromActiveMoProfile(onlyEnabled);
                 foreach (var modName in modNames)
@@ -2044,7 +2055,19 @@ namespace AIHelper.Manage
                     {
                         if (Directory.Exists(possiblePath))
                         {
-                            return possiblePath;
+                            if (tryFindWithContent && possiblePath.IsEmptyDir())
+                            {
+                                if (firstFoundPath.Length == 0)
+                                {
+                                    // set found path if not set
+                                    firstFoundPath = possiblePath;
+                                }
+                                continue;
+                            }
+                            else
+                            {
+                                return possiblePath;
+                            }
                         }
                     }
                     else
@@ -2060,7 +2083,7 @@ namespace AIHelper.Manage
             {
             }
 
-            return inputPath;
+            return firstFoundPath.Length > 0 ? firstFoundPath : inputPath;
         }
 
         /// <summary>

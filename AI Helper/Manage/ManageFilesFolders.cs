@@ -47,6 +47,29 @@ namespace AIHelper.Manage
         }
 
         /// <summary>
+        /// check if dir is empty. No any dirs or files inside.
+        /// </summary>
+        /// <param name="dirPath"></param>
+        /// <param name="Mask"></param>
+        /// <param name="allDirectories"></param>
+        /// <returns></returns>
+        public static bool IsEmptyDir(this string dirPath)
+        {
+            return dirPath.IsNullOrEmptyDirectory(mask: "*", searchForDirs: true, searchForFiles: true, recursive: false);
+        }
+        /// <summary>
+        /// check if dir is empty. No any dirs or files inside.
+        /// </summary>
+        /// <param name="dirPath"></param>
+        /// <param name="Mask"></param>
+        /// <param name="allDirectories"></param>
+        /// <returns></returns>
+        public static bool IsEmpty(this DirectoryInfo dirPath)
+        {
+            return dirPath.FullName.IsEmptyDir();
+        }
+
+        /// <summary>
         /// will delete empty folders
         /// </summary>
         /// <param name="dirPath"></param>

@@ -122,7 +122,9 @@ namespace AIHelper.Manage
             int objectLinkPathsLength = objectLinkPaths.Length / 2;
             for (int i = 0; i < objectLinkPathsLength; i++)
             {
-                var objectPath = new DirectoryInfo(ManageModOrganizer.GetLastPath(objectLinkPaths[i, 0], isDir: true));
+                // try to find last not empty dir path
+                var objectPath = new DirectoryInfo(ManageModOrganizer.GetLastPath(objectLinkPaths[i, 0], isDir: true, tryFindWithContent: true)); ;
+                
                 var linkPath = new DirectoryInfo(objectLinkPaths[i, 1]);
 
                 if (removeLinks)

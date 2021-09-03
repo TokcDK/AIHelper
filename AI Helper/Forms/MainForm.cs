@@ -2630,13 +2630,13 @@ namespace AIHelper
                         categoryNames: "",
                         version: "1.0",
                         comments: "",
-                        //notes: T._("KKManager's and it's Standalone Updater's new created files stored here")
-                        notes: ManageSettings.KKManagerFilesNotes()
+                        notes: T._("KKManager's and it's Standalone Updater's new created files stored here").ToHex()
+                        //notes: ManageSettings.KKManagerFilesNotes()
                         );
 
                     ManageModOrganizer.InsertMod(
                         modname: ManageSettings.KKManagerFilesModName(),
-                        modAfterWhichInsert: "Low priority"
+                        modAfterWhichInsert: "Low priority_separator"
                         );
                 }
 

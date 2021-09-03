@@ -1,10 +1,34 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 
 namespace AIHelper.Manage
 {
     internal static class ManageStringsExtensions
     {
+        //https://www.delftstack.com/howto/csharp/csharp-convert-string-to-hex/
+        /// <summary>
+        /// Convert string to hexed string
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
+        internal static string ToHex(this string inputString)
+        {
+            return @"\x" + string.Join(@"\x",
+                   inputString.Select(c => string.Format("{0:X2}", Convert.ToInt32(c))));
+        }
+
+        /// <summary>
+        /// Convert hexed string to normal string
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
+        internal static string UnHex(string inputString)
+        {
+            return System.Net.WebUtility.HtmlDecode(inputString);
+        }
+
         /// <summary>
         /// check if path is long and can cause standart io operations errors.
         /// if path is long, will be added prefix "\\?\" for long paths.

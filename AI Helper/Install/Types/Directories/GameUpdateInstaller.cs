@@ -167,20 +167,17 @@ namespace AIHelper.Install.Types.Directories
                 try
                 {
                     var targetDir = new DirectoryInfo(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modDirNameValue.Key));
-                    if (targetDir.Exists)
+                    if (!targetDir.Exists)
                     {
                         continue;
                     }
-                    var metainiPath = Path.Combine(targetDir.FullName, "meta.ini");
 
-                    if (!File.Exists(metainiPath))
-                    {
-                        continue;
-                    }
+                    var metainiPath = Path.Combine(targetDir.FullName, "meta.ini");
 
                     var ini = ManageIni.GetINIFile(metainiPath);
 
-                    if (ini.GetKey("General", "notes") != "\"" + modDirNameValue.Value + "\"")
+                    var currentValue = ini.GetKey("General", "notes");
+                    if (currentValue != "\"" + modDirNameValue.Value + "\"")
                     {
                         ini.SetKey("General", "notes", "\"" + modDirNameValue.Value + "\"");
                         ini.WriteFile();

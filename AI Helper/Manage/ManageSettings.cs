@@ -1573,5 +1573,26 @@ namespace AIHelper.Manage
                 Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ManageSettings.KKManagerFilesModName())
                 };
         }
+
+        /// <summary>
+        /// Notes for KKManagerFiles mod
+        /// </summary>
+        /// <returns></returns>
+        internal static string KKManagerFilesNotes()
+        {
+            return "<!DOCTYPE HTML PUBLIC \\\"-//W3C//DTD HTML 4.0//EN\\\" \\\"http://www.w3.org/TR/REC-html40/strict.dtd\\\">\\n" +
+                        "<html><head><meta name=\\\"qrichtext\\\" content=\\\"1\\\" /><style type=\\\"text/css\\\">" +
+                        "\\np, li { white-space: pre-wrap; }\\n</style></head><body style=\\\" font-family:'MS Shell Dlg 2';" +
+                        " font-size:8.25pt; font-weight:400; font-style:normal;\\\">" +
+                        "\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;" +
+                        " -qt-block-indent:0; text-indent:0px;\\\">\\x417\\x434\\x435\\x441\\x44c" +
+                        " \\x445\\x440\\x430\\x43d\\x44f\\x442\\x441\\x44f \\x444\\x430\\x439\\x43b\\x44b" +
+                        " \\x441\\x43e\\x437\\x434\\x430\\x43d\\x43d\\x44b\\x435 \\x43f\\x440\\x438" +
+                        " \\x440\\x430\\x431\\x43e\\x442\\x435 KKManager \\x438 \\x432\\x445\\x43e\\x434\\x44f\\x449\\x435\\x439" +
+                        " \\x432 \\x435\\x433\\x43e \\x441\\x43e\\x441\\x442\\x430\\x432" +
+                        " \\x43f\\x440\\x43e\\x433\\x440\\x430\\x43c\\x43c\\x44b" +
+                        " \\x43e\\x431\\x43d\\x43e\\x432\\x43b\\x435\\x43d\\x438\\x44f.</p></body></html>"
+                        );
+        }
     }
 }

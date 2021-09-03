@@ -68,8 +68,6 @@ namespace AIHelper.Install.Types.Directories
             }
             Directory.CreateDirectory(_bakDir);
 
-
-
             // proceed update actions
             if (ProceedUpdateMods())
             {

@@ -63,7 +63,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
         {
             _cfgPath = ManageSettings.GetBepInExCfgFilePath();
             var fullPath = Path.GetFullPath(Path.Combine(_cfgPath, "..", "..", "core", "BepInEx.dll"));
-            var bepInExDllPath = ManageModOrganizer.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(fullPath);
+            var bepInExDllPath = ManageModOrganizer.GetLastPath(fullPath);
             if (File.Exists(bepInExDllPath))
             {
                 var ver = FileVersionInfo.GetVersionInfo(bepInExDllPath).ProductVersion;

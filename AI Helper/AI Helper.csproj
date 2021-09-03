@@ -79,9 +79,6 @@
     <Reference Include="SharpConfig">
       <HintPath>K:\0 Repositories\[TokcDK]\SharpConfig\Src\bin\Release\net461\SharpConfig.dll</HintPath>
     </Reference>
-    <Reference Include="SymbolicLinkSupport">
-      <HintPath>K:\0 Repositories\symboliclinksupport\SymbolicLinkSupport\bin\Release\net35\SymbolicLinkSupport.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression.FileSystem" />
@@ -335,6 +332,10 @@
     <Folder Include="Costura64\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="K:\0GIT\symboliclinksupport\SymbolicLinkSupport\SymbolicLinkSupport.csproj">
+      <Project>{0f629727-5647-4cb0-946a-1ac4442fd8f2}</Project>
+      <Name>SymbolicLinkSupport</Name>
+    </ProjectReference>
     <ProjectReference Include="K:\0GIT\[TokcDK]\LC\LibsCollection\CheckForEmptyDir\CheckForEmptyDir.csproj">
       <Project>{636976fe-5ffe-4e17-bcb1-7b858a78a8a3}</Project>
       <Name>CheckForEmptyDir</Name>

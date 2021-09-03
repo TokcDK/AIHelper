@@ -18,7 +18,7 @@ namespace AIHelper.Manage
 
         public static void CleanBepInExLinksFromData()
         {
-            MousfsLoadingFix(true);
+            MOUSFSLoadingFix(true);
             ////удаление файлов BepinEx
             //ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "doorstop_config.ini"));
             //ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "winhttp.dll"));
@@ -108,7 +108,7 @@ namespace AIHelper.Manage
             }
         }
 
-        public static void MousfsLoadingFix(bool removeLinks = false)
+        public static void MOUSFSLoadingFix(bool removeLinks = false)
         {
             if (!ManageSettings.IsMoMode())
             {
@@ -122,22 +122,30 @@ namespace AIHelper.Manage
             int objectLinkPathsLength = objectLinkPaths.Length / 2;
             for (int i = 0; i < objectLinkPathsLength; i++)
             {
-                var objectPath = objectLinkPaths[i, 0];
-                var linkPath = objectLinkPaths[i, 1];
+                var objectPath = new DirectoryInfo(ManageModOrganizer.GetLastPath(objectLinkPaths[i, 0], isDir: true));
+                var linkPath = new DirectoryInfo(objectLinkPaths[i, 1]);
 
                 if (removeLinks)
                 {
-                    ManageSymLinkExtensions.DeleteIfSymlink(linkPath);
+                    ManageSymLinkExtensions.DeleteIfSymlink(linkPath.FullName);
                 }
                 else
                 {
+                    if (linkPath.IsSymlink())
+                    {
+                        if (linkPath.IsValidSymlink(objectPath.FullName))
+                        {
+                            continue;
+                        }
+                    }
+
                     try
                     {
                         if (ManageSymLinkExtensions.CreateSymlink
                           (
-                           objectPath
+                           objectPath.FullName
                            ,
-                           linkPath
+                           linkPath.FullName
                            ,
                            true
                            ,
@@ -148,13 +156,13 @@ namespace AIHelper.Manage
                         else
                         {
                             // need when dir in data exists and have content, then content will be move to target
-                            ManageFilesFolders.MoveContent(linkPath, objectPath);
+                            ManageFilesFolders.MoveContent(linkPath.FullName, objectPath.FullName);
 
                             ManageSymLinkExtensions.CreateSymlink
                                 (
-                                 objectPath
+                                 objectPath.FullName
                                  ,
-                                 linkPath
+                                 linkPath.FullName
                                  ,
                                  true
                                  ,
@@ -207,7 +215,7 @@ namespace AIHelper.Manage
                     try
                     {
 
-                        sourceFilePath = ManageModOrganizer.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(sourceFilePath);
+                        sourceFilePath = ManageModOrganizer.GetLastPath(sourceFilePath);
 
                         //skip file if source not exists
                         if (!File.Exists(sourceFilePath))

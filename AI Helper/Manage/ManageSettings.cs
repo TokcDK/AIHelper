@@ -1109,7 +1109,7 @@ namespace AIHelper.Manage
             {
                 return Path.Combine(GetBepInExPath(), "BepInEx", "config");
             }
-            return ManageModOrganizer.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(Path.Combine(GetBepInExPath(), "BepInEx", "config"), true);
+            return ManageModOrganizer.GetLastPath(Path.Combine(GetBepInExPath(), "BepInEx", "config"), true);
         }
 
         internal static string GetBepInExCfgFilePath()
@@ -1122,7 +1122,7 @@ namespace AIHelper.Manage
             {
                 return Properties.Settings.Default.BepinExCfgPath;
             }
-            return ManageModOrganizer.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(Path.Combine(GetBepInExCfgDirPath(), "BepInEx.cfg"));
+            return ManageModOrganizer.GetLastPath(Path.Combine(GetBepInExCfgDirPath(), "BepInEx.cfg"));
         }
 
         internal static void SwitchBepInExDisplayedLogLevelValue(CheckBox bepInExConsoleCheckBox, Label bepInExDisplayedLogLevelLabel, bool onlyShow = false, string targetSectionName = "Logging.Console")

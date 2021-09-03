@@ -1944,7 +1944,7 @@ namespace AIHelper.Manage
                             }
                             else
                             {
-                                path = GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(pathCandidate, isDir[d]);
+                                path = GetLastPath(pathCandidate, isDir[d]);
                                 if (!string.IsNullOrWhiteSpace(path) && path != pathCandidate)
                                 {
                                     return path;
@@ -1963,25 +1963,34 @@ namespace AIHelper.Manage
             return path;
         }
 
-        public static string GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(string pathInMods, bool isDir = false, bool onlyEnabled = true)
+        /// <summary>
+        /// Return last path for <paramref name="inputPath"/> in active Mod Organizer game profile.
+        /// Can be set <paramref name="isDir"/> if object path is directory (file path by default).
+        /// Can be set <paramref name="onlyEnabled"/> to determine if need to search only in enabled or all mods.
+        /// </summary>
+        /// <param name="inputPath"></param>
+        /// <param name="isDir"></param>
+        /// <param name="onlyEnabled"></param>
+        /// <returns></returns>
+        public static string GetLastPath(string inputPath, bool isDir = false, bool onlyEnabled = true)
         {
-            if (string.IsNullOrWhiteSpace(pathInMods))
+            if (string.IsNullOrWhiteSpace(inputPath))
             {
-                return pathInMods;
+                return inputPath;
             }
 
             try
             {
-                string modsOverwrite = pathInMods.Contains(ManageSettings.GetCurrentGameMoOverwritePath()) ? ManageSettings.GetCurrentGameMoOverwritePath() : ManageSettings.GetCurrentGameModsDirPath();
+                string modsOverwrite = inputPath.Contains(ManageSettings.GetCurrentGameMoOverwritePath()) ? ManageSettings.GetCurrentGameMoOverwritePath() : ManageSettings.GetCurrentGameModsDirPath();
 
                 //искать путь только для ссылки в Mods или в Data
-                if (!ManageStrings.IsStringAContainsStringB(pathInMods, modsOverwrite) && !ManageStrings.IsStringAContainsStringB(pathInMods, ManageSettings.GetCurrentGameDataPath()))
-                    return pathInMods;
+                if (!ManageStrings.IsStringAContainsStringB(inputPath, modsOverwrite) && !ManageStrings.IsStringAContainsStringB(inputPath, ManageSettings.GetCurrentGameDataPath()))
+                    return inputPath;
 
                 //отсеивание первого элемента с именем мода
                 //string subpath = string.Empty;
 
-                string[] pathInModsElements = pathInMods
+                string[] pathInModsElements = inputPath
                     .Replace(modsOverwrite, string.Empty)
                     .Split(Path.DirectorySeparatorChar)
                     .Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
@@ -2051,7 +2060,7 @@ namespace AIHelper.Manage
             {
             }
 
-            return pathInMods;
+            return inputPath;
         }
 
         /// <summary>
@@ -2063,7 +2072,7 @@ namespace AIHelper.Manage
             if (ManageSettings.IsMoMode())
             {
 
-                return GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(Path.Combine(ManageSettings.GetOverwriteFolder(), "UserData", "setup.xml"));
+                return GetLastPath(Path.Combine(ManageSettings.GetOverwriteFolder(), "UserData", "setup.xml"));
             }
             else
             {

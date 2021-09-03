@@ -756,7 +756,7 @@ namespace AIHelper
         private static void RunSlowActions()
         {
             //создание ссылок на файлы bepinex, НА ЭТО ТРАТИТСЯ МНОГО ВРЕМЕНИ
-            MousfsLoadingFix();
+            MOUSFSLoadingFix();
             //GameButton.Enabled = false;
             //Task t1 = new Task(() =>
             //ManageMOMods.BepinExLoadingFix()

@@ -24,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External", "External", "{CF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckForEmptyDir", "K:\0GIT\[TokcDK]\LC\LibsCollection\CheckForEmptyDir\CheckForEmptyDir.csproj", "{636976FE-5FFE-4E17-BCB1-7B858A78A8A3}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SymbolicLinkSupport", "K:\0GIT\symboliclinksupport\SymbolicLinkSupport\SymbolicLinkSupport.csproj", "{0F629727-5647-4CB0-946A-1AC4442FD8F2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,6 +74,14 @@ Global
 		{636976FE-5FFE-4E17-BCB1-7B858A78A8A3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{636976FE-5FFE-4E17-BCB1-7B858A78A8A3}.Release|x64.ActiveCfg = Release|Any CPU
 		{636976FE-5FFE-4E17-BCB1-7B858A78A8A3}.Release|x64.Build.0 = Release|Any CPU
+		{0F629727-5647-4CB0-946A-1AC4442FD8F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F629727-5647-4CB0-946A-1AC4442FD8F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F629727-5647-4CB0-946A-1AC4442FD8F2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0F629727-5647-4CB0-946A-1AC4442FD8F2}.Debug|x64.Build.0 = Debug|Any CPU
+		{0F629727-5647-4CB0-946A-1AC4442FD8F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F629727-5647-4CB0-946A-1AC4442FD8F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F629727-5647-4CB0-946A-1AC4442FD8F2}.Release|x64.ActiveCfg = Release|Any CPU
+		{0F629727-5647-4CB0-946A-1AC4442FD8F2}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,6 +93,7 @@ Global
 		{40AC8009-CECD-44D0-B564-96E07237FD1A} = {CF563EBD-B93A-434C-AF1F-B2F853E4CE7E}
 		{CF563EBD-B93A-434C-AF1F-B2F853E4CE7E} = {27E06EF2-8392-4E2C-9B2D-51614FA22584}
 		{636976FE-5FFE-4E17-BCB1-7B858A78A8A3} = {CF563EBD-B93A-434C-AF1F-B2F853E4CE7E}
+		{0F629727-5647-4CB0-946A-1AC4442FD8F2} = {CF563EBD-B93A-434C-AF1F-B2F853E4CE7E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E6619618-7F5E-4AA7-9756-C6CA2B7BAD64}

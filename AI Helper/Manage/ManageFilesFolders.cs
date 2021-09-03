@@ -386,69 +386,77 @@ namespace AIHelper.Manage
         }
 
         /// <summary>
-        /// Move content Of Source Folder To Target Folder And Then Clean Source
+        /// Move content Of Source Folder To Target Folder And Then Clean Source.
+        /// There is MoveAll extension method for DirectoryInfo with same function and it added to symlink creation
         /// </summary>
         /// <param name="sourceFolder"></param>
         /// <param name="targetFolder"></param>
         internal static void MoveContent(string sourceFolder, string targetFolder)
         {
-            if (Directory.Exists(sourceFolder))
+            if (!Directory.Exists(sourceFolder))
             {
-                if (!sourceFolder.IsNullOrEmptyDirectory() && !ManageSymLinkExtensions.IsSymLink(sourceFolder))
+                return;
+            }
+
+            if (sourceFolder.IsNullOrEmptyDirectory() || sourceFolder.IsSymLink())
+            {
+                return;
+            }
+
+            if (!Directory.Exists(targetFolder))
+            {
+                Directory.CreateDirectory(targetFolder);
+            }
+
+            foreach (string file in Directory.EnumerateFiles(sourceFolder))
+            {
+                var sourceFile = file;
+                var targetFile = Path.Combine(targetFolder, Path.GetFileName(sourceFile));
+
+                try
                 {
-                    if (!Directory.Exists(targetFolder))
+                    if (!File.Exists(targetFile))
                     {
-                        Directory.CreateDirectory(targetFolder);
+                        continue;
                     }
 
-                    foreach (string dir in Directory.EnumerateDirectories(sourceFolder))
+                    FileInfo sFile;
+                    FileInfo tFile;
+                    if ((sFile = new FileInfo(sourceFile)).LastWriteTime > (tFile = new FileInfo(targetFile)).LastWriteTime)
                     {
-                        var targetDir = Path.Combine(targetFolder, Path.GetFileName(dir));
-                        if (Directory.Exists(targetDir))
-                        {
-                            targetDir = GetNewNewWithCurrentDate(targetDir, false);
-                        }
-
-                        Directory.Move(dir, targetDir);
+                        File.Move(targetFile, GetNewNewWithCurrentDate(targetFile));
                     }
-                    foreach (string file in Directory.EnumerateFiles(sourceFolder))
+                    else if (sFile.LastWriteTime == tFile.LastWriteTime
+                        && sFile.Length == tFile.Length
+                        )
                     {
-                        var sourceFile = file;
-                        var targetFile = Path.Combine(targetFolder, Path.GetFileName(sourceFile));
-
-                        try
-                        {
-                            if (File.Exists(targetFile))
-                            {
-                                FileInfo sFile;
-                                FileInfo tFile;
-                                if ((sFile = new FileInfo(sourceFile)).LastWriteTime > (tFile = new FileInfo(targetFile)).LastWriteTime)
-                                {
-                                    File.Move(targetFile, GetNewNewWithCurrentDate(targetFile));
-                                }
-                                else if (sFile.LastWriteTime == tFile.LastWriteTime
-                                    && sFile.Length == tFile.Length
-                                    )
-                                {
-                                    File.Delete(targetFile);
-                                }
-                                else
-                                {
-                                    targetFile = GetNewNewWithCurrentDate(targetFile);
-                                }
-                            }
-
-                            File.Move(sourceFile, targetFile);
-                        }
-                        catch (IOException ex)
-                        {
-                            ManageLogs.Log("Error in MoveContentOfSourceFolderToTargetFolderAndThenCleanSource:" + Environment.NewLine + "sourceFilePath=" + sourceFile + Environment.NewLine + "targetFilePath=" + targetFile + Environment.NewLine + ex);
-                        }
+                        File.Delete(targetFile);
                     }
+                    else
+                    {
+                        targetFile = GetNewNewWithCurrentDate(targetFile);
+                    }
+
+                    File.Move(sourceFile, targetFile);
+                }
+                catch (IOException ex)
+                {
+                    ManageLogs.Log("Error in MoveContentOfSourceFolderToTargetFolderAndThenCleanSource:" + Environment.NewLine + "sourceFilePath=" + sourceFile + Environment.NewLine + "targetFilePath=" + targetFile + Environment.NewLine + ex);
+                }
+            }
+
+            foreach (string dir in Directory.EnumerateDirectories(sourceFolder))
+            {
+                var targetDir = Path.Combine(targetFolder, Path.GetFileName(dir));
+                if (Directory.Exists(targetDir))
+                {
+                    targetDir = GetNewNewWithCurrentDate(targetDir, false);
                 }
 
-                DeleteEmptySubfolders(sourceFolder, true);
+                Directory.Move(dir, targetDir);
             }
+
+            DeleteEmptySubfolders(sourceFolder, true);
         }
 
         /// <summary>

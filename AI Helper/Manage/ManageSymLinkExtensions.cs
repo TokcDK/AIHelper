@@ -396,7 +396,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool IsValidSymlinkTargetEquals(this DirectoryInfo symlink, string requiredTargetPath)
         {
-            return symlink.IsSymlink() && symlink.IsValidSymlink() && symlink.GetSymlinkTarget() == requiredTargetPath;
+            return symlink.Exists && symlink.IsSymlink() && symlink.IsValidSymlink() && symlink.GetSymlinkTarget() == requiredTargetPath;
         }
 
         /// <summary>
@@ -407,7 +407,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool IsSymlinkTargetEquals(this FileInfo symlink, string requiredTargetPath)
         {
-            return symlink.IsSymlink() && symlink.GetSymlinkTarget() == requiredTargetPath;
+            return symlink.Exists && symlink.IsSymlink() && symlink.GetSymlinkTarget() == requiredTargetPath;
         }
 
         /// <summary>
@@ -418,7 +418,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool IsSymlinkTargetEquals(this DirectoryInfo symlink, string requiredTargetPath)
         {
-            return symlink.IsSymlink() && symlink.GetSymlinkTarget() == requiredTargetPath;
+            return symlink.Exists && symlink.IsSymlink() && symlink.GetSymlinkTarget() == requiredTargetPath;
         }
     }
 

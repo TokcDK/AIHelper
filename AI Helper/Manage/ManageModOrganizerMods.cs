@@ -131,7 +131,7 @@ namespace AIHelper.Manage
                 }
                 else
                 {
-                    if (linkPath.IsSymlink())
+                    if (linkPath.Exists && linkPath.IsSymlink())
                     {
                         if (linkPath.IsValidSymlink(objectPath.FullName))
                         {

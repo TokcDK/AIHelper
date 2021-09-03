@@ -2993,7 +2993,7 @@ namespace AIHelper
             // buckup modlist
             File.Copy(ManageSettings.GetCurrentMoProfileModlistPath(), ManageSettings.GetCurrentMoProfileModlistPath() + ".prezipmodsUpdate");
 
-            var modlist = new ProfileModlist();
+            var modlist = new ModlistProfileInfo();
 
             foreach (var item in modlist.Items)
             {

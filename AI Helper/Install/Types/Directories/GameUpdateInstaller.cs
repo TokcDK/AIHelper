@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using static AIHelper.Manage.ManageModOrganizerMods;
 
 namespace AIHelper.Install.Types.Directories
 {
@@ -59,34 +60,16 @@ namespace AIHelper.Install.Types.Directories
             }
             Directory.CreateDirectory(_bakDir);
 
-            if (updateInfo.UpdateMods == "true")
+            // proceed update actions
+            if (   ProceedUpdateMods()
+                || ProceedUpdateData()
+                || ProceedUpdateMO()
+                || ProceedRemoveDirs()
+                || ProceedRemoveFiles()
+                || ProceedRemoveUnusedSeparators()
+                )
             {
                 updated = true;
-                ProceedUpdateMods();
-            }
-
-            if (updateInfo.UpdateData == "true")
-            {
-                updated = true;
-                ProceedUpdateData();
-            }
-
-            if (updateInfo.UpdateMO == "true")
-            {
-                updated = true;
-                ProceedUpdateMO();
-            }
-
-            if (updateInfo.RemoveDirs.Length > 0)
-            {
-                updated = true;
-                ProceedRemoveDirs();
-            }
-
-            if (updateInfo.RemoveFiles.Length > 0)
-            {
-                updated = true;
-                ProceedRemoveFiles();
             }
 
             // clean update info and folder
@@ -106,18 +89,37 @@ namespace AIHelper.Install.Types.Directories
             return updated;
         }
 
-        private void ProceedRemoveFiles()
+        private bool ProceedRemoveUnusedSeparators()
         {
-            ProceedRemove();
+            var modlist = new ModlistProfileInfo();
+            var bakModsDirPath = Path.Combine(_bakDir, "Mods");
+
+            var ret = false;
+            foreach(var separator in new DirectoryInfo(ManageSettings.GetCurrentGameModsDirPath()).GetFiles("*_separator"))
+            {
+                if (!modlist.ItemByName.ContainsKey(separator.Name))
+                {
+                    separator.MoveTo(separator.FullName.Replace(ManageSettings.GetCurrentGameModsDirPath(), bakModsDirPath));
+                    ret = true;
+                }
+            }
+
+            return ret;
         }
 
-        private void ProceedRemoveDirs()
+        private bool ProceedRemoveFiles()
         {
-            ProceedRemove(false);
+            return updateInfo.RemoveFiles.Length > 0 && ProceedRemove();
         }
 
-        private void ProceedRemove(bool files = true)
+        private bool ProceedRemoveDirs()
         {
+            return updateInfo.RemoveDirs.Length > 0 && ProceedRemove(false);
+        }
+
+        private bool ProceedRemove(bool files = true)
+        {
+            var ret = false;
             string rootDir = IsRoot ? ManageSettings.GetApplicationStartupPath() : ManageSettings.GetCurrentGameDirPath();
             foreach (var SubPath in updateInfo.RemoveDirs.Split(','))
             {
@@ -128,35 +130,41 @@ namespace AIHelper.Install.Types.Directories
                     Directory.CreateDirectory(Path.GetDirectoryName(buckupPath));
                     if (files)
                     {
+                        ret = true;
                         File.Move(sourcePath, buckupPath);
                     }
                     else
                     {
+                        ret = true;
                         Directory.Move(sourcePath, buckupPath);
                     }
                 }
             }
+
+            return ret;
         }
 
-        private void ProceedUpdateMO()
+        private bool ProceedUpdateMO()
         {
-            ProceedUpdateFiles("MO");
+            return updateInfo.UpdateMO == "true" && ProceedUpdateFiles("MO");
         }
 
-        private void ProceedUpdateData()
+        private bool ProceedUpdateData()
         {
-            ProceedUpdateFiles("Data");
+            return updateInfo.UpdateData == "true" && ProceedUpdateFiles("Data");
         }
 
-        private void ProceedUpdateFiles(string targetDirName)
+        private bool ProceedUpdateFiles(string targetDirName)
         {
             var updateGameDir = IsRoot ? Path.Combine(_dir.FullName, "Games", updateInfo.GameFolderName) : Path.Combine(_dir.FullName);
             var updateTargetSubDir = Path.Combine(updateGameDir, targetDirName);
 
             if (!Directory.Exists(updateTargetSubDir))
             {
-                return;
+                return false;
             }
+
+            var ret = false;
 
             var updateTargetBuckupSubDir = Path.Combine(_bakDir, targetDirName);
             if (!Directory.Exists(updateTargetBuckupSubDir))
@@ -188,18 +196,28 @@ namespace AIHelper.Install.Types.Directories
 
                 Directory.CreateDirectory(Path.GetDirectoryName(targetPath));// create parent dir
 
+                ret = true;
                 updateFileInfo.MoveTo(targetPath); // move update file to target if it is newer or to bak dir if older
             }
+
+            return ret;
         }
 
-        private void ProceedUpdateMods()
+        private bool ProceedUpdateMods()
         {
+            if (updateInfo.UpdateMods != "true")
+            {
+                return false;
+            }
+
             var updateModsDir = IsRoot ? Path.Combine(_dir.FullName, "Games", updateInfo.GameFolderName, "Mods") : Path.Combine(_dir.FullName, "Mods");
 
             if (!Directory.Exists(updateModsDir))
             {
-                return;
+                return false;
             }
+
+            var ret = false;
 
             // create mods buckup dir
             var modsBuckupDir = Path.Combine(_bakDir, "Mods");
@@ -212,7 +230,7 @@ namespace AIHelper.Install.Types.Directories
             foreach (var updateModDir in Directory.EnumerateDirectories(updateModsDir))
             {
                 var targetGameModDir = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), Path.GetFileName(updateModDir));
-                               
+
                 if (Directory.Exists(targetGameModDir))
                 {
                     string bakModDir = updateModDir.Replace(updateModsDir, modsBuckupDir);
@@ -229,7 +247,11 @@ namespace AIHelper.Install.Types.Directories
 
                 // move new update dir to target
                 Directory.Move(updateModDir, targetGameModDir);
+
+                ret = true;
             }
+
+            return ret;
         }
 
         private static bool IsNewer(string modDir, string currentGameModDir)

@@ -11,6 +11,8 @@ namespace AIHelper.Install.UpdateMaker
         UpdateMakerBase _parameter;
         Dictionary<string, string> _gameupdatekeys;
         bool _useBlacklist;
+        List<string> _removeDirsList;
+        List<string> _removeFilesList;
 
         public bool MakeUpdate()
         {
@@ -28,6 +30,8 @@ namespace AIHelper.Install.UpdateMaker
             };
 
             _gameupdatekeys = new Dictionary<string, string>();
+            _removeDirsList = new List<string>();
+            _removeFilesList = new List<string>();
 
             var infoIni = ManageIni.GetINIFile(updateMakeInfoFilePath);
             var blValueDirs = infoIni.GetKey("", "BlacklistDirs");
@@ -79,6 +83,7 @@ namespace AIHelper.Install.UpdateMaker
                             if (Directory.Exists(blacklistedSubPath))
                             {
                                 Directory.Delete(blacklistedSubPath, true);
+                                _removeDirsList.Add(subpath);
                             }
                         }
                     }
@@ -111,6 +116,7 @@ namespace AIHelper.Install.UpdateMaker
                             if (File.Exists(blacklistedSubPath))
                             {
                                 File.Delete(blacklistedSubPath);
+                                _removeFilesList.Add(subpath);
                             }
                         }
                     }
@@ -124,6 +130,9 @@ namespace AIHelper.Install.UpdateMaker
             {
                 gameupdateini.SetKey("", parameter.Key, parameter.Value);
             }
+            gameupdateini.SetKey("", "RemoveDirs", string.Join(",", _removeDirsList));
+            gameupdateini.SetKey("", "RemoveFiles", string.Join(",", _removeFilesList));
+
             gameupdateini.WriteFile();
 
             Process.Start(updateDir);
@@ -180,6 +189,7 @@ namespace AIHelper.Install.UpdateMaker
         {
             if (_useBlacklist && _parameter.blacklist.Contains(_parameter.DirName + Path.DirectorySeparatorChar + subPath))
             {
+                _removeFilesList.Add(subPath);
                 return false;
             }
 
@@ -248,6 +258,7 @@ namespace AIHelper.Install.UpdateMaker
         {
             if (_useBlacklist && _parameter.blacklist.Contains(_parameter.DirName + Path.DirectorySeparatorChar + subPath))
             {
+                _removeDirsList.Add(subPath);
                 return false;
             }
 

@@ -1690,7 +1690,7 @@ namespace AIHelper.Manage
         public static void ActivateDeactivateInsertMod(string modname, bool activate = true, string recordWithWhichInsert = "", bool placeAfter = true)
         {
             // insert new
-            var modList = new ProfileModlist();
+            var modList = new ModlistProfileInfo();
 
             // just activate/deactivate if exists
             if (modList.ItemByName.ContainsKey(modname))

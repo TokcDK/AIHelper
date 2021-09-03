@@ -765,7 +765,7 @@ namespace AIHelper.Manage
             return name.ToUpperInvariant().StartsWith("SIDELOADER MODPACK - KK_UNCENSORSELECTOR", StringComparison.InvariantCulture);
         }
 
-        internal class ProfileModlist
+        internal class ModlistProfileInfo
         {
             internal string ModlistPath = "";
             internal List<ProfileModlistRecord> Items;
@@ -777,7 +777,7 @@ namespace AIHelper.Manage
             /// <summary>
             /// init and load content of modlist for current profile
             /// </summary>
-            public ProfileModlist()
+            public ModlistProfileInfo()
             {
                 Items = new List<ProfileModlistRecord>();
                 ItemByName = new Dictionary<string, ProfileModlistRecord>();
@@ -787,7 +787,7 @@ namespace AIHelper.Manage
             /// <summary>
             /// init and load content of modlist for selected path
             /// </summary>
-            public ProfileModlist(string modListPath)
+            public ModlistProfileInfo(string modListPath)
             {
                 Items = new List<ProfileModlistRecord>();
                 ItemByName = new Dictionary<string, ProfileModlistRecord>();
@@ -1106,7 +1106,7 @@ namespace AIHelper.Manage
 
             void LoadAll()
             {
-                var modlist = new ProfileModlist();
+                var modlist = new ModlistProfileInfo();
 
                 foreach (var item in modlist.Items)
                 {

@@ -115,6 +115,11 @@ namespace AIHelper.Install.Types.Directories
 
         private bool ProceedRemoveUnusedSeparators()
         {
+            if (updateInfo.RemoveUnusedSeparators != "true")
+            {
+                return false;
+            }
+
             var modlist = new ModlistProfileInfo();
             var bakModsDirPath = Path.Combine(_bakDir, "Mods");
 
@@ -131,7 +136,7 @@ namespace AIHelper.Install.Types.Directories
                     }
                     catch (Exception ex)
                     {
-                        ManageLogs.Log("Filed to remove unusing separator. path:" + separator.FullName + "\r\nError:" + ex);
+                        ManageLogs.Log("Failed to remove unusing separator. path:" + separator.FullName + "\r\nError:" + ex);
                     }
                 }
             }
@@ -229,7 +234,7 @@ namespace AIHelper.Install.Types.Directories
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("Filed to update file. path:" + updateFileInfo.FullName + "\r\nError:" + ex);
+                    ManageLogs.Log("Failed to update file. path:" + updateFileInfo.FullName + "\r\nError:" + ex);
                 }
             }
 
@@ -290,7 +295,7 @@ namespace AIHelper.Install.Types.Directories
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("Filed to update dir. path:" + updateModDir.FullName + "\r\nError:" + ex);
+                    ManageLogs.Log("Failed to update dir. path:" + updateModDir.FullName + "\r\nError:" + ex);
                 }
 
             }
@@ -327,6 +332,7 @@ namespace AIHelper.Install.Types.Directories
             { nameof(UpdateMO), "false" },
             { nameof(RemoveFiles), string.Empty },
             { nameof(RemoveDirs), string.Empty },
+            { nameof(RemoveUnusedSeparators), "true" },
         };
 
         /// <summary>
@@ -357,6 +363,7 @@ namespace AIHelper.Install.Types.Directories
         /// List of dirs to remove
         /// </summary>
         public string RemoveDirs { get => _keys[nameof(RemoveDirs)]; set => _keys[nameof(RemoveDirs)] = value; }
+        public string RemoveUnusedSeparators { get => _keys[nameof(RemoveUnusedSeparators)]; set => _keys[nameof(RemoveUnusedSeparators)] = value; }
 
         public GameUpdateInfo(string updateInfoPath)
         {

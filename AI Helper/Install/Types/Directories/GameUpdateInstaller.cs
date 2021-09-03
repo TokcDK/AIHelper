@@ -21,6 +21,8 @@ namespace AIHelper.Install.Types.Directories
         string _backupsDir;
         string _bakDir;
         string _gameUpdateInfoFileName { get => "gameupdate.ini"; }
+        HashSet<string> _skipExistDirs;
+        HashSet<string> _skipExistFiles;
 
         protected override bool Get(DirectoryInfo dir)
         {
@@ -53,13 +55,20 @@ namespace AIHelper.Install.Types.Directories
 
             _dateTimeSuffix = ManageSettings.GetDateTimeBasedSuffix();
 
+            SetSkipLists();
+
             _backupsDir = Path.Combine(ManageSettings.GetCurrentGameDirPath(), "Buckups");
             _bakDir = Path.Combine(_backupsDir, "Backup");
             if (Directory.Exists(_bakDir))
             {
-                Directory.Move(_bakDir, _bakDir + _dateTimeSuffix);
+                if (!_bakDir.IsEmptyDir())
+                {
+                    Directory.Move(_bakDir, _bakDir + "_old" + _dateTimeSuffix);
+                }
             }
             Directory.CreateDirectory(_bakDir);
+
+
 
             // proceed update actions
             if (ProceedUpdateMods())
@@ -100,7 +109,7 @@ namespace AIHelper.Install.Types.Directories
             //File.Delete(Path.Combine(dir.FullName, _gameUpdateInfoFileName));
             //ManageFilesFolders.DeleteEmptySubfolders(dirPath: dir.FullName, deleteThisDir: true);
             // move dir to bak instead of delete
-            dir.MoveTo(_bakDir);
+            dir.MoveTo(Path.Combine(_bakDir, dir.Name) + _dateTimeSuffix);
 
             if (updated)
             {
@@ -113,6 +122,26 @@ namespace AIHelper.Install.Types.Directories
             }
 
             return updated;
+        }
+
+        private void SetSkipLists()
+        {
+            if (updateInfo.SkipExistDirs.Length > 0 && updateInfo.SkipExistDirs.IndexOf(",") != -1)
+            {
+                _skipExistDirs = updateInfo.SkipExistDirs.Split(',').ToHashSet();
+            }
+            else
+            {
+                _skipExistDirs = new HashSet<string>();
+            }
+            if (updateInfo.SkipExistFiles.Length > 0 && updateInfo.SkipExistFiles.IndexOf(",") != -1)
+            {
+                _skipExistFiles = updateInfo.SkipExistFiles.Split(',').ToHashSet();
+            }
+            else
+            {
+                _skipExistFiles = new HashSet<string>();
+            }
         }
 
         private bool ProceedRemoveUnusedSeparators()
@@ -216,7 +245,15 @@ namespace AIHelper.Install.Types.Directories
             {
                 try
                 {
-                    var targetFileInfo = new FileInfo(updateFileInfo.FullName.Replace(updateGameDir, ManageSettings.GetCurrentGameDirPath()));
+                    // get subpath
+                    var targetFileSubPath = updateFileInfo.FullName.Replace(updateGameDir + Path.DirectorySeparatorChar, string.Empty);
+                    if (_skipExistFiles.Contains(targetFileSubPath))
+                    {
+                        // skip if in skip list
+                        continue;
+                    }
+
+                    var targetFileInfo = new FileInfo(ManageSettings.GetCurrentGameDirPath() + Path.DirectorySeparatorChar + targetFileSubPath);
 
                     var targetPath = targetFileInfo.FullName;// default target path in game's target subdir
 
@@ -231,7 +268,7 @@ namespace AIHelper.Install.Types.Directories
 
                     Directory.CreateDirectory(Path.GetDirectoryName(targetPath));// create parent dir
                     updateFileInfo.MoveTo(targetPath); // move update file to target if it is newer or to bak dir if older
-                    
+
                     ret = true;
                 }
                 catch (Exception ex)
@@ -250,9 +287,10 @@ namespace AIHelper.Install.Types.Directories
                 return false;
             }
 
-            var updateModsDirPath = new DirectoryInfo(IsRoot ? Path.Combine(_dir.FullName, "Games", updateInfo.GameFolderName, "Mods") : Path.Combine(_dir.FullName, "Mods"));
+            var updateGameDir = IsRoot ? Path.Combine(_dir.FullName, "Games", updateInfo.GameFolderName) : _dir.FullName;
+            var updateTargetSubDir = new DirectoryInfo(Path.Combine(updateGameDir, "Mods"));
 
-            if (!updateModsDirPath.Exists)
+            if (!updateTargetSubDir.Exists)
             {
                 return false;
             }
@@ -267,11 +305,19 @@ namespace AIHelper.Install.Types.Directories
             }
 
             // replace folders by updated
-            foreach (var updateModDir in updateModsDirPath.EnumerateDirectories())
+            foreach (var updateModDir in updateTargetSubDir.EnumerateDirectories())
             {
                 try
                 {
-                    var targetGameModDir = new DirectoryInfo(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), updateModDir.Name));
+                    // get subpath
+                    var targetDirSubPath = updateModDir.FullName.Replace(updateGameDir + Path.DirectorySeparatorChar, string.Empty);
+                    if (_skipExistDirs.Contains(targetDirSubPath))
+                    {
+                        // skip if in skip list
+                        continue;
+                    }
+
+                    var targetGameModDir = new DirectoryInfo(ManageSettings.GetCurrentGameDirPath() + Path.DirectorySeparatorChar + targetDirSubPath);
 
                     if (targetGameModDir.Exists)
                     {
@@ -335,6 +381,8 @@ namespace AIHelper.Install.Types.Directories
             { nameof(RemoveFiles), string.Empty },
             { nameof(RemoveDirs), string.Empty },
             { nameof(RemoveUnusedSeparators), "true" },
+            { nameof(SkipExistDirs), string.Empty },
+            { nameof(SkipExistFiles), string.Empty },
         };
 
         /// <summary>
@@ -365,7 +413,18 @@ namespace AIHelper.Install.Types.Directories
         /// List of dirs to remove
         /// </summary>
         public string RemoveDirs { get => _keys[nameof(RemoveDirs)]; set => _keys[nameof(RemoveDirs)] = value; }
+        /// <summary>
+        /// Determines if need to remove unused separators which is not updated modlist
+        /// </summary>
         public string RemoveUnusedSeparators { get => _keys[nameof(RemoveUnusedSeparators)]; set => _keys[nameof(RemoveUnusedSeparators)] = value; }
+        /// <summary>
+        /// List of subpaths for dirs which must be skipped and not touched if already exist in current game
+        /// </summary>
+        public string SkipExistDirs { get => _keys[nameof(SkipExistDirs)]; set => _keys[nameof(SkipExistDirs)] = value; }
+        /// <summary>
+        /// List of subpaths for files which must be skipped and not touched if already exist in current game
+        /// </summary>
+        public string SkipExistFiles { get => _keys[nameof(SkipExistFiles)]; set => _keys[nameof(SkipExistFiles)] = value; }
 
         public GameUpdateInfo(string updateInfoPath)
         {

@@ -7,6 +7,35 @@ namespace AIHelper.Manage
     static class ManageFilesFoldersExtensions
     {
         /// <summary>
+        /// Get case sensitive directory info of exist dir
+        /// </summary>
+        /// <param name="inputInfo"></param>
+        /// <returns></returns>
+        public static DirectoryInfo GetCaseSensitive(this DirectoryInfo inputInfo)
+        {
+            foreach (var info in inputInfo.Parent.GetDirectories(inputInfo.Name))
+            {
+                return info;
+            }
+
+            return inputInfo;
+        }
+        /// <summary>
+        /// Get case sensitive name of the file
+        /// </summary>
+        /// <param name="inputInfo"></param>
+        /// <returns></returns>
+        public static FileInfo GetCaseSensitive(this FileInfo inputInfo)
+        {
+            foreach (var info in inputInfo.Directory.GetFiles(inputInfo.Name))
+            {
+                return info;
+            }
+
+            return inputInfo;
+        }
+
+        /// <summary>
         /// Delete directory with subfiles and dirs even if it is readonly
         /// </summary>
         /// <param name="targetDir"></param>

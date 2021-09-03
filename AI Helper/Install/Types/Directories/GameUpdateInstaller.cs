@@ -1,5 +1,6 @@
 ﻿using AIHelper.Manage;
 using AIHelper.Manage.Update;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -118,12 +119,20 @@ namespace AIHelper.Install.Types.Directories
             var bakModsDirPath = Path.Combine(_bakDir, "Mods");
 
             var ret = false;
-            foreach(var separator in new DirectoryInfo(ManageSettings.GetCurrentGameModsDirPath()).GetDirectories("*_separator"))
+            foreach (var separator in new DirectoryInfo(ManageSettings.GetCurrentGameModsDirPath()).GetDirectories("*_separator"))
             {
                 if (!modlist.ItemByName.ContainsKey(separator.Name))
                 {
-                    separator.MoveTo(separator.FullName.Replace(ManageSettings.GetCurrentGameModsDirPath(), bakModsDirPath));
-                    ret = true;
+                    var bakPath = separator.FullName.Replace(ManageSettings.GetCurrentGameModsDirPath(), bakModsDirPath);
+                    try
+                    {
+                        separator.MoveTo(bakPath);
+                        ret = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        ManageLogs.Log("Filed to remove unusing separator. path:" + separator.FullName + "\r\nError:" + ex);
+                    }
                 }
             }
 
@@ -198,29 +207,30 @@ namespace AIHelper.Install.Types.Directories
             // replace files by newer
             foreach (var updateFileInfo in new DirectoryInfo(updateTargetSubDir).EnumerateFiles("*", SearchOption.AllDirectories))
             {
-                var targetFileInfo = new FileInfo(updateFileInfo.FullName.Replace(updateGameDir, ManageSettings.GetCurrentGameDirPath()));
-
-                var targetPath = targetFileInfo.FullName;// default target path in game's target subdir
-
-                if (targetFileInfo.Exists)
+                try
                 {
-                    var fileBakBath = updateFileInfo.FullName.Replace(updateGameDir, _bakDir);// file's path in bak dir
+                    var targetFileInfo = new FileInfo(updateFileInfo.FullName.Replace(updateGameDir, ManageSettings.GetCurrentGameDirPath()));
 
-                    if (updateFileInfo.LastWriteTimeUtc > targetFileInfo.LastWriteTimeUtc)
+                    var targetPath = targetFileInfo.FullName;// default target path in game's target subdir
+
+                    if (targetFileInfo.Exists)
                     {
+                        var fileBakBath = updateFileInfo.FullName.Replace(updateGameDir, _bakDir);// file's path in bak dir
+
+                        // just move current file in buckup because lastwrite time can be newer in actually older file and it will not be replaced by updated
                         Directory.CreateDirectory(Path.GetDirectoryName(fileBakBath));// create parent dir
                         targetFileInfo.MoveTo(fileBakBath); // move exist older target file to bak dir
                     }
-                    else
-                    {
-                        targetPath = fileBakBath; // set bak dir path for older target file
-                    }
+
+                    Directory.CreateDirectory(Path.GetDirectoryName(targetPath));// create parent dir
+
+                    updateFileInfo.MoveTo(targetPath); // move update file to target if it is newer or to bak dir if older
+                    ret = true;
                 }
-
-                Directory.CreateDirectory(Path.GetDirectoryName(targetPath));// create parent dir
-
-                ret = true;
-                updateFileInfo.MoveTo(targetPath); // move update file to target if it is newer or to bak dir if older
+                catch (Exception ex)
+                {
+                    ManageLogs.Log("Filed to update file. path:" + updateFileInfo.FullName + "\r\nError:" + ex);
+                }
             }
 
             return ret;
@@ -233,9 +243,9 @@ namespace AIHelper.Install.Types.Directories
                 return false;
             }
 
-            var updateModsDir = IsRoot ? Path.Combine(_dir.FullName, "Games", updateInfo.GameFolderName, "Mods") : Path.Combine(_dir.FullName, "Mods");
+            var updateModsDirPath = new DirectoryInfo(IsRoot ? Path.Combine(_dir.FullName, "Games", updateInfo.GameFolderName, "Mods") : Path.Combine(_dir.FullName, "Mods"));
 
-            if (!Directory.Exists(updateModsDir))
+            if (!updateModsDirPath.Exists)
             {
                 return false;
             }
@@ -250,28 +260,39 @@ namespace AIHelper.Install.Types.Directories
             }
 
             // replace folders by updated
-            foreach (var updateModDir in Directory.EnumerateDirectories(updateModsDir))
+            foreach (var updateModDir in updateModsDirPath.EnumerateDirectories())
             {
-                var targetGameModDir = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), Path.GetFileName(updateModDir));
-
-                if (Directory.Exists(targetGameModDir))
+                try
                 {
-                    string bakModDir = updateModDir.Replace(updateModsDir, modsBuckupDir);
-                    if (!IsNewer(updateModDir, targetGameModDir))
+                    var targetGameModDir = new DirectoryInfo(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), updateModDir.Name));
+
+                    if (targetGameModDir.Exists)
                     {
-                        // when update dir older just move it in bak and continue
-                        Directory.Move(updateModDir, bakModDir);
-                        continue;
+                        var existsTargetGameModDir = targetGameModDir.GetCaseSensitive();
+                        if (!IsNewer(updateModDir.FullName, existsTargetGameModDir.FullName) // is older
+                            && updateModDir.Name == existsTargetGameModDir.Name // dir name has exactly same name with same chars case
+                            )
+                        {
+                            // when update dir older just move it in bak and continue
+                            updateModDir.MoveTo(updateModDir.FullName.Replace(updateModsDirPath.FullName, modsBuckupDir));
+                            continue;
+                        }
+
+                        // move older target dir to bak
+                        var existsTargetGameModDirBak = existsTargetGameModDir.FullName.Replace(ManageSettings.GetCurrentGameModsDirPath(), modsBuckupDir);
+                        existsTargetGameModDir.MoveTo(existsTargetGameModDirBak);
                     }
 
-                    // move older target dir to bak
-                    Directory.Move(targetGameModDir, bakModDir);
+                    // move new update dir to target
+                    updateModDir.MoveTo(targetGameModDir.FullName);
+
+                    ret = true;
+                }
+                catch (Exception ex)
+                {
+                    ManageLogs.Log("Filed to update dir. path:" + updateModDir.FullName + "\r\nError:" + ex);
                 }
 
-                // move new update dir to target
-                Directory.Move(updateModDir, targetGameModDir);
-
-                ret = true;
             }
 
             return ret;

@@ -97,8 +97,10 @@ namespace AIHelper.Install.Types.Directories
             }
 
             // clean update info and folder
-            File.Delete(Path.Combine(dir.FullName, _gameUpdateInfoFileName));
-            ManageFilesFolders.DeleteEmptySubfolders(dirPath: dir.FullName, deleteThisDir: true);
+            //File.Delete(Path.Combine(dir.FullName, _gameUpdateInfoFileName));
+            //ManageFilesFolders.DeleteEmptySubfolders(dirPath: dir.FullName, deleteThisDir: true);
+            // move dir to bak instead of delete
+            dir.MoveTo(_bakDir);
 
             if (updated)
             {
@@ -228,8 +230,8 @@ namespace AIHelper.Install.Types.Directories
                     }
 
                     Directory.CreateDirectory(Path.GetDirectoryName(targetPath));// create parent dir
-
                     updateFileInfo.MoveTo(targetPath); // move update file to target if it is newer or to bak dir if older
+                    
                     ret = true;
                 }
                 catch (Exception ex)
@@ -279,11 +281,11 @@ namespace AIHelper.Install.Types.Directories
                             )
                         {
                             // when update dir older just move it in bak and continue
-                            updateModDir.MoveTo(updateModDir.FullName.Replace(updateModsDirPath.FullName, modsBuckupDir));
+                            //updateModDir.MoveTo(updateModDir.FullName.Replace(updateModsDirPath.FullName, modsBuckupDir));
                             continue;
                         }
 
-                        // move older target dir to bak
+                        // move exist older target dir to bak
                         var existsTargetGameModDirBak = existsTargetGameModDir.FullName.Replace(ManageSettings.GetCurrentGameModsDirPath(), modsBuckupDir);
                         existsTargetGameModDir.MoveTo(existsTargetGameModDirBak);
                     }

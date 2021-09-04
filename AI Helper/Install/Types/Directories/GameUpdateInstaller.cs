@@ -398,22 +398,33 @@ namespace AIHelper.Install.Types.Directories
                         continue;
                     }
 
+                    if (updateFileInfo.Name.Contains("クマ.png"))
+                    {
+
+                    }
+
                     var targetFileInfo = new FileInfo(ManageSettings.GetCurrentGameDirPath() + Path.DirectorySeparatorChar + targetFileSubPath);
 
                     var targetPath = targetFileInfo.FullName;// default target path in game's target subdir
 
                     bool MoveIt = true;
-                    if (targetFileInfo.Exists && (updateFileInfo.LastWriteTime > targetFileInfo.LastWriteTime || updateFileInfo.Length != targetFileInfo.Length))
+                    if (targetFileInfo.Exists)
                     {
                         var fileBakBath = updateFileInfo.FullName.Replace(updateGameDir, _bakDir);// file's path in bak dir
 
-                        // just move current file in buckup because lastwrite time can be newer in actually older file and it will not be replaced by updated
-                        Directory.CreateDirectory(Path.GetDirectoryName(fileBakBath));// create parent dir
-                        targetFileInfo.MoveTo(fileBakBath); // move exist older target file to bak dir
-                    }
-                    else
-                    {
-                        MoveIt = false; // dont move update file because target was not removed
+                        // remove game file to bak if:
+                        if (updateFileInfo.LastWriteTime > targetFileInfo.LastWriteTime // update file is newer
+                            || updateFileInfo.Length != targetFileInfo.Length // update file has different size
+                            || updateFileInfo.GetCrc32() != targetFileInfo.GetCrc32()) // update file has different crc32
+                        {
+                            // just move current file in buckup because lastwrite time can be newer in actually older file and it will not be replaced by updated
+                            Directory.CreateDirectory(Path.GetDirectoryName(fileBakBath));// create parent dir
+                            targetFileInfo.MoveTo(fileBakBath); // move exist older target file to bak dir
+                        }
+                        else
+                        {
+                            MoveIt = false; // dont move update file because target was not removed
+                        }
                     }
 
                     if (MoveIt)

@@ -402,7 +402,8 @@ namespace AIHelper.Install.Types.Directories
 
                     var targetPath = targetFileInfo.FullName;// default target path in game's target subdir
 
-                    if (targetFileInfo.Exists)
+                    bool MoveIt = true;
+                    if (targetFileInfo.Exists && (updateFileInfo.LastWriteTime > targetFileInfo.LastWriteTime || updateFileInfo.Length != targetFileInfo.Length))
                     {
                         var fileBakBath = updateFileInfo.FullName.Replace(updateGameDir, _bakDir);// file's path in bak dir
 
@@ -410,9 +411,16 @@ namespace AIHelper.Install.Types.Directories
                         Directory.CreateDirectory(Path.GetDirectoryName(fileBakBath));// create parent dir
                         targetFileInfo.MoveTo(fileBakBath); // move exist older target file to bak dir
                     }
+                    else
+                    {
+                        MoveIt = false; // dont move update file because target was not removed
+                    }
 
-                    Directory.CreateDirectory(Path.GetDirectoryName(targetPath));// create parent dir
-                    updateFileInfo.MoveTo(targetPath); // move update file to target if it is newer or to bak dir if older
+                    if (MoveIt)
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(targetPath));// create parent dir
+                        updateFileInfo.MoveTo(targetPath); // move update file to target if it is newer or to bak dir if older
+                    }
 
                     ret = true;
                 }

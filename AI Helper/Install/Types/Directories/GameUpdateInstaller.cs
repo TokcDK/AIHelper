@@ -23,6 +23,7 @@ namespace AIHelper.Install.Types.Directories
         string _gameUpdateInfoFileName { get => "gameupdate.ini"; }
         HashSet<string> _skipExistDirs;
         HashSet<string> _skipExistFiles;
+        private bool crcfiles;
 
         protected override bool Get(DirectoryInfo dir)
         {
@@ -50,6 +51,7 @@ namespace AIHelper.Install.Types.Directories
             }
 
             bool updated = false;
+            crcfiles = updateInfo.CRCFiles=="true";
 
             IsRoot = updateInfo.IsRoot == "true";
 
@@ -142,7 +144,7 @@ namespace AIHelper.Install.Types.Directories
 
         private bool ProceedFixes()
         {
-            return FixIniValues();
+            return updateInfo.ApplyFixes=="true" && FixIniValues();
         }
 
         private bool FixIniValues()
@@ -398,11 +400,6 @@ namespace AIHelper.Install.Types.Directories
                         continue;
                     }
 
-                    if (updateFileInfo.Name.Contains("クマ.png"))
-                    {
-
-                    }
-
                     var targetFileInfo = new FileInfo(ManageSettings.GetCurrentGameDirPath() + Path.DirectorySeparatorChar + targetFileSubPath);
 
                     var targetPath = targetFileInfo.FullName;// default target path in game's target subdir
@@ -415,7 +412,7 @@ namespace AIHelper.Install.Types.Directories
                         // remove game file to bak if:
                         if (updateFileInfo.LastWriteTime > targetFileInfo.LastWriteTime // update file is newer
                             || updateFileInfo.Length != targetFileInfo.Length // update file has different size
-                            || updateFileInfo.GetCrc32() != targetFileInfo.GetCrc32()) // update file has different crc32
+                            || (crcfiles && updateFileInfo.GetCrc32() != targetFileInfo.GetCrc32())) // update file has different crc32
                         {
                             // just move current file in buckup because lastwrite time can be newer in actually older file and it will not be replaced by updated
                             Directory.CreateDirectory(Path.GetDirectoryName(fileBakBath));// create parent dir
@@ -534,8 +531,7 @@ namespace AIHelper.Install.Types.Directories
 
     class GameUpdateInfo
     {
-
-        Dictionary<string, string> _keys = new Dictionary<string, string>()
+        readonly Dictionary<string, string> _keys = new Dictionary<string, string>()
         {
             { nameof(GameFolderName), string.Empty },
             { nameof(UpdateData), "false" },
@@ -544,11 +540,13 @@ namespace AIHelper.Install.Types.Directories
             { nameof(UpdateMO), "false" },
             { nameof(RemoveFiles), string.Empty },
             { nameof(RemoveDirs), string.Empty },
-            { nameof(RemoveUnusedSeparators), "true" },
+            { nameof(RemoveUnusedSeparators), "false" },
             { nameof(SkipExistDirs), string.Empty },
             { nameof(SkipExistFiles), string.Empty },
             { nameof(CreateDirs), string.Empty },
             { nameof(CreateFiles), string.Empty },
+            { nameof(ApplyFixes), "false" },
+            { nameof(CRCFiles), "false" },
         };
 
         /// <summary>
@@ -600,6 +598,15 @@ namespace AIHelper.Install.Types.Directories
         /// Files which must be created after update
         /// </summary>
         public string CreateFiles { get => _keys[nameof(CreateFiles)]; set => _keys[nameof(CreateFiles)] = value; }
+        
+        /// <summary>
+        /// various game fixes and tweaks
+        /// </summary>
+        public string ApplyFixes { get => _keys[nameof(ApplyFixes)]; set => _keys[nameof(ApplyFixes)] = value; }
+        /// <summary>
+        /// calculate crc32 for files when chack files
+        /// </summary>
+        public string CRCFiles { get => _keys[nameof(CRCFiles)]; set => _keys[nameof(CRCFiles)] = value; }
 
         public GameUpdateInfo(string updateInfoPath)
         {

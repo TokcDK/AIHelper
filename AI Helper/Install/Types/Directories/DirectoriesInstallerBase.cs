@@ -1,4 +1,5 @@
 ﻿using AIHelper.Forms.Other;
+using System;
 using System.IO;
 
 namespace AIHelper.Install.Types.Directories
@@ -44,9 +45,16 @@ namespace AIHelper.Install.Types.Directories
                     {
                         progress.SetInfo(list[i].Name);
 
-                        if (Get(list[i]))
+                        try
                         {
-                            ret = true;
+                            if (Get(list[i]))
+                            {
+                                ret = true;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Manage.ManageLogs.Log("An error occured while parse by dir installer. error\r\n" + ex);
                         }
                     }
                 }

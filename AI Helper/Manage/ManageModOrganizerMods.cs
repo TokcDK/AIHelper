@@ -479,11 +479,11 @@ namespace AIHelper.Manage
                 {
                     string[] s = name.Split(']');
 
-                    if (!name.StartsWith("[AI]", StringComparison.InvariantCultureIgnoreCase))
+                    if (!name.StartsWith("[" + SharedData.GameData.CurrentGame.GetGamePrefix() + "]", StringComparison.InvariantCultureIgnoreCase))
                     {
                         author = s[0].Remove(0, 1);
                     }
-                    else if (name.StartsWith("[AI][", StringComparison.InvariantCultureIgnoreCase))
+                    else if (name.StartsWith("[" + SharedData.GameData.CurrentGame.GetGamePrefix() + "][", StringComparison.InvariantCultureIgnoreCase))
                     {
                         author = s[1].Remove(0, 1);
                     }

@@ -38,16 +38,13 @@ namespace AIHelper.Install.Types.Files
             }
 
             //добавление имени автора в начало имени папки
-            if ((!string.IsNullOrEmpty(name) && name.Substring(0, 1) == "[" && !name.StartsWith("[AI]", StringComparison.InvariantCultureIgnoreCase)) || (name.Length >= 5 && name.Substring(0, 5) == "[AI][") || ManageStrings.IsStringAContainsStringB(name, author))
+            if ((!string.IsNullOrEmpty(name) && name.Substring(0, 1) == "[" && !name.StartsWith("["+SharedData.GameData.CurrentGame.GetGamePrefix()+"]", StringComparison.InvariantCultureIgnoreCase)) || (name.Length >= 5 && name.Substring(0, 5) == "["+ SharedData.GameData.CurrentGame.GetGamePrefix() + "][") || ManageStrings.IsStringAContainsStringB(name, author))
             {
             }
             else if (author.Length > 0)
             {
                 //проверка на любые невалидные для имени папки символы
-                if (ManageFilesFolders.ContainsAnyInvalidCharacters(author))
-                {
-                }
-                else
+                if (!ManageFilesFolders.ContainsAnyInvalidCharacters(author))
                 {
                     name = "[" + author + "]" + name;
                 }

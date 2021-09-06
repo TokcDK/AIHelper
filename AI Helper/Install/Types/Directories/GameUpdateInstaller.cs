@@ -535,7 +535,7 @@ namespace AIHelper.Install.Types.Directories
 
     class GameUpdateInfo
     {
-        readonly Dictionary<string, string> _keys = new Dictionary<string, string>()
+        internal readonly Dictionary<string, string> _keys = new Dictionary<string, string>()
         {
             { nameof(GameFolderName), string.Empty },
             { nameof(UpdateData), "false" },
@@ -622,9 +622,12 @@ namespace AIHelper.Install.Types.Directories
         /// </summary>
         public string WriteTimeFiles { get => _keys[nameof(SizeFiles)]; set => _keys[nameof(SizeFiles)] = value; }
 
-        public GameUpdateInfo(string updateInfoPath)
+        public GameUpdateInfo(string updateInfoPath="")
         {
-            Get(updateInfoPath);
+            if(updateInfoPath.Length>0)
+            {
+                Get(updateInfoPath);
+            }
         }
 
         void Get(string updateInfoPath)

@@ -3094,7 +3094,8 @@ namespace AIHelper
 
             //check bleeding edge txt
             //cbxBleadingEdgeZipmods.Checked = cbxBleadingEdgeZipmods.Visible && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath());
-            BleadingEdgeZipmodsLabel.SetCheck(BleadingEdgeZipmodsLabel.Visible && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()));
+            BleadingEdgeZipmodsLabel.SetCheck(BleadingEdgeZipmodsLabel.Visible && UseKKmanagerUpdaterLabel.IsChecked() && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()));
+            BleadingEdgeZipmodsLabel.Enabled = BleadingEdgeZipmodsLabel.Visible && UseKKmanagerUpdaterLabel.IsChecked();
         }
 
         private void AIGirlHelperTabControl_SelectedIndexChanged(object sender, EventArgs e)

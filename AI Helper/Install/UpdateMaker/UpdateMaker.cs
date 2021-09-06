@@ -142,6 +142,15 @@ namespace AIHelper.Install.UpdateMaker
             gameupdateini.SetKey("", "RemoveDirs", string.Join(",", _removeDirsList));
             gameupdateini.SetKey("", "RemoveFiles", string.Join(",", _removeFilesList));
 
+            // set defaults from maker
+            if (infoIni.SectionExistsAndNotEmpty("Default"))
+            {
+                foreach (var parameter in infoIni.GetSectionKeyValuePairs("Default"))
+                {
+                    gameupdateini.SetKey("", parameter.Key, parameter.Value);
+                }
+            }
+
             gameupdateini.WriteFile();
 
             Process.Start(updateDir);

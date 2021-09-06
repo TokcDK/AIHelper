@@ -2822,7 +2822,7 @@ namespace AIHelper
                 //    { "Sideloader Modpack - KK_UncensorSelector", @"^\[KK\]\[Female\].*$" }//sideloader dir name /files regex filter
                 //};
 
-                var dirs = sortingDir.GetDirectories().Where(dirpath => dirpath.Name.StartsWith("Sideloader Modpack", comparisonType: StringComparison.InvariantCultureIgnoreCase));
+                var dirs = sortingDir.GetDirectories().Where(dirpath => dirpath.Name.StartsWith("Sideloader Modpack", comparisonType: StringComparison.InvariantCultureIgnoreCase) && !ManageSettings.GetKKManagerUpdateSortDirs().Contains(dirpath.Name));
 
                 if (!dirs.Any())
                 {
@@ -2873,7 +2873,7 @@ namespace AIHelper
 
                             if (isguid && !targetIsInSideloader/*do not touch sideloader files and let them be updated properly*/)//move by guid
                             {
-                                var target = file.Replace(ManageSettings.GetOverwriteFolder(), targetModPath);
+                                var target = file.Replace(sortingDir.FullName, targetModPath);
 
 
                                 bool isTargetExists = File.Exists(target);
@@ -2897,7 +2897,7 @@ namespace AIHelper
                                     }
                                     else if (targetinfo.LastWriteTime < sourceinfo.LastWriteTime)
                                     {
-                                        var tfiletarget = file.Replace(ManageSettings.GetOverwriteFolder(), targetModPath + "_" + timeInfo);
+                                        var tfiletarget = file.Replace(sortingDir.FullName, targetModPath + "_" + timeInfo);
 
                                         Directory.CreateDirectory(Path.GetDirectoryName(tfiletarget));
                                         if (!File.Exists(tfiletarget))
@@ -2905,7 +2905,7 @@ namespace AIHelper
                                     }
                                     else
                                     {
-                                        target = file.Replace(ManageSettings.GetOverwriteFolder(), targetModPath + "_" + timeInfo);
+                                        target = file.Replace(sortingDir.FullName, targetModPath + "_" + timeInfo);
                                     }
                                 }
 

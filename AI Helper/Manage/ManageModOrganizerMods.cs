@@ -701,6 +701,7 @@ namespace AIHelper.Manage
         {
             Dictionary<string, string> packs = new Dictionary<string, string>();
             HashSet<string> added = new HashSet<string>(10);
+            HashSet<string> addedModPackNames = new HashSet<string>(10);
             foreach (var dir in Directory.EnumerateDirectories(ManageSettings.GetCurrentGameModsDirPath()))
             {
                 if (!Directory.Exists(Path.Combine(dir, "mods")))
@@ -723,13 +724,24 @@ namespace AIHelper.Manage
                         continue;
                     }
 
+                    var oldName = name;
                     name += CheckFemaleMaleUncensor(modpackdir, name);
+
+                    var modpackName = Path.GetFileName(dir);
+
+                    // skip when same modpack name already added as target dir
+                    // but dont skip when it is uncensor selectr Male Female splitted zipmods of one modpack
+                    if (oldName == name && addedModPackNames.Contains(modpackName))
+                    {
+                        continue;
+                    }
 
                     //add to list
                     if (!packs.ContainsKey(name))
                     {
                         added.Add(name);
-                        packs.Add(name, Path.GetFileName(dir));
+                        packs.Add(name, modpackName);
+                        addedModPackNames.Add(modpackName);
                     }
                 }
             }

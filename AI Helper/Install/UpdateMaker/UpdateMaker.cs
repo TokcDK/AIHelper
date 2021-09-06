@@ -123,7 +123,7 @@ namespace AIHelper.Install.UpdateMaker
                 }
             }
 
-            var gameupdateini = ManageIni.GetINIFile(Path.Combine(updateDir, "gameupdate.ini"));
+            var gameupdateini = ManageIni.GetINIFile(Path.Combine(updateDir, ManageSettings.GetGameUpdateInstallerIniFileName()));
             gameupdateini.SetKey("", "GameFolderName", ManageSettings.GetCurrentGameFolderName());
             gameupdateini.SetKey("", "IsRoot", "true");
             // add keys

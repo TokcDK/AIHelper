@@ -24,6 +24,16 @@ namespace AIHelper.Manage
             return Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), "updateinfo.txt");
         }
 
+        /// <summary>
+        /// game update installer update info ini file name
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetGameUpdateInstallerIniFileName()
+        {
+            return "gameupdate.ini";
+        }
+
         internal static string GetCurrentGameMoGamePyPluginPath()
         {
 #pragma warning disable CA1308 // Normalize strings to uppercase

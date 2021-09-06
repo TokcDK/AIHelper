@@ -14,7 +14,7 @@ namespace AIHelper.Install.Types.Directories
 
         protected override bool Get(DirectoryInfo directoryInfo)
         {
-            if (directoryInfo == null || File.Exists(Path.Combine(directoryInfo.FullName, "gameupdate.ini")))
+            if (directoryInfo == null || File.Exists(Path.Combine(directoryInfo.FullName, ManageSettings.GetGameUpdateInstallerIniFileName())))
             {
                 // not parse game update
                 return false;

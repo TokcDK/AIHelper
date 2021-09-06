@@ -11,6 +11,11 @@ namespace AIHelper.Install.Types.Files
 
         protected override bool Get(FileInfo dllfile)
         {
+            if (dllfile == null)
+            {
+                return false;
+            }
+
             var ret = false;
 
             FileVersionInfo dllInfo = FileVersionInfo.GetVersionInfo(dllfile.FullName);

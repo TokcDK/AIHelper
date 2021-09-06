@@ -14,6 +14,12 @@ namespace AIHelper.Install.Types.Directories
 
         protected override bool Get(DirectoryInfo directoryInfo)
         {
+            if (directoryInfo == null || File.Exists(Path.Combine(directoryInfo.FullName, "gameupdate.ini")))
+            {
+                // not parse game update
+                return false;
+            }
+
             string name = directoryInfo.Name;
             if (!ManageStrings.IsStringAequalsStringB(name, "Temp", true)
                 && !ManageStrings.IsStringAequalsStringB(name, "f")

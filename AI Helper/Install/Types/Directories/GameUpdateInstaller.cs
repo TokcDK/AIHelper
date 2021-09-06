@@ -535,7 +535,7 @@ namespace AIHelper.Install.Types.Directories
 
     class GameUpdateInfo
     {
-        internal readonly Dictionary<string, string> _keys = new Dictionary<string, string>()
+        internal readonly Dictionary<string, string> Keys = new Dictionary<string, string>()
         {
             { nameof(GameFolderName), string.Empty },
             { nameof(UpdateData), "false" },
@@ -558,69 +558,69 @@ namespace AIHelper.Install.Types.Directories
         /// <summary>
         /// Name of game's folder name which need to update
         /// </summary>
-        internal string GameFolderName { get => _keys[nameof(GameFolderName)]; set => _keys[nameof(GameFolderName)] = value; }
+        internal string GameFolderName { get => Keys[nameof(GameFolderName)]; set => Keys[nameof(GameFolderName)] = value; }
         /// <summary>
         /// Update Data folder
         /// </summary>
-        internal string UpdateData { get => _keys[nameof(UpdateData)]; set => _keys[nameof(UpdateData)] = value; }
+        internal string UpdateData { get => Keys[nameof(UpdateData)]; set => Keys[nameof(UpdateData)] = value; }
         /// <summary>
         /// Update mod dirs in Mods folder
         /// </summary>
-        internal string UpdateMods { get => _keys[nameof(UpdateMods)]; set => _keys[nameof(UpdateMods)] = value; }
+        internal string UpdateMods { get => Keys[nameof(UpdateMods)]; set => Keys[nameof(UpdateMods)] = value; }
         /// <summary>
         /// Update files in MO dir of the game to newer
         /// </summary>
-        internal string UpdateMO { get => _keys[nameof(UpdateMO)]; set => _keys[nameof(UpdateMO)] = value; }
+        internal string UpdateMO { get => Keys[nameof(UpdateMO)]; set => Keys[nameof(UpdateMO)] = value; }
         /// <summary>
         /// Root means aihelper root dir as update dir root
         /// </summary>
-        internal string IsRoot { get => _keys[nameof(IsRoot)]; set => _keys[nameof(IsRoot)] = value; }
+        internal string IsRoot { get => Keys[nameof(IsRoot)]; set => Keys[nameof(IsRoot)] = value; }
         /// <summary>
         /// List of files to remove
         /// </summary>
-        public string RemoveFiles { get => _keys[nameof(RemoveFiles)]; set => _keys[nameof(RemoveFiles)] = value; }
+        public string RemoveFiles { get => Keys[nameof(RemoveFiles)]; set => Keys[nameof(RemoveFiles)] = value; }
         /// <summary>
         /// List of dirs to remove
         /// </summary>
-        public string RemoveDirs { get => _keys[nameof(RemoveDirs)]; set => _keys[nameof(RemoveDirs)] = value; }
+        public string RemoveDirs { get => Keys[nameof(RemoveDirs)]; set => Keys[nameof(RemoveDirs)] = value; }
         /// <summary>
         /// Determines if need to remove unused separators which is not updated modlist
         /// </summary>
-        public string RemoveUnusedSeparators { get => _keys[nameof(RemoveUnusedSeparators)]; set => _keys[nameof(RemoveUnusedSeparators)] = value; }
+        public string RemoveUnusedSeparators { get => Keys[nameof(RemoveUnusedSeparators)]; set => Keys[nameof(RemoveUnusedSeparators)] = value; }
         /// <summary>
         /// List of subpaths for dirs which must be skipped and not touched if already exist in current game
         /// </summary>
-        public string SkipExistDirs { get => _keys[nameof(SkipExistDirs)]; set => _keys[nameof(SkipExistDirs)] = value; }
+        public string SkipExistDirs { get => Keys[nameof(SkipExistDirs)]; set => Keys[nameof(SkipExistDirs)] = value; }
         /// <summary>
         /// List of subpaths for files which must be skipped and not touched if already exist in current game
         /// </summary>
-        public string SkipExistFiles { get => _keys[nameof(SkipExistFiles)]; set => _keys[nameof(SkipExistFiles)] = value; }
+        public string SkipExistFiles { get => Keys[nameof(SkipExistFiles)]; set => Keys[nameof(SkipExistFiles)] = value; }
 
         /// <summary>
         /// Dirs which must be created after update
         /// </summary>
-        public string CreateDirs { get => _keys[nameof(CreateDirs)]; set => _keys[nameof(CreateDirs)] = value; }
+        public string CreateDirs { get => Keys[nameof(CreateDirs)]; set => Keys[nameof(CreateDirs)] = value; }
         /// <summary>
         /// Files which must be created after update
         /// </summary>
-        public string CreateFiles { get => _keys[nameof(CreateFiles)]; set => _keys[nameof(CreateFiles)] = value; }
+        public string CreateFiles { get => Keys[nameof(CreateFiles)]; set => Keys[nameof(CreateFiles)] = value; }
 
         /// <summary>
         /// various game fixes and tweaks
         /// </summary>
-        public string ApplyFixes { get => _keys[nameof(ApplyFixes)]; set => _keys[nameof(ApplyFixes)] = value; }
+        public string ApplyFixes { get => Keys[nameof(ApplyFixes)]; set => Keys[nameof(ApplyFixes)] = value; }
         /// <summary>
         /// check crc32 while check if file need to update. (slow)
         /// </summary>
-        public string CRCFiles { get => _keys[nameof(CRCFiles)]; set => _keys[nameof(CRCFiles)] = value; }
+        public string CRCFiles { get => Keys[nameof(CRCFiles)]; set => Keys[nameof(CRCFiles)] = value; }
         /// <summary>
         /// check size while check if file need to update
         /// </summary>
-        public string SizeFiles { get => _keys[nameof(SizeFiles)]; set => _keys[nameof(SizeFiles)] = value; }
+        public string SizeFiles { get => Keys[nameof(SizeFiles)]; set => Keys[nameof(SizeFiles)] = value; }
         /// <summary>
         /// check last write time while check if file need to update
         /// </summary>
-        public string WriteTimeFiles { get => _keys[nameof(SizeFiles)]; set => _keys[nameof(SizeFiles)] = value; }
+        public string WriteTimeFiles { get => Keys[nameof(SizeFiles)]; set => Keys[nameof(SizeFiles)] = value; }
 
         public GameUpdateInfo(string updateInfoPath="")
         {
@@ -634,13 +634,13 @@ namespace AIHelper.Install.Types.Directories
         {
             var updateInfoIni = ManageIni.GetINIFile(updateInfoPath);
 
-            var keys = _keys.Keys.ToArray();
+            var keys = Keys.Keys.ToArray();
             for (int i = 0; i < keys.Length; i++)
             {
                 var keyName = keys[i];
                 if (updateInfoIni.KeyExists(keyName))
                 {
-                    _keys[keyName] = updateInfoIni.GetKey("", keyName);
+                    Keys[keyName] = updateInfoIni.GetKey("", keyName);
                 }
             }
         }

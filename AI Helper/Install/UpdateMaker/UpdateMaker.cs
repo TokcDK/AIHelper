@@ -126,9 +126,18 @@ namespace AIHelper.Install.UpdateMaker
             var gameupdateini = ManageIni.GetINIFile(Path.Combine(updateDir, "gameupdate.ini"));
             gameupdateini.SetKey("", "GameFolderName", ManageSettings.GetCurrentGameFolderName());
             gameupdateini.SetKey("", "IsRoot", "true");
+            // add keys
             foreach (var parameter in _gameupdatekeys)
             {
                 gameupdateini.SetKey("", parameter.Key, parameter.Value);
+            }
+            // add other missing keys and their default values
+            foreach (var parameter in new Types.Directories.GameUpdateInfo().Keys)
+            {
+                if (!gameupdateini.KeyExists(parameter.Key, ""))
+                {
+                    gameupdateini.SetKey("", parameter.Key, parameter.Value);
+                }
             }
             gameupdateini.SetKey("", "RemoveDirs", string.Join(",", _removeDirsList));
             gameupdateini.SetKey("", "RemoveFiles", string.Join(",", _removeFilesList));

@@ -29,7 +29,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
         {
             var infos = new Dictionary<string, string>();
 
-            var modsList = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
+            var modsList = ManageModOrganizer.GetModNamesListFromActiveMoProfile(SharedData.GameData.MainForm.CheckEnabledModsOnlyLabel.IsChecked());
 
             _targetinfo = new ModInfo();
 

@@ -90,9 +90,10 @@
             this.btnUpdateMods = new System.Windows.Forms.Button();
             this.UpdateButtonOptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.llOpenOldPluginsBuckupFolder = new System.Windows.Forms.LinkLabel();
+            this.BleadingEdgeZipmodsLabel = new System.Windows.Forms.Label();
             this.UpdatePluginsLabel = new System.Windows.Forms.Label();
             this.UseKKmanagerUpdaterLabel = new System.Windows.Forms.Label();
-            this.BleadingEdgeZipmodsLabel = new System.Windows.Forms.Label();
+            this.CheckEnabledModsOnlyLabel = new System.Windows.Forms.Label();
             this.Install2MOTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.Install2MOOptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -853,8 +854,8 @@
             // ToolsTabPageTableLayoutPanel
             // 
             this.ToolsTabPageTableLayoutPanel.ColumnCount = 2;
-            this.ToolsTabPageTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.ToolsTabPageTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.ToolsTabPageTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.29412F));
+            this.ToolsTabPageTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 49.70588F));
             this.ToolsTabPageTableLayoutPanel.Controls.Add(this.ToolsFixModListButton, 0, 2);
             this.ToolsTabPageTableLayoutPanel.Controls.Add(this.UpdateButtonTableLayoutPanel, 0, 3);
             this.ToolsTabPageTableLayoutPanel.Controls.Add(this.Install2MOTableLayoutPanel, 0, 1);
@@ -878,7 +879,7 @@
             this.ToolsFixModListButton.ForeColor = System.Drawing.Color.Black;
             this.ToolsFixModListButton.Location = new System.Drawing.Point(3, 79);
             this.ToolsFixModListButton.Name = "ToolsFixModListButton";
-            this.ToolsFixModListButton.Size = new System.Drawing.Size(129, 30);
+            this.ToolsFixModListButton.Size = new System.Drawing.Size(122, 30);
             this.ToolsFixModListButton.TabIndex = 22;
             this.ToolsFixModListButton.Text = "Fix ModList";
             this.ToolsFixModListButton.UseVisualStyleBackColor = false;
@@ -887,8 +888,8 @@
             // UpdateButtonTableLayoutPanel
             // 
             this.UpdateButtonTableLayoutPanel.ColumnCount = 2;
-            this.UpdateButtonTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 79.41177F));
-            this.UpdateButtonTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20.58824F));
+            this.UpdateButtonTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 74.86339F));
+            this.UpdateButtonTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.13661F));
             this.UpdateButtonTableLayoutPanel.Controls.Add(this.btnUpdateMods, 0, 0);
             this.UpdateButtonTableLayoutPanel.Controls.Add(this.UpdateButtonOptionsFlowLayoutPanel, 1, 0);
             this.UpdateButtonTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -907,7 +908,7 @@
             this.btnUpdateMods.ForeColor = System.Drawing.Color.Black;
             this.btnUpdateMods.Location = new System.Drawing.Point(3, 3);
             this.btnUpdateMods.Name = "btnUpdateMods";
-            this.btnUpdateMods.Size = new System.Drawing.Size(128, 30);
+            this.btnUpdateMods.Size = new System.Drawing.Size(121, 30);
             this.btnUpdateMods.TabIndex = 26;
             this.btnUpdateMods.Text = "Update mods";
             this.btnUpdateMods.UseVisualStyleBackColor = false;
@@ -915,26 +916,29 @@
             // 
             // UpdateButtonOptionsFlowLayoutPanel
             // 
-            this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.UpdatePluginsLabel);
             this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.llOpenOldPluginsBuckupFolder);
             this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.UseKKmanagerUpdaterLabel);
+            this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.UpdatePluginsLabel);
+            this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.CheckEnabledModsOnlyLabel);
             this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.BleadingEdgeZipmodsLabel);
             this.UpdateButtonOptionsFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.UpdateButtonOptionsFlowLayoutPanel.Location = new System.Drawing.Point(134, 0);
+            this.UpdateButtonOptionsFlowLayoutPanel.Location = new System.Drawing.Point(127, 0);
             this.UpdateButtonOptionsFlowLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.UpdateButtonOptionsFlowLayoutPanel.Name = "UpdateButtonOptionsFlowLayoutPanel";
-            this.UpdateButtonOptionsFlowLayoutPanel.Size = new System.Drawing.Size(36, 41);
+            this.UpdateButtonOptionsFlowLayoutPanel.Size = new System.Drawing.Size(43, 41);
             this.UpdateButtonOptionsFlowLayoutPanel.TabIndex = 27;
             // 
             // llOpenOldPluginsBuckupFolder
             // 
             this.llOpenOldPluginsBuckupFolder.AutoSize = true;
             this.llOpenOldPluginsBuckupFolder.BackColor = System.Drawing.Color.Transparent;
+            this.llOpenOldPluginsBuckupFolder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.llOpenOldPluginsBuckupFolder.Cursor = System.Windows.Forms.Cursors.Hand;
             this.llOpenOldPluginsBuckupFolder.LinkColor = System.Drawing.Color.WhiteSmoke;
-            this.llOpenOldPluginsBuckupFolder.Location = new System.Drawing.Point(19, 0);
+            this.llOpenOldPluginsBuckupFolder.Location = new System.Drawing.Point(0, 0);
             this.llOpenOldPluginsBuckupFolder.Margin = new System.Windows.Forms.Padding(0);
             this.llOpenOldPluginsBuckupFolder.Name = "llOpenOldPluginsBuckupFolder";
-            this.llOpenOldPluginsBuckupFolder.Size = new System.Drawing.Size(14, 13);
+            this.llOpenOldPluginsBuckupFolder.Size = new System.Drawing.Size(16, 15);
             this.llOpenOldPluginsBuckupFolder.TabIndex = 27;
             this.llOpenOldPluginsBuckupFolder.TabStop = true;
             this.llOpenOldPluginsBuckupFolder.Text = "D";
@@ -942,12 +946,26 @@
             this.llOpenOldPluginsBuckupFolder.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.llOpenOldPluginsBuckupFolder.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked_1);
             // 
+            // BleadingEdgeZipmodsLabel
+            // 
+            this.BleadingEdgeZipmodsLabel.AutoSize = true;
+            this.BleadingEdgeZipmodsLabel.BackColor = System.Drawing.Color.Transparent;
+            this.BleadingEdgeZipmodsLabel.ForeColor = System.Drawing.Color.LightGray;
+            this.BleadingEdgeZipmodsLabel.Location = new System.Drawing.Point(13, 15);
+            this.BleadingEdgeZipmodsLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.BleadingEdgeZipmodsLabel.Name = "BleadingEdgeZipmodsLabel";
+            this.BleadingEdgeZipmodsLabel.Size = new System.Drawing.Size(13, 13);
+            this.BleadingEdgeZipmodsLabel.TabIndex = 32;
+            this.BleadingEdgeZipmodsLabel.Text = "b";
+            this.BleadingEdgeZipmodsLabel.Click += new System.EventHandler(this.BleadingEdgeZipmodsLabel_Click);
+            // 
             // UpdatePluginsLabel
             // 
             this.UpdatePluginsLabel.AutoSize = true;
             this.UpdatePluginsLabel.BackColor = System.Drawing.Color.Transparent;
             this.UpdatePluginsLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.UpdatePluginsLabel.Location = new System.Drawing.Point(3, 0);
+            this.UpdatePluginsLabel.Location = new System.Drawing.Point(29, 0);
+            this.UpdatePluginsLabel.Margin = new System.Windows.Forms.Padding(0);
             this.UpdatePluginsLabel.Name = "UpdatePluginsLabel";
             this.UpdatePluginsLabel.Size = new System.Drawing.Size(13, 13);
             this.UpdatePluginsLabel.TabIndex = 31;
@@ -959,30 +977,32 @@
             this.UseKKmanagerUpdaterLabel.AutoSize = true;
             this.UseKKmanagerUpdaterLabel.BackColor = System.Drawing.Color.Transparent;
             this.UseKKmanagerUpdaterLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.UseKKmanagerUpdaterLabel.Location = new System.Drawing.Point(3, 13);
+            this.UseKKmanagerUpdaterLabel.Location = new System.Drawing.Point(16, 0);
+            this.UseKKmanagerUpdaterLabel.Margin = new System.Windows.Forms.Padding(0);
             this.UseKKmanagerUpdaterLabel.Name = "UseKKmanagerUpdaterLabel";
             this.UseKKmanagerUpdaterLabel.Size = new System.Drawing.Size(13, 13);
             this.UseKKmanagerUpdaterLabel.TabIndex = 32;
             this.UseKKmanagerUpdaterLabel.Text = "Z";
             this.UseKKmanagerUpdaterLabel.Click += new System.EventHandler(this.UseKKmanagerUpdaterLabel_Click);
             // 
-            // BleadingEdgeZipmodsLabel
+            // CheckEnabledModsOnlyLabel
             // 
-            this.BleadingEdgeZipmodsLabel.AutoSize = true;
-            this.BleadingEdgeZipmodsLabel.BackColor = System.Drawing.Color.Transparent;
-            this.BleadingEdgeZipmodsLabel.ForeColor = System.Drawing.Color.LightGray;
-            this.BleadingEdgeZipmodsLabel.Location = new System.Drawing.Point(3, 26);
-            this.BleadingEdgeZipmodsLabel.Name = "BleadingEdgeZipmodsLabel";
-            this.BleadingEdgeZipmodsLabel.Size = new System.Drawing.Size(13, 13);
-            this.BleadingEdgeZipmodsLabel.TabIndex = 32;
-            this.BleadingEdgeZipmodsLabel.Text = "T";
-            this.BleadingEdgeZipmodsLabel.Click += new System.EventHandler(this.BleadingEdgeZipmodsLabel_Click);
+            this.CheckEnabledModsOnlyLabel.AutoSize = true;
+            this.CheckEnabledModsOnlyLabel.BackColor = System.Drawing.Color.Transparent;
+            this.CheckEnabledModsOnlyLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.CheckEnabledModsOnlyLabel.Location = new System.Drawing.Point(0, 15);
+            this.CheckEnabledModsOnlyLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.CheckEnabledModsOnlyLabel.Name = "CheckEnabledModsOnlyLabel";
+            this.CheckEnabledModsOnlyLabel.Size = new System.Drawing.Size(13, 13);
+            this.CheckEnabledModsOnlyLabel.TabIndex = 33;
+            this.CheckEnabledModsOnlyLabel.Text = "e";
+            this.CheckEnabledModsOnlyLabel.Click += new System.EventHandler(this.CheckEnabledModsOnlyLabel_Click);
             // 
             // Install2MOTableLayoutPanel
             // 
             this.Install2MOTableLayoutPanel.ColumnCount = 2;
-            this.Install2MOTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 80F));
-            this.Install2MOTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.Install2MOTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 76.02339F));
+            this.Install2MOTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 23.97661F));
             this.Install2MOTableLayoutPanel.Controls.Add(this.InstallInModsButton, 0, 0);
             this.Install2MOTableLayoutPanel.Controls.Add(this.Install2MOOptionsFlowLayoutPanel, 1, 0);
             this.Install2MOTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1001,7 +1021,7 @@
             this.InstallInModsButton.ForeColor = System.Drawing.Color.Black;
             this.InstallInModsButton.Location = new System.Drawing.Point(3, 3);
             this.InstallInModsButton.Name = "InstallInModsButton";
-            this.InstallInModsButton.Size = new System.Drawing.Size(129, 30);
+            this.InstallInModsButton.Size = new System.Drawing.Size(122, 30);
             this.InstallInModsButton.TabIndex = 17;
             this.InstallInModsButton.Text = "Install";
             this.InstallInModsButton.UseVisualStyleBackColor = false;
@@ -1011,23 +1031,26 @@
             // 
             this.Install2MOOptionsFlowLayoutPanel.Controls.Add(this.Install2MODirPathOpenFolderLinkLabel);
             this.Install2MOOptionsFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Install2MOOptionsFlowLayoutPanel.Location = new System.Drawing.Point(136, 0);
+            this.Install2MOOptionsFlowLayoutPanel.Location = new System.Drawing.Point(129, 0);
             this.Install2MOOptionsFlowLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.Install2MOOptionsFlowLayoutPanel.Name = "Install2MOOptionsFlowLayoutPanel";
-            this.Install2MOOptionsFlowLayoutPanel.Size = new System.Drawing.Size(34, 38);
+            this.Install2MOOptionsFlowLayoutPanel.Size = new System.Drawing.Size(41, 38);
             this.Install2MOOptionsFlowLayoutPanel.TabIndex = 18;
             // 
             // Install2MODirPathOpenFolderLinkLabel
             // 
             this.Install2MODirPathOpenFolderLinkLabel.AutoSize = true;
+            this.Install2MODirPathOpenFolderLinkLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.Install2MODirPathOpenFolderLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Install2MODirPathOpenFolderLinkLabel.LinkColor = System.Drawing.Color.WhiteSmoke;
             this.Install2MODirPathOpenFolderLinkLabel.Location = new System.Drawing.Point(0, 0);
             this.Install2MODirPathOpenFolderLinkLabel.Margin = new System.Windows.Forms.Padding(0);
             this.Install2MODirPathOpenFolderLinkLabel.Name = "Install2MODirPathOpenFolderLinkLabel";
-            this.Install2MODirPathOpenFolderLinkLabel.Size = new System.Drawing.Size(14, 13);
+            this.Install2MODirPathOpenFolderLinkLabel.Size = new System.Drawing.Size(16, 15);
             this.Install2MODirPathOpenFolderLinkLabel.TabIndex = 18;
             this.Install2MODirPathOpenFolderLinkLabel.TabStop = true;
             this.Install2MODirPathOpenFolderLinkLabel.Text = "D";
+            this.Install2MODirPathOpenFolderLinkLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             this.Install2MODirPathOpenFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.Install2MODirPathOpenFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.Install2MODirPathOpenFolderLinkLabel_LinkClicked);
             // 
@@ -1039,7 +1062,7 @@
             this.MOCommonModeSwitchButton.ForeColor = System.Drawing.Color.Black;
             this.MOCommonModeSwitchButton.Location = new System.Drawing.Point(3, 3);
             this.MOCommonModeSwitchButton.Name = "MOCommonModeSwitchButton";
-            this.MOCommonModeSwitchButton.Size = new System.Drawing.Size(129, 30);
+            this.MOCommonModeSwitchButton.Size = new System.Drawing.Size(122, 30);
             this.MOCommonModeSwitchButton.TabIndex = 16;
             this.MOCommonModeSwitchButton.Text = "MOToCommon";
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
@@ -1159,6 +1182,7 @@
         private System.Windows.Forms.Label UpdatePluginsLabel;
         private System.Windows.Forms.Label UseKKmanagerUpdaterLabel;
         private System.Windows.Forms.Label BleadingEdgeZipmodsLabel;
+        internal System.Windows.Forms.Label CheckEnabledModsOnlyLabel;
     }
 }
 

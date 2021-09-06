@@ -431,6 +431,8 @@ namespace AIHelper
                     );
                 _thToolTip.SetToolTip(UpdatePluginsLabel, T._("Check if need to run update check for plugins and Mod Organizer.")
                     );
+                _thToolTip.SetToolTip(CheckEnabledModsOnlyLabel, T._("Check updates only for enabled plugins.")
+                    );
                 _thToolTip.SetToolTip(BleadingEdgeZipmodsLabel,
                     T._("Check also updates of Bleeding Edge Sideloader Modpack in KKManager") + "\n" +
                     T._("Bleeding Edge Sideloader modpack contains test versions of zipmods which is still not added in main modpacks") + "\n\n" +
@@ -3086,6 +3088,7 @@ namespace AIHelper
             BleadingEdgeZipmodsLabel.Visible = UseKKmanagerUpdaterLabel.Visible;
             //cbxBleadingEdgeZipmods.Visible = UseKKmanagerUpdaterCheckBox.Visible;
 
+            CheckEnabledModsOnlyLabel.Enabled = UpdatePluginsLabel.IsChecked();
             btnUpdateMods.Enabled = (UpdatePluginsLabel.Visible && UpdatePluginsLabel.IsChecked()) || (UseKKmanagerUpdaterLabel.Visible && UseKKmanagerUpdaterLabel.IsChecked());
             //btnUpdateMods.Enabled = (UpdatePluginsCheckBox.Visible && UpdatePluginsCheckBox.Checked) || (UseKKmanagerUpdaterCheckBox.Visible && UseKKmanagerUpdaterCheckBox.Checked);
 
@@ -3153,8 +3156,14 @@ namespace AIHelper
 
         private void RefreshLabelCheckState(object sender)
         {
-            (sender as Label).SetCheck(!(sender as Label).IsChecked());
+            var label = (sender as Label);
+            label.SetCheck(!label.IsChecked());
             UpdateButtonOptionsRefresh();
+        }
+
+        private void CheckEnabledModsOnlyLabel_Click(object sender, EventArgs e)
+        {
+            RefreshLabelCheckState(sender);
         }
 
         //Disable close window button

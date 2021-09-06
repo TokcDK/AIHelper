@@ -35,9 +35,9 @@ namespace AIHelper.Install.UpdateMaker
 
             var infoIni = ManageIni.GetINIFile(updateMakeInfoFilePath);
             var blValueDirs = infoIni.GetKey("", "BlacklistDirs");
-            var blacklistDirs = blValueDirs.Split(',').ToHashSet();
+            var blacklistDirs = (blValueDirs == null ? new HashSet<string>() : blValueDirs.Split(',').ToHashSet());
             var blValueFiles = infoIni.GetKey("", "BlacklistFiles");
-            var blacklistFiles = blValueFiles.Split(',').ToHashSet();
+            var blacklistFiles = (blValueFiles == null ? new HashSet<string>() : blValueFiles.Split(',').ToHashSet());
 
             var dateTimeSuffix = ManageSettings.GetDateTimeBasedSuffix();
 
@@ -69,7 +69,7 @@ namespace AIHelper.Install.UpdateMaker
                     var parameterDirs = infoIni.GetKey("", parameter.DirsKey).Split(',');
 
                     _parameter.blacklist = blacklistDirs;
-                    _useBlacklist = _parameter.blacklist != null && !string.IsNullOrWhiteSpace(blValueDirs) && _parameter.blacklist.Count > 0;
+                    _useBlacklist = !string.IsNullOrWhiteSpace(blValueDirs) && _parameter.blacklist.Count > 0;
 
                     ParseDirs(parameterDirs, parameterGameDir, parameterUpdateDir);
 
@@ -94,7 +94,7 @@ namespace AIHelper.Install.UpdateMaker
                     var parameterFiles = infoIni.GetKey("", parameter.FilesKey).Split(',');
 
                     _parameter.blacklist = blacklistFiles;
-                    _useBlacklist = _parameter.blacklist != null && !string.IsNullOrWhiteSpace(blValueFiles) && _parameter.blacklist.Count > 0;
+                    _useBlacklist = !string.IsNullOrWhiteSpace(blValueFiles) && _parameter.blacklist.Count > 0;
 
                     ParseFiles(parameterFiles, parameterGameDir, parameterUpdateDir);
 

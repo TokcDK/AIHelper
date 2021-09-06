@@ -119,13 +119,6 @@ namespace AIHelper.Install.Types.Files
                 ,
                 isUpdate ? string.Empty : "<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright
                 );
-            //Utils.IniFile INI = new Utils.IniFile(Path.Combine(dllmoddirpath, "meta.ini"));
-            //INI.WriteINI("General", "category", "\"51,\"");
-            //INI.WriteINI("General", "version", version);
-            //INI.WriteINI("General", "gameName", "Skyrim");
-            //INI.WriteINI("General", "comments", "Requires: BepinEx");
-            //INI.WriteINI("General", "notes", "\"<br>Author: " + author + "<br><br>" + description + "<br><br>" + copyright + " \"");
-            //INI.WriteINI("General", "validated", "true");
 
             ManageModOrganizer.ActivateDeactivateInsertMod(Path.GetFileName(dllTargetModDirPath));
 

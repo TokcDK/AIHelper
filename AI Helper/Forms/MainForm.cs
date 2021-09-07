@@ -3052,7 +3052,7 @@ namespace AIHelper
             Process.Start(ManageSettings.GetDiscordGroupLink());//Program's discord server
         }
 
-        private void linkLabel1_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LlOpenOldPluginsBuckupFolder_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var modUpdatesBakDir = ManageSettings.GetUpdatedModsOlderVersionsBuckupDirPath();
             if (!Directory.Exists(modUpdatesBakDir))

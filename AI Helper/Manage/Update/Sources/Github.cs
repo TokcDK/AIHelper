@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Net;
@@ -24,6 +25,31 @@ namespace AIHelper.Manage.Update.Sources
         internal async override Task<bool> GetFile()
         {
             return await DownloadTheFile().ConfigureAwait(true);
+        }
+
+        protected override void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            base.DownloadProgressChanged(sender, e);
+
+            if (e.ProgressPercentage <= _dwnpb.Maximum)
+            {
+                _dwnpb.Value = e.ProgressPercentage;
+            }
+        }
+
+        protected override void DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            base.DownloadFileCompleted(sender, e);
+
+            if (_dwnpb != null)
+            {
+                _dwnpb.Dispose();
+            }
+
+            if (_dwnf != null)
+            {
+                _dwnf.Dispose();
+            }
         }
 
         static Form _dwnf;
@@ -56,29 +82,8 @@ namespace AIHelper.Manage.Update.Sources
             };
             _dwnf.Controls.Add(_dwnpb);
             _dwnf.Show();
-            Wc.DownloadProgressChanged += (s, ea) =>
-            {
-                if (ea.ProgressPercentage <= _dwnpb.Maximum)
-                {
-                    _dwnpb.Value = ea.ProgressPercentage;
-                }
-            };
 
             Info.UpdateFilePath = Path.Combine(updateDownloadsDir, updateFileName);
-            Wc.DownloadFileCompleted += (s, ea) =>
-            {
-                if (_dwnpb != null)
-                {
-                    _dwnpb.Dispose();
-                }
-
-                if (_dwnf != null)
-                {
-                    _dwnf.Dispose();
-                }
-                //MessageBox.Show("Download Complete!");
-                //PerformModUpdateFromArchive();
-            };
 
             if (!File.Exists(Info.UpdateFilePath)//not exist
                 || (!Info.VersionFromFile && File.Exists(Info.UpdateFilePath) && !updateFileName.Contains(Info.TargetLastVersion))//when version from releases and filename is always same need to download it each time because exist in downloads is from older release
@@ -87,7 +92,7 @@ namespace AIHelper.Manage.Update.Sources
             {
                 await DownloadFileTaskAsync(new Uri(Info.DownloadLink), Info.UpdateFilePath).ConfigureAwait(true);
 
-                return File.Exists(Info.UpdateFilePath) && new FileInfo(Info.UpdateFilePath).Length != 0;
+                return IsCompletedDownload && File.Exists(Info.UpdateFilePath) && new FileInfo(Info.UpdateFilePath).Length != 0;
             }
             else
             {
@@ -177,7 +182,7 @@ namespace AIHelper.Manage.Update.Sources
                 //    return "";
                 //}
 
-                var latestReleasePage = Wc.DownloadString(Info.SourceLink);
+                var latestReleasePage = WC.DownloadString(Info.SourceLink);
                 var version = Regex.Match(latestReleasePage, @"/releases/tag/([^\""]+)\""");
                 if (version.Success)
                 {
@@ -204,7 +209,7 @@ namespace AIHelper.Manage.Update.Sources
                 {
                     getFromLast10Releases = true;
                     Info.SourceLink = "https://github.com/" + _gitOwner + "/" + _gitRepository + "/releases";
-                    latestReleasePage = Wc.DownloadString(Info.SourceLink);
+                    latestReleasePage = WC.DownloadString(Info.SourceLink);
                     linkPattern = @"href\=\""(/" + _gitOwner + "/" + _gitRepository + "/releases/download/([^/]+)/" + Info.UpdateFileStartsWith + @"([^\""]+)" + Info.UpdateFileEndsWith + @")\""";
                     link2File = Regex.Match(latestReleasePage, linkPattern);
 
@@ -337,7 +342,7 @@ namespace AIHelper.Manage.Update.Sources
 
         internal override byte[] DownloadFileFromTheLink(Uri link)
         {
-            return Wc.DownloadData(link);
+            return WC.DownloadData(link);
         }
 
         //private void SetContentLength(string sourceLink, long contentLength)

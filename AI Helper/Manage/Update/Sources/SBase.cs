@@ -1,6 +1,8 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Net;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace AIHelper.Manage.Update.Sources
 {
@@ -11,8 +13,9 @@ namespace AIHelper.Manage.Update.Sources
     {
         protected UpdateInfo Info;
 
-        protected readonly WebClient Wc;
+        protected SourceWebClient WC;
 
+        Timer Timer;
         /// <summary>
         /// download file
         /// </summary>
@@ -21,9 +24,10 @@ namespace AIHelper.Manage.Update.Sources
         /// <returns></returns>
         protected async Task DownloadFileTaskAsync(Uri uri, string updateFilePath)
         {
+            InitDownloadTimeTimer();
             try
             {
-                await Wc.DownloadFileTaskAsync(uri, updateFilePath).ConfigureAwait(true);
+                await WC.DownloadFileTaskAsync(uri, updateFilePath).ConfigureAwait(true);
             }
             catch (WebException ex)
             {
@@ -32,10 +36,71 @@ namespace AIHelper.Manage.Update.Sources
             }
         }
 
+        /// <summary>
+        /// made for causes when for some reason downloading is freezing like when reqrypt run
+        /// </summary>
+        private void InitDownloadTimeTimer()
+        {
+            Timer = new Timer
+            {
+                Interval = 10000 // 10 second timeout if download is freezed
+            };
+            Timer.Elapsed += CancelDownload;
+            Timer.Start();
+        }
+
+        bool IsCancelDownload;
+        private void CancelDownload(object sender, ElapsedEventArgs e)
+        {
+            IsCancelDownload = true;
+            Info.LastErrorText.AppendLine("Download was freezed by some reason and was cancelled after 10 seconds elapsed.");
+            WC.CancelAsync();
+        }
+
         protected SBase(UpdateInfo info)
         {
-            this.Info = info;
-            Wc = new WebClient();
+            Info = info;
+            WebClientInit();
+        }
+
+        private void WebClientInit()
+        {
+            WC = new SourceWebClient();
+
+            WC.DownloadProgressChanged += DownloadProgressChanged;
+
+            WC.DownloadFileCompleted += DownloadFileCompleted;
+        }
+
+        protected virtual void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            RestartTimer();
+        }
+
+        private void RestartTimer()
+        {
+            // restart timer when progress is changing
+            Timer.Stop();
+            Timer.Start();
+        }
+
+        protected bool IsCompletedDownload;
+        protected virtual void DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            if(!IsCancelDownload)
+            IsCompletedDownload = true;
+            ReleaseTimer();
+        }
+
+        private void ReleaseTimer()
+        {
+            // stop timer and dispose
+            Timer.Stop();
+            Timer.Dispose();
+        }
+
+        protected SBase()
+        {
         }
 
         /// <summary>
@@ -76,10 +141,20 @@ namespace AIHelper.Manage.Update.Sources
 
         public void Dispose()
         {
-            if (Wc != null)
+            if (WC != null)
             {
-                Wc.Dispose();
+                WC.Dispose();
             }
+        }
+    }
+
+    public class SourceWebClient : WebClient
+    {
+        protected override WebRequest GetWebRequest(Uri address)
+        {
+            WebRequest webRequest = base.GetWebRequest(address);
+            webRequest.Timeout = 5000; // 5 sec timeout
+            return webRequest;
         }
     }
 }

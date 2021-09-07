@@ -1603,5 +1603,14 @@ namespace AIHelper.Manage
                         " \\x43f\\x440\\x43e\\x433\\x440\\x430\\x43c\\x43c\\x44b" +
                         " \\x43e\\x431\\x43d\\x43e\\x432\\x43b\\x435\\x43d\\x438\\x44f.</p></body></html>";
         }
+
+        /// <summary>
+        /// temp dir for downloads of kkmanager standalone updater
+        /// </summary>
+        /// <returns></returns>
+        internal static string KKManagerDownloadsTempDir()
+        {
+            return Path.Combine(GetCurrentGameDataPath(), "temp", "KKManager_downloads");
+        }
     }
 }

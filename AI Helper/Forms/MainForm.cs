@@ -2651,6 +2651,8 @@ namespace AIHelper
             //activate all mods with Sideloader modpack inside
             ActivateSideloaderMods(zipmodsGuidList);
 
+            FixKKmanagerUpdaterFailedDownloads();
+
             RunProgram(ManageSettings.GetAppMOexePath(), "moshortcut://:" + ManageModOrganizer.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
 
             //restore modlist
@@ -2658,6 +2660,14 @@ namespace AIHelper
 
             //restore zipmods to source mods
             MoveZipModsFromOverwriteToSourceMod(zipmodsGuidList);
+        }
+
+        /// <summary>
+        /// prevents failed kkmanager updater file creation when run from mo
+        /// </summary>
+        private void FixKKmanagerUpdaterFailedDownloads()
+        {
+            Directory.CreateDirectory(ManageSettings.KKManagerDownloadsTempDir());
         }
 
         private void UpdateModsInit()
@@ -2708,25 +2718,18 @@ namespace AIHelper
         {
             foreach (var sortingDirPath in ManageSettings.GetKKManagerUpdateSortDirs())
             {
-                //clean empty dirs
-                ManageFilesFolders.DeleteEmptySubfolders(sortingDirPath, false);
-
                 // clean temp dir
                 CleanKKManagerTempDir(sortingDirPath);
             }
+
+            // clean temp in data
+            CleanKKManagerTempDir(ManageSettings.GetCurrentGameDataPath());
         }
 
         private static void CleanKKManagerTempDir(string targetDir)
         {
-            var tempDir = new DirectoryInfo(Path.Combine(targetDir, "temp"));
-            if (tempDir.Exists)
-            {
-                try
-                {
-                    tempDir.DeleteRecursive();
-                }
-                catch { }
-            }
+            var tempDir = Path.Combine(targetDir, "temp");
+            ManageFilesFolders.DeleteEmptySubfolders(tempDir, deleteThisDir: true);
         }
 
         private static void SortCommunityUserDataPack()
@@ -2868,7 +2871,7 @@ namespace AIHelper
                             var guid = ManageArchive.GetZipmodGuid(file);
                             bool isguid = guid.Length > 0 && zipmodsGuidList.GUIDList.ContainsKey(guid);
                             string targetModPath = isguid ? GetMoModPathInMods(zipmodsGuidList.GUIDList[guid].FileInfo.FullName) : "";
-                            var pathElements = !string.IsNullOrWhiteSpace(targetModPath) ? file.Replace(targetModPath, "").Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries) : null;
+                            var pathElements = !string.IsNullOrWhiteSpace(targetModPath) ? file.Replace(sortingDirPath, "").Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries) : null;
                             var targetzipModDirName = pathElements != null && pathElements.Length > 1 ? pathElements[1] : ""; // %modpath%\mods\%sideloadermodpackdir%
                             var targetIsInSideloader = targetzipModDirName.ToUpperInvariant().Contains("SIDELOADER MODPACK"); // dir in mods is sideloader
 

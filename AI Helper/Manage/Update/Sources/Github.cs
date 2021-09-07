@@ -49,6 +49,7 @@ namespace AIHelper.Manage.Update.Sources
             _dwnf = new Form
             {
                 StartPosition = FormStartPosition.CenterScreen,
+                TopMost = true,
                 Size = new Size(400, 50),
                 Text = T._("Downloading") + ": " + updateFileName,
                 FormBorderStyle = FormBorderStyle.FixedToolWindow

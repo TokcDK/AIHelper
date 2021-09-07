@@ -44,7 +44,6 @@ namespace AIHelper
 
             if (!SetListOfAddedGames())
             {
-                Directory.CreateDirectory(ManageSettings.GetGamesFolderPath());
                 Application.Exit();
                 this.Enabled = false;
                 return;

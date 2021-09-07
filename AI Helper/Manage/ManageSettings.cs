@@ -155,6 +155,9 @@ namespace AIHelper.Manage
             //var listOfGamesRead = new List<Game>(listOfGames);
 
             var listOfGameDirs = new List<Game>();
+
+            Directory.CreateDirectory(GetGamesFolderPath());// create games dir
+
             foreach (var gameDir in Directory.EnumerateDirectories(GetGamesFolderPath()))
             {
                 foreach (var gameType in listOfGames)

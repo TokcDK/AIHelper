@@ -862,9 +862,12 @@ namespace AIHelper.Manage
                                 }
                             }
 
+                            // create symlink
                             targetObjectPath.CreateSymlink(symlinkPath
                                 , isRelative: false
                                 , objectType: targetObjectType);
+
+                            break; // info found, stop read file
                         }
                     }
                 }

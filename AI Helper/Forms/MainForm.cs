@@ -681,6 +681,8 @@ namespace AIHelper
 
                 ManageModOrganizer.MoIniFixes();
 
+                ManageModOrganizerMods.MakeLinks();
+
                 //try start in another thread for perfomance purposes
                 new Thread(obj => RunSlowActions()).Start();
 

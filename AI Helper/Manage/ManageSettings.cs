@@ -897,6 +897,16 @@ namespace AIHelper.Manage
             return GameData.CurrentGame.GetGameFolderName();
         }
 
+        /// <summary>
+        /// file name for file where contains info to create symlink
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetLinkInfoFileName()
+        {
+            return "linkinfo.txt";
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string UpdateReportHtmlFileName()
         {

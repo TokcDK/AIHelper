@@ -1853,47 +1853,68 @@ namespace AIHelper.Manage
         /// <returns></returns>
         public static string[] GetModNamesListFromActiveMoProfile(bool onlyEnabled = true)
         {
+            return EnumerateModNamesListFromActiveMoProfile(onlyEnabled).ToArray();
+
+            //string[] lines;
+            //if (onlyEnabled)
+            //{
+            //    //все строки с + в начале
+            //    lines = File.ReadAllLines(profilemodlistpath).Where(line => line.Length > 0 && line[0] == '+').ToArray();
+            //}
+            //else
+            //{
+            //    //все строки кроме сепараторов
+            //    lines = File.ReadAllLines(profilemodlistpath).Where(line => line.Length > 0 && line[0] != '#' && (line.Length < 10 || !line.EndsWith("_separator", StringComparison.InvariantCulture))).ToArray();
+            //}
+            ////Array.Reverse(lines); //убрал, т.к. дулаю архив с резервными копиями
+            //int linesLength = lines.Length;
+            //for (int l = 0; l < linesLength; l++)
+            //{
+            //    //remove +-
+            //    lines[l] = lines[l].Remove(0, 1);
+            //}
+
+            //return lines;
+        }
+
+        /// <summary>
+        /// return list of mo names in active profile folder
+        /// </summary>
+        /// <param name="onlyEnabled"></param>
+        /// <returns></returns>
+        public static IEnumerable<string> EnumerateModNamesListFromActiveMoProfile(bool onlyEnabled = true)
+        {
             string currentMOprofile = ManageSettings.GetMoSelectedProfileDirName();
 
-            if (currentMOprofile.Length > 0)
+            if (currentMOprofile.Length == 0)
             {
-                string profilemodlistpath = ManageSettings.GetCurrentMoProfileModlistPath();
-
-                //фикс на случай несовпадения выбранной игры и профиля в MO ini
-                if (!File.Exists(profilemodlistpath))
-                {
-                    RedefineGameMoData();
-                    currentMOprofile = ReGetcurrentMOprofile(currentMOprofile);
-
-                    profilemodlistpath = ManageSettings.GetCurrentMoProfileModlistPath();
-                }
-
-                if (File.Exists(profilemodlistpath))
-                {
-                    string[] lines;
-                    if (onlyEnabled)
-                    {
-                        //все строки с + в начале
-                        lines = File.ReadAllLines(profilemodlistpath).Where(line => line.Length > 0 && line[0] == '+').ToArray();
-                    }
-                    else
-                    {
-                        //все строки кроме сепараторов
-                        lines = File.ReadAllLines(profilemodlistpath).Where(line => line.Length > 0 && line[0] != '#' && (line.Length < 10 || !line.EndsWith("_separator", StringComparison.InvariantCulture))).ToArray();
-                    }
-                    //Array.Reverse(lines); //убрал, т.к. дулаю архив с резервными копиями
-                    int linesLength = lines.Length;
-                    for (int l = 0; l < linesLength; l++)
-                    {
-                        //remove +-
-                        lines[l] = lines[l].Remove(0, 1);
-                    }
-
-                    return lines;
-                }
+                yield break;
             }
 
-            return new string[1];
+            string profilemodlistpath = ManageSettings.GetCurrentMoProfileModlistPath();
+
+            //фикс на случай несовпадения выбранной игры и профиля в MO ini
+            if (!File.Exists(profilemodlistpath))
+            {
+                RedefineGameMoData();
+                currentMOprofile = ReGetcurrentMOprofile(currentMOprofile);
+                if (currentMOprofile.Length == 0)
+                {
+                    yield break;
+                }
+
+                profilemodlistpath = ManageSettings.GetCurrentMoProfileModlistPath();
+            }
+
+            if (!File.Exists(profilemodlistpath))
+            {
+                yield break;
+            }
+
+            foreach(var modInfo in new ModlistProfileInfo().GetBy(modType: onlyEnabled ? ModlistProfileInfo.ModType.ModEnabled : ModlistProfileInfo.ModType.ModAny))
+            {
+                 yield return modInfo.Name;
+            }
         }
 
         private static string ReGetcurrentMOprofile(string currentMOprofile)

@@ -269,7 +269,7 @@ namespace AIHelper.Manage
         }
 
         /// <summary>
-        /// true if string is not empty and contains invalid symbols for file/folder path
+        /// true if <paramref name="path"/> is not empty and contains invalid symbols for file/folder path
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>

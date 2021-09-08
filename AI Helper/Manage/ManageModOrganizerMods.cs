@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace AIHelper.Manage
 {
@@ -124,7 +125,7 @@ namespace AIHelper.Manage
             {
                 // try to find last not empty dir path
                 var objectPath = new DirectoryInfo(ManageModOrganizer.GetLastPath(objectLinkPaths[i, 0], isDir: true, tryFindWithContent: true)); ;
-                
+
                 var linkPath = new DirectoryInfo(objectLinkPaths[i, 1]);
 
                 if (removeLinks)
@@ -747,6 +748,101 @@ namespace AIHelper.Manage
             }
 
             return packs;
+        }
+
+        /// <summary>
+        /// make symbolik links from fileinfo infos
+        /// </summary>
+        internal static void MakeLinks()
+        {
+            // parallel iterate mods because mod order is not important here
+            Parallel.ForEach(ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(false), modDirName =>
+            {
+                var modPath = new DirectoryInfo(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modDirName));
+                if (!modPath.Exists)
+                {
+                    // skip if mod is not exists by some reason
+                    return;
+                }
+
+                // search linkinfos
+                foreach (FileInfo linkinfo in modPath.GetFiles(ManageSettings.GetLinkInfoFileName(), SearchOption.AllDirectories))
+                {
+                    if (linkinfo.Length == 0)
+                    {
+                        // skip if link info file is empty
+                        continue;
+                    }
+
+                    using (StreamReader reader = new StreamReader(linkinfo.FullName))
+                    {
+                        string line;
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            if (string.IsNullOrWhiteSpace(line) || line.StartsWith(";"))
+                            {
+                                // skip empty lines and comments
+                                continue;
+                            }
+
+                            var info = line.Split(',');
+                            var infoLength = info.Length;
+                            if (infoLength < 2 || infoLength > 3)
+                            {
+                                continue;
+                            }
+                            bool HasTargetLinkNameSet = infoLength == 3; // if set target link name, use it else use object name
+
+                            bool IsDir = info[0] == "d";
+                            if (!IsDir && info[0] != "f")
+                            {
+                                // if type is incorrect or info invalid
+                                continue;
+                            }
+
+                            if (HasTargetLinkNameSet && ManageFilesFolders.ContainsAnyInvalidCharacters(info[2]))
+                            {
+                                // if target link name has invalid chars
+                                continue;
+                            }
+                            
+                            var objectPath = info[1].IndexOf(".\\") != -1 ? Path.GetFullPath(linkinfo.Directory.FullName + Path.DirectorySeparatorChar + info[1]) // get full path if it was relative. current directory will be linkinfo file's directory
+                                : info[1]; // path is not relative
+
+                            if (ManageFilesFolders.ContainsAnyInvalidCharacters(objectPath))
+                            {
+                                // if object path has invalid chars
+                                continue;
+                            }
+
+                            if (IsDir && Directory.Exists(objectPath))
+                            {
+                                var dir = new DirectoryInfo(objectPath);
+                                if (dir.IsSymlink())
+                                {
+                                    // get symlink target if symlink
+                                    dir = new DirectoryInfo(dir.GetSymlinkTarget());
+                                }
+                                dir.CreateSymlink(Path.Combine(linkinfo.Directory.FullName,
+                                    HasTargetLinkNameSet ? info[2] : linkinfo.Name) // get object name or name from info is was set
+                                    );
+                            }
+                            else if (File.Exists(objectPath))
+                            {
+                                var file = new FileInfo(objectPath);
+                                if (file.IsSymlink())
+                                {
+                                    // get symlink target if symlink
+                                    file = new FileInfo(file.GetSymlinkTarget());
+                                }
+                                file.CreateSymlink(Path.Combine(linkinfo.Directory.FullName,
+                                    HasTargetLinkNameSet ? info[2] : linkinfo.Name) // get object name or name from info is was set
+                                    );
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         /// <summary>

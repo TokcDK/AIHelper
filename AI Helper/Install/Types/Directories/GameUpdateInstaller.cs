@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using static AIHelper.Manage.ManageModOrganizerMods;
 
@@ -217,6 +218,10 @@ namespace AIHelper.Install.Types.Directories
             if (create)
             {
                 value = (files ? updateInfo.CreateFiles : updateInfo.CreateDirs);
+                if (files)
+                {
+                    value = HideContentCommas(value);
+                }
             }
             else
             {
@@ -257,26 +262,62 @@ namespace AIHelper.Install.Types.Directories
             return ret;
         }
 
+        /// <summary>
+        /// hide commas in creating file's content because comma using as splitter
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private string HideContentCommas(string value)
+        {
+            MatchCollection contents = Regex.Matches(value, @"\|begin ([^\|]+) end\|");
+            for (int i = contents.Count - 1; i >= 0; i--)
+            {
+                value = value
+                    .Remove(contents[i].Index, contents[i].Length)
+                    .Insert(contents[i].Index, contents[i].Value.Replace(",", _contentCommasHiddenString));
+                ;
+            }
+
+            return value;
+        }
+
+        string _createFileContendBeginMarker { get => "|begin "; }
+        string _createFileContendEndMarker { get => " end|"; }
+        string _contentCommasHiddenString { get => "%comma%"; }
+
         private bool ProceedCreate(string targetPath, bool files = true)
         {
-            var ret = false;
-
-            if ((files && !File.Exists(targetPath)) || (!files && !Directory.Exists(targetPath)))
+            string content = "";
+            if (files)
             {
-                if (files)
+                // has content
+                int contentBeginIndex = targetPath.IndexOf(_createFileContendBeginMarker);
+                if (contentBeginIndex != -1)
                 {
-                    Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
-                    File.WriteAllText(targetPath, "");
-                    ret = true;
-                }
-                else
-                {
-                    Directory.CreateDirectory(targetPath);
-                    ret = true;
+                    //path|begin 11a12 end|
+                    var startIndex = contentBeginIndex + _createFileContendBeginMarker.Length;
+                    var contentLength = targetPath.IndexOf(_createFileContendEndMarker) - startIndex;
+                    content = targetPath.Substring(startIndex, contentLength).Replace(_contentCommasHiddenString, ","); // file's content with unhidden commas
+                    targetPath = targetPath.Remove(contentBeginIndex); // file's path
                 }
             }
 
-            return ret;
+            if (targetPath.Exists(!files) /*&& (!files || (content.Length == 0 || File.ReadAllText(targetPath) == content))*/)
+            {
+                return false;
+            }
+
+            if (files)
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
+                File.WriteAllText(targetPath, content);
+            }
+            else
+            {
+                Directory.CreateDirectory(targetPath);
+            }
+
+            return true;
         }
 
         private void SetSkipLists()
@@ -622,9 +663,9 @@ namespace AIHelper.Install.Types.Directories
         /// </summary>
         public string WriteTimeFiles { get => Keys[nameof(SizeFiles)]; set => Keys[nameof(SizeFiles)] = value; }
 
-        public GameUpdateInfo(string updateInfoPath="")
+        public GameUpdateInfo(string updateInfoPath = "")
         {
-            if(updateInfoPath.Length>0)
+            if (updateInfoPath.Length > 0)
             {
                 Get(updateInfoPath);
             }

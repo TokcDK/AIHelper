@@ -262,9 +262,9 @@ namespace AIHelper.Manage
                         //&&
                         //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(GetMOdirPath(), GetMoProfilesDirName()))
                         &&
-                        !ManageSymLinkExtensions.IsSymLink(MoIniFilePath())
+                        !ManageSymLinkExtensions.IsSymlink(MoIniFilePath())
                         &&
-                        !ManageSymLinkExtensions.IsSymLink(MoCategoriesFilePath())
+                        !ManageSymLinkExtensions.IsSymlink(MoCategoriesFilePath())
                         )
                     {
                         //listOfGames.Add(new RootGame());

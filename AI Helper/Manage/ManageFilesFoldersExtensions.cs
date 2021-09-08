@@ -196,5 +196,16 @@ namespace AIHelper.Manage
 
             fileInfo.CopyTo(fi.FullName, true);
         }
+
+        /// <summary>
+        /// If input <paramref name="path"/> for file or folder is exists
+        /// </summary>
+        /// <param name="IsDir">determines if <paramref name="path"/> is directory else file</param>
+        /// <param name="path">input path</param>
+        /// <returns></returns>
+        internal static bool Exists(this string path, bool IsDir = true)
+        {
+            return IsDir ? Directory.Exists(path) : File.Exists(path);
+        }
     }
 }

@@ -152,7 +152,7 @@ namespace AIHelper.Manage
                            ,
                            true
                            ,
-                           ObjectType.Dir
+                           ObjectType.Directory
                           ))
                         {
                         }
@@ -169,7 +169,7 @@ namespace AIHelper.Manage
                                  ,
                                  true
                                  ,
-                                 ObjectType.Dir
+                                 ObjectType.Directory
                                 );
                         }
                     }
@@ -203,7 +203,7 @@ namespace AIHelper.Manage
                 {
                     try
                     {
-                        if (File.Exists(targetFilePath) && (File.Exists(sourceFilePath) || ManageSymLinkExtensions.IsSymLink(targetFilePath)))
+                        if (File.Exists(targetFilePath) && (File.Exists(sourceFilePath) || ManageSymLinkExtensions.IsSymlink(targetFilePath)))
                         {
                             File.Delete(targetFilePath);
                         }
@@ -240,7 +240,7 @@ namespace AIHelper.Manage
                         if (File.Exists(targetFilePath))
                         {
                             if (
-                                ManageSymLinkExtensions.IsSymLink(targetFilePath)
+                                ManageSymLinkExtensions.IsSymlink(targetFilePath)
                                 ||
                                 new FileInfo(targetFilePath).Length != new FileInfo(sourceFilePath).Length
                                 ||
@@ -805,40 +805,66 @@ namespace AIHelper.Manage
                                 // if target link name has invalid chars
                                 continue;
                             }
-                            
-                            var objectPath = info[1].IndexOf(".\\") != -1 ? Path.GetFullPath(linkinfo.Directory.FullName + Path.DirectorySeparatorChar + info[1]) // get full path if it was relative. current directory will be linkinfo file's directory
+
+                            var targetObjectPath = info[1].IndexOf(".\\") != -1 ? Path.GetFullPath(linkinfo.Directory.FullName + Path.DirectorySeparatorChar + info[1]) // get full path if it was relative. current directory will be linkinfo file's directory
                                 : info[1]; // path is not relative
 
-                            if (ManageFilesFolders.ContainsAnyInvalidCharacters(objectPath))
+                            if (ManageFilesFolders.ContainsAnyInvalidCharacters(targetObjectPath))
                             {
                                 // if object path has invalid chars
                                 continue;
                             }
 
-                            if (IsDir && Directory.Exists(objectPath))
+                            // skip if target object is not exists
+                            if (targetObjectPath.Exists(IsDir))
                             {
-                                var dir = new DirectoryInfo(objectPath);
-                                if (dir.IsSymlink())
-                                {
-                                    // get symlink target if symlink
-                                    dir = new DirectoryInfo(dir.GetSymlinkTarget());
-                                }
-                                dir.CreateSymlink(Path.Combine(linkinfo.Directory.FullName,
-                                    HasTargetLinkNameSet ? info[2] : linkinfo.Name) // get object name or name from info is was set
-                                    );
+                                continue;
                             }
-                            else if (File.Exists(objectPath))
+
+                            var targetObjectType = IsDir ? ObjectType.Directory : ObjectType.File;
+
+                            if (targetObjectPath.IsSymlink(targetObjectType))
                             {
-                                var file = new FileInfo(objectPath);
-                                if (file.IsSymlink())
+                                if (targetObjectPath.IsValidSymlink())
                                 {
-                                    // get symlink target if symlink
-                                    file = new FileInfo(file.GetSymlinkTarget());
+                                    // get symlink target if object is symlink
+                                    targetObjectPath = targetObjectPath.GetSymlinkTarget(targetObjectType);
                                 }
-                                file.CreateSymlink(Path.Combine(linkinfo.Directory.FullName,
-                                    HasTargetLinkNameSet ? info[2] : linkinfo.Name) // get object name or name from info is was set
-                                    );
+                                else
+                                {
+                                    ManageLogs.Log("Warning! Link info file has invalid simlink as target of path. File:" + linkinfo.FullName + "\r\n");
+                                    // skip if target object is invalid symlink
+                                    continue;
+                                }
                             }
+
+                            var symlinkPath = Path.Combine(linkinfo.Directory.FullName,
+                                HasTargetLinkNameSet ? info[2] : linkinfo.Name); // get object name or name from info is was set
+
+                            if (symlinkPath.Exists(IsDir))
+                            {
+                                if (!symlinkPath.IsSymlink(targetObjectType) || symlinkPath.GetSymlinkTarget(targetObjectType) == targetObjectPath)
+                                {
+                                    // skip if not synlink or exists symlink with valid target
+                                    continue;
+                                }
+                                else
+                                {
+                                    // delene invalid symlink
+                                    if (IsDir)
+                                    {
+                                        File.Delete(targetObjectPath);
+                                    }
+                                    else
+                                    {
+                                        Directory.Delete(targetObjectPath);
+                                    }
+                                }
+                            }
+
+                            targetObjectPath.CreateSymlink(symlinkPath
+                                , isRelative: false
+                                , objectType: targetObjectType);
                         }
                     }
                 }

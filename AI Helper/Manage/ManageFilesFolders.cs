@@ -13,13 +13,13 @@ namespace AIHelper.Manage
     internal static class ManageFilesFolders
     {
         /// <summary>
-        /// object (file or folder or any)
+        /// object type
         /// </summary>
         public enum ObjectType
         {
-            Any = 0,
-            File = 1,
-            Directory = 2
+            NotDefined = 0,
+            Directory = 1,
+            File = 2
         }
 
         /// <summary>
@@ -421,7 +421,7 @@ namespace AIHelper.Manage
                 return;
             }
 
-            if (sourceFolder.IsNullOrEmptyDirectory() || sourceFolder.IsSymLink())
+            if (sourceFolder.IsNullOrEmptyDirectory() || sourceFolder.IsSymlink(Manage.ObjectType.Directory))
             {
                 return;
             }

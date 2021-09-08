@@ -133,83 +133,85 @@ namespace AIHelper.Manage.Update
                         UpdateTools.CleanVersion(ref info.TargetLastVersion);
                         UpdateTools.CleanVersion(ref info.TargetCurrentVersion);
 
-                        if (info.TargetLastVersion.IsNewerOf(info.TargetCurrentVersion)) //if it is last version then run update
+                        if (!info.TargetLastVersion.IsNewerOf(info.TargetCurrentVersion)) //if it is last version then run update
                         {
-                            bool getfileIsTrue = await source.GetFile().ConfigureAwait(true); // download latest file
+                            continue;
+                        }
 
-                            if (getfileIsTrue && target.MakeBuckup() && target.UpdateFiles() // update folder with new files
-                                )
+                        bool getfileIsTrue = await source.GetFile().ConfigureAwait(true); // download latest file
+
+                        if (getfileIsTrue && target.MakeBuckup() && target.UpdateFiles() // update folder with new files
+                            )
+                        {
+                            UpdatedAny = true;
+
+                            info.Excluded.Add(tFolderInfo.Key); // add path to excluded to skip it next time if will be found for other source or target
+
+                            info.Report.Add(
+                                (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportSuccessLine() : string.Empty)
+                                    + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage()
+                                        //+ T._("Mod")
+                                        //+ " "
+                                        + ManageSettings.UpdateReport.HtmlModReportPreModnameTags()
+                                            + info.TargetFolderPath.Name
+                                        + ManageSettings.UpdateReport.HtmlModReportPostModnameTags()
+                                        + (!info.TargetFolderPath.Name.Contains(info.TargetCurrentVersion) ?
+                                                " "
+                                                + ManageSettings.UpdateReport.HtmlModReportPreVersionTags()
+                                                    + info.TargetCurrentVersion
+                                                + ManageSettings.UpdateReport.HtmlModReportPostVersionTags()
+                                            : "")
+                                        + " "
+                                        + T._("updated to version")
+                                        + " "
+                                        + ManageSettings.UpdateReport.HtmlModReportPreVersionTags()
+                                            + info.TargetLastVersion
+                                        + ManageSettings.UpdateReport.HtmlModReportPostVersionTags()
+                                    + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage()
+                                    + (_isHtmlReport ? ManageSettings.UpdateReport.HtmlAfterModReportLine() : string.Empty)
+                                        + (!string.IsNullOrWhiteSpace(info.SourceLink) ? ManageSettings.UpdateReport.InfoLinkPattern() + info.SourceLink : string.Empty)
+                                );
+
+                        }
+                        else
+                        {
+                            if (info.NoRemoteFile)
                             {
-                                UpdatedAny = true;
-
-                                info.Excluded.Add(tFolderInfo.Key); // add path to excluded to skip it next time if will be found for other source or target
-
                                 info.Report.Add(
-                                    (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportSuccessLine() : string.Empty)
+                                    (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportWarningLine() : string.Empty)
                                         + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage()
                                             //+ T._("Mod")
                                             //+ " "
                                             + ManageSettings.UpdateReport.HtmlModReportPreModnameTags()
                                                 + info.TargetFolderPath.Name
                                             + ManageSettings.UpdateReport.HtmlModReportPostModnameTags()
-                                            + (!info.TargetFolderPath.Name.Contains(info.TargetCurrentVersion) ?
-                                                    " "
-                                                    + ManageSettings.UpdateReport.HtmlModReportPreVersionTags()
-                                                        + info.TargetCurrentVersion
-                                                    + ManageSettings.UpdateReport.HtmlModReportPostVersionTags()
-                                                : "")
                                             + " "
-                                            + T._("updated to version")
-                                            + " "
-                                            + ManageSettings.UpdateReport.HtmlModReportPreVersionTags()
-                                                + info.TargetLastVersion
-                                            + ManageSettings.UpdateReport.HtmlModReportPostVersionTags()
+                                            + T._("have new version but file for update not found")
                                         + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage()
                                         + (_isHtmlReport ? ManageSettings.UpdateReport.HtmlAfterModReportLine() : string.Empty)
                                             + (!string.IsNullOrWhiteSpace(info.SourceLink) ? ManageSettings.UpdateReport.InfoLinkPattern() + info.SourceLink : string.Empty)
                                     );
-
                             }
                             else
                             {
-                                if (info.NoRemoteFile)
-                                {
-                                    info.Report.Add(
-                                        (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportWarningLine() : string.Empty)
-                                            + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage()
-                                                //+ T._("Mod")
-                                                //+ " "
-                                                + ManageSettings.UpdateReport.HtmlModReportPreModnameTags()
-                                                    + info.TargetFolderPath.Name
-                                                + ManageSettings.UpdateReport.HtmlModReportPostModnameTags()
-                                                + " "
-                                                + T._("have new version but file for update not found")
-                                            + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage()
-                                            + (_isHtmlReport ? ManageSettings.UpdateReport.HtmlAfterModReportLine() : string.Empty)
-                                                + (!string.IsNullOrWhiteSpace(info.SourceLink) ? ManageSettings.UpdateReport.InfoLinkPattern() + info.SourceLink : string.Empty)
-                                        );
-                                }
-                                else
-                                {
-                                    target.RestoreBuckup();
-                                    //RestoreModFromBuckup(OldModBuckupDirPath, UpdatingModDirPath);
+                                target.RestoreBuckup();
+                                //RestoreModFromBuckup(OldModBuckupDirPath, UpdatingModDirPath);
 
-                                    info.Report.Add(
-                                        (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportErrorLine() : string.Empty)
-                                            + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage()
-                                                + T._("Failed to update")
-                                                + " "
-                                                + info.TargetFolderPath.Name
-                                            + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage()
-                                                + ErrorMessage(info.LastErrorText)
-                                                + " ("
-                                                + T._("Details in") + " " + Properties.Settings.Default.ApplicationProductName + ".log"
-                                                + ")"
-                                        + ManageSettings.UpdateReport.HtmlAfterModReportLine()
-                                        );
+                                info.Report.Add(
+                                    (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportErrorLine() : string.Empty)
+                                        + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage()
+                                            + T._("Failed to update")
+                                            + " "
+                                            + info.TargetFolderPath.Name
+                                        + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage()
+                                            + ErrorMessage(info.LastErrorText)
+                                            + " ("
+                                            + T._("Details in") + " " + Properties.Settings.Default.ApplicationProductName + ".log"
+                                            + ")"
+                                    + ManageSettings.UpdateReport.HtmlAfterModReportLine()
+                                    );
 
-                                    ManageLogs.Log("Failed to update" + " " + info.TargetFolderPath.Name /*+ ":" + Environment.NewLine + ex*/);
-                                }
+                                ManageLogs.Log("Failed to update" + " " + info.TargetFolderPath.Name /*+ ":" + Environment.NewLine + ex*/);
                             }
                         }
                     }

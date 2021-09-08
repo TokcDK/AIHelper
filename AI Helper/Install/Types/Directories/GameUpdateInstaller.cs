@@ -294,7 +294,6 @@ namespace AIHelper.Install.Types.Directories
                 int contentBeginIndex = targetPath.IndexOf(_createFileContendBeginMarker);
                 if (contentBeginIndex != -1)
                 {
-                    //path|begin 11a12 end|
                     var startIndex = contentBeginIndex + _createFileContendBeginMarker.Length;
                     var contentLength = targetPath.IndexOf(_createFileContendEndMarker) - startIndex;
                     content = targetPath.Substring(startIndex, contentLength).Replace(_contentCommasHiddenString, ","); // file's content with unhidden commas

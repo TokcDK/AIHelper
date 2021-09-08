@@ -816,7 +816,7 @@ namespace AIHelper.Manage
                             }
 
                             // skip if target object is not exists
-                            if (targetObjectPath.Exists(IsDir))
+                            if (!targetObjectPath.Exists(IsDir))
                             {
                                 continue;
                             }
@@ -839,11 +839,12 @@ namespace AIHelper.Manage
                             }
 
                             var symlinkPath = Path.Combine(linkinfo.Directory.FullName,
-                                HasTargetLinkNameSet ? info[2] : linkinfo.Name); // get object name or name from info is was set
+                                HasTargetLinkNameSet ? info[2] : Path.GetFileName(targetObjectPath)); // get object name or name from info is was set
 
                             if (symlinkPath.Exists(IsDir))
                             {
-                                if (!symlinkPath.IsSymlink(targetObjectType) || symlinkPath.GetSymlinkTarget(targetObjectType) == targetObjectPath)
+                                bool isLink;
+                                if ((isLink=symlinkPath.IsSymlink(targetObjectType) && symlinkPath.GetSymlinkTarget(targetObjectType) == targetObjectPath) || (!IsDir || !symlinkPath.IsEmptyDir()))
                                 {
                                     // skip if not synlink or exists symlink with valid target
                                     continue;
@@ -853,11 +854,11 @@ namespace AIHelper.Manage
                                     // delene invalid symlink
                                     if (IsDir)
                                     {
-                                        File.Delete(targetObjectPath);
+                                        Directory.Delete(symlinkPath);
                                     }
                                     else
                                     {
-                                        Directory.Delete(targetObjectPath);
+                                        File.Delete(symlinkPath);
                                     }
                                 }
                             }

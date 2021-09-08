@@ -296,7 +296,7 @@ namespace AIHelper.Install.Types.Directories
                 {
                     var startIndex = contentBeginIndex + _createFileContendBeginMarker.Length;
                     var contentLength = targetPath.IndexOf(_createFileContendEndMarker) - startIndex;
-                    content = targetPath.Substring(startIndex, contentLength).Replace(_contentCommasHiddenString, ","); // file's content with unhidden commas
+                    content = UnhideCommasAndSpecTextReplace(targetPath.Substring(startIndex, contentLength)); // file's content with unhidden commas
                     targetPath = targetPath.Remove(contentBeginIndex); // file's path
                 }
             }
@@ -317,6 +317,19 @@ namespace AIHelper.Install.Types.Directories
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Unhide commas and replace some predefined text variables with actual info text
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        private string UnhideCommasAndSpecTextReplace(string str)
+        {
+            return str
+                .Replace("%sortmarker%", T._("The marker shows where to sort new zipmods for this sideloader modpack"))
+                .Replace(_contentCommasHiddenString, ",")
+                ;
         }
 
         private void SetSkipLists()

@@ -133,30 +133,36 @@ namespace AIHelper.Manage
         }
 
         /// <summary>
-        /// will return list of empty folder paths
+        /// get list of empty folder paths from <paramref name="dirPath"/> in <paramref name="pathsList"/>
         /// </summary>
         /// <param name="dirPath"></param>
-        /// <param name="retArray"></param>
+        /// <param name="pathsList"></param>
         /// <returns></returns>
-        public static StringBuilder GetEmptySubfoldersPaths(string dirPath, StringBuilder retArray)
+        public static void GetEmptySubfoldersPaths(string dirPath, StringBuilder pathsList)
         {
+            if (!Directory.Exists(dirPath))
+            {
+                return;
+            }
+
+            if (pathsList == null)
+            {
+                pathsList = new StringBuilder();
+            }
+
             string[] subfolders = Directory.GetDirectories(dirPath, "*");
             int subfoldersLength = subfolders.Length;
             if (subfoldersLength > 0)
             {
                 for (int d = 0; d < subfoldersLength; d++)
                 {
-                    GetEmptySubfoldersPaths(subfolders[d], retArray);
+                    GetEmptySubfoldersPaths(subfolders[d], pathsList);
                 }
             }
 
             if (dirPath.IsNullOrEmptyDirectory()/*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)
             {
-                return retArray.AppendLine(dirPath);
-            }
-            else
-            {
-                return retArray;
+                pathsList.AppendLine(dirPath);
             }
         }
 

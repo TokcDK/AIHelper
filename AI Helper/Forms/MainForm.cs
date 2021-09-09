@@ -726,7 +726,7 @@ namespace AIHelper
 
         private void SetMoMode(bool setText = true)
         {
-            if (File.Exists(ManageSettings.GetMoToStandartConvertationOperationsListFilePath()))
+            if (File.Exists(ManageSettings.GetCurrentGameMoToStandartConvertationOperationsListFilePath()))
             {
                 MOmode = false;
                 if (setText)
@@ -1369,18 +1369,18 @@ namespace AIHelper
             string[] moToStandartConvertationOperationsList = null;
             try
             {
-                moToStandartConvertationOperationsList = File.ReadAllLines(ManageSettings.GetMoToStandartConvertationOperationsListFilePath());
+                moToStandartConvertationOperationsList = File.ReadAllLines(ManageSettings.GetCurrentGameMoToStandartConvertationOperationsListFilePath());
                 ReplaceVarsToPaths(ref moToStandartConvertationOperationsList);
                 var operationsSplitString = new string[] { "|MovedTo|" };
-                var vanillaDataFilesList = File.ReadAllLines(ManageSettings.GetVanillaDataFilesListFilePath());
+                var vanillaDataFilesList = File.ReadAllLines(ManageSettings.GetCurrentGameVanillaDataFilesListFilePath());
                 ReplaceVarsToPaths(ref vanillaDataFilesList);
-                var moddedDataFilesList = File.ReadAllLines(ManageSettings.GetModdedDataFilesListFilePath());
+                var moddedDataFilesList = File.ReadAllLines(ManageSettings.GetCurrentGameModdedDataFilesListFilePath());
                 ReplaceVarsToPaths(ref moddedDataFilesList);
                 Dictionary<string, string> zipmodsGuidList = new Dictionary<string, string>();
                 bool zipmodsGuidListNotEmpty = false;
-                if (File.Exists(ManageSettings.GetZipmodsGuidListFilePath()))
+                if (File.Exists(ManageSettings.GetCurrentGameZipmodsGuidListFilePath()))
                 {
-                    using (var sr = new StreamReader(ManageSettings.GetZipmodsGuidListFilePath()))
+                    using (var sr = new StreamReader(ManageSettings.GetCurrentGameZipmodsGuidListFilePath()))
                     {
                         while (!sr.EndOfStream)
                         {
@@ -1645,10 +1645,10 @@ namespace AIHelper
                 MoveVanillaFIlesBackToData();
 
                 //очистка пустых папок в Data
-                if (File.Exists(ManageSettings.GetVanillaDataEmptyFoldersListFilePath()))
+                if (File.Exists(ManageSettings.GetCurrentGameVanillaDataEmptyFoldersListFilePath()))
                 {
                     //удалить все, за исключением добавленных ранее путей до пустых папок
-                    string[] vanillaDataEmptyFoldersList = File.ReadAllLines(ManageSettings.GetVanillaDataEmptyFoldersListFilePath());
+                    string[] vanillaDataEmptyFoldersList = File.ReadAllLines(ManageSettings.GetCurrentGameVanillaDataEmptyFoldersListFilePath());
                     ReplaceVarsToPaths(ref vanillaDataEmptyFoldersList);
                     ManageFilesFolders.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataPath(), false, vanillaDataEmptyFoldersList);
                 }
@@ -1712,14 +1712,16 @@ namespace AIHelper
                 }
 
                 //чистка файлов-списков
-                File.Delete(ManageSettings.GetMoToStandartConvertationOperationsListFilePath());
-                File.Delete(ManageSettings.GetVanillaDataFilesListFilePath());
-                File.Delete(ManageSettings.GetVanillaDataEmptyFoldersListFilePath());
-                File.Delete(ManageSettings.GetModdedDataFilesListFilePath());
-                if (File.Exists(ManageSettings.GetZipmodsGuidListFilePath()))
+                File.Delete(ManageSettings.GetCurrentGameMoToStandartConvertationOperationsListFilePath());
+                File.Delete(ManageSettings.GetCurrentGameVanillaDataFilesListFilePath());
+                File.Delete(ManageSettings.GetCurrentGameVanillaDataEmptyFoldersListFilePath());
+                File.Delete(ManageSettings.GetCurrentGameModdedDataFilesListFilePath());
+                if (File.Exists(ManageSettings.GetCurrentGameZipmodsGuidListFilePath()))
                 {
-                    File.Delete(ManageSettings.GetZipmodsGuidListFilePath());
+                    File.Delete(ManageSettings.GetCurrentGameZipmodsGuidListFilePath());
                 }
+
+                ManageFilesFolders.DeleteEmptySubfolders(ManageSettings.GetCurrentGameMOmodeBakDirPath(), deleteThisDir: true);
 
                 MOmode = true;
 
@@ -1747,7 +1749,7 @@ namespace AIHelper
                         }
                     }
 
-                    File.WriteAllLines(ManageSettings.GetMoToStandartConvertationOperationsListFilePath(), moToStandartConvertationOperationsList);
+                    File.WriteAllLines(ManageSettings.GetCurrentGameMoToStandartConvertationOperationsListFilePath(), moToStandartConvertationOperationsList);
                 }
 
                 //recreate normal mode identifier if failed
@@ -1815,15 +1817,14 @@ namespace AIHelper
                     }
                 }
 
-                debufStr = ManageSettings.GetMOmodeDataFilesBakDirPath();
-                Directory.CreateDirectory(ManageSettings.GetMOmodeDataFilesBakDirPath());
+                debufStr = ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath();
+                Directory.CreateDirectory(ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath());
                 moToStandartConvertationOperationsList = new StringBuilder();
 
-                vanillaDataEmptyFoldersList = ManageFilesFolders.GetEmptySubfoldersPaths(ManageSettings.GetCurrentGameDataPath(), new StringBuilder());
+                ManageFilesFolders.GetEmptySubfoldersPaths(ManageSettings.GetCurrentGameDataPath(), vanillaDataEmptyFoldersList);
 
                 //получение всех файлов из Data
                 vanillaDataFilesList = Directory.GetFiles(ManageSettings.GetCurrentGameDataPath(), "*.*", SearchOption.AllDirectories);
-
 
                 //получение всех файлов из папки Overwrite и их обработка
                 var filesInOverwrite = Directory.GetFiles(ManageSettings.GetOverwriteFolder(), "*.*", SearchOption.AllDirectories);
@@ -1882,7 +1883,7 @@ namespace AIHelper
                                 //}
                                 if (File.Exists(fileInDataFolder))
                                 {
-                                    var fileInBakFolderWhichIsInRes = fileInDataFolder.Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetMOmodeDataFilesBakDirPath());
+                                    var fileInBakFolderWhichIsInRes = fileInDataFolder.Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath());
                                     //if (FileInBakFolderWhichIsInRES.Length > 259)
                                     //{
                                     //    FileInBakFolderWhichIsInRES = @"\\?\" + FileInBakFolderWhichIsInRES;
@@ -2028,7 +2029,7 @@ namespace AIHelper
 
                                         if (File.Exists(fileInDataFolder))
                                         {
-                                            var fileInBakFolderWhichIsInRes = fileInDataFolder.Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetMOmodeDataFilesBakDirPath());
+                                            var fileInBakFolderWhichIsInRes = fileInDataFolder.Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath());
                                             //if (FileInBakFolderWhichIsInRES.Length > 259)
                                             //{
                                             //    FileInBakFolderWhichIsInRES = @"\\?\" + FileInBakFolderWhichIsInRES;
@@ -2091,15 +2092,15 @@ namespace AIHelper
                 }
 
                 ReplacePathsToVars(ref moToStandartConvertationOperationsList);
-                File.WriteAllText(ManageSettings.GetMoToStandartConvertationOperationsListFilePath(), moToStandartConvertationOperationsList.ToString());
+                File.WriteAllText(ManageSettings.GetCurrentGameMoToStandartConvertationOperationsListFilePath(), moToStandartConvertationOperationsList.ToString());
                 moToStandartConvertationOperationsList.Clear();
 
                 var dataWithModsFileslist = Directory.GetFiles(ManageSettings.GetCurrentGameDataPath(), "*.*", SearchOption.AllDirectories);
                 ReplacePathsToVars(ref dataWithModsFileslist);
-                File.WriteAllLines(ManageSettings.GetModdedDataFilesListFilePath(), dataWithModsFileslist);
+                File.WriteAllLines(ManageSettings.GetCurrentGameModdedDataFilesListFilePath(), dataWithModsFileslist);
 
                 ReplacePathsToVars(ref vanillaDataFilesList);
-                File.WriteAllLines(ManageSettings.GetVanillaDataFilesListFilePath(), vanillaDataFilesList);
+                File.WriteAllLines(ManageSettings.GetCurrentGameVanillaDataFilesListFilePath(), vanillaDataFilesList);
 
                 if (zipmodsGuidList.Count > 0)
                 {
@@ -2110,7 +2111,7 @@ namespace AIHelper
                     //        file.WriteLine("{0}{{ZIPMOD}}{1}", entry.Key, entry.Value);
                     //    }
                     //}
-                    File.WriteAllLines(ManageSettings.GetZipmodsGuidListFilePath(),
+                    File.WriteAllLines(ManageSettings.GetCurrentGameZipmodsGuidListFilePath(),
                         zipmodsGuidList.Select(x => x.Key + "{{ZIPMOD}}" + x.Value).ToArray());
                 }
                 dataWithModsFileslist = null;
@@ -2123,7 +2124,7 @@ namespace AIHelper
                 if (vanillaDataEmptyFoldersList.ToString().Length > 0)
                 {
                     ReplacePathsToVars(ref vanillaDataEmptyFoldersList);
-                    File.WriteAllText(ManageSettings.GetVanillaDataEmptyFoldersListFilePath(), vanillaDataEmptyFoldersList.ToString());
+                    File.WriteAllText(ManageSettings.GetCurrentGameVanillaDataEmptyFoldersListFilePath(), vanillaDataEmptyFoldersList.ToString());
                 }
 
                 MOmode = false;
@@ -2268,7 +2269,7 @@ namespace AIHelper
 
         private static void MoveVanillaFIlesBackToData()
         {
-            var mOmodeDataFilesBakDirPath = ManageSettings.GetMOmodeDataFilesBakDirPath();
+            var mOmodeDataFilesBakDirPath = ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath();
             if (Directory.Exists(mOmodeDataFilesBakDirPath))
             {
                 var filesInMOmodeDataFilesBak = Directory.GetFiles(mOmodeDataFilesBakDirPath, "*.*", SearchOption.AllDirectories);

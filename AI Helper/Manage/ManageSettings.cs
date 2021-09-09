@@ -1071,48 +1071,55 @@ namespace AIHelper.Manage
             return Path.Combine(GetCurrentGameModOrganizerIniPath(), MoIniFileName());
         }
 
-        internal static string MOmodeSwitchDataDirName { get => "momode"; }
+        internal static string MOmodeSwitchDataDirName { get => "MOModeRestoreInfo"; }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetMOmodeSwitchDataDirPath()
         {
-            return Path.Combine(GetAppResDir(), MOmodeSwitchDataDirName);
+            return Path.Combine(GetCurrentGameDirPath(), MOmodeSwitchDataDirName);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetMOmodeDataFilesBakDirPath()
+        internal static string GetCurrentGameMOmodeBakDirPath()
         {
-            return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName(), "MOmodeDataFilesBak");
+            //return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName());
+            return GetMOmodeSwitchDataDirPath();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetModdedDataFilesListFilePath()
+        internal static string GetCurrentGameMOmodeDataFilesBakDirPath()
         {
-            return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName(), "ModdedDataFilesList.txt");
+            return Path.Combine(GetCurrentGameMOmodeBakDirPath(), "MOmodeDataFilesBak");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetVanillaDataFilesListFilePath()
+        internal static string GetCurrentGameModdedDataFilesListFilePath()
         {
-            return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName(), "VanillaDataFilesList.txt");
+            return Path.Combine(GetCurrentGameMOmodeBakDirPath(), "ModdedDataFilesList.txt");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetVanillaDataEmptyFoldersListFilePath()
+        internal static string GetCurrentGameVanillaDataFilesListFilePath()
         {
-            return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName(), "VanillaDataEmptyFoldersList.txt");
+            return Path.Combine(GetCurrentGameMOmodeBakDirPath(), "VanillaDataFilesList.txt");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetMoToStandartConvertationOperationsListFilePath()
+        internal static string GetCurrentGameVanillaDataEmptyFoldersListFilePath()
         {
-            return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName(), "MOToStandartConvertationOperationsList.txt");
+            return Path.Combine(GetCurrentGameMOmodeBakDirPath(), "VanillaDataEmptyFoldersList.txt");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetZipmodsGuidListFilePath()
+        internal static string GetCurrentGameMoToStandartConvertationOperationsListFilePath()
         {
-            return Path.Combine(GetMOmodeSwitchDataDirPath(), GetCurrentGameFolderName(), "ZipmodsGUIDList.txt");
+            return Path.Combine(GetCurrentGameMOmodeBakDirPath(), "MOToStandartConvertationOperationsList.txt");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetCurrentGameZipmodsGuidListFilePath()
+        {
+            return Path.Combine(GetCurrentGameMOmodeBakDirPath(), "ZipmodsGUIDList.txt");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

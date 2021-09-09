@@ -293,7 +293,7 @@ namespace AIHelper.Manage
                 var splittedPath = noModsPath.Split(new char[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
                 var modname = splittedPath[0];
 
-                foreach (var name in ManageModOrganizer.GetModNamesListFromActiveMoProfile())
+                foreach (var name in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile())
                 {
                     if (modname == name)
                     {
@@ -751,128 +751,150 @@ namespace AIHelper.Manage
         }
 
         /// <summary>
-        /// make symbolik links from fileinfo infos
+        /// list of paths for linkinfo exist files
         /// </summary>
-        internal static void MakeLinks()
+        /// <returns></returns>
+        internal static List<string> GetLinkInfoFilesList()
         {
+            var linkInfosList = new List<string>();
             // parallel iterate mods because mod order is not important here
             Parallel.ForEach(ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(false), modDirName =>
             {
-                var modPath = new DirectoryInfo(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modDirName));
-                if (!modPath.Exists)
+                var modPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modDirName);
+                if (!Directory.Exists(modPath))
                 {
                     // skip if mod is not exists by some reason
                     return;
                 }
 
                 // search linkinfos
-                foreach (FileInfo linkinfo in modPath.GetFiles(ManageSettings.GetLinkInfoFileName(), SearchOption.AllDirectories))
+                foreach (var linkinfo in Directory.GetFiles(modPath, ManageSettings.GetLinkInfoFileName(), SearchOption.AllDirectories))
                 {
-                    if (linkinfo.Length == 0)
+                    linkInfosList.Add(linkinfo);
+                }
+            });
+
+            return linkInfosList;
+        }
+
+        /// <summary>
+        /// make symbolik links from fileinfo infos
+        /// </summary>
+        internal static void MakeLinks()
+        {
+            List<string> linkInfosList = GetLinkInfoFilesList();
+            // parallel iterate mods because mod order is not important here
+            Parallel.ForEach(linkInfosList, file =>
+            {
+                ParseLinkInfo(new FileInfo(file));
+            });
+        }
+
+        private static void ParseLinkInfo(FileInfo linkinfo)
+        {
+            if (linkinfo.Length == 0)
+            {
+                // skip if link info file is empty
+                return;
+            }
+
+            using (StreamReader reader = new StreamReader(linkinfo.FullName))
+            {
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith(";"))
                     {
-                        // skip if link info file is empty
+                        // skip empty lines and comments
                         continue;
                     }
 
-                    using (StreamReader reader = new StreamReader(linkinfo.FullName))
+                    var info = line.Split(',');
+                    var infoLength = info.Length;
+                    if (infoLength < 2 || infoLength > 3)
                     {
-                        string line;
-                        while ((line = reader.ReadLine()) != null)
+                        continue;
+                    }
+                    bool HasTargetLinkNameSet = infoLength == 3; // if set target link name, use it else use object name
+
+                    bool IsDir = info[0] == "d";
+                    if (!IsDir && info[0] != "f")
+                    {
+                        // if type is incorrect or info invalid
+                        continue;
+                    }
+
+                    if (HasTargetLinkNameSet && ManageFilesFolders.ContainsAnyInvalidCharacters(info[2]))
+                    {
+                        // if target link name has invalid chars
+                        continue;
+                    }
+
+                    var targetObjectPath = info[1].IndexOf(".\\") != -1 ? Path.GetFullPath(linkinfo.Directory.FullName + Path.DirectorySeparatorChar + info[1]) // get full path if it was relative. current directory will be linkinfo file's directory
+                        : info[1]; // path is not relative
+
+                    if (ManageFilesFolders.ContainsAnyInvalidCharacters(targetObjectPath))
+                    {
+                        // if object path has invalid chars
+                        continue;
+                    }
+
+                    // skip if target object is not exists
+                    if (!targetObjectPath.Exists(IsDir))
+                    {
+                        continue;
+                    }
+
+                    var targetObjectType = IsDir ? ObjectType.Directory : ObjectType.File;
+
+                    if (targetObjectPath.IsSymlink(targetObjectType))
+                    {
+                        if (targetObjectPath.IsValidSymlink())
                         {
-                            if (string.IsNullOrWhiteSpace(line) || line.StartsWith(";"))
-                            {
-                                // skip empty lines and comments
-                                continue;
-                            }
-
-                            var info = line.Split(',');
-                            var infoLength = info.Length;
-                            if (infoLength < 2 || infoLength > 3)
-                            {
-                                continue;
-                            }
-                            bool HasTargetLinkNameSet = infoLength == 3; // if set target link name, use it else use object name
-
-                            bool IsDir = info[0] == "d";
-                            if (!IsDir && info[0] != "f")
-                            {
-                                // if type is incorrect or info invalid
-                                continue;
-                            }
-
-                            if (HasTargetLinkNameSet && ManageFilesFolders.ContainsAnyInvalidCharacters(info[2]))
-                            {
-                                // if target link name has invalid chars
-                                continue;
-                            }
-
-                            var targetObjectPath = info[1].IndexOf(".\\") != -1 ? Path.GetFullPath(linkinfo.Directory.FullName + Path.DirectorySeparatorChar + info[1]) // get full path if it was relative. current directory will be linkinfo file's directory
-                                : info[1]; // path is not relative
-
-                            if (ManageFilesFolders.ContainsAnyInvalidCharacters(targetObjectPath))
-                            {
-                                // if object path has invalid chars
-                                continue;
-                            }
-
-                            // skip if target object is not exists
-                            if (!targetObjectPath.Exists(IsDir))
-                            {
-                                continue;
-                            }
-
-                            var targetObjectType = IsDir ? ObjectType.Directory : ObjectType.File;
-
-                            if (targetObjectPath.IsSymlink(targetObjectType))
-                            {
-                                if (targetObjectPath.IsValidSymlink())
-                                {
-                                    // get symlink target if object is symlink
-                                    targetObjectPath = targetObjectPath.GetSymlinkTarget(targetObjectType);
-                                }
-                                else
-                                {
-                                    ManageLogs.Log("Warning! Link info file has invalid simlink as target of path. File:" + linkinfo.FullName + "\r\n");
-                                    // skip if target object is invalid symlink
-                                    continue;
-                                }
-                            }
-
-                            var symlinkPath = Path.Combine(linkinfo.Directory.FullName,
-                                HasTargetLinkNameSet ? info[2] : Path.GetFileName(targetObjectPath)); // get object name or name from info is was set
-
-                            if (symlinkPath.Exists(IsDir))
-                            {
-                                bool isLink;
-                                if ((isLink=symlinkPath.IsSymlink(targetObjectType) && symlinkPath.GetSymlinkTarget(targetObjectType) == targetObjectPath) || (!IsDir || !symlinkPath.IsEmptyDir()))
-                                {
-                                    // skip if not synlink or exists symlink with valid target
-                                    continue;
-                                }
-                                else
-                                {
-                                    // delene invalid symlink
-                                    if (IsDir)
-                                    {
-                                        Directory.Delete(symlinkPath);
-                                    }
-                                    else
-                                    {
-                                        File.Delete(symlinkPath);
-                                    }
-                                }
-                            }
-
-                            // create symlink
-                            targetObjectPath.CreateSymlink(symlinkPath
-                                , isRelative: false
-                                , objectType: targetObjectType);
-
-                            break; // info found, stop read file
+                            // get symlink target if object is symlink
+                            targetObjectPath = targetObjectPath.GetSymlinkTarget(targetObjectType);
+                        }
+                        else
+                        {
+                            ManageLogs.Log("Warning! Link info file has invalid simlink as target of path. File:" + linkinfo.FullName + "\r\n");
+                            // skip if target object is invalid symlink
+                            continue;
                         }
                     }
+
+                    var symlinkPath = Path.Combine(linkinfo.Directory.FullName,
+                        HasTargetLinkNameSet ? info[2] : Path.GetFileName(targetObjectPath)); // get object name or name from info is was set
+
+                    if (symlinkPath.Exists(IsDir))
+                    {
+                        bool isLink;
+                        if ((isLink = symlinkPath.IsSymlink(targetObjectType) && symlinkPath.GetSymlinkTarget(targetObjectType) == targetObjectPath) || (!IsDir || !symlinkPath.IsEmptyDir()))
+                        {
+                            // skip if not synlink or exists symlink with valid target
+                            continue;
+                        }
+                        else
+                        {
+                            // delene invalid symlink
+                            if (IsDir)
+                            {
+                                Directory.Delete(symlinkPath);
+                            }
+                            else
+                            {
+                                File.Delete(symlinkPath);
+                            }
+                        }
+                    }
+
+                    // create symlink
+                    targetObjectPath.CreateSymlink(symlinkPath
+                        , isRelative: false
+                        , objectType: targetObjectType);
+
+                    return; // info found, stop read file
                 }
-            });
+            }
         }
 
         /// <summary>

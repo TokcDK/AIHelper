@@ -1,7 +1,6 @@
 ﻿using AIHelper.Manage;
 using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Text.RegularExpressions;
@@ -14,7 +13,7 @@ namespace AIHelper.Install.Types.Files.Archive
 
         protected override bool Get(FileInfo zipfile)
         {
-            var ret = false; 
+            var ret = false;
 
             bool foundZipMod = false;
             bool foundStandardModInZip = false;
@@ -57,46 +56,15 @@ namespace AIHelper.Install.Types.Files.Archive
                         break;
                     }
 
-                    if (!foundStandardModInZip)
+                    if (!foundStandardModInZip && IsStandardModInZip(entryFullName))
                     {
-                        if (
-                               string.Equals(Path.GetFileName(entryFullName), "abdata", StringComparison.InvariantCultureIgnoreCase) //entryFullName=="abdata/"
-                            || entryFullName.EndsWith("_data")/*тут только проверка на окончание нужна || string.Compare(entryFullName.Substring(0, 5), "_data", true, CultureInfo.InvariantCulture) == 0*/ //entryFullName=="_data/"
-                            || string.Equals(Path.GetFileName(entryFullName), "bepinex", StringComparison.InvariantCultureIgnoreCase) //entryFullName=="bepinex/"
-                            || string.Equals(Path.GetFileName(entryFullName), "userdata", StringComparison.InvariantCultureIgnoreCase) //entryFullName=="userdata/"
-                           )
-                        {
-                            foundStandardModInZip = true;
-                        }
+                        foundStandardModInZip = true;
                     }
 
                     //когда найдена папка mods, если найден zipmod
-                    if (foundModsDir && !foundStandardModInZip)
+                    if (foundModsDir && !foundStandardModInZip && FoundZipmod(archive:archive, entryFullName: entryFullName, filesCount: filesCount, entrieNum: entrieNum, zipName: zipName, entryName: entryName))
                     {
-                        if (string.Equals(Path.GetExtension(entryFullName), ".zipmod", StringComparison.InvariantCultureIgnoreCase))//entryFullName==".zipmod"
-                        {
-                            if (filesCount > 1)
-                            {
-                                archive.ExtractToDirectory(Path.Combine(ManageSettings.GetInstall2MoDirPath(), zipName));
-                            }
-                            else
-                            {
-                                archive.Entries[entrieNum].ExtractToFile(Path.Combine(ManageSettings.GetInstall2MoDirPath(), entryName));
-                            }
-                            break;
-                        }
-                        else if (string.Equals(Path.GetExtension(entryFullName), ".zip", StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            if (filesCount > 1)
-                            {
-                                archive.ExtractToDirectory(Path.Combine(ManageSettings.GetInstall2MoDirPath(), zipName));
-                            }
-                            else
-                            {
-                                archive.Entries[entrieNum].ExtractToFile(Path.Combine(ManageSettings.GetInstall2MoDirPath(), entryName + "mod"));
-                            }
-                            break;
-                        }
+                        break;
                     }
 
                     //если найдена папка mods
@@ -158,32 +126,38 @@ namespace AIHelper.Install.Types.Files.Archive
                         modFolderForUpdate = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modFolder);
                         string targetfile = Path.Combine(modFolderForUpdate, entryFullName);
                         targetFileAny = ManageModOrganizerMods.GetTheDllFromSubfolders(modFolderForUpdate, entryName.Remove(entryName.Length - 4, 4), "dll");
-                        if (File.Exists(targetfile) || (targetFileAny.Length > 0 && File.Exists(targetFileAny)))
+                        if (!File.Exists(targetfile) && (targetFileAny.Length == 0 || !File.Exists(targetFileAny)))
                         {
-                            if (targetFileAny.Length > 0)
-                            {
-                                targetfile = targetFileAny;
-                            }
+                            continue;
+                        }
 
-                            string updateModNameFromMeta = ManageIni.GetIniValueIfExist(Path.Combine(modFolderForUpdate, "meta.ini"), "notes", "General");
-                            if (updateModNameFromMeta.Length > 0)
-                            {
-                                int upIndex = updateModNameFromMeta.IndexOf("ompupname:", StringComparison.InvariantCultureIgnoreCase);
-                                if (upIndex > -1)
-                                {
-                                    //get update name
-                                    updateModNameFromMeta = updateModNameFromMeta.Substring(upIndex).Split(':')[1];
-                                    if (updateModNameFromMeta.Length > 0 && zipName.Length >= updateModNameFromMeta.Length && ManageStrings.IsStringAContainsStringB(zipName, updateModNameFromMeta))
-                                    {
-                                        foundUpdateName = true;
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        updateModNameFromMeta = string.Empty;
-                                    }
-                                }
-                            }
+                        if (targetFileAny.Length > 0)
+                        {
+                            targetfile = targetFileAny;
+                        }
+
+                        string updateModNameFromMeta = ManageIni.GetIniValueIfExist(Path.Combine(modFolderForUpdate, "meta.ini"), "notes", "General");
+                        if (updateModNameFromMeta.Length == 0)
+                        {
+                            continue;
+                        }
+
+                        int upIndex = updateModNameFromMeta.IndexOf("ompupname:", StringComparison.InvariantCultureIgnoreCase);
+                        if (upIndex == -1)
+                        {
+                            continue;
+                        }
+
+                        //get update name
+                        updateModNameFromMeta = updateModNameFromMeta.Substring(upIndex).Split(':')[1];
+                        if (updateModNameFromMeta.Length > 0 && zipName.Length >= updateModNameFromMeta.Length && ManageStrings.IsStringAContainsStringB(zipName, updateModNameFromMeta))
+                        {
+                            foundUpdateName = true;
+                            break;
+                        }
+                        else
+                        {
+                            updateModNameFromMeta = string.Empty;
                         }
                     }
 
@@ -215,57 +189,7 @@ namespace AIHelper.Install.Types.Files.Archive
 
                 if (foundUpdateName)
                 {
-                    string[] modfiles = Directory.GetFiles(targetModDirPath, "*.*", SearchOption.AllDirectories);
-                    foreach (var file in modfiles)
-                    {
-                        //ModFolderForUpdate
-                        string targetFIle = file.Replace(targetModDirPath, modFolderForUpdate);
-                        string targetFileDir = Path.GetDirectoryName(targetFIle);
-                        bool targetfileIsNewerOrSame = false;
-                        if (File.Exists(targetFIle))
-                        {
-                            if (File.GetLastWriteTime(file) > File.GetLastWriteTime(targetFIle))
-                            {
-                                File.Delete(targetFIle);
-                            }
-                            else
-                            {
-                                targetfileIsNewerOrSame = true;
-                            }
-                        }
-                        else
-                        {
-                            if (string.Equals(Path.GetExtension(targetFIle), ".dll", StringComparison.InvariantCultureIgnoreCase)
-                            && Path.GetFileNameWithoutExtension(targetFileAny) == Path.GetFileNameWithoutExtension(file)
-                            && File.Exists(targetFileAny)
-                               )
-                            {
-                                if (File.GetLastWriteTime(file) > File.GetLastWriteTime(targetFileAny))
-                                {
-                                    File.Delete(targetFileAny);
-                                }
-                                else
-                                {
-                                    targetfileIsNewerOrSame = true;
-                                }
-                            }
-                        }
-                        if (!Directory.Exists(targetFileDir))
-                        {
-                            Directory.CreateDirectory(targetFileDir);
-                        }
-                        if (targetfileIsNewerOrSame)
-                        {
-                            File.Delete(file);
-                        }
-                        else
-                        {
-                            File.Move(file, targetFIle);
-                        }
-                    }
-                    Directory.Delete(targetModDirPath, true);
-                    //присваивание папки на целевую, после переноса, для дальнейшей работы с ней
-                    targetModDirPath = modFolderForUpdate;
+                    ParseFoundUpdateName(ref targetModDirPath, modFolderForUpdate, targetFileAny);
                 }
 
                 zipfile.MoveTo(zipfile.FullName + (foundUpdateName ? ".InstalledUpdatedMod" : ".InstalledExtractedToMods"));
@@ -320,6 +244,101 @@ namespace AIHelper.Install.Types.Files.Archive
             }
 
             return ret;
+        }
+
+        private bool FoundZipmod(ZipArchive archive, string entryFullName, int filesCount, int entrieNum, string zipName, string entryName)
+        {
+            if (string.Equals(Path.GetExtension(entryFullName), ".zipmod", StringComparison.InvariantCultureIgnoreCase))//entryFullName==".zipmod"
+            {
+                if (filesCount > 1)
+                {
+                    archive.ExtractToDirectory(Path.Combine(ManageSettings.GetInstall2MoDirPath(), zipName));
+                }
+                else
+                {
+                    archive.Entries[entrieNum].ExtractToFile(Path.Combine(ManageSettings.GetInstall2MoDirPath(), entryName));
+                }
+                return true;
+            }
+            else if (string.Equals(Path.GetExtension(entryFullName), ".zip", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (filesCount > 1)
+                {
+                    archive.ExtractToDirectory(Path.Combine(ManageSettings.GetInstall2MoDirPath(), zipName));
+                }
+                else
+                {
+                    archive.Entries[entrieNum].ExtractToFile(Path.Combine(ManageSettings.GetInstall2MoDirPath(), entryName + "mod"));
+                }
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool IsStandardModInZip(string entryFullName)
+        {
+            return
+                   string.Equals(Path.GetFileName(entryFullName), "abdata", StringComparison.InvariantCultureIgnoreCase) //entryFullName=="abdata/"
+                || entryFullName.EndsWith("_data")/*тут только проверка на окончание нужна || string.Compare(entryFullName.Substring(0, 5), "_data", true, CultureInfo.InvariantCulture) == 0*/ //entryFullName=="_data/"
+                || string.Equals(Path.GetFileName(entryFullName), "bepinex", StringComparison.InvariantCultureIgnoreCase) //entryFullName=="bepinex/"
+                || string.Equals(Path.GetFileName(entryFullName), "userdata", StringComparison.InvariantCultureIgnoreCase) //entryFullName=="userdata/"
+                ;
+        }
+
+        private void ParseFoundUpdateName(ref string targetModDirPath, string modFolderForUpdate, string targetFileAny)
+        {
+            string[] modfiles = Directory.GetFiles(targetModDirPath, "*.*", SearchOption.AllDirectories);
+            foreach (var file in modfiles)
+            {
+                //ModFolderForUpdate
+                string targetFIle = file.Replace(targetModDirPath, modFolderForUpdate);
+                string targetFileDir = Path.GetDirectoryName(targetFIle);
+                bool targetfileIsNewerOrSame = false;
+                if (File.Exists(targetFIle))
+                {
+                    if (File.GetLastWriteTime(file) > File.GetLastWriteTime(targetFIle))
+                    {
+                        File.Delete(targetFIle);
+                    }
+                    else
+                    {
+                        targetfileIsNewerOrSame = true;
+                    }
+                }
+                else
+                {
+                    if (string.Equals(Path.GetExtension(targetFIle), ".dll", StringComparison.InvariantCultureIgnoreCase)
+                    && Path.GetFileNameWithoutExtension(targetFileAny) == Path.GetFileNameWithoutExtension(file)
+                    && File.Exists(targetFileAny)
+                       )
+                    {
+                        if (File.GetLastWriteTime(file) > File.GetLastWriteTime(targetFileAny))
+                        {
+                            File.Delete(targetFileAny);
+                        }
+                        else
+                        {
+                            targetfileIsNewerOrSame = true;
+                        }
+                    }
+                }
+                if (!Directory.Exists(targetFileDir))
+                {
+                    Directory.CreateDirectory(targetFileDir);
+                }
+                if (targetfileIsNewerOrSame)
+                {
+                    File.Delete(file);
+                }
+                else
+                {
+                    File.Move(file, targetFIle);
+                }
+            }
+            Directory.Delete(targetModDirPath, true);
+            //присваивание папки на целевую, после переноса, для дальнейшей работы с ней
+            targetModDirPath = modFolderForUpdate;
         }
     }
 }

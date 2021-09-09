@@ -1171,16 +1171,16 @@
         private System.Windows.Forms.TableLayoutPanel UpdateButtonTableLayoutPanel;
         private System.Windows.Forms.Button btnUpdateMods;
         private System.Windows.Forms.FlowLayoutPanel UpdateButtonOptionsFlowLayoutPanel;
-        private System.Windows.Forms.LinkLabel llOpenOldPluginsBuckupFolder;
         private System.Windows.Forms.TableLayoutPanel Install2MOTableLayoutPanel;
         private System.Windows.Forms.Button InstallInModsButton;
         private System.Windows.Forms.FlowLayoutPanel Install2MOOptionsFlowLayoutPanel;
         private System.Windows.Forms.LinkLabel Install2MODirPathOpenFolderLinkLabel;
-        private System.Windows.Forms.Label UpdatePluginsLabel;
-        private System.Windows.Forms.Label UseKKmanagerUpdaterLabel;
-        private System.Windows.Forms.Label BleadingEdgeZipmodsLabel;
-        internal System.Windows.Forms.Label CheckEnabledModsOnlyLabel;
         internal System.Windows.Forms.Button MOCommonModeSwitchButton;
+        public System.Windows.Forms.LinkLabel llOpenOldPluginsBuckupFolder;
+        public System.Windows.Forms.Label UpdatePluginsLabel;
+        public System.Windows.Forms.Label UseKKmanagerUpdaterLabel;
+        public System.Windows.Forms.Label BleadingEdgeZipmodsLabel;
+        public System.Windows.Forms.Label CheckEnabledModsOnlyLabel;
     }
 }
 

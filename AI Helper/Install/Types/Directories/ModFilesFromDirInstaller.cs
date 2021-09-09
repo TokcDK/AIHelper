@@ -45,13 +45,13 @@ namespace AIHelper.Install.Types.Directories
             var ret = false;
 
             //сортировка по подпапкам и переименование файлов
-            ManageModOrganizerMods.SortFilesToSubfolders(directoryInfo.FullName);
+            ManageModOrganizer.SortFilesToSubfolders(directoryInfo.FullName);
 
             string dir = ManageFilesFoldersExtensions.MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(directoryInfo.FullName);
             name = Path.GetFileName(dir);
             string category = string.Empty;
             string version = string.Empty;
-            string author = ManageModOrganizerMods.GetAuthorName(dir, name);//получение имени автора из имени файла или других файлов
+            string author = ManageModOrganizer.GetAuthorName(dir, name);//получение имени автора из имени файла или других файлов
             string comment = string.Empty;
             string description = string.Empty;
             string moddir = string.Empty;

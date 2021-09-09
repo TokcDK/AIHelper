@@ -303,7 +303,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
 
         private void OpenLogLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            ManageModOrganizerMods.OpenBepinexLog();
+            ManageModOrganizer.OpenBepinexLog();
         }
 
         private void BepInExSettingsDisplayedLogLevelLabel_Click(object sender, EventArgs e)

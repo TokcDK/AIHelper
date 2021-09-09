@@ -1176,11 +1176,11 @@
         private System.Windows.Forms.Button InstallInModsButton;
         private System.Windows.Forms.FlowLayoutPanel Install2MOOptionsFlowLayoutPanel;
         private System.Windows.Forms.LinkLabel Install2MODirPathOpenFolderLinkLabel;
-        private System.Windows.Forms.Button MOCommonModeSwitchButton;
         private System.Windows.Forms.Label UpdatePluginsLabel;
         private System.Windows.Forms.Label UseKKmanagerUpdaterLabel;
         private System.Windows.Forms.Label BleadingEdgeZipmodsLabel;
         internal System.Windows.Forms.Label CheckEnabledModsOnlyLabel;
+        internal System.Windows.Forms.Button MOCommonModeSwitchButton;
     }
 }
 

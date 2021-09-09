@@ -85,7 +85,7 @@ namespace AIHelper.Manage.Update.Targets
                     var dirinfo = new DirectoryInfo(path);
                     if (dirinfo.Exists && dirinfo.IsSymlink() && dirinfo.IsValidSymlink())
                     {
-                        var modPath = ManageModOrganizerMods.GetMoModPathInMods(dirinfo.GetSymlinkTarget());
+                        var modPath = ManageModOrganizer.GetPathInMods(dirinfo.GetSymlinkTarget());
 
                         if (Path.GetFileName(modPath) == Info.TargetFolderPath.FullName) // if parsing mod path is same then add for bak
                         {

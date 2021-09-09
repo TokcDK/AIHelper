@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 using System.Linq;
-using static AIHelper.Manage.ManageModOrganizerMods;
+using static AIHelper.Manage.ManageModOrganizer;
 
 namespace AIHelper.Install.Types.Files.Archive
 {

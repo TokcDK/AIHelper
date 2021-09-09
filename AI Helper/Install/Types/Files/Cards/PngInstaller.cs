@@ -20,7 +20,7 @@ namespace AIHelper.Install.Types.Files.Cards
 
             try
             {
-                var targetImagePath = ManageFilesFoldersExtensions.GetResultTargetFilePathWithNameCheck(ManageModOrganizerMods.GetUserDataSubFolder(" Chars", "f"), Path.GetFileNameWithoutExtension(pngInfo.Name), ext);
+                var targetImagePath = ManageFilesFoldersExtensions.GetResultTargetFilePathWithNameCheck(ManageModOrganizer.GetUserDataSubFolder(" Chars", "f"), Path.GetFileNameWithoutExtension(pngInfo.Name), ext);
 
                 pngInfo.MoveTo(targetImagePath);
             }

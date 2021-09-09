@@ -125,7 +125,7 @@ namespace AIHelper.Install.Types.Files.Archive
                     {
                         modFolderForUpdate = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modFolder);
                         string targetfile = Path.Combine(modFolderForUpdate, entryFullName);
-                        targetFileAny = ManageModOrganizerMods.GetTheDllFromSubfolders(modFolderForUpdate, entryName.Remove(entryName.Length - 4, 4), "dll");
+                        targetFileAny = ManageModOrganizer.GetTheDllFromSubfolders(modFolderForUpdate, entryName.Remove(entryName.Length - 4, 4), "dll");
                         if (!File.Exists(targetfile) && (targetFileAny.Length == 0 || !File.Exists(targetFileAny)))
                         {
                             continue;

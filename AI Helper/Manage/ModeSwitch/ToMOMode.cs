@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AIHelper.Manage.ModeSwitch
@@ -24,175 +25,45 @@ namespace AIHelper.Manage.ModeSwitch
         {
             SwitchBackToMoMode();
         }
+
+        StringBuilder operationsMade = new StringBuilder();
+        string[] moToStandartConvertationOperationsList = null;
+        string[] vanillaDataFilesList;
+        string[] moddedDataFilesList;
+        Dictionary<string, string> zipmodsGuidList;
+        StringBuilder filesWhichAlreadyHaveSameDestFileInMods;
+        bool filesWhichAlreadyHaveSameDestFileInModsIsNotEmpty;
+        string dateTimeInFormat;
+
         protected void SwitchBackToMoMode()
         {
-            StringBuilder operationsMade = new StringBuilder();
-            string[] moToStandartConvertationOperationsList = null;
             try
             {
+                operationsMade = new StringBuilder();
                 moToStandartConvertationOperationsList = File.ReadAllLines(ManageSettings.GetCurrentGameMoToStandartConvertationOperationsListFilePath());
                 ReplaceVarsToPaths(ref moToStandartConvertationOperationsList);
-                var operationsSplitString = new string[] { "|MovedTo|" };
-                var vanillaDataFilesList = File.ReadAllLines(ManageSettings.GetCurrentGameVanillaDataFilesListFilePath());
+                vanillaDataFilesList = File.ReadAllLines(ManageSettings.GetCurrentGameVanillaDataFilesListFilePath());
                 ReplaceVarsToPaths(ref vanillaDataFilesList);
-                var moddedDataFilesList = File.ReadAllLines(ManageSettings.GetCurrentGameModdedDataFilesListFilePath());
+                moddedDataFilesList = File.ReadAllLines(ManageSettings.GetCurrentGameModdedDataFilesListFilePath());
                 ReplaceVarsToPaths(ref moddedDataFilesList);
-                Dictionary<string, string> zipmodsGuidList = new Dictionary<string, string>();
-                bool zipmodsGuidListNotEmpty = FillZipModsGUID(zipmodsGuidList);                
+                zipmodsGuidList = new Dictionary<string, string>();
+                bool zipmodsGuidListNotEmpty = FillZipModsGUID(zipmodsGuidList);
 
                 //remove normal mode identifier
                 SwitchNormalModeIdentifier(false);
 
-                StringBuilder filesWhichAlreadyHaveSameDestFileInMods = new StringBuilder();
-                bool filesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = false;
+                filesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = false;
+                filesWhichAlreadyHaveSameDestFileInMods = new StringBuilder();
 
                 //Перемещение файлов модов по списку
-                int operationsLength = moToStandartConvertationOperationsList.Length;
-                for (int o = 0; o < operationsLength; o++)
-                {
-                    if (string.IsNullOrWhiteSpace(moToStandartConvertationOperationsList[o]))
-                    {
-                        continue;
-                    }
-
-                    string[] movePaths = moToStandartConvertationOperationsList[o].Split(operationsSplitString, StringSplitOptions.None);
-
-                    var filePathInModsExists = File.Exists(movePaths[0]);
-                    var filePathInDataExists = File.Exists(movePaths[1]);
-
-                    if (!filePathInDataExists)
-                    {
-                        continue;
-                    }
-
-                    if (!filePathInModsExists)
-                    {
-                        string modsubfolder = Path.GetDirectoryName(movePaths[0]);
-                        if (!Directory.Exists(modsubfolder))
-                        {
-                            Directory.CreateDirectory(modsubfolder);
-                        }
-
-                        try//ignore move file error if file will be locked and write in log about this
-                        {
-                            movePaths[1].MoveTo(movePaths[0]);
-
-                            //запись выполненной операции для удаления из общего списка в случае ошибки при переключении из обычного режима
-                            operationsMade.AppendLine(moToStandartConvertationOperationsList[o]);
-
-                            try
-                            {
-                                //Move bonemod file both with original
-                                if (File.Exists(movePaths[1] + ".bonemod.txt"))
-                                {
-                                    (movePaths[1] + ".bonemod.txt").MoveTo(movePaths[0] + ".bonemod.txt");
-                                }
-                                //запись выполненной операции для удаления из общего списка в случае ошибки при переключении из обычного режима
-                                operationsMade.AppendLine(movePaths[1] + ".bonemod.txt" + "|MovedTo|" + movePaths[0] + ".bonemod.txt");
-                            }
-                            catch (Exception ex)
-                            {
-                                ManageLogs.Log("An error occured while file moving." + "MovePaths[0]=" + movePaths[0] + ";MovePaths[1]=" + movePaths[0] + ".error:\r\n" + ex);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            ManageLogs.Log("Failed to move file: '" + Environment.NewLine + movePaths[1] + "' " + Environment.NewLine + "Error:" + Environment.NewLine + ex);
-                        }
-                    }
-                    else
-                    {
-                        //если в Mods на месте планируемого для перемещения назад в Mods файла появился новый файл, то записать информацию о нем в новый мод, чтобы перенести его в новый мод
-                        filesWhichAlreadyHaveSameDestFileInMods.AppendLine(movePaths[1] + "|MovedTo|" + movePaths[0]);
-                        filesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = true;
-                    }
-                }
+                MoveFilesByOperationsList();
 
                 //string destFolderForNewFiles = Path.Combine(ModsPath, "NewAddedFiles");
 
                 //получение даты и времени для дальнейшего использования
-                string dateTimeInFormat = ManageSettings.GetDateTimeBasedSuffix();
+                dateTimeInFormat = ManageSettings.GetDateTimeBasedSuffix();
 
-                if (filesWhichAlreadyHaveSameDestFileInModsIsNotEmpty)
-                {
-                    foreach (string fromToPathsLine in filesWhichAlreadyHaveSameDestFileInMods.ToString().Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
-                    {
-                        if (string.IsNullOrWhiteSpace(fromToPathsLine))
-                        {
-                            continue;
-                        }
-
-                        string[] fromToPaths = fromToPathsLine.Split(new string[] { "|MovedTo|" }, StringSplitOptions.None);
-
-                        string targetFolderPath = Path.GetDirectoryName(fromToPaths[1]);
-
-                        bool isForOverwriteFolder = ManageStrings.IsStringAContainsStringB(targetFolderPath, ManageSettings.GetCurrentGameOverwriteFolderPath());
-                        //поиск имени мода с учетом обработки файлов папки Overwrite
-                        string modName = targetFolderPath;
-                        if (isForOverwriteFolder)
-                        {
-                            modName = Path.GetFileName(ManageSettings.GetCurrentGameOverwriteFolderPath());
-                        }
-                        else
-                        {
-                            while (Path.GetDirectoryName(modName) != ManageSettings.GetCurrentGameModsDirPath())
-                            {
-                                modName = Path.GetDirectoryName(modName);
-                            }
-                            modName = Path.GetFileName(modName);
-                        }
-
-                        //Новое имя для новой целевой папки мода
-                        string originalModPath = isForOverwriteFolder ? ManageSettings.GetCurrentGameOverwriteFolderPath() : Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modName);
-                        string newModName = modName + dateTimeInFormat;
-                        string newModPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), newModName);
-                        targetFolderPath = targetFolderPath.Replace(originalModPath, newModPath);
-
-                        string targetFileName = Path.GetFileNameWithoutExtension(fromToPaths[1]);
-                        string targetFileExtension = Path.GetExtension(fromToPaths[1]);
-                        string targetPath = Path.Combine(targetFolderPath, targetFileName + targetFileExtension);
-
-                        //создать подпапку для файла
-                        if (!Directory.Exists(targetFolderPath))
-                        {
-                            Directory.CreateDirectory(targetFolderPath);
-                        }
-
-                        //переместить файл в новую для него папку
-                        fromToPaths[0].MoveTo(targetPath);
-
-                        //ВОЗМОЖНО ЗДЕСЬ ПРОБЛЕМА В КОДЕ, ПРИ КОТОРОЙ ДЛЯ КАЖДОГО ФАЙЛА БУДЕТ СОЗДАНА ОТДЕЛЬНАЯ ПАПКА С МОДОМ
-                        //НУЖНО ДОБАВИТЬ ЗАПИСЬ И ПОДКЛЮЧЕНИЕ НОВОГО МОДА ТОЛЬКО ПОСЛЕ ТОГО, КАК ВСЕ ФАЙЛЫ ИЗ НЕГО ПЕРЕМЕЩЕНЫ
-
-                        //записать в папку мода замечание с объяснением наличия этого мода
-                        string note = T._(
-                            "Files in same paths already exist in original mod folder!\n\n" +
-                            " This folder was created in time of conversion from Common mode to MO mode\n" +
-                            " and because in destination place\n" +
-                            " where mod file must be moved already was other file with same name.\n" +
-                            " It could happen if content of the mod folder was updated\n" +
-                            " when game was in common mode and was made same file in same place.\n" +
-                            " Please check files here and if this files need for you\n" +
-                            " then activate this mod or move files to mod folder with same name\n" +
-                            " and if this files obsolete or just not need anymore then delete this mod folder."
-                            );
-                        File.WriteAllText(Path.Combine(newModPath, "NOTE!.txt"), note);
-
-                        //запись meta.ini с замечанием
-                        ManageModOrganizer.WriteMetaIni(
-                            newModPath
-                            ,
-                            string.Empty
-                            ,
-                            "0." + dateTimeInFormat.Substring(1)
-                            ,
-                            string.Empty
-                            ,
-                            note.Replace("\n", "<br>")
-                            );
-                        ManageModOrganizer.ActivateDeactivateInsertMod(modname: newModName, activate: false, recordWithWhichInsert: modName, placeAfter: false);
-                    }
-                }
+                MoveFilesInNewMod();
 
                 //Перемещение новых файлов
                 //
@@ -400,6 +271,170 @@ namespace AIHelper.Manage.ModeSwitch
                 SwitchNormalModeIdentifier();
 
                 MessageBox.Show("Failed to switch in MO mode. Error:" + Environment.NewLine + ex);
+            }
+        }
+
+        private void MoveFilesInNewMod()
+        {
+            if (!filesWhichAlreadyHaveSameDestFileInModsIsNotEmpty)
+            {
+                return;
+            }
+
+            Parallel.ForEach(filesWhichAlreadyHaveSameDestFileInMods.ToString().SplitToLines(), fromToPathsLine =>
+            {
+                if (string.IsNullOrWhiteSpace(fromToPathsLine))
+                {
+                    return;
+                }
+
+                string[] fromToPaths = fromToPathsLine.Split(operationsSplitString, StringSplitOptions.None);
+
+                string targetFolderPath = Path.GetDirectoryName(fromToPaths[1]);
+
+                bool isForOverwriteFolder = ManageStrings.IsStringAContainsStringB(targetFolderPath, ManageSettings.GetCurrentGameOverwriteFolderPath());
+                //поиск имени мода с учетом обработки файлов папки Overwrite
+                string modName = targetFolderPath;
+                if (isForOverwriteFolder)
+                {
+                    modName = Path.GetFileName(ManageSettings.GetCurrentGameOverwriteFolderPath());
+                }
+                else
+                {
+                    while (Path.GetDirectoryName(modName) != ManageSettings.GetCurrentGameModsDirPath())
+                    {
+                        modName = Path.GetDirectoryName(modName);
+                    }
+                    modName = Path.GetFileName(modName);
+                }
+
+                //Новое имя для новой целевой папки мода
+                string originalModPath = isForOverwriteFolder ? ManageSettings.GetCurrentGameOverwriteFolderPath() : Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modName);
+                string newModName = modName + dateTimeInFormat;
+                string newModPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), newModName);
+                targetFolderPath = targetFolderPath.Replace(originalModPath, newModPath);
+
+                string targetFileName = Path.GetFileNameWithoutExtension(fromToPaths[1]);
+                string targetFileExtension = Path.GetExtension(fromToPaths[1]);
+                string targetPath = Path.Combine(targetFolderPath, targetFileName + targetFileExtension);
+
+                //создать подпапку для файла
+                if (!Directory.Exists(targetFolderPath))
+                {
+                    Directory.CreateDirectory(targetFolderPath);
+                }
+
+                //переместить файл в новую для него папку
+                fromToPaths[0].MoveTo(targetPath);
+
+                //ВОЗМОЖНО ЗДЕСЬ ПРОБЛЕМА В КОДЕ, ПРИ КОТОРОЙ ДЛЯ КАЖДОГО ФАЙЛА БУДЕТ СОЗДАНА ОТДЕЛЬНАЯ ПАПКА С МОДОМ
+                //НУЖНО ДОБАВИТЬ ЗАПИСЬ И ПОДКЛЮЧЕНИЕ НОВОГО МОДА ТОЛЬКО ПОСЛЕ ТОГО, КАК ВСЕ ФАЙЛЫ ИЗ НЕГО ПЕРЕМЕЩЕНЫ
+
+                //записать в папку мода замечание с объяснением наличия этого мода
+                string note = T._(
+                    "Files in same paths already exist in original mod folder!\n\n" +
+                    " This folder was created in time of conversion from Common mode to MO mode\n" +
+                    " and because in destination place\n" +
+                    " where mod file must be moved already was other file with same name.\n" +
+                    " It could happen if content of the mod folder was updated\n" +
+                    " when game was in common mode and was made same file in same place.\n" +
+                    " Please check files here and if this files need for you\n" +
+                    " then activate this mod or move files to mod folder with same name\n" +
+                    " and if this files obsolete or just not need anymore then delete this mod folder."
+                    );
+                File.WriteAllText(Path.Combine(newModPath, "NOTE!.txt"), note);
+
+                //запись meta.ini с замечанием
+                ManageModOrganizer.WriteMetaIni(
+                    newModPath
+                    ,
+                    string.Empty
+                    ,
+                    "0." + dateTimeInFormat.Substring(1)
+                    ,
+                    string.Empty
+                    ,
+                    note.Replace("\n", "<br>")
+                    );
+                ManageModOrganizer.ActivateDeactivateInsertMod(modname: newModName, activate: false, recordWithWhichInsert: modName, placeAfter: false);
+            });
+        }
+
+        private void MoveFilesByOperationsList()
+        {
+            int operationsLength = moToStandartConvertationOperationsList.Length;
+            Parallel.ForEach(moToStandartConvertationOperationsList, operation =>
+            {
+                if (string.IsNullOrWhiteSpace(operation))
+                {
+                    return;
+                }
+
+                string[] movePaths = operation.Split(operationsSplitString, StringSplitOptions.None);
+
+                var filePathInModsExists = File.Exists(movePaths[0]);
+                var filePathInDataExists = File.Exists(movePaths[1]);
+
+                if (!filePathInDataExists) // skip if was deleted in Data
+                {
+                    return;
+                }
+
+                if (filePathInModsExists)
+                {
+                    //если в Mods на месте планируемого для перемещения назад в Mods файла появился новый файл, то записать информацию о нем в новый мод, чтобы перенести его в новый мод
+                    filesWhichAlreadyHaveSameDestFileInMods.AppendLine(movePaths[1] + operationsSplitStringBase + movePaths[0]);
+                    filesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = true;
+
+                    return;
+                }
+                else
+                {
+                    string modsubfolder = Path.GetDirectoryName(movePaths[0]);
+                    if (!Directory.Exists(modsubfolder))
+                    {
+                        Directory.CreateDirectory(modsubfolder);
+                    }
+
+                    try//ignore move file error if file will be locked and write in log about this
+                    {
+                        movePaths[1].MoveTo(movePaths[0]);
+
+                        //запись выполненной операции для удаления из общего списка в случае ошибки при переключении из обычного режима
+                        operationsMade.AppendLine(operation);
+
+                        MoveBonemodForCards(movePaths);
+                    }
+                    catch (Exception ex)
+                    {
+                        ManageLogs.Log("Failed to move file: '" + Environment.NewLine + movePaths[1] + "' " + Environment.NewLine + "Error:" + Environment.NewLine + ex);
+                    }
+                }
+            });
+        }
+
+        private void MoveBonemodForCards(string[] movePaths)
+        {
+            if (!string.Equals(Path.GetExtension(movePaths[1]), ".png")) // only for cards
+            {
+                return;
+            }
+
+            try
+            {
+                //Move bonemod file both with original
+                if (!File.Exists(movePaths[1] + ".bonemod.txt") || File.Exists(movePaths[0] + ".bonemod.txt"))
+                {
+                    return;
+                }
+
+                (movePaths[1] + ".bonemod.txt").MoveTo(movePaths[0] + ".bonemod.txt");
+                //запись выполненной операции для удаления из общего списка в случае ошибки при переключении из обычного режима
+                operationsMade.AppendLine(movePaths[1] + ".bonemod.txt" + operationsSplitStringBase + movePaths[0] + ".bonemod.txt");
+            }
+            catch (Exception ex)
+            {
+                ManageLogs.Log("An error occured while file moving." + "MovePaths[0]=" + movePaths[0] + ";MovePaths[1]=" + movePaths[0] + ".error:\r\n" + ex);
             }
         }
 

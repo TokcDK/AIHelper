@@ -62,6 +62,31 @@ namespace AIHelper.Manage.ModeSwitch
             return false;
         }
 
+        /// <summary>
+        /// list of files with log paths
+        /// </summary>
+        protected List<string> longPaths;
+        /// <summary>
+        /// File paths list from vanilla Data folder with no mods
+        /// </summary>
+        protected string[] vanillaDataFilesList;
+        /// <summary>
+        /// List of empty folder paths in vanilla Data directory with no mods
+        /// </summary>
+        protected StringBuilder vanillaDataEmptyFoldersList;
+        /// <summary>
+        /// список guid zipmod-ов
+        /// </summary>
+        protected Dictionary<string, string> zipmodsGuidList;
+        /// <summary>
+        /// список выполненных операций с файлами.
+        /// </summary>
+        protected StringBuilder moToStandartConvertationOperationsList;
+        /// <summary>
+        /// True if any files was parsed
+        /// </summary>
+        protected bool ParsedAny;
+
         protected void SwitchToCommonMode()
         {
             moToStandartConvertationOperationsList = new StringBuilder();
@@ -198,6 +223,131 @@ namespace AIHelper.Manage.ModeSwitch
                 MessageBox.Show("Mode was not switched. Error:" + Environment.NewLine + ex + "\r\n/debufStr=" + debugString);
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sourceFolder"></param>
+        /// <param name="parentDir">Parent directory</param>
+        /// <returns></returns>
+        protected bool ParseDirectories(string sourceFolder, string parentDir)
+        {
+            Parallel.ForEach(Directory.GetDirectories(sourceFolder), dir =>
+            {
+                if (dir.IsSymlink(ObjectType.Directory))
+                {
+                    ParseDirLink(dir, parentDir);
+                }
+                else
+                {
+                    ParseFiles(dir, parentDir);
+                    ParseDirectories(sourceFolder, parentDir);
+                }
+            });
+
+            return true;
+        }
+
+        protected void ParseDirLink(string dir, string parentDir)
+        {
+            if (dir.IsValidSymlink())
+            {
+                var symlinkTarget = Path.GetFullPath(dir.GetSymlinkTarget());
+
+                var targetPath = dir.Replace(parentDir, ManageSettings.GetCurrentGameDataPath()); // we move to data
+                symlinkTarget.CreateSymlink(targetPath, isRelative: true, objectType: ObjectType.Directory);
+            }
+        }
+
+        protected bool ParseFiles(string dir, string parentDir)
+        {
+            var sourceFilePaths = Directory.GetFiles(dir, "*.*");
+            if (sourceFilePaths.Length == 0)
+            {
+                return false;
+            }
+
+            PreParseFiles();
+
+            var sourceFilePathsLength = sourceFilePaths.Length;
+            _ = Parallel.For(0, sourceFilePathsLength, f =>
+            {
+                 var sourceFilePath = sourceFilePaths[f];
+                 if (ManageStrings.CheckForLongPath(ref sourceFilePath))
+                 {
+                     longPaths.Add(sourceFilePath.Remove(0, 4)); // add to lng paths list but with removed long path prefix
+                 }
+
+                 if (NeedSkip(sourceFilePath, parentDir))
+                 {
+                     return;
+                 }
+
+                 ParseFile(sourceFilePath, parentDir);
+            });
+
+            return true;
+        }
+
+        protected void ParseFile(string sourceFilePath, string sourceFolder)
+        {
+            var dataFilePath = sourceFilePath.Replace(sourceFolder, ManageSettings.GetCurrentGameDataPath());
+            if (ManageStrings.CheckForLongPath(ref dataFilePath))
+            {
+                longPaths.Add(dataFilePath.Remove(0, 4));
+            }
+
+            if (File.Exists(dataFilePath))
+            {
+                var vanillaFileBackupTargetPath = dataFilePath.Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath());
+
+                if (File.Exists(vanillaFileBackupTargetPath) || !vanillaDataFilesList.Contains(dataFilePath))
+                {
+                    return;
+                }
+
+                var bakfolder = Path.GetDirectoryName(vanillaFileBackupTargetPath);
+                try
+                {
+                    Directory.CreateDirectory(bakfolder);
+
+                    dataFilePath.MoveTo(vanillaFileBackupTargetPath);//перенос файла из Data в Bak, если там не было
+
+                    ManageModOrganizer.SaveGuidIfZipMod(sourceFilePath, zipmodsGuidList);
+
+                    sourceFilePath.MoveTo(dataFilePath);
+                    moToStandartConvertationOperationsList.AppendLine(sourceFilePath + operationsSplitStringBase + dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
+                    ParsedAny = true;
+                }
+                catch (Exception ex)
+                {
+                    // when file is not exist in Data, but file in Bak is exist and file in sourceFolder also exists => return file from Bak to Data
+                    if (!File.Exists(dataFilePath) && File.Exists(vanillaFileBackupTargetPath) && File.Exists(sourceFilePath))
+                    {
+                        File.Move(vanillaFileBackupTargetPath, dataFilePath);
+                    }
+
+                    ManageLogs.Log("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + bakfolder + "\r\nData path=" + dataFilePath + "\r\nSource dir path=" + sourceFilePath);
+                }
+            }
+            else
+            {
+                var destFolder = Path.GetDirectoryName(dataFilePath);
+                try
+                {
+                    Directory.CreateDirectory(destFolder);
+
+                    ManageModOrganizer.SaveGuidIfZipMod(sourceFilePath, zipmodsGuidList);
+
+                    sourceFilePath.MoveTo(dataFilePath);//перенос файла из папки мода в Data
+                    moToStandartConvertationOperationsList.AppendLine(sourceFilePath + operationsSplitStringBase + dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
+                    ParsedAny = true;
+                }
+                catch (Exception ex)
+                {
+                    ManageLogs.Log("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + destFolder + "\r\nData path=" + dataFilePath + "\r\nSource dir path=" + sourceFilePath);
+                }
+            }
+        }
 
         void RestoreMovedFilesLocation(StringBuilder operations)
         {
@@ -212,7 +362,7 @@ namespace AIHelper.Manage.ModeSwitch
                             continue;
                         }
 
-                        var movePaths = record.Split(new string[] { "|MovedTo|" }, StringSplitOptions.None);
+                        var movePaths = record.Split(operationsSplitString, StringSplitOptions.None);
 
                         if (movePaths.Length != 2)
                         {

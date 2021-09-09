@@ -20,32 +20,23 @@ namespace AIHelper.Manage
         /// <param name="targetFilePath"></param>
         /// <param name="IsSymlink"></param>
         /// <returns></returns>
-        public static bool MoveTo(this string sourceFilePath, string targetFilePath, bool IsSymlink=false)
+        public static void MoveTo(this string sourceFilePath, string targetFilePath, bool IsSymlink=false)
         {
-            try
+            if (IsSymlink || sourceFilePath.IsSymlink(ObjectType.File))
             {
-                if (IsSymlink || sourceFilePath.IsSymlink(ObjectType.File))
+                if (sourceFilePath.IsValidSymlink())
                 {
-                    if (sourceFilePath.IsValidSymlink())
-                    {
-                        var symlinkTarget = Path.GetFullPath(sourceFilePath.GetSymlinkTarget());
+                    var symlinkTarget = Path.GetFullPath(sourceFilePath.GetSymlinkTarget());
 
-                        symlinkTarget.CreateSymlink(targetFilePath, isRelative: true, objectType: ObjectType.File);
-                    }
-
-                    File.Delete(sourceFilePath);
-                }
-                else
-                {
-                    File.Move(sourceFilePath, targetFilePath);//перенос файла из папки Overwrite в Data
+                    symlinkTarget.CreateSymlink(targetFilePath, isRelative: true, objectType: ObjectType.File);
                 }
 
-                return true;
+                File.Delete(sourceFilePath);
             }
-            catch(IOException)
+            else
             {
+                File.Move(sourceFilePath, targetFilePath);//перенос файла из папки Overwrite в Data
             }
-            return false;
         }
 
         /// <summary>

@@ -1833,7 +1833,7 @@ namespace AIHelper
                     //    OverwriteFolder = OverwriteFolder.Replace("overwrite", "Overwrite");
                     //}
 
-                    string fileInDataFolderPath;
+                    string dataFilePath;
                     var filesInOverwriteLength = filesInOverwrite.Length;
 
                     using (var frmProgress = new Form())
@@ -1855,11 +1855,11 @@ namespace AIHelper
                                     pbProgress.Value = n;
                                 }
 
-                                var fileInOverwrite = filesInOverwrite[n];
+                                var sourceFilePath = filesInOverwrite[n];
 
-                                if (ManageStrings.CheckForLongPath(ref fileInOverwrite))
+                                if (ManageStrings.CheckForLongPath(ref sourceFilePath))
                                 {
-                                    longPaths.Add(fileInOverwrite.Remove(0, 4));
+                                    longPaths.Add(sourceFilePath.Remove(0, 4));
                                 }
                                 //if (FileInOverwrite.Length > 259)
                                 //{
@@ -1870,23 +1870,23 @@ namespace AIHelper
                                 //    //    FileInOverwrite = @"\\?\" + FileInOverwrite;
                                 //}
 
-                                fileInDataFolderPath = fileInOverwrite.Replace(ManageSettings.GetCurrentGameOverwriteFolderPath(), ManageSettings.GetCurrentGameDataPath());
-                                if (ManageStrings.CheckForLongPath(ref fileInDataFolderPath))
+                                dataFilePath = sourceFilePath.Replace(ManageSettings.GetCurrentGameOverwriteFolderPath(), ManageSettings.GetCurrentGameDataPath());
+                                if (ManageStrings.CheckForLongPath(ref dataFilePath))
                                 {
-                                    longPaths.Add(fileInDataFolderPath.Remove(0, 4));
+                                    longPaths.Add(dataFilePath.Remove(0, 4));
                                 }
                                 //if (FileInDataFolder.Length > 259)
                                 //{
                                 //    FileInDataFolder = @"\\?\" + FileInDataFolder;
                                 //}
-                                if (File.Exists(fileInDataFolderPath))
+                                if (File.Exists(dataFilePath))
                                 {
-                                    var vanillaFileBackupTargetPath = fileInDataFolderPath.Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath());
+                                    var vanillaFileBackupTargetPath = dataFilePath.Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath());
                                     //if (FileInBakFolderWhichIsInRES.Length > 259)
                                     //{
                                     //    FileInBakFolderWhichIsInRES = @"\\?\" + FileInBakFolderWhichIsInRES;
                                     //}
-                                    if (!File.Exists(vanillaFileBackupTargetPath) && vanillaDataFilesList.Contains(fileInDataFolderPath))
+                                    if (!File.Exists(vanillaFileBackupTargetPath) && vanillaDataFilesList.Contains(dataFilePath))
                                     {
                                         var bakfolder = Path.GetDirectoryName(vanillaFileBackupTargetPath);
                                         try
@@ -1895,44 +1895,44 @@ namespace AIHelper
                                                 debugString = bakfolder + ":bakfolder,l1922";
                                             Directory.CreateDirectory(bakfolder);
 
-                                            fileInDataFolderPath.MoveTo(vanillaFileBackupTargetPath);//перенос файла из Data в Bak, если там не было
+                                            dataFilePath.MoveTo(vanillaFileBackupTargetPath);//перенос файла из Data в Bak, если там не было
 
-                                            SaveGuidIfZipMod(fileInOverwrite, zipmodsGuidList);
+                                            SaveGuidIfZipMod(sourceFilePath, zipmodsGuidList);
 
-                                            fileInOverwrite.MoveTo(fileInDataFolderPath);
+                                            sourceFilePath.MoveTo(dataFilePath);
 
-                                            moToStandartConvertationOperationsList.AppendLine(fileInOverwrite + "|MovedTo|" + fileInDataFolderPath);//запись об операции будет пропущена, если будет какая-то ошибка
+                                            moToStandartConvertationOperationsList.AppendLine(sourceFilePath + "|MovedTo|" + dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
 
                                         }
                                         catch (Exception ex)
                                         {
                                             //когда файла в дата нет, файл в бак есть и есть файл в папке Overwrite - вернуть файл из bak назад
-                                            if (!File.Exists(fileInDataFolderPath) && File.Exists(vanillaFileBackupTargetPath) && File.Exists(fileInOverwrite))
+                                            if (!File.Exists(dataFilePath) && File.Exists(vanillaFileBackupTargetPath) && File.Exists(sourceFilePath))
                                             {
-                                                File.Move(vanillaFileBackupTargetPath, fileInDataFolderPath);
+                                                File.Move(vanillaFileBackupTargetPath, dataFilePath);
                                             }
 
-                                            ManageLogs.Log("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\nparent dir=" + bakfolder + "\r\nData path=" + fileInDataFolderPath + "\r\nOverwrite path=" + fileInOverwrite);
+                                            ManageLogs.Log("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\nparent dir=" + bakfolder + "\r\nData path=" + dataFilePath + "\r\nOverwrite path=" + sourceFilePath);
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    var destFolder = Path.GetDirectoryName(fileInDataFolderPath);
+                                    var destFolder = Path.GetDirectoryName(dataFilePath);
                                     try
                                     {
                                         if (_isDebug)
                                             debugString = destFolder + ":destFolder,l2068";
                                         Directory.CreateDirectory(destFolder);
 
-                                        SaveGuidIfZipMod(fileInOverwrite, zipmodsGuidList);
+                                        SaveGuidIfZipMod(sourceFilePath, zipmodsGuidList);
 
-                                        fileInOverwrite.MoveTo(fileInDataFolderPath);//перенос файла из папки мода в Data
-                                        moToStandartConvertationOperationsList.AppendLine(fileInOverwrite + "|MovedTo|" + fileInDataFolderPath);//запись об операции будет пропущена, если будет какая-то ошибка
+                                        sourceFilePath.MoveTo(dataFilePath);//перенос файла из папки мода в Data
+                                        moToStandartConvertationOperationsList.AppendLine(sourceFilePath + "|MovedTo|" + dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
                                     }
                                     catch (Exception ex)
                                     {
-                                        ManageLogs.Log("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + destFolder + "\r\nData path=" + fileInDataFolderPath + "\r\nOverwrite path=" + fileInOverwrite);
+                                        ManageLogs.Log("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + destFolder + "\r\nData path=" + dataFilePath + "\r\nOverwrite path=" + sourceFilePath);
                                     }
                                 }
                             }
@@ -1965,17 +1965,17 @@ namespace AIHelper
                                 if (modFiles.Length > 0)
                                 {
                                     var modFilesLength = modFiles.Length;
-                                    string fileInDataFolder;
+                                    string dataFilePath;
 
                                     var metaskipped = false;
                                     for (int f = 0; f < modFilesLength; f++)
                                     {
                                         //"\\?\" - prefix to ignore 260 path cars limit
 
-                                        var fileOfMod = modFiles[f];
-                                        if (ManageStrings.CheckForLongPath(ref fileOfMod))
+                                        var sourceFilePath = modFiles[f];
+                                        if (ManageStrings.CheckForLongPath(ref sourceFilePath))
                                         {
-                                            longPaths.Add(fileOfMod.Remove(0, 4));
+                                            longPaths.Add(sourceFilePath.Remove(0, 4));
                                         }
                                         //if (FileOfMod.Length > 259)
                                         //{
@@ -1989,10 +1989,10 @@ namespace AIHelper
                                         try
                                         {
                                             //skip images and txt in mod root folder
-                                            var fileExtension = Path.GetExtension(fileOfMod);
+                                            var fileExtension = Path.GetExtension(sourceFilePath);
                                             if (string.Equals(fileExtension, ".txt", StringComparison.InvariantCultureIgnoreCase) || fileExtension.IsPictureExtension())
                                             {
-                                                if (Path.GetFileName(fileOfMod.Replace(Path.DirectorySeparatorChar + Path.GetFileName(fileOfMod), string.Empty)) == enabledModsList[n])
+                                                if (Path.GetFileName(sourceFilePath.Replace(Path.DirectorySeparatorChar + Path.GetFileName(sourceFilePath), string.Empty)) == enabledModsList[n])
                                                 {
                                                     //пропускать картинки и txt в корне папки мода
                                                     continue;
@@ -2008,31 +2008,31 @@ namespace AIHelper
                                         if (metaskipped)
                                         {
                                         }
-                                        else if (Path.GetFileName(fileOfMod) == "meta.ini" /*ModFile.Length >= 8 && string.Compare(ModFile.Substring(ModFile.Length - 8, 8), "meta.ini", true, CultureInfo.InvariantCulture) == 0*/)
+                                        else if (Path.GetFileName(sourceFilePath) == "meta.ini" /*ModFile.Length >= 8 && string.Compare(ModFile.Substring(ModFile.Length - 8, 8), "meta.ini", true, CultureInfo.InvariantCulture) == 0*/)
                                         {
                                             metaskipped = true;//для ускорения проверки, когда meta будет найден, будет делать быструю проверку bool переменной
                                             continue;
                                         }
 
                                         //MOCommonModeSwitchButton.Text = "..." + EnabledModsLength + "/" + N + ": " + f + "/" + ModFilesLength;
-                                        fileInDataFolder = fileOfMod.Replace(modFolder, ManageSettings.GetCurrentGameDataPath());
-                                        if (ManageStrings.CheckForLongPath(ref fileInDataFolder))
+                                        dataFilePath = sourceFilePath.Replace(modFolder, ManageSettings.GetCurrentGameDataPath());
+                                        if (ManageStrings.CheckForLongPath(ref dataFilePath))
                                         {
-                                            longPaths.Add(fileInDataFolder.Remove(0, 4));
+                                            longPaths.Add(dataFilePath.Remove(0, 4));
                                         }
                                         //if (FileInDataFolder.Length > 259)
                                         //{
                                         //    FileInDataFolder = @"\\?\" + FileInDataFolder;
                                         //}
 
-                                        if (File.Exists(fileInDataFolder))
+                                        if (File.Exists(dataFilePath))
                                         {
-                                            var fileInBakFolderWhichIsInRes = fileInDataFolder.Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath());
+                                            var fileInBakFolderWhichIsInRes = dataFilePath.Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath());
                                             //if (FileInBakFolderWhichIsInRES.Length > 259)
                                             //{
                                             //    FileInBakFolderWhichIsInRES = @"\\?\" + FileInBakFolderWhichIsInRES;
                                             //}
-                                            if (!File.Exists(fileInBakFolderWhichIsInRes) && vanillaDataFilesList.Contains(fileInDataFolder))
+                                            if (!File.Exists(fileInBakFolderWhichIsInRes) && vanillaDataFilesList.Contains(dataFilePath))
                                             {
                                                 var bakfolder = Path.GetDirectoryName(fileInBakFolderWhichIsInRes);
                                                 try
@@ -2041,42 +2041,42 @@ namespace AIHelper
                                                         debugString = bakfolder + ":bakfolder,l2183";
                                                     Directory.CreateDirectory(bakfolder);
 
-                                                    fileInDataFolder.MoveTo(fileInBakFolderWhichIsInRes);//перенос файла из Data в Bak, если там не было
+                                                    dataFilePath.MoveTo(fileInBakFolderWhichIsInRes);//перенос файла из Data в Bak, если там не было
 
-                                                    SaveGuidIfZipMod(fileOfMod, zipmodsGuidList);
+                                                    SaveGuidIfZipMod(sourceFilePath, zipmodsGuidList);
 
-                                                    fileOfMod.MoveTo(fileInDataFolder);//перенос файла из папки мода в Data
-                                                    moToStandartConvertationOperationsList.AppendLine(fileOfMod + "|MovedTo|" + fileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
+                                                    sourceFilePath.MoveTo(dataFilePath);//перенос файла из папки мода в Data
+                                                    moToStandartConvertationOperationsList.AppendLine(sourceFilePath + "|MovedTo|" + dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
                                                 }
                                                 catch (Exception ex)
                                                 {
                                                     //когда файла в дата нет, файл в бак есть и есть файл в папке мода - вернуть файл из bak назад
-                                                    if (!File.Exists(fileInDataFolder) && File.Exists(fileInBakFolderWhichIsInRes) && File.Exists(fileOfMod))
+                                                    if (!File.Exists(dataFilePath) && File.Exists(fileInBakFolderWhichIsInRes) && File.Exists(sourceFilePath))
                                                     {
-                                                        File.Move(fileInBakFolderWhichIsInRes, fileInDataFolder);
+                                                        File.Move(fileInBakFolderWhichIsInRes, dataFilePath);
                                                     }
 
-                                                    ManageLogs.Log("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + bakfolder + "\r\nData path=" + fileInDataFolder + "\r\nMods path=" + fileOfMod);
+                                                    ManageLogs.Log("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + bakfolder + "\r\nData path=" + dataFilePath + "\r\nMods path=" + sourceFilePath);
                                                 }
                                             }
                                         }
                                         else
                                         {
-                                            var destFolder = Path.GetDirectoryName(fileInDataFolder);
+                                            var destFolder = Path.GetDirectoryName(dataFilePath);
                                             try
                                             {
                                                 if (_isDebug)
                                                     debugString = destFolder + ":destFolder,l2208";
                                                 Directory.CreateDirectory(destFolder);
 
-                                                SaveGuidIfZipMod(fileOfMod, zipmodsGuidList);
+                                                SaveGuidIfZipMod(sourceFilePath, zipmodsGuidList);
 
-                                                fileOfMod.MoveTo(fileInDataFolder);//перенос файла из папки мода в Data
-                                                moToStandartConvertationOperationsList.AppendLine(fileOfMod + "|MovedTo|" + fileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
+                                                sourceFilePath.MoveTo(dataFilePath);//перенос файла из папки мода в Data
+                                                moToStandartConvertationOperationsList.AppendLine(sourceFilePath + "|MovedTo|" + dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
                                             }
                                             catch (Exception ex)
                                             {
-                                                ManageLogs.Log("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + destFolder + "\r\nData path=" + fileInDataFolder + "\r\nMods path=" + fileOfMod);
+                                                ManageLogs.Log("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + destFolder + "\r\nData path=" + dataFilePath + "\r\nMods path=" + sourceFilePath);
                                             }
                                         }
 

@@ -187,6 +187,9 @@
     <Compile Include="Manage\ManagePython.cs" />
     <Compile Include="Manage\ManageRegistry.cs" />
     <Compile Include="Manage\ManageUpdateMods.cs" />
+    <Compile Include="Manage\ModeSwitch\ModeSwitcherBase.cs" />
+    <Compile Include="Manage\ModeSwitch\ToMOMode.cs" />
+    <Compile Include="Manage\ModeSwitch\ToCommonMode.cs" />
     <Compile Include="Manage\ObjectType.cs" />
     <Compile Include="Manage\Rules\ManageRules.cs" />
     <Compile Include="Manage\ManageSettings.cs" />

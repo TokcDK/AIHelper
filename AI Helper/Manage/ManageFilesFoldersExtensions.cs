@@ -2,40 +2,57 @@
 using CheckForEmptyDir;
 using Soft160.Data.Cryptography;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace AIHelper.Manage
 {
     static class ManageFilesFoldersExtensions
     {
         /// <summary>
-        /// Move <paramref name="sourceFilePath"/> to <paramref name="targetFilePath"/>.
-        /// If <paramref name="IsSymlink"/> is true or <paramref name="sourceFilePath"/> is symlink then will recreate symlink in target path
+        /// Move <paramref name="sourcePath"/> to <paramref name="targetPath"/>.
+        /// If <paramref name="IsSymlink"/> is true or <paramref name="sourcePath"/> is symlink then will recreate symlink in target path
         /// </summary>
-        /// <param name="sourceFilePath"></param>
-        /// <param name="targetFilePath"></param>
+        /// <param name="sourcePath"></param>
+        /// <param name="targetPath"></param>
         /// <param name="IsSymlink"></param>
         /// <returns></returns>
-        public static void MoveTo(this string sourceFilePath, string targetFilePath, bool IsSymlink=false)
+        public static void MoveTo(this string sourcePath, string targetPath, bool IsSymlink = false, ObjectType objectType = ObjectType.File)
         {
-            if (IsSymlink || sourceFilePath.IsSymlink(ObjectType.File))
+            if (IsSymlink || sourcePath.IsSymlink(objectType))
             {
-                if (sourceFilePath.IsValidSymlink())
+                if (sourcePath.IsValidSymlink())
                 {
-                    var symlinkTarget = Path.GetFullPath(sourceFilePath.GetSymlinkTarget());
+                    var symlinkTarget = Path.GetFullPath(sourcePath.GetSymlinkTarget());
 
-                    symlinkTarget.CreateSymlink(targetFilePath, isRelative: true, objectType: ObjectType.File);
+                    symlinkTarget.CreateSymlink(targetPath, isRelative: true, objectType: ObjectType.File);
                 }
 
-                File.Delete(sourceFilePath);
+                if (objectType == ObjectType.File)
+                {
+                    File.Delete(sourcePath);
+                }
+                else
+                {
+                    Directory.Delete(sourcePath);
+                }
             }
             else
             {
-                File.Move(sourceFilePath, targetFilePath);//перенос файла из папки Overwrite в Data
+
+                if (objectType == ObjectType.File)
+                {
+                    File.Move(sourcePath, targetPath);//перенос файла из папки Overwrite в Data
+                }
+                else
+                {
+                    Directory.Move(sourcePath, targetPath);
+                }
             }
         }
 
@@ -802,6 +819,26 @@ namespace AIHelper.Manage
             }
 
             fileInfo.CopyTo(fi.FullName, true);
+        }
+
+        /// <summary>
+        /// get paths to all symlinks in <paramref name="dirPath"/>
+        /// </summary>
+        /// <param name="dirPath"></param>
+        /// <param name="dirLinksList"></param>
+        internal static void GetFolderSymlinks(string dirPath, List<string> dirLinksList)
+        {
+            Parallel.ForEach(Directory.EnumerateDirectories(dirPath), dir =>
+            {
+                if (dir.IsSymlink())
+                {
+                    dirLinksList.Add(dir);
+                }
+                else
+                {
+                    GetFolderSymlinks(dir, dirLinksList);
+                }
+            });
         }
 
         /// <summary>

@@ -153,7 +153,7 @@ namespace AIHelper.Manage
             else if (author.Length > 0)
             {
                 //проверка на любые невалидные для имени папки символы
-                if (ManageFilesFolders.ContainsAnyInvalidCharacters(author))
+                if (ManageFilesFoldersExtensions.ContainsAnyInvalidCharacters(author))
                 {
                 }
                 else

@@ -415,7 +415,7 @@ namespace AIHelper.Manage.Update.Targets
                 }
             }
 
-            ManageFilesFolders.DeleteEmptySubfolders(oldModBuckupDirPath);
+            ManageFilesFoldersExtensions.DeleteEmptySubfolders(oldModBuckupDirPath);
         }
 
         /// <summary>

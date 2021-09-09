@@ -304,12 +304,12 @@ namespace AIHelper.Games
             string gameMoDirPathAlt = Path.Combine(GetGamePath(), moDirAltName);
 
             // dirs and files required for work
-            var subPaths = new Dictionary<string, ManageFilesFolders.ObjectType>
+            var subPaths = new Dictionary<string, ObjectType>
             {
-                { "Profiles", ManageFilesFolders.ObjectType.Directory },
-                { "Overwrite", ManageFilesFolders.ObjectType.Directory },
-                { "categories.dat", ManageFilesFolders.ObjectType.File },
-                { "ModOrganizer.ini", ManageFilesFolders.ObjectType.File }
+                { "Profiles", ObjectType.Directory },
+                { "Overwrite", ObjectType.Directory },
+                { "categories.dat", ObjectType.File },
+                { "ModOrganizer.ini", ObjectType.File }
             };
 
             foreach (var subPath in subPaths)
@@ -318,11 +318,11 @@ namespace AIHelper.Games
                 {
                     var altpath = Path.GetFullPath(Path.Combine(gameMoDirPathAlt, subPath.Key));
                     var workpath = Path.GetFullPath(Path.Combine(gameMoDirPath, subPath.Key));
-                    if (subPath.Value == ManageFilesFolders.ObjectType.Directory && Directory.Exists(altpath) && (!Directory.Exists(workpath) || !ManageFilesFolders.IsAnyFileExistsInTheDir(workpath, allDirectories: true)))
+                    if (subPath.Value == ObjectType.Directory && Directory.Exists(altpath) && (!Directory.Exists(workpath) || !ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(workpath, allDirectories: true)))
                     {
                         ManageFilesFoldersExtensions.CopyAll(altpath, workpath);
                     }
-                    else if (subPath.Value == ManageFilesFolders.ObjectType.File && File.Exists(altpath) && !File.Exists(workpath))
+                    else if (subPath.Value == ObjectType.File && File.Exists(altpath) && !File.Exists(workpath))
                     {
                         File.Copy(altpath, workpath);
                     }

@@ -25,7 +25,7 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
                 foreach (var file in Directory.GetFiles(dir))
                 {
                     ret = true;
-                    File.Move(file, ManageFilesFolders.GetResultTargetFilePathWithNameCheck(targetFolder, Path.GetFileNameWithoutExtension(file), ".png"));
+                    File.Move(file, ManageFilesFoldersExtensions.GetResultTargetFilePathWithNameCheck(targetFolder, Path.GetFileNameWithoutExtension(file), ".png"));
                 }
             }
             else
@@ -36,7 +36,7 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
                     foreach (var file in Directory.GetFiles(typeDir))
                     {
                         ret = true;
-                        File.Move(file, ManageFilesFolders.GetResultTargetFilePathWithNameCheck(Path.Combine(targetFolder, hSubDirName), Path.GetFileNameWithoutExtension(file), ".png"));
+                        File.Move(file, ManageFilesFoldersExtensions.GetResultTargetFilePathWithNameCheck(Path.Combine(targetFolder, hSubDirName), Path.GetFileNameWithoutExtension(file), ".png"));
                     }
                 }
             }

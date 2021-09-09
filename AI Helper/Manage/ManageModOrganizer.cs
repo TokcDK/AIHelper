@@ -2116,7 +2116,7 @@ namespace AIHelper.Manage
             if (ManageSettings.IsMoMode())
             {
 
-                return GetLastPath(Path.Combine(ManageSettings.GetOverwriteFolder(), "UserData", "setup.xml"));
+                return GetLastPath(Path.Combine(ManageSettings.GetCurrentGameOverwriteFolderPath(), "UserData", "setup.xml"));
             }
             else
             {
@@ -2198,7 +2198,7 @@ namespace AIHelper.Manage
                     File.Copy(ManageSettings.GetDummyFileResPath(), ManageSettings.GetDummyFilePath());
                     //new FileInfo(ManageSettings.GetDummyFilePath()).Create().Close();
                     //File.WriteAllText(ManageSettings.GetDummyFilePath(), "dummy file need to execute mod organizer");
-                    ManageFilesFolders.HideFileFolder(ManageSettings.GetDummyFilePath(), true);
+                    ManageFilesFoldersExtensions.HideFileFolder(ManageSettings.GetDummyFilePath(), true);
                 }
             }
         }
@@ -2311,7 +2311,7 @@ namespace AIHelper.Manage
                     )
                     && Directory.Exists(dir)
                     && !dir.IsNullOrEmptyDirectory()
-                    && ManageFilesFolders.IsAnyFileExistsInTheDir(dir, extension)
+                    && ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(dir, extension)
                    )
                 {
                     if (resultCategory.Length > 0)
@@ -2633,12 +2633,12 @@ namespace AIHelper.Manage
 
             if (comments.Length > 0)
             {
-                ini.SetKey("General", "comments", comments);
+                ini.SetKey("General", "comments", comments.ToHexForMetaIni());
             }
 
             if (notes.Length > 0)
             {
-                ini.SetKey("General", "notes", "\"" + notes.Replace(Environment.NewLine, "<br>") + "\"");
+                ini.SetKey("General", "notes", ("\"" + notes.Replace(Environment.NewLine, "<br>") + "\"").ToHexForMetaIni());
             }
 
             ini.SetKey("General", "validated", "true");

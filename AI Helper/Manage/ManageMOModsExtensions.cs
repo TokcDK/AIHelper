@@ -4,7 +4,7 @@
     {
         internal static bool IsInOverwriteFolder(this string filePath)
         {
-            return filePath.ToUpperInvariant().Contains(ManageSettings.GetOverwriteFolder().ToUpperInvariant());
+            return filePath.ToUpperInvariant().Contains(ManageSettings.GetCurrentGameOverwriteFolderPath().ToUpperInvariant());
         }
     }
 }

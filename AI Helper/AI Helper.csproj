@@ -237,7 +237,6 @@
     <Compile Include="UserData\IUserDataFolders.cs" />
     <Compile Include="UserData\Overlays.cs" />
     <Compile Include="UserData\StudioScene.cs" />
-    <Compile Include="Manage\ManageFilesFolders.cs" />
     <Compile Include="Manage\ManageStrings.cs" />
     <Compile Include="Utils\CFGFiles.cs" />
     <Compile Include="Utils\FileWriter.cs" />

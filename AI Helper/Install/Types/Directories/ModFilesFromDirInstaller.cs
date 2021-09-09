@@ -47,7 +47,7 @@ namespace AIHelper.Install.Types.Directories
             //сортировка по подпапкам и переименование файлов
             ManageModOrganizerMods.SortFilesToSubfolders(directoryInfo.FullName);
 
-            string dir = ManageFilesFolders.MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(directoryInfo.FullName);
+            string dir = ManageFilesFoldersExtensions.MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(directoryInfo.FullName);
             name = Path.GetFileName(dir);
             string category = string.Empty;
             string version = string.Empty;
@@ -314,7 +314,7 @@ namespace AIHelper.Install.Types.Directories
 
             if (anyModFound)
             {
-                if (author.Length == 0 && ManageFilesFolders.IsAnyFileExistsInTheDir(moddir, ".dll"))
+                if (author.Length == 0 && ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(moddir, ".dll"))
                 {
                     foreach (string dll in Directory.GetFiles(moddir, "*.dll", SearchOption.AllDirectories))
                     {

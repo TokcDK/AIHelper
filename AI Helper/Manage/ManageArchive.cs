@@ -22,7 +22,7 @@ namespace AIHelper.Manage
             {
                 foreach (var file in Directory.GetFiles(dirForSearch, "*" + extension, SearchOption.AllDirectories))
                 {
-                    string targetDir = ManageFilesFolders.GetResultTargetDirPathWithNameCheck(dirForSearch, Path.GetFileNameWithoutExtension(file));
+                    string targetDir = ManageFilesFoldersExtensions.GetResultTargetDirPathWithNameCheck(dirForSearch, Path.GetFileNameWithoutExtension(file));
                     if (!Directory.Exists(targetDir))
                     {
                         try

@@ -44,7 +44,7 @@ namespace AIHelper.Install.Types.Files
             else if (author.Length > 0)
             {
                 //проверка на любые невалидные для имени папки символы
-                if (!ManageFilesFolders.ContainsAnyInvalidCharacters(author))
+                if (!ManageFilesFoldersExtensions.ContainsAnyInvalidCharacters(author))
                 {
                     name = "[" + author + "]" + name;
                 }
@@ -66,7 +66,7 @@ namespace AIHelper.Install.Types.Files
                 else
                 {
                     //Проверки существования целевой папки и модификация имени на более уникальное
-                    dllTargetModDirPath = ManageFilesFolders.GetResultTargetDirPathWithNameCheck(ManageSettings.GetCurrentGameModsDirPath(), name);
+                    dllTargetModDirPath = ManageFilesFoldersExtensions.GetResultTargetDirPathWithNameCheck(ManageSettings.GetCurrentGameModsDirPath(), name);
                 }
             }
             else

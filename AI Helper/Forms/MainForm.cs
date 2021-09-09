@@ -1154,7 +1154,6 @@ namespace AIHelper
             }
         }
 
-        readonly string _toMo = ManageSettings.ModsInstallDirName();
         private async void InstallInModsButton_Click(object sender, EventArgs e)
         {
             if (new UpdateMaker().MakeUpdate())
@@ -1162,7 +1161,6 @@ namespace AIHelper
                 MessageBox.Show("Made update instead");
                 return;
             }
-
 
             List<ModInstallerBase> installers = GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<ModInstallerBase>().OrderBy(o => o.Order).ToList();
 
@@ -1213,8 +1211,8 @@ namespace AIHelper
                 var IsDirInstaller = installer is DirectoriesInstallerBase;
                 foreach (var mask in installer.Masks)
                 {
-                    if ((IsDirInstaller && ManageFilesFolders.IsAnySubDirExistsInTheDir(ManageSettings.GetInstall2MoDirPath(), mask))
-                        || (!IsDirInstaller && ManageFilesFolders.IsAnyFileExistsInTheDir(ManageSettings.GetInstall2MoDirPath(), mask, allDirectories: false)))
+                    if ((IsDirInstaller && ManageFilesFoldersExtensions.IsAnySubDirExistsInTheDir(ManageSettings.GetInstall2MoDirPath(), mask))
+                        || (!IsDirInstaller && ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(ManageSettings.GetInstall2MoDirPath(), mask, allDirectories: false)))
                     {
                         return true;
                     }
@@ -1259,7 +1257,7 @@ namespace AIHelper
             //new CardsFromDirsInstaller().Install();
 
             //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "."));
-            ManageFilesFolders.DeleteEmptySubfolders(ManageSettings.GetInstall2MoDirPath(), false);
+            ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.GetInstall2MoDirPath(), false);
 
             if (!Directory.Exists(ManageSettings.GetInstall2MoDirPath()))
             {
@@ -1431,7 +1429,7 @@ namespace AIHelper
 
                         try//ignore move file error if file will be locked and write in log about this
                         {
-                            File.Move(movePaths[1], movePaths[0]);
+                            movePaths[1].MoveTo(movePaths[0]);
 
                             //запись выполненной операции для удаления из общего списка в случае ошибки при переключении из обычного режима
                             operationsMade.AppendLine(moToStandartConvertationOperationsList[o]);
@@ -1441,7 +1439,7 @@ namespace AIHelper
                                 //Move bonemod file both with original
                                 if (File.Exists(movePaths[1] + ".bonemod.txt"))
                                 {
-                                    File.Move(movePaths[1] + ".bonemod.txt", movePaths[0] + ".bonemod.txt");
+                                    (movePaths[1] + ".bonemod.txt").MoveTo(movePaths[0] + ".bonemod.txt");
                                 }
                                 //запись выполненной операции для удаления из общего списка в случае ошибки при переключении из обычного режима
                                 operationsMade.AppendLine(movePaths[1] + ".bonemod.txt" + "|MovedTo|" + movePaths[0] + ".bonemod.txt");
@@ -1482,12 +1480,12 @@ namespace AIHelper
 
                         string targetFolderPath = Path.GetDirectoryName(fromToPaths[1]);
 
-                        bool isForOverwriteFolder = ManageStrings.IsStringAContainsStringB(targetFolderPath, ManageSettings.GetOverwriteFolder());
+                        bool isForOverwriteFolder = ManageStrings.IsStringAContainsStringB(targetFolderPath, ManageSettings.GetCurrentGameOverwriteFolderPath());
                         //поиск имени мода с учетом обработки файлов папки Overwrite
                         string modName = targetFolderPath;
                         if (isForOverwriteFolder)
                         {
-                            modName = Path.GetFileName(ManageSettings.GetOverwriteFolder());
+                            modName = Path.GetFileName(ManageSettings.GetCurrentGameOverwriteFolderPath());
                         }
                         else
                         {
@@ -1499,7 +1497,7 @@ namespace AIHelper
                         }
 
                         //Новое имя для новой целевой папки мода
-                        string originalModPath = isForOverwriteFolder ? ManageSettings.GetOverwriteFolder() : Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modName);
+                        string originalModPath = isForOverwriteFolder ? ManageSettings.GetCurrentGameOverwriteFolderPath() : Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modName);
                         string newModName = modName + "_" + dateTimeInFormat;
                         string newModPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), newModName);
                         targetFolderPath = targetFolderPath.Replace(originalModPath, newModPath);
@@ -1515,7 +1513,7 @@ namespace AIHelper
                         }
 
                         //переместить файл в новую для него папку
-                        File.Move(fromToPaths[0], targetPath);
+                        fromToPaths[0].MoveTo(targetPath);
 
                         //ВОЗМОЖНО ЗДЕСЬ ПРОБЛЕМА В КОДЕ, ПРИ КОТОРОЙ ДЛЯ КАЖДОГО ФАЙЛА БУДЕТ СОЗДАНА ОТДЕЛЬНАЯ ПАПКА С МОДОМ
                         //НУЖНО ДОБАВИТЬ ЗАПИСЬ И ПОДКЛЮЧЕНИЕ НОВОГО МОДА ТОЛЬКО ПОСЛЕ ТОГО, КАК ВСЕ ФАЙЛЫ ИЗ НЕГО ПЕРЕМЕЩЕНЫ
@@ -1546,7 +1544,7 @@ namespace AIHelper
                             ,
                             note.Replace("\n", "<br>")
                             );
-                        ManageModOrganizer.ActivateDeactivateInsertMod(newModName, false, modName, false);
+                        ManageModOrganizer.ActivateDeactivateInsertMod(modname: newModName, activate: false, recordWithWhichInsert: modName, placeAfter: false);
                     }
                 }
 
@@ -1584,7 +1582,7 @@ namespace AIHelper
                             if (Path.GetFileName(addedFiles[f]) == Path.GetFileName(zipmod))//when zipmod has same name but moved
                             {
                                 var targetfolder = zipmod.IsInOverwriteFolder() ?
-                                    ManageSettings.GetOverwriteFolder() : ManageSettings.GetCurrentGameModsDirPath();
+                                    ManageSettings.GetCurrentGameOverwriteFolderPath() : ManageSettings.GetCurrentGameModsDirPath();
                                 destFileName = addedFiles[f].Replace(ManageSettings.GetCurrentGameDataPath(), targetfolder
                                     );
                             }
@@ -1592,7 +1590,7 @@ namespace AIHelper
                             {
                                 if (zipmod.IsInOverwriteFolder())//zipmod in overwrite
                                 {
-                                    var newFilePath = addedFiles[f].Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetOverwriteFolder());
+                                    var newFilePath = addedFiles[f].Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameOverwriteFolderPath());
                                     if (Directory.Exists(Path.GetDirectoryName(newFilePath)) && newFilePath != addedFiles[f])
                                     {
                                         destFileName = newFilePath;
@@ -1619,7 +1617,7 @@ namespace AIHelper
                         destFileName = addedFiles[f].Replace(ManageSettings.GetCurrentGameDataPath(), destFolderPath);
                     }
                     Directory.CreateDirectory(Path.GetDirectoryName(destFileName));
-                    File.Move(addedFiles[f], destFileName);
+                    addedFiles[f].MoveTo(destFileName);
                 }
 
                 //подключить новый мод, если он существует
@@ -1642,7 +1640,7 @@ namespace AIHelper
                 }
 
                 //перемещение ванильных файлов назад в дата
-                MoveVanillaFIlesBackToData();
+                MoveVanillaFilesBackToData();
 
                 //очистка пустых папок в Data
                 if (File.Exists(ManageSettings.GetCurrentGameVanillaDataEmptyFoldersListFilePath()))
@@ -1650,11 +1648,11 @@ namespace AIHelper
                     //удалить все, за исключением добавленных ранее путей до пустых папок
                     string[] vanillaDataEmptyFoldersList = File.ReadAllLines(ManageSettings.GetCurrentGameVanillaDataEmptyFoldersListFilePath());
                     ReplaceVarsToPaths(ref vanillaDataEmptyFoldersList);
-                    ManageFilesFolders.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataPath(), false, vanillaDataEmptyFoldersList);
+                    ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataPath(), false, vanillaDataEmptyFoldersList);
                 }
                 else
                 {
-                    ManageFilesFolders.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataPath(), false);
+                    ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataPath(), false);
                 }
 
                 //restore sideloader mods from Mods\Mods
@@ -1703,7 +1701,7 @@ namespace AIHelper
                         }
 
                         //cleanup empty dirs
-                        ManageFilesFolders.DeleteEmptySubfolders(modsmods, true);
+                        ManageFilesFoldersExtensions.DeleteEmptySubfolders(modsmods, true);
                     }
                     catch (Exception ex)
                     {
@@ -1721,7 +1719,7 @@ namespace AIHelper
                     File.Delete(ManageSettings.GetCurrentGameZipmodsGuidListFilePath());
                 }
 
-                ManageFilesFolders.DeleteEmptySubfolders(ManageSettings.GetCurrentGameMOmodeBakDirPath(), deleteThisDir: true);
+                ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.GetCurrentGameMOmodeBakDirPath(), deleteThisDir: true);
 
                 MOmode = true;
 
@@ -1804,7 +1802,7 @@ namespace AIHelper
 
             var enabledModsLength = enabledModsList.Length;
 
-            var debufStr = "";
+            var debugString = "";
             try
             {
                 CleanBepInExLinksFromData();
@@ -1817,17 +1815,17 @@ namespace AIHelper
                     }
                 }
 
-                debufStr = ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath();
+                debugString = ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath();
                 Directory.CreateDirectory(ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath());
                 moToStandartConvertationOperationsList = new StringBuilder();
 
-                ManageFilesFolders.GetEmptySubfoldersPaths(ManageSettings.GetCurrentGameDataPath(), vanillaDataEmptyFoldersList);
+                ManageFilesFoldersExtensions.GetEmptySubfoldersPaths(ManageSettings.GetCurrentGameDataPath(), vanillaDataEmptyFoldersList);
 
                 //получение всех файлов из Data
                 vanillaDataFilesList = Directory.GetFiles(ManageSettings.GetCurrentGameDataPath(), "*.*", SearchOption.AllDirectories);
 
                 //получение всех файлов из папки Overwrite и их обработка
-                var filesInOverwrite = Directory.GetFiles(ManageSettings.GetOverwriteFolder(), "*.*", SearchOption.AllDirectories);
+                var filesInOverwrite = Directory.GetFiles(ManageSettings.GetCurrentGameOverwriteFolderPath(), "*.*", SearchOption.AllDirectories);
                 if (filesInOverwrite.Length > 0)
                 {
                     //if (Path.GetFileName(FilesInOverwrite[0]).Contains("Overwrite"))
@@ -1835,7 +1833,7 @@ namespace AIHelper
                     //    OverwriteFolder = OverwriteFolder.Replace("overwrite", "Overwrite");
                     //}
 
-                    string fileInDataFolder;
+                    string fileInDataFolderPath;
                     var filesInOverwriteLength = filesInOverwrite.Length;
 
                     using (var frmProgress = new Form())
@@ -1872,69 +1870,69 @@ namespace AIHelper
                                 //    //    FileInOverwrite = @"\\?\" + FileInOverwrite;
                                 //}
 
-                                fileInDataFolder = fileInOverwrite.Replace(ManageSettings.GetOverwriteFolder(), ManageSettings.GetCurrentGameDataPath());
-                                if (ManageStrings.CheckForLongPath(ref fileInDataFolder))
+                                fileInDataFolderPath = fileInOverwrite.Replace(ManageSettings.GetCurrentGameOverwriteFolderPath(), ManageSettings.GetCurrentGameDataPath());
+                                if (ManageStrings.CheckForLongPath(ref fileInDataFolderPath))
                                 {
-                                    longPaths.Add(fileInDataFolder.Remove(0, 4));
+                                    longPaths.Add(fileInDataFolderPath.Remove(0, 4));
                                 }
                                 //if (FileInDataFolder.Length > 259)
                                 //{
                                 //    FileInDataFolder = @"\\?\" + FileInDataFolder;
                                 //}
-                                if (File.Exists(fileInDataFolder))
+                                if (File.Exists(fileInDataFolderPath))
                                 {
-                                    var fileInBakFolderWhichIsInRes = fileInDataFolder.Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath());
+                                    var vanillaFileBackupTargetPath = fileInDataFolderPath.Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath());
                                     //if (FileInBakFolderWhichIsInRES.Length > 259)
                                     //{
                                     //    FileInBakFolderWhichIsInRES = @"\\?\" + FileInBakFolderWhichIsInRES;
                                     //}
-                                    if (!File.Exists(fileInBakFolderWhichIsInRes) && vanillaDataFilesList.Contains(fileInDataFolder))
+                                    if (!File.Exists(vanillaFileBackupTargetPath) && vanillaDataFilesList.Contains(fileInDataFolderPath))
                                     {
-
-                                        var bakfolder = Path.GetDirectoryName(fileInBakFolderWhichIsInRes);
+                                        var bakfolder = Path.GetDirectoryName(vanillaFileBackupTargetPath);
                                         try
                                         {
                                             if (_isDebug)
-                                                debufStr = bakfolder + ":bakfolder,l2043";
+                                                debugString = bakfolder + ":bakfolder,l1922";
                                             Directory.CreateDirectory(bakfolder);
 
-                                            File.Move(fileInDataFolder, fileInBakFolderWhichIsInRes);//перенос файла из Data в Bak, если там не было
+                                            fileInDataFolderPath.MoveTo(vanillaFileBackupTargetPath);//перенос файла из Data в Bak, если там не было
 
                                             SaveGuidIfZipMod(fileInOverwrite, zipmodsGuidList);
 
-                                            File.Move(fileInOverwrite, fileInDataFolder);//перенос файла из папки Overwrite в Data
-                                            moToStandartConvertationOperationsList.AppendLine(fileInOverwrite + "|MovedTo|" + fileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
+                                            fileInOverwrite.MoveTo(fileInDataFolderPath);
+
+                                            moToStandartConvertationOperationsList.AppendLine(fileInOverwrite + "|MovedTo|" + fileInDataFolderPath);//запись об операции будет пропущена, если будет какая-то ошибка
 
                                         }
                                         catch (Exception ex)
                                         {
                                             //когда файла в дата нет, файл в бак есть и есть файл в папке Overwrite - вернуть файл из bak назад
-                                            if (!File.Exists(fileInDataFolder) && File.Exists(fileInBakFolderWhichIsInRes) && File.Exists(fileInOverwrite))
+                                            if (!File.Exists(fileInDataFolderPath) && File.Exists(vanillaFileBackupTargetPath) && File.Exists(fileInOverwrite))
                                             {
-                                                File.Move(fileInBakFolderWhichIsInRes, fileInDataFolder);
+                                                File.Move(vanillaFileBackupTargetPath, fileInDataFolderPath);
                                             }
 
-                                            ManageLogs.Log("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\nparent dir=" + bakfolder + "\r\nData path=" + fileInDataFolder + "\r\nOverwrite path=" + fileInOverwrite);
+                                            ManageLogs.Log("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\nparent dir=" + bakfolder + "\r\nData path=" + fileInDataFolderPath + "\r\nOverwrite path=" + fileInOverwrite);
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    var destFolder = Path.GetDirectoryName(fileInDataFolder);
+                                    var destFolder = Path.GetDirectoryName(fileInDataFolderPath);
                                     try
                                     {
                                         if (_isDebug)
-                                            debufStr = destFolder + ":destFolder,l2068";
+                                            debugString = destFolder + ":destFolder,l2068";
                                         Directory.CreateDirectory(destFolder);
 
                                         SaveGuidIfZipMod(fileInOverwrite, zipmodsGuidList);
 
-                                        File.Move(fileInOverwrite, fileInDataFolder);//перенос файла из папки мода в Data
-                                        moToStandartConvertationOperationsList.AppendLine(fileInOverwrite + "|MovedTo|" + fileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
+                                        fileInOverwrite.MoveTo(fileInDataFolderPath);//перенос файла из папки мода в Data
+                                        moToStandartConvertationOperationsList.AppendLine(fileInOverwrite + "|MovedTo|" + fileInDataFolderPath);//запись об операции будет пропущена, если будет какая-то ошибка
                                     }
                                     catch (Exception ex)
                                     {
-                                        ManageLogs.Log("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + destFolder + "\r\nData path=" + fileInDataFolder + "\r\nOverwrite path=" + fileInOverwrite);
+                                        ManageLogs.Log("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + destFolder + "\r\nData path=" + fileInDataFolderPath + "\r\nOverwrite path=" + fileInOverwrite);
                                     }
                                 }
                             }
@@ -1992,7 +1990,7 @@ namespace AIHelper
                                         {
                                             //skip images and txt in mod root folder
                                             var fileExtension = Path.GetExtension(fileOfMod);
-                                            if (fileExtension == ".txt" || fileExtension.IsPictureExtension())
+                                            if (string.Equals(fileExtension, ".txt", StringComparison.InvariantCultureIgnoreCase) || fileExtension.IsPictureExtension())
                                             {
                                                 if (Path.GetFileName(fileOfMod.Replace(Path.DirectorySeparatorChar + Path.GetFileName(fileOfMod), string.Empty)) == enabledModsList[n])
                                                 {
@@ -2040,14 +2038,14 @@ namespace AIHelper
                                                 try
                                                 {
                                                     if (_isDebug)
-                                                        debufStr = bakfolder + ":bakfolder,l2183";
+                                                        debugString = bakfolder + ":bakfolder,l2183";
                                                     Directory.CreateDirectory(bakfolder);
 
-                                                    File.Move(fileInDataFolder, fileInBakFolderWhichIsInRes);//перенос файла из Data в Bak, если там не было
+                                                    fileInDataFolder.MoveTo(fileInBakFolderWhichIsInRes);//перенос файла из Data в Bak, если там не было
 
                                                     SaveGuidIfZipMod(fileOfMod, zipmodsGuidList);
 
-                                                    File.Move(fileOfMod, fileInDataFolder);//перенос файла из папки мода в Data
+                                                    fileOfMod.MoveTo(fileInDataFolder);//перенос файла из папки мода в Data
                                                     moToStandartConvertationOperationsList.AppendLine(fileOfMod + "|MovedTo|" + fileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
                                                 }
                                                 catch (Exception ex)
@@ -2068,12 +2066,12 @@ namespace AIHelper
                                             try
                                             {
                                                 if (_isDebug)
-                                                    debufStr = destFolder + ":destFolder,l2208";
+                                                    debugString = destFolder + ":destFolder,l2208";
                                                 Directory.CreateDirectory(destFolder);
 
                                                 SaveGuidIfZipMod(fileOfMod, zipmodsGuidList);
 
-                                                File.Move(fileOfMod, fileInDataFolder);//перенос файла из папки мода в Data
+                                                fileOfMod.MoveTo(fileInDataFolder);//перенос файла из папки мода в Data
                                                 moToStandartConvertationOperationsList.AppendLine(fileOfMod + "|MovedTo|" + fileInDataFolder);//запись об операции будет пропущена, если будет какая-то ошибка
                                             }
                                             catch (Exception ex)
@@ -2137,10 +2135,10 @@ namespace AIHelper
                 RestoreMovedFilesLocation(moToStandartConvertationOperationsList);
 
                 //clean empty folders except whose was already in Data
-                ManageFilesFolders.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataPath(), false, vanillaDataEmptyFoldersList.ToString().SplitToLines().ToArray());
+                ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataPath(), false, vanillaDataEmptyFoldersList.ToString().SplitToLines().ToArray());
 
                 //сообщить об ошибке
-                MessageBox.Show("Mode was not switched. Error:" + Environment.NewLine + ex + "\r\n/debufStr=" + debufStr);
+                MessageBox.Show("Mode was not switched. Error:" + Environment.NewLine + ex + "\r\n/debufStr=" + debugString);
             }
         }
 
@@ -2252,7 +2250,7 @@ namespace AIHelper
                             {
                                 Directory.CreateDirectory(Path.GetDirectoryName(filePathInMods));
 
-                                File.Move(filePathInData, filePathInMods);
+                                filePathInData.MoveTo(filePathInMods);
                             }
                         }
                     }
@@ -2263,11 +2261,11 @@ namespace AIHelper
                 }
 
                 //возврат возможных ванильных резервных копий
-                MoveVanillaFIlesBackToData();
+                MoveVanillaFilesBackToData();
             }
         }
 
-        private static void MoveVanillaFIlesBackToData()
+        private static void MoveVanillaFilesBackToData()
         {
             var mOmodeDataFilesBakDirPath = ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath();
             if (Directory.Exists(mOmodeDataFilesBakDirPath))
@@ -2289,12 +2287,12 @@ namespace AIHelper
                         {
                             Directory.CreateDirectory(destFileInDataFolderPathFolder);
                         }
-                        File.Move(filesInMOmodeDataFilesBak[f], destFileInDataFolderPath);
+                        filesInMOmodeDataFilesBak[f].MoveTo(destFileInDataFolderPath);
                     }
                 }
 
                 //удаление папки, где хранились резервные копии ванильных файлов
-                ManageFilesFolders.DeleteEmptySubfolders(mOmodeDataFilesBakDirPath);
+                ManageFilesFoldersExtensions.DeleteEmptySubfolders(mOmodeDataFilesBakDirPath);
             }
         }
 
@@ -2334,7 +2332,7 @@ namespace AIHelper
             }
             if (!Directory.Exists(userFilesFolder))
             {
-                userFilesFolder = ManageSettings.GetOverwriteFolder();
+                userFilesFolder = ManageSettings.GetCurrentGameOverwriteFolderPath();
             }
             if (Directory.Exists(userFilesFolder))
             {
@@ -2344,9 +2342,9 @@ namespace AIHelper
 
         private void OpenMOOverwriteFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (Directory.Exists(ManageSettings.GetOverwriteFolder()))
+            if (Directory.Exists(ManageSettings.GetCurrentGameOverwriteFolderPath()))
             {
-                Process.Start("explorer.exe", ManageSettings.GetOverwriteFolder());
+                Process.Start("explorer.exe", ManageSettings.GetCurrentGameOverwriteFolderPath());
             }
         }
 
@@ -2635,7 +2633,7 @@ namespace AIHelper
                         categoryNames: "",
                         version: "1.0",
                         comments: "",
-                        notes: T._("KKManager's and it's Standalone Updater's new created files stored here").ToHex()
+                        notes: T._("KKManager's and it's Standalone Updater's new created files stored here")
                         //notes: ManageSettings.KKManagerFilesNotes()
                         );
 
@@ -2731,7 +2729,7 @@ namespace AIHelper
         private static void CleanKKManagerTempDir(string targetDir)
         {
             var tempDir = Path.Combine(targetDir, "temp");
-            ManageFilesFolders.DeleteEmptySubfolders(tempDir, deleteThisDir: true);
+            ManageFilesFoldersExtensions.DeleteEmptySubfolders(tempDir, deleteThisDir: true);
         }
 
         private static void SortCommunityUserDataPack()

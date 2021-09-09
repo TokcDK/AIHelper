@@ -1,12 +1,71 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 
 namespace AIHelper.Manage
 {
     internal static class ManageStringsExtensions
     {
+        /// <summary>
+        /// Check if char is latin char
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static bool IsNotNeedToBeHexed(this char c)
+        {
+            return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c.IsDigit() || c.IsHTMLSymbol();
+        }
+
+        /// <summary>
+        /// <paramref name="inputChar"/> is symbol using as html tag mark
+        /// </summary>
+        /// <param name="inputChar"></param>
+        /// <returns></returns>
+        public static bool IsHTMLSymbol(this char inputChar)
+        {
+            string chars = "\\|!#$%&/=?»«\"'@£§€{}<>()-_:;,. ";
+            foreach (var c in chars)
+            {
+                if (char.Equals(c, inputChar))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Check if char is latin char
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static bool IsLatinChar(this char c)
+        {
+            return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+        }
+
+        /// <summary>
+        /// Check if char is digit
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        public static bool IsDigit(this char c)
+        {
+            return !((c ^ '0') > 9);
+        }
+
+        //https://www.delftstack.com/howto/csharp/csharp-convert-string-to-hex/
+        /// <summary>
+        /// Convert string to hexed string
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
+        internal static string ToHex(this char c, bool xPrefix = true)
+        {
+            return (xPrefix ? @"\x" : "") + string.Format("{0:X2}", Convert.ToInt32(c));
+        }
+
         //https://www.delftstack.com/howto/csharp/csharp-convert-string-to-hex/
         /// <summary>
         /// Convert string to hexed string
@@ -15,8 +74,39 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static string ToHex(this string inputString)
         {
-            return @"\x" + string.Join(@"\x",
-                   inputString.Select(c => string.Format("{0:X2}", Convert.ToInt32(c))));
+            var s = new System.Text.StringBuilder();
+
+            foreach (var c in inputString)
+            {
+                s.Append(c.ToHex());
+            }
+
+            return s.ToString();
+        }
+
+        /// <summary>
+        /// Convert string to hexed string.
+        /// Converts only required chars, not latin or symbols.
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
+        internal static string ToHexForMetaIni(this string inputString)
+        {
+            var s = new System.Text.StringBuilder();
+
+            foreach (var c in inputString)
+            {
+                if (c.IsNotNeedToBeHexed())
+                {
+                    s.Append(c);
+                }
+                else
+                {
+                    s.Append(c.ToHex());
+                }
+            }
+
+            return s.ToString();
         }
 
         /// <summary>

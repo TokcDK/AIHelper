@@ -187,7 +187,7 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
             //Для всех, сброс png из корневой папки в целевую
             foreach (var target in Directory.GetFiles(dir, "*" + extension))
             {
-                var cardframeTargetFolder = ManageFilesFolders.GetResultTargetFilePathWithNameCheck(targetFolder, Path.GetFileNameWithoutExtension(target), extension);
+                var cardframeTargetFolder = ManageFilesFoldersExtensions.GetResultTargetFilePathWithNameCheck(targetFolder, Path.GetFileNameWithoutExtension(target), extension);
 
                 ret = true;
                 File.Move(target, cardframeTargetFolder);
@@ -195,7 +195,7 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
 
             MoveByContentType(contentType, dir, targetFolder, moveInThisFolder);
 
-            ManageFilesFolders.DeleteEmptySubfolders(dir);
+            ManageFilesFoldersExtensions.DeleteEmptySubfolders(dir);
 
             return ret;
         }
@@ -206,7 +206,7 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
             {
                 firstCandidateFolder.Substring(0,1)== " " ? Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "OrganizedModPack Downloaded"+firstCandidateFolder) : firstCandidateFolder,
                 Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserData"),
-                ManageSettings.GetOverwriteFolder()
+                ManageSettings.GetCurrentGameOverwriteFolderPath()
             };
 
             string typeFolder = string.Empty;
@@ -266,7 +266,7 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
                 }
             }
 
-            return Path.Combine(ManageSettings.GetOverwriteFolder(), "UserData", typeFolder, targetFolderName);
+            return Path.Combine(ManageSettings.GetCurrentGameOverwriteFolderPath(), "UserData", typeFolder, targetFolderName);
         }
     }
 }

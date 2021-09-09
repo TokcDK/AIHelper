@@ -54,7 +54,7 @@ namespace AIHelper.Install.Types.Files.Archive
             string anyFileName = string.Empty;
             if (Directory.Exists(modDirPath))
             {
-                if (File.Exists(targetZipFile) || (anyFileName = ManageFilesFolders.IsAnyFileWithSameExtensionContainsNameOfTheFile(modsSubDirPath, zipArchiveName, "*.zip")).Length > 0)
+                if (File.Exists(targetZipFile) || (anyFileName = ManageFilesFoldersExtensions.IsAnyFileWithSameExtensionContainsNameOfTheFile(modsSubDirPath, zipArchiveName, "*.zip")).Length > 0)
                 {
                     if (File.GetLastWriteTime(zipfile.FullName) > File.GetLastWriteTime(targetZipFile))
                     {
@@ -65,7 +65,7 @@ namespace AIHelper.Install.Types.Files.Archive
             }
             else
             {
-                modDirPath = ManageFilesFolders.GetResultTargetDirPathWithNameCheck(ManageSettings.GetCurrentGameModsDirPath(), modName);
+                modDirPath = ManageFilesFoldersExtensions.GetResultTargetDirPathWithNameCheck(ManageSettings.GetCurrentGameModsDirPath(), modName);
                 modsSubDirPath = Path.Combine(modDirPath, "mods");
                 targetZipFile = Path.Combine(modsSubDirPath, zipArchiveName + ".zipmod");
             }

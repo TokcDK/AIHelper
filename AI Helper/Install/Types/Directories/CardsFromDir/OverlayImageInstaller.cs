@@ -22,9 +22,9 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
             {
                 ret = true;
 
-                string newTarget = ManageFilesFolders.MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(oSubDir);
+                string newTarget = ManageFilesFoldersExtensions.MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(oSubDir);
                 string targetDirName = Path.GetFileName(newTarget);
-                var resultTargetPath = ManageFilesFolders.GetResultTargetDirPathWithNameCheck(targetFolder, targetDirName);
+                var resultTargetPath = ManageFilesFoldersExtensions.GetResultTargetDirPathWithNameCheck(targetFolder, targetDirName);
 
                 Directory.Move(newTarget, resultTargetPath);
             }

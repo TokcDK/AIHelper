@@ -829,7 +829,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameMoOverwritePath()
         {
-            return GetOverwriteFolder();
+            return GetCurrentGameOverwriteFolderPath();
         }
 
         internal static string GetMoCurrentGameName()
@@ -1002,7 +1002,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetMOiniPathForSelectedGame()
         {
-            return ManageFilesFolders.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGameMOPath(), MoIniFileName()));
+            return ManageFilesFoldersExtensions.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGameMOPath(), MoIniFileName()));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1014,7 +1014,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetAppMOcategoriesPath()
         {
-            return ManageFilesFolders.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGameMOPath(), MoCategoriesFileName()));
+            return ManageFilesFoldersExtensions.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGameMOPath(), MoCategoriesFileName()));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1024,9 +1024,9 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetOverwriteFolder()
+        internal static string GetCurrentGameOverwriteFolderPath()
         {
-            return ManageFilesFolders.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGameMOPath(), "overwrite"), true);
+            return ManageFilesFoldersExtensions.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGameMOPath(), "overwrite"), true);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1598,7 +1598,7 @@ namespace AIHelper.Manage
         internal static IEnumerable<string> GetKKManagerUpdateSortDirs()
         {
             return new[] {
-                ManageSettings.GetOverwriteFolder()
+                ManageSettings.GetCurrentGameOverwriteFolderPath()
                 ,
                 Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ManageSettings.KKManagerFilesModName())
                 };
@@ -1608,6 +1608,7 @@ namespace AIHelper.Manage
         /// Notes for KKManagerFiles mod
         /// </summary>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string KKManagerFilesNotes()
         {
             return "<!DOCTYPE HTML PUBLIC \\\"-//W3C//DTD HTML 4.0//EN\\\" \\\"http://www.w3.org/TR/REC-html40/strict.dtd\\\">\\n" +
@@ -1628,9 +1629,20 @@ namespace AIHelper.Manage
         /// temp dir for downloads of kkmanager standalone updater
         /// </summary>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string KKManagerDownloadsTempDir()
         {
             return Path.Combine(GetCurrentGameDataPath(), "temp", "KKManager_downloads");
+        }
+
+        /// <summary>
+        /// folder where place broken symlinks
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetCurrentGameBrokenSymlinksDirPath()
+        {
+            return Path.Combine(GetCurrentGameDirPath(),"BrokenSymlinks");
         }
     }
 }

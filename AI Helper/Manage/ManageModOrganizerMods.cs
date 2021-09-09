@@ -159,7 +159,7 @@ namespace AIHelper.Manage
                         else
                         {
                             // need when dir in data exists and have content, then content will be move to target
-                            ManageFilesFolders.MoveContent(linkPath.FullName, objectPath.FullName);
+                            ManageFilesFoldersExtensions.MoveContent(linkPath.FullName, objectPath.FullName);
 
                             ManageSymLinkExtensions.CreateSymlink
                                 (
@@ -266,7 +266,7 @@ namespace AIHelper.Manage
                 }
             }
 
-            ManageFilesFolders.DeleteEmptySubfolders(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx"), true);
+            ManageFilesFoldersExtensions.DeleteEmptySubfolders(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx"), true);
 
             //else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx")))
             //{
@@ -281,7 +281,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         private static bool IsInEnabledModOrOverwrite(string sourceFilePath)
         {
-            if (sourceFilePath.Contains(ManageSettings.GetOverwriteFolder()) || sourceFilePath.Contains(ManageSettings.GetCurrentGameMoOverwritePath()))
+            if (sourceFilePath.Contains(ManageSettings.GetCurrentGameOverwriteFolderPath()) || sourceFilePath.Contains(ManageSettings.GetCurrentGameMoOverwritePath()))
             {
                 return true;
             }
@@ -311,7 +311,7 @@ namespace AIHelper.Manage
             {
                 firstCandidateFolder.Substring(0,1)== " " ? Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "OrganizedModPack Downloaded"+firstCandidateFolder) : firstCandidateFolder,
                 Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserData"),
-                ManageSettings.GetOverwriteFolder()
+                ManageSettings.GetCurrentGameOverwriteFolderPath()
             };
 
             string typeFolder = string.Empty;
@@ -371,7 +371,7 @@ namespace AIHelper.Manage
                 }
             }
 
-            return Path.Combine(ManageSettings.GetOverwriteFolder(), "UserData", typeFolder, targetFolderName);
+            return Path.Combine(ManageSettings.GetCurrentGameOverwriteFolderPath(), "UserData", typeFolder, targetFolderName);
         }
 
         public static string GetTheDllFromSubfolders(string dir, string fileName, string extension)
@@ -397,7 +397,7 @@ namespace AIHelper.Manage
             if (!string.IsNullOrEmpty(subdir))
             {
                 string modsDir = Path.GetFileName(subdir) == "mods" ? subdir : Path.Combine(subdir, "mods");
-                if (Directory.Exists(modsDir) && ManageFilesFolders.IsAnyFileExistsInTheDir(modsDir, ".zip", false))
+                if (Directory.Exists(modsDir) && ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(modsDir, ".zip", false))
                 {
                     foreach (var zipfile in Directory.GetFiles(modsDir, "*.zip"))
                     {
@@ -422,7 +422,7 @@ namespace AIHelper.Manage
                                     author = ManageXml.ReadXmlValue(xmlpath, "manifest/author", "author");
 
                                     File.Delete(xmlpath);
-                                    ManageFilesFolders.DeleteEmptySubfolders(tempDir);
+                                    ManageFilesFoldersExtensions.DeleteEmptySubfolders(tempDir);
                                     break;
                                 }
                             }
@@ -435,7 +435,7 @@ namespace AIHelper.Manage
                     }
                 }
 
-                if (/*author.Length == 0 &&*/ ManageFilesFolders.IsAnyFileExistsInTheDir(subdir, ".dll"))
+                if (/*author.Length == 0 &&*/ ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(subdir, ".dll"))
                 {
                     foreach (var dllFilePath in Directory.GetFiles(subdir, "*.dll", SearchOption.AllDirectories))
                     {
@@ -457,7 +457,7 @@ namespace AIHelper.Manage
                     }
                 }
 
-                if (author.Length == 0 && ManageFilesFolders.IsAnyFileExistsInTheDir(subdir, ".txt", false))
+                if (author.Length == 0 && ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(subdir, ".txt", false))
                 {
                     foreach (var txtFilePath in Directory.GetFiles(subdir, "*.txt"))
                     {
@@ -824,7 +824,7 @@ namespace AIHelper.Manage
                         continue;
                     }
 
-                    if (HasTargetLinkNameSet && ManageFilesFolders.ContainsAnyInvalidCharacters(info[2]))
+                    if (HasTargetLinkNameSet && ManageFilesFoldersExtensions.ContainsAnyInvalidCharacters(info[2]))
                     {
                         // if target link name has invalid chars
                         continue;
@@ -833,7 +833,7 @@ namespace AIHelper.Manage
                     var targetObjectPath = info[1].IndexOf(".\\") != -1 ? Path.GetFullPath(linkinfo.Directory.FullName + Path.DirectorySeparatorChar + info[1]) // get full path if it was relative. current directory will be linkinfo file's directory
                         : info[1]; // path is not relative
 
-                    if (ManageFilesFolders.ContainsAnyInvalidCharacters(targetObjectPath))
+                    if (ManageFilesFoldersExtensions.ContainsAnyInvalidCharacters(targetObjectPath))
                     {
                         // if object path has invalid chars
                         continue;
@@ -907,8 +907,8 @@ namespace AIHelper.Manage
             if (IsUncensorSelector(!string.IsNullOrWhiteSpace(name) ? name : Path.GetFileName(modpackdir)))
             {
                 //add female male versions
-                var hasFemale = ManageFilesFolders.IsAnyFileExistsInTheDir(modpackdir, "*[Female]*.zipmod", true);
-                var hasMale = ManageFilesFolders.IsAnyFileExistsInTheDir(modpackdir, "*[Penis]*.zipmod", true) || ManageFilesFolders.IsAnyFileExistsInTheDir(modpackdir, "*[Balls]*.zipmod", true);
+                var hasFemale = ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(modpackdir, "*[Female]*.zipmod", true);
+                var hasMale = ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(modpackdir, "*[Penis]*.zipmod", true) || ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(modpackdir, "*[Balls]*.zipmod", true);
                 if (hasFemale && !hasMale)
                 {
                     return "F";

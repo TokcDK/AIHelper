@@ -11,7 +11,7 @@ namespace AIHelper.Install.Types.Files.Archive.Extractors
 
         protected override bool Get(FileInfo fileInfo)
         {
-            string targetDir = ManageFilesFolders.GetResultTargetDirPathWithNameCheck(ManageSettings.GetInstall2MoDirPath(), Path.GetFileNameWithoutExtension(fileInfo.Name));
+            string targetDir = ManageFilesFoldersExtensions.GetResultTargetDirPathWithNameCheck(ManageSettings.GetInstall2MoDirPath(), Path.GetFileNameWithoutExtension(fileInfo.Name));
             if (Directory.Exists(targetDir))
             {
                 return false;

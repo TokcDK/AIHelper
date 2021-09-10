@@ -129,12 +129,12 @@ namespace AIHelper.Manage.ModeSwitch
 
                 // OVERWRITE
                 var sourceFolder = ManageSettings.GetCurrentGameOverwriteFolderPath();
-                frmProgress.Text = T._("Move files") + ":" + Path.GetFileName(sourceFolder);
+                frmProgress.Text = T._("Parsing") + ":" + Path.GetFileName(sourceFolder);
                 ParseDirectories(sourceFolder, sourceFolder);
 
                 // MODS
                 string[] enabledModsList = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
-                if (enabledModsList.Length == 0)
+                if (!ParsedAny && enabledModsList.Length == 0)
                 {
                     MessageBox.Show(T._("There is no enabled mods or files in Overwrite"));
                     return;
@@ -154,7 +154,7 @@ namespace AIHelper.Manage.ModeSwitch
                         continue;
                     }
 
-                    frmProgress.Text = T._("Move files") + ":" + Path.GetFileName(sourceFolder);
+                    frmProgress.Text = T._("Parsing") + ":" + Path.GetFileName(sourceFolder);
 
                     ParseDirectories(sourceFolder, sourceFolder);
                 }

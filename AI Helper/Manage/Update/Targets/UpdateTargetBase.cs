@@ -7,11 +7,11 @@ using System.IO.Compression;
 namespace AIHelper.Manage.Update.Targets
 {
     //Base for targets
-    abstract class Base
+    abstract class UpdateTargetBase
     {
         protected UpdateInfo Info;
 
-        protected Base(UpdateInfo info)
+        protected UpdateTargetBase(UpdateInfo info)
         {
             this.Info = info;
 

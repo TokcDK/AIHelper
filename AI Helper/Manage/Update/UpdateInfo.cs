@@ -39,11 +39,11 @@ namespace AIHelper.Manage.Update
         /// <summary>
         /// selected source
         /// </summary>
-        internal SBase Source;
+        internal UpdateSourceBase Source;
         /// <summary>
         /// selected target
         /// </summary>
-        internal Base Target;
+        internal UpdateTargetBase Target;
         internal bool VersionFromFile;
         //internal bool GetVersionFromLink;
         //internal Dictionary<string, long> UrlSizeList;

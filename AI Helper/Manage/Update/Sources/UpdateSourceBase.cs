@@ -9,7 +9,7 @@ namespace AIHelper.Manage.Update.Sources
     /// <summary>
     /// Base for sources
     /// </summary>
-    abstract class SBase : IDisposable
+    abstract class UpdateSourceBase : IDisposable
     {
         protected UpdateInfo Info;
 
@@ -57,7 +57,7 @@ namespace AIHelper.Manage.Update.Sources
             WC.CancelAsync();
         }
 
-        protected SBase(UpdateInfo info)
+        protected UpdateSourceBase(UpdateInfo info)
         {
             Info = info;
             WebClientInit();
@@ -99,7 +99,7 @@ namespace AIHelper.Manage.Update.Sources
             Timer.Dispose();
         }
 
-        protected SBase()
+        protected UpdateSourceBase()
         {
         }
 

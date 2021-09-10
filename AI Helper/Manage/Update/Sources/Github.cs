@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace AIHelper.Manage.Update.Sources
 {
-    class Github : SBase
+    class Github : UpdateSourceBase
     {
         public Github(UpdateInfo info) : base(info)
         {

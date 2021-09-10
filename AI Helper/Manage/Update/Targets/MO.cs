@@ -4,7 +4,7 @@ using System.IO;
 
 namespace AIHelper.Manage.Update.Targets
 {
-    class Mo : Base
+    class Mo : UpdateTargetBase
     {
         public Mo(UpdateInfo info) : base(info)
         {

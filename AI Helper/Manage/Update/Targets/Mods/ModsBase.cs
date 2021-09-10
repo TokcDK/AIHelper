@@ -8,7 +8,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
     /// <summary>
     /// Base for mods
     /// </summary>
-    abstract class ModsBase : Base
+    abstract class ModsBase : UpdateTargetBase
     {
         protected ModsBase(UpdateInfo info) : base(info)
         {

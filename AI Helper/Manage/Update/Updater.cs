@@ -28,11 +28,11 @@ namespace AIHelper.Manage.Update
         internal async Task Update()
         {
             UpdateInfo info = new UpdateInfo();
-            var sources = new List<SBase> //Sources of updates
+            var sources = new List<UpdateSourceBase> //Sources of updates
             {
                 new Github(info)
             };
-            var targets = new List<Base> //Targets for update
+            var targets = new List<UpdateTargetBase> //Targets for update
             {
                 new Mo(info),
                 //new MOBaseGames(info),

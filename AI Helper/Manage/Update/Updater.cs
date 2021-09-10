@@ -117,10 +117,13 @@ namespace AIHelper.Manage.Update
                         }
 
                         // check only one time per hour
-                        var lastCheckTimeElapsed = sourcePathDateCheckTime[tFolderInfo.Key] + TimeSpan.FromMinutes(60);
-                        if (sourcePathDateCheckTime.ContainsKey(tFolderInfo.Key) && (checkDateTimeNow < lastCheckTimeElapsed))
+                        if (sourcePathDateCheckTime.ContainsKey(tFolderInfo.Key))
                         {
-                            continue;
+                            var lastCheckTimeElapsed = sourcePathDateCheckTime[tFolderInfo.Key] + TimeSpan.FromMinutes(60);
+                            if(checkDateTimeNow < lastCheckTimeElapsed)
+                            {
+                                continue;
+                            }
                         }
 
                         info.Reset(); // reset some infos

@@ -120,7 +120,7 @@ namespace AIHelper.Manage.Update
                         if (sourcePathDateCheckTime.ContainsKey(tFolderInfo.Key))
                         {
                             var lastCheckTimeElapsed = sourcePathDateCheckTime[tFolderInfo.Key] + TimeSpan.FromMinutes(60);
-                            if(checkDateTimeNow < lastCheckTimeElapsed)
+                            if (checkDateTimeNow < lastCheckTimeElapsed)
                             {
                                 continue;
                             }
@@ -181,6 +181,11 @@ namespace AIHelper.Manage.Update
                             )
                         {
                             UpdatedAny = true;
+
+                            if (File.Exists(info.UpdateFilePath))
+                            {
+                                File.WriteAllText(info.UpdateFilePath + ".version", info.TargetLastVersion);
+                            }
 
                             info.Excluded.Add(tFolderInfo.Key); // add path to excluded to skip it next time if will be found for other source or target
 

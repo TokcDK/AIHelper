@@ -3,6 +3,7 @@ using AIHelper.Manage.Update.Targets;
 using AIHelper.Manage.Update.Targets.Mods;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,11 @@ namespace AIHelper.Manage.Update
         /// </summary>
         internal bool UpdatedAny;
 
+        /// <summary>
+        /// Last check dates to reduce server requests one time per hour
+        /// </summary>
+        Dictionary<string, Dictionary<string, DateTime>> lastCheckDates;
+
         internal async Task Update()
         {
             UpdateInfo info = new UpdateInfo();
@@ -33,6 +39,8 @@ namespace AIHelper.Manage.Update
                 new ModsList(info),
                 new ModsMeta(info)
             };
+
+            lastCheckDates = GetDateTimesFromFile();
 
             var checkNUpdateText = T._("Update plugins");
 
@@ -68,6 +76,8 @@ namespace AIHelper.Manage.Update
                 Value = 0
             };
 
+            var checkDateTimeNow = DateTime.Now;
+
             progressForm.Controls.Add(pBar);
             progressForm.Show();
 
@@ -76,6 +86,13 @@ namespace AIHelper.Manage.Update
                 info.Source = source;
 
                 progressForm.Text = checkNUpdateText + ":" + source.Title;
+
+                var sourcePathDateCheckTime = new Dictionary<string, DateTime>();
+                if (!lastCheckDates.ContainsKey(source.Title))
+                {
+                    lastCheckDates.Add(source.Title, sourcePathDateCheckTime);
+                }
+                sourcePathDateCheckTime = lastCheckDates[source.Title];
 
                 info.SourceId = source.InfoId; //set source info detect ID
                 foreach (var target in targets) //enumerate targets
@@ -95,6 +112,13 @@ namespace AIHelper.Manage.Update
                     foreach (var tFolderInfo in tFolderInfos) //enumerate all folders with info
                     {
                         if (info.Excluded.Contains(tFolderInfo.Key)) //skip already updated
+                        {
+                            continue;
+                        }
+
+                        // check only one time per hour
+                        var lastCheckTimeElapsed = sourcePathDateCheckTime[tFolderInfo.Key] + TimeSpan.FromMinutes(60);
+                        if (sourcePathDateCheckTime.ContainsKey(tFolderInfo.Key) && (checkDateTimeNow < lastCheckTimeElapsed))
                         {
                             continue;
                         }
@@ -123,7 +147,17 @@ namespace AIHelper.Manage.Update
                         }
                         info.TargetFolderUpdateInfo = tInfoArray.Trim(); // get folder info
                                                                          //info.TargetCurrentVersion = tInfoArray[tInfoArray.Length - 1]; // get current version (last element of info)
+
                         info.TargetLastVersion = source.GetLastVersion(); // get last version
+
+                        if (sourcePathDateCheckTime.ContainsKey(tFolderInfo.Key))
+                        {
+                            sourcePathDateCheckTime[tFolderInfo.Key] = checkDateTimeNow;
+                        }
+                        else
+                        {
+                            sourcePathDateCheckTime.Add(tFolderInfo.Key, checkDateTimeNow);
+                        }
 
                         if (info.TargetLastVersion.Length == 0)
                         {
@@ -221,11 +255,73 @@ namespace AIHelper.Manage.Update
             pBar.Dispose();
             progressForm.Dispose();
 
+            SaveCheckDateTimes();
+
             //save sizes
             //SaveSizes(info.UrlSizeList);
 
             //Show report
             ShowReport(info);
+        }
+
+        /// <summary>
+        /// write update check datetimes to file
+        /// </summary>
+        private void SaveCheckDateTimes()
+        {
+            using (StreamWriter sw = new StreamWriter(ManageSettings.GetUpdateCheckDateTimesFilePath()))
+            {
+                foreach (var source in lastCheckDates)
+                {
+                    foreach (var data in source.Value)
+                    {
+                        sw.WriteLine(source.Key + "|" + data.Key + "|" + data.Value.ToString("O"));
+                    }
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// read update check datetimes from file
+        /// </summary>
+        /// <returns></returns>
+        private Dictionary<string, Dictionary<string, DateTime>> GetDateTimesFromFile()
+        {
+            var ret = new Dictionary<string, Dictionary<string, DateTime>>();
+            var DateTimesFilePath = ManageSettings.GetUpdateCheckDateTimesFilePath();
+            if (!File.Exists(DateTimesFilePath))
+            {
+                return ret;
+            }
+            StreamReader sr = new StreamReader(DateTimesFilePath);
+            string line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    continue;
+                }
+
+                var data = line.Split('|');
+
+                if (data.Length != 3)
+                {
+                    continue;
+                }
+
+                if (!ret.ContainsKey(data[0]))
+                {
+                    ret.Add(data[0], new Dictionary<string, DateTime>());
+                }
+                if (!ret[data[0]].ContainsKey(data[1]))
+                {
+                    ret[data[0]].Add(data[1], DateTime.ParseExact(data[2], "O", CultureInfo.InvariantCulture));
+                }
+            }
+            sr.Dispose();
+
+            return ret;
         }
 
         private static string ErrorMessage(StringBuilder lastErrorText)

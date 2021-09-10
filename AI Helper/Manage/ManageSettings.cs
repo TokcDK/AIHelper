@@ -310,6 +310,16 @@ namespace AIHelper.Manage
             return Path.Combine(GeneralMoPath(), MoIniFileName());
         }
 
+        /// <summary>
+        /// file where store update check date times
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetUpdateCheckDateTimesFilePath()
+        {
+            return Path.Combine(GetModsUpdateDirPath(),"updatecheckdatetimes.txt");
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static string MoCategoriesFileName()
         {
@@ -327,7 +337,7 @@ namespace AIHelper.Manage
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetModsUpdateDir()
+        internal static string GetModsUpdateDirPath()
         {
             return Path.Combine(GetAppResDir(), "update");
         }
@@ -335,13 +345,13 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameModsUpdateDir()
         {
-            return Path.Combine(GetModsUpdateDir(), GetCurrentGameFolderName());
+            return Path.Combine(GetModsUpdateDirPath(), GetCurrentGameFolderName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetModsUpdateDbInfoDir()
         {
-            return Path.Combine(GetModsUpdateDir(), "infos");
+            return Path.Combine(GetModsUpdateDirPath(), "infos");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1465,13 +1475,13 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetUpdatedModsOlderVersionsBuckupDirPath()
         {
-            return Path.Combine(GetModsUpdateDir(), GetCurrentGameFolderName(), GetUpdatedModsOlderVersionsBuckupDirName());
+            return Path.Combine(GetModsUpdateDirPath(), GetCurrentGameFolderName(), GetUpdatedModsOlderVersionsBuckupDirName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetModsUpdateDirDownloadsPath()
         {
-            return Path.Combine(GetModsUpdateDir(), GetModsUpdateDirDownloadsName());
+            return Path.Combine(GetModsUpdateDirPath(), GetModsUpdateDirDownloadsName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

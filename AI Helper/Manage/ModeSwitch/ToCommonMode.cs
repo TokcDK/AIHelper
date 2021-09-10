@@ -28,12 +28,12 @@ namespace AIHelper.Manage.ModeSwitch
         {
         }
 
-        protected override bool NeedSkip(string sourceFilePath, string sourceFolder)
+        protected override bool NeedSkip(string sourceFilePath, string parentFolder)
         {
-            return IsExcludedFileType(sourceFilePath, sourceFolder);
+            return IsExcludedFileType(sourceFilePath, parentFolder);
         }
 
-        protected bool IsExcludedFileType(string sourceFilePath, string sourceFolder)
+        protected bool IsExcludedFileType(string sourceFilePath, string parentFolder)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace AIHelper.Manage.ModeSwitch
                 var fileExtension = Path.GetExtension(sourceFilePath);
                 if (string.Equals(fileExtension, ".txt", StringComparison.InvariantCultureIgnoreCase) || fileExtension.IsPictureExtension())
                 {
-                    if (Path.GetFileName(sourceFilePath.Replace(Path.DirectorySeparatorChar + Path.GetFileName(sourceFilePath), string.Empty)) == Path.GetFileName(sourceFolder))
+                    if (Path.GetFileName(sourceFilePath.Replace(Path.DirectorySeparatorChar + Path.GetFileName(sourceFilePath), string.Empty)) == Path.GetFileName(parentFolder))
                     {
                         //пропускать картинки и txt в корне папки мода
                         return true;
@@ -130,7 +130,7 @@ namespace AIHelper.Manage.ModeSwitch
                 // OVERWRITE
                 var sourceFolder = ManageSettings.GetCurrentGameOverwriteFolderPath();
                 frmProgress.Text = T._("Move files") + ":" + Path.GetFileName(sourceFolder);
-                ParseFiles(sourceFolder, sourceFolder);
+                ParseDirectories(sourceFolder, sourceFolder);
 
                 // MODS
                 string[] enabledModsList = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
@@ -221,37 +221,42 @@ namespace AIHelper.Manage.ModeSwitch
             }
         }
         /// <summary>
-        /// 
+        /// Parse files and dirs in <paramref name="sourceFolder"/> using <paramref name="parentDirPath"/>
         /// </summary>
         /// <param name="sourceFolder"></param>
-        /// <param name="parentDir">Parent directory</param>
+        /// <param name="parentDirPath">Parent directory</param>
         /// <returns></returns>
-        protected bool ParseDirectories(string sourceFolder, string parentDir)
+        protected bool ParseDirectories(string sourceFolder, string parentDirPath)
         {
-            ParseFiles(sourceFolder, parentDir); // parse files of this directory
+            ParseFiles(sourceFolder, parentDirPath); // parse files of this directory
 
             Parallel.ForEach(Directory.EnumerateDirectories(sourceFolder), dir =>
             {
                 if (dir.IsSymlink(ObjectType.Directory))
                 {
-                    ParseDirLink(dir, parentDir);
+                    ParseDirLink(dir, parentDirPath);
                 }
                 else
                 {
-                    ParseDirectories(dir, parentDir);
+                    ParseDirectories(dir, parentDirPath);
                 }
             });
 
             return true;
         }
 
-        protected void ParseDirLink(string dir, string parentDir)
+        /// <summary>
+        /// Parse <paramref name="dir"/>'s symlink using <paramref name="parentDirPath"/>
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <param name="parentDirPath"></param>
+        protected void ParseDirLink(string dir, string parentDirPath)
         {
             if (dir.IsValidSymlink(objectType: ObjectType.Directory))
             {
                 var symlinkTarget = Path.GetFullPath(dir.GetSymlinkTarget(ObjectType.Directory));
 
-                var targetPath = dir.Replace(parentDir, ManageSettings.GetCurrentGameDataPath()); // we move to data
+                var targetPath = dir.Replace(parentDirPath, ManageSettings.GetCurrentGameDataPath()); // we move to data
                 symlinkTarget.CreateSymlink(targetPath, isRelative: true, objectType: ObjectType.Directory);
 
                 // we not deleted symlink in the dir
@@ -260,7 +265,13 @@ namespace AIHelper.Manage.ModeSwitch
             }
         }
 
-        protected bool ParseFiles(string dir, string parentDir)
+        /// <summary>
+        /// Parse files in <paramref name="dir"/> using <paramref name="parentDirPath"/>
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <param name="parentDirPath"></param>
+        /// <returns></returns>
+        protected bool ParseFiles(string dir, string parentDirPath)
         {
             //var sourceFilePaths = Directory.GetFiles(dir, "*.*");
             //if (sourceFilePaths.Length == 0)
@@ -276,26 +287,31 @@ namespace AIHelper.Manage.ModeSwitch
                 var sourceFilePath = f;
                 if (ManageStrings.CheckForLongPath(ref sourceFilePath))
                 {
-                    longPaths.Add(sourceFilePath.Remove(0, 4)); // add to long paths list but with removed long path prefix
+                    longPaths.Add(sourceFilePath.Substring(4)); // add to long paths list but with removed long path prefix
                 }
 
-                if (NeedSkip(sourceFilePath, parentDir))
+                if (NeedSkip(sourceFilePath, parentDirPath))
                 {
                     return;
                 }
 
-                ParseFile(sourceFilePath, parentDir);
+                ParseFile(sourceFilePath, parentDirPath);
             });
 
             return true;
         }
 
-        protected void ParseFile(string sourceFilePath, string sourceFolder)
+        /// <summary>
+        /// Parse <paramref name="sourceFilePath"/> using <paramref name="parentDirPath"/>
+        /// </summary>
+        /// <param name="sourceFilePath"></param>
+        /// <param name="parentDirPath"></param>
+        protected void ParseFile(string sourceFilePath, string parentDirPath)
         {
-            var dataFilePath = sourceFilePath.Replace(sourceFolder, ManageSettings.GetCurrentGameDataPath());
+            var dataFilePath = sourceFilePath.Replace(parentDirPath, ManageSettings.GetCurrentGameDataPath());
             if (ManageStrings.CheckForLongPath(ref dataFilePath))
             {
-                longPaths.Add(dataFilePath.Remove(0, 4));
+                longPaths.Add(dataFilePath.Substring(4));
             }
 
             if (File.Exists(dataFilePath))

@@ -7,6 +7,27 @@ namespace AIHelper.Manage
     internal static class ManageStringsExtensions
     {
         /// <summary>
+        /// Calculate count of char <paramref name="c"/> in input string <paramref name="s"/>
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="c"></param>
+        /// <returns></returns>
+        internal static int CountOf(this string s, char c)
+        {
+            int count = -1;
+            int index = -1;
+
+            do
+            {
+                count++;
+                index = s.IndexOf(c, index + 1);
+            }
+            while (index != -1);
+
+            return count;
+        }
+
+        /// <summary>
         /// Check if char is latin char
         /// </summary>
         /// <param name="c"></param>

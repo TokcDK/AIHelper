@@ -94,7 +94,6 @@ namespace AIHelper.Manage.ModeSwitch
             zipmodsGuidList = new Dictionary<string, string>();
             longPaths = new List<string>();
 
-            var debugString = "";
             try
             {
                 ManageModOrganizer.CleanBepInExLinksFromData();
@@ -107,9 +106,7 @@ namespace AIHelper.Manage.ModeSwitch
                     }
                 }
 
-                debugString = ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath();
                 Directory.CreateDirectory(ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath());
-                moToStandartConvertationOperationsList = new StringBuilder();
 
                 ManageFilesFoldersExtensions.GetEmptySubfoldersPaths(ManageSettings.GetCurrentGameDataPath(), vanillaDataEmptyFoldersList);
 
@@ -152,7 +149,7 @@ namespace AIHelper.Manage.ModeSwitch
                     }
 
                     sourceFolder = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), enabledModsList[m]);
-                    if (string.IsNullOrWhiteSpace(sourceFolder) || !Directory.Exists(sourceFolder))
+                    if (!Directory.Exists(sourceFolder))
                     {
                         continue;
                     }
@@ -220,7 +217,7 @@ namespace AIHelper.Manage.ModeSwitch
                 ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataPath(), false, vanillaDataEmptyFoldersList.ToString().SplitToLines().ToArray());
 
                 //сообщить об ошибке
-                MessageBox.Show("Mode was not switched. Error:" + Environment.NewLine + ex + "\r\n/debufStr=" + debugString);
+                MessageBox.Show("Mode was not switched. Error:" + Environment.NewLine + ex);
             }
         }
         /// <summary>
@@ -231,7 +228,9 @@ namespace AIHelper.Manage.ModeSwitch
         /// <returns></returns>
         protected bool ParseDirectories(string sourceFolder, string parentDir)
         {
-            Parallel.ForEach(Directory.GetDirectories(sourceFolder), dir =>
+            ParseFiles(sourceFolder, parentDir); // parse files of this directory
+
+            Parallel.ForEach(Directory.EnumerateDirectories(sourceFolder), dir =>
             {
                 if (dir.IsSymlink(ObjectType.Directory))
                 {
@@ -239,8 +238,7 @@ namespace AIHelper.Manage.ModeSwitch
                 }
                 else
                 {
-                    ParseFiles(dir, parentDir);
-                    ParseDirectories(sourceFolder, parentDir);
+                    ParseDirectories(dir, parentDir);
                 }
             });
 
@@ -249,40 +247,44 @@ namespace AIHelper.Manage.ModeSwitch
 
         protected void ParseDirLink(string dir, string parentDir)
         {
-            if (dir.IsValidSymlink())
+            if (dir.IsValidSymlink(objectType: ObjectType.Directory))
             {
-                var symlinkTarget = Path.GetFullPath(dir.GetSymlinkTarget());
+                var symlinkTarget = Path.GetFullPath(dir.GetSymlinkTarget(ObjectType.Directory));
 
                 var targetPath = dir.Replace(parentDir, ManageSettings.GetCurrentGameDataPath()); // we move to data
                 symlinkTarget.CreateSymlink(targetPath, isRelative: true, objectType: ObjectType.Directory);
+
+                // we not deleted symlink in the dir
+                moToStandartConvertationOperationsList.AppendLine(dir + operationsSplitStringBase + targetPath); // add symlink operation
+                ParsedAny = true;
             }
         }
 
         protected bool ParseFiles(string dir, string parentDir)
         {
-            var sourceFilePaths = Directory.GetFiles(dir, "*.*");
-            if (sourceFilePaths.Length == 0)
-            {
-                return false;
-            }
+            //var sourceFilePaths = Directory.GetFiles(dir, "*.*");
+            //if (sourceFilePaths.Length == 0)
+            //{
+            //    return false;
+            //}
 
             PreParseFiles();
 
-            var sourceFilePathsLength = sourceFilePaths.Length;
-            _ = Parallel.For(0, sourceFilePathsLength, f =>
+            //var sourceFilePathsLength = sourceFilePaths.Length;
+            Parallel.ForEach(Directory.EnumerateFiles(dir, "*.*"), f =>
             {
-                 var sourceFilePath = sourceFilePaths[f];
-                 if (ManageStrings.CheckForLongPath(ref sourceFilePath))
-                 {
-                     longPaths.Add(sourceFilePath.Remove(0, 4)); // add to lng paths list but with removed long path prefix
-                 }
+                var sourceFilePath = f;
+                if (ManageStrings.CheckForLongPath(ref sourceFilePath))
+                {
+                    longPaths.Add(sourceFilePath.Remove(0, 4)); // add to long paths list but with removed long path prefix
+                }
 
-                 if (NeedSkip(sourceFilePath, parentDir))
-                 {
-                     return;
-                 }
+                if (NeedSkip(sourceFilePath, parentDir))
+                {
+                    return;
+                }
 
-                 ParseFile(sourceFilePath, parentDir);
+                ParseFile(sourceFilePath, parentDir);
             });
 
             return true;
@@ -351,46 +353,52 @@ namespace AIHelper.Manage.ModeSwitch
 
         void RestoreMovedFilesLocation(StringBuilder operations)
         {
-            if (operations.Length > 0)
+            if (operations.Length == 0)
             {
-                foreach (string record in operations.ToString().SplitToLines())
-                {
-                    try
-                    {
-                        if (string.IsNullOrWhiteSpace(record))
-                        {
-                            continue;
-                        }
-
-                        var movePaths = record.Split(operationsSplitString, StringSplitOptions.None);
-
-                        if (movePaths.Length != 2)
-                        {
-                            continue;
-                        }
-
-                        var filePathInMods = movePaths[0];
-                        var filePathInData = movePaths[1];
-
-                        if (File.Exists(filePathInData))
-                        {
-                            if (!File.Exists(filePathInMods))
-                            {
-                                Directory.CreateDirectory(Path.GetDirectoryName(filePathInMods));
-
-                                filePathInData.MoveTo(filePathInMods);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        ManageLogs.Log("error while RestoreMovedFilesLocation. error:\r\n" + ex);
-                    }
-                }
-
-                //возврат возможных ванильных резервных копий
-                MoveVanillaFilesBackToData();
+                return;
             }
+
+            Parallel.ForEach(operations.ToString().SplitToLines(), record =>
+            {
+                try
+                {
+                    if (string.IsNullOrWhiteSpace(record))
+                    {
+                        return;
+                    }
+
+                    var movePaths = record.Split(operationsSplitString, StringSplitOptions.None);
+
+                    if (movePaths.Length != 2)
+                    {
+                        return;
+                    }
+
+                    var filePathInMods = movePaths[0];
+                    var filePathInData = movePaths[1];
+
+                    if (!File.Exists(filePathInData))
+                    {
+                        return;
+                    }
+
+                    if (File.Exists(filePathInMods))
+                    {
+                        return;
+                    }
+
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePathInMods));
+
+                    filePathInData.MoveTo(filePathInMods);
+                }
+                catch (Exception ex)
+                {
+                    ManageLogs.Log("error while RestoreMovedFilesLocation. error:\r\n" + ex);
+                }
+            });
+
+            //возврат возможных ванильных резервных копий
+            MoveVanillaFilesBackToData();
         }
     }
 }

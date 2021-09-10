@@ -15,6 +15,16 @@ namespace AIHelper.Manage
     static class ManageFilesFoldersExtensions
     {
         /// <summary>
+        /// if directory exist in the <paramref name="path"/>
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static bool IsDirectory(this string path)
+        {
+            return Directory.Exists(path);
+        }
+
+        /// <summary>
         /// Move <paramref name="sourcePath"/> to <paramref name="targetPath"/>.
         /// If <paramref name="IsSymlink"/> is true or <paramref name="sourcePath"/> is symlink then will recreate symlink in target path
         /// </summary>
@@ -26,11 +36,11 @@ namespace AIHelper.Manage
         {
             if (IsSymlink || sourcePath.IsSymlink(objectType))
             {
-                if (sourcePath.IsValidSymlink())
+                if (sourcePath.IsValidSymlink(objectType: objectType))
                 {
                     var symlinkTarget = Path.GetFullPath(sourcePath.GetSymlinkTarget());
 
-                    symlinkTarget.CreateSymlink(targetPath, isRelative: true, objectType: ObjectType.File);
+                    symlinkTarget.CreateSymlink(targetPath, isRelative: true, objectType: objectType);
                 }
 
                 if (objectType == ObjectType.File)

@@ -164,32 +164,32 @@ namespace AIHelper.Manage.ModeSwitch
         protected void MoveVanillaFilesBackToData()
         {
             var mOmodeDataFilesBakDirPath = ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath();
-            if (Directory.Exists(mOmodeDataFilesBakDirPath))
+            if (!Directory.Exists(mOmodeDataFilesBakDirPath))
             {
-                var filesInMOmodeDataFilesBak = Directory.GetFiles(mOmodeDataFilesBakDirPath, "*.*", SearchOption.AllDirectories);
-                int filesInMOmodeDataFilesBakLength = filesInMOmodeDataFilesBak.Length;
-                for (int f = 0; f < filesInMOmodeDataFilesBakLength; f++)
-                {
-                    if (string.IsNullOrWhiteSpace(filesInMOmodeDataFilesBak[f]))
-                    {
-                        continue;
-                    }
+                return;
+            }
 
-                    var destFileInDataFolderPath = filesInMOmodeDataFilesBak[f].Replace(mOmodeDataFilesBakDirPath, ManageSettings.GetCurrentGameDataPath());
-                    if (!File.Exists(destFileInDataFolderPath))
-                    {
-                        var destFileInDataFolderPathFolder = Path.GetDirectoryName(destFileInDataFolderPath);
-                        if (!Directory.Exists(destFileInDataFolderPathFolder))
-                        {
-                            Directory.CreateDirectory(destFileInDataFolderPathFolder);
-                        }
-                        filesInMOmodeDataFilesBak[f].MoveTo(destFileInDataFolderPath);
-                    }
+            Parallel.ForEach(Directory.GetFiles(mOmodeDataFilesBakDirPath, "*.*", SearchOption.AllDirectories), file =>
+            {
+                if (string.IsNullOrWhiteSpace(file))
+                {
+                    return;
                 }
 
-                //удаление папки, где хранились резервные копии ванильных файлов
-                ManageFilesFoldersExtensions.DeleteEmptySubfolders(mOmodeDataFilesBakDirPath);
-            }
+                var destFileInDataFolderPath = file.Replace(mOmodeDataFilesBakDirPath, ManageSettings.GetCurrentGameDataPath());
+                if (File.Exists(destFileInDataFolderPath))
+                {
+                    return;
+                }
+
+                var destFileInDataFolderPathFolder = Path.GetDirectoryName(destFileInDataFolderPath);
+                Directory.CreateDirectory(destFileInDataFolderPathFolder);
+
+                file.MoveTo(destFileInDataFolderPath);
+            });
+
+            //удаление папки, где хранились резервные копии ванильных файлов
+            ManageFilesFoldersExtensions.DeleteEmptySubfolders(mOmodeDataFilesBakDirPath);
         }
     }
 }

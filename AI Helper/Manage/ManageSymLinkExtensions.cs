@@ -43,17 +43,17 @@ namespace AIHelper.Manage
         /// <param name="symlinkPath"></param>
         /// <param name="linkTargetPath"></param>
         /// <returns></returns>
-        internal static bool IsValidSymlink(this string symlinkPath, string linkTargetPath = null)
+        internal static bool IsValidSymlink(this string symlinkPath, string linkTargetPath = null, ObjectType objectType = ObjectType.NotDefined)
         {
             //ссылка вообще существует
-            if (File.Exists(symlinkPath))
+            if (objectType == ObjectType.File || (objectType == ObjectType.NotDefined && File.Exists(symlinkPath)))
             {
                 var i = new FileInfo(symlinkPath);
                 return i.IsSymlink() && i.IsValidSymlink(linkTargetPath);
             }
-            else if (Directory.Exists(symlinkPath))
+            else if (objectType == ObjectType.Directory || (objectType == ObjectType.NotDefined && Directory.Exists(symlinkPath)))
             {
-                var i = new FileInfo(symlinkPath);
+                var i = new DirectoryInfo(symlinkPath);
                 return i.IsSymlink() && i.IsValidSymlink(linkTargetPath);
             }
 
@@ -75,9 +75,10 @@ namespace AIHelper.Manage
                     return false;
                 };
 
-                if (linkTargetPath == null)
+                if (string.IsNullOrWhiteSpace(linkTargetPath))
                 {
-                    return File.Exists(symlinkPath.GetSymlinkTarget());
+                    // true because already was same check
+                    return true;// File.Exists(Path.GetFullPath(symlinkPath.GetSymlinkTarget()));
                 }
                 else
                 {
@@ -105,9 +106,10 @@ namespace AIHelper.Manage
                     return false;
                 };
 
-                if (linkTargetPath == null)
+                if (string.IsNullOrWhiteSpace(linkTargetPath))
                 {
-                    return Directory.Exists(symlinkPath.GetSymlinkTarget());
+                    // true because already was same check
+                    return true; // Directory.Exists(Path.GetFullPath(symlinkPath.GetSymlinkTarget()));
                 }
                 else
                 {
@@ -158,13 +160,13 @@ namespace AIHelper.Manage
         /// true when object is symbolic link
         /// </summary>
         /// <returns></returns>
-        internal static bool IsSymlink(this string objectPath, ObjectType oType = ObjectType.NotDefined)
+        internal static bool IsSymlink(this string objectPath, ObjectType objectType = ObjectType.NotDefined)
         {
-            if (oType == ObjectType.File || (oType == ObjectType.NotDefined && File.Exists(objectPath)))
+            if (objectType == ObjectType.File || (objectType == ObjectType.NotDefined && File.Exists(objectPath)))
             {
                 return new FileInfo(objectPath).IsSymlink();
             }
-            else if (oType == ObjectType.Directory || (oType == ObjectType.NotDefined && Directory.Exists(objectPath)))
+            else if (objectType == ObjectType.Directory || (objectType == ObjectType.NotDefined && Directory.Exists(objectPath)))
             {
                 return new DirectoryInfo(objectPath).IsSymlink();
             }
@@ -176,13 +178,13 @@ namespace AIHelper.Manage
         /// true when object is symbolic link
         /// </summary>
         /// <returns></returns>
-        internal static string GetSymlinkTarget(this string symlinkPath, ObjectType oType = ObjectType.NotDefined)
+        internal static string GetSymlinkTarget(this string symlinkPath, ObjectType objectType = ObjectType.NotDefined)
         {
-            if (oType == ObjectType.File || (oType == ObjectType.NotDefined && File.Exists(symlinkPath)))
+            if (objectType == ObjectType.File || (objectType == ObjectType.NotDefined && File.Exists(symlinkPath)))
             {
                 return new FileInfo(symlinkPath).GetSymlinkTarget();
             }
-            else if (oType == ObjectType.Directory || (oType == ObjectType.NotDefined && Directory.Exists(symlinkPath)))
+            else if (objectType == ObjectType.Directory || (objectType == ObjectType.NotDefined && Directory.Exists(symlinkPath)))
             {
                 return new DirectoryInfo(symlinkPath).GetSymlinkTarget();
             }
@@ -299,9 +301,18 @@ namespace AIHelper.Manage
             string objectPath = null;
             if ((objectType == ObjectType.NotDefined && File.Exists(objectPath = ManageModOrganizer.GetLastPath(objectFileDirPath))) || objectType == ObjectType.File)
             {
-                if (objectType != ObjectType.NotDefined && !File.Exists(objectFileDirPath))
+                if (objectType == ObjectType.File)
                 {
-                    return false;
+                    // if objectType is set to file or dir objectPath will no set
+                    if(objectPath == null)
+                    {
+                        objectPath = ManageModOrganizer.GetLastPath(objectFileDirPath);
+                    }
+                }
+
+                if (!File.Exists(objectPath))
+                {
+                    return false; // return if file is not exists
                 }
 
                 var fi = new FileInfo(symlinkPath);
@@ -331,20 +342,26 @@ namespace AIHelper.Manage
                     {
                         new FileInfo(objectPath).CreateSymbolicLink(symlinkPath, isRelative);//new from NuGet package
                     }
-                    catch (IOException ex) { ManageLogs.Log("An error accured while tried to create symlink. creation skipped. error:" + ex.Message); }
+                    catch (IOException ex)
+                    {
+                        ManageLogs.Log("An error accured while tried to create symlink. creation skipped. error:" + ex.Message);
+                    }
 
                     return true;
                 }
             }
-            else if ((objectType == ObjectType.NotDefined && Directory.Exists(objectPath = ManageModOrganizer.GetLastPath(objectFileDirPath, true)))
+            else if ((objectType == ObjectType.NotDefined && Directory.Exists(objectPath = ManageModOrganizer.GetLastPath(objectFileDirPath, isDir: true)))
                 || objectType == ObjectType.Directory)
             {
-                if (objectType != ObjectType.NotDefined && !File.Exists(objectFileDirPath))
+                if (objectType == ObjectType.Directory)
                 {
-                    if (!Directory.Exists(objectPath = ManageModOrganizer.GetLastPath(objectFileDirPath, true)))
+                    // if objectType is set to file or dir objectPath will no set
+                    if(objectPath == null)
                     {
-                        Directory.CreateDirectory(objectFileDirPath);
+                        objectPath = ManageModOrganizer.GetLastPath(objectFileDirPath, isDir: true);
                     }
+
+                    Directory.CreateDirectory(objectPath); // create dir if setlastpath returned input dir path and the dir is not exists
                 }
 
                 // NOTE
@@ -435,7 +452,8 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool IsSymlinkTargetEquals(this DirectoryInfo symlink, string requiredTargetPath)
         {
-            return symlink.Exists && symlink.IsSymlink() && symlink.GetSymlinkTarget() == requiredTargetPath;
+            string targetPath;
+            return symlink.Exists && symlink.IsSymlink() && ((targetPath = symlink.GetSymlinkTarget()) == requiredTargetPath || Path.GetFullPath(targetPath) == Path.GetFullPath(requiredTargetPath));
         }
     }
 }

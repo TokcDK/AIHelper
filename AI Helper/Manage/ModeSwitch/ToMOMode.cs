@@ -31,6 +31,7 @@ namespace AIHelper.Manage.ModeSwitch
         string[] vanillaDataFilesList;
         string[] moddedDataFilesList;
         Dictionary<string, string> zipmodsGuidList;
+        bool zipmodsGuidListNotEmpty;
         StringBuilder filesWhichAlreadyHaveSameDestFileInMods;
         bool filesWhichAlreadyHaveSameDestFileInModsIsNotEmpty;
         string dateTimeInFormat;
@@ -47,7 +48,7 @@ namespace AIHelper.Manage.ModeSwitch
                 moddedDataFilesList = File.ReadAllLines(ManageSettings.GetCurrentGameModdedDataFilesListFilePath());
                 ReplaceVarsToPaths(ref moddedDataFilesList);
                 zipmodsGuidList = new Dictionary<string, string>();
-                bool zipmodsGuidListNotEmpty = FillZipModsGUID(zipmodsGuidList);
+                zipmodsGuidListNotEmpty = FillZipModsGUID(zipmodsGuidList);
 
                 //remove normal mode identifier
                 SwitchNormalModeIdentifier(false);
@@ -63,98 +64,10 @@ namespace AIHelper.Manage.ModeSwitch
                 //получение даты и времени для дальнейшего использования
                 dateTimeInFormat = ManageSettings.GetDateTimeBasedSuffix();
 
-                MoveFilesInNewMod();
+                MoveExistsModFilesInNewMod();
 
                 //Перемещение новых файлов
-                //
-                //добавление всех файлов из дата, которых нет в списке файлов модов и игры в дата, что был создан сразу после перехода в обычный режим
-                string[] addedFiles = Directory.GetFiles(ManageSettings.GetCurrentGameDataPath(), "*.*", SearchOption.AllDirectories).Where(line => !moddedDataFilesList.Contains(line)).ToArray();
-                //задание имени целевой папки для новых модов
-                string addedFilesFolderName = "[added]UseFiles" + dateTimeInFormat;
-                string destFolderPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), addedFilesFolderName);
-
-                int addedFilesLength = addedFiles.Length;
-                for (int f = 0; f < addedFilesLength; f++)
-                {
-                    string destFileName = null;
-                    try
-                    {
-                        //если zipmod guid присутствует в сохраненных, переместить его на место удаленного
-                        string ext;
-                        string guid;
-                        if (zipmodsGuidListNotEmpty
-                            && addedFiles[f].ToUpperInvariant().Contains("SIDELOADER MODPACK")
-                            && ((ext = Path.GetExtension(addedFiles[f]).ToUpperInvariant()) == ".ZIPMOD" || ext == ".ZIP")
-                            && !string.IsNullOrWhiteSpace(guid = ManageArchive.GetZipmodGuid(addedFiles[f]))
-                            && zipmodsGuidList.ContainsKey(guid)
-                            )
-                        {
-                            if (zipmodsGuidList[guid].Contains("%"))//temp check
-                            {
-                                ManageLogs.Log("zipmod contains %VAR%:" + zipmodsGuidList[guid]);
-                            }
-
-                            var zipmod = ReplaceVarsToPaths(zipmodsGuidList[guid]);
-
-                            if (Path.GetFileName(addedFiles[f]) == Path.GetFileName(zipmod))//when zipmod has same name but moved
-                            {
-                                var targetfolder = zipmod.IsInOverwriteFolder() ?
-                                    ManageSettings.GetCurrentGameOverwriteFolderPath() : ManageSettings.GetCurrentGameModsDirPath();
-                                destFileName = addedFiles[f].Replace(ManageSettings.GetCurrentGameDataPath(), targetfolder
-                                    );
-                            }
-                            else//when mod was renamed
-                            {
-                                if (zipmod.IsInOverwriteFolder())//zipmod in overwrite
-                                {
-                                    var newFilePath = addedFiles[f].Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameOverwriteFolderPath());
-                                    if (Directory.Exists(Path.GetDirectoryName(newFilePath)) && newFilePath != addedFiles[f])
-                                    {
-                                        destFileName = newFilePath;
-                                    }
-                                }
-                                else//zipmod in Mods
-                                {
-                                    var modPath = zipmod.GetPathInMods();
-                                    if (Path.GetFileName(modPath).ToUpperInvariant() != "MODS" && Directory.Exists(modPath))
-                                    {
-                                        destFileName = addedFiles[f].Replace(ManageSettings.GetCurrentGameDataPath(), modPath);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        ManageLogs.Log("Error occured while to MO mode switch:" + Environment.NewLine + ex);
-                    }
-
-                    if (string.IsNullOrEmpty(destFileName))
-                    {
-                        destFileName = addedFiles[f].Replace(ManageSettings.GetCurrentGameDataPath(), destFolderPath);
-                    }
-                    Directory.CreateDirectory(Path.GetDirectoryName(destFileName));
-                    addedFiles[f].MoveTo(destFileName);
-                }
-
-                //подключить новый мод, если он существует
-                if (Directory.Exists(destFolderPath))
-                {
-                    //запись meta.ini
-                    ManageModOrganizer.WriteMetaIni(
-                        destFolderPath
-                        ,
-                        "UserFiles"
-                        ,
-                        dateTimeInFormat.Substring(1)
-                        ,
-                        T._("Sort files if need")
-                        ,
-                        T._("<br>This files was added in Common mode<br>and moved as mod after convertation in MO mode.<br>Date: ") + dateTimeInFormat.Substring(1)
-                        );
-
-                    ManageModOrganizer.ActivateDeactivateInsertMod(addedFilesFolderName);
-                }
+                MoveNewCreatedDataFilesToNewMod();
 
                 //перемещение ванильных файлов назад в дата
                 MoveVanillaFilesBackToData();
@@ -274,7 +187,117 @@ namespace AIHelper.Manage.ModeSwitch
             }
         }
 
-        private void MoveFilesInNewMod()
+        private void MoveNewCreatedDataFilesToNewMod()
+        {
+            //
+            //добавление всех файлов из дата, которых нет в списке файлов модов и игры в дата, что был создан сразу после перехода в обычный режим
+            //string[] addedFiles = Directory.GetFiles(ManageSettings.GetCurrentGameDataPath(), "*.*", SearchOption.AllDirectories).Where(line => !moddedDataFilesList.Contains(line)).ToArray();
+            //задание имени целевой папки для новых модов
+            string addedFilesFolderName = "[added]UseFiles" + dateTimeInFormat;
+            string destFolderPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), addedFilesFolderName);
+
+            //int addedFilesLength = addedFiles.Length;
+            Parallel.ForEach(Directory.GetFiles(ManageSettings.GetCurrentGameDataPath(), "*.*", SearchOption.AllDirectories), file =>
+            {
+                if (moddedDataFilesList.Contains(file))
+                {
+                    // skip mod files
+                    return;
+                }
+
+                string destFileName = null;
+                try
+                {
+                    //если zipmod guid присутствует в сохраненных, переместить его на место удаленного
+                    string ext;
+                    string guid;
+                    if ((guid = IsZipmodCanBeMovedByGUID(file)).Length > 0)
+                    {
+                        if (zipmodsGuidList[guid].Contains("%"))//temp check
+                        {
+                            ManageLogs.Log("zipmod contains %VAR%:" + zipmodsGuidList[guid]);
+                        }
+
+                        var zipmod = ReplaceVarsToPaths(zipmodsGuidList[guid]);
+
+                        if (Path.GetFileName(file) == Path.GetFileName(zipmod))//when zipmod has same name but moved
+                        {
+                            var targetfolder = zipmod.IsInOverwriteFolder() ?
+                                ManageSettings.GetCurrentGameOverwriteFolderPath() : ManageSettings.GetCurrentGameModsDirPath();
+                            destFileName = file.Replace(ManageSettings.GetCurrentGameDataPath(), targetfolder
+                                );
+                        }
+                        else//when mod was renamed
+                        {
+                            if (zipmod.IsInOverwriteFolder())//zipmod in overwrite
+                            {
+                                var newFilePath = file.Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameOverwriteFolderPath());
+                                if (Directory.Exists(Path.GetDirectoryName(newFilePath)) && newFilePath != file)
+                                {
+                                    destFileName = newFilePath;
+                                }
+                            }
+                            else//zipmod in Mods
+                            {
+                                var modPath = zipmod.GetPathInMods();
+                                if (Path.GetFileName(modPath).ToUpperInvariant() != "MODS" && Directory.Exists(modPath))
+                                {
+                                    destFileName = file.Replace(ManageSettings.GetCurrentGameDataPath(), modPath);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ManageLogs.Log("Error occured while to MO mode switch:" + Environment.NewLine + ex);
+                }
+
+                if (string.IsNullOrEmpty(destFileName))
+                {
+                    destFileName = file.Replace(ManageSettings.GetCurrentGameDataPath(), destFolderPath);
+                }
+                Directory.CreateDirectory(Path.GetDirectoryName(destFileName));
+                file.MoveTo(destFileName);
+            });
+
+            //подключить новый мод, если он существует
+            if (Directory.Exists(destFolderPath))
+            {
+                //запись meta.ini
+                ManageModOrganizer.WriteMetaIni(
+                    destFolderPath
+                    ,
+                    "UserFiles"
+                    ,
+                    dateTimeInFormat.Substring(1)
+                    ,
+                    T._("Sort files if need")
+                    ,
+                    T._("<br>This files was added in Common mode<br>and moved as mod after convertation in MO mode.<br>Date: ") + dateTimeInFormat.Substring(1)
+                    );
+
+                ManageModOrganizer.ActivateDeactivateInsertMod(addedFilesFolderName);
+            }
+        }
+
+        private string IsZipmodCanBeMovedByGUID(string file)
+        {
+            string guid;
+            string ext;
+            if (zipmodsGuidListNotEmpty
+                           && file.ToUpperInvariant().Contains("SIDELOADER MODPACK")
+                           && ((ext = Path.GetExtension(file).ToUpperInvariant()) == ".ZIPMOD" || ext == ".ZIP")
+                           && !string.IsNullOrWhiteSpace(guid = ManageArchive.GetZipmodGuid(file))
+                           && zipmodsGuidList.ContainsKey(guid))
+            {
+                return guid;
+            }
+
+            return "";
+        }
+
+        private void MoveExistsModFilesInNewMod()
         {
             if (!filesWhichAlreadyHaveSameDestFileInModsIsNotEmpty)
             {
@@ -371,6 +394,22 @@ namespace AIHelper.Manage.ModeSwitch
                 }
 
                 string[] movePaths = operation.Split(operationsSplitString, StringSplitOptions.None);
+                if (movePaths.Length != 2)
+                {
+                    ManageLogs.Log("Something wrong and where was wrong operation parameters count in MoveFilesByOperationsList. Operation value:\r\n" + operation);
+                    return;
+                }
+
+                if (movePaths[0].CountOf(':') > 1 || movePaths[1].CountOf(':') > 1)
+                {
+                    // must be one ':' in absolute path or no one if relative path
+                    ManageLogs.Log("Something wrong and where was wrong operation parameters value in MoveFilesByOperationsList. Operation value:\r\n" + operation);
+                }
+
+                if (IsDirSymlink(movePaths))
+                {
+                    return;
+                }
 
                 var filePathInModsExists = File.Exists(movePaths[0]);
                 var filePathInDataExists = File.Exists(movePaths[1]);
@@ -391,10 +430,7 @@ namespace AIHelper.Manage.ModeSwitch
                 else
                 {
                     string modsubfolder = Path.GetDirectoryName(movePaths[0]);
-                    if (!Directory.Exists(modsubfolder))
-                    {
-                        Directory.CreateDirectory(modsubfolder);
-                    }
+                    Directory.CreateDirectory(modsubfolder);
 
                     try//ignore move file error if file will be locked and write in log about this
                     {
@@ -411,6 +447,22 @@ namespace AIHelper.Manage.ModeSwitch
                     }
                 }
             });
+        }
+
+        private bool IsDirSymlink(string[] movePaths)
+        {
+            if (movePaths[1].IsDirectory() && movePaths[1].IsSymlink(ObjectType.Directory))
+            {
+                // we created symlink for dir in Data but same symlink in target is still exists
+                if (movePaths[0].IsSymlink(ObjectType.Directory))
+                {
+                    Directory.Delete(movePaths[1]);
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         private void MoveBonemodForCards(string[] movePaths)

@@ -42,6 +42,23 @@ namespace AIHelper.Manage.Update
 
             lastCheckDates = GetDateTimesFromFile();
 
+            // get set timeout from app ini
+            var appIni = ManageIni.GetINIFile(ManageSettings.GetAiHelperIniPath());
+            int updateCheckTimeout = 10;
+            if(appIni.KeyExists(ManageSettings.GetUpdatesCheckTimeoutMinutesKeyName(), ManageSettings.GetAppIniUpdateSectionName()))
+            {
+                if(int.TryParse(appIni.GetKey(ManageSettings.GetAppIniUpdateSectionName(), ManageSettings.GetUpdatesCheckTimeoutMinutesKeyName()), out int result))
+                {
+                    updateCheckTimeout = result;
+                }
+            }
+            else
+            {
+                // add value and save
+                appIni.SetKey(ManageSettings.GetAppIniUpdateSectionName(), ManageSettings.GetUpdatesCheckTimeoutMinutesKeyName(), updateCheckTimeout.ToString());
+                appIni.WriteFile();
+            }
+
             var checkNUpdateText = T._("Update plugins");
 
             //using (var progressForm = new Form())
@@ -119,7 +136,7 @@ namespace AIHelper.Manage.Update
                         // check only one time per hour
                         if (sourcePathDateCheckTime.ContainsKey(tFolderInfo.Key))
                         {
-                            var lastCheckTimeElapsed = sourcePathDateCheckTime[tFolderInfo.Key] + TimeSpan.FromMinutes(60);
+                            var lastCheckTimeElapsed = sourcePathDateCheckTime[tFolderInfo.Key] + TimeSpan.FromMinutes(updateCheckTimeout);
                             if (checkDateTimeNow < lastCheckTimeElapsed)
                             {
                                 continue;

@@ -49,6 +49,24 @@ namespace AIHelper.Manage
 #pragma warning restore CA1308 // Normalize strings to uppercase
         }
 
+        /// <summary>
+        /// name of Update section in app ini
+        /// </summary>
+        /// <returns></returns>
+        internal static string GetAppIniUpdateSectionName()
+        {
+            return "Update";
+        }
+
+        /// <summary>
+        /// name of key for update check timeout in minutes
+        /// </summary>
+        /// <returns></returns>
+        internal static string GetUpdatesCheckTimeoutMinutesKeyName()
+        {
+            return "UpdatesCheckTimeoutMinutes";
+        }
+
         internal static string GetAppLocaleDirPath()
         {
             return Path.Combine(GetAppResDir(), "locale");

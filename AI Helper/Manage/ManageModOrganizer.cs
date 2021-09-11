@@ -1315,7 +1315,7 @@ namespace AIHelper.Manage
                 }
 
                 var guid = ManageArchive.GetZipmodGuid(zipmodPath);
-                if (string.IsNullOrWhiteSpace(guid) || GUIDList.ContainsKey(guid))
+                if (string.IsNullOrWhiteSpace(guid))
                 {
                     return;
                 }
@@ -1329,7 +1329,10 @@ namespace AIHelper.Manage
 
                 lock (GUIDListAddLock)
                 {
-                    GUIDList.Add(guid, zipmodInfo);
+                    if(!GUIDList.ContainsKey(guid))
+                    {
+                        GUIDList.Add(guid, zipmodInfo);
+                    }
                 }
             }
         }

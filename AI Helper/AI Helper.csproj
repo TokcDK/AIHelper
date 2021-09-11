@@ -181,7 +181,6 @@
     <Compile Include="Manage\ManageLabelExtensions.cs" />
     <Compile Include="Manage\ManageLogs.cs" />
     <Compile Include="Manage\ManageMOModeSwitch.cs" />
-    <Compile Include="Manage\ManageMOModsExtensions.cs" />
     <Compile Include="Manage\ManageDigitalsExtensions.cs" />
     <Compile Include="Manage\ManageProcess.cs" />
     <Compile Include="Manage\ManagePython.cs" />

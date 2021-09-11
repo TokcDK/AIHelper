@@ -1,10 +1,9 @@
 ﻿using AIHelper.Manage.Update;
 using AIHelper.SharedData;
 using System;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
+using System.Threading.Tasks;
 using static AIHelper.Manage.ManageModOrganizer;
 
 namespace AIHelper.Manage
@@ -55,7 +54,6 @@ namespace AIHelper.Manage
             //run zipmod's check if updater found and only for KK, AI, HS2
             if (!GameData.CurrentGame.IsHaveSideloaderMods || !File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath()))
             {
-                UpdateModsFinalize();
                 return;
             }
 
@@ -63,7 +61,6 @@ namespace AIHelper.Manage
             {
                 //run updater normal
                 ManageProcess.RunProgram(ManageSettings.KkManagerStandaloneUpdaterExePath(), "\"" + ManageSettings.GetCurrentGameDataPath() + "\"");
-                UpdateModsFinalize();
                 return;
             }
 
@@ -100,7 +97,7 @@ namespace AIHelper.Manage
                 ManageModOrganizer.InsertCustomExecutable(kkManagerStandaloneUpdater);
             }
 
-            var zipmodsGuidList = new ZipmodGUIIds(false);
+            zipmodsGuidList = new ZipmodGUIIds(false);
 
             //activate all mods with Sideloader modpack inside
             ActivateSideloaderMods(zipmodsGuidList);
@@ -113,7 +110,7 @@ namespace AIHelper.Manage
             ManageModOrganizer.RestoreModlist();
 
             //restore zipmods to source mods
-            MoveZipModsFromOverwriteToSourceMod(zipmodsGuidList);
+            MoveZipModsFromOverwriteToSourceMod();
         }
 
         /// <summary>
@@ -136,36 +133,36 @@ namespace AIHelper.Manage
             SharedData.GameData.MainForm.AIGirlHelperTabControl.Enabled = true;
         }
 
-        private static void MoveZipModsFromOverwriteToSourceMod(ZipmodGUIIds zipmodsGuidList)
+        private static void MoveZipModsFromOverwriteToSourceMod()
         {
-            var progressForm = new Form
-            {
-                StartPosition = FormStartPosition.CenterScreen,
-                Size = new Size(400, 50),
-                Text = T._("Sideloader dirs sorting") + "..",
-                FormBorderStyle = FormBorderStyle.FixedToolWindow
-            };
+            //progressForm = new Form
+            //{
+            //    StartPosition = FormStartPosition.CenterScreen,
+            //    Size = new Size(400, 50),
+            //    Text = T._("Sideloader dirs sorting") + "..",
+            //    FormBorderStyle = FormBorderStyle.FixedToolWindow
+            //};
 
-            var pBar = new ProgressBar
-            {
-                Dock = DockStyle.Bottom
-            };
+            //pBar = new ProgressBar
+            //{
+            //    Dock = DockStyle.Bottom
+            //};
 
-            progressForm.Controls.Add(pBar);
-            progressForm.Show();
+            //progressForm.Controls.Add(pBar);
+            //progressForm.Show();
 
-            SortZipmodsPacks(zipmodsGuidList, progressForm, pBar);
+            SortZipmodsPacks();
 
-            if (pBar.Value < pBar.Maximum)
-            {
-                pBar.Value = pBar.Maximum == 100 ? pBar.Maximum - 1 : pBar.Value + 1;
-            }
-            progressForm.Text = T._("Sorting") + ":" + "Sideloader ModPack - Community UserData";
+            //if (pBar.Value < pBar.Maximum)
+            //{
+            //    pBar.Value = pBar.Maximum == 100 ? pBar.Maximum - 1 : pBar.Value + 1;
+            //}
+            //progressForm.Text = T._("Sorting") + ":" + "Sideloader ModPack - Community UserData";
             SortCommunityUserDataPack();
 
             AfterZipmodsUpdateCleanDirs();
 
-            progressForm.Dispose();
+            //progressForm.Dispose();
         }
 
         private static void AfterZipmodsUpdateCleanDirs()
@@ -182,8 +179,7 @@ namespace AIHelper.Manage
 
         private static void CleanKKManagerTempDir(string targetDir)
         {
-            var tempDir = Path.Combine(targetDir, "temp");
-            ManageFilesFoldersExtensions.DeleteEmptySubfolders(tempDir, deleteThisDir: true);
+            ManageFilesFoldersExtensions.DeleteEmptySubfolders(targetDir);
         }
 
         private static void SortCommunityUserDataPack()
@@ -191,7 +187,7 @@ namespace AIHelper.Manage
             //sort community userdata
             var communityUserDataPack = new DirectoryInfo(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "Sideloader ModPack - Community UserData"));
 
-            foreach (var sortingDirPath in ManageSettings.GetKKManagerUpdateSortDirs())
+            Parallel.ForEach(ManageSettings.GetKKManagerUpdateSortDirs(), sortingDirPath =>
             {
                 var charaDir = new DirectoryInfo(Path.Combine(sortingDirPath, "UserData", "chara"));
                 if (!charaDir.Exists)
@@ -199,17 +195,17 @@ namespace AIHelper.Manage
                     return;
                 }
 
-                foreach (var genderDirName in new[] { "female", "male" })
+                Parallel.ForEach(new[] { "female", "male" }, genderDirName =>
                 {
                     var genderDir = new DirectoryInfo(Path.Combine(charaDir.FullName, genderDirName));
                     if (!genderDir.Exists)
                     {
-                        continue;
+                        return;
                     }
 
-                    foreach (var charaCommunityDir in genderDir.EnumerateDirectories("[Community] *"))
+                    Parallel.ForEach(genderDir.EnumerateDirectories("[Community] *"), charaCommunityDir =>
                     {
-                        foreach (var charaFile in charaCommunityDir.EnumerateFiles("*.*", searchOption: SearchOption.AllDirectories))
+                        Parallel.ForEach(charaCommunityDir.EnumerateFiles("*.*", searchOption: SearchOption.AllDirectories), charaFile =>
                         {
                             try
                             {
@@ -221,8 +217,8 @@ namespace AIHelper.Manage
                             {
                                 ManageLogs.Log("Failed to sort chara card: " + charaFile.FullName + "\r\nerror:\r\n" + ex);
                             }
-                        }
-                    }
+                        });
+                    });
 
                     var infoFile = new FileInfo(Path.Combine(genderDir.FullName, "Want your cards or scenes in BetterRepack.txt"));
                     if (infoFile.Exists)
@@ -238,8 +234,8 @@ namespace AIHelper.Manage
                             ManageLogs.Log("Failed to sort chara card: " + infoFile.FullName + "\r\nerror:\r\n" + ex);
                         }
                     }
-                }
-            }
+                });
+            });
         }
 
         private static void MoveSideloaderPackFile(FileInfo sourcePath, FileInfo targetPath)
@@ -263,16 +259,19 @@ namespace AIHelper.Manage
             sourcePath.MoveTo(targetPath.FullName);
         }
 
-        private static void SortZipmodsPacks(ZipmodGUIIds zipmodsGuidList, Form progressForm, ProgressBar pBar)
+        static ZipmodGUIIds zipmodsGuidList;
+        //static Form progressForm;
+        //static ProgressBar pBar;
+        private static void SortZipmodsPacks()
         {
-            foreach (var sortingDirPath in ManageSettings.GetKKManagerUpdateSortDirs())
+            Parallel.ForEach(ManageSettings.GetKKManagerUpdateSortDirs(), sortingDirPath =>
             {
 
                 var sortingDir = new DirectoryInfo(Path.Combine(sortingDirPath, "mods"));
 
                 if (!sortingDir.Exists)
                 {
-                    continue;
+                    return;
                 }
 
                 //var modpackFilters = new Dictionary<string, string>
@@ -289,17 +288,17 @@ namespace AIHelper.Manage
 
                 var modpacks = GetSideloaderModpackTargetDirs();
 
-                pBar.Maximum = dirs.Count() + 1;
-                pBar.Value = 0;
+                //pBar.Invoke((Action)(() => pBar.Maximum = dirs.Count() + 1));
+                //pBar.Invoke((Action)(() => pBar.Value = 0));
 
                 var timeInfo = ManageSettings.GetDateTimeBasedSuffix();
 
-                foreach (var dir in dirs)
+                Parallel.ForEach(dirs, dir =>
                 {
-                    if (pBar.Value < pBar.Maximum)
-                    {
-                        pBar.Value++;
-                    }
+                    //if (pBar.Value < pBar.Maximum)
+                    //{
+                    //    pBar.Invoke((Action)(() => pBar.Value++));
+                    //}
 
                     //if (!dir.ToUpperInvariant().Contains("SIDELOADER MODPACK"))
                     //{
@@ -309,13 +308,13 @@ namespace AIHelper.Manage
                     //set sideloader dir name
                     var sideloaderDirName = dir.Name;
 
-                    progressForm.Text = T._("Sorting") + ":" + sideloaderDirName;
+                    //progressForm.Text = T._("Sorting") + ":" + sideloaderDirName;
 
                     var isUnc = IsUncensorSelector(sideloaderDirName);
                     var isMaleUnc = isUnc && modpacks.ContainsKey(sideloaderDirName + "M");
                     var isFeMaleUnc = isUnc && modpacks.ContainsKey(sideloaderDirName + "F");
                     var isSortingModPack = modpacks.ContainsKey(sideloaderDirName) || isMaleUnc || isFeMaleUnc;
-                    foreach (var f in dir.EnumerateFiles("*.*", SearchOption.AllDirectories))
+                    Parallel.ForEach(dir.EnumerateFiles("*.*", SearchOption.AllDirectories), f =>
                     {
                         try
                         {
@@ -342,7 +341,7 @@ namespace AIHelper.Manage
 
                                 if (!isSourceExists)
                                 {
-                                    continue;
+                                    return;
                                 }
                                 else if (isTargetExists)
                                 {
@@ -351,7 +350,7 @@ namespace AIHelper.Manage
                                     if (targetinfo.Length == sourceinfo.Length && targetinfo.GetCrc32() == sourceinfo.GetCrc32())
                                     {
                                         sourceinfo.Delete();
-                                        continue;
+                                        return;
                                     }
                                     else if (targetinfo.LastWriteTime < sourceinfo.LastWriteTime)
                                     {
@@ -399,7 +398,7 @@ namespace AIHelper.Manage
 
                                 if (!isSourceExists)
                                 {
-                                    continue;
+                                    return;
                                 }
                                 else if (isTargetExists)
                                 {
@@ -408,7 +407,7 @@ namespace AIHelper.Manage
                                     if (targetinfo.Length == sourceinfo.Length && targetinfo.GetCrc32() == sourceinfo.GetCrc32())
                                     {
                                         sourceinfo.Delete();
-                                        continue;
+                                        return;
                                     }
                                     else if (targetinfo.LastWriteTime < sourceinfo.LastWriteTime)
                                     {
@@ -449,9 +448,9 @@ namespace AIHelper.Manage
                         {
                             ManageLogs.Log("Failed to sort file " + f + "\r\nerror:\r\n" + ex);
                         }
-                    }
-                }
-            }
+                    });
+                });
+            });
         }
 
         /// <summary>
@@ -466,11 +465,11 @@ namespace AIHelper.Manage
 
             var modlist = new ModlistProfileInfo();
 
-            foreach (var item in modlist.Items)
+            Parallel.ForEach(modlist.Items, (item, state) =>
             {
                 if (!item.IsExist || item.IsSeparator)
                 {
-                    continue;
+                    return;
                 }
 
                 if (Directory.Exists(Path.Combine(item.Path, "mods")))
@@ -481,23 +480,23 @@ namespace AIHelper.Manage
                     {
                         foreach (var packDir in Directory.EnumerateDirectories(Path.Combine(item.Path, "mods"), "Sideloader Modpack*"))
                         {
-                            foreach (var zipmod in Directory.EnumerateFiles(packDir, "*.zip*", SearchOption.AllDirectories))
+                            Parallel.ForEach(Directory.EnumerateFiles(packDir, "*.zip*", SearchOption.AllDirectories), zipmod =>
                             {
                                 zipmodsGuidList.Load(zipmod);
                                 //SaveGuidIfZipMod(zipmod, zipmodsGuidList);
-                            }
+                            });
                         }
                     }
                     else
                     {
-                        break;
+                        return;
                     }
                 }
                 else if (!item.IsEnabled && Directory.Exists(Path.Combine(item.Path, "UserData", "chara")))
                 {
                     item.IsEnabled = true;
                 }
-            }
+            });
 
             modlist.Save();
         }

@@ -19,6 +19,11 @@ namespace AIHelper.Manage
 {
     static class ManageModOrganizer
     {
+        internal static bool IsInOverwriteFolder(this string filePath)
+        {
+            return filePath.ToUpperInvariant().Contains(ManageSettings.GetCurrentGameOverwriteFolderPath().ToUpperInvariant());
+        }
+
         public static void SetMoModsVariables()
         {
             Properties.Settings.Default.BepinExCfgPath = ManageSettings.GetBepInExCfgFilePath();
@@ -1277,42 +1282,50 @@ namespace AIHelper.Manage
             {
                 var modlist = new ModlistProfileInfo();
 
-                foreach (var item in modlist.Items)
+                Parallel.ForEach(modlist.Items, item =>
                 {
                     if (!item.IsExist || item.IsSeparator)
                     {
-                        continue;
+                        return;
                     }
 
-                    if (Directory.Exists(Path.Combine(item.Path, "mods")))
+                    if (!Directory.Exists(Path.Combine(item.Path, "mods")))
                     {
-                        foreach (var packDir in Directory.EnumerateDirectories(Path.Combine(item.Path, "mods"), "Sideloader Modpack*"))
-                        {
-                            foreach (var zipmod in Directory.EnumerateFiles(packDir, "*.zip*", SearchOption.AllDirectories))
-                            {
-                                Load(zipmod);
-                            }
-                        }
+                        return;
                     }
-                }
+
+                    foreach (var packDir in Directory.EnumerateDirectories(Path.Combine(item.Path, "mods"), "Sideloader Modpack*"))
+                    {
+                        Parallel.ForEach(Directory.EnumerateFiles(packDir, "*.zip*", SearchOption.AllDirectories), zipmod =>
+                        {
+                            Load(zipmod);
+                        });
+                    }
+                });
             }
 
             internal void Load(string zipmodPath)
             {
                 //zipmod GUID save
-                if (File.Exists(zipmodPath) && (string.Equals(Path.GetExtension(zipmodPath), ".ZIPMOD", StringComparison.CurrentCultureIgnoreCase) || string.Equals(Path.GetExtension(zipmodPath), ".ZIPMOD", StringComparison.CurrentCultureIgnoreCase)))
+                if (!File.Exists(zipmodPath) || (!string.Equals(Path.GetExtension(zipmodPath), ".ZIPMOD", StringComparison.InvariantCultureIgnoreCase) && !string.Equals(Path.GetExtension(zipmodPath), ".ZIPMOD", StringComparison.InvariantCultureIgnoreCase)))
                 {
-                    var guid = ManageArchive.GetZipmodGuid(zipmodPath);
-                    if (guid.Length > 0 && !GUIDList.ContainsKey(guid))
-                    {
-                        var zipmodInfo = new ZipmodInfo();
-                        zipmodInfo.GUID = guid;
-                        zipmodInfo.FileInfo = new FileInfo(zipmodPath);
-                        zipmodInfo.SubPath = GetRelativeSubPathInMods(zipmodPath);
-
-                        GUIDList.Add(guid, zipmodInfo);
-                    }
+                    return;
                 }
+
+                var guid = ManageArchive.GetZipmodGuid(zipmodPath);
+                if (string.IsNullOrWhiteSpace(guid) || GUIDList.ContainsKey(guid))
+                {
+                    return;
+                }
+
+                var zipmodInfo = new ZipmodInfo
+                {
+                    GUID = guid,
+                    FileInfo = new FileInfo(zipmodPath),
+                    SubPath = GetRelativeSubPathInMods(zipmodPath)
+                };
+
+                GUIDList.Add(guid, zipmodInfo);
             }
         }
 

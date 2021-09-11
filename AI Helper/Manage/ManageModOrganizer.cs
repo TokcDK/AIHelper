@@ -3280,29 +3280,35 @@ namespace AIHelper.Manage
             int d = 0;
             try
             {
-                if (pathInMods != null)
-                    foreach (var pathCandidate in pathInMods)
-                    {
-                        path = pathCandidate;
+                if (pathInMods == null)
+                {
+                    return path;
+                }
 
-                        if (!string.IsNullOrWhiteSpace(path))
+                foreach (var pathCandidate in pathInMods)
+                {
+                    path = pathCandidate;
+
+                    if (!string.IsNullOrWhiteSpace(path))
+                    {
+                        if ((isDir[d] && Directory.Exists(pathCandidate)) || (!isDir[d] && File.Exists(pathCandidate)))
                         {
-                            if ((isDir[d] && Directory.Exists(pathCandidate)) || (!isDir[d] && File.Exists(pathCandidate)))
+                            return pathCandidate;
+                        }
+                        else
+                        {
+                            path = GetLastPath(pathCandidate, isDir[d]);
+                            if (!string.IsNullOrWhiteSpace(path) && path != pathCandidate)
                             {
-                                return pathCandidate;
-                            }
-                            else
-                            {
-                                path = GetLastPath(pathCandidate, isDir[d]);
-                                if (!string.IsNullOrWhiteSpace(path) && path != pathCandidate)
-                                {
-                                    return path;
-                                }
+                                return path;
                             }
                         }
-
-                        d++;
                     }
+
+                    d++;
+                }
+
+                return path;
             }
             catch (Exception ex)
             {
@@ -3371,27 +3377,9 @@ namespace AIHelper.Manage
                 //check in Overwrite 1st
                 string overwritePath = ManageSettings.GetCurrentGameMoOverwritePath() + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
 
-                if (isDir)
+                if (IsLastPathFound(overwritePath, ref firstFoundPath, isDir, tryFindWithContent))
                 {
-                    if (Directory.Exists(overwritePath))
-                    {
-                        if (tryFindWithContent)
-                        {
-                            // set found path
-                            firstFoundPath = overwritePath;
-                        }
-                        else
-                        {
-                            return overwritePath;
-                        }
-                    }
-                }
-                else
-                {
-                    if (File.Exists(overwritePath))
-                    {
-                        return overwritePath;
-                    }
+                    return overwritePath;
                 }
 
                 //поиск по списку модов
@@ -3400,31 +3388,10 @@ namespace AIHelper.Manage
                 foreach (var modName in modNames)
                 {
                     string possiblePath = Path.Combine(modsPath, modName) + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
-                    if (isDir)
+
+                    if (IsLastPathFound(possiblePath, ref firstFoundPath, isDir, tryFindWithContent))
                     {
-                        if (Directory.Exists(possiblePath))
-                        {
-                            if (tryFindWithContent && possiblePath.IsEmptyDir())
-                            {
-                                if (firstFoundPath.Length == 0)
-                                {
-                                    // set found path if not set
-                                    firstFoundPath = possiblePath;
-                                }
-                                continue;
-                            }
-                            else
-                            {
-                                return possiblePath;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (File.Exists(possiblePath))
-                        {
-                            return possiblePath;
-                        }
+                        return possiblePath;
                     }
                 }
             }
@@ -3433,6 +3400,38 @@ namespace AIHelper.Manage
             }
 
             return firstFoundPath.Length > 0 ? firstFoundPath : inputPath;
+        }
+
+        private static bool IsLastPathFound(string possiblePath, ref string firstFoundPath, bool isDir, bool tryFindWithContent)
+        {
+            if (isDir)
+            {
+                if (Directory.Exists(possiblePath))
+                {
+                    if (tryFindWithContent && possiblePath.IsEmptyDir())
+                    {
+                        if (firstFoundPath.Length == 0)
+                        {
+                            // set found path if not set
+                            firstFoundPath = possiblePath;
+                        }
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                if (File.Exists(possiblePath))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>

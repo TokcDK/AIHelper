@@ -1304,6 +1304,8 @@ namespace AIHelper.Manage
                 });
             }
 
+            private readonly object GUIDListAddLock = new object();
+
             internal void Load(string zipmodPath)
             {
                 //zipmod GUID save
@@ -1325,7 +1327,10 @@ namespace AIHelper.Manage
                     SubPath = GetRelativeSubPathInMods(zipmodPath)
                 };
 
-                GUIDList.Add(guid, zipmodInfo);
+                lock (GUIDListAddLock)
+                {
+                    GUIDList.Add(guid, zipmodInfo);
+                }
             }
         }
 

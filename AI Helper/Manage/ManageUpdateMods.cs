@@ -395,8 +395,8 @@ namespace AIHelper.Manage
                             }
                             else if (isSortingModPack)
                             {
-                                var sortM = isMaleUnc && Path.GetExtension(file).StartsWith(".zip", StringComparison.CurrentCultureIgnoreCase) && (Path.GetFileNameWithoutExtension(file).Contains("[Penis]") || Path.GetFileNameWithoutExtension(file).Contains("[Balls]"));
-                                var sortF = isFeMaleUnc && Path.GetExtension(file).StartsWith(".zip", StringComparison.CurrentCultureIgnoreCase) && Path.GetFileNameWithoutExtension(file).Contains("[Female]");
+                                var sortM = isMaleUnc && Path.GetExtension(file).StartsWith(".zip", StringComparison.InvariantCultureIgnoreCase) && (Path.GetFileNameWithoutExtension(file).Contains("[Penis]") || Path.GetFileNameWithoutExtension(file).Contains("[Balls]"));
+                                var sortF = isFeMaleUnc && Path.GetExtension(file).StartsWith(".zip", StringComparison.InvariantCultureIgnoreCase) && Path.GetFileNameWithoutExtension(file).Contains("[Female]");
 
                                 var targetModName = modpacks[sideloaderDirName + (sortF ? "F" : sortM ? "M" : "")];
 

@@ -18,34 +18,38 @@ namespace AIHelper.Manage
                 extension = "." + extension;
             }
 
-            if (extension.Length > 0 && Directory.Exists(dirForSearch))
+            if (extension.Length == 0 || !Directory.Exists(dirForSearch))
             {
-                foreach (var file in Directory.GetFiles(dirForSearch, "*" + extension, SearchOption.AllDirectories))
+                return;
+            }
+
+            foreach (var file in Directory.GetFiles(dirForSearch, "*" + extension, SearchOption.AllDirectories))
+            {
+                string targetDir = ManageFilesFoldersExtensions.GetResultTargetDirPathWithNameCheck(dirForSearch, Path.GetFileNameWithoutExtension(file));
+                if (Directory.Exists(targetDir))
                 {
-                    string targetDir = ManageFilesFoldersExtensions.GetResultTargetDirPathWithNameCheck(dirForSearch, Path.GetFileNameWithoutExtension(file));
-                    if (!Directory.Exists(targetDir))
+                    continue;
+                }
+
+                try
+                {
+                    if (string.Equals(extension, "zip", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        try
+                        using (ZipArchive archive = ZipFile.OpenRead(file))
                         {
-                            if (extension.EndsWith("zip", StringComparison.InvariantCultureIgnoreCase))
-                            {
-                                using (ZipArchive archive = ZipFile.OpenRead(file))
-                                {
-                                    archive.ExtractToDirectory(targetDir);
-                                }
-                            }
-                            else
-                            {
-                                Compressor.Decompress(file, targetDir);
-                            }
-                            //File.Delete(file);
-                            File.Move(file, file + ".Extracted" + ManageSettings.GetDateTimeBasedSuffix());
-                        }
-                        catch
-                        {
-                            //if decompression failed
+                            archive.ExtractToDirectory(targetDir);
                         }
                     }
+                    else
+                    {
+                        Compressor.Decompress(file, targetDir);
+                    }
+                    //File.Delete(file);
+                    File.Move(file, file + ".Extracted" + ManageSettings.GetDateTimeBasedSuffix());
+                }
+                catch
+                {
+                    //if decompression failed
                 }
             }
         }
@@ -91,8 +95,9 @@ namespace AIHelper.Manage
                 return string.Empty;
             }
 
-            var ext = Path.GetExtension(zipmodPath).ToUpperInvariant();
-            if (ext != ".ZIPMOD" && ext != ".ZIP")
+            var ext = Path.GetExtension(zipmodPath);
+            if (!string.Equals(ext, ".zipmod", StringComparison.InvariantCultureIgnoreCase)
+                && !string.Equals(ext, ".zip", StringComparison.InvariantCultureIgnoreCase))
             {
                 return string.Empty;
             }

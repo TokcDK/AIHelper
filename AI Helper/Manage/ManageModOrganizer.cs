@@ -2757,7 +2757,7 @@ namespace AIHelper.Manage
                 //        }
                 //    ,
                 //        {
-                //            CultureInfo.CurrentCulture.Name.Split('-')[0]
+                //            CultureInfo.InvariantCulture.Name.Split('-')[0]
                 //            ,
                 //            "Settings"
                 //            ,

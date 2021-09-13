@@ -7,12 +7,11 @@ namespace AIHelper.Manage
     {
         public static void FixRegistry(bool auto = true)
         {
-            string gameName = ManageSettings.GetCurrentGameExeName();
-            string regystryPath = @"HKEY_CURRENT_USER\Software\illusion\" + gameName + @"\" + gameName;
-            var installDirValue = Registry.GetValue(regystryPath, "INSTALLDIR", null);
+            string registryPath = ManageSettings.GetCurrentGameRegistryPath();
+            var installDirValue = Registry.GetValue(registryPath, ManageSettings.GetCurrentGameRegistryInstallDirKeyName(), null);
             if (installDirValue == null || installDirValue.ToString() != ManageSettings.GetCurrentGameDataPath())
             {
-                Registry.SetValue(regystryPath, "INSTALLDIR", ManageSettings.GetCurrentGameDataPath());
+                Registry.SetValue(registryPath, ManageSettings.GetCurrentGameRegistryInstallDirKeyName(), ManageSettings.GetCurrentGameDataPath());
                 if (!auto)
                 {
                     MessageBox.Show(T._("Registry fixed! Install dir was set to Data dir."));

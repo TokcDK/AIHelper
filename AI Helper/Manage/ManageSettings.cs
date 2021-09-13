@@ -18,6 +18,11 @@ namespace AIHelper.Manage
             return ManageIni.GetIniValueIfExist(GetAiHelperIniPath(), "FirstRun", "General") == "True";
         }
 
+        internal static string GetCurrentGameRegistryInstallDirKeyName()
+        {
+            return GameData.CurrentGame.RegistryInstallDirKey;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetUpdateInfosFilePath()
         {
@@ -1751,6 +1756,11 @@ namespace AIHelper.Manage
         internal static string GetCurrentGameBrokenSymlinksDirPath()
         {
             return Path.Combine(GetCurrentGameDirPath(), "BrokenSymlinks");
+        }
+
+        internal static string GetCurrentGameRegistryPath()
+        {
+            return GameData.CurrentGame.RegistryPath;
         }
     }
 }

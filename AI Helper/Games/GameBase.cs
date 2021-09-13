@@ -42,6 +42,15 @@ namespace AIHelper.Games
         public string GameName { get; internal set; }
 
         /// <summary>
+        /// The game's registry path
+        /// </summary>
+        public virtual string RegistryPath { get => ""; }
+        /// <summary>
+        /// The game's Install dir key name
+        /// </summary>
+        public virtual string RegistryInstallDirKey { get =>"";}
+
+        /// <summary>
         /// search and return game folder name
         /// </summary>
         /// <returns></returns>

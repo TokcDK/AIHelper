@@ -6,6 +6,11 @@
         {
             base.InitActions();
         }
+
+        //english is 'HKEY_CURRENT_USER\Software\KISS\CUSTOM ORDER MAID3D 2'
+        public override string RegistryPath => @"HKEY_CURRENT_USER\Software\KISS\カスタムオーダーメイド3D2";
+        public override string RegistryInstallDirKey => "InstallPath";
+
         public override bool IsHaveSideloaderMods { get; set; } = true;
 
         public override string ManifestGame => "com3d2";

@@ -112,6 +112,16 @@ namespace AIHelper.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] game_com3d2 {
+            get {
+                object obj = ResourceManager.GetObject("game_com3d2", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] game_honeyselect {
             get {
                 object obj = ResourceManager.GetObject("game_honeyselect", resourceCulture);

@@ -122,6 +122,7 @@
     <Compile Include="Games\Illusion\KoikatsuSunshine.cs" />
     <Compile Include="Games\Illusion\RootGame.cs" />
     <Compile Include="Games\Illusion\Koikatsu.cs" />
+    <Compile Include="Games\Kiss\Com3d2.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Install\Types\Directories\CardsFromDir\Cardframes\CardframesCardInstallerBase.cs" />
     <Compile Include="Install\Types\Directories\CardsFromDir\Cardframes\CharacterBackgroundCardInstaller.cs" />

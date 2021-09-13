@@ -1626,7 +1626,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool HasMainGameExe(this Game game)
         {
-            return File.Exists(Path.Combine(ManageSettings.GetGamesFolderPath(), game.GetDataPath(), game.GetGameExeName() + ".exe"));
+            return File.Exists(Path.Combine(ManageSettings.GetCurrentGameParentDirPath(), game.GetDataPath(), game.GetGameExeName() + ".exe"));
         }
 
         /// <summary>

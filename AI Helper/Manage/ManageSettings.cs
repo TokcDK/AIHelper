@@ -174,12 +174,12 @@ namespace AIHelper.Manage
 
             var listOfGameDirs = new List<Game>();
 
-            Directory.CreateDirectory(GetGamesFolderPath());// create games dir
+            Directory.CreateDirectory(GetGamesBaseFolderPath());// create games dir
 
-            foreach (var entrie in Directory.EnumerateFileSystemEntries(GetGamesFolderPath()))
+            foreach (var entrie in Directory.EnumerateFileSystemEntries(GetGamesBaseFolderPath()))
             {
                 string gameDir;
-                if (Path.GetFileName(entrie).StartsWith(ManageSettings.GetMOGameInfoFileIdentifier()) && File.Exists(entrie))
+                if (Path.GetFileName(entrie).StartsWith(ManageSettings.GetMOGameInfoFileIdentifier(), StringComparison.InvariantCultureIgnoreCase) && File.Exists(entrie))
                 {
                     try
                     {
@@ -239,7 +239,7 @@ namespace AIHelper.Manage
 
                         // check mo ini game parameters exist
                         ini.SetKey("General", "gameName", game.GetGameFolderName());
-                        ini.SetKey("General", "gamePath", "@ByteArray(" + Path.Combine(ManageSettings.GetGamesFolderPath(), game.GetGameFolderName()).Replace("\\", "\\\\") + ")");
+                        ini.SetKey("General", "gamePath", "@ByteArray(" + Path.Combine(game.GameDirInfo.Parent.FullName, game.GetGameFolderName()).Replace("\\", "\\\\") + ")");
                         ini.SetKey("General", "selected_profile", "Default");
                         ini.SetKey("Settings", "mod_directory", Path.Combine(gameDir, game.GetGameFolderName(), "Mods").Replace("\\", "\\\\"));
                         ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GetGameFolderName(), "Downloads").Replace("\\", "\\\\"));
@@ -862,6 +862,10 @@ namespace AIHelper.Manage
             return GameData.CurrentGame;
         }
 
+        /// <summary>
+        /// Base Games folder where can be placed mo game folders or mogame info files
+        /// </summary>
+        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetGamesBaseFolderPath()
         {
@@ -869,7 +873,7 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetGamesFolderPath()
+        internal static string GetCurrentGameParentDirPath()
         {
             return GameData.CurrentGame.GameDirInfo.Parent.FullName;
         }
@@ -889,7 +893,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameDirPath()
         {
-            return Path.Combine(GetGamesFolderPath(), ManageSettings.GetCurrentGameFolderName());
+            return Path.Combine(GetCurrentGameParentDirPath(), ManageSettings.GetCurrentGameFolderName());
         }
 
         /// <summary>

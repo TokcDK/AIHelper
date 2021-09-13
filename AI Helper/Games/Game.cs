@@ -270,9 +270,9 @@ namespace AIHelper.Games
         {
             try
             {
-                if (Directory.Exists(ManageSettings.GetGamesFolderPath()))
+                if (Directory.Exists(ManageSettings.GetCurrentGameParentDirPath()))
                 {
-                    foreach (var folder in Directory.EnumerateDirectories(ManageSettings.GetGamesFolderPath()))
+                    foreach (var folder in Directory.EnumerateDirectories(ManageSettings.GetCurrentGameParentDirPath()))
                     {
                         if (File.Exists(Path.Combine(folder, "Data", GetGameExeName() + ".exe")))
                         {

@@ -166,13 +166,13 @@ namespace AIHelper.Manage
         //    throw new NotImplementedException();
         //}
 
-        internal static List<Game> GetListOfExistsGames()
+        internal static List<GameBase> GetListOfExistsGames()
         {
             //List<Game> listOfGames = GamesList.GetGamesList();
-            List<Type> listOfGames = Inherited.GetListOfInheritedTypes(typeof(Game));
+            List<Type> listOfGames = Inherited.GetListOfInheritedTypes(typeof(GameBase));
             //var listOfGamesRead = new List<Game>(listOfGames);
 
-            var listOfGameDirs = new List<Game>();
+            var listOfGameDirs = new List<GameBase>();
 
             Directory.CreateDirectory(GetGamesBaseFolderPath());// create games dir
 
@@ -208,7 +208,7 @@ namespace AIHelper.Manage
                         continue;
                     }
 
-                    var game = (Game)Activator.CreateInstance(gameType);
+                    var game = (GameBase)Activator.CreateInstance(gameType);
                     if (!File.Exists(Path.Combine(gameDir, "Data", game.GetGameExeName() + ".exe")))
                     {
                         continue;
@@ -704,12 +704,6 @@ namespace AIHelper.Manage
             return Path.Combine(GetMoSelectedProfileDirPath(), "settings.ini");
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetCurrentGameSetupXmlFilePathinData()
-        {
-            return Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "setup.xml");
-        }
-
         //internal static Dictionary<string, Game> GetListOfGames()
         //{
         //    List<Game> ListOfGames = GamesList.GetGamesList();
@@ -847,7 +841,7 @@ namespace AIHelper.Manage
         /// List of found games
         /// </summary>
         /// <returns></returns>
-        internal static List<Game> GetListOfGames()
+        internal static List<GameBase> GetListOfGames()
         {
             return GameData.ListOfGames;
         }
@@ -857,7 +851,7 @@ namespace AIHelper.Manage
         /// Currents selected game
         /// </summary>
         /// <returns></returns>
-        internal static Game GetCurrentGame()
+        internal static GameBase GetCurrentGame()
         {
             return GameData.CurrentGame;
         }
@@ -876,6 +870,18 @@ namespace AIHelper.Manage
         internal static string GetCurrentGameParentDirPath()
         {
             return GameData.CurrentGame.GameDirInfo.Parent.FullName;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetCurrentGameSetupXmlFilePath()
+        {
+            return Path.Combine(ManageSettings.GetCurrentGameOverwriteFolderPath(), "UserData", "setup.xml");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetCurrentGameSetupXmlFilePathinData()
+        {
+            return Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "setup.xml");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1121,7 +1127,7 @@ namespace AIHelper.Manage
             return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, Properties.Settings.Default.ApplicationProductName + ".ini");
         }
 
-        internal static int GetCurrentGameIndexByFolderName(List<Game> listOfGames, string folderName)
+        internal static int GetCurrentGameIndexByFolderName(List<GameBase> listOfGames, string folderName)
         {
             // return first game index if was not found game folder name in ini or ini was empty
             if (string.IsNullOrWhiteSpace(folderName))

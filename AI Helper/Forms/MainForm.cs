@@ -470,27 +470,7 @@ namespace AIHelper
             //set Settings
             if (!File.Exists(SetupXmlPath))
             {
-                string screenWidth = Screen.PrimaryScreen.Bounds.Width.ToString(CultureInfo.InvariantCulture);
-                //string screenHeight = Screen.PrimaryScreen.Bounds.Height.ToString();
-                int[] width = { 1280, 1366, 1536, 1600, 1920, 2048, 2560, 3200, 3840 };
-                if (int.Parse(screenWidth, CultureInfo.InvariantCulture) > width[width.Length - 1])
-                {
-                    ResolutionComboBox.SelectedItem = width.Length - 1;
-                    SetScreenResolution(ResolutionComboBox.Items[width.Length - 1].ToString());
-                }
-                else
-                {
-                    for (int w = 0; w < width.Length; w++)
-                    {
-                        if (int.Parse(screenWidth, CultureInfo.InvariantCulture) <= width[w])
-                        {
-                            string selectedRes = ResolutionComboBox.Items[w].ToString();
-                            ResolutionComboBox.Text = selectedRes;
-                            SetScreenResolution(selectedRes);
-                            break;
-                        }
-                    }
-                }
+                CreateSetupXmlPath();
             }
 
             ResolutionComboBox.Text = ManageXml.ReadXmlValue(SetupXmlPath, "Setting/Size", ResolutionComboBox.Text);
@@ -507,6 +487,31 @@ namespace AIHelper
             }
 
             QualityComboBox.SelectedIndex = int.Parse(quality, CultureInfo.InvariantCulture);
+        }
+
+        private void CreateSetupXmlPath()
+        {
+            string screenWidth = Screen.PrimaryScreen.Bounds.Width.ToString(CultureInfo.InvariantCulture);
+            //string screenHeight = Screen.PrimaryScreen.Bounds.Height.ToString();
+            int[] width = { 1280, 1366, 1536, 1600, 1920, 2048, 2560, 3200, 3840 };
+            if (int.Parse(screenWidth, CultureInfo.InvariantCulture) > width[width.Length - 1])
+            {
+                ResolutionComboBox.SelectedItem = width.Length - 1;
+                SetScreenResolution(ResolutionComboBox.Items[width.Length - 1].ToString());
+            }
+            else
+            {
+                for (int w = 0; w < width.Length; w++)
+                {
+                    if (int.Parse(screenWidth, CultureInfo.InvariantCulture) <= width[w])
+                    {
+                        string selectedRes = ResolutionComboBox.Items[w].ToString();
+                        ResolutionComboBox.Text = selectedRes;
+                        SetScreenResolution(selectedRes);
+                        break;
+                    }
+                }
+            }
         }
 
         private static void SetScreenResolution(string resolution)
@@ -692,7 +697,7 @@ namespace AIHelper
             }
             else
             {
-                SetupXmlPath = Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "setup.xml");
+                SetupXmlPath = ManageSettings.GetCurrentGameSetupXmlFilePath();
 
                 ModsInfoLabel.Visible = false;
 

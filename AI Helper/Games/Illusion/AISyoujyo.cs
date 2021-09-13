@@ -1,6 +1,6 @@
 ﻿namespace AIHelper.Games
 {
-    public class AiSyoujyo : Game
+    public class AiSyoujyo : GameBase
     {
         public override string GetGameFolderName()
         {

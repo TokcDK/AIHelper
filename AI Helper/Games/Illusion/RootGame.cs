@@ -3,7 +3,7 @@ using System.IO;
 
 namespace AIHelper.Games
 {
-    class RootGame : Game
+    class RootGame : GameBase
     {
         public override void InitActions()
         {
@@ -20,7 +20,7 @@ namespace AIHelper.Games
                 return;
             }
 
-            List<Game> listOfGames = SharedData.GameData.ListOfGames != null ? SharedData.GameData.ListOfGames : GamesList.GetCompatibleGamePresetsList();
+            List<GameBase> listOfGames = SharedData.GameData.ListOfGames != null ? SharedData.GameData.ListOfGames : GamesList.GetCompatibleGamePresetsList();
             foreach (var game in listOfGames)
             {
                 if (File.Exists(Path.Combine(AIHelper.Properties.Settings.Default.ApplicationStartupPath, "Data", game.GetGameExeName() + ".exe")))
@@ -35,7 +35,7 @@ namespace AIHelper.Games
             }
         }
 
-        Game _detectedGame;
+        GameBase _detectedGame;
         public override string GetGameFolderName()
         {
             //DetectRootGame();

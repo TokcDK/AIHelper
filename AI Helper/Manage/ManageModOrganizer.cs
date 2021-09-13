@@ -1576,7 +1576,7 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        internal static bool IsValidGame(this Game game)
+        internal static bool IsValidGame(this GameBase game)
         {
             return game != null
                    &&
@@ -1597,7 +1597,7 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        internal static bool HasModOrganizerIni(this Game game)
+        internal static bool HasModOrganizerIni(this GameBase game)
         {
             return File.Exists(Path.Combine(game.GetGamePath(), "MO", "ModOrganizer.ini"));
         }
@@ -1606,7 +1606,7 @@ namespace AIHelper.Manage
         /// will create categories.dat file in mo folder of the <paramref name="game"/> if missing
         /// </summary>
         /// <param name="game"></param>
-        internal static bool CheckCategoriesDat(this Game game)
+        internal static bool CheckCategoriesDat(this GameBase game)
         {
             string categories;
             if (!File.Exists(categories = Path.Combine(game.GetGamePath(), "MO", "categories.dat")))
@@ -1624,7 +1624,7 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        internal static bool HasMainGameExe(this Game game)
+        internal static bool HasMainGameExe(this GameBase game)
         {
             return File.Exists(Path.Combine(ManageSettings.GetCurrentGameParentDirPath(), game.GetDataPath(), game.GetGameExeName() + ".exe"));
         }
@@ -1634,7 +1634,7 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        internal static bool HasAnyWorkProfile(this Game game)
+        internal static bool HasAnyWorkProfile(this GameBase game)
         {
             foreach (var profileDir in Directory.EnumerateDirectories(Path.Combine(game.GetGamePath(), "MO", "Profiles")))
             {
@@ -3505,12 +3505,11 @@ namespace AIHelper.Manage
         {
             if (ManageSettings.IsMoMode())
             {
-
-                return GetLastPath(Path.Combine(ManageSettings.GetCurrentGameOverwriteFolderPath(), "UserData", "setup.xml"));
+                return GetLastPath(ManageSettings.GetCurrentGameSetupXmlFilePath());
             }
             else
             {
-                return Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "setup.xml");
+                return ManageSettings.GetCurrentGameSetupXmlFilePathinData();
             }
         }
 

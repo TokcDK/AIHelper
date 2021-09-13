@@ -3,7 +3,7 @@ using System.IO;
 
 namespace AIHelper.Games
 {
-    public class HoneySelect2 : Game
+    public class HoneySelect2 : GameBase
     {
         public override void InitActions()
         {

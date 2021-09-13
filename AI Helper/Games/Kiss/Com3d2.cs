@@ -1,6 +1,6 @@
 ﻿namespace AIHelper.Games
 {
-    class Com3d2 : Game
+    class Com3d2 : GameBase
     {
         public override void InitActions()
         {

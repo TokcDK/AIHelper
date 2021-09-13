@@ -5,9 +5,9 @@ using System.IO;
 
 namespace AIHelper.Games
 {
-    public abstract class Game
+    public abstract class GameBase
     {
-        public Game()
+        public GameBase()
         {
             //InitActions();
         }

@@ -119,6 +119,7 @@
     <Compile Include="Forms\Other\ProgressForm\ProgressForm.cs" />
     <Compile Include="Games\GamesList.cs" />
     <Compile Include="Games\Illusion\HoneySelect2.cs" />
+    <Compile Include="Games\Illusion\IllusionGameBase.cs" />
     <Compile Include="Games\Illusion\KoikatsuSunshine.cs" />
     <Compile Include="Games\Illusion\RootGame.cs" />
     <Compile Include="Games\Illusion\Koikatsu.cs" />
@@ -172,7 +173,7 @@
     <Compile Include="Games\Illusion\AISyoujyoTrial.cs" />
     <Compile Include="Games\Illusion\HoneySelect.cs" />
     <Compile Include="Games\Illusion\AISyoujyo.cs" />
-    <Compile Include="Games\Game.cs" />
+    <Compile Include="Games\GameBase.cs" />
     <Compile Include="Manage\ManageArchive.cs" />
     <Compile Include="Manage\ManageArrayExtensions.cs" />
     <Compile Include="Manage\ManageCFG.cs" />

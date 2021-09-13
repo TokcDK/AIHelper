@@ -3,7 +3,7 @@ using System.IO;
 
 namespace AIHelper.Games
 {
-    public class HoneySelect : Game
+    public class HoneySelect : GameBase
     {
         public override string ManifestGame => "honeyselect";
 

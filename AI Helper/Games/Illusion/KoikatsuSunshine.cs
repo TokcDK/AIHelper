@@ -3,7 +3,7 @@ using System.IO;
 
 namespace AIHelper.Games
 {
-    class KoikatsuSunshine : Game
+    class KoikatsuSunshine : GameBase
     {
         public override void InitActions()
         {

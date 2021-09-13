@@ -196,7 +196,7 @@ namespace AIHelper.Manage
                     gameDir = entrie;
                 }
 
-                if(!Directory.Exists(entrie))
+                if(!Directory.Exists(gameDir))
                 {
                     continue;
                 }

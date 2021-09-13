@@ -37,13 +37,13 @@ namespace AIHelper.Manage
         internal static string GetCurrentGameMoGamePyPluginPath()
         {
 #pragma warning disable CA1308 // Normalize strings to uppercase
-            return Path.Combine(GetCurrentGameModOrganizerIniPath(), "plugins", "modorganizer-basic_games", "games", "game_"
-                + GetCurrentGameExeName()
-                .Replace("_64", string.Empty)
-                .Replace("_32", string.Empty)
-                .Replace("AI-Syoujyo", "aigirl")
-                .Replace("Honey Select", "honeyselect")
-                .ToLowerInvariant()
+            return Path.Combine(GetCurrentGameModOrganizerIniPath(), "plugins", "modorganizer-basic_games", "games", SharedData.GameData.CurrentGame.GetBaseGamePyFile().Name
+                //+ GetCurrentGameExeName()
+                //.Replace("_64", string.Empty)
+                //.Replace("_32", string.Empty)
+                //.Replace("AI-Syoujyo", "aigirl")
+                //.Replace("Honey Select", "honeyselect")
+                //.ToLowerInvariant()
                 + ".py"
                 );
 #pragma warning restore CA1308 // Normalize strings to uppercase

@@ -338,9 +338,15 @@ namespace AIHelper.Manage
                         fi.Directory.Create();
                     }
 
+                    var objectInfo = new FileInfo(objectPath);
+                    if (isRelative)
+                    {
+                        isRelative = objectInfo.Directory.Root == new FileInfo(symlinkPath).Directory.Root;
+                    }
+
                     try
                     {
-                        new FileInfo(objectPath).CreateSymbolicLink(symlinkPath, isRelative);//new from NuGet package
+                        objectInfo.CreateSymbolicLink(symlinkPath, isRelative);//new from NuGet package
                     }
                     catch (IOException ex)
                     {
@@ -373,6 +379,8 @@ namespace AIHelper.Manage
                 bool IsInvalidSymlink = false;
                 if ((objectPath != symlinkPath && !Directory.Exists(symlinkPath)) || (IsInvalidSymlink = (di.IsSymlink() && !di.IsValidSymlink())))
                 {
+                    var objectInfo = new DirectoryInfo(objectPath);
+
                     if (Directory.Exists(symlinkPath))
                     {
                         if (IsInvalidSymlink || symlinkPath.IsNullOrEmptyDirectory())
@@ -381,7 +389,7 @@ namespace AIHelper.Manage
                         }
                         else
                         {
-                            di.MoveAll(new DirectoryInfo(objectPath));
+                            di.MoveAll(objectInfo);
                         }
                     }
 
@@ -392,10 +400,14 @@ namespace AIHelper.Manage
                     {
                         di.Parent.Create();
                     }
+                    if (isRelative)
+                    {
+                        isRelative = objectInfo.Root == new DirectoryInfo(symlinkPath).Root;
+                    }
 
                     try
                     {
-                        new DirectoryInfo(objectPath).CreateSymbolicLink(symlinkPath, isRelative);//new from NuGet package
+                        objectInfo.CreateSymbolicLink(symlinkPath, isRelative);//new from NuGet package
                                                                                                   //CreateSymlink.Folder(file, symlink); //old
                     }
                     catch (IOException ex) { ManageLogs.Log("An error accured while tried to create symlink. creation skipped. error:" + ex.Message); }

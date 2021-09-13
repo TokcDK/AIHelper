@@ -1052,7 +1052,11 @@ namespace AIHelper
             List<ModInstallerBase> installers = GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<ModInstallerBase>().OrderBy(o => o.Order).ToList();
 
             //if (Directory.Exists(Install2MoDirPath) && (Directory.GetFiles(Install2MoDirPath, "*.rar").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.7z").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.cs").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.zipmod").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.zip").Length > 0 || Directory.GetDirectories(Install2MoDirPath, "*").Length > 0))
-            if (IsInstallDirHasAnyRequiredFileFrom(installers))
+            if (!IsInstallDirHasAnyRequiredFileFrom(installers))
+            {
+                MessageBox.Show(T._("No compatible for installation formats found in install folder.\n\nIt must be archvives, game files or folders with game files.\n\nWill be opened installation dir where you can drop files for installation."));
+            }
+            else
             {
                 OnOffButtons(false);
 
@@ -1081,10 +1085,6 @@ namespace AIHelper
                 FoldersInit();
 
                 MessageBox.Show(T._("All possible mods installed. Install all rest in install folder manually."));
-            }
-            else
-            {
-                MessageBox.Show(T._("No compatible for installation formats found in install folder.\n\nIt must be archvives, game files or folders with game files.\n\nWill be opened installation dir where you can drop files for installation."));
             }
 
             Directory.CreateDirectory(ManageSettings.GetInstall2MoDirPath());

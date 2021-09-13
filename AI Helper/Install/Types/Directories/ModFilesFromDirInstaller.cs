@@ -14,9 +14,9 @@ namespace AIHelper.Install.Types.Directories
 
         protected override bool Get(DirectoryInfo directoryInfo)
         {
-            if (directoryInfo == null 
+            if (directoryInfo == null
                 || File.Exists(Path.Combine(directoryInfo.FullName, ManageSettings.GetGameUpdateInstallerIniFileName())) // return if game update dir
-                || File.Exists(Path.Combine(directoryInfo.FullName, Properties.Settings.Default.ApplicationProductName+".exe")) // return if app update dir
+                || File.Exists(Path.Combine(directoryInfo.FullName, Properties.Settings.Default.ApplicationProductName + ".exe")) // return if app update dir
                 )
             {
                 // not parse game update
@@ -24,20 +24,9 @@ namespace AIHelper.Install.Types.Directories
             }
 
             string name = directoryInfo.Name;
-            if (!ManageStrings.IsStringAequalsStringB(name, "Temp", true)
-                && !ManageStrings.IsStringAequalsStringB(name, "f")
-                && !ManageStrings.IsStringAequalsStringB(name, "m")
-                && !ManageStrings.IsStringAequalsStringB(name, "c")
-                && !ManageStrings.IsStringAequalsStringB(name, "cf")
-                && !ManageStrings.IsStringAequalsStringB(name, "cb")
-                && !ManageStrings.IsStringAequalsStringB(name, "h")
-                && !ManageStrings.IsStringAequalsStringB(name, "h1")
-                && !ManageStrings.IsStringAequalsStringB(name, "h2")
-                && !ManageStrings.IsStringAequalsStringB(name, "h3")
-                && !ManageStrings.IsStringAequalsStringB(name, "h4")
-                && !ManageStrings.IsStringAequalsStringB(name, "o")
-                && !ManageStrings.IsStringAequalsStringB(name, "s")
-                )//path ends with 'Temp'
+            if (string.Equals(name, "Temp", StringComparison.InvariantCultureIgnoreCase) // skip temp dir
+                || IsDirForCardsInstaller(name) // must be parsed with cards installer
+                )
             {
                 return false;
             }
@@ -77,20 +66,7 @@ namespace AIHelper.Install.Types.Directories
                 string subdir = subDirs[i];
                 string subdirname = Path.GetFileName(subdir);
 
-                if (
-                       string.Compare(subdirname, "abdata", true, invariantCulture) == 0
-                    || string.Compare(subdirname, "userdata", true, invariantCulture) == 0
-                    || string.Compare(subdirname, "ai-syoujyotrial_data", true, invariantCulture) == 0
-                    || string.Compare(subdirname, "ai-syoujyo_data", true, invariantCulture) == 0
-                    || string.Compare(subdirname, "StudioNEOV2_Data", true, invariantCulture) == 0
-                    || string.Compare(subdirname, "manual_s", true, invariantCulture) == 0
-                    || string.Compare(subdirname, "manual", true, invariantCulture) == 0
-                    || string.Compare(subdirname, "MonoBleedingEdge", true, invariantCulture) == 0
-                    || string.Compare(subdirname, "DefaultData", true, invariantCulture) == 0
-                    || string.Compare(subdirname, "bepinex", true, invariantCulture) == 0
-                    || string.Compare(subdirname, "scripts", true, invariantCulture) == 0
-                    || string.Compare(subdirname, "mods", true, invariantCulture) == 0
-                    )
+                if (IsGameModValidDir(subdirname))
                 {
                     //CopyFolder.Copy(dir, Path.Combine(ManageSettings.GetCurrentGameModsPath(), dir));
                     //Directory.Move(dir, "[installed]" + dir);
@@ -389,6 +365,37 @@ namespace AIHelper.Install.Types.Directories
             }
 
             return ret;
+        }
+
+        private bool IsDirForCardsInstaller(string name)
+        {
+            return string.Equals(name, "f", StringComparison.InvariantCultureIgnoreCase)
+                || string.Equals(name, "m", StringComparison.InvariantCultureIgnoreCase)
+                || string.Equals(name, "c", StringComparison.InvariantCultureIgnoreCase)
+                || string.Equals(name, "cf", StringComparison.InvariantCultureIgnoreCase)
+                || string.Equals(name, "cb", StringComparison.InvariantCultureIgnoreCase)
+                || string.Equals(name, "h", StringComparison.InvariantCultureIgnoreCase)
+                || string.Equals(name, "h1", StringComparison.InvariantCultureIgnoreCase)
+                || string.Equals(name, "h2", StringComparison.InvariantCultureIgnoreCase)
+                || string.Equals(name, "h3", StringComparison.InvariantCultureIgnoreCase)
+                || string.Equals(name, "h4", StringComparison.InvariantCultureIgnoreCase)
+                || string.Equals(name, "o", StringComparison.InvariantCultureIgnoreCase)
+                || string.Equals(name, "s", StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        private bool IsGameModValidDir(string subdirname)
+        {
+            return string.Equals(subdirname, "abdata", StringComparison.InvariantCultureIgnoreCase)
+                    || string.Equals(subdirname, "userdata", StringComparison.InvariantCultureIgnoreCase)
+                    || string.Equals(subdirname, ManageSettings.GetCurrentGameExeName() + "_data", StringComparison.InvariantCultureIgnoreCase)
+                    || string.Equals(subdirname, ManageSettings.GetStudioExeName() + "_data", StringComparison.InvariantCultureIgnoreCase)
+                    || string.Equals(subdirname, "manual_s", StringComparison.InvariantCultureIgnoreCase)
+                    || string.Equals(subdirname, "manual", StringComparison.InvariantCultureIgnoreCase)
+                    || string.Equals(subdirname, "MonoBleedingEdge", StringComparison.InvariantCultureIgnoreCase)
+                    || string.Equals(subdirname, "DefaultData", StringComparison.InvariantCultureIgnoreCase)
+                    || string.Equals(subdirname, "bepinex", StringComparison.InvariantCultureIgnoreCase)
+                    || string.Equals(subdirname, "scripts", StringComparison.InvariantCultureIgnoreCase)
+                    || string.Equals(subdirname, "mods", StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }

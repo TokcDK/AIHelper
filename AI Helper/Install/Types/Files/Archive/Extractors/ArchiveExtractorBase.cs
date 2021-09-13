@@ -31,7 +31,7 @@ namespace AIHelper.Install.Types.Files.Archive.Extractors
                     Compressor.Decompress(fileInfo.FullName, targetDir);
                 }
                 //File.Delete(file);
-                fileInfo.MoveTo(fileInfo.FullName + ".ExtractedAndShouldHaveBeenInstalled");
+                fileInfo.MoveTo(fileInfo.FullName + ".Extracted" + ManageSettings.GetDateTimeBasedSuffix());
             }
             catch
             {

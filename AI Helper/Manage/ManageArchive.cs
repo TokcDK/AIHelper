@@ -39,7 +39,7 @@ namespace AIHelper.Manage
                                 Compressor.Decompress(file, targetDir);
                             }
                             //File.Delete(file);
-                            File.Move(file, file + ".ExtractedAndShouldHaveBeenInstalled");
+                            File.Move(file, file + ".Extracted" + ManageSettings.GetDateTimeBasedSuffix());
                         }
                         catch
                         {

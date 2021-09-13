@@ -168,7 +168,7 @@ namespace AIHelper.Install.Types.Files.Archive
 
             if (filesCount == 1)
             {
-                zipfile.MoveTo(zipfile + ".ExtractedToSubdirAndMustBeInstalled");
+                zipfile.MoveTo(zipfile + ".Extracted" + ManageSettings.GetDateTimeBasedSuffix());
                 ret = true;
             }
             else if (foundZipMod)

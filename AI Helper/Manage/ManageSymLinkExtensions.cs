@@ -283,7 +283,10 @@ namespace AIHelper.Manage
         /// <returns></returns>
         public static bool CreateSymlink(this string objectFileDirPath, string symlinkPath, bool isRelative = false, ObjectType objectType = ObjectType.NotDefined)
         {
-            if (string.IsNullOrWhiteSpace(symlinkPath) || string.IsNullOrWhiteSpace(objectFileDirPath))
+            // skip if empty or equal values
+            if (string.IsNullOrWhiteSpace(symlinkPath) 
+                || string.IsNullOrWhiteSpace(objectFileDirPath) 
+                || string.Equals(objectFileDirPath, symlinkPath, System.StringComparison.InvariantCultureIgnoreCase))
             {
                 return false;
             }

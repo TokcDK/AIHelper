@@ -11,8 +11,6 @@
         public override string RegistryPath => @"HKEY_CURRENT_USER\Software\KISS\カスタムオーダーメイド3D2";
         public override string RegistryInstallDirKey => "InstallPath";
 
-        public override bool IsHaveSideloaderMods { get; set; } = true;
-
         public override string ManifestGame => "com3d2";
 
         public override string GetGameFolderName()

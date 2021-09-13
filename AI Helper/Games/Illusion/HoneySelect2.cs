@@ -10,7 +10,7 @@ namespace AIHelper.Games
             base.InitActions();
             //CopyMOfiles("MOHS");
         }
-        public override bool IsHaveSideloaderMods { get; set; } = true;
+        public override bool IsHaveSideloaderMods => true;
 
         public override string ManifestGame => "honeyselect2";
 

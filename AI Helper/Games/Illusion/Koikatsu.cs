@@ -10,7 +10,7 @@ namespace AIHelper.Games
             base.InitActions();
             CopyModOrganizerUserFiles("MOKK");
         }
-        public override bool IsHaveSideloaderMods { get; set; } = true;
+        public override bool IsHaveSideloaderMods => true;
 
         public override string ManifestGame => "koikatsu";
 

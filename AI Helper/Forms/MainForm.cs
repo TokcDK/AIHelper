@@ -1468,9 +1468,8 @@ namespace AIHelper
         /// </summary>
         private void UpdateButtonOptionsRefresh()
         {
-            var b = File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath());
             //UseKKmanagerUpdaterLabel.SetCheck();
-            UseKKmanagerUpdaterLabel.Visible = b && GameData.CurrentGame.IsHaveSideloaderMods;
+            UseKKmanagerUpdaterLabel.Visible = ManageSettings.IsHaveSideloaderMods() && File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath());
             //UseKKmanagerUpdaterCheckBox.Visible = b && GameData.CurrentGame.IsHaveSideloaderMods;
             BleadingEdgeZipmodsLabel.Visible = UseKKmanagerUpdaterLabel.Visible;
             //cbxBleadingEdgeZipmods.Visible = UseKKmanagerUpdaterCheckBox.Visible;

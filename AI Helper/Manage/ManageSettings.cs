@@ -1738,6 +1738,11 @@ namespace AIHelper.Manage
                         " \\x43e\\x431\\x43d\\x43e\\x432\\x43b\\x435\\x43d\\x438\\x44f.</p></body></html>";
         }
 
+        internal static bool IsHaveSideloaderMods()
+        {
+            return GameData.CurrentGame.IsHaveSideloaderMods;
+        }
+
         /// <summary>
         /// temp dir for downloads of kkmanager standalone updater
         /// </summary>

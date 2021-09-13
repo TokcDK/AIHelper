@@ -8,7 +8,7 @@
 
             //return GetTheGameFolderName(GetGameExeName());
         }
-        public override bool IsHaveSideloaderMods { get; set; } = true;
+        public override bool IsHaveSideloaderMods => true;
 
         public override string ManifestGame => "AI Girl";
 

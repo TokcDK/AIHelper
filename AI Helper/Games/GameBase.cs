@@ -24,7 +24,7 @@ namespace AIHelper.Games
         /// <summary>
         /// true if game have sideloader zipmods
         /// </summary>
-        public virtual bool IsHaveSideloaderMods { get; set; }
+        public virtual bool IsHaveSideloaderMods { get => false; }
 
         /// <summary>
         /// name of the game's folder
@@ -48,7 +48,7 @@ namespace AIHelper.Games
         /// <summary>
         /// The game's Install dir key name
         /// </summary>
-        public virtual string RegistryInstallDirKey { get =>"";}
+        public virtual string RegistryInstallDirKey { get => ""; }
 
         /// <summary>
         /// search and return game folder name

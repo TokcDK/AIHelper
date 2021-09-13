@@ -335,7 +335,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetUpdateCheckDateTimesFilePath()
         {
-            return Path.Combine(GetModsUpdateDirPath(),"updatecheckdatetimes.txt");
+            return Path.Combine(GetModsUpdateDirPath(), "updatecheckdatetimes.txt");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1443,6 +1443,28 @@ namespace AIHelper.Manage
         /// </summary>
         internal static Dictionary<string, string> LanguageModeMap;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetCacheDirPath()
+        {
+            return Path.Combine(GetAppResDir(), "cache");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetCurrentGameGetCacheDirPath()
+        {
+            return Path.Combine(GetCacheDirPath(), GetCurrentGameFolderName());
+        }
+
+        /// <summary>
+        /// file with saved path-guid pairs for guidlist
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetCachedGUIDFilePath()
+        {
+            return Path.Combine(GetCurrentGameGetCacheDirPath(), "cachedzipmodsguid.txt");
+        }
+
         /// <summary>
         /// The language to translation mode map. (Reversed)
         /// </summary>
@@ -1670,7 +1692,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameBrokenSymlinksDirPath()
         {
-            return Path.Combine(GetCurrentGameDirPath(),"BrokenSymlinks");
+            return Path.Combine(GetCurrentGameDirPath(), "BrokenSymlinks");
         }
     }
 }

@@ -11,6 +11,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static AIHelper.Manage.ManageModOrganizer;
@@ -1264,6 +1265,7 @@ namespace AIHelper.Manage
         internal class ZipmodGUIIds
         {
             internal Dictionary<string, ZipmodInfo> GUIDList;
+            Dictionary<string, string> cachedGUIDList;
 
             /// <summary>
             /// Sideloader modpacks zipmod file infos are storing here
@@ -1272,6 +1274,7 @@ namespace AIHelper.Manage
             public ZipmodGUIIds(bool LoadInfos = true)
             {
                 GUIDList = new Dictionary<string, ZipmodInfo>();
+                cachedGUIDList = new Dictionary<string, string>();
                 if (LoadInfos)
                 {
                     LoadAll();
@@ -1281,6 +1284,8 @@ namespace AIHelper.Manage
             void LoadAll()
             {
                 var modlist = new ModlistProfileInfo();
+
+                ReadCachedGUID(cachedGUIDList);
 
                 Parallel.ForEach(modlist.Items, item =>
                 {
@@ -1302,6 +1307,8 @@ namespace AIHelper.Manage
                         });
                     }
                 });
+
+                Task.Run(() => WriteCachedGUID(GUIDList)).ConfigureAwait(false); // not need to wait while will be writed
             }
 
             private readonly object GUIDListAddLock = new object();
@@ -1314,7 +1321,7 @@ namespace AIHelper.Manage
                     return;
                 }
 
-                var guid = ManageArchive.GetZipmodGuid(zipmodPath);
+                string guid = cachedGUIDList.ContainsKey(zipmodPath) ? cachedGUIDList[zipmodPath] : ManageArchive.GetZipmodGuid(zipmodPath);
                 if (string.IsNullOrWhiteSpace(guid))
                 {
                     return;
@@ -1329,7 +1336,7 @@ namespace AIHelper.Manage
 
                 lock (GUIDListAddLock)
                 {
-                    if(!GUIDList.ContainsKey(guid))
+                    if (!GUIDList.ContainsKey(guid))
                     {
                         GUIDList.Add(guid, zipmodInfo);
                     }
@@ -1342,6 +1349,54 @@ namespace AIHelper.Manage
             internal string GUID;
             internal FileInfo FileInfo;
             internal string SubPath;
+        }
+
+        static void WriteCachedGUID(Dictionary<string, ZipmodInfo> gUIDList)
+        {
+            var list = new Dictionary<string, ZipmodInfo>(gUIDList); // get copy of list because it will be removed
+
+            Directory.CreateDirectory(Path.GetDirectoryName(ManageSettings.GetCachedGUIDFilePath()));
+
+            var sw = new StreamWriter(ManageSettings.GetCachedGUIDFilePath());
+            foreach (var pair in list)
+            {
+                sw.WriteLine(pair.Value.FileInfo.FullName + cachedCUIDFileSplitter + pair.Key);
+            }
+            sw.Dispose();
+        }
+
+        const string cachedCUIDFileSplitter = "|>|";
+
+        /// <summary>
+        /// Fill cached guid list from file
+        /// </summary>
+        /// <returns></returns>
+        private static bool ReadCachedGUID(Dictionary<string, string> cachedGUIDList)
+        {
+            if (!File.Exists(ManageSettings.GetCachedGUIDFilePath()))
+            {
+                cachedGUIDList = new Dictionary<string, string>();
+                return false;
+            }
+
+            foreach (var line in File.ReadAllLines(ManageSettings.GetCachedGUIDFilePath()))
+            {
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    continue;
+                }
+
+                var data = line.Split(new[] { cachedCUIDFileSplitter }, StringSplitOptions.None);
+
+                if (data.Length != 2)
+                {
+                    continue;
+                }
+
+                cachedGUIDList.Add(data[0], data[1]);
+            }
+
+            return true;
         }
 
         /// <summary>

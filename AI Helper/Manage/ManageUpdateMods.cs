@@ -1,9 +1,11 @@
 ﻿using AIHelper.Manage.Update;
 using AIHelper.SharedData;
 using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using static AIHelper.Manage.ManageModOrganizer;
 
 namespace AIHelper.Manage
@@ -97,21 +99,39 @@ namespace AIHelper.Manage
                 ManageModOrganizer.InsertCustomExecutable(kkManagerStandaloneUpdater);
             }
 
-            zipmodsGuidList = new ZipmodGUIIds(false);
+            progressForm = new Form
+            {
+                StartPosition = FormStartPosition.CenterScreen,
+                Size = new Size(400, 50),
+                Text = T._("Getting zipmods info") + "..",
+                FormBorderStyle = FormBorderStyle.FixedToolWindow
+            };
+            progressForm.Show();
 
+            zipmodsGuidList = new ZipmodGUIIds();
+
+            progressForm.Text = T._("Preactivate mods with Sideloader packs") + "..";
             //activate all mods with Sideloader modpack inside
-            ActivateSideloaderMods(zipmodsGuidList);
+            ActivateSideloaderMods();
 
             FixKKmanagerUpdaterFailedDownloads();
 
+            progressForm.Text = T._("Update zipmods") + "..";
             ManageProcess.RunProgram(ManageSettings.GetAppMOexePath(), "moshortcut://:" + ManageModOrganizer.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
 
             //restore modlist
             ManageModOrganizer.RestoreModlist();
 
+            progressForm.Text = T._("Sorting zipmods") + "..";
             //restore zipmods to source mods
             MoveZipModsFromOverwriteToSourceMod();
+
+            progressForm.Dispose();
         }
+
+        static ZipmodGUIIds zipmodsGuidList;
+        static Form progressForm;
+        //static ProgressBar pBar;
 
         /// <summary>
         /// prevents failed kkmanager updater file creation when run from mo
@@ -259,9 +279,6 @@ namespace AIHelper.Manage
             sourcePath.MoveTo(targetPath.FullName);
         }
 
-        static ZipmodGUIIds zipmodsGuidList;
-        //static Form progressForm;
-        //static ProgressBar pBar;
         private static void SortZipmodsPacks()
         {
             Parallel.ForEach(ManageSettings.GetKKManagerUpdateSortDirs(), sortingDirPath =>
@@ -456,10 +473,8 @@ namespace AIHelper.Manage
         /// <summary>
         /// activate all mods with sideloader modpack inside mods folder
         /// </summary>
-        private static void ActivateSideloaderMods(ZipmodGUIIds zipmodsGuidList = null)
+        private static void ActivateSideloaderMods()
         {
-            bool getZipmodId = zipmodsGuidList != null;
-
             // buckup modlist
             File.Copy(ManageSettings.GetCurrentMoProfileModlistPath(), ManageSettings.GetCurrentMoProfileModlistPath() + ".prezipmodsUpdate");
 
@@ -467,32 +482,12 @@ namespace AIHelper.Manage
 
             Parallel.ForEach(modlist.Items, (item, state) =>
             {
-                if (!item.IsExist || item.IsSeparator)
+                if (item.IsEnabled || !item.IsExist || item.IsSeparator)
                 {
                     return;
                 }
 
-                if (Directory.Exists(Path.Combine(item.Path, "mods")))
-                {
-                    item.IsEnabled = true;
-
-                    if (getZipmodId)
-                    {
-                        foreach (var packDir in Directory.EnumerateDirectories(Path.Combine(item.Path, "mods"), "Sideloader Modpack*"))
-                        {
-                            Parallel.ForEach(Directory.EnumerateFiles(packDir, "*.zip*", SearchOption.AllDirectories), zipmod =>
-                            {
-                                zipmodsGuidList.Load(zipmod);
-                                //SaveGuidIfZipMod(zipmod, zipmodsGuidList);
-                            });
-                        }
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
-                else if (!item.IsEnabled && Directory.Exists(Path.Combine(item.Path, "UserData", "chara")))
+                if (Directory.Exists(Path.Combine(item.Path, "mods")) || Directory.Exists(Path.Combine(item.Path, "UserData", "chara")))
                 {
                     item.IsEnabled = true;
                 }

@@ -313,6 +313,7 @@
   <ItemGroup>
     <Content Include="Other\basic_games\game_aigirl.py" />
     <Content Include="Other\basic_games\game_aigirltrial.py" />
+    <Content Include="Other\basic_games\game_com3d2.py" />
     <Content Include="Other\basic_games\game_honeyselect.py" />
     <Content Include="Other\basic_games\game_honeyselect2.py" />
     <Content Include="Other\basic_games\game_koikatusunshine.py" />

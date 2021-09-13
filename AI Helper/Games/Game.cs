@@ -41,23 +41,13 @@ namespace AIHelper.Games
         /// </summary>
         public string GameName { get; internal set; }
 
-        string GameFolderName;
-        /// <summary>
-        /// search and return game folder name
-        /// </summary>
-        /// <returns></returns>
-        public virtual void SetGameFolderName(string folderName)
-        {
-            GameFolderName = folderName;
-            //return SearchGameFolder();
-        }
         /// <summary>
         /// search and return game folder name
         /// </summary>
         /// <returns></returns>
         public virtual string GetGameFolderName()
         {
-            return GameFolderName;
+            return GameDirInfo.Name;
             //return SearchGameFolder();
         }
 
@@ -135,13 +125,15 @@ namespace AIHelper.Games
             return string.Empty;
         }
 
+        public DirectoryInfo GameDirInfo;
+
         /// game's path of selected game
         public virtual string GetGamePath()
         {
             return IsRootGame ?
                 Properties.Settings.Default.ApplicationStartupPath
                 :
-                Path.Combine(ManageSettings.GetGamesFolderPath(), GetGameFolderName())
+                GameDirInfo.FullName
                 ;
         }
 

@@ -150,10 +150,10 @@ namespace AIHelper.Manage
             };
         }
 
-        internal static string GetModOrganizerGithubLink()
-        {
-            return "https://github.com/Modorganizer2/modorganizer/releases/latest";
-        }
+        //internal static string GetModOrganizerGithubLink()
+        //{
+        //    return "https://github.com/Modorganizer2/modorganizer/releases/latest";
+        //}
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentMoProfileModlistPath()
@@ -161,10 +161,10 @@ namespace AIHelper.Manage
             return Path.Combine(GetMoSelectedProfileDirPath(), "modlist.txt");
         }
 
-        private static string GetCustomRes()
-        {
-            throw new NotImplementedException();
-        }
+        //private static string GetCustomRes()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         internal static List<Game> GetListOfExistsGames()
         {
@@ -176,8 +176,31 @@ namespace AIHelper.Manage
 
             Directory.CreateDirectory(GetGamesFolderPath());// create games dir
 
-            foreach (var gameDir in Directory.EnumerateDirectories(GetGamesFolderPath()))
+            foreach (var entrie in Directory.EnumerateFileSystemEntries(GetGamesFolderPath()))
             {
+                string gameDir;
+                if (Path.GetFileName(entrie).StartsWith(ManageSettings.GetMOGameInfoFileIdentifier()) && File.Exists(entrie))
+                {
+                    try
+                    {
+                        gameDir = Path.GetFullPath(File.ReadAllLines(entrie)[0]); // first line is game directory path
+                    }
+                    catch
+                    {
+                        // when invalid chars or other reason when getfullpath will fail
+                        continue;
+                    }
+                }
+                else
+                {
+                    gameDir = entrie;
+                }
+
+                if(!Directory.Exists(entrie))
+                {
+                    continue;
+                }
+
                 foreach (var gameType in listOfGames)
                 {
                     if (gameType == typeof(RootGame))
@@ -191,7 +214,7 @@ namespace AIHelper.Manage
                         continue;
                     }
 
-                    game.SetGameFolderName(Path.GetFileName(gameDir));
+                    game.GameDirInfo = new DirectoryInfo(gameDir);
 
                     var mods = Path.Combine(gameDir, "Mods");
                     if (!Directory.Exists(mods))
@@ -285,8 +308,14 @@ namespace AIHelper.Manage
                         !ManageSymLinkExtensions.IsSymlink(MoCategoriesFilePath())
                         )
                     {
+                        var game = new RootGame
+                        {
+                            // the app's dir
+                            GameDirInfo = new DirectoryInfo(Properties.Settings.Default.ApplicationStartupPath)
+                        };
+
                         //listOfGames.Add(new RootGame());
-                        listOfGameDirs.Add(new RootGame());
+                        listOfGameDirs.Add(game);
                     }
                 }
                 catch (Exception ex)
@@ -305,6 +334,21 @@ namespace AIHelper.Manage
             return listOfGameDirs;
         }
 
+        /// <summary>
+        /// identifier for mo game info file
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static string GetMOGameInfoFileIdentifier()
+        {
+            return "mogame";
+        }
+
+        /// <summary>
+        /// Mod Organizer profiles directory name
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static string GetMoProfilesDirName()
         {
             return "Profiles";
@@ -819,11 +863,15 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetGamesBaseFolderPath()
+        {
+            return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Games");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetGamesFolderPath()
         {
-            //var GamesPath = Path.Combine(Application.StartupPath, "Games");
-            return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Games");
-            //return Directory.Exists(GamesPath) ? GamesPath : Application.StartupPath;
+            return GameData.CurrentGame.GameDirInfo.Parent.FullName;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

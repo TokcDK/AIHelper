@@ -1337,7 +1337,7 @@ namespace AIHelper.Manage
             internal void Load(string zipmodPath)
             {
                 //zipmod GUID save
-                if (!File.Exists(zipmodPath) || (!string.Equals(Path.GetExtension(zipmodPath), ".ZIPMOD", StringComparison.InvariantCultureIgnoreCase) && !string.Equals(Path.GetExtension(zipmodPath), ".ZIPMOD", StringComparison.InvariantCultureIgnoreCase)))
+                if (!File.Exists(zipmodPath) || (!string.Equals(Path.GetExtension(zipmodPath), ".ZIPMOD", StringComparison.InvariantCultureIgnoreCase) && !string.Equals(Path.GetExtension(zipmodPath), ".ZIP", StringComparison.InvariantCultureIgnoreCase)))
                 {
                     return;
                 }

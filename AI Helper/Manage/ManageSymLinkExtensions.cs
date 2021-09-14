@@ -430,7 +430,7 @@ namespace AIHelper.Manage
         private static void CheckParentDirForSymLink(this string symlinkPath)
         {
             var pdir = new DirectoryInfo(Path.GetDirectoryName(symlinkPath));
-            if (pdir.IsSymlink() && !pdir.IsValidSymlink())
+            if (pdir.Exists && pdir.IsSymlink() && !pdir.IsValidSymlink())
             {
                 pdir.Delete();
             }

@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
 namespace AIHelper.Manage
 {
-    class ManageProcess
+    static class ManageProcess
     {
         public static void RunProgram(string programPath, string arguments = "")
         {
@@ -83,6 +84,30 @@ namespace AIHelper.Manage
             program.Dispose();
         }
 
+        internal static IEnumerable<Process> GetProcesses(this string processName)
+        {
+            foreach (Process process in Process.GetProcessesByName(processName))
+            {
+                yield return process;
+            }
+        }
+
+        internal static Process GetIfExists()
+        {
+            Process current = Process.GetCurrentProcess();
+            foreach (Process process in Process.GetProcessesByName(current.ProcessName))
+            {
+                if (process.Id != current.Id)
+                {
+                    return process;
+                    //SetForegroundWindow(process.MainWindowHandle);
+                    //break;
+                }
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// If Mod Organizer Will freeze in memory after main process will be closed then it will try to kill MO exe
         /// </summary>
@@ -117,6 +142,26 @@ namespace AIHelper.Manage
             //    MessageBox.Show("AIHelper: Failed to kill one of freezed ModOrganizer.exe. Try to kill it from Task Manager.");
             //}
 
+        }
+
+        internal static void KillProcessesByName(string processName)
+        {
+            if (string.IsNullOrWhiteSpace(processName))
+            {
+                return;
+            }
+
+            foreach (var process in GetProcesses(processName))
+            {
+                try
+                {
+                    process.Kill();
+                }
+                catch (Exception ex)
+                {
+                    ManageLogs.Log("Cant kill process \"" + process.ProcessName + "\" with id" + process.Id + ". Error:\r\n" + ex);
+                }
+            }
         }
     }
 }

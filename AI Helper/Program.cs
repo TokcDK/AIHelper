@@ -38,15 +38,10 @@ namespace AIHelper
                 }
                 else
                 {
-                    Process current = Process.GetCurrentProcess();
-                    foreach (Process process in Process.GetProcessesByName(current.ProcessName))
+                    var process = Manage.ManageProcess.GetIfExists();
+                    if (process != null)
                     {
-                        if (process.Id != current.Id)
-                        {
-                            ShowWindow(process.MainWindowHandle, SwRestore);
-                            //SetForegroundWindow(process.MainWindowHandle);
-                            break;
-                        }
+                        ShowWindow(process.MainWindowHandle, SwRestore);
                     }
                 }
             }

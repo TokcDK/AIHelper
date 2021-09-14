@@ -11,7 +11,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static AIHelper.Manage.ManageModOrganizer;
@@ -1223,6 +1222,28 @@ namespace AIHelper.Manage
                     }
                 }
             }
+        }
+
+        internal static string GetExeNameByTitle(string customExeTitleName, INIFile ini = null)
+        {
+            if (ini == null)
+            {
+                ini = ManageIni.GetINIFile(ManageSettings.GetMOiniPath());
+            }
+
+            var customs = new CustomExecutables(ini);
+            foreach (var customExe in customs.List)
+            {
+                if (customExe.Value.Title == customExeTitleName)
+                {
+                    if (File.Exists(customExe.Value.Binary))
+                    {
+                        return Path.GetFileNameWithoutExtension(customExe.Value.Binary);
+                    }
+                }
+            }
+
+            return "";
         }
 
         internal class ProfileModlistRecord

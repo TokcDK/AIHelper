@@ -865,6 +865,7 @@ namespace AIHelper
 
             if (MOmode)
             {
+                ManageProcess.KillProcessesByName(Path.GetFileNameWithoutExtension(ManageSettings.GetAppMOexePath()));
                 ManageProcess.RunProgram(ManageSettings.GetAppMOexePath(), string.Empty);
             }
             else
@@ -910,6 +911,8 @@ namespace AIHelper
                 var customExeTitleName = getCurrentGameExemoProfileName + vr;
                 exePath = ManageSettings.GetAppMOexePath();
 
+                ManageProcess.KillProcessesByName(ManageModOrganizer.GetExeNameByTitle(customExeTitleName));
+
                 if (cbxNtlea.Checked)
                 {
                     //customExeTitleName += "_NTLEA";
@@ -942,6 +945,7 @@ namespace AIHelper
                 }
             }
 
+            ManageProcess.KillProcessesByName(Path.GetFileNameWithoutExtension(exePath));
             ManageProcess.RunProgram(exePath, arguments);
 
             OnOffButtons();
@@ -960,12 +964,18 @@ namespace AIHelper
 
             if (MOmode)
             {
+                ManageProcess.KillProcessesByName(ManageSettings.GetStudioExeName());
+                ManageProcess.KillProcessesByName(Path.GetFileNameWithoutExtension(ManageSettings.GetAppMOexePath()));
+                
                 var studio = ManageModOrganizer.GetMOcustomExecutableTitleByExeName(ManageSettings.GetStudioExeName());
                 ManageProcess.RunProgram(ManageSettings.GetAppMOexePath(), "moshortcut://:" + studio);
             }
             else
             {
-                ManageProcess.RunProgram(Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetStudioExeName() + ".exe"), string.Empty);
+                ManageProcess.KillProcessesByName(ManageSettings.GetStudioExeName());
+
+                var exe = Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetStudioExeName() + ".exe");
+                ManageProcess.RunProgram(exe, string.Empty);
             }
             OnOffButtons();
         }

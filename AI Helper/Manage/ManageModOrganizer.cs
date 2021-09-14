@@ -770,20 +770,9 @@ namespace AIHelper.Manage
         {
             var linkInfosList = new List<string>();
             // parallel iterate mods because mod order is not important here
-            Parallel.ForEach(ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(false), modDirName =>
+            Parallel.ForEach(Directory.EnumerateFiles(ManageSettings.GetCurrentGameDirPath(), ManageSettings.GetLinkInfoFileName(), searchOption: SearchOption.AllDirectories), linkinfo =>
             {
-                var modPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modDirName);
-                if (!Directory.Exists(modPath))
-                {
-                    // skip if mod is not exists by some reason
-                    return;
-                }
-
-                // search linkinfos
-                foreach (var linkinfo in Directory.GetFiles(modPath, ManageSettings.GetLinkInfoFileName(), SearchOption.AllDirectories))
-                {
-                    linkInfosList.Add(linkinfo);
-                }
+                linkInfosList.Add(linkinfo);
             });
 
             return linkInfosList;
@@ -904,7 +893,7 @@ namespace AIHelper.Manage
                         , isRelative: false
                         , objectType: targetObjectType);
 
-                    return; // info found, stop read file
+                    //return; // info found, stop read file // commented because can be several links now
                 }
             }
         }

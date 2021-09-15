@@ -1213,39 +1213,34 @@ namespace AIHelper.Manage
             return Path.Combine(GetCurrentGameMOmodeBakDirPath(), "ZipmodsGUIDList.txt");
         }
 
+        internal static string GetDefaultSetupXmlValue()
+        {
+            return "<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<Setting>\r\n  <Size>1280 x 720 (16 : 9)</Size>\r\n  <Width>1280</Width>\r\n  <Height>720</Height>\r\n  <Quality>2</Quality>\r\n  <FullScreen>false</FullScreen>\r\n  <Display>0</Display>\r\n  <Language>0</Language>\r\n</Setting>";
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetBepInExPath()
         {
             return Path.Combine(IsMoMode() ? GetCurrentGameModsDirPath() : GetCurrentGameDataPath(), "BepInEx");
         }
 
-        internal static string GetDefaultSetupXmlValue()
-        {
-            return "<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<Setting>\r\n  <Size>1280 x 720 (16 : 9)</Size>\r\n  <Width>1280</Width>\r\n  <Height>720</Height>\r\n  <Quality>2</Quality>\r\n  <FullScreen>false</FullScreen>\r\n  <Display>0</Display>\r\n  <Language>0</Language>\r\n</Setting>";
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetBepInExCfgDirPath()
         {
-            if (!IsMoMode())
-            {
-                return Path.Combine(GetBepInExPath(), "BepInEx", "config");
-            }
-            return ManageModOrganizer.GetLastPath(Path.Combine(GetBepInExPath(), "BepInEx", "config"), true);
+            return Path.Combine(GetBepInExPath(), "BepInEx", "config");
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetBepInExCfgFilePath()
         {
-            if (!IsMoMode())
-            {
-                return Path.Combine(GetBepInExPath(), "config", "BepInEx.cfg");
-            }
             if (Properties.Settings.Default.BepinExCfgPath.Length > 0)
             {
                 return Properties.Settings.Default.BepinExCfgPath;
             }
             return ManageModOrganizer.GetLastPath(Path.Combine(GetBepInExCfgDirPath(), "BepInEx.cfg"));
         }
-
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void SwitchBepInExDisplayedLogLevelValue(CheckBox bepInExConsoleCheckBox, Label bepInExDisplayedLogLevelLabel, bool onlyShow = false, string targetSectionName = "Logging.Console")
         {
             //string curValue = ManageINI.GetINIValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "DisplayedLogLevel", "Logging.Console");

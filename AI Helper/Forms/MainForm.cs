@@ -808,14 +808,14 @@ namespace AIHelper
             StudioButton.Enabled = File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetStudioExeName() + ".exe"));
 
             //Set BepInEx log data
-            var bepInExCfgPath = ManageSettings.GetBepInExCfgFilePath();
+            var bepInExCfgPath = ManageSettings.GetBepInExCfgFilePath(); // заметно тормозит
             if (bepInExCfgPath.Length > 0 && File.Exists(bepInExCfgPath))
             {
                 BepInExConsoleCheckBox.Enabled = true;
                 try
                 {
                     //BepInExConsoleCheckBox.Checked = bool.Parse(ManageINI.GetINIValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "Enabled", "Logging.Console", "False"));
-                    BepInExConsoleCheckBox.Checked = bool.Parse(ManageCfg.GetCfgValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "Enabled", "Logging.Console", "False"));
+                    BepInExConsoleCheckBox.Checked = bool.Parse(ManageCfg.GetCfgValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "Enabled", "Logging.Console", "False")); // немного тормозит
                 }
                 catch (Exception ex)
                 {

@@ -763,19 +763,24 @@ namespace AIHelper.Manage
         }
 
         /// <summary>
-        /// list of paths for linkinfo exist files
+        /// Fills <paramref name="inputList"/> with paths of <paramref name="fileName"/> found in <paramref name="inputDir"/>
         /// </summary>
-        /// <returns></returns>
-        internal static List<string> GetLinkInfoFilesList()
+        /// <param name="inputDir">Dir where to search</param>
+        /// <param name="fileName">File name which to search</param>
+        /// <param name="inputList">List where to add found paths</param>
+        internal static void AddExistFilePathsUsing(this List<string> inputList, string inputDir, string fileName)
         {
-            var linkInfosList = new List<string>();
-            // parallel iterate mods because mod order is not important here
-            Parallel.ForEach(Directory.EnumerateFiles(ManageSettings.GetCurrentGameDirPath(), ManageSettings.GetLinkInfoFileName(), searchOption: SearchOption.AllDirectories), linkinfo =>
+            var filePath = Path.Combine(inputDir, fileName);
+            if (File.Exists(filePath))
             {
-                linkInfosList.Add(linkinfo);
-            });
+                inputList.Add(filePath);
+            }
 
-            return linkInfosList;
+            // parallel iterate mods because mod order is not important here
+            Parallel.ForEach(Directory.EnumerateDirectories(inputDir), dir =>
+            {
+                inputList.AddExistFilePathsUsing(dir, fileName);
+            });
         }
 
         /// <summary>
@@ -783,7 +788,9 @@ namespace AIHelper.Manage
         /// </summary>
         internal static void MakeLinks()
         {
-            List<string> linkInfosList = GetLinkInfoFilesList();
+            var linkInfosList = new List<string>();
+            linkInfosList.AddExistFilePathsUsing(ManageSettings.GetCurrentGameDirPath(), ManageSettings.GetLinkInfoFileName());
+            
             // parallel iterate mods because mod order is not important here
             Parallel.ForEach(linkInfosList, file =>
             {

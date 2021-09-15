@@ -815,7 +815,7 @@ namespace AIHelper.Manage
 
         private static void ParseLinkInfo(FileInfo linkinfo)
         {
-            if (linkinfo.Length == 0 || !linkinfo.Exists)
+            if (!linkinfo.Exists || linkinfo.Length == 0)
             {
                 // skip if link info file is empty
                 return;

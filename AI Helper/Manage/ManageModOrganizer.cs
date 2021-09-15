@@ -789,8 +789,23 @@ namespace AIHelper.Manage
         internal static void MakeLinks()
         {
             var linkInfosList = new List<string>();
-            linkInfosList.AddExistFilePathsUsing(ManageSettings.GetCurrentGameDirPath(), ManageSettings.GetLinkInfoFileName());
+
+            var infoFileName = ManageSettings.GetLinkInfoFileName();
+
+            //check overwrite
+            linkInfosList.AddExistFilePathsUsing(ManageSettings.GetCurrentGameOverwriteFolderPath(), infoFileName);
+
+            //create link for mods root info file
+            ParseLinkInfo(new FileInfo(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), infoFileName)));
+
+            //check mod dirs
+            Parallel.ForEach(ManageModOrganizer.GetModNamesListFromActiveMoProfile(true), modName =>
+            {
+                var dir = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modName);
+                linkInfosList.AddExistFilePathsUsing(dir, infoFileName);
+            });
             
+            // create links
             // parallel iterate mods because mod order is not important here
             Parallel.ForEach(linkInfosList, file =>
             {
@@ -800,7 +815,7 @@ namespace AIHelper.Manage
 
         private static void ParseLinkInfo(FileInfo linkinfo)
         {
-            if (linkinfo.Length == 0)
+            if (linkinfo.Length == 0 || !linkinfo.Exists)
             {
                 // skip if link info file is empty
                 return;

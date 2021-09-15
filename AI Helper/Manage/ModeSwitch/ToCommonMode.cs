@@ -86,6 +86,7 @@ namespace AIHelper.Manage.ModeSwitch
         /// True if any files was parsed
         /// </summary>
         protected bool ParsedAny;
+        private readonly object moToStandartConvertationOperationsListLocker = new object();
 
         protected void SwitchToCommonMode()
         {
@@ -260,7 +261,11 @@ namespace AIHelper.Manage.ModeSwitch
                 symlinkTarget.CreateSymlink(targetPath, isRelative: true, objectType: ObjectType.Directory);
 
                 // we not deleted symlink in the dir
-                moToStandartConvertationOperationsList.AppendLine(dir + operationsSplitStringBase + targetPath); // add symlink operation
+                lock(moToStandartConvertationOperationsListLocker)
+                {
+                    moToStandartConvertationOperationsList.AppendLine(dir + operationsSplitStringBase + targetPath); // add symlink operation
+                }
+
                 ParsedAny = true;
             }
         }
@@ -333,7 +338,11 @@ namespace AIHelper.Manage.ModeSwitch
                     ManageModOrganizer.SaveGuidIfZipMod(sourceFilePath, zipmodsGuidList);
 
                     sourceFilePath.MoveTo(dataFilePath);
-                    moToStandartConvertationOperationsList.AppendLine(sourceFilePath + operationsSplitStringBase + dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
+                    lock (moToStandartConvertationOperationsListLocker)
+                    {
+                        moToStandartConvertationOperationsList.AppendLine(sourceFilePath + operationsSplitStringBase + dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
+                    }
+
                     ParsedAny = true;
                 }
                 catch (Exception ex)
@@ -357,7 +366,11 @@ namespace AIHelper.Manage.ModeSwitch
                     ManageModOrganizer.SaveGuidIfZipMod(sourceFilePath, zipmodsGuidList);
 
                     sourceFilePath.MoveTo(dataFilePath);//перенос файла из папки мода в Data
-                    moToStandartConvertationOperationsList.AppendLine(sourceFilePath + operationsSplitStringBase + dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
+                    lock (moToStandartConvertationOperationsListLocker)
+                    {
+                        moToStandartConvertationOperationsList.AppendLine(sourceFilePath + operationsSplitStringBase + dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
+                    }
+
                     ParsedAny = true;
                 }
                 catch (Exception ex)

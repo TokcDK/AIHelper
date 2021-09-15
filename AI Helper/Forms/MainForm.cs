@@ -650,34 +650,13 @@ namespace AIHelper
                 if (!ManageSettings.GetCurrentGameModsDirPath().IsNullOrEmptyDirectory("*", new string[1] { "_separator" }))
                 {
                     ModsInfoLabel.Text = T._("Found mod folders in Mods");
-                    //button1.Enabled = false;
+
                     _mode = 1;
                     MainService.Text = T._("Mods Ready");
-                    //MO2StandartButton.Enabled = true;
+
                     AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
 
-                    //if (File.Exists(Path.Combine(DataPath, ManageSettings.GetCurrentGameEXEName() + ".exe")))
-                    //{
-                    //}
-                    //GetEnableDisableLaunchButtons();
                     MOCommonModeSwitchButton.Text = T._("MOToCommon");
-                }
-
-                {
-                    //if (Directory.Exists(Install2MODirPath))
-                    //{
-                    //    if (Directory.GetFiles(Install2MODirPath, "*.*").Length > 0)
-                    //    {
-                    //        InstallInModsButton.Visible = true;
-                    //        InstallInModsButton.Enabled = true;
-                    //    }
-                    //    string[] InstallModDirs = Directory.GetDirectories(Install2MODirPath, "*").Where(name => !name.EndsWith("Temp", StringComparison.OrdinalIgnoreCase)).ToArray();
-                    //    if (InstallModDirs.Length > 0)
-                    //    {
-                    //        InstallInModsButton.Visible = true;
-                    //        InstallInModsButton.Enabled = true;
-                    //    }
-                    //}
                 }
 
                 LaunchModeInfoLinkLabel.Text = T._("MO mode");
@@ -702,12 +681,11 @@ namespace AIHelper
                 ModsInfoLabel.Visible = false;
 
                 StudioButton.Enabled = false;
-                //MO2StandartButton.Enabled = false;
+
                 MOCommonModeSwitchButton.Text = T._("CommonToMO");
                 MainService.Text = T._("Common mode");
                 LaunchModeInfoLinkLabel.Text = T._("Common mode");
                 MainService.Enabled = false;
-                //AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
             }
 
             AIGirlHelperTabControl.SelectedTab = LaunchTabPage;

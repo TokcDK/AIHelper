@@ -92,57 +92,74 @@ namespace AIHelper.Manage
             }
         }
 
-        internal static Process GetIfExists()
-        {
-            Process current = Process.GetCurrentProcess();
-            foreach (Process process in Process.GetProcessesByName(current.ProcessName))
-            {
-                if (process.Id != current.Id)
-                {
-                    return process;
-                    //SetForegroundWindow(process.MainWindowHandle);
-                    //break;
-                }
-            }
+        ////https://stackoverflow.com/a/5497319
+        //internal static bool TheProcessAlreadyRun(out Process process)
+        //{
+        //    Process current = Process.GetCurrentProcess();
+        //    var wmiQueryString = "SELECT ProcessId, ExecutablePath, CommandLine FROM Win32_Process";
+        //    using (var searcher = new ManagementObjectSearcher(wmiQueryString))
+        //    using (var results = searcher.Get())
+        //    {
+        //        var query = from p in Process.GetProcessesByName(current.ProcessName)
+        //                    join mo in results.Cast<ManagementObject>()
+        //                    on p.Id equals (int)(uint)mo["ProcessId"]
+        //                    select new
+        //                    {
+        //                        Process = p,
+        //                        Path = (string)mo["ExecutablePath"],
+        //                        CommandLine = (string)mo["CommandLine"],
+        //                    };
+        //        var thisPath = Path.Combine(Application.StartupPath, Application.ProductName + ".exe");
+        //        foreach (var item in query)
+        //        {
+        //            if (item.Process.Id != current.Id && item.Path == thisPath)
+        //            {
+        //                process = item.Process;
+        //                return true;
+        //            }
+        //        }
+        //    }
 
-            return null;
-        }
+        //    process = null;
 
-        /// <summary>
-        /// If Mod Organizer Will freeze in memory after main process will be closed then it will try to kill MO exe
-        /// </summary>
-        /// <param name="processName"></param>
-        private static void RunFreezedMoKiller(string processName)
-        {
-            //if (string.IsNullOrEmpty(processName))
-            //{
-            //    return;
-            //}
+        //    return false;
+        //}
 
-            ////https://stackoverflow.com/questions/262280/how-can-i-know-if-a-process-is-running
+        ///// <summary>
+        ///// If Mod Organizer Will freeze in memory after main process will be closed then it will try to kill MO exe
+        ///// </summary>
+        ///// <param name="processName"></param>
+        //private static void RunFreezedMoKiller(string processName)
+        //{
+        //    //if (string.IsNullOrEmpty(processName))
+        //    //{
+        //    //    return;
+        //    //}
 
-            //Thread.Sleep(5000);
-            //while (Process.GetProcessesByName(processName).Length != 0)
-            //{
-            //    Thread.Sleep(5000);
-            //}
+        //    ////https://stackoverflow.com/questions/262280/how-can-i-know-if-a-process-is-running
 
-            //try
-            //{
-            //    if (Process.GetProcessesByName("ModOrganizer").Length != 0)
-            //    {
-            //        foreach (var process in Process.GetProcessesByName("ModOrganizer"))
-            //        {
-            //            process.Kill();
-            //        }
-            //    }
-            //}
-            //catch
-            //{
-            //    MessageBox.Show("AIHelper: Failed to kill one of freezed ModOrganizer.exe. Try to kill it from Task Manager.");
-            //}
+        //    //Thread.Sleep(5000);
+        //    //while (Process.GetProcessesByName(processName).Length != 0)
+        //    //{
+        //    //    Thread.Sleep(5000);
+        //    //}
 
-        }
+        //    //try
+        //    //{
+        //    //    if (Process.GetProcessesByName("ModOrganizer").Length != 0)
+        //    //    {
+        //    //        foreach (var process in Process.GetProcessesByName("ModOrganizer"))
+        //    //        {
+        //    //            process.Kill();
+        //    //        }
+        //    //    }
+        //    //}
+        //    //catch
+        //    //{
+        //    //    MessageBox.Show("AIHelper: Failed to kill one of freezed ModOrganizer.exe. Try to kill it from Task Manager.");
+        //    //}
+
+        //}
 
         internal static void KillProcessesByName(string processName)
         {

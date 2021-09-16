@@ -62,7 +62,7 @@ namespace AIHelper.Manage.Rules.ModList
 
             foundModName = string.Empty;
             HashSet<string> alreadyChecked = new HashSet<string>();
-            foreach (var subModName in ModlistData.AllModsList)
+            foreach (var subModName in ModlistData.AllModNamesList)
             {
                 ///add modname to already checked
                 if (!alreadyChecked.Contains(subModName))
@@ -78,7 +78,7 @@ namespace AIHelper.Manage.Rules.ModList
                         foundModName = subModName;
 
                         //when mod enabled return true and not add
-                        if (ModlistData.EnabledModsList.Contains(foundModName))
+                        if (ModlistData.EnabledModNamesList.Contains(foundModName))
                         {
                             return true;
                         }
@@ -160,7 +160,7 @@ namespace AIHelper.Manage.Rules.ModList
 
         private bool IsRestOfEnabledModsContainsSameFile(HashSet<string> alreadyChecked, string inSubPath)
         {
-            foreach (var modFile in ModlistData.EnabledModsList)
+            foreach (var modFile in ModlistData.EnabledModNamesList)
             {
                 var mFilePath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modFile) + Path.DirectorySeparatorChar + inSubPath;
                 if (!alreadyChecked.Contains(modFile) && File.Exists(mFilePath))
@@ -230,7 +230,7 @@ namespace AIHelper.Manage.Rules.ModList
 
         private bool ParseIncSearchModNameInEnabledMods(string modname, string ruleData)
         {
-            if (ModlistData.EnabledModsList.Contains(ruleData))
+            if (ModlistData.EnabledModNamesList.Contains(ruleData))
             {
                 //if (!modlistData.ModsMustBeDisabledCandidates.Contains(modname))
                 //{
@@ -260,7 +260,7 @@ namespace AIHelper.Manage.Rules.ModList
                 }
                 return true;
             }
-            foreach (var enabledModName in ModlistData.EnabledModsList)
+            foreach (var enabledModName in ModlistData.EnabledModNamesList)
             {
                 var modPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), enabledModName);
                 var targetfilePath = Path.GetFullPath(modPath + Path.DirectorySeparatorChar + ruleData);
@@ -434,9 +434,9 @@ namespace AIHelper.Manage.Rules.ModList
 
         private bool ParseReqSearchModNameInMods(string modname, string ruleData, int modeAndor = 0)
         {
-            if (!ModlistData.EnabledModsList.Contains(ruleData))
+            if (!ModlistData.EnabledModNamesList.Contains(ruleData))
             {
-                if (ModlistData.AllModsList.Contains(ruleData))
+                if (ModlistData.AllModNamesList.Contains(ruleData))
                 {
                     if (modeAndor > 0)
                     {

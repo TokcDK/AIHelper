@@ -19,14 +19,12 @@ namespace AIHelper.Manage.Update.Targets.Mods
         internal override Dictionary<string, string> GetUpdateInfos()
         {
             var infos = new Dictionary<string, string>();
-            string[] modsList = null;
+            string[] modNamesList = null;
             try
             {
-                modsList = ManageModOrganizer.GetModNamesListFromActiveMoProfile(SharedData.GameData.MainForm.CheckEnabledModsOnlyLabel.IsChecked());
                 var updateInfoList = GetUpdateInfosFromFile();
-
                 if (updateInfoList != null && updateInfoList.Count > 0)
-                    foreach (var modname in modsList)
+                    foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(SharedData.GameData.MainForm.CheckEnabledModsOnlyLabel.IsChecked()))
                     {
                         var modPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modname);
                         if (updateInfoList.ContainsKey(modname) && !infos.ContainsKey(modPath))
@@ -37,7 +35,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
             }
             catch (Exception ex)
             {
-                ManageLogs.Log("An error while get update infos:\r\n" + ex + "\r\ninfos count=" + infos.Count + (modsList != null ? "\r\nModsList count=" + modsList.Length : "ModsList is null"));
+                ManageLogs.Log("An error while get update infos:\r\n" + ex + "\r\ninfos count=" + infos.Count + (modNamesList != null ? "\r\nModsList count=" + modNamesList.Length : "ModsList is null"));
             }
 
             return infos;

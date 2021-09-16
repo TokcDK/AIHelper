@@ -21,8 +21,8 @@ namespace AIHelper.Manage
             {
                 var modlistBackupFilePath = ManageModOrganizer.MakeMoProfileModlistFileBuckup("_prefixes");
 
-                _modlistData.AllModsList = ManageModOrganizer.GetModNamesListFromActiveMoProfile(false);
-                _modlistData.EnabledModsList = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
+                _modlistData.AllModNamesList = ManageModOrganizer.GetModNamesListFromActiveMoProfile(false);
+                _modlistData.EnabledModNamesList = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
 
                 using (var checkForm = new Form())
                 {
@@ -33,11 +33,11 @@ namespace AIHelper.Manage
                     using (var checkProgress = new ProgressBar())
                     {
                         checkProgress.Dock = DockStyle.Fill;
-                        checkProgress.Maximum = _modlistData.EnabledModsList.Length;
+                        checkProgress.Maximum = _modlistData.EnabledModNamesList.Length;
                         var cnt = 0;
                         checkForm.Controls.Add(checkProgress);
                         checkForm.Show();
-                        foreach (var modName in _modlistData.EnabledModsList)
+                        foreach (var modName in _modlistData.EnabledModNamesList)
                         {
                             if (string.IsNullOrWhiteSpace(modName))
                             {
@@ -177,7 +177,7 @@ namespace AIHelper.Manage
 
                 if (!File.Exists(cfgpath))
                 {
-                    foreach (var modName in _modlistData.EnabledModsList)
+                    foreach (var modName in _modlistData.EnabledModNamesList)
                     {
                         if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modName, "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg")))
                         {

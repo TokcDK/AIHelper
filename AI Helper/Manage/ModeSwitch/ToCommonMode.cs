@@ -134,13 +134,13 @@ namespace AIHelper.Manage.ModeSwitch
                 ParseDirectories(sourceFolder, sourceFolder);
 
                 // MODS
-                string[] enabledModsList = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
-                if (!ParsedAny && enabledModsList.Length == 0)
+                var enabledModNamesList = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
+                if (!ParsedAny && enabledModNamesList.Length == 0)
                 {
                     MessageBox.Show(T._("There is no enabled mods or files in Overwrite"));
                     return;
                 }
-                var enabledModsLength = enabledModsList.Length;
+                var enabledModsLength = enabledModNamesList.Length;
                 pbProgress.Maximum = enabledModsLength;
                 for (int m = 0; m < enabledModsLength; m++)
                 {
@@ -149,7 +149,7 @@ namespace AIHelper.Manage.ModeSwitch
                         pbProgress.Value = m;
                     }
 
-                    sourceFolder = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), enabledModsList[m]);
+                    sourceFolder = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), enabledModNamesList[m]);
                     if (!Directory.Exists(sourceFolder))
                     {
                         continue;

@@ -119,9 +119,7 @@ namespace AIHelper.Install.Types.Files.Archive
                         author = copyright.Remove(copyright.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim();
                     }
 
-                    string[] modsList = ManageModOrganizer.GetModNamesListFromActiveMoProfile(false);
-
-                    foreach (var modFolder in modsList)
+                    foreach (var modFolder in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(false))
                     {
                         modFolderForUpdate = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modFolder);
                         string targetfile = Path.Combine(modFolderForUpdate, entryFullName);

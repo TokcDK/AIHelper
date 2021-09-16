@@ -799,7 +799,7 @@ namespace AIHelper.Manage
             ParseLinkInfo(new FileInfo(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), infoFileName)));
 
             //check mod dirs
-            Parallel.ForEach(ManageModOrganizer.GetModNamesListFromActiveMoProfile(true), modName =>
+            Parallel.ForEach(ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(), modName =>
             {
                 var dir = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modName);
                 linkInfosList.AddExistFilePathsUsing(dir, infoFileName);
@@ -3479,8 +3479,7 @@ namespace AIHelper.Manage
 
                 //поиск по списку модов
                 string modsPath = ManageSettings.GetCurrentGameModsDirPath();
-                var modNames = GetModNamesListFromActiveMoProfile(onlyEnabled);
-                foreach (var modName in modNames)
+                foreach (var modName in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(onlyEnabled))
                 {
                     string possiblePath = Path.Combine(modsPath, modName) + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
 
@@ -3573,12 +3572,9 @@ namespace AIHelper.Manage
         {
             if (!string.IsNullOrWhiteSpace(name))
             {
-                string[] modList = GetModNamesListFromActiveMoProfile(onlyFromEnabledMods);
                 int nameLength = name.Length;
-                int modListLength = modList.Length;
-                for (int modlineNumber = 0; modlineNumber < modListLength; modlineNumber++)
+                foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(onlyFromEnabledMods))
                 {
-                    string modname = modList[modlineNumber];
                     if (modname.Length >= nameLength && ManageStrings.IsStringAContainsStringB(modname, name))
                     {
                         return modname;

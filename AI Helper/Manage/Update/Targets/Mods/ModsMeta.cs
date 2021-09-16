@@ -29,8 +29,6 @@ namespace AIHelper.Manage.Update.Targets.Mods
         {
             var infos = new Dictionary<string, string>();
 
-            var modsList = ManageModOrganizer.GetModNamesListFromActiveMoProfile(SharedData.GameData.MainForm.CheckEnabledModsOnlyLabel.IsChecked());
-
             _targetinfo = new ModInfo();
 
             _dBs = new List<ModsMetaUrlBase>
@@ -38,7 +36,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
                 new Xua(_targetinfo)
             };
 
-            foreach (var modname in modsList)
+            foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(SharedData.GameData.MainForm.CheckEnabledModsOnlyLabel.IsChecked()))
             {
                 var modPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modname);
 

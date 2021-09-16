@@ -6,8 +6,8 @@ namespace AIHelper.Manage.Rules.ModList
 {
     internal class ModListData
     {
-        internal string[] AllModsList;
-        internal string[] EnabledModsList;
+        internal string[] AllModNamesList;
+        internal string[] EnabledModNamesList;
         internal Dictionary<string, string> ModsMustBeEnabled = new Dictionary<string, string>();
         internal Dictionary<string, string> ModsMustBeDisabled = new Dictionary<string, string>();
         internal Dictionary<string, string> ModsMustBeEnabledCandidates = new Dictionary<string, string>();

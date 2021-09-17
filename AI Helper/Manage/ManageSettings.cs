@@ -998,6 +998,16 @@ namespace AIHelper.Manage
             return "linkinfo.txt";
         }
 
+        /// <summary>
+        /// overall path file where contains info to create symlinks
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetOverallLinkInfoFilePath()
+        {
+            return Path.Combine(GetCurrentGameDirPath(), GetLinkInfoFileName());
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string UpdateReportHtmlFileName()
         {

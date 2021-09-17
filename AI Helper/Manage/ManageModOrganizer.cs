@@ -788,15 +788,25 @@ namespace AIHelper.Manage
         /// </summary>
         internal static void MakeLinks()
         {
+            if (File.Exists(ManageSettings.GetOverallLinkInfoFilePath()))
+            {
+                ParseLinkInfo(new FileInfo(ManageSettings.GetOverallLinkInfoFilePath()), out List<string> _, true);
+
+                return;
+            }
+
             var linkInfosList = new List<string>();
-
             var infoFileName = ManageSettings.GetLinkInfoFileName();
-
             //check overwrite
             linkInfosList.AddExistFilePathsUsing(ManageSettings.GetCurrentGameOverwriteFolderPath(), infoFileName);
 
+            var modsLinkInfoFile = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), infoFileName);
             //create link for mods root info file
-            ParseLinkInfo(new FileInfo(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), infoFileName)));
+            //ParseLinkInfo(modsLinkInfoFile);
+            if (File.Exists(modsLinkInfoFile))
+            {
+                linkInfosList.Add(modsLinkInfoFile);
+            }
 
             //check mod dirs
             Parallel.ForEach(ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(), modName =>
@@ -804,22 +814,38 @@ namespace AIHelper.Manage
                 var dir = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modName);
                 linkInfosList.AddExistFilePathsUsing(dir, infoFileName);
             });
-            
+
             // create links
             // parallel iterate mods because mod order is not important here
+            var sw = new StreamWriter(ManageSettings.GetOverallLinkInfoFilePath());
             Parallel.ForEach(linkInfosList, file =>
             {
-                ParseLinkInfo(new FileInfo(file));
+                if (ParseLinkInfo(new FileInfo(file), out List<string> newLines, false))
+                {
+                    sw.WriteLineAsync(string.Join(Environment.NewLine, newLines));// write lines in new file
+                }
             });
+            sw.Dispose();
         }
 
-        private static void ParseLinkInfo(FileInfo linkinfo)
+        private static bool ParseLinkInfo(FileInfo linkinfo, out List<string> newLines, bool overall = false)
         {
+            newLines = new List<string>();
             if (!linkinfo.Exists || linkinfo.Length == 0)
             {
                 // skip if link info file is empty
-                return;
+                return false;
             }
+
+            int minDataSize = 2;
+            int maxDataSize = 3;
+            if (overall)
+            {
+                minDataSize = 3;
+                maxDataSize = 4;
+            }
+
+            var ret = false;
 
             using (StreamReader reader = new StreamReader(linkinfo.FullName))
             {
@@ -834,11 +860,11 @@ namespace AIHelper.Manage
 
                     var info = line.Split(',');
                     var infoLength = info.Length;
-                    if (infoLength < 2 || infoLength > 3)
+                    if (infoLength < minDataSize || infoLength > maxDataSize)
                     {
                         continue;
                     }
-                    bool HasTargetLinkNameSet = infoLength == 3; // if set target link name, use it else use object name
+                    bool HasTargetLinkNameSet = infoLength == maxDataSize; // if set target link name, use it else use object name
 
                     bool IsDir = info[0] == "d";
                     if (!IsDir && info[0] != "f")
@@ -847,13 +873,17 @@ namespace AIHelper.Manage
                         continue;
                     }
 
-                    if (HasTargetLinkNameSet && ManageFilesFoldersExtensions.ContainsAnyInvalidCharacters(info[2]))
+                    if (HasTargetLinkNameSet && ManageFilesFoldersExtensions.ContainsAnyInvalidCharacters(info[minDataSize]))
                     {
                         // if target link name has invalid chars
-                        continue;
+                        //continue;
+
+                        // skip name because it invalid
+                        HasTargetLinkNameSet = false;
+                        info = info.Take(minDataSize).ToArray();
                     }
 
-                    var targetObjectPath = info[1].IndexOf(".\\") != -1 ? Path.GetFullPath(linkinfo.Directory.FullName + Path.DirectorySeparatorChar + info[1]) // get full path if it was relative. current directory will be linkinfo file's directory
+                    var targetObjectPath = info[1].IndexOf(".\\") != -1 ? Path.GetFullPath((overall ? Path.GetDirectoryName(info[2]) : linkinfo.Directory.FullName) + Path.DirectorySeparatorChar + info[1]) // get full path if it was relative. current directory will be linkinfo file's directory
                         : info[1]; // path is not relative
 
                     if (ManageFilesFoldersExtensions.ContainsAnyInvalidCharacters(targetObjectPath))
@@ -885,14 +915,18 @@ namespace AIHelper.Manage
                         }
                     }
 
-                    var symlinkPath = Path.Combine(linkinfo.Directory.FullName,
-                        HasTargetLinkNameSet ? info[2] : Path.GetFileName(targetObjectPath)); // get object name or name from info is was set
+                    string linkParentDirPath = overall ? Path.GetDirectoryName(info[minDataSize - 1]) : linkinfo.Directory.FullName;
+                    var symlinkPath = Path.Combine(linkParentDirPath,
+                    HasTargetLinkNameSet ? info[minDataSize] : Path.GetFileName(targetObjectPath)); // get object name or name from info is was set
+
+                    newLines.Add((IsDir ? "d" : "f") + "," + targetObjectPath + "," + symlinkPath + (HasTargetLinkNameSet ? "," + info[minDataSize] : string.Empty));
 
                     if (symlinkPath.Exists(IsDir))
                     {
                         bool isLink;
                         if ((isLink = symlinkPath.IsSymlink(targetObjectType) && symlinkPath.GetSymlinkTarget(targetObjectType) == targetObjectPath) || (!IsDir || !symlinkPath.IsEmptyDir()))
                         {
+                            ret = true;
                             // skip if not synlink or exists symlink with valid target
                             continue;
                         }
@@ -915,10 +949,120 @@ namespace AIHelper.Manage
                         , isRelative: false
                         , objectType: targetObjectType);
 
+                    ret = true;
                     //return; // info found, stop read file // commented because can be several links now
                 }
+
+                return ret;
             }
         }
+
+        //private static void ParseLinkInfo(FileInfo linkinfo)
+        //{
+        //    if (!linkinfo.Exists || linkinfo.Length == 0)
+        //    {
+        //        // skip if link info file is empty
+        //        return;
+        //    }
+
+        //    using (StreamReader reader = new StreamReader(linkinfo.FullName))
+        //    {
+        //        string line;
+        //        while ((line = reader.ReadLine()) != null)
+        //        {
+        //            if (string.IsNullOrWhiteSpace(line) || line.StartsWith(";"))
+        //            {
+        //                // skip empty lines and comments
+        //                continue;
+        //            }
+
+        //            var info = line.Split(',');
+        //            var infoLength = info.Length;
+        //            if (infoLength < 2 || infoLength > 3)
+        //            {
+        //                continue;
+        //            }
+        //            bool HasTargetLinkNameSet = infoLength == 3; // if set target link name, use it else use object name
+
+        //            bool IsDir = info[0] == "d";
+        //            if (!IsDir && info[0] != "f")
+        //            {
+        //                // if type is incorrect or info invalid
+        //                continue;
+        //            }
+
+        //            if (HasTargetLinkNameSet && ManageFilesFoldersExtensions.ContainsAnyInvalidCharacters(info[2]))
+        //            {
+        //                // if target link name has invalid chars
+        //                continue;
+        //            }
+
+        //            var targetObjectPath = info[1].IndexOf(".\\") != -1 ? Path.GetFullPath(linkinfo.Directory.FullName + Path.DirectorySeparatorChar + info[1]) // get full path if it was relative. current directory will be linkinfo file's directory
+        //                : info[1]; // path is not relative
+
+        //            if (ManageFilesFoldersExtensions.ContainsAnyInvalidCharacters(targetObjectPath))
+        //            {
+        //                // if object path has invalid chars
+        //                continue;
+        //            }
+
+        //            // skip if target object is not exists
+        //            if (!targetObjectPath.Exists(IsDir))
+        //            {
+        //                continue;
+        //            }
+
+        //            var targetObjectType = IsDir ? ObjectType.Directory : ObjectType.File;
+
+        //            if (targetObjectPath.IsSymlink(targetObjectType))
+        //            {
+        //                if (targetObjectPath.IsValidSymlink())
+        //                {
+        //                    // get symlink target if object is symlink
+        //                    targetObjectPath = targetObjectPath.GetSymlinkTarget(targetObjectType);
+        //                }
+        //                else
+        //                {
+        //                    ManageLogs.Log("Warning! Link info file has invalid simlink as target of path. File:" + linkinfo.FullName + "\r\n");
+        //                    // skip if target object is invalid symlink
+        //                    continue;
+        //                }
+        //            }
+
+        //            var symlinkPath = Path.Combine(linkinfo.Directory.FullName,
+        //                HasTargetLinkNameSet ? info[2] : Path.GetFileName(targetObjectPath)); // get object name or name from info is was set
+
+        //            if (symlinkPath.Exists(IsDir))
+        //            {
+        //                bool isLink;
+        //                if ((isLink = symlinkPath.IsSymlink(targetObjectType) && symlinkPath.GetSymlinkTarget(targetObjectType) == targetObjectPath) || (!IsDir || !symlinkPath.IsEmptyDir()))
+        //                {
+        //                    // skip if not synlink or exists symlink with valid target
+        //                    continue;
+        //                }
+        //                else
+        //                {
+        //                    // delene invalid symlink
+        //                    if (IsDir)
+        //                    {
+        //                        Directory.Delete(symlinkPath);
+        //                    }
+        //                    else
+        //                    {
+        //                        File.Delete(symlinkPath);
+        //                    }
+        //                }
+        //            }
+
+        //            // create symlink
+        //            targetObjectPath.CreateSymlink(symlinkPath
+        //                , isRelative: false
+        //                , objectType: targetObjectType);
+
+        //            //return; // info found, stop read file // commented because can be several links now
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// detect female or male uncensors in dir

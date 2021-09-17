@@ -220,29 +220,29 @@ namespace AIHelper.Manage
         /// <param name="linktargetPathIsRelative"></param>
         internal static void ReCreateFileLinkWhenNotValid(this string symlinkPath, string targetFilePath, bool linktargetPathIsRelative = false)
         {
-            if (
-                //если целевой файл выбранной игры существует
-                File.Exists(targetFilePath)
-               )
+            if (!File.Exists(targetFilePath))
             {
-                if (targetFilePath != symlinkPath && !IsValidSymlink(symlinkPath, targetFilePath))
-                {
-                    if (File.Exists(symlinkPath))
-                    {
-                        File.Delete(symlinkPath);
-                    }
-
-                    ManageSymLinkExtensions.CreateSymlink
-                      (
-                       targetFilePath
-                       ,
-                       symlinkPath
-                       ,
-                       linktargetPathIsRelative
-                      );
-                }
-
+                return;
             }
+
+            if (targetFilePath == symlinkPath || symlinkPath.GetSymlinkTarget() == targetFilePath)
+            {
+                return;
+            }
+
+            if (File.Exists(symlinkPath))
+            {
+                File.Delete(symlinkPath);
+            }
+
+            ManageSymLinkExtensions.CreateSymlink
+              (
+               targetFilePath
+               ,
+               symlinkPath
+               ,
+               linktargetPathIsRelative
+              );
 
         }
 
@@ -284,8 +284,8 @@ namespace AIHelper.Manage
         public static bool CreateSymlink(this string objectFileDirPath, string symlinkPath, bool isRelative = false, ObjectType objectType = ObjectType.NotDefined)
         {
             // skip if empty or equal values
-            if (string.IsNullOrWhiteSpace(symlinkPath) 
-                || string.IsNullOrWhiteSpace(objectFileDirPath) 
+            if (string.IsNullOrWhiteSpace(symlinkPath)
+                || string.IsNullOrWhiteSpace(objectFileDirPath)
                 || string.Equals(objectFileDirPath, symlinkPath, System.StringComparison.InvariantCultureIgnoreCase))
             {
                 return false;
@@ -307,10 +307,15 @@ namespace AIHelper.Manage
                 if (objectType == ObjectType.File)
                 {
                     // if objectType is set to file or dir objectPath will no set
-                    if(objectPath == null)
+                    if (objectPath == null)
                     {
                         objectPath = ManageModOrganizer.GetLastPath(objectFileDirPath);
                     }
+                }
+
+                if (string.Equals(objectPath, symlinkPath, System.StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return false;
                 }
 
                 if (!File.Exists(objectPath))
@@ -319,45 +324,43 @@ namespace AIHelper.Manage
                 }
 
                 var fi = new FileInfo(symlinkPath);
-                bool IsInvalidSymlink = false;
-                if ((objectPath != symlinkPath && !File.Exists(symlinkPath))
-                    || (IsInvalidSymlink =
-                            (fi.IsSymlink()
-                            &&
-                            !fi.IsValidSymlink())
-                        )
-                   )
+
+                if (File.Exists(symlinkPath) && fi.IsSymlink())
                 {
-                    if (IsInvalidSymlink && File.Exists(symlinkPath))
+                    if (string.Equals(Path.GetFullPath(fi.GetSymlinkTarget()), objectPath, System.StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        return false;
+                    }
+                    else
                     {
                         File.Delete(symlinkPath);
                     }
-
-                    CheckParentDirForSymLink(symlinkPath); // prevent error of missing dir
-
-                    // create parent dir
-                    if (fi.Directory.Root != fi.Directory)
-                    {
-                        fi.Directory.Create();
-                    }
-
-                    var objectInfo = new FileInfo(objectPath);
-                    if (isRelative)
-                    {
-                        isRelative = objectInfo.Directory.Root == new FileInfo(symlinkPath).Directory.Root;
-                    }
-
-                    try
-                    {
-                        objectInfo.CreateSymbolicLink(symlinkPath, isRelative);//new from NuGet package
-                    }
-                    catch (IOException ex)
-                    {
-                        ManageLogs.Log("An error accured while tried to create symlink. creation skipped. error:" + ex.Message);
-                    }
-
-                    return true;
                 }
+
+                CheckParentDirForSymLink(symlinkPath); // prevent error of missing dir
+
+                // create parent dir
+                if (fi.Directory.Root != fi.Directory)
+                {
+                    fi.Directory.Create();
+                }
+
+                var objectInfo = new FileInfo(objectPath);
+                if (isRelative)
+                {
+                    isRelative = objectInfo.Directory.Root == new FileInfo(symlinkPath).Directory.Root;
+                }
+
+                try
+                {
+                    objectInfo.CreateSymbolicLink(symlinkPath, isRelative);//new from NuGet package
+                }
+                catch (IOException ex)
+                {
+                    ManageLogs.Log("An error accured while tried to create symlink. creation skipped. error:" + ex.Message);
+                }
+
+                return true;
             }
             else if ((objectType == ObjectType.NotDefined && Directory.Exists(objectPath = ManageModOrganizer.GetLastPath(objectFileDirPath, isDir: true)))
                 || objectType == ObjectType.Directory)
@@ -365,12 +368,17 @@ namespace AIHelper.Manage
                 if (objectType == ObjectType.Directory)
                 {
                     // if objectType is set to file or dir objectPath will no set
-                    if(objectPath == null)
+                    if (objectPath == null)
                     {
                         objectPath = ManageModOrganizer.GetLastPath(objectFileDirPath, isDir: true);
                     }
 
                     Directory.CreateDirectory(objectPath); // create dir if setlastpath returned input dir path and the dir is not exists
+                }
+
+                if (string.Equals(objectPath, symlinkPath, System.StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return false;
                 }
 
                 // NOTE
@@ -379,44 +387,56 @@ namespace AIHelper.Manage
                 // and Directory.Exists will be true the link can be not able to be opened with explorer or will throw
                 // exception for methods like Directory.GetFiles
                 var di = new DirectoryInfo(symlinkPath);
-                bool IsInvalidSymlink = false;
-                if ((objectPath != symlinkPath && !Directory.Exists(symlinkPath)) || (IsInvalidSymlink = (di.IsSymlink() && !di.IsValidSymlink())))
+                var objectInfo = new DirectoryInfo(objectPath);
+                if (Directory.Exists(symlinkPath))
                 {
-                    var objectInfo = new DirectoryInfo(objectPath);
-
-                    if (Directory.Exists(symlinkPath))
+                    if (di.IsSymlink()) // is symlink
                     {
-                        if (IsInvalidSymlink || symlinkPath.IsNullOrEmptyDirectory())
+                        if (string.Equals(Path.GetFullPath(di.GetSymlinkTarget()), objectPath, System.StringComparison.InvariantCultureIgnoreCase))
                         {
-                            Directory.Delete(symlinkPath);
+                            // valid symlink with object path equal to required
+                            return false;
                         }
                         else
                         {
-                            di.MoveAll(objectInfo);
+                            // invalid symlink with different object path
+                            Directory.Delete(symlinkPath);
                         }
                     }
-
-                    CheckParentDirForSymLink(symlinkPath);
-
-                    // create parent dir
-                    if (di.Root != di.Parent)
+                    else if (symlinkPath.IsNullOrEmptyDirectory()) // empty directory
                     {
-                        di.Parent.Create();
+                        Directory.Delete(symlinkPath);
                     }
-                    if (isRelative)
+                    else if (di.FullName.Replace(ManageSettings.GetCurrentGameDataPath(), string.Empty) != di.FullName) // is data path of current game
                     {
-                        isRelative = objectInfo.Root == new DirectoryInfo(symlinkPath).Root;
+                        di.MoveAll(objectInfo); // move from Data subdir to object dir
                     }
-
-                    try
+                    else
                     {
-                        objectInfo.CreateSymbolicLink(symlinkPath, isRelative);//new from NuGet package
-                                                                                                  //CreateSymlink.Folder(file, symlink); //old
+                        // directory exists and not link or not empty
+                        return false;
                     }
-                    catch (IOException ex) { ManageLogs.Log("An error accured while tried to create symlink. creation skipped. error:" + ex.Message); }
-
-                    return true;
                 }
+
+                CheckParentDirForSymLink(symlinkPath);
+
+                // create parent dir
+                if (di.Root != di.Parent)
+                {
+                    di.Parent.Create();
+                }
+                if (isRelative)
+                {
+                    isRelative = objectInfo.Root == new DirectoryInfo(symlinkPath).Root;
+                }
+
+                try
+                {
+                    objectInfo.CreateSymbolicLink(symlinkPath, isRelative);//new from NuGet package
+                }
+                catch (IOException ex) { ManageLogs.Log("An error accured while tried to create symlink. creation skipped. error:" + ex.Message); }
+
+                return true;
 
             }
 

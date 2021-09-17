@@ -76,6 +76,18 @@ namespace AIHelper.Install.Types.Directories
             Directory.CreateDirectory(_bakDir);
 
             // proceed update actions
+            if (ProceedRemoveDirs())
+            {
+                updated = true;
+            }
+
+            // proceed update actions
+            if (ProceedRemoveFiles())
+            {
+                updated = true;
+            }
+
+            // proceed update actions
             if (ProceedUpdateMods())
             {
                 updated = true;
@@ -93,24 +105,6 @@ namespace AIHelper.Install.Types.Directories
             }
 
             // proceed update actions
-            if (ProceedRemoveDirs())
-            {
-                updated = true;
-            }
-
-            // proceed update actions
-            if (ProceedRemoveFiles())
-            {
-                updated = true;
-            }
-
-            // proceed update actions
-            if (ProceedRemoveUnusedSeparators())
-            {
-                updated = true;
-            }
-
-            // proceed update actions
             if (ProceedCreateDirs())
             {
                 updated = true;
@@ -118,6 +112,12 @@ namespace AIHelper.Install.Types.Directories
 
             // proceed update actions
             if (ProceedCreateFiles())
+            {
+                updated = true;
+            }
+
+            // proceed update actions
+            if (ProceedRemoveUnusedSeparators())
             {
                 updated = true;
             }

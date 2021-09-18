@@ -917,13 +917,17 @@ namespace AIHelper.Manage
                         }
                     }
 
-                    string linkParentDirPath = overall ? (info[minDataSize - 1].IndexOf(".\\") != -1 ? Path.GetDirectoryName(Path.GetFullPath(Path.Combine(ManageSettings.GetCurrentGameParentDirPath(), info[minDataSize - 1]))) // if relative path then get full path from current game dir
+                    string s;
+                    string linkParentDirPath = overall ? (info[minDataSize - 1].IndexOf(".\\") != -1 ? s= Path.GetDirectoryName(Path.GetFullPath(Path.Combine(ManageSettings.GetCurrentGameDirPath(), info[minDataSize - 1]))) // if relative path then get full path from current game dir
                         : Path.GetDirectoryName(info[minDataSize - 1]))
                         : linkinfo.Directory.FullName; // for old linkinfo
                     var symlinkPath = Path.Combine(linkParentDirPath,
                     HasTargetLinkNameSet ? info[minDataSize] : Path.GetFileName(targetObjectPath)); // get object name or name from info is was set
 
-                    newLines.Add((IsDir ? "d" : "f") + "," + targetObjectPath + "," + symlinkPath + (HasTargetLinkNameSet ? "," + info[minDataSize] : string.Empty));
+                    if(!overall)
+                    {
+                        newLines.Add((IsDir ? "d" : "f") + "," + targetObjectPath + "," + symlinkPath + (HasTargetLinkNameSet ? "," + info[minDataSize] : string.Empty));
+                    }
 
                     if (symlinkPath.Exists(IsDir))
                     {

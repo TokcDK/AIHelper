@@ -157,8 +157,4 @@ namespace AIHelper.Manage.Update.Sources
             }
         }
     }
-
-    public class SourceWebClient : WebClient
-    {
-    }
 }

@@ -873,6 +873,7 @@ namespace AIHelper.Manage
                         continue;
                     }
 
+
                     if (HasTargetLinkNameSet && ManageFilesFoldersExtensions.ContainsAnyInvalidCharacters(info[minDataSize]))
                     {
                         // if target link name has invalid chars
@@ -883,14 +884,15 @@ namespace AIHelper.Manage
                         info = info.Take(minDataSize).ToArray();
                     }
 
-                    var targetObjectPath = info[1].IndexOf(".\\") != -1 ? Path.GetFullPath((overall ? Path.GetDirectoryName(info[2]) : linkinfo.Directory.FullName) + Path.DirectorySeparatorChar + info[1]) // get full path if it was relative. current directory will be linkinfo file's directory
-                        : info[1]; // path is not relative
-
-                    if (ManageFilesFoldersExtensions.ContainsAnyInvalidCharacters(targetObjectPath))
+                    info[1] = ConvertVars(info[1]);
+                    if (ManageFilesFoldersExtensions.ContainsAnyInvalidCharacters(info[1]))
                     {
                         // if object path has invalid chars
                         continue;
                     }
+
+                    var targetObjectPath = info[1].IndexOf(".\\") != -1 ? Path.GetFullPath((overall ? Path.GetDirectoryName(info[2]) : linkinfo.Directory.FullName) + Path.DirectorySeparatorChar + info[1]) // get full path if it was relative. current directory will be linkinfo file's directory
+                        : info[1]; // path is not relative
 
                     // skip if target object is not exists
                     if (!targetObjectPath.Exists(IsDir))
@@ -916,7 +918,7 @@ namespace AIHelper.Manage
                     }
 
                     string linkParentDirPath = overall ? (info[minDataSize - 1].IndexOf(".\\") != -1 ? Path.GetDirectoryName(Path.GetFullPath(Path.Combine(ManageSettings.GetCurrentGameParentDirPath(), info[minDataSize - 1]))) // if relative path then get full path from current game dir
-                        : Path.GetDirectoryName(info[minDataSize - 1])) 
+                        : Path.GetDirectoryName(info[minDataSize - 1]))
                         : linkinfo.Directory.FullName; // for old linkinfo
                     var symlinkPath = Path.Combine(linkParentDirPath,
                     HasTargetLinkNameSet ? info[minDataSize] : Path.GetFileName(targetObjectPath)); // get object name or name from info is was set
@@ -957,6 +959,47 @@ namespace AIHelper.Manage
 
                 return ret;
             }
+        }
+
+        /// <summary>
+        /// convert vars to paths
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
+        private static string ConvertVars(string inputString)
+        {
+            inputString = GetTargetGamePath(inputString);
+
+            return inputString;
+        }
+
+        /// <summary>
+        /// replace var like %game:Koikatsu% to first found dir path
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
+        private static string GetTargetGamePath(string inputString)
+        {
+            //example: %game:Koikatsu%
+            if (inputString.Contains("%game:"))
+            {
+                var regexMatch = Regex.Match(inputString, "%game:([^%]+)%");
+
+                var gameDirName = regexMatch.Groups[1].Value;
+                foreach (var game in GameData.ListOfGames)
+                {
+                    if (game.GameDirInfo.Name == gameDirName)
+                    {
+                        // return path with the variable %game:Gamename% replaced to 1st game found path
+                        return inputString.Replace("%game:" + gameDirName + "%", game.GameDirInfo.FullName);
+                    }
+                }
+
+                return inputString.Replace("%game:" + gameDirName + "%", gameDirName);// else just replace by extracted name
+
+            }
+
+            return inputString;
         }
 
         //private static void ParseLinkInfo(FileInfo linkinfo)

@@ -68,12 +68,13 @@ namespace AIHelper.Manage.Update.Sources
         {
             if (WC == null)
             {
-                WC = new WebClientEx(OnlineTranslatorCookies ?? new CookieContainer());
+                WC = new WebClientEx(OnlineTranslatorCookies ?? new CookieContainer())
+                {
+                    Encoding = Encoding.UTF8
+                };
+
+                WC.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.Chrome_Iron_Win7);
             }
-
-            WC.Encoding = Encoding.UTF8;
-
-            WC.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.Chrome_Iron_Win7);
 
             WC.DownloadProgressChanged += DownloadProgressChanged;
 

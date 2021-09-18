@@ -76,6 +76,18 @@ namespace AIHelper.Install.Types.Directories
             Directory.CreateDirectory(_bakDir);
 
             // proceed update actions
+            if (ProceedRenameDirs())
+            {
+                updated = true;
+            }
+
+            // proceed update actions
+            if (ProceedRenameFiles())
+            {
+                updated = true;
+            }
+
+            // proceed update actions
             if (ProceedRemoveDirs())
             {
                 updated = true;
@@ -145,6 +157,110 @@ namespace AIHelper.Install.Types.Directories
             }
 
             return updated;
+        }
+
+        private bool ProceedRenameFiles()
+        {
+            string gameDir = ManageSettings.GetCurrentGameDirPath();
+            string value = updateInfo.RenameFiles;
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return false;
+            }
+
+            var ret = false;
+
+            foreach (var data in value.Split(new[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                try
+                {
+                    var renData = data.Split(':');
+                    if (renData.Length != 2)
+                    {
+                        continue;
+                    }
+
+                    var subPath = renData[0];
+                    var renName = renData[1];
+
+                    var targetPath = gameDir + Path.DirectorySeparatorChar + subPath;
+
+                    if (!File.Exists(targetPath))
+                    {
+                        continue;
+                    }
+
+
+                    ret = true;
+
+                    var newPath = Path.Combine(Path.GetDirectoryName(targetPath), renName);
+                    if (File.Exists(newPath))
+                    {
+                        // move to bak if exists new path
+                        File.Move(targetPath, _bakDir + Path.DirectorySeparatorChar + subPath);
+                    }
+                    else
+                    {
+                        // rename dir to new
+                        File.Move(targetPath, newPath);
+                    }
+                }
+                catch { }
+            }
+
+            return ret;
+        }
+
+        private bool ProceedRenameDirs()
+        {
+            string gameDir = ManageSettings.GetCurrentGameDirPath();
+            string value = updateInfo.RenameDirs;
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return false;
+            }
+
+            var ret = false;
+
+            foreach (var data in value.Split(new[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                try
+                {
+                    var renData = data.Split(':');
+                    if (renData.Length != 2)
+                    {
+                        continue;
+                    }
+
+                    var subPath = renData[0];
+                    var renName = renData[1];
+
+                    var targetPath = gameDir + Path.DirectorySeparatorChar + subPath;
+
+                    if (!Directory.Exists(targetPath))
+                    {
+                        continue;
+                    }
+
+
+                    ret = true;
+
+                    var newPath = Path.Combine(Path.GetDirectoryName(targetPath), renName);
+                    if (Directory.Exists(newPath))
+                    {
+                        // move to bak if exists new path
+                        Directory.Move(targetPath, _bakDir + Path.DirectorySeparatorChar + subPath);
+                    }
+                    else
+                    {
+                        // rename dir to new
+                        Directory.Move(targetPath, newPath);
+                    }
+                }
+                catch { }
+            }
+
+            return ret;
         }
 
         private bool ProceedFixes()
@@ -595,6 +711,8 @@ namespace AIHelper.Install.Types.Directories
             { nameof(UpdateMods), "false" },
             { nameof(IsRoot), "false" },
             { nameof(UpdateMO), "false" },
+            { nameof(RenameFiles), string.Empty },
+            { nameof(RenameDirs), string.Empty },
             { nameof(RemoveFiles), string.Empty },
             { nameof(RemoveDirs), string.Empty },
             { nameof(RemoveUnusedSeparators), "false" },
@@ -628,6 +746,14 @@ namespace AIHelper.Install.Types.Directories
         /// Root means aihelper root dir as update dir root
         /// </summary>
         internal string IsRoot { get => Keys[nameof(IsRoot)]; set => Keys[nameof(IsRoot)] = value; }
+        /// <summary>
+        /// List of files to remove
+        /// </summary>
+        public string RenameFiles { get => Keys[nameof(RenameFiles)]; set => Keys[nameof(RenameFiles)] = value; }
+        /// <summary>
+        /// List of dirs to remove
+        /// </summary>
+        public string RenameDirs { get => Keys[nameof(RenameDirs)]; set => Keys[nameof(RenameDirs)] = value; }
         /// <summary>
         /// List of files to remove
         /// </summary>

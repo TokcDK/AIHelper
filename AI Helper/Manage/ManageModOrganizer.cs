@@ -791,41 +791,43 @@ namespace AIHelper.Manage
             if (File.Exists(ManageSettings.GetOverallLinkInfoFilePath()))
             {
                 ParseLinkInfo(new FileInfo(ManageSettings.GetOverallLinkInfoFilePath()), out List<string> _, true);
-
+            }
+            else
+            {
                 return;
             }
 
-            var linkInfosList = new List<string>();
-            var infoFileName = ManageSettings.GetLinkInfoFileName();
-            //check overwrite
-            linkInfosList.AddExistFilePathsUsing(ManageSettings.GetCurrentGameOverwriteFolderPath(), infoFileName);
+            //var linkInfosList = new List<string>();
+            //var infoFileName = ManageSettings.GetLinkInfoFileName();
+            ////check overwrite
+            //linkInfosList.AddExistFilePathsUsing(ManageSettings.GetCurrentGameOverwriteFolderPath(), infoFileName);
 
-            var modsLinkInfoFile = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), infoFileName);
-            //create link for mods root info file
-            //ParseLinkInfo(modsLinkInfoFile);
-            if (File.Exists(modsLinkInfoFile))
-            {
-                linkInfosList.Add(modsLinkInfoFile);
-            }
+            //var modsLinkInfoFile = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), infoFileName);
+            ////create link for mods root info file
+            ////ParseLinkInfo(modsLinkInfoFile);
+            //if (File.Exists(modsLinkInfoFile))
+            //{
+            //    linkInfosList.Add(modsLinkInfoFile);
+            //}
 
-            //check mod dirs
-            Parallel.ForEach(ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(), modName =>
-            {
-                var dir = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modName);
-                linkInfosList.AddExistFilePathsUsing(dir, infoFileName);
-            });
+            ////check mod dirs
+            //Parallel.ForEach(ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(), modName =>
+            //{
+            //    var dir = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modName);
+            //    linkInfosList.AddExistFilePathsUsing(dir, infoFileName);
+            //});
 
-            // create links
-            // parallel iterate mods because mod order is not important here
-            var sw = new StreamWriter(ManageSettings.GetOverallLinkInfoFilePath());
-            Parallel.ForEach(linkInfosList, file =>
-            {
-                if (ParseLinkInfo(new FileInfo(file), out List<string> newLines, false))
-                {
-                    sw.WriteLineAsync(string.Join(Environment.NewLine, newLines));// write lines in new file
-                }
-            });
-            sw.Dispose();
+            //// create links
+            //// parallel iterate mods because mod order is not important here
+            //var sw = new StreamWriter(ManageSettings.GetOverallLinkInfoFilePath());
+            //Parallel.ForEach(linkInfosList, file =>
+            //{
+            //    if (ParseLinkInfo(new FileInfo(file), out List<string> newLines, false))
+            //    {
+            //        sw.WriteLineAsync(string.Join(Environment.NewLine, newLines));// write lines in new file
+            //    }
+            //});
+            //sw.Dispose();
         }
 
         private static bool ParseLinkInfo(FileInfo linkinfo, out List<string> newLines, bool overall = false)
@@ -922,7 +924,7 @@ namespace AIHelper.Manage
                         : Path.GetDirectoryName(info[minDataSize - 1]))
                         : linkinfo.Directory.FullName; // for old linkinfo
                     var symlinkPath = Path.Combine(linkParentDirPath,
-                    HasTargetLinkNameSet ? info[minDataSize] : Path.GetFileName(targetObjectPath)); // get object name or name from info is was set
+                    HasTargetLinkNameSet ? info[minDataSize] :(overall ? Path.GetFileName(info[minDataSize - 1]) : Path.GetFileName(targetObjectPath))); // get object name or name from info is was set
 
                     if(!overall)
                     {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -13,7 +14,7 @@ namespace AIHelper.Manage.Update.Sources
     {
         protected UpdateInfo Info;
 
-        protected SourceWebClient WC;
+        protected WebClient WC;
 
         Timer Timer;
         /// <summary>
@@ -65,7 +66,14 @@ namespace AIHelper.Manage.Update.Sources
 
         private void WebClientInit()
         {
-            WC = new SourceWebClient();
+            if (WC == null)
+            {
+                WC = new WebClientEx(OnlineTranslatorCookies ?? new CookieContainer());
+            }
+
+            WC.Encoding = Encoding.UTF8;
+
+            WC.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.Chrome_Iron_Win7);
 
             WC.DownloadProgressChanged += DownloadProgressChanged;
 
@@ -118,6 +126,8 @@ namespace AIHelper.Manage.Update.Sources
         /// </summary>
         internal abstract string InfoId { get; }
 
+        public CookieContainer OnlineTranslatorCookies { get; private set; }
+
         /// <summary>
         /// function to get version of selected target
         /// </summary>
@@ -150,11 +160,5 @@ namespace AIHelper.Manage.Update.Sources
 
     public class SourceWebClient : WebClient
     {
-        protected override WebRequest GetWebRequest(Uri address)
-        {
-            WebRequest webRequest = base.GetWebRequest(address);
-            webRequest.Timeout = 5000; // 5 sec timeout
-            return webRequest;
-        }
     }
 }

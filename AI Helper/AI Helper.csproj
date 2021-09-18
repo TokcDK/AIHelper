@@ -220,6 +220,10 @@
     <Compile Include="Manage\Update\Sort\SideloaderPackBase.cs" />
     <Compile Include="Manage\Update\Sort\UncensorSelectorFemale.cs" />
     <Compile Include="Manage\Update\Sort\UncensorSelectorMale.cs" />
+    <Compile Include="Manage\Update\Sources\UserAgents.cs" />
+    <Compile Include="Manage\Update\Sources\WebClientEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Manage\Update\Targets\MOBaseGames.cs" />
     <Compile Include="Manage\Update\Targets\Mods\ModsMetaUrl\ModsMetaUrlBase.cs" />
     <Compile Include="Manage\Update\Targets\Mods\ModsMetaUrl\XUA.cs" />

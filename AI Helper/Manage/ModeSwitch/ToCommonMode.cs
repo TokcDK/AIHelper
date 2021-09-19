@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -65,7 +66,7 @@ namespace AIHelper.Manage.ModeSwitch
         /// <summary>
         /// list of files with log paths
         /// </summary>
-        protected List<string> longPaths;
+        protected ConcurrentBag<string> longPaths;
         /// <summary>
         /// File paths list from vanilla Data folder with no mods
         /// </summary>
@@ -93,7 +94,7 @@ namespace AIHelper.Manage.ModeSwitch
             moToStandartConvertationOperationsList = new StringBuilder();
             vanillaDataEmptyFoldersList = new StringBuilder();
             zipmodsGuidList = new Dictionary<string, string>();
-            longPaths = new List<string>();
+            longPaths = new ConcurrentBag<string>();
 
             try
             {
@@ -261,7 +262,7 @@ namespace AIHelper.Manage.ModeSwitch
                 symlinkTarget.CreateSymlink(targetPath, isRelative: true, objectType: ObjectType.Directory);
 
                 // we not deleted symlink in the dir
-                lock(moToStandartConvertationOperationsListLocker)
+                lock (moToStandartConvertationOperationsListLocker)
                 {
                     moToStandartConvertationOperationsList.AppendLine(dir + operationsSplitStringBase + targetPath); // add symlink operation
                 }

@@ -190,7 +190,6 @@ namespace AIHelper.Install.Types.Directories
                         continue;
                     }
 
-
                     ret = true;
 
                     var newPath = Path.Combine(Path.GetDirectoryName(targetPath), renName);
@@ -241,7 +240,6 @@ namespace AIHelper.Install.Types.Directories
                     {
                         continue;
                     }
-
 
                     ret = true;
 

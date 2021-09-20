@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанных со сборкой.
 [assembly: AssemblyTitle("AI Helper")]
-[assembly: AssemblyDescription("AI Helper - менеджер сборок сборок под Мod Organizer")]
+[assembly: AssemblyDescription("AI Helper - менеджер сборок под Мod Organizer")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("AI Helper")]
@@ -32,6 +32,6 @@ using System.Runtime.InteropServices;
 // Можно задать все значения или принять номера сборки и редакции по умолчанию 
 // используя "*", как показано ниже:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("21.9.14.2")]
-[assembly: AssemblyFileVersion("21.9.14.2")]
+[assembly: AssemblyVersion("21.9.21.1")]
+[assembly: AssemblyFileVersion("21.9.21.1")]
 [assembly: NeutralResourcesLanguage("en")]

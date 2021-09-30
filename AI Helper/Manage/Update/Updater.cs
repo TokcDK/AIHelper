@@ -184,10 +184,11 @@ namespace AIHelper.Manage.Update
                             continue;
                         }
 
+                        // clean version for more correct comprasion
                         UpdateTools.CleanVersion(ref info.TargetLastVersion);
                         UpdateTools.CleanVersion(ref info.TargetCurrentVersion);
 
-                        if (!info.TargetLastVersion.IsNewerOf(info.TargetCurrentVersion)) //if it is last version then run update
+                        if (!info.TargetLastVersion.IsNewerOf(info.TargetCurrentVersion, false)) //if it is last version then run update
                         {
                             continue;
                         }

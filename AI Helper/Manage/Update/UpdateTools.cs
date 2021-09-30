@@ -11,7 +11,14 @@
             if (version.Length == 0)
                 return;
 
-            version = version.TrimFileVersion();
+            version = version.ToUpperInvariant()
+                .TrimFileVersion()
+                .Replace("ALPHA", "A")
+                .Replace("BETA", "B")
+                .Replace("RELEASE", "R")
+                .Replace("PREVIEW", "P")
+                .Replace("TEST", "")
+                ;
 
             //foreach (var prefix in new[] { "VERSION", "VER", "V" })
             //{
@@ -26,46 +33,46 @@
         /// <summary>
         /// check if last version newer of current
         /// </summary>
-        /// <param name="latestVersion"></param>
-        /// <param name="currentVersion"></param>
+        /// <param name="versionString1"></param>
+        /// <param name="versionString2"></param>
         /// <returns></returns>
-        public static bool IsNewerOf(this string latestVersion, string currentVersion)
+        public static bool IsNewerOf(this string versionString1, string versionString2, bool needClean = true)
         {
-            if (string.IsNullOrWhiteSpace(latestVersion))
+
+            //return string.Compare(latestVersion, currentVersion) == 1;
+            if (string.IsNullOrWhiteSpace(versionString1))
             {
                 return false;
             }
-            else if (string.IsNullOrWhiteSpace(currentVersion))
+            else if (string.IsNullOrWhiteSpace(versionString2))
             {
                 return true;
             }
 
-            var versionPartsOfLatest = latestVersion.TrimEnd('0', ',', '.').Split('.', ',');
-            var versionPartsOfCurrent = currentVersion.TrimEnd('0', ',', '.').Split('.', ',');
-            int dInd = 0;
-            var curCount = versionPartsOfCurrent.Length;
-            foreach (var digitL in versionPartsOfLatest)
+            if (needClean)
             {
-                if (curCount == dInd)//all digits was equal but current have smaller digits count
+                // clean version for more correct comprasion
+                CleanVersion(ref versionString1);
+                CleanVersion(ref versionString2);
+            }
+
+            var versionString1Parts = versionString1.Split('.', ',');
+            var versionString2Parts = versionString2.Split('.', ',');
+            var versionString1PartsCount = versionString1Parts.Length;
+            var versionString2PartsLastIndex = versionString2Parts.Length-1;
+            for (int i = 0; i < versionString1PartsCount; i++)
+            {
+                if (i > versionString2PartsLastIndex) // all digits was equal but current have smaller digits count
                 {
                     return true;
                 }
-                var digitC = versionPartsOfCurrent[dInd];
-                var latestParsed = int.TryParse(digitL, out int latest);
-                var currentParsed = int.TryParse(digitC, out int current);
-                if (latestParsed && currentParsed)
+
+                if (string.Compare(versionString1Parts[i], versionString2Parts[i]) == 1) // alphanumeric order of string 1 is higher of string 2
                 {
-                    if (latest > current)
-                    {
-                        return true;
-                    }
-                    else if (latest < current)
-                    {
-                        return false;
-                    }
+                    return true;
                 }
-                dInd++;
             }
+
             return false;
         }
     }

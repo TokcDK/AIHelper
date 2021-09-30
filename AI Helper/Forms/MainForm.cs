@@ -944,7 +944,7 @@ namespace AIHelper
             {
                 ManageProcess.KillProcessesByName(ManageSettings.GetStudioExeName());
                 ManageProcess.KillProcessesByName(Path.GetFileNameWithoutExtension(ManageSettings.GetAppMOexePath()));
-                
+
                 var studio = ManageModOrganizer.GetMOcustomExecutableTitleByExeName(ManageSettings.GetStudioExeName());
                 ManageProcess.RunProgram(ManageSettings.GetAppMOexePath(), "moshortcut://:" + studio);
             }
@@ -1036,6 +1036,12 @@ namespace AIHelper
 
         private async void InstallInModsButton_Click(object sender, EventArgs e)
         {
+            var s = string.Compare("1.0.0.1", "1.0.0.0.0");
+            s = string.Compare("1.0.0.0", "1.0.0.0.0");
+            s = string.Compare("1.0.0.1", "1.0.0.1a");
+            s = string.Compare("1.0.0.1b", "1.0.0.1a");
+            s = string.Compare("1.0.0.1", "1.0.0.1b");
+
             if (new UpdateMaker().MakeUpdate())
             {
                 MessageBox.Show("Made update instead");

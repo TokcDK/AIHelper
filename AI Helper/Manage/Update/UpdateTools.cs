@@ -38,8 +38,6 @@
         /// <returns></returns>
         public static bool IsNewerOf(this string versionString1, string versionString2, bool needClean = true)
         {
-
-            //return string.Compare(latestVersion, currentVersion) == 1;
             if (string.IsNullOrWhiteSpace(versionString1))
             {
                 return false;

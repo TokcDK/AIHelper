@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -295,6 +296,23 @@ namespace AIHelper.Manage.Update.Sources
             }
 
             return "";
+        }
+
+        internal override bool CheckIfStopWork(UpdateInfo info)
+        {
+            var s = info.LastErrorText.ToString();
+            var b = s.Contains("(429) too many requests");
+            if (b)
+            {
+                ManageLogs.Log("Source " + this.Title + " will be skipped for a while because stop approve requests. Error:\r\n" + s);
+            }
+
+            return b;
+        }
+
+        internal override void Pause()
+        {
+            Thread.Sleep((int)(new Random().NextDouble() * 500));
         }
 
         /// <summary>

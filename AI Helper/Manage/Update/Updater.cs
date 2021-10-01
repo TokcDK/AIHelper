@@ -45,9 +45,9 @@ namespace AIHelper.Manage.Update
             // get set timeout from app ini
             var appIni = ManageIni.GetINIFile(ManageSettings.GetAiHelperIniPath());
             int updateCheckTimeout = 10;
-            if(appIni.KeyExists(ManageSettings.GetUpdatesCheckTimeoutMinutesKeyName(), ManageSettings.GetAppIniUpdateSectionName()))
+            if (appIni.KeyExists(ManageSettings.GetUpdatesCheckTimeoutMinutesKeyName(), ManageSettings.GetAppIniUpdateSectionName()))
             {
-                if(int.TryParse(appIni.GetKey(ManageSettings.GetAppIniUpdateSectionName(), ManageSettings.GetUpdatesCheckTimeoutMinutesKeyName()), out int result))
+                if (int.TryParse(appIni.GetKey(ManageSettings.GetAppIniUpdateSectionName(), ManageSettings.GetUpdatesCheckTimeoutMinutesKeyName()), out int result))
                 {
                     updateCheckTimeout = result;
                 }
@@ -100,6 +100,11 @@ namespace AIHelper.Manage.Update
 
             foreach (var source in sources) //enumerate sources
             {
+                if (source.IsNotWorkingNow)
+                {
+                    continue;
+                }
+
                 info.Source = source;
 
                 progressForm.Text = checkNUpdateText + ":" + source.Title;
@@ -114,6 +119,11 @@ namespace AIHelper.Manage.Update
                 info.SourceId = source.InfoId; //set source info detect ID
                 foreach (var target in targets) //enumerate targets
                 {
+                    if (source.IsNotWorkingNow)
+                    {
+                        continue;
+                    }
+
                     var tFolderInfos = target.GetUpdateInfos(); // get folderslist for update, usually it is active mods
                     if (tFolderInfos == null || tFolderInfos.Count == 0) // skip if no targets
                     {
@@ -128,6 +138,11 @@ namespace AIHelper.Manage.Update
 
                     foreach (var tFolderInfo in tFolderInfos) //enumerate all folders with info
                     {
+                        if (source.IsNotWorkingNow)
+                        {
+                            continue;
+                        }
+
                         if (info.Excluded.Contains(tFolderInfo.Key)) //skip already updated
                         {
                             continue;
@@ -169,6 +184,12 @@ namespace AIHelper.Manage.Update
                                                                          //info.TargetCurrentVersion = tInfoArray[tInfoArray.Length - 1]; // get current version (last element of info)
 
                         info.TargetLastVersion = source.GetLastVersion(); // get last version
+                        if (source.CheckIfStopWork(info))
+                        {
+                            // stop request server for time
+                            source.IsNotWorkingNow = true;
+                            break;
+                        }
 
                         if (sourcePathDateCheckTime.ContainsKey(tFolderInfo.Key))
                         {
@@ -192,6 +213,8 @@ namespace AIHelper.Manage.Update
                         {
                             continue;
                         }
+
+                        source.Pause();
 
                         bool getfileIsTrue = await source.GetFile().ConfigureAwait(true); // download latest file
 

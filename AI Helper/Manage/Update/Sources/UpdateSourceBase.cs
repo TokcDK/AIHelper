@@ -16,7 +16,12 @@ namespace AIHelper.Manage.Update.Sources
 
         protected WebClient WC;
 
-        Timer Timer;
+        /// <summary>
+        /// when true the source will be skipped in this session
+        /// </summary>
+        internal bool IsNotWorkingNow = false;
+
+        System.Timers.Timer Timer;
         /// <summary>
         /// download file
         /// </summary>
@@ -42,7 +47,7 @@ namespace AIHelper.Manage.Update.Sources
         /// </summary>
         private void InitDownloadTimeTimer()
         {
-            Timer = new Timer
+            Timer = new System.Timers.Timer
             {
                 Interval = 10000 // 10 second timeout if download is freezed
             };
@@ -96,8 +101,8 @@ namespace AIHelper.Manage.Update.Sources
         protected bool IsCompletedDownload;
         protected virtual void DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            if(!IsCancelDownload)
-            IsCompletedDownload = true;
+            if (!IsCancelDownload)
+                IsCompletedDownload = true;
             ReleaseTimer();
         }
 
@@ -156,6 +161,20 @@ namespace AIHelper.Manage.Update.Sources
             {
                 WC.Dispose();
             }
+        }
+
+        /// <summary>
+        /// check if source stop work
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        internal virtual bool CheckIfStopWork(UpdateInfo info)
+        {
+            return false;
+        }
+
+        internal virtual void Pause()
+        {
         }
     }
 }

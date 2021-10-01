@@ -33,7 +33,9 @@ namespace AIHelper.Manage.Update.Targets.Mods
             var metaPath = Path.Combine(Info.TargetFolderPath.FullName, "meta.ini");
             if (File.Exists(metaPath))
             {
-                Info.TargetCurrentVersion = ManageIni.GetIniValueIfExist(metaPath, "version", "General");
+                var version = ManageIni.GetIniValueIfExist(metaPath, "version", "General");
+                ManageModOrganizer.ConvertMODateVersion(ref version);
+                Info.TargetCurrentVersion = version;
             }
         }
 

@@ -1,4 +1,6 @@
-﻿namespace AIHelper.Manage.Update
+﻿using System.Text.RegularExpressions;
+
+namespace AIHelper.Manage.Update
 {
     public static class UpdateTools
     {
@@ -47,6 +49,9 @@
                 return true;
             }
 
+            ManageModOrganizer.ConvertMODateVersion(ref versionString1);
+            ManageModOrganizer.ConvertMODateVersion(ref versionString2);
+
             if (needClean)
             {
                 // clean version for more correct comprasion
@@ -57,7 +62,7 @@
             var versionString1Parts = versionString1.Split('.', ',');
             var versionString2Parts = versionString2.Split('.', ',');
             var versionString1PartsCount = versionString1Parts.Length;
-            var versionString2PartsLastIndex = versionString2Parts.Length-1;
+            var versionString2PartsLastIndex = versionString2Parts.Length - 1;
             for (int i = 0; i < versionString1PartsCount; i++)
             {
                 if (i > versionString2PartsLastIndex) // all digits was equal but current have smaller digits count

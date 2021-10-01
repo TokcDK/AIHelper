@@ -46,6 +46,22 @@ namespace AIHelper.Manage
             //ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "UserData", "Overlays"), true);
         }
 
+        /// <summary>
+        /// When <paramref name="ConvertFromMODate"/> is true it will convert <paramref name="versionString"/> looking like d9.10.2011 mo date version format to 2011.10.9
+        /// When <paramref name="ConvertFromMODate"/> is false it will convert <paramref name="versionString"/> looking like 2011.10.9 to d9.10.2011 mo date version format
+        /// </summary>
+        /// <param name="versionString"></param>
+        /// <param name="ConvertFromMODate"></param>
+        internal static void ConvertMODateVersion(ref string versionString, bool ConvertFromMODate = true)
+        {
+            var dateRegex = new Regex((ConvertFromMODate ? "d" : "") + @"([0-9]{" + (ConvertFromMODate ? "2" : "2,4") + @"})\.([0-9]{2})\.([0-9]{" + (ConvertFromMODate ? "2,4" : "2") + @"})");
+            var dateRegexMatch = dateRegex.Match(versionString);
+            if (dateRegexMatch.Success)
+            {
+                versionString = (ConvertFromMODate ? "" : "d") + dateRegexMatch.Groups[3].Value.TrimStart('0') + "." + dateRegexMatch.Groups[2].Value.TrimStart('0') + "." + dateRegexMatch.Groups[1].Value.TrimStart('0');
+            }
+        }
+
         internal static bool IsFileDirExistsInDataOrOverwrite(string filedir, out string source)
         {
             //string filePathInOverwrite =
@@ -4243,6 +4259,7 @@ namespace AIHelper.Manage
 
             if (version.Length > 0)
             {
+                ManageModOrganizer.ConvertMODateVersion(ref version, false);
                 ini.SetKey("General", "version", version);
             }
 

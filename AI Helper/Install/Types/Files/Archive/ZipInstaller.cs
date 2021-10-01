@@ -264,7 +264,8 @@ namespace AIHelper.Install.Types.Files.Archive
             }
             if (version.Length == 0)
             {
-                version = Regex.Match(modName, @"[0-9]+(\.[0-9]+)*").Value;
+                var m = Regex.Match(modName, @"[0-9]+(\.[0-9]+)*");
+                version = m.Value;
                 modName = modName.Replace(m.Value, string.Empty).TrimEnd('_', '-').Trim();
             }
         }

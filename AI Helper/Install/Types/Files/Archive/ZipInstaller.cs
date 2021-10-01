@@ -61,19 +61,19 @@ namespace AIHelper.Install.Types.Files.Archive
                         foundStandardModInZip = true;
                     }
 
-                    //когда найдена папка mods, если найден zipmod
-                    if (foundModsDir && !foundStandardModInZip && FoundZipmod(archive:archive, entryFullName: entryFullName, filesCount: filesCount, entrieNum: entrieNum, zipName: zipName, entryName: entryName))
+                    //found mods dir, and zipmod
+                    if (foundModsDir && !foundStandardModInZip && FoundZipmod(archive: archive, entryFullName: entryFullName, filesCount: filesCount, entrieNum: entrieNum, zipName: zipName, entryName: entryName))
                     {
                         break;
                     }
 
-                    //если найдена папка mods
+                    //found mods dir
                     if (!foundModsDir && string.Equals(Path.GetFileName(entryFullName), "mods", StringComparison.InvariantCultureIgnoreCase))
                     {
                         foundModsDir = true;
                     }
 
-                    //если найден cs
+                    //found cs
                     if (!foundcsFiles && string.Equals(Path.GetExtension(entryFullName), ".cs", StringComparison.InvariantCultureIgnoreCase))
                     {
                         foundStandardModInZip = false;
@@ -81,7 +81,7 @@ namespace AIHelper.Install.Types.Files.Archive
                         break;
                     }
 
-                    //получение информации о моде из dll
+                    //found dll
                     if (!string.Equals(Path.GetExtension(entryFullName), ".dll", StringComparison.InvariantCultureIgnoreCase))
                     {
                         continue;
@@ -180,9 +180,11 @@ namespace AIHelper.Install.Types.Files.Archive
             }
             else if (foundStandardModInZip)
             {
-                string targetModDirPath = foundUpdateName
-                    ? Path.Combine(ManageSettings.GetInstall2MoDirPath(), zipName + "_temp")
-                    : Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), zipName);
+                var modName = zipName;
+                ExtractVersion(ref version, ref modName);
+
+                string targetModDirPath = ManageFilesFoldersExtensions.GetResultTargetDirPathWithNameCheck(foundUpdateName ? ManageSettings.GetInstall2MoDirPath() : ManageSettings.GetCurrentGameModsDirPath(), modName + (foundUpdateName ? "_temp" : ""));
+
                 Compressor.Decompress(zipfile.FullName, targetModDirPath);
 
                 if (foundUpdateName)
@@ -192,10 +194,6 @@ namespace AIHelper.Install.Types.Files.Archive
 
                 zipfile.MoveTo(zipfile.FullName + (foundUpdateName ? ".InstalledUpdatedMod" : ".InstalledExtractedToMods"));
 
-                if (version.Length == 0)
-                {
-                    version = Regex.Match(zipName, @"\d+(\.\d+)*").Value;
-                }
                 if (!foundUpdateName && author.Length == 0)
                 {
                     author = zipName.StartsWith("[" + SharedData.GameData.CurrentGame.GetGamePrefix() + "][", StringComparison.InvariantCulture) || (zipName.StartsWith("[", StringComparison.InvariantCulture) && !zipName.StartsWith("[" + SharedData.GameData.CurrentGame.GetGamePrefix() + "]", StringComparison.InvariantCulture)) ? zipName.Substring(zipName.IndexOf("[", StringComparison.InvariantCulture) + 1, zipName.IndexOf("]", StringComparison.InvariantCulture) - 1) : string.Empty;
@@ -234,7 +232,7 @@ namespace AIHelper.Install.Types.Files.Archive
             else if (foundcsFiles)
             {
                 //extract to handle as subdir
-                string extractpath = Path.Combine(ManageSettings.GetInstall2MoDirPath(), zipName);
+                string extractpath = ManageFilesFoldersExtensions.GetResultTargetDirPathWithNameCheck(ManageSettings.GetInstall2MoDirPath(), zipName);
                 Compressor.Decompress(zipfile.FullName, extractpath);
                 zipfile.MoveTo(zipfile.FullName + ".InstalledExtractedAsSubfolder");
 
@@ -242,6 +240,33 @@ namespace AIHelper.Install.Types.Files.Archive
             }
 
             return ret;
+        }
+
+        private void ExtractVersion(ref string version, ref string modName)
+        {
+            if (version.Length == 0)
+            {
+                var m = Regex.Match(modName, @"([0-9]{4})([\.\-_])([0-9]{2})\2([0-9]{2})");
+                if (m.Success)
+                {
+                    version = "d" + m.Groups[4].Value + "." + m.Groups[3].Value.TrimStart('0') + "." + m.Groups[1].Value;
+                    modName = modName.Replace(m.Value, string.Empty).TrimEnd('_', '-').Trim();
+                }
+                else
+                {
+                    m = Regex.Match(modName, @"([0-9]{2})([\.\-_])([0-9]{2})\2([0-9]{4})");
+                    if (m.Success)
+                    {
+                        version = "d" + m.Groups[1].Value + "." + m.Groups[3].Value.TrimStart('0') + "." + m.Groups[4].Value;
+                        modName = modName.Replace(m.Value, string.Empty).TrimEnd('_', '-').Trim();
+                    }
+                }
+            }
+            if (version.Length == 0)
+            {
+                version = Regex.Match(modName, @"[0-9]+(\.[0-9]+)*").Value;
+                modName = modName.Replace(m.Value, string.Empty).TrimEnd('_', '-').Trim();
+            }
         }
 
         private bool FoundZipmod(ZipArchive archive, string entryFullName, int filesCount, int entrieNum, string zipName, string entryName)
@@ -276,11 +301,15 @@ namespace AIHelper.Install.Types.Files.Archive
 
         private bool IsStandardModInZip(string entryFullName)
         {
+            entryFullName = entryFullName.ToUpperInvariant();
             return
-                   string.Equals(Path.GetFileName(entryFullName), "abdata", StringComparison.InvariantCultureIgnoreCase) //entryFullName=="abdata/"
-                || entryFullName.EndsWith("_data")/*тут только проверка на окончание нужна || string.Compare(entryFullName.Substring(0, 5), "_data", true, CultureInfo.InvariantCulture) == 0*/ //entryFullName=="_data/"
-                || string.Equals(Path.GetFileName(entryFullName), "bepinex", StringComparison.InvariantCultureIgnoreCase) //entryFullName=="bepinex/"
-                || string.Equals(Path.GetFileName(entryFullName), "userdata", StringComparison.InvariantCultureIgnoreCase) //entryFullName=="userdata/"
+                   string.Equals(Path.GetFileName(entryFullName), "ABDATA") //entryFullName=="abdata/"
+                || entryFullName.ToUpperInvariant().StartsWith("ABDATA/")
+                || entryFullName.EndsWith("_DATA")/*тут только проверка на окончание нужна || string.Compare(entryFullName.Substring(0, 5), "_data", true, CultureInfo.InvariantCulture) == 0*/ //entryFullName=="_data/"
+                || entryFullName.ToUpperInvariant().StartsWith("BEPINEX/")
+                || string.Equals(Path.GetFileName(entryFullName), "BEPINEX") //entryFullName=="userdata/"
+                || string.Equals(Path.GetFileName(entryFullName), "USERDATA") //entryFullName=="userdata/"
+                || entryFullName.ToUpperInvariant().StartsWith("USERDATA/")
                 ;
         }
 

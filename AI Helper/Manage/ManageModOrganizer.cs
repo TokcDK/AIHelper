@@ -54,7 +54,7 @@ namespace AIHelper.Manage
         /// <param name="ConvertFromMODate"></param>
         internal static void ConvertMODateVersion(ref string versionString, bool ConvertFromMODate = true)
         {
-            var dateRegex = new Regex((ConvertFromMODate ? "d" : "") + @"([0-9]{" + (ConvertFromMODate ? "2" : "2,4") + @"})\.([0-9]{2})\.([0-9]{" + (ConvertFromMODate ? "2,4" : "2") + @"})");
+            var dateRegex = new Regex("^" + (ConvertFromMODate ? "d" : "") + @"([0-9]{" + (ConvertFromMODate ? "2" : "2,4") + @"})\.([0-9]{2})\.([0-9]{" + (ConvertFromMODate ? "2,4" : "2") + @"})");
             var dateRegexMatch = dateRegex.Match(versionString);
             if (dateRegexMatch.Success)
             {

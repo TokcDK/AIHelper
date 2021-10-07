@@ -1071,7 +1071,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetAppModOrganizerDirPath()
         {
-            return Path.Combine(GetAppResDirPath(), GetAppModOrganizerDirName());
+            return GetAppOldModOrganizerDirPath();// Path.Combine(GetAppResDirPath(), GetAppModOrganizerDirName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

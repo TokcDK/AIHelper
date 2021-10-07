@@ -98,26 +98,28 @@ namespace AIHelper
 
         private void FixOldMODirPath()
         {
-            if (Directory.Exists(ManageSettings.GetAppOldModOrganizerDirPath()))
-            {
-                foreach(var possibleFileSymlink in new[]
-                {
-                    Path.Combine(ManageSettings.GetAppOldModOrganizerDirPath(), ManageSettings.MoCategoriesFileName()),
-                    Path.Combine(ManageSettings.GetAppOldModOrganizerDirPath(), ManageSettings.MoIniFileName()),
-                })
-                {
-                    // clean symlinks, they will be restored later
-                    if (File.Exists(possibleFileSymlink))
-                    {
-                        if (possibleFileSymlink.IsSymlink())
-                        {
-                            File.Delete(possibleFileSymlink);
-                        }
-                    }
-                }
+            return;
 
-                new DirectoryInfo(ManageSettings.GetAppOldModOrganizerDirPath()).MoveAll(new DirectoryInfo(ManageSettings.GetAppModOrganizerDirPath()), overwriteFiles: true);
-            }
+            //if (Directory.Exists(ManageSettings.GetAppOldModOrganizerDirPath()))
+            //{
+            //    foreach(var possibleFileSymlink in new[]
+            //    {
+            //        Path.Combine(ManageSettings.GetAppOldModOrganizerDirPath(), ManageSettings.MoCategoriesFileName()),
+            //        Path.Combine(ManageSettings.GetAppOldModOrganizerDirPath(), ManageSettings.MoIniFileName()),
+            //    })
+            //    {
+            //        // clean symlinks, they will be restored later
+            //        if (File.Exists(possibleFileSymlink))
+            //        {
+            //            if (possibleFileSymlink.IsSymlink())
+            //            {
+            //                File.Delete(possibleFileSymlink);
+            //            }
+            //        }
+            //    }
+
+            //    new DirectoryInfo(ManageSettings.GetAppOldModOrganizerDirPath()).MoveAll(new DirectoryInfo(ManageSettings.GetAppModOrganizerDirPath()), overwriteFiles: true);
+            //}
         }
 
         private static void CleanLog()

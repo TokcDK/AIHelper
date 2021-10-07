@@ -42,7 +42,7 @@ namespace AIHelper.Manage
         internal static string GetCurrentGameMoGamePyPluginPath()
         {
 #pragma warning disable CA1308 // Normalize strings to uppercase
-            return Path.Combine(GetCurrentGameModOrganizerIniPath(), "plugins", "modorganizer-basic_games", "games", SharedData.GameData.CurrentGame.GetBaseGamePyFile().Name
+            return Path.Combine(GetAppModOrganizerDirPath(), "plugins", "modorganizer-basic_games", "games", SharedData.GameData.CurrentGame.GetBaseGamePyFile().Name
                 //+ GetCurrentGameExeName()
                 //.Replace("_64", string.Empty)
                 //.Replace("_32", string.Empty)
@@ -74,7 +74,7 @@ namespace AIHelper.Manage
 
         internal static string GetAppLocaleDirPath()
         {
-            return Path.Combine(GetAppResDir(), "locale");
+            return Path.Combine(GetAppResDirPath(), "locale");
         }
 
         internal static void SettingsInit()
@@ -228,7 +228,7 @@ namespace AIHelper.Manage
                     }
 
                     //  check and write mod organizer dir
-                    var mo = Path.Combine(gameDir, "MO");
+                    var mo = Path.Combine(gameDir, GetAppModOrganizerDirName());
                     if (!Directory.Exists(mo))
                     {
                         Directory.CreateDirectory(mo);
@@ -248,8 +248,8 @@ namespace AIHelper.Manage
                         ini.SetKey("General", "selected_profile", "Default");
                         ini.SetKey("Settings", "mod_directory", Path.Combine(gameDir, game.GetGameFolderName(), "Mods").Replace("\\", "\\\\"));
                         ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GetGameFolderName(), "Downloads").Replace("\\", "\\\\"));
-                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GetGameFolderName(), "MO", "profiles").Replace("\\", "\\\\"));
-                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GetGameFolderName(), "MO", "overwrite").Replace("\\", "\\\\"));
+                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GetGameFolderName(), GetAppModOrganizerDirName(), "profiles").Replace("\\", "\\\\"));
+                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GetGameFolderName(), GetAppModOrganizerDirName(), "overwrite").Replace("\\", "\\\\"));
                     }
 
                     // check and write categories dat
@@ -302,7 +302,7 @@ namespace AIHelper.Manage
                         //&&
                         //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(GetMOdirPath())
                         &&
-                        IsMoFolderValid(GetCurrentGameModOrganizerIniPath())
+                        IsMoFolderValid(GetAppModOrganizerDirPath())
                         //&&
                         //Directory.Exists(Path.Combine(GetMOdirPath(), GetMoProfilesDirName())))
                         //&&
@@ -333,7 +333,7 @@ namespace AIHelper.Manage
             //(game =>
             //    Directory.Exists(game.GetGamePath())
             //    &&
-            //    !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(game.GetGamePath(), "MO", GetMoProfilesDirName()))
+            //    !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(game.GetGamePath(), GetAppModOrganizerDirName(), GetMoProfilesDirName()))
             //).ToList();
 
             return listOfGameDirs;
@@ -362,11 +362,11 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static string GeneralMoPath()
         {
-            return GetCurrentGameModOrganizerIniPath();
+            return GetAppModOrganizerDirPath();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static string MoIniFileName()
+        internal static string MoIniFileName()
         {
             return "ModOrganizer.ini";
         }
@@ -388,7 +388,7 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static string MoCategoriesFileName()
+        internal static string MoCategoriesFileName()
         {
             return "categories.dat";
         }
@@ -406,7 +406,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetModsUpdateDirPath()
         {
-            return Path.Combine(GetAppResDir(), "update");
+            return Path.Combine(GetAppResDirPath(), "update");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -424,7 +424,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameModListRulesPath()
         {
-            return Path.Combine(GetAppResDir(), "rules", GetCurrentGameFolderName(), "modlist.txt");
+            return Path.Combine(GetAppResDirPath(), "rules", GetCurrentGameFolderName(), "modlist.txt");
         }
 
         /// <summary>
@@ -444,7 +444,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetThemesDir()
         {
-            return Path.Combine(GetAppResDir(), GetThemesDirName());
+            return Path.Combine(GetAppResDirPath(), GetThemesDirName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -746,17 +746,17 @@ namespace AIHelper.Manage
         //                &&
         //                !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
         //                //&&
-        //                //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO"))
+        //                //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, GetAppModOrganizerDirName()))
         //                &&
-        //                IsMOFolderValid(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO"))
+        //                IsMOFolderValid(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, GetAppModOrganizerDirName()))
         //                //&&
-        //                //Directory.Exists(Path.Combine(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", GetMoProfilesDirName())))
+        //                //Directory.Exists(Path.Combine(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, GetAppModOrganizerDirName(), GetMoProfilesDirName())))
         //                //&&
-        //                //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", GetMoProfilesDirName()))
+        //                //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, GetAppModOrganizerDirName(), GetMoProfilesDirName()))
         //                &&
-        //                !ManageSymLinks.IsSymLink(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", MoIniFileName()))
+        //                !ManageSymLinks.IsSymLink(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, GetAppModOrganizerDirName(), MoIniFileName()))
         //                &&
-        //                !ManageSymLinks.IsSymLink(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO", MoCategoriesFileName()))
+        //                !ManageSymLinks.IsSymLink(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, GetAppModOrganizerDirName(), MoCategoriesFileName()))
         //                )
         //            {
         //                ListOfGames1.Add(Properties.Settings.Default.ApplicationStartupPath, new RootGame());
@@ -772,7 +772,7 @@ namespace AIHelper.Manage
         //    //(game =>
         //    //    Directory.Exists(game.GetGamePath())
         //    //    &&
-        //    //    !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(game.GetGamePath(), "MO", GetMoProfilesDirName()))
+        //    //    !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(game.GetGamePath(), GetAppModOrganizerDirName(), GetMoProfilesDirName()))
         //    //).ToList();
 
         //    return ListOfGames1;
@@ -789,13 +789,13 @@ namespace AIHelper.Manage
         //        &&
         //        !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(folder, "Data"))
         //        &&
-        //        ((IsMOFolderValid(MOFolder = Path.Combine(folder, "MO"))) || MOFolderFound(folder, ref MOFolder))
+        //        ((IsMOFolderValid(MOFolder = Path.Combine(folder, GetAppModOrganizerDirName()))) || MOFolderFound(folder, ref MOFolder))
         //        //&&
-        //        //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(folder, "MO"))
+        //        //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(folder, GetAppModOrganizerDirName()))
         //        //&&
-        //        //Directory.Exists(Path.Combine(Path.Combine(folder, "MO", GetMoProfilesDirName())))
+        //        //Directory.Exists(Path.Combine(Path.Combine(folder, GetAppModOrganizerDirName(), GetMoProfilesDirName())))
         //        //&&
-        //        //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(folder, "MO", GetMoProfilesDirName()))
+        //        //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(folder, GetAppModOrganizerDirName(), GetMoProfilesDirName()))
         //        )
         //    {
         //        return true;
@@ -912,9 +912,9 @@ namespace AIHelper.Manage
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetCurrentGameMOPath()
+        internal static string GetCurrentGameModOrganizerDirPath()
         {
-            return Path.Combine(GetCurrentGameDirPath(), "MO");
+            return Path.Combine(GetCurrentGameDirPath(), GetAppModOrganizerDirName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1039,7 +1039,7 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetAppResDir()
+        internal static string GetAppResDirPath()
         {
             return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "RES");
         }
@@ -1063,15 +1063,27 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetCurrentGameModOrganizerIniPath()
+        internal static string GetAppModOrganizerDirName()
         {
-            return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "MO");
+            return "MO";
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetAppModOrganizerDirPath()
+        {
+            return Path.Combine(GetAppResDirPath(), GetAppModOrganizerDirName());
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetAppOldModOrganizerDirPath()
+        {
+            return Path.Combine(Properties.Settings.Default.ApplicationStartupPath, GetAppModOrganizerDirName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetAppMOexePath()
         {
-            return Path.Combine(GetCurrentGameModOrganizerIniPath(), "ModOrganizer.exe");
+            return Path.Combine(GetAppModOrganizerDirPath(), "ModOrganizer.exe");
         }
 
         internal static string GetMoSelectedProfileDirName()
@@ -1091,31 +1103,31 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetMoSelectedProfileDirPath()
         {
-            return Path.Combine(GetCurrentGameMOPath(), GetMoProfilesDirName(), GetMoSelectedProfileDirName());
+            return Path.Combine(GetCurrentGameModOrganizerDirPath(), GetMoProfilesDirName(), GetMoSelectedProfileDirName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetMOiniPath()
+        internal static string GetAppMOiniFilePath()
         {
-            return Path.Combine(GetCurrentGameModOrganizerIniPath(), MoIniFileName());
+            return Path.Combine(GetAppModOrganizerDirPath(), MoIniFileName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetMOiniPathForSelectedGame()
         {
-            return ManageFilesFoldersExtensions.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGameMOPath(), MoIniFileName()));
+            return ManageFilesFoldersExtensions.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGameModOrganizerDirPath(), MoIniFileName()));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetMOcategoriesPath()
+        internal static string GetAppMOcategoriesFilePath()
         {
-            return Path.Combine(GetCurrentGameModOrganizerIniPath(), MoCategoriesFileName());
+            return Path.Combine(GetAppModOrganizerDirPath(), MoCategoriesFileName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetAppMOcategoriesPath()
+        internal static string GetCurrentGameMOcategoriesFilePath()
         {
-            return ManageFilesFoldersExtensions.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGameMOPath(), MoCategoriesFileName()));
+            return ManageFilesFoldersExtensions.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGameModOrganizerDirPath(), MoCategoriesFileName()));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1127,7 +1139,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameOverwriteFolderPath()
         {
-            return ManageFilesFoldersExtensions.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGameMOPath(), "overwrite"), true);
+            return ManageFilesFoldersExtensions.GreateFileFolderIfNotExists(Path.Combine(GetCurrentGameModOrganizerDirPath(), "overwrite"), true);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1169,7 +1181,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetModOrganizerIniPath()
         {
-            return Path.Combine(GetCurrentGameModOrganizerIniPath(), MoIniFileName());
+            return Path.Combine(GetAppModOrganizerDirPath(), MoIniFileName());
         }
 
         internal static string MOmodeSwitchDataDirName { get => "MOModeRestoreInfo"; }
@@ -1503,7 +1515,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameInstallDirPath()
         {
-            return Path.Combine(GetAppResDir(), "install", GetCurrentGameFolderName());
+            return Path.Combine(GetAppResDirPath(), "install", GetCurrentGameFolderName());
         }
 
         /// <summary>
@@ -1514,7 +1526,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCacheDirPath()
         {
-            return Path.Combine(GetAppResDir(), "cache");
+            return Path.Combine(GetAppResDirPath(), "cache");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1547,7 +1559,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetDummyFileResPath()
         {
-            return Path.Combine(GetAppResDir(), "TESV.exe.dummy");
+            return Path.Combine(GetAppResDirPath(), "TESV.exe.dummy");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1601,7 +1613,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetKkManagerDirPath()
         {
-            return Path.Combine(GetAppResDir(), "tools", "KKManager");
+            return Path.Combine(GetAppResDirPath(), "tools", "KKManager");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1657,7 +1669,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetMoBaseGamesPluginGamesDirPath()
         {
-            return Path.Combine(GetCurrentGameModOrganizerIniPath(), "plugins", "basic_games", "games");
+            return Path.Combine(GetAppModOrganizerDirPath(), "plugins", "basic_games", "games");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1675,7 +1687,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetAppResToolsDirPath()
         {
-            return Path.Combine(GetAppResDir(), "tools");
+            return Path.Combine(GetAppResDirPath(), "tools");
         }
 
         /// <summary>

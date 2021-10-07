@@ -1455,7 +1455,7 @@ namespace AIHelper.Manage
         {
             if (ini == null)
             {
-                ini = ManageIni.GetINIFile(ManageSettings.GetMOiniPath());
+                ini = ManageIni.GetINIFile(ManageSettings.GetAppMOiniFilePath());
             }
 
             var customs = new CustomExecutables(ini);
@@ -1674,9 +1674,9 @@ namespace AIHelper.Manage
         public static void RedefineGameMoData()
         {
             //MOini
-            ManageSettings.GetMOiniPath().ReCreateFileLinkWhenNotValid(ManageSettings.GetMOiniPathForSelectedGame(), true);
+            ManageSettings.GetAppMOiniFilePath().ReCreateFileLinkWhenNotValid(ManageSettings.GetMOiniPathForSelectedGame(), true);
             //Categories
-            ManageSettings.GetMOcategoriesPath().ReCreateFileLinkWhenNotValid(ManageSettings.GetAppMOcategoriesPath(), true);
+            ManageSettings.GetAppMOcategoriesFilePath().ReCreateFileLinkWhenNotValid(ManageSettings.GetCurrentGameMOcategoriesFilePath(), true);
         }
 
         internal static string GetMoVersion()
@@ -1690,7 +1690,7 @@ namespace AIHelper.Manage
             RedefineGameMoData();
 
             //менять настройки МО только когда игра меняется
-            if (!Properties.Settings.Default.CurrentGameIsChanging && Path.GetDirectoryName(ManageSettings.GetCurrentGameModOrganizerIniPath()) != Properties.Settings.Default.ApplicationStartupPath)
+            if (!Properties.Settings.Default.CurrentGameIsChanging && Path.GetDirectoryName(ManageSettings.GetAppModOrganizerDirPath()) != Properties.Settings.Default.ApplicationStartupPath)
             {
                 return;
             }
@@ -1847,7 +1847,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool HasModOrganizerIni(this GameBase game)
         {
-            return File.Exists(Path.Combine(game.GetGamePath(), "MO", "ModOrganizer.ini"));
+            return File.Exists(Path.Combine(game.GetGamePath(), ManageSettings.GetAppModOrganizerDirName(), "ModOrganizer.ini"));
         }
 
         /// <summary>
@@ -1857,9 +1857,9 @@ namespace AIHelper.Manage
         internal static bool CheckCategoriesDat(this GameBase game)
         {
             string categories;
-            if (!File.Exists(categories = Path.Combine(game.GetGamePath(), "MO", "categories.dat")))
+            if (!File.Exists(categories = Path.Combine(game.GetGamePath(), ManageSettings.GetAppModOrganizerDirName(), "categories.dat")))
             {
-                Directory.CreateDirectory(Path.Combine(game.GetGamePath(), "MO"));
+                Directory.CreateDirectory(Path.Combine(game.GetGamePath(), ManageSettings.GetAppModOrganizerDirName()));
 
                 File.WriteAllText(categories, string.Empty);
             }
@@ -1884,7 +1884,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool HasAnyWorkProfile(this GameBase game)
         {
-            foreach (var profileDir in Directory.EnumerateDirectories(Path.Combine(game.GetGamePath(), "MO", "Profiles")))
+            foreach (var profileDir in Directory.EnumerateDirectories(Path.Combine(game.GetGamePath(), ManageSettings.GetAppModOrganizerDirName(), "Profiles")))
             {
                 if (File.Exists(Path.Combine(profileDir, "modlist.txt")))
                 {
@@ -1892,7 +1892,7 @@ namespace AIHelper.Manage
                 }
             }
             return false;
-            //!Path.Combine(game.GetGamePath(), "MO", "Profiles").IsNullOrEmptyDirectory(mask: "modlist.txt", recursive: true, preciseMask: true) // modlist.txt must exist atleast one
+            //!Path.Combine(game.GetGamePath(), GetAppModOrganizerDirName(), "Profiles").IsNullOrEmptyDirectory(mask: "modlist.txt", recursive: true, preciseMask: true) // modlist.txt must exist atleast one
         }
 
         /// <summary>
@@ -1929,7 +1929,7 @@ namespace AIHelper.Manage
             /// </summary>
             internal CustomExecutables()
             {
-                LoadFrom(ManageIni.GetINIFile(ManageSettings.GetMOiniPath()));
+                LoadFrom(ManageIni.GetINIFile(ManageSettings.GetAppMOiniFilePath()));
             }
 
             /// <summary>
@@ -3044,7 +3044,7 @@ namespace AIHelper.Manage
                     }
                 ,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGameMOPath(), "profiles")
+                        Path.Combine(ManageSettings.GetCurrentGameModOrganizerDirPath(), "profiles")
                         ,
                         "Settings"
                         ,
@@ -3052,7 +3052,7 @@ namespace AIHelper.Manage
                     }
                 ,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGameMOPath(), "overwrite")
+                        Path.Combine(ManageSettings.GetCurrentGameModOrganizerDirPath(), "overwrite")
                         ,
                         "Settings"
                         ,
@@ -3125,7 +3125,7 @@ namespace AIHelper.Manage
         {
             if (ini == null)
             {
-                ini = ManageIni.GetINIFile(ManageSettings.GetMOiniPath());
+                ini = ManageIni.GetINIFile(ManageSettings.GetAppMOiniFilePath());
             }
 
             if (newMethod)
@@ -3169,7 +3169,7 @@ namespace AIHelper.Manage
         {
             if (ini == null)
             {
-                ini = ManageIni.GetINIFile(ManageSettings.GetMOiniPath());
+                ini = ManageIni.GetINIFile(ManageSettings.GetAppMOiniFilePath());
             }
 
             var customExcutables = new CustomExecutables(ini);
@@ -3212,7 +3212,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static int GetMOiniCustomExecutablesCount(Dictionary<string, string> customs = null)
         {
-            customs = customs ?? ManageIni.GetINIFile(ManageSettings.GetMOiniPath()).GetSectionValuesToDictionary("customExecutables");
+            customs = customs ?? ManageIni.GetINIFile(ManageSettings.GetAppMOiniFilePath()).GetSectionValuesToDictionary("customExecutables");
 
             if (customs.Count == 0)//check if caustoms is exists
             {
@@ -3239,7 +3239,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool IsMOcustomExecutableTitleByExeNameExists(string exename)
         {
-            var customs = ManageIni.GetINIFile(ManageSettings.GetMOiniPath()).GetSectionValuesToDictionary("customExecutables");
+            var customs = ManageIni.GetINIFile(ManageSettings.GetAppMOiniFilePath()).GetSectionValuesToDictionary("customExecutables");
             foreach (var pair in customs)
             {
                 if (pair.Key.EndsWith(@"\binary", StringComparison.InvariantCulture))
@@ -3558,27 +3558,27 @@ namespace AIHelper.Manage
 
         private static string ReGetcurrentMOprofile(string currentMOprofile)
         {
-            while (!Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameMOPath(), "profiles", currentMOprofile)))
+            while (!Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameModOrganizerDirPath(), "profiles", currentMOprofile)))
             {
-                if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameMOPath(), "profiles", ManageSettings.GetCurrentGameExeName())))
+                if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameModOrganizerDirPath(), "profiles", ManageSettings.GetCurrentGameExeName())))
                 {
                     return ManageSettings.GetCurrentGameExeName();
                 }
-                else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameMOPath(), "profiles", ManageSettings.GetCurrentGameDisplayingName())))
+                else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameModOrganizerDirPath(), "profiles", ManageSettings.GetCurrentGameDisplayingName())))
                 {
                     return ManageSettings.GetCurrentGameDisplayingName();
                 }
-                else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameMOPath(), "profiles", ManageSettings.GetCurrentGameFolderName())))
+                else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameModOrganizerDirPath(), "profiles", ManageSettings.GetCurrentGameFolderName())))
                 {
                     return ManageSettings.GetCurrentGameFolderName();
                 }
-                else if (Directory.GetDirectories(Path.Combine(ManageSettings.GetCurrentGameMOPath(), "profiles")).Length == 0)
+                else if (Directory.GetDirectories(Path.Combine(ManageSettings.GetCurrentGameModOrganizerDirPath(), "profiles")).Length == 0)
                 {
                     MessageBox.Show(T._("No profiles found for Current game") + " " + ManageSettings.GetCurrentGameDisplayingName());
                 }
                 else
                 {
-                    return Path.GetDirectoryName(Directory.GetDirectories(Path.Combine(ManageSettings.GetCurrentGameMOPath(), "profiles"))[0]);
+                    return Path.GetDirectoryName(Directory.GetDirectories(Path.Combine(ManageSettings.GetCurrentGameModOrganizerDirPath(), "profiles"))[0]);
                 }
             }
             Application.Exit();
@@ -4067,7 +4067,7 @@ namespace AIHelper.Manage
                     @"MOFolder\plugins\data\DDS\",
                     !GetMoVersion().StartsWith("2.3",StringComparison.InvariantCulture)?@"MOFolder\plugins\modorganizer-basic_games\":""
             };
-            var mOfolderPath = ManageSettings.GetCurrentGameModOrganizerIniPath();
+            var mOfolderPath = ManageSettings.GetAppModOrganizerDirPath();
             foreach (var file in moFilesForClean)
             {
                 var path = file.Replace("MOFolder", mOfolderPath);
@@ -4308,7 +4308,7 @@ namespace AIHelper.Manage
 
         public CategoriesInfo(string categoriesFilePath = null)
         {
-            Get(categoriesFilePath ?? ManageSettings.GetAppMOcategoriesPath());
+            Get(categoriesFilePath ?? ManageSettings.GetCurrentGameMOcategoriesFilePath());
         }
 
         public string Add(string categoryName, bool doSave = false)

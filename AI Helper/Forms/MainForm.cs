@@ -57,10 +57,13 @@ namespace AIHelper
         private async void CheckMoAndEndInit()
         {
             //MO data parse
-            if (!Directory.Exists(ManageSettings.GetCurrentGameModOrganizerIniPath()))
+            if (!Directory.Exists(ManageSettings.GetAppModOrganizerDirPath()))
             {
-                Directory.CreateDirectory(ManageSettings.GetCurrentGameModOrganizerIniPath());
+                Directory.CreateDirectory(ManageSettings.GetAppModOrganizerDirPath());
             }
+
+            FixOldMODirPath();
+
             if (!File.Exists(ManageSettings.GetAppMOexePath()))
             {
                 await new Updater().Update().ConfigureAwait(true);
@@ -91,6 +94,30 @@ namespace AIHelper
             //}
 
             Properties.Settings.Default.INITDone = true;
+        }
+
+        private void FixOldMODirPath()
+        {
+            if (Directory.Exists(ManageSettings.GetAppOldModOrganizerDirPath()))
+            {
+                foreach(var possibleFileSymlink in new[]
+                {
+                    Path.Combine(ManageSettings.GetAppOldModOrganizerDirPath(), ManageSettings.MoCategoriesFileName()),
+                    Path.Combine(ManageSettings.GetAppOldModOrganizerDirPath(), ManageSettings.MoIniFileName()),
+                })
+                {
+                    // clean symlinks, they will be restored later
+                    if (File.Exists(possibleFileSymlink))
+                    {
+                        if (possibleFileSymlink.IsSymlink())
+                        {
+                            File.Delete(possibleFileSymlink);
+                        }
+                    }
+                }
+
+                new DirectoryInfo(ManageSettings.GetAppOldModOrganizerDirPath()).MoveAll(new DirectoryInfo(ManageSettings.GetAppModOrganizerDirPath()), overwriteFiles: true);
+            }
         }
 
         private static void CleanLog()
@@ -561,7 +588,7 @@ namespace AIHelper
             {
                 DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} game installed in {1}"), ManageSettings.GetCurrentGameDisplayingName(), "Data");
             }
-            else if (File.Exists(Path.Combine(ManageSettings.GetAppResDir(), ManageSettings.GetCurrentGameExeName() + ".7z")))
+            else if (File.Exists(Path.Combine(ManageSettings.GetAppResDirPath(), ManageSettings.GetCurrentGameExeName() + ".7z")))
             {
                 DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} archive in {1}"), "AIGirl", "Data");
             }
@@ -1165,8 +1192,8 @@ namespace AIHelper
 
         private void OpenMOFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (Directory.Exists(ManageSettings.GetCurrentGameModOrganizerIniPath()))
-                Process.Start("explorer.exe", ManageSettings.GetCurrentGameModOrganizerIniPath());
+            if (Directory.Exists(ManageSettings.GetAppModOrganizerDirPath()))
+                Process.Start("explorer.exe", ManageSettings.GetAppModOrganizerDirPath());
         }
 
         private void OpenModsFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

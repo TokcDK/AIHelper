@@ -90,24 +90,27 @@ namespace AIHelper
             }
         }
 
+        /// <summary>
+        /// get 1st exist 1z.dll file path
+        /// </summary>
+        /// <returns></returns>
         private static string Get7ZdllPath()
         {
-            string path = Path.Combine(ManageSettings.GetAppResDir(), "dlls", "x86", "7z.dll");
-            if (File.Exists(path))
+            foreach (var dllPath in new[]
             {
-            }
-            else
+                Path.Combine(ManageSettings.GetAppResDirPath(), "dlls", "x86", "7z.dll"),
+                "C:\\Program Files (x86)\\7-Zip\\7z.dll",
+                Path.Combine(ManageSettings.GetAppResDirPath(), "dlls", "x64", "7z.dll"),
+                "C:\\Program Files\\7-Zip\\7z.dll"
+            })
             {
-                path = "C:\\Program Files (x86)\\7-Zip\\7z.dll";
-                if (File.Exists(path))
+                if (File.Exists(dllPath))
                 {
-                }
-                else
-                {
-                    return null;
+                    return dllPath;
                 }
             }
-            return path;
+
+            return null;
         }
     }
 }

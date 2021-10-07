@@ -199,7 +199,18 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static string GetSymlinkTarget(this DirectoryInfo symlinkPath, string linkTargetPath = null)
         {
-            return symlinkPath.GetSymbolicLinkTarget();
+            try
+            {
+                return symlinkPath.GetSymbolicLinkTarget();
+            }
+            catch
+            {
+                if(linkTargetPath!= null)
+                {
+                    return linkTargetPath;
+                }
+                return symlinkPath.FullName;
+            }
         }
 
         /// <summary>
@@ -209,7 +220,18 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static string GetSymlinkTarget(this FileInfo symlinkPath, string linkTargetPath = null)
         {
-            return symlinkPath.GetSymbolicLinkTarget();
+            try
+            {
+                return symlinkPath.GetSymbolicLinkTarget();
+            }
+            catch
+            {
+                if (linkTargetPath != null)
+                {
+                    return linkTargetPath;
+                }
+                return symlinkPath.FullName;
+            }
         }
 
         /// <summary>

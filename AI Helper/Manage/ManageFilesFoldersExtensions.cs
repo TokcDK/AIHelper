@@ -803,10 +803,10 @@ namespace AIHelper.Manage
                 {
                     continue;
                 }
-                fi.MoveTo(targetPath, overwriteFiles);
+                fi.MoveTo(targetPath, overwrite: overwriteFiles);
             }
 
-            // Copy each subdirectory using recursion.
+            // move each subdirectory using recursion.
             foreach (DirectoryInfo diSourceSubDir in sourceDirectory.GetDirectories())
             {
                 DirectoryInfo nextTargetSubDir =
@@ -822,13 +822,42 @@ namespace AIHelper.Manage
 
         public static void MoveTo(this FileInfo fileInfo, string targetPath, bool overwrite = false)
         {
-            var fi = new FileInfo(targetPath);
-            if (!overwrite)
+            if (File.Exists(targetPath))
             {
-                fi = new FileInfo(targetPath).GetNewTargetName();
+                if (overwrite)
+                {
+                    File.Move(targetPath, targetPath + ".moveBak"); // create temp backup
+
+                    try
+                    {
+                        File.Move(fileInfo.FullName, targetPath);
+
+                        if (File.Exists(targetPath + ".moveBak"))
+                        {
+                            if (File.Exists(targetPath))
+                            {
+                                File.Delete(targetPath + ".moveBak"); // remove tem bak when file succefully moved
+                            }
+                            else
+                            {
+                                File.Move(targetPath + ".moveBak", targetPath); // else restore from bak
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ManageLogs.Log("Failed to move file " + targetPath + " / error:\r\n" + ex);
+                    }
+
+                    return;
+                }
+                else
+                {
+                    fileInfo = new FileInfo(targetPath).GetNewTargetName();
+                }
             }
 
-            fileInfo.CopyTo(fi.FullName, true);
+            File.Move(fileInfo.FullName, targetPath);
         }
 
         /// <summary>

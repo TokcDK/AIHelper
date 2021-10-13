@@ -117,7 +117,23 @@ namespace AIHelper.Manage
 
         internal static string TrimFileVersion(this string fileVersion)
         {
-            return fileVersion.Trim().TrimStart('v', 'V', 'r', 'R', '0', '.', ',').TrimEnd('.', ',', '0');
+            fileVersion = fileVersion.Trim().TrimStart('v', 'V', 'r', 'R', '_').TrimEnd('.', ',');
+
+            if (fileVersion.Length == 0)
+            {
+                return fileVersion;
+            }
+
+            while (fileVersion.EndsWith(".0") || fileVersion.EndsWith(",0"))
+            {
+                fileVersion = fileVersion.Remove(fileVersion.Length - 2, 2);
+            }
+            while (fileVersion.StartsWith(".0") || fileVersion.StartsWith(",0"))
+            {
+                fileVersion = fileVersion.Remove(0, 2);
+            }
+
+            return fileVersion;
         }
 
         /// <summary>

@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace AIHelper.Manage.Update
+﻿namespace AIHelper.Manage.Update
 {
     public static class UpdateTools
     {
@@ -21,6 +19,7 @@ namespace AIHelper.Manage.Update
                 .Replace("PREVIEW", "P")
                 .Replace("TEST", "")
                 ;
+
 
             //foreach (var prefix in new[] { "VERSION", "VER", "V" })
             //{
@@ -70,7 +69,18 @@ namespace AIHelper.Manage.Update
                     return true;
                 }
 
-                if (string.Compare(versionString1Parts[i], versionString2Parts[i]) == 1) // alphanumeric order of string 1 is higher of string 2
+                // first try compare as int because string.compare will place 10 lower of 2 because first is 1
+                if(int.TryParse(versionString1Parts[i], out int ver1)
+                    && int.TryParse(versionString2Parts[i], out int ver2)
+                    && ver1 > ver2
+                    )
+                {
+                    return true;
+                }
+
+                // then compare as ab order
+                var compareResult = string.Compare(versionString1Parts[i], versionString2Parts[i]);
+                if (compareResult == 1) // alphanumeric order of string 1 is higher of string 2
                 {
                     return true;
                 }

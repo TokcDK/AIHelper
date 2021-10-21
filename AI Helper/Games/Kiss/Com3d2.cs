@@ -13,6 +13,8 @@
 
         public override string ManifestGame => "com3d2";
 
+        public override bool IsHaveSideloaderMods => false;
+
         public override string GetGameFolderName()
         {
             return base.GetGameFolderName();

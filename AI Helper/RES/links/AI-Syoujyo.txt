@@ -1,0 +1,51 @@
+;Links for AI-Girl game resources
+;
+;lines starting with ";" will be ignored
+;
+;Standart groups:
+;;Characters
+;;Mods
+;;Authors
+;;Resources
+;;Other
+;
+;Format:
+;;%groupname%{{link}}%linkname%{{link}}%link%
+;
+;Resources with characters cards
+Characters{{link}}Google{{link}}https://www.google.ru/search?newwindow=1&as_st=y&hl=jp&tbs=isz%3Aex%2Ciszw%3A252%2Ciszh%3A352%2Cift%3Apng&tbm=isch&sa=1&ei=GXu0Xfb8DPyKk74Ph7iTyAk&q=illusion+%7C+%EF%BC%A1%EF%BC%A9+%E5%B0%91%E5%A5%B3+%7C+AIShoujo+%7C+char+%7C+game+%7C+hentai+%7C+%E3%82%A8%E3%83%AD+-koikatsu+-koikatu+-honeyselect+-%E3%82%B3%E3%82%A4%E3%82%AB%E3%83%84
+Characters{{link}}Booru{{link}}https://aigirl.booru.org/index.php?page=post&s=list&tags=all
+Characters{{link}}db.bepis.io{{link}}https://db.bepis.io/aishoujo
+Characters{{link}}Kenzato{{link}}https://kenzato.uk/booru/category/AICARD
+Characters{{link}}Illusion Discord{{link}}https://discord.gg/TyQtXkf
+;
+;Resources with any mods
+Mods{{link}}Pastebin{{link}}https://pastebin.com/QRRKtC45
+;
+;Maps
+Studio Maps{{link}}[Hooh] Art Class{{link}}https://mega.nz/#F!BslzlarA!sehQ40aA1UgTINqcUC19eg
+Studio Maps{{link}}[Zeromike] Urban maps {{link}}https://mega.nz/#F!weYRCYRB!3hOMuA0FwQOtUqL5oOP7gA
+Studio Maps{{link}}[AiLegend] Cyberpunk Map Pack{{link}}https://mega.nz/#F!HyYhVYQS!7LKYXYG_ZbDFkqvyfOjo8g
+Studio Maps{{link}}[AiLegend] Tiny Home{{link}}https://mega.nz/#F!vvpnSAjY!2DFqs7gXMdKRWoPXRpk9zQ
+Studio Maps{{link}}[AiLegend] Tiny Home 2{{link}}https://mega.nz/#F!frxl0KyL!D_vW9YB13q7G6GTfqN_ygg
+Studio Maps{{link}}[AiLegend] Tiny Home 3{{link}}https://www.patreon.com/posts/34386157
+Studio Maps{{link}}[AiLegend] Rocky Plains{{link}}https://mega.nz/#F!OiQHjaLC!vMl8ZoIOD3naBpTsD_jE_Q
+Studio Maps{{link}}[AiLegend] Modern Apartment{{link}}https://mega.nz/#F!WqBnFCTC!AD_yMqJPXImioh1GM3HWlg
+Studio Maps{{link}}[AiLegend] HQ Big Suburban Home{{link}}https://www.patreon.com/posts/create-home-2-hq-33838861
+Studio Maps{{link}}[AiLegend] Asian Environment{{link}}https://www.patreon.com/posts/34107720
+Studio Maps{{link}}[AiLegend] California Home Pack{{link}}https://www.patreon.com/posts/california-home-34030557
+Studio Maps{{link}}[AiLegend] HD Western Saloon Map{{link}}https://www.patreon.com/posts/33913050
+Studio Maps{{link}}[Hooh] Classic Office{{link}}https://mega.nz/#F!dstS3SqJ!zod1svuI7nVziYhMtwnf1g
+Studio Maps{{link}}[Hooh] Office Map and Mega Prop Pack{{link}}https://mega.nz/#F!0g0WgC5S!k5CWdZwGDGtExk4CiFxoWA
+Studio Maps{{link}}[Nyaacho] PH park map remastered{{link}}https://drive.google.com/uc?id=1kBwEMwCJx3CCEbAPm6lIt7_6FOOzGRea&export=download
+Studio Maps{{link}}[qq128416324]Streets of asia 2+Japanese winter spa{{link}}https://mega.nz/#!zTwVRIoI!yr8ggulTRVXfHeunIXxOSJRnCrwdzN6Q6ti4ch6anAI
+Studio Maps{{link}}[qq128416324]the streets of asia 4{{link}}https://mega.nz/file/bGhByRhD#fCHoa4NYNeNKm5felekPTiXHi_lrwt9cQmpVCCZ-f6Y
+Studio Maps{{link}}[AiLegend] Modern Big City (Day & Night) + City Apartment Interior{{link}}https://www.patreon.com/posts/34221066
+Studio Maps{{link}}[hooh] Classic Interior and Props{{link}}https://www.patreon.com/posts/classic-and-33767073
+Studio Maps{{link}}[hooh] Fantasy Village{{link}}https://www.patreon.com/posts/fantasy-village-33487471
+;
+;Items
+Items{{link}}[qq128416324]100+ Fantasy Props{{link}}https://www.patreon.com/posts/100-fantasy-33658316
+;
+;Authors
+Authors{{link}}Totaldecay{{link}}https://totaldecay78.blogspot.com/

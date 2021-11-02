@@ -1,0 +1,22 @@
+;Links for AI-Girl game resources
+;
+;lines starting with ";" will be ignored
+;
+;Standart groups:
+;;Characters
+;;Mods
+;;Authors
+;;Resources
+;;Other
+;
+;Format:
+;;%groupname%{{link}}%linkname%{{link}}%link%
+;
+;Resources with characters cards
+Characters{{link}}[Torrent]Combined Communities Character Card Pack v3{{link}}https://sukebei.nyaa.si/view/3330941
+Characters{{link}}Booru{{link}}https://illusioncards.booru.org/index.php?page=post&s=list&tags=koikatsu
+Characters{{link}}db.bepis.io{{link}}https://db.bepis.io/koikatsu
+Characters{{link}}Kenzato{{link}}https://kenzato.uk/booru/category/KK
+Characters{{link}}Pixiv{{link}}https://www.pixiv.net/en/tags/%E3%82%AD%E3%83%A3%E3%83%A9%E9%85%8D%E5%B8%83%28%E3%82%B3%E3%82%A4%E3%82%AB%E3%83%84%29/artworks
+Characters{{link}}Illusionsoft Discord{{link}}https://discord.gg/illusionsoft
+Characters{{link}}Koikatsu! Discord{{link}}https://discord.gg/sZay4CvBrG

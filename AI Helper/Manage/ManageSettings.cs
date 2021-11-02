@@ -243,13 +243,13 @@ namespace AIHelper.Manage
                         var ini = ManageIni.GetINIFile(moIni);
 
                         // check mo ini game parameters exist
-                        ini.SetKey("General", "gameName", game.GetGameFolderName());
-                        ini.SetKey("General", "gamePath", "@ByteArray(" + Path.Combine(game.GameDirInfo.Parent.FullName, game.GetGameFolderName()).Replace("\\", "\\\\") + ")");
+                        ini.SetKey("General", "gameName", game.GetGameDirName());
+                        ini.SetKey("General", "gamePath", "@ByteArray(" + Path.Combine(game.GameDirInfo.Parent.FullName, game.GetGameDirName()).Replace("\\", "\\\\") + ")");
                         ini.SetKey("General", "selected_profile", "Default");
-                        ini.SetKey("Settings", "mod_directory", Path.Combine(gameDir, game.GetGameFolderName(), "Mods").Replace("\\", "\\\\"));
-                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GetGameFolderName(), "Downloads").Replace("\\", "\\\\"));
-                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GetGameFolderName(), GetAppModOrganizerDirName(), "profiles").Replace("\\", "\\\\"));
-                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GetGameFolderName(), GetAppModOrganizerDirName(), "overwrite").Replace("\\", "\\\\"));
+                        ini.SetKey("Settings", "mod_directory", Path.Combine(gameDir, game.GetGameDirName(), "Mods").Replace("\\", "\\\\"));
+                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GetGameDirName(), "Downloads").Replace("\\", "\\\\"));
+                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GetGameDirName(), GetAppModOrganizerDirName(), "profiles").Replace("\\", "\\\\"));
+                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GetGameDirName(), GetAppModOrganizerDirName(), "overwrite").Replace("\\", "\\\\"));
                     }
 
                     // check and write categories dat
@@ -412,7 +412,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameModsUpdateDir()
         {
-            return Path.Combine(GetModsUpdateDirPath(), GetCurrentGameFolderName());
+            return Path.Combine(GetModsUpdateDirPath(), GetCurrentGameDirName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -424,7 +424,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameModListRulesPath()
         {
-            return Path.Combine(GetAppResDirPath(), "rules", GetCurrentGameFolderName(), "modlist.txt");
+            return Path.Combine(GetAppResDirPath(), "rules", GetCurrentGameDirName(), "modlist.txt");
         }
 
         /// <summary>
@@ -835,7 +835,7 @@ namespace AIHelper.Manage
             string listOfGamesString = string.Empty;
             foreach (var game in GameData.ListOfGames)
             {
-                listOfGamesString += game.GetGameFolderName() + Environment.NewLine;
+                listOfGamesString += game.GetGameDirName() + Environment.NewLine;
             }
 
             return listOfGamesString;
@@ -886,7 +886,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameSetupXmlFilePathinData()
         {
-            return Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "setup.xml");
+            return Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "UserData", "setup.xml");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -898,13 +898,13 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetSettingsExePath()
         {
-            return Path.Combine(GetCurrentGameDataPath(), GetIniSettingsExeName() + ".exe");
+            return Path.Combine(GetCurrentGameDataDirPath(), GetIniSettingsExeName() + ".exe");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameDirPath()
         {
-            return Path.Combine(GetCurrentGameParentDirPath(), ManageSettings.GetCurrentGameFolderName());
+            return Path.Combine(GetCurrentGameParentDirPath(), ManageSettings.GetCurrentGameDirName());
         }
 
         /// <summary>
@@ -954,7 +954,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameExePath()
         {
-            return Path.Combine(GetCurrentGameDataPath(), GetCurrentGameExeName() + ".exe");
+            return Path.Combine(GetCurrentGameDataDirPath(), GetCurrentGameExeName() + ".exe");
         }
 
         /// <summary>
@@ -983,9 +983,9 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetCurrentGameFolderName()
+        internal static string GetCurrentGameDirName()
         {
-            return GameData.CurrentGame.GetGameFolderName();
+            return GameData.CurrentGame.GetGameDirName();
         }
 
         /// <summary>
@@ -1057,7 +1057,7 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static string GetCurrentGameDataPath()
+        internal static string GetCurrentGameDataDirPath()
         {
             return Path.Combine(GetCurrentGameDirPath(), "Data");
         }
@@ -1164,7 +1164,7 @@ namespace AIHelper.Manage
 
             for (var i = 0; i < listOfGames.Count; i++)
             {
-                if (listOfGames[i].GetGameFolderName() == folderName)
+                if (listOfGames[i].GetGameDirName() == folderName)
                 {
                     return i;
                 }
@@ -1243,7 +1243,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetBepInExPath()
         {
-            return Path.Combine(IsMoMode() ? GetCurrentGameModsDirPath() : GetCurrentGameDataPath(), "BepInEx");
+            return Path.Combine(IsMoMode() ? GetCurrentGameModsDirPath() : GetCurrentGameDataDirPath(), "BepInEx");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1515,7 +1515,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameInstallDirPath()
         {
-            return Path.Combine(GetAppResDirPath(), "install", GetCurrentGameFolderName());
+            return Path.Combine(GetAppResDirPath(), "install", GetCurrentGameDirName());
         }
 
         /// <summary>
@@ -1532,7 +1532,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameGetCacheDirPath()
         {
-            return Path.Combine(GetCacheDirPath(), GetCurrentGameFolderName());
+            return Path.Combine(GetCacheDirPath(), GetCurrentGameDirName());
         }
 
         /// <summary>
@@ -1553,7 +1553,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static bool GetCurrentGameIsHaveVr()
         {
-            return File.Exists(Path.Combine(GetCurrentGameDataPath(), GetCurrentGameExeName() + "VR" + ".exe"));
+            return File.Exists(Path.Combine(GetCurrentGameDataDirPath(), GetCurrentGameExeName() + "VR" + ".exe"));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1595,7 +1595,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetUpdatedModsOlderVersionsBuckupDirPath()
         {
-            return Path.Combine(GetModsUpdateDirPath(), GetCurrentGameFolderName(), GetUpdatedModsOlderVersionsBuckupDirName());
+            return Path.Combine(GetModsUpdateDirPath(), GetCurrentGameDirName(), GetUpdatedModsOlderVersionsBuckupDirName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1657,7 +1657,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static string ZipmodsBleedingEdgeMarkFilePath()
         {
-            return Path.Combine(GetCurrentGameDataPath(), "UserData", "LauncherEN", ZipmodsBleedingEdgeMarkFileName());
+            return Path.Combine(GetCurrentGameDataDirPath(), "UserData", "LauncherEN", ZipmodsBleedingEdgeMarkFileName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1767,7 +1767,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string KKManagerDownloadsTempDir()
         {
-            return Path.Combine(GetCurrentGameDataPath(), "temp", "KKManager_downloads");
+            return Path.Combine(GetCurrentGameDataDirPath(), "temp", "KKManager_downloads");
         }
 
         /// <summary>

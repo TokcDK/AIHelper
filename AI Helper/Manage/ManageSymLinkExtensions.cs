@@ -429,7 +429,7 @@ namespace AIHelper.Manage
                     {
                         Directory.Delete(symlinkPath);
                     }
-                    else if (di.FullName.Replace(ManageSettings.GetCurrentGameDataPath(), string.Empty) != di.FullName) // is data path of current game
+                    else if (di.FullName.Replace(ManageSettings.GetCurrentGameDataDirPath(), string.Empty) != di.FullName) // is data path of current game
                     {
                         di.MoveAll(objectInfo); // move from Data subdir to object dir
                     }

@@ -166,7 +166,7 @@ namespace AIHelper
 
                 foreach (var game in GameData.ListOfGames)
                 {
-                    CurrentGameComboBox.Items.Add(game.GetGameFolderName());
+                    CurrentGameComboBox.Items.Add(game.GetGameDirName());
                 }
                 if (CurrentGameComboBox.Items.Count == 1)
                 {
@@ -187,7 +187,7 @@ namespace AIHelper
                     if (string.IsNullOrWhiteSpace(selected_game))
                     {
                         var game = GameData.ListOfGames[0];
-                        selected_game = game.GetGameFolderName();
+                        selected_game = game.GetGameDirName();
                     }
                 }
 
@@ -477,6 +477,12 @@ namespace AIHelper
                         " in their folders and vanilla files restored"
                     )
                     );
+                _thToolTip.SetToolTip(ModeSwitchCreateBuckupLabel,
+                    T._("Enables backup creation of selected game before mode switch\n" +
+                    " to be possible to restore Data and Mods dirs.\n" +
+                    "\n" +
+                    "Backup creating using ntfs hardlinks and not consumes any extra space.")
+                    );
 
                 _thToolTip.SetToolTip(InstallInModsButton, T._("Install mods and userdata, placed in") + " " + ManageSettings.ModsInstallDirName()
                      + (MOmode ? T._(
@@ -576,9 +582,9 @@ namespace AIHelper
 
             SetMoMode();
 
-            if (!Directory.Exists(ManageSettings.GetCurrentGameDataPath()))
+            if (!Directory.Exists(ManageSettings.GetCurrentGameDataDirPath()))
             {
-                Directory.CreateDirectory(ManageSettings.GetCurrentGameDataPath());
+                Directory.CreateDirectory(ManageSettings.GetCurrentGameDataDirPath());
             }
             if (MOmode && !Directory.Exists(ManageSettings.GetCurrentGameModsDirPath()))
             {
@@ -586,7 +592,7 @@ namespace AIHelper
                 ModsInfoLabel.Text = T._("Mods dir created");
             }
 
-            if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameExeName() + ".exe")))
+            if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), ManageSettings.GetCurrentGameExeName() + ".exe")))
             {
                 DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} game installed in {1}"), ManageSettings.GetCurrentGameDisplayingName(), "Data");
             }
@@ -594,14 +600,14 @@ namespace AIHelper
             {
                 DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} archive in {1}"), "AIGirl", "Data");
             }
-            else if (Directory.Exists(ManageSettings.GetCurrentGameDataPath()))
+            else if (Directory.Exists(ManageSettings.GetCurrentGameDataDirPath()))
             {
-                DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} files not in {1}. Move {0} game files there."), ManageSettings.GetCurrentGameFolderName(), "Data");
+                DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} files not in {1}. Move {0} game files there."), ManageSettings.GetCurrentGameDirName(), "Data");
             }
             else
             {
-                Directory.CreateDirectory(ManageSettings.GetCurrentGameDataPath());
-                DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} dir created. Move {1} game files there."), "Data", ManageSettings.GetCurrentGameFolderName());
+                Directory.CreateDirectory(ManageSettings.GetCurrentGameDataDirPath());
+                DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} dir created. Move {1} game files there."), "Data", ManageSettings.GetCurrentGameDirName());
             }
 
             if (MOmode)
@@ -718,7 +724,7 @@ namespace AIHelper
             }
 
             AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
-            CurrentGameComboBox.Text = GameData.CurrentGame.GetGameFolderName();
+            CurrentGameComboBox.Text = GameData.CurrentGame.GetGameDirName();
             CurrentGameComboBox.SelectedIndex = ManageSettings.GetCurrentGameIndex();
 
             GetEnableDisableLaunchTabButtons();
@@ -810,9 +816,9 @@ namespace AIHelper
 
             //MOButton.Enabled = /*Properties.Settings.Default.MOmode && */File.Exists(ManageSettings.GetMOexePath());
             //SettingsButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"));
-            JPLauncherRunLinkLabel.Enabled = File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetIniSettingsExeName() + ".exe"));
-            GameButton.Enabled = File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameExeName() + ".exe"));
-            StudioButton.Enabled = File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetStudioExeName() + ".exe"));
+            JPLauncherRunLinkLabel.Enabled = File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), ManageSettings.GetIniSettingsExeName() + ".exe"));
+            GameButton.Enabled = File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), ManageSettings.GetCurrentGameExeName() + ".exe"));
+            StudioButton.Enabled = File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), ManageSettings.GetStudioExeName() + ".exe"));
 
             //Set BepInEx log data
             var bepInExCfgPath = ManageSettings.GetBepInExCfgFilePath(); // заметно тормозит
@@ -944,11 +950,11 @@ namespace AIHelper
                 if (cbxNtlea.Checked)
                 {
                     exePath = ManageSettings.NtleaExePath();
-                    arguments = "\"" + Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameExeName() + vr + ".exe") + "\"" + " \"C932\" \"L0411\"";
+                    arguments = "\"" + Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), ManageSettings.GetCurrentGameExeName() + vr + ".exe") + "\"" + " \"C932\" \"L0411\"";
                 }
                 else
                 {
-                    exePath = Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameExeName() + vr + ".exe");
+                    exePath = Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), ManageSettings.GetCurrentGameExeName() + vr + ".exe");
                 }
             }
 
@@ -981,7 +987,7 @@ namespace AIHelper
             {
                 ManageProcess.KillProcessesByName(ManageSettings.GetStudioExeName());
 
-                var exe = Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetStudioExeName() + ".exe");
+                var exe = Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), ManageSettings.GetStudioExeName() + ".exe");
                 ManageProcess.RunProgram(exe, string.Empty);
             }
             OnOffButtons();
@@ -1188,8 +1194,8 @@ namespace AIHelper
 
         private void OpenGameFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (Directory.Exists(ManageSettings.GetCurrentGameDataPath()))
-                Process.Start("explorer.exe", ManageSettings.GetCurrentGameDataPath());
+            if (Directory.Exists(ManageSettings.GetCurrentGameDataDirPath()))
+                Process.Start("explorer.exe", ManageSettings.GetCurrentGameDataDirPath());
         }
 
         private void OpenMOFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -1256,7 +1262,7 @@ namespace AIHelper
                 Properties.Settings.Default.CurrentGameListIndex = (sender as ComboBox).SelectedIndex;
                 ActionsOnGameChanged();
 
-                ManageIni.GetINIFile(ManageSettings.GetAiHelperIniPath()).SetKey("Settings", "selected_game", ManageSettings.GetCurrentGameFolderName());
+                ManageIni.GetINIFile(ManageSettings.GetAiHelperIniPath()).SetKey("Settings", "selected_game", ManageSettings.GetCurrentGameDirName());
 
                 FoldersInit();
 
@@ -1264,7 +1270,7 @@ namespace AIHelper
             }
             else
             {
-                CurrentGameComboBox.SelectedItem = ManageSettings.GetCurrentGameFolderName();
+                CurrentGameComboBox.SelectedItem = ManageSettings.GetCurrentGameDirName();
             }
         }
 
@@ -1375,7 +1381,7 @@ namespace AIHelper
             }
             else
             {
-                ManageProcess.RunProgram(Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetIniSettingsExeName() + ".exe"), string.Empty);
+                ManageProcess.RunProgram(Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), ManageSettings.GetIniSettingsExeName() + ".exe"), string.Empty);
             }
             OnOffButtons();
         }
@@ -1390,7 +1396,7 @@ namespace AIHelper
             try
             {
                 //write last game folder name
-                ManageIni.GetINIFile(ManageSettings.GetAiHelperIniPath()).SetKey("Settings", "selected_game", ManageSettings.GetCurrentGameFolderName());
+                ManageIni.GetINIFile(ManageSettings.GetAiHelperIniPath()).SetKey("Settings", "selected_game", ManageSettings.GetCurrentGameDirName());
             }
             catch (Exception ex)
             {
@@ -1566,6 +1572,11 @@ namespace AIHelper
         }
 
         private void CheckEnabledModsOnlyLabel_Click(object sender, EventArgs e)
+        {
+            RefreshLabelCheckState(sender);
+        }
+
+        private void ModeSwitchCreateBuckupLabel_Click(object sender, EventArgs e)
         {
             RefreshLabelCheckState(sender);
         }

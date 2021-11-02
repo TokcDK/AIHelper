@@ -55,7 +55,7 @@ namespace AIHelper.Install.UpdateMaker
             }
             Directory.CreateDirectory(updateDir);
 
-            var updateGameDir = Path.Combine(updateDir, "Games", ManageSettings.GetCurrentGameFolderName());
+            var updateGameDir = Path.Combine(updateDir, "Games", ManageSettings.GetCurrentGameDirName());
 
             foreach (var parameter in parameters)
             {
@@ -124,7 +124,7 @@ namespace AIHelper.Install.UpdateMaker
             }
 
             var gameupdateini = ManageIni.GetINIFile(Path.Combine(updateDir, ManageSettings.GetGameUpdateInstallerIniFileName()));
-            gameupdateini.SetKey("", "GameFolderName", ManageSettings.GetCurrentGameFolderName());
+            gameupdateini.SetKey("", "GameFolderName", ManageSettings.GetCurrentGameDirName());
             gameupdateini.SetKey("", "IsRoot", "true");
             // add keys
             foreach (var parameter in _gameupdatekeys)

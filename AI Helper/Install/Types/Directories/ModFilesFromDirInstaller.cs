@@ -144,7 +144,7 @@ namespace AIHelper.Install.Types.Directories
                     {
                         //string[] datafiles = Directory.GetFiles(dir, Path.GetFileName(file), SearchOption.AllDirectories);
 
-                        DirectoryInfo dirinfo = new DirectoryInfo(ManageSettings.GetCurrentGameDataPath());
+                        DirectoryInfo dirinfo = new DirectoryInfo(ManageSettings.GetCurrentGameDataDirPath());
 
                         var datafiles = dirinfo.GetFiles(Path.GetFileName(file), SearchOption.AllDirectories);
 
@@ -164,7 +164,7 @@ namespace AIHelper.Install.Types.Directories
                                 }
                             }
 
-                            targetfilepath = selectedfile.Replace(ManageSettings.GetCurrentGameDataPath(), moddir);
+                            targetfilepath = selectedfile.Replace(ManageSettings.GetCurrentGameDataDirPath(), moddir);
 
                             Directory.CreateDirectory(Path.GetDirectoryName(targetfilepath));
                             File.Move(file, targetfilepath);

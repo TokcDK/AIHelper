@@ -91,6 +91,10 @@ namespace AIHelper.Manage.ModeSwitch
 
         protected void SwitchToCommonMode()
         {
+            // first make game's buckup
+            if (SharedData.GameData.MainForm.ModeSwitchCreateBuckupLabel.IsChecked())
+                new GameBackuper().CreateDataModsBakOfCurrentGame();
+
             moToStandartConvertationOperationsList = new StringBuilder();
             vanillaDataEmptyFoldersList = new StringBuilder();
             zipmodsGuidList = new Dictionary<string, string>();
@@ -110,7 +114,7 @@ namespace AIHelper.Manage.ModeSwitch
 
                 Directory.CreateDirectory(ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath());
 
-                ManageFilesFoldersExtensions.GetEmptySubfoldersPaths(ManageSettings.GetCurrentGameDataPath(), vanillaDataEmptyFoldersList);
+                ManageFilesFoldersExtensions.GetEmptySubfoldersPaths(ManageSettings.GetCurrentGameDataDirPath(), vanillaDataEmptyFoldersList);
 
                 var frmProgress = new Form
                 {
@@ -127,7 +131,7 @@ namespace AIHelper.Manage.ModeSwitch
                 frmProgress.Show();
 
                 //DATA files
-                vanillaDataFilesList = Directory.GetFiles(ManageSettings.GetCurrentGameDataPath(), "*.*", SearchOption.AllDirectories);
+                vanillaDataFilesList = Directory.GetFiles(ManageSettings.GetCurrentGameDataDirPath(), "*.*", SearchOption.AllDirectories);
 
                 // OVERWRITE
                 var sourceFolder = ManageSettings.GetCurrentGameOverwriteFolderPath();
@@ -174,7 +178,7 @@ namespace AIHelper.Manage.ModeSwitch
                 File.WriteAllText(ManageSettings.GetCurrentGameMoToStandartConvertationOperationsListFilePath(), moToStandartConvertationOperationsList.ToString());
                 moToStandartConvertationOperationsList.Clear();
 
-                var dataWithModsFileslist = Directory.GetFiles(ManageSettings.GetCurrentGameDataPath(), "*.*", SearchOption.AllDirectories);
+                var dataWithModsFileslist = Directory.GetFiles(ManageSettings.GetCurrentGameDataDirPath(), "*.*", SearchOption.AllDirectories);
                 ReplacePathsToVars(ref dataWithModsFileslist);
                 File.WriteAllLines(ManageSettings.GetCurrentGameModdedDataFilesListFilePath(), dataWithModsFileslist);
 
@@ -215,13 +219,15 @@ namespace AIHelper.Manage.ModeSwitch
                 //восстановление файлов в первоначальные папки
                 RestoreMovedFilesLocation(moToStandartConvertationOperationsList);
 
+                var emptyDirsList = ReplaceVarsToPaths(vanillaDataEmptyFoldersList.ToString());
                 //clean empty folders except whose was already in Data
-                ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataPath(), false, vanillaDataEmptyFoldersList.ToString().SplitToLines().ToArray());
+                ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataDirPath(), false, emptyDirsList.SplitToLines().ToArray());
 
                 //сообщить об ошибке
                 MessageBox.Show("Mode was not switched. Error:" + Environment.NewLine + ex);
             }
         }
+
         /// <summary>
         /// Parse files and dirs in <paramref name="sourceFolder"/> using <paramref name="parentDirPath"/>
         /// </summary>
@@ -258,8 +264,8 @@ namespace AIHelper.Manage.ModeSwitch
             {
                 var symlinkTarget = Path.GetFullPath(dir.GetSymlinkTarget(ObjectType.Directory));
 
-                var targetPath = dir.Replace(parentDirPath, ManageSettings.GetCurrentGameDataPath()); // we move to data
-                symlinkTarget.CreateSymlink(targetPath, isRelative: true, objectType: ObjectType.Directory);
+                var targetPath = dir.Replace(parentDirPath, ManageSettings.GetCurrentGameDataDirPath()); // we move to data
+                symlinkTarget.CreateSymlink(targetPath, isRelative: Path.GetPathRoot(targetPath) == Path.GetPathRoot(symlinkTarget), objectType: ObjectType.Directory);
 
                 // we not deleted symlink in the dir
                 lock (moToStandartConvertationOperationsListLocker)
@@ -268,6 +274,14 @@ namespace AIHelper.Manage.ModeSwitch
                 }
 
                 ParsedAny = true;
+            }
+            else
+            {
+                var invalidSymlinkDirMarkerPath = dir + "_InvalidSymLink";
+                if (!Directory.Exists(invalidSymlinkDirMarkerPath))
+                {
+                    Directory.CreateDirectory(invalidSymlinkDirMarkerPath);
+                }
             }
         }
 
@@ -301,10 +315,36 @@ namespace AIHelper.Manage.ModeSwitch
                     return;
                 }
 
-                ParseFile(sourceFilePath, parentDirPath);
+                if (sourceFilePath.IsSymlink(ObjectType.File))
+                {
+                    ParseFileLink(dir, parentDirPath);
+                }
+                else
+                {
+                    ParseFile(sourceFilePath, parentDirPath);
+                }
             });
 
             return true;
+        }
+
+        static void ParseFileLink(string linkPath, string parentDirPath)
+        {
+            if (linkPath.IsValidSymlink(objectType: ObjectType.File))
+            {
+                var symlinkTarget = Path.GetFullPath(linkPath.GetSymlinkTarget(ObjectType.File));
+
+                var targetPath = linkPath.Replace(parentDirPath, ManageSettings.GetCurrentGameDataDirPath());
+                symlinkTarget.CreateSymlink(targetPath, isRelative: Path.GetPathRoot(targetPath) == Path.GetPathRoot(symlinkTarget), objectType: ObjectType.File);
+            }
+            else
+            {
+                var invalidSymlinkDirMarkerPath = linkPath + ".InvalidSymLink";
+                if (!File.Exists(invalidSymlinkDirMarkerPath))
+                {
+                    File.WriteAllText(invalidSymlinkDirMarkerPath, "Symlink file '" + linkPath + "' is invalid!");
+                }
+            }
         }
 
         /// <summary>
@@ -314,7 +354,7 @@ namespace AIHelper.Manage.ModeSwitch
         /// <param name="parentDirPath"></param>
         protected void ParseFile(string sourceFilePath, string parentDirPath)
         {
-            var dataFilePath = sourceFilePath.Replace(parentDirPath, ManageSettings.GetCurrentGameDataPath());
+            var dataFilePath = sourceFilePath.Replace(parentDirPath, ManageSettings.GetCurrentGameDataDirPath());
             if (ManageStrings.CheckForLongPath(ref dataFilePath))
             {
                 longPaths.Add(dataFilePath.Substring(4));
@@ -322,7 +362,7 @@ namespace AIHelper.Manage.ModeSwitch
 
             if (File.Exists(dataFilePath))
             {
-                var vanillaFileBackupTargetPath = dataFilePath.Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath());
+                var vanillaFileBackupTargetPath = dataFilePath.Replace(ManageSettings.GetCurrentGameDataDirPath(), ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath());
 
                 if (File.Exists(vanillaFileBackupTargetPath) || !vanillaDataFilesList.Contains(dataFilePath))
                 {

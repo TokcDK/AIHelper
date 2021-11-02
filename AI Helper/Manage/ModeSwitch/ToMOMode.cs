@@ -78,11 +78,11 @@ namespace AIHelper.Manage.ModeSwitch
                     //удалить все, за исключением добавленных ранее путей до пустых папок
                     string[] vanillaDataEmptyFoldersList = File.ReadAllLines(ManageSettings.GetCurrentGameVanillaDataEmptyFoldersListFilePath());
                     ReplaceVarsToPaths(ref vanillaDataEmptyFoldersList);
-                    ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataPath(), false, vanillaDataEmptyFoldersList);
+                    ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataDirPath(), false, vanillaDataEmptyFoldersList);
                 }
                 else
                 {
-                    ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataPath(), false);
+                    ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataDirPath(), false);
                 }
 
                 //restore sideloader mods from Mods\Mods
@@ -197,7 +197,7 @@ namespace AIHelper.Manage.ModeSwitch
             string destFolderPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), addedFilesFolderName);
 
             //int addedFilesLength = addedFiles.Length;
-            Parallel.ForEach(Directory.GetFiles(ManageSettings.GetCurrentGameDataPath(), "*.*", SearchOption.AllDirectories), file =>
+            Parallel.ForEach(Directory.GetFiles(ManageSettings.GetCurrentGameDataDirPath(), "*.*", SearchOption.AllDirectories), file =>
             {
                 if (moddedDataFilesList.Contains(file))
                 {
@@ -224,14 +224,14 @@ namespace AIHelper.Manage.ModeSwitch
                         {
                             var targetfolder = zipmod.IsInOverwriteFolder() ?
                                 ManageSettings.GetCurrentGameOverwriteFolderPath() : ManageSettings.GetCurrentGameModsDirPath();
-                            destFileName = file.Replace(ManageSettings.GetCurrentGameDataPath(), targetfolder
+                            destFileName = file.Replace(ManageSettings.GetCurrentGameDataDirPath(), targetfolder
                                 );
                         }
                         else//when mod was renamed
                         {
                             if (zipmod.IsInOverwriteFolder())//zipmod in overwrite
                             {
-                                var newFilePath = file.Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameOverwriteFolderPath());
+                                var newFilePath = file.Replace(ManageSettings.GetCurrentGameDataDirPath(), ManageSettings.GetCurrentGameOverwriteFolderPath());
                                 if (Directory.Exists(Path.GetDirectoryName(newFilePath)) && newFilePath != file)
                                 {
                                     destFileName = newFilePath;
@@ -242,7 +242,7 @@ namespace AIHelper.Manage.ModeSwitch
                                 var modPath = zipmod.GetPathInMods();
                                 if (Path.GetFileName(modPath).ToUpperInvariant() != "MODS" && Directory.Exists(modPath))
                                 {
-                                    destFileName = file.Replace(ManageSettings.GetCurrentGameDataPath(), modPath);
+                                    destFileName = file.Replace(ManageSettings.GetCurrentGameDataDirPath(), modPath);
                                 }
                             }
                         }
@@ -255,7 +255,7 @@ namespace AIHelper.Manage.ModeSwitch
 
                 if (string.IsNullOrEmpty(destFileName))
                 {
-                    destFileName = file.Replace(ManageSettings.GetCurrentGameDataPath(), destFolderPath);
+                    destFileName = file.Replace(ManageSettings.GetCurrentGameDataDirPath(), destFolderPath);
                 }
                 Directory.CreateDirectory(Path.GetDirectoryName(destFileName));
                 file.MoveTo(destFileName);

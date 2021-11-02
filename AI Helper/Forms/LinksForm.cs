@@ -63,7 +63,7 @@ namespace AIHelper
                 { "Other", T._("Other") }
             };
 
-            string gameLinksPath = Path.Combine(ManageSettings.GetAppResDirPath(), "links", ManageSettings.GetCurrentGameFolderName() + ".txt");
+            string gameLinksPath = Path.Combine(ManageSettings.GetAppResDirPath(), "links", ManageSettings.GetCurrentGameDirName() + ".txt");
             if (!File.Exists(gameLinksPath))
             {
                 gameLinksPath = Path.Combine(ManageSettings.GetAppResDirPath(), "links", "Default.txt");

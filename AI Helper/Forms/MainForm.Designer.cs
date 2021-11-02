@@ -99,6 +99,11 @@
             this.Install2MOOptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
+            this.ModeSwitchTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.ModeSwitchButtonPanel = new System.Windows.Forms.Panel();
+            this.ModeSwitchOptionsPanel = new System.Windows.Forms.Panel();
+            this.ModeSwitchFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.ModeSwitchCreateBuckupLabel = new System.Windows.Forms.Label();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -118,6 +123,10 @@
             this.UpdateButtonOptionsFlowLayoutPanel.SuspendLayout();
             this.Install2MOTableLayoutPanel.SuspendLayout();
             this.Install2MOOptionsFlowLayoutPanel.SuspendLayout();
+            this.ModeSwitchTableLayoutPanel.SuspendLayout();
+            this.ModeSwitchButtonPanel.SuspendLayout();
+            this.ModeSwitchOptionsPanel.SuspendLayout();
+            this.ModeSwitchFlowLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // AIGirlHelperTabControl
@@ -859,7 +868,7 @@
             this.ToolsTabPageTableLayoutPanel.Controls.Add(this.ToolsFixModListButton, 0, 2);
             this.ToolsTabPageTableLayoutPanel.Controls.Add(this.UpdateButtonTableLayoutPanel, 0, 3);
             this.ToolsTabPageTableLayoutPanel.Controls.Add(this.Install2MOTableLayoutPanel, 0, 1);
-            this.ToolsTabPageTableLayoutPanel.Controls.Add(this.MOCommonModeSwitchButton, 0, 0);
+            this.ToolsTabPageTableLayoutPanel.Controls.Add(this.ModeSwitchTableLayoutPanel, 0, 0);
             this.ToolsTabPageTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ToolsTabPageTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.ToolsTabPageTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
@@ -1058,13 +1067,69 @@
             this.MOCommonModeSwitchButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.MOCommonModeSwitchButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MOCommonModeSwitchButton.ForeColor = System.Drawing.Color.Black;
-            this.MOCommonModeSwitchButton.Location = new System.Drawing.Point(3, 3);
+            this.MOCommonModeSwitchButton.Location = new System.Drawing.Point(5, 3);
             this.MOCommonModeSwitchButton.Name = "MOCommonModeSwitchButton";
             this.MOCommonModeSwitchButton.Size = new System.Drawing.Size(122, 30);
             this.MOCommonModeSwitchButton.TabIndex = 16;
             this.MOCommonModeSwitchButton.Text = "MOToCommon";
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
+            // 
+            // ModeSwitchTableLayoutPanel
+            // 
+            this.ModeSwitchTableLayoutPanel.ColumnCount = 2;
+            this.ModeSwitchTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 76.36364F));
+            this.ModeSwitchTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 23.63636F));
+            this.ModeSwitchTableLayoutPanel.Controls.Add(this.ModeSwitchButtonPanel, 0, 0);
+            this.ModeSwitchTableLayoutPanel.Controls.Add(this.ModeSwitchOptionsPanel, 1, 0);
+            this.ModeSwitchTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.ModeSwitchTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.ModeSwitchTableLayoutPanel.Name = "ModeSwitchTableLayoutPanel";
+            this.ModeSwitchTableLayoutPanel.RowCount = 1;
+            this.ModeSwitchTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.ModeSwitchTableLayoutPanel.Size = new System.Drawing.Size(171, 38);
+            this.ModeSwitchTableLayoutPanel.TabIndex = 31;
+            // 
+            // ModeSwitchButtonPanel
+            // 
+            this.ModeSwitchButtonPanel.Controls.Add(this.MOCommonModeSwitchButton);
+            this.ModeSwitchButtonPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ModeSwitchButtonPanel.Location = new System.Drawing.Point(0, 0);
+            this.ModeSwitchButtonPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.ModeSwitchButtonPanel.Name = "ModeSwitchButtonPanel";
+            this.ModeSwitchButtonPanel.Size = new System.Drawing.Size(130, 38);
+            this.ModeSwitchButtonPanel.TabIndex = 0;
+            // 
+            // ModeSwitchOptionsPanel
+            // 
+            this.ModeSwitchOptionsPanel.Controls.Add(this.ModeSwitchFlowLayoutPanel);
+            this.ModeSwitchOptionsPanel.Location = new System.Drawing.Point(130, 0);
+            this.ModeSwitchOptionsPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.ModeSwitchOptionsPanel.Name = "ModeSwitchOptionsPanel";
+            this.ModeSwitchOptionsPanel.Size = new System.Drawing.Size(41, 38);
+            this.ModeSwitchOptionsPanel.TabIndex = 1;
+            // 
+            // ModeSwitchFlowLayoutPanel
+            // 
+            this.ModeSwitchFlowLayoutPanel.Controls.Add(this.ModeSwitchCreateBuckupLabel);
+            this.ModeSwitchFlowLayoutPanel.Location = new System.Drawing.Point(1, 4);
+            this.ModeSwitchFlowLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.ModeSwitchFlowLayoutPanel.Name = "ModeSwitchFlowLayoutPanel";
+            this.ModeSwitchFlowLayoutPanel.Size = new System.Drawing.Size(40, 34);
+            this.ModeSwitchFlowLayoutPanel.TabIndex = 0;
+            // 
+            // ModeSwitchCreateBuckupLabel
+            // 
+            this.ModeSwitchCreateBuckupLabel.AutoSize = true;
+            this.ModeSwitchCreateBuckupLabel.BackColor = System.Drawing.Color.Transparent;
+            this.ModeSwitchCreateBuckupLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.ModeSwitchCreateBuckupLabel.Location = new System.Drawing.Point(0, 0);
+            this.ModeSwitchCreateBuckupLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.ModeSwitchCreateBuckupLabel.Name = "ModeSwitchCreateBuckupLabel";
+            this.ModeSwitchCreateBuckupLabel.Size = new System.Drawing.Size(13, 13);
+            this.ModeSwitchCreateBuckupLabel.TabIndex = 33;
+            this.ModeSwitchCreateBuckupLabel.Text = "b";
+            this.ModeSwitchCreateBuckupLabel.Click += new System.EventHandler(this.ModeSwitchCreateBuckupLabel_Click);
             // 
             // MainForm
             // 
@@ -1106,6 +1171,11 @@
             this.Install2MOTableLayoutPanel.ResumeLayout(false);
             this.Install2MOOptionsFlowLayoutPanel.ResumeLayout(false);
             this.Install2MOOptionsFlowLayoutPanel.PerformLayout();
+            this.ModeSwitchTableLayoutPanel.ResumeLayout(false);
+            this.ModeSwitchButtonPanel.ResumeLayout(false);
+            this.ModeSwitchOptionsPanel.ResumeLayout(false);
+            this.ModeSwitchFlowLayoutPanel.ResumeLayout(false);
+            this.ModeSwitchFlowLayoutPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1181,6 +1251,11 @@
         public System.Windows.Forms.Label UseKKmanagerUpdaterLabel;
         public System.Windows.Forms.Label BleadingEdgeZipmodsLabel;
         public System.Windows.Forms.Label CheckEnabledModsOnlyLabel;
+        private System.Windows.Forms.TableLayoutPanel ModeSwitchTableLayoutPanel;
+        private System.Windows.Forms.Panel ModeSwitchButtonPanel;
+        private System.Windows.Forms.Panel ModeSwitchOptionsPanel;
+        private System.Windows.Forms.FlowLayoutPanel ModeSwitchFlowLayoutPanel;
+        public System.Windows.Forms.Label ModeSwitchCreateBuckupLabel;
     }
 }
 

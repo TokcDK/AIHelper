@@ -14,9 +14,9 @@ namespace AIHelper.Games
 
         public override string ManifestGame => "honeyselect2";
 
-        public override string GetGameFolderName()
+        public override string GetGameDirName()
         {
-            return base.GetGameFolderName();
+            return base.GetGameDirName();
 
             //return GetTheGameFolderName("HoneySelect2");
         }
@@ -66,13 +66,13 @@ namespace AIHelper.Games
                     {
                         Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserData", "UserData", "cap")
                         ,
-                        Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "cap")
+                        Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "UserData", "cap")
                     }
                     ,
                     {
                         Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserData", "UserData", "studioneo", "BetterSceneLoader")
                         ,
-                        Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "studioneo", "BetterSceneLoader")
+                        Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "UserData", "studioneo", "BetterSceneLoader")
                     }
             };
         }

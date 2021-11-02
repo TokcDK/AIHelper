@@ -15,9 +15,9 @@
 
         public override bool IsHaveSideloaderMods => false;
 
-        public override string GetGameFolderName()
+        public override string GetGameDirName()
         {
-            return base.GetGameFolderName();
+            return base.GetGameDirName();
 
             //return GetTheGameFolderName("Koikatsu");
         }

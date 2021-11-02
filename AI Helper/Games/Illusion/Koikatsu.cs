@@ -14,9 +14,9 @@ namespace AIHelper.Games
 
         public override string ManifestGame => "koikatsu";
 
-        public override string GetGameFolderName()
+        public override string GetGameDirName()
         {
-            return base.GetGameFolderName();
+            return base.GetGameDirName();
 
             //return GetTheGameFolderName("Koikatsu");
         }
@@ -66,19 +66,19 @@ namespace AIHelper.Games
                     {
                         Path.Combine(ManageSettings.GetCurrentGameMoOverwritePath(), "UserData", "MaterialEditor")
                         ,
-                        Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "MaterialEditor")
+                        Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "UserData", "MaterialEditor")
                     }
                     ,
                     {
                         Path.Combine(ManageSettings.GetCurrentGameMoOverwritePath(), "UserData", "Overlays")
                         ,
-                        Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "Overlays")
+                        Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "UserData", "Overlays")
                     }
                     ,
                     {
                         Path.Combine(ManageSettings.GetCurrentGameMoOverwritePath(), "UserData", "cap")
                         ,
-                        Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "cap")
+                        Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "UserData", "cap")
                     }
             };
         }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -119,7 +120,18 @@ namespace AIHelper.Manage
         /// <param name="dirPath"></param>
         /// <param name="deleteThisDir"></param>
         /// <param name="exclusions"></param>
-        public static void DeleteEmptySubfolders(string dirPath, bool deleteThisDir = true, string[] exclusions = null)
+        public static void DeleteEmptySubfolders(string dirPath, bool deleteThisDir, string[] exclusions)
+        {
+            DeleteEmptySubfolders(dirPath, deleteThisDir, exclusions.ToHashSet());
+        }
+
+        /// <summary>
+        /// will delete empty folders
+        /// </summary>
+        /// <param name="dirPath"></param>
+        /// <param name="deleteThisDir"></param>
+        /// <param name="exclusions"></param>
+        public static void DeleteEmptySubfolders(string dirPath, bool deleteThisDir = true, HashSet<string> exclusions = null)
         {
             if (string.IsNullOrEmpty(dirPath) || !Directory.Exists(dirPath))
             {
@@ -243,29 +255,14 @@ namespace AIHelper.Manage
         /// <param name="str"></param>
         /// <param name="exclusions"></param>
         /// <returns></returns>
-        public static bool TrueIfStringInExclusionsList(string str, string[] exclusions)
+        public static bool TrueIfStringInExclusionsList(string str, HashSet<string> exclusions)
         {
-            if (exclusions == null || str.Length == 0)
+            if (exclusions == null || string.IsNullOrEmpty(str))
             {
                 return false;
             }
-            else
-            {
-                int exclusionsLength = exclusions.Length;
-                for (int i = 0; i < exclusionsLength; i++)
-                {
-                    if (string.IsNullOrWhiteSpace(exclusions[i]))
-                    {
-                        continue;
-                    }
-                    if (ManageStrings.IsStringAContainsStringB(str, exclusions[i]))
-                    {
-                        return true;
-                    }
-                }
 
-            }
-            return false;
+            return exclusions.Contains(str);
         }
 
         /// <summary>

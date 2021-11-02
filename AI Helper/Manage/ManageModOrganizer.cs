@@ -93,7 +93,7 @@ namespace AIHelper.Manage
 
                    File.Exists(
                        Path.GetFullPath(
-                           Path.Combine(ManageSettings.GetCurrentGameDataPath() + Path.DirectorySeparatorChar + filedir)
+                           Path.Combine(ManageSettings.GetCurrentGameDataDirPath() + Path.DirectorySeparatorChar + filedir)
                                        )
                                    )
                    //||
@@ -125,13 +125,13 @@ namespace AIHelper.Manage
             }
             else
             {
-                if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameExeName() + "_Data", "output_log.txt")))
+                if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), ManageSettings.GetCurrentGameExeName() + "_Data", "output_log.txt")))
                 {
-                    Process.Start("explorer.exe", Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameExeName() + "_Data", "output_log.txt"));
+                    Process.Start("explorer.exe", Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), ManageSettings.GetCurrentGameExeName() + "_Data", "output_log.txt"));
                 }
-                else if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), gameNameByExe + "_Data", "output_log.txt")))
+                else if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), gameNameByExe + "_Data", "output_log.txt")))
                 {
-                    Process.Start("explorer.exe", Path.Combine(ManageSettings.GetCurrentGameDataPath(), gameNameByExe + "_Data", "output_log.txt"));
+                    Process.Start("explorer.exe", Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), gameNameByExe + "_Data", "output_log.txt"));
                 }
 
             }
@@ -294,7 +294,7 @@ namespace AIHelper.Manage
                 }
             }
 
-            ManageFilesFoldersExtensions.DeleteEmptySubfolders(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx"), true);
+            ManageFilesFoldersExtensions.DeleteEmptySubfolders(Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "BepInEx"), true);
 
             //else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx")))
             //{
@@ -3272,7 +3272,7 @@ namespace AIHelper.Manage
                 }
                 else
                 {
-                    objectDir = new DirectoryInfo(ManageSettings.GetCurrentGameDataPath());
+                    objectDir = new DirectoryInfo(ManageSettings.GetCurrentGameDataDirPath());
                 }
 
                 //create target object dir when it is not exists
@@ -3568,9 +3568,9 @@ namespace AIHelper.Manage
                 {
                     return ManageSettings.GetCurrentGameDisplayingName();
                 }
-                else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameModOrganizerDirPath(), "profiles", ManageSettings.GetCurrentGameFolderName())))
+                else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameModOrganizerDirPath(), "profiles", ManageSettings.GetCurrentGameDirName())))
                 {
-                    return ManageSettings.GetCurrentGameFolderName();
+                    return ManageSettings.GetCurrentGameDirName();
                 }
                 else if (Directory.GetDirectories(Path.Combine(ManageSettings.GetCurrentGameModOrganizerDirPath(), "profiles")).Length == 0)
                 {
@@ -3652,7 +3652,7 @@ namespace AIHelper.Manage
                 string modsOverwrite = inputPath.Contains(ManageSettings.GetCurrentGameMoOverwritePath()) ? ManageSettings.GetCurrentGameMoOverwritePath() : ManageSettings.GetCurrentGameModsDirPath();
 
                 //искать путь только для ссылки в Mods или в Data
-                if (!ManageStrings.IsStringAContainsStringB(inputPath, modsOverwrite) && !ManageStrings.IsStringAContainsStringB(inputPath, ManageSettings.GetCurrentGameDataPath()))
+                if (!ManageStrings.IsStringAContainsStringB(inputPath, modsOverwrite) && !ManageStrings.IsStringAContainsStringB(inputPath, ManageSettings.GetCurrentGameDataDirPath()))
                     return inputPath;
 
                 //отсеивание первого элемента с именем мода
@@ -3682,7 +3682,7 @@ namespace AIHelper.Manage
 
                 if (!ManageSettings.IsMoMode())
                 {
-                    return Path.Combine(ManageSettings.GetCurrentGameDataPath(), subpath);
+                    return Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), subpath);
                 }
 
                 //check in Overwrite 1st

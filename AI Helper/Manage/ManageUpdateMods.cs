@@ -62,7 +62,7 @@ namespace AIHelper.Manage
             if (!Manage.ManageSettings.IsMoMode())
             {
                 //run updater normal
-                ManageProcess.RunProgram(ManageSettings.KkManagerStandaloneUpdaterExePath(), "\"" + ManageSettings.GetCurrentGameDataPath() + "\"");
+                ManageProcess.RunProgram(ManageSettings.KkManagerStandaloneUpdaterExePath(), "\"" + ManageSettings.GetCurrentGameDataDirPath() + "\"");
                 return;
             }
 
@@ -73,7 +73,7 @@ namespace AIHelper.Manage
                 {
                     Title = "KKManagerStandaloneUpdater",
                     Binary = ManageSettings.KkManagerStandaloneUpdaterExePath(),
-                    Arguments = ManageSettings.GetCurrentGameDataPath(),
+                    Arguments = ManageSettings.GetCurrentGameDataDirPath(),
                     MoTargetMod = ManageSettings.KKManagerFilesModName()
                 };
 
@@ -194,7 +194,7 @@ namespace AIHelper.Manage
             }
 
             // clean temp in data
-            CleanKKManagerTempDir(ManageSettings.GetCurrentGameDataPath());
+            CleanKKManagerTempDir(ManageSettings.GetCurrentGameDataDirPath());
         }
 
         private static void CleanKKManagerTempDir(string targetDir)

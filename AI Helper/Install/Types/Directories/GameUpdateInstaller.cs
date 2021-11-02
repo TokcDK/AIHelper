@@ -46,7 +46,7 @@ namespace AIHelper.Install.Types.Directories
                 return false;
             }
 
-            if (ManageSettings.GetCurrentGameFolderName() != updateInfo.GameFolderName)
+            if (ManageSettings.GetCurrentGameDirName() != updateInfo.GameFolderName)
             {
                 // incorrect game
                 MessageBox.Show(updateInfo.GameFolderName + ": " + T._("Incorrect current game"));

@@ -36,10 +36,10 @@ namespace AIHelper.Games
         }
 
         GameBase _detectedGame;
-        public override string GetGameFolderName()
+        public override string GetGameDirName()
         {
             //DetectRootGame();
-            return _detectedGame.GetGameFolderName();
+            return _detectedGame.GetGameDirName();
         }
 
         public override string GetGameExeName()

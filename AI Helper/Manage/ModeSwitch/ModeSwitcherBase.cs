@@ -65,16 +65,16 @@ namespace AIHelper.Manage.ModeSwitch
         {
             if (create)
             {
-                if (!File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "normal.mode")))
+                if (!File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "normal.mode")))
                 {
-                    File.WriteAllText(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "normal.mode"), "The game is in normal mode");
+                    File.WriteAllText(Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "normal.mode"), "The game is in normal mode");
                 }
             }
             else
             {
-                if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "normal.mode")))
+                if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "normal.mode")))
                 {
-                    File.Delete(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "normal.mode"));
+                    File.Delete(Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "normal.mode"));
                 }
             }
         }
@@ -87,7 +87,7 @@ namespace AIHelper.Manage.ModeSwitch
         protected string ReplaceVarsToPaths(string str)
         {
             return str
-            .Replace(ManageSettings.VarCurrentGameDataPath(), ManageSettings.GetCurrentGameDataPath())
+            .Replace(ManageSettings.VarCurrentGameDataPath(), ManageSettings.GetCurrentGameDataDirPath())
             .Replace(ManageSettings.VarCurrentGameModsPath(), ManageSettings.GetCurrentGameModsDirPath())
             .Replace(ManageSettings.VarCurrentGameMoOverwritePath(), ManageSettings.GetCurrentGameMoOverwritePath());
         }
@@ -101,7 +101,7 @@ namespace AIHelper.Manage.ModeSwitch
             for (int i = 0; i < sarr.Length; i++)
             {
                 sarr[i] = sarr[i]
-                .Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.VarCurrentGameDataPath())
+                .Replace(ManageSettings.GetCurrentGameDataDirPath(), ManageSettings.VarCurrentGameDataPath())
                 .Replace(ManageSettings.GetCurrentGameModsDirPath(), ManageSettings.VarCurrentGameModsPath())
                 .Replace(ManageSettings.GetCurrentGameMoOverwritePath(), ManageSettings.VarCurrentGameMoOverwritePath());
             }
@@ -116,7 +116,7 @@ namespace AIHelper.Manage.ModeSwitch
             for (int i = 0; i < sarr.Length; i++)
             {
                 sarr[i] = sarr[i]
-                .Replace(ManageSettings.VarCurrentGameDataPath(), ManageSettings.GetCurrentGameDataPath())
+                .Replace(ManageSettings.VarCurrentGameDataPath(), ManageSettings.GetCurrentGameDataDirPath())
                 .Replace(ManageSettings.VarCurrentGameModsPath(), ManageSettings.GetCurrentGameModsDirPath())
                 .Replace(ManageSettings.VarCurrentGameMoOverwritePath(), ManageSettings.GetCurrentGameMoOverwritePath());
             }
@@ -129,7 +129,7 @@ namespace AIHelper.Manage.ModeSwitch
         protected void ReplacePathsToVars(ref StringBuilder sb)
         {
             sb = sb
-                .Replace(ManageSettings.GetCurrentGameDataPath(), ManageSettings.VarCurrentGameDataPath())
+                .Replace(ManageSettings.GetCurrentGameDataDirPath(), ManageSettings.VarCurrentGameDataPath())
                 .Replace(ManageSettings.GetCurrentGameModsDirPath(), ManageSettings.VarCurrentGameModsPath())
                 .Replace(ManageSettings.GetCurrentGameMoOverwritePath(), ManageSettings.VarCurrentGameMoOverwritePath());
         }
@@ -173,7 +173,7 @@ namespace AIHelper.Manage.ModeSwitch
                     return;
                 }
 
-                var destFileInDataFolderPath = file.Replace(mOmodeDataFilesBakDirPath, ManageSettings.GetCurrentGameDataPath());
+                var destFileInDataFolderPath = file.Replace(mOmodeDataFilesBakDirPath, ManageSettings.GetCurrentGameDataDirPath());
                 if (File.Exists(destFileInDataFolderPath))
                 {
                     return;

@@ -2,9 +2,9 @@
 {
     public class AiSyoujyo : GameBase
     {
-        public override string GetGameFolderName()
+        public override string GetGameDirName()
         {
-            return base.GetGameFolderName();
+            return base.GetGameDirName();
 
             //return GetTheGameFolderName(GetGameExeName());
         }

@@ -122,7 +122,7 @@ namespace AIHelper.Manage
         /// <param name="exclusions"></param>
         public static void DeleteEmptySubfolders(string dirPath, bool deleteThisDir, string[] exclusions)
         {
-            DeleteEmptySubfolders(dirPath, deleteThisDir, exclusions.ToHashSet());
+            DeleteEmptySubfolders(dirPath, deleteThisDir, exclusions.ToHashSet(), false);
         }
 
         /// <summary>
@@ -131,7 +131,7 @@ namespace AIHelper.Manage
         /// <param name="dirPath"></param>
         /// <param name="deleteThisDir"></param>
         /// <param name="exclusions"></param>
-        public static void DeleteEmptySubfolders(string dirPath, bool deleteThisDir = true, HashSet<string> exclusions = null)
+        public static void DeleteEmptySubfolders(string dirPath, bool deleteThisDir = true, HashSet<string> exclusions = null, bool notUseExclusions = true)
         {
             if (string.IsNullOrEmpty(dirPath) || !Directory.Exists(dirPath))
             {
@@ -173,7 +173,7 @@ namespace AIHelper.Manage
                 int subfoldersLength = subfolders.Length;
                 for (int d = 0; d < subfoldersLength; d++)
                 {
-                    DeleteEmptySubfolders(subfolders[d], !TrueIfStringInExclusionsList(subfolders[d], exclusions), exclusions);
+                    DeleteEmptySubfolders(subfolders[d], !IsInExclusionsList(subfolders[d], exclusions, notUseExclusions), exclusions, notUseExclusions);
                 }
             }
             catch
@@ -255,9 +255,9 @@ namespace AIHelper.Manage
         /// <param name="str"></param>
         /// <param name="exclusions"></param>
         /// <returns></returns>
-        public static bool TrueIfStringInExclusionsList(string str, HashSet<string> exclusions)
+        public static bool IsInExclusionsList(string str, HashSet<string> exclusions, bool notUseExclusions)
         {
-            if (exclusions == null || string.IsNullOrEmpty(str))
+            if (notUseExclusions || exclusions == null || string.IsNullOrEmpty(str))
             {
                 return false;
             }

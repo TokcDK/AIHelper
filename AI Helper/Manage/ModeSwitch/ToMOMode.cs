@@ -72,17 +72,32 @@ namespace AIHelper.Manage.ModeSwitch
                 //перемещение ванильных файлов назад в дата
                 MoveVanillaFilesBackToData();
 
-                //очистка пустых папок в Data
-                if (File.Exists(ManageSettings.GetCurrentGameVanillaDataEmptyFoldersListFilePath()))
+                // remove empty dirs
+                ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataDirPath(), false);
+
+                var emptyDirsInfoFilePath = ManageSettings.GetCurrentGameVanillaDataEmptyFoldersListFilePath();
+                if (File.Exists(emptyDirsInfoFilePath))
                 {
-                    //удалить все, за исключением добавленных ранее путей до пустых папок
-                    string[] vanillaDataEmptyFoldersList = File.ReadAllLines(ManageSettings.GetCurrentGameVanillaDataEmptyFoldersListFilePath());
+                    string[] vanillaDataEmptyFoldersList = File.ReadAllLines(emptyDirsInfoFilePath);
                     ReplaceVarsToPaths(ref vanillaDataEmptyFoldersList);
-                    ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataDirPath(), false, vanillaDataEmptyFoldersList);
-                }
-                else
-                {
-                    ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataDirPath(), false);
+
+                    // restore empty dirs which was exist before mode switch
+                    foreach (var path in vanillaDataEmptyFoldersList)
+                    {
+                        if (string.IsNullOrWhiteSpace(path))
+                        {
+                            continue;
+                        }
+
+                        if (!Directory.Exists(path))
+                        {
+                            try
+                            {
+                                Directory.CreateDirectory(path);
+                            }
+                            catch { }
+                        }
+                    }
                 }
 
                 //restore sideloader mods from Mods\Mods

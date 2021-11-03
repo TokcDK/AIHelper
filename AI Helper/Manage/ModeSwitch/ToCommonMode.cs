@@ -221,7 +221,7 @@ namespace AIHelper.Manage.ModeSwitch
 
                 var emptyDirsList = ReplaceVarsToPaths(vanillaDataEmptyFoldersList.ToString());
                 //clean empty folders except whose was already in Data
-                ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataDirPath(), false, emptyDirsList.SplitToLines().ToArray());
+                ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataDirPath(), false, emptyDirsList.SplitToLines().ToHashSet(), false);
 
                 //сообщить об ошибке
                 MessageBox.Show("Mode was not switched. Error:" + Environment.NewLine + ex);

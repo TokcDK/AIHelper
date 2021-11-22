@@ -91,7 +91,7 @@ namespace AIHelper.Install.UpdateMaker
 
                 if (infoIni.KeyExists(parameter.FilesKey))
                 {
-                    var parameterFiles = infoIni.GetKey("", parameter.FilesKey).Split(',');
+                    var parameterFiles = infoIni.GetKey("", parameter.FilesKey).Split(',').ToHashSet();
 
                     _parameter.blacklist = blacklistFiles;
                     _useBlacklist = !string.IsNullOrWhiteSpace(blValueFiles) && _parameter.blacklist.Count > 0;
@@ -112,6 +112,17 @@ namespace AIHelper.Install.UpdateMaker
                     {
                         foreach (var subpath in _parameter.blacklist)
                         {
+                            if (string.IsNullOrWhiteSpace(subpath))
+                            {
+                                continue;
+                            }
+
+                            var dirName = parameter.DirName + "\\";
+                            if (parameterFiles.Contains(subpath) || (subpath.StartsWith(dirName)) && parameterFiles.Contains(subpath.Substring(dirName.Length)))
+                            {
+                                continue; // skip if file is contains in included files list
+                            }
+
                             var blacklistedSubPath = updateGameDir + Path.DirectorySeparatorChar + subpath;
                             if (File.Exists(blacklistedSubPath))
                             {
@@ -158,9 +169,9 @@ namespace AIHelper.Install.UpdateMaker
             return true;
         }
 
-        private void ParseFiles(string[] parameterFiles, string parameterGameDir, string parameterUpdateDir)
+        private void ParseFiles(HashSet<string> parameterFiles, string parameterGameDir, string parameterUpdateDir)
         {
-            if (string.IsNullOrWhiteSpace(parameterFiles[0]) || !Directory.Exists(parameterGameDir))
+            if (parameterFiles == null || !Directory.Exists(parameterGameDir))
             {
                 return;
             }
@@ -173,11 +184,11 @@ namespace AIHelper.Install.UpdateMaker
                 {
                     firstCheck = false;
 
-                    if (subPath == null || subPath == "")
+                    if (string.IsNullOrWhiteSpace(subPath)) // first subpath is invalid
                     {
                         break;
                     }
-                    else if (subPath == "*")
+                    else if (subPath == "*") // parameter * means copy all files
                     {
                         getAll = true;
                         break;
@@ -195,7 +206,7 @@ namespace AIHelper.Install.UpdateMaker
                 foreach (var dir in Directory.EnumerateFiles(parameterGameDir, "*"))
                 {
                     var subPath = dir.Replace(parameterGameDir, string.Empty);
-                    if (CopyFileBySubPath(subPath, parameterGameDir, parameterUpdateDir))
+                    if (CopyFileBySubPath(subPath, parameterGameDir, parameterUpdateDir, copyAll: true))
                     {
                         _parameter.Ret = true;
                     }
@@ -203,9 +214,9 @@ namespace AIHelper.Install.UpdateMaker
             }
         }
 
-        private bool CopyFileBySubPath(string subPath, string sourceDir, string targetDir)
+        private bool CopyFileBySubPath(string subPath, string sourceDir, string targetDir, bool copyAll = false)
         {
-            if (_useBlacklist && _parameter.blacklist.Contains(_parameter.DirName + Path.DirectorySeparatorChar + subPath))
+            if (_useBlacklist && copyAll && _parameter.blacklist.Contains(_parameter.DirName + "\\" + subPath)) // dirname before because blacklist record is starts with sourceDir name
             {
                 _removeFilesList.Add(subPath);
                 return false;

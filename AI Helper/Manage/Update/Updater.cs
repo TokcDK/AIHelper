@@ -191,8 +191,11 @@ namespace AIHelper.Manage.Update
                             break;
                         }
 
+                        // add check date
+                        var oldCheckDateTime = DateTime.MinValue;
                         if (sourcePathDateCheckTime.ContainsKey(tFolderInfo.Key))
                         {
+                            oldCheckDateTime = checkDateTimeNow;
                             sourcePathDateCheckTime[tFolderInfo.Key] = checkDateTimeNow;
                         }
                         else
@@ -218,7 +221,8 @@ namespace AIHelper.Manage.Update
 
                         bool getfileIsTrue = await source.GetFile().ConfigureAwait(true); // download latest file
 
-                        if (getfileIsTrue && target.MakeBuckup() && target.UpdateFiles() // update folder with new files
+                        bool updateFilesFailed = false;
+                        if (getfileIsTrue && target.MakeBuckup() && (updateFilesFailed = target.UpdateFiles()) // update folder with new files
                             )
                         {
                             UpdatedAny = true;
@@ -258,6 +262,19 @@ namespace AIHelper.Manage.Update
                         }
                         else
                         {
+                            if (updateFilesFailed)
+                            {
+                                // restore check datetime if failed to update
+                                if (oldCheckDateTime == DateTime.MinValue)
+                                {
+                                    sourcePathDateCheckTime.Remove(tFolderInfo.Key); // remove last check date
+                                }
+                                else
+                                {
+                                    sourcePathDateCheckTime[tFolderInfo.Key] = oldCheckDateTime; // restore old check date
+                                }
+                            }
+
                             if (info.NoRemoteFile)
                             {
                                 info.Report.Add(

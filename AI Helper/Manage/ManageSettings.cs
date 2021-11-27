@@ -404,9 +404,19 @@ namespace AIHelper.Manage
         /// </summary>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetModsUpdateDirName()
+        {
+            return "update";
+        }
+
+        /// <summary>
+        /// Dir where will be placed update files and backups
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetModsUpdateDirPath()
         {
-            return Path.Combine(GetAppResDirPath(), "update");
+            return Path.Combine(GetAppResDirPath(), GetModsUpdateDirName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1593,9 +1603,25 @@ namespace AIHelper.Manage
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetCurrentGameBakDirName()
+        {
+            return "Bak";
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetCurrentGameBakDirPath()
+        {
+            return Path.Combine(GetCurrentGameDirPath(), GetCurrentGameBakDirName());
+        }
+
+        /// <summary>
+        /// dir where will be stored old versions of updated content
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetUpdatedModsOlderVersionsBuckupDirPath()
         {
-            return Path.Combine(GetModsUpdateDirPath(), GetCurrentGameDirName(), GetUpdatedModsOlderVersionsBuckupDirName());
+            return Path.Combine(GetCurrentGameDirPath(), GetModsUpdateDirName(), GetUpdatedModsOlderVersionsBuckupDirName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

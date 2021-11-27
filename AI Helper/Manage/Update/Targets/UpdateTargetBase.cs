@@ -119,6 +119,7 @@ namespace AIHelper.Manage.Update.Targets
         protected bool PerformUpdate()
         {
             if (!Path.GetFileNameWithoutExtension(Info.UpdateFilePath).StartsWith(Info.UpdateFileStartsWith, StringComparison.InvariantCultureIgnoreCase)
+               && !Path.GetFileNameWithoutExtension(Info.UpdateFilePath).ToUpperInvariant().StartsWith(Path.GetFileNameWithoutExtension(Info.UpdateFileStartsWith).ToUpperInvariant(), StringComparison.InvariantCultureIgnoreCase)
                 //|| !IsLatestVersionNewerOfCurrent(GitLatestVersion, GitCurrentVersion)
                 )
             {

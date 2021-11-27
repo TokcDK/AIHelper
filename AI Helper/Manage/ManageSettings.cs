@@ -1621,7 +1621,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetUpdatedModsOlderVersionsBuckupDirPath()
         {
-            return Path.Combine(GetCurrentGameDirPath(), GetModsUpdateDirName(), GetUpdatedModsOlderVersionsBuckupDirName());
+            return Path.Combine(GetCurrentGameBakDirPath(), GetModsUpdateDirName(), GetUpdatedModsOlderVersionsBuckupDirName());
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

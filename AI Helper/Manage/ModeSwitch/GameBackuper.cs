@@ -57,17 +57,22 @@ namespace AIHelper.Manage.ModeSwitch
                 }
                 else
                 {
-                    if (dir.IsEmptyDir())
-                    {
-                        var targetDirPath = dir.Replace(selectedGamePath, bakDirPath);
-                        Directory.CreateDirectory(targetDirPath);
-                    }
-                    else
-                    {
-                        ParseDirectories(dir);
-                    }
+                    ParseDir(dir);
                 }
             });
+        }
+
+        private void ParseDir(string dir)
+        {
+            if (dir.IsEmptyDir())
+            {
+                var targetDirPath = dir.Replace(selectedGamePath, bakDirPath);
+                Directory.CreateDirectory(targetDirPath);
+            }
+            else
+            {
+                ParseDirectories(dir);
+            }
         }
 
         void ParseDirLink(string dir)

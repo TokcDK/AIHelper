@@ -92,10 +92,8 @@ namespace AIHelper.Manage.ModeSwitch
         void ParseFiles(string dir)
         {
             //var sourceFilePathsLength = sourceFilePaths.Length;
-            Parallel.ForEach(Directory.EnumerateFiles(dir, "*.*"), f =>
+            Parallel.ForEach(Directory.EnumerateFiles(dir, "*.*"), sourceFilePath =>
             {
-                var sourceFilePath = f;
-
                 ParseFile(sourceFilePath);
             });
         }

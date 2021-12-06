@@ -24,7 +24,7 @@ namespace AIHelper
 {
     internal partial class MainForm : Form
     {
-        internal bool _compressmode;
+        //internal bool _compressmode;
 
         /// <summary>
         /// Get or set path to setup.xml graphic settings for current game

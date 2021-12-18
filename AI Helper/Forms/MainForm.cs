@@ -453,20 +453,20 @@ namespace AIHelper
                     T._("Mods will be updated if there exist info in meta.ini notes or in updateInfo.txt") + "\n" +
                     T._("After plugins update check will be executed KKManager StandaloneUpdater for Sideloader modpack updates check for games where it is possible")
                     );
-                var sideloaderPacksWarning = T._("Warning! More of packs you check more of memory game will consume.") + "\n" +
-                    T._("Check only what you really using or you can 16+ gb of memory.");
-                _thToolTip.SetToolTip(UseKKmanagerUpdaterLabel, T._("Check if need to run update check for sideloader modpacks.") + "\n\n" +
-                    sideloaderPacksWarning
-                    );
-                _thToolTip.SetToolTip(UpdatePluginsLabel, T._("Check if need to run update check for plugins and Mod Organizer.")
-                    );
-                _thToolTip.SetToolTip(CheckEnabledModsOnlyLabel, T._("Check updates only for enabled plugins.")
-                    );
-                _thToolTip.SetToolTip(BleadingEdgeZipmodsLabel,
-                    T._("Check also updates of Bleeding Edge Sideloader Modpack in KKManager") + "\n" +
-                    T._("Bleeding Edge Sideloader modpack contains test versions of zipmods which is still not added in main modpacks") + "\n\n" +
-                    sideloaderPacksWarning
-                    );
+                //var sideloaderPacksWarning = T._("Warning! More of packs you check more of memory game will consume.") + "\n" +
+                //    T._("Check only what you really using or you can 16+ gb of memory.");
+                //_thToolTip.SetToolTip(UseKKmanagerUpdaterLabel, T._("Check if need to run update check for sideloader modpacks.") + "\n\n" +
+                //    sideloaderPacksWarning
+                //    );
+                //_thToolTip.SetToolTip(UpdatePluginsLabel, T._("Check if need to run update check for plugins and Mod Organizer.")
+                //    );
+                //_thToolTip.SetToolTip(CheckEnabledModsOnlyLabel, T._("Check updates only for enabled plugins.")
+                //    );
+                //_thToolTip.SetToolTip(BleadingEdgeZipmodsLabel,
+                //    T._("Check also updates of Bleeding Edge Sideloader Modpack in KKManager") + "\n" +
+                //    T._("Bleeding Edge Sideloader modpack contains test versions of zipmods which is still not added in main modpacks") + "\n\n" +
+                //    sideloaderPacksWarning
+                //    );
                 _thToolTip.SetToolTip(MOCommonModeSwitchButton, MOmode ? T._(
                         "Will convert game from MO Mode to Common mode\n" +
                         " when you can run exes from Data folder without Mod Organizer.\n You can convert game back to MO mode\n" +

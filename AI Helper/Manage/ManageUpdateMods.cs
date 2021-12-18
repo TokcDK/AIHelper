@@ -1,4 +1,5 @@
-﻿using AIHelper.Manage.Update;
+﻿using AIHelper.Forms.Other;
+using AIHelper.Manage.Update;
 using AIHelper.SharedData;
 using System;
 using System.Drawing;
@@ -12,15 +13,28 @@ namespace AIHelper.Manage
 {
     class ManageUpdateMods
     {
+        static UpdateOptionsDialogForm UpdateOptions;
 
         public static void UpdateMods()
         {
+            UpdateOptions = new UpdateOptionsDialogForm();
+            UpdateOptions.Location = new Point(SharedData.GameData.MainForm.Location.X, SharedData.GameData.MainForm.Location.Y);
+            UpdateOptions.StartPosition = FormStartPosition.Manual;
+
+            DialogResult result = UpdateOptions.ShowDialog();
+            if (result != DialogResult.OK)
+            {
+                return;
+            }
+
             UpdateModsInit();
 
-            if (SharedData.GameData.MainForm.UseKKmanagerUpdaterLabel.IsChecked())
+            //if (SharedData.GameData.MainForm.UseKKmanagerUpdaterLabel.IsChecked())
+            if (UpdateOptions.UpdateZipmodsCheckBox.Checked)
                 UpdateZipmods();
 
-            if (SharedData.GameData.MainForm.UpdatePluginsLabel.IsChecked())
+            //if (SharedData.GameData.MainForm.UpdatePluginsLabel.IsChecked())
+            if (UpdateOptions.UpdatePluginsCheckBox.Checked)
                 UpdateByUpdater();
 
             UpdateModsFinalize();

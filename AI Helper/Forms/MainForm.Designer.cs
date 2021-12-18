@@ -98,9 +98,9 @@
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.Install2MOOptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.Install2MODirPathOpenFolderLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
             this.ModeSwitchTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.ModeSwitchButtonPanel = new System.Windows.Forms.Panel();
+            this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
             this.ModeSwitchOptionsPanel = new System.Windows.Forms.Panel();
             this.ModeSwitchFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.ModeSwitchCreateBuckupLabel = new System.Windows.Forms.Label();
@@ -950,6 +950,7 @@
             this.llOpenOldPluginsBuckupFolder.TabIndex = 27;
             this.llOpenOldPluginsBuckupFolder.TabStop = true;
             this.llOpenOldPluginsBuckupFolder.Text = "D";
+            this.llOpenOldPluginsBuckupFolder.Visible = false;
             this.llOpenOldPluginsBuckupFolder.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.llOpenOldPluginsBuckupFolder.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LlOpenOldPluginsBuckupFolder_LinkClicked);
             // 
@@ -964,6 +965,7 @@
             this.UseKKmanagerUpdaterLabel.Size = new System.Drawing.Size(13, 13);
             this.UseKKmanagerUpdaterLabel.TabIndex = 32;
             this.UseKKmanagerUpdaterLabel.Text = "Z";
+            this.UseKKmanagerUpdaterLabel.Visible = false;
             this.UseKKmanagerUpdaterLabel.Click += new System.EventHandler(this.UseKKmanagerUpdaterLabel_Click);
             // 
             // UpdatePluginsLabel
@@ -977,6 +979,7 @@
             this.UpdatePluginsLabel.Size = new System.Drawing.Size(13, 13);
             this.UpdatePluginsLabel.TabIndex = 31;
             this.UpdatePluginsLabel.Text = "P";
+            this.UpdatePluginsLabel.Visible = false;
             this.UpdatePluginsLabel.Click += new System.EventHandler(this.UpdatePluginsLabel_Click);
             // 
             // CheckEnabledModsOnlyLabel
@@ -990,6 +993,7 @@
             this.CheckEnabledModsOnlyLabel.Size = new System.Drawing.Size(13, 13);
             this.CheckEnabledModsOnlyLabel.TabIndex = 33;
             this.CheckEnabledModsOnlyLabel.Text = "e";
+            this.CheckEnabledModsOnlyLabel.Visible = false;
             this.CheckEnabledModsOnlyLabel.Click += new System.EventHandler(this.CheckEnabledModsOnlyLabel_Click);
             // 
             // BleadingEdgeZipmodsLabel
@@ -1003,6 +1007,7 @@
             this.BleadingEdgeZipmodsLabel.Size = new System.Drawing.Size(13, 13);
             this.BleadingEdgeZipmodsLabel.TabIndex = 32;
             this.BleadingEdgeZipmodsLabel.Text = "b";
+            this.BleadingEdgeZipmodsLabel.Visible = false;
             this.BleadingEdgeZipmodsLabel.Click += new System.EventHandler(this.BleadingEdgeZipmodsLabel_Click);
             // 
             // Install2MOTableLayoutPanel
@@ -1038,10 +1043,10 @@
             // 
             this.Install2MOOptionsFlowLayoutPanel.Controls.Add(this.Install2MODirPathOpenFolderLinkLabel);
             this.Install2MOOptionsFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Install2MOOptionsFlowLayoutPanel.Location = new System.Drawing.Point(129, 0);
+            this.Install2MOOptionsFlowLayoutPanel.Location = new System.Drawing.Point(130, 0);
             this.Install2MOOptionsFlowLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.Install2MOOptionsFlowLayoutPanel.Name = "Install2MOOptionsFlowLayoutPanel";
-            this.Install2MOOptionsFlowLayoutPanel.Size = new System.Drawing.Size(42, 38);
+            this.Install2MOOptionsFlowLayoutPanel.Size = new System.Drawing.Size(41, 38);
             this.Install2MOOptionsFlowLayoutPanel.TabIndex = 18;
             // 
             // Install2MODirPathOpenFolderLinkLabel
@@ -1060,20 +1065,6 @@
             this.Install2MODirPathOpenFolderLinkLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             this.Install2MODirPathOpenFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.Install2MODirPathOpenFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.Install2MODirPathOpenFolderLinkLabel_LinkClicked);
-            // 
-            // MOCommonModeSwitchButton
-            // 
-            this.MOCommonModeSwitchButton.BackColor = System.Drawing.Color.Silver;
-            this.MOCommonModeSwitchButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.MOCommonModeSwitchButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MOCommonModeSwitchButton.ForeColor = System.Drawing.Color.Black;
-            this.MOCommonModeSwitchButton.Location = new System.Drawing.Point(5, 3);
-            this.MOCommonModeSwitchButton.Name = "MOCommonModeSwitchButton";
-            this.MOCommonModeSwitchButton.Size = new System.Drawing.Size(122, 30);
-            this.MOCommonModeSwitchButton.TabIndex = 16;
-            this.MOCommonModeSwitchButton.Text = "MOToCommon";
-            this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
-            this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
             // 
             // ModeSwitchTableLayoutPanel
             // 
@@ -1099,6 +1090,20 @@
             this.ModeSwitchButtonPanel.Name = "ModeSwitchButtonPanel";
             this.ModeSwitchButtonPanel.Size = new System.Drawing.Size(130, 38);
             this.ModeSwitchButtonPanel.TabIndex = 0;
+            // 
+            // MOCommonModeSwitchButton
+            // 
+            this.MOCommonModeSwitchButton.BackColor = System.Drawing.Color.Silver;
+            this.MOCommonModeSwitchButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.MOCommonModeSwitchButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MOCommonModeSwitchButton.ForeColor = System.Drawing.Color.Black;
+            this.MOCommonModeSwitchButton.Location = new System.Drawing.Point(5, 3);
+            this.MOCommonModeSwitchButton.Name = "MOCommonModeSwitchButton";
+            this.MOCommonModeSwitchButton.Size = new System.Drawing.Size(122, 30);
+            this.MOCommonModeSwitchButton.TabIndex = 16;
+            this.MOCommonModeSwitchButton.Text = "MOToCommon";
+            this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
+            this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
             // 
             // ModeSwitchOptionsPanel
             // 

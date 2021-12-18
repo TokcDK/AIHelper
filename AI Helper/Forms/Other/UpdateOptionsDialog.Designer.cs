@@ -31,22 +31,22 @@
             this.UpdateOptionsPanel = new System.Windows.Forms.Panel();
             this.UpdateOptionsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.OpenOldVersionsDirButton = new System.Windows.Forms.Button();
-            this.CheckEnabledModsOnlyCheckBox = new System.Windows.Forms.CheckBox();
-            this.UpdatePluginsCheckBox = new System.Windows.Forms.CheckBox();
-            this.BleadingEdgeZipmodsCheckBox = new System.Windows.Forms.CheckBox();
+            this.UpdateOptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.UpdateZipmodsCheckBox = new System.Windows.Forms.CheckBox();
+            this.BleadingEdgeZipmodsCheckBox = new System.Windows.Forms.CheckBox();
+            this.UpdatePluginsCheckBox = new System.Windows.Forms.CheckBox();
+            this.CheckEnabledModsOnlyCheckBox = new System.Windows.Forms.CheckBox();
+            this.OpenOldVersionsDirButton = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnUpdateMods = new System.Windows.Forms.Button();
-            this.UpdateOptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.UpdateOptionsPanel.SuspendLayout();
             this.UpdateOptionsTableLayoutPanel.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.UpdateOptionsFlowLayoutPanel.SuspendLayout();
             this.panel2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            this.UpdateOptionsFlowLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // UpdateOptionsPanel
@@ -83,28 +83,41 @@
             this.panel1.Size = new System.Drawing.Size(348, 141);
             this.panel1.TabIndex = 0;
             // 
-            // OpenOldVersionsDirButton
+            // UpdateOptionsFlowLayoutPanel
             // 
-            this.OpenOldVersionsDirButton.Location = new System.Drawing.Point(177, 115);
-            this.OpenOldVersionsDirButton.Name = "OpenOldVersionsDirButton";
-            this.OpenOldVersionsDirButton.Size = new System.Drawing.Size(168, 23);
-            this.OpenOldVersionsDirButton.TabIndex = 4;
-            this.OpenOldVersionsDirButton.Text = "Open dir with old versions";
-            this.OpenOldVersionsDirButton.UseVisualStyleBackColor = true;
-            this.OpenOldVersionsDirButton.Click += new System.EventHandler(this.OpenOldVersionsDirButton_Click);
+            this.UpdateOptionsFlowLayoutPanel.Controls.Add(this.UpdateZipmodsCheckBox);
+            this.UpdateOptionsFlowLayoutPanel.Controls.Add(this.BleadingEdgeZipmodsCheckBox);
+            this.UpdateOptionsFlowLayoutPanel.Controls.Add(this.UpdatePluginsCheckBox);
+            this.UpdateOptionsFlowLayoutPanel.Controls.Add(this.CheckEnabledModsOnlyCheckBox);
+            this.UpdateOptionsFlowLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.UpdateOptionsFlowLayoutPanel.Location = new System.Drawing.Point(9, 3);
+            this.UpdateOptionsFlowLayoutPanel.Name = "UpdateOptionsFlowLayoutPanel";
+            this.UpdateOptionsFlowLayoutPanel.Size = new System.Drawing.Size(330, 106);
+            this.UpdateOptionsFlowLayoutPanel.TabIndex = 5;
             // 
-            // CheckEnabledModsOnlyCheckBox
+            // UpdateZipmodsCheckBox
             // 
-            this.CheckEnabledModsOnlyCheckBox.AutoSize = true;
-            this.CheckEnabledModsOnlyCheckBox.Checked = true;
-            this.CheckEnabledModsOnlyCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CheckEnabledModsOnlyCheckBox.Location = new System.Drawing.Point(3, 72);
-            this.CheckEnabledModsOnlyCheckBox.Name = "CheckEnabledModsOnlyCheckBox";
-            this.CheckEnabledModsOnlyCheckBox.Size = new System.Drawing.Size(125, 17);
-            this.CheckEnabledModsOnlyCheckBox.TabIndex = 3;
-            this.CheckEnabledModsOnlyCheckBox.Text = "Only enabled plugins";
-            this.CheckEnabledModsOnlyCheckBox.UseVisualStyleBackColor = true;
-            this.CheckEnabledModsOnlyCheckBox.CheckedChanged += new System.EventHandler(this.CheckEnabledModsOnlyCheckBox_CheckedChanged);
+            this.UpdateZipmodsCheckBox.AutoSize = true;
+            this.UpdateZipmodsCheckBox.Checked = true;
+            this.UpdateZipmodsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.UpdateZipmodsCheckBox.Location = new System.Drawing.Point(3, 3);
+            this.UpdateZipmodsCheckBox.Name = "UpdateZipmodsCheckBox";
+            this.UpdateZipmodsCheckBox.Size = new System.Drawing.Size(102, 17);
+            this.UpdateZipmodsCheckBox.TabIndex = 0;
+            this.UpdateZipmodsCheckBox.Text = "Update zipmods";
+            this.UpdateZipmodsCheckBox.UseVisualStyleBackColor = true;
+            this.UpdateZipmodsCheckBox.CheckedChanged += new System.EventHandler(this.UpdateZipmodsCheckBox_CheckedChanged);
+            // 
+            // BleadingEdgeZipmodsCheckBox
+            // 
+            this.BleadingEdgeZipmodsCheckBox.AutoSize = true;
+            this.BleadingEdgeZipmodsCheckBox.Location = new System.Drawing.Point(3, 26);
+            this.BleadingEdgeZipmodsCheckBox.Name = "BleadingEdgeZipmodsCheckBox";
+            this.BleadingEdgeZipmodsCheckBox.Size = new System.Drawing.Size(143, 17);
+            this.BleadingEdgeZipmodsCheckBox.TabIndex = 1;
+            this.BleadingEdgeZipmodsCheckBox.Text = "Check test zipmods pack";
+            this.BleadingEdgeZipmodsCheckBox.UseVisualStyleBackColor = true;
+            this.BleadingEdgeZipmodsCheckBox.CheckedChanged += new System.EventHandler(this.BleadingEdgeZipmodsCheckBox_CheckedChanged);
             // 
             // UpdatePluginsCheckBox
             // 
@@ -119,29 +132,28 @@
             this.UpdatePluginsCheckBox.UseVisualStyleBackColor = true;
             this.UpdatePluginsCheckBox.CheckedChanged += new System.EventHandler(this.UpdatePluginsCheckBox_CheckedChanged);
             // 
-            // BleadingEdgeZipmodsCheckBox
+            // CheckEnabledModsOnlyCheckBox
             // 
-            this.BleadingEdgeZipmodsCheckBox.AutoSize = true;
-            this.BleadingEdgeZipmodsCheckBox.Location = new System.Drawing.Point(3, 26);
-            this.BleadingEdgeZipmodsCheckBox.Name = "BleadingEdgeZipmodsCheckBox";
-            this.BleadingEdgeZipmodsCheckBox.Size = new System.Drawing.Size(143, 17);
-            this.BleadingEdgeZipmodsCheckBox.TabIndex = 1;
-            this.BleadingEdgeZipmodsCheckBox.Text = "Check test zipmods pack";
-            this.BleadingEdgeZipmodsCheckBox.UseVisualStyleBackColor = true;
-            this.BleadingEdgeZipmodsCheckBox.CheckedChanged += new System.EventHandler(this.BleadingEdgeZipmodsCheckBox_CheckedChanged);
+            this.CheckEnabledModsOnlyCheckBox.AutoSize = true;
+            this.CheckEnabledModsOnlyCheckBox.Checked = true;
+            this.CheckEnabledModsOnlyCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CheckEnabledModsOnlyCheckBox.Location = new System.Drawing.Point(3, 72);
+            this.CheckEnabledModsOnlyCheckBox.Name = "CheckEnabledModsOnlyCheckBox";
+            this.CheckEnabledModsOnlyCheckBox.Size = new System.Drawing.Size(125, 17);
+            this.CheckEnabledModsOnlyCheckBox.TabIndex = 3;
+            this.CheckEnabledModsOnlyCheckBox.Text = "Only enabled plugins";
+            this.CheckEnabledModsOnlyCheckBox.UseVisualStyleBackColor = true;
+            this.CheckEnabledModsOnlyCheckBox.CheckedChanged += new System.EventHandler(this.CheckEnabledModsOnlyCheckBox_CheckedChanged);
             // 
-            // UpdateZipmodsCheckBox
+            // OpenOldVersionsDirButton
             // 
-            this.UpdateZipmodsCheckBox.AutoSize = true;
-            this.UpdateZipmodsCheckBox.Checked = true;
-            this.UpdateZipmodsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.UpdateZipmodsCheckBox.Location = new System.Drawing.Point(3, 3);
-            this.UpdateZipmodsCheckBox.Name = "UpdateZipmodsCheckBox";
-            this.UpdateZipmodsCheckBox.Size = new System.Drawing.Size(102, 17);
-            this.UpdateZipmodsCheckBox.TabIndex = 0;
-            this.UpdateZipmodsCheckBox.Text = "Update zipmods";
-            this.UpdateZipmodsCheckBox.UseVisualStyleBackColor = true;
-            this.UpdateZipmodsCheckBox.CheckedChanged += new System.EventHandler(this.UpdateZipmodsCheckBox_CheckedChanged);
+            this.OpenOldVersionsDirButton.Location = new System.Drawing.Point(177, 115);
+            this.OpenOldVersionsDirButton.Name = "OpenOldVersionsDirButton";
+            this.OpenOldVersionsDirButton.Size = new System.Drawing.Size(168, 23);
+            this.OpenOldVersionsDirButton.TabIndex = 4;
+            this.OpenOldVersionsDirButton.Text = "Old versions";
+            this.OpenOldVersionsDirButton.UseVisualStyleBackColor = true;
+            this.OpenOldVersionsDirButton.Click += new System.EventHandler(this.OpenOldVersionsDirButton_Click);
             // 
             // panel2
             // 
@@ -187,18 +199,6 @@
             this.btnUpdateMods.UseVisualStyleBackColor = true;
             this.btnUpdateMods.Click += new System.EventHandler(this.btnUpdateMods_Click);
             // 
-            // UpdateOptionsFlowLayoutPanel
-            // 
-            this.UpdateOptionsFlowLayoutPanel.Controls.Add(this.UpdateZipmodsCheckBox);
-            this.UpdateOptionsFlowLayoutPanel.Controls.Add(this.BleadingEdgeZipmodsCheckBox);
-            this.UpdateOptionsFlowLayoutPanel.Controls.Add(this.UpdatePluginsCheckBox);
-            this.UpdateOptionsFlowLayoutPanel.Controls.Add(this.CheckEnabledModsOnlyCheckBox);
-            this.UpdateOptionsFlowLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.UpdateOptionsFlowLayoutPanel.Location = new System.Drawing.Point(9, 3);
-            this.UpdateOptionsFlowLayoutPanel.Name = "UpdateOptionsFlowLayoutPanel";
-            this.UpdateOptionsFlowLayoutPanel.Size = new System.Drawing.Size(330, 106);
-            this.UpdateOptionsFlowLayoutPanel.TabIndex = 5;
-            // 
             // UpdateOptionsDialogForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -214,10 +214,10 @@
             this.UpdateOptionsPanel.ResumeLayout(false);
             this.UpdateOptionsTableLayoutPanel.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
-            this.tableLayoutPanel1.ResumeLayout(false);
             this.UpdateOptionsFlowLayoutPanel.ResumeLayout(false);
             this.UpdateOptionsFlowLayoutPanel.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.tableLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

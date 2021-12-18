@@ -106,7 +106,7 @@ namespace AIHelper.Forms.Other
             BleadingEdgeZipmodsCheckBox.Text = T._("Check test zipmods pack");
             UpdatePluginsCheckBox.Text = T._("Update plugins");
             CheckEnabledModsOnlyCheckBox.Text = T._("Only enabled plugins");
-            OpenOldVersionsDirButton.Text = T._("Open dir with old versions");
+            OpenOldVersionsDirButton.Text = T._("Old versions");
             btnUpdateMods.Text = T._("Start");
             btnCancel.Text = T._("Cancel");
         }

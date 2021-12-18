@@ -109,7 +109,7 @@ namespace AIHelper
                         lastgroup = linkParts[0];
                         Label lblGroup = new Label
                         {
-                            Text = groupNames.Keys.Contains(linkParts[0]) ? groupNames[linkParts[0]] : linkParts[0]
+                            Text = groupNames.ContainsKey(linkParts[0]) ? groupNames[linkParts[0]] : linkParts[0]
                         };
 
                         panel.Controls.Add(lblGroup, 0, currentRow++);

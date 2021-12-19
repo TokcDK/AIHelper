@@ -17,9 +17,11 @@ namespace AIHelper.Manage
 
         public static void UpdateMods()
         {
-            UpdateOptions = new UpdateOptionsDialogForm();
-            UpdateOptions.Location = new Point(SharedData.GameData.MainForm.Location.X, SharedData.GameData.MainForm.Location.Y);
-            UpdateOptions.StartPosition = FormStartPosition.Manual;
+            UpdateOptions = new UpdateOptionsDialogForm
+            {
+                Location = new Point(SharedData.GameData.MainForm.Location.X, SharedData.GameData.MainForm.Location.Y),
+                StartPosition = FormStartPosition.Manual
+            };
 
             DialogResult result = UpdateOptions.ShowDialog();
             if (result != DialogResult.OK)

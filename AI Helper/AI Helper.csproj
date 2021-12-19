@@ -117,6 +117,12 @@
       <DependentUpon>LogLevelselectionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Other\ProgressForm\ProgressForm.cs" />
+    <Compile Include="Forms\Other\SwitchModeDialogForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Other\SwitchModeDialogForm.Designer.cs">
+      <DependentUpon>SwitchModeDialogForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Other\UpdateOptionsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -295,6 +301,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\LogLevelselectionForm.resx">
       <DependentUpon>LogLevelselectionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Other\SwitchModeDialogForm.resx">
+      <DependentUpon>SwitchModeDialogForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Other\UpdateOptionsDialog.resx">
       <DependentUpon>UpdateOptionsDialog.cs</DependentUpon>

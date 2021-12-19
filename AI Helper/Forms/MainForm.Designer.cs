@@ -1134,6 +1134,7 @@
             this.ModeSwitchCreateBuckupLabel.Size = new System.Drawing.Size(13, 13);
             this.ModeSwitchCreateBuckupLabel.TabIndex = 33;
             this.ModeSwitchCreateBuckupLabel.Text = "b";
+            this.ModeSwitchCreateBuckupLabel.Visible = false;
             this.ModeSwitchCreateBuckupLabel.Click += new System.EventHandler(this.ModeSwitchCreateBuckupLabel_Click);
             // 
             // MainForm

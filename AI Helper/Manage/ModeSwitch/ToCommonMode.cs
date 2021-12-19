@@ -92,7 +92,8 @@ namespace AIHelper.Manage.ModeSwitch
         protected void SwitchToCommonMode()
         {
             // first make game's buckup
-            if (SharedData.GameData.MainForm.ModeSwitchCreateBuckupLabel.IsChecked())
+            //if (SharedData.GameData.MainForm.ModeSwitchCreateBuckupLabel.IsChecked())
+            if (MakeBuckup)
                 new GameBackuper().CreateDataModsBakOfCurrentGame();
 
             moToStandartConvertationOperationsList = new StringBuilder();

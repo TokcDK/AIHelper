@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using AIHelper.Forms.Other;
+using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -17,28 +19,60 @@ namespace AIHelper.Manage.ModeSwitch
         /// </summary>
         protected abstract void Action();
 
+        /// <summary>
+        /// When switch to normal mode make backup of Data and Mods dirs using ntfs hard links
+        /// </summary>
+        public bool MakeBuckup = true;
+
         public async void Switch()
         {
             SharedData.GameData.MainForm.OnOffButtons(false);
 
-            DialogResult result = MessageBox.Show(
-                DialogText,
-                T._("Confirmation"),
-                MessageBoxButtons.OKCancel);
-            if (result == DialogResult.OK)
+            SwitchModeDialogForm dialog = new SwitchModeDialogForm
             {
-                await Task.Run(() => Action()).ConfigureAwait(true);
+                Location = new Point(SharedData.GameData.MainForm.Location.X, SharedData.GameData.MainForm.Location.Y),
+                StartPosition = FormStartPosition.Manual
+            };
 
-                try
-                {
-                    SharedData.GameData.MainForm.MOCommonModeSwitchButton.Text = MOmode ? T._("MOToCommon") : T._("CommonToMO");
-                }
-                catch
-                {
-                }
-
-                SharedData.GameData.MainForm.FoldersInit();
+            DialogResult result = dialog.ShowDialog();
+            if (result != DialogResult.OK)
+            {
+                SharedData.GameData.MainForm.OnOffButtons();
+                return;
             }
+
+            MakeBuckup = dialog.MakeBuckupCheckBox.Checked;
+
+            await Task.Run(() => Action()).ConfigureAwait(true);
+
+            try
+            {
+                SharedData.GameData.MainForm.MOCommonModeSwitchButton.Text = MOmode ? T._("MOToCommon") : T._("CommonToMO");
+            }
+            catch
+            {
+            }
+
+            SharedData.GameData.MainForm.FoldersInit();
+
+            //DialogResult result = MessageBox.Show(
+            //    DialogText,
+            //    T._("Confirmation"),
+            //    MessageBoxButtons.OKCancel);
+            //if (result == DialogResult.OK)
+            //{
+            //    await Task.Run(() => Action()).ConfigureAwait(true);
+
+            //    try
+            //    {
+            //        SharedData.GameData.MainForm.MOCommonModeSwitchButton.Text = MOmode ? T._("MOToCommon") : T._("CommonToMO");
+            //    }
+            //    catch
+            //    {
+            //    }
+
+            //    SharedData.GameData.MainForm.FoldersInit();
+            //}
 
             SharedData.GameData.MainForm.OnOffButtons();
         }

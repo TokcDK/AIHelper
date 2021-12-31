@@ -57,16 +57,52 @@ namespace AIHelper.Manage.Update.Sources
         static ProgressBar _dwnpb;
         private async Task<bool> DownloadTheFile()
         {
-            if (string.IsNullOrWhiteSpace(Info.DownloadLink))
-            {
-                Info.NoRemoteFile = true;
-                return false;
-            }
-
             var updateDownloadsDir = ManageSettings.GetModsUpdateDirDownloadsPath(); //Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), modGitData.CurrentModName);
             Directory.CreateDirectory(updateDownloadsDir);
 
             var updateFileName = Path.GetFileName(Info.DownloadLink);
+
+            if (string.IsNullOrWhiteSpace(updateFileName))
+            {
+                bool found = false;
+                foreach (var targetDir in new[] { updateDownloadsDir, ManageSettings.GetInstall2MoDirPath() })
+                {
+                    foreach (var prefix in new[] { "", "v" })
+                    {
+                        foreach (var ending in new[] { "", ".0" })
+                        {
+                            var possibleName = Info.UpdateFileStartsWith + prefix + Info.TargetLastVersion + ending + Info.UpdateFileEndsWith;
+                            if (File.Exists(Path.Combine(targetDir, possibleName)))
+                            {
+                                found = true;
+                                updateFileName = possibleName;
+                                Info.UpdateFilePath = Path.Combine(targetDir, possibleName);
+                                break;
+                            }
+                        }
+
+                        if (found)
+                        {
+                            break;
+                        }
+                    }
+
+                    if (found)
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                Info.UpdateFilePath = Path.Combine(updateDownloadsDir, updateFileName);
+            }
+
+            string altUpdateFilePath = Path.Combine(ManageSettings.GetInstall2MoDirPath(), updateFileName);
+            if (Info.VersionFromFile && !File.Exists(Info.UpdateFilePath) && File.Exists(altUpdateFilePath))
+            {
+                Info.UpdateFilePath = altUpdateFilePath;
+            }
 
             _dwnpb = new ProgressBar
             {
@@ -84,13 +120,19 @@ namespace AIHelper.Manage.Update.Sources
             _dwnf.Controls.Add(_dwnpb);
             _dwnf.Show();
 
-            Info.UpdateFilePath = Path.Combine(updateDownloadsDir, updateFileName);
-
             if (!File.Exists(Info.UpdateFilePath)//not exist
                 || (!Info.VersionFromFile && File.Exists(Info.UpdateFilePath) && !updateFileName.Contains(Info.TargetLastVersion))//when version from releases and filename is always same need to download it each time because exist in downloads is from older release
                 || new FileInfo(Info.UpdateFilePath).Length == 0//zero length van be when was failed previous download
                 )
             {
+                if (string.IsNullOrWhiteSpace(Info.DownloadLink))
+                {
+                    Info.NoRemoteFile = true;
+                    _dwnpb.Dispose();
+                    _dwnf.Dispose();
+                    return false;
+                }
+
                 await DownloadFileTaskAsync(new Uri(Info.DownloadLink), Info.UpdateFilePath).ConfigureAwait(true);
 
                 return IsCompletedDownload && File.Exists(Info.UpdateFilePath) && new FileInfo(Info.UpdateFilePath).Length != 0;

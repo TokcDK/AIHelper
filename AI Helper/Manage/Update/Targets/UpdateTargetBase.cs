@@ -126,6 +126,17 @@ namespace AIHelper.Manage.Update.Targets
                 return false;
             }
 
+            // Move file from 2mo to downloads when it was manally downloaded in 2mo
+            if (Info.UpdateFilePath.StartsWith(ManageSettings.GetInstall2MoDirPath()))
+            {
+                // set new path in downloads
+                var newFilePathInDownloads = Info.UpdateFilePath.Replace(ManageSettings.GetInstall2MoDirPath(), ManageSettings.GetModsUpdateDirDownloadsPath());
+                // move file to new path
+                File.Move(Info.UpdateFilePath, newFilePathInDownloads);
+                // set change path to new
+                Info.UpdateFilePath = newFilePathInDownloads;
+            }
+
             //if (!updateData.IsMod)
             //{
             //    return;

@@ -1519,15 +1519,16 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static string GetUserfilesDirectoryPath(string subDirPath = "")
         {
-            var paths = new[] {
-                Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserData"),
-                Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserFiles"),
-                Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "GameUserData")
+            var modNames = new[] {
+                "MyUserData",
+                "MyUserFiles",
+                GetGameUserDataModName()
             };
             var subPath = (string.IsNullOrWhiteSpace(subDirPath) ? "" : "\\" + subDirPath);
-            foreach (var path in paths)
+            var currentGameModsDirPath = GetCurrentGameModsDirPath();
+            foreach (var modName in modNames)
             {
-                var dirPath = path + subPath;
+                var dirPath = Path.Combine(currentGameModsDirPath, modName) + subPath;
 
                 if (Directory.Exists(dirPath))
                 {
@@ -1535,7 +1536,7 @@ namespace AIHelper.Manage
                 }
             }
 
-            return ManageSettings.GetCurrentGameOverwriteFolderPath() + subPath;
+            return GetCurrentGameOverwriteFolderPath() + subPath;
         }
 
         /// <summary>

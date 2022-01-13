@@ -54,6 +54,9 @@ namespace AIHelper.Forms.Other
                 )).Replace("\n", "\r\n");
 
             this.Text = T._("Mode switch. Current mode:") + " " + (ManageSettings.IsMoMode() ? T._("MO mode") : T._("Normal mode"));
+            MakeBuckupCheckBox.Text = T._("Make backup");
+            button1.Text = T._("Switch mode");
+            button2.Text = T._("Cancel");
         }
 
         /// <summary>

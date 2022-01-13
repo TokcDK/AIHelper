@@ -104,6 +104,7 @@
             this.ModeSwitchOptionsPanel = new System.Windows.Forms.Panel();
             this.ModeSwitchFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.ModeSwitchCreateBuckupLabel = new System.Windows.Forms.Label();
+            this.OpenPresetDirsLinkLabel = new System.Windows.Forms.LinkLabel();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -672,6 +673,7 @@
             // SettingsFoldersGroupBox
             // 
             this.SettingsFoldersGroupBox.BackColor = System.Drawing.Color.Transparent;
+            this.SettingsFoldersGroupBox.Controls.Add(this.OpenPresetDirsLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.SettingsOpen2MOLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenMOOverwriteFolderLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenMyUserDataFolderLinkLabel);
@@ -690,7 +692,7 @@
             // 
             this.SettingsOpen2MOLinkLabel.AutoSize = true;
             this.SettingsOpen2MOLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.SettingsOpen2MOLinkLabel.Location = new System.Drawing.Point(46, 39);
+            this.SettingsOpen2MOLinkLabel.Location = new System.Drawing.Point(5, 54);
             this.SettingsOpen2MOLinkLabel.Name = "SettingsOpen2MOLinkLabel";
             this.SettingsOpen2MOLinkLabel.Size = new System.Drawing.Size(29, 13);
             this.SettingsOpen2MOLinkLabel.TabIndex = 5;
@@ -1137,6 +1139,19 @@
             this.ModeSwitchCreateBuckupLabel.Visible = false;
             this.ModeSwitchCreateBuckupLabel.Click += new System.EventHandler(this.ModeSwitchCreateBuckupLabel_Click);
             // 
+            // OpenPresetDirsLinkLabel
+            // 
+            this.OpenPresetDirsLinkLabel.AutoSize = true;
+            this.OpenPresetDirsLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.OpenPresetDirsLinkLabel.Location = new System.Drawing.Point(46, 39);
+            this.OpenPresetDirsLinkLabel.Name = "OpenPresetDirsLinkLabel";
+            this.OpenPresetDirsLinkLabel.Size = new System.Drawing.Size(43, 13);
+            this.OpenPresetDirsLinkLabel.TabIndex = 6;
+            this.OpenPresetDirsLinkLabel.TabStop = true;
+            this.OpenPresetDirsLinkLabel.Text = "Presets";
+            this.OpenPresetDirsLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
+            this.OpenPresetDirsLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenPresetDirsLinkLabel_LinkClicked);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1262,6 +1277,7 @@
         private System.Windows.Forms.Panel ModeSwitchOptionsPanel;
         private System.Windows.Forms.FlowLayoutPanel ModeSwitchFlowLayoutPanel;
         public System.Windows.Forms.Label ModeSwitchCreateBuckupLabel;
+        private System.Windows.Forms.LinkLabel OpenPresetDirsLinkLabel;
     }
 }
 

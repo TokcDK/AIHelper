@@ -1513,6 +1513,32 @@ namespace AIHelper.Manage
         }
 
         /// <summary>
+        /// User files directory path
+        /// </summary>
+        /// <param name="subDirPath">subpath to check if exists</param>
+        /// <returns></returns>
+        internal static string GetUserfilesDirectoryPath(string subDirPath = "")
+        {
+            var paths = new[] {
+                Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserData"),
+                Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserFiles"),
+                Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "GameUserData")
+            };
+            var subPath = (string.IsNullOrWhiteSpace(subDirPath) ? "" : "\\" + subDirPath);
+            foreach (var path in paths)
+            {
+                var dirPath = path + subPath;
+
+                if (Directory.Exists(dirPath))
+                {
+                    return dirPath;
+                }
+            }
+
+            return ManageSettings.GetCurrentGameOverwriteFolderPath() + subPath;
+        }
+
+        /// <summary>
         /// True when mo mode activated
         /// </summary>
         /// <returns></returns>
@@ -1809,6 +1835,16 @@ namespace AIHelper.Manage
         internal static string GetCurrentGameRegistryPath()
         {
             return GameData.CurrentGame.RegistryPath;
+        }
+
+        /// <summary>
+        /// Mod name of dir where game will place new created files
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetGameUserDataModName()
+        {
+            return "GameUserData";
         }
     }
 }

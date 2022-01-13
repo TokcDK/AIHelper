@@ -403,6 +403,7 @@ namespace AIHelper
                 _thToolTip.SetToolTip(OpenMOFolderLinkLabel, T._("Open Mod Organizer folder"));
                 _thToolTip.SetToolTip(OpenMOOverwriteFolderLinkLabel, T._("Open Overwrite folder of Mod Organizer with possible new generated files for selected game\n\nFiles here have highest priority and will be loaded over any enabled mod files"));
                 _thToolTip.SetToolTip(OpenMyUserDataFolderLinkLabel, T._("Open MyUserData folder in Mods if exist\n\nHere placed usual User files of Organized ModPack for selected game"));
+                _thToolTip.SetToolTip(OpenPresetDirsLinkLabel, T._("Open presets folder\n\nWill be opened virtual folder with Mod Organizer in MO mode and data folder in normal mode.\n\nShift+Click to force open without MO."));
 
                 _thToolTip.SetToolTip(LaunchLinksLinkLabel, T._("Open list of links for game resources"));
                 _thToolTip.SetToolTip(ExtraSettingsLinkLabel, T._("Open extra setting window for plugins and etc"));
@@ -1221,15 +1222,7 @@ namespace AIHelper
 
         private void OpenMyUserDataFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            string userFilesFolder = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserData");
-            if (!Directory.Exists(userFilesFolder))
-            {
-                userFilesFolder = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserFiles");
-            }
-            if (!Directory.Exists(userFilesFolder))
-            {
-                userFilesFolder = ManageSettings.GetCurrentGameOverwriteFolderPath();
-            }
+            string userFilesFolder = ManageSettings.GetUserfilesDirectoryPath();
             if (Directory.Exists(userFilesFolder))
             {
                 Process.Start("explorer.exe", userFilesFolder);
@@ -1579,6 +1572,71 @@ namespace AIHelper
         private void ModeSwitchCreateBuckupLabel_Click(object sender, EventArgs e)
         {
             RefreshLabelCheckState(sender);
+        }
+
+        private async void OpenPresetDirsLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            bool OpenUserDataNoMO = MOmode && Control.ModifierKeys == Keys.Shift;
+
+            await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
+
+            string exePath = OpenUserDataNoMO || !MOmode ? "explorer.exe" : Path.Combine(ManageSettings.GetAppModOrganizerDirPath(), "explorer++", "Explorer++.exe");
+            string presetsDirPath = OpenUserDataNoMO ? ManageSettings.GetUserfilesDirectoryPath("UserData\\chara") : Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "UserData", "chara");
+
+            if (MOmode && !OpenUserDataNoMO)
+            {
+                OnOffButtons(false);
+
+                string customExeTitleName = "Presets";
+                string gameUserDataModName = ManageSettings.GetGameUserDataModName();
+                // Set new app open presets dir profile in mo
+                var explorerPresetsDir = new ManageModOrganizer.CustomExecutables.CustomExecutable
+                {
+                    Title = customExeTitleName,
+                    Binary = exePath,
+                    Arguments = presetsDirPath,
+                    MoTargetMod = gameUserDataModName
+                };
+
+                var GameUserDataFilesModPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), gameUserDataModName);
+                if (!Directory.Exists(GameUserDataFilesModPath))
+                {
+                    Directory.CreateDirectory(GameUserDataFilesModPath);
+                    ManageModOrganizer.WriteMetaIni(
+                        GameUserDataFilesModPath,
+                        categoryNames: "UserData",
+                        version: "1.0",
+                        comments: "",
+                        notes: T._("New files created by the game will be stored here. Saves, plugins configs and other.")
+                        //notes: ManageSettings.KKManagerFilesNotes()
+                        );
+
+                    ManageModOrganizer.InsertMod(
+                        modname: gameUserDataModName,
+                        modAfterWhichInsert: "UserData_separator"
+                        );
+                }
+
+                ManageModOrganizer.InsertCustomExecutable(explorerPresetsDir);
+
+                exePath = ManageSettings.GetAppMOexePath();
+                presetsDirPath = "moshortcut://:\"" + customExeTitleName + "\"";
+            }
+
+            if (OpenUserDataNoMO || !MOmode)
+            {
+                Directory.CreateDirectory(presetsDirPath);
+            }
+
+            if (MOmode && !OpenUserDataNoMO)
+            {
+                ManageProcess.RunProgram(exePath, presetsDirPath);
+                OnOffButtons();
+            }
+            else
+            {
+                Process.Start(exePath, presetsDirPath);
+            }
         }
 
         //Disable close window button

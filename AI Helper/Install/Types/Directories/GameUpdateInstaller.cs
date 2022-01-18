@@ -423,7 +423,7 @@ namespace AIHelper.Install.Types.Directories
             if (files)
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
-                File.WriteAllText(targetPath, content);
+                File.WriteAllText(targetPath, content.Replace("\\r\\n", "\r\n").Replace("\\n", "\n").Replace("\\r", "\r"));
             }
             else
             {

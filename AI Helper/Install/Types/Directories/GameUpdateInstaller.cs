@@ -21,7 +21,8 @@ namespace AIHelper.Install.Types.Directories
         string _dateTimeSuffix;
         string _backupsDir;
         string _bakDir;
-        string _gameUpdateInfoFileName { get => ManageSettings.GetGameUpdateInstallerIniFileName(); }
+
+        static string _gameUpdateInfoFileName { get => ManageSettings.GetGameUpdateInstallerIniFileName(); }
         HashSet<string> _skipExistDirs;
         HashSet<string> _skipExistFiles;
         private bool crcfiles;
@@ -266,12 +267,12 @@ namespace AIHelper.Install.Types.Directories
             return updateInfo.ApplyFixes == "true" && FixIniValues();
         }
 
-        private bool FixIniValues()
+        private static bool FixIniValues()
         {
             return MetaIniNotesTweaks();
         }
 
-        private bool MetaIniNotesTweaks()
+        private static bool MetaIniNotesTweaks()
         {
             Dictionary<string, string> modDirNamesValues = new Dictionary<string, string>()
             {
@@ -381,35 +382,35 @@ namespace AIHelper.Install.Types.Directories
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        private string HideContentCommas(string value)
+        private static string HideContentCommas(string value)
         {
             MatchCollection contents = Regex.Matches(value, @"\|begin ([^\|]+) end\|");
             for (int i = contents.Count - 1; i >= 0; i--)
             {
                 value = value
                     .Remove(contents[i].Index, contents[i].Length)
-                    .Insert(contents[i].Index, contents[i].Value.Replace(",", _contentCommasHiddenString));
+                    .Insert(contents[i].Index, contents[i].Value.Replace(",", ContentCommasHiddenString));
                 ;
             }
 
             return value;
         }
 
-        string _createFileContendBeginMarker { get => "|begin "; }
-        string _createFileContendEndMarker { get => " end|"; }
-        string _contentCommasHiddenString { get => "%comma%"; }
+        static string CreateFileContendBeginMarker { get => "|begin "; }
+        static string CreateFileContendEndMarker { get => " end|"; }
+        static string ContentCommasHiddenString { get => "%comma%"; }
 
-        private bool ProceedCreate(string targetPath, bool files = true)
+        private static bool ProceedCreate(string targetPath, bool files = true)
         {
             string content = "";
             if (files)
             {
                 // has content
-                int contentBeginIndex = targetPath.IndexOf(_createFileContendBeginMarker);
+                int contentBeginIndex = targetPath.IndexOf(CreateFileContendBeginMarker);
                 if (contentBeginIndex != -1)
                 {
-                    var startIndex = contentBeginIndex + _createFileContendBeginMarker.Length;
-                    var contentLength = targetPath.IndexOf(_createFileContendEndMarker) - startIndex;
+                    var startIndex = contentBeginIndex + CreateFileContendBeginMarker.Length;
+                    var contentLength = targetPath.IndexOf(CreateFileContendEndMarker) - startIndex;
                     content = UnhideCommasAndSpecTextReplace(targetPath.Substring(startIndex, contentLength)); // file's content with unhidden commas
                     targetPath = targetPath.Remove(contentBeginIndex); // file's path
                 }
@@ -438,11 +439,11 @@ namespace AIHelper.Install.Types.Directories
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        private string UnhideCommasAndSpecTextReplace(string str)
+        private static string UnhideCommasAndSpecTextReplace(string str)
         {
             return str
                 .Replace("%sortmarker%", T._("The marker shows where to sort new zipmods for this sideloader modpack"))
-                .Replace(_contentCommasHiddenString, ",")
+                .Replace(ContentCommasHiddenString, ",")
                 ;
         }
 

@@ -201,7 +201,7 @@ namespace AIHelper.Manage.Update.Targets
                                 {
                                     Directory.CreateDirectory(targetDir);
                                 }
-                                else if (Info.TargetFolderUpdateInfo[0] == "BepInEx")//default BepInEx plugins dir
+                                else// if (Info.TargetFolderUpdateInfo[0] == "BepInEx")//default BepInEx plugins dir
                                 {
                                     targetDir = Path.Combine(updatingModDirPath, "BepInEx", "plugins");
                                 }

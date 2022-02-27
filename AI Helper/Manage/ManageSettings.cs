@@ -220,6 +220,7 @@ namespace AIHelper.Manage
                     }
 
                     game.GameDirInfo = new DirectoryInfo(gameDir);
+                    GameData.CurrentGame = game; // temp set current game
 
                     var mods = Path.Combine(gameDir, "Mods");
                     if (!Directory.Exists(mods))
@@ -243,7 +244,7 @@ namespace AIHelper.Manage
                         var ini = ManageIni.GetINIFile(moIni);
 
                         // check mo ini game parameters exist
-                        ini.SetKey("General", "gameName", game.GetGameDirName());
+                        ini.SetKey("General", "gameName", game.GetGameName());
                         ini.SetKey("General", "gamePath", "@ByteArray(" + Path.Combine(game.GameDirInfo.Parent.FullName, game.GetGameDirName()).Replace("\\", "\\\\") + ")");
                         ini.SetKey("General", "selected_profile", "Default");
                         ini.SetKey("Settings", "mod_directory", Path.Combine(gameDir, game.GetGameDirName(), "Mods").Replace("\\", "\\\\"));

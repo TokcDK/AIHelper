@@ -284,6 +284,11 @@ namespace AIHelper.Games
             };
         }
 
+        internal string GetGameName()
+        {
+            return !string.IsNullOrWhiteSpace(GameName) ? GameName : GameName = ManageModOrganizer.GetMoBasicGamePluginGameName();
+        }
+
         protected string SearchGameFolder()
         {
             try

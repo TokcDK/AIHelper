@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
@@ -32,6 +34,10 @@ namespace AIHelper
             {
                 if (createdNew)
                 {
+                    //load dll from selected subdir, need to move all related  dlls to the subdir in post build event
+                    //AppDomain currentDomain = AppDomain.CurrentDomain;
+                    //currentDomain.AssemblyResolve += new ResolveEventHandler(LoadFromSubFolder);
+
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
                     Application.Run(new MainForm());
@@ -51,5 +57,14 @@ namespace AIHelper
                 }
             }
         }
+
+        //static Assembly LoadFromSubFolder(object sender, ResolveEventArgs args)
+        //{
+        //    string folderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "RES", "lib");
+        //    string assemblyPath = Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
+        //    if (!File.Exists(assemblyPath)) return null;
+        //    Assembly assembly = Assembly.LoadFrom(assemblyPath);
+        //    return assembly;
+        //}
     }
 }

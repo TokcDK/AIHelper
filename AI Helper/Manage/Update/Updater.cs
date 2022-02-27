@@ -480,7 +480,19 @@ namespace AIHelper.Manage.Update
                     Directory.CreateDirectory(Path.GetDirectoryName(htmlfile));// fix missing parent directory error
 
                     File.WriteAllText(htmlfile, reportMessage);
-                    System.Diagnostics.Process.Start(htmlfile);
+                    using (var process = new System.Diagnostics.Process())
+                    {
+                        try
+                        {
+                            process.StartInfo.UseShellExecute = true;
+                            process.StartInfo.FileName = htmlfile;
+                            process.Start();
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.Message);
+                        }
+                    }
                 }
                 //else
                 //{

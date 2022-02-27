@@ -42,6 +42,11 @@
             return "COM3D2";
         }
 
+        public override string GetCharacterPresetsFolderSubPath()
+        {
+            return "Preset";
+        }
+
         public override string[,] GetDirLinkPaths()
         {
             return new string[,]

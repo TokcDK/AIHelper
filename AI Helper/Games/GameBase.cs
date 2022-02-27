@@ -165,6 +165,15 @@ namespace AIHelper.Games
         }
 
         /// <summary>
+        /// game's character presets folder subpath
+        /// </summary>
+        /// <returns></returns>
+        public virtual string GetCharacterPresetsFolderSubPath()
+        {
+            return "";
+        }
+
+        /// <summary>
         /// game's 2MO folder path of selected game
         /// </summary>
         /// <returns></returns>

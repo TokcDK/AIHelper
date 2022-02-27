@@ -1580,8 +1580,15 @@ namespace AIHelper
 
             await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
+            string CharacterDirSubpath = GameData.CurrentGame.GetCharacterPresetsFolderSubPath();
+
             string exePath = OpenUserDataNoMO || !MOmode ? "explorer.exe" : Path.Combine(ManageSettings.GetAppModOrganizerDirPath(), "explorer++", "Explorer++.exe");
-            string presetsDirPath = OpenUserDataNoMO ? ManageSettings.GetUserfilesDirectoryPath("UserData\\chara") : Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "UserData", "chara");
+            string presetsDirPath = OpenUserDataNoMO ? ManageSettings.GetUserfilesDirectoryPath(CharacterDirSubpath) : Path.Combine(ManageSettings.GetCurrentGameDataDirPath()) + "\\" + CharacterDirSubpath;
+
+            if (string.IsNullOrWhiteSpace(presetsDirPath) || !Directory.Exists(presetsDirPath))
+            {
+                return;
+            }
 
             if (MOmode && !OpenUserDataNoMO)
             {

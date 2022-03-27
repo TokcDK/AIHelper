@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29230.47
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI Helper", "AI Helper\AI Helper.csproj", "{6E16DB2A-586F-49D9-BFC8-FBEC0D3DF6C7}"
 EndProject
@@ -25,6 +25,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckForEmptyDir", "K:\0GIT\[TokcDK]\LC\LibsCollection\CheckForEmptyDir\CheckForEmptyDir.csproj", "{636976FE-5FFE-4E17-BCB1-7B858A78A8A3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SymbolicLinkSupport", "K:\0GIT\symboliclinksupport\SymbolicLinkSupport\SymbolicLinkSupport.csproj", "{0F629727-5647-4CB0-946A-1AC4442FD8F2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WPF", "WPF", "{1B49BB37-65FF-4492-A9B5-CA806F536DF5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI Helper", "WPf\AI Helper\AI Helper.csproj", "{B815B801-F0C2-47D6-B901-C163BA3CECDF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,6 +86,14 @@ Global
 		{0F629727-5647-4CB0-946A-1AC4442FD8F2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0F629727-5647-4CB0-946A-1AC4442FD8F2}.Release|x64.ActiveCfg = Release|Any CPU
 		{0F629727-5647-4CB0-946A-1AC4442FD8F2}.Release|x64.Build.0 = Release|Any CPU
+		{B815B801-F0C2-47D6-B901-C163BA3CECDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B815B801-F0C2-47D6-B901-C163BA3CECDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B815B801-F0C2-47D6-B901-C163BA3CECDF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B815B801-F0C2-47D6-B901-C163BA3CECDF}.Debug|x64.Build.0 = Debug|Any CPU
+		{B815B801-F0C2-47D6-B901-C163BA3CECDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B815B801-F0C2-47D6-B901-C163BA3CECDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B815B801-F0C2-47D6-B901-C163BA3CECDF}.Release|x64.ActiveCfg = Release|Any CPU
+		{B815B801-F0C2-47D6-B901-C163BA3CECDF}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,6 +106,8 @@ Global
 		{CF563EBD-B93A-434C-AF1F-B2F853E4CE7E} = {27E06EF2-8392-4E2C-9B2D-51614FA22584}
 		{636976FE-5FFE-4E17-BCB1-7B858A78A8A3} = {CF563EBD-B93A-434C-AF1F-B2F853E4CE7E}
 		{0F629727-5647-4CB0-946A-1AC4442FD8F2} = {CF563EBD-B93A-434C-AF1F-B2F853E4CE7E}
+		{1B49BB37-65FF-4492-A9B5-CA806F536DF5} = {27E06EF2-8392-4E2C-9B2D-51614FA22584}
+		{B815B801-F0C2-47D6-B901-C163BA3CECDF} = {1B49BB37-65FF-4492-A9B5-CA806F536DF5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E6619618-7F5E-4AA7-9756-C6CA2B7BAD64}

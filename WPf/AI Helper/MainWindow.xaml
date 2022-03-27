@@ -1,0 +1,64 @@
+﻿<Window x:Class="AI_Helper.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AI_Helper"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="225" Width="370">
+    <Grid>
+        <TabControl>
+            <TabItem Header="Info">
+                <Grid Background="Gray">
+                    <DockPanel LastChildFill="False" Margin="136,27,124,116" RenderTransformOrigin="0.5,0.5">
+                        <DockPanel.RenderTransform>
+                            <TransformGroup>
+                                <ScaleTransform/>
+                                <SkewTransform AngleX="1.155"/>
+                                <RotateTransform/>
+                                <TranslateTransform X="0.313"/>
+                            </TransformGroup>
+                        </DockPanel.RenderTransform>
+                        <Label Height="45" Width="31" DockPanel.Dock="Left" FontFamily="Lucida Handwriting" FontSize="14.25">AI</Label>
+                        <Label DockPanel.Dock="Right" FontFamily="Lucida Handwriting" FontSize="14.25" Width="69">Helper</Label>
+                    </DockPanel>
+                    <Button Height="33" Width="150" FontFamily="Segoe Print" FontSize="9.75">Prepare the game</Button>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Launch">
+                <Grid Background="Gray">
+                    <DockPanel LastChildFill="True">
+                        <DockPanel Height="70" DockPanel.Dock="Top">
+                            
+                        </DockPanel>
+                        <DockPanel LastChildFill="False" DockPanel.Dock="Bottom" Width="219" Height="81">
+                            <DockPanel Height="33" DockPanel.Dock="Top">
+                                <DockPanel Width="100" DockPanel.Dock="Left">
+                                    <Button Content="Game" Height="33" Width="94" Click="Button_Click"></Button>
+                                </DockPanel>
+                                <DockPanel Width="100" DockPanel.Dock="Right">
+                                    <Button Content="Manager" Height="33" Width="94" Click="Button_Click"></Button>
+                                </DockPanel>
+                            </DockPanel>
+                            <DockPanel  DockPanel.Dock="Bottom">
+                                <DockPanel Width="100" DockPanel.Dock="Left">
+                                    <Button Content="Settings" Height="33" Width="94" Click="Button_Click"></Button>
+                                </DockPanel>
+                                <DockPanel Width="100" DockPanel.Dock="Right">
+                                    <Button Content="Studio" Height="33" Width="94" Click="Button_Click"></Button>
+                                </DockPanel>
+                            </DockPanel>
+                        </DockPanel>
+                    </DockPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Settings">
+                <Grid Background="Gray"/>
+            </TabItem>
+            <TabItem Header="Tools">
+                <Grid Background="Gray"/>
+            </TabItem>
+        </TabControl>
+
+    </Grid>
+</Window>

@@ -60,7 +60,7 @@ namespace AIHelper.Manage.Update.Sources
             var updateDownloadsDir = ManageSettings.GetModsUpdateDirDownloadsPath(); //Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), modGitData.CurrentModName);
             Directory.CreateDirectory(updateDownloadsDir);
 
-            var updateFileName = Path.GetFileName(Info.DownloadLink);
+            var updateFileName = Info.UpdateFilePath.Length > 0 ? Path.GetFileName(Info.UpdateFilePath) : Path.GetFileName(Info.DownloadLink);
 
             if (string.IsNullOrWhiteSpace(updateFileName))
             {
@@ -237,6 +237,21 @@ namespace AIHelper.Manage.Update.Sources
                 var link2File = Regex.Match(latestReleasePage, linkPattern);
                 //var linkPattern = @"href\=\""(/" + GitOwner + "/" + GitRepository + "/releases/download/([^/]+)/" + info.UpdateFileStartsWith + @"([^\""]+)" + info.UpdateFileEndsWith + @")\""";
                 //var link2file = Regex.Match(LatestReleasePage, linkPattern);
+                if (!link2File.Success && Info.VersionFromFile)
+                {
+                    foreach (var file in Directory.GetFiles(ManageSettings.GetInstall2MoDirPath(), Info.UpdateFileStartsWith + "*" + Info.UpdateFileEndsWith))
+                    {
+                        var ver = Regex.Match(Path.GetFileName(file), Info.UpdateFileStartsWith + "(.*)" + Info.UpdateFileEndsWith).Groups[1].Value;
+                        UpdateTools.CleanVersion(ref ver);
+                        UpdateTools.CleanVersion(ref Info.TargetCurrentVersion);
+                        if (ver == _gitLatestVersion || ver.IsNewerOf(Info.TargetCurrentVersion))
+                        {
+                            Info.UpdateFilePath = file;
+                            return ver;
+                        }
+                    }
+                }
+
                 if (!link2File.Success)//refind sublink to file
                 {
                     //when author changed username on git

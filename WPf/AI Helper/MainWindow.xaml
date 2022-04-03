@@ -6,54 +6,91 @@
         xmlns:local="clr-namespace:AI_Helper"
         mc:Ignorable="d"
         Title="MainWindow" Height="225" Width="370">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="DarkGray" />
+                    <Setter Property="Foreground" Value="Black" />
+                    <Setter Property="Button.Effect">
+                        <Setter.Value>
+                            <DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Grid>
         <TabControl>
             <TabItem Header="Info">
                 <Grid Background="Gray">
-                    <DockPanel LastChildFill="False" Margin="136,27,124,116" RenderTransformOrigin="0.5,0.5">
-                        <DockPanel.RenderTransform>
-                            <TransformGroup>
-                                <ScaleTransform/>
-                                <SkewTransform AngleX="1.155"/>
-                                <RotateTransform/>
-                                <TranslateTransform X="0.313"/>
-                            </TransformGroup>
-                        </DockPanel.RenderTransform>
-                        <Label Height="45" Width="31" DockPanel.Dock="Left" FontFamily="Lucida Handwriting" FontSize="14.25">AI</Label>
-                        <Label DockPanel.Dock="Right" FontFamily="Lucida Handwriting" FontSize="14.25" Width="69">Helper</Label>
-                    </DockPanel>
-                    <Button Height="33" Width="150" FontFamily="Segoe Print" FontSize="9.75">Prepare the game</Button>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="AI Helper" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontFamily="Lucida Handwriting">
+                        <TextBlock.BitmapEffect>
+                            <DropShadowBitmapEffect Color="Black" Direction="-25" ShadowDepth="10" Softness=".35"/>
+                        </TextBlock.BitmapEffect>
+                    </TextBlock>
+                    <TextBlock Text="Koikatsu" Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="14" FontFamily="Lucida Handwriting" Foreground="#FFF1B7DC"/>
+
+                    <Button Grid.Row="1" VerticalAlignment="Top" Height="33" Width="150" FontFamily="Segoe Print" FontSize="9.75">Prepare the game</Button>
                 </Grid>
             </TabItem>
             <TabItem Header="Launch">
                 <Grid Background="Gray">
-                    <DockPanel LastChildFill="True">
-                        <DockPanel Height="70" DockPanel.Dock="Top">
-                            
-                        </DockPanel>
-                        <DockPanel LastChildFill="False" DockPanel.Dock="Bottom" Width="219" Height="81">
-                            <DockPanel Height="33" DockPanel.Dock="Top">
-                                <DockPanel Width="100" DockPanel.Dock="Left">
-                                    <Button Content="Game" Height="33" Width="94" Click="Button_Click"></Button>
-                                </DockPanel>
-                                <DockPanel Width="100" DockPanel.Dock="Right">
-                                    <Button Content="Manager" Height="33" Width="94" Click="Button_Click"></Button>
-                                </DockPanel>
-                            </DockPanel>
-                            <DockPanel  DockPanel.Dock="Bottom">
-                                <DockPanel Width="100" DockPanel.Dock="Left">
-                                    <Button Content="Settings" Height="33" Width="94" Click="Button_Click"></Button>
-                                </DockPanel>
-                                <DockPanel Width="100" DockPanel.Dock="Right">
-                                    <Button Content="Studio" Height="33" Width="94" Click="Button_Click"></Button>
-                                </DockPanel>
-                            </DockPanel>
-                        </DockPanel>
-                    </DockPanel>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.3*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="0.3*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.5*"/>
+                        <RowDefinition Height="0.5*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="AI Helper" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontFamily="Lucida Handwriting">
+                        <TextBlock.BitmapEffect>
+                            <DropShadowBitmapEffect Color="Black" Direction="-25" ShadowDepth="10" Softness=".35"/>
+                        </TextBlock.BitmapEffect>
+                    </TextBlock>
+                    <TextBlock Text="Koikatsu" Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="14" FontFamily="Lucida Handwriting" Foreground="#FFF1B7DC"/>
+
+                    <Grid Grid.Column="1" Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.5*"/>
+                            <ColumnDefinition Width="0.5*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0.5*"/>
+                            <RowDefinition Height="0.5*"/>
+                        </Grid.RowDefinitions>
+                        <Button Grid.Column="0" Grid.Row="0" Content="Game" Height="33" Width="94"></Button>
+                        <Button Grid.Column="1" Grid.Row="0" Content="Manager" Height="33" Width="94"></Button>
+                        <Button Grid.Column="1" Grid.Row="1" Content="Settings" Height="33" Width="94"></Button>
+                        <Button Grid.Column="0" Grid.Row="1" Content="Studio" Height="33" Width="94"></Button>
+                    </Grid>
                 </Grid>
             </TabItem>
             <TabItem Header="Settings">
-                <Grid Background="Gray"/>
+                <Grid Background="Gray">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.45*"/>
+                        <ColumnDefinition Width="0.55*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="0.4*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Game:"/>
+                    <RibbonComboBox HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="130"/>
+                </Grid>
             </TabItem>
             <TabItem Header="Tools">
                 <Grid Background="Gray"/>

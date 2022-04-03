@@ -4,25 +4,36 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AI_Helper"
+        xmlns:vm="clr-namespace:AI_Helper.ViewModel"
         mc:Ignorable="d"
         Title="MainWindow" Height="225" Width="370">
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
     <Window.Resources>
         <Style TargetType="Button">
+            <Setter Property="Button.Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="Black" Direction="-25" ShadowDepth="10" BlurRadius="5" Opacity="0.5" />
+                    <!--<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />-->
+                </Setter.Value>
+            </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="BorderBrush" Value="DarkGray" />
                     <Setter Property="Foreground" Value="Black" />
                     <Setter Property="Button.Effect">
                         <Setter.Value>
-                            <DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />
+                            <DropShadowEffect Color="Black" Direction="-15" ShadowDepth="5" BlurRadius="5" Opacity="0.5" />
+                            <!--<DropShadowEffect Color="Black" Direction="320" ShadowDepth="3" BlurRadius="5" Opacity="0.5" />-->
                         </Setter.Value>
                     </Setter>
                 </Trigger>
             </Style.Triggers>
         </Style>
     </Window.Resources>
-    <Grid>
-        <TabControl>
+    <Grid IsEnabled="{Binding IsWorking}">
+        <TabControl SelectedIndex="{Binding TabIndex, UpdateSourceTrigger=PropertyChanged}">
             <TabItem Header="Info">
                 <Grid Background="Gray">
                     <Grid.ColumnDefinitions>
@@ -38,9 +49,9 @@
                             <DropShadowBitmapEffect Color="Black" Direction="-25" ShadowDepth="10" Softness=".35"/>
                         </TextBlock.BitmapEffect>
                     </TextBlock>
-                    <TextBlock Text="Koikatsu" Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="14" FontFamily="Lucida Handwriting" Foreground="#FFF1B7DC"/>
+                    <TextBlock Text="{Binding GamesList.Selected.GameName}" Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="14" FontFamily="Lucida Handwriting" Foreground="#FFF1B7DC"/>
 
-                    <Button Grid.Row="1" VerticalAlignment="Top" Height="33" Width="150" FontFamily="Segoe Print" FontSize="9.75">Prepare the game</Button>
+                    <Button Grid.Row="1" VerticalAlignment="Top" Height="33" Width="150" FontFamily="Segoe Print" FontSize="9.75" Command="{Binding OnPrepareGame_Click}">Prepare the game</Button>
                 </Grid>
             </TabItem>
             <TabItem Header="Launch">
@@ -60,7 +71,7 @@
                             <DropShadowBitmapEffect Color="Black" Direction="-25" ShadowDepth="10" Softness=".35"/>
                         </TextBlock.BitmapEffect>
                     </TextBlock>
-                    <TextBlock Text="Koikatsu" Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="14" FontFamily="Lucida Handwriting" Foreground="#FFF1B7DC"/>
+                    <TextBlock Text="{Binding GamesList.Selected.GameName}" Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="14" FontFamily="Lucida Handwriting" Foreground="#FFF1B7DC"/>
 
                     <Grid Grid.Column="1" Grid.Row="1">
                         <Grid.ColumnDefinitions>
@@ -71,10 +82,10 @@
                             <RowDefinition Height="0.5*"/>
                             <RowDefinition Height="0.5*"/>
                         </Grid.RowDefinitions>
-                        <Button Grid.Column="0" Grid.Row="0" Content="Game" Height="33" Width="94"></Button>
-                        <Button Grid.Column="1" Grid.Row="0" Content="Manager" Height="33" Width="94"></Button>
-                        <Button Grid.Column="1" Grid.Row="1" Content="Settings" Height="33" Width="94"></Button>
-                        <Button Grid.Column="0" Grid.Row="1" Content="Studio" Height="33" Width="94"></Button>
+                        <Button Grid.Column="0" Grid.Row="0" Content="Game" Height="33" Width="94" Command="{Binding OnGameButton_Click}"></Button>
+                        <Button Grid.Column="1" Grid.Row="0" Content="Manager" Height="33" Width="94" Command="{Binding OnManagerButton_Click}"></Button>
+                        <Button Grid.Column="1" Grid.Row="1" Content="Settings" Height="33" Width="94" Command="{Binding OnSettingsButton_Click}"></Button>
+                        <Button Grid.Column="0" Grid.Row="1" Content="Studio" Height="33" Width="94" Command="{Binding OnStudioButton_Click}"></Button>
                     </Grid>
                 </Grid>
             </TabItem>
@@ -89,13 +100,23 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Game:"/>
-                    <RibbonComboBox HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="130"/>
+                    <ComboBox
+                        ItemsSource="{Binding GamesList.Games}"
+                        SelectedItem="{Binding GamesList.Selected, UpdateSourceTrigger=PropertyChanged}"
+                        HorizontalAlignment="Left" 
+                        VerticalAlignment="Bottom"
+                        Width="130">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding GameName}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                 </Grid>
             </TabItem>
             <TabItem Header="Tools">
                 <Grid Background="Gray"/>
             </TabItem>
         </TabControl>
-
     </Grid>
 </Window>

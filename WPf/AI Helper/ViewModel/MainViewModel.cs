@@ -35,5 +35,10 @@ namespace AI_Helper.ViewModel
 
         private RelayCommand? onSettingsButton_Click;
         public RelayCommand OnSettingsButton_Click => onSettingsButton_Click ??= new RelayCommand(obj => { });
+
+        public static string AppDir { get; internal set; } = System.IO.Path.GetDirectoryName(System.Environment.ProcessPath);
+
+        // strings
+        public LocaleStrings Loc { get; } = new LocaleStrings();
     }
 }

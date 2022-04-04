@@ -82,10 +82,10 @@
                             <RowDefinition Height="0.5*"/>
                             <RowDefinition Height="0.5*"/>
                         </Grid.RowDefinitions>
-                        <Button Grid.Column="0" Grid.Row="0" Content="Game" Height="33" Width="94" Command="{Binding OnGameButton_Click}"></Button>
-                        <Button Grid.Column="1" Grid.Row="0" Content="Manager" Height="33" Width="94" Command="{Binding OnManagerButton_Click}"></Button>
-                        <Button Grid.Column="1" Grid.Row="1" Content="Settings" Height="33" Width="94" Command="{Binding OnSettingsButton_Click}"></Button>
-                        <Button Grid.Column="0" Grid.Row="1" Content="Studio" Height="33" Width="94" Command="{Binding OnStudioButton_Click}"></Button>
+                        <Button Grid.Column="0" Grid.Row="0" Content="{Binding Loc.Game}" Height="33" Width="94" Command="{Binding OnGameButton_Click}"></Button>
+                        <Button Grid.Column="1" Grid.Row="0" Content="{Binding Loc.Manager}" Height="33" Width="94" Command="{Binding OnManagerButton_Click}"></Button>
+                        <Button Grid.Column="1" Grid.Row="1" Content="{Binding Loc.Settings}" Height="33" Width="94" Command="{Binding OnSettingsButton_Click}"></Button>
+                        <Button Grid.Column="0" Grid.Row="1" Content="{Binding Loc.Studio}" Height="33" Width="94" Command="{Binding OnStudioButton_Click}"></Button>
                     </Grid>
                 </Grid>
             </TabItem>

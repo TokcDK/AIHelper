@@ -8,4 +8,8 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="NGettext.Wpf" Version="1.2.4" />
+  </ItemGroup>
+
 </Project>

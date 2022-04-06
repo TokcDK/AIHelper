@@ -1,14 +1,17 @@
 ﻿using AIHelper.Games;
 using AIHelper.SharedData;
 using System.Collections.ObjectModel;
+using System.IO;
 
 namespace AIHelper.ViewModel
 {
     internal class MainViewModel
     {
         public static GameData GamesList { get; set; } = new();
+        public static bool CanUserRunStudio { get => File.Exists(GamesList.Game.GetGameStudioExeName()); }
 
-        public static bool IsWorking { get => GamesList.Game != null; }
+        public static bool HasAnyGame { get => GamesList.Game != null; }
+
         public static int TabIndex { get; set; } = 0;
 
         private RelayCommand? onPrepareGame_Click;

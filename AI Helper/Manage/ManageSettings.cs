@@ -20,7 +20,7 @@ namespace AIHelper.Manage
 
         internal static string GetCurrentGameRegistryInstallDirKeyName()
         {
-            return GameData.CurrentGame.RegistryInstallDirKey;
+            return GameData.Game.RegistryInstallDirKey;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -42,7 +42,7 @@ namespace AIHelper.Manage
         internal static string GetCurrentGameMoGamePyPluginPath()
         {
 #pragma warning disable CA1308 // Normalize strings to uppercase
-            return Path.Combine(GetAppModOrganizerDirPath(), "plugins", "modorganizer-basic_games", "games", SharedData.GameData.CurrentGame.GetBaseGamePyFile().Name
+            return Path.Combine(GetAppModOrganizerDirPath(), "plugins", "modorganizer-basic_games", "games", SharedData.GameData.Game.GetBaseGamePyFile().Name
                 //+ GetCurrentGameExeName()
                 //.Replace("_64", string.Empty)
                 //.Replace("_32", string.Empty)
@@ -220,7 +220,7 @@ namespace AIHelper.Manage
                     }
 
                     game.GameDirInfo = new DirectoryInfo(gameDir);
-                    GameData.CurrentGame = game; // temp set current game
+                    GameData.Game = game; // temp set current game
 
                     var mods = Path.Combine(gameDir, "Mods");
                     if (!Directory.Exists(mods))
@@ -844,7 +844,7 @@ namespace AIHelper.Manage
         internal static string GetFolderNamesOfFoundGame()
         {
             string listOfGamesString = string.Empty;
-            foreach (var game in GameData.ListOfGames)
+            foreach (var game in GameData.Games)
             {
                 listOfGamesString += game.GetGameDirName() + Environment.NewLine;
             }
@@ -859,7 +859,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static List<GameBase> GetListOfGames()
         {
-            return GameData.ListOfGames;
+            return GameData.Games;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -869,7 +869,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static GameBase GetCurrentGame()
         {
-            return GameData.CurrentGame;
+            return GameData.Game;
         }
 
         /// <summary>
@@ -885,7 +885,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameParentDirPath()
         {
-            return GameData.CurrentGame.GameDirInfo.Parent.FullName;
+            return GameData.Game.GameDirInfo.Parent.FullName;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -938,7 +938,7 @@ namespace AIHelper.Manage
         {
             if (MoIsNew)
             {
-                return GameData.CurrentGame.GameName;
+                return GameData.Game.GameName;
             }
             else
             {
@@ -975,7 +975,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameExeName()
         {
-            return GameData.CurrentGame.GetGameExeName();
+            return GameData.Game.GetGameExeName();
         }
 
         /// <summary>
@@ -996,7 +996,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameDirName()
         {
-            return GameData.CurrentGame.GetGameDirName();
+            return GameData.Game.GetGameDirName();
         }
 
         /// <summary>
@@ -1034,19 +1034,19 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetCurrentGameDisplayingName()
         {
-            return GameData.CurrentGame.GetGameDisplayingName();
+            return GameData.Game.GetGameDisplayingName();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetStudioExeName()
         {
-            return GameData.CurrentGame.GetGameStudioExeName();
+            return GameData.Game.GetGameStudioExeName();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetIniSettingsExeName()
         {
-            return GameData.CurrentGame.GetIniSettingsExeName();
+            return GameData.Game.GetIniSettingsExeName();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1735,7 +1735,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetZipmodManifestGameNameByCurrentGame()
         {
-            return GameData.CurrentGame.ManifestGame;
+            return GameData.Game.ManifestGame;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1811,7 +1811,7 @@ namespace AIHelper.Manage
 
         internal static bool IsHaveSideloaderMods()
         {
-            return GameData.CurrentGame.IsHaveSideloaderMods;
+            return GameData.Game.IsHaveSideloaderMods;
         }
 
         /// <summary>
@@ -1836,7 +1836,7 @@ namespace AIHelper.Manage
 
         internal static string GetCurrentGameRegistryPath()
         {
-            return GameData.CurrentGame.RegistryPath;
+            return GameData.Game.RegistryPath;
         }
 
         /// <summary>

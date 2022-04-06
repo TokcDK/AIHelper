@@ -1,4 +1,4 @@
-using AI_Helper.ViewModel;
+using AIHelper.ViewModel;
 using NGettext;
 using System.IO;
 

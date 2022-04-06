@@ -1,24 +1,14 @@
-﻿using AI_Helper.Games;
+﻿using AIHelper.Games;
+using AIHelper.SharedData;
 using System.Collections.ObjectModel;
 
-namespace AI_Helper.ViewModel
+namespace AIHelper.ViewModel
 {
     internal class MainViewModel
     {
-        public static _gamesList GamesList { get; set; } = new();
+        public static GameData GamesList { get; set; } = new();
 
-        public class _gamesList
-        {
-            public _gamesList()
-            {
-                Selected = Games[0];
-            }
-
-            public ObservableCollection<GameBase> Games { get; set; } = new() { new Koikatsu(), new HoneySelect() };
-            public GameBase Selected { get; set; }
-        }
-
-        public static bool IsWorking { get => GamesList.Selected != null; }
+        public static bool IsWorking { get => GamesList.Game != null; }
         public static int TabIndex { get; set; } = 0;
 
         private RelayCommand? onPrepareGame_Click;

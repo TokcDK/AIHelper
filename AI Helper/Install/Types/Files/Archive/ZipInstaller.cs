@@ -196,7 +196,7 @@ namespace AIHelper.Install.Types.Files.Archive
 
                 if (!foundUpdateName && author.Length == 0)
                 {
-                    author = zipName.StartsWith("[" + SharedData.GameData.CurrentGame.GetGamePrefix() + "][", StringComparison.InvariantCulture) || (zipName.StartsWith("[", StringComparison.InvariantCulture) && !zipName.StartsWith("[" + SharedData.GameData.CurrentGame.GetGamePrefix() + "]", StringComparison.InvariantCulture)) ? zipName.Substring(zipName.IndexOf("[", StringComparison.InvariantCulture) + 1, zipName.IndexOf("]", StringComparison.InvariantCulture) - 1) : string.Empty;
+                    author = zipName.StartsWith("[" + SharedData.GameData.Game.GetGameAbbreviation() + "][", StringComparison.InvariantCulture) || (zipName.StartsWith("[", StringComparison.InvariantCulture) && !zipName.StartsWith("[" + SharedData.GameData.Game.GetGameAbbreviation() + "]", StringComparison.InvariantCulture)) ? zipName.Substring(zipName.IndexOf("[", StringComparison.InvariantCulture) + 1, zipName.IndexOf("]", StringComparison.InvariantCulture) - 1) : string.Empty;
                 }
 
                 //запись meta.ini

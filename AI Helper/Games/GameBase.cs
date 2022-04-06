@@ -87,7 +87,7 @@ namespace AIHelper.Games
         /// prefix of selected game (kk,hs,hs2,ai,kks)
         /// </summary>
         /// <returns></returns>
-        public abstract string GetGamePrefix();
+        public abstract string GetGameAbbreviation();
 
         /// <summary>
         /// main game's vr exe name of selected game

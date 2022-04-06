@@ -20,7 +20,7 @@
             return T._("AI-Girl") + "Trial";
         }
 
-        public override string GetGamePrefix()
+        public override string GetGameAbbreviation()
         {
             return "AI";
         }

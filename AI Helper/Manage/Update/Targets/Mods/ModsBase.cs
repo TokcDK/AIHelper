@@ -49,7 +49,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
 
         internal override string[] RestorePathsListExtra()
         {
-            string[,] objectLinkPaths = GameData.CurrentGame.GetDirLinkPaths();
+            string[,] objectLinkPaths = GameData.Game.GetDirLinkPaths();
 
             int objectLinkPathsLength = objectLinkPaths.Length / 2;
             HashSet<string> links = new HashSet<string>(objectLinkPathsLength);

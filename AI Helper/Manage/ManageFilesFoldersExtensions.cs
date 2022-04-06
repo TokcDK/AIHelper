@@ -420,7 +420,7 @@ namespace AIHelper.Manage
             string aloneFolderName = IfInTheFolderOnlyOneFolderGetItName(folderPath);
             if (aloneFolderName.Length > 0)
             {
-                if (!ManageStrings.IsStringAContainsAnyStringFromStringArray(aloneFolderName, GameData.CurrentGame.GetGameStandartFolderNames(), true))
+                if (!ManageStrings.IsStringAContainsAnyStringFromStringArray(aloneFolderName, GameData.Game.GetGameStandartFolderNames(), true))
                 {
                     string folderPathName = Path.GetFileName(folderPath);
                     string folderParentDirPath = Path.GetDirectoryName(folderPath);

@@ -37,7 +37,7 @@
             return "CharaStudio";
         }
 
-        public override string GetGamePrefix()
+        public override string GetGameAbbreviation()
         {
             return "COM3D2";
         }

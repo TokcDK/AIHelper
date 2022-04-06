@@ -8,12 +8,12 @@ namespace AIHelper.SharedData
         /// <summary>
         /// List of valid games
         /// </summary>
-        internal static List<GameBase> ListOfGames;
+        internal static List<GameBase> Games { get; set; }
 
         /// <summary>
         /// Current selected game
         /// </summary>
-        internal static GameBase CurrentGame;
+        internal static GameBase Game { get; set; }
 
         /// <summary>
         /// reference to the main form

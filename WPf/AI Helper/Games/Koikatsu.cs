@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AI_Helper.Games
+namespace AIHelper.Games
 {
     internal class Koikatsu : GameBase
     {
         public override string GameName => "Koikatsu";
 
-        public override string ShortName => "kk";
+        public override string GameAbbreviation => "kk";
     }
 }

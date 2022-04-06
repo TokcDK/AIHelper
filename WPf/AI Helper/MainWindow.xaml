@@ -1,10 +1,10 @@
-﻿<Window x:Class="AI_Helper.MainWindow"
+﻿<Window x:Class="AIHelper.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AI_Helper"
-        xmlns:vm="clr-namespace:AI_Helper.ViewModel"
+        xmlns:local="clr-namespace:AIHelper"
+        xmlns:vm="clr-namespace:AIHelper.ViewModel"
         mc:Ignorable="d"
         Title="MainWindow" Height="225" Width="370">
     <Window.DataContext>
@@ -49,7 +49,7 @@
                             <DropShadowBitmapEffect Color="Black" Direction="-25" ShadowDepth="10" Softness=".35"/>
                         </TextBlock.BitmapEffect>
                     </TextBlock>
-                    <TextBlock Text="{Binding GamesList.Selected.GameName}" Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="14" FontFamily="Lucida Handwriting" Foreground="#FFF1B7DC"/>
+                    <TextBlock Text="{Binding GamesList.Game.GameName}" Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="14" FontFamily="Lucida Handwriting" Foreground="#FFF1B7DC"/>
 
                     <Button Grid.Row="1" VerticalAlignment="Top" Height="33" Width="150" FontFamily="Segoe Print" FontSize="9.75" Command="{Binding OnPrepareGame_Click}">Prepare the game</Button>
                 </Grid>
@@ -71,7 +71,7 @@
                             <DropShadowBitmapEffect Color="Black" Direction="-25" ShadowDepth="10" Softness=".35"/>
                         </TextBlock.BitmapEffect>
                     </TextBlock>
-                    <TextBlock Text="{Binding GamesList.Selected.GameName}" Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="14" FontFamily="Lucida Handwriting" Foreground="#FFF1B7DC"/>
+                    <TextBlock Text="{Binding GamesList.Game.GameName}" Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="14" FontFamily="Lucida Handwriting" Foreground="#FFF1B7DC"/>
 
                     <Grid Grid.Column="1" Grid.Row="1">
                         <Grid.ColumnDefinitions>
@@ -102,7 +102,7 @@
                     <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Game:"/>
                     <ComboBox
                         ItemsSource="{Binding GamesList.Games}"
-                        SelectedItem="{Binding GamesList.Selected, UpdateSourceTrigger=PropertyChanged}"
+                        SelectedItem="{Binding GamesList.Game, UpdateSourceTrigger=PropertyChanged}"
                         HorizontalAlignment="Left" 
                         VerticalAlignment="Bottom"
                         Width="130">

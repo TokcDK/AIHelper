@@ -146,7 +146,7 @@ namespace AIHelper.Manage
 
             BepInExPreloadersFix(removeLinks);
 
-            string[,] objectLinkPaths = GameData.CurrentGame.GetDirLinkPaths();
+            string[,] objectLinkPaths = GameData.Game.GetDirLinkPaths();
 
             int objectLinkPathsLength = objectLinkPaths.Length / 2;
             for (int i = 0; i < objectLinkPathsLength; i++)
@@ -220,7 +220,7 @@ namespace AIHelper.Manage
 
         private static void BepInExPreloadersFix(bool remove = false)
         {
-            string[,] bepInExFilesPaths = GameData.CurrentGame.GetObjectsForMove();
+            string[,] bepInExFilesPaths = GameData.Game.GetObjectsForMove();
 
             int bepInExFilesPathsLength = bepInExFilesPaths.Length / 2;
             for (int i = 0; i < bepInExFilesPathsLength; i++)
@@ -508,11 +508,11 @@ namespace AIHelper.Manage
                 {
                     string[] s = name.Split(']');
 
-                    if (!name.StartsWith("[" + SharedData.GameData.CurrentGame.GetGamePrefix() + "]", StringComparison.InvariantCultureIgnoreCase))
+                    if (!name.StartsWith("[" + SharedData.GameData.Game.GetGameAbbreviation() + "]", StringComparison.InvariantCultureIgnoreCase))
                     {
                         author = s[0].Remove(0, 1);
                     }
-                    else if (name.StartsWith("[" + SharedData.GameData.CurrentGame.GetGamePrefix() + "][", StringComparison.InvariantCultureIgnoreCase))
+                    else if (name.StartsWith("[" + SharedData.GameData.Game.GetGameAbbreviation() + "][", StringComparison.InvariantCultureIgnoreCase))
                     {
                         author = s[1].Remove(0, 1);
                     }
@@ -1013,7 +1013,7 @@ namespace AIHelper.Manage
                 var regexMatch = Regex.Match(inputString, "%game:([^%]+)%");
 
                 var gameDirName = regexMatch.Groups[1].Value;
-                foreach (var game in GameData.ListOfGames)
+                foreach (var game in GameData.Games)
                 {
                     if (game.GameDirInfo.Name == gameDirName)
                     {
@@ -4133,7 +4133,7 @@ namespace AIHelper.Manage
                 return;
             }
 
-            var py = GameData.CurrentGame.GetBaseGamePyFile();
+            var py = GameData.Game.GetBaseGamePyFile();
             var pypath = Path.Combine(moBaseGamesPluginGamesDirPath, py.Name + ".py");
             if (!File.Exists(pypath) || py.Value.Length != new FileInfo(pypath).Length)
             {
@@ -4147,7 +4147,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static string GetMoBasicGamePluginGameName()
         {
-            Match gameName = Regex.Match(Encoding.UTF8.GetString(GameData.CurrentGame.GetBaseGamePyFile().Value), @"GameName \= \""([^\""]+)\""");
+            Match gameName = Regex.Match(Encoding.UTF8.GetString(GameData.Game.GetBaseGamePyFile().Value), @"GameName \= \""([^\""]+)\""");
 
             if (gameName == null)
             {

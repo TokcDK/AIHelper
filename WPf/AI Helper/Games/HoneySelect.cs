@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AI_Helper.Games
+namespace AIHelper.Games
 {
     internal class HoneySelect : GameBase
     {
         public override string GameName => "Honey Select";
 
-        public override string ShortName => "hs";
+        public override string GameAbbreviation => "hs";
     }
 }

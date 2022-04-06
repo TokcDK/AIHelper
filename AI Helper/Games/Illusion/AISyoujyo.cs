@@ -27,7 +27,7 @@
             return "StudioNEOV2";
         }
 
-        public override string GetGamePrefix()
+        public override string GetGameAbbreviation()
         {
             return "AI";
         }

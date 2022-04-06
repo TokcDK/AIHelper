@@ -20,7 +20,7 @@ namespace AIHelper.Games
                 return;
             }
 
-            List<GameBase> listOfGames = SharedData.GameData.ListOfGames != null ? SharedData.GameData.ListOfGames : GamesList.GetCompatibleGamePresetsList();
+            List<GameBase> listOfGames = SharedData.GameData.Games != null ? SharedData.GameData.Games : GamesList.GetCompatibleGamePresetsList();
             foreach (var game in listOfGames)
             {
                 if (File.Exists(Path.Combine(AIHelper.Properties.Settings.Default.ApplicationStartupPath, "Data", game.GetGameExeName() + ".exe")))
@@ -78,10 +78,10 @@ namespace AIHelper.Games
             return _detectedGame.GetDirLinkPaths();
         }
 
-        public override string GetGamePrefix()
+        public override string GetGameAbbreviation()
         {
             //DetectRootGame();
-            return _detectedGame.GetGamePrefix();
+            return _detectedGame.GetGameAbbreviation();
         }
 
         public override BaseGamePyFileInfo GetBaseGamePyFile()

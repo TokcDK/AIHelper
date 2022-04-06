@@ -36,7 +36,7 @@ namespace AIHelper.Games
             return "CharaStudio";
         }
 
-        public override string GetGamePrefix()
+        public override string GetGameAbbreviation()
         {
             return "KK";
         }

@@ -45,7 +45,7 @@ namespace AIHelper.Games
             return T._("Honey Select");
         }
 
-        public override string GetGamePrefix()
+        public override string GetGameAbbreviation()
         {
             return "HS";
         }

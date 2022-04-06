@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace AI_Helper.ViewModel
+namespace AIHelper.ViewModel
 {
     public class RelayCommand : ICommand
     {

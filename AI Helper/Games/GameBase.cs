@@ -60,17 +60,17 @@ namespace AIHelper.Games
             //return SearchGameFolder();
         }
 
-        protected string GetTheGameFolderName(string defaultGameFolderName)
-        {
-            if (GamefolderName.Length > 0 || (GamefolderName = SearchGameFolder()).Length > 0)
-            {
-                return GamefolderName;
-            }
-            else
-            {
-                return defaultGameFolderName;
-            }
-        }
+        //protected string GetTheGameFolderName(string defaultGameFolderName)
+        //{
+        //    if (GamefolderName.Length > 0 || (GamefolderName = SearchGameFolder()).Length > 0)
+        //    {
+        //        return GamefolderName;
+        //    }
+        //    else
+        //    {
+        //        return defaultGameFolderName;
+        //    }
+        //}
 
         public virtual string GetGameDisplayingName()
         {
@@ -289,27 +289,27 @@ namespace AIHelper.Games
             return !string.IsNullOrWhiteSpace(GameName) ? GameName : GameName = ManageModOrganizer.GetMoBasicGamePluginGameName();
         }
 
-        protected string SearchGameFolder()
-        {
-            try
-            {
-                if (Directory.Exists(ManageSettings.GetCurrentGameParentDirPath()))
-                {
-                    foreach (var folder in Directory.EnumerateDirectories(ManageSettings.GetCurrentGameParentDirPath()))
-                    {
-                        if (File.Exists(Path.Combine(folder, "Data", GetGameExeName() + ".exe")))
-                        {
-                            return Path.GetFileName(folder);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ManageLogs.Log("An error occured while SearchGameFolder. error:\r\n" + ex);
-            }
-            return string.Empty;
-        }
+        //protected string SearchGameFolder()
+        //{
+        //    try
+        //    {
+        //        if (Directory.Exists(ManageSettings.GetCurrentGameParentDirPath()))
+        //        {
+        //            foreach (var folder in Directory.EnumerateDirectories(ManageSettings.GetCurrentGameParentDirPath()))
+        //            {
+        //                if (File.Exists(Path.Combine(folder, "Data", GetGameExeName() + ".exe")))
+        //                {
+        //                    return Path.GetFileName(folder);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ManageLogs.Log("An error occured while SearchGameFolder. error:\r\n" + ex);
+        //    }
+        //    return string.Empty;
+        //}
 
 
         protected void CopyModOrganizerUserFiles(string moDirAltName)

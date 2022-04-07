@@ -14,7 +14,7 @@ namespace AIHelper.Manage
             var groupNames = new Dictionary<string, string>();
 
             var langID = "<" + ManageSettings.GetLanuageID() + ">";
-            langID = "<ru-RU>";
+            //langID = "<ru-RU>";
 
             string gameLinksPath = ManageSettings.GetLinksInfoFilePath();
             if (string.IsNullOrWhiteSpace(gameLinksPath)) return;

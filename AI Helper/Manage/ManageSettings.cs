@@ -482,6 +482,12 @@ namespace AIHelper.Manage
             return Path.Combine(GetDefaultThemeDirPath(), GetReportDirName());
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetReportBGDirPath()
+        {
+            return Path.Combine(GetReportDirPath(), "bg");
+        }
+
         internal class UpdateReport
         {
             /// <summary>
@@ -641,13 +647,13 @@ namespace AIHelper.Manage
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal static string GetCurrentGameBgFileName()
             {
-                return GetCurrentGameExeNameNoSuffixes() + "ReportBG.jpg";
+                return GetCurrentGame().GetGameAbbreviation() + ".jpg";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal static string GetCurrentGameBgFilePath()
             {
-                return Path.Combine(GetReportDirPath(), GetCurrentGameBgFileName()).Replace(Path.DirectorySeparatorChar.ToString(), "/");
+                return Path.Combine(GetReportBGDirPath(), GetCurrentGameBgFileName()).Replace(Path.DirectorySeparatorChar.ToString(), "/");
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]

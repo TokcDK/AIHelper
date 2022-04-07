@@ -29,6 +29,36 @@ namespace AIHelper.Manage
             return Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), "updateinfo.txt");
         }
 
+        internal static string GetLanuageID()
+        {
+            return T._("en-US");
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetCurrentGameLinksInfoDirPath()
+        {
+            return Path.Combine(ManageSettings.GetAppResDirPath(), "links");
+        }
+
+        /// <summary>
+        /// path to dir where links info files are located
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static string GetLinksInfoFilePath()
+        {
+            foreach(var path in new[]
+            {
+                Path.Combine(GetCurrentGameLinksInfoDirPath(), GetCurrentGame().GetGameAbbreviation() + ".txt"),
+                Path.Combine(GetCurrentGameLinksInfoDirPath(), "Default.txt")
+            })
+            {
+                if (File.Exists(path)) return path;
+            }
+
+            return "";
+        }
+
         /// <summary>
         /// game update installer update info ini file name
         /// </summary>
@@ -201,7 +231,7 @@ namespace AIHelper.Manage
                     gameDir = entrie;
                 }
 
-                if(!Directory.Exists(gameDir))
+                if (!Directory.Exists(gameDir))
                 {
                     continue;
                 }
@@ -642,6 +672,47 @@ namespace AIHelper.Manage
             internal static string HtmlReportStyleText()
             {
                 return " style=\"background-color:gray;\"";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HtmlReportCategoryTemplateFilePath()
+            {
+                return Path.Combine(GetCurrentGameLinksInfoDirPath(), "htmlCategoryTemplate.txt");
+            }
+
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HtmlReportCategoryTemplate()
+            {
+                if (File.Exists(HtmlReportCategoryTemplateFilePath()))
+                {
+                    var content = File.ReadAllLines(HtmlReportCategoryTemplateFilePath()).First(l => !l.StartsWith(";"));
+                    if (content.Contains("%category%") && content.Contains("%items%"))
+                    {
+                        return content;
+                    }
+                }
+                return "<details style=\"color:white\"><summary style=\"color:white\"><p style=\"color:lightgreen;display:inline\">%category%</p></summary>%items%</details>";
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HtmlReportCategoryItemTemplateFilePath()
+            {
+                return Path.Combine(GetCurrentGameLinksInfoDirPath(), "htmlCategoryItemTemplate.txt");
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal static string HtmlReportCategoryItemTemplate()
+            {
+                if(File.Exists(HtmlReportCategoryItemTemplateFilePath()))
+                {
+                    var content = File.ReadAllLines(HtmlReportCategoryItemTemplateFilePath()).First(l=>!l.StartsWith(";"));
+                    if (content.Contains("%link%"))
+                    {
+                        return content;
+                    }
+                }
+                return "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%link%\">%text%</a> - <p style=\"color:yellow;display:inline\">%description%</p><p style=\"color:yellow;display:inline\"></p>";
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1278,7 +1349,7 @@ namespace AIHelper.Manage
             }
             return ManageModOrganizer.GetLastPath(Path.Combine(GetBepInExCfgDirPath(), "BepInEx.cfg"));
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void SwitchBepInExDisplayedLogLevelValue(CheckBox bepInExConsoleCheckBox, Label bepInExDisplayedLogLevelLabel, bool onlyShow = false, string targetSectionName = "Logging.Console")
         {

@@ -23,7 +23,7 @@ namespace AIHelper
         }
 
         //private static readonly ICatalog _Catalog = new Catalog("Example", "./locale");
-        private static readonly ICatalog Catalog = GetCatalog();
+        public static readonly ICatalog Catalog = GetCatalog();
 
 
 #pragma warning disable IDE1006 // Стили именования

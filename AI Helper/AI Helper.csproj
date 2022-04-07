@@ -187,6 +187,7 @@
     <Compile Include="Games\Illusion\AISyoujyo.cs" />
     <Compile Include="Games\GameBase.cs" />
     <Compile Include="Manage\ManageHardlinks.cs" />
+    <Compile Include="Manage\ManageReport.cs" />
     <Compile Include="Manage\ModeSwitch\GameBackuper.cs" />
     <Compile Include="Manage\ManageArchive.cs" />
     <Compile Include="Manage\ManageArrayExtensions.cs" />

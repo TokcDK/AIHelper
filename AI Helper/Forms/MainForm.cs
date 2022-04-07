@@ -1005,34 +1005,36 @@ namespace AIHelper
 
         private void NewformButton_Click(object sender, EventArgs e)
         {
-            if (_linksForm == null || _linksForm.IsDisposed)
-            {
-                //show and reposition of form
-                //https://stackoverflow.com/questions/31492787/how-to-set-position-second-form-depend-on-first-form
-                _linksForm = new LinksForm
-                {
-                    //LinksForm.Text = T._("Links");
-                    StartPosition = FormStartPosition.Manual
-                };
-                _linksForm.Load += delegate (object s2, EventArgs e2)
-                {
-                    _linksForm.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (_linksForm.Width / 2),
-                        Bounds.Location.Y + /*(Bounds.Height / 2) - (f2.Height / 2) +*/ Bounds.Height);
-                };
-                _linksForm.Text = T._("Links");
-                newformButton.Text = @"/\";
-                if (_extraSettingsForm != null && !_extraSettingsForm.IsDisposed)
-                {
-                    _extraSettingsForm.Close();
-                }
-                _linksForm.Show();
-                _linksForm.TopMost = true;
-            }
-            else
-            {
-                newformButton.Text = @"\/";
-                _linksForm.Close();
-            }
+            ManageReport.ShowReportFromLinks();
+
+            //if (_linksForm == null || _linksForm.IsDisposed)
+            //{
+            //    //show and reposition of form
+            //    //https://stackoverflow.com/questions/31492787/how-to-set-position-second-form-depend-on-first-form
+            //    _linksForm = new LinksForm
+            //    {
+            //        //LinksForm.Text = T._("Links");
+            //        StartPosition = FormStartPosition.Manual
+            //    };
+            //    _linksForm.Load += delegate (object s2, EventArgs e2)
+            //    {
+            //        _linksForm.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (_linksForm.Width / 2),
+            //            Bounds.Location.Y + /*(Bounds.Height / 2) - (f2.Height / 2) +*/ Bounds.Height);
+            //    };
+            //    _linksForm.Text = T._("Links");
+            //    newformButton.Text = @"/\";
+            //    if (_extraSettingsForm != null && !_extraSettingsForm.IsDisposed)
+            //    {
+            //        _extraSettingsForm.Close();
+            //    }
+            //    _linksForm.Show();
+            //    _linksForm.TopMost = true;
+            //}
+            //else
+            //{
+            //    newformButton.Text = @"\/";
+            //    _linksForm.Close();
+            //}
         }
 
         private void AIHelper_LocationChanged(object sender, EventArgs e)

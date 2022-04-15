@@ -4,6 +4,7 @@ using CheckForEmptyDir;
 using GetListOfSubClasses;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -31,7 +32,7 @@ namespace AIHelper.Manage
 
         internal static string GetLanuageID()
         {
-            return T._("en-US");
+            return CultureInfo.CurrentCulture.Name;// T._("en-US");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

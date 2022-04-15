@@ -305,7 +305,7 @@ namespace AIHelper.Install.UpdateMaker
             var targetPath = new DirectoryInfo(targetDir + Path.DirectorySeparatorChar + subPath);
             targetPath.Parent.Create();
 
-            path.CopyAll(targetPath, _parameter.blacklist);
+            path.CopyAll(targetPath, exclusions: _parameter.blacklist);
 
             return true;
         }

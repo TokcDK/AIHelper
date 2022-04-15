@@ -163,6 +163,8 @@
     <Compile Include="Install\Types\Files\Cards\PngInstaller.cs" />
     <Compile Include="Install\Types\Files\FilesInstallerBase.cs" />
     <Compile Include="Install\Types\ModInstallerBase.cs" />
+    <Compile Include="Install\UpdateMaker\Parameters\FilesBlackList.cs" />
+    <Compile Include="Install\UpdateMaker\Parameters\IUpdateMakerIniParameter.cs" />
     <Compile Include="Install\UpdateMaker\LogConsole.cs" />
     <Compile Include="Install\UpdateMaker\UpdateMaker.cs" />
     <Compile Include="Install\UpdateMaker\UpdateMakerBase.cs" />

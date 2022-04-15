@@ -108,7 +108,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         private static string TryGetTranslation(this string str, string languageID)
         {
-            var o = Regex.Match(str, "$([^<]+)");
+            var o = Regex.Match(str, "^([^<]+)");
             var t = Regex.Match(str, languageID + "([^<]+)");
             if (!t.Success) return o.Groups[1].Value;
 

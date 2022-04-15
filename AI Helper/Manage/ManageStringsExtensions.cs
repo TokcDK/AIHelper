@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 
@@ -251,6 +252,22 @@ namespace AIHelper.Manage
             }
 
             return new FileInfo(Path.Combine(targetFileInfo.DirectoryName, targetName, targetFileInfo.Extension));
+        }
+
+        /// <summary>
+        /// Check if <paramref name="inputString"/> contains any string from <paramref name="stringsCollection"/> elements
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <param name="stringsCollection"></param>
+        /// <returns></returns>
+        public static bool ContainsAnyFrom(this string inputString, ICollection<string> stringsCollection)
+        {
+            foreach(var str in stringsCollection)
+            {
+                if (inputString.Contains(str)) return true;
+            }
+
+            return false;
         }
     }
 }

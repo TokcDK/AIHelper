@@ -757,9 +757,11 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="sourceDirectory"></param>
         /// <param name="targetDirectory"></param>
-        public static void CopyAll(this DirectoryInfo sourceDirectory, DirectoryInfo targetDirectory, bool overwriteFiles = false)
+        public static void CopyAll(this DirectoryInfo sourceDirectory, DirectoryInfo targetDirectory, bool overwriteFiles = false, HashSet<string> exclusions = null)
         {
             Directory.CreateDirectory(targetDirectory.FullName);
+
+            bool useExclusions = exclusions != null && exclusions.Count > 0;
 
             // Copy each file into the new directory.
             foreach (FileInfo fi in sourceDirectory.GetFiles())
@@ -770,6 +772,9 @@ namespace AIHelper.Manage
                 {
                     continue;
                 }
+
+                if (useExclusions && fi.FullName.ContainsAnyFrom(exclusions)) continue;
+
                 fi.CopyTo(targetPath, overwriteFiles);
             }
 
@@ -778,7 +783,7 @@ namespace AIHelper.Manage
             {
                 DirectoryInfo nextTargetSubDir =
                     targetDirectory.CreateSubdirectory(diSourceSubDir.Name);
-                CopyAll(diSourceSubDir, nextTargetSubDir, overwriteFiles);
+                CopyAll(diSourceSubDir, nextTargetSubDir, overwriteFiles, exclusions);
             }
         }
 

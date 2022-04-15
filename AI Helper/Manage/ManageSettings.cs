@@ -48,7 +48,7 @@ namespace AIHelper.Manage
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static string GetLinksInfoFilePath()
         {
-            foreach(var path in new[]
+            foreach (var path in new[]
             {
                 Path.Combine(GetCurrentGameLinksInfoDirPath(), GetCurrentGame().GetGameAbbreviation() + ".txt"),
                 Path.Combine(GetCurrentGameLinksInfoDirPath(), "Default.txt")
@@ -212,25 +212,30 @@ namespace AIHelper.Manage
 
             Directory.CreateDirectory(GetGamesBaseFolderPath());// create games dir
 
-            foreach (var entrie in Directory.EnumerateFileSystemEntries(GetGamesBaseFolderPath()))
+            // not empty txt diles in games dir where 1st line is exists dir path
+            var txts = Directory.EnumerateFiles(GetGamesBaseFolderPath(), "*.txt").Where(t => new FileInfo(t).Length > 3 && Directory.Exists(File.ReadAllLines(t)[0])).Select(t => File.ReadAllLines(t)[0]);
+            // dirs in games dir
+            var dirs = Directory.EnumerateDirectories(GetGamesBaseFolderPath()).Concat(txts);
+            foreach (var entrie in dirs)
             {
-                string gameDir;
-                if (Path.GetFileName(entrie).StartsWith(ManageSettings.GetMOGameInfoFileIdentifier(), StringComparison.InvariantCultureIgnoreCase) && File.Exists(entrie))
-                {
-                    try
-                    {
-                        gameDir = Path.GetFullPath(File.ReadAllLines(entrie)[0]); // first line is game directory path
-                    }
-                    catch
-                    {
-                        // when invalid chars or other reason when getfullpath will fail
-                        continue;
-                    }
-                }
-                else
-                {
-                    gameDir = entrie;
-                }
+                //string gameDir;
+                //if (Path.GetFileName(entrie).StartsWith(ManageSettings.GetMOGameInfoFileIdentifier(), StringComparison.InvariantCultureIgnoreCase) && File.Exists(entrie))
+                //{
+                //    try
+                //    {
+                //        gameDir = Path.GetFullPath(File.ReadAllLines(entrie)[0]); // first line is game directory path
+                //    }
+                //    catch
+                //    {
+                //        // when invalid chars or other reason when getfullpath will fail
+                //        continue;
+                //    }
+                //}
+                //else
+                //{
+                //    gameDir = entrie;
+                //}
+                var gameDir = entrie;
 
                 if (!Directory.Exists(gameDir))
                 {
@@ -705,9 +710,9 @@ namespace AIHelper.Manage
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal static string HtmlReportCategoryItemTemplate()
             {
-                if(File.Exists(HtmlReportCategoryItemTemplateFilePath()))
+                if (File.Exists(HtmlReportCategoryItemTemplateFilePath()))
                 {
-                    var content = File.ReadAllLines(HtmlReportCategoryItemTemplateFilePath()).First(l=>!l.StartsWith(";"));
+                    var content = File.ReadAllLines(HtmlReportCategoryItemTemplateFilePath()).First(l => !l.StartsWith(";"));
                     if (content.Contains("%link%"))
                     {
                         return content;

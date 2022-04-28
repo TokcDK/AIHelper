@@ -35,8 +35,8 @@ namespace AIHelper
                 if (createdNew)
                 {
                     //load dll from selected subdir, need to move all related  dlls to the subdir in post build event
-                    //AppDomain currentDomain = AppDomain.CurrentDomain;
-                    //currentDomain.AssemblyResolve += new ResolveEventHandler(LoadFromSubFolder);
+                    AppDomain currentDomain = AppDomain.CurrentDomain;
+                    currentDomain.AssemblyResolve += new ResolveEventHandler(LoadFromSubFolder);
 
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
@@ -58,13 +58,13 @@ namespace AIHelper
             }
         }
 
-        //static Assembly LoadFromSubFolder(object sender, ResolveEventArgs args)
-        //{
-        //    string folderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "RES", "lib");
-        //    string assemblyPath = Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
-        //    if (!File.Exists(assemblyPath)) return null;
-        //    Assembly assembly = Assembly.LoadFrom(assemblyPath);
-        //    return assembly;
-        //}
+        static Assembly LoadFromSubFolder(object sender, ResolveEventArgs args)
+        {
+            string folderPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "RES", "lib");
+            string assemblyPath = Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
+            if (!File.Exists(assemblyPath)) return null;
+            Assembly assembly = Assembly.LoadFrom(assemblyPath);
+            return assembly;
+        }
     }
 }

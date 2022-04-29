@@ -172,12 +172,6 @@
     <Compile Include="Install\UpdateMaker\UpdateMakerData.cs" />
     <Compile Include="Install\UpdateMaker\UpdateMakerMods.cs" />
     <Compile Include="Lists\CategoriesList.cs" />
-    <Compile Include="Forms\LinksForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\LinksForm.Designer.cs">
-      <DependentUpon>LinksForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\ExtraSettings\ExtraSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -291,10 +285,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ExtraSettings\Elements\XUnityAutotranslator\XUnityAutotranslatorForm.resx">
       <DependentUpon>XUnityAutotranslatorForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\LinksForm.resx">
-      <DependentUpon>LinksForm.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ExtraSettings\ExtraSettingsForm.resx">
       <DependentUpon>ExtraSettingsForm.cs</DependentUpon>

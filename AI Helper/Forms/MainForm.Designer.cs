@@ -71,7 +71,7 @@
             this.CurrentGameLabel = new System.Windows.Forms.Label();
             this.CurrentGameComboBox = new System.Windows.Forms.ComboBox();
             this.SettingsFoldersGroupBox = new System.Windows.Forms.GroupBox();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.OpenPresetDirsLinkLabelMO = new System.Windows.Forms.LinkLabel();
             this.OpenPresetDirsLinkLabel = new System.Windows.Forms.LinkLabel();
             this.SettingsOpen2MOLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenMOOverwriteFolderLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -674,7 +674,7 @@
             // SettingsFoldersGroupBox
             // 
             this.SettingsFoldersGroupBox.BackColor = System.Drawing.Color.Transparent;
-            this.SettingsFoldersGroupBox.Controls.Add(this.linkLabel1);
+            this.SettingsFoldersGroupBox.Controls.Add(this.OpenPresetDirsLinkLabelMO);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenPresetDirsLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.SettingsOpen2MOLinkLabel);
             this.SettingsFoldersGroupBox.Controls.Add(this.OpenMOOverwriteFolderLinkLabel);
@@ -690,18 +690,18 @@
             this.SettingsFoldersGroupBox.TabStop = false;
             this.SettingsFoldersGroupBox.Text = "Folders";
             // 
-            // linkLabel1
+            // OpenPresetDirsLinkLabelMO
             // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.linkLabel1.Location = new System.Drawing.Point(46, 54);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(51, 13);
-            this.linkLabel1.TabIndex = 7;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "CardsMO";
-            this.linkLabel1.VisitedLinkColor = System.Drawing.Color.Aquamarine;
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenPresetDirsLinkLabelMO_LinkClicked);
+            this.OpenPresetDirsLinkLabelMO.AutoSize = true;
+            this.OpenPresetDirsLinkLabelMO.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.OpenPresetDirsLinkLabelMO.Location = new System.Drawing.Point(46, 54);
+            this.OpenPresetDirsLinkLabelMO.Name = "OpenPresetDirsLinkLabelMO";
+            this.OpenPresetDirsLinkLabelMO.Size = new System.Drawing.Size(51, 13);
+            this.OpenPresetDirsLinkLabelMO.TabIndex = 7;
+            this.OpenPresetDirsLinkLabelMO.TabStop = true;
+            this.OpenPresetDirsLinkLabelMO.Text = T._("CardsMO");
+            this.OpenPresetDirsLinkLabelMO.VisitedLinkColor = System.Drawing.Color.Aquamarine;
+            this.OpenPresetDirsLinkLabelMO.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenPresetDirsLinkLabelMO_LinkClicked);
             // 
             // OpenPresetDirsLinkLabel
             // 
@@ -712,7 +712,7 @@
             this.OpenPresetDirsLinkLabel.Size = new System.Drawing.Size(35, 13);
             this.OpenPresetDirsLinkLabel.TabIndex = 6;
             this.OpenPresetDirsLinkLabel.TabStop = true;
-            this.OpenPresetDirsLinkLabel.Text = "Cards";
+            this.OpenPresetDirsLinkLabel.Text = T._("Cards");
             this.OpenPresetDirsLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
             this.OpenPresetDirsLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenPresetDirsLinkLabel_LinkClicked);
             // 
@@ -1293,7 +1293,7 @@
         private System.Windows.Forms.FlowLayoutPanel ModeSwitchFlowLayoutPanel;
         public System.Windows.Forms.Label ModeSwitchCreateBuckupLabel;
         private System.Windows.Forms.LinkLabel OpenPresetDirsLinkLabel;
-        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.LinkLabel OpenPresetDirsLinkLabelMO;
     }
 }
 

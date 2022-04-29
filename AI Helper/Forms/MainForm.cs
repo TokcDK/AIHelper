@@ -403,7 +403,8 @@ namespace AIHelper
                 _thToolTip.SetToolTip(OpenMOFolderLinkLabel, T._("Open Mod Organizer folder"));
                 _thToolTip.SetToolTip(OpenMOOverwriteFolderLinkLabel, T._("Open Overwrite folder of Mod Organizer with possible new generated files for selected game\n\nFiles here have highest priority and will be loaded over any enabled mod files"));
                 _thToolTip.SetToolTip(OpenMyUserDataFolderLinkLabel, T._("Open MyUserData folder in Mods if exist\n\nHere placed usual User files of Organized ModPack for selected game"));
-                _thToolTip.SetToolTip(OpenPresetDirsLinkLabel, T._("Open presets folder\n\nWill be opened virtual folder with Mod Organizer in MO mode and data folder in normal mode.\n\nShift+Click to force open without MO."));
+                _thToolTip.SetToolTip(OpenPresetDirsLinkLabel, T._("Open dir for character cards"));
+                _thToolTip.SetToolTip(OpenPresetDirsLinkLabelMO, T._("Open dir for character cards using Mod Organizer when game in MO mode."));
 
                 _thToolTip.SetToolTip(LaunchLinksLinkLabel, T._("Open list of links for game resources"));
                 _thToolTip.SetToolTip(ExtraSettingsLinkLabel, T._("Open extra setting window for plugins and etc"));
@@ -1601,7 +1602,7 @@ namespace AIHelper
             {
                 OnOffButtons(false);
 
-                string customExeTitleName = "Presets";
+                string customExeTitleName = "Cards";
                 string gameUserDataModName = ManageSettings.GetGameUserDataModName();
                 // Set new app open presets dir profile in mo
                 var explorerPresetsDir = new ManageModOrganizer.CustomExecutables.CustomExecutable

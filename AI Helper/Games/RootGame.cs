@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace AIHelper.Games
+namespace AIHelper.Games.Illusion
 {
-    class RootGame : GameBase
+    class RootGame : IllusionGameBase
     {
         public override void InitActions()
         {
@@ -15,7 +15,7 @@ namespace AIHelper.Games
 
         public void DetectRootGame()
         {
-            if (_detectedGame != null && File.Exists(Path.Combine(AIHelper.Properties.Settings.Default.ApplicationStartupPath, "Data", _detectedGame.GetGameExeName() + ".exe")))
+            if (_detectedGame != null && File.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data", _detectedGame.GetGameExeName() + ".exe")))
             {
                 return;
             }
@@ -23,10 +23,10 @@ namespace AIHelper.Games
             List<GameBase> listOfGames = SharedData.GameData.Games != null ? SharedData.GameData.Games : GamesList.GetCompatibleGamePresetsList();
             foreach (var game in listOfGames)
             {
-                if (File.Exists(Path.Combine(AIHelper.Properties.Settings.Default.ApplicationStartupPath, "Data", game.GetGameExeName() + ".exe")))
+                if (File.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data", game.GetGameExeName() + ".exe")))
                 {
                     // set game's folder name
-                    game.GameDirInfo = new DirectoryInfo(AIHelper.Properties.Settings.Default.ApplicationStartupPath);
+                    game.GameDirInfo = new DirectoryInfo(Properties.Settings.Default.ApplicationStartupPath);
 
                     _detectedGame = game;
 

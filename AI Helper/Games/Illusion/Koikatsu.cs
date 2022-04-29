@@ -1,9 +1,9 @@
 ﻿using AIHelper.Manage;
 using System.IO;
 
-namespace AIHelper.Games
+namespace AIHelper.Games.Illusion
 {
-    class Koikatsu : GameBase
+    public class Koikatsu : IllusionGameBase
     {
         public override void InitActions()
         {
@@ -85,7 +85,7 @@ namespace AIHelper.Games
 
         public override BaseGamePyFileInfo GetBaseGamePyFile()
         {
-            return new BaseGamePyFileInfo(nameof(AIHelper.Properties.Resources.game_koikatu), Properties.Resources.game_koikatu);
+            return new BaseGamePyFileInfo(nameof(Properties.Resources.game_koikatu), Properties.Resources.game_koikatu);
         }
     }
 }

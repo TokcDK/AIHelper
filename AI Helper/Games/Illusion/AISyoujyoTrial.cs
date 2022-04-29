@@ -1,6 +1,6 @@
-﻿namespace AIHelper.Games
+﻿namespace AIHelper.Games.Illusion
 {
-    public class AiSyoujyoTrial : GameBase
+    public class AiSyoujyoTrial : IllusionGameBase
     {
         public override string ManifestGame => "AI Girl";
         public override string GetGameDirName()

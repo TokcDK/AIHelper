@@ -1576,23 +1576,28 @@ namespace AIHelper
             RefreshLabelCheckState(sender);
         }
 
-        private async void OpenPresetDirsLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void OpenPresetDirsLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            bool OpenUserDataNoMO = MOmode && Control.ModifierKeys == Keys.Shift;
+            OpenPresetDirs(false);
+        }
 
+        private void OpenPresetDirsLinkLabelMO_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            OpenPresetDirs(true);
+        }
+
+        private async void OpenPresetDirs(bool IsMO = false)
+        {
             await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
             string CharacterDirSubpath = GameData.Game.GetCharacterPresetsFolderSubPath();
 
-            string exePath = OpenUserDataNoMO || !MOmode ? "explorer.exe" : Path.Combine(ManageSettings.GetAppModOrganizerDirPath(), "explorer++", "Explorer++.exe");
-            string presetsDirPath = OpenUserDataNoMO ? ManageSettings.GetUserfilesDirectoryPath(CharacterDirSubpath) : Path.Combine(ManageSettings.GetCurrentGameDataDirPath()) + "\\" + CharacterDirSubpath;
+            string exePath = IsMO ? Path.Combine(ManageSettings.GetAppModOrganizerDirPath(), "explorer++", "Explorer++.exe") : "explorer.exe";
+            string presetsDirPath = IsMO && ManageSettings.IsMoMode() ? Path.Combine(ManageSettings.GetCurrentGameDataDirPath()) + "\\" + CharacterDirSubpath : ManageSettings.GetUserfilesDirectoryPath(CharacterDirSubpath);
 
-            if (string.IsNullOrWhiteSpace(presetsDirPath) || !Directory.Exists(presetsDirPath))
-            {
-                return;
-            }
+            Directory.CreateDirectory(presetsDirPath);
 
-            if (MOmode && !OpenUserDataNoMO)
+            if (IsMO && ManageSettings.IsMoMode())
             {
                 OnOffButtons(false);
 
@@ -1630,15 +1635,7 @@ namespace AIHelper
 
                 exePath = ManageSettings.GetAppMOexePath();
                 presetsDirPath = "moshortcut://:\"" + customExeTitleName + "\"";
-            }
 
-            if (OpenUserDataNoMO || !MOmode)
-            {
-                Directory.CreateDirectory(presetsDirPath);
-            }
-
-            if (MOmode && !OpenUserDataNoMO)
-            {
                 ManageProcess.RunProgram(exePath, presetsDirPath);
                 OnOffButtons();
             }

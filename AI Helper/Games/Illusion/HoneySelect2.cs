@@ -1,9 +1,9 @@
 ﻿using AIHelper.Manage;
 using System.IO;
 
-namespace AIHelper.Games
+namespace AIHelper.Games.Illusion
 {
-    public class HoneySelect2 : GameBase
+    public class HoneySelect2 : IllusionGameBase
     {
         public override void InitActions()
         {

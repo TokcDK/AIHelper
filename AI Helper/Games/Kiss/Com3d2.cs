@@ -1,4 +1,4 @@
-﻿namespace AIHelper.Games
+﻿namespace AIHelper.Games.Kiss
 {
     class Com3d2 : GameBase
     {
@@ -91,7 +91,7 @@
 
         public override BaseGamePyFileInfo GetBaseGamePyFile()
         {
-            return new BaseGamePyFileInfo(nameof(AIHelper.Properties.Resources.game_com3d2), Properties.Resources.game_com3d2);
+            return new BaseGamePyFileInfo(nameof(Properties.Resources.game_com3d2), Properties.Resources.game_com3d2);
         }
     }
 }

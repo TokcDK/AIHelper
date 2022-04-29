@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using AIHelper.Games.Illusion;
+using System.Collections.Generic;
 
 namespace AIHelper.Games
 {

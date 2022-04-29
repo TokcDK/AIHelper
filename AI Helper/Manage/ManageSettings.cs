@@ -1,4 +1,5 @@
 ﻿using AIHelper.Games;
+using AIHelper.Games.Illusion;
 using AIHelper.SharedData;
 using CheckForEmptyDir;
 using GetListOfSubClasses;

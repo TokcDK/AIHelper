@@ -1,9 +1,9 @@
 ﻿using AIHelper.Manage;
 using System.IO;
 
-namespace AIHelper.Games
+namespace AIHelper.Games.Illusion
 {
-    class KoikatsuSunshine : GameBase
+    public class KoikatsuSunshine : IllusionGameBase
     {
         public override void InitActions()
         {

@@ -1414,7 +1414,7 @@ namespace AIHelper.Manage
         internal static Form[] ListOfFormsForMinimize()
         {
             //info: http://www.cyberforum.ru/windows-forms/thread31052.html
-            return new Form[3] { GameData.MainForm._linksForm, GameData.MainForm._extraSettingsForm, GameData.MainForm };
+            return new Form[2] { GameData.MainForm._extraSettingsForm, GameData.MainForm };
         }
 
         /// <summary>

@@ -54,7 +54,6 @@
             this.LaunchModeInfoLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenLogLinkLabel = new System.Windows.Forms.LinkLabel();
             this.LaunchTabLaunchLabel = new System.Windows.Forms.Label();
-            this.newformButton = new System.Windows.Forms.Button();
             this.StudioButton = new System.Windows.Forms.Button();
             this.GameButton = new System.Windows.Forms.Button();
             this.MOButton = new System.Windows.Forms.Button();
@@ -295,7 +294,6 @@
             this.LaunchPagePanel.Controls.Add(this.LaunchModeInfoLinkLabel);
             this.LaunchPagePanel.Controls.Add(this.OpenLogLinkLabel);
             this.LaunchPagePanel.Controls.Add(this.LaunchTabLaunchLabel);
-            this.LaunchPagePanel.Controls.Add(this.newformButton);
             this.LaunchPagePanel.Controls.Add(this.StudioButton);
             this.LaunchPagePanel.Controls.Add(this.GameButton);
             this.LaunchPagePanel.Controls.Add(this.MOButton);
@@ -458,20 +456,6 @@
             this.LaunchTabLaunchLabel.Size = new System.Drawing.Size(55, 15);
             this.LaunchTabLaunchLabel.TabIndex = 19;
             this.LaunchTabLaunchLabel.Text = "Launch";
-            // 
-            // newformButton
-            // 
-            this.newformButton.BackColor = System.Drawing.Color.Silver;
-            this.newformButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.newformButton.ForeColor = System.Drawing.Color.Black;
-            this.newformButton.Location = new System.Drawing.Point(305, 88);
-            this.newformButton.Name = "newformButton";
-            this.newformButton.Size = new System.Drawing.Size(32, 32);
-            this.newformButton.TabIndex = 17;
-            this.newformButton.Text = "\\/";
-            this.newformButton.UseVisualStyleBackColor = false;
-            this.newformButton.Visible = false;
-            this.newformButton.Click += new System.EventHandler(this.NewformButton_Click);
             // 
             // StudioButton
             // 
@@ -699,7 +683,7 @@
             this.OpenPresetDirsLinkLabelMO.Size = new System.Drawing.Size(51, 13);
             this.OpenPresetDirsLinkLabelMO.TabIndex = 7;
             this.OpenPresetDirsLinkLabelMO.TabStop = true;
-            this.OpenPresetDirsLinkLabelMO.Text = T._("CardsMO");
+            this.OpenPresetDirsLinkLabelMO.Text = "CardsMO";
             this.OpenPresetDirsLinkLabelMO.VisitedLinkColor = System.Drawing.Color.Aquamarine;
             this.OpenPresetDirsLinkLabelMO.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenPresetDirsLinkLabelMO_LinkClicked);
             // 
@@ -712,7 +696,7 @@
             this.OpenPresetDirsLinkLabel.Size = new System.Drawing.Size(35, 13);
             this.OpenPresetDirsLinkLabel.TabIndex = 6;
             this.OpenPresetDirsLinkLabel.TabStop = true;
-            this.OpenPresetDirsLinkLabel.Text = T._("Cards");
+            this.OpenPresetDirsLinkLabel.Text = "Cards";
             this.OpenPresetDirsLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
             this.OpenPresetDirsLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenPresetDirsLinkLabel_LinkClicked);
             // 
@@ -1235,7 +1219,6 @@
         private System.Windows.Forms.Button MOButton;
         private System.Windows.Forms.Button SettingsButton;
         private System.Windows.Forms.ComboBox QualityComboBox;
-        private System.Windows.Forms.Button newformButton;
         private System.Windows.Forms.Label LaunchTabLaunchLabel;
         private System.Windows.Forms.TabPage ToolsTabPage;
         private System.Windows.Forms.GroupBox SettingsFoldersGroupBox;

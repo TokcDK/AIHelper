@@ -16,15 +16,9 @@ namespace AIHelper.Manage.Rules.ModList
         {
             var rulesFilePath = ManageSettings.GetCurrentGameModListRulesPath();
 
-            if (!File.Exists(rulesFilePath))
-            {
-                return false;
-            }
+            if (!File.Exists(rulesFilePath)) return false;
 
-            if (!FillrulesDict())
-            {
-                return false;
-            }
+            if (!FillrulesDict()) return false;
             //if (modlistData.rulesDict.ContainsKey(modlistData.ModName))
             //{
             //    var t = modlistData.rulesDict[modlistData.ModName][1];
@@ -50,10 +44,7 @@ namespace AIHelper.Manage.Rules.ModList
 
         private bool FillrulesDict()
         {
-            if (ModlistData.RulesDict != null)
-            {
-                return ModlistData.RulesDict.Count > 0;
-            }
+            if (ModlistData.RulesDict != null) return ModlistData.RulesDict.Count > 0;
 
             ModlistData.RulesDict = new Dictionary<string, string[]>();
 

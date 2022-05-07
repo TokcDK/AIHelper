@@ -46,6 +46,7 @@ namespace AIHelper.Manage.Rules.MetaIniFixes
 
                 var modMetaIniPath = Path.Combine(mod, "meta.ini");
                 if (!File.Exists(modMetaIniPath)) continue;
+
                 var ini = ManageIni.GetINIFile(modMetaIniPath);
 
                 foreach (var fix in Inherited.GetInheritedSubClasses<ModlistDataMetaIniFixesBase>(modlistData, ini, mod))

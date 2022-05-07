@@ -24,38 +24,33 @@ namespace AIHelper.Manage
                 _modlistData.AllModNamesList = ManageModOrganizer.GetModNamesListFromActiveMoProfile(false);
                 _modlistData.EnabledModNamesList = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
 
-                using (var checkForm = new Form())
+                var checkForm = new Form();
+                checkForm.Size = new System.Drawing.Size(300, 50);
+                checkForm.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+                checkForm.StartPosition = FormStartPosition.CenterScreen;
+                checkForm.Text = T._("Checking") + "...";
+
+                var checkProgress = new ProgressBar();
+
+                checkProgress.Dock = DockStyle.Fill;
+                checkProgress.Maximum = _modlistData.EnabledModNamesList.Length;
+                var cnt = 0;
+                checkForm.Controls.Add(checkProgress);
+                checkForm.Show();
+                foreach (var modName in _modlistData.EnabledModNamesList)
                 {
-                    checkForm.Size = new System.Drawing.Size(300, 50);
-                    checkForm.FormBorderStyle = FormBorderStyle.FixedToolWindow;
-                    checkForm.StartPosition = FormStartPosition.CenterScreen;
-                    checkForm.Text = T._("Checking") + "...";
-                    using (var checkProgress = new ProgressBar())
-                    {
-                        checkProgress.Dock = DockStyle.Fill;
-                        checkProgress.Maximum = _modlistData.EnabledModNamesList.Length;
-                        var cnt = 0;
-                        checkForm.Controls.Add(checkProgress);
-                        checkForm.Show();
-                        foreach (var modName in _modlistData.EnabledModNamesList)
-                        {
-                            if (string.IsNullOrWhiteSpace(modName))
-                            {
-                                continue;
-                            }
+                    if (string.IsNullOrWhiteSpace(modName)) continue;
 
-                            if (cnt < checkProgress.Maximum)
-                            {
-                                checkProgress.Value = cnt;
-                            }
+                    if (cnt < checkProgress.Maximum) checkProgress.Value = cnt;
 
-                            _modlistData.ModName = modName;
-                            ApplyRules();
+                    _modlistData.ModName = modName;
+                    ApplyRules();
 
-                            cnt++;
-                        }
-                    }
+                    cnt++;
                 }
+
+                checkProgress.Dispose();
+                checkForm.Dispose();
 
                 KPlugTweaks();
 

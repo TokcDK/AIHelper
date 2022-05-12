@@ -214,9 +214,9 @@ namespace AIHelper.Manage
             Directory.CreateDirectory(GetGamesBaseFolderPath());// create games dir
 
             // not empty txt diles in games dir where 1st line is exists dir path
-            var txts = Directory.EnumerateFiles(GetGamesBaseFolderPath(), "*.txt").Where(t => new FileInfo(t).Length > 3 && Directory.Exists(Path.GetFullPath(File.ReadAllLines(t)[0]))).Select(t => File.ReadAllLines(t)[0]);
+            var foundPathInTxt = GetGamesFromTxt();
             // dirs in games dir
-            var dirs = Directory.EnumerateDirectories(GetGamesBaseFolderPath()).Concat(txts);
+            var dirs = Directory.EnumerateDirectories(GetGamesBaseFolderPath()).Concat(foundPathInTxt);
             foreach (var entrie in dirs)
             {
                 //string gameDir;
@@ -360,6 +360,29 @@ namespace AIHelper.Manage
             //).ToList();
 
             return listOfGameDirs;
+        }
+
+        private static IEnumerable<string> GetGamesFromTxt()
+        {
+           // Directory.EnumerateFiles(GetGamesBaseFolderPath(), "*.txt").Where(t => new FileInfo(t).Length > 3 && Directory.Exists(Path.GetFullPath(File.ReadAllLines(t)[0]))).Select(t => File.ReadAllLines(t)[0])
+
+            foreach(var txt in Directory.EnumerateFiles(GetGamesBaseFolderPath(), "*.txt"))
+            {
+                if (new FileInfo(txt).Length < 4) continue;
+
+                StreamReader sr = new StreamReader(txt);
+                while (!sr.EndOfStream)
+                {
+                    var line = sr.ReadLine();
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+                    if (line.TrimStart().StartsWith(";")) continue;
+
+                    var path = Path.GetFullPath(line);
+                    if (!Directory.Exists(path)) continue;
+
+                    yield return path;
+                }
+            }
         }
 
         /// <summary>
@@ -1391,6 +1414,11 @@ namespace AIHelper.Manage
                 return LanguageModeMap.Keys.OrderBy(p => p);
             }
         }
+
+        /// <summary>
+        /// List of known games
+        /// </summary>
+        public static List<string> KnownGames { get; internal set; }
 
         /// <summary>
         /// List of forms which need to be minimized

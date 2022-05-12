@@ -5,6 +5,7 @@ using AIHelper.Manage;
 using AIHelper.Manage.Update;
 using AIHelper.SharedData;
 using CheckForEmptyDir;
+using INIFileMan;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -141,9 +142,12 @@ namespace AIHelper
         {
             try
             {
+                var ini = ManageIni.GetINIFile(ManageSettings.GetAiHelperIniPath());
+                ManageSettings.KnownGames = GetKnownGames(ini);
+
                 GameData.Games = ManageSettings.GetListOfExistsGames();
 
-                if (GameData.Games == null || GameData.Games.Count == 0)
+                if (ManageSettings.KnownGames.Count==0 && ( GameData.Games == null || GameData.Games.Count == 0))
                 {
                     MessageBox.Show(T._("Games not found") + "."
                         + Environment.NewLine + T._("Need atleast one game in subfolder in Games folder") + "."
@@ -163,6 +167,30 @@ namespace AIHelper
                     //Application.Exit();
                     return false;
                 }
+                else
+                {
+                    List<string> newGamesReport = new List<string>();
+                    foreach (var game in GameData.Games)
+                    {
+                        var gamePath = game.GetGamePath();
+                        if (ManageSettings.KnownGames.Contains(gamePath)) continue;
+
+                        ManageSettings.KnownGames.Add(gamePath);
+                        newGamesReport.Add("\n" + game.GetGameDisplayingName() + ": " + gamePath);
+                    }
+
+                    newGamesReport = newGamesReport.OrderBy(p => p).ToList();
+
+                    if (newGamesReport.Count > 0)
+                    {
+                        MessageBox.Show(T._("Found new games:") +
+                            "\n"
+                            + Environment.NewLine + "----------------"
+                            + string.Join("", newGamesReport)
+                        + Environment.NewLine + "----------------"
+                        );
+                    }
+                }
 
                 foreach (var game in GameData.Games)
                 {
@@ -173,8 +201,6 @@ namespace AIHelper
                     //CurrentGameComboBox.Items[0] = ListOfGames[0].GetGameDisplayingName();
                     CurrentGameComboBox.Enabled = false;
                 }
-
-                var ini = ManageIni.GetINIFile(ManageSettings.GetAiHelperIniPath());
 
                 string selected_game;
                 if (ini.Configuration == null)
@@ -197,6 +223,8 @@ namespace AIHelper
                         selected_game
                         ));
 
+                ini.SetKey("Settings", "known_games", string.Join("|", ManageSettings.KnownGames));
+
                 try
                 {
                     CurrentGameTitleTextBox.Text = GameData.Game.GetGameDisplayingName();
@@ -212,6 +240,30 @@ namespace AIHelper
 
 
             return true;
+        }
+
+        private static List<string> GetKnownGames(INIFile ini)
+        {
+            List<string> list = new List<string>();
+            if (ini != null && ini.Configuration != null)
+            {
+                var games = ini.GetKey("Settings", "known_games");
+
+                if (!string.IsNullOrWhiteSpace(games))
+                {
+                    var gamesList = games.Split('|');
+                    if (gamesList != null && gamesList.Length > 0)
+                    {
+                        gamesList = gamesList.Where(p=>Directory.Exists(p)).Distinct().ToArray();
+                        foreach(var path in gamesList)
+                        {
+                            list.Add(path);
+                        }
+                    }
+                }
+            }
+
+            return list;
         }
 
         private void SetSelectedGameIndexAndBasicVariables(int index = 0)

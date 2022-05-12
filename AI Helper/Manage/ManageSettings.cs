@@ -214,7 +214,7 @@ namespace AIHelper.Manage
             Directory.CreateDirectory(GetGamesBaseFolderPath());// create games dir
 
             // not empty txt diles in games dir where 1st line is exists dir path
-            var txts = Directory.EnumerateFiles(GetGamesBaseFolderPath(), "*.txt").Where(t => new FileInfo(t).Length > 3 && Directory.Exists(File.ReadAllLines(t)[0])).Select(t => File.ReadAllLines(t)[0]);
+            var txts = Directory.EnumerateFiles(GetGamesBaseFolderPath(), "*.txt").Where(t => new FileInfo(t).Length > 3 && Directory.Exists(Path.GetFullPath(File.ReadAllLines(t)[0]))).Select(t => File.ReadAllLines(t)[0]);
             // dirs in games dir
             var dirs = Directory.EnumerateDirectories(GetGamesBaseFolderPath()).Concat(txts);
             foreach (var entrie in dirs)

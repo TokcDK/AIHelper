@@ -245,32 +245,20 @@ namespace AIHelper.Manage
 
                 foreach (var gameType in listOfGames)
                 {
-                    if (gameType == typeof(RootGame))
-                    {
-                        continue;
-                    }
+                    if (gameType == typeof(RootGame)) continue;
 
                     var game = (GameBase)Activator.CreateInstance(gameType);
-                    if (!File.Exists(Path.Combine(gameDir, "Data", game.GetGameExeName() + ".exe")))
-                    {
-                        continue;
-                    }
+                    if (!File.Exists(Path.Combine(gameDir, "Data", game.GetGameExeName() + ".exe"))) continue;
 
                     game.GameDirInfo = new DirectoryInfo(gameDir);
                     GameData.Game = game; // temp set current game
 
                     var mods = Path.Combine(gameDir, "Mods");
-                    if (!Directory.Exists(mods))
-                    {
-                        Directory.CreateDirectory(mods);
-                    }
+                    Directory.CreateDirectory(mods);
 
                     //  check and write mod organizer dir
                     var mo = Path.Combine(gameDir, GetAppModOrganizerDirName());
-                    if (!Directory.Exists(mo))
-                    {
-                        Directory.CreateDirectory(mo);
-                    }
+                    Directory.CreateDirectory(mo);
 
                     //  check and write mod organizer ini
                     var moIni = Path.Combine(mo, MoIniFileName());
@@ -292,10 +280,7 @@ namespace AIHelper.Manage
 
                     // check and write categories dat
                     var catDat = Path.Combine(mo, MoCategoriesFileName());
-                    if (!File.Exists(catDat))
-                    {
-                        File.WriteAllText(catDat, "");
-                    }
+                    if (!File.Exists(catDat)) File.WriteAllText(catDat, "");
 
                     // check and write default profile
                     var profiles = Path.Combine(mo, GetMoProfilesDirName());

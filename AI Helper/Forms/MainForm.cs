@@ -67,7 +67,15 @@ namespace AIHelper
 
             if (!File.Exists(ManageSettings.GetAppMOexePath()))
             {
-                await new Updater().Update().ConfigureAwait(true);
+                var ok = MessageBox.Show(T._("Mod Organizer is missing in the app dir. Need to download latest version for to be able to manage mods by MO. Download latest?"), T._("Mod Organizer not found!", MessageBoxButtons.OKCancel));
+                if(DialogResult.OK == ok)
+                {
+                    await new Updater().Update().ConfigureAwait(true);
+                }
+                else
+                {
+                    Application.Exit();
+                }
             }
 
             Properties.Settings.Default.MOIsNew = ManageModOrganizer.IsMo23OrNever();
@@ -183,7 +191,7 @@ namespace AIHelper
 
                     if (newGamesReport.Count > 0)
                     {
-                        MessageBox.Show(T._("Found new games:") +
+                        MessageBox.Show(T._(T._("Found new games:")) +
                             "\n"
                             + Environment.NewLine + "----------------"
                             + string.Join("", newGamesReport)

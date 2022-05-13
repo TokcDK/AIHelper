@@ -70,7 +70,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
                 return ver;
             }
 
-            return ManageSettings.GetDefaultBepInEx5OlderVersion();
+            return ManageSettings.DefaultBepInEx5OlderVersion;
         }
 
         bool _isInit;

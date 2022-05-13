@@ -73,13 +73,13 @@ namespace AIHelper.Manage
         /// name of Update section in app ini
         /// </summary>
         /// <returns></returns>
-        internal static string GetAppIniUpdateSectionName => "Update";
+        internal static string AppIniUpdateSectionName => "Update";
 
         /// <summary>
         /// name of key for update check timeout in minutes
         /// </summary>
         /// <returns></returns>
-        internal static string GetUpdatesCheckTimeoutMinutesKeyName => "UpdatesCheckTimeoutMinutes";
+        internal static string UpdatesCheckTimeoutMinutesKeyName => "UpdatesCheckTimeoutMinutes";
 
         internal static string AppLocaleDirPath => Path.Combine(AppResDirPath, "locale");
 
@@ -104,7 +104,7 @@ namespace AIHelper.Manage
 
         internal static bool MoIsNew { get => Properties.Settings.Default.MOIsNew; }
 
-        internal static string GetDefaultBepInEx5OlderVersion => "5.0.1";
+        internal static string DefaultBepInEx5OlderVersion => "5.0.1";
 
         /// <summary>
         /// Section name of AIHelper to store required values

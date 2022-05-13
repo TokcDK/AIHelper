@@ -82,11 +82,11 @@ namespace AIHelper.Manage.Update.Targets.Mods
             {
                 //read info from standalone key
                 //need to think about section and key names
-                if (ini.SectionExistsAndNotEmpty(ManageSettings.AiMetaIniSectionName()))
+                if (ini.SectionExistsAndNotEmpty(ManageSettings.AiMetaIniSectionName))
                 {
-                    if (ini.KeyExists(ManageSettings.AiMetaIniKeyUpdateName, ManageSettings.AiMetaIniSectionName()))
+                    if (ini.KeyExists(ManageSettings.AiMetaIniKeyUpdateName, ManageSettings.AiMetaIniSectionName))
                     {
-                        var info = ini.GetKey(ManageSettings.AiMetaIniSectionName(), ManageSettings.AiMetaIniKeyUpdateName);
+                        var info = ini.GetKey(ManageSettings.AiMetaIniSectionName, ManageSettings.AiMetaIniKeyUpdateName);
 
                         return Regex.Match(info, Info.SourceId + "::([^:]+)::").Result("$1");
                     }

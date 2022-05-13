@@ -45,7 +45,7 @@ namespace AIHelper.Manage.Rules.MetaIniFixes
                 {
                     var infoValue = Regex.Replace(info.Value.Replace(@"\n", @"\r\n"), "<[^>]*>", "");//cleaned info from html tags
                                                                                                      //write new key to meta ini with info
-                    ini.SetKey(ManageSettings.AiMetaIniSectionName(), pattern[1], infoValue, false);
+                    ini.SetKey(ManageSettings.AiMetaIniSectionName, pattern[1], infoValue, false);
 
                     modlistData.Report.Add(Path.GetFileName(mod) + ": " + T._("moved meta ini info from notes in ini key") + " " + pattern[1]);
 

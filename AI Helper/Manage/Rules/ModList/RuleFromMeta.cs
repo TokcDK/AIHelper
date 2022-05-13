@@ -62,11 +62,11 @@ namespace AIHelper.Manage.Rules.ModList
 
                 //read info from standalone key
                 //need to think about section and key names
-                if (ini.SectionExistsAndNotEmpty(ManageSettings.AiMetaIniSectionName()))
+                if (ini.SectionExistsAndNotEmpty(ManageSettings.AiMetaIniSectionName))
                 {
-                    if (ini.KeyExists(ManageSettings.AiMetaIniKeyModlistRulesInfoName, ManageSettings.AiMetaIniSectionName()))
+                    if (ini.KeyExists(ManageSettings.AiMetaIniKeyModlistRulesInfoName, ManageSettings.AiMetaIniSectionName))
                     {
-                        mlinfo = ini.GetKey(ManageSettings.AiMetaIniSectionName(), ManageSettings.AiMetaIniKeyModlistRulesInfoName);
+                        mlinfo = ini.GetKey(ManageSettings.AiMetaIniSectionName, ManageSettings.AiMetaIniKeyModlistRulesInfoName);
                     }
                     if (!string.IsNullOrWhiteSpace(mlinfo))
                     {

@@ -22,7 +22,7 @@ namespace AIHelper.Install.Types.Directories
         string _backupsDir;
         string _bakDir;
 
-        static string _gameUpdateInfoFileName { get => ManageSettings.GameUpdateInstallerIniFileName(); }
+        static string _gameUpdateInfoFileName { get => ManageSettings.GameUpdateInstallerIniFileName; }
         HashSet<string> _skipExistDirs;
         HashSet<string> _skipExistFiles;
         private bool crcfiles;

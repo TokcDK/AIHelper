@@ -45,9 +45,9 @@ namespace AIHelper.Manage.Update
             // get set timeout from app ini
             var appIni = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
             int updateCheckTimeout = 10;
-            if (appIni.KeyExists(ManageSettings.GetUpdatesCheckTimeoutMinutesKeyName(), ManageSettings.GetAppIniUpdateSectionName()))
+            if (appIni.KeyExists(ManageSettings.UpdatesCheckTimeoutMinutesKeyName, ManageSettings.AppIniUpdateSectionName))
             {
-                if (int.TryParse(appIni.GetKey(ManageSettings.GetAppIniUpdateSectionName(), ManageSettings.GetUpdatesCheckTimeoutMinutesKeyName()), out int result))
+                if (int.TryParse(appIni.GetKey(ManageSettings.AppIniUpdateSectionName, ManageSettings.UpdatesCheckTimeoutMinutesKeyName), out int result))
                 {
                     updateCheckTimeout = result;
                 }
@@ -55,7 +55,7 @@ namespace AIHelper.Manage.Update
             else
             {
                 // add value and save
-                appIni.SetKey(ManageSettings.GetAppIniUpdateSectionName(), ManageSettings.GetUpdatesCheckTimeoutMinutesKeyName(), updateCheckTimeout.ToString());
+                appIni.SetKey(ManageSettings.AppIniUpdateSectionName, ManageSettings.UpdatesCheckTimeoutMinutesKeyName, updateCheckTimeout.ToString());
                 appIni.WriteFile();
             }
 

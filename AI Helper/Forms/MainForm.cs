@@ -217,7 +217,7 @@ namespace AIHelper
                 }
                 else
                 {
-                    selected_game = ini.GetKey("Settings", "selected_game");
+                    selected_game = ini.GetKey(ManageSettings.SettingsIniSectionName, ManageSettings.SelectedGameIniKeyName);
                     if (string.IsNullOrWhiteSpace(selected_game))
                     {
                         var game = GameData.Games[0];
@@ -231,7 +231,7 @@ namespace AIHelper
                         selected_game
                         ));
 
-                ini.SetKey("Settings", "known_games", string.Join("|", ManageSettings.KnownGames));
+                ini.SetKey(ManageSettings.SettingsIniSectionName, ManageSettings.KnownGamesIniKeyName, string.Join("|", ManageSettings.KnownGames));
 
                 try
                 {
@@ -255,7 +255,7 @@ namespace AIHelper
             List<string> list = new List<string>();
             if (ini != null && ini.Configuration != null)
             {
-                var games = ini.GetKey("Settings", "known_games");
+                var games = ini.GetKey(ManageSettings.SettingsIniSectionName, ManageSettings.KnownGamesIniKeyName);
 
                 if (!string.IsNullOrWhiteSpace(games))
                 {

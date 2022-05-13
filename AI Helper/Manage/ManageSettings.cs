@@ -1419,6 +1419,9 @@ namespace AIHelper.Manage
         /// List of known games
         /// </summary>
         public static List<string> KnownGames { get; internal set; }
+        public static string KnownGamesIniKeyName { get => "known_games"; }
+        public static string SettingsIniSectionName { get=> "Settings"; }
+        public static string SelectedGameIniKeyName { get => "selected_game"; }
 
         /// <summary>
         /// List of forms which need to be minimized

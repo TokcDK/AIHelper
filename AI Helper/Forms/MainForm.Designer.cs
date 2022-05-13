@@ -308,6 +308,7 @@
             // pbDiscord
             // 
             this.pbDiscord.BackColor = System.Drawing.Color.Transparent;
+            this.pbDiscord.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pbDiscord.Image = ((System.Drawing.Image)(resources.GetObject("pbDiscord.Image")));
             this.pbDiscord.InitialImage = ((System.Drawing.Image)(resources.GetObject("pbDiscord.InitialImage")));
             this.pbDiscord.Location = new System.Drawing.Point(6, 37);
@@ -350,6 +351,7 @@
             // 
             this.LaunchLinksLinkLabel.AutoSize = true;
             this.LaunchLinksLinkLabel.BackColor = System.Drawing.Color.Transparent;
+            this.LaunchLinksLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.LaunchLinksLinkLabel.LinkColor = System.Drawing.Color.White;
             this.LaunchLinksLinkLabel.Location = new System.Drawing.Point(5, 21);
             this.LaunchLinksLinkLabel.Name = "LaunchLinksLinkLabel";
@@ -421,6 +423,7 @@
             // 
             this.LaunchModeInfoLinkLabel.AutoSize = true;
             this.LaunchModeInfoLinkLabel.BackColor = System.Drawing.Color.Transparent;
+            this.LaunchModeInfoLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.LaunchModeInfoLinkLabel.LinkColor = System.Drawing.Color.White;
             this.LaunchModeInfoLinkLabel.Location = new System.Drawing.Point(5, 5);
             this.LaunchModeInfoLinkLabel.Name = "LaunchModeInfoLinkLabel";
@@ -435,6 +438,7 @@
             // 
             this.OpenLogLinkLabel.AutoSize = true;
             this.OpenLogLinkLabel.BackColor = System.Drawing.Color.Transparent;
+            this.OpenLogLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.OpenLogLinkLabel.LinkColor = System.Drawing.Color.WhiteSmoke;
             this.OpenLogLinkLabel.Location = new System.Drawing.Point(300, 3);
             this.OpenLogLinkLabel.Name = "OpenLogLinkLabel";
@@ -561,6 +565,7 @@
             // 
             this.FixRegistryLinkLabel.AutoSize = true;
             this.FixRegistryLinkLabel.BackColor = System.Drawing.Color.Transparent;
+            this.FixRegistryLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.FixRegistryLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.FixRegistryLinkLabel.Location = new System.Drawing.Point(265, 73);
             this.FixRegistryLinkLabel.Name = "FixRegistryLinkLabel";
@@ -575,6 +580,7 @@
             // 
             this.CreateShortcutLinkLabel.AutoSize = true;
             this.CreateShortcutLinkLabel.BackColor = System.Drawing.Color.Transparent;
+            this.CreateShortcutLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.CreateShortcutLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.CreateShortcutLinkLabel.Location = new System.Drawing.Point(265, 86);
             this.CreateShortcutLinkLabel.Name = "CreateShortcutLinkLabel";
@@ -611,6 +617,7 @@
             // 
             this.JPLauncherRunLinkLabel.AutoSize = true;
             this.JPLauncherRunLinkLabel.BackColor = System.Drawing.Color.Transparent;
+            this.JPLauncherRunLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.JPLauncherRunLinkLabel.LinkColor = System.Drawing.Color.White;
             this.JPLauncherRunLinkLabel.Location = new System.Drawing.Point(10, 140);
             this.JPLauncherRunLinkLabel.Name = "JPLauncherRunLinkLabel";
@@ -624,6 +631,7 @@
             // 
             this.ExtraSettingsLinkLabel.AutoSize = true;
             this.ExtraSettingsLinkLabel.BackColor = System.Drawing.Color.Transparent;
+            this.ExtraSettingsLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.ExtraSettingsLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.ExtraSettingsLinkLabel.Location = new System.Drawing.Point(158, 23);
             this.ExtraSettingsLinkLabel.Name = "ExtraSettingsLinkLabel";
@@ -677,6 +685,7 @@
             // OpenPresetDirsLinkLabelMO
             // 
             this.OpenPresetDirsLinkLabelMO.AutoSize = true;
+            this.OpenPresetDirsLinkLabelMO.Cursor = System.Windows.Forms.Cursors.Hand;
             this.OpenPresetDirsLinkLabelMO.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.OpenPresetDirsLinkLabelMO.Location = new System.Drawing.Point(46, 54);
             this.OpenPresetDirsLinkLabelMO.Name = "OpenPresetDirsLinkLabelMO";
@@ -690,6 +699,7 @@
             // OpenPresetDirsLinkLabel
             // 
             this.OpenPresetDirsLinkLabel.AutoSize = true;
+            this.OpenPresetDirsLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.OpenPresetDirsLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.OpenPresetDirsLinkLabel.Location = new System.Drawing.Point(46, 39);
             this.OpenPresetDirsLinkLabel.Name = "OpenPresetDirsLinkLabel";
@@ -703,6 +713,7 @@
             // SettingsOpen2MOLinkLabel
             // 
             this.SettingsOpen2MOLinkLabel.AutoSize = true;
+            this.SettingsOpen2MOLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.SettingsOpen2MOLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.SettingsOpen2MOLinkLabel.Location = new System.Drawing.Point(5, 54);
             this.SettingsOpen2MOLinkLabel.Name = "SettingsOpen2MOLinkLabel";
@@ -716,6 +727,7 @@
             // OpenMOOverwriteFolderLinkLabel
             // 
             this.OpenMOOverwriteFolderLinkLabel.AutoSize = true;
+            this.OpenMOOverwriteFolderLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.OpenMOOverwriteFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.OpenMOOverwriteFolderLinkLabel.Location = new System.Drawing.Point(46, 12);
             this.OpenMOOverwriteFolderLinkLabel.Name = "OpenMOOverwriteFolderLinkLabel";
@@ -729,6 +741,7 @@
             // OpenMyUserDataFolderLinkLabel
             // 
             this.OpenMyUserDataFolderLinkLabel.AutoSize = true;
+            this.OpenMyUserDataFolderLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.OpenMyUserDataFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.OpenMyUserDataFolderLinkLabel.Location = new System.Drawing.Point(46, 26);
             this.OpenMyUserDataFolderLinkLabel.Name = "OpenMyUserDataFolderLinkLabel";
@@ -742,6 +755,7 @@
             // OpenModsFolderLinkLabel
             // 
             this.OpenModsFolderLinkLabel.AutoSize = true;
+            this.OpenModsFolderLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.OpenModsFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.OpenModsFolderLinkLabel.Location = new System.Drawing.Point(6, 26);
             this.OpenModsFolderLinkLabel.Name = "OpenModsFolderLinkLabel";
@@ -755,6 +769,7 @@
             // OpenMOFolderLinkLabel
             // 
             this.OpenMOFolderLinkLabel.AutoSize = true;
+            this.OpenMOFolderLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.OpenMOFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.OpenMOFolderLinkLabel.Location = new System.Drawing.Point(6, 39);
             this.OpenMOFolderLinkLabel.Name = "OpenMOFolderLinkLabel";
@@ -768,6 +783,7 @@
             // OpenGameFolderLinkLabel
             // 
             this.OpenGameFolderLinkLabel.AutoSize = true;
+            this.OpenGameFolderLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.OpenGameFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.OpenGameFolderLinkLabel.Location = new System.Drawing.Point(6, 12);
             this.OpenGameFolderLinkLabel.Name = "OpenGameFolderLinkLabel";
@@ -898,6 +914,7 @@
             // ToolsFixModListButton
             // 
             this.ToolsFixModListButton.BackColor = System.Drawing.Color.Silver;
+            this.ToolsFixModListButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.ToolsFixModListButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.ToolsFixModListButton.ForeColor = System.Drawing.Color.Black;
             this.ToolsFixModListButton.Location = new System.Drawing.Point(3, 79);
@@ -927,6 +944,7 @@
             // btnUpdateMods
             // 
             this.btnUpdateMods.BackColor = System.Drawing.Color.Silver;
+            this.btnUpdateMods.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnUpdateMods.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.btnUpdateMods.ForeColor = System.Drawing.Color.Black;
             this.btnUpdateMods.Location = new System.Drawing.Point(3, 3);
@@ -1043,6 +1061,7 @@
             // InstallInModsButton
             // 
             this.InstallInModsButton.BackColor = System.Drawing.Color.Silver;
+            this.InstallInModsButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.InstallInModsButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.InstallInModsButton.ForeColor = System.Drawing.Color.Black;
             this.InstallInModsButton.Location = new System.Drawing.Point(3, 3);
@@ -1141,6 +1160,7 @@
             // 
             this.ModeSwitchCreateBuckupLabel.AutoSize = true;
             this.ModeSwitchCreateBuckupLabel.BackColor = System.Drawing.Color.Transparent;
+            this.ModeSwitchCreateBuckupLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.ModeSwitchCreateBuckupLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.ModeSwitchCreateBuckupLabel.Location = new System.Drawing.Point(0, 0);
             this.ModeSwitchCreateBuckupLabel.Margin = new System.Windows.Forms.Padding(0);

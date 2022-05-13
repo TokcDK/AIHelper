@@ -44,12 +44,12 @@ namespace AIHelper.Manage
 
         private static async void UpdateByUpdater()
         {
-            ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize());
+            ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize);
 
             var updater = new Updater();
 
             //update plugins in mo mode
-            if (Manage.ManageSettings.IsMoMode())
+            if (Manage.ManageSettings.IsMoMode)
             {
                 await updater.Update().ConfigureAwait(true);
             }
@@ -63,22 +63,22 @@ namespace AIHelper.Manage
                 ManageModOrganizer.RedefineGameMoData();
             }
 
-            ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize());
+            ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize);
         }
 
         private static void UpdateZipmods()
         {
 
             //run zipmod's check if updater found and only for KK, AI, HS2
-            if (!GameData.Game.IsHaveSideloaderMods || !File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath()))
+            if (!GameData.Game.IsHaveSideloaderMods || !File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath))
             {
                 return;
             }
 
-            if (!Manage.ManageSettings.IsMoMode())
+            if (!Manage.ManageSettings.IsMoMode)
             {
                 //run updater normal
-                ManageProcess.RunProgram(ManageSettings.KkManagerStandaloneUpdaterExePath(), "\"" + ManageSettings.GetCurrentGameDataDirPath() + "\"");
+                ManageProcess.RunProgram(ManageSettings.KkManagerStandaloneUpdaterExePath, "\"" + ManageSettings.CurrentGameDataDirPath + "\"");
                 return;
             }
 
@@ -88,12 +88,11 @@ namespace AIHelper.Manage
                 var kkManagerStandaloneUpdater = new ManageModOrganizer.CustomExecutables.CustomExecutable
                 {
                     Title = "KKManagerStandaloneUpdater",
-                    Binary = ManageSettings.KkManagerStandaloneUpdaterExePath(),
-                    Arguments = ManageSettings.GetCurrentGameDataDirPath(),
-                    MoTargetMod = ManageSettings.KKManagerFilesModName()
-                };
+                    Binary = ManageSettings.KkManagerStandaloneUpdaterExePath,
+                    Arguments = ManageSettings.CurrentGameDataDirPath,
+                    MoTargetMod = ManageSettings.KKManagerFilesModName                };
 
-                var kkManagerFilesModPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ManageSettings.KKManagerFilesModName());
+                var kkManagerFilesModPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, ManageSettings.KKManagerFilesModName);
                 if (!Directory.Exists(kkManagerFilesModPath))
                 {
                     Directory.CreateDirectory(kkManagerFilesModPath);
@@ -107,7 +106,7 @@ namespace AIHelper.Manage
                         );
 
                     ManageModOrganizer.InsertMod(
-                        modname: ManageSettings.KKManagerFilesModName(),
+                        modname: ManageSettings.KKManagerFilesModName,
                         modAfterWhichInsert: "Low priority_separator"
                         );
                 }
@@ -133,7 +132,7 @@ namespace AIHelper.Manage
             FixKKmanagerUpdaterFailedDownloads();
 
             progressForm.Text = T._("Update zipmods") + "..";
-            ManageProcess.RunProgram(ManageSettings.GetAppMOexePath(), "moshortcut://:" + ManageModOrganizer.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
+            ManageProcess.RunProgram(ManageSettings.AppMOexePath, "moshortcut://:" + ManageModOrganizer.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
 
             //restore modlist
             ManageModOrganizer.RestoreModlist();
@@ -154,7 +153,7 @@ namespace AIHelper.Manage
         /// </summary>
         private static void FixKKmanagerUpdaterFailedDownloads()
         {
-            Directory.CreateDirectory(ManageSettings.KKManagerDownloadsTempDir());
+            Directory.CreateDirectory(ManageSettings.KKManagerDownloadsTempDir);
         }
 
         private static void UpdateModsInit()
@@ -203,14 +202,14 @@ namespace AIHelper.Manage
 
         private static void AfterZipmodsUpdateCleanDirs()
         {
-            foreach (var sortingDirPath in ManageSettings.GetKKManagerUpdateSortDirs())
+            foreach (var sortingDirPath in ManageSettings.KKManagerUpdateSortDirs)
             {
                 // clean temp dir
                 CleanKKManagerTempDir(sortingDirPath);
             }
 
             // clean temp in data
-            CleanKKManagerTempDir(ManageSettings.GetCurrentGameDataDirPath());
+            CleanKKManagerTempDir(ManageSettings.CurrentGameDataDirPath);
         }
 
         private static void CleanKKManagerTempDir(string targetDir)
@@ -221,9 +220,9 @@ namespace AIHelper.Manage
         private static void SortCommunityUserDataPack()
         {
             //sort community userdata
-            var communityUserDataPack = new DirectoryInfo(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "Sideloader ModPack - Community UserData"));
+            var communityUserDataPack = new DirectoryInfo(Path.Combine(ManageSettings.CurrentGameModsDirPath, "Sideloader ModPack - Community UserData"));
 
-            Parallel.ForEach(ManageSettings.GetKKManagerUpdateSortDirs(), sortingDirPath =>
+            Parallel.ForEach(ManageSettings.KKManagerUpdateSortDirs, sortingDirPath =>
             {
                 var charaDir = new DirectoryInfo(Path.Combine(sortingDirPath, "UserData", "chara"));
                 if (!charaDir.Exists)
@@ -297,7 +296,7 @@ namespace AIHelper.Manage
 
         private static void SortZipmodsPacks()
         {
-            Parallel.ForEach(ManageSettings.GetKKManagerUpdateSortDirs(), sortingDirPath =>
+            Parallel.ForEach(ManageSettings.KKManagerUpdateSortDirs, sortingDirPath =>
             {
 
                 var sortingDir = new DirectoryInfo(Path.Combine(sortingDirPath, "mods"));
@@ -312,7 +311,7 @@ namespace AIHelper.Manage
                 //    { "Sideloader Modpack - KK_UncensorSelector", @"^\[KK\]\[Female\].*$" }//sideloader dir name /files regex filter
                 //};
 
-                var dirs = sortingDir.GetDirectories().Where(dirpath => dirpath.Name.StartsWith("Sideloader Modpack", comparisonType: StringComparison.InvariantCultureIgnoreCase) && !ManageSettings.GetKKManagerUpdateSortDirs().Contains(dirpath.Name));
+                var dirs = sortingDir.GetDirectories().Where(dirpath => dirpath.Name.StartsWith("Sideloader Modpack", comparisonType: StringComparison.InvariantCultureIgnoreCase) && !ManageSettings.KKManagerUpdateSortDirs.Contains(dirpath.Name));
 
                 if (!dirs.Any())
                 {
@@ -324,7 +323,7 @@ namespace AIHelper.Manage
                 //pBar.Invoke((Action)(() => pBar.Maximum = dirs.Count() + 1));
                 //pBar.Invoke((Action)(() => pBar.Value = 0));
 
-                var timeInfo = ManageSettings.GetDateTimeBasedSuffix();
+                var timeInfo = ManageSettings.DateTimeBasedSuffix;
 
                 Parallel.ForEach(dirs, dir =>
                 {
@@ -417,7 +416,7 @@ namespace AIHelper.Manage
                                 var targetModName = modpacks[sideloaderDirName + (sortF ? "F" : sortM ? "M" : "")];
 
                                 //get target path for the zipmod
-                                var target = ManageSettings.GetCurrentGameModsDirPath()
+                                var target = ManageSettings.CurrentGameModsDirPath
                                     + Path.DirectorySeparatorChar + targetModName //mod name
                                     + Path.DirectorySeparatorChar + "mods" //mods dir
                                     + Path.DirectorySeparatorChar + sideloaderDirName // sideloader dir name
@@ -444,7 +443,7 @@ namespace AIHelper.Manage
                                     }
                                     else if (targetinfo.LastWriteTime < sourceinfo.LastWriteTime)
                                     {
-                                        var tfiletarget = ManageSettings.GetCurrentGameModsDirPath()
+                                        var tfiletarget = ManageSettings.CurrentGameModsDirPath
                                             + Path.DirectorySeparatorChar + targetModName + timeInfo //mod name
                                             + Path.DirectorySeparatorChar + "mods" //mods dir
                                             + Path.DirectorySeparatorChar + sideloaderDirName // sideloader dir name
@@ -456,7 +455,7 @@ namespace AIHelper.Manage
                                     }
                                     else
                                     {
-                                        target = ManageSettings.GetCurrentGameModsDirPath()
+                                        target = ManageSettings.CurrentGameModsDirPath
                                             + Path.DirectorySeparatorChar + targetModName + timeInfo //mod name
                                             + Path.DirectorySeparatorChar + "mods" //mods dir
                                             + Path.DirectorySeparatorChar + sideloaderDirName // sideloader dir name
@@ -492,7 +491,7 @@ namespace AIHelper.Manage
         private static void ActivateSideloaderMods()
         {
             // buckup modlist
-            File.Copy(ManageSettings.GetCurrentMoProfileModlistPath(), ManageSettings.GetCurrentMoProfileModlistPath() + ".prezipmodsUpdate");
+            File.Copy(ManageSettings.CurrentMoProfileModlistPath, ManageSettings.CurrentMoProfileModlistPath + ".prezipmodsUpdate");
 
             var modlist = new ModlistProfileInfo();
 

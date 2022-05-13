@@ -37,13 +37,13 @@ namespace AIHelper.Manage
                 program.StartInfo.Arguments = arguments;
             }
 
-            if (!ManageSettings.IsMoMode() || string.IsNullOrWhiteSpace(program.StartInfo.Arguments))
+            if (!ManageSettings.IsMoMode|| string.IsNullOrWhiteSpace(program.StartInfo.Arguments))
             {
                 program.StartInfo.WorkingDirectory = Path.GetDirectoryName(programPath);
             }
 
             // свернуть
-            ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize());
+            ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize);
             //WindowState = FormWindowState.Minimized;
             //if (LinksForm == null || LinksForm.IsDisposed)
             //{
@@ -64,7 +64,7 @@ namespace AIHelper.Manage
             program.WaitForExit();
 
             // Показать
-            ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize());
+            ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize);
             //WindowState = FormWindowState.Normal;
             //if (LinksForm == null || LinksForm.IsDisposed)
             //{

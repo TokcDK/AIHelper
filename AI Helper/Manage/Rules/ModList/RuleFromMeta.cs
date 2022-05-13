@@ -15,7 +15,7 @@ namespace AIHelper.Manage.Rules.ModList
 
         internal override bool Condition()
         {
-            var modPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ModlistData.ModName);
+            var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.ModName);
 
             var metaPath = Path.Combine(modPath, "meta.ini");
             if (!File.Exists(metaPath))
@@ -40,7 +40,7 @@ namespace AIHelper.Manage.Rules.ModList
 
         private bool ParseRulesFromMeta()
         {
-            var modPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ModlistData.ModName);
+            var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.ModName);
 
             var metaPath = Path.Combine(modPath, "meta.ini");
             if (File.Exists(metaPath))
@@ -64,9 +64,9 @@ namespace AIHelper.Manage.Rules.ModList
                 //need to think about section and key names
                 if (ini.SectionExistsAndNotEmpty(ManageSettings.AiMetaIniSectionName()))
                 {
-                    if (ini.KeyExists(ManageSettings.AiMetaIniKeyModlistRulesInfoName(), ManageSettings.AiMetaIniSectionName()))
+                    if (ini.KeyExists(ManageSettings.AiMetaIniKeyModlistRulesInfoName, ManageSettings.AiMetaIniSectionName()))
                     {
-                        mlinfo = ini.GetKey(ManageSettings.AiMetaIniSectionName(), ManageSettings.AiMetaIniKeyModlistRulesInfoName());
+                        mlinfo = ini.GetKey(ManageSettings.AiMetaIniSectionName(), ManageSettings.AiMetaIniKeyModlistRulesInfoName);
                     }
                     if (!string.IsNullOrWhiteSpace(mlinfo))
                     {

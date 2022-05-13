@@ -204,9 +204,9 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
         {
             string[] targetFolders = new string[3]
             {
-                firstCandidateFolder.Substring(0,1)== " " ? Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "OrganizedModPack Downloaded"+firstCandidateFolder) : firstCandidateFolder,
-                Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserData"),
-                ManageSettings.GetCurrentGameOverwriteFolderPath()
+                firstCandidateFolder.Substring(0,1)== " " ? Path.Combine(ManageSettings.CurrentGameModsDirPath, "OrganizedModPack Downloaded"+firstCandidateFolder) : firstCandidateFolder,
+                Path.Combine(ManageSettings.CurrentGameModsDirPath, "MyUserData"),
+                ManageSettings.CurrentGameOverwriteFolderPath
             };
 
             string typeFolder = string.Empty;
@@ -266,7 +266,7 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
                 }
             }
 
-            return Path.Combine(ManageSettings.GetCurrentGameOverwriteFolderPath(), "UserData", typeFolder, targetFolderName);
+            return Path.Combine(ManageSettings.CurrentGameOverwriteFolderPath, "UserData", typeFolder, targetFolderName);
         }
     }
 }

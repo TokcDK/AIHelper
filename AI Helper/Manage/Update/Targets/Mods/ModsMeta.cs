@@ -38,7 +38,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
 
             foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(SharedData.GameData.MainForm.CheckEnabledModsOnlyLabel.IsChecked()))
             {
-                var modPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modname);
+                var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modname);
 
                 var modinfo = GetInfoFromMeta(modPath);
 
@@ -84,9 +84,9 @@ namespace AIHelper.Manage.Update.Targets.Mods
                 //need to think about section and key names
                 if (ini.SectionExistsAndNotEmpty(ManageSettings.AiMetaIniSectionName()))
                 {
-                    if (ini.KeyExists(ManageSettings.AiMetaIniKeyUpdateName(), ManageSettings.AiMetaIniSectionName()))
+                    if (ini.KeyExists(ManageSettings.AiMetaIniKeyUpdateName, ManageSettings.AiMetaIniSectionName()))
                     {
-                        var info = ini.GetKey(ManageSettings.AiMetaIniSectionName(), ManageSettings.AiMetaIniKeyUpdateName());
+                        var info = ini.GetKey(ManageSettings.AiMetaIniSectionName(), ManageSettings.AiMetaIniKeyUpdateName);
 
                         return Regex.Match(info, Info.SourceId + "::([^:]+)::").Result("$1");
                     }
@@ -190,7 +190,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
             {
                 _dbData = new List<Dictionary<string, string>>();
                 var iniNum = 0;
-                foreach (var iniFile in Directory.EnumerateFiles(ManageSettings.GetModsUpdateDbInfoDir(), "*.ini", SearchOption.AllDirectories))
+                foreach (var iniFile in Directory.EnumerateFiles(ManageSettings.ModsUpdateDbInfoDir, "*.ini", SearchOption.AllDirectories))
                 {
                     INIFile ini = ManageIni.GetINIFile(iniFile);
 

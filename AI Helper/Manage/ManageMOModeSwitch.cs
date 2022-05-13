@@ -6,7 +6,7 @@ namespace AIHelper.Manage
     {
         internal static void SwitchBetweenMoAndStandartModes()
         {
-            if (ManageSettings.IsMoMode())
+            if (ManageSettings.IsMoMode)
             {
                 new ToCommonMode().Switch();
             }

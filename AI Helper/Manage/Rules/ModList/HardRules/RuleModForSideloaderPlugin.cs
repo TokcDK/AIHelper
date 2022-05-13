@@ -12,13 +12,13 @@ namespace AIHelper.Manage.Rules.ModList
         internal override bool Condition()
         {
             return (
-                !Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ModlistData.ModName, "mods").IsNullOrEmptyDirectory("*.zip", null, true
+                !Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.ModName, "mods").IsNullOrEmptyDirectory("*.zip", null, true
                 )
                 ||
-                !Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ModlistData.ModName, "mods").IsNullOrEmptyDirectory("*.zipmod", null, true
+                !Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.ModName, "mods").IsNullOrEmptyDirectory("*.zipmod", null, true
                 ))
-                && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ModlistData.ModName, "BepInEx", "plugins", ModlistData.GamePrefix + "_BepisPlugins", "Sideloader.dll"))
-                && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ModlistData.ModName, "BepInEx", "plugins", ModlistData.GamePrefix + "_BepisPlugins", ModlistData.GamePrefix + "_Sideloader.dll"));
+                && !File.Exists(Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.ModName, "BepInEx", "plugins", ModlistData.GamePrefix + "_BepisPlugins", "Sideloader.dll"))
+                && !File.Exists(Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.ModName, "BepInEx", "plugins", ModlistData.GamePrefix + "_BepisPlugins", ModlistData.GamePrefix + "_Sideloader.dll"));
         }
 
         internal override string Description()

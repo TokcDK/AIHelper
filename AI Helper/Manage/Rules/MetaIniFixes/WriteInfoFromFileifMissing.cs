@@ -19,7 +19,7 @@ namespace AIHelper.Manage.Rules.MetaIniFixes
         internal override bool Apply()
         {
             var section = ManageSettings.AiMetaIniSectionName();
-            var key = ManageSettings.AiMetaIniKeyModlistRulesInfoName();
+            var key = ManageSettings.AiMetaIniKeyModlistRulesInfoName;
             var modName = Path.GetFileName(mod);
 
             if (!modlistData.RulesDict.ContainsKey(modName)) return false;

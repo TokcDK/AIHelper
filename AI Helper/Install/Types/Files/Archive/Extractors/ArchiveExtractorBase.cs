@@ -11,7 +11,7 @@ namespace AIHelper.Install.Types.Files.Archive.Extractors
 
         protected override bool Get(FileInfo fileInfo)
         {
-            string targetDir = ManageFilesFoldersExtensions.GetResultTargetDirPathWithNameCheck(ManageSettings.GetInstall2MoDirPath(), Path.GetFileNameWithoutExtension(fileInfo.Name));
+            string targetDir = ManageFilesFoldersExtensions.GetResultTargetDirPathWithNameCheck(ManageSettings.Install2MoDirPath, Path.GetFileNameWithoutExtension(fileInfo.Name));
             if (Directory.Exists(targetDir))
             {
                 return false;
@@ -31,7 +31,7 @@ namespace AIHelper.Install.Types.Files.Archive.Extractors
                     Compressor.Decompress(fileInfo.FullName, targetDir);
                 }
                 //File.Delete(file);
-                fileInfo.MoveTo(fileInfo.FullName + ".Extracted" + ManageSettings.GetDateTimeBasedSuffix());
+                fileInfo.MoveTo(fileInfo.FullName + ".Extracted" + ManageSettings.DateTimeBasedSuffix);
             }
             catch
             {

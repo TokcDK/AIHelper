@@ -22,7 +22,7 @@ namespace AIHelper.Install.Types.Directories
         string _backupsDir;
         string _bakDir;
 
-        static string _gameUpdateInfoFileName { get => ManageSettings.GetGameUpdateInstallerIniFileName(); }
+        static string _gameUpdateInfoFileName { get => ManageSettings.GameUpdateInstallerIniFileName(); }
         HashSet<string> _skipExistDirs;
         HashSet<string> _skipExistFiles;
         private bool crcfiles;
@@ -47,7 +47,7 @@ namespace AIHelper.Install.Types.Directories
                 return false;
             }
 
-            if (ManageSettings.GetCurrentGameDirName() != updateInfo.GameFolderName)
+            if (ManageSettings.CurrentGameDirName != updateInfo.GameFolderName)
             {
                 // incorrect game
                 MessageBox.Show(updateInfo.GameFolderName + ": " + T._("Incorrect current game"));
@@ -61,11 +61,11 @@ namespace AIHelper.Install.Types.Directories
 
             IsRoot = updateInfo.IsRoot == "true";
 
-            _dateTimeSuffix = ManageSettings.GetDateTimeBasedSuffix();
+            _dateTimeSuffix = ManageSettings.DateTimeBasedSuffix;
 
             SetSkipLists();
 
-            _backupsDir = Path.Combine(ManageSettings.GetCurrentGameDirPath(), "Buckups");
+            _backupsDir = Path.Combine(ManageSettings.CurrentGameDirPath, "Buckups");
             _bakDir = Path.Combine(_backupsDir, "Backup");
             if (Directory.Exists(_bakDir))
             {
@@ -162,7 +162,7 @@ namespace AIHelper.Install.Types.Directories
 
         private bool ProceedRenameFiles()
         {
-            string gameDir = ManageSettings.GetCurrentGameDirPath();
+            string gameDir = ManageSettings.CurrentGameDirPath;
             string value = updateInfo.RenameFiles;
             if (string.IsNullOrWhiteSpace(value))
             {
@@ -213,7 +213,7 @@ namespace AIHelper.Install.Types.Directories
 
         private bool ProceedRenameDirs()
         {
-            string gameDir = ManageSettings.GetCurrentGameDirPath();
+            string gameDir = ManageSettings.CurrentGameDirPath;
             string value = updateInfo.RenameDirs;
             if (string.IsNullOrWhiteSpace(value))
             {
@@ -276,7 +276,7 @@ namespace AIHelper.Install.Types.Directories
         {
             Dictionary<string, string> modDirNamesValues = new Dictionary<string, string>()
             {
-                { ManageSettings.KKManagerFilesModName(), ManageSettings.KKManagerFilesNotes()},
+                { ManageSettings.KKManagerFilesModName, ManageSettings.KKManagerFilesNotes},
                 { "GameUserData", "<!DOCTYPE HTML PUBLIC \\\"-//W3C//DTD HTML 4.0//EN\\\" \\\"http://www.w3.org/TR/REC-html40/strict.dtd\\\">\\n<html><head><meta name=\\\"qrichtext\\\" content=\\\"1\\\" /><style type=\\\"text/css\\\">\\np, li { white-space: pre-wrap; }\\n</style></head><body style=\\\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\\\">\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">New files created by the game will be stored here. Saves, plugins configs and other.</p>\\n<p style=\\\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\"><br /></p>\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">\\x41d\\x43e\\x432\\x44b\\x435 \\x444\\x430\\x439\\x43b\\x44b \\x441\\x43e\\x437\\x434\\x430\\x43d\\x43d\\x44b\\x435 \\x438\\x433\\x440\\x43e\\x439 \\x431\\x443\\x434\\x443\\x442 \\x434\\x43e\\x431\\x430\\x432\\x43b\\x44f\\x442\\x44c\\x441\\x44f \\x441\\x44e\\x434\\x430. \\x421\\x43e\\x445\\x440\\x430\\x43d\\x435\\x43d\\x438\\x44f, \\x43d\\x430\\x441\\x442\\x440\\x43e\\x439\\x43a\\x438 \\x43f\\x43b\\x430\\x433\\x438\\x43d\\x43e\\x432 \\x438 \\x434\\x440.</p></body></html>"},
                 { "Sideloader Modpack - Exclusive KKS", "<!DOCTYPE HTML PUBLIC \\\"-//W3C//DTD HTML 4.0//EN\\\" \\\"http://www.w3.org/TR/REC-html40/strict.dtd\\\">\\n<html><head><meta name=\\\"qrichtext\\\" content=\\\"1\\\" /><style type=\\\"text/css\\\">\\np, li { white-space: pre-wrap; }\\n</style></head><body style=\\\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\\\">\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">EN</p>\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">Koikatsu Sunshine exclusive mods.</p>\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">Warning! More mods more memory consumption.</p>\\n<p style=\\\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\"><br /></p>\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">required: Sideloader</p>\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">------------------------------------------------------------</p>\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">RU</p>\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">\\x42d\\x43a\\x441\\x43a\\x43b\\x44e\\x437\\x438\\x432\\x43d\\x44b\\x435 \\x43c\\x43e\\x434\\x44b \\x434\\x43b\\x44f Koikatsu Sunshine.</p>\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">\\x412\\x43d\\x438\\x43c\\x430\\x43d\\x438\\x435! \\x427\\x435\\x43c \\x431\\x43e\\x43b\\x44c\\x448\\x435 \\x43c\\x43e\\x434\\x43e\\x432, \\x442\\x435\\x43c \\x431\\x43e\\x43b\\x44c\\x448\\x435 \\x43f\\x43e\\x442\\x440\\x435\\x431\\x43b\\x435\\x43d\\x438\\x44f \\x43f\\x430\\x43c\\x44f\\x442\\x438.</p>\\n<p style=\\\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\"><br /></p>\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">\\x442\\x440\\x435\\x431\\x443\\x435\\x442\\x441\\x44f: Sideloader</p></body></html>"},
                 { "Sideloader Modpack - KK_UncensorSelector", "<!DOCTYPE HTML PUBLIC \\\"-//W3C//DTD HTML 4.0//EN\\\" \\\"http://www.w3.org/TR/REC-html40/strict.dtd\\\">\\n<html><head><meta name=\\\"qrichtext\\\" content=\\\"1\\\" /><style type=\\\"text/css\\\">\\np, li { white-space: pre-wrap; }\\n</style></head><body style=\\\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\\\">\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">EN</p>\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">Koikatsu Sunshine mods for Uncensor Selector.</p>\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">Warning! More mods more memory consumption.</p>\\n<p style=\\\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\"><br /></p>\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">required: Sideloader and Uncensor Selector</p>\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">------------------------------------------------------------</p>\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">RU</p>\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">\\x42d\\x43a\\x441\\x43a\\x43b\\x44e\\x437\\x438\\x432\\x43d\\x44b\\x435 \\x43c\\x43e\\x434\\x44b \\x434\\x43b\\x44f Koikatsu Sunshine \\x434\\x43b\\x44f Uncensor Selector.</p>\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">\\x412\\x43d\\x438\\x43c\\x430\\x43d\\x438\\x435! \\x427\\x435\\x43c \\x431\\x43e\\x43b\\x44c\\x448\\x435 \\x43c\\x43e\\x434\\x43e\\x432, \\x442\\x435\\x43c \\x431\\x43e\\x43b\\x44c\\x448\\x435 \\x43f\\x43e\\x442\\x440\\x435\\x431\\x43b\\x435\\x43d\\x438\\x44f \\x43f\\x430\\x43c\\x44f\\x442\\x438.</p>\\n<p style=\\\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\"><br /></p>\\n<p style=\\\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\\\">\\x442\\x440\\x435\\x431\\x443\\x435\\x442\\x441\\x44f: Sideloader \\x438 Uncensor Selector</p></body></html>"},
@@ -288,7 +288,7 @@ namespace AIHelper.Install.Types.Directories
             {
                 try
                 {
-                    var targetDir = new DirectoryInfo(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modDirNameValue.Key));
+                    var targetDir = new DirectoryInfo(Path.Combine(ManageSettings.CurrentGameModsDirPath, modDirNameValue.Key));
                     if (!targetDir.Exists)
                     {
                         continue;
@@ -328,7 +328,7 @@ namespace AIHelper.Install.Types.Directories
         private bool ProceedCreateRemove(bool files = true, bool create = true)
         {
             var ret = false;
-            string gameDir = ManageSettings.GetCurrentGameDirPath();
+            string gameDir = ManageSettings.CurrentGameDirPath;
             string value;
             if (create)
             {
@@ -478,11 +478,11 @@ namespace AIHelper.Install.Types.Directories
             var bakModsDirPath = Path.Combine(_bakDir, "Mods");
 
             var ret = false;
-            foreach (var separator in new DirectoryInfo(ManageSettings.GetCurrentGameModsDirPath()).GetDirectories("*_separator"))
+            foreach (var separator in new DirectoryInfo(ManageSettings.CurrentGameModsDirPath).GetDirectories("*_separator"))
             {
                 if (!modlist.ItemByName.ContainsKey(separator.Name))
                 {
-                    var bakPath = separator.FullName.Replace(ManageSettings.GetCurrentGameModsDirPath(), bakModsDirPath);
+                    var bakPath = separator.FullName.Replace(ManageSettings.CurrentGameModsDirPath, bakModsDirPath);
                     try
                     {
                         separator.MoveTo(bakPath);
@@ -572,7 +572,7 @@ namespace AIHelper.Install.Types.Directories
                         continue;
                     }
 
-                    var targetFileInfo = new FileInfo(ManageSettings.GetCurrentGameDirPath() + Path.DirectorySeparatorChar + targetFileSubPath);
+                    var targetFileInfo = new FileInfo(ManageSettings.CurrentGameDirPath + Path.DirectorySeparatorChar + targetFileSubPath);
 
                     var targetPath = targetFileInfo.FullName;// default target path in game's target subdir
 
@@ -650,7 +650,7 @@ namespace AIHelper.Install.Types.Directories
                         continue;
                     }
 
-                    var targetGameSubDir = new DirectoryInfo(ManageSettings.GetCurrentGameDirPath() + Path.DirectorySeparatorChar + targetDirSubPath);
+                    var targetGameSubDir = new DirectoryInfo(ManageSettings.CurrentGameDirPath + Path.DirectorySeparatorChar + targetDirSubPath);
 
                     if (targetGameSubDir.Exists)
                     {
@@ -665,7 +665,7 @@ namespace AIHelper.Install.Types.Directories
                         }
 
                         // move exist older target dir to bak
-                        var existsTargetGameModDirBak = existsTargetGameSubDir.FullName.Replace(ManageSettings.GetCurrentGameModsDirPath(), targetDirBuckupPath);
+                        var existsTargetGameModDirBak = existsTargetGameSubDir.FullName.Replace(ManageSettings.CurrentGameModsDirPath, targetDirBuckupPath);
                         existsTargetGameSubDir.MoveTo(existsTargetGameModDirBak);
                     }
 

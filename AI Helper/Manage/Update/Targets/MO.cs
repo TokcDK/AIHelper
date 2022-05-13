@@ -21,7 +21,7 @@ namespace AIHelper.Manage.Update.Targets
         {
             if (Info.Source.Title.ToUpperInvariant().Contains("GITHUB"))
             {
-                _moDirPath = ManageSettings.GetAppModOrganizerDirPath();
+                _moDirPath = ManageSettings.AppModOrganizerDirPath;
                 return new Dictionary<string, string>()
                 {
                     { _moDirPath, "ModOrganizer2,modorganizer,Mod.Organizer-"}

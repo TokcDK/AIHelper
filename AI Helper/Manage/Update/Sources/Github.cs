@@ -57,7 +57,7 @@ namespace AIHelper.Manage.Update.Sources
         static ProgressBar _dwnpb;
         private async Task<bool> DownloadTheFile()
         {
-            var updateDownloadsDir = ManageSettings.GetModsUpdateDirDownloadsPath(); //Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), modGitData.CurrentModName);
+            var updateDownloadsDir = ManageSettings.ModsUpdateDirDownloadsPath; //Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), modGitData.CurrentModName);
             Directory.CreateDirectory(updateDownloadsDir);
 
             var updateFileName = Info.UpdateFilePath.Length > 0 ? Path.GetFileName(Info.UpdateFilePath) : Path.GetFileName(Info.DownloadLink);
@@ -65,7 +65,7 @@ namespace AIHelper.Manage.Update.Sources
             if (string.IsNullOrWhiteSpace(updateFileName))
             {
                 bool found = false;
-                foreach (var targetDir in new[] { updateDownloadsDir, ManageSettings.GetInstall2MoDirPath() })
+                foreach (var targetDir in new[] { updateDownloadsDir, ManageSettings.Install2MoDirPath })
                 {
                     foreach (var prefix in new[] { "", "v" })
                     {
@@ -98,7 +98,7 @@ namespace AIHelper.Manage.Update.Sources
                 Info.UpdateFilePath = Path.Combine(updateDownloadsDir, updateFileName);
             }
 
-            string altUpdateFilePath = Path.Combine(ManageSettings.GetInstall2MoDirPath(), updateFileName);
+            string altUpdateFilePath = Path.Combine(ManageSettings.Install2MoDirPath, updateFileName);
             if (Info.VersionFromFile && !File.Exists(Info.UpdateFilePath) && File.Exists(altUpdateFilePath))
             {
                 Info.UpdateFilePath = altUpdateFilePath;
@@ -239,7 +239,7 @@ namespace AIHelper.Manage.Update.Sources
                 //var link2file = Regex.Match(LatestReleasePage, linkPattern);
                 if (!link2File.Success && Info.VersionFromFile)
                 {
-                    foreach (var file in Directory.GetFiles(ManageSettings.GetInstall2MoDirPath(), Info.UpdateFileStartsWith + "*" + Info.UpdateFileEndsWith))
+                    foreach (var file in Directory.GetFiles(ManageSettings.Install2MoDirPath, Info.UpdateFileStartsWith + "*" + Info.UpdateFileEndsWith))
                     {
                         var ver = Regex.Match(Path.GetFileName(file), Info.UpdateFileStartsWith + "(.*)" + Info.UpdateFileEndsWith).Groups[1].Value;
                         UpdateTools.CleanVersion(ref ver);

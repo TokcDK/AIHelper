@@ -7,11 +7,11 @@ namespace AIHelper.Manage
     {
         public static void FixRegistry(bool auto = true)
         {
-            string registryPath = ManageSettings.GetCurrentGameRegistryPath();
-            var installDirValue = Registry.GetValue(registryPath, ManageSettings.GetCurrentGameRegistryInstallDirKeyName(), null);
-            if (installDirValue == null || installDirValue.ToString() != ManageSettings.GetCurrentGameDataDirPath())
+            string registryPath = ManageSettings.CurrentGameRegistryPath;
+            var installDirValue = Registry.GetValue(registryPath, ManageSettings.CurrentGameRegistryInstallDirKeyName, null);
+            if (installDirValue == null || installDirValue.ToString() != ManageSettings.CurrentGameDataDirPath)
             {
-                Registry.SetValue(registryPath, ManageSettings.GetCurrentGameRegistryInstallDirKeyName(), ManageSettings.GetCurrentGameDataDirPath());
+                Registry.SetValue(registryPath, ManageSettings.CurrentGameRegistryInstallDirKeyName, ManageSettings.CurrentGameDataDirPath);
                 if (!auto)
                 {
                     MessageBox.Show(T._("Registry fixed! Install dir was set to Data dir."));

@@ -25,7 +25,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
 
         internal override string GetParentFolderPath()
         {
-            return ManageSettings.GetCurrentGameModsDirPath();
+            return ManageSettings.CurrentGameModsDirPath;
         }
 
         internal override void SetCurrentVersion()

@@ -64,15 +64,15 @@ namespace AIHelper.Games.Illusion
                     //}
                     //,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserData", "UserData", "cap")
+                        Path.Combine(ManageSettings.CurrentGameModsDirPath, "MyUserData", "UserData", "cap")
                         ,
-                        Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "UserData", "cap")
+                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "cap")
                     }
                     ,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserData", "UserData", "studioneo", "BetterSceneLoader")
+                        Path.Combine(ManageSettings.CurrentGameModsDirPath, "MyUserData", "UserData", "studioneo", "BetterSceneLoader")
                         ,
-                        Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "UserData", "studioneo", "BetterSceneLoader")
+                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "studioneo", "BetterSceneLoader")
                     }
             };
         }

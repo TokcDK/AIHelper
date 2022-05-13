@@ -25,7 +25,7 @@ namespace AIHelper.Install.Types.Files.Archive
             string zipArchiveName = Path.GetFileNameWithoutExtension(zipfile.FullName);
             bool gameEmpty = zipmod.game.Length == 0;
 
-            if (!gameEmpty && !string.Equals(zipmod.game, ManageSettings.GetZipmodManifestGameNameByCurrentGame(), StringComparison.InvariantCultureIgnoreCase))
+            if (!gameEmpty && !string.Equals(zipmod.game, ManageSettings.ZipmodManifestGameNameByCurrentGame, StringComparison.InvariantCultureIgnoreCase))
             {
                 ManageLogs.Log("Wrong game: " + zipmod.game + ", zipmod name: " + zipfile.Name);
                 File.WriteAllText(zipfile.FullName + ".info.txt", zipfile.Name + " info:\r\n\r\nGame: " + zipmod.game);
@@ -47,7 +47,7 @@ namespace AIHelper.Install.Types.Files.Archive
 
             // paths setup
             //string zipmoddirpath = GetResultTargetDirPathWithNameCheck(ManageSettings.GetCurrentGameModsPath(), name);
-            string modDirPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modName);
+            string modDirPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modName);
             string modsSubDirPath = Path.Combine(modDirPath, "mods");
             string targetZipFile = Path.Combine(modsSubDirPath, zipArchiveName + ".zipmod");
 
@@ -67,7 +67,7 @@ namespace AIHelper.Install.Types.Files.Archive
             }
             else
             {
-                modDirPath = ManageFilesFoldersExtensions.GetResultTargetDirPathWithNameCheck(ManageSettings.GetCurrentGameModsDirPath(), modName);
+                modDirPath = ManageFilesFoldersExtensions.GetResultTargetDirPathWithNameCheck(ManageSettings.CurrentGameModsDirPath, modName);
                 modsSubDirPath = Path.Combine(modDirPath, "mods");
                 targetZipFile = Path.Combine(modsSubDirPath, zipArchiveName + ".zipmod");
             }
@@ -77,7 +77,7 @@ namespace AIHelper.Install.Types.Files.Archive
             File.Move(zipfile.FullName, targetZipFile);
 
             // Move files starting with same name to the same mod folder
-            string[] possibleFilesOfTheMod = Directory.GetFiles(ManageSettings.GetInstall2MoDirPath(), "*.*").Where(file => Path.GetFileName(file).Trim().StartsWith(zipArchiveName, StringComparison.InvariantCultureIgnoreCase) && ManageStrings.IsStringAContainsAnyStringFromStringArray(Path.GetExtension(file), new string[7] { ".txt", ".png", ".jpg", ".jpeg", ".bmp", ".doc", ".rtf" })).ToArray();
+            string[] possibleFilesOfTheMod = Directory.GetFiles(ManageSettings.Install2MoDirPath, "*.*").Where(file => Path.GetFileName(file).Trim().StartsWith(zipArchiveName, StringComparison.InvariantCultureIgnoreCase) && ManageStrings.IsStringAContainsAnyStringFromStringArray(Path.GetExtension(file), new string[7] { ".txt", ".png", ".jpg", ".jpeg", ".bmp", ".doc", ".rtf" })).ToArray();
             int possibleFilesOfTheModLength = possibleFilesOfTheMod.Length;
             if (possibleFilesOfTheModLength > 0)
             {

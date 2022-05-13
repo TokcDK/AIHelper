@@ -43,7 +43,7 @@ namespace AIHelper.Manage.Update
             lastCheckDates = GetDateTimesFromFile();
 
             // get set timeout from app ini
-            var appIni = ManageIni.GetINIFile(ManageSettings.GetAiHelperIniPath());
+            var appIni = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
             int updateCheckTimeout = 10;
             if (appIni.KeyExists(ManageSettings.GetUpdatesCheckTimeoutMinutesKeyName(), ManageSettings.GetAppIniUpdateSectionName()))
             {
@@ -235,28 +235,20 @@ namespace AIHelper.Manage.Update
                             info.Excluded.Add(tFolderInfo.Key); // add path to excluded to skip it next time if will be found for other source or target
 
                             info.Report.Add(
-                                (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportSuccessLine() : string.Empty)
-                                    + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage()
-                                        //+ T._("Mod")
+                                (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportSuccessLine: string.Empty)
+                                    + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage                                        //+ T._("Mod")
                                         //+ " "
-                                        + ManageSettings.UpdateReport.HtmlModReportPreModnameTags()
-                                            + info.TargetFolderPath.Name
-                                        + ManageSettings.UpdateReport.HtmlModReportPostModnameTags()
-                                        + (!info.TargetFolderPath.Name.Contains(info.TargetCurrentVersion) ?
+                                        + ManageSettings.UpdateReport.HtmlModReportPreModnameTags                                            + info.TargetFolderPath.Name
+                                        + ManageSettings.UpdateReport.HtmlModReportPostModnameTags                                        + (!info.TargetFolderPath.Name.Contains(info.TargetCurrentVersion) ?
                                                 " "
-                                                + ManageSettings.UpdateReport.HtmlModReportPreVersionTags()
-                                                    + info.TargetCurrentVersion
-                                                + ManageSettings.UpdateReport.HtmlModReportPostVersionTags()
-                                            : "")
+                                                + ManageSettings.UpdateReport.HtmlModReportPreVersionTags                                                    + info.TargetCurrentVersion
+                                                + ManageSettings.UpdateReport.HtmlModReportPostVersionTags                                            : "")
                                         + " "
                                         + T._("updated to version")
                                         + " "
-                                        + ManageSettings.UpdateReport.HtmlModReportPreVersionTags()
-                                            + info.TargetLastVersion
-                                        + ManageSettings.UpdateReport.HtmlModReportPostVersionTags()
-                                    + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage()
-                                    + (_isHtmlReport ? ManageSettings.UpdateReport.HtmlAfterModReportLine() : string.Empty)
-                                        + (!string.IsNullOrWhiteSpace(info.SourceLink) ? ManageSettings.UpdateReport.InfoLinkPattern() + info.SourceLink : string.Empty)
+                                        + ManageSettings.UpdateReport.HtmlModReportPreVersionTags                                            + info.TargetLastVersion
+                                        + ManageSettings.UpdateReport.HtmlModReportPostVersionTags                                    + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage                                    + (_isHtmlReport ? ManageSettings.UpdateReport.HtmlAfterModReportLine: string.Empty)
+                                        + (!string.IsNullOrWhiteSpace(info.SourceLink) ? ManageSettings.UpdateReport.InfoLinkPattern+ info.SourceLink : string.Empty)
                                 );
 
                         }
@@ -278,18 +270,14 @@ namespace AIHelper.Manage.Update
                             if (info.NoRemoteFile)
                             {
                                 info.Report.Add(
-                                    (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportWarningLine() : string.Empty)
-                                        + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage()
-                                            //+ T._("Mod")
+                                    (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportWarningLine: string.Empty)
+                                        + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage                                            //+ T._("Mod")
                                             //+ " "
-                                            + ManageSettings.UpdateReport.HtmlModReportPreModnameTags()
-                                                + info.TargetFolderPath.Name
-                                            + ManageSettings.UpdateReport.HtmlModReportPostModnameTags()
-                                            + " "
+                                            + ManageSettings.UpdateReport.HtmlModReportPreModnameTags                                                + info.TargetFolderPath.Name
+                                            + ManageSettings.UpdateReport.HtmlModReportPostModnameTags                                            + " "
                                             + T._("have new version but file for update not found")
-                                        + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage()
-                                        + (_isHtmlReport ? ManageSettings.UpdateReport.HtmlAfterModReportLine() : string.Empty)
-                                            + (!string.IsNullOrWhiteSpace(info.SourceLink) ? ManageSettings.UpdateReport.InfoLinkPattern() + info.SourceLink : string.Empty)
+                                        + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage                                        + (_isHtmlReport ? ManageSettings.UpdateReport.HtmlAfterModReportLine: string.Empty)
+                                            + (!string.IsNullOrWhiteSpace(info.SourceLink) ? ManageSettings.UpdateReport.InfoLinkPattern+ info.SourceLink : string.Empty)
                                     );
                             }
                             else
@@ -298,18 +286,15 @@ namespace AIHelper.Manage.Update
                                 //RestoreModFromBuckup(OldModBuckupDirPath, UpdatingModDirPath);
 
                                 info.Report.Add(
-                                    (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportErrorLine() : string.Empty)
-                                        + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage()
-                                            + T._("Failed to update")
+                                    (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportErrorLine: string.Empty)
+                                        + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage                                            + T._("Failed to update")
                                             + " "
                                             + info.TargetFolderPath.Name
-                                        + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage()
-                                            + ErrorMessage(info.LastErrorText)
+                                        + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage                                            + ErrorMessage(info.LastErrorText)
                                             + " ("
                                             + T._("Details in") + " " + Properties.Settings.Default.ApplicationProductName + ".log"
                                             + ")"
-                                    + ManageSettings.UpdateReport.HtmlAfterModReportLine()
-                                    );
+                                    + ManageSettings.UpdateReport.HtmlAfterModReportLine                                    );
 
                                 ManageLogs.Log("Failed to update" + " " + info.TargetFolderPath.Name /*+ ":" + Environment.NewLine + ex*/);
                             }
@@ -335,7 +320,7 @@ namespace AIHelper.Manage.Update
         /// </summary>
         private void SaveCheckDateTimes()
         {
-            using (StreamWriter sw = new StreamWriter(ManageSettings.GetUpdateCheckDateTimesFilePath()))
+            using (StreamWriter sw = new StreamWriter(ManageSettings.UpdateCheckDateTimesFilePath))
             {
                 foreach (var source in lastCheckDates)
                 {
@@ -355,7 +340,7 @@ namespace AIHelper.Manage.Update
         private Dictionary<string, Dictionary<string, DateTime>> GetDateTimesFromFile()
         {
             var ret = new Dictionary<string, Dictionary<string, DateTime>>();
-            var DateTimesFilePath = ManageSettings.GetUpdateCheckDateTimesFilePath();
+            var DateTimesFilePath = ManageSettings.UpdateCheckDateTimesFilePath;
             if (!File.Exists(DateTimesFilePath))
             {
                 return ret;
@@ -423,25 +408,13 @@ namespace AIHelper.Manage.Update
                 {
                     foreach (var line in info.Report)
                     {
-                        string[] lines = line.Split(new[] { ManageSettings.UpdateReport.InfoLinkPattern() }, StringSplitOptions.None);
+                        string[] lines = line.Split(new[] { ManageSettings.UpdateReport.InfoLinkPattern}, StringSplitOptions.None);
                         if (lines.Length == 2 && _isHtmlReport)
                         {
                             newReport.Add(lines[0].Replace(
-                                  ManageSettings.UpdateReport.HtmlAfterModReportLine()
-                                , _isHtmlReport ?
-                                      ManageSettings.UpdateReport.HtmlModReportPreVersionTags()
-                                        + ManageSettings.UpdateReport.PreInfoLinkTitleText()
-                                    + ManageSettings.UpdateReport.HtmlModReportPostVersionTags()
-                                    + ManageSettings.UpdateReport.HtmlPreInfoLinkHtml()
-                                        + lines[1]
-                                    + ManageSettings.UpdateReport.HtmlAfterInfoLinkHtml()
-                                        + ManageSettings.UpdateReport.InfoLinkText()
-                                    + ManageSettings.UpdateReport.HtmlAfterInfoLinkText()
-                                    + ManageSettings.UpdateReport.HtmlModReportPreVersionTags()
-                                        + ManageSettings.UpdateReport.PostInfoLinkTitleText()
-                                    + ManageSettings.UpdateReport.HtmlModReportPostVersionTags()
-                                + ManageSettings.UpdateReport.HtmlAfterModReportLine()
-                                  : string.Empty
+                                  ManageSettings.UpdateReport.HtmlAfterModReportLine                                , _isHtmlReport ?
+                                      ManageSettings.UpdateReport.HtmlModReportPreVersionTags                                        + ManageSettings.UpdateReport.PreInfoLinkTitleText                                    + ManageSettings.UpdateReport.HtmlModReportPostVersionTags                                    + ManageSettings.UpdateReport.HtmlPreInfoLinkHtml                                        + lines[1]
+                                    + ManageSettings.UpdateReport.HtmlAfterInfoLinkHtml                                        + ManageSettings.UpdateReport.InfoLinkText                                    + ManageSettings.UpdateReport.HtmlAfterInfoLinkText                                    + ManageSettings.UpdateReport.HtmlModReportPreVersionTags                                        + ManageSettings.UpdateReport.PostInfoLinkTitleText                                    + ManageSettings.UpdateReport.HtmlModReportPostVersionTags                                + ManageSettings.UpdateReport.HtmlAfterModReportLine                                  : string.Empty
                                 ));
                         }
                         else
@@ -453,29 +426,28 @@ namespace AIHelper.Manage.Update
 
                 var noModsInfo = newReport.Count == 0;
 
-                if (File.Exists(ManageSettings.UpdateReport.GetReportFilePath()))
+                if (File.Exists(ManageSettings.UpdateReport.ReportFilePath))
                 {
                     _isHtmlReport = true;
-                    reportMessage = File.ReadAllText(ManageSettings.UpdateReport.GetReportFilePath())
-                     .Replace(ManageSettings.UpdateReport.GetBgImageLinkPathPattern(), ManageSettings.UpdateReport.GetCurrentGameBgFilePath())
-                     .Replace(ManageSettings.UpdateReport.GetModsUpdateReportHeaderTextPattern(), ManageSettings.UpdateReport.TitleText())
-                     .Replace(ManageSettings.UpdateReport.GetSingleModUpdateReportsTextSectionPattern(), (noModsInfo ? ManageSettings.UpdateReport.NoModsUpdatesFoundText() : string.Join(ManageSettings.UpdateReport.HtmlBetweenModsText(), newReport)) + "<br>")
-                     .Replace(ManageSettings.UpdateReport.GetModsUpdateInfoNoticePattern(), noModsInfo ? "" : ManageSettings.UpdateReport.ModsUpdateInfoNoticeText());
+                    reportMessage = File.ReadAllText(ManageSettings.UpdateReport.ReportFilePath)
+                     .Replace(ManageSettings.UpdateReport.BgImageLinkPathPattern, ManageSettings.UpdateReport.CurrentGameBgFilePath)
+                     .Replace(ManageSettings.UpdateReport.ModsUpdateReportHeaderTextPattern, ManageSettings.UpdateReport.TitleText)
+                     .Replace(ManageSettings.UpdateReport.SingleModUpdateReportsTextSectionPattern, (noModsInfo ? ManageSettings.UpdateReport.NoModsUpdatesFoundText: string.Join(ManageSettings.UpdateReport.HtmlBetweenModsText, newReport)) + "<br>")
+                     .Replace(ManageSettings.UpdateReport.ModsUpdateInfoNoticePattern, noModsInfo ? "" : ManageSettings.UpdateReport.ModsUpdateInfoNoticeText);
                 }
                 else
                 {
                     reportMessage =
-                        (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeginText() : string.Empty)
-                        + ManageSettings.UpdateReport.TitleText()
-                        + (_isHtmlReport ? ManageSettings.UpdateReport.HtmlAfterHeaderText() : Environment.NewLine + Environment.NewLine)
-                        + (noModsInfo ? ManageSettings.UpdateReport.NoModsUpdatesFoundText() : string.Join(_isHtmlReport ? ManageSettings.UpdateReport.HtmlBetweenModsText() : Environment.NewLine, newReport))
+                        (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeginText: string.Empty)
+                        + ManageSettings.UpdateReport.TitleText                        + (_isHtmlReport ? ManageSettings.UpdateReport.HtmlAfterHeaderText: Environment.NewLine + Environment.NewLine)
+                        + (noModsInfo ? ManageSettings.UpdateReport.NoModsUpdatesFoundText: string.Join(_isHtmlReport ? ManageSettings.UpdateReport.HtmlBetweenModsText: Environment.NewLine, newReport))
                         + "<br>"
-                        + (_isHtmlReport ? ManageSettings.UpdateReport.HtmLendText() : string.Empty);
+                        + (_isHtmlReport ? ManageSettings.UpdateReport.HtmLendText: string.Empty);
                 }
                 //ReportMessage = string.Join(/*Environment.NewLine*/"<br>", report);
                 //if (IsHTMLReport)
                 {
-                    var htmlfile = ManageSettings.UpdateReportHtmlFilePath();
+                    var htmlfile = ManageSettings.UpdateReportHtmlFilePath;
 
                     Directory.CreateDirectory(Path.GetDirectoryName(htmlfile));// fix missing parent directory error
 

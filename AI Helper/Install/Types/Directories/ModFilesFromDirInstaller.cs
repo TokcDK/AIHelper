@@ -15,7 +15,7 @@ namespace AIHelper.Install.Types.Directories
         protected override bool Get(DirectoryInfo directoryInfo)
         {
             if (directoryInfo == null
-                || File.Exists(Path.Combine(directoryInfo.FullName, ManageSettings.GetGameUpdateInstallerIniFileName())) // return if game update dir
+                || File.Exists(Path.Combine(directoryInfo.FullName, ManageSettings.GameUpdateInstallerIniFileName())) // return if game update dir
                 || File.Exists(Path.Combine(directoryInfo.FullName, Properties.Settings.Default.ApplicationProductName + ".exe")) // return if app update dir
                 )
             {
@@ -73,7 +73,7 @@ namespace AIHelper.Install.Types.Directories
 
                     //имя папки без GetResultTargetDirPathWithNameCheck для того, чтобы обновить существующую, если такая найдется
                     var targetModDIr = Path.Combine(
-                        ManageSettings.GetCurrentGameModsDirPath(),
+                        ManageSettings.CurrentGameModsDirPath,
                         (author.Length > 0 && !ManageStrings.IsStringAContainsStringB(name, author))
                             ?
                             "[" + author + "]" + name
@@ -124,19 +124,19 @@ namespace AIHelper.Install.Types.Directories
 
             if (!anyModFound)
             {
-                moddir = dir.Replace(ManageSettings.GetInstall2MoDirPath(), ManageSettings.GetCurrentGameModsDirPath());
+                moddir = dir.Replace(ManageSettings.Install2MoDirPath, ManageSettings.CurrentGameModsDirPath);
                 string targetfilepath = "readme.txt";
                 foreach (var file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
                 {
                     if (Path.GetExtension(file) == ".zipmod")
                     {
-                        string newpath = Path.Combine(ManageSettings.GetInstall2MoDirPath(), Path.GetFileName(file));
+                        string newpath = Path.Combine(ManageSettings.Install2MoDirPath, Path.GetFileName(file));
                         File.Move(file, newpath);
                         new ZipInstaller().Install();
                     }
                     else if (Path.GetExtension(file) == ".dll")
                     {
-                        string newpath = Path.Combine(ManageSettings.GetInstall2MoDirPath(), Path.GetFileName(file));
+                        string newpath = Path.Combine(ManageSettings.Install2MoDirPath, Path.GetFileName(file));
                         File.Move(file, newpath);
                         new BebInExDllInstaller().Install();
                     }
@@ -144,7 +144,7 @@ namespace AIHelper.Install.Types.Directories
                     {
                         //string[] datafiles = Directory.GetFiles(dir, Path.GetFileName(file), SearchOption.AllDirectories);
 
-                        DirectoryInfo dirinfo = new DirectoryInfo(ManageSettings.GetCurrentGameDataDirPath());
+                        DirectoryInfo dirinfo = new DirectoryInfo(ManageSettings.CurrentGameDataDirPath);
 
                         var datafiles = dirinfo.GetFiles(Path.GetFileName(file), SearchOption.AllDirectories);
 
@@ -164,7 +164,7 @@ namespace AIHelper.Install.Types.Directories
                                 }
                             }
 
-                            targetfilepath = selectedfile.Replace(ManageSettings.GetCurrentGameDataDirPath(), moddir);
+                            targetfilepath = selectedfile.Replace(ManageSettings.CurrentGameDataDirPath, moddir);
 
                             Directory.CreateDirectory(Path.GetDirectoryName(targetfilepath));
                             File.Move(file, targetfilepath);
@@ -387,8 +387,8 @@ namespace AIHelper.Install.Types.Directories
         {
             return string.Equals(subdirname, "abdata", StringComparison.InvariantCultureIgnoreCase)
                     || string.Equals(subdirname, "userdata", StringComparison.InvariantCultureIgnoreCase)
-                    || string.Equals(subdirname, ManageSettings.GetCurrentGameExeName() + "_data", StringComparison.InvariantCultureIgnoreCase)
-                    || string.Equals(subdirname, ManageSettings.GetStudioExeName() + "_data", StringComparison.InvariantCultureIgnoreCase)
+                    || string.Equals(subdirname, ManageSettings.CurrentGameExeName + "_data", StringComparison.InvariantCultureIgnoreCase)
+                    || string.Equals(subdirname, ManageSettings.StudioExeName + "_data", StringComparison.InvariantCultureIgnoreCase)
                     || string.Equals(subdirname, "manual_s", StringComparison.InvariantCultureIgnoreCase)
                     || string.Equals(subdirname, "manual", StringComparison.InvariantCultureIgnoreCase)
                     || string.Equals(subdirname, "MonoBleedingEdge", StringComparison.InvariantCultureIgnoreCase)

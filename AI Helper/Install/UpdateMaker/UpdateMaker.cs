@@ -16,7 +16,7 @@ namespace AIHelper.Install.UpdateMaker
 
         public bool MakeUpdate()
         {
-            var updateMakeInfoFilePath = Path.Combine(ManageSettings.GetCurrentGameDirPath(), "makeupdate.ini");
+            var updateMakeInfoFilePath = Path.Combine(ManageSettings.CurrentGameDirPath, "makeupdate.ini");
             if (!File.Exists(updateMakeInfoFilePath))
             {
                 return false;
@@ -39,9 +39,9 @@ namespace AIHelper.Install.UpdateMaker
             var blValueFiles = infoIni.GetKey("", "BlacklistFiles");
             var blacklistFiles = (blValueFiles == null ? new HashSet<string>() : blValueFiles.Split(',').ToHashSet());
 
-            var dateTimeSuffix = ManageSettings.GetDateTimeBasedSuffix();
+            var dateTimeSuffix = ManageSettings.DateTimeBasedSuffix;
 
-            var updateDir = Path.Combine(ManageSettings.GetCurrentGameDirPath(), "Updates", "Update");
+            var updateDir = Path.Combine(ManageSettings.CurrentGameDirPath, "Updates", "Update");
             if (Directory.Exists(updateDir))
             {
                 try
@@ -55,13 +55,13 @@ namespace AIHelper.Install.UpdateMaker
             }
             Directory.CreateDirectory(updateDir);
 
-            var updateGameDir = Path.Combine(updateDir, "Games", ManageSettings.GetCurrentGameDirName());
+            var updateGameDir = Path.Combine(updateDir, "Games", ManageSettings.CurrentGameDirName);
 
             foreach (var parameter in parameters)
             {
                 _parameter = parameter;
 
-                var parameterGameDir = Path.Combine(ManageSettings.GetCurrentGameDirPath(), parameter.DirName);
+                var parameterGameDir = Path.Combine(ManageSettings.CurrentGameDirPath, parameter.DirName);
                 var parameterUpdateDir = Path.Combine(updateGameDir, parameter.DirName);
 
                 if (infoIni.KeyExists(parameter.DirsKey))
@@ -134,8 +134,8 @@ namespace AIHelper.Install.UpdateMaker
                 }
             }
 
-            var gameupdateini = ManageIni.GetINIFile(Path.Combine(updateDir, ManageSettings.GetGameUpdateInstallerIniFileName()));
-            gameupdateini.SetKey("", "GameFolderName", ManageSettings.GetCurrentGameDirName());
+            var gameupdateini = ManageIni.GetINIFile(Path.Combine(updateDir, ManageSettings.GameUpdateInstallerIniFileName()));
+            gameupdateini.SetKey("", "GameFolderName", ManageSettings.CurrentGameDirName);
             gameupdateini.SetKey("", "IsRoot", "true");
             // add keys
             foreach (var parameter in _gameupdatekeys)

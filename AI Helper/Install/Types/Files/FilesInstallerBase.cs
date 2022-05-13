@@ -12,7 +12,7 @@ namespace AIHelper.Install.Types.Files
 
         public override bool Install()
         {
-            return GetAll(new DirectoryInfo(Manage.ManageSettings.GetInstall2MoDirPath()));
+            return GetAll(new DirectoryInfo(Manage.ManageSettings.Install2MoDirPath));
         }
 
         public override bool InstallFrom(string path)

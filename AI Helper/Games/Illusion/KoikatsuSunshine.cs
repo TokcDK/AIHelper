@@ -64,21 +64,21 @@ namespace AIHelper.Games.Illusion
                     //}
                     //,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGameMoOverwritePath(), "UserData", "MaterialEditor")
+                        Path.Combine(ManageSettings.CurrentGameMoOverwritePath, "UserData", "MaterialEditor")
                         ,
-                        Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "UserData", "MaterialEditor")
+                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "MaterialEditor")
                     }
                     ,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGameMoOverwritePath(), "UserData", "Overlays")
+                        Path.Combine(ManageSettings.CurrentGameMoOverwritePath, "UserData", "Overlays")
                         ,
-                        Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "UserData", "Overlays")
+                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "Overlays")
                     }
                     ,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGameMoOverwritePath(), "UserData", "cap")
+                        Path.Combine(ManageSettings.CurrentGameMoOverwritePath, "UserData", "cap")
                         ,
-                        Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "UserData", "cap")
+                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "cap")
                     }
             };
         }

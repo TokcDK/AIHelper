@@ -42,7 +42,7 @@ namespace AIHelper.Install.Types.Files.Archive
                     //если один файл, распаковать в подпапку
                     if (filesCount == 1)
                     {
-                        archive.ExtractToDirectory(Path.Combine(ManageSettings.GetInstall2MoDirPath(), zipName));
+                        archive.ExtractToDirectory(Path.Combine(ManageSettings.Install2MoDirPath, zipName));
                         break;
                     }
 
@@ -92,7 +92,7 @@ namespace AIHelper.Install.Types.Files.Archive
                         continue;
                     }
 
-                    string temp = Path.Combine(ManageSettings.GetInstall2MoDirPath(), "temp");
+                    string temp = Path.Combine(ManageSettings.Install2MoDirPath, "temp");
                     string entryPath = Path.Combine(temp, entryFullName);
                     string entryDir = Path.GetDirectoryName(entryPath);
                     if (!Directory.Exists(entryDir))
@@ -121,7 +121,7 @@ namespace AIHelper.Install.Types.Files.Archive
 
                     foreach (var modFolder in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(false))
                     {
-                        modFolderForUpdate = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modFolder);
+                        modFolderForUpdate = Path.Combine(ManageSettings.CurrentGameModsDirPath, modFolder);
                         string targetfile = Path.Combine(modFolderForUpdate, entryFullName);
                         targetFileAny = ManageModOrganizer.GetTheDllFromSubfolders(modFolderForUpdate, entryName.Remove(entryName.Length - 4, 4), "dll");
                         if (!File.Exists(targetfile) && (targetFileAny.Length == 0 || !File.Exists(targetFileAny)))
@@ -166,7 +166,7 @@ namespace AIHelper.Install.Types.Files.Archive
 
             if (filesCount == 1)
             {
-                zipfile.MoveTo(zipfile + ".Extracted" + ManageSettings.GetDateTimeBasedSuffix());
+                zipfile.MoveTo(zipfile + ".Extracted" + ManageSettings.DateTimeBasedSuffix);
                 ret = true;
             }
             else if (foundZipMod)
@@ -183,7 +183,7 @@ namespace AIHelper.Install.Types.Files.Archive
                 var modName = zipName;
                 ExtractVersion(ref version, ref modName);
 
-                string targetModDirPath = ManageFilesFoldersExtensions.GetResultTargetDirPathWithNameCheck(foundUpdateName ? ManageSettings.GetInstall2MoDirPath() : ManageSettings.GetCurrentGameModsDirPath(), modName + (foundUpdateName ? "_temp" : ""));
+                string targetModDirPath = ManageFilesFoldersExtensions.GetResultTargetDirPathWithNameCheck(foundUpdateName ? ManageSettings.Install2MoDirPath : ManageSettings.CurrentGameModsDirPath, modName + (foundUpdateName ? "_temp" : ""));
 
                 Compressor.Decompress(zipfile.FullName, targetModDirPath);
 
@@ -232,7 +232,7 @@ namespace AIHelper.Install.Types.Files.Archive
             else if (foundcsFiles)
             {
                 //extract to handle as subdir
-                string extractpath = ManageFilesFoldersExtensions.GetResultTargetDirPathWithNameCheck(ManageSettings.GetInstall2MoDirPath(), zipName);
+                string extractpath = ManageFilesFoldersExtensions.GetResultTargetDirPathWithNameCheck(ManageSettings.Install2MoDirPath, zipName);
                 Compressor.Decompress(zipfile.FullName, extractpath);
                 zipfile.MoveTo(zipfile.FullName + ".InstalledExtractedAsSubfolder");
 
@@ -276,11 +276,11 @@ namespace AIHelper.Install.Types.Files.Archive
             {
                 if (filesCount > 1)
                 {
-                    archive.ExtractToDirectory(Path.Combine(ManageSettings.GetInstall2MoDirPath(), zipName));
+                    archive.ExtractToDirectory(Path.Combine(ManageSettings.Install2MoDirPath, zipName));
                 }
                 else
                 {
-                    archive.Entries[entrieNum].ExtractToFile(Path.Combine(ManageSettings.GetInstall2MoDirPath(), entryName));
+                    archive.Entries[entrieNum].ExtractToFile(Path.Combine(ManageSettings.Install2MoDirPath, entryName));
                 }
                 return true;
             }
@@ -288,11 +288,11 @@ namespace AIHelper.Install.Types.Files.Archive
             {
                 if (filesCount > 1)
                 {
-                    archive.ExtractToDirectory(Path.Combine(ManageSettings.GetInstall2MoDirPath(), zipName));
+                    archive.ExtractToDirectory(Path.Combine(ManageSettings.Install2MoDirPath, zipName));
                 }
                 else
                 {
-                    archive.Entries[entrieNum].ExtractToFile(Path.Combine(ManageSettings.GetInstall2MoDirPath(), entryName + "mod"));
+                    archive.Entries[entrieNum].ExtractToFile(Path.Combine(ManageSettings.Install2MoDirPath, entryName + "mod"));
                 }
                 return true;
             }

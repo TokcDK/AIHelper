@@ -63,7 +63,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements
 
                 XUAFromLanguageComboBox.SelectedItem = ManageSettings.LanguageEnumFromIdentifier(iniValue);
 
-                if (ManageSettings.IsFirstRun())
+                if (ManageSettings.IsFirstRun)
                 {
                     iniValue = GetLanguageCodeBySystemLanguage();
                 }

@@ -10,7 +10,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
         {
         }
 
-        readonly string _updateInfosFile = ManageSettings.GetUpdateInfosFilePath();
+        readonly string _updateInfosFile = ManageSettings.UpdateInfosFilePath;
 
         /// <summary>
         /// Get enabled and exists Mods list from updateinfos file
@@ -26,7 +26,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
                 if (updateInfoList != null && updateInfoList.Count > 0)
                     foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(SharedData.GameData.MainForm.CheckEnabledModsOnlyLabel.IsChecked()))
                     {
-                        var modPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modname);
+                        var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modname);
                         if (updateInfoList.ContainsKey(modname) && !infos.ContainsKey(modPath))
                         {
                             infos.Add(modname, updateInfoList[modname]);

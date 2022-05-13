@@ -25,18 +25,18 @@ namespace AIHelper.Manage.ModeSwitch
             };
 
             frmProgress.Controls.Add(pbProgress);
-            frmProgress.Text = T._("Creating backup of Data and Mods for the game") + ":" + ManageSettings.GetCurrentGameDirName();
+            frmProgress.Text = T._("Creating backup of Data and Mods for the game") + ":" + ManageSettings.CurrentGameDirName;
 
             frmProgress.Show();
 
-            bakDirPath = Path.Combine(selectedGamePath = ManageSettings.GetCurrentGameDirPath(), "Bak", ManageSettings.GetCurrentGameDirName() + "_backup" + ManageSettings.GetDateTimeBasedSuffix());
+            bakDirPath = Path.Combine(selectedGamePath = ManageSettings.CurrentGameDirPath, "Bak", ManageSettings.CurrentGameDirName + "_backup" + ManageSettings.DateTimeBasedSuffix);
 
             Directory.CreateDirectory(bakDirPath);
 
             Parallel.ForEach(new[]
             {
-                ManageSettings.GetCurrentGameDataDirPath(),
-                ManageSettings.GetCurrentGameModsDirPath(),
+                ManageSettings.CurrentGameDataDirPath,
+                ManageSettings.CurrentGameModsDirPath,
             }, dir =>
             {
                 ParseDirectories(dir);

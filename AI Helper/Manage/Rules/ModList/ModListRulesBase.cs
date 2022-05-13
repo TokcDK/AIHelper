@@ -46,7 +46,7 @@ namespace AIHelper.Manage.Rules.ModList
         {
             RemoveRulesTagFile(ref inSubPath);
 
-            if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), ModlistData.ModName) + Path.DirectorySeparatorChar + inSubPath))
+            if (File.Exists(Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.ModName) + Path.DirectorySeparatorChar + inSubPath))
             {
                 foundModName = ModlistData.ModName;
                 return true;
@@ -72,7 +72,7 @@ namespace AIHelper.Manage.Rules.ModList
 
                 for (int i = 0; i < inSubPath.Length; i++)
                 {
-                    var filePath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), subModName) + Path.DirectorySeparatorChar + inSubPath[i];
+                    var filePath = Path.Combine(ManageSettings.CurrentGameModsDirPath, subModName) + Path.DirectorySeparatorChar + inSubPath[i];
                     if (subModName != ModlistData.ModName && File.Exists(filePath))
                     {
                         foundModName = subModName;
@@ -162,7 +162,7 @@ namespace AIHelper.Manage.Rules.ModList
         {
             foreach (var modFile in ModlistData.EnabledModNamesList)
             {
-                var mFilePath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modFile) + Path.DirectorySeparatorChar + inSubPath;
+                var mFilePath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modFile) + Path.DirectorySeparatorChar + inSubPath;
                 if (!alreadyChecked.Contains(modFile) && File.Exists(mFilePath))
                 {
                     //when one of other enabled mods already have same file
@@ -262,7 +262,7 @@ namespace AIHelper.Manage.Rules.ModList
             }
             foreach (var enabledModName in ModlistData.EnabledModNamesList)
             {
-                var modPath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), enabledModName);
+                var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, enabledModName);
                 var targetfilePath = Path.GetFullPath(modPath + Path.DirectorySeparatorChar + ruleData);
                 if (File.Exists(targetfilePath) || Directory.Exists(targetfilePath))
                 {

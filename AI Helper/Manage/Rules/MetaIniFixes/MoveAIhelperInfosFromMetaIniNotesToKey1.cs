@@ -32,8 +32,8 @@ namespace AIHelper.Manage.Rules.MetaIniFixes
 
             var patternsOfInfoForMove = new string[2][]
             {
-                                        new string[2] { "mlinfo", ManageSettings.AiMetaIniKeyModlistRulesInfoName() },//regex to capture ::mlinfo:: with html tags
-                                        new string[2] { "updgit", ManageSettings.AiMetaIniKeyUpdateName() }//regex to capture update info with html tags
+                                        new string[2] { "mlinfo", ManageSettings.AiMetaIniKeyModlistRulesInfoName},//regex to capture ::mlinfo:: with html tags
+                                        new string[2] { "updgit", ManageSettings.AiMetaIniKeyUpdateName}//regex to capture update info with html tags
             };
 
             var metainiinfomoved = false;

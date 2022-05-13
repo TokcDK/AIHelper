@@ -61,7 +61,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
 
         private string GetBepInExVersionString()
         {
-            _cfgPath = ManageSettings.GetBepInExCfgFilePath();
+            _cfgPath = ManageSettings.BepInExCfgFilePath;
             var fullPath = Path.GetFullPath(Path.Combine(_cfgPath, "..", "..", "core", "BepInEx.dll"));
             var bepInExDllPath = ManageModOrganizer.GetLastPath(fullPath);
             if (File.Exists(bepInExDllPath))
@@ -84,7 +84,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
         private void InitLogSettings()
         {
             //Set BepInEx log data
-            var bepInExCfgPath = ManageSettings.GetBepInExCfgFilePath();
+            var bepInExCfgPath = ManageSettings.BepInExCfgFilePath;
             if (bepInExCfgPath.Length > 0 && File.Exists(bepInExCfgPath))
             {
                 BepInExSettingsLogCheckBox.Enabled = true;

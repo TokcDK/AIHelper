@@ -168,15 +168,15 @@ namespace AIHelper.Manage
             /// </summary>
             private void KPlugTweaks()
             {
-                var cfgpath = Path.Combine(ManageSettings.GetCurrentGameMoOverwritePath(), "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg");
+                var cfgpath = Path.Combine(ManageSettings.CurrentGameMoOverwritePath, "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg");
 
                 if (!File.Exists(cfgpath))
                 {
                     foreach (var modName in _modlistData.EnabledModNamesList)
                     {
-                        if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modName, "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg")))
+                        if (File.Exists(Path.Combine(ManageSettings.CurrentGameModsDirPath, modName, "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg")))
                         {
-                            cfgpath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modName, "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg");
+                            cfgpath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modName, "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg");
                             break;
                         }
                     }

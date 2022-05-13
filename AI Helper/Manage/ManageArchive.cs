@@ -45,7 +45,7 @@ namespace AIHelper.Manage
                         Compressor.Decompress(file, targetDir);
                     }
                     //File.Delete(file);
-                    File.Move(file, file + ".Extracted" + ManageSettings.GetDateTimeBasedSuffix());
+                    File.Move(file, file + ".Extracted" + ManageSettings.DateTimeBasedSuffix);
                 }
                 catch
                 {

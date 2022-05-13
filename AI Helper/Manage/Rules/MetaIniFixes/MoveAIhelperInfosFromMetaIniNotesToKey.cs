@@ -18,7 +18,7 @@ namespace AIHelper.Manage.Rules.MetaIniFixes
 
         internal override bool Apply()
         {
-            var gameName = ManageSettings.GetMoCurrentGameName();
+            var gameName = ManageSettings.MoCurrentGameName;
             if (string.IsNullOrWhiteSpace(gameName)) return false;
             if (ini.KeyExists("gameName", "General") && ini.GetKey("General", "gameName") == gameName) return false;
 

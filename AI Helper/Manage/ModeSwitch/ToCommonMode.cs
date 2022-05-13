@@ -107,15 +107,15 @@ namespace AIHelper.Manage.ModeSwitch
 
                 if (!ManageSettings.MoIsNew)
                 {
-                    if (File.Exists(ManageSettings.GetDummyFilePath()) && /*Удалил TESV.exe, который был лаунчером, а не болванкой*/new FileInfo(ManageSettings.GetDummyFilePath()).Length < 10000)
+                    if (File.Exists(ManageSettings.DummyFilePath) && /*Удалил TESV.exe, который был лаунчером, а не болванкой*/new FileInfo(ManageSettings.DummyFilePath).Length < 10000)
                     {
-                        File.Delete(ManageSettings.GetDummyFilePath());
+                        File.Delete(ManageSettings.DummyFilePath);
                     }
                 }
 
-                Directory.CreateDirectory(ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath());
+                Directory.CreateDirectory(ManageSettings.CurrentGameMOmodeDataFilesBakDirPath);
 
-                ManageFilesFoldersExtensions.GetEmptySubfoldersPaths(ManageSettings.GetCurrentGameDataDirPath(), vanillaDataEmptyFoldersList);
+                ManageFilesFoldersExtensions.GetEmptySubfoldersPaths(ManageSettings.CurrentGameDataDirPath, vanillaDataEmptyFoldersList);
 
                 var frmProgress = new Form
                 {
@@ -132,10 +132,10 @@ namespace AIHelper.Manage.ModeSwitch
                 frmProgress.Show();
 
                 //DATA files
-                vanillaDataFilesList = Directory.GetFiles(ManageSettings.GetCurrentGameDataDirPath(), "*.*", SearchOption.AllDirectories);
+                vanillaDataFilesList = Directory.GetFiles(ManageSettings.CurrentGameDataDirPath, "*.*", SearchOption.AllDirectories);
 
                 // OVERWRITE
-                var sourceFolder = ManageSettings.GetCurrentGameOverwriteFolderPath();
+                var sourceFolder = ManageSettings.CurrentGameOverwriteFolderPath;
                 frmProgress.Text = T._("Parsing") + ":" + Path.GetFileName(sourceFolder);
                 ParseDirectories(sourceFolder, sourceFolder);
 
@@ -155,7 +155,7 @@ namespace AIHelper.Manage.ModeSwitch
                         pbProgress.Value = m;
                     }
 
-                    sourceFolder = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), enabledModNamesList[m]);
+                    sourceFolder = Path.Combine(ManageSettings.CurrentGameModsDirPath, enabledModNamesList[m]);
                     if (!Directory.Exists(sourceFolder))
                     {
                         continue;
@@ -176,15 +176,15 @@ namespace AIHelper.Manage.ModeSwitch
                 }
 
                 ReplacePathsToVars(ref moToStandartConvertationOperationsList);
-                File.WriteAllText(ManageSettings.GetCurrentGameMoToStandartConvertationOperationsListFilePath(), moToStandartConvertationOperationsList.ToString());
+                File.WriteAllText(ManageSettings.CurrentGameMoToStandartConvertationOperationsListFilePath, moToStandartConvertationOperationsList.ToString());
                 moToStandartConvertationOperationsList.Clear();
 
-                var dataWithModsFileslist = Directory.GetFiles(ManageSettings.GetCurrentGameDataDirPath(), "*.*", SearchOption.AllDirectories);
+                var dataWithModsFileslist = Directory.GetFiles(ManageSettings.CurrentGameDataDirPath, "*.*", SearchOption.AllDirectories);
                 ReplacePathsToVars(ref dataWithModsFileslist);
-                File.WriteAllLines(ManageSettings.GetCurrentGameModdedDataFilesListFilePath(), dataWithModsFileslist);
+                File.WriteAllLines(ManageSettings.CurrentGameModdedDataFilesListFilePath, dataWithModsFileslist);
 
                 ReplacePathsToVars(ref vanillaDataFilesList);
-                File.WriteAllLines(ManageSettings.GetCurrentGameVanillaDataFilesListFilePath(), vanillaDataFilesList);
+                File.WriteAllLines(ManageSettings.CurrentGameVanillaDataFilesListFilePath, vanillaDataFilesList);
 
                 if (zipmodsGuidList.Count > 0)
                 {
@@ -195,7 +195,7 @@ namespace AIHelper.Manage.ModeSwitch
                     //        file.WriteLine("{0}{{ZIPMOD}}{1}", entry.Key, entry.Value);
                     //    }
                     //}
-                    File.WriteAllLines(ManageSettings.GetCurrentGameZipmodsGuidListFilePath(),
+                    File.WriteAllLines(ManageSettings.CurrentGameZipmodsGuidListFilePath,
                         zipmodsGuidList.Select(x => x.Key + "{{ZIPMOD}}" + x.Value).ToArray());
                 }
                 dataWithModsFileslist = null;
@@ -208,7 +208,7 @@ namespace AIHelper.Manage.ModeSwitch
                 if (vanillaDataEmptyFoldersList.ToString().Length > 0)
                 {
                     ReplacePathsToVars(ref vanillaDataEmptyFoldersList);
-                    File.WriteAllText(ManageSettings.GetCurrentGameVanillaDataEmptyFoldersListFilePath(), vanillaDataEmptyFoldersList.ToString());
+                    File.WriteAllText(ManageSettings.CurrentGameVanillaDataEmptyFoldersListFilePath, vanillaDataEmptyFoldersList.ToString());
                 }
 
                 MOmode = false;
@@ -222,7 +222,7 @@ namespace AIHelper.Manage.ModeSwitch
 
                 var emptyDirsList = ReplaceVarsToPaths(vanillaDataEmptyFoldersList.ToString());
                 //clean empty folders except whose was already in Data
-                ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.GetCurrentGameDataDirPath(), false, emptyDirsList.SplitToLines().ToHashSet(), false);
+                ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.CurrentGameDataDirPath, false, emptyDirsList.SplitToLines().ToHashSet(), false);
 
                 //сообщить об ошибке
                 MessageBox.Show("Mode was not switched. Error:" + Environment.NewLine + ex);
@@ -265,7 +265,7 @@ namespace AIHelper.Manage.ModeSwitch
             {
                 var symlinkTarget = Path.GetFullPath(dir.GetSymlinkTarget(ObjectType.Directory));
 
-                var targetPath = dir.Replace(parentDirPath, ManageSettings.GetCurrentGameDataDirPath()); // we move to data
+                var targetPath = dir.Replace(parentDirPath, ManageSettings.CurrentGameDataDirPath); // we move to data
                 symlinkTarget.CreateSymlink(targetPath, isRelative: Path.GetPathRoot(targetPath) == Path.GetPathRoot(symlinkTarget), objectType: ObjectType.Directory);
 
                 // we not deleted symlink in the dir
@@ -335,7 +335,7 @@ namespace AIHelper.Manage.ModeSwitch
             {
                 var symlinkTarget = Path.GetFullPath(linkPath.GetSymlinkTarget(ObjectType.File));
 
-                var targetPath = linkPath.Replace(parentDirPath, ManageSettings.GetCurrentGameDataDirPath());
+                var targetPath = linkPath.Replace(parentDirPath, ManageSettings.CurrentGameDataDirPath);
                 symlinkTarget.CreateSymlink(targetPath, isRelative: Path.GetPathRoot(targetPath) == Path.GetPathRoot(symlinkTarget), objectType: ObjectType.File);
             }
             else
@@ -355,7 +355,7 @@ namespace AIHelper.Manage.ModeSwitch
         /// <param name="parentDirPath"></param>
         protected void ParseFile(string sourceFilePath, string parentDirPath)
         {
-            var dataFilePath = sourceFilePath.Replace(parentDirPath, ManageSettings.GetCurrentGameDataDirPath());
+            var dataFilePath = sourceFilePath.Replace(parentDirPath, ManageSettings.CurrentGameDataDirPath);
             if (ManageStrings.CheckForLongPath(ref dataFilePath))
             {
                 longPaths.Add(dataFilePath.Substring(4));
@@ -363,7 +363,7 @@ namespace AIHelper.Manage.ModeSwitch
 
             if (File.Exists(dataFilePath))
             {
-                var vanillaFileBackupTargetPath = dataFilePath.Replace(ManageSettings.GetCurrentGameDataDirPath(), ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath());
+                var vanillaFileBackupTargetPath = dataFilePath.Replace(ManageSettings.CurrentGameDataDirPath, ManageSettings.CurrentGameMOmodeDataFilesBakDirPath);
 
                 if (File.Exists(vanillaFileBackupTargetPath) || !vanillaDataFilesList.Contains(dataFilePath))
                 {

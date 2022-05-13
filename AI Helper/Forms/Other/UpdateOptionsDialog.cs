@@ -15,7 +15,7 @@ namespace AIHelper.Forms.Other
 
         private void OpenOldVersionsDirButton_Click(object sender, EventArgs e)
         {
-            var modUpdatesBakDir = ManageSettings.GetUpdatedModsOlderVersionsBuckupDirPath();
+            var modUpdatesBakDir = ManageSettings.UpdatedModsOlderVersionsBuckupDirPath;
             if (!Directory.Exists(modUpdatesBakDir))
             {
                 Directory.CreateDirectory(modUpdatesBakDir);
@@ -30,14 +30,14 @@ namespace AIHelper.Forms.Other
 
         private void BleadingEdgeZipmodsCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            if (BleadingEdgeZipmodsCheckBox.Checked && !File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()))
+            if (BleadingEdgeZipmodsCheckBox.Checked && !File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()));
-                File.WriteAllText(ManageSettings.ZipmodsBleedingEdgeMarkFilePath(), string.Empty);
+                Directory.CreateDirectory(Path.GetDirectoryName(ManageSettings.ZipmodsBleedingEdgeMarkFilePath));
+                File.WriteAllText(ManageSettings.ZipmodsBleedingEdgeMarkFilePath, string.Empty);
             }
-            else if (!BleadingEdgeZipmodsCheckBox.Checked && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()))
+            else if (!BleadingEdgeZipmodsCheckBox.Checked && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath))
             {
-                File.Delete(ManageSettings.ZipmodsBleedingEdgeMarkFilePath());
+                File.Delete(ManageSettings.ZipmodsBleedingEdgeMarkFilePath);
             }
 
             UpdateButtonOptionsRefresh();
@@ -58,7 +58,7 @@ namespace AIHelper.Forms.Other
         /// </summary>
         private void UpdateButtonOptionsRefresh()
         {
-            UpdateZipmodsCheckBox.Enabled = ManageSettings.IsHaveSideloaderMods() && File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath());
+            UpdateZipmodsCheckBox.Enabled = ManageSettings.IsHaveSideloaderMods&& File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath);
             if (UpdateZipmodsCheckBox.Checked && !UpdateZipmodsCheckBox.Enabled)
             {
                 UpdateZipmodsCheckBox.Checked = false;
@@ -74,7 +74,7 @@ namespace AIHelper.Forms.Other
             SharedData.GameData.MainForm.CheckEnabledModsOnlyLabel.SetCheck(CheckEnabledModsOnlyCheckBox.Enabled);
             btnUpdateMods.Enabled = (UpdatePluginsCheckBox.Visible && UpdatePluginsCheckBox.Checked) || (UpdateZipmodsCheckBox.Visible && UpdateZipmodsCheckBox.Checked);
 
-            BleadingEdgeZipmodsCheckBox.Checked = BleadingEdgeZipmodsCheckBox.Enabled && UpdateZipmodsCheckBox.Checked && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath());
+            BleadingEdgeZipmodsCheckBox.Checked = BleadingEdgeZipmodsCheckBox.Enabled && UpdateZipmodsCheckBox.Checked && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath);
             BleadingEdgeZipmodsCheckBox.Enabled = BleadingEdgeZipmodsCheckBox.Enabled && UpdateZipmodsCheckBox.Checked;
         }
 

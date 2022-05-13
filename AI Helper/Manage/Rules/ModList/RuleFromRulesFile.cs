@@ -14,7 +14,7 @@ namespace AIHelper.Manage.Rules.ModList
 
         internal override bool Condition()
         {
-            var rulesFilePath = ManageSettings.GetCurrentGameModListRulesPath();
+            var rulesFilePath = ManageSettings.CurrentGameModListRulesPath;
 
             if (!File.Exists(rulesFilePath)) return false;
 
@@ -48,7 +48,7 @@ namespace AIHelper.Manage.Rules.ModList
 
             ModlistData.RulesDict = new Dictionary<string, string[]>();
 
-            var modlistRulesPath = ManageSettings.GetCurrentGameModListRulesPath();
+            var modlistRulesPath = ManageSettings.CurrentGameModListRulesPath;
             if (!File.Exists(modlistRulesPath))
             {
                 ModlistData.RulesDict = null;

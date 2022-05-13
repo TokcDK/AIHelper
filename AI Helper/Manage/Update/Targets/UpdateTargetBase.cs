@@ -53,10 +53,10 @@ namespace AIHelper.Manage.Update.Targets
         {
             try
             {
-                BuckupDirPath = Path.Combine(ManageSettings.GetUpdatedModsOlderVersionsBuckupDirPath(), Info.TargetFolderPath.Name + "_" + Info.TargetCurrentVersion);
+                BuckupDirPath = Path.Combine(ManageSettings.UpdatedModsOlderVersionsBuckupDirPath, Info.TargetFolderPath.Name + "_" + Info.TargetCurrentVersion);
                 if (Directory.Exists(BuckupDirPath))
                 {
-                    BuckupDirPath += ManageSettings.GetDateTimeBasedSuffix();
+                    BuckupDirPath += ManageSettings.DateTimeBasedSuffix;
                 }
 
                 Info.BuckupDirPath = BuckupDirPath;
@@ -127,10 +127,10 @@ namespace AIHelper.Manage.Update.Targets
             }
 
             // Move file from 2mo to downloads when it was manally downloaded in 2mo
-            if (Info.UpdateFilePath.StartsWith(ManageSettings.GetInstall2MoDirPath()))
+            if (Info.UpdateFilePath.StartsWith(ManageSettings.Install2MoDirPath))
             {
                 // set new path in downloads
-                var newFilePathInDownloads = Info.UpdateFilePath.Replace(ManageSettings.GetInstall2MoDirPath(), ManageSettings.GetModsUpdateDirDownloadsPath());
+                var newFilePathInDownloads = Info.UpdateFilePath.Replace(ManageSettings.Install2MoDirPath, ManageSettings.ModsUpdateDirDownloadsPath);
                 // move file to new path
                 File.Move(Info.UpdateFilePath, newFilePathInDownloads);
                 // set change path to new

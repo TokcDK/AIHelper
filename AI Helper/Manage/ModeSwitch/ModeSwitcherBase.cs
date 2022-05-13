@@ -86,7 +86,7 @@ namespace AIHelper.Manage.ModeSwitch
         {
         }
 
-        protected bool MOmode { get => ManageSettings.IsMoMode(); set => Properties.Settings.Default.MOmode = value; }
+        protected bool MOmode { get => ManageSettings.IsMoMode; set => Properties.Settings.Default.MOmode = value; }
 
         protected static string operationsSplitStringBase { get => "|MovedTo|"; }
         protected string[] operationsSplitString = new string[1] { operationsSplitStringBase };
@@ -99,16 +99,16 @@ namespace AIHelper.Manage.ModeSwitch
         {
             if (create)
             {
-                if (!File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "normal.mode")))
+                if (!File.Exists(Path.Combine(ManageSettings.CurrentGameDataDirPath, "normal.mode")))
                 {
-                    File.WriteAllText(Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "normal.mode"), "The game is in normal mode");
+                    File.WriteAllText(Path.Combine(ManageSettings.CurrentGameDataDirPath, "normal.mode"), "The game is in normal mode");
                 }
             }
             else
             {
-                if (File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "normal.mode")))
+                if (File.Exists(Path.Combine(ManageSettings.CurrentGameDataDirPath, "normal.mode")))
                 {
-                    File.Delete(Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "normal.mode"));
+                    File.Delete(Path.Combine(ManageSettings.CurrentGameDataDirPath, "normal.mode"));
                 }
             }
         }
@@ -121,9 +121,9 @@ namespace AIHelper.Manage.ModeSwitch
         protected string ReplaceVarsToPaths(string str)
         {
             return str
-            .Replace(ManageSettings.VarCurrentGameDataPath(), ManageSettings.GetCurrentGameDataDirPath())
-            .Replace(ManageSettings.VarCurrentGameModsPath(), ManageSettings.GetCurrentGameModsDirPath())
-            .Replace(ManageSettings.VarCurrentGameMoOverwritePath(), ManageSettings.GetCurrentGameMoOverwritePath());
+            .Replace(ManageSettings.VarCurrentGameDataPath, ManageSettings.CurrentGameDataDirPath)
+            .Replace(ManageSettings.VarCurrentGameModsPath, ManageSettings.CurrentGameModsDirPath)
+            .Replace(ManageSettings.VarCurrentGameMoOverwritePath, ManageSettings.CurrentGameMoOverwritePath);
         }
 
         /// <summary>
@@ -135,9 +135,9 @@ namespace AIHelper.Manage.ModeSwitch
             for (int i = 0; i < sarr.Length; i++)
             {
                 sarr[i] = sarr[i]
-                .Replace(ManageSettings.GetCurrentGameDataDirPath(), ManageSettings.VarCurrentGameDataPath())
-                .Replace(ManageSettings.GetCurrentGameModsDirPath(), ManageSettings.VarCurrentGameModsPath())
-                .Replace(ManageSettings.GetCurrentGameMoOverwritePath(), ManageSettings.VarCurrentGameMoOverwritePath());
+                .Replace(ManageSettings.CurrentGameDataDirPath, ManageSettings.VarCurrentGameDataPath)
+                .Replace(ManageSettings.CurrentGameModsDirPath, ManageSettings.VarCurrentGameModsPath)
+                .Replace(ManageSettings.CurrentGameMoOverwritePath, ManageSettings.VarCurrentGameMoOverwritePath);
             }
         }
 
@@ -150,9 +150,9 @@ namespace AIHelper.Manage.ModeSwitch
             for (int i = 0; i < sarr.Length; i++)
             {
                 sarr[i] = sarr[i]
-                .Replace(ManageSettings.VarCurrentGameDataPath(), ManageSettings.GetCurrentGameDataDirPath())
-                .Replace(ManageSettings.VarCurrentGameModsPath(), ManageSettings.GetCurrentGameModsDirPath())
-                .Replace(ManageSettings.VarCurrentGameMoOverwritePath(), ManageSettings.GetCurrentGameMoOverwritePath());
+                .Replace(ManageSettings.VarCurrentGameDataPath, ManageSettings.CurrentGameDataDirPath)
+                .Replace(ManageSettings.VarCurrentGameModsPath, ManageSettings.CurrentGameModsDirPath)
+                .Replace(ManageSettings.VarCurrentGameMoOverwritePath, ManageSettings.CurrentGameMoOverwritePath);
             }
         }
 
@@ -163,9 +163,9 @@ namespace AIHelper.Manage.ModeSwitch
         protected void ReplacePathsToVars(ref StringBuilder sb)
         {
             sb = sb
-                .Replace(ManageSettings.GetCurrentGameDataDirPath(), ManageSettings.VarCurrentGameDataPath())
-                .Replace(ManageSettings.GetCurrentGameModsDirPath(), ManageSettings.VarCurrentGameModsPath())
-                .Replace(ManageSettings.GetCurrentGameMoOverwritePath(), ManageSettings.VarCurrentGameMoOverwritePath());
+                .Replace(ManageSettings.CurrentGameDataDirPath, ManageSettings.VarCurrentGameDataPath)
+                .Replace(ManageSettings.CurrentGameModsDirPath, ManageSettings.VarCurrentGameModsPath)
+                .Replace(ManageSettings.CurrentGameMoOverwritePath, ManageSettings.VarCurrentGameMoOverwritePath);
         }
 
         ///// <summary>
@@ -194,7 +194,7 @@ namespace AIHelper.Manage.ModeSwitch
 
         protected void MoveVanillaFilesBackToData()
         {
-            var mOmodeDataFilesBakDirPath = ManageSettings.GetCurrentGameMOmodeDataFilesBakDirPath();
+            var mOmodeDataFilesBakDirPath = ManageSettings.CurrentGameMOmodeDataFilesBakDirPath;
             if (!Directory.Exists(mOmodeDataFilesBakDirPath))
             {
                 return;
@@ -207,7 +207,7 @@ namespace AIHelper.Manage.ModeSwitch
                     return;
                 }
 
-                var destFileInDataFolderPath = file.Replace(mOmodeDataFilesBakDirPath, ManageSettings.GetCurrentGameDataDirPath());
+                var destFileInDataFolderPath = file.Replace(mOmodeDataFilesBakDirPath, ManageSettings.CurrentGameDataDirPath);
                 if (File.Exists(destFileInDataFolderPath))
                 {
                     return;

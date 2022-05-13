@@ -19,7 +19,7 @@ namespace AIHelper
             //_Catalog = new Catalog("en", localesDir, new CultureInfo("en-EN"));
             //_Catalog = new Catalog("ru", localesDir, new CultureInfo("ru-RU"));
             //_Catalog = new Catalog("helper", localesDir);
-            return new Catalog("helper", ManageSettings.GetAppLocaleDirPath());
+            return new Catalog("helper", ManageSettings.AppLocaleDirPath);
         }
 
         //private static readonly ICatalog _Catalog = new Catalog("Example", "./locale");

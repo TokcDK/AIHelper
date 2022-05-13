@@ -235,27 +235,27 @@ namespace AIHelper.Games
                     //}
                     //,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserData", "UserData", "MaterialEditor")
+                        Path.Combine(ManageSettings.CurrentGameModsDirPath, "MyUserData", "UserData", "MaterialEditor")
                         ,
-                        Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "UserData", "MaterialEditor")
+                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "MaterialEditor")
                     }
                     ,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserData", "UserData", "Overlays")
+                        Path.Combine(ManageSettings.CurrentGameModsDirPath, "MyUserData", "UserData", "Overlays")
                         ,
-                        Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "UserData", "Overlays")
+                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "Overlays")
                     }
                     ,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserData", "UserData", "cap")
+                        Path.Combine(ManageSettings.CurrentGameModsDirPath, "MyUserData", "UserData", "cap")
                         ,
-                        Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "UserData", "cap")
+                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "cap")
                     }
                     ,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MyUserData", "UserData", "studioneo", "BetterSceneLoader")
+                        Path.Combine(ManageSettings.CurrentGameModsDirPath, "MyUserData", "UserData", "studioneo", "BetterSceneLoader")
                         ,
-                        Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "UserData", "studioneo", "BetterSceneLoader")
+                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "studioneo", "BetterSceneLoader")
                     }
             };
         }
@@ -265,21 +265,21 @@ namespace AIHelper.Games
             return new string[,]
             {
                     {
-                        Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
+                        Path.Combine(ManageSettings.CurrentGameModsDirPath, "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
                         ,
-                        Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "BepInEx", "core", "BepInEx.Preloader.dll")
+                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "BepInEx", "core", "BepInEx.Preloader.dll")
                     }
                     ,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "BepInEx", "doorstop_config.ini")
+                        Path.Combine(ManageSettings.CurrentGameModsDirPath, "BepInEx", "doorstop_config.ini")
                         ,
-                        Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "doorstop_config.ini")
+                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "doorstop_config.ini")
                     }
                     ,
                     {
-                        Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "BepInEx", "winhttp.dll")
+                        Path.Combine(ManageSettings.CurrentGameModsDirPath, "BepInEx", "winhttp.dll")
                         ,
-                        Path.Combine(ManageSettings.GetCurrentGameDataDirPath(), "winhttp.dll")
+                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "winhttp.dll")
                     }
             };
         }

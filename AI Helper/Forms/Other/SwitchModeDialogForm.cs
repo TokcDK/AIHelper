@@ -28,7 +28,7 @@ namespace AIHelper.Forms.Other
             SetTranslations();
             SetTooltips();
 
-            if (!ManageSettings.IsMoMode())
+            if (!ManageSettings.IsMoMode)
             {
                 MakeBuckupCheckBox.Checked = false;
                 MakeBuckupCheckBox.Visible = false;
@@ -38,7 +38,7 @@ namespace AIHelper.Forms.Other
         private ToolTip _thToolTip;
         private void SetTranslations()
         {
-            MessageTextTextBox.Text = (ManageSettings.IsMoMode() ? T._(
+            MessageTextTextBox.Text = (ManageSettings.IsMoMode? T._(
                     "Game mode will be changed to normal when " +
                     "used files will be moved to Data dir.\n" +
                     "Game will be executing raw from its exe.\n" +
@@ -53,7 +53,7 @@ namespace AIHelper.Forms.Other
                     "Game will be executing from Mod Organizer."
                 )).Replace("\n", "\r\n");
 
-            this.Text = T._("Mode switch. Current mode:") + " " + (ManageSettings.IsMoMode() ? T._("MO mode") : T._("Normal mode"));
+            this.Text = T._("Mode switch. Current mode:") + " " + (ManageSettings.IsMoMode? T._("MO mode") : T._("Normal mode"));
             MakeBuckupCheckBox.Text = T._("Make backup");
             button1.Text = T._("Switch mode");
             button2.Text = T._("Cancel");

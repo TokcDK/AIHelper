@@ -98,9 +98,9 @@ namespace AIHelper
         {
             foreach (var dllPath in new[]
             {
-                Path.Combine(ManageSettings.GetAppResDirPath(), "dlls", "x86", "7z.dll"),
+                Path.Combine(ManageSettings.AppResDirPath, "dlls", "x86", "7z.dll"),
                 "C:\\Program Files (x86)\\7-Zip\\7z.dll",
-                Path.Combine(ManageSettings.GetAppResDirPath(), "dlls", "x64", "7z.dll"),
+                Path.Combine(ManageSettings.AppResDirPath, "dlls", "x64", "7z.dll"),
                 "C:\\Program Files\\7-Zip\\7z.dll"
             })
             {

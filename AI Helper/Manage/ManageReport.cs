@@ -13,10 +13,10 @@ namespace AIHelper.Manage
         {
             var groupNames = new Dictionary<string, string>();
 
-            var langID = "<" + ManageSettings.GetLanuageID() + ">";
+            var langID = "<" + ManageSettings.LanuageID + ">";
             //langID = "<ru-RU>";
 
-            string gameLinksPath = ManageSettings.GetLinksInfoFilePath();
+            string gameLinksPath = ManageSettings.LinksInfoFilePath;
             if (string.IsNullOrWhiteSpace(gameLinksPath)) return;
 
             string[] strings = File.ReadAllLines(gameLinksPath).Where(line => line.StartsWith(";##", StringComparison.InvariantCulture)).ToArray();
@@ -56,24 +56,23 @@ namespace AIHelper.Manage
                 var descriptonLink = new List<string>();
                 foreach (var link in category.Value)
                 {
-                    descriptonLink.Add(ManageSettings.UpdateReport.HtmlReportCategoryItemTemplate()
-                        .Replace("%link%", link[1])
+                    descriptonLink.Add(ManageSettings.UpdateReport.HtmlReportCategoryItemTemplate                        .Replace("%link%", link[1])
                         .Replace("%text%", new Uri(link[1]).Host.ToUpperInvariant())
                         .Replace("%description%", TryGetTranslation(link[0], langID))
                         );
                 }
 
-                categoriesInfo.Add(ManageSettings.UpdateReport.HtmlReportCategoryTemplate().Replace("%category%", groupNames.TryGetValue(category.Key)).Replace("%items%", string.Join("<br>", descriptonLink)));
+                categoriesInfo.Add(ManageSettings.UpdateReport.HtmlReportCategoryTemplate.Replace("%category%", groupNames.TryGetValue(category.Key)).Replace("%items%", string.Join("<br>", descriptonLink)));
             }
 
             // create new report contet
-            var reportMessage = File.ReadAllText(ManageSettings.UpdateReport.GetReportFilePath())
-             .Replace(ManageSettings.UpdateReport.GetBgImageLinkPathPattern(), ManageSettings.UpdateReport.GetCurrentGameBgFilePath())
-             .Replace(ManageSettings.UpdateReport.GetModsUpdateReportHeaderTextPattern(), T._("Links"))
-             .Replace(ManageSettings.UpdateReport.GetSingleModUpdateReportsTextSectionPattern(), string.Join(ManageSettings.UpdateReport.HtmlBetweenModsText(), categoriesInfo) + "<br>")
-             .Replace(ManageSettings.UpdateReport.GetModsUpdateInfoNoticePattern(), ManageSettings.UpdateReport.ModsUpdateInfoNoticeText());
+            var reportMessage = File.ReadAllText(ManageSettings.UpdateReport.ReportFilePath)
+             .Replace(ManageSettings.UpdateReport.BgImageLinkPathPattern, ManageSettings.UpdateReport.CurrentGameBgFilePath)
+             .Replace(ManageSettings.UpdateReport.ModsUpdateReportHeaderTextPattern, T._("Links"))
+             .Replace(ManageSettings.UpdateReport.SingleModUpdateReportsTextSectionPattern, string.Join(ManageSettings.UpdateReport.HtmlBetweenModsText, categoriesInfo) + "<br>")
+             .Replace(ManageSettings.UpdateReport.ModsUpdateInfoNoticePattern, ManageSettings.UpdateReport.ModsUpdateInfoNoticeText);
 
-            var htmlfile = Path.Combine(ManageSettings.GetCurrentGameLinksInfoDirPath(), ManageSettings.GetCurrentGame().GetGameAbbreviation() + ".html");
+            var htmlfile = Path.Combine(ManageSettings.CurrentGameLinksInfoDirPath, ManageSettings.CurrentGame.GetGameAbbreviation() + ".html");
 
             Directory.CreateDirectory(Path.GetDirectoryName(htmlfile));// fix missing parent directory error
 

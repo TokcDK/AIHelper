@@ -100,35 +100,26 @@ namespace AIHelper.Manage.Update
 
             foreach (var source in sources) //enumerate sources
             {
-                if (source.IsNotWorkingNow)
-                {
-                    continue;
-                }
+                if (source.IsNotWorkingNow) continue;
 
                 info.Source = source;
 
                 progressForm.Text = checkNUpdateText + ":" + source.Title;
 
                 var sourcePathDateCheckTime = new Dictionary<string, DateTime>();
-                if (!lastCheckDates.ContainsKey(source.Title))
-                {
-                    lastCheckDates.Add(source.Title, sourcePathDateCheckTime);
-                }
+                if (!lastCheckDates.ContainsKey(source.Title)) lastCheckDates.Add(source.Title, sourcePathDateCheckTime);
+
                 sourcePathDateCheckTime = lastCheckDates[source.Title];
 
                 info.SourceId = source.InfoId; //set source info detect ID
                 foreach (var target in targets) //enumerate targets
                 {
-                    if (source.IsNotWorkingNow)
-                    {
-                        continue;
-                    }
+                    if (source.IsNotWorkingNow) continue;
 
                     var tFolderInfos = target.GetUpdateInfos(); // get folderslist for update, usually it is active mods
-                    if (tFolderInfos == null || tFolderInfos.Count == 0) // skip if no targets
-                    {
-                        continue;
-                    }
+                    
+                    // skip if no targets
+                    if (tFolderInfos == null || tFolderInfos.Count == 0) continue;
 
                     info.Target = target;
 
@@ -138,24 +129,16 @@ namespace AIHelper.Manage.Update
 
                     foreach (var tFolderInfo in tFolderInfos) //enumerate all folders with info
                     {
-                        if (source.IsNotWorkingNow)
-                        {
-                            continue;
-                        }
+                        if (source.IsNotWorkingNow) continue;
 
-                        if (info.Excluded.Contains(tFolderInfo.Key)) //skip already updated
-                        {
-                            continue;
-                        }
+                        //skip already updated
+                        if (info.Excluded.Contains(tFolderInfo.Key)) continue;
 
                         // check only one time per hour
                         if (sourcePathDateCheckTime.ContainsKey(tFolderInfo.Key))
                         {
                             var lastCheckTimeElapsed = sourcePathDateCheckTime[tFolderInfo.Key] + TimeSpan.FromMinutes(updateCheckTimeout);
-                            if (checkDateTimeNow < lastCheckTimeElapsed)
-                            {
-                                continue;
-                            }
+                            if (checkDateTimeNow < lastCheckTimeElapsed) continue;
                         }
 
                         info.Reset(); // reset some infos
@@ -165,10 +148,7 @@ namespace AIHelper.Manage.Update
 
                         progressForm.Text = checkNUpdateText + ":" + source.Title + ">" + info.TargetFolderPath.Name;
 
-                        if (pBar.Value < pBar.Maximum)
-                        {
-                            pBar.Value += 1;
-                        }
+                        if (pBar.Value < pBar.Maximum) pBar.Value += 1;
 
                         // Set current version
                         target.SetCurrentVersion();
@@ -176,10 +156,9 @@ namespace AIHelper.Manage.Update
                         // get info to array
                         var tInfoArray = (tFolderInfo.Value.StartsWith(source.InfoId, StringComparison.InvariantCultureIgnoreCase) ? tFolderInfo.Value.Remove(tFolderInfo.Value.Length - 2, 2).Remove(0, source.InfoId.Length + 2) : tFolderInfo.Value).Split(new[] { Environment.NewLine, "\n", "\r", "," }, StringSplitOptions.None);
 
-                        if (tInfoArray.Length == 0) // skip if info is invalid
-                        {
-                            continue;
-                        }
+                        // skip if info is invalid
+                        if (tInfoArray.Length == 0) continue;
+
                         info.TargetFolderUpdateInfo = tInfoArray.Trim(); // get folder info
                                                                          //info.TargetCurrentVersion = tInfoArray[tInfoArray.Length - 1]; // get current version (last element of info)
 
@@ -203,19 +182,14 @@ namespace AIHelper.Manage.Update
                             sourcePathDateCheckTime.Add(tFolderInfo.Key, checkDateTimeNow);
                         }
 
-                        if (info.TargetLastVersion.Length == 0)
-                        {
-                            continue;
-                        }
+                        if (info.TargetLastVersion.Length == 0) continue;
 
                         // clean version for more correct comprasion
                         UpdateTools.CleanVersion(ref info.TargetLastVersion);
                         UpdateTools.CleanVersion(ref info.TargetCurrentVersion);
 
-                        if (!info.TargetLastVersion.IsNewerOf(info.TargetCurrentVersion, false)) //if it is last version then run update
-                        {
-                            continue;
-                        }
+                        //if it is last version then run update
+                        if (!info.TargetLastVersion.IsNewerOf(info.TargetCurrentVersion, false)) continue;
 
                         source.Pause();
 
@@ -227,10 +201,7 @@ namespace AIHelper.Manage.Update
                         {
                             UpdatedAny = true;
 
-                            if (File.Exists(info.UpdateFilePath))
-                            {
-                                File.WriteAllText(info.UpdateFilePath + ".version", info.TargetLastVersion);
-                            }
+                            if (File.Exists(info.UpdateFilePath)) File.WriteAllText(info.UpdateFilePath + ".version", info.TargetLastVersion);
 
                             info.Excluded.Add(tFolderInfo.Key); // add path to excluded to skip it next time if will be found for other source or target
 

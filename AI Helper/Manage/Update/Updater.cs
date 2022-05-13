@@ -207,13 +207,18 @@ namespace AIHelper.Manage.Update
 
                             info.Report.Add(
                                 (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportSuccessLine: string.Empty)
-                                    + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage                                        //+ T._("Mod")
-                                        //+ " "
-                                        + ManageSettings.UpdateReport.HtmlModReportPreModnameTags                                            + info.TargetFolderPath.Name
-                                        + ManageSettings.UpdateReport.HtmlModReportPostModnameTags                                        + (!info.TargetFolderPath.Name.Contains(info.TargetCurrentVersion) ?
-                                                " "
-                                                + ManageSettings.UpdateReport.HtmlModReportPreVersionTags                                                    + info.TargetCurrentVersion
-                                                + ManageSettings.UpdateReport.HtmlModReportPostVersionTags                                            : "")
+                                    + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage
+                                        + ManageSettings.UpdateReport.HtmlModReportPreModnameTags
+                                        + info.TargetFolderPath.Name
+                                        + ManageSettings.UpdateReport.HtmlModReportPostModnameTags
+                                        + (!info.TargetFolderPath.Name.Contains(info.TargetCurrentVersion) ? 
+                                        (
+                                        " "
+                                        + ManageSettings.UpdateReport.HtmlModReportPreVersionTags
+                                        + info.TargetCurrentVersion
+                                        + ManageSettings.UpdateReport.HtmlModReportPostVersionTags
+                                        )
+                                        : "")
                                         + " "
                                         + T._("updated to version")
                                         + " "
@@ -241,15 +246,17 @@ namespace AIHelper.Manage.Update
                             if (info.NoRemoteFile)
                             {
                                 info.Report.Add(
-                                    (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportWarningLine: string.Empty)
-                                        + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage                                            //+ T._("Mod")
-                                            //+ " "
-                                            + ManageSettings.UpdateReport.HtmlModReportPreModnameTags                                                + info.TargetFolderPath.Name
-                                            + ManageSettings.UpdateReport.HtmlModReportPostModnameTags                                            + " "
-                                            + T._("have new version but file for update not found")
-                                        + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage                                        + (_isHtmlReport ? ManageSettings.UpdateReport.HtmlAfterModReportLine: string.Empty)
-                                            + (!string.IsNullOrWhiteSpace(info.SourceLink) ? ManageSettings.UpdateReport.InfoLinkPattern+ info.SourceLink : string.Empty)
-                                    );
+                                        (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportWarningLine: string.Empty)
+                                        + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage
+                                        + ManageSettings.UpdateReport.HtmlModReportPreModnameTags
+                                        + info.TargetFolderPath.Name
+                                        + ManageSettings.UpdateReport.HtmlModReportPostModnameTags
+                                        + " "
+                                        + T._("have new version but file for update not found")
+                                        + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage                                        
+                                        + (_isHtmlReport ? ManageSettings.UpdateReport.HtmlAfterModReportLine: string.Empty)
+                                        + (!string.IsNullOrWhiteSpace(info.SourceLink) ? ManageSettings.UpdateReport.InfoLinkPattern+ info.SourceLink : string.Empty)
+                                        );
                             }
                             else
                             {
@@ -257,15 +264,13 @@ namespace AIHelper.Manage.Update
                                 //RestoreModFromBuckup(OldModBuckupDirPath, UpdatingModDirPath);
 
                                 info.Report.Add(
-                                    (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportErrorLine: string.Empty)
-                                        + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage                                            + T._("Failed to update")
-                                            + " "
-                                            + info.TargetFolderPath.Name
-                                        + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage                                            + ErrorMessage(info.LastErrorText)
-                                            + " ("
-                                            + T._("Details in") + " " + Properties.Settings.Default.ApplicationProductName + ".log"
-                                            + ")"
-                                    + ManageSettings.UpdateReport.HtmlAfterModReportLine                                    );
+                                        (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportErrorLine: string.Empty)
+                                        + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage                                            
+                                        + T._("Failed to update") + " " + info.TargetFolderPath.Name
+                                        + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage                                            
+                                        + ErrorMessage(info.LastErrorText)
+                                        + " ("+ T._("Details in") + " " + Properties.Settings.Default.ApplicationProductName + ".log" + ")"
+                                        + ManageSettings.UpdateReport.HtmlAfterModReportLine);
 
                                 ManageLogs.Log("Failed to update" + " " + info.TargetFolderPath.Name /*+ ":" + Environment.NewLine + ex*/);
                             }

@@ -69,6 +69,10 @@ namespace AIHelper.Manage.Update.Sources
             WebClientInit();
         }
 
+        protected UpdateSourceBase()
+        {
+        }
+
         private void WebClientInit()
         {
             if (WC == null)
@@ -111,10 +115,6 @@ namespace AIHelper.Manage.Update.Sources
             // stop timer and dispose
             Timer.Stop();
             Timer.Dispose();
-        }
-
-        protected UpdateSourceBase()
-        {
         }
 
         /// <summary>

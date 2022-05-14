@@ -45,8 +45,8 @@ namespace AIHelper
 
             if (!SetListOfAddedGames())
             {
-                Application.Exit();
                 this.Enabled = false;
+                Application.Exit();
                 return;
             }
 
@@ -191,11 +191,11 @@ namespace AIHelper
 
                     if (newGamesReport.Count > 0)
                     {
-                        MessageBox.Show(T._(T._("Found new games:")) +
+                        MessageBox.Show(T._("Found new games:") +
                             "\n"
                             + Environment.NewLine + "----------------"
                             + string.Join("", newGamesReport)
-                        + Environment.NewLine + "----------------"
+                            + Environment.NewLine + "----------------"
                         );
                     }
                 }

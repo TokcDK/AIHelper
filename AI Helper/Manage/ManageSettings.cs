@@ -195,7 +195,7 @@ namespace AIHelper.Manage
 
                 foreach (var gameType in listOfGames)
                 {
-                    if (gameType == typeof(RootGame)) continue;
+                    //if (gameType == typeof(RootGame)) continue;
 
                     var game = (GameBase)Activator.CreateInstance(gameType);
                     if (!File.Exists(Path.Combine(gameDir, "Data", game.GetGameExeName() + ".exe"))) continue;
@@ -262,45 +262,47 @@ namespace AIHelper.Manage
             //}
 
 
-            //if (listOfGames.Count == 0)
-            if (listOfGameDirs.Count == 0)
-            {
-                try
-                {
-                    if (Directory.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Mods"))
-                        &&
-                        Directory.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
-                        &&
-                        !Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data").IsNullOrEmptyDirectory(mask: "*.exe", searchForFiles: true, searchForDirs: false, recursive: false)
-                        //&&
-                        //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(GetMOdirPath())
-                        &&
-                        IsMoFolderValid(AppModOrganizerDirPath)
-                        //&&
-                        //Directory.Exists(Path.Combine(GetMOdirPath(), GetMoProfilesDirName())))
-                        //&&
-                        //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(GetMOdirPath(), GetMoProfilesDirName()))
-                        &&
-                        !ManageSymLinkExtensions.IsSymlink(MoIniFilePath)
-                        &&
-                        !ManageSymLinkExtensions.IsSymlink(MoCategoriesFilePath)
-                        )
-                    {
-                        var game = new RootGame
-                        {
-                            // the app's dir
-                            GameDirInfo = new DirectoryInfo(Properties.Settings.Default.ApplicationStartupPath)
-                        };
+            // commented because obsolete
+            ////if (listOfGames.Count == 0)
+            //if (listOfGameDirs.Count == 0)
+            //{
+            //    // root game setup
+            //    try
+            //    {
+            //        if (Directory.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Mods"))
+            //            &&
+            //            Directory.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
+            //            &&
+            //            !Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data").IsNullOrEmptyDirectory(mask: "*.exe", searchForFiles: true, searchForDirs: false, recursive: false)
+            //            //&&
+            //            //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(GetMOdirPath())
+            //            &&
+            //            IsMoFolderValid(AppModOrganizerDirPath)
+            //            //&&
+            //            //Directory.Exists(Path.Combine(GetMOdirPath(), GetMoProfilesDirName())))
+            //            //&&
+            //            //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(GetMOdirPath(), GetMoProfilesDirName()))
+            //            &&
+            //            !ManageSymLinkExtensions.IsSymlink(MoIniFilePath)
+            //            &&
+            //            !ManageSymLinkExtensions.IsSymlink(MoCategoriesFilePath)
+            //            )
+            //        {
+            //            var game = new RootGame
+            //            {
+            //                // the app's dir
+            //                GameDirInfo = new DirectoryInfo(Properties.Settings.Default.ApplicationStartupPath)
+            //            };
 
-                        //listOfGames.Add(new RootGame());
-                        listOfGameDirs.Add(game);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ManageLogs.Log("RootGame check failed. Error:" + Environment.NewLine + ex);
-                }
-            }
+            //            //listOfGames.Add(new RootGame());
+            //            listOfGameDirs.Add(game);
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        ManageLogs.Log("RootGame check failed. Error:" + Environment.NewLine + ex);
+            //    }
+            //}
 
             //ListOfGames = ListOfGames.Where
             //(game =>

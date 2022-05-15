@@ -163,7 +163,7 @@ namespace AIHelper.Manage
 
         private static void UpdateModsFinalize()
         {
-            SharedData.GameData.MainForm.FoldersInit();
+            SharedData.GameData.MainForm.UpdateData();
 
             SharedData.GameData.MainForm.AIGirlHelperTabControl.Enabled = true;
         }

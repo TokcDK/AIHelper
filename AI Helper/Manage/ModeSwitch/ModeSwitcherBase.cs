@@ -53,7 +53,7 @@ namespace AIHelper.Manage.ModeSwitch
             {
             }
 
-            SharedData.GameData.MainForm.FoldersInit();
+            SharedData.GameData.MainForm.UpdateData();
 
             //DialogResult result = MessageBox.Show(
             //    DialogText,

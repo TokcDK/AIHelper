@@ -68,7 +68,7 @@ namespace AIHelper
             if (!File.Exists(ManageSettings.AppMOexePath))
             {
                 var ok = MessageBox.Show(T._("Mod Organizer is missing in the app dir. Need to download latest version for to be able to manage mods by MO. Download latest?"), T._("Mod Organizer not found!", MessageBoxButtons.OKCancel));
-                if(DialogResult.OK == ok)
+                if (DialogResult.OK == ok)
                 {
                     await new Updater().Update().ConfigureAwait(true);
                 }
@@ -95,7 +95,7 @@ namespace AIHelper
 
             SetLocalizationStrings();
 
-            FoldersInit();
+            UpdateData();
 
             //if (Registry.GetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", null) == null)
             //{
@@ -155,7 +155,7 @@ namespace AIHelper
 
                 GameData.Games = ManageSettings.GetListOfExistsGames();
 
-                if (ManageSettings.KnownGames.Count==0 && ( GameData.Games == null || GameData.Games.Count == 0))
+                if (ManageSettings.KnownGames.Count == 0 && (GameData.Games == null || GameData.Games.Count == 0))
                 {
                     MessageBox.Show(T._("Games not found") + "."
                         + Environment.NewLine + T._("Need atleast one game in subfolder in Games folder") + "."
@@ -262,8 +262,8 @@ namespace AIHelper
                     var gamesList = games.Split('|');
                     if (gamesList != null && gamesList.Length > 0)
                     {
-                        gamesList = gamesList.Where(p=>Directory.Exists(p)).Distinct().ToArray();
-                        foreach(var path in gamesList)
+                        gamesList = gamesList.Where(p => Directory.Exists(p)).Distinct().ToArray();
+                        foreach (var path in gamesList)
                         {
                             list.Add(path);
                         }
@@ -546,7 +546,7 @@ namespace AIHelper
                     "Backup creating using ntfs hardlinks and not consumes any extra space.")
                     );
 
-                _thToolTip.SetToolTip(InstallInModsButton, T._("Install mods and userdata, placed in") + " " + ManageSettings.ModsInstallDirName                     + (MOmode ? T._(
+                _thToolTip.SetToolTip(InstallInModsButton, T._("Install mods and userdata, placed in") + " " + ManageSettings.ModsInstallDirName + (MOmode ? T._(
                              " to MO format in Mods when possible"
                          ) : T._(
                              " to the game folder when possible"
@@ -637,7 +637,7 @@ namespace AIHelper
         /// <summary>
         /// reinit some parameters
         /// </summary>
-        internal void FoldersInit()
+        internal void UpdateData()
         {
             EnableDisableSomeTools();
 
@@ -787,6 +787,9 @@ namespace AIHelper
             AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
             CurrentGameComboBox.Text = GameData.Game.GetGameDirName();
             CurrentGameComboBox.SelectedIndex = ManageSettings.CurrentGameIndex;
+
+            var p = Path.Combine(ManageSettings.ApplicationStartupPath, "dev.txt");
+            DevButton.Visible = File.Exists(p);
 
             GetEnableDisableLaunchTabButtons();
 
@@ -1130,7 +1133,7 @@ namespace AIHelper
                 OnOffButtons();
 
                 //обновление информации о конфигурации папок игры
-                FoldersInit();
+                UpdateData();
 
                 MessageBox.Show(T._("All possible mods installed. Install all rest in install folder manually."));
             }
@@ -1276,7 +1279,7 @@ namespace AIHelper
 
                 ManageIni.GetINIFile(ManageSettings.AiHelperIniPath).SetKey("Settings", "selected_game", ManageSettings.CurrentGameDirName);
 
-                FoldersInit();
+                UpdateData();
 
                 Properties.Settings.Default.CurrentGameIsChanging = false;
             }
@@ -1450,7 +1453,7 @@ namespace AIHelper
 
             OnOffButtons();
 
-            FoldersInit();
+            UpdateData();
         }
 
         private void btnUpdateMods_Click(object sender, EventArgs e)
@@ -1496,7 +1499,7 @@ namespace AIHelper
         private void UpdateButtonOptionsRefresh()
         {
             //UseKKmanagerUpdaterLabel.SetCheck();
-            UseKKmanagerUpdaterLabel.Visible = ManageSettings.IsHaveSideloaderMods&& File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath);
+            UseKKmanagerUpdaterLabel.Visible = ManageSettings.IsHaveSideloaderMods && File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath);
             //UseKKmanagerUpdaterCheckBox.Visible = b && GameData.CurrentGame.IsHaveSideloaderMods;
             BleadingEdgeZipmodsLabel.Visible = UseKKmanagerUpdaterLabel.Visible;
             //cbxBleadingEdgeZipmods.Visible = UseKKmanagerUpdaterCheckBox.Visible;
@@ -1602,7 +1605,7 @@ namespace AIHelper
             string CharacterDirSubpath = GameData.Game.GetCharacterPresetsFolderSubPath();
 
             string exePath = IsMO ? Path.Combine(ManageSettings.AppModOrganizerDirPath, "explorer++", "Explorer++.exe") : "explorer.exe";
-            string presetsDirPath = IsMO && ManageSettings.IsMoMode? Path.Combine(ManageSettings.CurrentGameDataDirPath) + "\\" + CharacterDirSubpath : ManageSettings.GetUserfilesDirectoryPath(CharacterDirSubpath);
+            string presetsDirPath = IsMO && ManageSettings.IsMoMode ? Path.Combine(ManageSettings.CurrentGameDataDirPath) + "\\" + CharacterDirSubpath : ManageSettings.GetUserfilesDirectoryPath(CharacterDirSubpath);
 
             Directory.CreateDirectory(presetsDirPath);
 
@@ -1652,6 +1655,50 @@ namespace AIHelper
             {
                 Process.Start(exePath, presetsDirPath);
             }
+        }
+
+        private void Dev_Click(object sender, EventArgs e)
+        {
+            var targetIniPath = Path.Combine(ManageSettings.CurrentGameDirPath, "Meta.ini");
+
+            if (File.Exists(targetIniPath)) return;
+
+            var targetIni = new INIFile(targetIniPath, true);
+
+            foreach (var mod in ManageModOrganizer.GetModNamesListFromActiveMoProfile(false))
+            {
+                var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, mod);
+                if (!Directory.Exists(modPath)) continue;
+
+                var metaPath = Path.Combine(modPath, "meta.ini");
+                if (!File.Exists(metaPath)) continue;
+
+                var ini = new INIFile(metaPath);
+
+                var targetSectionName = mod;
+
+                if (ini.KeyExists("notes", "General"))
+                {
+                    targetIni.SetKey(targetSectionName, "notes", ini.GetKey("General", "notes"), false);
+                }
+
+                if (ini.KeyExists("url", "General"))
+                {
+                    targetIni.SetKey(targetSectionName, "url", ini.GetKey("General", "url"), false);
+                }
+
+                if (ini.KeyExists("ModUpdateInfo", "AISettings"))
+                {
+                    targetIni.SetKey(targetSectionName, "updateinfo", ini.GetKey("AISettings", "ModUpdateInfo"), false);
+                }
+
+                if (ini.KeyExists("ModlistRulesInfo", "AISettings"))
+                {
+                    targetIni.SetKey(targetSectionName, "modlistrules", ini.GetKey("AISettings", "ModlistRulesInfo"), false);
+                }
+            }
+
+            targetIni.WriteFile();
         }
 
         //Disable close window button

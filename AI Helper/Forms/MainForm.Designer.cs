@@ -105,6 +105,7 @@
             this.ModeSwitchOptionsPanel = new System.Windows.Forms.Panel();
             this.ModeSwitchFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.ModeSwitchCreateBuckupLabel = new System.Windows.Forms.Label();
+            this.DevButton = new System.Windows.Forms.Button();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -899,6 +900,7 @@
             this.ToolsTabPageTableLayoutPanel.Controls.Add(this.UpdateButtonTableLayoutPanel, 0, 3);
             this.ToolsTabPageTableLayoutPanel.Controls.Add(this.Install2MOTableLayoutPanel, 0, 1);
             this.ToolsTabPageTableLayoutPanel.Controls.Add(this.ModeSwitchTableLayoutPanel, 0, 0);
+            this.ToolsTabPageTableLayoutPanel.Controls.Add(this.DevButton, 1, 0);
             this.ToolsTabPageTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ToolsTabPageTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.ToolsTabPageTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
@@ -1055,6 +1057,7 @@
             this.Install2MOTableLayoutPanel.Name = "Install2MOTableLayoutPanel";
             this.Install2MOTableLayoutPanel.RowCount = 1;
             this.Install2MOTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.Install2MOTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
             this.Install2MOTableLayoutPanel.Size = new System.Drawing.Size(171, 38);
             this.Install2MOTableLayoutPanel.TabIndex = 30;
             // 
@@ -1170,6 +1173,16 @@
             this.ModeSwitchCreateBuckupLabel.Text = "b";
             this.ModeSwitchCreateBuckupLabel.Visible = false;
             this.ModeSwitchCreateBuckupLabel.Click += new System.EventHandler(this.ModeSwitchCreateBuckupLabel_Click);
+            // 
+            // DevButton
+            // 
+            this.DevButton.Location = new System.Drawing.Point(174, 3);
+            this.DevButton.Name = "DevButton";
+            this.DevButton.Size = new System.Drawing.Size(163, 32);
+            this.DevButton.TabIndex = 32;
+            this.DevButton.Text = "Dev";
+            this.DevButton.UseVisualStyleBackColor = true;
+            this.DevButton.Click += new System.EventHandler(this.Dev_Click);
             // 
             // MainForm
             // 
@@ -1297,6 +1310,7 @@
         public System.Windows.Forms.Label ModeSwitchCreateBuckupLabel;
         private System.Windows.Forms.LinkLabel OpenPresetDirsLinkLabel;
         private System.Windows.Forms.LinkLabel OpenPresetDirsLinkLabelMO;
+        private System.Windows.Forms.Button DevButton;
     }
 }
 

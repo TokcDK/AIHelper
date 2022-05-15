@@ -249,10 +249,10 @@ namespace AIHelper.Manage
                         sourceFilePath = ManageModOrganizer.GetLastPath(sourceFilePath);
 
                         //skip file if source not exists
-                        if (!File.Exists(sourceFilePath))
-                        {
-                            continue;
-                        }
+                        //if (!File.Exists(sourceFilePath))
+                        //{
+                        //    continue;
+                        //}
 
                         //skip file if not in enabled mod
                         if (!File.Exists(sourceFilePath) || !ManageModOrganizer.IsInEnabledModOrOverwrite(sourceFilePath))//skip if no active mod found

@@ -1708,6 +1708,7 @@ namespace AIHelper
                 else if (updateInfos.ContainsKey(mod))
                 {
                     targetIni.SetKey(targetSectionName, "updateinfo", updateInfos[mod], false);
+                    ini.SetKey("AISettings", "ModUpdateInfo", updateInfos[mod]);
                 }
 
                 if (ini.KeyExists("ModlistRulesInfo", "AISettings"))

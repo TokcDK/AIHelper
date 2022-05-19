@@ -18,74 +18,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
         /// <returns></returns>
         internal override Dictionary<string, string> GetUpdateInfos()
         {
-            var infos = new Dictionary<string, string>();
-            string[] modNamesList = null;
-            try
-            {
-                var updateInfoList = GetUpdateInfosFromFile();
-                if (updateInfoList != null && updateInfoList.Count > 0)
-                    foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(SharedData.GameData.MainForm.CheckEnabledModsOnlyLabel.IsChecked()))
-                    {
-                        var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modname);
-                        if (updateInfoList.ContainsKey(modname) && !infos.ContainsKey(modPath))
-                        {
-                            infos.Add(modname, updateInfoList[modname]);
-                        }
-                    }
-            }
-            catch (Exception ex)
-            {
-                ManageLogs.Log("An error while get update infos:\r\n" + ex + "\r\ninfos count=" + infos.Count + (modNamesList != null ? "\r\nModsList count=" + modNamesList.Length : "ModsList is null"));
-            }
-
-            return infos;
-        }
-
-        private Dictionary<string, string> GetUpdateInfosFromFile()
-        {
-            var d = new Dictionary<string, string>();
-
-            if (!File.Exists(_updateInfosFile))
-                return null;
-
-            using (StreamReader sr = new StreamReader(_updateInfosFile))
-            {
-                string line;
-                string[] pair = new string[2];
-                pair[0] = "";
-                pair[1] = "";
-                while ((line = sr.ReadLine()) != null)
-                {
-                    if (string.IsNullOrWhiteSpace(line) || line.TrimStart()[0] == ';')
-                        continue;
-
-                    if (pair[0].Length == 0)
-                    {
-                        pair[0] = line;
-                    }
-                    else if (pair[1].Length == 0)
-                    {
-                        pair[1] = line;
-                    }
-
-                    if (pair[0].Length > 0 && pair[1].Length > 0)
-                    {
-                        if (pair[1].StartsWith(Info.SourceId, System.StringComparison.InvariantCultureIgnoreCase)
-                        && !d.ContainsKey(pair[0]))
-                        {
-                            d.Add(pair[0], pair[1]);
-
-                        }
-                        else
-                        {
-                            pair[0] = "";
-                            pair[1] = "";
-                        }
-                    }
-                }
-            }
-
-            return d;
+            return ManageUpdateMods.GetUpdateInfos(Info.SourceId);
         }
     }
 }

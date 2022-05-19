@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace AIHelper.Manage
 {
@@ -35,7 +38,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         public static bool IsNotNeedToBeHexed(this char c)
         {
-            return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c.IsDigit() || c.IsHTMLSymbol();
+            return IsLatinChar(c) || c.IsDigit() || c.IsHTMLSymbol();
         }
 
         /// <summary>
@@ -131,14 +134,61 @@ namespace AIHelper.Manage
             return s.ToString();
         }
 
+        ///// <summary>
+        ///// Convert hexed string to normal string
+        ///// </summary>
+        ///// <param name="inputString"></param>
+        ///// <returns></returns>
+        //internal static string UnHex(this string inputString)
+        //{
+        //    return System.Net.WebUtility.HtmlDecode(inputString);
+        //}
+
         /// <summary>
-        /// Convert hexed string to normal string
+        /// Convert string like \x440 to char
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="xPrefix">true if string is starts with \x</param>
+        /// <returns></returns>
+        internal static char UnHex(this string s, bool xPrefix)
+        {
+            s = xPrefix ? s.Remove(0, 2) : s;
+
+            var b = Convert.ToInt32(s, 16);
+            var c = Convert.ToChar(b);
+
+            return c;
+        }
+        internal static string UnHex(this string inputString)
+        {
+            var matches = Regex.Matches(inputString, @"\\x[0-9a-f]{3}");
+            for (int i = matches.Count - 1; i >= 0; i--)
+            {
+                char unhexed = matches[i].Value.UnHex(true);
+                inputString = inputString.Remove(matches[i].Index, matches[i].Length)
+                    .Insert(matches[i].Index, unhexed.ToString());
+            }
+
+            return inputString;
+        }
+
+        /// <summary>
+        /// Remove Mod Organizer html tags from notes string
         /// </summary>
         /// <param name="inputString"></param>
         /// <returns></returns>
-        internal static string UnHex(string inputString)
+        internal static string StripMONotesHTML(this string inputString)
         {
-            return System.Net.WebUtility.HtmlDecode(inputString);
+            inputString = Regex.Replace(inputString, "<.*?>|&.*?;", "").Replace("\\n\\np, li { white-space: pre-wrap; }\\n\\n", "");
+
+            if (inputString.StartsWith("\"")) inputString = inputString.Remove(0, 1);
+            if(inputString.EndsWith("\"")) inputString = inputString.Remove(inputString.Length - 1);
+            inputString = inputString.Replace(@"\x", "{xxx}");
+            inputString = inputString.Replace("{xxx}", "\\x");
+
+            inputString = inputString.Replace("<br/>", "\\n").Replace("<br>", "\\n").Replace("\n", "\\n").Replace("\r", "\\r");
+
+            return inputString.UnHex();
         }
 
         /// <summary>

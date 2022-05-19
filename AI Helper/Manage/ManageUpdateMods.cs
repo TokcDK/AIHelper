@@ -2,6 +2,7 @@
 using AIHelper.Manage.Update;
 using AIHelper.SharedData;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -40,6 +41,68 @@ namespace AIHelper.Manage
                 UpdateByUpdater();
 
             UpdateModsFinalize();
+        }
+
+        public static Dictionary<string, string> GetUpdateInfosFromFile(string sourceId)
+        {
+            var d = new Dictionary<string, string>();
+
+            if (!File.Exists(ManageSettings.UpdateInfosFilePath)) return null;
+
+            using (StreamReader sr = new StreamReader(ManageSettings.UpdateInfosFilePath))
+            {
+                string line;
+                string[] pair = new string[2];
+                pair[0] = "";
+                pair[1] = "";
+                while ((line = sr.ReadLine()) != null)
+                {
+                    if (string.IsNullOrWhiteSpace(line) || line.TrimStart()[0] == ';') continue;
+
+                    if (pair[0].Length == 0) pair[0] = line; else if (pair[1].Length == 0) pair[1] = line;
+
+                    if (pair[0].Length == 0 || pair[1].Length == 0) continue;
+
+                    if (pair[1].StartsWith(sourceId, System.StringComparison.InvariantCultureIgnoreCase)
+                    && !d.ContainsKey(pair[0]))
+                    {
+                        d.Add(pair[0], pair[1]);
+                    }
+                    else
+                    {
+                        pair[0] = "";
+                        pair[1] = "";
+                    }
+                }
+            }
+
+            return d;
+        }
+
+        internal static Dictionary<string, string> GetUpdateInfos(string sourceId, bool onlyActive = true)
+        {
+            var infos = new Dictionary<string, string>();
+            string[] modNamesList = null;
+            try
+            {
+                var updateInfoList = GetUpdateInfosFromFile(sourceId);
+                if (updateInfoList == null || updateInfoList.Count == 0) return infos;
+
+                foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(SharedData.GameData.MainForm.CheckEnabledModsOnlyLabel.IsChecked()))
+                {
+                    var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modname);
+                    if (updateInfoList.ContainsKey(modname) && !infos.ContainsKey(modPath))
+                    {
+                        infos.Add(modname, updateInfoList[modname]);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ManageLogs.Log("An error while get update infos:\r\n" + ex + "\r\ninfos count=" + infos.Count + (modNamesList != null ? "\r\nModsList count=" + modNamesList.Length : "ModsList is null"));
+            }
+
+            return infos;
         }
 
         private static async void UpdateByUpdater()
@@ -90,7 +153,8 @@ namespace AIHelper.Manage
                     Title = "KKManagerStandaloneUpdater",
                     Binary = ManageSettings.KkManagerStandaloneUpdaterExePath,
                     Arguments = ManageSettings.CurrentGameDataDirPath,
-                    MoTargetMod = ManageSettings.KKManagerFilesModName                };
+                    MoTargetMod = ManageSettings.KKManagerFilesModName
+                };
 
                 var kkManagerFilesModPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, ManageSettings.KKManagerFilesModName);
                 if (!Directory.Exists(kkManagerFilesModPath))

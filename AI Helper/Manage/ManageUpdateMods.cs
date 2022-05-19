@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static AIHelper.Manage.ManageModOrganizer;
@@ -52,26 +53,19 @@ namespace AIHelper.Manage
             using (StreamReader sr = new StreamReader(ManageSettings.UpdateInfosFilePath))
             {
                 string line;
-                string[] pair = new string[2];
-                pair[0] = "";
-                pair[1] = "";
+                string modName = "";
                 while ((line = sr.ReadLine()) != null)
                 {
                     if (string.IsNullOrWhiteSpace(line) || line.TrimStart()[0] == ';') continue;
 
-                    if (pair[0].Length == 0) pair[0] = line; else if (pair[1].Length == 0) pair[1] = line;
-
-                    if (pair[0].Length == 0 || pair[1].Length == 0) continue;
-
-                    if (pair[1].StartsWith(sourceId, System.StringComparison.InvariantCultureIgnoreCase)
-                    && !d.ContainsKey(pair[0]))
+                    if (modName.Length == 0)
                     {
-                        d.Add(pair[0], pair[1]);
+                        modName = line;
                     }
-                    else
+                    else if(Regex.IsMatch(line, "^[a-zA-Z0-9]+::[^:]+::$"))
                     {
-                        pair[0] = "";
-                        pair[1] = "";
+                        d.Add(modName, line);
+                        modName = "";
                     }
                 }
             }

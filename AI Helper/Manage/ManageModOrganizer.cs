@@ -666,7 +666,7 @@ namespace AIHelper.Manage
 
             if (modPath != string.Empty &&
                 (string.Equals(Path.GetFileName(modPath), Path.GetFileName(ManageSettings.CurrentGameModsDirPath), StringComparison.InvariantCultureIgnoreCase)//temp debug check
-                                                                                                                                                                    //|| string.Equals(Path.GetFileName(modPath), Path.GetFileName(ManageSettings.GetOverwriteFolder()), StringComparison.InvariantCultureIgnoreCase)
+                                                                                                                                                               //|| string.Equals(Path.GetFileName(modPath), Path.GetFileName(ManageSettings.GetOverwriteFolder()), StringComparison.InvariantCultureIgnoreCase)
                 )
                 )
             {
@@ -4008,11 +4008,13 @@ namespace AIHelper.Manage
                 }
 
                 // set target mod for kkmanager exe's
-                if (!string.Equals(custom.Value.MoTargetMod, ManageSettings.KKManagerFilesModName, StringComparison.InvariantCultureIgnoreCase) &&
-                    (
-                    Path.GetFileName(custom.Value.Binary) == ManageSettings.KkManagerExeName
+                if (!string.Equals(custom.Value.MoTargetMod, ManageSettings.KKManagerFilesModName, StringComparison.InvariantCultureIgnoreCase)
+                    && Directory.Exists(Path.Combine(ManageSettings.CurrentGameModsDirPath, ManageSettings.KKManagerFilesModName))
+                    && ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(true).Any(n => n == ManageSettings.KKManagerFilesModName)
+                    &&
+                    (Path.GetFileName(custom.Value.Binary) == ManageSettings.KkManagerExeName
                     ||
-                    Path.GetFileName(custom.Value.Binary) == ManageSettings.KkManagerStandaloneUpdaterExeName                    )
+                    Path.GetFileName(custom.Value.Binary) == ManageSettings.KkManagerStandaloneUpdaterExeName)
                     )
                 {
                     custom.Value.MoTargetMod = ManageSettings.KKManagerFilesModName;

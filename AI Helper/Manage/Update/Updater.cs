@@ -25,7 +25,7 @@ namespace AIHelper.Manage.Update
         /// </summary>
         Dictionary<string, Dictionary<string, DateTime>> lastCheckDates;
 
-        internal async Task Update() // test
+        internal async Task Update()
         {
             UpdateInfo info = new UpdateInfo();
             var sources = new List<UpdateSourceBase> //Sources of updates

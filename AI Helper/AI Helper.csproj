@@ -178,9 +178,9 @@
     <Compile Include="Forms\ExtraSettings\ExtraSettingsForm.Designer.cs">
       <DependentUpon>ExtraSettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Games\Illusion\AISyoujyoTrial.cs" />
+    <Compile Include="Games\Illusion\AIGirlTrial.cs" />
     <Compile Include="Games\Illusion\HoneySelect.cs" />
-    <Compile Include="Games\Illusion\AiSyoujyo.cs" />
+    <Compile Include="Games\Illusion\AiGirl.cs" />
     <Compile Include="Games\GameBase.cs" />
     <Compile Include="Manage\ManageHardlinks.cs" />
     <Compile Include="Manage\ManageReport.cs" />

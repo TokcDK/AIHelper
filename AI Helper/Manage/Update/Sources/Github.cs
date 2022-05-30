@@ -239,6 +239,8 @@ namespace AIHelper.Manage.Update.Sources
                 //var link2file = Regex.Match(LatestReleasePage, linkPattern);
                 if (!link2File.Success && Info.VersionFromFile)
                 {
+                    Directory.CreateDirectory(ManageSettings.Install2MoDirPath);
+
                     foreach (var file in Directory.GetFiles(ManageSettings.Install2MoDirPath, Info.UpdateFileStartsWith + "*" + Info.UpdateFileEndsWith))
                     {
                         var ver = Regex.Match(Path.GetFileName(file), Info.UpdateFileStartsWith + "(.*)" + Info.UpdateFileEndsWith).Groups[1].Value;

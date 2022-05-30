@@ -22,10 +22,11 @@ namespace AIHelper.Manage.Rules.MetaIniFixes
             var key = ManageSettings.AiMetaIniKeyModlistRulesInfoName;
             var modName = Path.GetFileName(mod);
 
+            if (modlistData == null || modlistData.RulesDict == null) return false;
             if (!modlistData.RulesDict.ContainsKey(modName)) return false;
             if (ini.SectionExists(section) && ini.KeyExists(key, section)) return false;
 
-            ini.SetKey(section, key, "::mlinfo::\\r\\n" + string.Join("\\r\\n", modlistData.RulesDict[modName])+ "\\r\\n::", false);
+            ini.SetKey(section, key, "::mlinfo::\\r\\n" + string.Join("\\r\\n", modlistData.RulesDict[modName]) + "\\r\\n::", false);
 
             modlistData.Report.Add(modName + ": " + T._("added rules info into meta.ini"));
 

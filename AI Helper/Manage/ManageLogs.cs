@@ -4,6 +4,7 @@ using System.IO;
 
 namespace AIHelper.Manage
 {
+    [Obsolete]
     class ManageLogs
     {
         internal readonly static string LogFilePath = Path.Combine(Properties.Settings.Default.ApplicationStartupPath, Properties.Settings.Default.ApplicationProductName + ".log");

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -6,6 +7,7 @@ namespace AIHelper.Manage
 {
     static class ManageStrings
     {
+        static Logger _log = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// check if path is long and can cause standart io operations errors.
         /// if path is long, will be added prefix "\\?\" for long paths.
@@ -16,7 +18,7 @@ namespace AIHelper.Manage
         {
             if (path.Length > 259 && path.Substring(0, 4) != @"\\?\")
             {
-                ManageLogs.Log("Warning. Path to file has more of 259 characters. It can cause errors in game. Try to make path shorter by rename filename or any folders to it. File:" + Environment.NewLine + path);
+                _log.Debug("Warning. Path to file has more of 259 characters. It can cause errors in game. Try to make path shorter by rename filename or any folders to it. File:" + Environment.NewLine + path);
                 path = path.ToLongPathWhenNeed(true, true);
                 return true;
             }

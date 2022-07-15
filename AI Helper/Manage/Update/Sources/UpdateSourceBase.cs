@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.ComponentModel;
 using System.Net;
 using System.Text;
@@ -12,6 +13,8 @@ namespace AIHelper.Manage.Update.Sources
     /// </summary>
     abstract class UpdateSourceBase : IDisposable
     {
+        protected static Logger _log = LogManager.GetCurrentClassLogger();
+
         protected UpdateInfo Info;
 
         protected WebClient WC;
@@ -37,7 +40,7 @@ namespace AIHelper.Manage.Update.Sources
             }
             catch (WebException ex)
             {
-                ManageLogs.Log("An error occured while file downloading. \r\nLink:" + Info.DownloadLink + "\r\nError:\r\n" + ex);
+                _log.Debug("An error occured while file downloading. \r\nLink:" + Info.DownloadLink + "\r\nError:\r\n" + ex);
                 Info.LastErrorText.AppendLine(" >" + ex.Message);
             }
         }

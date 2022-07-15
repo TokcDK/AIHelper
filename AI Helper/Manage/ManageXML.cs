@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.IO;
 using System.Xml;
 
@@ -6,6 +7,7 @@ namespace AIHelper.Manage
 {
     class ManageXml
     {
+        static Logger _log = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// changes UserData/setup.xml values
         /// </summary>
@@ -119,7 +121,7 @@ namespace AIHelper.Manage
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("An error occured while ReadXmlValue. error:\r\n" + ex);
+                    _log.Debug("An error occured while ReadXmlValue. error:\r\n" + ex);
                 }
             }
             return defaultresult;

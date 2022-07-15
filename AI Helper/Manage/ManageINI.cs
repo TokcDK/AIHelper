@@ -1,10 +1,12 @@
 ﻿using INIFileMan;
+using NLog;
 using System.IO;
 
 namespace AIHelper.Manage
 {
     internal static class ManageIni
     {
+        static Logger _log = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// init ini file and set required settings for it
         /// </summary>
@@ -22,7 +24,7 @@ namespace AIHelper.Manage
                 }
                 else
                 {
-                    ManageLogs.Log("GetINIFile error. ini is null. iniPath=" + iniPath);
+                    _log.Debug("GetINIFile error. ini is null. iniPath=" + iniPath);
                 }
             }
             else

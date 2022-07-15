@@ -1,4 +1,5 @@
 ﻿using AIHelper.Manage;
+using NLog;
 using System;
 using System.Windows.Forms;
 
@@ -6,6 +7,7 @@ namespace AIHelper.Forms.Other
 {
     public partial class SwitchModeDialogForm : Form
     {
+        static Logger _log = LogManager.GetCurrentClassLogger();
         public SwitchModeDialogForm()
         {
             InitializeComponent();
@@ -74,7 +76,7 @@ namespace AIHelper.Forms.Other
             }
             catch (Exception ex)
             {
-                ManageLogs.Log("An error occured while SetTooltips. error:\r\n" + ex);
+                _log.Debug("An error occured while SetTooltips. error:\r\n" + ex);
             }
         }
 

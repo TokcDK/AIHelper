@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -140,7 +141,7 @@ namespace AIHelper.Manage.Rules.ModList
             }
             catch (Exception ex)
             {
-                ManageLogs.Log("GetTagInfoTextFromHTML error:" + Environment.NewLine + ex);
+                _log.Debug("GetTagInfoTextFromHTML error:" + Environment.NewLine + ex);
                 return string.Empty;
             }
         }

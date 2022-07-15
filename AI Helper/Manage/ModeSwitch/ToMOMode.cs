@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace AIHelper.Manage.ModeSwitch
 {
     class ToMOMode : ModeSwitcherBase
     {
+        static Logger _log = LogManager.GetCurrentClassLogger();
         protected override string DialogText =>
             T._("Attention")
             + "\n\n"
@@ -150,7 +152,7 @@ namespace AIHelper.Manage.ModeSwitch
                     }
                     catch (Exception ex)
                     {
-                        ManageLogs.Log("error occured while Mods\\Mods file sorting. Error:\r\n" + ex);
+                        _log.Debug("error occured while Mods\\Mods file sorting. Error:\r\n" + ex);
                     }
                 }
 
@@ -230,7 +232,7 @@ namespace AIHelper.Manage.ModeSwitch
                     {
                         if (zipmodsGuidList[guid].Contains("%"))//temp check
                         {
-                            ManageLogs.Log("zipmod contains %VAR%:" + zipmodsGuidList[guid]);
+                            _log.Debug("zipmod contains %VAR%:" + zipmodsGuidList[guid]);
                         }
 
                         var zipmod = ReplaceVarsToPaths(zipmodsGuidList[guid]);
@@ -265,7 +267,7 @@ namespace AIHelper.Manage.ModeSwitch
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("Error occured while to MO mode switch:" + Environment.NewLine + ex);
+                    _log.Debug("Error occured while to MO mode switch:" + Environment.NewLine + ex);
                 }
 
                 if (string.IsNullOrEmpty(destFileName))
@@ -411,14 +413,14 @@ namespace AIHelper.Manage.ModeSwitch
                 string[] movePaths = operation.Split(operationsSplitString, StringSplitOptions.None);
                 if (movePaths.Length != 2)
                 {
-                    ManageLogs.Log("Something wrong and where was wrong operation parameters count in MoveFilesByOperationsList. Operation value:\r\n" + operation);
+                    _log.Debug("Something wrong and where was wrong operation parameters count in MoveFilesByOperationsList. Operation value:\r\n" + operation);
                     return;
                 }
 
                 if (movePaths[0].CountOf(':') > 1 || movePaths[1].CountOf(':') > 1)
                 {
                     // must be one ':' in absolute path or no one if relative path
-                    ManageLogs.Log("Something wrong and where was wrong operation parameters value in MoveFilesByOperationsList. Operation value:\r\n" + operation);
+                    _log.Debug("Something wrong and where was wrong operation parameters value in MoveFilesByOperationsList. Operation value:\r\n" + operation);
                 }
 
                 if (IsDirSymlink(movePaths))
@@ -458,7 +460,7 @@ namespace AIHelper.Manage.ModeSwitch
                     }
                     catch (Exception ex)
                     {
-                        ManageLogs.Log("Failed to move file: '" + Environment.NewLine + movePaths[1] + "' " + Environment.NewLine + "Error:" + Environment.NewLine + ex);
+                        _log.Debug("Failed to move file: '" + Environment.NewLine + movePaths[1] + "' " + Environment.NewLine + "Error:" + Environment.NewLine + ex);
                     }
                 }
             });
@@ -501,7 +503,7 @@ namespace AIHelper.Manage.ModeSwitch
             }
             catch (Exception ex)
             {
-                ManageLogs.Log("An error occured while file moving." + "MovePaths[0]=" + movePaths[0] + ";MovePaths[1]=" + movePaths[0] + ".error:\r\n" + ex);
+                _log.Debug("An error occured while file moving." + "MovePaths[0]=" + movePaths[0] + ";MovePaths[1]=" + movePaths[0] + ".error:\r\n" + ex);
             }
         }
 

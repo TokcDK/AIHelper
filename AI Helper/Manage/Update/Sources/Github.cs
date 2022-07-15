@@ -330,7 +330,7 @@ namespace AIHelper.Manage.Update.Sources
                 }
                 else
                 {
-                    ManageLogs.Log("GitHub sublink to file not found or incorrect.\r\n\tMod:" + Info.TargetFolderPath.Name + "\r\n\tlink:" + Info.SourceLink + "\r\n\tfile:" + Info.UpdateFileStartsWith + "*" + Info.UpdateFileEndsWith + " =>(Link to file" + (link2File.Success ? ": " + link2File.Value : " not found") + ")");
+                    _log.Debug("GitHub sublink to file not found or incorrect.\r\n\tMod:" + Info.TargetFolderPath.Name + "\r\n\tlink:" + Info.SourceLink + "\r\n\tfile:" + Info.UpdateFileStartsWith + "*" + Info.UpdateFileEndsWith + " =>(Link to file" + (link2File.Success ? ": " + link2File.Value : " not found") + ")");
 
                     if (!Info.VersionFromFile && _gitLatestVersion.Length > 0)
                     {
@@ -341,7 +341,7 @@ namespace AIHelper.Manage.Update.Sources
             }
             catch (Exception ex)
             {
-                ManageLogs.Log("failed to check update. error:\r\n" + ex);
+                _log.Debug("failed to check update. error:\r\n" + ex);
                 Info.LastErrorText.Append(" >" + ex.Message);
             }
 
@@ -354,7 +354,7 @@ namespace AIHelper.Manage.Update.Sources
             var b = s.Contains("(429) too many requests");
             if (b)
             {
-                ManageLogs.Log("Source " + this.Title + " will be skipped for a while because stop approve requests. Error:\r\n" + s);
+                _log.Debug("Source " + this.Title + " will be skipped for a while because stop approve requests. Error:\r\n" + s);
             }
 
             return b;

@@ -54,7 +54,7 @@ namespace AIHelper.Install.Types.Directories
                         }
                         catch (Exception ex)
                         {
-                            Manage.ManageLogs.Log("An error occured while parse by dir installer. error\r\n" + ex);
+                            _log.Debug("An error occured while parse by dir installer. error\r\n" + ex);
                         }
                     }
                 }

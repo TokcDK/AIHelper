@@ -1,4 +1,5 @@
 ﻿using AIHelper.Manage;
+using NLog;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -8,6 +9,7 @@ namespace AIHelper.Forms.Other
 {
     public partial class UpdateOptionsDialogForm : Form
     {
+        static Logger _log = LogManager.GetCurrentClassLogger();
         public UpdateOptionsDialogForm()
         {
             InitializeComponent();
@@ -128,7 +130,7 @@ namespace AIHelper.Forms.Other
             }
             catch (Exception ex)
             {
-                ManageLogs.Log("An error occured while SetTooltips. error:\r\n" + ex);
+                _log.Debug("An error occured while SetTooltips. error:\r\n" + ex);
             }
         }
 

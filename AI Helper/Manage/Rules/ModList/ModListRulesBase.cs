@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,8 @@ namespace AIHelper.Manage.Rules.ModList
 {
     internal abstract class ModListRulesBase
     {
+        protected static Logger _log = LogManager.GetCurrentClassLogger();
+
         protected ModListData ModlistData;
 
         internal string OutModName;

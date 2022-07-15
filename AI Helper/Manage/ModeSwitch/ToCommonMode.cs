@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,6 +13,7 @@ namespace AIHelper.Manage.ModeSwitch
 {
     class ToCommonMode : ModeSwitcherBase
     {
+        static Logger _log = LogManager.GetCurrentClassLogger();
         protected override string DialogText =>
                     T._("Attention")
                     + "\n\n"
@@ -51,7 +53,7 @@ namespace AIHelper.Manage.ModeSwitch
             }
             catch (Exception ex)
             {
-                ManageLogs.Log("error while image skip. error:" + ex);
+                _log.Debug("error while image skip. error:" + ex);
             }
 
             //skip meta.ini
@@ -395,7 +397,7 @@ namespace AIHelper.Manage.ModeSwitch
                         File.Move(vanillaFileBackupTargetPath, dataFilePath);
                     }
 
-                    ManageLogs.Log("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + bakfolder + "\r\nData path=" + dataFilePath + "\r\nSource dir path=" + sourceFilePath);
+                    _log.Debug("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + bakfolder + "\r\nData path=" + dataFilePath + "\r\nSource dir path=" + sourceFilePath);
                 }
             }
             else
@@ -417,7 +419,7 @@ namespace AIHelper.Manage.ModeSwitch
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + destFolder + "\r\nData path=" + dataFilePath + "\r\nSource dir path=" + sourceFilePath);
+                    _log.Debug("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + destFolder + "\r\nData path=" + dataFilePath + "\r\nSource dir path=" + sourceFilePath);
                 }
             }
         }
@@ -464,7 +466,7 @@ namespace AIHelper.Manage.ModeSwitch
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("error while RestoreMovedFilesLocation. error:\r\n" + ex);
+                    _log.Debug("error while RestoreMovedFilesLocation. error:\r\n" + ex);
                 }
             });
 

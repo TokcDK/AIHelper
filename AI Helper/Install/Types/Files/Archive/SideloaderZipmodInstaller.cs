@@ -1,4 +1,5 @@
 ﻿using AIHelper.Manage;
+using NLog;
 using System;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,8 @@ namespace AIHelper.Install.Types.Files.Archive
 {
     class SideloaderZipmodInstaller : ArchiveInstallerBase
     {
+        static Logger _log = LogManager.GetCurrentClassLogger();
+
         // zipmods it is archives but they will not be extracted
         public override int Order => base.Order * 5;
 
@@ -27,7 +30,7 @@ namespace AIHelper.Install.Types.Files.Archive
 
             if (!gameEmpty && !string.Equals(zipmod.game, ManageSettings.ZipmodManifestGameNameByCurrentGame, StringComparison.InvariantCultureIgnoreCase))
             {
-                ManageLogs.Log("Wrong game: " + zipmod.game + ", zipmod name: " + zipfile.Name);
+                _log.Debug("Wrong game: " + zipmod.game + ", zipmod name: " + zipfile.Name);
                 File.WriteAllText(zipfile.FullName + ".info.txt", zipfile.Name + " info:\r\n\r\nGame: " + zipmod.game);
                 return false;
             }

@@ -1,4 +1,5 @@
 ﻿
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,6 +10,8 @@ namespace AIHelper.Manage.Update.Targets
     //Base for targets
     abstract class UpdateTargetBase
     {
+        protected static Logger _log = LogManager.GetCurrentClassLogger();
+
         protected UpdateInfo Info;
 
         protected UpdateTargetBase(UpdateInfo info)
@@ -103,7 +106,7 @@ namespace AIHelper.Manage.Update.Targets
             }
             catch (Exception ex)
             {
-                ManageLogs.Log("An error occured while buckup creation:\r\n" + ex);
+                _log.Debug("An error occured while buckup creation:\r\n" + ex);
                 return false;
             }
         }
@@ -268,7 +271,7 @@ namespace AIHelper.Manage.Update.Targets
                 //    + "</p>"
                 //    );
 
-                ManageLogs.Log("Failed to update mod" + " " + Info.TargetFolderPath.Name + ":" + Environment.NewLine + ex);
+                _log.Debug("Failed to update mod" + " " + Info.TargetFolderPath.Name + ":" + Environment.NewLine + ex);
 
                 return false;
             }
@@ -343,7 +346,7 @@ namespace AIHelper.Manage.Update.Targets
                 }
                 catch// (Exception ex)
                 {
-                    //ManageLogs.Log("Update: Failed to move file to bak dir. error:" + Environment.NewLine + ex);
+                    //_log.Debug("Update: Failed to move file to bak dir. error:" + Environment.NewLine + ex);
                 }
             }
 
@@ -372,7 +375,7 @@ namespace AIHelper.Manage.Update.Targets
                 }
                 catch// (Exception ex)
                 {
-                    //ManageLogs.Log("Update: Failed to move file to bak dir. error:" + Environment.NewLine + ex);
+                    //_log.Debug("Update: Failed to move file to bak dir. error:" + Environment.NewLine + ex);
                 }
             }
         }
@@ -402,7 +405,7 @@ namespace AIHelper.Manage.Update.Targets
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("Restore: Failed to move dir to mod dir. error:" + Environment.NewLine + ex);
+                    _log.Debug("Restore: Failed to move dir to mod dir. error:" + Environment.NewLine + ex);
                 }
             }
             //restore old files
@@ -423,7 +426,7 @@ namespace AIHelper.Manage.Update.Targets
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("Restore: Failed to move file to mod dir. error:" + Environment.NewLine + ex);
+                    _log.Debug("Restore: Failed to move file to mod dir. error:" + Environment.NewLine + ex);
                 }
             }
 
@@ -473,7 +476,7 @@ namespace AIHelper.Manage.Update.Targets
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("Update: Filed to move dir to bak dir. error:" + Environment.NewLine + ex);
+                    _log.Debug("Update: Filed to move dir to bak dir. error:" + Environment.NewLine + ex);
                 }
             }
             //buckup old files
@@ -512,7 +515,7 @@ namespace AIHelper.Manage.Update.Targets
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("Update: Failed to move file to bak dir. error:" + Environment.NewLine + ex);
+                    _log.Debug("Update: Failed to move file to bak dir. error:" + Environment.NewLine + ex);
                 }
             }
         }

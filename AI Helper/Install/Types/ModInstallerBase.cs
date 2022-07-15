@@ -1,7 +1,11 @@
-﻿namespace AIHelper.Install.Types
+﻿using NLog;
+
+namespace AIHelper.Install.Types
 {
     abstract class ModInstallerBase
     {
+        protected static Logger _log = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// order of installer
         /// </summary>

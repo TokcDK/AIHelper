@@ -300,7 +300,7 @@ namespace AIHelper.Manage
             //    }
             //    catch (Exception ex)
             //    {
-            //        ManageLogs.Log("RootGame check failed. Error:" + Environment.NewLine + ex);
+            //        _log.Debug("RootGame check failed. Error:" + Environment.NewLine + ex);
             //    }
             //}
 
@@ -651,7 +651,7 @@ namespace AIHelper.Manage
         //        }
         //        catch (Exception ex)
         //        {
-        //            ManageLogs.Log("RootGame check failed. Error:" + Environment.NewLine + ex);
+        //            _log.Debug("RootGame check failed. Error:" + Environment.NewLine + ex);
         //        }
         //    }
 

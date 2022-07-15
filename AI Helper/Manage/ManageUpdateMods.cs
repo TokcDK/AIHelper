@@ -1,6 +1,7 @@
 ﻿using AIHelper.Forms.Other;
 using AIHelper.Manage.Update;
 using AIHelper.SharedData;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,6 +16,8 @@ namespace AIHelper.Manage
 {
     class ManageUpdateMods
     {
+        static Logger _log = LogManager.GetCurrentClassLogger();
+
         static UpdateOptionsDialogForm UpdateOptions;
 
         public static void UpdateMods()
@@ -89,7 +92,7 @@ namespace AIHelper.Manage
             }
             catch (Exception ex)
             {
-                ManageLogs.Log("An error while get update infos:\r\n" + ex + "\r\ninfos count=" + infos.Count + (modNamesList != null ? "\r\nModsList count=" + modNamesList.Length : "ModsList is null"));
+                _log.Debug("An error while get update infos:\r\n" + ex + "\r\ninfos count=" + infos.Count + (modNamesList != null ? "\r\nModsList count=" + modNamesList.Length : "ModsList is null"));
             }
 
             return infos;
@@ -292,7 +295,7 @@ namespace AIHelper.Manage
                             }
                             catch (Exception ex)
                             {
-                                ManageLogs.Log("Failed to sort chara card: " + charaFile.FullName + "\r\nerror:\r\n" + ex);
+                                _log.Debug("Failed to sort chara card: " + charaFile.FullName + "\r\nerror:\r\n" + ex);
                             }
                         });
                     });
@@ -308,7 +311,7 @@ namespace AIHelper.Manage
                     }
                     catch (Exception ex)
                     {
-                        ManageLogs.Log("Failed to sort chara card: " + infoFile.FullName + "\r\nerror:\r\n" + ex);
+                        _log.Debug("Failed to sort chara card: " + infoFile.FullName + "\r\nerror:\r\n" + ex);
                     }
                 });
             });
@@ -436,7 +439,7 @@ namespace AIHelper.Manage
                                 }
                                 catch (IOException ex)
                                 {
-                                    ManageLogs.Log("An error occured while file move. error:\r\n" + ex + "\r\nfile=" + file + "\r\ntarget file=" + target);
+                                    _log.Debug("An error occured while file move. error:\r\n" + ex + "\r\nfile=" + file + "\r\ntarget file=" + target);
                                 }
                             }
                             else if (isSortingModPack)
@@ -503,13 +506,13 @@ namespace AIHelper.Manage
                                 }
                                 catch (IOException ex)
                                 {
-                                    ManageLogs.Log("An error occured while file move. error:\r\n" + ex + "\r\nfile=" + file + "\r\ntarget file=" + target);
+                                    _log.Debug("An error occured while file move. error:\r\n" + ex + "\r\nfile=" + file + "\r\ntarget file=" + target);
                                 }
                             }
                         }
                         catch (Exception ex)
                         {
-                            ManageLogs.Log("Failed to sort file " + f + "\r\nerror:\r\n" + ex);
+                            _log.Debug("Failed to sort file " + f + "\r\nerror:\r\n" + ex);
                         }
                     });
                 });

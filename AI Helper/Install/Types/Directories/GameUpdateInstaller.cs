@@ -1,5 +1,6 @@
 ﻿using AIHelper.Manage;
 using AIHelper.Manage.Update;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,6 +14,7 @@ namespace AIHelper.Install.Types.Directories
 {
     class GameUpdateInstaller : DirectoriesInstallerBase
     {
+        static Logger _log = LogManager.GetCurrentClassLogger();
         public override int Order => base.Order / 5;
 
         DirectoryInfo _dir;
@@ -308,7 +310,7 @@ namespace AIHelper.Install.Types.Directories
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("Failed to apply notes default value. Mod name:" + modDirNameValue.Value + "\r\nError:" + ex);
+                    _log.Debug("Failed to apply notes default value. Mod name:" + modDirNameValue.Value + "\r\nError:" + ex);
                 }
             }
 
@@ -370,7 +372,7 @@ namespace AIHelper.Install.Types.Directories
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("Failed to " + (create ? "create" : "remove") + " " + (files ? "file" : "dir") + ". SubPath:" + subPath + "\r\nError:" + ex);
+                    _log.Debug("Failed to " + (create ? "create" : "remove") + " " + (files ? "file" : "dir") + ". SubPath:" + subPath + "\r\nError:" + ex);
                 }
             }
 
@@ -490,7 +492,7 @@ namespace AIHelper.Install.Types.Directories
                     }
                     catch (Exception ex)
                     {
-                        ManageLogs.Log("Failed to remove unusing separator. path:" + separator.FullName + "\r\nError:" + ex);
+                        _log.Debug("Failed to remove unusing separator. path:" + separator.FullName + "\r\nError:" + ex);
                     }
                 }
             }
@@ -606,7 +608,7 @@ namespace AIHelper.Install.Types.Directories
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("Failed to update file. path:" + updateFileInfo.FullName + "\r\nError:" + ex);
+                    _log.Debug("Failed to update file. path:" + updateFileInfo.FullName + "\r\nError:" + ex);
                 }
             }
 
@@ -676,7 +678,7 @@ namespace AIHelper.Install.Types.Directories
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("Failed to update dir. path:" + updateSubDir.FullName + "\r\nError:" + ex);
+                    _log.Debug("Failed to update dir. path:" + updateSubDir.FullName + "\r\nError:" + ex);
                 }
 
             }

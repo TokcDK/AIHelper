@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,6 +8,7 @@ namespace AIHelper.Manage
 {
     static class ManageProcess
     {
+        static Logger _log = LogManager.GetCurrentClassLogger();
         public static void RunProgram(string programPath, string arguments = "")
         {
             if (!File.Exists(programPath))
@@ -176,7 +178,7 @@ namespace AIHelper.Manage
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("Cant kill process \"" + process.ProcessName + "\" with id" + process.Id + ". Error:\r\n" + ex);
+                    _log.Debug("Cant kill process \"" + process.ProcessName + "\" with id" + process.Id + ". Error:\r\n" + ex);
                 }
             }
         }

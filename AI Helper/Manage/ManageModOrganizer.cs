@@ -2,6 +2,7 @@
 using AIHelper.SharedData;
 using CheckForEmptyDir;
 using INIFileMan;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,6 +20,7 @@ namespace AIHelper.Manage
 {
     static class ManageModOrganizer
     {
+        static Logger _log = LogManager.GetCurrentClassLogger();
         internal static bool IsInOverwriteFolder(this string filePath)
         {
             return filePath.ToUpperInvariant().Contains(ManageSettings.CurrentGameOverwriteFolderPath.ToUpperInvariant());
@@ -203,7 +205,7 @@ namespace AIHelper.Manage
                     }
                     catch (Exception ex)
                     {
-                        ManageLogs.Log("An error occured while symlink creation:\r\n" + ex);
+                        _log.Debug("An error occured while symlink creation:\r\n" + ex);
                     }
                 }
             }
@@ -238,7 +240,7 @@ namespace AIHelper.Manage
                     }
                     catch (Exception ex)
                     {
-                        ManageLogs.Log("BepInExPreloadersFix error:" + Environment.NewLine + ex);
+                        _log.Debug("BepInExPreloadersFix error:" + Environment.NewLine + ex);
                     }
                 }
                 else
@@ -289,7 +291,7 @@ namespace AIHelper.Manage
                     }
                     catch (Exception ex)
                     {
-                        ManageLogs.Log("BepInExPreloadersFix error:" + Environment.NewLine + ex);
+                        _log.Debug("BepInExPreloadersFix error:" + Environment.NewLine + ex);
                     }
                 }
             }
@@ -659,7 +661,7 @@ namespace AIHelper.Manage
                 folderPath = Path.GetDirectoryName(folderPath);
                 if (string.Equals(folderPath, ManageSettings.CurrentGameDirPath, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    ManageLogs.Log("Warning. Path in Mods not found." + "\r\ninputPath=" + inputPath + "\r\nModPath=" + modPath + "\r\nFolderPath=" + folderPath);
+                    _log.Debug("Warning. Path in Mods not found." + "\r\ninputPath=" + inputPath + "\r\nModPath=" + modPath + "\r\nFolderPath=" + folderPath);
                     return defaultPath;
                 }
             }
@@ -670,11 +672,11 @@ namespace AIHelper.Manage
                 )
                 )
             {
-                ManageLogs.Log("warning. log path is Mods. ModPath=" + modPath + ". FolderPath=" + folderPath);
+                _log.Debug("warning. log path is Mods. ModPath=" + modPath + ". FolderPath=" + folderPath);
             }
             else if (modPath == string.Empty)
             {
-                ManageLogs.Log("warning. ModPath is null, set to default.(" + modPath + ") FolderPath=" + folderPath);
+                _log.Debug("warning. ModPath is null, set to default.(" + modPath + ") FolderPath=" + folderPath);
                 modPath = defaultPath;// set to default if null
             }
 
@@ -929,7 +931,7 @@ namespace AIHelper.Manage
                         }
                         else
                         {
-                            ManageLogs.Log("Warning! Link info file has invalid simlink as target of path. File:" + linkinfo.FullName + "\r\n");
+                            _log.Debug("Warning! Link info file has invalid simlink as target of path. File:" + linkinfo.FullName + "\r\n");
                             // skip if target object is invalid symlink
                             continue;
                         }
@@ -1095,7 +1097,7 @@ namespace AIHelper.Manage
         //                }
         //                else
         //                {
-        //                    ManageLogs.Log("Warning! Link info file has invalid simlink as target of path. File:" + linkinfo.FullName + "\r\n");
+        //                    _log.Debug("Warning! Link info file has invalid simlink as target of path. File:" + linkinfo.FullName + "\r\n");
         //                    // skip if target object is invalid symlink
         //                    continue;
         //                }
@@ -1805,7 +1807,7 @@ namespace AIHelper.Manage
                     }
                     catch
                     {
-                        ManageLogs.Log("FixCustomExecutablesIniValues:Error while path fix.\r\nKey=" + record.Key + "\r\nPath=" + record.Value.Binary);
+                        _log.Debug("FixCustomExecutablesIniValues:Error while path fix.\r\nKey=" + record.Key + "\r\nPath=" + record.Value.Binary);
                     }
                 }
             }
@@ -3297,7 +3299,7 @@ namespace AIHelper.Manage
             }
             catch (Exception ex)
             {
-                ManageLogs.Log("An error occured in CheckMoUserdata. error:" + ex);
+                _log.Debug("An error occured in CheckMoUserdata. error:" + ex);
             }
         }
 
@@ -3480,7 +3482,7 @@ namespace AIHelper.Manage
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("RestoreModlist error:\r\n" + ex);
+                    _log.Debug("RestoreModlist error:\r\n" + ex);
                 }
             }
         }
@@ -3623,7 +3625,7 @@ namespace AIHelper.Manage
             }
             catch (Exception ex)
             {
-                ManageLogs.Log("An error occured while path get:\r\n" + ex + "\r\npath=" + path);
+                _log.Debug("An error occured while path get:\r\n" + ex + "\r\npath=" + path);
             }
 
             return path;
@@ -4095,7 +4097,7 @@ namespace AIHelper.Manage
                         }
                         catch (Exception ex)
                         {
-                            ManageLogs.Log("An error occured while MO dir cleaning from useless files. Error:\r\n" + ex);
+                            _log.Debug("An error occured while MO dir cleaning from useless files. Error:\r\n" + ex);
                         }
                     }
                 }
@@ -4116,7 +4118,7 @@ namespace AIHelper.Manage
                         }
                         catch (Exception ex)
                         {
-                            ManageLogs.Log("An error occured while MO dir cleaning from useless files. Error:\r\n" + ex);
+                            _log.Debug("An error occured while MO dir cleaning from useless files. Error:\r\n" + ex);
                         }
                     }
                 }

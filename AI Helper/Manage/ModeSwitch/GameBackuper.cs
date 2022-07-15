@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ namespace AIHelper.Manage.ModeSwitch
 {
     class GameBackuper
     {
+        static Logger _log = LogManager.GetCurrentClassLogger();
         string bakDirPath;
         string selectedGamePath;
         internal void CreateDataModsBakOfCurrentGame()
@@ -124,7 +126,7 @@ namespace AIHelper.Manage.ModeSwitch
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("Error occured while game buckup file move:" + Environment.NewLine + ex + "\r\npath=" + targetFileParentDirPath + "\r\nData path=" + targetFilePath + "\r\nSource dir path=" + sourceFilePath);
+                    _log.Debug("Error occured while game buckup file move:" + Environment.NewLine + ex + "\r\npath=" + targetFileParentDirPath + "\r\nData path=" + targetFilePath + "\r\nSource dir path=" + sourceFilePath);
                 }
             }
         }

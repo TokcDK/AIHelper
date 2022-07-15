@@ -1,6 +1,7 @@
 ﻿using AIHelper.Manage.Update.Sources;
 using AIHelper.Manage.Update.Targets;
 using AIHelper.Manage.Update.Targets.Mods;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -13,6 +14,8 @@ namespace AIHelper.Manage.Update
 {
     class Updater
     {
+        static Logger _log = LogManager.GetCurrentClassLogger();
+
         private bool _isHtmlReport = true;
 
         /// <summary>
@@ -272,7 +275,7 @@ namespace AIHelper.Manage.Update
                                         + " ("+ T._("Details in") + " " + Properties.Settings.Default.ApplicationProductName + ".log" + ")"
                                         + ManageSettings.UpdateReport.HtmlAfterModReportLine);
 
-                                ManageLogs.Log("Failed to update" + " " + info.TargetFolderPath.Name /*+ ":" + Environment.NewLine + ex*/);
+                                _log.Debug("Failed to update" + " " + info.TargetFolderPath.Name /*+ ":" + Environment.NewLine + ex*/);
                             }
                         }
                     }

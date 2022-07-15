@@ -1,4 +1,5 @@
 ﻿using AIHelper.Manage;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +8,7 @@ namespace AIHelper.Games
 {
     public abstract class GameBase
     {
+        protected static Logger _log = LogManager.GetCurrentClassLogger();
         public GameBase()
         {
             //InitActions();
@@ -306,7 +308,7 @@ namespace AIHelper.Games
         //    }
         //    catch (Exception ex)
         //    {
-        //        ManageLogs.Log("An error occured while SearchGameFolder. error:\r\n" + ex);
+        //        _log.Debug("An error occured while SearchGameFolder. error:\r\n" + ex);
         //    }
         //    return string.Empty;
         //}
@@ -344,7 +346,7 @@ namespace AIHelper.Games
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("An error occured while MO files coping. error:\r\n" + ex);
+                    _log.Debug("An error occured while MO files coping. error:\r\n" + ex);
                 }
             }
         }

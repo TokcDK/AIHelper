@@ -1,4 +1,5 @@
 ﻿using CheckForEmptyDir;
+using NLog;
 using SymbolicLinkSupport;
 using System.IO;
 
@@ -9,6 +10,7 @@ namespace AIHelper.Manage
     /// </summary>
     static class ManageSymLinkExtensions
     {
+        static Logger _log = LogManager.GetCurrentClassLogger();
         public static bool DeleteIfSymlink(this string linkPath, bool isFolder = false)
         {
             if (isFolder || Directory.Exists(linkPath))
@@ -379,7 +381,7 @@ namespace AIHelper.Manage
                 }
                 catch (IOException ex)
                 {
-                    ManageLogs.Log("An error accured while tried to create symlink. creation skipped. error:" + ex.Message);
+                    _log.Debug("An error accured while tried to create symlink. creation skipped. error:" + ex.Message);
                 }
 
                 return true;
@@ -456,7 +458,7 @@ namespace AIHelper.Manage
                 {
                     objectInfo.CreateSymbolicLink(symlinkPath, isRelative);//new from NuGet package
                 }
-                catch (IOException ex) { ManageLogs.Log("An error accured while tried to create symlink. creation skipped. error:" + ex.Message); }
+                catch (IOException ex) { _log.Debug("An error accured while tried to create symlink. creation skipped. error:" + ex.Message); }
 
                 return true;
 

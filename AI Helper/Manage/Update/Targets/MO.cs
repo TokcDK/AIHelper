@@ -91,7 +91,7 @@ namespace AIHelper.Manage.Update.Targets
         //    }
         //    catch (Exception ex)
         //    {
-        //        ManageLogs.Log("error while modorganizer-basic_games extraction\r\n" + ex);
+        //        _log.Debug("error while modorganizer-basic_games extraction\r\n" + ex);
         //    }
         //}
 

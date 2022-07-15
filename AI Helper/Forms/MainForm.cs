@@ -6,6 +6,7 @@ using AIHelper.Manage.Update;
 using AIHelper.SharedData;
 using CheckForEmptyDir;
 using INIFileMan;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,6 +26,8 @@ namespace AIHelper
 {
     internal partial class MainForm : Form
     {
+        static Logger _log = LogManager.GetCurrentClassLogger();
+
         //internal bool _compressmode;
 
         /// <summary>
@@ -141,7 +144,7 @@ namespace AIHelper
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("An error occured whil tried to CleanLog. error:" + ex);
+                    _log.Debug("An error occured whil tried to CleanLog. error:" + ex);
                 }
             }
         }
@@ -242,7 +245,7 @@ namespace AIHelper
             }
             catch (Exception ex)
             {
-                ManageLogs.Log("An error occured while SetListOfGames.path=" + ManageSettings.AiHelperIniPath + "\r\n error:\r\n" + ex);
+                _log.Debug("An error occured while SetListOfGames.path=" + ManageSettings.AiHelperIniPath + "\r\n error:\r\n" + ex);
                 return false;
             }
 
@@ -367,7 +370,7 @@ namespace AIHelper
             }
             catch (Exception ex)
             {
-                ManageLogs.Log("An error occured while SetTooltips. error:\r\n" + ex);
+                _log.Debug("An error occured while SetTooltips. error:\r\n" + ex);
             }
         }
 
@@ -896,7 +899,7 @@ namespace AIHelper
                 }
                 catch (Exception ex)
                 {
-                    ManageLogs.Log("An error occured while GetEnableDisableLaunchTabButtons. error:\r\n" + ex);
+                    _log.Debug("An error occured while GetEnableDisableLaunchTabButtons. error:\r\n" + ex);
                     BepInExConsoleCheckBox.Checked = false;
                 }
             }
@@ -1407,7 +1410,7 @@ namespace AIHelper
             }
             catch (Exception ex)
             {
-                ManageLogs.Log("An error occered in time of the app closing. error:\r\n" + ex);
+                _log.Debug("An error occered in time of the app closing. error:\r\n" + ex);
             }
             //нашел баг, когда при открытии свойства ссылки в проводнике
             //, с последующим закрытием свойств и закрытием AI Helper происходит блокировка папки проводником и при следующем запуске происходит ошибка AI Helper, до разблокировки папки

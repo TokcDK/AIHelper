@@ -1,5 +1,6 @@
 ﻿using AIHelper.SharedData;
 using CheckForEmptyDir;
+using NLog;
 using Soft160.Data.Cryptography;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace AIHelper.Manage
 {
     static class ManageFilesFoldersExtensions
     {
+        static Logger _log = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// if directory exist in the <paramref name="path"/>
         /// </summary>
@@ -157,7 +159,7 @@ namespace AIHelper.Manage
             }
             catch (Exception ex)
             {
-                ManageLogs.Log("dirPath=" + dirPath + Environment.NewLine + "Error:" + Environment.NewLine + ex);
+                _log.Debug("dirPath=" + dirPath + Environment.NewLine + "Error:" + Environment.NewLine + ex);
                 return;
             }
 
@@ -511,7 +513,7 @@ namespace AIHelper.Manage
                 }
                 catch (IOException ex)
                 {
-                    ManageLogs.Log("Error in MoveContentOfSourceFolderToTargetFolderAndThenCleanSource:" + Environment.NewLine + "sourceFilePath=" + sourceFile + Environment.NewLine + "targetFilePath=" + targetFile + Environment.NewLine + ex);
+                    _log.Debug("Error in MoveContentOfSourceFolderToTargetFolderAndThenCleanSource:" + Environment.NewLine + "sourceFilePath=" + sourceFile + Environment.NewLine + "targetFilePath=" + targetFile + Environment.NewLine + ex);
                 }
             }
 
@@ -848,7 +850,7 @@ namespace AIHelper.Manage
                     }
                     catch (Exception ex)
                     {
-                        ManageLogs.Log("Failed to move file " + targetPath + " / error:\r\n" + ex);
+                        _log.Debug("Failed to move file " + targetPath + " / error:\r\n" + ex);
                     }
 
                     return;

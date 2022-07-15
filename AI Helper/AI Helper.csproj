@@ -409,6 +409,9 @@
     <PackageReference Include="NGettext">
       <Version>0.6.7</Version>
     </PackageReference>
+    <PackageReference Include="NLog">
+      <Version>5.0.1</Version>
+    </PackageReference>
     <PackageReference Include="SevenZipSharp">
       <Version>0.64.0</Version>
     </PackageReference>

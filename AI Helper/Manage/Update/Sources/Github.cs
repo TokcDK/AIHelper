@@ -81,16 +81,10 @@ namespace AIHelper.Manage.Update.Sources
                             }
                         }
 
-                        if (found)
-                        {
-                            break;
-                        }
+                        if (found) break;
                     }
 
-                    if (found)
-                    {
-                        break;
-                    }
+                    if (found) break;
                 }
             }
             else
@@ -227,10 +221,7 @@ namespace AIHelper.Manage.Update.Sources
 
                 var latestReleasePage = WC.DownloadString(Info.SourceLink);
                 var version = Regex.Match(latestReleasePage, @"/releases/tag/([^\""]+)\""");
-                if (version.Success)
-                {
-                    _gitLatestVersion = version.Result("$1");
-                }
+                if (version.Success) _gitLatestVersion = version.Result("$1");
                 //GitLatestVersion = version.Value.Remove(version.Value.Length - 1, 1).Remove(0, 14);
 
                 var linkPattern = @"href\=\""(/" + _gitOwner + "/" + _gitRepository + "/releases/download/" + _gitLatestVersion + "/" + Info.UpdateFileStartsWith + @"([^\""]*)" + Info.UpdateFileEndsWith + @")\""";

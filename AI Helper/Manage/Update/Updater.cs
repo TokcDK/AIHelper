@@ -317,25 +317,16 @@ namespace AIHelper.Manage.Update
         {
             var ret = new Dictionary<string, Dictionary<string, DateTime>>();
             var DateTimesFilePath = ManageSettings.UpdateCheckDateTimesFilePath;
-            if (!File.Exists(DateTimesFilePath))
-            {
-                return ret;
-            }
+            if (!File.Exists(DateTimesFilePath)) return ret;
             StreamReader sr = new StreamReader(DateTimesFilePath);
             string line;
             while ((line = sr.ReadLine()) != null)
             {
-                if (string.IsNullOrWhiteSpace(line))
-                {
-                    continue;
-                }
+                if (string.IsNullOrWhiteSpace(line)) continue;
 
                 var data = line.Split('|');
 
-                if (data.Length != 3)
-                {
-                    continue;
-                }
+                if (data.Length != 3) continue;
 
                 if (!ret.ContainsKey(data[0]))
                 {
@@ -377,76 +368,74 @@ namespace AIHelper.Manage.Update
         {
             string reportMessage;
 
+            List<string> newReport = new List<string>();
+            if (info.Report != null && info.Report.Count > 0)
             {
-
-                List<string> newReport = new List<string>();
-                if (info.Report != null && info.Report.Count > 0)
+                foreach (var line in info.Report)
                 {
-                    foreach (var line in info.Report)
+                    string[] lines = line.Split(new[] { ManageSettings.UpdateReport.InfoLinkPattern }, StringSplitOptions.None);
+                    if (lines.Length == 2 && _isHtmlReport)
                     {
-                        string[] lines = line.Split(new[] { ManageSettings.UpdateReport.InfoLinkPattern}, StringSplitOptions.None);
-                        if (lines.Length == 2 && _isHtmlReport)
-                        {
-                            newReport.Add(lines[0].Replace(
-                                  ManageSettings.UpdateReport.HtmlAfterModReportLine                                , _isHtmlReport ?
-                                      ManageSettings.UpdateReport.HtmlModReportPreVersionTags                                        + ManageSettings.UpdateReport.PreInfoLinkTitleText                                    + ManageSettings.UpdateReport.HtmlModReportPostVersionTags                                    + ManageSettings.UpdateReport.HtmlPreInfoLinkHtml                                        + lines[1]
-                                    + ManageSettings.UpdateReport.HtmlAfterInfoLinkHtml                                        + ManageSettings.UpdateReport.InfoLinkText                                    + ManageSettings.UpdateReport.HtmlAfterInfoLinkText                                    + ManageSettings.UpdateReport.HtmlModReportPreVersionTags                                        + ManageSettings.UpdateReport.PostInfoLinkTitleText                                    + ManageSettings.UpdateReport.HtmlModReportPostVersionTags                                + ManageSettings.UpdateReport.HtmlAfterModReportLine                                  : string.Empty
-                                ));
-                        }
-                        else
-                        {
-                            newReport.Add(lines[0]);
-                        }
+                        newReport.Add(lines[0].Replace(
+                              ManageSettings.UpdateReport.HtmlAfterModReportLine, _isHtmlReport ?
+                                  ManageSettings.UpdateReport.HtmlModReportPreVersionTags + ManageSettings.UpdateReport.PreInfoLinkTitleText + ManageSettings.UpdateReport.HtmlModReportPostVersionTags + ManageSettings.UpdateReport.HtmlPreInfoLinkHtml + lines[1]
+                                + ManageSettings.UpdateReport.HtmlAfterInfoLinkHtml + ManageSettings.UpdateReport.InfoLinkText + ManageSettings.UpdateReport.HtmlAfterInfoLinkText + ManageSettings.UpdateReport.HtmlModReportPreVersionTags + ManageSettings.UpdateReport.PostInfoLinkTitleText + ManageSettings.UpdateReport.HtmlModReportPostVersionTags + ManageSettings.UpdateReport.HtmlAfterModReportLine : string.Empty
+                            ));
+                    }
+                    else
+                    {
+                        newReport.Add(lines[0]);
                     }
                 }
-
-                var noModsInfo = newReport.Count == 0;
-
-                if (File.Exists(ManageSettings.UpdateReport.ReportFilePath))
-                {
-                    _isHtmlReport = true;
-                    reportMessage = File.ReadAllText(ManageSettings.UpdateReport.ReportFilePath)
-                     .Replace(ManageSettings.UpdateReport.BgImageLinkPathPattern, ManageSettings.UpdateReport.CurrentGameBgFilePath)
-                     .Replace(ManageSettings.UpdateReport.ModsUpdateReportHeaderTextPattern, ManageSettings.UpdateReport.TitleText)
-                     .Replace(ManageSettings.UpdateReport.SingleModUpdateReportsTextSectionPattern, (noModsInfo ? ManageSettings.UpdateReport.NoModsUpdatesFoundText: string.Join(ManageSettings.UpdateReport.HtmlBetweenModsText, newReport)) + "<br>")
-                     .Replace(ManageSettings.UpdateReport.ModsUpdateInfoNoticePattern, noModsInfo ? "" : ManageSettings.UpdateReport.ModsUpdateInfoNoticeText);
-                }
-                else
-                {
-                    reportMessage =
-                        (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeginText: string.Empty)
-                        + ManageSettings.UpdateReport.TitleText                        + (_isHtmlReport ? ManageSettings.UpdateReport.HtmlAfterHeaderText: Environment.NewLine + Environment.NewLine)
-                        + (noModsInfo ? ManageSettings.UpdateReport.NoModsUpdatesFoundText: string.Join(_isHtmlReport ? ManageSettings.UpdateReport.HtmlBetweenModsText: Environment.NewLine, newReport))
-                        + "<br>"
-                        + (_isHtmlReport ? ManageSettings.UpdateReport.HtmLendText: string.Empty);
-                }
-                //ReportMessage = string.Join(/*Environment.NewLine*/"<br>", report);
-                //if (IsHTMLReport)
-                {
-                    var htmlfile = ManageSettings.UpdateReportHtmlFilePath;
-
-                    Directory.CreateDirectory(Path.GetDirectoryName(htmlfile));// fix missing parent directory error
-
-                    File.WriteAllText(htmlfile, reportMessage);
-                    using (var process = new System.Diagnostics.Process())
-                    {
-                        try
-                        {
-                            process.StartInfo.UseShellExecute = true;
-                            process.StartInfo.FileName = htmlfile;
-                            process.Start();
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e.Message);
-                        }
-                    }
-                }
-                //else
-                //{
-                //    MessageBox.Show(ReportMessage);
-                //}
             }
+
+            var noModsInfo = newReport.Count == 0;
+
+            if (File.Exists(ManageSettings.UpdateReport.ReportFilePath))
+            {
+                _isHtmlReport = true;
+                reportMessage = File.ReadAllText(ManageSettings.UpdateReport.ReportFilePath)
+                 .Replace(ManageSettings.UpdateReport.BgImageLinkPathPattern, ManageSettings.UpdateReport.CurrentGameBgFilePath)
+                 .Replace(ManageSettings.UpdateReport.ModsUpdateReportHeaderTextPattern, ManageSettings.UpdateReport.TitleText)
+                 .Replace(ManageSettings.UpdateReport.SingleModUpdateReportsTextSectionPattern, (noModsInfo ? ManageSettings.UpdateReport.NoModsUpdatesFoundText : string.Join(ManageSettings.UpdateReport.HtmlBetweenModsText, newReport)) + "<br>")
+                 .Replace(ManageSettings.UpdateReport.ModsUpdateInfoNoticePattern, noModsInfo ? "" : ManageSettings.UpdateReport.ModsUpdateInfoNoticeText);
+            }
+            else
+            {
+                reportMessage =
+                    (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeginText : string.Empty)
+                    + ManageSettings.UpdateReport.TitleText + (_isHtmlReport ? ManageSettings.UpdateReport.HtmlAfterHeaderText : Environment.NewLine + Environment.NewLine)
+                    + (noModsInfo ? ManageSettings.UpdateReport.NoModsUpdatesFoundText : string.Join(_isHtmlReport ? ManageSettings.UpdateReport.HtmlBetweenModsText : Environment.NewLine, newReport))
+                    + "<br>"
+                    + (_isHtmlReport ? ManageSettings.UpdateReport.HtmLendText : string.Empty);
+            }
+            //ReportMessage = string.Join(/*Environment.NewLine*/"<br>", report);
+            //if (IsHTMLReport)
+            {
+                var htmlfile = ManageSettings.UpdateReportHtmlFilePath;
+
+                Directory.CreateDirectory(Path.GetDirectoryName(htmlfile));// fix missing parent directory error
+
+                File.WriteAllText(htmlfile, reportMessage);
+                using (var process = new System.Diagnostics.Process())
+                {
+                    try
+                    {
+                        process.StartInfo.UseShellExecute = true;
+                        process.StartInfo.FileName = htmlfile;
+                        process.Start();
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                }
+            }
+            //else
+            //{
+            //    MessageBox.Show(ReportMessage);
+            //}
+
             //else
             //{
             //    ReportMessage = T._("No updates found");

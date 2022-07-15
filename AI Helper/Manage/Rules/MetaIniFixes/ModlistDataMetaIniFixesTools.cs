@@ -57,9 +57,9 @@ namespace AIHelper.Manage.Rules.MetaIniFixes
                 if (inIchanged) ini.WriteFile();
             }
 
+            // remove fixes title if was no fixes
             if (preModlistCount == modlistData.Report.Count && modlistData.Report.Count > 0)
             {
-                // remove fixes title if was no fixes
                 modlistData.Report.RemoveAt(modlistData.Report.Count - 1);
             }
 

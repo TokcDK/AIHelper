@@ -243,10 +243,7 @@ namespace AIHelper.Manage
             {
                 if (isEqual)
                 {
-                    if (arrayWhereReplace[i] == replaceWhat)
-                    {
-                        arrayWhereReplace[i] = replaceWith;
-                    }
+                    if (arrayWhereReplace[i] == replaceWhat) arrayWhereReplace[i] = replaceWith;
                 }
                 else
                 {
@@ -287,10 +284,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         public static FileInfo GetNewTargetName(this FileInfo targetFileInfo)
         {
-            if (!targetFileInfo.Exists)
-            {
-                return targetFileInfo;
-            }
+            if (!targetFileInfo.Exists) return targetFileInfo;
 
             string name = Path.GetFileNameWithoutExtension(targetFileInfo.Name);
             int nameIndex = 1;

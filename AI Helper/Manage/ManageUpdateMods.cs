@@ -92,7 +92,7 @@ namespace AIHelper.Manage
             }
             catch (Exception ex)
             {
-                _log.Debug("An error while get update infos:\r\n" + ex + "\r\ninfos count=" + infos.Count + (modNamesList != null ? "\r\nModsList count=" + modNamesList.Length : "ModsList is null"));
+                _log.Error("An error while get update infos:\r\n" + ex + "\r\ninfos count=" + infos.Count + (modNamesList != null ? "\r\nModsList count=" + modNamesList.Length : "ModsList is null"));
             }
 
             return infos;
@@ -295,7 +295,7 @@ namespace AIHelper.Manage
                             }
                             catch (Exception ex)
                             {
-                                _log.Debug("Failed to sort chara card: " + charaFile.FullName + "\r\nerror:\r\n" + ex);
+                                _log.Error("Failed to sort chara card: " + charaFile.FullName + "\r\nerror:\r\n" + ex);
                             }
                         });
                     });
@@ -311,7 +311,7 @@ namespace AIHelper.Manage
                     }
                     catch (Exception ex)
                     {
-                        _log.Debug("Failed to sort chara card: " + infoFile.FullName + "\r\nerror:\r\n" + ex);
+                        _log.Error("Failed to sort chara card: " + infoFile.FullName + "\r\nerror:\r\n" + ex);
                     }
                 });
             });
@@ -439,7 +439,7 @@ namespace AIHelper.Manage
                                 }
                                 catch (IOException ex)
                                 {
-                                    _log.Debug("An error occured while file move. error:\r\n" + ex + "\r\nfile=" + file + "\r\ntarget file=" + target);
+                                    _log.Error("An error occured while file move. error:\r\n" + ex + "\r\nfile=" + file + "\r\ntarget file=" + target);
                                 }
                             }
                             else if (isSortingModPack)
@@ -506,13 +506,13 @@ namespace AIHelper.Manage
                                 }
                                 catch (IOException ex)
                                 {
-                                    _log.Debug("An error occured while file move. error:\r\n" + ex + "\r\nfile=" + file + "\r\ntarget file=" + target);
+                                    _log.Error("An error occured while file move. error:\r\n" + ex + "\r\nfile=" + file + "\r\ntarget file=" + target);
                                 }
                             }
                         }
                         catch (Exception ex)
                         {
-                            _log.Debug("Failed to sort file " + f + "\r\nerror:\r\n" + ex);
+                            _log.Error("Failed to sort file " + f + "\r\nerror:\r\n" + ex);
                         }
                     });
                 });

@@ -40,7 +40,7 @@ namespace AIHelper.Manage.Update.Sources
             }
             catch (WebException ex)
             {
-                _log.Debug("An error occured while file downloading. \r\nLink:" + Info.DownloadLink + "\r\nError:\r\n" + ex);
+                _log.Warn("An error occured while file downloading. \r\nLink:" + Info.DownloadLink + "\r\nError:\r\n" + ex);
                 Info.LastErrorText.AppendLine(" >" + ex.Message);
             }
         }

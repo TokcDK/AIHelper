@@ -141,7 +141,7 @@ namespace AIHelper.Manage.Rules.ModList
             }
             catch (Exception ex)
             {
-                _log.Debug("GetTagInfoTextFromHTML error:" + Environment.NewLine + ex);
+                _log.Error("GetTagInfoTextFromHTML error:" + Environment.NewLine + ex);
                 return string.Empty;
             }
         }

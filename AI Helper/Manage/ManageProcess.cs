@@ -178,7 +178,7 @@ namespace AIHelper.Manage
                 }
                 catch (Exception ex)
                 {
-                    _log.Debug("Cant kill process \"" + process.ProcessName + "\" with id" + process.Id + ". Error:\r\n" + ex);
+                    _log.Error("Cant kill process \"" + process.ProcessName + "\" with id" + process.Id + ". Error:\r\n" + ex);
                 }
             }
         }

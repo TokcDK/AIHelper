@@ -381,7 +381,7 @@ namespace AIHelper.Manage
                 }
                 catch (IOException ex)
                 {
-                    _log.Debug("An error accured while tried to create symlink. creation skipped. error:" + ex.Message);
+                    _log.Error("An error accured while tried to create symlink. creation skipped. error:" + ex.Message);
                 }
 
                 return true;
@@ -458,7 +458,7 @@ namespace AIHelper.Manage
                 {
                     objectInfo.CreateSymbolicLink(symlinkPath, isRelative);//new from NuGet package
                 }
-                catch (IOException ex) { _log.Debug("An error accured while tried to create symlink. creation skipped. error:" + ex.Message); }
+                catch (IOException ex) { _log.Error("An error accured while tried to create symlink. creation skipped. error:" + ex.Message); }
 
                 return true;
 

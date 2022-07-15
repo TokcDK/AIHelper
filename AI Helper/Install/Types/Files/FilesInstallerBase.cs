@@ -56,7 +56,7 @@ namespace AIHelper.Install.Types.Files
                         }
                         catch (Exception ex)
                         {
-                            _log.Debug("An error occured while parse by file installer. error\r\n"+ex);
+                            _log.Error("An error occured while parse by file installer. error\r\n"+ex);
                         }
                     }
                 }

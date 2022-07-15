@@ -346,7 +346,7 @@ namespace AIHelper.Games
                 }
                 catch (Exception ex)
                 {
-                    _log.Debug("An error occured while MO files coping. error:\r\n" + ex);
+                    _log.Error("An error occured while MO files coping. error:\r\n" + ex);
                 }
             }
         }

@@ -53,7 +53,7 @@ namespace AIHelper.Manage.ModeSwitch
             }
             catch (Exception ex)
             {
-                _log.Debug("error while image skip. error:" + ex);
+                _log.Error("error while image skip. error:" + ex);
             }
 
             //skip meta.ini
@@ -397,7 +397,7 @@ namespace AIHelper.Manage.ModeSwitch
                         File.Move(vanillaFileBackupTargetPath, dataFilePath);
                     }
 
-                    _log.Debug("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + bakfolder + "\r\nData path=" + dataFilePath + "\r\nSource dir path=" + sourceFilePath);
+                    _log.Error("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + bakfolder + "\r\nData path=" + dataFilePath + "\r\nSource dir path=" + sourceFilePath);
                 }
             }
             else
@@ -419,7 +419,7 @@ namespace AIHelper.Manage.ModeSwitch
                 }
                 catch (Exception ex)
                 {
-                    _log.Debug("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + destFolder + "\r\nData path=" + dataFilePath + "\r\nSource dir path=" + sourceFilePath);
+                    _log.Error("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + destFolder + "\r\nData path=" + dataFilePath + "\r\nSource dir path=" + sourceFilePath);
                 }
             }
         }
@@ -466,7 +466,7 @@ namespace AIHelper.Manage.ModeSwitch
                 }
                 catch (Exception ex)
                 {
-                    _log.Debug("error while RestoreMovedFilesLocation. error:\r\n" + ex);
+                    _log.Error("error while RestoreMovedFilesLocation. error:\r\n" + ex);
                 }
             });
 

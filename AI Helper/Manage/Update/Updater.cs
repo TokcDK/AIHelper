@@ -275,7 +275,7 @@ namespace AIHelper.Manage.Update
                                         + " ("+ T._("Details in") + " " + Properties.Settings.Default.ApplicationProductName + ".log" + ")"
                                         + ManageSettings.UpdateReport.HtmlAfterModReportLine);
 
-                                _log.Debug("Failed to update" + " " + info.TargetFolderPath.Name /*+ ":" + Environment.NewLine + ex*/);
+                                _log.Warn("Failed to update" + " " + info.TargetFolderPath.Name /*+ ":" + Environment.NewLine + ex*/);
                             }
                         }
                     }

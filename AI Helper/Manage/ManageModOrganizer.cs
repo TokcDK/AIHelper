@@ -205,7 +205,7 @@ namespace AIHelper.Manage
                     }
                     catch (Exception ex)
                     {
-                        _log.Debug("An error occured while symlink creation:\r\n" + ex);
+                        _log.Error("An error occured while symlink creation:\r\n" + ex);
                     }
                 }
             }
@@ -240,7 +240,7 @@ namespace AIHelper.Manage
                     }
                     catch (Exception ex)
                     {
-                        _log.Debug("BepInExPreloadersFix error:" + Environment.NewLine + ex);
+                        _log.Error("BepInExPreloadersFix error:" + Environment.NewLine + ex);
                     }
                 }
                 else
@@ -291,7 +291,7 @@ namespace AIHelper.Manage
                     }
                     catch (Exception ex)
                     {
-                        _log.Debug("BepInExPreloadersFix error:" + Environment.NewLine + ex);
+                        _log.Error("BepInExPreloadersFix error:" + Environment.NewLine + ex);
                     }
                 }
             }
@@ -661,7 +661,7 @@ namespace AIHelper.Manage
                 folderPath = Path.GetDirectoryName(folderPath);
                 if (string.Equals(folderPath, ManageSettings.CurrentGameDirPath, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    _log.Debug("Warning. Path in Mods not found." + "\r\ninputPath=" + inputPath + "\r\nModPath=" + modPath + "\r\nFolderPath=" + folderPath);
+                    _log.Warn("Warning. Path in Mods not found." + "\r\ninputPath=" + inputPath + "\r\nModPath=" + modPath + "\r\nFolderPath=" + folderPath);
                     return defaultPath;
                 }
             }
@@ -672,11 +672,11 @@ namespace AIHelper.Manage
                 )
                 )
             {
-                _log.Debug("warning. log path is Mods. ModPath=" + modPath + ". FolderPath=" + folderPath);
+                _log.Warn("warning. log path is Mods. ModPath=" + modPath + ". FolderPath=" + folderPath);
             }
             else if (modPath == string.Empty)
             {
-                _log.Debug("warning. ModPath is null, set to default.(" + modPath + ") FolderPath=" + folderPath);
+                _log.Warn("warning. ModPath is null, set to default.(" + modPath + ") FolderPath=" + folderPath);
                 modPath = defaultPath;// set to default if null
             }
 
@@ -931,7 +931,7 @@ namespace AIHelper.Manage
                         }
                         else
                         {
-                            _log.Debug("Warning! Link info file has invalid simlink as target of path. File:" + linkinfo.FullName + "\r\n");
+                            _log.Warn("Warning! Link info file has invalid simlink as target of path. File:" + linkinfo.FullName + "\r\n");
                             // skip if target object is invalid symlink
                             continue;
                         }
@@ -1807,7 +1807,7 @@ namespace AIHelper.Manage
                     }
                     catch
                     {
-                        _log.Debug("FixCustomExecutablesIniValues:Error while path fix.\r\nKey=" + record.Key + "\r\nPath=" + record.Value.Binary);
+                        _log.Error("FixCustomExecutablesIniValues:Error while path fix.\r\nKey=" + record.Key + "\r\nPath=" + record.Value.Binary);
                     }
                 }
             }
@@ -3299,7 +3299,7 @@ namespace AIHelper.Manage
             }
             catch (Exception ex)
             {
-                _log.Debug("An error occured in CheckMoUserdata. error:" + ex);
+                _log.Error("An error occured in CheckMoUserdata. error:" + ex);
             }
         }
 
@@ -3482,7 +3482,7 @@ namespace AIHelper.Manage
                 }
                 catch (Exception ex)
                 {
-                    _log.Debug("RestoreModlist error:\r\n" + ex);
+                    _log.Error("RestoreModlist error:\r\n" + ex);
                 }
             }
         }
@@ -3625,7 +3625,7 @@ namespace AIHelper.Manage
             }
             catch (Exception ex)
             {
-                _log.Debug("An error occured while path get:\r\n" + ex + "\r\npath=" + path);
+                _log.Error("An error occured while path get:\r\n" + ex + "\r\npath=" + path);
             }
 
             return path;
@@ -4097,7 +4097,7 @@ namespace AIHelper.Manage
                         }
                         catch (Exception ex)
                         {
-                            _log.Debug("An error occured while MO dir cleaning from useless files. Error:\r\n" + ex);
+                            _log.Error("An error occured while MO dir cleaning from useless files. Error:\r\n" + ex);
                         }
                     }
                 }
@@ -4118,7 +4118,7 @@ namespace AIHelper.Manage
                         }
                         catch (Exception ex)
                         {
-                            _log.Debug("An error occured while MO dir cleaning from useless files. Error:\r\n" + ex);
+                            _log.Error("An error occured while MO dir cleaning from useless files. Error:\r\n" + ex);
                         }
                     }
                 }

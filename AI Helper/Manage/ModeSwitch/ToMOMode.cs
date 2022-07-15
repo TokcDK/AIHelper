@@ -152,7 +152,7 @@ namespace AIHelper.Manage.ModeSwitch
                     }
                     catch (Exception ex)
                     {
-                        _log.Debug("error occured while Mods\\Mods file sorting. Error:\r\n" + ex);
+                        _log.Error("error occured while Mods\\Mods file sorting. Error:\r\n" + ex);
                     }
                 }
 
@@ -232,7 +232,7 @@ namespace AIHelper.Manage.ModeSwitch
                     {
                         if (zipmodsGuidList[guid].Contains("%"))//temp check
                         {
-                            _log.Debug("zipmod contains %VAR%:" + zipmodsGuidList[guid]);
+                            _log.Warn("zipmod contains %VAR%:" + zipmodsGuidList[guid]);
                         }
 
                         var zipmod = ReplaceVarsToPaths(zipmodsGuidList[guid]);
@@ -267,7 +267,7 @@ namespace AIHelper.Manage.ModeSwitch
                 }
                 catch (Exception ex)
                 {
-                    _log.Debug("Error occured while to MO mode switch:" + Environment.NewLine + ex);
+                    _log.Error("Error occured while to MO mode switch:" + Environment.NewLine + ex);
                 }
 
                 if (string.IsNullOrEmpty(destFileName))
@@ -405,36 +405,28 @@ namespace AIHelper.Manage.ModeSwitch
             int operationsLength = moToStandartConvertationOperationsList.Length;
             Parallel.ForEach(moToStandartConvertationOperationsList, operation =>
             {
-                if (string.IsNullOrWhiteSpace(operation))
-                {
-                    return;
-                }
+                if (string.IsNullOrWhiteSpace(operation)) return;
 
                 string[] movePaths = operation.Split(operationsSplitString, StringSplitOptions.None);
                 if (movePaths.Length != 2)
                 {
-                    _log.Debug("Something wrong and where was wrong operation parameters count in MoveFilesByOperationsList. Operation value:\r\n" + operation);
+                    _log.Warn("Something wrong and where was wrong operation parameters count in MoveFilesByOperationsList. Operation value:\r\n" + operation);
                     return;
                 }
 
                 if (movePaths[0].CountOf(':') > 1 || movePaths[1].CountOf(':') > 1)
                 {
                     // must be one ':' in absolute path or no one if relative path
-                    _log.Debug("Something wrong and where was wrong operation parameters value in MoveFilesByOperationsList. Operation value:\r\n" + operation);
+                    _log.Warn("Something wrong and where was wrong operation parameters value in MoveFilesByOperationsList. Operation value:\r\n" + operation);
                 }
 
-                if (IsDirSymlink(movePaths))
-                {
-                    return;
-                }
+                if (IsDirSymlink(movePaths)) return;
 
                 var filePathInModsExists = File.Exists(movePaths[0]);
                 var filePathInDataExists = File.Exists(movePaths[1]);
-
-                if (!filePathInDataExists) // skip if was deleted in Data
-                {
-                    return;
-                }
+               
+                // skip if was deleted in Data
+                if (!filePathInDataExists) return;
 
                 if (filePathInModsExists)
                 {
@@ -460,7 +452,7 @@ namespace AIHelper.Manage.ModeSwitch
                     }
                     catch (Exception ex)
                     {
-                        _log.Debug("Failed to move file: '" + Environment.NewLine + movePaths[1] + "' " + Environment.NewLine + "Error:" + Environment.NewLine + ex);
+                        _log.Error("Failed to move file: '" + Environment.NewLine + movePaths[1] + "' " + Environment.NewLine + "Error:" + Environment.NewLine + ex);
                     }
                 }
             });
@@ -471,10 +463,7 @@ namespace AIHelper.Manage.ModeSwitch
             if (movePaths[1].IsDirectory() && movePaths[1].IsSymlink(ObjectType.Directory))
             {
                 // we created symlink for dir in Data but same symlink in target is still exists
-                if (movePaths[0].IsSymlink(ObjectType.Directory))
-                {
-                    Directory.Delete(movePaths[1]);
-                }
+                if (movePaths[0].IsSymlink(ObjectType.Directory)) Directory.Delete(movePaths[1]);
 
                 return true;
             }
@@ -484,18 +473,13 @@ namespace AIHelper.Manage.ModeSwitch
 
         private void MoveBonemodForCards(string[] movePaths)
         {
-            if (!string.Equals(Path.GetExtension(movePaths[1]), ".png")) // only for cards
-            {
-                return;
-            }
+            // only for cards
+            if (!string.Equals(Path.GetExtension(movePaths[1]), ".png")) return;
 
             try
             {
                 //Move bonemod file both with original
-                if (!File.Exists(movePaths[1] + ".bonemod.txt") || File.Exists(movePaths[0] + ".bonemod.txt"))
-                {
-                    return;
-                }
+                if (!File.Exists(movePaths[1] + ".bonemod.txt") || File.Exists(movePaths[0] + ".bonemod.txt")) return;
 
                 (movePaths[1] + ".bonemod.txt").MoveTo(movePaths[0] + ".bonemod.txt");
                 //запись выполненной операции для удаления из общего списка в случае ошибки при переключении из обычного режима
@@ -503,16 +487,13 @@ namespace AIHelper.Manage.ModeSwitch
             }
             catch (Exception ex)
             {
-                _log.Debug("An error occured while file moving." + "MovePaths[0]=" + movePaths[0] + ";MovePaths[1]=" + movePaths[0] + ".error:\r\n" + ex);
+                _log.Error("An error occured while file moving." + "MovePaths[0]=" + movePaths[0] + ";MovePaths[1]=" + movePaths[0] + ".error:\r\n" + ex);
             }
         }
 
         private bool FillZipModsGUID(Dictionary<string, string> zipmodsGuidList)
         {
-            if (!File.Exists(ManageSettings.CurrentGameZipmodsGuidListFilePath))
-            {
-                return false;
-            }
+            if (!File.Exists(ManageSettings.CurrentGameZipmodsGuidListFilePath)) return false;
 
             using (var sr = new StreamReader(ManageSettings.CurrentGameZipmodsGuidListFilePath))
             {

@@ -121,7 +121,7 @@ namespace AIHelper.Manage
                 }
                 catch (Exception ex)
                 {
-                    _log.Debug("An error occured while ReadXmlValue. error:\r\n" + ex);
+                    _log.Error("An error occured while ReadXmlValue. error:\r\n" + ex);
                 }
             }
             return defaultresult;

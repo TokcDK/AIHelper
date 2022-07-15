@@ -159,7 +159,7 @@ namespace AIHelper.Manage
             }
             catch (Exception ex)
             {
-                _log.Debug("dirPath=" + dirPath + Environment.NewLine + "Error:" + Environment.NewLine + ex);
+                _log.Error("dirPath=" + dirPath + Environment.NewLine + "Error:" + Environment.NewLine + ex);
                 return;
             }
 
@@ -513,7 +513,7 @@ namespace AIHelper.Manage
                 }
                 catch (IOException ex)
                 {
-                    _log.Debug("Error in MoveContentOfSourceFolderToTargetFolderAndThenCleanSource:" + Environment.NewLine + "sourceFilePath=" + sourceFile + Environment.NewLine + "targetFilePath=" + targetFile + Environment.NewLine + ex);
+                    _log.Error("Error in MoveContentOfSourceFolderToTargetFolderAndThenCleanSource:" + Environment.NewLine + "sourceFilePath=" + sourceFile + Environment.NewLine + "targetFilePath=" + targetFile + Environment.NewLine + ex);
                 }
             }
 
@@ -850,7 +850,7 @@ namespace AIHelper.Manage
                     }
                     catch (Exception ex)
                     {
-                        _log.Debug("Failed to move file " + targetPath + " / error:\r\n" + ex);
+                        _log.Error("Failed to move file " + targetPath + " / error:\r\n" + ex);
                     }
 
                     return;

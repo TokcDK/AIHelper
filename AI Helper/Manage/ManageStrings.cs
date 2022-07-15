@@ -18,7 +18,7 @@ namespace AIHelper.Manage
         {
             if (path.Length > 259 && path.Substring(0, 4) != @"\\?\")
             {
-                _log.Debug("Warning. Path to file has more of 259 characters. It can cause errors in game. Try to make path shorter by rename filename or any folders to it. File:" + Environment.NewLine + path);
+                _log.Warn("Warning. Path to file has more of 259 characters. It can cause errors in game. Try to make path shorter by rename filename or any folders to it. File:" + Environment.NewLine + path);
                 path = path.ToLongPathWhenNeed(true, true);
                 return true;
             }

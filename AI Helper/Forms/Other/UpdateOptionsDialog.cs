@@ -130,7 +130,7 @@ namespace AIHelper.Forms.Other
             }
             catch (Exception ex)
             {
-                _log.Debug("An error occured while SetTooltips. error:\r\n" + ex);
+                _log.Error("An error occured while SetTooltips. error:\r\n" + ex);
             }
         }
 

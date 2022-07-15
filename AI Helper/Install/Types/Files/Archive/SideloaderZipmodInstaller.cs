@@ -30,7 +30,7 @@ namespace AIHelper.Install.Types.Files.Archive
 
             if (!gameEmpty && !string.Equals(zipmod.game, ManageSettings.ZipmodManifestGameNameByCurrentGame, StringComparison.InvariantCultureIgnoreCase))
             {
-                _log.Debug("Wrong game: " + zipmod.game + ", zipmod name: " + zipfile.Name);
+                _log.Warn("Wrong game: " + zipmod.game + ", zipmod name: " + zipfile.Name);
                 File.WriteAllText(zipfile.FullName + ".info.txt", zipfile.Name + " info:\r\n\r\nGame: " + zipmod.game);
                 return false;
             }

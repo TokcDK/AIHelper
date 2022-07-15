@@ -24,7 +24,7 @@ namespace AIHelper.Manage
                 }
                 else
                 {
-                    _log.Debug("GetINIFile error. ini is null. iniPath=" + iniPath);
+                    _log.Error("GetINIFile error. ini is null. iniPath=" + iniPath);
                 }
             }
             else

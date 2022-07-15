@@ -126,7 +126,7 @@ namespace AIHelper.Manage.ModeSwitch
                 }
                 catch (Exception ex)
                 {
-                    _log.Debug("Error occured while game buckup file move:" + Environment.NewLine + ex + "\r\npath=" + targetFileParentDirPath + "\r\nData path=" + targetFilePath + "\r\nSource dir path=" + sourceFilePath);
+                    _log.Error("Error occured while game buckup file move:" + Environment.NewLine + ex + "\r\npath=" + targetFileParentDirPath + "\r\nData path=" + targetFilePath + "\r\nSource dir path=" + sourceFilePath);
                 }
             }
         }

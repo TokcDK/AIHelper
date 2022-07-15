@@ -26,20 +26,16 @@ namespace AIHelper.Manage
             };
 
             DialogResult result = UpdateOptions.ShowDialog();
-            if (result != DialogResult.OK)
-            {
-                return;
-            }
+            if (result != DialogResult.OK) return;
 
             UpdateModsInit();
 
             //if (SharedData.GameData.MainForm.UseKKmanagerUpdaterLabel.IsChecked())
-            if (UpdateOptions.UpdateZipmodsCheckBox.Checked)
-                UpdateZipmods();
+            if (UpdateOptions.UpdateZipmodsCheckBox.Checked) UpdateZipmods();
+
 
             //if (SharedData.GameData.MainForm.UpdatePluginsLabel.IsChecked())
-            if (UpdateOptions.UpdatePluginsCheckBox.Checked)
-                UpdateByUpdater();
+            if (UpdateOptions.UpdatePluginsCheckBox.Checked) UpdateByUpdater();
 
             UpdateModsFinalize();
         }
@@ -106,10 +102,7 @@ namespace AIHelper.Manage
             var updater = new Updater();
 
             //update plugins in mo mode
-            if (Manage.ManageSettings.IsMoMode)
-            {
-                await updater.Update().ConfigureAwait(true);
-            }
+            if (Manage.ManageSettings.IsMoMode) await updater.Update().ConfigureAwait(true);
 
             if (updater.UpdatedAny) // make data update only when was updated any. Maybe required after update of MO or BepinEx
             {
@@ -127,10 +120,7 @@ namespace AIHelper.Manage
         {
 
             //run zipmod's check if updater found and only for KK, AI, HS2
-            if (!GameData.Game.IsHaveSideloaderMods || !File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath))
-            {
-                return;
-            }
+            if (!GameData.Game.IsHaveSideloaderMods || !File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath)) return;
 
             if (!Manage.ManageSettings.IsMoMode)
             {
@@ -283,18 +273,12 @@ namespace AIHelper.Manage
             Parallel.ForEach(ManageSettings.KKManagerUpdateSortDirs, sortingDirPath =>
             {
                 var charaDir = new DirectoryInfo(Path.Combine(sortingDirPath, "UserData", "chara"));
-                if (!charaDir.Exists)
-                {
-                    return;
-                }
+                if (!charaDir.Exists) return;
 
                 Parallel.ForEach(new[] { "female", "male" }, genderDirName =>
                 {
                     var genderDir = new DirectoryInfo(Path.Combine(charaDir.FullName, genderDirName));
-                    if (!genderDir.Exists)
-                    {
-                        return;
-                    }
+                    if (!genderDir.Exists) return;
 
                     Parallel.ForEach(genderDir.EnumerateDirectories("[Community] *"), charaCommunityDir =>
                     {
@@ -314,18 +298,17 @@ namespace AIHelper.Manage
                     });
 
                     var infoFile = new FileInfo(Path.Combine(genderDir.FullName, "Want your cards or scenes in BetterRepack.txt"));
-                    if (infoFile.Exists)
-                    {
-                        try
-                        {
-                            var targetPath = new FileInfo(infoFile.FullName.Replace(sortingDirPath, communityUserDataPack.FullName));
+                    if (!infoFile.Exists) return;
 
-                            MoveSideloaderPackFile(infoFile, targetPath);
-                        }
-                        catch (Exception ex)
-                        {
-                            ManageLogs.Log("Failed to sort chara card: " + infoFile.FullName + "\r\nerror:\r\n" + ex);
-                        }
+                    try
+                    {
+                        var targetPath = new FileInfo(infoFile.FullName.Replace(sortingDirPath, communityUserDataPack.FullName));
+
+                        MoveSideloaderPackFile(infoFile, targetPath);
+                    }
+                    catch (Exception ex)
+                    {
+                        ManageLogs.Log("Failed to sort chara card: " + infoFile.FullName + "\r\nerror:\r\n" + ex);
                     }
                 });
             });
@@ -345,10 +328,7 @@ namespace AIHelper.Manage
                 }
             }
 
-            if (!targetPath.Directory.Exists)
-            {
-                targetPath.Directory.Create();
-            }
+            targetPath.Directory.Create();
             sourcePath.MoveTo(targetPath.FullName);
         }
 
@@ -356,13 +336,9 @@ namespace AIHelper.Manage
         {
             Parallel.ForEach(ManageSettings.KKManagerUpdateSortDirs, sortingDirPath =>
             {
-
                 var sortingDir = new DirectoryInfo(Path.Combine(sortingDirPath, "mods"));
 
-                if (!sortingDir.Exists)
-                {
-                    return;
-                }
+                if (!sortingDir.Exists) return;
 
                 //var modpackFilters = new Dictionary<string, string>
                 //{
@@ -371,10 +347,7 @@ namespace AIHelper.Manage
 
                 var dirs = sortingDir.GetDirectories().Where(dirpath => dirpath.Name.StartsWith("Sideloader Modpack", comparisonType: StringComparison.InvariantCultureIgnoreCase) && !ManageSettings.KKManagerUpdateSortDirs.Contains(dirpath.Name));
 
-                if (!dirs.Any())
-                {
-                    return;
-                }
+                if (!dirs.Any()) return;
 
                 var modpacks = GetSideloaderModpackTargetDirs();
 
@@ -555,15 +528,10 @@ namespace AIHelper.Manage
 
             Parallel.ForEach(modlist.Items, (item, state) =>
             {
-                if (item.IsEnabled || !item.IsExist || item.IsSeparator)
-                {
-                    return;
-                }
+                if (item.IsEnabled || !item.IsExist || item.IsSeparator) return;
 
-                if (Directory.Exists(Path.Combine(item.Path, "mods")) || Directory.Exists(Path.Combine(item.Path, "UserData", "chara")))
-                {
-                    item.IsEnabled = true;
-                }
+                if (Directory.Exists(Path.Combine(item.Path, "mods"))
+                || Directory.Exists(Path.Combine(item.Path, "UserData", "chara"))) item.IsEnabled = true;
             });
 
             modlist.Save();

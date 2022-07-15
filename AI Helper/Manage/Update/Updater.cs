@@ -344,13 +344,11 @@ namespace AIHelper.Manage.Update
 
         private static string ErrorMessage(StringBuilder lastErrorText)
         {
-            if (lastErrorText.Length > 0)
-            {
-                var ret = " " + lastErrorText.ToString() + " ";
-                lastErrorText.Clear();
-                return ret;
-            }
-            return "";
+            if (lastErrorText.Length == 0) return "";
+
+            var ret = " " + lastErrorText.ToString() + " ";
+            lastErrorText.Clear();
+            return ret;
         }
 
         //private static void SaveSizes(Dictionary<string, long> urlSizeList)

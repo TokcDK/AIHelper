@@ -2,29 +2,14 @@
 {
     public class StudioScene : IUserDataFolders
     {
-        public string Foldername()
-        {
-            return "s";
-        }
+        public string Foldername => "s";
 
-        public string TargetFolderSuffix()
-        {
-            return " Scenes";
-        }
+        public string TargetFolderSuffix => " Scenes";
 
-        public string Extension()
-        {
-            return ".png";
-        }
+        public string Extension => ".png";
 
-        public string TypeFolder()
-        {
-            return "studio";
-        }
+        public string TypeFolder => "studio";
 
-        public string TargetFolderName()
-        {
-            return "scene";
-        }
+        public string TargetFolderName => "scene";
     }
 }

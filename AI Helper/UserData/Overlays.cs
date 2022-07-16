@@ -2,29 +2,14 @@
 {
     public class Overlays : IUserDataFolders
     {
-        public string Foldername()
-        {
-            return "o";
-        }
+        public string Foldername => "o";
 
-        public string TargetFolderSuffix()
-        {
-            return " Overlays";
-        }
+        public string TargetFolderSuffix => " Overlays";
 
-        public string Extension()
-        {
-            return ".png";
-        }
+        public string Extension => ".png";
 
-        public string TypeFolder()
-        {
-            return string.Empty;
-        }
+        public string TypeFolder => string.Empty;
 
-        public string TargetFolderName()
-        {
-            return "Overlays";
-        }
+        public string TargetFolderName => "Overlays";
     }
 }

@@ -2,29 +2,14 @@
 {
     public class Coordinate : IUserDataFolders
     {
-        public string Foldername()
-        {
-            return "m";
-        }
+        public string Foldername => "m";
 
-        public string TargetFolderSuffix()
-        {
-            return " Coordinate";
-        }
+        public string TargetFolderSuffix => " Coordinate";
 
-        public string Extension()
-        {
-            return ".png";
-        }
+        public string Extension => ".png";
 
-        public string TypeFolder()
-        {
-            return string.Empty;
-        }
+        public string TypeFolder => string.Empty;
 
-        public string TargetFolderName()
-        {
-            return "coordinate";
-        }
+        public string TargetFolderName => "coordinate";
     }
 }

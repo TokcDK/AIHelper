@@ -2,29 +2,14 @@
 {
     class CardframeBack : IUserDataFolders
     {
-        public string Foldername()
-        {
-            return "cf";
-        }
+        public string Foldername => "cf";
 
-        public string TargetFolderSuffix()
-        {
-            return " Cardframes";
-        }
+        public string TargetFolderSuffix => " Cardframes";
 
-        public string Extension()
-        {
-            return ".png";
-        }
+        public string Extension => ".png";
 
-        public string TypeFolder()
-        {
-            return "cardframe";
-        }
+        public string TypeFolder => "cardframe";
 
-        public string TargetFolderName()
-        {
-            return "Back";
-        }
+        public string TargetFolderName => "Back";
     }
 }

@@ -2,29 +2,14 @@
 {
     public class Housing : IUserDataFolders
     {
-        public string Foldername()
-        {
-            return "h";
-        }
+        public string Foldername => "h";
 
-        public string TargetFolderSuffix()
-        {
-            return " Housing";
-        }
+        public string TargetFolderSuffix => " Housing";
 
-        public string Extension()
-        {
-            return ".png";
-        }
+        public string Extension => ".png";
 
-        public string TypeFolder()
-        {
-            return string.Empty;
-        }
+        public string TypeFolder => string.Empty;
 
-        public string TargetFolderName()
-        {
-            return "housing";
-        }
+        public string TargetFolderName => "housing";
     }
 }

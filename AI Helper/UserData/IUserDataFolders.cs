@@ -2,15 +2,14 @@
 {
     public interface IUserDataFolders
     {
-        string Foldername();
+        string Foldername { get; }
 
-        string TargetFolderSuffix();
+        string TargetFolderSuffix { get; }
 
-        string Extension();
+        string Extension { get; }
 
-        string TypeFolder();
+        string TypeFolder { get; }
 
-        string TargetFolderName();
-
+        string TargetFolderName { get; }
     }
 }

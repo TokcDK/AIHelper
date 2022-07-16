@@ -2,29 +2,14 @@
 {
     public class CharaMale : IUserDataFolders
     {
-        public string Foldername()
-        {
-            return "m";
-        }
+        public string Foldername => "m";
 
-        public string TargetFolderSuffix()
-        {
-            return " Chars";
-        }
+        public string TargetFolderSuffix => " Chars";
 
-        public string Extension()
-        {
-            return ".png";
-        }
+        public string Extension => ".png";
 
-        public string TypeFolder()
-        {
-            return "Chara";
-        }
+        public string TypeFolder => "Chara";
 
-        public string TargetFolderName()
-        {
-            return "male";
-        }
+        public string TargetFolderName => "male";
     }
 }

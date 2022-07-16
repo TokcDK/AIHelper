@@ -136,17 +136,32 @@ namespace AIHelper
 
         private static void CleanLog()
         {
-            if (File.Exists(ManageLogs.LogFilePath) && new FileInfo(ManageLogs.LogFilePath).Length > 10000000)
+            try
             {
-                try
+                var logsPath = Path.Combine(Path.GetDirectoryName(ManageLogs.LogFilePath), "logs", "old");
+                Directory.CreateDirectory(logsPath);
+                if (File.Exists(ManageLogs.LogFilePath))
                 {
-                    File.Delete(ManageLogs.LogFilePath);
-                }
-                catch (Exception ex)
-                {
-                    _log.Debug("An error occured whil tried to CleanLog. error:" + ex);
+                    File.Move(ManageLogs.LogFilePath, Path.Combine(logsPath, Path.GetFileName(ManageLogs.LogFilePath)));
+                    _log.Info("Old log file moved to logs");
                 }
             }
+            catch (IOException ex)
+            {
+                _log.Error("Error while old log file move:" + ex);
+            }
+
+            //if (File.Exists(ManageLogs.LogFilePath) && new FileInfo(ManageLogs.LogFilePath).Length > 10000000)
+            //{
+            //    try
+            //    {
+            //        File.Delete(ManageLogs.LogFilePath);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        _log.Debug("An error occured whil tried to CleanLog. error:" + ex);
+            //    }
+            //}
         }
 
         private bool SetListOfAddedGames()
@@ -241,7 +256,7 @@ namespace AIHelper
                     CurrentGameTitleTextBox.Text = GameData.Game.GetGameDisplayingName();
                     CurrentGameTitleTextBox.Enabled = false;
                 }
-                catch { }
+                catch (Exception ex) { _log.Info("Error while game title setup. Set more specific exception there. Error:\r\n" + ex); }
             }
             catch (Exception ex)
             {
@@ -249,28 +264,23 @@ namespace AIHelper
                 return false;
             }
 
-
             return true;
         }
 
         private static List<string> GetKnownGames(INIFile ini)
         {
             List<string> list = new List<string>();
-            if (ini != null && ini.Configuration != null)
-            {
-                var games = ini.GetKey(ManageSettings.SettingsIniSectionName, ManageSettings.KnownGamesIniKeyName);
+            if (ini == null || ini.Configuration == null) return list;
 
-                if (!string.IsNullOrWhiteSpace(games))
+            var games = ini.GetKey(ManageSettings.SettingsIniSectionName, ManageSettings.KnownGamesIniKeyName);
+
+            if (!string.IsNullOrWhiteSpace(games))
+            {
+                var gamesList = games.Split('|');
+                if (gamesList != null && gamesList.Length > 0)
                 {
-                    var gamesList = games.Split('|');
-                    if (gamesList != null && gamesList.Length > 0)
-                    {
-                        gamesList = gamesList.Where(p => Directory.Exists(p)).Distinct().ToArray();
-                        foreach (var path in gamesList)
-                        {
-                            list.Add(path);
-                        }
-                    }
+                    gamesList = gamesList.Where(p => Directory.Exists(p)).Distinct().ToArray();
+                    foreach (var path in gamesList) list.Add(path);
                 }
             }
 

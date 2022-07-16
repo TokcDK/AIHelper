@@ -24,10 +24,7 @@ namespace AIHelper.Utils
         {
             _config[section][key].StringValue = value;
 
-            if (doSaveCfg)
-            {
-                _config.SaveToFile(_filePath);
-            }
+            if (doSaveCfg) _config.SaveToFile(_filePath);
         }
 
         public bool KeyExists(string key, string section = null)

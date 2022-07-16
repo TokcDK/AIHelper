@@ -44,46 +44,38 @@ namespace AIHelper
 
         internal static void Decompress(string sourceFile, string targetFolder)
         {
-            if (File.Exists(sourceFile))
+            if (!File.Exists(sourceFile)) return;
+
+            //Specify where 7z.dll DLL is located
+            string path = Get7ZdllPath();
+            if (path == null) return;//return if path was not found
+            SevenZipBase.SetLibraryPath(path);
+
+            //create dir if not exists
+            if (!Directory.Exists(targetFolder)) _ = Directory.CreateDirectory(targetFolder);
+
+            //http://qaru.site/questions/513888/how-would-i-use-sevenzipsharp-with-this-code
+            //Extract archive to targetFolder
+            using (SevenZipExtractor sevenZipDecompressor = new SevenZipExtractor(sourceFile))
             {
-                //Specify where 7z.dll DLL is located
-                string path = Get7ZdllPath();
-                if (path == null)
+                try
                 {
-                    return;//return if path was not found
+                    sevenZipDecompressor.ExtractArchive(targetFolder);
                 }
-                SevenZipBase.SetLibraryPath(path);
-
-                //create dir if not exists
-                if (!Directory.Exists(targetFolder))
+                catch
                 {
-                    _ = Directory.CreateDirectory(targetFolder);
-                }
+                    //https://github.com/adamhathcock/sharpcompress/blob/master/USAGE.md
+                    if (Path.GetExtension(sourceFile) != ".rar") return;
 
-                //http://qaru.site/questions/513888/how-would-i-use-sevenzipsharp-with-this-code
-                //Extract archive to targetFolder
-                using (SevenZipExtractor sevenZipDecompressor = new SevenZipExtractor(sourceFile))
-                {
-                    try
+                    using (var archive = RarArchive.Open(sourceFile))
                     {
-                        sevenZipDecompressor.ExtractArchive(targetFolder);
-                    }
-                    catch
-                    {
-                        //https://github.com/adamhathcock/sharpcompress/blob/master/USAGE.md
-                        if (Path.GetExtension(sourceFile) == ".rar")
+                        foreach (var entry in archive.Entries.Where(entry => !entry.IsDirectory))
                         {
-                            using (var archive = RarArchive.Open(sourceFile))
+                            entry.WriteToDirectory(targetFolder, new ExtractionOptions()
                             {
-                                foreach (var entry in archive.Entries.Where(entry => !entry.IsDirectory))
-                                {
-                                    entry.WriteToDirectory(targetFolder, new ExtractionOptions()
-                                    {
-                                        ExtractFullPath = true,
-                                        Overwrite = true
-                                    });
-                                }
-                            }
+                                ExtractFullPath = true,
+                                Overwrite = true
+                            });
                         }
                     }
                 }

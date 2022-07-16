@@ -8,37 +8,22 @@ namespace AIHelper.Manage
     {
         public static void UnpackArchivesToSubfoldersWithSameName(string dirForSearch, string extension)
         {
-            if (dirForSearch.Length == 0 || extension.Length == 0)
-            {
-                return;
-            }
+            if (dirForSearch.Length == 0 || extension.Length == 0) return;
 
-            if (extension.Substring(0, 1) != ".")
-            {
-                extension = "." + extension;
-            }
+            if (extension.Substring(0, 1) != ".") extension = "." + extension;
 
-            if (extension.Length == 0 || !Directory.Exists(dirForSearch))
-            {
-                return;
-            }
+            if (extension.Length == 0 || !Directory.Exists(dirForSearch)) return;
 
             foreach (var file in Directory.GetFiles(dirForSearch, "*" + extension, SearchOption.AllDirectories))
             {
                 string targetDir = ManageFilesFoldersExtensions.GetResultTargetDirPathWithNameCheck(dirForSearch, Path.GetFileNameWithoutExtension(file));
-                if (Directory.Exists(targetDir))
-                {
-                    continue;
-                }
+                if (Directory.Exists(targetDir)) continue;
 
                 try
                 {
                     if (string.Equals(extension, "zip", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        using (ZipArchive archive = ZipFile.OpenRead(file))
-                        {
-                            archive.ExtractToDirectory(targetDir);
-                        }
+                        using (ZipArchive archive = ZipFile.OpenRead(file)) archive.ExtractToDirectory(targetDir);
                     }
                     else
                     {
@@ -64,10 +49,7 @@ namespace AIHelper.Manage
                 // We count only named (i.e. that are with files) entries
                 foreach (var entry in inputArchive.Entries)
                 {
-                    if (!string.IsNullOrEmpty(entry.Name))
-                    {
-                        count++;
-                    }
+                    if (!string.IsNullOrEmpty(entry.Name)) count++;
                 }
             }
             else if (zipFilePath.Length > 0)
@@ -77,10 +59,7 @@ namespace AIHelper.Manage
                     // We count only named (i.e. that are with files) entries
                     foreach (var entry in archive.Entries)
                     {
-                        if (!string.IsNullOrEmpty(entry.Name))
-                        {
-                            count++;
-                        }
+                        if (!string.IsNullOrEmpty(entry.Name)) count++;
                     }
                 }
             }
@@ -90,10 +69,7 @@ namespace AIHelper.Manage
 
         internal static string GetZipmodGuid(string zipmodPath)
         {
-            if (string.IsNullOrWhiteSpace(zipmodPath) || !File.Exists(zipmodPath))
-            {
-                return string.Empty;
-            }
+            if (string.IsNullOrWhiteSpace(zipmodPath) || !File.Exists(zipmodPath)) return string.Empty;
 
             var ext = Path.GetExtension(zipmodPath);
             if (!string.Equals(ext, ".zipmod", StringComparison.InvariantCultureIgnoreCase)

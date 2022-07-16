@@ -17,26 +17,16 @@ namespace AIHelper
         {
             var startupFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             var shortCutLinkFilePath = Path.Combine(startupFolderPath, shortcutname + ".lnk");
-            if (System.IO.File.Exists(shortCutLinkFilePath))
-            {
-            }
-            else
-            {
-                var shell = new WshShell();
-                var windowsApplicationShortcut = (IWshShortcut)shell.CreateShortcut(shortCutLinkFilePath);
-                windowsApplicationShortcut.Description = description;
-                windowsApplicationShortcut.WorkingDirectory = workingdir;
-                windowsApplicationShortcut.TargetPath = targetpath;
-                windowsApplicationShortcut.Arguments = arguments;
-                if (string.IsNullOrEmpty(iconlocation))
-                {
-                }
-                else
-                {
-                    windowsApplicationShortcut.IconLocation = iconlocation;
-                }
-                windowsApplicationShortcut.Save();
-            }
+            if (System.IO.File.Exists(shortCutLinkFilePath)) return;
+
+            var shell = new WshShell();
+            var windowsApplicationShortcut = (IWshShortcut)shell.CreateShortcut(shortCutLinkFilePath);
+            windowsApplicationShortcut.Description = description;
+            windowsApplicationShortcut.WorkingDirectory = workingdir;
+            windowsApplicationShortcut.TargetPath = targetpath;
+            windowsApplicationShortcut.Arguments = arguments;
+            if (!string.IsNullOrEmpty(iconlocation)) windowsApplicationShortcut.IconLocation = iconlocation;
+            windowsApplicationShortcut.Save();
         }
     }
 }

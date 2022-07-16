@@ -61,12 +61,9 @@ namespace AIHelper
         private async void CheckMoAndEndInit()
         {
             //MO data parse
-            if (!Directory.Exists(ManageSettings.AppModOrganizerDirPath))
-            {
-                Directory.CreateDirectory(ManageSettings.AppModOrganizerDirPath);
-            }
+            Directory.CreateDirectory(ManageSettings.AppModOrganizerDirPath);
 
-            FixOldMODirPath();
+            //FixOldMODirPath();
 
             if (!File.Exists(ManageSettings.AppMOexePath))
             {
@@ -108,9 +105,9 @@ namespace AIHelper
             Properties.Settings.Default.INITDone = true;
         }
 
-        private void FixOldMODirPath()
-        {
-            return;
+        //private void FixOldMODirPath()
+        //{
+        //    return;
 
             //if (Directory.Exists(ManageSettings.GetAppOldModOrganizerDirPath()))
             //{
@@ -132,19 +129,18 @@ namespace AIHelper
 
             //    new DirectoryInfo(ManageSettings.GetAppOldModOrganizerDirPath()).MoveAll(new DirectoryInfo(ManageSettings.GetAppModOrganizerDirPath()), overwriteFiles: true);
             //}
-        }
+        //}
 
         private static void CleanLog()
         {
             try
             {
+                if (!File.Exists(ManageLogs.LogFilePath)) return;
+
                 var logsPath = Path.Combine(Path.GetDirectoryName(ManageLogs.LogFilePath), "logs", "old");
                 Directory.CreateDirectory(logsPath);
-                if (File.Exists(ManageLogs.LogFilePath))
-                {
-                    File.Move(ManageLogs.LogFilePath, Path.Combine(logsPath, Path.GetFileName(ManageLogs.LogFilePath)));
-                    _log.Info("Old log file moved to logs");
-                }
+                File.Move(ManageLogs.LogFilePath, Path.Combine(logsPath, Path.GetFileName(ManageLogs.LogFilePath)));
+                _log.Info("Old log file moved to logs");
             }
             catch (IOException ex)
             {

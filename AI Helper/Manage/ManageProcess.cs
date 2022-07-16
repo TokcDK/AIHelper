@@ -8,7 +8,7 @@ namespace AIHelper.Manage
 {
     static class ManageProcess
     {
-        static Logger _log = LogManager.GetCurrentClassLogger();
+        static readonly Logger _log = LogManager.GetCurrentClassLogger();
         public static void RunProgram(string programPath, string arguments = "")
         {
             if (!File.Exists(programPath))

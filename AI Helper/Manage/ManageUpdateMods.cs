@@ -16,7 +16,7 @@ namespace AIHelper.Manage
 {
     class ManageUpdateMods
     {
-        static Logger _log = LogManager.GetCurrentClassLogger();
+        static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
         static UpdateOptionsDialogForm UpdateOptions;
 

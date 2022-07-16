@@ -26,7 +26,7 @@ namespace AIHelper
 {
     internal partial class MainForm : Form
     {
-        static Logger _log = LogManager.GetCurrentClassLogger();
+        static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
         //internal bool _compressmode;
 

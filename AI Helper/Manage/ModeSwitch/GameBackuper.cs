@@ -9,7 +9,7 @@ namespace AIHelper.Manage.ModeSwitch
 {
     class GameBackuper
     {
-        static Logger _log = LogManager.GetCurrentClassLogger();
+        static readonly Logger _log = LogManager.GetCurrentClassLogger();
         string bakDirPath;
         string selectedGamePath;
         internal void CreateDataModsBakOfCurrentGame()

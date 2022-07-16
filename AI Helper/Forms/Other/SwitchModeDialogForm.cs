@@ -7,7 +7,7 @@ namespace AIHelper.Forms.Other
 {
     public partial class SwitchModeDialogForm : Form
     {
-        static Logger _log = LogManager.GetCurrentClassLogger();
+        static readonly Logger _log = LogManager.GetCurrentClassLogger();
         public SwitchModeDialogForm()
         {
             InitializeComponent();

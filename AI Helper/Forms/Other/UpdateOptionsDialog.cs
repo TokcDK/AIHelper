@@ -9,7 +9,7 @@ namespace AIHelper.Forms.Other
 {
     public partial class UpdateOptionsDialogForm : Form
     {
-        static Logger _log = LogManager.GetCurrentClassLogger();
+        static readonly Logger _log = LogManager.GetCurrentClassLogger();
         public UpdateOptionsDialogForm()
         {
             InitializeComponent();

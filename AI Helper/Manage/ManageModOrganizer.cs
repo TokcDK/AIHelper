@@ -20,7 +20,7 @@ namespace AIHelper.Manage
 {
     static class ManageModOrganizer
     {
-        static Logger _log = LogManager.GetCurrentClassLogger();
+        static readonly Logger _log = LogManager.GetCurrentClassLogger();
         internal static bool IsInOverwriteFolder(this string filePath)
         {
             return filePath.ToUpperInvariant().Contains(ManageSettings.CurrentGameOverwriteFolderPath.ToUpperInvariant());
@@ -1515,7 +1515,7 @@ namespace AIHelper.Manage
         internal class ZipmodGUIIds
         {
             internal Dictionary<string, ZipmodInfo> GUIDList;
-            Dictionary<string, string> cachedGUIDList;
+            readonly Dictionary<string, string> cachedGUIDList;
 
             /// <summary>
             /// Sideloader modpacks zipmod file infos are storing here

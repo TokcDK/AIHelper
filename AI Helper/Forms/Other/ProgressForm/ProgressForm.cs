@@ -6,7 +6,7 @@ namespace AIHelper.Forms.Other
     class ProgressForm : IDisposable
     {
         internal readonly Form PForm;
-        ProgressBar _progressBar;
+        readonly ProgressBar _progressBar;
 
         int Max;
 

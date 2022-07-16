@@ -7,7 +7,7 @@ namespace AIHelper.Manage
 {
     class ManageXml
     {
-        static Logger _log = LogManager.GetCurrentClassLogger();
+        static readonly Logger _log = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// changes UserData/setup.xml values
         /// </summary>

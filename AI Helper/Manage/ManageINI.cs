@@ -6,7 +6,7 @@ namespace AIHelper.Manage
 {
     internal static class ManageIni
     {
-        static Logger _log = LogManager.GetCurrentClassLogger();
+        static readonly Logger _log = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// init ini file and set required settings for it
         /// </summary>

@@ -14,7 +14,7 @@ namespace AIHelper.Manage.Update
 {
     class Updater
     {
-        static Logger _log = LogManager.GetCurrentClassLogger();
+        static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
         private bool _isHtmlReport = true;
 

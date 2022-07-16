@@ -7,7 +7,7 @@ namespace AIHelper.Manage
 {
     static class ManageStrings
     {
-        static Logger _log = LogManager.GetCurrentClassLogger();
+        static readonly Logger _log = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// check if path is long and can cause standart io operations errors.
         /// if path is long, will be added prefix "\\?\" for long paths.

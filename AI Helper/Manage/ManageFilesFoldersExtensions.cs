@@ -16,7 +16,7 @@ namespace AIHelper.Manage
 {
     static class ManageFilesFoldersExtensions
     {
-        static Logger _log = LogManager.GetCurrentClassLogger();
+        static readonly Logger _log = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// if directory exist in the <paramref name="path"/>
         /// </summary>

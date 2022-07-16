@@ -10,7 +10,7 @@ namespace AIHelper.Manage
     /// </summary>
     static class ManageSymLinkExtensions
     {
-        static Logger _log = LogManager.GetCurrentClassLogger();
+        static readonly Logger _log = LogManager.GetCurrentClassLogger();
         public static bool DeleteIfSymlink(this string linkPath, bool isFolder = false)
         {
             if (isFolder || Directory.Exists(linkPath))

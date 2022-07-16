@@ -1,4 +1,6 @@
 ﻿using AIHelper.Forms.Other;
+using NLog;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Text;
@@ -9,6 +11,8 @@ namespace AIHelper.Manage.ModeSwitch
 {
     abstract class ModeSwitcherBase
     {
+        protected static Logger _log = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Text for switch confirmation dialog
         /// </summary>
@@ -49,8 +53,9 @@ namespace AIHelper.Manage.ModeSwitch
             {
                 SharedData.GameData.MainForm.MOCommonModeSwitchButton.Text = MOmode ? T._("MOToCommon") : T._("CommonToMO");
             }
-            catch
+            catch (Exception ex)
             {
+                _log.Info("An error occured while change mode switch button text: \r\n" + ex);
             }
 
             SharedData.GameData.MainForm.UpdateData();

@@ -135,10 +135,7 @@ namespace AIHelper.Manage
         /// <param name="exclusions"></param>
         public static void DeleteEmptySubfolders(string dirPath, bool deleteThisDir = true, HashSet<string> exclusions = null, bool notUseExclusions = true)
         {
-            if (string.IsNullOrEmpty(dirPath) || !Directory.Exists(dirPath))
-            {
-                return;
-            }
+            if (string.IsNullOrEmpty(dirPath) || !Directory.Exists(dirPath)) return;
 
             DirectoryInfo dir = new DirectoryInfo(dirPath);
 
@@ -198,15 +195,9 @@ namespace AIHelper.Manage
         /// <returns></returns>
         public static void GetEmptySubfoldersPaths(string dirPath, StringBuilder pathsList)
         {
-            if (!Directory.Exists(dirPath))
-            {
-                return;
-            }
+            if (!Directory.Exists(dirPath)) return;
 
-            if (pathsList == null)
-            {
-                pathsList = new StringBuilder();
-            }
+            if (pathsList == null) pathsList = new StringBuilder();
 
             string[] subfolders = Directory.GetDirectories(dirPath, "*");
             int subfoldersLength = subfolders.Length;
@@ -218,10 +209,7 @@ namespace AIHelper.Manage
                 }
             }
 
-            if (dirPath.IsNullOrEmptyDirectory()/*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)
-            {
-                pathsList.AppendLine(dirPath);
-            }
+            if (dirPath.IsNullOrEmptyDirectory()) pathsList.AppendLine(dirPath);///*Directory.GetDirectories(dataPath, "*").Length == 0 && Directory.GetFiles(dataPath, "*.*").Length == 0*/)
         }
 
         /// <summary>
@@ -234,17 +222,11 @@ namespace AIHelper.Manage
         {
             if (isFolder)
             {
-                if (!Directory.Exists(inputPath))
-                {
-                    Directory.CreateDirectory(inputPath);
-                }
+                if (!Directory.Exists(inputPath)) Directory.CreateDirectory(inputPath);
             }
             else
             {
-                if (!File.Exists(inputPath))
-                {
-                    File.WriteAllText(inputPath, string.Empty);
-                }
+                if (!File.Exists(inputPath)) File.WriteAllText(inputPath, string.Empty);
             }
 
             return inputPath;
@@ -259,12 +241,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         public static bool IsInExclusionsList(string str, HashSet<string> exclusions, bool notUseExclusions)
         {
-            if (notUseExclusions || exclusions == null || string.IsNullOrEmpty(str))
-            {
-                return false;
-            }
-
-            return exclusions.Contains(str);
+            return notUseExclusions || exclusions == null || string.IsNullOrEmpty(str) ? false : exclusions.Contains(str);
         }
 
         /// <summary>
@@ -276,16 +253,10 @@ namespace AIHelper.Manage
         {
 
             //first, delete target file if exists, as File.Move() does not support overwrite
-            if (File.Exists(destFileName))
-            {
-                File.Delete(destFileName);
-            }
+            if (File.Exists(destFileName)) File.Delete(destFileName);
 
             string destFolder = Path.GetDirectoryName(destFileName);
-            if (!Directory.Exists(destFolder))
-            {
-                Directory.CreateDirectory(destFolder);
-            }
+            if (!Directory.Exists(destFolder)) Directory.CreateDirectory(destFolder);
             File.Move(sourceFileName, destFileName);
 
         }
@@ -299,20 +270,12 @@ namespace AIHelper.Manage
         {
             if (isFile)
             {
-                if (File.Exists(path))
-                {
-                    File.SetAttributes(path, FileAttributes.Hidden);
-                }
+                if (File.Exists(path)) File.SetAttributes(path, FileAttributes.Hidden);
             }
             else
             {
-                if (Directory.Exists(path))
-                {
-                    _ = new DirectoryInfo(path)
-                    {
-                        Attributes = FileAttributes.Hidden
-                    };
-                }
+                if (!Directory.Exists(path)) return;
+                _ = new DirectoryInfo(path) { Attributes = FileAttributes.Hidden };
             }
 
         }
@@ -372,10 +335,7 @@ namespace AIHelper.Manage
                 foreach (var path in Directory.GetFiles(zipmoddirmodspath, extension))
                 {
                     string name = Path.GetFileNameWithoutExtension(path);
-                    if (ManageStrings.IsStringAContainsStringB(name, zipname))
-                    {
-                        return path;
-                    }
+                    if (ManageStrings.IsStringAContainsStringB(name, zipname)) return path;
                 }
             }
             return string.Empty;
@@ -393,19 +353,13 @@ namespace AIHelper.Manage
             foreach (var file in Directory.GetFiles(folderPath))
             {
                 cnt--;
-                if (cnt == 0)
-                {
-                    return string.Empty;
-                }
+                if (cnt == 0) return string.Empty;
             }
             cnt = 2;
             foreach (var dir in Directory.GetDirectories(folderPath))
             {
                 cnt--;
-                if (cnt == 0)
-                {
-                    return string.Empty;
-                }
+                if (cnt == 0) return string.Empty;
                 aloneFolderName = Path.GetFileName(dir);
             }
 
@@ -420,41 +374,40 @@ namespace AIHelper.Manage
         public static string MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(string folderPath)
         {
             string aloneFolderName = IfInTheFolderOnlyOneFolderGetItName(folderPath);
-            if (aloneFolderName.Length > 0)
+            if (aloneFolderName.Length == 0) return folderPath;
+            if (ManageStrings.IsStringAContainsAnyStringFromStringArray(aloneFolderName, GameData.Game.GetGameStandartFolderNames(), true))
             {
-                if (!ManageStrings.IsStringAContainsAnyStringFromStringArray(aloneFolderName, GameData.Game.GetGameStandartFolderNames(), true))
-                {
-                    string folderPathName = Path.GetFileName(folderPath);
-                    string folderParentDirPath = Path.GetDirectoryName(folderPath);
-                    string oDirSubdir = Path.Combine(folderPath, aloneFolderName);
-                    string newDirPath;
-                    if (aloneFolderName == folderPathName)
-                    {
-                        newDirPath = GetResultTargetDirPathWithNameCheck(folderParentDirPath, aloneFolderName);
-                        Directory.Move(oDirSubdir, newDirPath);
-                        Directory.Delete(folderPath);
-                        Directory.Move(newDirPath, folderPath);
-                    }
-                    else
-                    {
-                        newDirPath = Path.Combine(folderParentDirPath, aloneFolderName);
-                        Directory.Move(oDirSubdir, newDirPath);
-                        Directory.Delete(folderPath);
-                        if (folderPathName.Length > aloneFolderName.Length)//если изначальное имя было длиннее, то переименовать имя субпапки на него
-                        {
-                            Directory.Move(newDirPath, folderPath);
-                        }
-                        else
-                        {
-                            return MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(newDirPath);
-                        }
-                    }
+                return folderPath;
+            }
 
-                    //возвращение через эту же функцию, если вложенных одиночных подпапок было более одной
-                    return MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(folderPath);
+            string folderPathName = Path.GetFileName(folderPath);
+            string folderParentDirPath = Path.GetDirectoryName(folderPath);
+            string oDirSubdir = Path.Combine(folderPath, aloneFolderName);
+            string newDirPath;
+            if (aloneFolderName == folderPathName)
+            {
+                newDirPath = GetResultTargetDirPathWithNameCheck(folderParentDirPath, aloneFolderName);
+                Directory.Move(oDirSubdir, newDirPath);
+                Directory.Delete(folderPath);
+                Directory.Move(newDirPath, folderPath);
+            }
+            else
+            {
+                newDirPath = Path.Combine(folderParentDirPath, aloneFolderName);
+                Directory.Move(oDirSubdir, newDirPath);
+                Directory.Delete(folderPath);
+                if (folderPathName.Length > aloneFolderName.Length)//если изначальное имя было длиннее, то переименовать имя субпапки на него
+                {
+                    Directory.Move(newDirPath, folderPath);
+                }
+                else
+                {
+                    return MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(newDirPath);
                 }
             }
-            return folderPath;
+
+            //возвращение через эту же функцию, если вложенных одиночных подпапок было более одной
+            return MoveFolderToOneLevelUpIfItAloneAndReturnMovedFolderPath(folderPath);
         }
 
         /// <summary>
@@ -465,20 +418,10 @@ namespace AIHelper.Manage
         /// <param name="targetFolder"></param>
         internal static void MoveContent(string sourceFolder, string targetFolder)
         {
-            if (!Directory.Exists(sourceFolder))
-            {
-                return;
-            }
-
-            if (sourceFolder.IsNullOrEmptyDirectory() || sourceFolder.IsSymlink(Manage.ObjectType.Directory))
-            {
-                return;
-            }
-
-            if (!Directory.Exists(targetFolder))
-            {
-                Directory.CreateDirectory(targetFolder);
-            }
+            if (!Directory.Exists(sourceFolder)) return;
+            if (sourceFolder.IsNullOrEmptyDirectory()) return;
+            if (sourceFolder.IsSymlink(ObjectType.Directory)) return;
+            if (!Directory.Exists(targetFolder)) Directory.CreateDirectory(targetFolder);
 
             foreach (string file in Directory.EnumerateFiles(sourceFolder))
             {
@@ -520,10 +463,7 @@ namespace AIHelper.Manage
             foreach (string dir in Directory.EnumerateDirectories(sourceFolder))
             {
                 var targetDir = Path.Combine(targetFolder, Path.GetFileName(dir));
-                if (Directory.Exists(targetDir))
-                {
-                    targetDir = GetNewNewWithCurrentDate(targetDir, false);
-                }
+                if (Directory.Exists(targetDir)) targetDir = GetNewNewWithCurrentDate(targetDir, false);
 
                 Directory.Move(dir, targetDir);
             }
@@ -579,10 +519,7 @@ namespace AIHelper.Manage
                 {
                     var array = crc32.ComputeHash(fs);
                     var arrayLength = array.Length;
-                    for (int i = 0; i < arrayLength; i++)
-                    {
-                        hash += array[i].ToString("x2", CultureInfo.InvariantCulture)/*.ToLowerInvariant()*/;
-                    }
+                    for (int i = 0; i < arrayLength; i++) hash += array[i].ToString("x2", CultureInfo.InvariantCulture)/*.ToLowerInvariant()*/;
                 }
 
                 return hash;
@@ -630,10 +567,7 @@ namespace AIHelper.Manage
         /// <param name="file"></param>
         internal static void DeleteReadOnly(this FileInfo file)
         {
-            if (!file.Exists)
-            {
-                return;
-            }
+            if (!file.Exists) return;
 
             file.Attributes = FileAttributes.Normal;
             file.Delete();
@@ -646,10 +580,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         public static DirectoryInfo GetCaseSensitive(this DirectoryInfo inputInfo)
         {
-            foreach (var info in inputInfo.Parent.GetDirectories(inputInfo.Name))
-            {
-                return info;
-            }
+            foreach (var info in inputInfo.Parent.GetDirectories(inputInfo.Name)) return info;
 
             return inputInfo;
         }
@@ -660,10 +591,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         public static FileInfo GetCaseSensitive(this FileInfo inputInfo)
         {
-            foreach (var info in inputInfo.Directory.GetFiles(inputInfo.Name))
-            {
-                return info;
-            }
+            foreach (var info in inputInfo.Directory.GetFiles(inputInfo.Name)) return info;
 
             return inputInfo;
         }
@@ -682,10 +610,7 @@ namespace AIHelper.Manage
                 file.Delete();
             }
 
-            foreach (var dir in targetDir.GetDirectories())
-            {
-                dir.DeleteRecursive();
-            }
+            foreach (var dir in targetDir.GetDirectories()) dir.DeleteRecursive();
 
             targetDir.Delete(false);
         }
@@ -700,10 +625,7 @@ namespace AIHelper.Manage
             foreach (var c in Path.GetInvalidPathChars())
             {
                 int index;
-                while ((index = path.IndexOf(c)) != -1)
-                {
-                    path = path.Remove(index, 1);
-                }
+                while ((index = path.IndexOf(c)) != -1) path = path.Remove(index, 1);
             }
 
             return path;
@@ -717,10 +639,7 @@ namespace AIHelper.Manage
         /// <returns>zipfile entry stream</returns>
         public static Stream GetZipEntryStream(this ZipArchive zipfile, string fileName)
         {
-            if (zipfile == null || string.IsNullOrWhiteSpace(fileName))
-            {
-                return null;
-            }
+            if (zipfile == null || string.IsNullOrWhiteSpace(fileName)) return null;
 
             Stream ret = null;
 
@@ -737,7 +656,7 @@ namespace AIHelper.Manage
             }
             catch (Exception ex)
             {
-                ManageLogs.Error("GetZipEntryStream. error:\r\n" + ex);
+                _log.Error("GetZipEntryStream. error:\r\n" + ex);
             }
 
             return ret;
@@ -770,10 +689,7 @@ namespace AIHelper.Manage
             {
                 //Console.WriteLine(@"Copying {0}\{1}", target.FullName, fi.Name);
                 var targetPath = Path.Combine(targetDirectory.FullName, fi.Name);
-                if (!overwriteFiles && File.Exists(targetPath))
-                {
-                    continue;
-                }
+                if (!overwriteFiles && File.Exists(targetPath)) continue;
 
                 if (useExclusions && fi.FullName.ContainsAnyFrom(exclusions)) continue;
 
@@ -803,10 +719,8 @@ namespace AIHelper.Manage
             {
                 //Console.WriteLine(@"Copying {0}\{1}", target.FullName, fi.Name);
                 var targetPath = Path.Combine(targetDirectory.FullName, fi.Name);
-                if (File.Exists(targetPath) && !overwriteFiles)
-                {
-                    continue;
-                }
+                if (File.Exists(targetPath) && !overwriteFiles) continue;
+
                 fi.MoveTo(targetPath, overwrite: overwriteFiles);
             }
 
@@ -818,10 +732,7 @@ namespace AIHelper.Manage
                 MoveAll(diSourceSubDir, nextTargetSubDir, overwriteFiles);
             }
 
-            if (cleanEmptyDirs)
-            {
-                ManageFilesFoldersExtensions.DeleteEmptySubfolders(sourceDirectory.FullName, true);
-            }
+            if (cleanEmptyDirs) DeleteEmptySubfolders(sourceDirectory.FullName, true);
         }
 
         public static void MoveTo(this FileInfo fileInfo, string targetPath, bool overwrite = false)

@@ -10,14 +10,7 @@ namespace AIHelper.Manage
 
         public static void SetCheck(this Label label, bool checkState)
         {
-            if (checkState)
-            {
-                label.ForeColor = Checked;
-            }
-            else
-            {
-                label.ForeColor = UnChecked;
-            }
+            label.ForeColor = checkState ? Checked : UnChecked;
         }
 
         /// <summary>
@@ -27,14 +20,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         public static bool IsChecked(this Label label)
         {
-            if (label.ForeColor == Checked)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return label.ForeColor == Checked;
         }
 
 

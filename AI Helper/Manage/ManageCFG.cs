@@ -10,10 +10,7 @@ namespace AIHelper.Manage
             if (File.Exists(cfgPath))
             {
                 CfgFiles cfg = new CfgFiles(cfgPath);
-                if (cfg.KeyExists(key, section))
-                {
-                    return cfg.ReadCfg(section, key);
-                }
+                if (cfg.KeyExists(key, section)) return cfg.ReadCfg(section, key);
             }
             return defaultValue;
         }
@@ -24,7 +21,6 @@ namespace AIHelper.Manage
                 (new CfgFiles(cfgPath)).WriteCfg(section, key, value, doSaveIni);
                 return true;
             }
-
             return false;
         }
     }

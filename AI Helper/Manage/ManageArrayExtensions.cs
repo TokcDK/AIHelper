@@ -7,12 +7,9 @@
         /// </summary>
         /// <param name="array"></param>
         /// <returns></returns>
-        internal static string[] Trim(this string[] array)
+        internal static string[] TrimEachValue(this string[] array)
         {
-            for (int i = 0; i < array.Length; i++)
-            {
-                array[i] = array[i].Trim();
-            }
+            for (int i = 0; i < array.Length; i++) array[i] = array[i].Trim();
 
             return array;
         }

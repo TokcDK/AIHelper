@@ -162,7 +162,7 @@ namespace AIHelper.Manage.Update
                         // skip if info is invalid
                         if (tInfoArray.Length == 0) continue;
 
-                        info.TargetFolderUpdateInfo = tInfoArray.Trim(); // get folder info
+                        info.TargetFolderUpdateInfo = tInfoArray.TrimEachValue(); // get folder info
                                                                          //info.TargetCurrentVersion = tInfoArray[tInfoArray.Length - 1]; // get current version (last element of info)
 
                         info.TargetLastVersion = source.GetLastVersion(); // get last version

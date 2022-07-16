@@ -200,23 +200,14 @@ namespace AIHelper.Manage.ModeSwitch
         protected void MoveVanillaFilesBackToData()
         {
             var mOmodeDataFilesBakDirPath = ManageSettings.CurrentGameMOmodeDataFilesBakDirPath;
-            if (!Directory.Exists(mOmodeDataFilesBakDirPath))
-            {
-                return;
-            }
+            if (!Directory.Exists(mOmodeDataFilesBakDirPath)) return;
 
             Parallel.ForEach(Directory.GetFiles(mOmodeDataFilesBakDirPath, "*.*", SearchOption.AllDirectories), file =>
             {
-                if (string.IsNullOrWhiteSpace(file))
-                {
-                    return;
-                }
+                if (string.IsNullOrWhiteSpace(file)) return;
 
                 var destFileInDataFolderPath = file.Replace(mOmodeDataFilesBakDirPath, ManageSettings.CurrentGameDataDirPath);
-                if (File.Exists(destFileInDataFolderPath))
-                {
-                    return;
-                }
+                if (File.Exists(destFileInDataFolderPath)) return;
 
                 var destFileInDataFolderPathFolder = Path.GetDirectoryName(destFileInDataFolderPath);
                 Directory.CreateDirectory(destFileInDataFolderPathFolder);

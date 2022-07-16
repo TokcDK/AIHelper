@@ -567,29 +567,17 @@ namespace AIHelper
 
         private void SetScreenSettings()
         {
-            if (!MOmode)
-            {
-                SetupXmlPath = ManageSettings.CurrentGameSetupXmlFilePathinData;
-            }
+            if (!MOmode) SetupXmlPath = ManageSettings.CurrentGameSetupXmlFilePathinData;
 
             //set Settings
-            if (!File.Exists(SetupXmlPath))
-            {
-                CreateSetupXmlPath();
-            }
+            if (!File.Exists(SetupXmlPath)) CreateSetupXmlPath();
 
             ResolutionComboBox.Text = ManageXml.ReadXmlValue(SetupXmlPath, "Setting/Size", ResolutionComboBox.Text);
             FullScreenCheckBox.Checked = bool.Parse(ManageXml.ReadXmlValue(SetupXmlPath, "Setting/FullScreen", FullScreenCheckBox.Checked + ""));
 
             string quality = ManageXml.ReadXmlValue(SetupXmlPath, "Setting/Quality", "2");
             //если качество будет за пределами диапазона 0-2, тогда будет равно 1 - нормально
-            if (quality == "0" || quality == "1" || quality == "2")
-            {
-            }
-            else
-            {
-                quality = "1";
-            }
+            if (quality != "0" && quality != "1" && quality != "2") quality = "1";
 
             QualityComboBox.SelectedIndex = int.Parse(quality, CultureInfo.InvariantCulture);
         }
@@ -608,13 +596,12 @@ namespace AIHelper
             {
                 for (int w = 0; w < width.Length; w++)
                 {
-                    if (int.Parse(screenWidth, CultureInfo.InvariantCulture) <= width[w])
-                    {
-                        string selectedRes = ResolutionComboBox.Items[w].ToString();
-                        ResolutionComboBox.Text = selectedRes;
-                        SetScreenResolution(selectedRes);
-                        break;
-                    }
+                    if (int.Parse(screenWidth, CultureInfo.InvariantCulture) > width[w]) continue;
+
+                    string selectedRes = ResolutionComboBox.Items[w].ToString();
+                    ResolutionComboBox.Text = selectedRes;
+                    SetScreenResolution(selectedRes);
+                    break;
                 }
             }
         }
@@ -652,10 +639,7 @@ namespace AIHelper
 
             SetMoMode();
 
-            if (!Directory.Exists(ManageSettings.CurrentGameDataDirPath))
-            {
-                Directory.CreateDirectory(ManageSettings.CurrentGameDataDirPath);
-            }
+            Directory.CreateDirectory(ManageSettings.CurrentGameDataDirPath);
             if (MOmode && !Directory.Exists(ManageSettings.CurrentGameModsDirPath))
             {
                 Directory.CreateDirectory(ManageSettings.CurrentGameModsDirPath);
@@ -682,115 +666,11 @@ namespace AIHelper
 
             if (MOmode)
             {
-                ManageModOrganizer.RestoreModlist();
-
-                ManageModOrganizer.CheckBaseGamesPy();
-
-                {
-                    //string[] Archives7z;
-                    //string[] ModDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();
-
-                    //Archives7z = Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories);
-                    //if (ModDirs.Length > 0 && Archives7z.Length > 0)
-                    //{
-                    //    bool NotAllModsExtracted = false;
-                    //    foreach (var Archive in Archives7z)
-                    //    {
-                    //        if (ModDirs.Contains(Path.Combine(ModsPath, Path.GetFileNameWithoutExtension(Archive))))
-                    //        {
-                    //        }
-                    //        else
-                    //        {
-                    //            NotAllModsExtracted = true;
-                    //            break;
-                    //        }
-                    //    }
-
-                    //    if (compressmode && NotAllModsExtracted && ModDirs.Length < Archives7z.Length)
-                    //    {
-                    //        ModsInfoLabel.Text = T._("Not all mods in Mods dir");
-                    //        //button1.Enabled = false;
-                    //        mode = 2;
-                    //        button1.Text = T._("Extract missing");
-                    //    }
-                    //    else
-                    //    {
-                    //        ModsInfoLabel.Text = T._("Found mod folders in Mods");
-                    //        //button1.Enabled = false;
-                    //        mode = 1;
-                    //        button1.Text = T._("Mods Ready");
-                    //        //MO2StandartButton.Enabled = true;
-                    //        GetEnableDisableLaunchButtons();
-                    //        MOCommonModeSwitchButton.Text = T._("MOToCommon");
-                    //        AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    //если нет папок модов но есть архивы в загрузках
-                    //    if (Archives7z.Length > 0 && ModDirs.Length == 0)
-                    //    {
-                    //        ModsInfoLabel.Text = T._("Mods Ready for extract");
-                    //        mode = 2;
-                    //        button1.Text = T._("Extract mods");
-                    //    }
-                    //}
-
-                    ////если нет архивов в загрузках, но есть папки модов
-                    //if (compressmode && Directory.Exists(DownloadsPath) && Directory.Exists(ModsPath))
-                    //{
-                    //    if (ModDirs.Length > 0 && Archives7z.Length == 0)
-                    //    {
-                    //        if (Archives7z.Length == 0)
-                    //        {
-                    //            ModsInfoLabel.Text = "No archives in downloads";
-                    //            button1.Text = "Pack mods";
-                    //            mode = 0;
-                    //        }
-                    //    }
-                    //}
-                }
-
-
-                if (!ManageSettings.CurrentGameModsDirPath.IsNullOrEmptyDirectory("*", new string[1] { "_separator" }))
-                {
-                    ModsInfoLabel.Text = T._("Found mod folders in Mods");
-
-                    _mode = 1;
-                    MainService.Text = T._("Mods Ready");
-
-                    AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
-
-                    MOCommonModeSwitchButton.Text = T._("MOToCommon");
-                }
-
-                LaunchModeInfoLinkLabel.Text = T._("MO mode");
-
-                ManageModOrganizer.DummyFiles();
-
-                ManageModOrganizer.MoIniFixes();
-
-                ManageModOrganizer.MakeLinks();
-
-                //try start in another thread for perfomance purposes
-                new Thread(obj => RunSlowActions()).Start();
-
-                SetupXmlPath = ManageModOrganizer.GetSetupXmlPathForCurrentProfile();
-
-                SetMoModsVariables();
+                MOModeSpecificSetup();
             }
             else
             {
-                SetupXmlPath = ManageSettings.CurrentGameSetupXmlFilePath;
-
-                ModsInfoLabel.Visible = false;
-
-                StudioButton.Enabled = false;
-
-                MOCommonModeSwitchButton.Text = T._("CommonToMO");
-                MainService.Text = T._("Common mode");
-                LaunchModeInfoLinkLabel.Text = T._("Common mode");
-                MainService.Enabled = false;
+                CommonModeSpecificSetup();
             }
 
             AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
@@ -806,13 +686,124 @@ namespace AIHelper
 
             SetTooltips();
 
-            if (AutoShortcutRegistryCheckBox.Checked)
-            {
-                ManageOther.AutoShortcutAndRegystry();
-            }
+            if (AutoShortcutRegistryCheckBox.Checked) ManageOther.AutoShortcutAndRegystry();
 
             SelectedGameLabel.Text = GameData.Game.GetGameDisplayingName() + "❤";
             this.Text = "AI Helper" + " | " + GameData.Game.GetGameDisplayingName();
+        }
+
+        private void CommonModeSpecificSetup()
+        {
+            SetupXmlPath = ManageSettings.CurrentGameSetupXmlFilePath;
+
+            ModsInfoLabel.Visible = false;
+
+            StudioButton.Enabled = false;
+
+            MOCommonModeSwitchButton.Text = T._("CommonToMO");
+            MainService.Text = T._("Common mode");
+            LaunchModeInfoLinkLabel.Text = T._("Common mode");
+            MainService.Enabled = false;
+        }
+
+        private void MOModeSpecificSetup()
+        {
+            ManageModOrganizer.RestoreModlist();
+
+            ManageModOrganizer.CheckBaseGamesPy();
+
+            {
+                //string[] Archives7z;
+                //string[] ModDirs = Directory.GetDirectories(ModsPath, "*").Where(name => !name.EndsWith("_separator", StringComparison.OrdinalIgnoreCase)).ToArray();
+
+                //Archives7z = Directory.GetFiles(DownloadsPath, "*.7z", SearchOption.AllDirectories);
+                //if (ModDirs.Length > 0 && Archives7z.Length > 0)
+                //{
+                //    bool NotAllModsExtracted = false;
+                //    foreach (var Archive in Archives7z)
+                //    {
+                //        if (ModDirs.Contains(Path.Combine(ModsPath, Path.GetFileNameWithoutExtension(Archive))))
+                //        {
+                //        }
+                //        else
+                //        {
+                //            NotAllModsExtracted = true;
+                //            break;
+                //        }
+                //    }
+
+                //    if (compressmode && NotAllModsExtracted && ModDirs.Length < Archives7z.Length)
+                //    {
+                //        ModsInfoLabel.Text = T._("Not all mods in Mods dir");
+                //        //button1.Enabled = false;
+                //        mode = 2;
+                //        button1.Text = T._("Extract missing");
+                //    }
+                //    else
+                //    {
+                //        ModsInfoLabel.Text = T._("Found mod folders in Mods");
+                //        //button1.Enabled = false;
+                //        mode = 1;
+                //        button1.Text = T._("Mods Ready");
+                //        //MO2StandartButton.Enabled = true;
+                //        GetEnableDisableLaunchButtons();
+                //        MOCommonModeSwitchButton.Text = T._("MOToCommon");
+                //        AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
+                //    }
+                //}
+                //else
+                //{
+                //    //если нет папок модов но есть архивы в загрузках
+                //    if (Archives7z.Length > 0 && ModDirs.Length == 0)
+                //    {
+                //        ModsInfoLabel.Text = T._("Mods Ready for extract");
+                //        mode = 2;
+                //        button1.Text = T._("Extract mods");
+                //    }
+                //}
+
+                ////если нет архивов в загрузках, но есть папки модов
+                //if (compressmode && Directory.Exists(DownloadsPath) && Directory.Exists(ModsPath))
+                //{
+                //    if (ModDirs.Length > 0 && Archives7z.Length == 0)
+                //    {
+                //        if (Archives7z.Length == 0)
+                //        {
+                //            ModsInfoLabel.Text = "No archives in downloads";
+                //            button1.Text = "Pack mods";
+                //            mode = 0;
+                //        }
+                //    }
+                //}
+            }
+
+
+            if (!ManageSettings.CurrentGameModsDirPath.IsNullOrEmptyDirectory("*", new string[1] { "_separator" }))
+            {
+                ModsInfoLabel.Text = T._("Found mod folders in Mods");
+
+                _mode = 1;
+                MainService.Text = T._("Mods Ready");
+
+                AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
+
+                MOCommonModeSwitchButton.Text = T._("MOToCommon");
+            }
+
+            LaunchModeInfoLinkLabel.Text = T._("MO mode");
+
+            ManageModOrganizer.DummyFiles();
+
+            ManageModOrganizer.MoIniFixes();
+
+            ManageModOrganizer.MakeLinks();
+
+            //try start in another thread for perfomance purposes
+            new Thread(obj => RunSlowActions()).Start();
+
+            SetupXmlPath = ManageModOrganizer.GetSetupXmlPathForCurrentProfile();
+
+            SetMoModsVariables();
         }
 
         private void SetMoMode(bool setText = true)
@@ -820,18 +811,12 @@ namespace AIHelper
             if (File.Exists(ManageSettings.CurrentGameMoToStandartConvertationOperationsListFilePath))
             {
                 MOmode = false;
-                if (setText)
-                {
-                    MainService.Text = T._("Common mode");
-                }
+                if (setText) MainService.Text = T._("Common mode");
             }
             else
             {
                 MOmode = true;
-                if (setText)
-                {
-                    MainService.Text = T._("MO mode");
-                }
+                if (setText) MainService.Text = T._("MO mode");
             }
         }
 
@@ -882,10 +867,7 @@ namespace AIHelper
 
         private void GetEnableDisableLaunchTabButtons()
         {
-            if (AIGirlHelperTabControl.SelectedTab.Name != "LaunchTabPage")
-            {
-                return;
-            }
+            if (AIGirlHelperTabControl.SelectedTab.Name != "LaunchTabPage") return;
 
             //MOButton.Enabled = /*Properties.Settings.Default.MOmode && */File.Exists(ManageSettings.GetMOexePath());
             //SettingsButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"));
@@ -1080,22 +1062,14 @@ namespace AIHelper
 
         private void AIHelper_LocationChanged(object sender, EventArgs e)
         {
-            if (GameData.Game == null)
-            {
-                return;
-            }
+            if (GameData.Game == null) return;
 
             //move second form with main form
             //https://stackoverflow.com/questions/3429445/how-to-move-two-windows-forms-together
-            if (_extraSettingsForm == null || _extraSettingsForm.IsDisposed)
+            if (_extraSettingsForm != null && !_extraSettingsForm.IsDisposed)
             {
-            }
-            else
-            {
-                if (_extraSettingsForm.WindowState == FormWindowState.Minimized)
-                {
-                    _extraSettingsForm.WindowState = FormWindowState.Normal;
-                }
+                if (_extraSettingsForm.WindowState == FormWindowState.Minimized) _extraSettingsForm.WindowState = FormWindowState.Normal;
+
                 _extraSettingsForm.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (_extraSettingsForm.Width / 2),
                     Bounds.Location.Y + /*(Bounds.Height / 2) - (f2.Height / 2) +*/ Bounds.Height);
             }

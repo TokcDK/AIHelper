@@ -12,9 +12,7 @@ namespace AIHelper.Games
             //InitActions();
         }
 
-        public virtual void InitActions()
-        {
-        }
+        public virtual void InitActions() { }
 
         //public string gamefolderPath { get; set; } = string.Empty;
         /// <summary>
@@ -40,11 +38,11 @@ namespace AIHelper.Games
         /// <summary>
         /// The game's registry path
         /// </summary>
-        public virtual string RegistryPath { get => ""; }
+        public virtual string RegistryPath { get; }
         /// <summary>
         /// The game's Install dir key name
         /// </summary>
-        public virtual string RegistryInstallDirKey { get => ""; }
+        public virtual string RegistryInstallDirKey { get; }
 
         /// <summary>
         /// search and return game folder name
@@ -129,7 +127,7 @@ namespace AIHelper.Games
         /// game's character presets folder subpath
         /// </summary>
         /// <returns></returns>
-        public virtual string CharacterPresetsFolderSubPath { get => ""; }
+        public virtual string CharacterPresetsFolderSubPath { get; }
 
         /// <summary>
         /// game's 2MO folder path of selected game

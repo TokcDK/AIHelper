@@ -100,18 +100,18 @@ namespace AIHelper.Games
         /// game's studio exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string GameStudioExeName { get => string.Empty; }
+        public virtual string GameStudioExeName { get; }
 
         /// <summary>
         /// game's studio x32 exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string GameStudioExeNameX32 { get => string.Empty; }
+        public virtual string GameStudioExeNameX32 { get; }
 
         public DirectoryInfo GameDirInfo;
 
         /// game's path of selected game
-        public virtual string GamePath { get => GameDirInfo.FullName; }
+        public virtual string GamePath { get => GameDirInfo.FullName; set { GameDirInfo = new DirectoryInfo(value); } }
 
         /// <summary>
         /// game's Mods folder path of selected game

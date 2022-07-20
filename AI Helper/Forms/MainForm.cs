@@ -167,7 +167,7 @@ namespace AIHelper
                 var ini = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
                 ManageSettings.KnownGames = GetKnownGames(ini);
 
-                GameData.Games = ManageSettings.GetListOfExistsGames();
+                GameData.Games = ManageOther.GetListOfExistsGames();
 
                 if (ManageSettings.KnownGames.Count == 0 && (GameData.Games == null || GameData.Games.Count == 0))
                 {

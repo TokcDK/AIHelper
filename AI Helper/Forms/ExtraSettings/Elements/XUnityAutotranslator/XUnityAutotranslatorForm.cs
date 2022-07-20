@@ -26,12 +26,12 @@ namespace AIHelper.Forms.ExtraSettings.Elements
 
         private void AddXuaSettings()
         {
-            //Properties.Settings.Default.XUAiniPath =
+            //ManageSettings.XUAiniPath =
             //    ManageMO.GetLastMOFileDirPathFromEnabledModsOfActiveMOProfile(new string[2] { Path.Combine(ManageSettings.GetModsPath(), "XUnity.AutoTranslator", "BepInEx", "config", "AutoTranslatorConfig.ini"), Path.Combine(ManageSettings.GetModsPath(), "XUnity.AutoTranslator", "Plugins", "AutoTranslatorConfig.ini") }, new bool[2] { false, false })
             //    ;
 
             ////если xua ini не найден, отключить элемент
-            //if (string.IsNullOrWhiteSpace(Properties.Settings.Default.XUAiniPath) || !File.Exists(Properties.Settings.Default.XUAiniPath))
+            //if (string.IsNullOrWhiteSpace(ManageSettings.XUAiniPath) || !File.Exists(ManageSettings.XUAiniPath))
             //{
             //    XUASettingsPanel.Enabled = false;
             //    return;
@@ -41,10 +41,10 @@ namespace AIHelper.Forms.ExtraSettings.Elements
             //    XUAGroupBox.Enabled = true;
             //}
 
-            if (Properties.Settings.Default.XUAiniPath.Length > 0)
+            if (ManageSettings.XUAiniPath.Length > 0)
             {
                 var iniValue = ManageIni.GetIniValueIfExist(
-                    Properties.Settings.Default.XUAiniPath,
+                    ManageSettings.XUAiniPath,
                     "FromLanguage",
                     "General"
                     );
@@ -70,7 +70,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements
                 else
                 {
                     iniValue = ManageIni.GetIniValueIfExist(
-                        Properties.Settings.Default.XUAiniPath,
+                        ManageSettings.XUAiniPath,
                         "Language",
                         "General"
                         );
@@ -85,7 +85,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements
                 XUAEndpointComboBox.Items.AddRange(GetTranslationServicesList());
 
                 iniValue = ManageIni.GetIniValueIfExist(
-                    Properties.Settings.Default.XUAiniPath,
+                    ManageSettings.XUAiniPath,
                     "Endpoint",
                     "Service"
                     );
@@ -213,36 +213,36 @@ namespace AIHelper.Forms.ExtraSettings.Elements
 
         private void XUAFromLanguageComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!Properties.Settings.Default.ExtraSettingsInitOnLoadIsInAction)
+            if (!ManageSettings.ExtraSettingsInitOnLoadIsInAction)
             {
                 string value = ManageSettings.LanguageEnumToIdentifier((sender as ComboBox).SelectedItem.ToString());
-                ManageIni.WriteIniValue(Properties.Settings.Default.XUAiniPath, "General", "FromLanguage", value);
+                ManageIni.WriteIniValue(ManageSettings.XUAiniPath, "General", "FromLanguage", value);
             }
         }
 
         private void XUALanguageComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!Properties.Settings.Default.ExtraSettingsInitOnLoadIsInAction)
+            if (!ManageSettings.ExtraSettingsInitOnLoadIsInAction)
             {
                 string value = ManageSettings.LanguageEnumToIdentifier((sender as ComboBox).SelectedItem.ToString());
-                ManageIni.WriteIniValue(Properties.Settings.Default.XUAiniPath, "General", "Language", value);
+                ManageIni.WriteIniValue(ManageSettings.XUAiniPath, "General", "Language", value);
             }
         }
 
         private void XUAEndpointComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!Properties.Settings.Default.ExtraSettingsInitOnLoadIsInAction)
+            if (!ManageSettings.ExtraSettingsInitOnLoadIsInAction)
             {
                 string value = (sender as ComboBox).SelectedItem.ToString();
-                ManageIni.WriteIniValue(Properties.Settings.Default.XUAiniPath, "Service", "Endpoint", value);
+                ManageIni.WriteIniValue(ManageSettings.XUAiniPath, "Service", "Endpoint", value);
             }
         }
 
         private void XUAcfgFileOpenLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (File.Exists(Properties.Settings.Default.XUAiniPath))
+            if (File.Exists(ManageSettings.XUAiniPath))
             {
-                Process.Start(Properties.Settings.Default.XUAiniPath);
+                Process.Start(ManageSettings.XUAiniPath);
             }
         }
     }

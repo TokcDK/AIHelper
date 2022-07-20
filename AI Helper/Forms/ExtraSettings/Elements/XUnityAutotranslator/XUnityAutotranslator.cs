@@ -18,12 +18,12 @@ namespace AIHelper.Forms.ExtraSettings.Elements
 
         internal override bool Check()
         {
-            Properties.Settings.Default.XUAiniPath =
+            ManageSettings.XUAiniPath =
                 ManageModOrganizer.GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(new string[2] { Path.Combine(ManageSettings.CurrentGameModsDirPath, "XUnity.AutoTranslator", "BepInEx", "config", "AutoTranslatorConfig.ini"), Path.Combine(ManageSettings.CurrentGameModsDirPath, "XUnity.AutoTranslator", "Plugins", "AutoTranslatorConfig.ini") }, new bool[2] { false, false })
                 ;
 
             //return false;
-            return !string.IsNullOrWhiteSpace(Properties.Settings.Default.XUAiniPath) && File.Exists(Properties.Settings.Default.XUAiniPath);
+            return !string.IsNullOrWhiteSpace(ManageSettings.XUAiniPath) && File.Exists(ManageSettings.XUAiniPath);
         }
 
         XUnityAutotranslatorForm _xuaElement;
@@ -36,7 +36,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements
 
         internal override void Show(Form parentForm)
         {
-            if (!string.IsNullOrWhiteSpace(Properties.Settings.Default.XUAiniPath))
+            if (!string.IsNullOrWhiteSpace(ManageSettings.XUAiniPath))
             {
                 parentForm.Controls.Add(_xuaElement);
                 _xuaElement.Show();

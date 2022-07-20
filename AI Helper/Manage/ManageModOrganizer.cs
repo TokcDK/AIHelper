@@ -28,7 +28,6 @@ namespace AIHelper.Manage
 
         public static void SetMoModsVariables()
         {
-            Properties.Settings.Default.BepinExCfgPath = ManageSettings.BepInExCfgFilePath;
         }
 
         public static void CleanBepInExLinksFromData()
@@ -1729,7 +1728,7 @@ namespace AIHelper.Manage
             RedefineGameMoData();
 
             //менять настройки МО только когда игра меняется
-            if (!Properties.Settings.Default.CurrentGameIsChanging && Path.GetDirectoryName(ManageSettings.AppModOrganizerDirPath) != Properties.Settings.Default.ApplicationStartupPath)
+            if (!ManageSettings.CurrentGameIsChanging && Path.GetDirectoryName(ManageSettings.AppModOrganizerDirPath) != ManageSettings.ApplicationStartupPath)
             {
                 return;
             }
@@ -1740,9 +1739,9 @@ namespace AIHelper.Manage
 
             //await Task.Run(() => SetCustomExecutablesIniValues(INI)).ConfigureAwait(true);
             FixCustomExecutablesIniValues();
-            Properties.Settings.Default.SetModOrganizerINISettingsForTheGame = false;
+            ManageSettings.SetModOrganizerINISettingsForTheGame = false;
 
-            //Properties.Settings.Default.CurrentGameIsChanging = false;
+            //ManageSettings.CurrentGameIsChanging = false;
         }
 
         /// <summary>
@@ -2320,12 +2319,12 @@ namespace AIHelper.Manage
 
         //private static void SetCustomExecutablesIniValues(INIFile INI)
         //{
-        //    if (Properties.Settings.Default.SetModOrganizerINISettingsForTheGame)
+        //    if (ManageSettings.SetModOrganizerINISettingsForTheGame)
         //    {
         //        return;
         //    }
 
-        //    Properties.Settings.Default.SetModOrganizerINISettingsForTheGame = true;
+        //    ManageSettings.SetModOrganizerINISettingsForTheGame = true;
 
         //    string[,] IniValues = new string[,] { };
 
@@ -2611,7 +2610,7 @@ namespace AIHelper.Manage
         //        INI.SaveINI(true, true);
         //    }
 
-        //    Properties.Settings.Default.SetModOrganizerINISettingsForTheGame = false;
+        //    ManageSettings.SetModOrganizerINISettingsForTheGame = false;
         //}
 
         /// <summary>
@@ -2849,8 +2848,8 @@ namespace AIHelper.Manage
         //    //добавление hardcoded exe
         //    //executablesCount++;
         //    //customs.Add(executablesCount + @"\title", "Skyrim");
-        //    //customs.Add(executablesCount + @"\binary", Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "TESV.exe"));
-        //    //customs.Add(executablesCount + @"\workingDirectory", Properties.Settings.Default.ApplicationStartupPath);
+        //    //customs.Add(executablesCount + @"\binary", Path.Combine(ManageSettings.ApplicationStartupPath, "TESV.exe"));
+        //    //customs.Add(executablesCount + @"\workingDirectory", ManageSettings.ApplicationStartupPath);
         //    //customs.Add(executablesCount + @"\ownicon", "true");
         //    //executablesCount++;
         //    //customs.Add(executablesCount + @"\title", "Explore Virtual Folder");

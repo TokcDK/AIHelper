@@ -16,7 +16,7 @@ namespace AIHelper.Install.Types.Directories
         {
             if (directoryInfo == null
                 || File.Exists(Path.Combine(directoryInfo.FullName, ManageSettings.GameUpdateInstallerIniFileName)) // return if game update dir
-                || File.Exists(Path.Combine(directoryInfo.FullName, Properties.Settings.Default.ApplicationProductName + ".exe")) // return if app update dir
+                || File.Exists(Path.Combine(directoryInfo.FullName, ManageSettings.ApplicationProductName + ".exe")) // return if app update dir
                 )
             {
                 // not parse game update

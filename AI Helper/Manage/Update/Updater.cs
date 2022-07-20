@@ -272,7 +272,7 @@ namespace AIHelper.Manage.Update
                                         + T._("Failed to update") + " " + info.TargetFolderPath.Name
                                         + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage                                            
                                         + ErrorMessage(info.LastErrorText)
-                                        + " ("+ T._("Details in") + " " + Properties.Settings.Default.ApplicationProductName + ".log" + ")"
+                                        + " ("+ T._("Details in") + " " + ManageSettings.ApplicationProductName + ".log" + ")"
                                         + ManageSettings.UpdateReport.HtmlAfterModReportLine);
 
                                 _log.Warn("Failed to update" + " " + info.TargetFolderPath.Name /*+ ":" + Environment.NewLine + ex*/);

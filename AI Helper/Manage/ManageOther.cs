@@ -21,7 +21,7 @@ namespace AIHelper.Manage
         private static void WaitIfGameIsChanging(int waittime, int maxLoops = 60)
         {
             int loopsCount = 0;
-            while (ManageSettings.IsMoMode&& (Properties.Settings.Default.SetModOrganizerINISettingsForTheGame || Properties.Settings.Default.CurrentGameIsChanging) && loopsCount < maxLoops)
+            while (ManageSettings.IsMoMode&& (ManageSettings.SetModOrganizerINISettingsForTheGame || ManageSettings.CurrentGameIsChanging) && loopsCount < maxLoops)
             {
                 Thread.Sleep(waittime);
                 loopsCount++;
@@ -30,14 +30,7 @@ namespace AIHelper.Manage
 
         public static void CheckBoxChangeColor(CheckBox checkBox)
         {
-            if (checkBox.Checked)
-            {
-                checkBox.ForeColor = Color.FromArgb(192, 255, 192);
-            }
-            else
-            {
-                checkBox.ForeColor = Color.White;
-            }
+            checkBox.ForeColor = checkBox.Checked ? Color.FromArgb(192, 255, 192) : Color.White;
         }
 
         public static void AutoShortcutAndRegystry()
@@ -49,49 +42,42 @@ namespace AIHelper.Manage
         //https://bytescout.com/blog/create-shortcuts-in-c-and-vbnet.html
         public static void CreateShortcuts(bool force = false, bool auto = true)
         {
-            if (Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked || force)
-            {
-                //AI-Girl Helper
-                string shortcutname = /*ManageSettings.GetCurrentGameFolderName() +*/ "AI " + T._("Helper");
-                string targetpath = Application.ExecutablePath;
-                string arguments = string.Empty;
-                string workingdir = Path.GetDirectoryName(targetpath);
-                string description = T._("Run") + " " + shortcutname;
-                string iconlocation = Application.ExecutablePath;
-                Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description, iconlocation);
+            if (!ManageSettings.AutoShortcutRegistryCheckBoxChecked && !force) return;
 
-                //AI-Girl Trial
-                //shortcutname = "AI-Girl Trial";
-                //targetpath = Path.Combine(MOPath, "ModOrganizer.exe");
-                //arguments = "\"moshortcut://:AI-SyoujyoTrial\"";
-                //workingdir = Path.GetDirectoryName(targetpath);
-                //description = "Run " + shortcutname + " with ModOrganizer";
-                //iconlocation = Path.Combine(DataPath, "AI-SyoujyoTrial.exe");
-                //Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description, iconlocation);
+            //AI-Girl Helper
+            string shortcutname = /*ManageSettings.GetCurrentGameFolderName() +*/ "AI " + T._("Helper");
+            string targetpath = Application.ExecutablePath;
+            string arguments = string.Empty;
+            string workingdir = Path.GetDirectoryName(targetpath);
+            string description = T._("Run") + " " + shortcutname;
+            string iconlocation = Application.ExecutablePath;
+            Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description, iconlocation);
 
-                ////Mod Organizer
-                //shortcutname = "ModOrganizer AI-Shoujo Trial";
-                //targetpath = Path.Combine(MOPath, "ModOrganizer.exe");
-                //arguments = string.Empty;
-                //workingdir = Path.GetDirectoryName(targetpath);
-                //description = shortcutname;
-                //Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description);
+            //AI-Girl Trial
+            //shortcutname = "AI-Girl Trial";
+            //targetpath = Path.Combine(MOPath, "ModOrganizer.exe");
+            //arguments = "\"moshortcut://:AI-SyoujyoTrial\"";
+            //workingdir = Path.GetDirectoryName(targetpath);
+            //description = "Run " + shortcutname + " with ModOrganizer";
+            //iconlocation = Path.Combine(DataPath, "AI-SyoujyoTrial.exe");
+            //Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description, iconlocation);
 
-                ManageModOrganizer.CheckMoUserdata();
+            ////Mod Organizer
+            //shortcutname = "ModOrganizer AI-Shoujo Trial";
+            //targetpath = Path.Combine(MOPath, "ModOrganizer.exe");
+            //arguments = string.Empty;
+            //workingdir = Path.GetDirectoryName(targetpath);
+            //description = shortcutname;
+            //Shortcut.Create(shortcutname, targetpath, arguments, workingdir, description);
 
-                if (!auto)
-                {
-                    MessageBox.Show(T._("Shortcut") + " " + T._("created") + "!");
-                }
-            }
+            ManageModOrganizer.CheckMoUserdata();
+
+            if (!auto) MessageBox.Show(T._("Shortcut") + " " + T._("created") + "!");
         }
 
         internal static void SwitchFormMinimizedNormalAll(Form[] forms, bool forceMinimize = false, bool forceMaximize = false)
         {
-            foreach (var form in forms)
-            {
-                SwitchFormMinimizedNormal(form);
-            }
+            foreach (var form in forms) SwitchFormMinimizedNormal(form);
         }
 
         internal static void SwitchFormMinimizedNormal(Form form, bool forceMinimize = false, bool forceMaximize = false)

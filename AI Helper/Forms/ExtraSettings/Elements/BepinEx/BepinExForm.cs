@@ -84,8 +84,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
         private void InitLogSettings()
         {
             //Set BepInEx log data
-            var bepInExCfgPath = ManageSettings.BepInExCfgFilePath;
-            if (bepInExCfgPath.Length > 0 && File.Exists(bepInExCfgPath))
+            if (ManageSettings.BepInExCfgFilePath.Length > 0 && File.Exists(ManageSettings.BepInExCfgFilePath))
             {
                 BepInExSettingsLogCheckBox.Enabled = true;
 
@@ -93,7 +92,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
 
                 try
                 {
-                    BepInExSettingsLogCheckBox.Checked = bool.Parse(ManageCfg.GetCfgValueIfExist(bepInExCfgPath, "Enabled", logTargetSection, "False"));
+                    BepInExSettingsLogCheckBox.Checked = bool.Parse(ManageCfg.GetCfgValueIfExist(ManageSettings.BepInExCfgFilePath, "Enabled", logTargetSection, "False"));
                 }
                 catch
                 {

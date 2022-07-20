@@ -1,5 +1,6 @@
 ﻿using AIHelper.Forms.ExtraSettings.Elements;
 using AIHelper.Forms.ExtraSettings.Elements.BepinEx;
+using AIHelper.Manage;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,7 +10,7 @@ namespace AIHelper
 {
     internal partial class ExtraSettingsForm : Form
     {
-        private static bool ExtraSettingsInitOnLoadIsInAction { get => Properties.Settings.Default.ExtraSettingsInitOnLoadIsInAction; set => Properties.Settings.Default.ExtraSettingsInitOnLoadIsInAction = value; }
+        private static bool ExtraSettingsInitOnLoadIsInAction { get => ManageSettings.ExtraSettingsInitOnLoadIsInAction; set => ManageSettings.ExtraSettingsInitOnLoadIsInAction = value; }
 
         public ExtraSettingsForm()
         {

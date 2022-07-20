@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using AIHelper.Manage;
+using System.IO;
 using System.Threading;
 
 namespace AIHelper.Utils
@@ -9,7 +10,7 @@ namespace AIHelper.Utils
 
         public static void WriteData(string filePath, string data, bool debugMode = false)
         {
-            if (string.IsNullOrEmpty(filePath) || (!debugMode && filePath.Contains(Properties.Settings.Default.ApplicationProductName + ".log")))
+            if (string.IsNullOrEmpty(filePath) || (!debugMode && filePath.Contains(ManageSettings.ApplicationProductName + ".log")))
             {
                 return;
             }

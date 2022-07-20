@@ -33,18 +33,18 @@ namespace AIHelper
         /// <summary>
         /// Get or set path to setup.xml graphic settings for current game
         /// </summary>
-        private static string SetupXmlPath { get => Properties.Settings.Default.SetupXmlPath; set => Properties.Settings.Default.SetupXmlPath = value; }
+        private static string SetupXmlPath { get => ManageSettings.SetupXmlPath; set => ManageSettings.SetupXmlPath = value; }
         /// <summary>
         /// Get or set MO mode for current game
         /// </summary>
-        private static bool MOmode { get => ManageSettings.IsMoMode; set => Properties.Settings.Default.MOmode = value; }
+        private static bool MOmode { get => ManageSettings.IsMoMode; set => ManageSettings.IsMoMode = value; }
 
         public MainForm()
         {
             InitializeComponent();
 
-            Properties.Settings.Default.ApplicationStartupPath = Application.StartupPath;
-            Properties.Settings.Default.ApplicationProductName = Application.ProductName;
+            ManageSettings.ApplicationStartupPath = Application.StartupPath;
+            ManageSettings.ApplicationProductName = Application.ProductName;
 
             if (!SetListOfAddedGames())
             {
@@ -78,7 +78,7 @@ namespace AIHelper
                 }
             }
 
-            Properties.Settings.Default.MOIsNew = ManageModOrganizer.IsMo23OrNever();
+            ManageSettings.MOIsNew = IsMo23OrNever();
 
             ManageModOrganizer.RedefineGameMoData();
 
@@ -102,7 +102,7 @@ namespace AIHelper
             //    FixRegistryButton.Visible = true;
             //}
 
-            Properties.Settings.Default.INITDone = true;
+            ManageSettings.INITDone = true;
         }
 
         //private void FixOldMODirPath()
@@ -285,13 +285,13 @@ namespace AIHelper
 
         private void SetSelectedGameIndexAndBasicVariables(int index = 0)
         {
-            Properties.Settings.Default.CurrentGameListIndex = index;
-            GameData.Game = GameData.Games[Properties.Settings.Default.CurrentGameListIndex];
+            ManageSettings.CurrentGameListIndex = index;
+            GameData.Game = GameData.Games[ManageSettings.CurrentGameListIndex];
             CurrentGameComboBox.SelectedIndex = index;
 
             //set checkbox
-            Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked = bool.Parse(ManageIni.GetIniValueIfExist(ManageSettings.AiHelperIniPath, "autoCreateShortcutAndFixRegystry", "Settings", "False"));
-            AutoShortcutRegistryCheckBox.Checked = Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked;
+            ManageSettings.AutoShortcutRegistryCheckBoxChecked = bool.Parse(ManageIni.GetIniValueIfExist(ManageSettings.AiHelperIniPath, "autoCreateShortcutAndFixRegystry", "Settings", "False"));
+            AutoShortcutRegistryCheckBox.Checked = ManageSettings.AutoShortcutRegistryCheckBoxChecked;
         }
 
         private void SetLocalizationStrings()
@@ -411,7 +411,7 @@ namespace AIHelper
             }
             else if (AIGirlHelperTabControl.SelectedTab == LaunchTabPage)
             {
-                _thToolTip.SetToolTip(ProgramNameLabelPart2, Properties.Settings.Default.ApplicationProductName + " - " + T._("Illusion games manager.\n\n"
+                _thToolTip.SetToolTip(ProgramNameLabelPart2, ManageSettings.ApplicationProductName + " - " + T._("Illusion games manager.\n\n"
                         + "Move mouse over wished button or text to see info about it"
                         )
                     );
@@ -824,8 +824,8 @@ namespace AIHelper
         internal bool IsBetaTest;
         private void EnableDisableSomeTools()
         {
-            IsDebug = Path.GetFileName(Properties.Settings.Default.ApplicationStartupPath) == "Debug" && File.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "IsDevDebugMode.txt"));
-            IsBetaTest = File.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "IsBetaTest.txt"));
+            IsDebug = Path.GetFileName(ManageSettings.ApplicationStartupPath) == "Debug" && File.Exists(Path.Combine(ManageSettings.ApplicationStartupPath, "IsDevDebugMode.txt"));
+            IsBetaTest = File.Exists(Path.Combine(ManageSettings.ApplicationStartupPath, "IsBetaTest.txt"));
 
             //Debug
 
@@ -869,15 +869,14 @@ namespace AIHelper
         {
             if (AIGirlHelperTabControl.SelectedTab.Name != "LaunchTabPage") return;
 
-            //MOButton.Enabled = /*Properties.Settings.Default.MOmode && */File.Exists(ManageSettings.GetMOexePath());
+            //MOButton.Enabled = /*ManageSettings.IsMoMode && */File.Exists(ManageSettings.GetMOexePath());
             //SettingsButton.Enabled = File.Exists(Path.Combine(DataPath, ManageSettings.GetINISettingsEXEName() + ".exe"));
             JPLauncherRunLinkLabel.Enabled = File.Exists(Path.Combine(ManageSettings.CurrentGameDataDirPath, ManageSettings.IniSettingsExeName + ".exe"));
             GameButton.Enabled = File.Exists(Path.Combine(ManageSettings.CurrentGameDataDirPath, ManageSettings.CurrentGameExeName + ".exe"));
             StudioButton.Enabled = File.Exists(Path.Combine(ManageSettings.CurrentGameDataDirPath, ManageSettings.StudioExeName + ".exe"));
 
             //Set BepInEx log data
-            var bepInExCfgPath = ManageSettings.BepInExCfgFilePath; // заметно тормозит
-            if (bepInExCfgPath.Length > 0 && File.Exists(bepInExCfgPath))
+            if (ManageSettings.BepInExCfgFilePath.Length > 0 && File.Exists(ManageSettings.BepInExCfgFilePath))
             {
                 BepInExConsoleCheckBox.Enabled = true;
                 try
@@ -899,8 +898,8 @@ namespace AIHelper
         private void CheckBox1_CheckedChanged(object sender, EventArgs e)
         {
             ManageOther.CheckBoxChangeColor(sender as CheckBox);
-            Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked = AutoShortcutRegistryCheckBox.Checked;
-            ManageIni.GetINIFile(ManageSettings.AiHelperIniPath).SetKey("Settings", "autoCreateShortcutAndFixRegystry", Properties.Settings.Default.AutoShortcutRegistryCheckBoxChecked.ToString(CultureInfo.InvariantCulture));
+            ManageSettings.AutoShortcutRegistryCheckBoxChecked = AutoShortcutRegistryCheckBox.Checked;
+            ManageIni.GetINIFile(ManageSettings.AiHelperIniPath).SetKey("Settings", "autoCreateShortcutAndFixRegystry", ManageSettings.AutoShortcutRegistryCheckBoxChecked.ToString(CultureInfo.InvariantCulture));
         }
 
         private void ResolutionComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -1249,22 +1248,22 @@ namespace AIHelper
 
         private void CurrentGameComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //bool init = Properties.Settings.Default.INITDone;
-            //bool change = Properties.Settings.Default.CurrentGameIsChanging;
+            //bool init = ManageSettings.INITDone;
+            //bool change = ManageSettings.CurrentGameIsChanging;
 
-            if (Properties.Settings.Default.INITDone && !Properties.Settings.Default.CurrentGameIsChanging && !Properties.Settings.Default.SetModOrganizerINISettingsForTheGame)
+            if (ManageSettings.INITDone && !ManageSettings.CurrentGameIsChanging && !ManageSettings.SetModOrganizerINISettingsForTheGame)
             {
-                Properties.Settings.Default.CurrentGameIsChanging = true;
+                ManageSettings.CurrentGameIsChanging = true;
 
                 SetSelectedGameIndexAndBasicVariables((sender as ComboBox).SelectedIndex);
-                Properties.Settings.Default.CurrentGameListIndex = (sender as ComboBox).SelectedIndex;
+                ManageSettings.CurrentGameListIndex = (sender as ComboBox).SelectedIndex;
                 ActionsOnGameChanged();
 
                 ManageIni.GetINIFile(ManageSettings.AiHelperIniPath).SetKey("Settings", "selected_game", ManageSettings.CurrentGameDirName);
 
                 UpdateData();
 
-                Properties.Settings.Default.CurrentGameIsChanging = false;
+                ManageSettings.CurrentGameIsChanging = false;
             }
             else
             {
@@ -1279,8 +1278,8 @@ namespace AIHelper
             //File.Delete(ManageSettings.GetModOrganizerINIpath());
             //File.Delete(ManageSettings.GetMOcategoriesPath());
             ManageModOrganizer.RedefineGameMoData();
-            Properties.Settings.Default.BepinExCfgPath = string.Empty;
-            Properties.Settings.Default.MOSelectedProfileDirName = string.Empty;
+            ManageSettings.BepInExCfgFilePath = string.Empty;
+            ManageSettings.MOSelectedProfileDirName = string.Empty;
 
             ManageModOrganizer.CheckBaseGamesPy();
 

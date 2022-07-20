@@ -83,7 +83,7 @@ namespace AIHelper.Manage
 
         internal static void SettingsInit()
         {
-            //int index = Properties.Settings.Default.CurrentGameListIndex;
+            //int index = ManageSettings.CurrentGameListIndex;
             //ManageSettings.GetCurrentGamePath() = ListOfGames[index].GetGamePath();
             //ModsPath = SettingsManage.GetModsPath();
             //DownloadsPath = SettingsManage.GetDownloadsPath();
@@ -100,7 +100,7 @@ namespace AIHelper.Manage
 
         internal static string DateTimeBasedSuffix => "_" + DateTime.Now.ToString("yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
 
-        internal static bool MoIsNew { get => Properties.Settings.Default.MOIsNew; }
+        internal static bool MoIsNew { get => ManageSettings.MOIsNew; }
 
         internal static string DefaultBepInEx5OlderVersion => "5.0.1";
 
@@ -122,7 +122,7 @@ namespace AIHelper.Manage
         internal static string AiMetaIniKeyUpdateName => "ModUpdateInfo";
 
 
-        internal static string ApplicationStartupPath => Properties.Settings.Default.ApplicationStartupPath;
+        internal static string ApplicationStartupPath = "";
 
         internal static string[] ScreenResolutions => new string[]
             {
@@ -267,11 +267,11 @@ namespace AIHelper.Manage
             //    // root game setup
             //    try
             //    {
-            //        if (Directory.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Mods"))
+            //        if (Directory.Exists(Path.Combine(ManageSettings.ApplicationStartupPath, "Mods"))
             //            &&
-            //            Directory.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
+            //            Directory.Exists(Path.Combine(ManageSettings.ApplicationStartupPath, "Data"))
             //            &&
-            //            !Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data").IsNullOrEmptyDirectory(mask: "*.exe", searchForFiles: true, searchForDirs: false, recursive: false)
+            //            !Path.Combine(ManageSettings.ApplicationStartupPath, "Data").IsNullOrEmptyDirectory(mask: "*.exe", searchForFiles: true, searchForDirs: false, recursive: false)
             //            //&&
             //            //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(GetMOdirPath())
             //            &&
@@ -289,7 +289,7 @@ namespace AIHelper.Manage
             //            var game = new RootGame
             //            {
             //                // the app's dir
-            //                GameDirInfo = new DirectoryInfo(Properties.Settings.Default.ApplicationStartupPath)
+            //                GameDirInfo = new DirectoryInfo(ManageSettings.ApplicationStartupPath)
             //            };
 
             //            //listOfGames.Add(new RootGame());
@@ -625,26 +625,26 @@ namespace AIHelper.Manage
         //    {
         //        try
         //        {
-        //            if (Directory.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Mods"))
+        //            if (Directory.Exists(Path.Combine(ManageSettings.ApplicationStartupPath, "Mods"))
         //                &&
-        //                Directory.Exists(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
+        //                Directory.Exists(Path.Combine(ManageSettings.ApplicationStartupPath, "Data"))
         //                &&
-        //                !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Data"))
+        //                !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(ManageSettings.ApplicationStartupPath, "Data"))
         //                //&&
-        //                //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, GetAppModOrganizerDirName()))
+        //                //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(ManageSettings.ApplicationStartupPath, GetAppModOrganizerDirName()))
         //                &&
-        //                IsMOFolderValid(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, GetAppModOrganizerDirName()))
+        //                IsMOFolderValid(Path.Combine(ManageSettings.ApplicationStartupPath, GetAppModOrganizerDirName()))
         //                //&&
-        //                //Directory.Exists(Path.Combine(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, GetAppModOrganizerDirName(), GetMoProfilesDirName())))
+        //                //Directory.Exists(Path.Combine(Path.Combine(ManageSettings.ApplicationStartupPath, GetAppModOrganizerDirName(), GetMoProfilesDirName())))
         //                //&&
-        //                //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, GetAppModOrganizerDirName(), GetMoProfilesDirName()))
+        //                //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(ManageSettings.ApplicationStartupPath, GetAppModOrganizerDirName(), GetMoProfilesDirName()))
         //                &&
-        //                !ManageSymLinks.IsSymLink(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, GetAppModOrganizerDirName(), MoIniFileName()))
+        //                !ManageSymLinks.IsSymLink(Path.Combine(ManageSettings.ApplicationStartupPath, GetAppModOrganizerDirName(), MoIniFileName()))
         //                &&
-        //                !ManageSymLinks.IsSymLink(Path.Combine(Properties.Settings.Default.ApplicationStartupPath, GetAppModOrganizerDirName(), MoCategoriesFileName()))
+        //                !ManageSymLinks.IsSymLink(Path.Combine(ManageSettings.ApplicationStartupPath, GetAppModOrganizerDirName(), MoCategoriesFileName()))
         //                )
         //            {
-        //                ListOfGames1.Add(Properties.Settings.Default.ApplicationStartupPath, new RootGame());
+        //                ListOfGames1.Add(ManageSettings.ApplicationStartupPath, new RootGame());
         //            }
         //        }
         //        catch (Exception ex)
@@ -748,7 +748,7 @@ namespace AIHelper.Manage
         /// </summary>
         /// <returns></returns>
 
-        internal static string GamesBaseFolderPath => Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "Games");
+        internal static string GamesBaseFolderPath => Path.Combine(ManageSettings.ApplicationStartupPath, "Games");
 
 
         internal static string CurrentGameParentDirPath => GameData.Game.GameDirInfo.Parent.FullName;
@@ -760,7 +760,7 @@ namespace AIHelper.Manage
         internal static string CurrentGameSetupXmlFilePathinData => Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "setup.xml");
 
 
-        internal static int CurrentGameIndex => Properties.Settings.Default.CurrentGameListIndex;
+        internal static int CurrentGameIndex => 0;
 
 
         internal static string SettingsExePath => Path.Combine(CurrentGameDataDirPath, IniSettingsExeName + ".exe");
@@ -862,7 +862,7 @@ namespace AIHelper.Manage
         internal static string IniSettingsExeName => GameData.Game.IniSettingsExeName;
 
 
-        internal static string AppResDirPath => Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "RES");
+        internal static string AppResDirPath => Path.Combine(ManageSettings.ApplicationStartupPath, "RES");
 
 
         internal static string CurrentGameModsDirPath => Path.Combine(CurrentGameDirPath, "Mods");
@@ -880,22 +880,24 @@ namespace AIHelper.Manage
         internal static string AppModOrganizerDirPath => AppOldModOrganizerDirPath;// Path.Combine(GetAppResDirPath(), GetAppModOrganizerDirName());
 
 
-        internal static string AppOldModOrganizerDirPath => Path.Combine(Properties.Settings.Default.ApplicationStartupPath, AppModOrganizerDirName);
+        internal static string AppOldModOrganizerDirPath => Path.Combine(ManageSettings.ApplicationStartupPath, AppModOrganizerDirName);
 
 
         internal static string AppMOexePath => Path.Combine(AppModOrganizerDirPath, "ModOrganizer.exe");
 
+        internal static string MOSelectedProfileDirName { get; set; } = "";
+
         internal static string GetMoSelectedProfileDirName()
         {
-            if (Properties.Settings.Default.MOSelectedProfileDirName.Length > 0)
+            if (ManageSettings.MOSelectedProfileDirName.Length > 0)
             {
-                return Properties.Settings.Default.MOSelectedProfileDirName;
+                return ManageSettings.MOSelectedProfileDirName;
             }
             else
             {
-                Properties.Settings.Default.MOSelectedProfileDirName = ManageModOrganizer.MOremoveByteArray(ManageIni.GetIniValueIfExist(File.Exists(ModOrganizerIniPath) ? ModOrganizerIniPath : ModOrganizerInIpathForSelectedGame, "selected_profile", "General"));
+                ManageSettings.MOSelectedProfileDirName = ManageModOrganizer.MOremoveByteArray(ManageIni.GetIniValueIfExist(File.Exists(ModOrganizerIniPath) ? ModOrganizerIniPath : ModOrganizerInIpathForSelectedGame, "selected_profile", "General"));
 
-                return Properties.Settings.Default.MOSelectedProfileDirName;
+                return ManageSettings.MOSelectedProfileDirName;
             }
         }
 
@@ -924,7 +926,7 @@ namespace AIHelper.Manage
         internal static string OverwriteFolderLink => Path.Combine(CurrentGameDirPath, "MOUserData");
 
 
-        internal static string AiHelperIniPath => Path.Combine(Properties.Settings.Default.ApplicationStartupPath, Properties.Settings.Default.ApplicationProductName + ".ini");
+        internal static string AiHelperIniPath => Path.Combine(ManageSettings.ApplicationStartupPath, ManageSettings.ApplicationProductName + ".ini");
 
         internal static int GetCurrentGameIndexByFolderName(List<GameBase> listOfGames, string folderName)
         {
@@ -987,17 +989,7 @@ namespace AIHelper.Manage
         internal static string BepInExCfgDirPath => Path.Combine(BepInExPath, "BepInEx", "config");
 
 
-        internal static string BepInExCfgFilePath
-        {
-            get
-            {
-                if (Properties.Settings.Default.BepinExCfgPath.Length > 0)
-                {
-                    return Properties.Settings.Default.BepinExCfgPath;
-                }
-                return ManageModOrganizer.GetLastPath(Path.Combine(BepInExCfgDirPath, "BepInEx.cfg"));
-            }
-        }
+        internal static string BepInExCfgFilePath { get; set; } = "";
 
         internal static void SwitchBepInExDisplayedLogLevelValue(CheckBox bepInExConsoleCheckBox, Label bepInExDisplayedLogLevelLabel, bool onlyShow = false, string targetSectionName = "Logging.Console")
         {
@@ -1276,7 +1268,7 @@ namespace AIHelper.Manage
         /// </summary>
         /// <returns></returns>
 
-        internal static bool IsMoMode => Properties.Settings.Default.MOmode;
+        internal static bool IsMoMode = true;
 
 
         internal static string CurrentGameInstallDirPath => Path.Combine(AppResDirPath, "install", CurrentGameDirName);
@@ -1467,5 +1459,15 @@ namespace AIHelper.Manage
         public static string CurrentGameInstallDirName { get; set; } = "2MO";
         public static string DefaultInitSettingExeName { get; set; } = "InitSetting";
         public static string GameVRexeSuffixName { get; set; } = "VR";
+        public static bool AutoShortcutRegistryCheckBoxChecked { get; internal set; } = true;
+        public static bool INITDone { get; internal set; } = false;
+        public static int CurrentGameListIndex { get; internal set; } = 0;
+        public static string SetupXmlPath { get; internal set; } = "";
+        public static string XUAiniPath { get; internal set; }
+        public static bool CurrentGameIsChanging { get; internal set; }
+        public static bool SetModOrganizerINISettingsForTheGame { get; internal set; }
+        public static bool ExtraSettingsInitOnLoadIsInAction { get; internal set; }
+        public static bool MOIsNew { get; internal set; } = true;
+        public static string ApplicationProductName { get; internal set; }
     }
 }

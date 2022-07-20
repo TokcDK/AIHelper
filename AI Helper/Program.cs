@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AIHelper.Manage;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -22,7 +23,7 @@ namespace AIHelper
         private const int SwRestore = 9;
 
         //appname
-        internal static readonly string AppName = Properties.Settings.Default.ApplicationProductName = Application.ProductName;
+        internal static readonly string AppName = ManageSettings.ApplicationProductName = Application.ProductName;
 
         /// <summary>
         /// Главная точка входа для приложения.

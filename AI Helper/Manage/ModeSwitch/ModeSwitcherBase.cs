@@ -91,7 +91,7 @@ namespace AIHelper.Manage.ModeSwitch
         {
         }
 
-        protected bool MOmode { get => ManageSettings.IsMoMode; set => Properties.Settings.Default.MOmode = value; }
+        protected bool MOmode { get => ManageSettings.IsMoMode; set => ManageSettings.IsMoMode = value; }
 
         protected static string operationsSplitStringBase { get => "|MovedTo|"; }
         protected string[] operationsSplitString = new string[1] { operationsSplitStringBase };

@@ -56,12 +56,8 @@ namespace AIHelper.Games
         /// search and return game folder name
         /// </summary>
         /// <returns></returns>
-        public virtual string GetGameDirName()
-        {
-            return GameDirInfo.Name;
-            //return SearchGameFolder();
-        }
-
+        public virtual string GameDirName => GameDirInfo.Name;
+        //return SearchGameFolder();
         //protected string GetTheGameFolderName(string defaultGameFolderName)
         //{
         //    if (GamefolderName.Length > 0 || (GamefolderName = SearchGameFolder()).Length > 0)
@@ -74,149 +70,111 @@ namespace AIHelper.Games
         //    }
         //}
 
-        public virtual string GetGameDisplayingName()
-        {
-            return GetGameDirName();
-        }
+        public virtual string GameDisplayingName => GameDirName;
 
         /// <summary>
         /// main game's exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public abstract string GetGameExeName();
+        public abstract string GameExeName { get; }
 
         /// <summary>
         /// prefix of selected game (kk,hs,hs2,ai,kks)
         /// </summary>
         /// <returns></returns>
-        public abstract string GetGameAbbreviation();
+        public abstract string GameAbbreviation { get; }
 
         /// <summary>
         /// main game's vr exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string GetGameExeNameVr()
-        {
-            return GetGameExeName() + "VR";
-        }
+        public virtual string GameExeNameVr => GameExeName + "VR";
 
         /// <summary>
         /// main game's x32 exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string GetGameExeNameX32()
-        {
-            return string.Empty;
-        }
+        public virtual string GameExeNameX32 => string.Empty;
 
         /// <summary>
         /// game's inisettings launcher exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string GetIniSettingsExeName()
-        {
-            return "InitSetting";
-        }
+        public virtual string IniSettingsExeName => "InitSetting";
 
         /// <summary>
         /// game's studio exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string GetGameStudioExeName()
-        {
-            return string.Empty;
-        }
+        public virtual string GameStudioExeName => string.Empty;
 
         /// <summary>
         /// game's studio x32 exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string GetGameStudioExeNameX32()
-        {
-            return string.Empty;
-        }
+        public virtual string GameStudioExeNameX32 => string.Empty;
 
         public DirectoryInfo GameDirInfo;
 
         /// game's path of selected game
-        public virtual string GetGamePath()
-        {
-            return IsRootGame ?
+        public virtual string GamePath => IsRootGame ?
                 Properties.Settings.Default.ApplicationStartupPath
                 :
                 GameDirInfo.FullName
                 ;
-        }
 
         /// <summary>
         /// game's Mods folder path of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string GetModsPath()
-        {
-            return Path.Combine(GetGamePath(), "Mods");
-        }
+        public virtual string ModsPath => Path.Combine(GamePath, "Mods");
 
         /// <summary>
         /// game's Data folder path of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string GetDataPath()
-        {
-            return Path.Combine(GetGamePath(), "Data");
-        }
+        public virtual string DataPath => Path.Combine(GamePath, "Data");
 
         /// <summary>
         /// game's character presets folder subpath
         /// </summary>
         /// <returns></returns>
-        public virtual string GetCharacterPresetsFolderSubPath()
-        {
-            return "";
-        }
+        public virtual string CharacterPresetsFolderSubPath => "";
 
         /// <summary>
         /// game's 2MO folder path of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string Get2MoFolderPath()
-        {
-            return Path.Combine(GetGamePath(), "2MO");
-        }
+        public virtual string InstallFolderPath => Path.Combine(GamePath, "2MO");
 
         /// <summary>
         /// game's TESV.exe dummy path of selected game. for older versions of MO
         /// </summary>
         /// <returns></returns>
-        public virtual string GetDummyFile()
-        {
-            return Path.Combine(GetGamePath(), "TESV.exe");
-        }
+        public virtual string DummyFilePath => Path.Combine(GamePath, "TESV.exe");
 
         /// <summary>
         /// additional exe paths for selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string[] GetAdditionalExecutables()
+        public virtual string[] AdditionalExecutables => null;
+
+        public virtual string[] GameStandartFolderNames
         {
-            return null;
+            get
+            {
+                if (GameExeNameX32.Length > 0 && GameStudioExeNameX32.Length > 0)
+                {
+                    return new string[] { "abdata", "UserData", GameExeName + "_Data", GameExeNameX32 + "_Data", GameStudioExeName + "_Data", GameStudioExeNameX32 + "_Data", "BepInEx" };
+                }
+                else
+                {
+                    return new string[] { "abdata", "UserData", GameExeName + "_Data", GameStudioExeName + "_Data", "BepInEx" };
+                }
+            }
         }
 
-        public virtual string[] GetGameStandartFolderNames()
-        {
-            if (GetGameExeNameX32().Length > 0 && GetGameStudioExeNameX32().Length > 0)
-            {
-                return new string[] { "abdata", "UserData", GetGameExeName() + "_Data", GetGameExeNameX32() + "_Data", GetGameStudioExeName() + "_Data", GetGameStudioExeNameX32() + "_Data", "BepInEx" };
-            }
-            else
-            {
-                return new string[] { "abdata", "UserData", GetGameExeName() + "_Data", GetGameStudioExeName() + "_Data", "BepInEx" };
-            }
-        }
-
-        public virtual string[,] GetDirLinkPaths()
-        {
-            return new string[,]
+        public virtual string[,] DirLinkPaths => new string[,]
             {
                     //{
                     //    Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
@@ -260,11 +218,8 @@ namespace AIHelper.Games
                         Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "studioneo", "BetterSceneLoader")
                     }
             };
-        }
 
-        public virtual string[,] GetObjectsForMove()
-        {
-            return new string[,]
+        public virtual string[,] ObjectsForMove => new string[,]
             {
                     {
                         Path.Combine(ManageSettings.CurrentGameModsDirPath, "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
@@ -284,12 +239,8 @@ namespace AIHelper.Games
                         Path.Combine(ManageSettings.CurrentGameDataDirPath, "winhttp.dll")
                     }
             };
-        }
 
-        internal string GetGameName()
-        {
-            return !string.IsNullOrWhiteSpace(GameName) ? GameName : GameName = ManageModOrganizer.GetMoBasicGamePluginGameName();
-        }
+        internal string GameName1 => !string.IsNullOrWhiteSpace(GameName) ? GameName : GameName = ManageModOrganizer.GetMoBasicGamePluginGameName();
 
         //protected string SearchGameFolder()
         //{
@@ -313,60 +264,10 @@ namespace AIHelper.Games
         //    return string.Empty;
         //}
 
-
-        protected void CopyModOrganizerUserFiles(string moDirAltName)
-        {
-            //var game = Data.CurrentGame.GetCurrentGameIndex()];
-            string gameMoDirPath = Path.Combine(GetGamePath(), "MO");
-            string gameMoDirPathAlt = Path.Combine(GetGamePath(), moDirAltName);
-
-            // dirs and files required for work
-            var subPaths = new Dictionary<string, ObjectType>
-            {
-                { "Profiles", ObjectType.Directory },
-                { "Overwrite", ObjectType.Directory },
-                { "categories.dat", ObjectType.File },
-                { "ModOrganizer.ini", ObjectType.File }
-            };
-
-            foreach (var subPath in subPaths)
-            {
-                try
-                {
-                    var altpath = Path.GetFullPath(Path.Combine(gameMoDirPathAlt, subPath.Key));
-                    var workpath = Path.GetFullPath(Path.Combine(gameMoDirPath, subPath.Key));
-                    if (subPath.Value == ObjectType.Directory && Directory.Exists(altpath) && (!Directory.Exists(workpath) || !ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(workpath, allDirectories: true)))
-                    {
-                        ManageFilesFoldersExtensions.CopyAll(altpath, workpath);
-                    }
-                    else if (subPath.Value == ObjectType.File && File.Exists(altpath) && !File.Exists(workpath))
-                    {
-                        File.Copy(altpath, workpath);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _log.Error("An error occured while MO files coping. error:\r\n" + ex);
-                }
-            }
-        }
-
         /// <summary>
         /// return selected game detection MO BaseGame plugin's py file or all files by default
         /// </summary>
         /// <returns></returns>
-        public abstract BaseGamePyFileInfo GetBaseGamePyFile();
-    }
-
-    public class BaseGamePyFileInfo
-    {
-        public string Name;
-        public byte[] Value;
-
-        public BaseGamePyFileInfo(string filename, byte[] value)
-        {
-            Name = filename;
-            Value = value;
-        }
+        public abstract BaseGamePyFileInfo BaseGamePyFile { get; }
     }
 }

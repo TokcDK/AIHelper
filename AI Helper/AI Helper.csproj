@@ -129,6 +129,7 @@
     <Compile Include="Forms\Other\UpdateOptionsDialog.Designer.cs">
       <DependentUpon>UpdateOptionsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Games\BaseGamePyFileInfo.cs" />
     <Compile Include="Games\GamesList.cs" />
     <Compile Include="Games\Illusion\HoneySelect2.cs" />
     <Compile Include="Games\Illusion\IllusionGameBase.cs" />

@@ -14,36 +14,17 @@ namespace AIHelper.Games.Illusion
 
         public override string ManifestGame => "honeyselect2";
 
-        public override string GetGameDirName()
-        {
-            return base.GetGameDirName();
+        public override string GameDirName => base.GameDirName;
+        //return GetTheGameFolderName("HoneySelect2");
+        public override string GameExeName => "HoneySelect2";
 
-            //return GetTheGameFolderName("HoneySelect2");
-        }
+        public override string GameStudioExeName => "StudioNEOV2";
 
-        public override string GetGameExeName()
-        {
-            return "HoneySelect2";
-        }
+        public override string GameDisplayingName => T._("Honey Select 2");
 
-        public override string GetGameStudioExeName()
-        {
-            return "StudioNEOV2";
-        }
+        public override string GameAbbreviation => "HS2";
 
-        public override string GetGameDisplayingName()
-        {
-            return T._("Honey Select 2");
-        }
-
-        public override string GetGameAbbreviation()
-        {
-            return "HS2";
-        }
-
-        public override string[,] GetDirLinkPaths()
-        {
-            return new string[,]
+        public override string[,] DirLinkPaths => new string[,]
             {
                     //{
                     //    Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
@@ -75,11 +56,7 @@ namespace AIHelper.Games.Illusion
                         Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "studioneo", "BetterSceneLoader")
                     }
             };
-        }
 
-        public override BaseGamePyFileInfo GetBaseGamePyFile()
-        {
-            return new BaseGamePyFileInfo(nameof(Properties.Resources.game_honeyselect2), Properties.Resources.game_honeyselect2);
-        }
+        public override BaseGamePyFileInfo BaseGamePyFile => new BaseGamePyFileInfo(nameof(Properties.Resources.game_honeyselect2), Properties.Resources.game_honeyselect2);
     }
 }

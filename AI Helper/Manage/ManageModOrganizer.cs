@@ -48,6 +48,43 @@ namespace AIHelper.Manage
             //ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "UserData", "Overlays"), true);
         }
 
+        public static void CopyModOrganizerUserFiles(string moDirAltName)
+        {
+            //var game = Data.CurrentGame.GetCurrentGameIndex()];
+            string gameMoDirPath = Path.Combine(ManageSettings.CurrentGameDirPath, "MO");
+            string gameMoDirPathAlt = Path.Combine(ManageSettings.CurrentGameDirPath, moDirAltName);
+
+            // dirs and files required for work
+            var subPaths = new Dictionary<string, ObjectType>
+            {
+                { "Profiles", ObjectType.Directory },
+                { "Overwrite", ObjectType.Directory },
+                { "categories.dat", ObjectType.File },
+                { "ModOrganizer.ini", ObjectType.File }
+            };
+
+            foreach (var subPath in subPaths)
+            {
+                try
+                {
+                    var altpath = Path.GetFullPath(Path.Combine(gameMoDirPathAlt, subPath.Key));
+                    var workpath = Path.GetFullPath(Path.Combine(gameMoDirPath, subPath.Key));
+                    if (subPath.Value == ObjectType.Directory && Directory.Exists(altpath) && (!Directory.Exists(workpath) || !ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(workpath, allDirectories: true)))
+                    {
+                        ManageFilesFoldersExtensions.CopyAll(altpath, workpath);
+                    }
+                    else if (subPath.Value == ObjectType.File && File.Exists(altpath) && !File.Exists(workpath))
+                    {
+                        File.Copy(altpath, workpath);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _log.Error("An error occured while MO files coping. error:\r\n" + ex);
+                }
+            }
+        }
+
         /// <summary>
         /// When <paramref name="ConvertFromMODate"/> is true it will convert <paramref name="versionString"/> looking like d9.10.2011 mo date version format to 2011.10.9
         /// When <paramref name="ConvertFromMODate"/> is false it will convert <paramref name="versionString"/> looking like 2011.10.9 to d9.10.2011 mo date version format
@@ -148,7 +185,7 @@ namespace AIHelper.Manage
 
             BepInExPreloadersFix(removeLinks);
 
-            string[,] objectLinkPaths = GameData.Game.GetDirLinkPaths();
+            string[,] objectLinkPaths = GameData.Game.DirLinkPaths;
 
             int objectLinkPathsLength = objectLinkPaths.Length / 2;
             for (int i = 0; i < objectLinkPathsLength; i++)
@@ -222,7 +259,7 @@ namespace AIHelper.Manage
 
         private static void BepInExPreloadersFix(bool remove = false)
         {
-            string[,] bepInExFilesPaths = GameData.Game.GetObjectsForMove();
+            string[,] bepInExFilesPaths = GameData.Game.ObjectsForMove;
 
             int bepInExFilesPathsLength = bepInExFilesPaths.Length / 2;
             for (int i = 0; i < bepInExFilesPathsLength; i++)
@@ -510,11 +547,11 @@ namespace AIHelper.Manage
                 {
                     string[] s = name.Split(']');
 
-                    if (!name.StartsWith("[" + SharedData.GameData.Game.GetGameAbbreviation() + "]", StringComparison.InvariantCultureIgnoreCase))
+                    if (!name.StartsWith("[" + SharedData.GameData.Game.GameAbbreviation + "]", StringComparison.InvariantCultureIgnoreCase))
                     {
                         author = s[0].Remove(0, 1);
                     }
-                    else if (name.StartsWith("[" + SharedData.GameData.Game.GetGameAbbreviation() + "][", StringComparison.InvariantCultureIgnoreCase))
+                    else if (name.StartsWith("[" + SharedData.GameData.Game.GameAbbreviation + "][", StringComparison.InvariantCultureIgnoreCase))
                     {
                         author = s[1].Remove(0, 1);
                     }
@@ -1830,7 +1867,7 @@ namespace AIHelper.Manage
         {
             return game != null
                    &&
-                   Directory.Exists(game.GetGamePath())
+                   Directory.Exists(game.GamePath)
                    &&
                    game.HasMainGameExe() // has main exe to play
                    &&
@@ -1849,7 +1886,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool HasModOrganizerIni(this GameBase game)
         {
-            return File.Exists(Path.Combine(game.GetGamePath(), ManageSettings.AppModOrganizerDirName, "ModOrganizer.ini"));
+            return File.Exists(Path.Combine(game.GamePath, ManageSettings.AppModOrganizerDirName, "ModOrganizer.ini"));
         }
 
         /// <summary>
@@ -1859,9 +1896,9 @@ namespace AIHelper.Manage
         internal static bool CheckCategoriesDat(this GameBase game)
         {
             string categories;
-            if (!File.Exists(categories = Path.Combine(game.GetGamePath(), ManageSettings.AppModOrganizerDirName, "categories.dat")))
+            if (!File.Exists(categories = Path.Combine(game.GamePath, ManageSettings.AppModOrganizerDirName, "categories.dat")))
             {
-                Directory.CreateDirectory(Path.Combine(game.GetGamePath(), ManageSettings.AppModOrganizerDirName));
+                Directory.CreateDirectory(Path.Combine(game.GamePath, ManageSettings.AppModOrganizerDirName));
 
                 File.WriteAllText(categories, string.Empty);
             }
@@ -1876,7 +1913,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool HasMainGameExe(this GameBase game)
         {
-            return File.Exists(Path.Combine(ManageSettings.CurrentGameParentDirPath, game.GetDataPath(), game.GetGameExeName() + ".exe"));
+            return File.Exists(Path.Combine(ManageSettings.CurrentGameParentDirPath, game.DataPath, game.GameExeName + ".exe"));
         }
 
         /// <summary>
@@ -1886,7 +1923,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool HasAnyWorkProfile(this GameBase game)
         {
-            foreach (var profileDir in Directory.EnumerateDirectories(Path.Combine(game.GetGamePath(), ManageSettings.AppModOrganizerDirName, "Profiles")))
+            foreach (var profileDir in Directory.EnumerateDirectories(Path.Combine(game.GamePath, ManageSettings.AppModOrganizerDirName, "Profiles")))
             {
                 if (File.Exists(Path.Combine(profileDir, "modlist.txt")))
                 {
@@ -4136,7 +4173,7 @@ namespace AIHelper.Manage
                 return;
             }
 
-            var py = GameData.Game.GetBaseGamePyFile();
+            var py = GameData.Game.BaseGamePyFile;
             var pypath = Path.Combine(moBaseGamesPluginGamesDirPath, py.Name + ".py");
             if (!File.Exists(pypath) || py.Value.Length != new FileInfo(pypath).Length)
             {
@@ -4150,7 +4187,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static string GetMoBasicGamePluginGameName()
         {
-            Match gameName = Regex.Match(Encoding.UTF8.GetString(GameData.Game.GetBaseGamePyFile().Value), @"GameName \= \""([^\""]+)\""");
+            Match gameName = Regex.Match(Encoding.UTF8.GetString(GameData.Game.BaseGamePyFile.Value), @"GameName \= \""([^\""]+)\""");
 
             if (gameName == null)
             {

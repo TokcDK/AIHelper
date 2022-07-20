@@ -15,41 +15,19 @@
 
         public override bool IsHaveSideloaderMods => false;
 
-        public override string GetGameDirName()
-        {
-            return base.GetGameDirName();
+        public override string GameDirName => base.GameDirName;
+        //return GetTheGameFolderName("Koikatsu");
+        public override string GameExeName => "COM3D2x64";
 
-            //return GetTheGameFolderName("Koikatsu");
-        }
+        public override string GameDisplayingName => T._("Custom Order Maid 3D2");
 
-        public override string GetGameExeName()
-        {
-            return "COM3D2x64";
-        }
+        public override string GameStudioExeName => "CharaStudio";
 
-        public override string GetGameDisplayingName()
-        {
-            return T._("Custom Order Maid 3D2");
-        }
+        public override string GameAbbreviation => "COM3D2";
 
-        public override string GetGameStudioExeName()
-        {
-            return "CharaStudio";
-        }
+        public override string CharacterPresetsFolderSubPath => "Preset";
 
-        public override string GetGameAbbreviation()
-        {
-            return "COM3D2";
-        }
-
-        public override string GetCharacterPresetsFolderSubPath()
-        {
-            return "Preset";
-        }
-
-        public override string[,] GetDirLinkPaths()
-        {
-            return new string[,]
+        public override string[,] DirLinkPaths => new string[,]
             {
                     //{
                     //    Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
@@ -87,11 +65,7 @@
                     //    Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "cap")
                     //}
             };
-        }
 
-        public override BaseGamePyFileInfo GetBaseGamePyFile()
-        {
-            return new BaseGamePyFileInfo(nameof(Properties.Resources.game_com3d2), Properties.Resources.game_com3d2);
-        }
+        public override BaseGamePyFileInfo BaseGamePyFile => new BaseGamePyFileInfo(nameof(Properties.Resources.game_com3d2), Properties.Resources.game_com3d2);
     }
 }

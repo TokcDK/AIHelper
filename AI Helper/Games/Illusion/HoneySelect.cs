@@ -10,49 +10,24 @@ namespace AIHelper.Games.Illusion
         public override void InitActions()
         {
             base.InitActions();
-            CopyModOrganizerUserFiles("MOHS");
+            ManageModOrganizer.CopyModOrganizerUserFiles("MOHS");
         }
 
-        public override string GetGameDirName()
-        {
-            return base.GetGameDirName();
+        public override string GameDirName => base.GameDirName;
+        //return GetTheGameFolderName("HoneySelect");
+        public override string GameExeName => "HoneySelect_64";
 
-            //return GetTheGameFolderName("HoneySelect");
-        }
+        public override string GameExeNameX32 => "HoneySelect_32";
 
-        public override string GetGameExeName()
-        {
-            return "HoneySelect_64";
-        }
+        public override string GameStudioExeName => "StudioNEO_64";
 
-        public override string GetGameExeNameX32()
-        {
-            return "HoneySelect_32";
-        }
+        public override string GameStudioExeNameX32 => "StudioNEO_32";
 
-        public override string GetGameStudioExeName()
-        {
-            return "StudioNEO_64";
-        }
+        public override string GameDisplayingName => T._("Honey Select");
 
-        public override string GetGameStudioExeNameX32()
-        {
-            return "StudioNEO_32";
-        }
+        public override string GameAbbreviation => "HS";
 
-        public override string GetGameDisplayingName()
-        {
-            return T._("Honey Select");
-        }
-
-        public override string GetGameAbbreviation()
-        {
-            return "HS";
-        }
-
-        public override string[,] GetDirLinkPaths()
-        {
-            return new string[,]
+        public override string[,] DirLinkPaths => new string[,]
             {
                     //{
                     //    Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
@@ -84,11 +59,7 @@ namespace AIHelper.Games.Illusion
                         Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "studioneo", "BetterSceneLoader")
                     }
             };
-        }
 
-        public override BaseGamePyFileInfo GetBaseGamePyFile()
-        {
-            return new BaseGamePyFileInfo(nameof(Properties.Resources.game_honeyselect), Properties.Resources.game_honeyselect);
-        }
+        public override BaseGamePyFileInfo BaseGamePyFile => new BaseGamePyFileInfo(nameof(Properties.Resources.game_honeyselect), Properties.Resources.game_honeyselect);
     }
 }

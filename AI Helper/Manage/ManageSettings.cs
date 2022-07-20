@@ -38,7 +38,7 @@ namespace AIHelper.Manage
             {
                 foreach (var path in new[]
                 {
-                    Path.Combine(CurrentGameLinksInfoDirPath, CurrentGame.GetGameAbbreviation() + ".txt"),
+                    Path.Combine(CurrentGameLinksInfoDirPath, CurrentGame.GameAbbreviation + ".txt"),
                     Path.Combine(CurrentGameLinksInfoDirPath, "Default.txt")
                 })
                 {
@@ -58,7 +58,7 @@ namespace AIHelper.Manage
 
         internal static string CurrentGameMoGamePyPluginPath =>
 #pragma warning disable CA1308 // Normalize strings to uppercase
-            Path.Combine(AppModOrganizerDirPath, "plugins", "modorganizer-basic_games", "games", SharedData.GameData.Game.GetBaseGamePyFile().Name
+            Path.Combine(AppModOrganizerDirPath, "plugins", "modorganizer-basic_games", "games", SharedData.GameData.Game.BaseGamePyFile.Name
                 //+ GetCurrentGameExeName()
                 //.Replace("_64", string.Empty)
                 //.Replace("_32", string.Empty)
@@ -198,7 +198,7 @@ namespace AIHelper.Manage
                     //if (gameType == typeof(RootGame)) continue;
 
                     var game = (GameBase)Activator.CreateInstance(gameType);
-                    if (!File.Exists(Path.Combine(gameDir, "Data", game.GetGameExeName() + ".exe"))) continue;
+                    if (!File.Exists(Path.Combine(gameDir, "Data", game.GameExeName + ".exe"))) continue;
 
                     game.GameDirInfo = new DirectoryInfo(gameDir);
                     GameData.Game = game; // temp set current game
@@ -219,13 +219,13 @@ namespace AIHelper.Manage
                         var ini = ManageIni.GetINIFile(moIni);
 
                         // check mo ini game parameters exist
-                        ini.SetKey("General", "gameName", game.GetGameName());
-                        ini.SetKey("General", "gamePath", "@ByteArray(" + Path.Combine(game.GameDirInfo.Parent.FullName, game.GetGameDirName()).Replace("\\", "\\\\") + ")");
+                        ini.SetKey("General", "gameName", game.GameName1);
+                        ini.SetKey("General", "gamePath", "@ByteArray(" + Path.Combine(game.GameDirInfo.Parent.FullName, game.GameDirName).Replace("\\", "\\\\") + ")");
                         ini.SetKey("General", "selected_profile", "Default");
-                        ini.SetKey("Settings", "mod_directory", Path.Combine(gameDir, game.GetGameDirName(), "Mods").Replace("\\", "\\\\"));
-                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GetGameDirName(), "Downloads").Replace("\\", "\\\\"));
-                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GetGameDirName(), AppModOrganizerDirName, "profiles").Replace("\\", "\\\\"));
-                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GetGameDirName(), AppModOrganizerDirName, "overwrite").Replace("\\", "\\\\"));
+                        ini.SetKey("Settings", "mod_directory", Path.Combine(gameDir, game.GameDirName, "Mods").Replace("\\", "\\\\"));
+                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GameDirName, "Downloads").Replace("\\", "\\\\"));
+                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GameDirName, AppModOrganizerDirName, "profiles").Replace("\\", "\\\\"));
+                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GameDirName, AppModOrganizerDirName, "overwrite").Replace("\\", "\\\\"));
                     }
 
                     // check and write categories dat
@@ -554,7 +554,7 @@ namespace AIHelper.Manage
                 }
             }
 
-            internal static string CurrentGameBgFileName => CurrentGame.GetGameAbbreviation() + ".jpg";
+            internal static string CurrentGameBgFileName => CurrentGame.GameAbbreviation + ".jpg";
 
 
             internal static string CurrentGameBgFilePath => Path.Combine(ReportBGDirPath, CurrentGameBgFileName).Replace(Path.DirectorySeparatorChar.ToString(), "/");
@@ -724,7 +724,7 @@ namespace AIHelper.Manage
                 string listOfGamesString = string.Empty;
                 foreach (var game in GameData.Games)
                 {
-                    listOfGamesString += game.GetGameDirName() + Environment.NewLine;
+                    listOfGamesString += game.GameDirName + Environment.NewLine;
                 }
 
                 return listOfGamesString;
@@ -812,7 +812,7 @@ namespace AIHelper.Manage
         /// </summary>
         /// <returns></returns>
 
-        internal static string CurrentGameExeName => GameData.Game.GetGameExeName();
+        internal static string CurrentGameExeName => GameData.Game.GameExeName;
 
         /// <summary>
         /// return current game exe name with removed suffixes like _64 or _32
@@ -832,7 +832,7 @@ namespace AIHelper.Manage
             }
         }
 
-        internal static string CurrentGameDirName => GameData.Game.GetGameDirName();
+        internal static string CurrentGameDirName => GameData.Game.GameDirName;
 
         /// <summary>
         /// file name for file where contains info to create symlink
@@ -855,13 +855,13 @@ namespace AIHelper.Manage
         internal static string UpdateReportHtmlFilePath => Path.Combine(CurrentGameModsUpdateDir, UpdateReportHtmlFileName);
 
 
-        internal static string CurrentGameDisplayingName => GameData.Game.GetGameDisplayingName();
+        internal static string CurrentGameDisplayingName => GameData.Game.GameDisplayingName;
 
 
-        internal static string StudioExeName => GameData.Game.GetGameStudioExeName();
+        internal static string StudioExeName => GameData.Game.GameStudioExeName;
 
 
-        internal static string IniSettingsExeName => GameData.Game.GetIniSettingsExeName();
+        internal static string IniSettingsExeName => GameData.Game.IniSettingsExeName;
 
 
         internal static string AppResDirPath => Path.Combine(Properties.Settings.Default.ApplicationStartupPath, "RES");
@@ -938,7 +938,7 @@ namespace AIHelper.Manage
 
             for (var i = 0; i < listOfGames.Count; i++)
             {
-                if (listOfGames[i].GetGameDirName() == folderName)
+                if (listOfGames[i].GameDirName == folderName)
                 {
                     return i;
                 }

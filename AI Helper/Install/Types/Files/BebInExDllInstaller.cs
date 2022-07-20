@@ -38,7 +38,7 @@ namespace AIHelper.Install.Types.Files
             }
 
             //добавление имени автора в начало имени папки
-            if ((!string.IsNullOrEmpty(name) && name.Substring(0, 1) == "[" && !name.StartsWith("["+SharedData.GameData.Game.GetGameAbbreviation()+"]", StringComparison.InvariantCultureIgnoreCase)) || (name.Length >= 5 && name.Substring(0, 5) == "["+ SharedData.GameData.Game.GetGameAbbreviation() + "][") || ManageStrings.IsStringAContainsStringB(name, author))
+            if ((!string.IsNullOrEmpty(name) && name.Substring(0, 1) == "[" && !name.StartsWith("["+SharedData.GameData.Game.GameAbbreviation+"]", StringComparison.InvariantCultureIgnoreCase)) || (name.Length >= 5 && name.Substring(0, 5) == "["+ SharedData.GameData.Game.GameAbbreviation + "][") || ManageStrings.IsStringAContainsStringB(name, author))
             {
             }
             else if (author.Length > 0)

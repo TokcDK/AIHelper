@@ -194,11 +194,11 @@ namespace AIHelper
                     List<string> newGamesReport = new List<string>();
                     foreach (var game in GameData.Games)
                     {
-                        var gamePath = game.GetGamePath();
+                        var gamePath = game.GamePath;
                         if (ManageSettings.KnownGames.Contains(gamePath)) continue;
 
                         ManageSettings.KnownGames.Add(gamePath);
-                        newGamesReport.Add("\n" + game.GetGameDisplayingName() + ": " + gamePath);
+                        newGamesReport.Add("\n" + game.GameDisplayingName + ": " + gamePath);
                     }
 
                     newGamesReport = newGamesReport.OrderBy(p => p).ToList();
@@ -216,7 +216,7 @@ namespace AIHelper
 
                 foreach (var game in GameData.Games)
                 {
-                    CurrentGameComboBox.Items.Add(game.GetGameDirName());
+                    CurrentGameComboBox.Items.Add(game.GameDirName);
                 }
                 if (CurrentGameComboBox.Items.Count == 1)
                 {
@@ -235,7 +235,7 @@ namespace AIHelper
                     if (string.IsNullOrWhiteSpace(selected_game))
                     {
                         var game = GameData.Games[0];
-                        selected_game = game.GetGameDirName();
+                        selected_game = game.GameDirName;
                     }
                 }
 
@@ -249,7 +249,7 @@ namespace AIHelper
 
                 try
                 {
-                    CurrentGameTitleTextBox.Text = GameData.Game.GetGameDisplayingName();
+                    CurrentGameTitleTextBox.Text = GameData.Game.GameDisplayingName;
                     CurrentGameTitleTextBox.Enabled = false;
                 }
                 catch (Exception ex) { _log.Info("Error while game title setup. Set more specific exception there. Error:\r\n" + ex); }
@@ -296,7 +296,7 @@ namespace AIHelper
 
         private void SetLocalizationStrings()
         {
-            this.Text = "AI Helper" + " | " + GameData.Game.GetGameDisplayingName();
+            this.Text = "AI Helper" + " | " + GameData.Game.GameDisplayingName;
             CurrentGameLabel.Text = T._("Current Game") + ":";
             InstallInModsButton.Text = T._("Install");// + " " + ManageSettings.ModsInstallDirName();
             ToolsFixModListButton.Text = T._("Fix modlist");
@@ -478,7 +478,7 @@ namespace AIHelper
                 _thToolTip.SetToolTip(LaunchLinksLinkLabel, T._("Open list of links for game resources"));
                 _thToolTip.SetToolTip(ExtraSettingsLinkLabel, T._("Open extra setting window for plugins and etc"));
 
-                _thToolTip.SetToolTip(CurrentGameComboBox, T._("List of found games. Current") + ": " + GameData.Game.GetGameDisplayingName());
+                _thToolTip.SetToolTip(CurrentGameComboBox, T._("List of found games. Current") + ": " + GameData.Game.GameDisplayingName);
 
 
                 var toMo = ManageSettings.ModsInstallDirName;
@@ -674,7 +674,7 @@ namespace AIHelper
             }
 
             AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
-            CurrentGameComboBox.Text = GameData.Game.GetGameDirName();
+            CurrentGameComboBox.Text = GameData.Game.GameDirName;
             CurrentGameComboBox.SelectedIndex = ManageSettings.CurrentGameIndex;
 
             var p = Path.Combine(ManageSettings.ApplicationStartupPath, "dev.txt");
@@ -688,8 +688,8 @@ namespace AIHelper
 
             if (AutoShortcutRegistryCheckBox.Checked) ManageOther.AutoShortcutAndRegystry();
 
-            SelectedGameLabel.Text = GameData.Game.GetGameDisplayingName() + "❤";
-            this.Text = "AI Helper" + " | " + GameData.Game.GetGameDisplayingName();
+            SelectedGameLabel.Text = GameData.Game.GameDisplayingName + "❤";
+            this.Text = "AI Helper" + " | " + GameData.Game.GameDisplayingName;
         }
 
         private void CommonModeSpecificSetup()
@@ -1285,7 +1285,7 @@ namespace AIHelper
             ManageModOrganizer.CheckBaseGamesPy();
 
             GameData.Game.InitActions();
-            CurrentGameTitleTextBox.Text = GameData.Game.GetGameDisplayingName();
+            CurrentGameTitleTextBox.Text = GameData.Game.GameDisplayingName;
         }
 
         private void CloseExtraForms()
@@ -1585,7 +1585,7 @@ namespace AIHelper
         {
             await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
-            string CharacterDirSubpath = GameData.Game.GetCharacterPresetsFolderSubPath();
+            string CharacterDirSubpath = GameData.Game.CharacterPresetsFolderSubPath;
 
             string exePath = IsMO ? Path.Combine(ManageSettings.AppModOrganizerDirPath, "explorer++", "Explorer++.exe") : "explorer.exe";
             string presetsDirPath = IsMO && ManageSettings.IsMoMode ? Path.Combine(ManageSettings.CurrentGameDataDirPath) + "\\" + CharacterDirSubpath : ManageSettings.GetUserfilesDirectoryPath(CharacterDirSubpath);

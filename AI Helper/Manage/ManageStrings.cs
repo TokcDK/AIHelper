@@ -165,7 +165,7 @@ namespace AIHelper.Manage
         public static string AddAuthorToNameIfNeed(string name, string author)
         {
             //добавление имени автора в начало имени папки
-            if (name.StartsWith("[" + ManageSettings.CurrentGame.GetGameAbbreviation() + "][", System.StringComparison.InvariantCulture) || (name.StartsWith("[", System.StringComparison.InvariantCulture) && !name.StartsWith("[" + ManageSettings.CurrentGame.GetGameAbbreviation() + "]", System.StringComparison.InvariantCulture)) || ManageStrings.IsStringAContainsStringB(name, author))
+            if (name.StartsWith("[" + ManageSettings.CurrentGame.GameAbbreviation + "][", System.StringComparison.InvariantCulture) || (name.StartsWith("[", System.StringComparison.InvariantCulture) && !name.StartsWith("[" + ManageSettings.CurrentGame.GameAbbreviation + "]", System.StringComparison.InvariantCulture)) || ManageStrings.IsStringAContainsStringB(name, author))
             {
             }
             else if (author.Length > 0)

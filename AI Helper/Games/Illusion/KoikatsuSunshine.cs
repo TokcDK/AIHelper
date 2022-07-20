@@ -14,36 +14,17 @@ namespace AIHelper.Games.Illusion
 
         public override string ManifestGame => "koikatsusunshine";
 
-        public override string GetGameDirName()
-        {
-            return base.GetGameDirName();
+        public override string GameDirName => base.GameDirName;
+        //return GetTheGameFolderName("KoikatsuSunshine");
+        public override string GameExeName => "KoikatsuSunshine";
 
-            //return GetTheGameFolderName("KoikatsuSunshine");
-        }
+        public override string GameDisplayingName => T._("Koikatsu Sunshine");
 
-        public override string GetGameExeName()
-        {
-            return "KoikatsuSunshine";
-        }
+        public override string GameStudioExeName => "CharaStudio";
 
-        public override string GetGameDisplayingName()
-        {
-            return T._("Koikatsu Sunshine");
-        }
+        public override string GameAbbreviation => "KKS";
 
-        public override string GetGameStudioExeName()
-        {
-            return "CharaStudio";
-        }
-
-        public override string GetGameAbbreviation()
-        {
-            return "KKS";
-        }
-
-        public override string[,] GetDirLinkPaths()
-        {
-            return new string[,]
+        public override string[,] DirLinkPaths => new string[,]
             {
                     //{
                     //    Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
@@ -81,11 +62,7 @@ namespace AIHelper.Games.Illusion
                         Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "cap")
                     }
             };
-        }
 
-        public override BaseGamePyFileInfo GetBaseGamePyFile()
-        {
-            return new BaseGamePyFileInfo(nameof(Properties.Resources.game_koikatusunshine), Properties.Resources.game_koikatusunshine);
-        }
+        public override BaseGamePyFileInfo BaseGamePyFile => new BaseGamePyFileInfo(nameof(Properties.Resources.game_koikatusunshine), Properties.Resources.game_koikatusunshine);
     }
 }

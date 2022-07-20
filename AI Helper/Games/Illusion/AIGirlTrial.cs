@@ -3,31 +3,14 @@
     public class AIGirlTrial : IllusionGameBase
     {
         public override string ManifestGame => "AI Girl";
-        public override string GetGameDirName()
-        {
-            return base.GetGameDirName();
+        public override string GameDirName => base.GameDirName;
+        //return GetTheGameFolderName(GetGameExeName());
+        public override string GameExeName => "AI-SyoujyoTrial";
 
-            //return GetTheGameFolderName(GetGameExeName());
-        }
+        public override string GameDisplayingName => T._("AI-Girl") + "Trial";
 
-        public override string GetGameExeName()
-        {
-            return "AI-SyoujyoTrial";
-        }
+        public override string GameAbbreviation => "AI";
 
-        public override string GetGameDisplayingName()
-        {
-            return T._("AI-Girl") + "Trial";
-        }
-
-        public override string GetGameAbbreviation()
-        {
-            return "AI";
-        }
-
-        public override BaseGamePyFileInfo GetBaseGamePyFile()
-        {
-            return new BaseGamePyFileInfo(nameof(Properties.Resources.game_aigirltrial), Properties.Resources.game_aigirltrial);
-        }
+        public override BaseGamePyFileInfo BaseGamePyFile => new BaseGamePyFileInfo(nameof(Properties.Resources.game_aigirltrial), Properties.Resources.game_aigirltrial);
     }
 }

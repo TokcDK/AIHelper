@@ -8,42 +8,23 @@ namespace AIHelper.Games.Illusion
         public override void InitActions()
         {
             base.InitActions();
-            CopyModOrganizerUserFiles("MOKK");
+            ManageModOrganizer.CopyModOrganizerUserFiles("MOKK");
         }
         public override bool IsHaveSideloaderMods => true;
 
         public override string ManifestGame => "koikatsu";
 
-        public override string GetGameDirName()
-        {
-            return base.GetGameDirName();
+        public override string GameDirName => base.GameDirName;
+        //return GetTheGameFolderName("Koikatsu");
+        public override string GameExeName => "Koikatu";
 
-            //return GetTheGameFolderName("Koikatsu");
-        }
+        public override string GameDisplayingName => T._("Koikatsu");
 
-        public override string GetGameExeName()
-        {
-            return "Koikatu";
-        }
+        public override string GameStudioExeName => "CharaStudio";
 
-        public override string GetGameDisplayingName()
-        {
-            return T._("Koikatsu");
-        }
+        public override string GameAbbreviation => "KK";
 
-        public override string GetGameStudioExeName()
-        {
-            return "CharaStudio";
-        }
-
-        public override string GetGameAbbreviation()
-        {
-            return "KK";
-        }
-
-        public override string[,] GetDirLinkPaths()
-        {
-            return new string[,]
+        public override string[,] DirLinkPaths => new string[,]
             {
                     //{
                     //    Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
@@ -81,11 +62,7 @@ namespace AIHelper.Games.Illusion
                         Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "cap")
                     }
             };
-        }
 
-        public override BaseGamePyFileInfo GetBaseGamePyFile()
-        {
-            return new BaseGamePyFileInfo(nameof(Properties.Resources.game_koikatu), Properties.Resources.game_koikatu);
-        }
+        public override BaseGamePyFileInfo BaseGamePyFile => new BaseGamePyFileInfo(nameof(Properties.Resources.game_koikatu), Properties.Resources.game_koikatu);
     }
 }

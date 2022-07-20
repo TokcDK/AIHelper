@@ -18,10 +18,6 @@ namespace AIHelper.Games
 
         //public string gamefolderPath { get; set; } = string.Empty;
         /// <summary>
-        /// true if it is root game ie placed in same folder with game's data, mods folder
-        /// </summary>
-        public virtual bool IsRootGame { get; set; }
-        /// <summary>
         /// true if game have sideloader zipmods
         /// </summary>
         public virtual bool IsHaveSideloaderMods { get => false; }
@@ -115,10 +111,7 @@ namespace AIHelper.Games
         public DirectoryInfo GameDirInfo;
 
         /// game's path of selected game
-        public virtual string GamePath
-        {
-            get => IsRootGame ? Properties.Settings.Default.ApplicationStartupPath : GameDirInfo.FullName;
-        }
+        public virtual string GamePath { get => GameDirInfo.FullName; }
 
         /// <summary>
         /// game's Mods folder path of selected game

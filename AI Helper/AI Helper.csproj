@@ -134,7 +134,6 @@
     <Compile Include="Games\Illusion\HoneySelect2.cs" />
     <Compile Include="Games\Illusion\IllusionGameBase.cs" />
     <Compile Include="Games\Illusion\KoikatsuSunshine.cs" />
-    <Compile Include="Games\RootGame.cs" />
     <Compile Include="Games\Illusion\Koikatsu.cs" />
     <Compile Include="Games\Kiss\Com3d2.cs" />
     <Compile Include="GlobalSuppressions.cs" />

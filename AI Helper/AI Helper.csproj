@@ -131,6 +131,7 @@
     </Compile>
     <Compile Include="Games\BaseGamePyFileInfo.cs" />
     <Compile Include="Games\GamesList.cs" />
+    <Compile Include="Games\IGame.cs" />
     <Compile Include="Games\Illusion\HoneySelect2.cs" />
     <Compile Include="Games\Illusion\IllusionGameBase.cs" />
     <Compile Include="Games\Illusion\KoikatsuSunshine.cs" />

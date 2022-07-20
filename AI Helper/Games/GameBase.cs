@@ -6,7 +6,7 @@ namespace AIHelper.Games
 {
     public abstract class GameBase
     {
-        protected static Logger _log = LogManager.GetCurrentClassLogger();
+        protected readonly static Logger _log = LogManager.GetCurrentClassLogger();
         public GameBase()
         {
             //InitActions();
@@ -18,12 +18,12 @@ namespace AIHelper.Games
         /// <summary>
         /// true if game have sideloader zipmods
         /// </summary>
-        public virtual bool IsHaveSideloaderMods { get => false; }
+        public virtual bool IsHaveSideloaderMods { get; }
 
         /// <summary>
         /// name of the game's folder
         /// </summary>
-        protected string GamefolderName { get; set; } = string.Empty;
+        protected string GamefolderName { get; set; }
 
         /// <summary>
         /// manifest/game name

@@ -15,7 +15,7 @@
 
         public override bool IsHaveSideloaderMods => false;
 
-        public override string GameDirName => base.GameDirName;
+        //public override string GameDirName => base.GameDirName;
         //return GetTheGameFolderName("Koikatsu");
         public override string GameExeName => "COM3D2x64";
 

@@ -3,7 +3,7 @@
     public class AIGirlTrial : IllusionGameBase
     {
         public override string ManifestGame => "AI Girl";
-        public override string GameDirName => base.GameDirName;
+        //public override string GameDirName => base.GameDirName;
         //return GetTheGameFolderName(GetGameExeName());
         public override string GameExeName => "AI-SyoujyoTrial";
 

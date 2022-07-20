@@ -2,7 +2,7 @@
 {
     public class AiGirl : IllusionGameBase
     {
-        public override string GameDirName => base.GameDirName;
+        //public override string GameDirName => base.GameDirName;
         //return GetTheGameFolderName(GetGameExeName());                                                                public override bool IsHaveSideloaderMods => true;
 
         public override string ManifestGame => "AI Girl";

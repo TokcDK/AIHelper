@@ -14,7 +14,7 @@ namespace AIHelper.Games.Illusion
 
         public override string ManifestGame => "koikatsu";
 
-        public override string GameDirName => base.GameDirName;
+        //public override string GameDirName => base.GameDirName;
         //return GetTheGameFolderName("Koikatsu");
         public override string GameExeName => "Koikatu";
 

@@ -14,7 +14,7 @@ namespace AIHelper.Games.Illusion
 
         public override string ManifestGame => "honeyselect2";
 
-        public override string GameDirName => base.GameDirName;
+        //public override string GameDirName => base.GameDirName;
         //return GetTheGameFolderName("HoneySelect2");
         public override string GameExeName => "HoneySelect2";
 

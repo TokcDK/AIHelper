@@ -13,7 +13,7 @@ namespace AIHelper.Games.Illusion
             ManageModOrganizer.CopyModOrganizerUserFiles("MOHS");
         }
 
-        public override string GameDirName => base.GameDirName;
+        //public override string GameDirName => base.GameDirName;
         //return GetTheGameFolderName("HoneySelect");
         public override string GameExeName => "HoneySelect_64";
 

@@ -82,7 +82,7 @@ namespace AIHelper.Games
         /// main game's vr exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string GameExeNameVr { get => GameExeName + "VR"; }
+        public virtual string GameExeNameVr { get => GameExeName + ManageSettings.GameVRexeSuffixName; }
 
         /// <summary>
         /// main game's x32 exe name of selected game
@@ -94,7 +94,7 @@ namespace AIHelper.Games
         /// game's inisettings launcher exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string IniSettingsExeName { get => "InitSetting"; }
+        public virtual string IniSettingsExeName { get => ManageSettings.DefaultInitSettingExeName; }
 
         /// <summary>
         /// game's studio exe name of selected game
@@ -117,13 +117,13 @@ namespace AIHelper.Games
         /// game's Mods folder path of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string ModsPath { get => Path.Combine(GamePath, "Mods"); }
+        public virtual string ModsPath { get => Path.Combine(GamePath, ManageSettings.CurrentGameModsDirName); }
 
         /// <summary>
         /// game's Data folder path of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string DataPath { get => Path.Combine(GamePath, "Data"); }
+        public virtual string DataPath { get => Path.Combine(GamePath, ManageSettings.CurrentGameDataDirName); }
 
         /// <summary>
         /// game's character presets folder subpath
@@ -135,13 +135,13 @@ namespace AIHelper.Games
         /// game's 2MO folder path of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string InstallFolderPath { get => Path.Combine(GamePath, "2MO"); }
+        public virtual string InstallFolderPath { get => Path.Combine(GamePath, ManageSettings.CurrentGameInstallDirName); }
 
         /// <summary>
         /// game's TESV.exe dummy path of selected game. for older versions of MO
         /// </summary>
         /// <returns></returns>
-        public virtual string DummyFilePath { get => Path.Combine(GamePath, "TESV.exe"); }
+        public virtual string DummyFilePath { get => Path.Combine(GamePath, ManageSettings.DummyFileName); }
 
         /// <summary>
         /// additional exe paths for selected game

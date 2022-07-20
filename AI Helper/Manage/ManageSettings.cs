@@ -1,5 +1,4 @@
 ﻿using AIHelper.Games;
-using AIHelper.Games.Illusion;
 using AIHelper.SharedData;
 using CheckForEmptyDir;
 using GetListOfSubClasses;
@@ -8,7 +7,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace AIHelper.Manage
@@ -316,9 +314,9 @@ namespace AIHelper.Manage
 
         private static IEnumerable<string> GetGamesFromTxt()
         {
-           // Directory.EnumerateFiles(GetGamesBaseFolderPath(), "*.txt").Where(t => new FileInfo(t).Length > 3 && Directory.Exists(Path.GetFullPath(File.ReadAllLines(t)[0]))).Select(t => File.ReadAllLines(t)[0])
+            // Directory.EnumerateFiles(GetGamesBaseFolderPath(), "*.txt").Where(t => new FileInfo(t).Length > 3 && Directory.Exists(Path.GetFullPath(File.ReadAllLines(t)[0]))).Select(t => File.ReadAllLines(t)[0])
 
-            foreach(var txt in Directory.EnumerateFiles(GamesBaseFolderPath, "*.txt"))
+            foreach (var txt in Directory.EnumerateFiles(GamesBaseFolderPath, "*.txt"))
             {
                 if (new FileInfo(txt).Length < 4) continue;
 
@@ -424,7 +422,7 @@ namespace AIHelper.Manage
             /// Plugins update report file name
             /// </summary>
             /// <returns></returns>
-    
+
             internal static string GetReportFileName()
             {
                 return "ReportTemplate.html";
@@ -577,7 +575,7 @@ namespace AIHelper.Manage
             internal static string NoModsUpdatesFoundText => T._("No updates found");
 
 
-            internal static string HtmlBeginText => "<html><body" + HtmlReportStyleText+ "><h1>";
+            internal static string HtmlBeginText => "<html><body" + HtmlReportStyleText + "><h1>";
 
 
             internal static string HtmlAfterHeaderText => "</h2><hr><br>";
@@ -1055,7 +1053,7 @@ namespace AIHelper.Manage
         /// </summary>
         public static List<string> KnownGames { get; internal set; }
         public static string KnownGamesIniKeyName { get => "known_games"; }
-        public static string SettingsIniSectionName { get=> "Settings"; }
+        public static string SettingsIniSectionName { get => "Settings"; }
         public static string SelectedGameIniKeyName { get => "selected_game"; }
 
         /// <summary>
@@ -1462,9 +1460,12 @@ namespace AIHelper.Manage
         /// Mod name of dir where game will place new created files
         /// </summary>
         /// <returns></returns>
-        internal static string GameUserDataModName
-        {
-            get=> "GameUserData";
-        }
+        internal static string GameUserDataModName { get => "GameUserData"; }
+
+        public static string CurrentGameModsDirName { get; set; } = "Mods";
+        public static string CurrentGameDataDirName { get; set; } = "Data";
+        public static string CurrentGameInstallDirName { get; set; } = "2MO";
+        public static string DefaultInitSettingExeName { get; set; } = "InitSetting";
+        public static string GameVRexeSuffixName { get; set; } = "VR";
     }
 }

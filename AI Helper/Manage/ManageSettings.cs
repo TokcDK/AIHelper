@@ -219,7 +219,7 @@ namespace AIHelper.Manage
                         var ini = ManageIni.GetINIFile(moIni);
 
                         // check mo ini game parameters exist
-                        ini.SetKey("General", "gameName", game.GameName1);
+                        ini.SetKey("General", "gameName", game.GetGameName());
                         ini.SetKey("General", "gamePath", "@ByteArray(" + Path.Combine(game.GameDirInfo.Parent.FullName, game.GameDirName).Replace("\\", "\\\\") + ")");
                         ini.SetKey("General", "selected_profile", "Default");
                         ini.SetKey("Settings", "mod_directory", Path.Combine(gameDir, game.GameDirName, "Mods").Replace("\\", "\\\\"));

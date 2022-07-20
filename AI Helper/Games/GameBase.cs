@@ -240,7 +240,10 @@ namespace AIHelper.Games
                     }
             };
 
-        internal string GameName1 => !string.IsNullOrWhiteSpace(GameName) ? GameName : GameName = ManageModOrganizer.GetMoBasicGamePluginGameName();
+        internal string GetGameName()
+        {
+            return !string.IsNullOrWhiteSpace(GameName) ? GameName : GameName = ManageModOrganizer.GetMoBasicGamePluginGameName();
+        }
 
         //protected string SearchGameFolder()
         //{

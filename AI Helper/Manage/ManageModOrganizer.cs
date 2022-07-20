@@ -4172,7 +4172,7 @@ namespace AIHelper.Manage
                 return;
             }
 
-            var py = GameData.Game.BaseGamePyFile;
+            var py = GameData.Game.ModOrganizerBaseGamePyFile;
             var pypath = Path.Combine(moBaseGamesPluginGamesDirPath, py.Name + ".py");
             if (!File.Exists(pypath) || py.Value.Length != new FileInfo(pypath).Length)
             {
@@ -4186,7 +4186,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static string GetMoBasicGamePluginGameName()
         {
-            Match gameName = Regex.Match(Encoding.UTF8.GetString(GameData.Game.BaseGamePyFile.Value), @"GameName \= \""([^\""]+)\""");
+            Match gameName = Regex.Match(Encoding.UTF8.GetString(GameData.Game.ModOrganizerBaseGamePyFile.Value), @"GameName \= \""([^\""]+)\""");
 
             if (gameName == null)
             {

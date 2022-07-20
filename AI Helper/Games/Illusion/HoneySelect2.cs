@@ -12,7 +12,7 @@ namespace AIHelper.Games.Illusion
         }
         public override bool IsHaveSideloaderMods => true;
 
-        public override string ManifestGame => "honeyselect2";
+        public override string ZipmodManifestGameName => "honeyselect2";
 
         //public override string GameDirName => base.GameDirName;
         //return GetTheGameFolderName("HoneySelect2");
@@ -57,6 +57,6 @@ namespace AIHelper.Games.Illusion
                     }
             };
 
-        public override BaseGamePyFileInfo BaseGamePyFile => new BaseGamePyFileInfo(nameof(Properties.Resources.game_honeyselect2), Properties.Resources.game_honeyselect2);
+        public override BaseGamePyFileInfo ModOrganizerBaseGamePyFile => new BaseGamePyFileInfo(nameof(Properties.Resources.game_honeyselect2), Properties.Resources.game_honeyselect2);
     }
 }

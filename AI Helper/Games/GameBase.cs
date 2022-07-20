@@ -28,7 +28,7 @@ namespace AIHelper.Games
         /// <summary>
         /// manifest/game name
         /// </summary>
-        public abstract string ManifestGame { get; }
+        public abstract string ZipmodManifestGameName { get; }
 
         /// <summary>
         /// title of current game. GameName value for MO ini GameName parameter
@@ -259,6 +259,6 @@ namespace AIHelper.Games
         /// return selected game detection MO BaseGame plugin's py file or all files by default
         /// </summary>
         /// <returns></returns>
-        public abstract BaseGamePyFileInfo BaseGamePyFile { get; }
+        public abstract BaseGamePyFileInfo ModOrganizerBaseGamePyFile { get; }
     }
 }

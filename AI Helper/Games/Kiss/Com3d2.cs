@@ -11,7 +11,7 @@
         public override string RegistryPath => @"HKEY_CURRENT_USER\Software\KISS\カスタムオーダーメイド3D2";
         public override string RegistryInstallDirKey => "InstallPath";
 
-        public override string ManifestGame => "com3d2";
+        public override string ZipmodManifestGameName => "com3d2";
 
         public override bool IsHaveSideloaderMods => false;
 
@@ -66,6 +66,6 @@
                     //}
             };
 
-        public override BaseGamePyFileInfo BaseGamePyFile => new BaseGamePyFileInfo(nameof(Properties.Resources.game_com3d2), Properties.Resources.game_com3d2);
+        public override BaseGamePyFileInfo ModOrganizerBaseGamePyFile => new BaseGamePyFileInfo(nameof(Properties.Resources.game_com3d2), Properties.Resources.game_com3d2);
     }
 }

@@ -5,7 +5,7 @@
         //public override string GameDirName => base.GameDirName;
         //return GetTheGameFolderName(GetGameExeName());                                                                public override bool IsHaveSideloaderMods => true;
 
-        public override string ManifestGame => "AI Girl";
+        public override string ZipmodManifestGameName => "AI Girl";
 
         public override string GameExeName => "AI-Syoujyo";
 
@@ -15,6 +15,6 @@
 
         public override string GameAbbreviation => "AI";
 
-        public override BaseGamePyFileInfo BaseGamePyFile => new BaseGamePyFileInfo(nameof(Properties.Resources.game_aigirl), Properties.Resources.game_aigirl);
+        public override BaseGamePyFileInfo ModOrganizerBaseGamePyFile => new BaseGamePyFileInfo(nameof(Properties.Resources.game_aigirl), Properties.Resources.game_aigirl);
     }
 }

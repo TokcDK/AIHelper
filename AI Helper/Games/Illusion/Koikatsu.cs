@@ -12,7 +12,7 @@ namespace AIHelper.Games.Illusion
         }
         public override bool IsHaveSideloaderMods => true;
 
-        public override string ManifestGame => "koikatsu";
+        public override string ZipmodManifestGameName => "koikatsu";
 
         //public override string GameDirName => base.GameDirName;
         //return GetTheGameFolderName("Koikatsu");
@@ -63,6 +63,6 @@ namespace AIHelper.Games.Illusion
                     }
             };
 
-        public override BaseGamePyFileInfo BaseGamePyFile => new BaseGamePyFileInfo(nameof(Properties.Resources.game_koikatu), Properties.Resources.game_koikatu);
+        public override BaseGamePyFileInfo ModOrganizerBaseGamePyFile => new BaseGamePyFileInfo(nameof(Properties.Resources.game_koikatu), Properties.Resources.game_koikatu);
     }
 }

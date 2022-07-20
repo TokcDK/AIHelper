@@ -5,7 +5,7 @@ namespace AIHelper.Games.Illusion
 {
     public class HoneySelect : IllusionGameBase
     {
-        public override string ManifestGame => "honeyselect";
+        public override string ZipmodManifestGameName => "honeyselect";
 
         public override void InitActions()
         {
@@ -60,6 +60,6 @@ namespace AIHelper.Games.Illusion
                     }
             };
 
-        public override BaseGamePyFileInfo BaseGamePyFile => new BaseGamePyFileInfo(nameof(Properties.Resources.game_honeyselect), Properties.Resources.game_honeyselect);
+        public override BaseGamePyFileInfo ModOrganizerBaseGamePyFile => new BaseGamePyFileInfo(nameof(Properties.Resources.game_honeyselect), Properties.Resources.game_honeyselect);
     }
 }

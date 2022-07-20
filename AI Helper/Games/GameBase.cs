@@ -1,7 +1,5 @@
 ﻿using AIHelper.Manage;
 using NLog;
-using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace AIHelper.Games
@@ -56,7 +54,7 @@ namespace AIHelper.Games
         /// search and return game folder name
         /// </summary>
         /// <returns></returns>
-        public virtual string GameDirName => GameDirInfo.Name;
+        public virtual string GameDirName { get => GameDirInfo.Name; }
         //return SearchGameFolder();
         //protected string GetTheGameFolderName(string defaultGameFolderName)
         //{
@@ -70,7 +68,7 @@ namespace AIHelper.Games
         //    }
         //}
 
-        public virtual string GameDisplayingName => GameDirName;
+        public virtual string GameDisplayingName { get => GameDirName; }
 
         /// <summary>
         /// main game's exe name of selected game
@@ -88,70 +86,69 @@ namespace AIHelper.Games
         /// main game's vr exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string GameExeNameVr => GameExeName + "VR";
+        public virtual string GameExeNameVr { get => GameExeName + "VR"; }
 
         /// <summary>
         /// main game's x32 exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string GameExeNameX32 => string.Empty;
+        public virtual string GameExeNameX32 { get => string.Empty; }
 
         /// <summary>
         /// game's inisettings launcher exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string IniSettingsExeName => "InitSetting";
+        public virtual string IniSettingsExeName { get => "InitSetting"; }
 
         /// <summary>
         /// game's studio exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string GameStudioExeName => string.Empty;
+        public virtual string GameStudioExeName { get => string.Empty; }
 
         /// <summary>
         /// game's studio x32 exe name of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string GameStudioExeNameX32 => string.Empty;
+        public virtual string GameStudioExeNameX32 { get => string.Empty; }
 
         public DirectoryInfo GameDirInfo;
 
         /// game's path of selected game
-        public virtual string GamePath => IsRootGame ?
-                Properties.Settings.Default.ApplicationStartupPath
-                :
-                GameDirInfo.FullName
-                ;
+        public virtual string GamePath
+        {
+            get => IsRootGame ? Properties.Settings.Default.ApplicationStartupPath : GameDirInfo.FullName;
+        }
 
         /// <summary>
         /// game's Mods folder path of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string ModsPath => Path.Combine(GamePath, "Mods");
+        public virtual string ModsPath { get => Path.Combine(GamePath, "Mods"); }
 
         /// <summary>
         /// game's Data folder path of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string DataPath => Path.Combine(GamePath, "Data");
+        public virtual string DataPath { get => Path.Combine(GamePath, "Data"); }
 
         /// <summary>
         /// game's character presets folder subpath
         /// </summary>
         /// <returns></returns>
-        public virtual string CharacterPresetsFolderSubPath => "";
+        public virtual string CharacterPresetsFolderSubPath { get => ""; }
 
         /// <summary>
         /// game's 2MO folder path of selected game
         /// </summary>
         /// <returns></returns>
-        public virtual string InstallFolderPath => Path.Combine(GamePath, "2MO");
+        public virtual string InstallFolderPath { get => Path.Combine(GamePath, "2MO"); }
 
         /// <summary>
         /// game's TESV.exe dummy path of selected game. for older versions of MO
         /// </summary>
         /// <returns></returns>
-        public virtual string DummyFilePath => Path.Combine(GamePath, "TESV.exe");
+        public virtual string DummyFilePath { get => Path.Combine(GamePath, "TESV.exe"); }
 
         /// <summary>
         /// additional exe paths for selected game

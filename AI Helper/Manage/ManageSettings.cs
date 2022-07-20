@@ -524,10 +524,7 @@ namespace AIHelper.Manage
                     if (File.Exists(HtmlReportCategoryTemplateFilePath))
                     {
                         var content = File.ReadAllLines(HtmlReportCategoryTemplateFilePath).First(l => !l.StartsWith(";"));
-                        if (content.Contains("%category%") && content.Contains("%items%"))
-                        {
-                            return content;
-                        }
+                        if (content.Contains("%category%") && content.Contains("%items%")) return content;
                     }
                     return "<details style=\"color:white\"><summary style=\"color:white\"><p style=\"color:lightgreen;display:inline\">%category%</p></summary>%items%</details>";
                 }
@@ -543,10 +540,7 @@ namespace AIHelper.Manage
                     if (File.Exists(HtmlReportCategoryItemTemplateFilePath))
                     {
                         var content = File.ReadAllLines(HtmlReportCategoryItemTemplateFilePath).First(l => !l.StartsWith(";"));
-                        if (content.Contains("%link%"))
-                        {
-                            return content;
-                        }
+                        if (content.Contains("%link%")) return content;
                     }
                     return "<a target=\"_blank\" rel=\"noopener noreferrer\" href=\"%link%\">%text%</a> - <p style=\"color:yellow;display:inline\">%description%</p><p style=\"color:yellow;display:inline\"></p>";
                 }
@@ -720,10 +714,7 @@ namespace AIHelper.Manage
             get
             {
                 string listOfGamesString = string.Empty;
-                foreach (var game in GameData.Games)
-                {
-                    listOfGamesString += game.GameDirName + Environment.NewLine;
-                }
+                foreach (var game in GameData.Games) listOfGamesString += game.GameDirName + Environment.NewLine;
 
                 return listOfGamesString;
             }
@@ -778,20 +769,7 @@ namespace AIHelper.Manage
 
         internal static string CurrentGameMoOverwritePath => CurrentGameOverwriteFolderPath;
 
-        internal static string MoCurrentGameName
-        {
-            get
-            {
-                if (MoIsNew)
-                {
-                    return GameData.Game.GameName;
-                }
-                else
-                {
-                    return "Skyrim";
-                }
-            }
-        }
+        internal static string MoCurrentGameName { get => MoIsNew ? GameData.Game.GameName : "Skyrim"; }
 
         internal static string DummyFileName => "TESV.exe";
 
@@ -931,17 +909,11 @@ namespace AIHelper.Manage
         internal static int GetCurrentGameIndexByFolderName(List<GameBase> listOfGames, string folderName)
         {
             // return first game index if was not found game folder name in ini or ini was empty
-            if (string.IsNullOrWhiteSpace(folderName))
-            {
-                return 0;
-            }
+            if (string.IsNullOrWhiteSpace(folderName)) return 0;
 
             for (var i = 0; i < listOfGames.Count; i++)
             {
-                if (listOfGames[i].GameDirName == folderName)
-                {
-                    return i;
-                }
+                if (listOfGames[i].GameDirName == folderName) return i;
             }
             return 0;
         }
@@ -989,11 +961,11 @@ namespace AIHelper.Manage
         internal static string BepInExCfgDirPath => Path.Combine(BepInExPath, "BepInEx", "config");
 
         internal static string _bepInExCfgFilePath { get; set; }
-        internal static string BepInExCfgFilePath 
+        internal static string BepInExCfgFilePath
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(_bepInExCfgFilePath) && File.Exists(_bepInExCfgFilePath)) return _bepInExCfgFilePath;                
+                if (!string.IsNullOrWhiteSpace(_bepInExCfgFilePath) && File.Exists(_bepInExCfgFilePath)) return _bepInExCfgFilePath;
                 return _bepInExCfgFilePath = ManageModOrganizer.GetLastPath(Path.Combine(BepInExCfgDirPath, "BepInEx.cfg"));
             }
 
@@ -1004,10 +976,9 @@ namespace AIHelper.Manage
         {
             //string curValue = ManageINI.GetINIValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "DisplayedLogLevel", "Logging.Console");
             string curValue = ManageCfg.GetCfgValueIfExist(BepInExCfgFilePath, "DisplayedLogLevel", "Logging.Console");
-            if (curValue.Length == 0) //in BepinEx 5.4 looks like DisplayedLogLevel was deleted 
-            {
-                bepInExDisplayedLogLevelLabel.Visible = false;
-            }
+
+            //in BepinEx 5.4 looks like DisplayedLogLevel was deleted 
+            if (curValue.Length == 0) bepInExDisplayedLogLevelLabel.Visible = false;
             if (onlyShow)
             {
                 bepInExDisplayedLogLevelLabel.Text = curValue;

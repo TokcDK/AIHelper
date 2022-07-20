@@ -988,8 +988,17 @@ namespace AIHelper.Manage
 
         internal static string BepInExCfgDirPath => Path.Combine(BepInExPath, "BepInEx", "config");
 
+        internal static string _bepInExCfgFilePath { get; set; }
+        internal static string BepInExCfgFilePath 
+        {
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(_bepInExCfgFilePath) && File.Exists(_bepInExCfgFilePath)) return _bepInExCfgFilePath;                
+                return _bepInExCfgFilePath = ManageModOrganizer.GetLastPath(Path.Combine(BepInExCfgDirPath, "BepInEx.cfg"));
+            }
 
-        internal static string BepInExCfgFilePath { get; set; } = "";
+            set { _bepInExCfgFilePath = value; }
+        }
 
         internal static void SwitchBepInExDisplayedLogLevelValue(CheckBox bepInExConsoleCheckBox, Label bepInExDisplayedLogLevelLabel, bool onlyShow = false, string targetSectionName = "Logging.Console")
         {

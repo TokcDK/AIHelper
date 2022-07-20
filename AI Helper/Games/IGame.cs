@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace AIHelper.Games
 {
-    internal interface IGame
+    public interface IGame
     {
+        string GameDisplayingName { get; }
+        string GameExeName { get; }
+        string GameStudioExeName { get; }
+        string GameAbbreviation { get; }
+        string ManifestGame { get; }
+        BaseGamePyFileInfo BaseGamePyFile { get; }
     }
 }

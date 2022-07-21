@@ -27,7 +27,7 @@ namespace AIHelper.Manage
         private static void WaitIfGameIsChanging(int waittime, int maxLoops = 60)
         {
             int loopsCount = 0;
-            while (ManageSettings.IsMoMode&& (ManageSettings.SetModOrganizerINISettingsForTheGame || ManageSettings.CurrentGameIsChanging) && loopsCount < maxLoops)
+            while (ManageSettings.IsMoMode && (ManageSettings.SetModOrganizerINISettingsForTheGame || ManageSettings.CurrentGameIsChanging) && loopsCount < maxLoops)
             {
                 Thread.Sleep(waittime);
                 loopsCount++;
@@ -132,7 +132,7 @@ namespace AIHelper.Manage
         ////            ReportForm.Controls.Add(ReportTB);
         ////            ReportForm.Show();
         //        }
-        internal static List<GameBase> GetListOfExistsGames()
+        internal static void GetListOfExistsGames()
         {
             //List<Game> listOfGames = GamesList.GetGamesList();
             List<Type> listOfGames = Inherited.GetListOfInheritedTypes(typeof(GameBase));
@@ -167,11 +167,9 @@ namespace AIHelper.Manage
                 //}
                 var gameDir = entrie;
 
-                if (!Directory.Exists(gameDir))
-                {
-                    continue;
-                }
+                if (!Directory.Exists(gameDir)) continue;
 
+                ManageSettings.Games = new GameData();
                 foreach (var gameType in listOfGames)
                 {
                     //if (gameType == typeof(RootGame)) continue;
@@ -180,7 +178,7 @@ namespace AIHelper.Manage
                     if (!File.Exists(Path.Combine(gameDir, "Data", game.GameExeName + ".exe"))) continue;
 
                     game.GameDirInfo = new DirectoryInfo(gameDir);
-                    GameData.Game = game; // temp set current game
+                    ManageSettings.Games.Game = game; // temp set current game
 
                     var mods = Path.Combine(gameDir, "Mods");
                     Directory.CreateDirectory(mods);
@@ -290,7 +288,10 @@ namespace AIHelper.Manage
             //    !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(game.GetGamePath(), GetAppModOrganizerDirName(), GetMoProfilesDirName()))
             //).ToList();
 
-            return listOfGameDirs;
+            ManageSettings.Games.Games = listOfGameDirs;
+            if (ManageSettings.Games.Games.Count > 0) ManageSettings.Games.Game = listOfGameDirs[0];
+
+            //return listOfGameDirs;
         }
 
         private static IEnumerable<string> GetGamesFromTxt()

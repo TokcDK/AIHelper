@@ -123,7 +123,7 @@ namespace AIHelper.Manage
         {
 
             //run zipmod's check if updater found and only for KK, AI, HS2
-            if (!GameData.Game.IsHaveSideloaderMods || !File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath)) return;
+            if (!ManageSettings.Games.Game.IsHaveSideloaderMods || !File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath)) return;
 
             if (!Manage.ManageSettings.IsMoMode)
             {

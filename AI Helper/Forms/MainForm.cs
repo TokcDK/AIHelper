@@ -3,7 +3,6 @@ using AIHelper.Install.Types.Directories;
 using AIHelper.Install.UpdateMaker;
 using AIHelper.Manage;
 using AIHelper.Manage.Update;
-using AIHelper.SharedData;
 using CheckForEmptyDir;
 using INIFileMan;
 using NLog;
@@ -84,14 +83,14 @@ namespace AIHelper
 
             ManageModOrganizer.CleanMoFolder();
             //
-            GameData.Game.GameName = ManageModOrganizer.GetMoBasicGamePluginGameName();
+            ManageSettings.Games.Game.GameName = ManageModOrganizer.GetMoBasicGamePluginGameName();
             //
             ManageModOrganizer.CheckBaseGamesPy();
 
             CleanLog();
 
             SetMoMode(false);
-            GameData.Game.InitActions();
+            ManageSettings.Games.Game.InitActions();
 
             SetLocalizationStrings();
 
@@ -109,26 +108,26 @@ namespace AIHelper
         //{
         //    return;
 
-            //if (Directory.Exists(ManageSettings.GetAppOldModOrganizerDirPath()))
-            //{
-            //    foreach(var possibleFileSymlink in new[]
-            //    {
-            //        Path.Combine(ManageSettings.GetAppOldModOrganizerDirPath(), ManageSettings.MoCategoriesFileName()),
-            //        Path.Combine(ManageSettings.GetAppOldModOrganizerDirPath(), ManageSettings.MoIniFileName()),
-            //    })
-            //    {
-            //        // clean symlinks, they will be restored later
-            //        if (File.Exists(possibleFileSymlink))
-            //        {
-            //            if (possibleFileSymlink.IsSymlink())
-            //            {
-            //                File.Delete(possibleFileSymlink);
-            //            }
-            //        }
-            //    }
+        //if (Directory.Exists(ManageSettings.GetAppOldModOrganizerDirPath()))
+        //{
+        //    foreach(var possibleFileSymlink in new[]
+        //    {
+        //        Path.Combine(ManageSettings.GetAppOldModOrganizerDirPath(), ManageSettings.MoCategoriesFileName()),
+        //        Path.Combine(ManageSettings.GetAppOldModOrganizerDirPath(), ManageSettings.MoIniFileName()),
+        //    })
+        //    {
+        //        // clean symlinks, they will be restored later
+        //        if (File.Exists(possibleFileSymlink))
+        //        {
+        //            if (possibleFileSymlink.IsSymlink())
+        //            {
+        //                File.Delete(possibleFileSymlink);
+        //            }
+        //        }
+        //    }
 
-            //    new DirectoryInfo(ManageSettings.GetAppOldModOrganizerDirPath()).MoveAll(new DirectoryInfo(ManageSettings.GetAppModOrganizerDirPath()), overwriteFiles: true);
-            //}
+        //    new DirectoryInfo(ManageSettings.GetAppOldModOrganizerDirPath()).MoveAll(new DirectoryInfo(ManageSettings.GetAppModOrganizerDirPath()), overwriteFiles: true);
+        //}
         //}
 
         private static void CleanLog()
@@ -167,9 +166,9 @@ namespace AIHelper
                 var ini = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
                 ManageSettings.KnownGames = GetKnownGames(ini);
 
-                GameData.Games = ManageOther.GetListOfExistsGames();
+                ManageOther.GetListOfExistsGames();
 
-                if (ManageSettings.KnownGames.Count == 0 && (GameData.Games == null || GameData.Games.Count == 0))
+                if (ManageSettings.KnownGames.Count == 0 && (ManageSettings.Games.Games == null || ManageSettings.Games.Games.Count == 0))
                 {
                     MessageBox.Show(T._("Games not found") + "."
                         + Environment.NewLine + T._("Need atleast one game in subfolder in Games folder") + "."
@@ -192,7 +191,7 @@ namespace AIHelper
                 else
                 {
                     List<string> newGamesReport = new List<string>();
-                    foreach (var game in GameData.Games)
+                    foreach (var game in ManageSettings.Games.Games)
                     {
                         var gamePath = game.GamePath;
                         if (ManageSettings.KnownGames.Contains(gamePath)) continue;
@@ -224,23 +223,30 @@ namespace AIHelper
                     selected_game = ini.GetKey(ManageSettings.SettingsIniSectionName, ManageSettings.SelectedGameIniKeyName);
                     if (string.IsNullOrWhiteSpace(selected_game))
                     {
-                        var game = GameData.Games[0];
+                        var game = ManageSettings.Games.Games[0];
                         selected_game = game.GameDirName;
                     }
                 }
 
-                foreach (var game in GameData.Games)
-                {
-                    CurrentGameComboBox.Items.Add(game.GameDirName);
-                }
-                if (CurrentGameComboBox.Items.Count == 1)
+                ManageSettings.Games.Game = ManageSettings.Games.Games.First(g => g.GameDirName == selected_game);
+                var bindingSource1 = new BindingSource();
+                bindingSource1.DataSource = ManageSettings.Games.Games;
+                CurrentGameComboBox.DataSource = bindingSource1.DataSource;
+                CurrentGameComboBox.DisplayMember = "GameDirName";
+                CurrentGameComboBox.ValueMember = "GameDirName";
+
+                //foreach (var game in ManageSettings.Games.Games)
+                //{
+                //    CurrentGameComboBox.Items.Add(game.GameDirName);
+                //}
+                if (ManageSettings.Games.Games.Count == 1)
                 {
                     //CurrentGameComboBox.Items[0] = ListOfGames[0].GetGameDisplayingName();
                     CurrentGameComboBox.Enabled = false;
                 }
 
                 SetSelectedGameIndexAndBasicVariables(ManageSettings.GetCurrentGameIndexByFolderName(
-                        GameData.Games
+                        ManageSettings.Games.Games
                         ,
                         selected_game
                         ));
@@ -249,7 +255,7 @@ namespace AIHelper
 
                 try
                 {
-                    CurrentGameTitleTextBox.Text = GameData.Game.GameDisplayingName;
+                    CurrentGameTitleTextBox.Text = ManageSettings.Games.Game.GameDisplayingName;
                     CurrentGameTitleTextBox.Enabled = false;
                 }
                 catch (Exception ex) { _log.Info("Error while game title setup. Set more specific exception there. Error:\r\n" + ex); }
@@ -285,9 +291,9 @@ namespace AIHelper
 
         private void SetSelectedGameIndexAndBasicVariables(int index = 0)
         {
-            ManageSettings.CurrentGameListIndex = index;
-            GameData.Game = GameData.Games[ManageSettings.CurrentGameListIndex];
-            CurrentGameComboBox.SelectedIndex = index;
+            //ManageSettings.Games.CurrentGameListIndex = index;
+            //ManageSettings.Games.Game = ManageSettings.Games.Games[ManageSettings.Games.CurrentGameListIndex];
+            //CurrentGameComboBox.SelectedIndex = index;
 
             //set checkbox
             ManageSettings.AutoShortcutRegistryCheckBoxChecked = bool.Parse(ManageIni.GetIniValueIfExist(ManageSettings.AiHelperIniPath, "autoCreateShortcutAndFixRegystry", "Settings", "False"));
@@ -296,7 +302,7 @@ namespace AIHelper
 
         private void SetLocalizationStrings()
         {
-            this.Text = "AI Helper" + " | " + GameData.Game.GameDisplayingName;
+            this.Text = "AI Helper" + " | " + ManageSettings.Games.Game.GameDisplayingName;
             CurrentGameLabel.Text = T._("Current Game") + ":";
             InstallInModsButton.Text = T._("Install");// + " " + ManageSettings.ModsInstallDirName();
             ToolsFixModListButton.Text = T._("Fix modlist");
@@ -478,7 +484,7 @@ namespace AIHelper
                 _thToolTip.SetToolTip(LaunchLinksLinkLabel, T._("Open list of links for game resources"));
                 _thToolTip.SetToolTip(ExtraSettingsLinkLabel, T._("Open extra setting window for plugins and etc"));
 
-                _thToolTip.SetToolTip(CurrentGameComboBox, T._("List of found games. Current") + ": " + GameData.Game.GameDisplayingName);
+                _thToolTip.SetToolTip(CurrentGameComboBox, T._("List of found games. Current") + ": " + ManageSettings.Games.Game.GameDisplayingName);
 
 
                 var toMo = ManageSettings.ModsInstallDirName;
@@ -674,7 +680,7 @@ namespace AIHelper
             }
 
             AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
-            CurrentGameComboBox.Text = GameData.Game.GameDirName;
+            CurrentGameComboBox.Text = ManageSettings.Games.Game.GameDirName;
             CurrentGameComboBox.SelectedIndex = ManageSettings.CurrentGameIndex;
 
             var p = Path.Combine(ManageSettings.ApplicationStartupPath, "dev.txt");
@@ -688,8 +694,8 @@ namespace AIHelper
 
             if (AutoShortcutRegistryCheckBox.Checked) ManageOther.AutoShortcutAndRegystry();
 
-            SelectedGameLabel.Text = GameData.Game.GameDisplayingName + "❤";
-            this.Text = "AI Helper" + " | " + GameData.Game.GameDisplayingName;
+            SelectedGameLabel.Text = ManageSettings.Games.Game.GameDisplayingName + "❤";
+            this.Text = "AI Helper" + " | " + ManageSettings.Games.Game.GameDisplayingName;
         }
 
         private void CommonModeSpecificSetup()
@@ -1061,7 +1067,7 @@ namespace AIHelper
 
         private void AIHelper_LocationChanged(object sender, EventArgs e)
         {
-            if (GameData.Game == null) return;
+            if (ManageSettings.Games.Game == null) return;
 
             //move second form with main form
             //https://stackoverflow.com/questions/3429445/how-to-move-two-windows-forms-together
@@ -1255,8 +1261,9 @@ namespace AIHelper
             {
                 ManageSettings.CurrentGameIsChanging = true;
 
+                ManageSettings.Games.Game = ManageSettings.Games.Games[(sender as ComboBox).SelectedIndex];
                 SetSelectedGameIndexAndBasicVariables((sender as ComboBox).SelectedIndex);
-                ManageSettings.CurrentGameListIndex = (sender as ComboBox).SelectedIndex;
+                //ManageSettings.Games.CurrentGameListIndex = (sender as ComboBox).SelectedIndex;
                 ActionsOnGameChanged();
 
                 ManageIni.GetINIFile(ManageSettings.AiHelperIniPath).SetKey("Settings", "selected_game", ManageSettings.CurrentGameDirName);
@@ -1283,8 +1290,8 @@ namespace AIHelper
 
             ManageModOrganizer.CheckBaseGamesPy();
 
-            GameData.Game.InitActions();
-            CurrentGameTitleTextBox.Text = GameData.Game.GameDisplayingName;
+            ManageSettings.Games.Game.InitActions();
+            CurrentGameTitleTextBox.Text = ManageSettings.Games.Game.GameDisplayingName;
         }
 
         private void CloseExtraForms()
@@ -1377,7 +1384,7 @@ namespace AIHelper
 
         private void AI_Helper_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (GameData.Game == null)
+            if (ManageSettings.Games.Game == null)
             {
                 return;
             }
@@ -1482,7 +1489,7 @@ namespace AIHelper
         {
             //UseKKmanagerUpdaterLabel.SetCheck();
             UseKKmanagerUpdaterLabel.Visible = ManageSettings.IsHaveSideloaderMods && File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath);
-            //UseKKmanagerUpdaterCheckBox.Visible = b && GameData.CurrentGame.IsHaveSideloaderMods;
+            //UseKKmanagerUpdaterCheckBox.Visible = b && ManageSettings.Games.CurrentGame.IsHaveSideloaderMods;
             BleadingEdgeZipmodsLabel.Visible = UseKKmanagerUpdaterLabel.Visible;
             //cbxBleadingEdgeZipmods.Visible = UseKKmanagerUpdaterCheckBox.Visible;
 
@@ -1584,7 +1591,7 @@ namespace AIHelper
         {
             await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
-            string CharacterDirSubpath = GameData.Game.CharacterPresetsFolderSubPath;
+            string CharacterDirSubpath = ManageSettings.Games.Game.CharacterPresetsFolderSubPath;
 
             string exePath = IsMO ? Path.Combine(ManageSettings.AppModOrganizerDirPath, "explorer++", "Explorer++.exe") : "explorer.exe";
             string presetsDirPath = IsMO && ManageSettings.IsMoMode ? Path.Combine(ManageSettings.CurrentGameDataDirPath) + "\\" + CharacterDirSubpath : ManageSettings.GetUserfilesDirectoryPath(CharacterDirSubpath);

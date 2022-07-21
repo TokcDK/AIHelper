@@ -375,7 +375,7 @@ namespace AIHelper.Manage
         {
             string aloneFolderName = IfInTheFolderOnlyOneFolderGetItName(folderPath);
             if (aloneFolderName.Length == 0) return folderPath;
-            if (ManageStrings.IsStringAContainsAnyStringFromStringArray(aloneFolderName, GameData.Game.GameStandartFolderNames, true))
+            if (ManageStrings.IsStringAContainsAnyStringFromStringArray(aloneFolderName, ManageSettings.Games.Game.GameStandartFolderNames, true))
             {
                 return folderPath;
             }

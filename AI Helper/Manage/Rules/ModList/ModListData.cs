@@ -28,7 +28,7 @@ namespace AIHelper.Manage.Rules.ModList
 
         public ModListData()
         {
-            GamePrefix = GameData.Game.GameAbbreviation;
+            GamePrefix = ManageSettings.Games.Game.GameAbbreviation;
             RulesList = GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<ModListRulesBase>(this);
         }
 

@@ -3,16 +3,18 @@ using System.Collections.Generic;
 
 namespace AIHelper.SharedData
 {
-    internal static class GameData
+    internal class GameData
     {
+        public int CurrentGameListIndex { get => Games.IndexOf(Game); internal set { Game = Games[value]; } }
+
         /// <summary>
         /// List of valid games
         /// </summary>
-        internal static List<GameBase> Games { get; set; }
+        internal List<GameBase> Games { get; set; }
 
         /// <summary>
         /// Current selected game
         /// </summary>
-        internal static GameBase Game { get; set; }
+        internal GameBase Game { get; set; }
     }
 }

@@ -17,9 +17,11 @@ namespace AIHelper.Manage
         /// </summary>
         public static MainForm MainForm { get; internal set; }
 
+        public static GameData Games { get; set; }
+
         internal static bool IsFirstRun => ManageIni.GetIniValueIfExist(AiHelperIniPath, "FirstRun", "General") == "True";
 
-        internal static string CurrentGameRegistryInstallDirKeyName => GameData.Game.RegistryInstallDirKey;
+        internal static string CurrentGameRegistryInstallDirKeyName => ManageSettings.Games.Game.RegistryInstallDirKey;
 
 
         internal static string UpdateInfosFilePath => Path.Combine(ManageSettings.CurrentGameModsUpdateDir, "updateinfo.txt");
@@ -60,7 +62,7 @@ namespace AIHelper.Manage
 
         internal static string CurrentGameMoGamePyPluginPath =>
 #pragma warning disable CA1308 // Normalize strings to uppercase
-            Path.Combine(AppModOrganizerDirPath, "plugins", "modorganizer-basic_games", "games", GameData.Game.BasicGamePluginName
+            Path.Combine(AppModOrganizerDirPath, "plugins", "modorganizer-basic_games", "games", ManageSettings.Games.Game.BasicGamePluginName
                 //+ GetCurrentGameExeName()
                 //.Replace("_64", string.Empty)
                 //.Replace("_32", string.Empty)
@@ -87,7 +89,7 @@ namespace AIHelper.Manage
 
         internal static void SettingsInit()
         {
-            //int index = ManageSettings.CurrentGameListIndex;
+            //int index = ManageSettings.Games.CurrentGameListIndex;
             //ManageSettings.GetCurrentGamePath() = ListOfGames[index].GetGamePath();
             //ModsPath = SettingsManage.GetModsPath();
             //DownloadsPath = SettingsManage.GetDownloadsPath();
@@ -531,7 +533,7 @@ namespace AIHelper.Manage
             get
             {
                 string listOfGamesString = string.Empty;
-                foreach (var game in GameData.Games) listOfGamesString += game.GameDirName + Environment.NewLine;
+                foreach (var game in ManageSettings.Games.Games) listOfGamesString += game.GameDirName + Environment.NewLine;
 
                 return listOfGamesString;
             }
@@ -542,14 +544,14 @@ namespace AIHelper.Manage
         /// List of found games
         /// </summary>
         /// <returns></returns>
-        internal static List<GameBase> ListOfGames => GameData.Games;
+        internal static List<GameBase> ListOfGames => ManageSettings.Games.Games;
 
 
         /// <summary>
         /// Currents selected game
         /// </summary>
         /// <returns></returns>
-        internal static GameBase CurrentGame => GameData.Game;
+        internal static GameBase CurrentGame => ManageSettings.Games.Game;
 
         /// <summary>
         /// Base Games folder where can be placed mo game folders or mogame info files
@@ -559,7 +561,7 @@ namespace AIHelper.Manage
         internal static string GamesBaseFolderPath => Path.Combine(ManageSettings.ApplicationStartupPath, "Games");
 
 
-        internal static string CurrentGameParentDirPath => GameData.Game.GameDirInfo.Parent.FullName;
+        internal static string CurrentGameParentDirPath => ManageSettings.Games.Game.GameDirInfo.Parent.FullName;
 
 
         internal static string CurrentGameSetupXmlFilePath => Path.Combine(ManageSettings.CurrentGameOverwriteFolderPath, "UserData", "setup.xml");
@@ -586,7 +588,7 @@ namespace AIHelper.Manage
 
         internal static string CurrentGameMoOverwritePath => CurrentGameOverwriteFolderPath;
 
-        internal static string MoCurrentGameName { get => MoIsNew ? GameData.Game.GameName : "Skyrim"; }
+        internal static string MoCurrentGameName { get => MoIsNew ? ManageSettings.Games.Game.GameName : "Skyrim"; }
 
         internal static string DummyFileName => "TESV.exe";
 
@@ -605,7 +607,7 @@ namespace AIHelper.Manage
         /// </summary>
         /// <returns></returns>
 
-        internal static string CurrentGameExeName => GameData.Game.GameExeName;
+        internal static string CurrentGameExeName => ManageSettings.Games.Game.GameExeName;
 
         /// <summary>
         /// return current game exe name with removed suffixes like _64 or _32
@@ -625,7 +627,7 @@ namespace AIHelper.Manage
             }
         }
 
-        internal static string CurrentGameDirName => GameData.Game.GameDirName;
+        internal static string CurrentGameDirName => ManageSettings.Games.Game.GameDirName;
 
         /// <summary>
         /// file name for file where contains info to create symlink
@@ -648,13 +650,13 @@ namespace AIHelper.Manage
         internal static string UpdateReportHtmlFilePath => Path.Combine(CurrentGameModsUpdateDir, UpdateReportHtmlFileName);
 
 
-        internal static string CurrentGameDisplayingName => GameData.Game.GameDisplayingName;
+        internal static string CurrentGameDisplayingName => ManageSettings.Games.Game.GameDisplayingName;
 
 
-        internal static string StudioExeName => GameData.Game.GameStudioExeName;
+        internal static string StudioExeName => ManageSettings.Games.Game.GameStudioExeName;
 
 
-        internal static string IniSettingsExeName => GameData.Game.IniSettingsExeName;
+        internal static string IniSettingsExeName => ManageSettings.Games.Game.IniSettingsExeName;
 
 
         internal static string AppResDirPath => Path.Combine(ManageSettings.ApplicationStartupPath, "RES");
@@ -1172,7 +1174,7 @@ namespace AIHelper.Manage
         internal static string DiscordGroupLink => "https://bit.ly/AIHelperDiscordRU"; //RU to EN for en
 
 
-        internal static string ZipmodManifestGameNameByCurrentGame => GameData.Game.ZipmodManifestGameName;
+        internal static string ZipmodManifestGameNameByCurrentGame => ManageSettings.Games.Game.ZipmodManifestGameName;
 
 
         internal static string AppResToolsDirPath => Path.Combine(AppResDirPath, "tools");
@@ -1227,7 +1229,7 @@ namespace AIHelper.Manage
                         " \\x43f\\x440\\x43e\\x433\\x440\\x430\\x43c\\x43c\\x44b" +
                         " \\x43e\\x431\\x43d\\x43e\\x432\\x43b\\x435\\x43d\\x438\\x44f.</p></body></html>";
 
-        internal static bool IsHaveSideloaderMods => GameData.Game.IsHaveSideloaderMods;
+        internal static bool IsHaveSideloaderMods => ManageSettings.Games.Game.IsHaveSideloaderMods;
 
         /// <summary>
         /// temp dir for downloads of kkmanager standalone updater
@@ -1243,7 +1245,7 @@ namespace AIHelper.Manage
 
         internal static string CurrentGameBrokenSymlinksDirPath => Path.Combine(CurrentGameDirPath, "BrokenSymlinks");
 
-        internal static string CurrentGameRegistryPath => GameData.Game.RegistryPath;
+        internal static string CurrentGameRegistryPath => ManageSettings.Games.Game.RegistryPath;
 
         /// <summary>
         /// Mod name of dir where game will place new created files

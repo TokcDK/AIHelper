@@ -239,11 +239,7 @@ namespace AIHelper
                 //{
                 //    CurrentGameComboBox.Items.Add(game.GameDirName);
                 //}
-                if (ManageSettings.Games.Games.Count == 1)
-                {
-                    //CurrentGameComboBox.Items[0] = ListOfGames[0].GetGameDisplayingName();
-                    CurrentGameComboBox.Enabled = false;
-                }
+                if (ManageSettings.Games.Games.Count == 1) CurrentGameComboBox.Enabled = false;
 
                 SetSelectedGameIndexAndBasicVariables(ManageSettings.GetCurrentGameIndexByFolderName(
                         ManageSettings.Games.Games
@@ -971,10 +967,7 @@ namespace AIHelper
             await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
             string vr = string.Empty;
-            if (VRGameCheckBox.Visible && VRGameCheckBox.Checked && ManageSettings.CurrentGameIsHaveVr)
-            {
-                vr = "VR";
-            }
+            if (VRGameCheckBox.Visible && VRGameCheckBox.Checked && ManageSettings.CurrentGameIsHaveVr) vr = "VR";
 
             string exePath;
             string arguments = string.Empty;
@@ -986,8 +979,8 @@ namespace AIHelper
 
                 ManageProcess.KillProcessesByName(ManageModOrganizer.GetExeNameByTitle(customExeTitleName));
 
-                if (cbxNtlea.Checked)
-                {
+                //if (cbxNtlea.Checked)
+                //{
                     //customExeTitleName += "_NTLEA";
 
                     //var customs = new CustomExecutables();
@@ -1001,7 +994,7 @@ namespace AIHelper
                     //    };
                     //    customs.Add(custom, performSave: true);
                     //}
-                }
+                //}
 
                 arguments = "moshortcut://:\"" + customExeTitleName + "\"";
             }
@@ -1151,10 +1144,7 @@ namespace AIHelper
         private static void InstallModFilesAndCleanEmptyFolder(List<ModInstallerBase> installers)
         {
 
-            foreach (var installer in installers)
-            {
-                installer.Install();
-            }
+            foreach (var installer in installers) installer.Install();
 
             //string installMessage = T._("Installing");
             //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage));
@@ -1185,10 +1175,7 @@ namespace AIHelper
             //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "."));
             ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.Install2MoDirPath, false);
 
-            if (!Directory.Exists(ManageSettings.Install2MoDirPath))
-            {
-                Directory.CreateDirectory(ManageSettings.Install2MoDirPath);
-            }
+            Directory.CreateDirectory(ManageSettings.Install2MoDirPath);
 
             //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = T._("Install from") + " " + ManageSettings.ModsInstallDirName()));
         }
@@ -1223,28 +1210,20 @@ namespace AIHelper
 
         private void Install2MODirPathOpenFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (!Directory.Exists(ManageSettings.Install2MoDirPath))
-            {
-                Directory.CreateDirectory(ManageSettings.Install2MoDirPath);
-            }
+            Directory.CreateDirectory(ManageSettings.Install2MoDirPath);
             Process.Start("explorer.exe", ManageSettings.Install2MoDirPath);
         }
 
         private void OpenMyUserDataFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             string userFilesFolder = ManageSettings.GetUserfilesDirectoryPath();
-            if (Directory.Exists(userFilesFolder))
-            {
-                Process.Start("explorer.exe", userFilesFolder);
-            }
+            if (Directory.Exists(userFilesFolder)) Process.Start("explorer.exe", userFilesFolder);
         }
 
         private void OpenMOOverwriteFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (Directory.Exists(ManageSettings.CurrentGameOverwriteFolderPath))
-            {
+            if (Directory.Exists(ManageSettings.CurrentGameOverwriteFolderPath)) 
                 Process.Start("explorer.exe", ManageSettings.CurrentGameOverwriteFolderPath);
-            }
         }
 
         private void OpenLogLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -1296,10 +1275,7 @@ namespace AIHelper
 
         private void CloseExtraForms()
         {
-            if (_extraSettingsForm != null && !_extraSettingsForm.IsDisposed)
-            {
-                _extraSettingsForm.Close();
-            }
+            if (_extraSettingsForm != null && !_extraSettingsForm.IsDisposed) _extraSettingsForm.Close();
         }
 
         private void ConsoleCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -1324,10 +1300,8 @@ namespace AIHelper
 
         private void BepInExDisplayedLogLevelLabel_Click(object sender, EventArgs e)
         {
-            if (BepInExConsoleCheckBox.Checked)
-            {
+            if (BepInExConsoleCheckBox.Checked) 
                 ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExConsoleCheckBox, BepInExDisplayedLogLevelLabel);
-            }
         }
 
         internal ExtraSettingsForm _extraSettingsForm;
@@ -1384,10 +1358,7 @@ namespace AIHelper
 
         private void AI_Helper_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (ManageSettings.Games.Game == null)
-            {
-                return;
-            }
+            if (ManageSettings.Games.Game == null) return;
 
             try
             {
@@ -1406,10 +1377,7 @@ namespace AIHelper
 
         private void SetupXmlPathLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (File.Exists(SetupXmlPath))
-            {
-                Process.Start("notepad.exe", SetupXmlPath);
-            }
+            if (File.Exists(SetupXmlPath)) Process.Start("notepad.exe", SetupXmlPath);
         }
 
         private void OpenHelpLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -1458,10 +1426,7 @@ namespace AIHelper
         private void LlOpenOldPluginsBuckupFolder_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var modUpdatesBakDir = ManageSettings.UpdatedModsOlderVersionsBuckupDirPath;
-            if (!Directory.Exists(modUpdatesBakDir))
-            {
-                Directory.CreateDirectory(modUpdatesBakDir);
-            }
+            Directory.CreateDirectory(modUpdatesBakDir);
             Process.Start("explorer.exe", modUpdatesBakDir);
         }
 

@@ -1,7 +1,6 @@
 ﻿using AIHelper.Games;
 using AIHelper.SharedData;
 using CheckForEmptyDir;
-using GetListOfSubClasses;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -1262,5 +1261,10 @@ namespace AIHelper.Manage
         public static bool ExtraSettingsInitOnLoadIsInAction { get; internal set; }
         public static bool MOIsNew { get; internal set; } = true;
         public static string ApplicationProductName { get; internal set; }
+
+        /// <summary>
+        /// Dir of Mod Organizer Basic game plugins for managed games
+        /// </summary>
+        public static string AppResBasicGamesDir { get => Path.Combine(AppResDirPath, "basicgames"); }
     }
 }

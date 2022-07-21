@@ -19,19 +19,19 @@
 //        {
 //            if (File.Exists("PackMe!.txt"))
 //            {
-//                GameData.MainForm._compressmode = true;
+//                ManageSettings.MainForm._compressmode = true;
 //            }
 //            else
 //            {
-//                GameData.MainForm._compressmode = false;
+//                ManageSettings.MainForm._compressmode = false;
 //            }
 //            return 0;
 //        }
 
 //        internal static async void ExtractingMode()
 //        {
-//            GameData.MainForm.MainService.Text = T._("Extracting") + "..";
-//            GameData.MainForm.MainService.Enabled = false;
+//            ManageSettings.MainForm.MainService.Text = T._("Extracting") + "..";
+//            ManageSettings.MainForm.MainService.Enabled = false;
 
 //            //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5
 //            await Task.Run(() => UnpackGame()).ConfigureAwait(true);
@@ -44,9 +44,9 @@
 
 //            ManageModOrganizer.DummyFiles();
 
-//            GameData.MainForm.MainService.Text = T._("Game Ready");
-//            GameData.MainForm.FoldersInit();
-//            GameData.MainForm.MainService.Enabled = true;
+//            ManageSettings.MainForm.MainService.Text = T._("Game Ready");
+//            ManageSettings.MainForm.FoldersInit();
+//            ManageSettings.MainForm.MainService.Enabled = true;
 //        }
 
 //        private static void UnpackMo()
@@ -56,12 +56,12 @@
 //                string mo7Zip = Path.Combine(ManageSettings.GetAppResDir(), "MO.7z");
 //                if (File.Exists(mo7Zip) && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModOrganizerIniPath(), "ModOrganizer.exe")))
 //                {
-//                    _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Visible = true));
-//                    _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Style = ProgressBarStyle.Marquee));
-//                    _ = GameData.MainForm.DataInfoLabel.Invoke((Action)(() => GameData.MainForm.DataInfoLabel.Text = T._("Extracting")));
-//                    _ = GameData.MainForm.ModsInfoLabel.Invoke((Action)(() => GameData.MainForm.ModsInfoLabel.Text = T._("MO archive") + ": " + Path.GetFileNameWithoutExtension(mo7Zip)));
+//                    _ = ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Visible = true));
+//                    _ = ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Style = ProgressBarStyle.Marquee));
+//                    _ = ManageSettings.MainForm.DataInfoLabel.Invoke((Action)(() => ManageSettings.MainForm.DataInfoLabel.Text = T._("Extracting")));
+//                    _ = ManageSettings.MainForm.ModsInfoLabel.Invoke((Action)(() => ManageSettings.MainForm.ModsInfoLabel.Text = T._("MO archive") + ": " + Path.GetFileNameWithoutExtension(mo7Zip)));
 //                    Compressor.Decompress(mo7Zip, ManageSettings.GetCurrentGameModOrganizerIniPath());
-//                    _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Style = ProgressBarStyle.Blocks));
+//                    _ = ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Style = ProgressBarStyle.Blocks));
 //                }
 //            }
 //        }
@@ -74,21 +74,21 @@
 //                string aiGirl = Path.Combine(ManageSettings.GetAppResDir(), "AIGirl.7z");
 //                if (File.Exists(aiGirlTrial) && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "AI-SyoujyoTrial.exe")))
 //                {
-//                    _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Visible = true));
-//                    _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Style = ProgressBarStyle.Marquee));
-//                    _ = GameData.MainForm.DataInfoLabel.Invoke((Action)(() => GameData.MainForm.DataInfoLabel.Text = T._("Extracting")));
-//                    _ = GameData.MainForm.ModsInfoLabel.Invoke((Action)(() => GameData.MainForm.ModsInfoLabel.Text = T._("Game archive") + ": " + Path.GetFileNameWithoutExtension(aiGirlTrial)));
+//                    _ = ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Visible = true));
+//                    _ = ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Style = ProgressBarStyle.Marquee));
+//                    _ = ManageSettings.MainForm.DataInfoLabel.Invoke((Action)(() => ManageSettings.MainForm.DataInfoLabel.Text = T._("Extracting")));
+//                    _ = ManageSettings.MainForm.ModsInfoLabel.Invoke((Action)(() => ManageSettings.MainForm.ModsInfoLabel.Text = T._("Game archive") + ": " + Path.GetFileNameWithoutExtension(aiGirlTrial)));
 //                    Compressor.Decompress(aiGirlTrial, ManageSettings.GetCurrentGameDataPath());
-//                    _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Style = ProgressBarStyle.Blocks));
+//                    _ = ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Style = ProgressBarStyle.Blocks));
 //                }
 //                else if (File.Exists(aiGirl) && !File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "AI-Syoujyo.exe")))
 //                {
-//                    _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Visible = true));
-//                    _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Style = ProgressBarStyle.Marquee));
-//                    _ = GameData.MainForm.DataInfoLabel.Invoke((Action)(() => GameData.MainForm.DataInfoLabel.Text = T._("Extracting")));
-//                    _ = GameData.MainForm.ModsInfoLabel.Invoke((Action)(() => GameData.MainForm.ModsInfoLabel.Text = T._("Game archive") + ": " + Path.GetFileNameWithoutExtension(aiGirl)));
+//                    _ = ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Visible = true));
+//                    _ = ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Style = ProgressBarStyle.Marquee));
+//                    _ = ManageSettings.MainForm.DataInfoLabel.Invoke((Action)(() => ManageSettings.MainForm.DataInfoLabel.Text = T._("Extracting")));
+//                    _ = ManageSettings.MainForm.ModsInfoLabel.Invoke((Action)(() => ManageSettings.MainForm.ModsInfoLabel.Text = T._("Game archive") + ": " + Path.GetFileNameWithoutExtension(aiGirl)));
 //                    Compressor.Decompress(aiGirl, ManageSettings.GetCurrentGameDataPath());
-//                    _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Style = ProgressBarStyle.Blocks));
+//                    _ = ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Style = ProgressBarStyle.Blocks));
 //                }
 //            }
 //        }
@@ -107,23 +107,23 @@
 //                    else
 //                    {
 //                        int i = 1;
-//                        GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Visible = true));
-//                        GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Maximum = files.Length));
-//                        GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Value = i));
+//                        ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Visible = true));
+//                        ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Maximum = files.Length));
+//                        ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Value = i));
 //                        foreach (string file in files)
 //                        {
 //                            string filename = Path.GetFileNameWithoutExtension(file);
-//                            GameData.MainForm.DataInfoLabel.Invoke((Action)(() => GameData.MainForm.DataInfoLabel.Text = T._("Extracting") + " " + +i + "/" + files.Length));
-//                            GameData.MainForm.ModsInfoLabel.Invoke((Action)(() => GameData.MainForm.ModsInfoLabel.Text = T._("Mod") + ": " + filename));
+//                            ManageSettings.MainForm.DataInfoLabel.Invoke((Action)(() => ManageSettings.MainForm.DataInfoLabel.Text = T._("Extracting") + " " + +i + "/" + files.Length));
+//                            ManageSettings.MainForm.ModsInfoLabel.Invoke((Action)(() => ManageSettings.MainForm.ModsInfoLabel.Text = T._("Mod") + ": " + filename));
 //                            string moddirpath = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), filename);
 //                            if (!Directory.Exists(moddirpath))
 //                            {
 //                                Compressor.Decompress(file, moddirpath);
 //                            }
-//                            GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Value = i));
+//                            ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Value = i));
 //                            i++;
 //                        }
-//                        GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Visible = false));
+//                        ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Visible = false));
 //                    }
 //                }
 
@@ -138,10 +138,10 @@
 
 //        internal static async void CompressingMode()
 //        {
-//            if (GameData.MainForm._compressmode)
+//            if (ManageSettings.MainForm._compressmode)
 //            {
-//                GameData.MainForm.MainService.Enabled = false;
-//                GameData.MainForm.MainService.Text = "Compressing..";
+//                ManageSettings.MainForm.MainService.Enabled = false;
+//                ManageSettings.MainForm.MainService.Text = "Compressing..";
 
 //                //https://ru.stackoverflow.com/questions/222414/%d0%9a%d0%b0%d0%ba-%d0%bf%d1%80%d0%b0%d0%b2%d0%b8%d0%bb%d1%8c%d0%bd%d0%be-%d0%b2%d1%8b%d0%bf%d0%be%d0%bb%d0%bd%d0%b8%d1%82%d1%8c-%d0%bc%d0%b5%d1%82%d0%be%d0%b4-%d0%b2-%d0%be%d1%82%d0%b4%d0%b5%d0%bb%d1%8c%d0%bd%d0%be%d0%bc-%d0%bf%d0%be%d1%82%d0%be%d0%ba%d0%b5
 //                //await Task.Run(() => PackGame());
@@ -153,13 +153,13 @@
 //                //Thread open = new Thread(new ParameterizedThreadStart((obj) => PackMods()));
 //                //open.Start();
 
-//                GameData.MainForm.MainService.Text = T._("Prepare the game");
-//                GameData.MainForm.FoldersInit();
-//                GameData.MainForm.MainService.Enabled = true;
+//                ManageSettings.MainForm.MainService.Text = T._("Prepare the game");
+//                ManageSettings.MainForm.FoldersInit();
+//                ManageSettings.MainForm.MainService.Enabled = true;
 //            }
 //            else
 //            {
-//                GameData.MainForm.AIGirlHelperTabControl.SelectedTab = GameData.MainForm.LaunchTabPage;
+//                ManageSettings.MainForm.AIGirlHelperTabControl.SelectedTab = ManageSettings.MainForm.LaunchTabPage;
 //            }
 //        }
 
@@ -167,12 +167,12 @@
 //        //{
 //        //    if (Directory.Exists(ManageSettings.GetCurrentGameModOrganizerIniPath()) && Directory.Exists(ManageSettings.GetAppResDir()))
 //        //    {
-//        //        _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Visible = true));
-//        //        _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Style = ProgressBarStyle.Marquee));
-//        //        _ = GameData.MainForm.DataInfoLabel.Invoke((Action)(() => GameData.MainForm.DataInfoLabel.Text = "Compressing"));
-//        //        _ = GameData.MainForm.ModsInfoLabel.Invoke((Action)(() => GameData.MainForm.ModsInfoLabel.Text = "MO archive.."));
+//        //        _ = ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Visible = true));
+//        //        _ = ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Style = ProgressBarStyle.Marquee));
+//        //        _ = ManageSettings.MainForm.DataInfoLabel.Invoke((Action)(() => ManageSettings.MainForm.DataInfoLabel.Text = "Compressing"));
+//        //        _ = ManageSettings.MainForm.ModsInfoLabel.Invoke((Action)(() => ManageSettings.MainForm.ModsInfoLabel.Text = "MO archive.."));
 //        //        Compressor.Compress(ManageSettings.GetCurrentGameModOrganizerIniPath(), ManageSettings.GetAppResDir());
-//        //        _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Style = ProgressBarStyle.Blocks));
+//        //        _ = ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Style = ProgressBarStyle.Blocks));
 //        //    }
 //        //}
 
@@ -185,12 +185,12 @@
 //        //        if (!File.Exists(aiGirlTrial)
 //        //            && (File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameExeName() + ".exe"))))
 //        //        {
-//        //            _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Visible = true));
-//        //            _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Style = ProgressBarStyle.Marquee));
-//        //            _ = GameData.MainForm.DataInfoLabel.Invoke((Action)(() => GameData.MainForm.DataInfoLabel.Text = "Compressing"));
-//        //            _ = GameData.MainForm.ModsInfoLabel.Invoke((Action)(() => GameData.MainForm.ModsInfoLabel.Text = "Game archive: " + Path.GetFileNameWithoutExtension(aiGirlTrial)));
+//        //            _ = ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Visible = true));
+//        //            _ = ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Style = ProgressBarStyle.Marquee));
+//        //            _ = ManageSettings.MainForm.DataInfoLabel.Invoke((Action)(() => ManageSettings.MainForm.DataInfoLabel.Text = "Compressing"));
+//        //            _ = ManageSettings.MainForm.ModsInfoLabel.Invoke((Action)(() => ManageSettings.MainForm.ModsInfoLabel.Text = "Game archive: " + Path.GetFileNameWithoutExtension(aiGirlTrial)));
 //        //            Compressor.Compress(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetAppResDir());
-//        //            _ = GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Style = ProgressBarStyle.Blocks));
+//        //            _ = ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Style = ProgressBarStyle.Blocks));
 //        //        }
 //        //    }
 //        //}
@@ -219,20 +219,20 @@
 //                }
 
 //                int i = 1;
-//                GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Visible = true));
-//                GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Maximum = dirs.Length));
-//                GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Value = i));
+//                ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Visible = true));
+//                ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Maximum = dirs.Length));
+//                ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Value = i));
 //                foreach (string dir in dirs)
 //                {
-//                    GameData.MainForm.DataInfoLabel.Invoke((Action)(() => GameData.MainForm.DataInfoLabel.Text = "Compressing " + i + "/" + dirs.Length));
-//                    GameData.MainForm.ModsInfoLabel.Invoke((Action)(() => GameData.MainForm.ModsInfoLabel.Text = "Folder: " + Path.GetFileNameWithoutExtension(dir)));
+//                    ManageSettings.MainForm.DataInfoLabel.Invoke((Action)(() => ManageSettings.MainForm.DataInfoLabel.Text = "Compressing " + i + "/" + dirs.Length));
+//                    ManageSettings.MainForm.ModsInfoLabel.Invoke((Action)(() => ManageSettings.MainForm.ModsInfoLabel.Text = "Folder: " + Path.GetFileNameWithoutExtension(dir)));
 
 //                    Compressor.Compress(dir, GetResultTargetName(categories, dir));
 
-//                    GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Value = i));
+//                    ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Value = i));
 //                    i++;
 //                }
-//                GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Visible = false));
+//                ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Visible = false));
 //            }
 //        }
 
@@ -296,13 +296,13 @@
 //            }
 //            else
 //            {
-//                //GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Visible = true));
-//                //GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Maximum = dirs.Length));
-//                //GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Value = 0));
+//                //ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Visible = true));
+//                //ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Maximum = dirs.Length));
+//                //ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Value = 0));
 //                string tempdir = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), "MOModsSeparators");
 
-//                GameData.MainForm.DataInfoLabel.Invoke((Action)(() => GameData.MainForm.DataInfoLabel.Text = "Compressing"));
-//                GameData.MainForm.ModsInfoLabel.Invoke((Action)(() => GameData.MainForm.ModsInfoLabel.Text = "Folder: " + Path.GetFileNameWithoutExtension(tempdir)));
+//                ManageSettings.MainForm.DataInfoLabel.Invoke((Action)(() => ManageSettings.MainForm.DataInfoLabel.Text = "Compressing"));
+//                ManageSettings.MainForm.ModsInfoLabel.Invoke((Action)(() => ManageSettings.MainForm.ModsInfoLabel.Text = "Folder: " + Path.GetFileNameWithoutExtension(tempdir)));
 
 //                Directory.CreateDirectory(tempdir);
 //                foreach (string dir in dirs)
@@ -313,7 +313,7 @@
 //                Compressor.Compress(tempdir, ManageSettings.GetAppResDir());
 //                Directory.Delete(tempdir, true);
 
-//                //GameData.MainForm.progressBar1.Invoke((Action)(() => GameData.MainForm.progressBar1.Visible = false));
+//                //ManageSettings.MainForm.progressBar1.Invoke((Action)(() => ManageSettings.MainForm.progressBar1.Visible = false));
 //            }
 //        }
 //    }

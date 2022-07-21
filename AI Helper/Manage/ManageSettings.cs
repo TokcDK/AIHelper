@@ -12,6 +12,11 @@ namespace AIHelper.Manage
 {
     class ManageSettings
     {
+        /// <summary>
+        /// reference to the main form
+        /// </summary>
+        public static MainForm MainForm { get; internal set; }
+
         internal static bool IsFirstRun => ManageIni.GetIniValueIfExist(AiHelperIniPath, "FirstRun", "General") == "True";
 
         internal static string CurrentGameRegistryInstallDirKeyName => GameData.Game.RegistryInstallDirKey;
@@ -846,7 +851,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static Form[] ListOfFormsForMinimize =>
             //info: http://www.cyberforum.ru/windows-forms/thread31052.html
-            new Form[2] { GameData.MainForm._extraSettingsForm, GameData.MainForm };
+            new Form[2] { ManageSettings.MainForm._extraSettingsForm, ManageSettings.MainForm };
 
         /// <summary>
         /// Converts a language to its identifier.

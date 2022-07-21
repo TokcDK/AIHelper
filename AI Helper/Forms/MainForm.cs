@@ -53,7 +53,7 @@ namespace AIHelper
                 return;
             }
 
-            GameData.MainForm = this; // set reference to the form for controls use
+            ManageSettings.MainForm = this; // set reference to the form for controls use
 
             CheckMoAndEndInit();
         }

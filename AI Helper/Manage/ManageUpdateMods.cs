@@ -24,7 +24,7 @@ namespace AIHelper.Manage
         {
             UpdateOptions = new UpdateOptionsDialogForm
             {
-                Location = new Point(SharedData.GameData.MainForm.Location.X, SharedData.GameData.MainForm.Location.Y),
+                Location = new Point(ManageSettings.MainForm.Location.X, ManageSettings.MainForm.Location.Y),
                 StartPosition = FormStartPosition.Manual
             };
 
@@ -33,11 +33,11 @@ namespace AIHelper.Manage
 
             UpdateModsInit();
 
-            //if (SharedData.GameData.MainForm.UseKKmanagerUpdaterLabel.IsChecked())
+            //if (ManageSettings.MainForm.UseKKmanagerUpdaterLabel.IsChecked())
             if (UpdateOptions.UpdateZipmodsCheckBox.Checked) UpdateZipmods();
 
 
-            //if (SharedData.GameData.MainForm.UpdatePluginsLabel.IsChecked())
+            //if (ManageSettings.MainForm.UpdatePluginsLabel.IsChecked())
             if (UpdateOptions.UpdatePluginsCheckBox.Checked) UpdateByUpdater();
 
             UpdateModsFinalize();
@@ -81,7 +81,7 @@ namespace AIHelper.Manage
                 var updateInfoList = GetUpdateInfosFromFile(sourceId);
                 if (updateInfoList == null || updateInfoList.Count == 0) return infos;
 
-                foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(SharedData.GameData.MainForm.CheckEnabledModsOnlyLabel.IsChecked()))
+                foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(ManageSettings.MainForm.CheckEnabledModsOnlyLabel.IsChecked()))
                 {
                     var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modname);
                     if (updateInfoList.ContainsKey(modname) && !infos.ContainsKey(modPath))
@@ -209,14 +209,14 @@ namespace AIHelper.Manage
 
         private static void UpdateModsInit()
         {
-            SharedData.GameData.MainForm.AIGirlHelperTabControl.Enabled = false;
+            ManageSettings.MainForm.AIGirlHelperTabControl.Enabled = false;
         }
 
         private static void UpdateModsFinalize()
         {
-            SharedData.GameData.MainForm.UpdateData();
+            ManageSettings.MainForm.UpdateData();
 
-            SharedData.GameData.MainForm.AIGirlHelperTabControl.Enabled = true;
+            ManageSettings.MainForm.AIGirlHelperTabControl.Enabled = true;
         }
 
         private static void MoveZipModsFromOverwriteToSourceMod()

@@ -14,10 +14,5 @@ namespace AIHelper.SharedData
         /// Current selected game
         /// </summary>
         internal static GameBase Game { get; set; }
-
-        /// <summary>
-        /// reference to the main form
-        /// </summary>
-        public static MainForm MainForm { get; internal set; }
     }
 }

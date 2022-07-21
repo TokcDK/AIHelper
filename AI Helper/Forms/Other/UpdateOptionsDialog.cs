@@ -73,7 +73,7 @@ namespace AIHelper.Forms.Other
             }
 
             CheckEnabledModsOnlyCheckBox.Enabled = UpdatePluginsCheckBox.Checked;
-            SharedData.GameData.MainForm.CheckEnabledModsOnlyLabel.SetCheck(CheckEnabledModsOnlyCheckBox.Enabled);
+            ManageSettings.MainForm.CheckEnabledModsOnlyLabel.SetCheck(CheckEnabledModsOnlyCheckBox.Enabled);
             btnUpdateMods.Enabled = (UpdatePluginsCheckBox.Visible && UpdatePluginsCheckBox.Checked) || (UpdateZipmodsCheckBox.Visible && UpdateZipmodsCheckBox.Checked);
 
             BleadingEdgeZipmodsCheckBox.Checked = BleadingEdgeZipmodsCheckBox.Enabled && UpdateZipmodsCheckBox.Checked && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath);

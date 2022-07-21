@@ -30,18 +30,18 @@ namespace AIHelper.Manage.ModeSwitch
 
         public async void Switch()
         {
-            SharedData.GameData.MainForm.OnOffButtons(false);
+            ManageSettings.MainForm.OnOffButtons(false);
 
             SwitchModeDialogForm dialog = new SwitchModeDialogForm
             {
-                Location = new Point(SharedData.GameData.MainForm.Location.X, SharedData.GameData.MainForm.Location.Y),
+                Location = new Point(ManageSettings.MainForm.Location.X, ManageSettings.MainForm.Location.Y),
                 StartPosition = FormStartPosition.Manual
             };
 
             DialogResult result = dialog.ShowDialog();
             if (result != DialogResult.OK)
             {
-                SharedData.GameData.MainForm.OnOffButtons();
+                ManageSettings.MainForm.OnOffButtons();
                 return;
             }
 
@@ -51,14 +51,14 @@ namespace AIHelper.Manage.ModeSwitch
 
             try
             {
-                SharedData.GameData.MainForm.MOCommonModeSwitchButton.Text = MOmode ? T._("MOToCommon") : T._("CommonToMO");
+                ManageSettings.MainForm.MOCommonModeSwitchButton.Text = MOmode ? T._("MOToCommon") : T._("CommonToMO");
             }
             catch (Exception ex)
             {
                 _log.Info("An error occured while change mode switch button text: \r\n" + ex);
             }
 
-            SharedData.GameData.MainForm.UpdateData();
+            ManageSettings.MainForm.UpdateData();
 
             //DialogResult result = MessageBox.Show(
             //    DialogText,
@@ -70,16 +70,16 @@ namespace AIHelper.Manage.ModeSwitch
 
             //    try
             //    {
-            //        SharedData.GameData.MainForm.MOCommonModeSwitchButton.Text = MOmode ? T._("MOToCommon") : T._("CommonToMO");
+            //        ManageSettings.MainForm.MOCommonModeSwitchButton.Text = MOmode ? T._("MOToCommon") : T._("CommonToMO");
             //    }
             //    catch
             //    {
             //    }
 
-            //    SharedData.GameData.MainForm.FoldersInit();
+            //    ManageSettings.MainForm.FoldersInit();
             //}
 
-            SharedData.GameData.MainForm.OnOffButtons();
+            ManageSettings.MainForm.OnOffButtons();
         }
 
         protected virtual bool NeedSkip(string sourceFilePath, string sourceFolder)

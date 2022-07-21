@@ -96,13 +96,13 @@ namespace AIHelper.Manage
             {
                 form.WindowState = FormWindowState.Minimized;
 
-                SharedData.GameData.MainForm.DisposeTooltips(); // tooltips is not need here
+                ManageSettings.MainForm.DisposeTooltips(); // tooltips is not need here
             }
             else if (forceMaximize || form.WindowState == FormWindowState.Minimized)
             {
                 form.WindowState = FormWindowState.Normal;
 
-                SharedData.GameData.MainForm.SetTooltips(); // set tooltips again
+                ManageSettings.MainForm.SetTooltips(); // set tooltips again
             }
         }
 

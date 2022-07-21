@@ -94,7 +94,7 @@ namespace AIHelper.Manage.ModeSwitch
         protected void SwitchToCommonMode()
         {
             // first make game's buckup
-            //if (SharedData.GameData.MainForm.ModeSwitchCreateBuckupLabel.IsChecked())
+            //if (ManageSettings.MainForm.ModeSwitchCreateBuckupLabel.IsChecked())
             if (MakeBuckup)
                 new GameBackuper().CreateDataModsBakOfCurrentGame();
 

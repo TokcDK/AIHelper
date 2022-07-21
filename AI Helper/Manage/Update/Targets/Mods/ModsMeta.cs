@@ -36,7 +36,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
                 new Xua(_targetinfo)
             };
 
-            foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(SharedData.GameData.MainForm.CheckEnabledModsOnlyLabel.IsChecked()))
+            foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(ManageSettings.MainForm.CheckEnabledModsOnlyLabel.IsChecked()))
             {
                 var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modname);
 

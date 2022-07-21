@@ -214,16 +214,6 @@ namespace AIHelper
                     }
                 }
 
-                foreach (var game in GameData.Games)
-                {
-                    CurrentGameComboBox.Items.Add(game.GameDirName);
-                }
-                if (CurrentGameComboBox.Items.Count == 1)
-                {
-                    //CurrentGameComboBox.Items[0] = ListOfGames[0].GetGameDisplayingName();
-                    CurrentGameComboBox.Enabled = false;
-                }
-
                 string selected_game;
                 if (ini.Configuration == null)
                 {
@@ -237,6 +227,16 @@ namespace AIHelper
                         var game = GameData.Games[0];
                         selected_game = game.GameDirName;
                     }
+                }
+
+                foreach (var game in GameData.Games)
+                {
+                    CurrentGameComboBox.Items.Add(game.GameDirName);
+                }
+                if (CurrentGameComboBox.Items.Count == 1)
+                {
+                    //CurrentGameComboBox.Items[0] = ListOfGames[0].GetGameDisplayingName();
+                    CurrentGameComboBox.Enabled = false;
                 }
 
                 SetSelectedGameIndexAndBasicVariables(ManageSettings.GetCurrentGameIndexByFolderName(

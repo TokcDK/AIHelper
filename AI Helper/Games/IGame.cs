@@ -13,6 +13,5 @@ namespace AIHelper.Games
         string GameStudioExeName { get; }
         string GameAbbreviation { get; }
         string ManifestGame { get; }
-        BaseGamePyFileInfo BaseGamePyFile { get; }
     }
 }

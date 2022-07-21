@@ -11,6 +11,6 @@
 
         public override string GameAbbreviation => "AI";
 
-        public override BaseGamePyFileInfo ModOrganizerBaseGamePyFile => new BaseGamePyFileInfo(nameof(Properties.Resources.game_aigirltrial), Properties.Resources.game_aigirltrial);
+        public override string BasicGamePluginName => "game_aigirltrial";
     }
 }

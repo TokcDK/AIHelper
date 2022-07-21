@@ -4166,17 +4166,20 @@ namespace AIHelper.Manage
         /// </summary>
         internal static void CheckBaseGamesPy()
         {
-            var moBaseGamesPluginGamesDirPath = ManageSettings.MoBaseGamesPluginGamesDirPath;
-            if (!Directory.Exists(moBaseGamesPluginGamesDirPath))
-            {
-                return;
-            }
+            var moTargetBaseGamesPluginGamesDirPath = ManageSettings.MoBaseGamesPluginGamesDirPath;
+            var moSourceBaseGamesPluginGamesDirPath = ManageSettings.AppResBasicGamesDir;
+            if (!Directory.Exists(moTargetBaseGamesPluginGamesDirPath)) return;
 
-            var py = GameData.Game.ModOrganizerBaseGamePyFile;
-            var pypath = Path.Combine(moBaseGamesPluginGamesDirPath, py.Name + ".py");
-            if (!File.Exists(pypath) || py.Value.Length != new FileInfo(pypath).Length)
+            var pyname = GameData.Game.BasicGamePluginName;
+            if (string.IsNullOrWhiteSpace(pyname)) return;
+
+            var TargetPyInfo = new FileInfo(Path.Combine(moTargetBaseGamesPluginGamesDirPath, pyname + ".py"));
+            var SourcePyInfo = new FileInfo(Path.Combine(moSourceBaseGamesPluginGamesDirPath, pyname + ".py"));            
+
+            if (SourcePyInfo.Exists && (!TargetPyInfo.Exists || SourcePyInfo.Length != TargetPyInfo.Length))
             {
-                File.WriteAllBytes(pypath, py.Value);
+                TargetPyInfo.Directory.Create();
+                SourcePyInfo.CopyTo(SourcePyInfo.FullName, true);
             }
         }
 
@@ -4186,12 +4189,9 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static string GetMoBasicGamePluginGameName()
         {
-            Match gameName = Regex.Match(Encoding.UTF8.GetString(GameData.Game.ModOrganizerBaseGamePyFile.Value), @"GameName \= \""([^\""]+)\""");
+            Match gameName = Regex.Match(File.ReadAllText(Path.Combine(ManageSettings.MoBaseGamesPluginGamesDirPath, GameData.Game.BasicGamePluginName + ".py")), @"GameName \= \""([^\""]+)\""");
 
-            if (gameName == null)
-            {
-                return "";
-            }
+            if (gameName == null) return "";
 
             return gameName.Result("$1");
         }

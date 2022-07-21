@@ -19,7 +19,7 @@ namespace AIHelper.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -86,76 +86,6 @@ namespace AIHelper.Properties {
         internal static string defmoini {
             get {
                 return ResourceManager.GetString("defmoini", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] game_aigirl {
-            get {
-                object obj = ResourceManager.GetObject("game_aigirl", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] game_aigirltrial {
-            get {
-                object obj = ResourceManager.GetObject("game_aigirltrial", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] game_com3d2 {
-            get {
-                object obj = ResourceManager.GetObject("game_com3d2", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] game_honeyselect {
-            get {
-                object obj = ResourceManager.GetObject("game_honeyselect", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] game_honeyselect2 {
-            get {
-                object obj = ResourceManager.GetObject("game_honeyselect2", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] game_koikatu {
-            get {
-                object obj = ResourceManager.GetObject("game_koikatu", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        internal static byte[] game_koikatusunshine {
-            get {
-                object obj = ResourceManager.GetObject("game_koikatusunshine", resourceCulture);
-                return ((byte[])(obj));
             }
         }
     }

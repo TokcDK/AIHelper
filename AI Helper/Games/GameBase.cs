@@ -255,10 +255,6 @@ namespace AIHelper.Games
         //    return string.Empty;
         //}
 
-        /// <summary>
-        /// return selected game detection MO BaseGame plugin's py file or all files by default
-        /// </summary>
-        /// <returns></returns>
-        public abstract BaseGamePyFileInfo ModOrganizerBaseGamePyFile { get; }
+        public abstract string BasicGamePluginName { get; }
     }
 }

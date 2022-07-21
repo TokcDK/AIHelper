@@ -121,25 +121,4 @@
   <data name="defmoini" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\other\defaultmodorganizer.ini;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="game_aigirl" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\other\basic_games\game_aigirl.py;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="game_aigirltrial" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\other\basic_games\game_aigirltrial.py;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="game_com3d2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\other\basic_games\game_com3d2.py;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="game_honeyselect" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\other\basic_games\game_honeyselect.py;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="game_honeyselect2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\other\basic_games\game_honeyselect2.py;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="game_koikatu" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\other\basic_games\game_koikatu.py;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="game_koikatusunshine" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\other\basic_games\game_koikatusunshine.py;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
 </root>

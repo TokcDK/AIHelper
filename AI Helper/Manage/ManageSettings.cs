@@ -55,7 +55,7 @@ namespace AIHelper.Manage
 
         internal static string CurrentGameMoGamePyPluginPath =>
 #pragma warning disable CA1308 // Normalize strings to uppercase
-            Path.Combine(AppModOrganizerDirPath, "plugins", "modorganizer-basic_games", "games", SharedData.GameData.Game.ModOrganizerBaseGamePyFile.Name
+            Path.Combine(AppModOrganizerDirPath, "plugins", "modorganizer-basic_games", "games", GameData.Game.BasicGamePluginName
                 //+ GetCurrentGameExeName()
                 //.Replace("_64", string.Empty)
                 //.Replace("_32", string.Empty)

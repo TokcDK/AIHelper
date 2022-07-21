@@ -57,6 +57,6 @@ namespace AIHelper.Games.Illusion
                     }
             };
 
-        public override BaseGamePyFileInfo ModOrganizerBaseGamePyFile => new BaseGamePyFileInfo(nameof(Properties.Resources.game_honeyselect2), Properties.Resources.game_honeyselect2);
+        public override string BasicGamePluginName => "game_honeyselect2";
     }
 }

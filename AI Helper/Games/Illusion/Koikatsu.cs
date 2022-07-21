@@ -63,6 +63,6 @@ namespace AIHelper.Games.Illusion
                     }
             };
 
-        public override BaseGamePyFileInfo ModOrganizerBaseGamePyFile => new BaseGamePyFileInfo(nameof(Properties.Resources.game_koikatu), Properties.Resources.game_koikatu);
+        public override string BasicGamePluginName => "game_koikatu";
     }
 }

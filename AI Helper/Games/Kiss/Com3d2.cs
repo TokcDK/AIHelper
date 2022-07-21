@@ -66,6 +66,6 @@
                     //}
             };
 
-        public override BaseGamePyFileInfo ModOrganizerBaseGamePyFile => new BaseGamePyFileInfo(nameof(Properties.Resources.game_com3d2), Properties.Resources.game_com3d2);
+        public override string BasicGamePluginName => "game_com3d2";
     }
 }

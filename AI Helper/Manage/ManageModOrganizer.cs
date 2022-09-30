@@ -356,10 +356,7 @@ namespace AIHelper.Manage
                 var splittedPath = noModsPath.Split(new char[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
                 var modname = splittedPath[0];
 
-                foreach (var name in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile())
-                {
-                    if (modname == name) return true;
-                }
+                foreach (var name in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile()) if (modname == name) return true;
             }
 
             return false;
@@ -447,82 +444,14 @@ namespace AIHelper.Manage
 
         public static string GetAuthorName(string subdir = null, string name = null)
         {
-            string author = string.Empty;
-
-            if (!string.IsNullOrEmpty(subdir))
-            {
-                string modsDir = Path.GetFileName(subdir) == "mods" ? subdir : Path.Combine(subdir, "mods");
-                if (Directory.Exists(modsDir) && ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(modsDir, ".zip", false))
-                {
-                    foreach (var zipfile in Directory.GetFiles(modsDir, "*.zip"))
-                    {
-                        using (var archive = ZipFile.OpenRead(zipfile))
-                        {
-                            foreach (ZipArchiveEntry entry in archive.Entries)
-                            {
-                                if (!entry.FullName.EndsWith("manifest.xml", StringComparison.OrdinalIgnoreCase)) continue;
-
-                                string tempDir = Path.Combine(modsDir, "temp");
-                                Directory.CreateDirectory(tempDir);
-
-                                string xmlpath = Path.Combine(tempDir, entry.FullName);
-                                entry.ExtractToFile(xmlpath);
-
-                                author = ManageXml.ReadXmlValue(xmlpath, "manifest/author", "author");
-
-                                File.Delete(xmlpath);
-                                ManageFilesFoldersExtensions.DeleteEmptySubfolders(tempDir);
-                                break;
-                            }
-                            if (author.Length > 0) return author;
-                        }
-
-                    }
-                }
-
-                if (/*author.Length == 0 &&*/ ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(subdir, ".dll"))
-                {
-                    foreach (var dllFilePath in Directory.GetFiles(subdir, "*.dll", SearchOption.AllDirectories))
-                    {
-                        FileVersionInfo dllInfo = FileVersionInfo.GetVersionInfo(dllFilePath);
-
-                        author = dllInfo.LegalCopyright;
-                        //"Copyright © AuthorName 2019"
-                        if (!string.IsNullOrEmpty(author))
-                        {
-                            if (author.Length >= 4)//удаление года, строка должна быть не менее 4 символов для этого
-                            {
-                                author = author.Remove(author.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim();
-                            }
-                        }
-                        else
-                        {
-                            author = string.Empty;
-                        }
-                    }
-                }
-
-                if (author.Length == 0 && ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(subdir, ".txt", false))
-                {
-                    foreach (var txtFilePath in Directory.GetFiles(subdir, "*.txt"))
-                    {
-                        using (StreamReader sr = new StreamReader(txtFilePath))
-                        {
-                            string line = sr.ReadLine();
-
-                            if (line.ToUpperInvariant().StartsWith("BY ", StringComparison.InvariantCultureIgnoreCase) || line.ToUpperInvariant().StartsWith("AUTHOR: ", StringComparison.InvariantCultureIgnoreCase) || line.ToUpperInvariant().StartsWith("AUTHOR ", StringComparison.InvariantCultureIgnoreCase))
-                            {
-                                author = line.Split(' ')[1];
-                            }
-                        }
-                    }
-                }
-            }
+            string author = GetAuthorNameFromSubdir(subdir);
 
             if (!string.IsNullOrEmpty(name) && author.Length == 0)
             {
+                // when name is not empty but author name is empty
                 if (name.StartsWith("[", StringComparison.InvariantCultureIgnoreCase))
                 {
+                    // extract author name when it is mod name
                     string[] s = name.Split(']');
 
                     if (!name.StartsWith("[" + ManageSettings.Games.Game.GameAbbreviation + "]", StringComparison.InvariantCultureIgnoreCase))
@@ -532,6 +461,83 @@ namespace AIHelper.Manage
                     else if (name.StartsWith("[" + ManageSettings.Games.Game.GameAbbreviation + "][", StringComparison.InvariantCultureIgnoreCase))
                     {
                         author = s[1].Remove(0, 1);
+                    }
+                }
+            }
+
+            return author;
+        }
+
+        private static string GetAuthorNameFromSubdir(string subdir)
+        {
+
+            if (string.IsNullOrEmpty(subdir)) return "";
+
+            string author = string.Empty;
+
+            string modsDir = Path.GetFileName(subdir) == "mods" ? subdir : Path.Combine(subdir, "mods");
+            if (Directory.Exists(modsDir) && ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(modsDir, ".zip", false))
+            {
+                foreach (var zipfile in Directory.GetFiles(modsDir, "*.zip"))
+                {
+                    using (var archive = ZipFile.OpenRead(zipfile))
+                    {
+                        foreach (ZipArchiveEntry entry in archive.Entries)
+                        {
+                            if (!entry.FullName.EndsWith("manifest.xml", StringComparison.OrdinalIgnoreCase)) continue;
+
+                            string tempDir = Path.Combine(modsDir, "temp");
+                            Directory.CreateDirectory(tempDir);
+
+                            string xmlpath = Path.Combine(tempDir, entry.FullName);
+                            entry.ExtractToFile(xmlpath);
+
+                            author = ManageXml.ReadXmlValue(xmlpath, "manifest/author", "author");
+
+                            File.Delete(xmlpath);
+                            ManageFilesFoldersExtensions.DeleteEmptySubfolders(tempDir);
+                            break;
+                        }
+                        if (author.Length > 0) return author;
+                    }
+
+                }
+            }
+
+            if (/*author.Length == 0 &&*/ ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(subdir, ".dll"))
+            {
+                foreach (var dllFilePath in Directory.GetFiles(subdir, "*.dll", SearchOption.AllDirectories))
+                {
+                    FileVersionInfo dllInfo = FileVersionInfo.GetVersionInfo(dllFilePath);
+
+                    author = dllInfo.LegalCopyright;
+                    //"Copyright © AuthorName 2019"
+                    if (!string.IsNullOrEmpty(author))
+                    {
+                        if (author.Length >= 4)//удаление года, строка должна быть не менее 4 символов для этого
+                        {
+                            author = author.Remove(author.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim();
+                        }
+                    }
+                    else
+                    {
+                        author = string.Empty;
+                    }
+                }
+            }
+
+            if (author.Length == 0 && ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(subdir, ".txt", false))
+            {
+                foreach (var txtFilePath in Directory.GetFiles(subdir, "*.txt"))
+                {
+                    using (StreamReader sr = new StreamReader(txtFilePath))
+                    {
+                        string line = sr.ReadLine();
+
+                        if (line.ToUpperInvariant().StartsWith("BY ", StringComparison.InvariantCultureIgnoreCase) || line.ToUpperInvariant().StartsWith("AUTHOR: ", StringComparison.InvariantCultureIgnoreCase) || line.ToUpperInvariant().StartsWith("AUTHOR ", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            author = line.Split(' ')[1];
+                        }
                     }
                 }
             }

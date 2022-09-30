@@ -1677,6 +1677,35 @@ namespace AIHelper
             targetIni.WriteFile();
         }
 
+        private void AddGameLabel_Click(object sender, EventArgs e)
+        {
+            var browseDialog = new FolderBrowserDialog();
+            var result = browseDialog.ShowDialog();
+            if (result != DialogResult.OK) return;
+            if (File.Exists(browseDialog.SelectedPath)) return;
+
+            string txtName = Path.GetFileNameWithoutExtension(browseDialog.SelectedPath);
+            string gameTxtPath = Path.Combine(ManageSettings.GamesBaseFolderPath, $"{txtName}.txt");
+
+            if (File.Exists(gameTxtPath))
+            {
+                bool lineAlreadyAdded = false;
+                var lines = File.ReadAllLines(gameTxtPath);
+                foreach (var line in lines)
+                {
+                    if (string.Equals(browseDialog.SelectedPath, line, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        lineAlreadyAdded = true;
+                        break;
+                    }
+                }
+
+                // write new path in the file if missing
+                if (!lineAlreadyAdded) File.WriteAllLines(gameTxtPath, lines.Concat(new[] { browseDialog.SelectedPath }).ToArray());
+            }
+            else File.WriteAllText(gameTxtPath, $"{browseDialog.SelectedPath}\r\n");
+        }
+
         //Disable close window button
         //https://social.msdn.microsoft.com/Forums/en-US/b1f0d913-c603-43e9-8fe3-681fb7286d4c/c-disable-close-button-on-windows-form-application?forum=csharpgeneral
         //[DllImport("user32")]

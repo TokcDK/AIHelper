@@ -106,6 +106,7 @@
             this.ModeSwitchFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.ModeSwitchCreateBuckupLabel = new System.Windows.Forms.Label();
             this.DevButton = new System.Windows.Forms.Button();
+            this.AddGameLabel = new System.Windows.Forms.Label();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -283,6 +284,7 @@
             // LaunchPagePanel
             // 
             this.LaunchPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.LaunchPagePanel.Controls.Add(this.AddGameLabel);
             this.LaunchPagePanel.Controls.Add(this.pbDiscord);
             this.LaunchPagePanel.Controls.Add(this.VRGameCheckBox);
             this.LaunchPagePanel.Controls.Add(this.OpenHelpLinkLabel);
@@ -341,7 +343,7 @@
             this.OpenHelpLinkLabel.LinkColor = System.Drawing.Color.White;
             this.OpenHelpLinkLabel.Location = new System.Drawing.Point(5, 34);
             this.OpenHelpLinkLabel.Name = "OpenHelpLinkLabel";
-            this.OpenHelpLinkLabel.Size = new System.Drawing.Size(28, 13);
+            this.OpenHelpLinkLabel.Size = new System.Drawing.Size(29, 13);
             this.OpenHelpLinkLabel.TabIndex = 28;
             this.OpenHelpLinkLabel.TabStop = true;
             this.OpenHelpLinkLabel.Text = "Help";
@@ -368,7 +370,7 @@
             this.BepInExDisplayedLogLevelLabel.BackColor = System.Drawing.Color.Transparent;
             this.BepInExDisplayedLogLevelLabel.Location = new System.Drawing.Point(294, 16);
             this.BepInExDisplayedLogLevelLabel.Name = "BepInExDisplayedLogLevelLabel";
-            this.BepInExDisplayedLogLevelLabel.Size = new System.Drawing.Size(27, 13);
+            this.BepInExDisplayedLogLevelLabel.Size = new System.Drawing.Size(25, 13);
             this.BepInExDisplayedLogLevelLabel.TabIndex = 26;
             this.BepInExDisplayedLogLevelLabel.Text = "Info";
             this.BepInExDisplayedLogLevelLabel.Visible = false;
@@ -428,7 +430,7 @@
             this.LaunchModeInfoLinkLabel.LinkColor = System.Drawing.Color.White;
             this.LaunchModeInfoLinkLabel.Location = new System.Drawing.Point(5, 5);
             this.LaunchModeInfoLinkLabel.Name = "LaunchModeInfoLinkLabel";
-            this.LaunchModeInfoLinkLabel.Size = new System.Drawing.Size(52, 13);
+            this.LaunchModeInfoLinkLabel.Size = new System.Drawing.Size(53, 13);
             this.LaunchModeInfoLinkLabel.TabIndex = 21;
             this.LaunchModeInfoLinkLabel.TabStop = true;
             this.LaunchModeInfoLinkLabel.Text = "MO mode";
@@ -556,7 +558,7 @@
             this.cbxNtlea.ForeColor = System.Drawing.Color.White;
             this.cbxNtlea.Location = new System.Drawing.Point(155, 139);
             this.cbxNtlea.Name = "cbxNtlea";
-            this.cbxNtlea.Size = new System.Drawing.Size(50, 17);
+            this.cbxNtlea.Size = new System.Drawing.Size(49, 17);
             this.cbxNtlea.TabIndex = 7;
             this.cbxNtlea.Text = "ntlea";
             this.cbxNtlea.UseVisualStyleBackColor = false;
@@ -570,7 +572,7 @@
             this.FixRegistryLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.FixRegistryLinkLabel.Location = new System.Drawing.Point(265, 73);
             this.FixRegistryLinkLabel.Name = "FixRegistryLinkLabel";
-            this.FixRegistryLinkLabel.Size = new System.Drawing.Size(61, 13);
+            this.FixRegistryLinkLabel.Size = new System.Drawing.Size(56, 13);
             this.FixRegistryLinkLabel.TabIndex = 12;
             this.FixRegistryLinkLabel.TabStop = true;
             this.FixRegistryLinkLabel.Text = "Fix registry";
@@ -585,7 +587,7 @@
             this.CreateShortcutLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.CreateShortcutLinkLabel.Location = new System.Drawing.Point(265, 86);
             this.CreateShortcutLinkLabel.Name = "CreateShortcutLinkLabel";
-            this.CreateShortcutLinkLabel.Size = new System.Drawing.Size(48, 13);
+            this.CreateShortcutLinkLabel.Size = new System.Drawing.Size(47, 13);
             this.CreateShortcutLinkLabel.TabIndex = 13;
             this.CreateShortcutLinkLabel.TabStop = true;
             this.CreateShortcutLinkLabel.Text = "Shortcut";
@@ -597,7 +599,7 @@
             this.CurrentGameTitleTextBox.Location = new System.Drawing.Point(13, 20);
             this.CurrentGameTitleTextBox.Name = "CurrentGameTitleTextBox";
             this.CurrentGameTitleTextBox.ReadOnly = true;
-            this.CurrentGameTitleTextBox.Size = new System.Drawing.Size(115, 21);
+            this.CurrentGameTitleTextBox.Size = new System.Drawing.Size(115, 20);
             this.CurrentGameTitleTextBox.TabIndex = 11;
             // 
             // AutoShortcutRegistryCheckBox
@@ -622,7 +624,7 @@
             this.JPLauncherRunLinkLabel.LinkColor = System.Drawing.Color.White;
             this.JPLauncherRunLinkLabel.Location = new System.Drawing.Point(10, 140);
             this.JPLauncherRunLinkLabel.Name = "JPLauncherRunLinkLabel";
-            this.JPLauncherRunLinkLabel.Size = new System.Drawing.Size(65, 13);
+            this.JPLauncherRunLinkLabel.Size = new System.Drawing.Size(67, 13);
             this.JPLauncherRunLinkLabel.TabIndex = 10;
             this.JPLauncherRunLinkLabel.TabStop = true;
             this.JPLauncherRunLinkLabel.Text = "JP Launcher";
@@ -636,7 +638,7 @@
             this.ExtraSettingsLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.ExtraSettingsLinkLabel.Location = new System.Drawing.Point(158, 23);
             this.ExtraSettingsLinkLabel.Name = "ExtraSettingsLinkLabel";
-            this.ExtraSettingsLinkLabel.Size = new System.Drawing.Size(75, 13);
+            this.ExtraSettingsLinkLabel.Size = new System.Drawing.Size(72, 13);
             this.ExtraSettingsLinkLabel.TabIndex = 9;
             this.ExtraSettingsLinkLabel.TabStop = true;
             this.ExtraSettingsLinkLabel.Text = "Extra Settings";
@@ -649,7 +651,7 @@
             this.CurrentGameLabel.ForeColor = System.Drawing.Color.White;
             this.CurrentGameLabel.Location = new System.Drawing.Point(11, 4);
             this.CurrentGameLabel.Name = "CurrentGameLabel";
-            this.CurrentGameLabel.Size = new System.Drawing.Size(78, 13);
+            this.CurrentGameLabel.Size = new System.Drawing.Size(75, 13);
             this.CurrentGameLabel.TabIndex = 8;
             this.CurrentGameLabel.Text = "Current Game:";
             // 
@@ -704,7 +706,7 @@
             this.OpenPresetDirsLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.OpenPresetDirsLinkLabel.Location = new System.Drawing.Point(46, 39);
             this.OpenPresetDirsLinkLabel.Name = "OpenPresetDirsLinkLabel";
-            this.OpenPresetDirsLinkLabel.Size = new System.Drawing.Size(35, 13);
+            this.OpenPresetDirsLinkLabel.Size = new System.Drawing.Size(34, 13);
             this.OpenPresetDirsLinkLabel.TabIndex = 6;
             this.OpenPresetDirsLinkLabel.TabStop = true;
             this.OpenPresetDirsLinkLabel.Text = "Cards";
@@ -718,7 +720,7 @@
             this.SettingsOpen2MOLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.SettingsOpen2MOLinkLabel.Location = new System.Drawing.Point(5, 54);
             this.SettingsOpen2MOLinkLabel.Name = "SettingsOpen2MOLinkLabel";
-            this.SettingsOpen2MOLinkLabel.Size = new System.Drawing.Size(29, 13);
+            this.SettingsOpen2MOLinkLabel.Size = new System.Drawing.Size(30, 13);
             this.SettingsOpen2MOLinkLabel.TabIndex = 5;
             this.SettingsOpen2MOLinkLabel.TabStop = true;
             this.SettingsOpen2MOLinkLabel.Text = "2MO";
@@ -732,7 +734,7 @@
             this.OpenMOOverwriteFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.OpenMOOverwriteFolderLinkLabel.Location = new System.Drawing.Point(46, 12);
             this.OpenMOOverwriteFolderLinkLabel.Name = "OpenMOOverwriteFolderLinkLabel";
-            this.OpenMOOverwriteFolderLinkLabel.Size = new System.Drawing.Size(55, 13);
+            this.OpenMOOverwriteFolderLinkLabel.Size = new System.Drawing.Size(52, 13);
             this.OpenMOOverwriteFolderLinkLabel.TabIndex = 4;
             this.OpenMOOverwriteFolderLinkLabel.TabStop = true;
             this.OpenMOOverwriteFolderLinkLabel.Text = "Overwrite";
@@ -746,7 +748,7 @@
             this.OpenMyUserDataFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.OpenMyUserDataFolderLinkLabel.Location = new System.Drawing.Point(46, 26);
             this.OpenMyUserDataFolderLinkLabel.Name = "OpenMyUserDataFolderLinkLabel";
-            this.OpenMyUserDataFolderLinkLabel.Size = new System.Drawing.Size(48, 13);
+            this.OpenMyUserDataFolderLinkLabel.Size = new System.Drawing.Size(47, 13);
             this.OpenMyUserDataFolderLinkLabel.TabIndex = 3;
             this.OpenMyUserDataFolderLinkLabel.TabStop = true;
             this.OpenMyUserDataFolderLinkLabel.Text = "Userfiles";
@@ -760,7 +762,7 @@
             this.OpenModsFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.OpenModsFolderLinkLabel.Location = new System.Drawing.Point(6, 26);
             this.OpenModsFolderLinkLabel.Name = "OpenModsFolderLinkLabel";
-            this.OpenModsFolderLinkLabel.Size = new System.Drawing.Size(32, 13);
+            this.OpenModsFolderLinkLabel.Size = new System.Drawing.Size(33, 13);
             this.OpenModsFolderLinkLabel.TabIndex = 2;
             this.OpenModsFolderLinkLabel.TabStop = true;
             this.OpenModsFolderLinkLabel.Text = "Mods";
@@ -774,7 +776,7 @@
             this.OpenMOFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.OpenMOFolderLinkLabel.Location = new System.Drawing.Point(6, 39);
             this.OpenMOFolderLinkLabel.Name = "OpenMOFolderLinkLabel";
-            this.OpenMOFolderLinkLabel.Size = new System.Drawing.Size(23, 13);
+            this.OpenMOFolderLinkLabel.Size = new System.Drawing.Size(24, 13);
             this.OpenMOFolderLinkLabel.TabIndex = 1;
             this.OpenMOFolderLinkLabel.TabStop = true;
             this.OpenMOFolderLinkLabel.Text = "MO";
@@ -788,7 +790,7 @@
             this.OpenGameFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.OpenGameFolderLinkLabel.Location = new System.Drawing.Point(6, 12);
             this.OpenGameFolderLinkLabel.Name = "OpenGameFolderLinkLabel";
-            this.OpenGameFolderLinkLabel.Size = new System.Drawing.Size(34, 13);
+            this.OpenGameFolderLinkLabel.Size = new System.Drawing.Size(35, 13);
             this.OpenGameFolderLinkLabel.TabIndex = 0;
             this.OpenGameFolderLinkLabel.TabStop = true;
             this.OpenGameFolderLinkLabel.Text = "Game";
@@ -863,7 +865,7 @@
             this.FullScreenCheckBox.ForeColor = System.Drawing.Color.White;
             this.FullScreenCheckBox.Location = new System.Drawing.Point(6, 67);
             this.FullScreenCheckBox.Name = "FullScreenCheckBox";
-            this.FullScreenCheckBox.Size = new System.Drawing.Size(72, 17);
+            this.FullScreenCheckBox.Size = new System.Drawing.Size(71, 17);
             this.FullScreenCheckBox.TabIndex = 4;
             this.FullScreenCheckBox.Text = "fullscreen";
             this.FullScreenCheckBox.UseVisualStyleBackColor = false;
@@ -980,7 +982,7 @@
             this.llOpenOldPluginsBuckupFolder.Location = new System.Drawing.Point(0, 0);
             this.llOpenOldPluginsBuckupFolder.Margin = new System.Windows.Forms.Padding(0);
             this.llOpenOldPluginsBuckupFolder.Name = "llOpenOldPluginsBuckupFolder";
-            this.llOpenOldPluginsBuckupFolder.Size = new System.Drawing.Size(14, 13);
+            this.llOpenOldPluginsBuckupFolder.Size = new System.Drawing.Size(15, 13);
             this.llOpenOldPluginsBuckupFolder.TabIndex = 27;
             this.llOpenOldPluginsBuckupFolder.TabStop = true;
             this.llOpenOldPluginsBuckupFolder.Text = "D";
@@ -993,10 +995,10 @@
             this.UseKKmanagerUpdaterLabel.AutoSize = true;
             this.UseKKmanagerUpdaterLabel.BackColor = System.Drawing.Color.Transparent;
             this.UseKKmanagerUpdaterLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.UseKKmanagerUpdaterLabel.Location = new System.Drawing.Point(14, 0);
+            this.UseKKmanagerUpdaterLabel.Location = new System.Drawing.Point(15, 0);
             this.UseKKmanagerUpdaterLabel.Margin = new System.Windows.Forms.Padding(0);
             this.UseKKmanagerUpdaterLabel.Name = "UseKKmanagerUpdaterLabel";
-            this.UseKKmanagerUpdaterLabel.Size = new System.Drawing.Size(13, 13);
+            this.UseKKmanagerUpdaterLabel.Size = new System.Drawing.Size(14, 13);
             this.UseKKmanagerUpdaterLabel.TabIndex = 32;
             this.UseKKmanagerUpdaterLabel.Text = "Z";
             this.UseKKmanagerUpdaterLabel.Visible = false;
@@ -1007,10 +1009,10 @@
             this.UpdatePluginsLabel.AutoSize = true;
             this.UpdatePluginsLabel.BackColor = System.Drawing.Color.Transparent;
             this.UpdatePluginsLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.UpdatePluginsLabel.Location = new System.Drawing.Point(27, 0);
+            this.UpdatePluginsLabel.Location = new System.Drawing.Point(29, 0);
             this.UpdatePluginsLabel.Margin = new System.Windows.Forms.Padding(0);
             this.UpdatePluginsLabel.Name = "UpdatePluginsLabel";
-            this.UpdatePluginsLabel.Size = new System.Drawing.Size(13, 13);
+            this.UpdatePluginsLabel.Size = new System.Drawing.Size(14, 13);
             this.UpdatePluginsLabel.TabIndex = 31;
             this.UpdatePluginsLabel.Text = "P";
             this.UpdatePluginsLabel.Visible = false;
@@ -1094,7 +1096,7 @@
             this.Install2MODirPathOpenFolderLinkLabel.Location = new System.Drawing.Point(0, 0);
             this.Install2MODirPathOpenFolderLinkLabel.Margin = new System.Windows.Forms.Padding(0);
             this.Install2MODirPathOpenFolderLinkLabel.Name = "Install2MODirPathOpenFolderLinkLabel";
-            this.Install2MODirPathOpenFolderLinkLabel.Size = new System.Drawing.Size(16, 15);
+            this.Install2MODirPathOpenFolderLinkLabel.Size = new System.Drawing.Size(17, 15);
             this.Install2MODirPathOpenFolderLinkLabel.TabIndex = 18;
             this.Install2MODirPathOpenFolderLinkLabel.TabStop = true;
             this.Install2MODirPathOpenFolderLinkLabel.Text = "D";
@@ -1183,6 +1185,18 @@
             this.DevButton.Text = "Dev";
             this.DevButton.UseVisualStyleBackColor = true;
             this.DevButton.Click += new System.EventHandler(this.Dev_Click);
+            // 
+            // AddGameLabel
+            // 
+            this.AddGameLabel.AutoSize = true;
+            this.AddGameLabel.BackColor = System.Drawing.Color.Transparent;
+            this.AddGameLabel.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.AddGameLabel.Location = new System.Drawing.Point(322, 140);
+            this.AddGameLabel.Name = "AddGameLabel";
+            this.AddGameLabel.Size = new System.Drawing.Size(13, 13);
+            this.AddGameLabel.TabIndex = 31;
+            this.AddGameLabel.Text = "+";
+            this.AddGameLabel.Click += new System.EventHandler(this.AddGameLabel_Click);
             // 
             // MainForm
             // 
@@ -1311,6 +1325,7 @@
         private System.Windows.Forms.LinkLabel OpenPresetDirsLinkLabel;
         private System.Windows.Forms.LinkLabel OpenPresetDirsLinkLabelMO;
         private System.Windows.Forms.Button DevButton;
+        private System.Windows.Forms.Label AddGameLabel;
     }
 }
 

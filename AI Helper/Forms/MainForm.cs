@@ -1,9 +1,11 @@
-﻿using AIHelper.Install.Types;
+﻿using AIHelper.Games;
+using AIHelper.Install.Types;
 using AIHelper.Install.Types.Directories;
 using AIHelper.Install.UpdateMaker;
 using AIHelper.Manage;
 using AIHelper.Manage.Update;
 using CheckForEmptyDir;
+using GetListOfSubClasses;
 using INIFileMan;
 using NLog;
 using System;
@@ -13,6 +15,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -1684,8 +1687,29 @@ namespace AIHelper
             if (result != DialogResult.OK) return;
             if (File.Exists(browseDialog.SelectedPath)) return;
 
-            string txtName = Path.GetFileNameWithoutExtension(browseDialog.SelectedPath);
-            string gameTxtPath = Path.Combine(ManageSettings.GamesBaseFolderPath, $"{txtName}.txt");
+            string exeName = Path.GetFileNameWithoutExtension(browseDialog.SelectedPath);
+
+            // check if exe is exe of one of valid games
+            bool invalid = true;
+            foreach (var gameType in Inherited.GetListOfInheritedTypes(typeof(GameBase)))
+            {
+                var game = (GameBase)Activator.CreateInstance(gameType);
+                if (game.GameExeName == exeName
+                    || game.GameExeNameX32 == exeName
+                    || game.GameExeNameVr == exeName
+                    || game.GameStudioExeName == exeName
+                    || game.GameStudioExeNameX32 == exeName
+                    || game.IniSettingsExeName == exeName
+                    )
+                {
+                    invalid = false;
+                    break;
+                }
+            }
+
+            if (invalid) return;
+
+            string gameTxtPath = Path.Combine(ManageSettings.GamesBaseFolderPath, $"{exeName}.txt");
 
             if (File.Exists(gameTxtPath))
             {

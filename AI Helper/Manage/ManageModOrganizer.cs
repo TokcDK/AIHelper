@@ -177,10 +177,7 @@ namespace AIHelper.Manage
 
         public static void MOUSFSLoadingFix(bool removeLinks = false)
         {
-            if (!ManageSettings.IsMoMode)
-            {
-                return;
-            }
+            if (!ManageSettings.IsMoMode) return;
 
             BepInExPreloadersFix(removeLinks);
 
@@ -269,10 +266,8 @@ namespace AIHelper.Manage
                 {
                     try
                     {
-                        if (File.Exists(targetFilePath) && (File.Exists(sourceFilePath) || ManageSymLinkExtensions.IsSymlink(targetFilePath)))
-                        {
-                            File.Delete(targetFilePath);
-                        }
+                        if (File.Exists(targetFilePath) && (File.Exists(sourceFilePath) 
+                            || ManageSymLinkExtensions.IsSymlink(targetFilePath))) File.Delete(targetFilePath);
                     }
                     catch (Exception ex)
                     {
@@ -293,12 +288,12 @@ namespace AIHelper.Manage
                         //}
 
                         //skip file if not in enabled mod
-                        if (!File.Exists(sourceFilePath) || !ManageModOrganizer.IsInEnabledModOrOverwrite(sourceFilePath))//skip if no active mod found
+                        bool isNotExistsSource = false;
+                        if ((isNotExistsSource = !File.Exists(sourceFilePath)) || !ManageModOrganizer.IsInEnabledModOrOverwrite(sourceFilePath))//skip if no active mod found
                         {
-                            if (File.Exists(targetFilePath))
-                            {
-                                File.Delete(targetFilePath);
-                            }
+                            if (File.Exists(targetFilePath)) File.Delete(targetFilePath);
+
+                            if(isNotExistsSource) _log.Warn($"{nameof(BepInExPreloadersFix)}, Source path is not exists: {sourceFilePath}");
 
                             continue;
                         }

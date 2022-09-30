@@ -210,6 +210,12 @@ namespace AIHelper.Games
         public virtual string[,] ObjectsForMove => new string[,]
             {
                     {
+                        Path.Combine(ManageSettings.CurrentGameModsDirPath, "BepInEx", "BepInEx", "core", "BepInEx.Preloader.Core.dll")
+                        ,
+                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "BepInEx", "core", "BepInEx.Preloader.Core.dll")
+                    }
+                    ,
+                    {
                         Path.Combine(ManageSettings.CurrentGameModsDirPath, "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
                         ,
                         Path.Combine(ManageSettings.CurrentGameDataDirPath, "BepInEx", "core", "BepInEx.Preloader.dll")

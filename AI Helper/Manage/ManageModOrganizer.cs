@@ -77,6 +77,7 @@ namespace AIHelper.Manage
                 ini.SetKey("forced_libraries", $"{processName}\\{index}\\enabled", "true");
                 ini.SetKey("forced_libraries", $"{processName}\\{index}\\library", "winhttp.dll");
                 ini.SetKey("forced_libraries", $"{processName}\\{index}\\process", $"{processName}.exe");
+                ini.SetKey("forced_libraries", $"{processName}\\size", "1");
             }
         }
 

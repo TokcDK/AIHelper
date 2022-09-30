@@ -259,11 +259,12 @@ namespace AIHelper.Manage
 
             int bepInExFilesPathsLength = bepInExFilesPaths.Length / 2;
             for (int i = 0; i < bepInExFilesPathsLength; i++)
-            {
-                var sourceFilePath = bepInExFilesPaths[i, 0];
-                var targetFilePath = bepInExFilesPaths[i, 1];
+            {                
+                var sourceFilePath = bepInExFilesPaths[i, 0]; // source file, which to copy
+                var targetFilePath = bepInExFilesPaths[i, 1]; // target file path, where to copy
                 if (remove)
                 {
+                    // remove files mode
                     try
                     {
                         if (File.Exists(targetFilePath) && (File.Exists(sourceFilePath) 
@@ -276,10 +277,11 @@ namespace AIHelper.Manage
                 }
                 else
                 {
+                    // add file mode
                     try
                     {
 
-                        sourceFilePath = ManageModOrganizer.GetLastPath(sourceFilePath);
+                        sourceFilePath = ManageModOrganizer.GetLastPath(sourceFilePath); // get path in last mod in MO load order
 
                         //skip file if source not exists
                         //if (!File.Exists(sourceFilePath))
@@ -300,6 +302,7 @@ namespace AIHelper.Manage
 
                         if (File.Exists(targetFilePath))
                         {
+                            // chack if latest version of the target file when exists
                             if (
                                 ManageSymLinkExtensions.IsSymlink(targetFilePath)
                                 ||
@@ -308,16 +311,16 @@ namespace AIHelper.Manage
                                 FileVersionInfo.GetVersionInfo(targetFilePath).ProductVersion != FileVersionInfo.GetVersionInfo(sourceFilePath).ProductVersion
                                 )
                             {
-                                File.Delete(targetFilePath);
+                                File.Delete(targetFilePath); // remove when old or invalid
                             }
                             else
                             {
-                                continue;
+                                continue; // do not touch when actual and valid
                             }
                         }
 
+                        // copy actual version of the file
                         Directory.CreateDirectory(Path.GetDirectoryName(targetFilePath));
-
                         File.Copy(sourceFilePath, targetFilePath);
                     }
                     catch (Exception ex)
@@ -327,6 +330,7 @@ namespace AIHelper.Manage
                 }
             }
 
+            // clean empty dirs in bepinex fir
             ManageFilesFoldersExtensions.DeleteEmptySubfolders(Path.Combine(ManageSettings.CurrentGameDataDirPath, "BepInEx"), true);
 
             //else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx")))

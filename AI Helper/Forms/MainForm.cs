@@ -83,9 +83,9 @@ namespace AIHelper
 
             ManageModOrganizer.CleanMoFolder();
             //
-            ManageSettings.Games.Game.GameName = ManageModOrganizer.GetMoBasicGamePluginGameName();
-            //
             ManageModOrganizer.CheckBaseGamesPy();
+            //
+            ManageSettings.Games.Game.GameName = ManageModOrganizer.GetMoBasicGamePluginGameName();
 
             CleanLog();
 

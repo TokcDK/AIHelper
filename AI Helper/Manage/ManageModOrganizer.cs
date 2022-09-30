@@ -4179,7 +4179,7 @@ namespace AIHelper.Manage
             if (SourcePyInfo.Exists && (!TargetPyInfo.Exists || SourcePyInfo.Length != TargetPyInfo.Length))
             {
                 TargetPyInfo.Directory.Create();
-                SourcePyInfo.CopyTo(SourcePyInfo.FullName, true);
+                SourcePyInfo.CopyTo(TargetPyInfo.FullName, true);
             }
         }
 

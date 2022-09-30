@@ -1272,6 +1272,6 @@ namespace AIHelper.Manage
         /// <summary>
         /// Dir of Mod Organizer Basic game plugins for managed games
         /// </summary>
-        public static string AppResBasicGamesDir { get => Path.Combine(AppResDirPath, "basicgames"); }
+        public static string AppResBasicGamesDir { get => Path.Combine(AppResDirPath, "basicgames", "games"); }
     }
 }

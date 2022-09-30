@@ -175,6 +175,31 @@ namespace AIHelper.Manage
                     //if (gameType == typeof(RootGame)) continue;
 
                     var game = (GameBase)Activator.CreateInstance(gameType);
+
+                    bool exeInData = File.Exists(Path.Combine(gameDir, "Data", game.GameExeName + ".exe"));
+                    bool exeInRoot = File.Exists(Path.Combine(gameDir, game.GameExeName + ".exe"));
+
+                    if (!exeInData && exeInRoot)
+                    {
+                        // when all game files in root dir
+
+                        var dataDir = Path.Combine(gameDir, "Data");
+                        Directory.CreateDirectory(dataDir);
+
+                        // move dirs except data into data
+                        foreach(var dir in Directory.GetDirectories(gameDir))
+                        {
+                            if (string.Equals(dir, dataDir)) continue;
+
+                            Directory.Move(dir, Path.Combine(dataDir, Path.GetFileName(dir)));
+                        }
+                        // move files into data
+                        foreach(var file in Directory.GetFiles(gameDir))
+                        {
+                            File.Move(file, Path.Combine(dataDir, Path.GetFileName(file)));
+                        }
+                    }
+
                     if (!File.Exists(Path.Combine(gameDir, "Data", game.GameExeName + ".exe"))) continue;
 
                     game.GameDirInfo = new DirectoryInfo(gameDir);

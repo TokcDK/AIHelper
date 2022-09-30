@@ -198,7 +198,7 @@ namespace AIHelper.Manage
                         // check mo ini game parameters exist
                         ini.SetKey("General", "gameName", game.GetGameName());
                         ini.SetKey("General", "gamePath", "@ByteArray(" + Path.Combine(game.GameDirInfo.Parent.FullName, game.GameDirName).Replace("\\", "\\\\") + ")");
-                        ini.SetKey("General", "selected_profile", "Default");
+                        ini.SetKey("General", "selected_profile", "@ByteArray(Default)");
                         ini.SetKey("Settings", "mod_directory", Path.Combine(gameDir, game.GameDirName, "Mods").Replace("\\", "\\\\"));
                         ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GameDirName, "Downloads").Replace("\\", "\\\\"));
                         ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GameDirName, ManageSettings.AppModOrganizerDirName, "profiles").Replace("\\", "\\\\"));

@@ -54,30 +54,33 @@ namespace AIHelper.Manage
             var ini = ManageIni.GetINIFile(selectedProfileSettingsIniPath);
 
             int index = 1;
-            foreach(var processName in new[]
+            foreach(var exeName in new[]
             {
                 ManageSettings.CurrentGame.GameExeName,
                 ManageSettings.CurrentGame.GameStudioExeName,
             })
             {
-                bool gameExeForcedLibrariesIsSet = ini.SectionExists("forced_libraries")
-                    && ini.KeyExists($"{processName}\\enabled", "forced_libraries")
-                    && ini.GetKey("forced_libraries", $"{processName}\\enabled") == "true"
-                    && ini.KeyExists($"{processName}\\{index}\\enabled", "forced_libraries")
-                    && ini.GetKey("forced_libraries", $"{processName}\\{index}\\enabled") == "true"
-                    && ini.KeyExists($"{processName}\\{index}\\library", "forced_libraries")
-                    && ini.GetKey("forced_libraries", $"{processName}\\{index}\\library") == "winhttp.dll"
-                    && ini.KeyExists($"{processName}\\{index}\\library", "forced_libraries")
-                    && ini.GetKey("forced_libraries", $"{processName}\\{index}\\process") == $"{processName}.exe"
-                    ;
+                foreach (var customExeTitle in ManageModOrganizer.GetMOcustomExecutableTitleListByExeName(exeName))
+                {
+                    bool gameExeForcedLibrariesIsSet = ini.SectionExists("forced_libraries")
+                        && ini.KeyExists($"{customExeTitle}\\enabled", "forced_libraries")
+                        && ini.GetKey("forced_libraries", $"{customExeTitle}\\enabled") == "true"
+                        && ini.KeyExists($"{customExeTitle}\\{index}\\enabled", "forced_libraries")
+                        && ini.GetKey("forced_libraries", $"{customExeTitle}\\{index}\\enabled") == "true"
+                        && ini.KeyExists($"{customExeTitle}\\{index}\\library", "forced_libraries")
+                        && ini.GetKey("forced_libraries", $"{customExeTitle}\\{index}\\library") == "winhttp.dll"
+                        && ini.KeyExists($"{customExeTitle}\\{index}\\library", "forced_libraries")
+                        && ini.GetKey("forced_libraries", $"{customExeTitle}\\{index}\\process") == $"{exeName}.exe"
+                        ;
 
-                if (gameExeForcedLibrariesIsSet) continue;
+                    if (gameExeForcedLibrariesIsSet) continue;
 
-                ini.SetKey("forced_libraries", $"{processName}\\enabled", "true");
-                ini.SetKey("forced_libraries", $"{processName}\\{index}\\enabled", "true");
-                ini.SetKey("forced_libraries", $"{processName}\\{index}\\library", "winhttp.dll");
-                ini.SetKey("forced_libraries", $"{processName}\\{index}\\process", $"{processName}.exe");
-                ini.SetKey("forced_libraries", $"{processName}\\size", "1");
+                    ini.SetKey("forced_libraries", $"{customExeTitle}\\enabled", "true");
+                    ini.SetKey("forced_libraries", $"{customExeTitle}\\{index}\\enabled", "true");
+                    ini.SetKey("forced_libraries", $"{customExeTitle}\\{index}\\library", "winhttp.dll");
+                    ini.SetKey("forced_libraries", $"{customExeTitle}\\{index}\\process", $"{exeName}.exe");
+                    ini.SetKey("forced_libraries", $"{customExeTitle}\\size", "1");
+                }
             }
         }
 
@@ -3108,6 +3111,27 @@ namespace AIHelper.Manage
             }
 
             return exename;
+        }
+
+        /// <summary>
+        /// get title of custom executable by it exe name
+        /// </summary>
+        /// <param name="exename"></param>
+        /// <param name="ini"></param>
+        /// <returns></returns>
+        internal static IEnumerable<string> GetMOcustomExecutableTitleListByExeName(string exename, INIFile ini = null)
+        {
+            if (ini == null) ini = ManageIni.GetINIFile(ManageSettings.AppMOiniFilePath);
+
+            var customs = new CustomExecutables(ini);
+            foreach (var customExe in customs.List)
+            {
+                // skip not valid
+                if (Path.GetFileNameWithoutExtension(customExe.Value.Binary) != exename) continue;
+                if (!File.Exists(customExe.Value.Binary)) continue;
+
+                yield return customExe.Value.Title;
+            }
         }
 
         /// <summary>

@@ -717,10 +717,7 @@ namespace AIHelper.Manage
             if (targetZipmodPath.ToUpperInvariant().Contains("SIDELOADER MODPACK") && ((fileInDataFolderExtension = Path.GetExtension(targetZipmodPath).ToUpperInvariant()) == ".ZIPMOD" || fileInDataFolderExtension == ".ZIP"))
             {
                 var guid = ManageArchive.GetZipmodGuid(targetZipmodPath);
-                if (guid.Length > 0 && !zipmodsGuidList.ContainsKey(guid))
-                {
-                    zipmodsGuidList.Add(guid, sourceModZipmodPath);
-                }
+                if (guid.Length > 0 && !zipmodsGuidList.ContainsKey(guid)) zipmodsGuidList.Add(guid, sourceModZipmodPath);
             }
         }
 
@@ -756,25 +753,17 @@ namespace AIHelper.Manage
             HashSet<string> addedModPackNames = new HashSet<string>(10);
             foreach (var dir in Directory.EnumerateDirectories(ManageSettings.CurrentGameModsDirPath))
             {
-                if (!Directory.Exists(Path.Combine(dir, "mods")))
-                {
-                    continue;
-                }
+                if (!Directory.Exists(Path.Combine(dir, "mods"))) continue;
 
                 foreach (var modpackdir in Directory.EnumerateDirectories(Path.Combine(dir, "mods")))
                 {
                     var name = Path.GetFileName(modpackdir);
                     //skip if not sideloader modpack
-                    if (!name.ToUpperInvariant().Contains("SIDELOADER MODPACK"))
-                    {
-                        continue;
-                    }
+                    if (!name.ToUpperInvariant().Contains("SIDELOADER MODPACK")) continue;
 
                     //skip if txt with same name is missing or modpack already added in list
-                    if (!File.Exists(Path.Combine(Path.GetDirectoryName(modpackdir), name + ".txt")) || added.Contains(name))
-                    {
-                        continue;
-                    }
+                    if (!File.Exists(Path.Combine(Path.GetDirectoryName(modpackdir), name + ".txt")) 
+                        || added.Contains(name)) continue;
 
                     var oldName = name;
                     name += CheckFemaleMaleUncensor(modpackdir, name);
@@ -783,18 +772,14 @@ namespace AIHelper.Manage
 
                     // skip when same modpack name already added as target dir
                     // but dont skip when it is uncensor selectr Male Female splitted zipmods of one modpack
-                    if (oldName == name && addedModPackNames.Contains(modpackName))
-                    {
-                        continue;
-                    }
+                    if (oldName == name && addedModPackNames.Contains(modpackName)) continue;
+
+                    if (packs.ContainsKey(name)) continue;
 
                     //add to list
-                    if (!packs.ContainsKey(name))
-                    {
-                        added.Add(name);
-                        packs.Add(name, modpackName);
-                        addedModPackNames.Add(modpackName);
-                    }
+                    added.Add(name);
+                    packs.Add(name, modpackName);
+                    addedModPackNames.Add(modpackName);
                 }
             }
 
@@ -810,16 +795,10 @@ namespace AIHelper.Manage
         internal static void AddExistFilePathsUsing(this List<string> inputList, string inputDir, string fileName)
         {
             var filePath = Path.Combine(inputDir, fileName);
-            if (File.Exists(filePath))
-            {
-                inputList.Add(filePath);
-            }
+            if (File.Exists(filePath)) inputList.Add(filePath);
 
             // parallel iterate mods because mod order is not important here
-            Parallel.ForEach(Directory.EnumerateDirectories(inputDir), dir =>
-            {
-                inputList.AddExistFilePathsUsing(dir, fileName);
-            });
+            Parallel.ForEach(Directory.EnumerateDirectories(inputDir), dir => { inputList.AddExistFilePathsUsing(dir, fileName); });
         }
 
         /// <summary>
@@ -827,14 +806,9 @@ namespace AIHelper.Manage
         /// </summary>
         internal static void MakeLinks()
         {
-            if (File.Exists(ManageSettings.OverallLinkInfoFilePath))
-            {
-                ParseLinkInfo(new FileInfo(ManageSettings.OverallLinkInfoFilePath), out List<string> _, true);
-            }
-            else
-            {
-                return;
-            }
+            if (!File.Exists(ManageSettings.OverallLinkInfoFilePath)) return;
+
+            ParseLinkInfo(new FileInfo(ManageSettings.OverallLinkInfoFilePath), out List<string> _, true);
 
             //var linkInfosList = new List<string>();
             //var infoFileName = ManageSettings.GetLinkInfoFileName();
@@ -872,11 +846,7 @@ namespace AIHelper.Manage
         private static bool ParseLinkInfo(FileInfo linkinfo, out List<string> newLines, bool overall = false)
         {
             newLines = new List<string>();
-            if (!linkinfo.Exists || linkinfo.Length == 0)
-            {
-                // skip if link info file is empty
-                return false;
-            }
+            if (!linkinfo.Exists || linkinfo.Length == 0) return false; // skip if link info file is empty
 
             int minDataSize = 2;
             int maxDataSize = 3;
@@ -893,27 +863,15 @@ namespace AIHelper.Manage
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
-                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith(";"))
-                    {
-                        // skip empty lines and comments
-                        continue;
-                    }
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith(";")) continue; // skip empty lines and comments
 
                     var info = line.Split(',');
                     var infoLength = info.Length;
-                    if (infoLength < minDataSize || infoLength > maxDataSize)
-                    {
-                        continue;
-                    }
+                    if (infoLength < minDataSize || infoLength > maxDataSize) continue;
                     bool HasTargetLinkNameSet = infoLength == maxDataSize; // if set target link name, use it else use object name
 
                     bool IsDir = info[0] == "d";
-                    if (!IsDir && info[0] != "f")
-                    {
-                        // if type is incorrect or info invalid
-                        continue;
-                    }
-
+                    if (!IsDir && info[0] != "f") continue; // if type is incorrect or info invalid
 
                     if (HasTargetLinkNameSet && ManageFilesFoldersExtensions.ContainsAnyInvalidCharacters(info[minDataSize]))
                     {
@@ -926,20 +884,12 @@ namespace AIHelper.Manage
                     }
 
                     info[1] = ConvertVars(info[1]);
-                    if (ManageFilesFoldersExtensions.ContainsAnyInvalidCharacters(info[1]))
-                    {
-                        // if object path has invalid chars
-                        continue;
-                    }
+                    if (ManageFilesFoldersExtensions.ContainsAnyInvalidCharacters(info[1])) continue;// if object path has invalid chars
 
                     var targetObjectPath = info[1].IndexOf(".\\") != -1 ? Path.GetFullPath((overall ? Path.GetDirectoryName(info[2]) : linkinfo.Directory.FullName) + Path.DirectorySeparatorChar + info[1]) // get full path if it was relative. current directory will be linkinfo file's directory
                         : info[1]; // path is not relative
-
-                    // skip if target object is not exists
-                    if (!targetObjectPath.Exists(IsDir))
-                    {
-                        continue;
-                    }
+                                        
+                    if (!targetObjectPath.Exists(IsDir)) continue;// skip if target object is not exists
 
                     var targetObjectType = IsDir ? ObjectType.Directory : ObjectType.File;
 
@@ -970,10 +920,7 @@ namespace AIHelper.Manage
                         return false;
                     }
 
-                    if (!overall)
-                    {
-                        newLines.Add((IsDir ? "d" : "f") + "," + targetObjectPath + "," + symlinkPath + (HasTargetLinkNameSet ? "," + info[minDataSize] : string.Empty));
-                    }
+                    if (!overall) newLines.Add((IsDir ? "d" : "f") + "," + targetObjectPath + "," + symlinkPath + (HasTargetLinkNameSet ? "," + info[minDataSize] : string.Empty));
 
                     if (symlinkPath.Exists(IsDir))
                     {
@@ -1038,11 +985,8 @@ namespace AIHelper.Manage
                 var gameDirName = regexMatch.Groups[1].Value;
                 foreach (var game in ManageSettings.Games.Games)
                 {
-                    if (game.GameDirInfo.Name == gameDirName)
-                    {
-                        // return path with the variable %game:Gamename% replaced to 1st game found path
-                        return inputString.Replace("%game:" + gameDirName + "%", game.GameDirInfo.FullName);
-                    }
+                    // return path with the variable %game:Gamename% replaced to 1st game found path
+                    if (game.GameDirInfo.Name == gameDirName) return inputString.Replace("%game:" + gameDirName + "%", game.GameDirInfo.FullName);
                 }
 
                 return inputString.Replace("%game:" + gameDirName + "%", gameDirName);// else just replace by extracted name
@@ -1225,10 +1169,7 @@ namespace AIHelper.Manage
             {
                 ModlistPath = modListPath ?? ManageSettings.CurrentMoProfileModlistPath;
 
-                if (!File.Exists(ModlistPath))
-                {
-                    return;
-                }
+                if (!File.Exists(ModlistPath)) return;
 
                 var modlistContent = File.ReadAllLines(ManageSettings.CurrentMoProfileModlistPath);
                 Array.Reverse(modlistContent);
@@ -1259,11 +1200,7 @@ namespace AIHelper.Manage
                     }
 
                     // reset separator if was changed
-                    if (mod.IsSeparator && lastSeparator != mod.ParentSeparator)
-                    {
-                        lastSeparator = mod;
-                    }
-
+                    if (mod.IsSeparator && lastSeparator != mod.ParentSeparator) lastSeparator = mod;
 
                     Items.Add(mod);
                     ItemByName.Add(mod.Name, mod);
@@ -1387,10 +1324,7 @@ namespace AIHelper.Manage
 
             private ProfileModlistRecord GetItemByName(string itemName)
             {
-                if (ItemByName.ContainsKey(itemName))
-                {
-                    return ItemByName[itemName];
-                }
+                if (ItemByName.ContainsKey(itemName)) return ItemByName[itemName];
 
                 return null;
             }
@@ -1400,10 +1334,7 @@ namespace AIHelper.Manage
             /// </summary>
             /// <param name="modType">Enabled, Disabled, Separator</param>
             /// <returns>list of mods by mod type</returns>
-            internal List<ProfileModlistRecord> GetListBy(ModType modType)
-            {
-                return GetBy(modType).ToList();
-            }
+            internal List<ProfileModlistRecord> GetListBy(ModType modType) { return GetBy(modType).ToList(); }
 
             /// <summary>
             /// get mods from all items by selected mod type
@@ -1456,41 +1387,29 @@ namespace AIHelper.Manage
             /// </summary>
             internal void Save()
             {
-                if (!File.Exists(ModlistPath))
-                {
-                    return;
-                }
+                if (!File.Exists(ModlistPath)) return;
 
                 var writeItems = new List<ProfileModlistRecord>(Items);
                 writeItems.Reverse();
                 using (var newModlist = new StreamWriter(ModlistPath))
                 {
                     newModlist.WriteLine(ListDescriptionMarker);
-                    foreach (var item in writeItems)
-                    {
-                        newModlist.WriteLine((item.IsEnabled ? "+" : "-") + item.Name);
-                    }
+                    foreach (var item in writeItems) newModlist.WriteLine((item.IsEnabled ? "+" : "-") + item.Name);
                 }
             }
         }
 
         internal static string GetExeNameByTitle(string customExeTitleName, INIFile ini = null)
         {
-            if (ini == null)
-            {
-                ini = ManageIni.GetINIFile(ManageSettings.AppMOiniFilePath);
-            }
+            if (ini == null) ini = ManageIni.GetINIFile(ManageSettings.AppMOiniFilePath);
 
             var customs = new CustomExecutables(ini);
             foreach (var customExe in customs.List)
             {
-                if (customExe.Value.Title == customExeTitleName)
-                {
-                    if (File.Exists(customExe.Value.Binary))
-                    {
-                        return Path.GetFileNameWithoutExtension(customExe.Value.Binary);
-                    }
-                }
+                if (customExe.Value.Title != customExeTitleName) continue;
+                if (!File.Exists(customExe.Value.Binary)) continue;
+
+                return Path.GetFileNameWithoutExtension(customExe.Value.Binary);
             }
 
             return "";
@@ -1546,10 +1465,7 @@ namespace AIHelper.Manage
             {
                 GUIDList = new Dictionary<string, ZipmodInfo>();
                 cachedGUIDList = new Dictionary<string, string>();
-                if (LoadInfos)
-                {
-                    LoadAll();
-                }
+                if (LoadInfos) LoadAll();
             }
 
             void LoadAll()
@@ -1560,15 +1476,8 @@ namespace AIHelper.Manage
 
                 Parallel.ForEach(modlist.Items, item =>
                 {
-                    if (!item.IsExist || item.IsSeparator)
-                    {
-                        return;
-                    }
-
-                    if (!Directory.Exists(Path.Combine(item.Path, "mods")))
-                    {
-                        return;
-                    }
+                    if (!item.IsExist || item.IsSeparator) return;
+                    if (!Directory.Exists(Path.Combine(item.Path, "mods"))) return;
 
                     foreach (var packDir in Directory.EnumerateDirectories(Path.Combine(item.Path, "mods"), "Sideloader Modpack*"))
                     {
@@ -1593,10 +1502,7 @@ namespace AIHelper.Manage
                 }
 
                 string guid = cachedGUIDList.ContainsKey(zipmodPath) ? cachedGUIDList[zipmodPath] : ManageArchive.GetZipmodGuid(zipmodPath);
-                if (string.IsNullOrWhiteSpace(guid))
-                {
-                    return;
-                }
+                if (string.IsNullOrWhiteSpace(guid)) return;
 
                 var zipmodInfo = new ZipmodInfo
                 {
@@ -1607,10 +1513,7 @@ namespace AIHelper.Manage
 
                 lock (GUIDListAddLock)
                 {
-                    if (!GUIDList.ContainsKey(guid))
-                    {
-                        GUIDList.Add(guid, zipmodInfo);
-                    }
+                    if (!GUIDList.ContainsKey(guid)) GUIDList.Add(guid, zipmodInfo);
                 }
             }
         }
@@ -1629,10 +1532,7 @@ namespace AIHelper.Manage
             Directory.CreateDirectory(Path.GetDirectoryName(ManageSettings.CachedGUIDFilePath));
 
             var sw = new StreamWriter(ManageSettings.CachedGUIDFilePath);
-            foreach (var pair in list)
-            {
-                sw.WriteLine(pair.Value.FileInfo.FullName + cachedCUIDFileSplitter + pair.Key);
-            }
+            foreach (var pair in list) sw.WriteLine(pair.Value.FileInfo.FullName + cachedCUIDFileSplitter + pair.Key);
             sw.Dispose();
         }
 
@@ -1652,17 +1552,11 @@ namespace AIHelper.Manage
 
             foreach (var line in File.ReadAllLines(ManageSettings.CachedGUIDFilePath))
             {
-                if (string.IsNullOrWhiteSpace(line))
-                {
-                    continue;
-                }
+                if (string.IsNullOrWhiteSpace(line)) continue;
 
                 var data = line.Split(new[] { cachedCUIDFileSplitter }, StringSplitOptions.None);
 
-                if (data.Length != 2)
-                {
-                    continue;
-                }
+                if (data.Length != 2) continue;
 
                 cachedGUIDList.Add(data[0], data[1]);
             }

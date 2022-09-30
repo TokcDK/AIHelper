@@ -47,6 +47,39 @@ namespace AIHelper.Manage
             //ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "UserData", "Overlays"), true);
         }
 
+        public static void PreloadingSetup()
+        {
+            var selectedProfileSettingsIniPath = ManageSettings.MoSelectedProfileSettingsPath;
+
+            var ini = ManageIni.GetINIFile(selectedProfileSettingsIniPath);
+
+            int index = 1;
+            foreach(var processName in new[]
+            {
+                ManageSettings.CurrentGame.GameExeName,
+                ManageSettings.CurrentGame.GameStudioExeName,
+            })
+            {
+                bool gameExeForcedLibrariesIsSet = ini.SectionExists("forced_libraries")
+                    && ini.KeyExists($"{processName}\\enabled", "forced_libraries")
+                    && ini.GetKey("forced_libraries", $"{processName}\\enabled") == "true"
+                    && ini.KeyExists($"{processName}\\{index}\\enabled", "forced_libraries")
+                    && ini.GetKey("forced_libraries", $"{processName}\\{index}\\enabled") == "true"
+                    && ini.KeyExists($"{processName}\\{index}\\library", "forced_libraries")
+                    && ini.GetKey("forced_libraries", $"{processName}\\{index}\\library") == "winhttp.dll"
+                    && ini.KeyExists($"{processName}\\{index}\\library", "forced_libraries")
+                    && ini.GetKey("forced_libraries", $"{processName}\\{index}\\process") == $"{processName}.exe"
+                    ;
+
+                if (gameExeForcedLibrariesIsSet) continue;
+
+                ini.SetKey("forced_libraries", $"{processName}\\enabled", "true");
+                ini.SetKey("forced_libraries", $"{processName}\\{index}\\enabled", "true");
+                ini.SetKey("forced_libraries", $"{processName}\\{index}\\library", "winhttp.dll");
+                ini.SetKey("forced_libraries", $"{processName}\\{index}\\process", $"{processName}.exe");
+            }
+        }
+
         public static void CopyModOrganizerUserFiles(string moDirAltName)
         {
             //var game = Data.CurrentGame.GetCurrentGameIndex()];

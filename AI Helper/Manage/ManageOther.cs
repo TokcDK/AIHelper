@@ -439,7 +439,11 @@ namespace AIHelper.Manage
 
                 ManageOther.GetListOfExistsGames();
 
-                if (ManageSettings.KnownGames.Count == 0 && (ManageSettings.Games.Games == null || ManageSettings.Games.Games.Count == 0))
+                bool isNoGamesFound = ManageSettings.KnownGames.Count == 0 && (ManageSettings.Games.Games == null || ManageSettings.Games.Games.Count == 0);
+
+                isNoGamesFound = !AddNewGame(main) && ManageSettings.KnownGames.Count == 0 && (ManageSettings.Games.Games == null || ManageSettings.Games.Games.Count == 0);
+
+                if (isNoGamesFound)
                 {
                     MessageBox.Show(T._("Games not found") + "."
                         + Environment.NewLine + T._("Need atleast one game in subfolder in Games folder") + "."
@@ -457,7 +461,7 @@ namespace AIHelper.Manage
                         + Environment.NewLine + "  " + T._("in place of any not exists MO data files will be created empty.")
                         );
                     //Application.Exit();
-                    return AddNewGame(main);
+                    return false;
                 }
                 else
                 {

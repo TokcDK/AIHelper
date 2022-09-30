@@ -132,6 +132,7 @@
     <Compile Include="Games\BaseGamePyFileInfo.cs" />
     <Compile Include="Games\GamesList.cs" />
     <Compile Include="Games\IGame.cs" />
+    <Compile Include="Games\Illusion\RoomGirl.cs" />
     <Compile Include="Games\Illusion\HoneySelect2.cs" />
     <Compile Include="Games\Illusion\IllusionGameBase.cs" />
     <Compile Include="Games\Illusion\KoikatsuSunshine.cs" />
@@ -339,6 +340,7 @@
     <Content Include="Other\basic_games\game_honeyselect2.py" />
     <Content Include="Other\basic_games\game_koikatusunshine.py" />
     <Content Include="Other\basic_games\game_koikatu.py" />
+    <Content Include="Other\basic_games\game_roomgirl.py" />
     <Content Include="Other\ModUpdateReportTemplate.html" />
     <Content Include="helpericon.ico" />
   </ItemGroup>

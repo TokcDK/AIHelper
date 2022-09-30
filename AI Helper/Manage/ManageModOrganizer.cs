@@ -346,10 +346,8 @@ namespace AIHelper.Manage
         /// <returns></returns>
         private static bool IsInEnabledModOrOverwrite(string sourceFilePath)
         {
-            if (sourceFilePath.Contains(ManageSettings.CurrentGameOverwriteFolderPath) || sourceFilePath.Contains(ManageSettings.CurrentGameMoOverwritePath))
-            {
-                return true;
-            }
+            if (sourceFilePath.Contains(ManageSettings.CurrentGameOverwriteFolderPath) 
+                || sourceFilePath.Contains(ManageSettings.CurrentGameMoOverwritePath)) return true;
 
             if (sourceFilePath.Contains(ManageSettings.CurrentGameModsDirPath))
             {
@@ -360,10 +358,7 @@ namespace AIHelper.Manage
 
                 foreach (var name in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile())
                 {
-                    if (modname == name)
-                    {
-                        return true;
-                    }
+                    if (modname == name) return true;
                 }
             }
 
@@ -425,15 +420,14 @@ namespace AIHelper.Manage
             for (int i = 0; i < targetFoldersLength; i++)
             {
                 string folder = targetFolders[i];
-                if (Directory.Exists(folder))
+                if (!Directory.Exists(folder)) continue;
+
+                var targetResultDirPath = Path.Combine(folder, "UserData", typeFolder, targetFolderName);
+                if (!Directory.Exists(targetResultDirPath))
                 {
-                    var targetResultDirPath = Path.Combine(folder, "UserData", typeFolder, targetFolderName);
-                    if (!Directory.Exists(targetResultDirPath))
-                    {
-                        Directory.CreateDirectory(targetResultDirPath);
-                    }
-                    return targetResultDirPath;
+                    Directory.CreateDirectory(targetResultDirPath);
                 }
+                return targetResultDirPath;
             }
 
             return Path.Combine(ManageSettings.CurrentGameOverwriteFolderPath, "UserData", typeFolder, targetFolderName);
@@ -441,16 +435,12 @@ namespace AIHelper.Manage
 
         public static string GetTheDllFromSubfolders(string dir, string fileName, string extension)
         {
-            if (Directory.Exists(dir))
+            if (!Directory.Exists(dir)) return string.Empty;
+
+            foreach (var file in Directory.GetFiles(dir, "*." + extension, SearchOption.AllDirectories))
             {
-                foreach (var file in Directory.GetFiles(dir, "*." + extension, SearchOption.AllDirectories))
-                {
-                    string name = Path.GetFileNameWithoutExtension(file);
-                    if (string.Compare(name, fileName, true, CultureInfo.InvariantCulture) == 0)
-                    {
-                        return file;
-                    }
-                }
+                string name = Path.GetFileNameWithoutExtension(file);
+                if (string.Compare(name, fileName, true, CultureInfo.InvariantCulture) == 0) return file;
             }
             return string.Empty;
         }
@@ -466,35 +456,25 @@ namespace AIHelper.Manage
                 {
                     foreach (var zipfile in Directory.GetFiles(modsDir, "*.zip"))
                     {
-                        using (ZipArchive archive = ZipFile.OpenRead(zipfile))
+                        using (var archive = ZipFile.OpenRead(zipfile))
                         {
                             foreach (ZipArchiveEntry entry in archive.Entries)
                             {
-                                if (entry.FullName.EndsWith("manifest.xml", StringComparison.OrdinalIgnoreCase))
-                                {
-                                    string tempDir = Path.Combine(modsDir, "temp");
-                                    if (Directory.Exists(tempDir))
-                                    {
-                                    }
-                                    else
-                                    {
-                                        Directory.CreateDirectory(tempDir);
-                                    }
+                                if (!entry.FullName.EndsWith("manifest.xml", StringComparison.OrdinalIgnoreCase)) continue;
 
-                                    string xmlpath = Path.Combine(tempDir, entry.FullName);
-                                    entry.ExtractToFile(xmlpath);
+                                string tempDir = Path.Combine(modsDir, "temp");
+                                Directory.CreateDirectory(tempDir);
 
-                                    author = ManageXml.ReadXmlValue(xmlpath, "manifest/author", "author");
+                                string xmlpath = Path.Combine(tempDir, entry.FullName);
+                                entry.ExtractToFile(xmlpath);
 
-                                    File.Delete(xmlpath);
-                                    ManageFilesFoldersExtensions.DeleteEmptySubfolders(tempDir);
-                                    break;
-                                }
+                                author = ManageXml.ReadXmlValue(xmlpath, "manifest/author", "author");
+
+                                File.Delete(xmlpath);
+                                ManageFilesFoldersExtensions.DeleteEmptySubfolders(tempDir);
+                                break;
                             }
-                            if (author.Length > 0)
-                            {
-                                return author;
-                            }
+                            if (author.Length > 0) return author;
                         }
 
                     }

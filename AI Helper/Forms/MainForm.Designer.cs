@@ -42,6 +42,7 @@
             this.MainService = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.LaunchPagePanel = new System.Windows.Forms.Panel();
+            this.AddGameLabel = new System.Windows.Forms.Label();
             this.pbDiscord = new System.Windows.Forms.PictureBox();
             this.VRGameCheckBox = new System.Windows.Forms.CheckBox();
             this.OpenHelpLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -106,7 +107,7 @@
             this.ModeSwitchFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.ModeSwitchCreateBuckupLabel = new System.Windows.Forms.Label();
             this.DevButton = new System.Windows.Forms.Button();
-            this.AddGameLabel = new System.Windows.Forms.Label();
+            this.AddGameSettingsLabel = new System.Windows.Forms.Label();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -307,6 +308,18 @@
             this.LaunchPagePanel.Name = "LaunchPagePanel";
             this.LaunchPagePanel.Size = new System.Drawing.Size(340, 155);
             this.LaunchPagePanel.TabIndex = 0;
+            // 
+            // AddGameLabel
+            // 
+            this.AddGameLabel.AutoSize = true;
+            this.AddGameLabel.BackColor = System.Drawing.Color.Transparent;
+            this.AddGameLabel.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.AddGameLabel.Location = new System.Drawing.Point(322, 140);
+            this.AddGameLabel.Name = "AddGameLabel";
+            this.AddGameLabel.Size = new System.Drawing.Size(13, 13);
+            this.AddGameLabel.TabIndex = 31;
+            this.AddGameLabel.Text = "+";
+            this.AddGameLabel.Click += new System.EventHandler(this.AddGameLabel_Click);
             // 
             // pbDiscord
             // 
@@ -534,6 +547,7 @@
             // SettingsPagePanel
             // 
             this.SettingsPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.SettingsPagePanel.Controls.Add(this.AddGameSettingsLabel);
             this.SettingsPagePanel.Controls.Add(this.cbxNtlea);
             this.SettingsPagePanel.Controls.Add(this.FixRegistryLinkLabel);
             this.SettingsPagePanel.Controls.Add(this.CreateShortcutLinkLabel);
@@ -556,7 +570,7 @@
             this.cbxNtlea.AutoSize = true;
             this.cbxNtlea.BackColor = System.Drawing.Color.Transparent;
             this.cbxNtlea.ForeColor = System.Drawing.Color.White;
-            this.cbxNtlea.Location = new System.Drawing.Point(155, 139);
+            this.cbxNtlea.Location = new System.Drawing.Point(83, 139);
             this.cbxNtlea.Name = "cbxNtlea";
             this.cbxNtlea.Size = new System.Drawing.Size(49, 17);
             this.cbxNtlea.TabIndex = 7;
@@ -636,7 +650,7 @@
             this.ExtraSettingsLinkLabel.BackColor = System.Drawing.Color.Transparent;
             this.ExtraSettingsLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.ExtraSettingsLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.ExtraSettingsLinkLabel.Location = new System.Drawing.Point(158, 23);
+            this.ExtraSettingsLinkLabel.Location = new System.Drawing.Point(157, 139);
             this.ExtraSettingsLinkLabel.Name = "ExtraSettingsLinkLabel";
             this.ExtraSettingsLinkLabel.Size = new System.Drawing.Size(72, 13);
             this.ExtraSettingsLinkLabel.TabIndex = 9;
@@ -1186,17 +1200,16 @@
             this.DevButton.UseVisualStyleBackColor = true;
             this.DevButton.Click += new System.EventHandler(this.Dev_Click);
             // 
-            // AddGameLabel
+            // AddGameSettingsLabel
             // 
-            this.AddGameLabel.AutoSize = true;
-            this.AddGameLabel.BackColor = System.Drawing.Color.Transparent;
-            this.AddGameLabel.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.AddGameLabel.Location = new System.Drawing.Point(322, 140);
-            this.AddGameLabel.Name = "AddGameLabel";
-            this.AddGameLabel.Size = new System.Drawing.Size(13, 13);
-            this.AddGameLabel.TabIndex = 31;
-            this.AddGameLabel.Text = "+";
-            this.AddGameLabel.Click += new System.EventHandler(this.AddGameLabel_Click);
+            this.AddGameSettingsLabel.AutoSize = true;
+            this.AddGameSettingsLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.AddGameSettingsLabel.Location = new System.Drawing.Point(158, 23);
+            this.AddGameSettingsLabel.Name = "AddGameSettingsLabel";
+            this.AddGameSettingsLabel.Size = new System.Drawing.Size(55, 13);
+            this.AddGameSettingsLabel.TabIndex = 14;
+            this.AddGameSettingsLabel.Text = "Add game";
+            this.AddGameSettingsLabel.Click += new System.EventHandler(this.AddGameLabel_Click);
             // 
             // MainForm
             // 
@@ -1256,7 +1269,6 @@
         private System.Windows.Forms.Panel LabelPanel2;
         private System.Windows.Forms.TabPage SettingsTabPage;
         private System.Windows.Forms.Panel SettingsPagePanel;
-        private System.Windows.Forms.CheckBox AutoShortcutRegistryCheckBox;
         private System.Windows.Forms.GroupBox DisplaySettingsGroupBox;
         private System.Windows.Forms.CheckBox FullScreenCheckBox;
         private System.Windows.Forms.ComboBox ResolutionComboBox;
@@ -1277,11 +1289,9 @@
         private System.Windows.Forms.LinkLabel OpenMyUserDataFolderLinkLabel;
         private System.Windows.Forms.LinkLabel OpenMOOverwriteFolderLinkLabel;
         private System.Windows.Forms.Label CurrentGameLabel;
-        private System.Windows.Forms.ComboBox CurrentGameComboBox;
         private System.Windows.Forms.Label ProgramNameLabelPart1;
         private System.Windows.Forms.Label ProgramNameLabelPart2;
         private System.Windows.Forms.LinkLabel SettingsOpen2MOLinkLabel;
-        private System.Windows.Forms.Label SelectedGameLabel;
         private System.Windows.Forms.CheckBox BepInExConsoleCheckBox;
         private System.Windows.Forms.Label BepInExDisplayedLogLevelLabel;
         private System.Windows.Forms.LinkLabel ExtraSettingsLinkLabel;
@@ -1289,7 +1299,6 @@
         private System.Windows.Forms.LinkLabel JPLauncherRunLinkLabel;
         private System.Windows.Forms.LinkLabel SetupXmlLinkLabel;
         private System.Windows.Forms.LinkLabel OpenHelpLinkLabel;
-        private System.Windows.Forms.TextBox CurrentGameTitleTextBox;
         private System.Windows.Forms.CheckBox VRGameCheckBox;
         private System.Windows.Forms.LinkLabel CreateShortcutLinkLabel;
         private System.Windows.Forms.LinkLabel FixRegistryLinkLabel;
@@ -1326,6 +1335,11 @@
         private System.Windows.Forms.LinkLabel OpenPresetDirsLinkLabelMO;
         private System.Windows.Forms.Button DevButton;
         private System.Windows.Forms.Label AddGameLabel;
+        internal System.Windows.Forms.ComboBox CurrentGameComboBox;
+        internal System.Windows.Forms.CheckBox AutoShortcutRegistryCheckBox;
+        internal System.Windows.Forms.Label SelectedGameLabel;
+        internal System.Windows.Forms.TextBox CurrentGameTitleTextBox;
+        private System.Windows.Forms.Label AddGameSettingsLabel;
     }
 }
 

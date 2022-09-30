@@ -1,25 +1,22 @@
-﻿using AIHelper.Games;
-using AIHelper.Install.Types;
-using AIHelper.Install.Types.Directories;
-using AIHelper.Install.UpdateMaker;
-using AIHelper.Manage;
-using AIHelper.Manage.Update;
-using CheckForEmptyDir;
-using GetListOfSubClasses;
-using INIFileMan;
-using NLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Security.AccessControl;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AIHelper.Install.Types;
+using AIHelper.Install.Types.Directories;
+using AIHelper.Install.UpdateMaker;
+using AIHelper.Manage;
+using AIHelper.Manage.Update;
+using CheckForEmptyDir;
+using INIFileMan;
+using NLog;
 using static AIHelper.Manage.ManageModOrganizer;
 
 //using Crc32C;
@@ -48,7 +45,7 @@ namespace AIHelper
             ManageSettings.ApplicationStartupPath = Application.StartupPath;
             ManageSettings.ApplicationProductName = Application.ProductName;
 
-            if (!SetListOfAddedGames())
+            if (!ManageOther.SetListOfAddedGames(this))
             {
                 this.Enabled = false;
                 Application.Exit();
@@ -160,143 +157,6 @@ namespace AIHelper
             //        _log.Debug("An error occured whil tried to CleanLog. error:" + ex);
             //    }
             //}
-        }
-
-        private bool SetListOfAddedGames()
-        {
-            try
-            {
-                var ini = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
-                ManageSettings.KnownGames = GetKnownGames(ini);
-
-                ManageOther.GetListOfExistsGames();
-
-                if (ManageSettings.KnownGames.Count == 0 && (ManageSettings.Games.Games == null || ManageSettings.Games.Games.Count == 0))
-                {
-                    MessageBox.Show(T._("Games not found") + "."
-                        + Environment.NewLine + T._("Need atleast one game in subfolder in Games folder") + "."
-                        + Environment.NewLine + "----------------"
-                        + Environment.NewLine + T._("List of games") + ":"
-                        + Environment.NewLine + ManageSettings.FolderNamesOfFoundGame
-                        + Environment.NewLine + "----------------"
-                        + Environment.NewLine + T._("The game folder must contain") + ":"
-                        + Environment.NewLine + "Data" + " - " + T._("main game data")
-                        + Environment.NewLine + "Mods" + " - " + T._("game mods in subfolders")
-                        + Environment.NewLine + "MO" + " - " + T._("Mod Organizer folder with next data") + ":"
-                        + Environment.NewLine + "  " + "profiles" + " - " + T._("profiles folder with mod combinations")
-                        + Environment.NewLine + "  " + "categories.dat" + " - " + T._("list of categories for mods")
-                        + Environment.NewLine + "  " + "ModOrganizer.ini" + " - " + T._("Mod Organizer settings for the game")
-                        + Environment.NewLine + "  " + T._("in place of any not exists MO data files will be created empty.")
-                        );
-                    //Application.Exit();
-                    return false;
-                }
-                else
-                {
-                    List<string> newGamesReport = new List<string>();
-                    foreach (var game in ManageSettings.Games.Games)
-                    {
-                        var gamePath = game.GamePath;
-                        if (ManageSettings.KnownGames.Contains(gamePath)) continue;
-
-                        ManageSettings.KnownGames.Add(gamePath);
-                        newGamesReport.Add("\n" + game.GameDisplayingName + ": " + gamePath);
-                    }
-
-                    newGamesReport = newGamesReport.OrderBy(p => p).ToList();
-
-                    if (newGamesReport.Count > 0)
-                    {
-                        MessageBox.Show(T._("Found new games:") +
-                            "\n"
-                            + Environment.NewLine + "----------------"
-                            + string.Join("", newGamesReport)
-                            + Environment.NewLine + "----------------"
-                        );
-                    }
-                }
-
-                string selected_game;
-                if (ini.Configuration == null)
-                {
-                    selected_game = "";
-                }
-                else
-                {
-                    selected_game = ini.GetKey(ManageSettings.SettingsIniSectionName, ManageSettings.SelectedGameIniKeyName);
-                    if (string.IsNullOrWhiteSpace(selected_game))
-                    {
-                        var game = ManageSettings.Games.Games[0];
-                        selected_game = game.GameDirName;
-                    }
-                }
-
-                ManageSettings.Games.Game = ManageSettings.Games.Games.First(g => g.GameDirName == selected_game);
-                var bindingSource1 = new BindingSource();
-                bindingSource1.DataSource = ManageSettings.Games.Games;
-                CurrentGameComboBox.DataSource = bindingSource1.DataSource;
-                CurrentGameComboBox.DisplayMember = "GameDirName";
-                CurrentGameComboBox.ValueMember = "GameDirName";
-
-                //foreach (var game in ManageSettings.Games.Games)
-                //{
-                //    CurrentGameComboBox.Items.Add(game.GameDirName);
-                //}
-                if (ManageSettings.Games.Games.Count == 1) CurrentGameComboBox.Enabled = false;
-
-                SetSelectedGameIndexAndBasicVariables(ManageSettings.GetCurrentGameIndexByFolderName(
-                        ManageSettings.Games.Games
-                        ,
-                        selected_game
-                        ));
-
-                ini.SetKey(ManageSettings.SettingsIniSectionName, ManageSettings.KnownGamesIniKeyName, string.Join("|", ManageSettings.KnownGames));
-
-                try
-                {
-                    CurrentGameTitleTextBox.Text = ManageSettings.Games.Game.GameDisplayingName;
-                    CurrentGameTitleTextBox.Enabled = false;
-                }
-                catch (Exception ex) { _log.Info("Error while game title setup. Set more specific exception there. Error:\r\n" + ex); }
-            }
-            catch (Exception ex)
-            {
-                _log.Debug("An error occured while SetListOfGames.path=" + ManageSettings.AiHelperIniPath + "\r\n error:\r\n" + ex);
-                return false;
-            }
-
-            return true;
-        }
-
-        private static List<string> GetKnownGames(INIFile ini)
-        {
-            List<string> list = new List<string>();
-            if (ini == null || ini.Configuration == null) return list;
-
-            var games = ini.GetKey(ManageSettings.SettingsIniSectionName, ManageSettings.KnownGamesIniKeyName);
-
-            if (!string.IsNullOrWhiteSpace(games))
-            {
-                var gamesList = games.Split('|');
-                if (gamesList != null && gamesList.Length > 0)
-                {
-                    gamesList = gamesList.Where(p => Directory.Exists(p)).Distinct().ToArray();
-                    foreach (var path in gamesList) list.Add(path);
-                }
-            }
-
-            return list;
-        }
-
-        private void SetSelectedGameIndexAndBasicVariables(int index = 0)
-        {
-            //ManageSettings.Games.CurrentGameListIndex = index;
-            //ManageSettings.Games.Game = ManageSettings.Games.Games[ManageSettings.Games.CurrentGameListIndex];
-            //CurrentGameComboBox.SelectedIndex = index;
-
-            //set checkbox
-            ManageSettings.AutoShortcutRegistryCheckBoxChecked = bool.Parse(ManageIni.GetIniValueIfExist(ManageSettings.AiHelperIniPath, "autoCreateShortcutAndFixRegystry", "Settings", "False"));
-            AutoShortcutRegistryCheckBox.Checked = ManageSettings.AutoShortcutRegistryCheckBoxChecked;
         }
 
         private void SetLocalizationStrings()
@@ -987,19 +847,19 @@ namespace AIHelper
 
                 //if (cbxNtlea.Checked)
                 //{
-                    //customExeTitleName += "_NTLEA";
+                //customExeTitleName += "_NTLEA";
 
-                    //var customs = new CustomExecutables();
-                    //if (!customs.ContainsTitle(customExeTitleName))
-                    //{
-                    //    var custom = new CustomExecutables.CustomExecutable
-                    //    {
-                    //        Title = customExeTitleName,
-                    //        Binary = ManageSettings.NtleaExePath(), // ntlea path
-                    //        Arguments = "\"" + ManageSettings.GetCurrentGameExePath() + "\" \"C932\" \"L0411\"" // ntlea arcuments like [C]odepage  and [L]ocal ID
-                    //    };
-                    //    customs.Add(custom, performSave: true);
-                    //}
+                //var customs = new CustomExecutables();
+                //if (!customs.ContainsTitle(customExeTitleName))
+                //{
+                //    var custom = new CustomExecutables.CustomExecutable
+                //    {
+                //        Title = customExeTitleName,
+                //        Binary = ManageSettings.NtleaExePath(), // ntlea path
+                //        Arguments = "\"" + ManageSettings.GetCurrentGameExePath() + "\" \"C932\" \"L0411\"" // ntlea arcuments like [C]odepage  and [L]ocal ID
+                //    };
+                //    customs.Add(custom, performSave: true);
+                //}
                 //}
 
                 arguments = "moshortcut://:\"" + customExeTitleName + "\"";
@@ -1228,7 +1088,7 @@ namespace AIHelper
 
         private void OpenMOOverwriteFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            if (Directory.Exists(ManageSettings.CurrentGameOverwriteFolderPath)) 
+            if (Directory.Exists(ManageSettings.CurrentGameOverwriteFolderPath))
                 Process.Start("explorer.exe", ManageSettings.CurrentGameOverwriteFolderPath);
         }
 
@@ -1247,7 +1107,7 @@ namespace AIHelper
                 ManageSettings.CurrentGameIsChanging = true;
 
                 ManageSettings.Games.Game = ManageSettings.Games.Games[(sender as ComboBox).SelectedIndex];
-                SetSelectedGameIndexAndBasicVariables((sender as ComboBox).SelectedIndex);
+                ManageOther.SetSelectedGameIndexAndBasicVariables(this);
                 //ManageSettings.Games.CurrentGameListIndex = (sender as ComboBox).SelectedIndex;
                 ActionsOnGameChanged();
 
@@ -1306,7 +1166,7 @@ namespace AIHelper
 
         private void BepInExDisplayedLogLevelLabel_Click(object sender, EventArgs e)
         {
-            if (BepInExConsoleCheckBox.Checked) 
+            if (BepInExConsoleCheckBox.Checked)
                 ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExConsoleCheckBox, BepInExDisplayedLogLevelLabel);
         }
 
@@ -1682,52 +1542,7 @@ namespace AIHelper
 
         private void AddGameLabel_Click(object sender, EventArgs e)
         {
-            var browseDialog = new FolderBrowserDialog();
-            var result = browseDialog.ShowDialog();
-            if (result != DialogResult.OK) return;
-            if (File.Exists(browseDialog.SelectedPath)) return;
-
-            string exeName = Path.GetFileNameWithoutExtension(browseDialog.SelectedPath);
-
-            // check if exe is exe of one of valid games
-            bool invalid = true;
-            foreach (var gameType in Inherited.GetListOfInheritedTypes(typeof(GameBase)))
-            {
-                var game = (GameBase)Activator.CreateInstance(gameType);
-                if (game.GameExeName == exeName
-                    || game.GameExeNameX32 == exeName
-                    || game.GameExeNameVr == exeName
-                    || game.GameStudioExeName == exeName
-                    || game.GameStudioExeNameX32 == exeName
-                    || game.IniSettingsExeName == exeName
-                    )
-                {
-                    invalid = false;
-                    break;
-                }
-            }
-
-            if (invalid) return;
-
-            string gameTxtPath = Path.Combine(ManageSettings.GamesBaseFolderPath, $"{exeName}.txt");
-
-            if (File.Exists(gameTxtPath))
-            {
-                bool lineAlreadyAdded = false;
-                var lines = File.ReadAllLines(gameTxtPath);
-                foreach (var line in lines)
-                {
-                    if (string.Equals(browseDialog.SelectedPath, line, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        lineAlreadyAdded = true;
-                        break;
-                    }
-                }
-
-                // write new path in the file if missing
-                if (!lineAlreadyAdded) File.WriteAllLines(gameTxtPath, lines.Concat(new[] { browseDialog.SelectedPath }).ToArray());
-            }
-            else File.WriteAllText(gameTxtPath, $"{browseDialog.SelectedPath}\r\n");
+            ManageOther.AddNewGame(this);
         }
 
         //Disable close window button

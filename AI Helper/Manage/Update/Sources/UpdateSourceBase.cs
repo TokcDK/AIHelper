@@ -15,7 +15,7 @@ namespace AIHelper.Manage.Update.Sources
     {
         protected static Logger _log = LogManager.GetCurrentClassLogger();
 
-        protected UpdateInfo Info;
+        internal UpdateInfo Info;
 
         protected WebClient WC;
 

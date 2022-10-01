@@ -1,14 +1,14 @@
-﻿using AIHelper.Manage.Update.Sources;
-using AIHelper.Manage.Update.Targets;
-using AIHelper.Manage.Update.Targets.Mods;
-using NLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AIHelper.Manage.Update.Sources;
+using AIHelper.Manage.Update.Targets;
+using AIHelper.Manage.Update.Targets.Mods;
+using NLog;
 
 namespace AIHelper.Manage.Update
 {
@@ -28,20 +28,21 @@ namespace AIHelper.Manage.Update
         /// </summary>
         Dictionary<string, Dictionary<string, DateTime>> lastCheckDates;
 
-        internal async Task Update()
+        internal async Task Update(List<UpdateTargetBase> targetList = null)
         {
-            UpdateInfo info = new UpdateInfo();
+            bool isUsingTargetList = targetList != null && targetList.Count > 0;
+            UpdateInfo info = !isUsingTargetList ? new UpdateInfo() : targetList[0].Info;
             var sources = new List<UpdateSourceBase> //Sources of updates
             {
                 new Github(info)
             };
-            var targets = new List<UpdateTargetBase> //Targets for update
+            var targets = !isUsingTargetList ? new List<UpdateTargetBase> //Targets for update
             {
                 new Mo(info),
                 //new MOBaseGames(info),
                 new ModsList(info),
                 new ModsMeta(info)
-            };
+            } : targetList;
 
             lastCheckDates = GetDateTimesFromFile();
 
@@ -120,7 +121,7 @@ namespace AIHelper.Manage.Update
                     if (source.IsNotWorkingNow) continue;
 
                     var tFolderInfos = target.GetUpdateInfos(); // get folderslist for update, usually it is active mods
-                    
+
                     // skip if no targets
                     if (tFolderInfos == null || tFolderInfos.Count == 0) continue;
 
@@ -163,7 +164,7 @@ namespace AIHelper.Manage.Update
                         if (tInfoArray.Length == 0) continue;
 
                         info.TargetFolderUpdateInfo = tInfoArray.TrimEachValue(); // get folder info
-                                                                         //info.TargetCurrentVersion = tInfoArray[tInfoArray.Length - 1]; // get current version (last element of info)
+                                                                                  //info.TargetCurrentVersion = tInfoArray[tInfoArray.Length - 1]; // get current version (last element of info)
 
                         info.TargetLastVersion = source.GetLastVersion(); // get last version
                         if (source.CheckIfStopWork(info))
@@ -209,12 +210,12 @@ namespace AIHelper.Manage.Update
                             info.Excluded.Add(tFolderInfo.Key); // add path to excluded to skip it next time if will be found for other source or target
 
                             info.Report.Add(
-                                (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportSuccessLine: string.Empty)
+                                (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportSuccessLine : string.Empty)
                                     + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage
                                         + ManageSettings.UpdateReport.HtmlModReportPreModnameTags
                                         + info.TargetFolderPath.Name
                                         + ManageSettings.UpdateReport.HtmlModReportPostModnameTags
-                                        + (!info.TargetFolderPath.Name.Contains(info.TargetCurrentVersion) ? 
+                                        + (!info.TargetFolderPath.Name.Contains(info.TargetCurrentVersion) ?
                                         (
                                         " "
                                         + ManageSettings.UpdateReport.HtmlModReportPreVersionTags
@@ -225,9 +226,9 @@ namespace AIHelper.Manage.Update
                                         + " "
                                         + T._("updated to version")
                                         + " "
-                                        + ManageSettings.UpdateReport.HtmlModReportPreVersionTags                                            + info.TargetLastVersion
-                                        + ManageSettings.UpdateReport.HtmlModReportPostVersionTags                                    + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage                                    + (_isHtmlReport ? ManageSettings.UpdateReport.HtmlAfterModReportLine: string.Empty)
-                                        + (!string.IsNullOrWhiteSpace(info.SourceLink) ? ManageSettings.UpdateReport.InfoLinkPattern+ info.SourceLink : string.Empty)
+                                        + ManageSettings.UpdateReport.HtmlModReportPreVersionTags + info.TargetLastVersion
+                                        + ManageSettings.UpdateReport.HtmlModReportPostVersionTags + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage + (_isHtmlReport ? ManageSettings.UpdateReport.HtmlAfterModReportLine : string.Empty)
+                                        + (!string.IsNullOrWhiteSpace(info.SourceLink) ? ManageSettings.UpdateReport.InfoLinkPattern + info.SourceLink : string.Empty)
                                 );
 
                         }
@@ -249,16 +250,16 @@ namespace AIHelper.Manage.Update
                             if (info.NoRemoteFile)
                             {
                                 info.Report.Add(
-                                        (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportWarningLine: string.Empty)
+                                        (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportWarningLine : string.Empty)
                                         + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage
                                         + ManageSettings.UpdateReport.HtmlModReportPreModnameTags
                                         + info.TargetFolderPath.Name
                                         + ManageSettings.UpdateReport.HtmlModReportPostModnameTags
                                         + " "
                                         + T._("have new version but file for update not found")
-                                        + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage                                        
-                                        + (_isHtmlReport ? ManageSettings.UpdateReport.HtmlAfterModReportLine: string.Empty)
-                                        + (!string.IsNullOrWhiteSpace(info.SourceLink) ? ManageSettings.UpdateReport.InfoLinkPattern+ info.SourceLink : string.Empty)
+                                        + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage
+                                        + (_isHtmlReport ? ManageSettings.UpdateReport.HtmlAfterModReportLine : string.Empty)
+                                        + (!string.IsNullOrWhiteSpace(info.SourceLink) ? ManageSettings.UpdateReport.InfoLinkPattern + info.SourceLink : string.Empty)
                                         );
                             }
                             else
@@ -267,12 +268,12 @@ namespace AIHelper.Manage.Update
                                 //RestoreModFromBuckup(OldModBuckupDirPath, UpdatingModDirPath);
 
                                 info.Report.Add(
-                                        (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportErrorLine: string.Empty)
-                                        + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage                                            
+                                        (_isHtmlReport ? ManageSettings.UpdateReport.HtmlBeforeModReportErrorLine : string.Empty)
+                                        + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage
                                         + T._("Failed to update") + " " + info.TargetFolderPath.Name
-                                        + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage                                            
+                                        + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage
                                         + ErrorMessage(info.LastErrorText)
-                                        + " ("+ T._("Details in") + " " + ManageSettings.ApplicationProductName + ".log" + ")"
+                                        + " (" + T._("Details in") + " " + ManageSettings.ApplicationProductName + ".log" + ")"
                                         + ManageSettings.UpdateReport.HtmlAfterModReportLine);
 
                                 _log.Warn("Failed to update" + " " + info.TargetFolderPath.Name /*+ ":" + Environment.NewLine + ex*/);

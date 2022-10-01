@@ -12,7 +12,7 @@ namespace AIHelper.Manage.Update.Targets
     {
         protected static Logger _log = LogManager.GetCurrentClassLogger();
 
-        protected UpdateInfo Info;
+        internal UpdateInfo Info;
 
         protected UpdateTargetBase(UpdateInfo info)
         {

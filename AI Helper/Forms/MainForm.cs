@@ -14,6 +14,7 @@ using AIHelper.Install.Types.Directories;
 using AIHelper.Install.UpdateMaker;
 using AIHelper.Manage;
 using AIHelper.Manage.Update;
+using AIHelper.Manage.Update.Targets;
 using CheckForEmptyDir;
 using INIFileMan;
 using NLog;
@@ -89,7 +90,7 @@ namespace AIHelper
                     return;
                 }
 
-                await new Updater().Update().ConfigureAwait(true);
+                await new Updater().Update(new List<UpdateTargetBase>() {new Mo(new UpdateInfo()) }).ConfigureAwait(true);
             }
 
             ManageSettings.MOIsNew = IsMo23OrNever();

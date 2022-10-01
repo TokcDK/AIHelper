@@ -220,7 +220,7 @@ namespace AIHelper.Manage.Update.Sources
                 //}
 
                 var latestReleasePage = WC.DownloadString(Info.SourceLink);
-                string assetsPagePattern = @"src\=\""(https\:\/\/github\.com\/" + _gitOwner + "\/" + _gitRepository + @"\/releases\/expanded_assets\/([^\""]+))\""";
+                string assetsPagePattern = @"src\=\""(https\:\/\/github\.com\/" + _gitOwner + @"\/" + _gitRepository + @"\/releases\/expanded_assets\/([^\""]+))\""";
                 var assetPageMatch = Regex.Match(latestReleasePage, assetsPagePattern);
                 if (assetPageMatch.Success)
                 {

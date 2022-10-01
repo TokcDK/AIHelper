@@ -1,19 +1,17 @@
-﻿using AIHelper.Games;
-using AIHelper.SharedData;
-using CheckForEmptyDir;
-using INIFileMan;
-using NLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AIHelper.Games;
+using CheckForEmptyDir;
+using INIFileMan;
+using NLog;
 using static AIHelper.Manage.ManageModOrganizer;
 
 namespace AIHelper.Manage
@@ -54,7 +52,7 @@ namespace AIHelper.Manage
             var ini = ManageIni.GetINIFile(selectedProfileSettingsIniPath);
 
             int index = 1;
-            foreach(var exeName in new[]
+            foreach (var exeName in new[]
             {
                 ManageSettings.CurrentGame.GameExeName,
                 ManageSettings.CurrentGame.GameStudioExeName,
@@ -296,7 +294,7 @@ namespace AIHelper.Manage
 
             int bepInExFilesPathsLength = bepInExFilesPaths.Length / 2;
             for (int i = 0; i < bepInExFilesPathsLength; i++)
-            {                
+            {
                 var sourceFilePath = bepInExFilesPaths[i, 0]; // source file, which to copy
                 var targetFilePath = bepInExFilesPaths[i, 1]; // target file path, where to copy
                 if (remove)
@@ -304,7 +302,7 @@ namespace AIHelper.Manage
                     // remove files mode
                     try
                     {
-                        if (File.Exists(targetFilePath) && (File.Exists(sourceFilePath) 
+                        if (File.Exists(targetFilePath) && (File.Exists(sourceFilePath)
                             || ManageSymLinkExtensions.IsSymlink(targetFilePath))) File.Delete(targetFilePath);
                     }
                     catch (Exception ex)
@@ -332,7 +330,7 @@ namespace AIHelper.Manage
                         {
                             if (File.Exists(targetFilePath)) File.Delete(targetFilePath);
 
-                            if(isNotExistsSource) _log.Warn($"{nameof(BepInExPreloadersFix)}, Source path is not exists: {sourceFilePath}");
+                            if (isNotExistsSource) _log.Warn($"{nameof(BepInExPreloadersFix)}, Source path is not exists: {sourceFilePath}");
 
                             continue;
                         }
@@ -383,7 +381,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         private static bool IsInEnabledModOrOverwrite(string sourceFilePath)
         {
-            if (sourceFilePath.Contains(ManageSettings.CurrentGameOverwriteFolderPath) 
+            if (sourceFilePath.Contains(ManageSettings.CurrentGameOverwriteFolderPath)
                 || sourceFilePath.Contains(ManageSettings.CurrentGameMoOverwritePath)) return true;
 
             if (sourceFilePath.Contains(ManageSettings.CurrentGameModsDirPath))
@@ -799,7 +797,7 @@ namespace AIHelper.Manage
                     if (!name.ToUpperInvariant().Contains("SIDELOADER MODPACK")) continue;
 
                     //skip if txt with same name is missing or modpack already added in list
-                    if (!File.Exists(Path.Combine(Path.GetDirectoryName(modpackdir), name + ".txt")) 
+                    if (!File.Exists(Path.Combine(Path.GetDirectoryName(modpackdir), name + ".txt"))
                         || added.Contains(name)) continue;
 
                     var oldName = name;
@@ -925,7 +923,7 @@ namespace AIHelper.Manage
 
                     var targetObjectPath = info[1].IndexOf(".\\") != -1 ? Path.GetFullPath((overall ? Path.GetDirectoryName(info[2]) : linkinfo.Directory.FullName) + Path.DirectorySeparatorChar + info[1]) // get full path if it was relative. current directory will be linkinfo file's directory
                         : info[1]; // path is not relative
-                                        
+
                     if (!targetObjectPath.Exists(IsDir)) continue;// skip if target object is not exists
 
                     var targetObjectType = IsDir ? ObjectType.Directory : ObjectType.File;
@@ -1721,39 +1719,94 @@ namespace AIHelper.Manage
                 {
                     try
                     {
+                        string path = record.Value.Attribute[attribute];
+
                         string fullPath = "";
-                        if (record.Value.Attribute[attribute].Length > 0)
-                        {
-                            fullPath = Path.GetFullPath(record.Value.Attribute[attribute]);
-                        }
+                        if (path.Length > 0) fullPath = Path.GetFullPath(path);
+
                         bool isFile = attribute == "binary";
                         if ((isFile && File.Exists(fullPath)) || (!isFile && Directory.Exists(fullPath)))
                         {
                             //not need to change if path is exists
+                            continue;
+                        }
+
+                        if (path.StartsWith("..", StringComparison.InvariantCulture))
+                        {
+                            //suppose relative path was from MO dir ..\%MODir%
+                            //replace .. to absolute path of current game directory
+                            var targetcorrectedrelative = path
+                                    .Remove(0, 2).Insert(0, ManageSettings.CurrentGameDirPath);
+
+                            //replace other slashes
+                            var targetcorrectedabsolute = Path.GetFullPath(targetcorrectedrelative);
+
+                            FixExplorerPlusPlusPath(ref targetcorrectedabsolute);
+
+                            record.Value.Attribute[attribute] = CustomExecutables.NormalizePath(targetcorrectedabsolute);
                         }
                         else
                         {
-                            if (record.Value.Attribute[attribute].StartsWith("..", StringComparison.InvariantCulture))
+                            // fix main exe paths
+                            if (isFile)
                             {
-                                //suppose relative path was from MO dir ..\%MODir%
-                                //replace .. to absolute path of current game directory
-                                var targetcorrectedrelative = record.Value.Attribute[attribute]
-                                        .Remove(0, 2).Insert(0, ManageSettings.CurrentGameDirPath);
+                                if (!File.Exists(path))
+                                {
+                                    foreach (var (subpath, slash) in new[]
+                                    {
+                                        ("/" + ManageSettings.CurrentGameDirName + "/data/" + ManageSettings.CurrentGame.GameExeName + ".exe", "/"),
+                                        ("/" + ManageSettings.CurrentGameDirName + "/data/" + ManageSettings.CurrentGame.GameExeNameX32 + ".exe", "/"),
+                                        ("/" + ManageSettings.CurrentGameDirName + "/data/" + ManageSettings.CurrentGame.GameExeNameVr + ".exe", "/"),
+                                        ("/" + ManageSettings.CurrentGameDirName + "/data/" + ManageSettings.CurrentGame.GameStudioExeName + ".exe", "/"),
+                                        ("/" + ManageSettings.CurrentGameDirName + "/data/" + ManageSettings.CurrentGame.GameStudioExeNameX32 + ".exe", "/"),
+                                        ("\\" + ManageSettings.CurrentGameDirName + "\\data\\" + ManageSettings.CurrentGame.GameExeName + ".exe", "\\"),
+                                        ("\\" + ManageSettings.CurrentGameDirName + "\\data\\" + ManageSettings.CurrentGame.GameExeNameX32 + ".exe", "\\"),
+                                        ("\\" + ManageSettings.CurrentGameDirName + "\\data\\" + ManageSettings.CurrentGame.GameExeNameVr + ".exe", "\\"),
+                                        ("\\" + ManageSettings.CurrentGameDirName + "\\data\\" + ManageSettings.CurrentGame.GameStudioExeName + ".exe", "\\"),
+                                        ("\\" + ManageSettings.CurrentGameDirName + "\\data\\" + ManageSettings.CurrentGame.GameStudioExeNameX32 + ".exe", "\\"),
+                                        ("////" + ManageSettings.CurrentGameDirName + "////data////" + ManageSettings.CurrentGame.GameExeName + ".exe", "////"),
+                                        ("////" + ManageSettings.CurrentGameDirName + "////data////" + ManageSettings.CurrentGame.GameExeNameX32 + ".exe", "////"),
+                                        ("////" + ManageSettings.CurrentGameDirName + "////data////" + ManageSettings.CurrentGame.GameExeNameVr + ".exe", "////"),
+                                        ("////" + ManageSettings.CurrentGameDirName + "////data////" + ManageSettings.CurrentGame.GameStudioExeName + ".exe", "////"),
+                                        ("////" + ManageSettings.CurrentGameDirName + "////data////" + ManageSettings.CurrentGame.GameStudioExeNameX32 + ".exe", "////"),
+                                    })
+                                    {
+                                        if (!path.EndsWith(subpath, StringComparison.InvariantCultureIgnoreCase)) continue;
 
-                                //replace other slashes
-                                var targetcorrectedabsolute = Path.GetFullPath(targetcorrectedrelative);
+                                        var fixedPath = $"{ManageSettings.CurrentGameDirPath.Remove(ManageSettings.CurrentGameDirPath.IndexOf(ManageSettings.CurrentGameDirName)).TrimEnd('/').TrimEnd('\\')}/{subpath.TrimStart('/').TrimStart('\\').Replace(slash, "/")}";
 
-                                FixExplorerPlusPlusPath(ref targetcorrectedabsolute);
+                                        if (File.Exists(fixedPath)) record.Value.Attribute[attribute] = CustomExecutables.NormalizePath(fixedPath);
 
-                                record.Value.Attribute[attribute] = CustomExecutables.NormalizePath(targetcorrectedabsolute);
+                                        break;
+                                    }
+                                }
                             }
                             else
                             {
-                                var newPath = record.Value.Attribute[attribute].Replace("/", "\\");
-                                if (FixExplorerPlusPlusPath(ref newPath))
+                                if (!Directory.Exists(path))
                                 {
-                                    record.Value.Attribute[attribute] = CustomExecutables.NormalizePath(newPath);
+                                    foreach (var (subpath, slash) in new[]
+                                    {
+                                        ("/" + ManageSettings.CurrentGameDirName + "/Data", "/"),
+                                        ("\\" + ManageSettings.CurrentGameDirName + "\\Data", "\\"),
+                                        ("////" + ManageSettings.CurrentGameDirName + "////Data", "////"),
+                                    })
+                                    {
+                                        if (!path.EndsWith(subpath, StringComparison.InvariantCultureIgnoreCase)) continue;
+
+                                        var fixedPath = $"{ManageSettings.CurrentGameDirPath}\\Data";
+
+                                        if (Directory.Exists(fixedPath)) record.Value.Attribute[attribute] = CustomExecutables.NormalizePath(fixedPath);
+
+                                        break;
+                                    }
                                 }
+                            }
+
+                            var newPath = record.Value.Attribute[attribute].Replace("/", "\\");
+                            if (FixExplorerPlusPlusPath(ref newPath))
+                            {
+                                record.Value.Attribute[attribute] = CustomExecutables.NormalizePath(newPath);
                             }
                         }
                     }
@@ -4111,7 +4164,7 @@ namespace AIHelper.Manage
             if (string.IsNullOrWhiteSpace(pyname)) return;
 
             var TargetPyInfo = new FileInfo(Path.Combine(moTargetBaseGamesPluginGamesDirPath, pyname + ".py"));
-            var SourcePyInfo = new FileInfo(Path.Combine(moSourceBaseGamesPluginGamesDirPath, pyname + ".py"));            
+            var SourcePyInfo = new FileInfo(Path.Combine(moSourceBaseGamesPluginGamesDirPath, pyname + ".py"));
 
             if (SourcePyInfo.Exists && (!TargetPyInfo.Exists || SourcePyInfo.Length != TargetPyInfo.Length))
             {

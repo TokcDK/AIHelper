@@ -441,7 +441,7 @@ namespace AIHelper.Manage
 
                 bool isNoGamesFound = ManageSettings.KnownGames.Count == 0 && (ManageSettings.Games.Games == null || ManageSettings.Games.Games.Count == 0);
 
-                isNoGamesFound = !AddNewGame(main) && ManageSettings.KnownGames.Count == 0 && (ManageSettings.Games.Games == null || ManageSettings.Games.Games.Count == 0);
+                if (isNoGamesFound) isNoGamesFound = !AddNewGame(main) && ManageSettings.KnownGames.Count == 0 && (ManageSettings.Games.Games == null || ManageSettings.Games.Games.Count == 0);
 
                 if (isNoGamesFound)
                 {
@@ -479,7 +479,7 @@ namespace AIHelper.Manage
 
                     if (newGamesReport.Count > 0)
                     {
-                        MessageBox.Show(T._("Found new games:") +
+                        MessageBox.Show(T._("New games:") +
                             "\n"
                             + Environment.NewLine + "----------------"
                             + string.Join("", newGamesReport)

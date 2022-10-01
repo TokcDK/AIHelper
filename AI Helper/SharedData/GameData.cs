@@ -10,7 +10,7 @@ namespace AIHelper.SharedData
         /// <summary>
         /// List of valid games
         /// </summary>
-        internal List<GameBase> Games { get; set; }
+        internal List<GameBase> Games { get; set; } = new List<GameBase>();
 
         /// <summary>
         /// Current selected game

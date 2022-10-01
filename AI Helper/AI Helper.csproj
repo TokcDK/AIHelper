@@ -542,7 +542,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>:: Move all assemblies and related files to lib folder
-ROBOCOPY "$(TargetDir) " "$(TargetDir)RES\lib\ " /XF "$(TargetName).dll" "$(TargetName).pdb" "$(TargetName).runtimeconfig.json" *.exe *.ini *.config *.manifest *.ico *.log *.txt *.7z *.rar *.zip *.png *.jpg *.lnk /XD RES MO lib Games net6.0-windows "AI Helper Release" [net4] net472 "DEV images" MOTest Downloads "Organized ModPack Dev files" /E /IS /MOVE
+ROBOCOPY "$(TargetDir) " "$(TargetDir)RES\lib\ " *.dll *.pdb /XF "$(TargetName).dll" "$(TargetName).pdb" "$(TargetName).runtimeconfig.json" *.exe *.ini *.config *.manifest *.ico *.log *.txt *.7z *.rar *.zip *.png *.jpg *.lnk /XD logs test AIHInfos RES MO lib Games net6.0-windows "AI Helper Release" [net4] net472 "DEV images" MOTest Downloads "Organized ModPack Dev files" /E /IS /MOVE
 ROBOCOPY "$(ProjectDir)Other\basic_games\ " "$(TargetDir)RES\basicgames\games " *.py
 if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25</PostBuildEvent>
   </PropertyGroup>

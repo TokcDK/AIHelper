@@ -17,7 +17,7 @@ namespace AIHelper.Manage
         /// </summary>
         public static MainForm MainForm { get; internal set; }
 
-        public static GameData Games { get; set; }
+        public static GameData Games { get; set; } = new GameData();
 
         internal static bool IsFirstRun => ManageIni.GetIniValueIfExist(AiHelperIniPath, "FirstRun", "General") == "True";
 

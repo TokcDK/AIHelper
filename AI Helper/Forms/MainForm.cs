@@ -74,6 +74,7 @@ namespace AIHelper
                 else
                 {
                     Application.Exit();
+                    return;
                 }
             }
 

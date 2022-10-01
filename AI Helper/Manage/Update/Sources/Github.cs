@@ -261,13 +261,25 @@ namespace AIHelper.Manage.Update.Sources
 
                 var getFromLast10Releases = false;
                 //List<GitReleasesInfo> Releases = null;
-                if (!link2File.Success)
+                if (!link2File.Success && Info.VersionFromFile)
                 {
+                    // search in releases assets
                     getFromLast10Releases = true;
                     Info.SourceLink = "https://github.com/" + _gitOwner + "/" + _gitRepository + "/releases";
                     latestReleasePage = WC.DownloadString(Info.SourceLink);
-                    linkPattern = @"href\=\""(/" + _gitOwner + "/" + _gitRepository + "/releases/download/([^/]+)/" + Info.UpdateFileStartsWith + @"([^\""]+)" + Info.UpdateFileEndsWith + @")\""";
-                    link2File = Regex.Match(latestReleasePage, linkPattern);
+                    MatchCollection assetsList = Regex.Matches(latestReleasePage, $"\"(https://github.com/{_gitOwner}/{_gitRepository}/releases/expanded_assets/([^\"]+))\"");
+                    foreach(Match assetsMatch in assetsList)
+                    {
+                        string theReleaseAssetsPage = WC.DownloadString(assetsMatch.Result("$1")); // download page for the release assets
+
+                        linkPattern = @"href\=\""(/" + _gitOwner + "/" + _gitRepository + "/releases/download/([^/]+)/" + Info.UpdateFileStartsWith + @"([^\""]+)" + Info.UpdateFileEndsWith + @")\""";
+                        link2File = Regex.Match(theReleaseAssetsPage, linkPattern);
+
+                        if (!link2File.Success) continue;
+
+                        latestReleasePage = theReleaseAssetsPage;
+                        break;
+                    }
 
                     if (!link2File.Success)//refind sublink to file
                     {

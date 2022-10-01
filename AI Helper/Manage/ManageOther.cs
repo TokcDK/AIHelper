@@ -149,6 +149,7 @@ namespace AIHelper.Manage
             var foundPathInTxt = GetGamesFromTxt();
             // dirs in games dir
             var dirs = Directory.EnumerateDirectories(ManageSettings.GamesBaseFolderPath).Concat(foundPathInTxt);
+            var added = new HashSet<string>();
             foreach (var entrie in dirs)
             {
                 //string gameDir;
@@ -170,7 +171,8 @@ namespace AIHelper.Manage
                 //}
                 var gameDir = entrie;
 
-                if (!Directory.Exists(gameDir)) continue;
+                if (!Directory.Exists(gameDir)) continue; // skip not exists
+                if (added.Contains(gameDir)) continue; // skip duples
 
                 ManageSettings.Games = new GameData();
                 foreach (var gameType in listOfGames)
@@ -247,6 +249,7 @@ namespace AIHelper.Manage
                     }
 
                     listOfGameDirs.Add(game);
+                    added.Add(gameDir); // add game path to the added list to prevent duplicates
                 }
             }
 

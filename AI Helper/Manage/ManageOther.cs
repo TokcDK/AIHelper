@@ -169,15 +169,15 @@ namespace AIHelper.Manage
                 //{
                 //    gameDir = entrie;
                 //}
-                string gameDir = "";
+                string gameDirPath = "";
                 try
                 {
-                    gameDir = Path.GetFullPath(entrie);
+                    gameDirPath = Path.GetFullPath(entrie);
                 }
                 catch { continue; } // skip when invalid chars in path
 
-                if (!Directory.Exists(gameDir)) continue; // skip not exists
-                if (added.Contains(gameDir)) continue; // skip duples
+                if (!Directory.Exists(gameDirPath)) continue; // skip not exists
+                if (added.Contains(gameDirPath)) continue; // skip duples
 
                 ManageSettings.Games = new GameData();
                 foreach (var gameType in listOfGames)
@@ -186,40 +186,40 @@ namespace AIHelper.Manage
 
                     var game = (GameBase)Activator.CreateInstance(gameType);
 
-                    bool exeInData = File.Exists(Path.Combine(gameDir, "Data", game.GameExeName + ".exe"));
-                    bool exeInRoot = File.Exists(Path.Combine(gameDir, game.GameExeName + ".exe"));
+                    bool exeInData = File.Exists(Path.Combine(gameDirPath, "Data", game.GameExeName + ".exe"));
+                    bool exeInRoot = File.Exists(Path.Combine(gameDirPath, game.GameExeName + ".exe"));
 
                     if (!exeInData && exeInRoot)
                     {
                         // when all game files in root dir
 
-                        var dataDir = Path.Combine(gameDir, "Data");
+                        var dataDir = Path.Combine(gameDirPath, "Data");
                         Directory.CreateDirectory(dataDir);
 
                         // move dirs except data into data
-                        foreach (var dir in Directory.GetDirectories(gameDir))
+                        foreach (var dir in Directory.GetDirectories(gameDirPath))
                         {
                             if (string.Equals(dir, dataDir)) continue;
 
                             Directory.Move(dir, Path.Combine(dataDir, Path.GetFileName(dir)));
                         }
                         // move files into data
-                        foreach (var file in Directory.GetFiles(gameDir))
+                        foreach (var file in Directory.GetFiles(gameDirPath))
                         {
                             File.Move(file, Path.Combine(dataDir, Path.GetFileName(file)));
                         }
                     }
 
-                    if (!File.Exists(Path.Combine(gameDir, "Data", game.GameExeName + ".exe"))) continue;
+                    if (!File.Exists(Path.Combine(gameDirPath, "Data", game.GameExeName + ".exe"))) continue;
 
-                    game.GameDirInfo = new DirectoryInfo(gameDir);
+                    game.GameDirInfo = new DirectoryInfo(gameDirPath);
                     ManageSettings.Games.Game = game; // temp set current game
 
-                    var mods = Path.Combine(gameDir, "Mods");
+                    var mods = Path.Combine(gameDirPath, "Mods");
                     Directory.CreateDirectory(mods);
 
                     //  check and write mod organizer dir
-                    var mo = Path.Combine(gameDir, ManageSettings.AppModOrganizerDirName);
+                    var mo = Path.Combine(gameDirPath, ManageSettings.AppModOrganizerDirName);
                     Directory.CreateDirectory(mo);
 
                     //  check and write mod organizer ini
@@ -234,10 +234,10 @@ namespace AIHelper.Manage
                         ini.SetKey("General", "gameName", game.GetGameName());
                         ini.SetKey("General", "gamePath", "@ByteArray(" + Path.Combine(game.GameDirInfo.Parent.FullName, game.GameDirName).Replace("\\", "\\\\") + ")");
                         ini.SetKey("General", "selected_profile", "@ByteArray(Default)");
-                        ini.SetKey("Settings", "mod_directory", Path.Combine(gameDir, game.GameDirName, "Mods").Replace("\\", "\\\\"));
-                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GameDirName, "Downloads").Replace("\\", "\\\\"));
-                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GameDirName, ManageSettings.AppModOrganizerDirName, "profiles").Replace("\\", "\\\\"));
-                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDir, game.GameDirName, ManageSettings.AppModOrganizerDirName, "overwrite").Replace("\\", "\\\\"));
+                        ini.SetKey("Settings", "mod_directory", Path.Combine(gameDirPath, game.GameDirName, "Mods").Replace("\\", "\\\\"));
+                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDirPath, game.GameDirName, "Downloads").Replace("\\", "\\\\"));
+                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDirPath, game.GameDirName, ManageSettings.AppModOrganizerDirName, "profiles").Replace("\\", "\\\\"));
+                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDirPath, game.GameDirName, ManageSettings.AppModOrganizerDirName, "overwrite").Replace("\\", "\\\\"));
                     }
 
                     // check and write categories dat
@@ -254,7 +254,7 @@ namespace AIHelper.Manage
                     }
 
                     listOfGameDirs.Add(game);
-                    added.Add(gameDir); // add game path to the added list to prevent duplicates
+                    added.Add(gameDirPath); // add game path to the added list to prevent duplicates
                 }
             }
 

@@ -66,16 +66,29 @@ namespace AIHelper
 
             if (!File.Exists(ManageSettings.AppMOexePath))
             {
-                var ok = MessageBox.Show(T._("Mod Organizer is missing in the app dir. Need to download latest version for to be able to manage mods by MO. Download latest?"), T._("Mod Organizer not found!", MessageBoxButtons.OKCancel));
-                if (DialogResult.OK == ok)
+                var moDownloadOffer = MessageBox.Show(T._("Mod Organizer is missing in the app dir. Need to download latest version for to be able to manage mods by MO. Download latest?"), T._("Mod Organizer not found!", MessageBoxButtons.YesNo));
+                if (DialogResult.Yes != moDownloadOffer)
                 {
-                    await new Updater().Update().ConfigureAwait(true);
-                }
-                else
-                {
+                    MessageBox.Show(T._("Application will exit now. You can manually put Mod Organizer in MO folder nex to the program."));
+                    Directory.CreateDirectory("MO");
+                    using (var process = new Process())
+                    {
+                        try
+                        {
+                            process.StartInfo.UseShellExecute = true;
+                            process.StartInfo.FileName = "https://github.com/Modorganizer2/modorganizer/releases";
+                            process.Start();
+                        }
+                        catch (Exception e)
+                        {
+                            _log.Error($"Failed to open link to MO github page. Error:{e.Message}");
+                        }
+                    }
+
                     Application.Exit();
-                    return;
                 }
+
+                await new Updater().Update().ConfigureAwait(true);
             }
 
             ManageSettings.MOIsNew = IsMo23OrNever();

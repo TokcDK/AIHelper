@@ -207,7 +207,7 @@ namespace AIHelper.Manage.Update.Sources
                 if (Info.UpdateFileEndsWith.Length == 0)
                     Info.UpdateFileEndsWith = (Info.TargetFolderUpdateInfo.Length > 3 && Info.TargetFolderUpdateInfo[3].ToUpperInvariant() != "TRUE" && Info.TargetFolderUpdateInfo[3].ToUpperInvariant() != "FALSE") ? Info.TargetFolderUpdateInfo[3] : "";
                 Info.VersionFromFile = Info.TargetFolderUpdateInfo[Info.TargetFolderUpdateInfo.Length - 1].ToUpperInvariant() == "TRUE";
-                Info.SourceLink = "https://github.com/" + _gitOwner + "/" + _gitRepository + "/releases/latest";
+                Info.SourceLink = $"https://github.com/{_gitOwner}/{_gitRepository}/releases/latest";
                 //info.SourceLink = "https://github.com/" + GitOwner + "/" + GitRepository + "/releases";
 
                 //var request = (HttpWebRequest)WebRequest.Create(new Uri(info.SourceLink));
@@ -220,11 +220,16 @@ namespace AIHelper.Manage.Update.Sources
                 //}
 
                 var latestReleasePage = WC.DownloadString(Info.SourceLink);
-                var version = Regex.Match(latestReleasePage, @"/releases/tag/([^\""]+)\""");
-                if (version.Success) _gitLatestVersion = version.Result("$1");
-                //GitLatestVersion = version.Value.Remove(version.Value.Length - 1, 1).Remove(0, 14);
+                var assetPageMatch = Regex.Match(latestReleasePage, $"\"(https://github.com/{_gitOwner}/{_gitRepository}/releases/expanded_assets/([^\"]+))\"");
+                //var assetsPage = $"\"https://github.com/{_gitOwner}/{_gitRepository}/releases/expanded_assets/([^\"]+)\"";
 
-                var linkPattern = @"href\=\""(/" + _gitOwner + "/" + _gitRepository + "/releases/download/" + _gitLatestVersion + "/" + Info.UpdateFileStartsWith + @"([^\""]*)" + Info.UpdateFileEndsWith + @")\""";
+                //var version = Regex.Match(latestReleasePage, @"/releases/tag/([^\""]+)\""");
+                //if (version.Success) _gitLatestVersion = version.Result("$1");
+                //GitLatestVersion = version.Value.Remove(version.Value.Length - 1, 1).Remove(0, 14);
+                if (assetPageMatch.Success) _gitLatestVersion = assetPageMatch.Result("$2");
+                latestReleasePage = WC.DownloadString(assetPageMatch.Result("$1")); // redownload assets page as release page
+
+                var linkPattern = @"href\=\""(/" + _gitOwner + "/" + _gitRepository + "/releases/download/" + _gitLatestVersion + "/" + Info.UpdateFileStartsWith + "([^\"]*)" + Info.UpdateFileEndsWith + ")\"";
                 var link2File = Regex.Match(latestReleasePage, linkPattern);
                 //var linkPattern = @"href\=\""(/" + GitOwner + "/" + GitRepository + "/releases/download/([^/]+)/" + info.UpdateFileStartsWith + @"([^\""]+)" + info.UpdateFileEndsWith + @")\""";
                 //var link2file = Regex.Match(LatestReleasePage, linkPattern);

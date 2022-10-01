@@ -169,7 +169,12 @@ namespace AIHelper.Manage
                 //{
                 //    gameDir = entrie;
                 //}
-                var gameDir = entrie;
+                string gameDir = "";
+                try
+                {
+                    gameDir = Path.GetFullPath(entrie);
+                }
+                catch { continue; } // skip when invalid chars in path
 
                 if (!Directory.Exists(gameDir)) continue; // skip not exists
                 if (added.Contains(gameDir)) continue; // skip duples

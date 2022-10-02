@@ -1561,6 +1561,11 @@ namespace AIHelper
             ManageOther.AddNewGame(this);
         }
 
+        private void CleanDataDirLabel_Click(object sender, EventArgs e)
+        {
+            ManageOther.CleanCurrentGameDataDir();
+        }
+
         //Disable close window button
         //https://social.msdn.microsoft.com/Forums/en-US/b1f0d913-c603-43e9-8fe3-681fb7286d4c/c-disable-close-button-on-windows-form-application?forum=csharpgeneral
         //[DllImport("user32")]

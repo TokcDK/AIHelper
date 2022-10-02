@@ -558,5 +558,19 @@ namespace AIHelper.Manage
             ManageSettings.AutoShortcutRegistryCheckBoxChecked = bool.Parse(ManageIni.GetIniValueIfExist(ManageSettings.AiHelperIniPath, "autoCreateShortcutAndFixRegystry", "Settings", "False"));
             main.AutoShortcutRegistryCheckBox.Checked = ManageSettings.AutoShortcutRegistryCheckBoxChecked;
         }
+
+        /// <summary>
+        /// clean Data dir of current selected game from not native files
+        /// </summary>
+        internal static void CleanCurrentGameDataDir()
+        {
+            var cleanDataDirInfoPath = ManageSettings.CurrentGameCleanFunctionDirPath;
+            var dataDipPath = ManageSettings.CurrentGameDataDirPath;
+            var currentGameAbbr = ManageSettings.CurrentGame.GameAbbreviation;
+            var blackListPath = ManageSettings.CurrentGameCleanFunctionBlackListFilePath;
+            var whiteListPath = ManageSettings.CurrentGameCleanFunctionWhiteListFilePath;
+
+
+        }
     }
 }

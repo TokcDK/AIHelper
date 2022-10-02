@@ -42,6 +42,7 @@
             this.MainService = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.LaunchPagePanel = new System.Windows.Forms.Panel();
+            this.CleanDataDirLabel = new System.Windows.Forms.Label();
             this.AddGameLabel = new System.Windows.Forms.Label();
             this.pbDiscord = new System.Windows.Forms.PictureBox();
             this.VRGameCheckBox = new System.Windows.Forms.CheckBox();
@@ -108,7 +109,6 @@
             this.ModeSwitchFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.ModeSwitchCreateBuckupLabel = new System.Windows.Forms.Label();
             this.DevButton = new System.Windows.Forms.Button();
-            this.CleanDataDirLabel = new System.Windows.Forms.Label();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -310,6 +310,16 @@
             this.LaunchPagePanel.Name = "LaunchPagePanel";
             this.LaunchPagePanel.Size = new System.Drawing.Size(340, 155);
             this.LaunchPagePanel.TabIndex = 0;
+            // 
+            // CleanDataDirLabel
+            // 
+            this.CleanDataDirLabel.AutoSize = true;
+            this.CleanDataDirLabel.Location = new System.Drawing.Point(316, 140);
+            this.CleanDataDirLabel.Name = "CleanDataDirLabel";
+            this.CleanDataDirLabel.Size = new System.Drawing.Size(19, 13);
+            this.CleanDataDirLabel.TabIndex = 32;
+            this.CleanDataDirLabel.Text = "🧹";
+            this.CleanDataDirLabel.Click += new System.EventHandler(this.CleanDataDirLabel_Click);
             // 
             // AddGameLabel
             // 
@@ -1212,15 +1222,6 @@
             this.DevButton.Text = "Dev";
             this.DevButton.UseVisualStyleBackColor = true;
             this.DevButton.Click += new System.EventHandler(this.Dev_Click);
-            // 
-            // CleanDataDirLabel
-            // 
-            this.CleanDataDirLabel.AutoSize = true;
-            this.CleanDataDirLabel.Location = new System.Drawing.Point(316, 140);
-            this.CleanDataDirLabel.Name = "CleanDataDirLabel";
-            this.CleanDataDirLabel.Size = new System.Drawing.Size(19, 13);
-            this.CleanDataDirLabel.TabIndex = 32;
-            this.CleanDataDirLabel.Text = "🧹";
             // 
             // MainForm
             // 

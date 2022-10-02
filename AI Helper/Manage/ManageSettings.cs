@@ -1273,5 +1273,8 @@ namespace AIHelper.Manage
         /// Dir of Mod Organizer Basic game plugins for managed games
         /// </summary>
         public static string AppResBasicGamesDir { get => Path.Combine(AppResDirPath, "basicgames", "games"); }
+        public static string CurrentGameCleanFunctionDirPath { get => Path.Combine(AppResDirPath, "f", "cleandata"); }
+        public static string CurrentGameCleanFunctionBlackListFilePath { get => Path.Combine(CurrentGameCleanFunctionDirPath, CurrentGame.GameAbbreviation+"-bl.txt"); }
+        public static string CurrentGameCleanFunctionWhiteListFilePath { get => Path.Combine(CurrentGameCleanFunctionDirPath, CurrentGame.GameAbbreviation+"-wl.txt"); }
     }
 }

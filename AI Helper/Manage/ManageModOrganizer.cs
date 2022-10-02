@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AIHelper.Games;
+using AIHelper.Manage.MOiniCustomExeFixers;
 using CheckForEmptyDir;
 using INIFileMan;
 using NLog;
@@ -1715,14 +1716,13 @@ namespace AIHelper.Manage
                     continue;
                 }
 
-                foreach (var attribute in new[] { "binary", "workingDirectory" })
+                foreach (var attribute in new[] { "binary", "workingDirectory", "arguments" })
                 {
                     try
                     {
                         string path = record.Value.Attribute[attribute];
-
                         string fullPath = "";
-                        if (path.Length > 0) fullPath = Path.GetFullPath(path);
+                        if (path.Length > 0 && attribute != "arguments") fullPath = Path.GetFullPath(path);
 
                         bool isFile = attribute == "binary";
                         if ((isFile && File.Exists(fullPath)) || (!isFile && Directory.Exists(fullPath)))
@@ -1731,83 +1731,15 @@ namespace AIHelper.Manage
                             continue;
                         }
 
-                        if (path.StartsWith("..", StringComparison.InvariantCulture))
+                        var data = new CustomExeFixData() { Path = path, Attribute=attribute, CustomExeData=record.Value };
+                        foreach (var fixer in new ICustomExePathFixerBase[]
                         {
-                            //suppose relative path was from MO dir ..\%MODir%
-                            //replace .. to absolute path of current game directory
-                            var targetcorrectedrelative = path
-                                    .Remove(0, 2).Insert(0, ManageSettings.CurrentGameDirPath);
-
-                            //replace other slashes
-                            var targetcorrectedabsolute = Path.GetFullPath(targetcorrectedrelative);
-
-                            FixExplorerPlusPlusPath(ref targetcorrectedabsolute);
-
-                            record.Value.Attribute[attribute] = CustomExecutables.NormalizePath(targetcorrectedabsolute);
-                        }
-                        else
+                            new RelativePathFixer(),
+                            new MainExesPathFixer(),
+                            new ExplorerPPPathFixer(),
+                        })
                         {
-                            // fix main exe paths
-                            if (isFile)
-                            {
-                                if (!File.Exists(path))
-                                {
-                                    foreach (var (subpath, slash) in new[]
-                                    {
-                                        ("/" + ManageSettings.CurrentGameDirName + "/data/" + ManageSettings.CurrentGame.GameExeName + ".exe", "/"),
-                                        ("/" + ManageSettings.CurrentGameDirName + "/data/" + ManageSettings.CurrentGame.GameExeNameX32 + ".exe", "/"),
-                                        ("/" + ManageSettings.CurrentGameDirName + "/data/" + ManageSettings.CurrentGame.GameExeNameVr + ".exe", "/"),
-                                        ("/" + ManageSettings.CurrentGameDirName + "/data/" + ManageSettings.CurrentGame.GameStudioExeName + ".exe", "/"),
-                                        ("/" + ManageSettings.CurrentGameDirName + "/data/" + ManageSettings.CurrentGame.GameStudioExeNameX32 + ".exe", "/"),
-                                        ("\\" + ManageSettings.CurrentGameDirName + "\\data\\" + ManageSettings.CurrentGame.GameExeName + ".exe", "\\"),
-                                        ("\\" + ManageSettings.CurrentGameDirName + "\\data\\" + ManageSettings.CurrentGame.GameExeNameX32 + ".exe", "\\"),
-                                        ("\\" + ManageSettings.CurrentGameDirName + "\\data\\" + ManageSettings.CurrentGame.GameExeNameVr + ".exe", "\\"),
-                                        ("\\" + ManageSettings.CurrentGameDirName + "\\data\\" + ManageSettings.CurrentGame.GameStudioExeName + ".exe", "\\"),
-                                        ("\\" + ManageSettings.CurrentGameDirName + "\\data\\" + ManageSettings.CurrentGame.GameStudioExeNameX32 + ".exe", "\\"),
-                                        ("////" + ManageSettings.CurrentGameDirName + "////data////" + ManageSettings.CurrentGame.GameExeName + ".exe", "////"),
-                                        ("////" + ManageSettings.CurrentGameDirName + "////data////" + ManageSettings.CurrentGame.GameExeNameX32 + ".exe", "////"),
-                                        ("////" + ManageSettings.CurrentGameDirName + "////data////" + ManageSettings.CurrentGame.GameExeNameVr + ".exe", "////"),
-                                        ("////" + ManageSettings.CurrentGameDirName + "////data////" + ManageSettings.CurrentGame.GameStudioExeName + ".exe", "////"),
-                                        ("////" + ManageSettings.CurrentGameDirName + "////data////" + ManageSettings.CurrentGame.GameStudioExeNameX32 + ".exe", "////"),
-                                    })
-                                    {
-                                        if (!path.EndsWith(subpath, StringComparison.InvariantCultureIgnoreCase)) continue;
-
-                                        var fixedPath = $"{ManageSettings.CurrentGameDirPath.Remove(ManageSettings.CurrentGameDirPath.IndexOf(ManageSettings.CurrentGameDirName)).TrimEnd('/').TrimEnd('\\')}/{subpath.TrimStart('/').TrimStart('\\').Replace(slash, "/")}";
-
-                                        if (File.Exists(fixedPath)) record.Value.Attribute[attribute] = CustomExecutables.NormalizePath(fixedPath);
-
-                                        break;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (!Directory.Exists(path))
-                                {
-                                    foreach (var (subpath, slash) in new[]
-                                    {
-                                        ("/" + ManageSettings.CurrentGameDirName + "/Data", "/"),
-                                        ("\\" + ManageSettings.CurrentGameDirName + "\\Data", "\\"),
-                                        ("////" + ManageSettings.CurrentGameDirName + "////Data", "////"),
-                                    })
-                                    {
-                                        if (!path.EndsWith(subpath, StringComparison.InvariantCultureIgnoreCase)) continue;
-
-                                        var fixedPath = $"{ManageSettings.CurrentGameDirPath}\\Data";
-
-                                        if (Directory.Exists(fixedPath)) record.Value.Attribute[attribute] = CustomExecutables.NormalizePath(fixedPath);
-
-                                        break;
-                                    }
-                                }
-                            }
-
-                            var newPath = record.Value.Attribute[attribute].Replace("/", "\\");
-                            if (FixExplorerPlusPlusPath(ref newPath))
-                            {
-                                record.Value.Attribute[attribute] = CustomExecutables.NormalizePath(newPath);
-                            }
+                            fixer.TryFix(data);
                         }
                     }
                     catch
@@ -1906,7 +1838,7 @@ namespace AIHelper.Manage
         /// fixes alternative path for explorer++ to path to native mo dir
         /// </summary>
         /// <param name="inputPath"></param>
-        private static bool FixExplorerPlusPlusPath(ref string inputPath)
+        public static bool FixExplorerPlusPlusPath(ref string inputPath)
         {
             var altModOrganizerDirNameForEpp = Regex.Match(inputPath, @"\\([^\\]+)\\explorer\+\+");
             if (altModOrganizerDirNameForEpp.Success && altModOrganizerDirNameForEpp.Result("$1").StartsWith("MO", StringComparison.InvariantCultureIgnoreCase))

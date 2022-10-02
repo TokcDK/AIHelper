@@ -568,10 +568,13 @@ namespace AIHelper.Manage
             // set vars
             var cleanDataDirInfoPath = ManageSettings.CurrentGameCleanFunctionDirPath;
             var dataDipPath = ManageSettings.CurrentGameDataDirPath;
+            int dataDipPathLength = dataDipPath.Length;
             var currentGameAbbr = ManageSettings.CurrentGame.GameAbbreviation;
             var blackListPath = ManageSettings.CurrentGameCleanFunctionBlackListFilePath;
             var whiteListPath = ManageSettings.CurrentGameCleanFunctionWhiteListFilePath;
             var hardcodedWhiteList = ManageSettings.CurrentGameCleanFunctionHardcodedWhiteList;
+            var dir2move = Path.Combine(ManageSettings.CurrentGameDirPath, "testbak");
+            Directory.CreateDirectory(dir2move);
 
             // fill lists
             //var blackList = new HashSet<string>();
@@ -579,12 +582,75 @@ namespace AIHelper.Manage
             var blackList = File.Exists(blackListPath) ? new IgnoreList(blackListPath) : null;
             var whiteList = File.Exists(whiteListPath) ? new IgnoreList(whiteListPath) : null;
 
-            foreach (var di in new DirectoryInfo(dataDipPath).EnumerateDirectories("*", SearchOption.AllDirectories).Where(d => !whiteList.IsIgnored(d)))
+            int failedCount = 0;
+            int movedDirs = 0;
+            int movedFiles = 0;
+
+            // whiteList
+            // move dirs first
+            foreach (var item in new DirectoryInfo(dataDipPath).EnumerateDirectories("*", SearchOption.AllDirectories).Where(d => !whiteList.IsIgnored(d) && d.Exists))
             {
+                try
+                {
+                    var targetPath = $"{dir2move}{item.FullName.Substring(dataDipPathLength)}";
+                    item.MoveTo(targetPath);
+                    movedDirs++;
+                }
+                catch (IOException ex)
+                {
+                    failedCount++;
+                    _log.Error($"{nameof(CleanCurrentGameDataDir)}: Failed to remove dir '{item.FullName}'. Error:\r\n{ex}");
+                }
             }
-            foreach (var di in new DirectoryInfo(dataDipPath).EnumerateFiles("*.*", SearchOption.AllDirectories).Where(d => !whiteList.IsIgnored(d)))
+            // move files
+            foreach (var item in new DirectoryInfo(dataDipPath).EnumerateFiles("*.*", SearchOption.AllDirectories).Where(f => !whiteList.IsIgnored(f) && f.Exists))
             {
+                try
+                {
+                    var targetPath = $"{dir2move}{item.FullName.Substring(dataDipPathLength)}";
+                    item.MoveTo(targetPath);
+                    movedFiles++;
+                }
+                catch (IOException ex)
+                {
+                    failedCount++;
+                    _log.Error($"{nameof(CleanCurrentGameDataDir)}: Failed to remove file '{item.FullName}'. Error:\r\n{ex}");
+                }
             }
+
+            // blacklist
+            // move dirs first
+            foreach (var item in new DirectoryInfo(dataDipPath).EnumerateDirectories("*", SearchOption.AllDirectories).Where(d => blackList.IsIgnored(d) && d.Exists))
+            {
+                try
+                {
+                    var targetPath = $"{dir2move}{item.FullName.Substring(dataDipPathLength)}";
+                    item.MoveTo(targetPath);
+                    movedDirs++;
+                }
+                catch (IOException ex)
+                {
+                    failedCount++;
+                    _log.Error($"{nameof(CleanCurrentGameDataDir)}: Failed to remove dir '{item.FullName}'. Error:\r\n{ex}");
+                }
+            }
+            // move files
+            foreach (var item in new DirectoryInfo(dataDipPath).EnumerateFiles("*.*", SearchOption.AllDirectories).Where(f => blackList.IsIgnored(f) && f.Exists))
+            {
+                try
+                {
+                    var targetPath = $"{dir2move}{item.FullName.Substring(dataDipPathLength)}";
+                    item.MoveTo(targetPath);
+                    movedFiles++;
+                }
+                catch (IOException ex)
+                {
+                    failedCount++;
+                    _log.Error($"{nameof(CleanCurrentGameDataDir)}: Failed to remove file '{item.FullName}'. Error:\r\n{ex}");
+                }
+            }
+
+            MessageBox.Show($"Cleaning finished! Moved {movedDirs} dirs and {movedFiles} files. Failed to move {failedCount} items.");
 
             // fill from hardcoded whitelist
             //foreach (var str in hardcodedWhiteList)

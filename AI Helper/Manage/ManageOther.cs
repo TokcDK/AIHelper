@@ -565,6 +565,8 @@ namespace AIHelper.Manage
         /// </summary>
         internal static void CleanCurrentGameDataDir()
         {
+            if (!ManageSettings.IsMoMode) return; // dont touch in common mode
+
             // set vars
             var cleanDataDirInfoPath = ManageSettings.CurrentGameCleanFunctionDirPath;
             var dataDipPath = ManageSettings.CurrentGameDataDirPath;

@@ -11,6 +11,7 @@ using AIHelper.SharedData;
 using GetListOfSubClasses;
 using INIFileMan;
 using NLog;
+using MAB.DotIgnore;
 
 namespace AIHelper.Manage
 {
@@ -564,12 +565,54 @@ namespace AIHelper.Manage
         /// </summary>
         internal static void CleanCurrentGameDataDir()
         {
+            // set vars
             var cleanDataDirInfoPath = ManageSettings.CurrentGameCleanFunctionDirPath;
             var dataDipPath = ManageSettings.CurrentGameDataDirPath;
             var currentGameAbbr = ManageSettings.CurrentGame.GameAbbreviation;
             var blackListPath = ManageSettings.CurrentGameCleanFunctionBlackListFilePath;
             var whiteListPath = ManageSettings.CurrentGameCleanFunctionWhiteListFilePath;
+            var hardcodedWhiteList = ManageSettings.CurrentGameCleanFunctionHardcodedWhiteList;
 
+            // fill lists
+            //var blackList = new HashSet<string>();
+            //var whiteList = new HashSet<string>();
+            var blackList = File.Exists(blackListPath) ? new IgnoreList(blackListPath) : null;
+            var whiteList = File.Exists(whiteListPath) ? new IgnoreList(whiteListPath) : null;
+
+            foreach (var di in new DirectoryInfo(dataDipPath).EnumerateDirectories("*", SearchOption.AllDirectories).Where(d => !whiteList.IsIgnored(d)))
+            {
+            }
+            foreach (var di in new DirectoryInfo(dataDipPath).EnumerateFiles("*.*", SearchOption.AllDirectories).Where(d => !whiteList.IsIgnored(d)))
+            {
+            }
+
+            // fill from hardcoded whitelist
+            //foreach (var str in hardcodedWhiteList)
+            //{
+            //    var subpath = str;
+            //    int lastCharIndex = subpath.Length - 1;
+            //    bool isDir = subpath[lastCharIndex] == '\\';
+            //    if (isDir) subpath = subpath.Remove(lastCharIndex);
+            //    bool isTopDir = subpath.Remove(lastCharIndex).IndexOf('\\') == -1;
+            //    var searchOption = isTopDir ? SearchOption.TopDirectoryOnly : SearchOption.AllDirectories;
+
+                //    //var path = $"{dataDipPath}\\{subpath}";
+
+                //    var paths = isDir ? Directory.EnumerateDirectories(dataDipPath, subpath, searchOption) : Directory.EnumerateFiles(dataDipPath, subpath, searchOption);
+
+                //    foreach (var entrie in paths)
+                //    {
+                //        // skip missing paths
+                //        if (isDir)
+                //        {
+                //            if (!Directory.Exists(entrie)) continue;
+                //        }
+                //        else if (!File.Exists(entrie)) continue;
+
+                //        if (whiteList.Contains(entrie)) continue;
+                //        whiteList.Add(entrie);
+                //    }
+                //}
 
         }
     }

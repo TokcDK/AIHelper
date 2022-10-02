@@ -1276,5 +1276,19 @@ namespace AIHelper.Manage
         public static string CurrentGameCleanFunctionDirPath { get => Path.Combine(AppResDirPath, "f", "cleandata"); }
         public static string CurrentGameCleanFunctionBlackListFilePath { get => Path.Combine(CurrentGameCleanFunctionDirPath, CurrentGame.GameAbbreviation+"-bl.txt"); }
         public static string CurrentGameCleanFunctionWhiteListFilePath { get => Path.Combine(CurrentGameCleanFunctionDirPath, CurrentGame.GameAbbreviation+"-wl.txt"); }
+        public static HashSet<string> CurrentGameCleanFunctionHardcodedWhiteList { get => new HashSet<string>()
+        {
+            "UserData\\*\\",
+            $"{CurrentGameExeName}.exe",
+            $"{CurrentGameExeName}_Data\\",
+            $"{StudioExeName}.exe",
+            $"{StudioExeName}_Data\\",
+            $"{CurrentGame.GameExeNameX32}.exe",
+            $"{CurrentGame.GameExeNameX32}_Data\\",
+            $"{CurrentGame.GameExeNameVr}.exe",
+            $"{CurrentGame.GameExeNameVr}_Data\\",
+            $"{CurrentGame.GameStudioExeNameX32}.exe",
+            $"{CurrentGame.GameStudioExeNameX32}_Data\\",
+        };}
     }
 }

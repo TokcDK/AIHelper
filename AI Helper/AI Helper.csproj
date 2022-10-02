@@ -391,6 +391,9 @@
     <PackageReference Include="ini-parser">
       <Version>2.5.2</Version>
     </PackageReference>
+    <PackageReference Include="MAB.DotIgnore">
+      <Version>3.0.2</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
       <Version>3.3.3</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

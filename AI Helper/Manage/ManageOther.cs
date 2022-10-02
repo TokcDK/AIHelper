@@ -12,6 +12,7 @@ using GetListOfSubClasses;
 using INIFileMan;
 using NLog;
 using MAB.DotIgnore;
+using AIHelper.Forms.Other;
 
 namespace AIHelper.Manage
 {
@@ -566,6 +567,15 @@ namespace AIHelper.Manage
         internal static void CleanCurrentGameDataDir()
         {
             if (!ManageSettings.IsMoMode) return; // dont touch in common mode
+
+            var options = new CleanOptionsDialogForm
+            {
+                Location = new Point(ManageSettings.MainForm.Location.X, ManageSettings.MainForm.Location.Y),
+                StartPosition = FormStartPosition.Manual
+            };
+
+            DialogResult result = options.ShowDialog();
+            if (result != DialogResult.OK) return;
 
             // set vars
             var cleanDataDirInfoPath = ManageSettings.CurrentGameCleanFunctionDirPath;

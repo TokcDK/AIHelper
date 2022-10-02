@@ -578,6 +578,7 @@ namespace AIHelper.Manage
             if (result != DialogResult.OK) return;
 
             // set vars
+            bool moveIntoNewMod = options.cbxMoveToNewMod.Checked;
             var cleanDataDirInfoPath = ManageSettings.CurrentGameCleanFunctionDirPath;
             var dataDipPath = ManageSettings.CurrentGameDataDirPath;
             int dataDipPathLength = dataDipPath.Length;
@@ -587,6 +588,8 @@ namespace AIHelper.Manage
             var hardcodedWhiteList = ManageSettings.CurrentGameCleanFunctionHardcodedWhiteList;
             var dir2move = Path.Combine(ManageSettings.CurrentGameDirPath, "testbak");
             Directory.CreateDirectory(dir2move);
+
+            options.Dispose();
 
             // fill lists
             //var blackList = new HashSet<string>();

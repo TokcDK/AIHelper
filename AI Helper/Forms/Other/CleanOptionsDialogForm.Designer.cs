@@ -151,6 +151,6 @@
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.CheckBox cbxMoveToNewMod;
+        public System.Windows.Forms.CheckBox cbxMoveToNewMod;
     }
 }

@@ -71,12 +71,12 @@ namespace AIHelper.Manage
         {
             try
             {
-                //ссылка вообще существует
-                if (!symlinkPath.IsSymbolicLinkValid())
-                {
-                    return false;
-                };
+                // is symlink
+                if (!symlinkPath.IsSymbolicLink()) return false;
+                // is valid synlink
+                if (!symlinkPath.IsSymbolicLinkValid()) return false;
 
+                // target check
                 if (string.IsNullOrWhiteSpace(linkTargetPath))
                 {
                     // true because already was same check

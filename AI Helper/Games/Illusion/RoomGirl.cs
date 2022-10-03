@@ -22,7 +22,7 @@ namespace AIHelper.Games.Illusion
 
         public override string GameDisplayingName => T._("Room Girl");
 
-        public override string GameAbbreviation => "rg";
+        public override string GameAbbreviation => "RG";
 
         public override string[,] DirLinkPaths => new string[,]
             {

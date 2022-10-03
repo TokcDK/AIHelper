@@ -116,6 +116,18 @@
     <Compile Include="Forms\LogLevelselectionForm.Designer.cs">
       <DependentUpon>LogLevelselectionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Other\CleanOptionsDialogForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Other\CleanOptionsDialogForm.Designer.cs">
+      <DependentUpon>CleanOptionsDialogForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Other\DialogFormGeneral.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Other\DialogFormGeneral.Designer.cs">
+      <DependentUpon>DialogFormGeneral.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Other\ProgressForm\ProgressForm.cs" />
     <Compile Include="Forms\Other\SwitchModeDialogForm.cs">
       <SubType>Form</SubType>
@@ -184,6 +196,7 @@
     <Compile Include="Games\Illusion\HoneySelect.cs" />
     <Compile Include="Games\Illusion\AiGirl.cs" />
     <Compile Include="Games\GameBase.cs" />
+    <Compile Include="Manage\Functions\DataDirCleaner.cs" />
     <Compile Include="Manage\ManageHardlinks.cs" />
     <Compile Include="Manage\ManageReport.cs" />
     <Compile Include="Manage\ModeSwitch\GameBackuper.cs" />
@@ -307,6 +320,12 @@
     <EmbeddedResource Include="Forms\LogLevelselectionForm.resx">
       <DependentUpon>LogLevelselectionForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Other\CleanOptionsDialogForm.resx">
+      <DependentUpon>CleanOptionsDialogForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Other\DialogFormGeneral.resx">
+      <DependentUpon>DialogFormGeneral.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Other\SwitchModeDialogForm.resx">
       <DependentUpon>SwitchModeDialogForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -390,6 +409,9 @@
     </PackageReference>
     <PackageReference Include="ini-parser">
       <Version>2.5.2</Version>
+    </PackageReference>
+    <PackageReference Include="MAB.DotIgnore">
+      <Version>3.0.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
       <Version>3.3.3</Version>

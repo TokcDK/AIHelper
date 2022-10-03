@@ -42,6 +42,7 @@
             this.MainService = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.LaunchPagePanel = new System.Windows.Forms.Panel();
+            this.CleanDataDirLabel = new System.Windows.Forms.Label();
             this.AddGameLabel = new System.Windows.Forms.Label();
             this.pbDiscord = new System.Windows.Forms.PictureBox();
             this.VRGameCheckBox = new System.Windows.Forms.CheckBox();
@@ -61,6 +62,7 @@
             this.SettingsButton = new System.Windows.Forms.Button();
             this.SettingsTabPage = new System.Windows.Forms.TabPage();
             this.SettingsPagePanel = new System.Windows.Forms.Panel();
+            this.AddGameSettingsLabel = new System.Windows.Forms.Label();
             this.cbxNtlea = new System.Windows.Forms.CheckBox();
             this.FixRegistryLinkLabel = new System.Windows.Forms.LinkLabel();
             this.CreateShortcutLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -107,7 +109,6 @@
             this.ModeSwitchFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.ModeSwitchCreateBuckupLabel = new System.Windows.Forms.Label();
             this.DevButton = new System.Windows.Forms.Button();
-            this.AddGameSettingsLabel = new System.Windows.Forms.Label();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -285,6 +286,7 @@
             // LaunchPagePanel
             // 
             this.LaunchPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.LaunchPagePanel.Controls.Add(this.CleanDataDirLabel);
             this.LaunchPagePanel.Controls.Add(this.AddGameLabel);
             this.LaunchPagePanel.Controls.Add(this.pbDiscord);
             this.LaunchPagePanel.Controls.Add(this.VRGameCheckBox);
@@ -309,12 +311,22 @@
             this.LaunchPagePanel.Size = new System.Drawing.Size(340, 155);
             this.LaunchPagePanel.TabIndex = 0;
             // 
+            // CleanDataDirLabel
+            // 
+            this.CleanDataDirLabel.AutoSize = true;
+            this.CleanDataDirLabel.Location = new System.Drawing.Point(316, 140);
+            this.CleanDataDirLabel.Name = "CleanDataDirLabel";
+            this.CleanDataDirLabel.Size = new System.Drawing.Size(19, 13);
+            this.CleanDataDirLabel.TabIndex = 32;
+            this.CleanDataDirLabel.Text = "🧹";
+            this.CleanDataDirLabel.Click += new System.EventHandler(this.CleanDataDirLabel_Click);
+            // 
             // AddGameLabel
             // 
             this.AddGameLabel.AutoSize = true;
             this.AddGameLabel.BackColor = System.Drawing.Color.Transparent;
             this.AddGameLabel.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.AddGameLabel.Location = new System.Drawing.Point(322, 140);
+            this.AddGameLabel.Location = new System.Drawing.Point(322, 127);
             this.AddGameLabel.Name = "AddGameLabel";
             this.AddGameLabel.Size = new System.Drawing.Size(13, 13);
             this.AddGameLabel.TabIndex = 31;
@@ -564,6 +576,17 @@
             this.SettingsPagePanel.Name = "SettingsPagePanel";
             this.SettingsPagePanel.Size = new System.Drawing.Size(340, 155);
             this.SettingsPagePanel.TabIndex = 1;
+            // 
+            // AddGameSettingsLabel
+            // 
+            this.AddGameSettingsLabel.AutoSize = true;
+            this.AddGameSettingsLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.AddGameSettingsLabel.Location = new System.Drawing.Point(158, 23);
+            this.AddGameSettingsLabel.Name = "AddGameSettingsLabel";
+            this.AddGameSettingsLabel.Size = new System.Drawing.Size(55, 13);
+            this.AddGameSettingsLabel.TabIndex = 14;
+            this.AddGameSettingsLabel.Text = "Add game";
+            this.AddGameSettingsLabel.Click += new System.EventHandler(this.AddGameLabel_Click);
             // 
             // cbxNtlea
             // 
@@ -1200,17 +1223,6 @@
             this.DevButton.UseVisualStyleBackColor = true;
             this.DevButton.Click += new System.EventHandler(this.Dev_Click);
             // 
-            // AddGameSettingsLabel
-            // 
-            this.AddGameSettingsLabel.AutoSize = true;
-            this.AddGameSettingsLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.AddGameSettingsLabel.Location = new System.Drawing.Point(158, 23);
-            this.AddGameSettingsLabel.Name = "AddGameSettingsLabel";
-            this.AddGameSettingsLabel.Size = new System.Drawing.Size(55, 13);
-            this.AddGameSettingsLabel.TabIndex = 14;
-            this.AddGameSettingsLabel.Text = "Add game";
-            this.AddGameSettingsLabel.Click += new System.EventHandler(this.AddGameLabel_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1340,6 +1352,7 @@
         internal System.Windows.Forms.Label SelectedGameLabel;
         internal System.Windows.Forms.TextBox CurrentGameTitleTextBox;
         private System.Windows.Forms.Label AddGameSettingsLabel;
+        private System.Windows.Forms.Label CleanDataDirLabel;
     }
 }
 

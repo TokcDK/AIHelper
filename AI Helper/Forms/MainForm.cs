@@ -13,6 +13,7 @@ using AIHelper.Install.Types;
 using AIHelper.Install.Types.Directories;
 using AIHelper.Install.UpdateMaker;
 using AIHelper.Manage;
+using AIHelper.Manage.Functions;
 using AIHelper.Manage.Update;
 using AIHelper.Manage.Update.Targets;
 using CheckForEmptyDir;
@@ -90,7 +91,7 @@ namespace AIHelper
                     return;
                 }
 
-                await new Updater().Update(new List<UpdateTargetBase>() {new Mo(new UpdateInfo()) }).ConfigureAwait(true);
+                await new Updater().Update(new List<UpdateTargetBase>() { new Mo(new UpdateInfo()) }).ConfigureAwait(true);
             }
 
             ManageSettings.MOIsNew = IsMo23OrNever();
@@ -1559,6 +1560,11 @@ namespace AIHelper
         private void AddGameLabel_Click(object sender, EventArgs e)
         {
             ManageOther.AddNewGame(this);
+        }
+
+        private void CleanDataDirLabel_Click(object sender, EventArgs e)
+        {
+            new DataDirCleaner().Clean();
         }
 
         //Disable close window button

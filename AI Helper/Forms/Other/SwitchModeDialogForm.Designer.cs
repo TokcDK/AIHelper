@@ -31,12 +31,12 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.MakeBuckupCheckBox = new System.Windows.Forms.CheckBox();
+            this.MessageTextTextBox = new System.Windows.Forms.TextBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.MakeBuckupCheckBox = new System.Windows.Forms.CheckBox();
-            this.MessageTextTextBox = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -80,6 +80,32 @@
             this.panel2.Size = new System.Drawing.Size(348, 151);
             this.panel2.TabIndex = 0;
             // 
+            // MakeBuckupCheckBox
+            // 
+            this.MakeBuckupCheckBox.AutoSize = true;
+            this.MakeBuckupCheckBox.Checked = true;
+            this.MakeBuckupCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.MakeBuckupCheckBox.Location = new System.Drawing.Point(3, 131);
+            this.MakeBuckupCheckBox.Name = "MakeBuckupCheckBox";
+            this.MakeBuckupCheckBox.Size = new System.Drawing.Size(92, 17);
+            this.MakeBuckupCheckBox.TabIndex = 0;
+            this.MakeBuckupCheckBox.Text = "Make buckup";
+            this.MakeBuckupCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // MessageTextTextBox
+            // 
+            this.MessageTextTextBox.BackColor = System.Drawing.Color.Gray;
+            this.MessageTextTextBox.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MessageTextTextBox.ForeColor = System.Drawing.Color.White;
+            this.MessageTextTextBox.Location = new System.Drawing.Point(0, 3);
+            this.MessageTextTextBox.Multiline = true;
+            this.MessageTextTextBox.Name = "MessageTextTextBox";
+            this.MessageTextTextBox.ReadOnly = true;
+            this.MessageTextTextBox.Size = new System.Drawing.Size(345, 125);
+            this.MessageTextTextBox.TabIndex = 0;
+            this.MessageTextTextBox.Text = "Game mode will be changed to normal when ";
+            this.MessageTextTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
             // panel3
             // 
             this.panel3.Controls.Add(this.tableLayoutPanel2);
@@ -108,6 +134,7 @@
             // 
             // button1
             // 
+            this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.button1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button1.Location = new System.Drawing.Point(3, 3);
             this.button1.Name = "button1";
@@ -119,6 +146,7 @@
             // 
             // button2
             // 
+            this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.button2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button2.Location = new System.Drawing.Point(180, 3);
             this.button2.Name = "button2";
@@ -127,32 +155,6 @@
             this.button2.Text = "Cancel";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // MakeBuckupCheckBox
-            // 
-            this.MakeBuckupCheckBox.AutoSize = true;
-            this.MakeBuckupCheckBox.Checked = true;
-            this.MakeBuckupCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.MakeBuckupCheckBox.Location = new System.Drawing.Point(3, 131);
-            this.MakeBuckupCheckBox.Name = "MakeBuckupCheckBox";
-            this.MakeBuckupCheckBox.Size = new System.Drawing.Size(88, 17);
-            this.MakeBuckupCheckBox.TabIndex = 0;
-            this.MakeBuckupCheckBox.Text = "Make buckup";
-            this.MakeBuckupCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // MessageTextTextBox
-            // 
-            this.MessageTextTextBox.BackColor = System.Drawing.Color.Gray;
-            this.MessageTextTextBox.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MessageTextTextBox.ForeColor = System.Drawing.Color.White;
-            this.MessageTextTextBox.Location = new System.Drawing.Point(0, 3);
-            this.MessageTextTextBox.Multiline = true;
-            this.MessageTextTextBox.Name = "MessageTextTextBox";
-            this.MessageTextTextBox.ReadOnly = true;
-            this.MessageTextTextBox.Size = new System.Drawing.Size(345, 125);
-            this.MessageTextTextBox.TabIndex = 0;
-            this.MessageTextTextBox.Text = "Game mode will be changed to normal when ";
-            this.MessageTextTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // SwitchModeDialogForm
             // 

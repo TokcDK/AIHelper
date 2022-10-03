@@ -113,7 +113,7 @@
             this.BleadingEdgeZipmodsCheckBox.AutoSize = true;
             this.BleadingEdgeZipmodsCheckBox.Location = new System.Drawing.Point(3, 26);
             this.BleadingEdgeZipmodsCheckBox.Name = "BleadingEdgeZipmodsCheckBox";
-            this.BleadingEdgeZipmodsCheckBox.Size = new System.Drawing.Size(143, 17);
+            this.BleadingEdgeZipmodsCheckBox.Size = new System.Drawing.Size(145, 17);
             this.BleadingEdgeZipmodsCheckBox.TabIndex = 1;
             this.BleadingEdgeZipmodsCheckBox.Text = "Check test zipmods pack";
             this.BleadingEdgeZipmodsCheckBox.UseVisualStyleBackColor = true;
@@ -139,7 +139,7 @@
             this.CheckEnabledModsOnlyCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.CheckEnabledModsOnlyCheckBox.Location = new System.Drawing.Point(3, 72);
             this.CheckEnabledModsOnlyCheckBox.Name = "CheckEnabledModsOnlyCheckBox";
-            this.CheckEnabledModsOnlyCheckBox.Size = new System.Drawing.Size(125, 17);
+            this.CheckEnabledModsOnlyCheckBox.Size = new System.Drawing.Size(124, 17);
             this.CheckEnabledModsOnlyCheckBox.TabIndex = 3;
             this.CheckEnabledModsOnlyCheckBox.Text = "Only enabled plugins";
             this.CheckEnabledModsOnlyCheckBox.UseVisualStyleBackColor = true;
@@ -181,6 +181,7 @@
             // 
             // btnCancel
             // 
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Location = new System.Drawing.Point(177, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(168, 32);
@@ -191,6 +192,7 @@
             // 
             // btnUpdateMods
             // 
+            this.btnUpdateMods.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnUpdateMods.Location = new System.Drawing.Point(3, 3);
             this.btnUpdateMods.Name = "btnUpdateMods";
             this.btnUpdateMods.Size = new System.Drawing.Size(168, 32);

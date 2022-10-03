@@ -600,6 +600,19 @@ namespace AIHelper.Manage
                 string.IsNullOrWhiteSpace(ManageSettings.GameExeNameVr)?"": $"{ManageSettings.GameExeNameVr}_Data/",
                 string.IsNullOrWhiteSpace(ManageSettings.GameStudioExeNameX32)?"": $"{ManageSettings.GameStudioExeNameX32}.exe",
                 string.IsNullOrWhiteSpace(ManageSettings.GameStudioExeNameX32)?"": $"{ManageSettings.GameStudioExeNameX32}_Data/",
+                "abdata/",
+                "*_Data/",
+                "mono/",
+                "manual/",
+                "UserData/",
+                "DefaultData/",
+                "baselib.dll",
+                "GameAssembly.dll",
+                "InitSetting.exe",
+                "InitSetting.exe.config",
+                "UnityCrashHandler.exe",
+                "UnityCrashHandler64.exe",
+                "UnityPlayer.dll",
             };
 
             options.Dispose();

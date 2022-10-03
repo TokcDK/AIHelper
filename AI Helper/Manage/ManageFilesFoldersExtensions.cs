@@ -70,13 +70,13 @@ namespace AIHelper.Manage
         }
 
         /// <summary>
-        /// true s ny file in dir
+        /// true when any file in dir
         /// </summary>
         /// <param name="dirPath"></param>
         /// <param name="Mask"></param>
         /// <param name="allDirectories"></param>
         /// <returns></returns>
-        public static bool IsAnyFileExistsInTheDir(string dirPath, string Mask = "*", bool allDirectories = true)
+        public static bool IsAnyFileExistsInTheDir(this string dirPath, string Mask = "*", bool allDirectories = true)
         {
             return !dirPath.IsNullOrEmptyDirectory(mask: Mask, searchForFiles: true, searchForDirs: false, recursive: allDirectories);
         }
@@ -88,7 +88,7 @@ namespace AIHelper.Manage
         /// <param name="Mask"></param>
         /// <param name="allDirectories"></param>
         /// <returns></returns>
-        public static bool IsAnySubDirExistsInTheDir(string dirPath, string Mask = "*")
+        public static bool IsAnySubDirExistsInTheDir(this string dirPath, string Mask = "*")
         {
             return !dirPath.IsNullOrEmptyDirectory(mask: Mask, searchForDirs: true, searchForFiles: false, recursive: false);
         }

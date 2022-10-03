@@ -614,6 +614,41 @@ namespace AIHelper.Manage
                 "UnityCrashHandler64.exe",
                 "UnityPlayer.dll",
             };
+            hardcodedWhiteList = hardcodedWhiteList.Where(s => s != "").ToHashSet(); // clean from empty records
+
+            if (File.Exists(whiteListPath))
+            {
+                // add missing hardcoded masks
+                var existsMasks = new HashSet<string>();
+                var lines = File.ReadAllLines(whiteListPath);
+                foreach (var line in lines)
+                {
+                    if (string.IsNullOrWhiteSpace(line)) continue;
+                    if (line.TrimStart().StartsWith("#")) continue;
+                    if (hardcodedWhiteList.Contains(line)) continue;
+
+                    existsMasks.Add(line);
+                }
+
+                // check for new hardcoded masks need to add
+                var masksToAdd = new HashSet<string>();
+                foreach(var mask in hardcodedWhiteList)
+                {
+                    if (existsMasks.Contains(mask)) continue;
+
+                    masksToAdd.Add(mask);
+                }
+
+                // add new masks in the end of file if any need
+                if(masksToAdd.Count > 0) File.WriteAllLines(whiteListPath, lines.Concat((new string[] { "\r\n\r\n" }).Concat(masksToAdd)));
+            }
+            else
+            {
+                // write hardcoded masks
+                File.WriteAllText(whiteListPath, $"# Files and folders patterns which need to be saved\r\n# use .gitignore patterns: https://www.google.com/search?q=.gitignore+pattern\r\n\r\n{string.Join("\r\n", hardcodedWhiteList)}");
+            }
+
+            if (!File.Exists(blackListPath)) File.WriteAllText(blackListPath, "# Files and folders patterns which need to be removed\r\nHave higher priority than Whitelist\r\n# use .gitignore patterns: https://www.google.com/search?q=.gitignore+pattern\r\n\r\n");
 
             options.Dispose();
 

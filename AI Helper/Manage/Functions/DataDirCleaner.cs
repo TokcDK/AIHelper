@@ -22,6 +22,11 @@ namespace AIHelper.Manage.Functions
         internal void Clean()
         {
             if (!ManageSettings.IsMoMode) return; // dont touch in common mode
+            var general = new CleanOptionsDialogForm
+            {
+                Location = new Point(ManageSettings.MainForm.Location.X, ManageSettings.MainForm.Location.Y),
+                StartPosition = FormStartPosition.Manual
+            };
 
             var options = new CleanOptionsDialogForm
             {

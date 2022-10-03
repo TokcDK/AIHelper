@@ -31,8 +31,8 @@
             this.MainPanel = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.ChoiceTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.btnStart = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.btnStart = new System.Windows.Forms.Button();
             this.InfoOptionsPanel = new System.Windows.Forms.Panel();
             this.flpOptions = new System.Windows.Forms.FlowLayoutPanel();
             this.MainPanel.SuspendLayout();
@@ -81,17 +81,6 @@
             this.ChoiceTableLayoutPanel.Size = new System.Drawing.Size(354, 43);
             this.ChoiceTableLayoutPanel.TabIndex = 0;
             // 
-            // btnStart
-            // 
-            this.btnStart.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnStart.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnStart.Location = new System.Drawing.Point(3, 3);
-            this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(171, 37);
-            this.btnStart.TabIndex = 0;
-            this.btnStart.Text = "Start";
-            this.btnStart.UseVisualStyleBackColor = true;
-            // 
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
@@ -102,6 +91,17 @@
             this.btnCancel.TabIndex = 1;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
+            // 
+            // btnStart
+            // 
+            this.btnStart.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnStart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnStart.Location = new System.Drawing.Point(3, 3);
+            this.btnStart.Name = "btnStart";
+            this.btnStart.Size = new System.Drawing.Size(171, 37);
+            this.btnStart.TabIndex = 0;
+            this.btnStart.Text = "Start";
+            this.btnStart.UseVisualStyleBackColor = true;
             // 
             // InfoOptionsPanel
             // 
@@ -135,6 +135,8 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "DialogFormGeneral";
             this.Text = "_";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_Closing);
+            this.Load += new System.EventHandler(this.Form_Load);
             this.MainPanel.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.ChoiceTableLayoutPanel.ResumeLayout(false);

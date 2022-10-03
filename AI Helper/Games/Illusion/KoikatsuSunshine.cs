@@ -17,6 +17,7 @@ namespace AIHelper.Games.Illusion
         //public override string GameDirName => base.GameDirName;
         //return GetTheGameFolderName("KoikatsuSunshine");
         public override string GameExeName => "KoikatsuSunshine";
+        public override string GameExeNameVr => "KoikatsuSunshine_VR";
 
         public override string GameDisplayingName => T._("Koikatsu Sunshine");
 

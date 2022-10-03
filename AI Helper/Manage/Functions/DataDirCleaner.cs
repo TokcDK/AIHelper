@@ -114,6 +114,7 @@ namespace AIHelper.Manage.Functions
             };
             hardcodedWhiteList = hardcodedWhiteList.Where(s => s != "").ToHashSet(); // clean from empty records
 
+            Directory.CreateDirectory(Path.GetDirectoryName(whiteListPath)); // create parent dir
             if (File.Exists(whiteListPath))
             {
                 // add missing hardcoded masks

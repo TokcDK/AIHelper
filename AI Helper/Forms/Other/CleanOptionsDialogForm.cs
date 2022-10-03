@@ -42,6 +42,7 @@ namespace AIHelper.Forms.Other
             this.Text = T._("Cleaning options");
             cbxMoveToNewMod.Text = T._("Move to the new mod");
             cbxIgnoreSymlinks.Text = T._("Ignore symlinks");
+            cbxIgnoreShortcuts.Text = T._("Ignore shortcuts");
             btnStart.Text = T._("Start");
             btnCancel.Text = T._("Cancel");
         }
@@ -90,6 +91,9 @@ namespace AIHelper.Forms.Other
                 );
             _thToolTip.SetToolTip(cbxIgnoreSymlinks,
                 T._("Will ignore any symbolic links")
+                );
+            _thToolTip.SetToolTip(cbxIgnoreShortcuts,
+                T._("Will ignore any shortcuts")
                 );
             ////////////////////////////
         }

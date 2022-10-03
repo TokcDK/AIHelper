@@ -36,6 +36,7 @@
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.cbxMoveToNewMod = new System.Windows.Forms.CheckBox();
             this.cbxIgnoreSymlinks = new System.Windows.Forms.CheckBox();
+            this.cbxIgnoreShortcuts = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -107,6 +108,7 @@
             // 
             this.flowLayoutPanel1.Controls.Add(this.cbxMoveToNewMod);
             this.flowLayoutPanel1.Controls.Add(this.cbxIgnoreSymlinks);
+            this.flowLayoutPanel1.Controls.Add(this.cbxIgnoreShortcuts);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 3);
@@ -135,6 +137,16 @@
             this.cbxIgnoreSymlinks.TabIndex = 1;
             this.cbxIgnoreSymlinks.Text = "Ignore symlinks";
             this.cbxIgnoreSymlinks.UseVisualStyleBackColor = true;
+            // 
+            // cbxIgnoreShortcuts
+            // 
+            this.cbxIgnoreShortcuts.AutoSize = true;
+            this.cbxIgnoreShortcuts.Location = new System.Drawing.Point(3, 49);
+            this.cbxIgnoreShortcuts.Name = "cbxIgnoreShortcuts";
+            this.cbxIgnoreShortcuts.Size = new System.Drawing.Size(102, 17);
+            this.cbxIgnoreShortcuts.TabIndex = 2;
+            this.cbxIgnoreShortcuts.Text = "Ignore shortcuts";
+            this.cbxIgnoreShortcuts.UseVisualStyleBackColor = true;
             // 
             // CleanOptionsDialogForm
             // 
@@ -167,5 +179,6 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         public System.Windows.Forms.CheckBox cbxMoveToNewMod;
         public System.Windows.Forms.CheckBox cbxIgnoreSymlinks;
+        public System.Windows.Forms.CheckBox cbxIgnoreShortcuts;
     }
 }

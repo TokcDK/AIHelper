@@ -41,6 +41,7 @@ namespace AIHelper.Forms.Other
         {
             this.Text = T._("Cleaning options");
             cbxMoveToNewMod.Text = T._("Move to the new mod");
+            cbxIgnoreSymlinks.Text = T._("Ignore symlinks");
             btnStart.Text = T._("Start");
             btnCancel.Text = T._("Cancel");
         }
@@ -86,6 +87,9 @@ namespace AIHelper.Forms.Other
 
             _thToolTip.SetToolTip(cbxMoveToNewMod,
                 T._("Instead of bakup folder removed files will be moved into new enabled mod in top of mods list")
+                );
+            _thToolTip.SetToolTip(cbxIgnoreSymlinks,
+                T._("Will ignore any symbolic links")
                 );
             ////////////////////////////
         }

@@ -32,7 +32,8 @@ namespace AIHelper.Manage.Functions
             if (result != DialogResult.OK) return;
 
             // set vars
-            bool moveIntoNewMod = options.cbxMoveToNewMod.Checked;
+            bool isMoveIntoNewMod = options.cbxMoveToNewMod.Checked;
+            bool isIgnoreSymlinks = options.cbxIgnoreSymlinks.Checked;
             var cleanDataDirInfoPath = ManageSettings.CurrentGameCleanFunctionDirPath;
             var dataDipPath = ManageSettings.CurrentGameDataDirPath;
             int dataDipPathLength = dataDipPath.Length;
@@ -113,7 +114,7 @@ namespace AIHelper.Manage.Functions
 
             // when move into new mod is set, setup new mod
 
-            if (moveIntoNewMod)
+            if (isMoveIntoNewMod)
             {
                 bakDir = Path.Combine(ManageSettings.CurrentGameModsDirPath, "DataFiles" + dateTimeSuffix);
             }
@@ -133,10 +134,10 @@ namespace AIHelper.Manage.Functions
             })
             {
                 // move dirs first
-                foreach (var item in new DirectoryInfo(dataDipPath).EnumerateDirectories("*", SearchOption.AllDirectories).Where(i => (isIgnored ? list.IsIgnored(i) : !list.IsIgnored(i)) && i.Exists))
+                foreach (var item in new DirectoryInfo(dataDipPath).EnumerateDirectories("*", SearchOption.AllDirectories).Where(i => (isIgnored ? list.IsIgnored(i) : !list.IsIgnored(i)) && i.Exists && (!isIgnoreSymlinks || i.IsValidSymlink())))
                     if (MoveItem(item, bakDir, dataDipPathLength)) { movedDirsCount++; } else { failedCount++; }
                 // move files
-                foreach (var item in new DirectoryInfo(dataDipPath).EnumerateFiles("*.*", SearchOption.AllDirectories).Where(i => (isIgnored ? list.IsIgnored(i) : !list.IsIgnored(i)) && i.Exists))
+                foreach (var item in new DirectoryInfo(dataDipPath).EnumerateFiles("*.*", SearchOption.AllDirectories).Where(i => (isIgnored ? list.IsIgnored(i) : !list.IsIgnored(i)) && i.Exists && (!isIgnoreSymlinks || i.IsValidSymlink())))
                     if (MoveItem(item, bakDir, dataDipPathLength)) { movedFilesCount++; } else { failedCount++; }
             }
 
@@ -149,7 +150,7 @@ namespace AIHelper.Manage.Functions
             }
             else
             {
-                if (moveIntoNewMod)
+                if (isMoveIntoNewMod)
                 {
                     var modlist = new ModlistProfileInfo();
 

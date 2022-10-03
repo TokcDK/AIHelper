@@ -72,10 +72,7 @@ namespace AIHelper.Manage
             try
             {
                 //ссылка вообще существует
-                if (!symlinkPath.IsSymbolicLinkValid())
-                {
-                    return false;
-                };
+                if (!symlinkPath.IsSymbolicLinkValid()) return false;
 
                 if (string.IsNullOrWhiteSpace(linkTargetPath))
                 {

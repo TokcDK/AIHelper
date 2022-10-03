@@ -35,6 +35,7 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.cbxMoveToNewMod = new System.Windows.Forms.CheckBox();
+            this.cbxIgnoreSymlinks = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -105,6 +106,7 @@
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.Controls.Add(this.cbxMoveToNewMod);
+            this.flowLayoutPanel1.Controls.Add(this.cbxIgnoreSymlinks);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 3);
@@ -121,6 +123,18 @@
             this.cbxMoveToNewMod.TabIndex = 0;
             this.cbxMoveToNewMod.Text = "Move to new mod";
             this.cbxMoveToNewMod.UseVisualStyleBackColor = true;
+            // 
+            // cbxIgnoreSymlinks
+            // 
+            this.cbxIgnoreSymlinks.AutoSize = true;
+            this.cbxIgnoreSymlinks.Checked = true;
+            this.cbxIgnoreSymlinks.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbxIgnoreSymlinks.Location = new System.Drawing.Point(3, 26);
+            this.cbxIgnoreSymlinks.Name = "cbxIgnoreSymlinks";
+            this.cbxIgnoreSymlinks.Size = new System.Drawing.Size(98, 17);
+            this.cbxIgnoreSymlinks.TabIndex = 1;
+            this.cbxIgnoreSymlinks.Text = "Ignore symlinks";
+            this.cbxIgnoreSymlinks.UseVisualStyleBackColor = true;
             // 
             // CleanOptionsDialogForm
             // 
@@ -152,5 +166,6 @@
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         public System.Windows.Forms.CheckBox cbxMoveToNewMod;
+        public System.Windows.Forms.CheckBox cbxIgnoreSymlinks;
     }
 }

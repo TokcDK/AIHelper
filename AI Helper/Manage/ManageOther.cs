@@ -632,7 +632,7 @@ namespace AIHelper.Manage
 
                 // check for new hardcoded masks need to add
                 var masksToAdd = new HashSet<string>();
-                foreach(var mask in hardcodedWhiteList)
+                foreach (var mask in hardcodedWhiteList)
                 {
                     if (existsMasks.Contains(mask)) continue;
 
@@ -640,7 +640,7 @@ namespace AIHelper.Manage
                 }
 
                 // add new masks in the end of file if any need
-                if(masksToAdd.Count > 0) File.WriteAllLines(whiteListPath, lines.Concat((new string[] { "\r\n\r\n" }).Concat(masksToAdd)));
+                if (masksToAdd.Count > 0) File.WriteAllLines(whiteListPath, lines.Concat((new string[] { "\r\n\r\n" }).Concat(masksToAdd)));
             }
             else
             {
@@ -653,10 +653,8 @@ namespace AIHelper.Manage
             options.Dispose();
 
             // fill lists
-            //var blackList = new HashSet<string>();
-            //var whiteList = new HashSet<string>();
-            var blackList = File.Exists(blackListPath) ? new IgnoreList(blackListPath) : null;
-            var whiteList = File.Exists(whiteListPath) ? new IgnoreList(whiteListPath) : null;
+            var whiteList = new IgnoreList(whiteListPath);
+            var blackList = new IgnoreList(blackListPath);
 
             // info vars
             int failedCount = 0;
@@ -666,107 +664,48 @@ namespace AIHelper.Manage
             // create target bak dir only if any item will be moved
             bool isNeedToCreateBakDir = true;
 
-            // whiteList
-            // move dirs first
-            foreach (var item in new DirectoryInfo(dataDipPath).EnumerateDirectories("*", SearchOption.AllDirectories).Where(d => !whiteList.IsIgnored(d) && d.Exists))
+            foreach (var (list, isIgnored) in new[]
             {
-                try
-                {
-
-                    var targetPath = $"{dir2move}{item.FullName.Substring(dataDipPathLength)}";
-                    item.MoveTo(targetPath);
-                    movedDirs++;
-                }
-                catch (IOException ex)
-                {
-                    failedCount++;
-                    _log.Error($"{nameof(CleanCurrentGameDataDir)}: Failed to remove dir '{item.FullName}'. Error:\r\n{ex}");
-                }
-            }
-            // move files
-            foreach (var item in new DirectoryInfo(dataDipPath).EnumerateFiles("*.*", SearchOption.AllDirectories).Where(f => !whiteList.IsIgnored(f) && f.Exists))
+                (whiteList, false),
+                (blackList, true),
+            })
             {
-                try
-                {
-                    if (isNeedToCreateBakDir) { isNeedToCreateBakDir = false; Directory.CreateDirectory(dir2move); }
 
-                    var targetPath = $"{dir2move}{item.FullName.Substring(dataDipPathLength)}";
-                    item.MoveTo(targetPath);
-                    movedFiles++;
-                }
-                catch (IOException ex)
+                // move dirs first
+                foreach (var item in new DirectoryInfo(dataDipPath).EnumerateDirectories("*", SearchOption.AllDirectories).Where(i => (isIgnored ? list.IsIgnored(i) : !list.IsIgnored(i)) && i.Exists))
                 {
-                    failedCount++;
-                    _log.Error($"{nameof(CleanCurrentGameDataDir)}: Failed to remove file '{item.FullName}'. Error:\r\n{ex}");
+                    try
+                    {
+                        var targetPath = $"{dir2move}{item.FullName.Substring(dataDipPathLength)}";
+                        item.MoveTo(targetPath);
+                        movedDirs++;
+                    }
+                    catch (IOException ex)
+                    {
+                        failedCount++;
+                        _log.Error($"{nameof(CleanCurrentGameDataDir)}: Failed to remove dir '{item.FullName}'. Error:\r\n{ex}");
+                    }
                 }
-            }
+                // move files
+                foreach (var item in new DirectoryInfo(dataDipPath).EnumerateFiles("*.*", SearchOption.AllDirectories).Where(i => (isIgnored ? list.IsIgnored(i) : !list.IsIgnored(i)) && i.Exists))
+                {
+                    try
+                    {
+                        if (isNeedToCreateBakDir) { isNeedToCreateBakDir = false; Directory.CreateDirectory(dir2move); }
 
-            // blacklist
-            // move dirs first
-            foreach (var item in new DirectoryInfo(dataDipPath).EnumerateDirectories("*", SearchOption.AllDirectories).Where(d => blackList.IsIgnored(d) && d.Exists))
-            {
-                if (isNeedToCreateBakDir) { isNeedToCreateBakDir = false; Directory.CreateDirectory(dir2move); }
-
-                try
-                {
-                    var targetPath = $"{dir2move}{item.FullName.Substring(dataDipPathLength)}";
-                    item.MoveTo(targetPath);
-                    movedDirs++;
-                }
-                catch (IOException ex)
-                {
-                    failedCount++;
-                    _log.Error($"{nameof(CleanCurrentGameDataDir)}: Failed to remove dir '{item.FullName}'. Error:\r\n{ex}");
-                }
-            }
-            // move files
-            foreach (var item in new DirectoryInfo(dataDipPath).EnumerateFiles("*.*", SearchOption.AllDirectories).Where(f => blackList.IsIgnored(f) && f.Exists))
-            {
-                if (isNeedToCreateBakDir) { isNeedToCreateBakDir = false; Directory.CreateDirectory(dir2move); }
-
-                try
-                {
-                    var targetPath = $"{dir2move}{item.FullName.Substring(dataDipPathLength)}";
-                    item.MoveTo(targetPath);
-                    movedFiles++;
-                }
-                catch (IOException ex)
-                {
-                    failedCount++;
-                    _log.Error($"{nameof(CleanCurrentGameDataDir)}: Failed to remove file '{item.FullName}'. Error:\r\n{ex}");
+                        var targetPath = $"{dir2move}{item.FullName.Substring(dataDipPathLength)}";
+                        item.MoveTo(targetPath);
+                        movedFiles++;
+                    }
+                    catch (IOException ex)
+                    {
+                        failedCount++;
+                        _log.Error($"{nameof(CleanCurrentGameDataDir)}: Failed to remove file '{item.FullName}'. Error:\r\n{ex}");
+                    }
                 }
             }
 
             MessageBox.Show($"Cleaning finished! Moved {movedDirs} dirs and {movedFiles} files. Failed to move {failedCount} items.");
-
-            // fill from hardcoded whitelist
-            //foreach (var str in hardcodedWhiteList)
-            //{
-            //    var subpath = str;
-            //    int lastCharIndex = subpath.Length - 1;
-            //    bool isDir = subpath[lastCharIndex] == '\\';
-            //    if (isDir) subpath = subpath.Remove(lastCharIndex);
-            //    bool isTopDir = subpath.Remove(lastCharIndex).IndexOf('\\') == -1;
-            //    var searchOption = isTopDir ? SearchOption.TopDirectoryOnly : SearchOption.AllDirectories;
-
-            //    //var path = $"{dataDipPath}\\{subpath}";
-
-            //    var paths = isDir ? Directory.EnumerateDirectories(dataDipPath, subpath, searchOption) : Directory.EnumerateFiles(dataDipPath, subpath, searchOption);
-
-            //    foreach (var entrie in paths)
-            //    {
-            //        // skip missing paths
-            //        if (isDir)
-            //        {
-            //            if (!Directory.Exists(entrie)) continue;
-            //        }
-            //        else if (!File.Exists(entrie)) continue;
-
-            //        if (whiteList.Contains(entrie)) continue;
-            //        whiteList.Add(entrie);
-            //    }
-            //}
-
         }
     }
 }

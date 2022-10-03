@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Forms;
 using AIHelper.Forms.Other;
 using MAB.DotIgnore;
-using NLog.Fluent;
-using System.Windows.Forms;
-using System.Drawing;
 using NLog;
+using static AIHelper.Manage.ManageModOrganizer;
 
 namespace AIHelper.Manage.Functions
 {
@@ -60,6 +58,7 @@ namespace AIHelper.Manage.Functions
                 "*_Data/",
                 "mono/",
                 "manual/",
+                "MonoBleedingEdge/",
                 "UserData/",
                 "DefaultData/",
                 "baselib.dll",
@@ -112,6 +111,13 @@ namespace AIHelper.Manage.Functions
             var whiteList = new IgnoreList(whiteListPath);
             var blackList = new IgnoreList(blackListPath);
 
+            // when move into new mod is set, setup new mod
+
+            if (moveIntoNewMod)
+            {
+                bakDir = Path.Combine(ManageSettings.CurrentGameModsDirPath, "DataFiles" + dateTimeSuffix);
+            }
+
             // info vars
             int failedCount = 0;
             int movedDirsCount = 0;
@@ -134,10 +140,33 @@ namespace AIHelper.Manage.Functions
                     if (MoveItem(item, bakDir, dataDipPathLength)) { movedFilesCount++; } else { failedCount++; }
             }
 
-            // remove bak dir when empty
-            if (movedDirsCount == 0 && movedFilesCount == 0 && !bakDir.IsAnyFileExistsInTheDir()) Directory.Delete(bakDir);
+            bool isAnyItemsWasMoved = !(movedDirsCount == 0 && movedFilesCount == 0 && !bakDir.IsAnyFileExistsInTheDir());
 
-            MessageBox.Show(T._($"Cleaning finished! Moved {movedDirsCount} dirs and {movedFilesCount} files. Failed to move {failedCount} items."));
+            // remove bak dir when empty
+            if (!isAnyItemsWasMoved)
+            {
+                Directory.Delete(bakDir);
+            }
+            else
+            {
+                if (moveIntoNewMod)
+                {
+                    var modlist = new ModlistProfileInfo();
+
+                    var mod = new ProfileModlistRecord();
+                    mod.IsEnabled = true;
+                    mod.Priority = 0;
+                    mod.Path = bakDir;
+                    mod.Name = Path.GetFileName(bakDir);
+
+                    modlist.Insert(mod);
+                    modlist.Save();
+                }
+            }
+
+            MessageBox.Show(T._($"Cleaning finished! Moved {movedDirsCount} dirs and {movedFilesCount} files. Failed to move {failedCount} items.") + (isAnyItemsWasMoved ? "\r\n" + T._("Will be opened the folder where files was moved. You can remove all you dont need.") : ""));
+
+            if (isAnyItemsWasMoved) Process.Start("explorer.exe", bakDir);
         }
 
         bool MoveItem(FileSystemInfo item, string dir2move, int dataDipPathLength)

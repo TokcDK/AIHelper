@@ -1355,7 +1355,7 @@ namespace AIHelper.Manage
                     Items.Add(profileModlistRecord);
                     return;
                 }
-                Items.Insert(profileModlistRecord.Priority - 1, profileModlistRecord);
+                Items.Insert(profileModlistRecord.Priority - (profileModlistRecord.Priority > 0 ? 1 : 0), profileModlistRecord);
             }
 
             private ProfileModlistRecord GetItemByName(string itemName)
@@ -1472,7 +1472,7 @@ namespace AIHelper.Manage
             /// <summary>
             /// true for separators
             /// </summary>
-            internal bool IsSeparator;
+            internal bool IsSeparator = false;
             /// <summary>
             /// true when folder is exists in mods
             /// </summary>
@@ -1731,7 +1731,7 @@ namespace AIHelper.Manage
                             continue;
                         }
 
-                        var data = new CustomExeFixData() { Path = path, Attribute=attribute, CustomExeData=record.Value };
+                        var data = new CustomExeFixData() { Path = path, Attribute = attribute, CustomExeData = record.Value };
                         foreach (var fixer in new ICustomExePathFixerBase[]
                         {
                             new RelativePathFixer(),

@@ -6,13 +6,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AIHelper.Forms.Other;
 using AIHelper.Games;
 using AIHelper.SharedData;
 using GetListOfSubClasses;
 using INIFileMan;
-using NLog;
 using MAB.DotIgnore;
-using AIHelper.Forms.Other;
+using NLog;
 
 namespace AIHelper.Manage
 {
@@ -585,9 +585,22 @@ namespace AIHelper.Manage
             var currentGameAbbr = ManageSettings.CurrentGame.GameAbbreviation;
             var blackListPath = ManageSettings.CurrentGameCleanFunctionBlackListFilePath;
             var whiteListPath = ManageSettings.CurrentGameCleanFunctionWhiteListFilePath;
-            var hardcodedWhiteList = ManageSettings.CurrentGameCleanFunctionHardcodedWhiteList;
-            var dir2move = Path.Combine(ManageSettings.CurrentGameDirPath, "testbak");
-            Directory.CreateDirectory(dir2move);
+            var dateTimeSuffix = ManageSettings.DateTimeBasedSuffix;
+            var dir2move = Path.Combine(ManageSettings.CurrentGameBakDirPath, ManageSettings.CurrentGameFunctionsDirName, ManageSettings.CurrentGameCleanFunctionDirName, "bak" + dateTimeSuffix);
+
+            var hardcodedWhiteList = new HashSet<string>()
+            {
+                string.IsNullOrWhiteSpace(ManageSettings.CurrentGameExeName)?"": $"{ManageSettings.CurrentGameExeName}.exe",
+                string.IsNullOrWhiteSpace(ManageSettings.CurrentGameExeName)?"": $"{ManageSettings.CurrentGameExeName}_Data/",
+                string.IsNullOrWhiteSpace(ManageSettings.StudioExeName)?"": $"{ManageSettings.StudioExeName}.exe",
+                string.IsNullOrWhiteSpace(ManageSettings.StudioExeName)?"": $"{ManageSettings.StudioExeName}_Data/",
+                string.IsNullOrWhiteSpace(ManageSettings.GameExeNameX32)?"": $"{ManageSettings.GameExeNameX32}.exe",
+                string.IsNullOrWhiteSpace(ManageSettings.GameExeNameX32)?"": $"{ManageSettings.GameExeNameX32}_Data/",
+                string.IsNullOrWhiteSpace(ManageSettings.GameExeNameVr)?"": $"{ManageSettings.GameExeNameVr}.exe",
+                string.IsNullOrWhiteSpace(ManageSettings.GameExeNameVr)?"": $"{ManageSettings.GameExeNameVr}_Data/",
+                string.IsNullOrWhiteSpace(ManageSettings.GameStudioExeNameX32)?"": $"{ManageSettings.GameStudioExeNameX32}.exe",
+                string.IsNullOrWhiteSpace(ManageSettings.GameStudioExeNameX32)?"": $"{ManageSettings.GameStudioExeNameX32}_Data/",
+            };
 
             options.Dispose();
 
@@ -597,9 +610,13 @@ namespace AIHelper.Manage
             var blackList = File.Exists(blackListPath) ? new IgnoreList(blackListPath) : null;
             var whiteList = File.Exists(whiteListPath) ? new IgnoreList(whiteListPath) : null;
 
+            // info vars
             int failedCount = 0;
             int movedDirs = 0;
             int movedFiles = 0;
+
+            // create target bak dir only if any item will be moved
+            bool isNeedToCreateBakDir = true;
 
             // whiteList
             // move dirs first
@@ -607,6 +624,7 @@ namespace AIHelper.Manage
             {
                 try
                 {
+
                     var targetPath = $"{dir2move}{item.FullName.Substring(dataDipPathLength)}";
                     item.MoveTo(targetPath);
                     movedDirs++;
@@ -622,6 +640,8 @@ namespace AIHelper.Manage
             {
                 try
                 {
+                    if (isNeedToCreateBakDir) { isNeedToCreateBakDir = false; Directory.CreateDirectory(dir2move); }
+
                     var targetPath = $"{dir2move}{item.FullName.Substring(dataDipPathLength)}";
                     item.MoveTo(targetPath);
                     movedFiles++;
@@ -637,6 +657,8 @@ namespace AIHelper.Manage
             // move dirs first
             foreach (var item in new DirectoryInfo(dataDipPath).EnumerateDirectories("*", SearchOption.AllDirectories).Where(d => blackList.IsIgnored(d) && d.Exists))
             {
+                if (isNeedToCreateBakDir) { isNeedToCreateBakDir = false; Directory.CreateDirectory(dir2move); }
+
                 try
                 {
                     var targetPath = $"{dir2move}{item.FullName.Substring(dataDipPathLength)}";
@@ -652,6 +674,8 @@ namespace AIHelper.Manage
             // move files
             foreach (var item in new DirectoryInfo(dataDipPath).EnumerateFiles("*.*", SearchOption.AllDirectories).Where(f => blackList.IsIgnored(f) && f.Exists))
             {
+                if (isNeedToCreateBakDir) { isNeedToCreateBakDir = false; Directory.CreateDirectory(dir2move); }
+
                 try
                 {
                     var targetPath = $"{dir2move}{item.FullName.Substring(dataDipPathLength)}";
@@ -677,23 +701,23 @@ namespace AIHelper.Manage
             //    bool isTopDir = subpath.Remove(lastCharIndex).IndexOf('\\') == -1;
             //    var searchOption = isTopDir ? SearchOption.TopDirectoryOnly : SearchOption.AllDirectories;
 
-                //    //var path = $"{dataDipPath}\\{subpath}";
+            //    //var path = $"{dataDipPath}\\{subpath}";
 
-                //    var paths = isDir ? Directory.EnumerateDirectories(dataDipPath, subpath, searchOption) : Directory.EnumerateFiles(dataDipPath, subpath, searchOption);
+            //    var paths = isDir ? Directory.EnumerateDirectories(dataDipPath, subpath, searchOption) : Directory.EnumerateFiles(dataDipPath, subpath, searchOption);
 
-                //    foreach (var entrie in paths)
-                //    {
-                //        // skip missing paths
-                //        if (isDir)
-                //        {
-                //            if (!Directory.Exists(entrie)) continue;
-                //        }
-                //        else if (!File.Exists(entrie)) continue;
+            //    foreach (var entrie in paths)
+            //    {
+            //        // skip missing paths
+            //        if (isDir)
+            //        {
+            //            if (!Directory.Exists(entrie)) continue;
+            //        }
+            //        else if (!File.Exists(entrie)) continue;
 
-                //        if (whiteList.Contains(entrie)) continue;
-                //        whiteList.Add(entrie);
-                //    }
-                //}
+            //        if (whiteList.Contains(entrie)) continue;
+            //        whiteList.Add(entrie);
+            //    }
+            //}
 
         }
     }

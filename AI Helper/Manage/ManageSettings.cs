@@ -104,7 +104,7 @@ namespace AIHelper.Manage
 
         }
 
-        internal static string DateTimeBasedSuffix => "_" + DateTime.Now.ToString("yyyyMMddHHmmss", System.Globalization.CultureInfo.InvariantCulture);
+        internal static string DateTimeBasedSuffix => "_" + DateTime.Now.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
 
         internal static bool MoIsNew { get => ManageSettings.MOIsNew; }
 
@@ -1273,22 +1273,32 @@ namespace AIHelper.Manage
         /// Dir of Mod Organizer Basic game plugins for managed games
         /// </summary>
         public static string AppResBasicGamesDir { get => Path.Combine(AppResDirPath, "basicgames", "games"); }
-        public static string CurrentGameCleanFunctionDirPath { get => Path.Combine(AppResDirPath, "f", "cleandata"); }
+        /// <summary>
+        /// Directory name the dir where functions data dirs are located
+        /// </summary>
+        public static string CurrentGameFunctionsDirName { get => "func"; }
+        /// <summary>
+        /// Directory path the dir where functions data dirs are located
+        /// </summary>
+        public static string CurrentGameFunctionsDirPath { get => Path.Combine(AppResDirPath, CurrentGameFunctionsDirName); }
+        /// <summary>
+        /// Data directory cleaning function dir name
+        /// </summary>
+        public static string CurrentGameCleanFunctionDirName { get => "cleandata"; }
+        /// <summary>
+        /// Data directory cleaning function dir path
+        /// </summary>
+        public static string CurrentGameCleanFunctionDirPath { get => Path.Combine(CurrentGameFunctionsDirPath, CurrentGameCleanFunctionDirName); }
+        /// <summary>
+        /// Data directory cleaning function Blacklist path for current game
+        /// </summary>
         public static string CurrentGameCleanFunctionBlackListFilePath { get => Path.Combine(CurrentGameCleanFunctionDirPath, CurrentGame.GameAbbreviation+"-bl.txt"); }
+        /// <summary>
+        /// Data directory cleaning function Whitelist path for current game
+        /// </summary>
         public static string CurrentGameCleanFunctionWhiteListFilePath { get => Path.Combine(CurrentGameCleanFunctionDirPath, CurrentGame.GameAbbreviation+"-wl.txt"); }
-        public static HashSet<string> CurrentGameCleanFunctionHardcodedWhiteList { get => new HashSet<string>()
-        {
-            "UserData\\*\\",
-            $"{CurrentGameExeName}.exe",
-            $"{CurrentGameExeName}_Data\\",
-            $"{StudioExeName}.exe",
-            $"{StudioExeName}_Data\\",
-            $"{CurrentGame.GameExeNameX32}.exe",
-            $"{CurrentGame.GameExeNameX32}_Data\\",
-            $"{CurrentGame.GameExeNameVr}.exe",
-            $"{CurrentGame.GameExeNameVr}_Data\\",
-            $"{CurrentGame.GameStudioExeNameX32}.exe",
-            $"{CurrentGame.GameStudioExeNameX32}_Data\\",
-        };}
+        public static string GameExeNameX32 { get => CurrentGame.GameExeNameX32; }
+        public static string GameExeNameVr { get => CurrentGame.GameExeNameVr; }
+        public static string GameStudioExeNameX32 { get => CurrentGame.GameStudioExeNameX32; }
     }
 }

@@ -40,11 +40,11 @@ namespace AIHelper.Forms.Other
         private void SetTranslations()
         {
             this.Text = T._("Cleaning options");
-            cbxMoveToNewMod.Text = T._("Move to the new mod");
+            cbxMoveIntoNewMod.Text = T._("Move to the new mod");
             cbxIgnoreSymlinks.Text = T._("Ignore symlinks");
             cbxIgnoreShortcuts.Text = T._("Ignore shortcuts");
-            btnStart.Text = T._("Start");
-            btnCancel.Text = T._("Cancel");
+            //btnStart.Text = T._("OK");
+            //btnCancel.Text = T._("Cancel");
         }
 
         private ToolTip _thToolTip;
@@ -86,7 +86,7 @@ namespace AIHelper.Forms.Other
                 ShowAlways = true
             };
 
-            _thToolTip.SetToolTip(cbxMoveToNewMod,
+            _thToolTip.SetToolTip(cbxMoveIntoNewMod,
                 T._("Instead of bakup folder removed files will be moved into new enabled mod in top of mods list")
                 );
             _thToolTip.SetToolTip(cbxIgnoreSymlinks,

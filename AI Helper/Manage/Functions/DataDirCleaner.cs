@@ -22,25 +22,45 @@ namespace AIHelper.Manage.Functions
         internal void Clean()
         {
             if (!ManageSettings.IsMoMode) return; // dont touch in common mode
-            var general = new CleanOptionsDialogForm
+            var options = new DialogFormGeneral
             {
                 Location = new Point(ManageSettings.MainForm.Location.X, ManageSettings.MainForm.Location.Y),
                 StartPosition = FormStartPosition.Manual
             };
 
-            var options = new CleanOptionsDialogForm
-            {
-                Location = new Point(ManageSettings.MainForm.Location.X, ManageSettings.MainForm.Location.Y),
-                StartPosition = FormStartPosition.Manual
-            };
+            // option place into form
+            var cbxMoveIntoNewMod = new CheckBox();
+            cbxMoveIntoNewMod.Text = T._("Move into new mod");
+            var cbxIgnoreSymlinks = new CheckBox();
+            cbxIgnoreSymlinks.Text = T._("Ignore symlinks");
+            cbxIgnoreSymlinks.Checked = true;
+            var cbxIgnoreShortcuts = new CheckBox();
+            cbxIgnoreShortcuts.Text = T._("Ignore shortcurs");
+            options.flpOptions.Controls.Add(cbxMoveIntoNewMod);
+            options.flpOptions.Controls.Add(cbxIgnoreSymlinks);
+            options.flpOptions.Controls.Add(cbxIgnoreShortcuts);
+
+            //var options = new CleanOptionsDialogForm
+            //{
+            //    Location = new Point(ManageSettings.MainForm.Location.X, ManageSettings.MainForm.Location.Y),
+            //    StartPosition = FormStartPosition.Manual
+            //};
 
             DialogResult result = options.ShowDialog();
             if (result != DialogResult.OK) return;
 
+            // test
+            //options.btnStart.Enabled = false;
+            //options.btnCancel.Enabled = false;
+            //TextBox tbxInfo = new TextBox();
+            //tbxInfo.ReadOnly = true;
+            //options.flpOptions.Controls.Add(tbxInfo);
+            //tbxInfo.Text = T._("Read lists");
+
             // set vars
-            bool isMoveIntoNewMod = options.cbxMoveToNewMod.Checked;
-            bool isIgnoreSymlinks = options.cbxIgnoreSymlinks.Checked;
-            bool isIgnoreShortcuts = options.cbxIgnoreShortcuts.Checked;
+            bool isMoveIntoNewMod = cbxMoveIntoNewMod.Checked;
+            bool isIgnoreSymlinks = cbxIgnoreSymlinks.Checked;
+            bool isIgnoreShortcuts = cbxIgnoreShortcuts.Checked;
             var cleanDataDirInfoPath = ManageSettings.CurrentGameCleanFunctionDirPath;
             var dataDipPath = ManageSettings.CurrentGameDataDirPath;
             int dataDipPathLength = dataDipPath.Length;
@@ -49,6 +69,8 @@ namespace AIHelper.Manage.Functions
             var whiteListPath = ManageSettings.CurrentGameCleanFunctionWhiteListFilePath;
             var dateTimeSuffix = ManageSettings.DateTimeBasedSuffix;
             var bakDir = Path.Combine(ManageSettings.CurrentGameBakDirPath, ManageSettings.CurrentGameFunctionsDirName, ManageSettings.CurrentGameCleanFunctionDirName, "bak" + dateTimeSuffix);
+
+            options.Dispose(); // release options form
 
             var hardcodedWhiteList = new HashSet<string>()
             {
@@ -125,8 +147,6 @@ namespace AIHelper.Manage.Functions
 
             if (!File.Exists(blackListPath)) File.WriteAllText(blackListPath, "# Files and folders patterns which need to be removed\r\nHave higher priority than Whitelist\r\n# use .gitignore patterns: https://www.google.com/search?q=.gitignore+pattern\r\n\r\n");
 
-            options.Dispose(); // release options form
-
             // fill lists
             var whiteList = new IgnoreList(whiteListPath);
             var blackList = new IgnoreList(blackListPath);
@@ -139,13 +159,15 @@ namespace AIHelper.Manage.Functions
             }
 
             // info vars
-            int failedCount = 0;
-            int movedDirsCount = 0;
-            int movedFilesCount = 0;
+            int errors = 0;
+            int dirs = 0;
+            int files = 0;
 
             // create bak dir
             Directory.CreateDirectory(bakDir);
 
+            // move files
+            //tbxInfo.Text = T._($"Move files: D{dirs}/F{files}/!{errors}");
             foreach (var (list, isIgnored) in new[]
             {
                 (whiteList, false),
@@ -155,14 +177,20 @@ namespace AIHelper.Manage.Functions
                 // move dirs first
                 foreach (var item in new DirectoryInfo(dataDipPath).EnumerateDirectories("*", SearchOption.AllDirectories)
                     .Where(i => (isIgnored ? list.IsIgnored(i) : !list.IsIgnored(i)) && i.Exists && (!isIgnoreSymlinks || !i.IsSymlink())))
-                    if (MoveItem(item, bakDir, dataDipPathLength)) { movedDirsCount++; } else { failedCount++; }
+                {
+                    if (MoveItem(item, bakDir, dataDipPathLength)) { dirs++; } else { errors++; }
+                    //tbxInfo.Text = T._($"Move files: D{dirs}/F{files}/!{errors}");
+                }
                 // move files
                 foreach (var item in new DirectoryInfo(dataDipPath).EnumerateFiles("*.*", SearchOption.AllDirectories)
                     .Where(i => (isIgnored ? list.IsIgnored(i) : !list.IsIgnored(i)) && i.Exists && (!isIgnoreSymlinks || !i.IsSymlink()) && (!isIgnoreShortcuts || i.Extension != ".lnk")))
-                    if (MoveItem(item, bakDir, dataDipPathLength)) { movedFilesCount++; } else { failedCount++; }
+                {
+                    if (MoveItem(item, bakDir, dataDipPathLength)) { files++; } else { errors++; }
+                    //tbxInfo.Text = T._($"Move files: D{dirs}/F{files}/!{errors}");
+                }
             }
 
-            bool isAnyItemsWasMoved = !(movedDirsCount == 0 && movedFilesCount == 0 && !bakDir.IsAnyFileExistsInTheDir());
+            bool isAnyItemsWasMoved = !(dirs == 0 && files == 0 && !bakDir.IsAnyFileExistsInTheDir());
 
             // remove bak dir when empty
             if (!isAnyItemsWasMoved)
@@ -186,7 +214,7 @@ namespace AIHelper.Manage.Functions
                 }
             }
 
-            MessageBox.Show(T._($"Cleaning finished! Moved {movedDirsCount} dirs and {movedFilesCount} files. Failed to move {failedCount} items.") + (isAnyItemsWasMoved ? "\r\n" + T._("Will be opened the folder where files was moved. You can remove all you dont need.") : ""));
+            MessageBox.Show(T._($"Cleaning finished! Moved {dirs} dirs and {files} files. Failed to move {errors} items.") + (isAnyItemsWasMoved ? "\r\n" + T._("Will be opened the folder where files was moved. You can remove all you dont need.") : ""));
 
             if (isAnyItemsWasMoved) Process.Start("explorer.exe", bakDir);
         }

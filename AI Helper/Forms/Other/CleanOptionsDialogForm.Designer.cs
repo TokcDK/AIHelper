@@ -34,7 +34,7 @@
             this.btnStart = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.cbxMoveToNewMod = new System.Windows.Forms.CheckBox();
+            this.cbxMoveIntoNewMod = new System.Windows.Forms.CheckBox();
             this.cbxIgnoreSymlinks = new System.Windows.Forms.CheckBox();
             this.cbxIgnoreShortcuts = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
@@ -84,29 +84,31 @@
             // 
             // btnStart
             // 
+            this.btnStart.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnStart.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnStart.Location = new System.Drawing.Point(3, 3);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(162, 40);
             this.btnStart.TabIndex = 0;
-            this.btnStart.Text = "Start";
+            this.btnStart.Text = T._("OK");
             this.btnStart.UseVisualStyleBackColor = true;
             this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
             // btnCancel
             // 
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnCancel.Location = new System.Drawing.Point(171, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(174, 40);
             this.btnCancel.TabIndex = 1;
-            this.btnCancel.Text = "Cancel";
+            this.btnCancel.Text = T._("Cancel");
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // flowLayoutPanel1
             // 
-            this.flowLayoutPanel1.Controls.Add(this.cbxMoveToNewMod);
+            this.flowLayoutPanel1.Controls.Add(this.cbxMoveIntoNewMod);
             this.flowLayoutPanel1.Controls.Add(this.cbxIgnoreSymlinks);
             this.flowLayoutPanel1.Controls.Add(this.cbxIgnoreShortcuts);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -118,13 +120,13 @@
             // 
             // cbxMoveToNewMod
             // 
-            this.cbxMoveToNewMod.AutoSize = true;
-            this.cbxMoveToNewMod.Location = new System.Drawing.Point(3, 3);
-            this.cbxMoveToNewMod.Name = "cbxMoveToNewMod";
-            this.cbxMoveToNewMod.Size = new System.Drawing.Size(111, 17);
-            this.cbxMoveToNewMod.TabIndex = 0;
-            this.cbxMoveToNewMod.Text = "Move to new mod";
-            this.cbxMoveToNewMod.UseVisualStyleBackColor = true;
+            this.cbxMoveIntoNewMod.AutoSize = true;
+            this.cbxMoveIntoNewMod.Location = new System.Drawing.Point(3, 3);
+            this.cbxMoveIntoNewMod.Name = "cbxMoveToNewMod";
+            this.cbxMoveIntoNewMod.Size = new System.Drawing.Size(111, 17);
+            this.cbxMoveIntoNewMod.TabIndex = 0;
+            this.cbxMoveIntoNewMod.Text = T._("Remove into the new mod");
+            this.cbxMoveIntoNewMod.UseVisualStyleBackColor = true;
             // 
             // cbxIgnoreSymlinks
             // 
@@ -135,7 +137,7 @@
             this.cbxIgnoreSymlinks.Name = "cbxIgnoreSymlinks";
             this.cbxIgnoreSymlinks.Size = new System.Drawing.Size(98, 17);
             this.cbxIgnoreSymlinks.TabIndex = 1;
-            this.cbxIgnoreSymlinks.Text = "Ignore symlinks";
+            this.cbxIgnoreSymlinks.Text = T._("Ignore symlinks");
             this.cbxIgnoreSymlinks.UseVisualStyleBackColor = true;
             // 
             // cbxIgnoreShortcuts
@@ -145,7 +147,7 @@
             this.cbxIgnoreShortcuts.Name = "cbxIgnoreShortcuts";
             this.cbxIgnoreShortcuts.Size = new System.Drawing.Size(102, 17);
             this.cbxIgnoreShortcuts.TabIndex = 2;
-            this.cbxIgnoreShortcuts.Text = "Ignore shortcuts";
+            this.cbxIgnoreShortcuts.Text = T._("Ignore shortcuts");
             this.cbxIgnoreShortcuts.UseVisualStyleBackColor = true;
             // 
             // CleanOptionsDialogForm
@@ -157,7 +159,7 @@
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "CleanOptionsDialogForm";
-            this.Text = "text";
+            this.Text = T._("Options");
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CleanOptionsDialogForm_FormClosing);
             this.Load += new System.EventHandler(this.CleanOptionsDialogForm_Load);
             this.panel1.ResumeLayout(false);
@@ -177,7 +179,7 @@
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        public System.Windows.Forms.CheckBox cbxMoveToNewMod;
+        public System.Windows.Forms.CheckBox cbxMoveIntoNewMod;
         public System.Windows.Forms.CheckBox cbxIgnoreSymlinks;
         public System.Windows.Forms.CheckBox cbxIgnoreShortcuts;
     }

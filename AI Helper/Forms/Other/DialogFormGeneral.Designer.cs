@@ -150,9 +150,9 @@
         private System.Windows.Forms.Panel MainPanel;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.TableLayoutPanel ChoiceTableLayoutPanel;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Panel InfoOptionsPanel;
-        private System.Windows.Forms.FlowLayoutPanel flpOptions;
+        public System.Windows.Forms.FlowLayoutPanel flpOptions;
+        public System.Windows.Forms.Button btnCancel;
+        public System.Windows.Forms.Button btnStart;
     }
 }

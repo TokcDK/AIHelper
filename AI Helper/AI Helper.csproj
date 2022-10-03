@@ -122,6 +122,12 @@
     <Compile Include="Forms\Other\CleanOptionsDialogForm.Designer.cs">
       <DependentUpon>CleanOptionsDialogForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Other\DialogFormGeneral.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Other\DialogFormGeneral.Designer.cs">
+      <DependentUpon>DialogFormGeneral.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Other\ProgressForm\ProgressForm.cs" />
     <Compile Include="Forms\Other\SwitchModeDialogForm.cs">
       <SubType>Form</SubType>
@@ -316,6 +322,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Other\CleanOptionsDialogForm.resx">
       <DependentUpon>CleanOptionsDialogForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Other\DialogFormGeneral.resx">
+      <DependentUpon>DialogFormGeneral.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Other\SwitchModeDialogForm.resx">
       <DependentUpon>SwitchModeDialogForm.cs</DependentUpon>

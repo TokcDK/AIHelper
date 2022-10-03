@@ -58,6 +58,10 @@ namespace AIHelper.Manage.Functions
                 string.IsNullOrWhiteSpace(ManageSettings.GameStudioExeNameX32)?"": $"{ManageSettings.GameStudioExeNameX32}.exe",
                 string.IsNullOrWhiteSpace(ManageSettings.GameStudioExeNameX32)?"": $"{ManageSettings.GameStudioExeNameX32}_Data/",
                 "abdata/",
+                "GameData/",
+                "GameData_*/",
+                "IMG/",
+                "Preset/",
                 "*_Data/",
                 "mono/",
                 "cubemaps/",
@@ -74,6 +78,11 @@ namespace AIHelper.Manage.Functions
                 "UnityCrashHandler.exe",
                 "UnityCrashHandler64.exe",
                 "UnityPlayer.dll",
+                "update.cfg",
+                "update.lst",
+                "system.dat",
+                "uninst.dat",
+                "uninst.exe",
             };
             hardcodedWhiteList = hardcodedWhiteList.Where(s => s != "").ToHashSet(); // clean from empty records
 

@@ -18,6 +18,7 @@
         //public override string GameDirName => base.GameDirName;
         //return GetTheGameFolderName("Koikatsu");
         public override string GameExeName => "COM3D2x64";
+        public override string GameExeNameX32 => "COM3D2";
 
         public override string GameDisplayingName => T._("Custom Order Maid 3D2");
 

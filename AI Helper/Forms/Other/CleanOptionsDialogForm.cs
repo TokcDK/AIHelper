@@ -25,18 +25,6 @@ namespace AIHelper.Forms.Other
             SetTooltips();
         }
 
-        private void btnStart_Click(object sender, EventArgs e)
-        {
-            this.DialogResult = DialogResult.OK;
-            this.Close();
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
-        }
-
         private void SetTranslations()
         {
             this.Text = T._("Cleaning options");

@@ -13,16 +13,6 @@ namespace AIHelper.Forms.Other
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
         private void SwitchModeDialogForm_Load(object sender, EventArgs e)
         {
             SetTranslations();

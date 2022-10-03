@@ -80,16 +80,6 @@ namespace AIHelper.Forms.Other
             BleadingEdgeZipmodsCheckBox.Enabled = BleadingEdgeZipmodsCheckBox.Enabled && UpdateZipmodsCheckBox.Checked;
         }
 
-        private void btnUpdateMods_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
         private void UpdateOptionsDialogForm_Load(object sender, EventArgs e)
         {
             SetTranslations();

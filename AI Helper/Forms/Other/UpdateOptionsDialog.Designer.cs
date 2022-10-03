@@ -188,7 +188,6 @@
             this.btnCancel.TabIndex = 1;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnUpdateMods
             // 
@@ -199,7 +198,6 @@
             this.btnUpdateMods.TabIndex = 0;
             this.btnUpdateMods.Text = "Start";
             this.btnUpdateMods.UseVisualStyleBackColor = true;
-            this.btnUpdateMods.Click += new System.EventHandler(this.btnUpdateMods_Click);
             // 
             // UpdateOptionsDialogForm
             // 

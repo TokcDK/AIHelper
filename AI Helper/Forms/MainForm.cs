@@ -849,15 +849,14 @@ namespace AIHelper
 
             await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
-            string vr = string.Empty;
-            if (VRGameCheckBox.Visible && VRGameCheckBox.Checked && ManageSettings.CurrentGameIsHaveVr) vr = "VR";
+            bool isVr = ManageSettings.CurrentGameIsHaveVr;
 
             string exePath;
             string arguments = string.Empty;
             if (MOmode)
             {
                 var getCurrentGameExemoProfileName = ManageSettings.CurrentGameExemoProfileName;
-                var customExeTitleName = getCurrentGameExemoProfileName + vr;
+                var customExeTitleName = getCurrentGameExemoProfileName + (isVr?"VR":"");
                 exePath = ManageSettings.AppMOexePath;
 
                 ManageProcess.KillProcessesByName(ManageModOrganizer.GetExeNameByTitle(customExeTitleName));
@@ -886,11 +885,11 @@ namespace AIHelper
                 if (cbxNtlea.Checked)
                 {
                     exePath = ManageSettings.NtleaExePath;
-                    arguments = "\"" + Path.Combine(ManageSettings.CurrentGameDataDirPath, ManageSettings.CurrentGameExeName + vr + ".exe") + "\"" + " \"C932\" \"L0411\"";
+                    arguments = "\"" + Path.Combine(ManageSettings.CurrentGameDataDirPath, (isVr ? ManageSettings.CurrentGame.GameExeNameVr : ManageSettings.CurrentGameExeName) + ".exe") + "\"" + " \"C932\" \"L0411\"";
                 }
                 else
                 {
-                    exePath = Path.Combine(ManageSettings.CurrentGameDataDirPath, ManageSettings.CurrentGameExeName + vr + ".exe");
+                    exePath = Path.Combine(ManageSettings.CurrentGameDataDirPath, (isVr ? ManageSettings.CurrentGame.GameExeNameVr : ManageSettings.CurrentGameExeName) + ".exe");
                 }
             }
 

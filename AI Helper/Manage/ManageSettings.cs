@@ -1096,7 +1096,7 @@ namespace AIHelper.Manage
         internal static Dictionary<string, string> LanguageModeMapReversed;
 
 
-        internal static bool CurrentGameIsHaveVr => File.Exists(Path.Combine(CurrentGameDataDirPath, CurrentGameExeName + "VR" + ".exe"));
+        internal static bool CurrentGameIsHaveVr => File.Exists(Path.Combine(CurrentGameDataDirPath, CurrentGame.GameExeNameVr + ".exe"));
 
 
         internal static string DummyFileResPath => Path.Combine(AppResDirPath, "TESV.exe.dummy");

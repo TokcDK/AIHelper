@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Cache;
 
 namespace AIHelper.Manage.Update.Sources
 {
@@ -9,6 +10,8 @@ namespace AIHelper.Manage.Update.Sources
         public WebClientEx(CookieContainer container)
         {
             CookieContainer = container;
+            var cp = CachePolicy;
+            CachePolicy = new RequestCachePolicy(RequestCacheLevel.CacheIfAvailable);
         }
 
         public CookieContainer CookieContainer { get; set; } = new CookieContainer();

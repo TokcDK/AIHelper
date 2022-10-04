@@ -10,7 +10,6 @@ namespace AIHelper.Manage.Update.Sources
         public WebClientEx(CookieContainer container)
         {
             CookieContainer = container;
-            var cp = CachePolicy;
             CachePolicy = new RequestCachePolicy(RequestCacheLevel.CacheIfAvailable);
         }
 

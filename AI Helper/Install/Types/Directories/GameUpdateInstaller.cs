@@ -14,7 +14,6 @@ namespace AIHelper.Install.Types.Directories
 {
     class GameUpdateInstaller : DirectoriesInstallerBase
     {
-        static readonly Logger _log = LogManager.GetCurrentClassLogger();
         public override int Order => base.Order / 5;
 
         DirectoryInfo _dir;

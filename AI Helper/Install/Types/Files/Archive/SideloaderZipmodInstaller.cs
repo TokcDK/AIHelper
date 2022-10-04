@@ -9,8 +9,6 @@ namespace AIHelper.Install.Types.Files.Archive
 {
     class SideloaderZipmodInstaller : ArchiveInstallerBase
     {
-        static readonly Logger _log = LogManager.GetCurrentClassLogger();
-
         // zipmods it is archives but they will not be extracted
         public override int Order => base.Order * 5;
 

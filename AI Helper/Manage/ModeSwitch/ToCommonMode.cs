@@ -13,7 +13,6 @@ namespace AIHelper.Manage.ModeSwitch
 {
     class ToCommonMode : ModeSwitcherBase
     {
-        static readonly Logger _log = LogManager.GetCurrentClassLogger();
         protected override string DialogText =>
                     T._("Attention")
                     + "\n\n"

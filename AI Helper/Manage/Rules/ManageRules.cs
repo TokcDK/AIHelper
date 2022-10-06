@@ -21,9 +21,6 @@ namespace AIHelper.Manage
             {
                 var modlistBackupFilePath = ManageModOrganizer.MakeMoProfileModlistFileBuckup("_prefixes");
 
-                _modlistData.AllModNamesList = ManageModOrganizer.GetModNamesListFromActiveMoProfile(false);
-                _modlistData.EnabledModNamesList = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
-
                 var checkForm = new Form
                 {
                     Size = new System.Drawing.Size(300, 50),
@@ -39,6 +36,9 @@ namespace AIHelper.Manage
                 var cnt = 0;
                 checkForm.Controls.Add(checkProgress);
                 checkForm.Show();
+
+                _modlistData.AllModNamesList = ManageModOrganizer.GetModNamesListFromActiveMoProfile(false);
+                _modlistData.EnabledModNamesList = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
                 foreach (var modName in _modlistData.EnabledModNamesList)
                 {
                     if (string.IsNullOrWhiteSpace(modName)) continue;

@@ -24,16 +24,18 @@ namespace AIHelper.Manage
                 _modlistData.AllModNamesList = ManageModOrganizer.GetModNamesListFromActiveMoProfile(false);
                 _modlistData.EnabledModNamesList = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
 
-                var checkForm = new Form();
-                checkForm.Size = new System.Drawing.Size(300, 50);
-                checkForm.FormBorderStyle = FormBorderStyle.FixedToolWindow;
-                checkForm.StartPosition = FormStartPosition.CenterScreen;
-                checkForm.Text = T._("Checking") + "...";
-
-                var checkProgress = new ProgressBar();
-
-                checkProgress.Dock = DockStyle.Fill;
-                checkProgress.Maximum = _modlistData.EnabledModNamesList.Length;
+                var checkForm = new Form
+                {
+                    Size = new System.Drawing.Size(300, 50),
+                    FormBorderStyle = FormBorderStyle.FixedToolWindow,
+                    StartPosition = FormStartPosition.CenterScreen,
+                    Text = T._("Checking") + "..."
+                };
+                var checkProgress = new ProgressBar
+                {
+                    Dock = DockStyle.Fill,
+                    Maximum = _modlistData.EnabledModNamesList.Length
+                };
                 var cnt = 0;
                 checkForm.Controls.Add(checkProgress);
                 checkForm.Show();
@@ -120,8 +122,7 @@ namespace AIHelper.Manage
                            + string.Join(Environment.NewLine, _modlistData.Report);
                     }
 
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                    Form reportForm = new Form
+                    var reportForm = new Form
                     {
                         Text = T._("Modlist check report"),
                         //ReportForm.Size = new System.Drawing.Size(500,700);
@@ -129,8 +130,7 @@ namespace AIHelper.Manage
                         FormBorderStyle = FormBorderStyle.FixedDialog,
                         StartPosition = FormStartPosition.CenterScreen
                     };
-#pragma warning restore CA2000 // Dispose objects before losing scope
-                    RichTextBox reportTb = new RichTextBox
+                    var reportTb = new RichTextBox
                     {
                         Size = new System.Drawing.Size(700, 900),
                         WordWrap = true,

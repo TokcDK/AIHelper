@@ -203,9 +203,9 @@ namespace AIHelper.Manage.Functions
             {
                 if (isMoveIntoNewMod)
                 {
-                    var modlist = new ModlistProfileInfo();
+                    var modlist = new ModlistData();
 
-                    var mod = new ProfileModlistRecord();
+                    var mod = new ModData();
                     mod.IsEnabled = true;
                     mod.Priority = 0;
                     mod.Path = bakDir;

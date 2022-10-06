@@ -475,7 +475,7 @@ namespace AIHelper.Install.Types.Directories
                 return false;
             }
 
-            var modlist = new ModlistProfileInfo();
+            var modlist = new ModlistData();
             var bakModsDirPath = Path.Combine(_bakDir, "Mods");
 
             var ret = false;

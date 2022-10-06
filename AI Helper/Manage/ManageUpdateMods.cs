@@ -527,7 +527,7 @@ namespace AIHelper.Manage
             // buckup modlist
             File.Copy(ManageSettings.CurrentMoProfileModlistPath, ManageSettings.CurrentMoProfileModlistPath + ".prezipmodsUpdate");
 
-            var modlist = new ModlistProfileInfo();
+            var modlist = new ModlistData();
 
             Parallel.ForEach(modlist.Items, (item, state) =>
             {

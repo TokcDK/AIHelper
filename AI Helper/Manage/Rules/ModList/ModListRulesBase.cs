@@ -173,51 +173,39 @@ namespace AIHelper.Manage.Rules.ModList
 
         protected bool ParseRules(string[] rules)
         {
-            bool allIsTrue = false;
+            // add rules for incompatible and required
+            var RulesListINC = new List<string>();
+            var RulesListREQ= new List<string>();
             foreach (var rule in rules)
             {
-                if (rule.TrimStart().StartsWith(ModlistData.RulesTagReq, StringComparison.InvariantCulture))
+                if (rule.TrimStart().StartsWith(ModlistData.RulesTagInc, StringComparison.InvariantCulture))
                 {
-                    allIsTrue = ParseReq(ModlistData.Mod, rule);
+                    RulesListINC.Add(rule);
                 }
-                else if (rule.TrimStart().StartsWith(ModlistData.RulesTagInc, StringComparison.InvariantCulture))
+                else if (rule.TrimStart().StartsWith(ModlistData.RulesTagReq, StringComparison.InvariantCulture))
                 {
-                    allIsTrue = ParseInc(ModlistData.Mod, rule);
+                    RulesListREQ.Add(rule);
                 }
-
-                if (!allIsTrue) break;
             }
-            return allIsTrue;
+
+            // all incompatible mods must be disamled or missing
+            foreach(var rule in RulesListINC) if (!ParseInc(ModlistData.Mod, rule)) return false;
+
+            // all required mods must be enabled
+            foreach(var rule in RulesListREQ) if (!ParseReq(ModlistData.Mod, rule)) return false;
+
+            // when all incompatible is missing or disabled and all required is exist and enabled
+            return true;
         }
 
         private bool ParseInc(ModData mod, string rule)
         {
-            // for INC type if any found then mod must be disabled
+            // return false when any incompatible mod found
 
             var ruleData = rule.StartsWith(ModlistData.RulesTagInc, StringComparison.InvariantCulture) ? rule.Remove(0, ModlistData.RulesTagReq.Length).TrimStart() : rule; // remove prefix if was not removed
 
             var andMembers = ruleData.Split(new[] { ModlistData.RulesTagAnd }, StringSplitOptions.RemoveEmptyEntries); // split by AND tag
             foreach (var andMember in andMembers) if (IsFound(mod, andMember)) return false; // parse all AND tag parts
-
-            //bool allIsTrue = false;
-            //var ruleData = rule.Remove(0, 4).Trim();
-            //if (ruleData.Contains(ModlistData.RulesTagOr) || ruleData.Contains(ModlistData.RulesTagAnd))
-            //{
-            //    var ruleDatas = ruleData.Split(new[] { ModlistData.RulesTagOr, ModlistData.RulesTagAnd }, StringSplitOptions.RemoveEmptyEntries);
-            //    foreach (var subRule in ruleDatas)
-            //    {
-            //        allIsTrue = ParseIncSearchInEnabledMods(mod, subRule);
-            //        if (!allIsTrue)
-            //        {
-            //            return false;
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    allIsTrue = ParseIncSearchInEnabledMods(mod, ruleData);
-            //}
-            //return allIsTrue;
 
             return true;
         }
@@ -311,6 +299,8 @@ namespace AIHelper.Manage.Rules.ModList
 
         private bool ParseReq(ModData mod, string rule)
         {
+            // return false when any required mod is missing
+
             var ruleData = rule.StartsWith(ModlistData.RulesTagReq, StringComparison.InvariantCulture) ? rule.Remove(0, ModlistData.RulesTagReq.Length).TrimStart() : rule; // remove prefix if was not removed
             //var or = ruleData.Contains(ModlistData.RulesTagOr);
             //var and = ruleData.Contains(ModlistData.RulesTagAnd);

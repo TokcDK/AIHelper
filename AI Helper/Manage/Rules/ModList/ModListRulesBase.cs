@@ -165,7 +165,7 @@ namespace AIHelper.Manage.Rules.ModList
             foreach (var mod in ModlistData.EnabledModNamesList)
             {
                 var mFilePath = Path.Combine(ManageSettings.CurrentGameModsDirPath, mod.Name) + Path.DirectorySeparatorChar + inSubPath;
-                
+
                 if (!alreadyChecked.Contains(mod) && File.Exists(mFilePath)) return true;//when one of other enabled mods already have same file
             }
             return false;
@@ -176,11 +176,11 @@ namespace AIHelper.Manage.Rules.ModList
             bool allIsTrue = false;
             foreach (var rule in rules)
             {
-                if (rule.StartsWith(ModlistData.RulesTagReq, StringComparison.InvariantCulture))
+                if (rule.TrimStart().StartsWith(ModlistData.RulesTagReq, StringComparison.InvariantCulture))
                 {
                     allIsTrue = ParseReq(ModlistData.Mod, rule);
                 }
-                else if (rule.StartsWith(ModlistData.RulesTagInc, StringComparison.InvariantCulture))
+                else if (rule.TrimStart().StartsWith(ModlistData.RulesTagInc, StringComparison.InvariantCulture))
                 {
                     allIsTrue = ParseInc(ModlistData.Mod, rule);
                 }
@@ -302,25 +302,31 @@ namespace AIHelper.Manage.Rules.ModList
 
         private bool ParseReq(ModData mod, string rule)
         {
-            var ruleData = rule.StartsWith(ModlistData.RulesTagReq, StringComparison.InvariantCulture) ? rule.Remove(0, 4).Trim() : rule;
-            var or = ruleData.Contains(ModlistData.RulesTagOr);
-            var and = ruleData.Contains(ModlistData.RulesTagAnd);
-            if (or && and)
-            {
-                return ParseReqorand(ruleData, mod);
-            }
-            else if (or)
-            {
-                return ParseReqor(ruleData, mod);
-            }
-            else if (and)
-            {
-                return ParseReqand(ruleData, mod);
-            }
-            else
-            {
-                return ParseReqSearchFileModNameInMods(mod, ruleData);
-            }
+            var ruleData = rule.StartsWith(ModlistData.RulesTagReq, StringComparison.InvariantCulture) ? rule.Remove(0, ModlistData.RulesTagReq.Length).TrimStart() : rule; // remove prefix if was not removed
+            //var or = ruleData.Contains(ModlistData.RulesTagOr);
+            //var and = ruleData.Contains(ModlistData.RulesTagAnd);
+
+            var andMembers = ruleData.Split(new[] { ModlistData.RulesTagAnd }, StringSplitOptions.RemoveEmptyEntries); // splot by AND tag
+            foreach (var andMember in andMembers) if (!ParseReqAnd(andMember, mod)) return false; // parse all AND tag parts
+
+            //if (or && and)
+            //{
+            //    return ParseReqorand(ruleData, mod);
+            //}
+            //else if (or)
+            //{
+            //    return ParseReqor(ruleData, mod);
+            //}
+            //else if (and)
+            //{
+            //    return ParseReqand(ruleData, mod);
+            //}
+            //else
+            //{
+            //    return ParseReqSearchFileModNameInMods(mod, ruleData);
+            //}
+
+            return true;
         }
 
         private bool ParseReqorand(string ruleData, ModData mod)
@@ -377,18 +383,60 @@ namespace AIHelper.Manage.Rules.ModList
             return str.Replace("|", "\\|");
         }
 
-        private bool ParseReqand(string ruleData, ModData mod, bool addCandidates = false)
+        private bool ParseReqAnd(string ruleData, ModData mod, bool addCandidates = false)
         {
-            var ruleDatas = ruleData.Split(new[] { ModlistData.RulesTagAnd }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var subRule in ruleDatas)
+            // parse OR tag parts
+            var membersOfTypeOr = ruleData.Split(new[] { ModlistData.RulesTagOr }, StringSplitOptions.RemoveEmptyEntries);
+            if (membersOfTypeOr.Length > 1)
             {
-                if (!ParseReqSearchFileModNameInMods(mod, subRule, 1)) return false;
+                foreach (var memberOfTypeOr in membersOfTypeOr) if (!ParseReqSearchFileModNameInMods(mod, memberOfTypeOr, 1)) return false;
             }
+            else if (!IsValid(mod, ruleData)) return false; // when OR missing, parse single AND
+
+            //foreach (var andMember in membersOfTypeOr) if (!ParseReqAnd(andMember, mod)) return false;
+
+            //var ruleDatas = ruleData.Split(new[] { ModlistData.RulesTagAnd }, StringSplitOptions.RemoveEmptyEntries);
+            //foreach (var subRule in ruleDatas)
+            //{
+            //    if (!ParseReqSearchFileModNameInMods(mod, subRule, 1)) return false;
+            //}
             //if (addCandidates)
             //{
             //    AddCandidates();
             //}
             return true;
+        }
+
+        /// <summary>
+        /// check if subpath or mod is exists
+        /// </summary>
+        /// <param name="targetMod"></param>
+        /// <param name="ruleData"></param>
+        /// <returns></returns>
+        private bool IsValid(ModData targetMod, string ruleData)
+        {
+            bool isFileSubPath = false;
+            if (isFileSubPath = ruleData.TrimStart().StartsWith(ModlistData.RulesTagFile))
+            {
+                ruleData = ruleData.TrimStart().Substring(ModlistData.RulesTagFile.Length);
+            }
+            else if (ruleData.Contains("\\") || ruleData.Contains("/")) isFileSubPath = true;
+
+            foreach (var mod in ModlistData.AllModNamesList)
+            {
+                if (isFileSubPath && File.Exists(mod.Path + "\\" + ruleData)) return true;
+                if (!isFileSubPath)
+                {
+                    var m = ModlistData.AllModNamesList.FirstOrDefault(m1 => m1.Name == ruleData);
+                    if (m != null)
+                    {
+                        targetMod.Relations.Requires.Add(m);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         private bool ParseReqor(string ruleData, ModData mod, bool addCandidates = false)
@@ -497,5 +545,11 @@ namespace AIHelper.Manage.Rules.ModList
                         ||
                    line.StartsWith(ModlistData.RulesTagInc, StringComparison.InvariantCulture);
         }
+    }
+
+    public enum MemberType
+    {
+        AND,
+        OR
     }
 }

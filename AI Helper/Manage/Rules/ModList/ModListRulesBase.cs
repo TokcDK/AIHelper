@@ -192,25 +192,34 @@ namespace AIHelper.Manage.Rules.ModList
 
         private bool ParseInc(ModData mod, string rule)
         {
-            bool allIsTrue = false;
-            var ruleData = rule.Remove(0, 4).Trim();
-            if (ruleData.Contains(ModlistData.RulesTagOr) || ruleData.Contains(ModlistData.RulesTagAnd))
-            {
-                var ruleDatas = ruleData.Split(new[] { ModlistData.RulesTagOr, ModlistData.RulesTagAnd }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var subRule in ruleDatas)
-                {
-                    allIsTrue = ParseIncSearchInEnabledMods(mod, subRule);
-                    if (!allIsTrue)
-                    {
-                        return false;
-                    }
-                }
-            }
-            else
-            {
-                allIsTrue = ParseIncSearchInEnabledMods(mod, ruleData);
-            }
-            return allIsTrue;
+            // for INC type if any found then mod must be disabled
+
+            var ruleData = rule.StartsWith(ModlistData.RulesTagInc, StringComparison.InvariantCulture) ? rule.Remove(0, ModlistData.RulesTagReq.Length).TrimStart() : rule; // remove prefix if was not removed
+
+            var andMembers = ruleData.Split(new[] { ModlistData.RulesTagAnd }, StringSplitOptions.RemoveEmptyEntries); // split by AND tag
+            foreach (var andMember in andMembers) if (IsFound(mod, andMember)) return false; // parse all AND tag parts
+
+            //bool allIsTrue = false;
+            //var ruleData = rule.Remove(0, 4).Trim();
+            //if (ruleData.Contains(ModlistData.RulesTagOr) || ruleData.Contains(ModlistData.RulesTagAnd))
+            //{
+            //    var ruleDatas = ruleData.Split(new[] { ModlistData.RulesTagOr, ModlistData.RulesTagAnd }, StringSplitOptions.RemoveEmptyEntries);
+            //    foreach (var subRule in ruleDatas)
+            //    {
+            //        allIsTrue = ParseIncSearchInEnabledMods(mod, subRule);
+            //        if (!allIsTrue)
+            //        {
+            //            return false;
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    allIsTrue = ParseIncSearchInEnabledMods(mod, ruleData);
+            //}
+            //return allIsTrue;
+
+            return true;
         }
 
         private bool ParseIncSearchInEnabledMods(ModData mod, string ruleData)
@@ -306,7 +315,7 @@ namespace AIHelper.Manage.Rules.ModList
             //var or = ruleData.Contains(ModlistData.RulesTagOr);
             //var and = ruleData.Contains(ModlistData.RulesTagAnd);
 
-            var andMembers = ruleData.Split(new[] { ModlistData.RulesTagAnd }, StringSplitOptions.RemoveEmptyEntries); // splot by AND tag
+            var andMembers = ruleData.Split(new[] { ModlistData.RulesTagAnd }, StringSplitOptions.RemoveEmptyEntries); // split by AND tag
             foreach (var andMember in andMembers) if (!ParseReqAnd(andMember, mod)) return false; // parse all AND tag parts
 
             //if (or && and)
@@ -391,7 +400,7 @@ namespace AIHelper.Manage.Rules.ModList
             {
                 foreach (var memberOfTypeOr in membersOfTypeOr) if (!ParseReqSearchFileModNameInMods(mod, memberOfTypeOr, 1)) return false;
             }
-            else if (!IsValid(mod, ruleData)) return false; // when OR missing, parse single AND
+            else if (!IsFound(mod, ruleData)) return false; // when OR missing, parse single AND
 
             //foreach (var andMember in membersOfTypeOr) if (!ParseReqAnd(andMember, mod)) return false;
 
@@ -413,7 +422,7 @@ namespace AIHelper.Manage.Rules.ModList
         /// <param name="targetMod"></param>
         /// <param name="ruleData"></param>
         /// <returns></returns>
-        private bool IsValid(ModData targetMod, string ruleData)
+        private bool IsFound(ModData targetMod, string ruleData)
         {
             bool isFileSubPath = false;
             if (isFileSubPath = ruleData.TrimStart().StartsWith(ModlistData.RulesTagFile))

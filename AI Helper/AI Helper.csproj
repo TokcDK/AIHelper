@@ -185,7 +185,7 @@
     <Compile Include="Install\UpdateMaker\UpdateMakerMO.cs" />
     <Compile Include="Install\UpdateMaker\UpdateMakerData.cs" />
     <Compile Include="Install\UpdateMaker\UpdateMakerMods.cs" />
-    <Compile Include="Lists\CategoriesList.cs" />
+    <Compile Include="Data\CategoriesList.cs" />
     <Compile Include="Forms\ExtraSettings\ExtraSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -217,6 +217,7 @@
     <Compile Include="Manage\ModeSwitch\ModeSwitcherBase.cs" />
     <Compile Include="Manage\ModeSwitch\ToMOMode.cs" />
     <Compile Include="Manage\ModeSwitch\ToCommonMode.cs" />
+    <Compile Include="Data\ModlistData.cs" />
     <Compile Include="Manage\MOiniCustomExeFixers\ICustomExePathFixerBase.cs" />
     <Compile Include="Manage\MOiniCustomExeFixers\MainExesPathFixer.cs" />
     <Compile Include="Manage\MOiniCustomExeFixers\ExplorerPPPathFixer.cs" />

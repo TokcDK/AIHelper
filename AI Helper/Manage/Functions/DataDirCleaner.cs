@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using AIHelper.Forms.Other;
+using AIHelper.Data.Modlist;
 using MAB.DotIgnore;
 using NLog;
 using static AIHelper.Manage.ManageModOrganizer;

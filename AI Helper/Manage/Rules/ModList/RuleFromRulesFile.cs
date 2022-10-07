@@ -6,7 +6,7 @@ namespace AIHelper.Manage.Rules.ModList
 {
     class RuleFromRulesFile : ModListRulesBase
     {
-        public RuleFromRulesFile(ModListData modlistData) : base(modlistData)
+        public RuleFromRulesFile(ModListRulesData modlistData) : base(modlistData)
         {
         }
 
@@ -19,12 +19,12 @@ namespace AIHelper.Manage.Rules.ModList
             if (!File.Exists(rulesFilePath)) return false;
 
             if (!FillrulesDict()) return false;
-            //if (modlistData.rulesDict.ContainsKey(modlistData.ModName))
+            //if (modlistData.rulesDict.ContainsKey(ModlistData.Mod.NameName))
             //{
-            //    var t = modlistData.rulesDict[modlistData.ModName][1];
+            //    var t = modlistData.rulesDict[ModlistData.Mod.NameName][1];
             //}
 
-            return ModlistData.RulesDict.ContainsKey(ModlistData.ModName);
+            return ModlistData.RulesDict.ContainsKey(ModlistData.Mod.Name);
         }
 
         internal override string Description()
@@ -39,7 +39,7 @@ namespace AIHelper.Manage.Rules.ModList
 
         private bool ParseRulesFromFile()
         {
-            return ParseRules(ModlistData.RulesDict[ModlistData.ModName]);
+            return ParseRules(ModlistData.RulesDict[ModlistData.Mod.Name]);
         }
 
         private bool FillrulesDict()
@@ -63,7 +63,7 @@ namespace AIHelper.Manage.Rules.ModList
                 while (!sr.EndOfStream)
                 {
                     var line = sr.ReadLine();
-                    if (string.IsNullOrWhiteSpace(line) || ModListData.IsComment(line))
+                    if (string.IsNullOrWhiteSpace(line) || ModListRulesData.IsComment(line))
                     {
                         continue;
                     }
@@ -71,7 +71,7 @@ namespace AIHelper.Manage.Rules.ModList
                     line = line.Trim();
                     if (ruleReading && IsModListRule(line))
                     {
-                        ruleConditions.Add(ModListData.GetDataWithNoComments(line));
+                        ruleConditions.Add(ModListRulesData.GetDataWithNoComments(line));
                     }
                     else if (ruleReading && !string.IsNullOrWhiteSpace(ruleName))
                     {
@@ -87,7 +87,7 @@ namespace AIHelper.Manage.Rules.ModList
                     {
                         if (!line.StartsWith(ModlistData.RulesTagFile, StringComparison.InvariantCulture))
                         {
-                            ruleName = ModListData.GetDataWithNoComments(line);
+                            ruleName = ModListRulesData.GetDataWithNoComments(line);
                             ruleReading = true;
                         }
                     }

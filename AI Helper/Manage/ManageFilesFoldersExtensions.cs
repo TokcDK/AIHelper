@@ -287,7 +287,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         public static bool ContainsAnyInvalidCharacters(string path)
         {
-            return (path.Length > 0 && path.IndexOfAny(Path.GetInvalidPathChars()) >= 0);
+            return path.Length > 0 && path.IndexOfAny(Path.GetInvalidPathChars()) >= 0;
         }
 
         /// <summary>

@@ -5,20 +5,20 @@ namespace AIHelper.Manage.Rules.ModList
 {
     internal class RuleModForSideloaderPlugin : ModListRulesBase
     {
-        public RuleModForSideloaderPlugin(ModListData modlistData) : base(modlistData)
+        public RuleModForSideloaderPlugin(ModListRulesData modlistData) : base(modlistData)
         {
         }
 
         internal override bool Condition()
         {
             return (
-                !Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.ModName, "mods").IsNullOrEmptyDirectory("*.zip", null, true
+                !Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.Mod.Name, "mods").IsNullOrEmptyDirectory("*.zip", null, true
                 )
                 ||
-                !Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.ModName, "mods").IsNullOrEmptyDirectory("*.zipmod", null, true
+                !Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.Mod.Name, "mods").IsNullOrEmptyDirectory("*.zipmod", null, true
                 ))
-                && !File.Exists(Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.ModName, "BepInEx", "plugins", ModlistData.GamePrefix + "_BepisPlugins", "Sideloader.dll"))
-                && !File.Exists(Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.ModName, "BepInEx", "plugins", ModlistData.GamePrefix + "_BepisPlugins", ModlistData.GamePrefix + "_Sideloader.dll"));
+                && !File.Exists(Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.Mod.Name, "BepInEx", "plugins", ModlistData.GamePrefix + "_BepisPlugins", "Sideloader.dll"))
+                && !File.Exists(Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.Mod.Name, "BepInEx", "plugins", ModlistData.GamePrefix + "_BepisPlugins", ModlistData.GamePrefix + "_Sideloader.dll"));
         }
 
         internal override string Description()
@@ -33,7 +33,7 @@ namespace AIHelper.Manage.Rules.ModList
                     "BepInEx" + Path.DirectorySeparatorChar + "plugins" + Path.DirectorySeparatorChar + ModlistData.GamePrefix + "_BepisPlugins" + Path.DirectorySeparatorChar + "Sideloader.dll"
                   , "BepInEx" + Path.DirectorySeparatorChar + "plugins" + Path.DirectorySeparatorChar + ModlistData.GamePrefix + "_BepisPlugins" + Path.DirectorySeparatorChar + ModlistData.GamePrefix + "_Sideloader.dll"
                       }
-            , out OutModName);
+            , out _);
         }
     }
 }

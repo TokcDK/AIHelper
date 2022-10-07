@@ -13,7 +13,7 @@ namespace AIHelper.Manage.Rules.MetaIniFixes
         /// <param name="modlistData"></param>
         /// <param name="ini"></param>
         /// <param name="mod"></param>
-        public MoveAIhelperInfosFromMetaIniNotesToKey(ModListData modlistData, INIFile ini, string mod) : base(modlistData, ini, mod)
+        public MoveAIhelperInfosFromMetaIniNotesToKey(ModListRulesData modlistData, INIFile ini, string mod) : base(modlistData, ini, mod)
         {
         }
 

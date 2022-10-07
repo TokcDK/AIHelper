@@ -18,7 +18,7 @@ namespace AIHelper.Manage
         {
             if (File.Exists(cfgPath))
             {
-                (new CfgFiles(cfgPath)).WriteCfg(section, key, value, doSaveIni);
+                new CfgFiles(cfgPath).WriteCfg(section, key, value, doSaveIni);
                 return true;
             }
             return false;

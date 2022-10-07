@@ -310,7 +310,7 @@ namespace AIHelper.Manage.Update.Sources
                     //Releases = GetGitLast10ReleasesInfo(GitOwner, GitRepository, info.UpdateFileStartsWith, info.UpdateFileEndsWith);
                 }
 
-                if ((link2File.Success && link2File.Value.Length > 7 && link2File.Value.StartsWith("href=", StringComparison.InvariantCultureIgnoreCase)) /*|| (Releases != null && Releases.Count > 0)*/)
+                if (link2File.Success && link2File.Value.Length > 7 && link2File.Value.StartsWith("href=", StringComparison.InvariantCultureIgnoreCase) /*|| (Releases != null && Releases.Count > 0)*/)
                 {
                     Info.DownloadLink = "https://" + Url + link2File.Result("$1");
 

@@ -12,7 +12,7 @@ namespace AIHelper.Manage.Rules.MetaIniFixes
         /// <param name="modlistData"></param>
         /// <param name="ini"></param>
         /// <param name="mod"></param>
-        public FixIncorrecModGameNameSet(ModListData modlistData, INIFile ini, string mod) : base(modlistData, ini, mod)
+        public FixIncorrecModGameNameSet(ModListRulesData modlistData, INIFile ini, string mod) : base(modlistData, ini, mod)
         {
         }
 

@@ -6,7 +6,7 @@ namespace AIHelper.Manage.Rules.ModList
 {
     class RuleFromRulesFileOverall : ModListRulesBase
     {
-        public RuleFromRulesFileOverall(ModListData modlistData) : base(modlistData)
+        public RuleFromRulesFileOverall(ModListRulesData modlistData) : base(modlistData)
         {
         }
 
@@ -34,7 +34,7 @@ namespace AIHelper.Manage.Rules.ModList
             var isAllTrue = false;
             foreach (var file in ModlistData.RulesDictOverall)
             {
-                var targetPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.ModName, file.Key.Remove(0, ModlistData.RulesTagFile.Length));
+                var targetPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.Mod.Name, file.Key.Remove(0, ModlistData.RulesTagFile.Length));
                 if (File.Exists(targetPath)
                     ||
                     Directory.Exists(targetPath)
@@ -74,7 +74,7 @@ namespace AIHelper.Manage.Rules.ModList
                 while (!sr.EndOfStream)
                 {
                     var line = sr.ReadLine();
-                    if (string.IsNullOrWhiteSpace(line) || ModListData.IsComment(line))
+                    if (string.IsNullOrWhiteSpace(line) || ModListRulesData.IsComment(line))
                     {
                         continue;
                     }
@@ -82,7 +82,7 @@ namespace AIHelper.Manage.Rules.ModList
                     line = line.Trim();
                     if (ruleReading && IsModListRule(line))
                     {
-                        ruleConditions.Add(ModListData.GetDataWithNoComments(line));
+                        ruleConditions.Add(ModListRulesData.GetDataWithNoComments(line));
                     }
                     else if (ruleReading && !string.IsNullOrWhiteSpace(ruleName))
                     {
@@ -98,7 +98,7 @@ namespace AIHelper.Manage.Rules.ModList
                     {
                         if (line.StartsWith(ModlistData.RulesTagFile, StringComparison.InvariantCulture))
                         {
-                            ruleName = ModListData.GetDataWithNoComments(line);
+                            ruleName = ModListRulesData.GetDataWithNoComments(line);
                             ruleReading = true;
                         }
                     }

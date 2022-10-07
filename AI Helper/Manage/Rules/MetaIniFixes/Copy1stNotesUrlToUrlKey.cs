@@ -13,7 +13,7 @@ namespace AIHelper.Manage.Rules.MetaIniFixes
         /// <param name="modlistData"></param>
         /// <param name="ini"></param>
         /// <param name="mod"></param>
-        public Copy1stNotesUrlToUrlKey(ModListData modlistData, INIFile ini, string mod) : base(modlistData, ini, mod)
+        public Copy1stNotesUrlToUrlKey(ModListRulesData modlistData, INIFile ini, string mod) : base(modlistData, ini, mod)
         {
         }
 

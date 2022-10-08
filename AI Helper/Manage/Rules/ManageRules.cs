@@ -25,8 +25,8 @@ namespace AIHelper.Manage
 
 
                 var modlist = new ModlistData();
-                _modlistData.AllModsList = modlist.GetBy(ModlistData.ModType.ModAny).ToArray();
-                _modlistData.EnabledModsListAndOverwrite = modlist.GetBy(ModlistData.ModType.ModEnabledAndOverwrite).ToArray();
+                _modlistData.AllModsList = modlist.GetBy(ModlistData.ModType.ModAny).OrderByDescending(m => m.Priority).ToArray();
+                _modlistData.EnabledModsListAndOverwrite = _modlistData.AllModsList.Where(m => m.IsEnabled).ToArray();
                 var checkForm = new Form
                 {
                     Size = new System.Drawing.Size(300, 50),

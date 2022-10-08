@@ -34,9 +34,18 @@ namespace AIHelper.Manage.Rules.ModList
         /// <param name="foundMod">mod name of found mod</param>
         /// <param name="modeAndor">0-none, 1-and, 2-or</param>
         /// <returns></returns>
-        protected bool FindModWithThePath(string inSubPath, out ModData foundMod, int modeAndor = 0, bool dontAddCandidate = false)
+        protected bool FindModWithThePath(string[] inSubPath, out ModData foundMod)
         {
-            return FindModWithThePath(new[] { inSubPath }, out foundMod, modeAndor, dontAddCandidate);
+            foundMod = null;
+
+            foreach (var subPath in inSubPath)
+            {
+                if (!FindModWithThePath(subPath, out foundMod)) continue;
+
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -46,107 +55,36 @@ namespace AIHelper.Manage.Rules.ModList
         /// <param name="foundMod">mod name of found mod</param>
         /// <param name="modeAndor">0-none, 1-and, 2-or</param>
         /// <returns></returns>
-        protected bool FindModWithThePath(string[] inSubPath, out ModData foundMod, int modeAndor = 0, bool dontAddCandidate = false)
+        protected bool FindModWithThePath(string inSubPath, out ModData foundMod)
         {
-            RemoveRulesTagFile(ref inSubPath);
-
-            if (File.Exists(Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.Mod.Name) + Path.DirectorySeparatorChar + inSubPath))
-            {
-                foundMod = ModlistData.Mod;
-                return true;
-            }
-
-            if (IsExistInDataOrOverwrite(inSubPath, out foundMod))
-            {
-                return true;
-            }
-
-            //AllModsList = ManageMO.GetModNamesListFromActiveMOProfile(false);
-            //EnabledModsList = ManageMO.GetModNamesListFromActiveMOProfile();
-
             foundMod = null;
-            var alreadyChecked = new HashSet<ModData>();
-            foreach (var subMod in ModlistData.AllModsList)
+
+            if (File.Exists(ManageSettings.CurrentGameDataDirPath + "\\" + inSubPath)) return true;
+
+            foreach (var mod in ModlistData.EnabledModsListAndOverwrite)
             {
-                ///add modname to already checked
-                if (!alreadyChecked.Contains(subMod))
-                {
-                    alreadyChecked.Add(subMod);
-                }
-
-                for (int i = 0; i < inSubPath.Length; i++)
-                {
-                    var filePath = Path.Combine(ManageSettings.CurrentGameModsDirPath, subMod.Name) + Path.DirectorySeparatorChar + inSubPath[i];
-                    if (subMod != ModlistData.Mod && File.Exists(filePath))
-                    {
-                        foundMod = subMod;
-
-                        //when mod enabled return true and not add
-                        if (ModlistData.EnabledModsListAndOverwrite.Contains(foundMod))
-                        {
-                            return true;
-                        }
-
-                        ///Check if path not exists in rest of Enabled mods
-                        if (IsRestOfEnabledModsContainsSameFile(alreadyChecked, inSubPath[i])) return true;
-
-                        //else if mod not enabled then add it for activation
-                        if (!dontAddCandidate)
-                        {
-                            if (!foundMod.IsEnabled)
-                            {
-                                foundMod.IsEnabled = true;
-                                foundMod.ReportMessages.Add($"Enabled, required by: {ModlistData.Mod.Name}");
-                            }
-
-                            //if (modeANDOR > 0)
-                            //{
-                            //    if (!ModlistData.Mod.NamesMustBeEnabledCandidates.ContainsKey(FoundModName))
-                            //    {
-                            //        ModlistData.Mod.NamesMustBeEnabledCandidates.Add(FoundModName, "req:" + SubModName);
-                            //    }
-                            //}
-                            //else
-                            //{
-                            //    if (!ModlistData.Mod.NamesMustBeEnabledCandidates.ContainsKey(FoundModName))
-                            //    {
-                            //        ModlistData.Mod.NamesMustBeEnabledCandidates.Add(FoundModName, "req:" + SubModName);
-                            //    }
-                            //    //if (!ModlistData.Mod.NamesMustBeEnabled.Contains(FoundModName))
-                            //    //{
-                            //    //    ModlistData.Mod.NamesMustBeEnabled.Add(FoundModName);
-                            //    //}
-                            //}
-                        }
-
-                        //if (!ModsMustBeEnabled.Contains(FoundModName))
-                        //{
-                        //    ModsMustBeEnabled.Add(FoundModName);
-                        //}
-                        return true;
-                    }
-                }
-            }
-            if (ModlistData.Mod.IsEnabled)
-            {
-                ModlistData.Mod.IsEnabled = false;
-                ModlistData.Mod.ReportMessages.Add($"Disabled, requires: {string.Join(",", inSubPath)}");
-            }
-
-            return false;
-        }
-
-        private bool IsExistInDataOrOverwrite(string[] inSubPath, out ModData foundMod)
-        {
-            for (int i = 0; i < inSubPath.Length; i++)
-            {
-                var mod = ModlistData.EnabledModsListAndOverwrite.FirstOrDefault(m => File.Exists(m.Path + "\\" + inSubPath[i]) || Directory.Exists(m.Path + "\\" + inSubPath[i]));
-                if (mod == null) continue;
+                if (!File.Exists(mod.Path + Path.DirectorySeparatorChar + inSubPath)) continue;
 
                 foundMod = mod;
                 return true;
             }
-            foundMod = null;
+
+            return false;
+
+            //return FindModWithThePath(new[] { inSubPath }, out foundMod, modeAndor, dontAddCandidate);
+        }
+
+        private bool IsExistInDataOrOverwrite(string[] inSubPath)
+        {
+            for (int i = 0; i < inSubPath.Length; i++)
+            {
+                if (File.Exists(ManageSettings.CurrentGameDataDirPath + "\\" + inSubPath)) { }
+                else if (File.Exists(ManageSettings.CurrentGameOverwriteFolderPath + "\\" + inSubPath)) { }
+                else continue;
+
+                return true;
+            }
+
             return false;
         }
 
@@ -175,7 +113,7 @@ namespace AIHelper.Manage.Rules.ModList
         {
             // add rules for incompatible and required
             var RulesListINC = new List<string>();
-            var RulesListREQ= new List<string>();
+            var RulesListREQ = new List<string>();
             foreach (var rule in rules)
             {
                 if (rule.TrimStart().StartsWith(ModlistData.RulesTagInc, StringComparison.InvariantCulture))
@@ -189,10 +127,10 @@ namespace AIHelper.Manage.Rules.ModList
             }
 
             // all incompatible mods must be disamled or missing
-            foreach(var rule in RulesListINC) if (!ParseInc(ModlistData.Mod, rule)) return false;
+            foreach (var rule in RulesListINC) if (!ParseInc(ModlistData.Mod, rule)) return false;
 
             // all required mods must be enabled
-            foreach(var rule in RulesListREQ) if (!ParseReq(ModlistData.Mod, rule)) return false;
+            foreach (var rule in RulesListREQ) if (!ParseReq(ModlistData.Mod, rule)) return false;
 
             // when all incompatible is missing or disabled and all required is exist and enabled
             return true;

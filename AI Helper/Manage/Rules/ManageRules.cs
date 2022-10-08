@@ -25,8 +25,8 @@ namespace AIHelper.Manage
 
 
                 var modlist = new ModlistData();
-                _modlistData.AllModNamesList = modlist.GetBy(ModlistData.ModType.ModAny).ToArray();
-                _modlistData.EnabledModNamesList = modlist.GetBy(ModlistData.ModType.ModEnabled).ToArray();
+                _modlistData.AllModsList = modlist.GetBy(ModlistData.ModType.ModAny).ToArray();
+                _modlistData.EnabledModsListAndOverwrite = modlist.GetBy(ModlistData.ModType.ModEnabledAndOverwrite).ToArray();
                 var checkForm = new Form
                 {
                     Size = new System.Drawing.Size(300, 50),
@@ -37,7 +37,7 @@ namespace AIHelper.Manage
                 var checkProgress = new ProgressBar
                 {
                     Dock = DockStyle.Fill,
-                    Maximum = _modlistData.EnabledModNamesList.Length
+                    Maximum = _modlistData.EnabledModsListAndOverwrite.Length
                 };
                 var cnt = 0;
                 checkForm.Controls.Add(checkProgress);
@@ -58,7 +58,7 @@ namespace AIHelper.Manage
 
                 KPlugTweaks();
 
-                _modlistData.Report = _modlistData.AllModNamesList.Where(m => m.ReportMessages.Count > 0).Select(m => $"{m.Name}: {string.Join($"\n{m.Name}: ", m.ReportMessages)}").ToList();
+                _modlistData.Report = _modlistData.AllModsList.Where(m => m.ReportMessages.Count > 0).Select(m => $"{m.Name}: {string.Join($"\n{m.Name}: ", m.ReportMessages)}").ToList();
 
                 var listChanged = _modlistData.Report.Count > 0;
                 //if (listChanged) modlist.Save();
@@ -178,7 +178,7 @@ namespace AIHelper.Manage
 
                 if (!File.Exists(cfgpath))
                 {
-                    foreach (var mod in _modlistData.EnabledModNamesList)
+                    foreach (var mod in _modlistData.EnabledModsListAndOverwrite)
                     {
                         if (File.Exists(Path.Combine(ManageSettings.CurrentGameModsDirPath, mod.Name, "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg")))
                         {

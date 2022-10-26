@@ -195,11 +195,11 @@ namespace AIHelper.Manage.Functions
             bool isAnyItemsWasMoved = !(dirs == 0 && files == 0 && !bakDir.IsAnyFileExistsInTheDir());
 
             // remove bak dir when empty
-            if (!isAnyItemsWasMoved)
+            if (!isAnyItemsWasMoved && bakDir.IsEmptyDir())
             {
                 Directory.Delete(bakDir);
             }
-            else
+            else if(isAnyItemsWasMoved)
             {
                 if (isMoveIntoNewMod)
                 {

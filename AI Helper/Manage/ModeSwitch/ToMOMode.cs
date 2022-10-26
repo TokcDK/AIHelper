@@ -395,7 +395,7 @@ namespace AIHelper.Manage.ModeSwitch
                     ,
                     note.Replace("\n", "<br>")
                     );
-                ManageModOrganizer.ActivateDeactivateInsertMod(modname: newModName, activate: false, recordWithWhichInsert: modName, placeAfter: false);
+                ManageModOrganizer.ActivateDeactivateInsertMod(modname: newModName, activate: false, modNameToInsertWith: modName, placeAfter: false);
             });
         }
 

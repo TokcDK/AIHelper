@@ -481,7 +481,7 @@ namespace AIHelper.Install.Types.Directories
             var ret = false;
             foreach (var separator in new DirectoryInfo(ManageSettings.CurrentGameModsDirPath).GetDirectories("*_separator"))
             {
-                if (!modlist.ItemByName.ContainsKey(separator.Name))
+                if (!modlist.ModByName.ContainsKey(separator.Name))
                 {
                     var bakPath = separator.FullName.Replace(ManageSettings.CurrentGameModsDirPath, bakModsDirPath);
                     try

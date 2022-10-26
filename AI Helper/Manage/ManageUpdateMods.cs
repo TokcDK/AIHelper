@@ -529,7 +529,7 @@ namespace AIHelper.Manage
 
             var modlist = new ModlistData();
 
-            Parallel.ForEach(modlist.Items, (item, state) =>
+            Parallel.ForEach(modlist.Mods, (item, state) =>
             {
                 if (item.IsEnabled || !item.IsExist || item.IsSeparator) return;
 

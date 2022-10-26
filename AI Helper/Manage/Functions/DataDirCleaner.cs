@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using AIHelper.Forms.Other;
 using MAB.DotIgnore;
@@ -31,11 +31,14 @@ namespace AIHelper.Manage.Functions
             // option place into form
             var cbxMoveIntoNewMod = new CheckBox();
             cbxMoveIntoNewMod.Text = T._("Move into new mod");
+            cbxMoveIntoNewMod.AutoSize = true;
             var cbxIgnoreSymlinks = new CheckBox();
             cbxIgnoreSymlinks.Text = T._("Ignore symlinks");
+            cbxIgnoreSymlinks.AutoSize = true;
             cbxIgnoreSymlinks.Checked = true;
             var cbxIgnoreShortcuts = new CheckBox();
             cbxIgnoreShortcuts.Text = T._("Ignore shortcurs");
+            cbxIgnoreSymlinks.AutoSize = true;
             options.flpOptions.Controls.Add(cbxMoveIntoNewMod);
             options.flpOptions.Controls.Add(cbxIgnoreSymlinks);
             options.flpOptions.Controls.Add(cbxIgnoreShortcuts);
@@ -155,9 +158,10 @@ namespace AIHelper.Manage.Functions
 
             // when move into new mod is set, setup new mod
 
+            var bakDirBaseName = "DataFiles";
             if (isMoveIntoNewMod)
             {
-                bakDir = Path.Combine(ManageSettings.CurrentGameModsDirPath, "DataFiles" + dateTimeSuffix);
+                bakDir = Path.Combine(ManageSettings.CurrentGameModsDirPath, bakDirBaseName + dateTimeSuffix);
             }
 
             // info vars
@@ -199,7 +203,7 @@ namespace AIHelper.Manage.Functions
             {
                 Directory.Delete(bakDir);
             }
-            else if(isAnyItemsWasMoved)
+            else if (isAnyItemsWasMoved)
             {
                 if (isMoveIntoNewMod)
                 {
@@ -207,12 +211,18 @@ namespace AIHelper.Manage.Functions
 
                     var mod = new ModData();
                     mod.IsEnabled = true;
-                    mod.Priority = 0;
                     mod.Path = bakDir;
                     mod.Name = Path.GetFileName(bakDir);
 
-                    modlist.Insert(mod);
-                    modlist.Save();
+                    ModData modAfter = default;
+                    var existBakDirs = modlist.GetListBy(ModlistData.ModType.ModAny).Where(m => Regex.IsMatch(m.Name, bakDirBaseName + "_[0-9]{14}")).ToArray();
+                    if (existBakDirs.Length > 0)
+                    {
+                        modAfter = existBakDirs.OrderByDescending(m => long.Parse(m.Name.Split('_')[1])).FirstOrDefault();
+                    }
+                    else mod.Priority = 0;
+
+                    modlist.Insert(mod, modNameToPlaceWith: modAfter != default ? modAfter.Name : "");
                 }
             }
 

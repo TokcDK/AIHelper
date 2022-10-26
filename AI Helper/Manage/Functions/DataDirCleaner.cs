@@ -38,7 +38,7 @@ namespace AIHelper.Manage.Functions
             cbxIgnoreSymlinks.Checked = true;
             var cbxIgnoreShortcuts = new CheckBox();
             cbxIgnoreShortcuts.Text = T._("Ignore shortcurs");
-            cbxIgnoreSymlinks.AutoSize = true;
+            cbxIgnoreShortcuts.AutoSize = true;
             options.flpOptions.Controls.Add(cbxMoveIntoNewMod);
             options.flpOptions.Controls.Add(cbxIgnoreSymlinks);
             options.flpOptions.Controls.Add(cbxIgnoreShortcuts);

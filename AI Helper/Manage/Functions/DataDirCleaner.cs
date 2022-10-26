@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -226,8 +227,10 @@ namespace AIHelper.Manage.Functions
                 }
             }
 
+            // show result message
             MessageBox.Show(string.Format(T._("Cleaning finished! Moved {0} dirs and {1} files. Failed to move {2} items."), dirs, files, errors) + (isAnyItemsWasMoved ? "\r\n" + T._("Will be opened the folder where files was moved. You can remove all you dont need.") : ""));
 
+            // open bak dir where files and dirs was moved
             if (isAnyItemsWasMoved) Process.Start("explorer.exe", bakDir);
         }
 

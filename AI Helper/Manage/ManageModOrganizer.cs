@@ -1146,19 +1146,18 @@ namespace AIHelper.Manage
         /// <returns>F if in dir only female uncensors, M if only male uncensors or empty, else empty</returns>
         private static string CheckFemaleMaleUncensor(string modpackdir, string name = null)
         {
-            if (IsUncensorSelector(!string.IsNullOrWhiteSpace(name) ? name : Path.GetFileName(modpackdir)))
+            if (!IsUncensorSelector(!string.IsNullOrWhiteSpace(name) ? name : Path.GetFileName(modpackdir))) return "";
+
+            //add female male versions
+            var hasFemale = ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(modpackdir, "*[Female]*.zipmod", true);
+            var hasMale = ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(modpackdir, "*[Penis]*.zipmod", true) || ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(modpackdir, "*[Balls]*.zipmod", true);
+            if (hasFemale && !hasMale)
             {
-                //add female male versions
-                var hasFemale = ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(modpackdir, "*[Female]*.zipmod", true);
-                var hasMale = ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(modpackdir, "*[Penis]*.zipmod", true) || ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(modpackdir, "*[Balls]*.zipmod", true);
-                if (hasFemale && !hasMale)
-                {
-                    return "F";
-                }
-                else if (!hasFemale && hasMale)
-                {
-                    return "M";
-                }
+                return "F";
+            }
+            else if (!hasFemale && hasMale)
+            {
+                return "M";
             }
 
             return "";
@@ -1242,10 +1241,13 @@ namespace AIHelper.Manage
 
             internal void Insert(ModData modToInsert, string modNameToPlaceWith = "", bool insertAfter = true, bool skipIfExists = true, bool saveAfterInsert = true)
             {
+                // skip when mod already exists
                 var existsMod = GetModByName(modToInsert.Name);
                 if (existsMod != null) { if (skipIfExists) return; Mods.Remove(existsMod); }
 
                 bool isInsertByPriority = true;
+
+                // try insert by mod name
                 if (!string.IsNullOrWhiteSpace(modNameToPlaceWith))
                 {
                     var modToPlace = GetModByName(modNameToPlaceWith);
@@ -1259,10 +1261,17 @@ namespace AIHelper.Manage
                     }
                 }
 
+                // insert by priority if was not inserted by mod name
                 if (isInsertByPriority) if (modToInsert.Priority == -1) Mods.Add(modToInsert); else Mods.Insert(modToInsert.Priority, modToInsert);
 
+                // update priority
+                int priority = 0;
+                foreach (var mod in Mods) mod.Priority = priority++;
+
+                // update modbyname
                 ModByName = Mods.ToDictionary(k => k.Name, v => v);
 
+                // save when need
                 if (saveAfterInsert) Save();
             }
 

@@ -226,7 +226,7 @@ namespace AIHelper.Manage.Functions
                 }
             }
 
-            MessageBox.Show(T._($"Cleaning finished! Moved {dirs} dirs and {files} files. Failed to move {errors} items.") + (isAnyItemsWasMoved ? "\r\n" + T._("Will be opened the folder where files was moved. You can remove all you dont need.") : ""));
+            MessageBox.Show(string.Format(T._("Cleaning finished! Moved {0} dirs and {1} files. Failed to move {2} items."), dirs, files, errors) + (isAnyItemsWasMoved ? "\r\n" + T._("Will be opened the folder where files was moved. You can remove all you dont need.") : ""));
 
             if (isAnyItemsWasMoved) Process.Start("explorer.exe", bakDir);
         }

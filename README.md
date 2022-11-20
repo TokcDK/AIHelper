@@ -1,7 +1,7 @@
 # AIHelper
 ### MO games manage helper for some Illusion/Kiss games
 
-## En
+## English
 - The program was originally coded for personal use, to save time and for more convenient management of some assemblies with mods managed by Mod Organizer.
 
 ### Features

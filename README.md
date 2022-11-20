@@ -1,4 +1,5 @@
 # AIHelper
+![How it looks](AIH_UI_en-US.png)
 
 ### Languages
  ● [English](README.md) ● [Русский](README_ru-RU.md)

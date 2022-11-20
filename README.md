@@ -8,6 +8,7 @@
 - Installing mods and resources
 - Autodetect and fix conflicts in the list of mods
 - Automatic update of plugins
+- Auto-cleaning of the game folder from foreign files
 - Ability to switch to normal mode when all the files in the game folder and back if you need to change mods.
 
 #### Installation
@@ -26,6 +27,7 @@
 - Установка модов и ресурсов
 - Автоопределение и исправление конфликтов в списке модов
 - Автообновление плагинов
+- Автоочистка папки игры от сторонних файлов
 - Возможность переключения в обычный режим, когда все файлы в папке игры и обратно, если нужно изменить моды.
  
 #### Установка

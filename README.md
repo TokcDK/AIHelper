@@ -12,6 +12,7 @@
 - Autodetect and fix conflicts in the list of mods
 - Automatic update of plugins
 - Auto-cleaning of the game folder from foreign files
+- Autofix of some issues
 - Ability to switch to normal mode when all the files in the game folder and back if you need to change mods.
 
 #### Installation

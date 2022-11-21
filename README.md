@@ -8,11 +8,12 @@
 - The program was originally coded for personal use, to save time and for more convenient management of some assemblies with mods managed by Mod Organizer.
 
 ### Features
-- Installing mods and resources
+- Easy add of a new game
 - Autodetect and fix conflicts in the list of mods
 - Automatic update of plugins
 - Auto-cleaning of the game folder from foreign files
 - Autofix of some issues
+- Installing mods and resources
 - Ability to switch to normal mode when all the files in the game folder and back if you need to change mods.
 
 #### Installation

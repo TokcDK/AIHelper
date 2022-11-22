@@ -10,7 +10,7 @@
 ### Features
 - Easy add of a new game
 - Autodetect and fix conflicts in the list of mods
-- Automatic update of plugins
+- Automatic update of plugins and mods
 - Auto-cleaning of the game folder from foreign files
 - Autofix of some issues
 - Installing mods and resources

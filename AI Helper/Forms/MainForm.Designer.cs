@@ -100,7 +100,7 @@
             this.ModeSwitchButtonPanel = new System.Windows.Forms.Panel();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
             this.DevButton = new System.Windows.Forms.Button();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.FunctionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -275,7 +275,7 @@
             // LaunchPagePanel
             // 
             this.LaunchPagePanel.BackColor = System.Drawing.Color.Gray;
-            this.LaunchPagePanel.Controls.Add(this.flowLayoutPanel1);
+            this.LaunchPagePanel.Controls.Add(this.FunctionsFlowLayoutPanel);
             this.LaunchPagePanel.Controls.Add(this.CleanDataDirLabel);
             this.LaunchPagePanel.Controls.Add(this.AddGameLabel);
             this.LaunchPagePanel.Controls.Add(this.pbDiscord);
@@ -1091,13 +1091,13 @@
             this.DevButton.UseVisualStyleBackColor = true;
             this.DevButton.Click += new System.EventHandler(this.Dev_Click);
             // 
-            // flowLayoutPanel1
+            // FunctionsFlowLayoutPanel
             // 
-            this.flowLayoutPanel1.BackColor = System.Drawing.Color.Transparent;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(320, 34);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(17, 121);
-            this.flowLayoutPanel1.TabIndex = 33;
+            this.FunctionsFlowLayoutPanel.BackColor = System.Drawing.Color.Transparent;
+            this.FunctionsFlowLayoutPanel.Location = new System.Drawing.Point(320, 34);
+            this.FunctionsFlowLayoutPanel.Name = "FunctionsFlowLayoutPanel";
+            this.FunctionsFlowLayoutPanel.Size = new System.Drawing.Size(17, 121);
+            this.FunctionsFlowLayoutPanel.TabIndex = 33;
             // 
             // MainForm
             // 
@@ -1215,7 +1215,7 @@
         internal System.Windows.Forms.TextBox CurrentGameTitleTextBox;
         private System.Windows.Forms.Label AddGameSettingsLabel;
         private System.Windows.Forms.Label CleanDataDirLabel;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        internal System.Windows.Forms.FlowLayoutPanel FunctionsFlowLayoutPanel;
     }
 }
 

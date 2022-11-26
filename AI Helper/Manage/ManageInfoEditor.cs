@@ -118,6 +118,8 @@ namespace AIHelper.Manage
 
                 foreach (var propertyInfo in infoData.GitInfo.GetType().GetProperties())
                 {
+                    if (propertyInfo.Name == nameof(infoData.GitInfo.Site)) continue;
+
                     var thePropertyFlowPanel = new FlowLayoutPanel
                     {
                         //Dock = DockStyle.Fill,

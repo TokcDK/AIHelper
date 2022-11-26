@@ -12,9 +12,10 @@ namespace AIHelper.Manage.Functions
     {
         internal static void Load()
         {
-            var functions = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFunctionForFlp>();
-
             var flp = ManageSettings.MainForm.FunctionsFlowLayoutPanel;
+            flp.Controls.Clear(); // clear old
+
+            var functions = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFunctionForFlp>();
 
             var ttip = new ToolTip()
             {

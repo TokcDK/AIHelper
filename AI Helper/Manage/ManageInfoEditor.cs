@@ -98,7 +98,8 @@ namespace AIHelper.Manage
                     FlowDirection = FlowDirection.TopDown,
                     AutoScroll = true,
                     Size = new System.Drawing.Size(10, 10),
-                    Margin = new Padding(10)
+                    Margin = new Padding(10),
+                    BorderStyle = BorderStyle.Fixed3D,
                 };
 
                 var mname = new Label
@@ -227,7 +228,7 @@ namespace AIHelper.Manage
 
                 AddOpenWebButton(currentModFlowPanel, infoData);
 
-                currentModFlowPanel.Size = new System.Drawing.Size(currentModFlowPanel.Width, currentModFlowPanel.Height + 5);
+                currentModFlowPanel.Size = new System.Drawing.Size(currentModFlowPanel.Width + 15, currentModFlowPanel.Height + 15);
 
                 modsListFlowPanel.Controls.Add(currentModFlowPanel);
 

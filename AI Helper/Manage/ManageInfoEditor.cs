@@ -3,7 +3,9 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using AIHelper.Manage.Update.Sources;
+using INIFileMan;
 using static AIHelper.Manage.ManageModOrganizer;
+using static Microsoft.FSharp.Core.ByRefKinds;
 
 namespace AIHelper.Manage
 {
@@ -54,7 +56,7 @@ namespace AIHelper.Manage
 
                 var github = new Github(null);
                 var urlMatch = Regex.Match(url, $@"(https?:\/\/){github.Url}\/([^\/]+)\/([^\/]+)", RegexOptions.IgnoreCase);
-                var infoData = new UpdateInfoData(ini.INIPath.Directory.Name);
+                var infoData = new UpdateInfoData(ini);
 
                 if (!updateInfoIsEmpty && updateInfo.StartsWith(github.InfoId))
                 {
@@ -208,6 +210,11 @@ namespace AIHelper.Manage
                             Margin = new Padding(0)
                         };
                         l.DataBindings.Add(new Binding("Checked", infoData.GitInfo, propertyInfo.Name));
+                        l.CheckedChanged += new System.EventHandler((o, e) =>
+                        {
+
+                        });
+
 
                         var lWidth = l.Width + (l.Margin.Horizontal * 2);
                         var lHeight = l.Height + (l.Margin.Vertical * 2);
@@ -305,11 +312,13 @@ namespace AIHelper.Manage
 
         public class UpdateInfoData
         {
-            public UpdateInfoData(string modName)
+            public UpdateInfoData(INIFile ini)
             {
-                ModName = modName;
+                INI = ini;
+                ModName = ini.INIPath.Directory.Name;
             }
 
+            public INIFile INI { get; }
             public string ModName { get; }
             public GitUpdateInfoData GitInfo { get; set; } = new GitUpdateInfoData();
         }

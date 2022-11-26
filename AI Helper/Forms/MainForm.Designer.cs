@@ -100,6 +100,7 @@
             this.ModeSwitchButtonPanel = new System.Windows.Forms.Panel();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
             this.DevButton = new System.Windows.Forms.Button();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -274,6 +275,7 @@
             // LaunchPagePanel
             // 
             this.LaunchPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.LaunchPagePanel.Controls.Add(this.flowLayoutPanel1);
             this.LaunchPagePanel.Controls.Add(this.CleanDataDirLabel);
             this.LaunchPagePanel.Controls.Add(this.AddGameLabel);
             this.LaunchPagePanel.Controls.Add(this.pbDiscord);
@@ -302,7 +304,7 @@
             // CleanDataDirLabel
             // 
             this.CleanDataDirLabel.AutoSize = true;
-            this.CleanDataDirLabel.Location = new System.Drawing.Point(316, 140);
+            this.CleanDataDirLabel.Location = new System.Drawing.Point(279, 50);
             this.CleanDataDirLabel.Name = "CleanDataDirLabel";
             this.CleanDataDirLabel.Size = new System.Drawing.Size(19, 13);
             this.CleanDataDirLabel.TabIndex = 32;
@@ -314,7 +316,7 @@
             this.AddGameLabel.AutoSize = true;
             this.AddGameLabel.BackColor = System.Drawing.Color.Transparent;
             this.AddGameLabel.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.AddGameLabel.Location = new System.Drawing.Point(322, 127);
+            this.AddGameLabel.Location = new System.Drawing.Point(285, 37);
             this.AddGameLabel.Name = "AddGameLabel";
             this.AddGameLabel.Size = new System.Drawing.Size(13, 13);
             this.AddGameLabel.TabIndex = 31;
@@ -1089,6 +1091,14 @@
             this.DevButton.UseVisualStyleBackColor = true;
             this.DevButton.Click += new System.EventHandler(this.Dev_Click);
             // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.BackColor = System.Drawing.Color.Transparent;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(320, 34);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(17, 121);
+            this.flowLayoutPanel1.TabIndex = 33;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1205,6 +1215,7 @@
         internal System.Windows.Forms.TextBox CurrentGameTitleTextBox;
         private System.Windows.Forms.Label AddGameSettingsLabel;
         private System.Windows.Forms.Label CleanDataDirLabel;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
     }
 }
 

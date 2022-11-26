@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -119,55 +119,115 @@ namespace AIHelper.Manage
                 foreach (var propertyInfo in infoData.GitInfo.GetType().GetProperties())
                 {
                     if (propertyInfo.Name == nameof(infoData.GitInfo.Site)) continue;
+                    if (propertyInfo.Name == nameof(infoData.GitInfo.Strings)) continue;
 
-                    var thePropertyFlowPanel = new FlowLayoutPanel
+                    var propertyType = propertyInfo.GetMethod.ReturnType;
+
+                    if (propertyType == typeof(string))
                     {
-                        //Dock = DockStyle.Fill,
-                        FlowDirection = FlowDirection.LeftToRight,
-                        //AutoScroll = true,
-                        //Size = new System.Drawing.Size(300, 20),
-                        //AutoSize = true,
-                        Margin = new Padding(0)
-                    };
-                    var l = new Label
+                        var ttip = new ToolTip
+                        {
+                            // Set up the delays for the ToolTip.
+                            AutoPopDelay = 32000,
+                            InitialDelay = 1000,
+                            ReshowDelay = 500,
+                            UseAnimation = true,
+                            UseFading = true,
+                            // Force the ToolTip text to be displayed whether or not the form is active.
+                            ShowAlways = true
+                        };
+
+                        var thePropertyFlowPanel = new FlowLayoutPanel
+                        {
+                            //Dock = DockStyle.Fill,
+                            FlowDirection = FlowDirection.LeftToRight,
+                            //AutoScroll = true,
+                            //Size = new System.Drawing.Size(300, 20),
+                            //AutoSize = true,
+                            Margin = new Padding(0)
+                        };
+                        var l = new Label
+                        {
+                            AutoSize = true,
+                            Text = infoData.GitInfo.Strings[propertyInfo.Name].t + ":",
+                            Size = new System.Drawing.Size(100, _elHeight),
+                            Margin = new Padding(0)
+                        };
+                        var tb = new TextBox
+                        {
+                            AutoSize = true,
+                            Size = new System.Drawing.Size(200, _elHeight),
+                            Margin = new Padding(0),                            
+                        };
+                        tb.DataBindings.Add(new Binding("Text", infoData.GitInfo, propertyInfo.Name));
+
+                        thePropertyFlowPanel.Controls.Add(l);
+                        thePropertyFlowPanel.Controls.Add(tb);
+
+                        ttip.SetToolTip(l, infoData.GitInfo.Strings[propertyInfo.Name].d);
+                        ttip.SetToolTip(tb, infoData.GitInfo.Strings[propertyInfo.Name].d);
+
+                        var lWidth = l.Width + (l.Margin.Horizontal * 2);
+                        var lHeight = l.Height + (l.Margin.Vertical * 2);
+                        var tbWidth = tb.Width + (tb.Margin.Horizontal * 2);
+                        var tbHeight = tb.Height + (tb.Margin.Vertical * 2);
+                        var ltbWidth = lWidth + tbWidth;
+                        var ltbHeight = lHeight + tbHeight;
+                        thePropertyFlowPanel.Size = new System.Drawing.Size(ltbWidth, ltbHeight);
+
+                        currentModFlowPanel.Controls.Add(thePropertyFlowPanel);
+
+                        var thePropertyFlowPanelWidth = thePropertyFlowPanel.Width + (thePropertyFlowPanel.Margin.Horizontal * 2);
+                        var thePropertyFlowPanelHeight = thePropertyFlowPanel.Height + (thePropertyFlowPanel.Margin.Vertical * 2);
+                        currentModFlowPanel.Size = new System.Drawing.Size
+                            (
+                            thePropertyFlowPanelWidth > currentModFlowPanel.Width ? thePropertyFlowPanelWidth : currentModFlowPanel.Width
+                            , currentModFlowPanel.Height + thePropertyFlowPanelHeight
+                            );
+                    }
+                    else if (propertyType == typeof(bool))
                     {
-                        AutoSize = true,
-                        Text = propertyInfo.Name + ":",
-                        Size = new System.Drawing.Size(100, _elHeight),
-                        Margin = new Padding(0)
-                    };
-                    var tb = new TextBox
-                    {
-                        AutoSize = true,
-                        Size = new System.Drawing.Size(200, _elHeight),
-                        Margin = new Padding(0)
-                    };
-                    tb.DataBindings.Add(new Binding("Text", infoData.GitInfo, propertyInfo.Name));
+                        var ttip = new ToolTip
+                        {
+                            // Set up the delays for the ToolTip.
+                            AutoPopDelay = 32000,
+                            InitialDelay = 1000,
+                            ReshowDelay = 500,
+                            UseAnimation = true,
+                            UseFading = true,
+                            // Force the ToolTip text to be displayed whether or not the form is active.
+                            ShowAlways = true
+                        };
 
-                    thePropertyFlowPanel.Controls.Add(l);
-                    thePropertyFlowPanel.Controls.Add(tb);
-                    var lWidth = l.Width + (l.Margin.Horizontal * 2);
-                    var lHeight = l.Height + (l.Margin.Vertical * 2);
-                    var tbWidth = tb.Width + (tb.Margin.Horizontal * 2);
-                    var tbHeight = tb.Height + (tb.Margin.Vertical * 2);
-                    var ltbWidth = lWidth + tbWidth;
-                    var ltbHeight = lHeight + tbHeight;
-                    thePropertyFlowPanel.Size = new System.Drawing.Size(ltbWidth, ltbHeight);
+                        var l = new CheckBox
+                        {
+                            AutoSize = true,
+                            Text = infoData.GitInfo.Strings[propertyInfo.Name].t,
+                            Size = new System.Drawing.Size(100, _elHeight),
+                            Margin = new Padding(0)
+                        };
+                        l.DataBindings.Add(new Binding("Checked", infoData.GitInfo, propertyInfo.Name));
 
-                    currentModFlowPanel.Controls.Add(thePropertyFlowPanel);
+                        var lWidth = l.Width + (l.Margin.Horizontal * 2);
+                        var lHeight = l.Height + (l.Margin.Vertical * 2);
 
-                    var thePropertyFlowPanelWidth = thePropertyFlowPanel.Width + (thePropertyFlowPanel.Margin.Horizontal * 2);
-                    var thePropertyFlowPanelHeight = thePropertyFlowPanel.Height + (thePropertyFlowPanel.Margin.Vertical * 2);
-                    currentModFlowPanel.Size = new System.Drawing.Size
-                        (
-                        thePropertyFlowPanelWidth > currentModFlowPanel.Width ? thePropertyFlowPanelWidth : currentModFlowPanel.Width
-                        , currentModFlowPanel.Height + thePropertyFlowPanelHeight
-                        );
+                        currentModFlowPanel.Controls.Add(l);
+                        currentModFlowPanel.Size = new System.Drawing.Size
+                            (
+                            lWidth > currentModFlowPanel.Width ? lWidth : currentModFlowPanel.Width
+                            , currentModFlowPanel.Height + lHeight
+                            );
+
+                        ttip.SetToolTip(l, infoData.GitInfo.Strings[propertyInfo.Name].d);
+                    }
+                    else continue;
+
+
                 }
 
                 AddOpenWebButton(currentModFlowPanel, infoData);
 
-                currentModFlowPanel.Size = new System.Drawing.Size(currentModFlowPanel.Width, currentModFlowPanel.Height + 2);
+                currentModFlowPanel.Size = new System.Drawing.Size(currentModFlowPanel.Width, currentModFlowPanel.Height + 5);
 
                 modsListFlowPanel.Controls.Add(currentModFlowPanel);
 
@@ -214,7 +274,7 @@ namespace AIHelper.Manage
                 FlowDirection = FlowDirection.LeftToRight,
                 Margin = new Padding(0)
             };
-            var site = $"{(infoData.GitInfo.Site.StartsWith("http", System.StringComparison.InvariantCultureIgnoreCase) ? "": "https://")}{infoData.GitInfo.Site}";
+            var site = $"{(infoData.GitInfo.Site.StartsWith("http", System.StringComparison.InvariantCultureIgnoreCase) ? "" : "https://")}{infoData.GitInfo.Site}";
             var sub = $"/{infoData.GitInfo.Owner}/{infoData.GitInfo.Repository}/releases/latest";
             var openWebPageButton = new Button()
             {
@@ -258,6 +318,15 @@ namespace AIHelper.Manage
             public string FileStartsWith { get; set; } = "";
             public string FileEndsWith { get; set; } = "";
             public bool VersionFromFile { get; set; } = false;
+
+            internal Dictionary<string, (string t, string d)> Strings = new Dictionary<string, (string t, string d)>()
+            {
+                {nameof(Owner), (T._("Owner"), T._("Repository owner")) },
+                {nameof(Repository), (T._("Repository"), T._("Repository name")) },
+                {nameof(FileStartsWith), (T._("File starts with"), T._("File to download starts with. Name part before version.")) },
+                {nameof(FileEndsWith), (T._("File ends with"), T._("File to download ends with. Name part after version. Usually extension here")) },
+                {nameof(VersionFromFile), (T._("Version from file"), T._("Determines if need to search version in file name.")) },
+            };
         }
     }
 }

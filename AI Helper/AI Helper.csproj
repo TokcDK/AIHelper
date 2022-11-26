@@ -202,6 +202,7 @@
     <Compile Include="Manage\Functions\IFunctionForFlp.cs" />
     <Compile Include="Manage\Functions\UpdaterFlp.cs" />
     <Compile Include="Manage\ManageHardlinks.cs" />
+    <Compile Include="Manage\ManageInfoEditor.cs" />
     <Compile Include="Manage\ManageReport.cs" />
     <Compile Include="Manage\ModeSwitch\GameBackuper.cs" />
     <Compile Include="Manage\ManageArchive.cs" />

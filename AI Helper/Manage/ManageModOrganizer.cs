@@ -1226,6 +1226,8 @@ namespace AIHelper.Manage
                     mod.IsExist = Directory.Exists(mod.Path);
                     mod.ParentSeparator = lastSeparator;
 
+                    var metaIniPath = Path.Combine(mod.Path, "meta.ini");
+                    if (File.Exists(metaIniPath)) mod.MetaIni = ManageIni.GetINIFile(metaIniPath);
 
                     if (!mod.IsSeparator && lastSeparator != null) lastSeparator.Childs.Add(mod); // add subitems references to understand which items is under the group separator
 
@@ -1236,6 +1238,38 @@ namespace AIHelper.Manage
                     ModByName.Add(mod.Name, mod);
 
                     modPriority++;
+                }
+            }
+
+            /// <summary>
+            /// Mods meta.ini file content as <see cref="INIFile"/>. Mods filtered by <paramref name="modType"/>
+            /// </summary>
+            /// <param name="modType"></param>
+            /// <returns></returns>
+            public IEnumerable<INIFile> EnumerateModsMetaIni()
+            {
+                foreach (var mod in Mods)
+                {
+                    var ini = mod.MetaIni;
+                    if(ini == null) continue;
+
+                    yield return ini;
+                }
+            }
+
+            /// <summary>
+            /// Mods meta.ini file content as <see cref="INIFile"/>. Mods filtered by <paramref name="modType"/>
+            /// </summary>
+            /// <param name="modType"></param>
+            /// <returns></returns>
+            public IEnumerable<INIFile> EnumerateModsMetaIni(ModType modType)
+            {
+                foreach (var mod in GetBy(modType))
+                {
+                    var iniPath = Path.Combine(mod.Path, "meta.ini");
+                    if (!File.Exists(iniPath)) continue;
+
+                    yield return ManageIni.GetINIFile(iniPath);
                 }
             }
 
@@ -1406,6 +1440,7 @@ namespace AIHelper.Manage
             /// Mod relations with other mods
             /// </summary>
             internal ModRelationsData Relations = null;
+            internal INIFile MetaIni { get; set; }
         }
 
         internal class ModRelationsData

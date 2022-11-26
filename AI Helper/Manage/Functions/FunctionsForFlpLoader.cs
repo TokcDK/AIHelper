@@ -38,6 +38,8 @@ namespace AIHelper.Manage.Functions
                 };
                 l.Click += f.OnClick;
                 ttip.SetToolTip(l, f.Description);
+
+                flp.Controls.Add(l);
             }
         }
     }

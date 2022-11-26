@@ -12,6 +12,7 @@ namespace AIHelper.Manage.Functions
     {
         internal static void Load()
         {
+
             var flp = ManageSettings.MainForm.FunctionsFlowLayoutPanel;
             flp.Controls.Clear(); // clear old
 
@@ -36,7 +37,22 @@ namespace AIHelper.Manage.Functions
                     AutoSize = true,
                     Text = f.Symbol
                 };
-                l.Click += f.OnClick;
+                l.Click += new EventHandler((o, e) =>
+                {
+                    // place last used control as first
+                    //int i = 0;
+                    //var controls = new Control[flp.Controls.Count];
+                    //controls[i++] = o as Control;
+                    //foreach (var flpc in flp.Controls)
+                    //{
+                    //    if (object.Equals(flpc, o)) continue;
+
+                    //    controls[i++] = flpc as Control;
+                    //}
+                    //flp.Controls.AddRange(controls);
+
+                    f.OnClick(o,e);
+                });
                 ttip.SetToolTip(l, f.Description);
 
                 flp.Controls.Add(l);

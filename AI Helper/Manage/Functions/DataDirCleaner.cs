@@ -13,9 +13,18 @@ using static AIHelper.Manage.ManageModOrganizer;
 
 namespace AIHelper.Manage.Functions
 {
-    internal class DataDirCleaner
+    internal class DataDirCleaner : IFunctionForFlp
     {
         readonly Logger _log = LogManager.GetCurrentClassLogger();
+
+        public string Symbol => "🧹";
+
+        public string Description => T._("Clean game dir from external files using black and white lists");
+
+        public void OnClick(object o, EventArgs e)
+        {
+            Clean();
+        }
 
         /// <summary>
         /// clean Data dir of current selected game from not native files

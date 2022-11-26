@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using AIHelper.Manage.Update.Sources;
@@ -37,6 +38,8 @@ namespace AIHelper.Manage
 
             p.Controls.Add(modsListFlowPanel);
             f.Controls.Add(p);
+
+            bool isReading = true;
 
             var mods = new ModlistData();
             var sectionName = ManageSettings.AiMetaIniSectionName;
@@ -123,6 +126,8 @@ namespace AIHelper.Manage
                 {
                     if (propertyInfo.Name == nameof(infoData.GitInfo.Site)) continue;
                     if (propertyInfo.Name == nameof(infoData.GitInfo.Strings)) continue;
+                    if (propertyInfo.Name == nameof(infoData.GitInfo.INI)) continue;
+                    if (!propertyInfo.CanWrite) continue;
 
                     var propertyType = propertyInfo.GetMethod.ReturnType;
 
@@ -163,6 +168,12 @@ namespace AIHelper.Manage
                             Margin = new Padding(0),                            
                         };
                         tb.DataBindings.Add(new Binding("Text", infoData.GitInfo, propertyInfo.Name));
+                        tb.TextChanged += new System.EventHandler((o, e) =>
+                        {
+                            if (isReading) return;
+
+                            infoData.GitInfo.Write();
+                        });
 
                         thePropertyFlowPanel.Controls.Add(l);
                         thePropertyFlowPanel.Controls.Add(tb);
@@ -212,7 +223,9 @@ namespace AIHelper.Manage
                         l.DataBindings.Add(new Binding("Checked", infoData.GitInfo, propertyInfo.Name));
                         l.CheckedChanged += new System.EventHandler((o, e) =>
                         {
+                            if (isReading) return;
 
+                            infoData.GitInfo.Write();
                         });
 
 
@@ -270,6 +283,8 @@ namespace AIHelper.Manage
             //    );
             f.Size = new System.Drawing.Size(f.Width * 2, f.Height * 2);
             f.Show(ManageSettings.MainForm);
+
+            isReading = false;
         }
 
         static List<UpdateInfoData> updateInfoDatas = new List<UpdateInfoData>();
@@ -316,16 +331,18 @@ namespace AIHelper.Manage
             {
                 INI = ini;
                 ModName = ini.INIPath.Directory.Name;
+                GitInfo = new GitUpdateInfoData(INI);
             }
 
             public INIFile INI { get; }
             public string ModName { get; }
-            public GitUpdateInfoData GitInfo { get; set; } = new GitUpdateInfoData();
+            public GitUpdateInfoData GitInfo { get; set; }
         }
 
         public class GitUpdateInfoData
         {
             public string Site { get; } = "github.com";
+            public string Marker { get; } = "updgit";
 
             public string Owner { get; set; } = "";
             public string Repository { get; set; } = "";
@@ -333,7 +350,7 @@ namespace AIHelper.Manage
             public string FileEndsWith { get; set; } = "";
             public bool VersionFromFile { get; set; } = false;
 
-            internal Dictionary<string, (string t, string d)> Strings = new Dictionary<string, (string t, string d)>()
+            internal Dictionary<string, (string t, string d)> Strings { get; } = new Dictionary<string, (string t, string d)>()
             {
                 {nameof(Owner), (T._("Owner"), T._("Repository owner")) },
                 {nameof(Repository), (T._("Repository"), T._("Repository name")) },
@@ -341,6 +358,47 @@ namespace AIHelper.Manage
                 {nameof(FileEndsWith), (T._("File ends with"), T._("File to download ends with. Name part after version. Usually extension here")) },
                 {nameof(VersionFromFile), (T._("Version from file"), T._("Determines if need to search version in file name.")) },
             };
+
+            public GitUpdateInfoData(INIFile ini)
+            {
+                INI = ini;
+            }
+
+            public INIFile INI { get; }
+
+            public void Write()
+            {
+                bool changed = false;
+
+                bool hasGitHubUrlData = Owner.Length > 0 && Repository.Length > 0;
+                if (hasGitHubUrlData && FileStartsWith.Length > 0)
+                {
+                    var fileEnds = FileEndsWith.Length > 0 ? "," + FileEndsWith : "";
+                    var verFromFile = (VersionFromFile ? "," + VersionFromFile : "").ToLowerInvariant();
+                    var newInfo = $"{Marker}::{Owner},{Repository}{FileStartsWith}{fileEnds}{verFromFile}::";
+
+                    var currentInfo = INI.GetKey(ManageSettings.AiMetaIniSectionName, ManageSettings.AiMetaIniKeyUpdateName);
+
+                    if(!string.Equals(currentInfo, newInfo, System.StringComparison.InvariantCultureIgnoreCase) 
+                        && !string.Equals(currentInfo.Replace(", ", ","), newInfo, System.StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        INI.SetKey(ManageSettings.AiMetaIniSectionName, ManageSettings.AiMetaIniKeyUpdateName, newInfo, false);
+                        
+                        changed = true;
+                    }
+                }
+
+                var url = INI.GetKey("General", "url");
+                if (hasGitHubUrlData && url.Length == 0)
+                {
+                    var site = (Site.StartsWith("http", System.StringComparison.InvariantCultureIgnoreCase) ? "https://" : "") + Site;
+                    INI.SetKey(ManageSettings.AiMetaIniSectionName, ManageSettings.AiMetaIniKeyUpdateName, $"{site}/{Owner}/{Repository}", false);
+                    
+                    changed = true;
+                }
+
+                if (changed) INI.WriteFile();
+            }
         }
     }
 }

@@ -92,12 +92,6 @@
             this.ToolsFixModListButton = new System.Windows.Forms.Button();
             this.UpdateButtonTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.btnUpdateMods = new System.Windows.Forms.Button();
-            this.UpdateButtonOptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.llOpenOldPluginsBuckupFolder = new System.Windows.Forms.LinkLabel();
-            this.UseKKmanagerUpdaterLabel = new System.Windows.Forms.Label();
-            this.UpdatePluginsLabel = new System.Windows.Forms.Label();
-            this.CheckEnabledModsOnlyLabel = new System.Windows.Forms.Label();
-            this.BleadingEdgeZipmodsLabel = new System.Windows.Forms.Label();
             this.Install2MOTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.Install2MOOptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -105,9 +99,6 @@
             this.ModeSwitchTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.ModeSwitchButtonPanel = new System.Windows.Forms.Panel();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
-            this.ModeSwitchOptionsPanel = new System.Windows.Forms.Panel();
-            this.ModeSwitchFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.ModeSwitchCreateBuckupLabel = new System.Windows.Forms.Label();
             this.DevButton = new System.Windows.Forms.Button();
             this.UpdateInfoEditorButton = new System.Windows.Forms.Button();
             this.AIGirlHelperTabControl.SuspendLayout();
@@ -126,13 +117,10 @@
             this.ToolsTabPagePanel.SuspendLayout();
             this.ToolsTabPageTableLayoutPanel.SuspendLayout();
             this.UpdateButtonTableLayoutPanel.SuspendLayout();
-            this.UpdateButtonOptionsFlowLayoutPanel.SuspendLayout();
             this.Install2MOTableLayoutPanel.SuspendLayout();
             this.Install2MOOptionsFlowLayoutPanel.SuspendLayout();
             this.ModeSwitchTableLayoutPanel.SuspendLayout();
             this.ModeSwitchButtonPanel.SuspendLayout();
-            this.ModeSwitchOptionsPanel.SuspendLayout();
-            this.ModeSwitchFlowLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // AIGirlHelperTabControl
@@ -974,7 +962,6 @@
             this.UpdateButtonTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 74.86339F));
             this.UpdateButtonTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.13661F));
             this.UpdateButtonTableLayoutPanel.Controls.Add(this.btnUpdateMods, 0, 0);
-            this.UpdateButtonTableLayoutPanel.Controls.Add(this.UpdateButtonOptionsFlowLayoutPanel, 1, 0);
             this.UpdateButtonTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.UpdateButtonTableLayoutPanel.Location = new System.Drawing.Point(0, 114);
             this.UpdateButtonTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
@@ -997,93 +984,6 @@
             this.btnUpdateMods.Text = "Update mods";
             this.btnUpdateMods.UseVisualStyleBackColor = false;
             this.btnUpdateMods.Click += new System.EventHandler(this.btnUpdateMods_Click);
-            // 
-            // UpdateButtonOptionsFlowLayoutPanel
-            // 
-            this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.llOpenOldPluginsBuckupFolder);
-            this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.UseKKmanagerUpdaterLabel);
-            this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.UpdatePluginsLabel);
-            this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.CheckEnabledModsOnlyLabel);
-            this.UpdateButtonOptionsFlowLayoutPanel.Controls.Add(this.BleadingEdgeZipmodsLabel);
-            this.UpdateButtonOptionsFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.UpdateButtonOptionsFlowLayoutPanel.Location = new System.Drawing.Point(128, 0);
-            this.UpdateButtonOptionsFlowLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
-            this.UpdateButtonOptionsFlowLayoutPanel.Name = "UpdateButtonOptionsFlowLayoutPanel";
-            this.UpdateButtonOptionsFlowLayoutPanel.Size = new System.Drawing.Size(43, 41);
-            this.UpdateButtonOptionsFlowLayoutPanel.TabIndex = 27;
-            // 
-            // llOpenOldPluginsBuckupFolder
-            // 
-            this.llOpenOldPluginsBuckupFolder.AutoSize = true;
-            this.llOpenOldPluginsBuckupFolder.BackColor = System.Drawing.Color.Transparent;
-            this.llOpenOldPluginsBuckupFolder.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.llOpenOldPluginsBuckupFolder.LinkColor = System.Drawing.Color.WhiteSmoke;
-            this.llOpenOldPluginsBuckupFolder.Location = new System.Drawing.Point(0, 0);
-            this.llOpenOldPluginsBuckupFolder.Margin = new System.Windows.Forms.Padding(0);
-            this.llOpenOldPluginsBuckupFolder.Name = "llOpenOldPluginsBuckupFolder";
-            this.llOpenOldPluginsBuckupFolder.Size = new System.Drawing.Size(15, 13);
-            this.llOpenOldPluginsBuckupFolder.TabIndex = 27;
-            this.llOpenOldPluginsBuckupFolder.TabStop = true;
-            this.llOpenOldPluginsBuckupFolder.Text = "D";
-            this.llOpenOldPluginsBuckupFolder.Visible = false;
-            this.llOpenOldPluginsBuckupFolder.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.llOpenOldPluginsBuckupFolder.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LlOpenOldPluginsBuckupFolder_LinkClicked);
-            // 
-            // UseKKmanagerUpdaterLabel
-            // 
-            this.UseKKmanagerUpdaterLabel.AutoSize = true;
-            this.UseKKmanagerUpdaterLabel.BackColor = System.Drawing.Color.Transparent;
-            this.UseKKmanagerUpdaterLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.UseKKmanagerUpdaterLabel.Location = new System.Drawing.Point(15, 0);
-            this.UseKKmanagerUpdaterLabel.Margin = new System.Windows.Forms.Padding(0);
-            this.UseKKmanagerUpdaterLabel.Name = "UseKKmanagerUpdaterLabel";
-            this.UseKKmanagerUpdaterLabel.Size = new System.Drawing.Size(14, 13);
-            this.UseKKmanagerUpdaterLabel.TabIndex = 32;
-            this.UseKKmanagerUpdaterLabel.Text = "Z";
-            this.UseKKmanagerUpdaterLabel.Visible = false;
-            this.UseKKmanagerUpdaterLabel.Click += new System.EventHandler(this.UseKKmanagerUpdaterLabel_Click);
-            // 
-            // UpdatePluginsLabel
-            // 
-            this.UpdatePluginsLabel.AutoSize = true;
-            this.UpdatePluginsLabel.BackColor = System.Drawing.Color.Transparent;
-            this.UpdatePluginsLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.UpdatePluginsLabel.Location = new System.Drawing.Point(29, 0);
-            this.UpdatePluginsLabel.Margin = new System.Windows.Forms.Padding(0);
-            this.UpdatePluginsLabel.Name = "UpdatePluginsLabel";
-            this.UpdatePluginsLabel.Size = new System.Drawing.Size(14, 13);
-            this.UpdatePluginsLabel.TabIndex = 31;
-            this.UpdatePluginsLabel.Text = "P";
-            this.UpdatePluginsLabel.Visible = false;
-            this.UpdatePluginsLabel.Click += new System.EventHandler(this.UpdatePluginsLabel_Click);
-            // 
-            // CheckEnabledModsOnlyLabel
-            // 
-            this.CheckEnabledModsOnlyLabel.AutoSize = true;
-            this.CheckEnabledModsOnlyLabel.BackColor = System.Drawing.Color.Transparent;
-            this.CheckEnabledModsOnlyLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.CheckEnabledModsOnlyLabel.Location = new System.Drawing.Point(0, 13);
-            this.CheckEnabledModsOnlyLabel.Margin = new System.Windows.Forms.Padding(0);
-            this.CheckEnabledModsOnlyLabel.Name = "CheckEnabledModsOnlyLabel";
-            this.CheckEnabledModsOnlyLabel.Size = new System.Drawing.Size(13, 13);
-            this.CheckEnabledModsOnlyLabel.TabIndex = 33;
-            this.CheckEnabledModsOnlyLabel.Text = "e";
-            this.CheckEnabledModsOnlyLabel.Visible = false;
-            this.CheckEnabledModsOnlyLabel.Click += new System.EventHandler(this.CheckEnabledModsOnlyLabel_Click);
-            // 
-            // BleadingEdgeZipmodsLabel
-            // 
-            this.BleadingEdgeZipmodsLabel.AutoSize = true;
-            this.BleadingEdgeZipmodsLabel.BackColor = System.Drawing.Color.Transparent;
-            this.BleadingEdgeZipmodsLabel.ForeColor = System.Drawing.Color.LightGray;
-            this.BleadingEdgeZipmodsLabel.Location = new System.Drawing.Point(13, 13);
-            this.BleadingEdgeZipmodsLabel.Margin = new System.Windows.Forms.Padding(0);
-            this.BleadingEdgeZipmodsLabel.Name = "BleadingEdgeZipmodsLabel";
-            this.BleadingEdgeZipmodsLabel.Size = new System.Drawing.Size(13, 13);
-            this.BleadingEdgeZipmodsLabel.TabIndex = 32;
-            this.BleadingEdgeZipmodsLabel.Text = "b";
-            this.BleadingEdgeZipmodsLabel.Visible = false;
-            this.BleadingEdgeZipmodsLabel.Click += new System.EventHandler(this.BleadingEdgeZipmodsLabel_Click);
             // 
             // Install2MOTableLayoutPanel
             // 
@@ -1149,7 +1049,6 @@
             this.ModeSwitchTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 76.36364F));
             this.ModeSwitchTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 23.63636F));
             this.ModeSwitchTableLayoutPanel.Controls.Add(this.ModeSwitchButtonPanel, 0, 0);
-            this.ModeSwitchTableLayoutPanel.Controls.Add(this.ModeSwitchOptionsPanel, 1, 0);
             this.ModeSwitchTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.ModeSwitchTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.ModeSwitchTableLayoutPanel.Name = "ModeSwitchTableLayoutPanel";
@@ -1181,39 +1080,6 @@
             this.MOCommonModeSwitchButton.Text = "MOToCommon";
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
             this.MOCommonModeSwitchButton.Click += new System.EventHandler(this.MO2StandartButton_Click);
-            // 
-            // ModeSwitchOptionsPanel
-            // 
-            this.ModeSwitchOptionsPanel.Controls.Add(this.ModeSwitchFlowLayoutPanel);
-            this.ModeSwitchOptionsPanel.Location = new System.Drawing.Point(130, 0);
-            this.ModeSwitchOptionsPanel.Margin = new System.Windows.Forms.Padding(0);
-            this.ModeSwitchOptionsPanel.Name = "ModeSwitchOptionsPanel";
-            this.ModeSwitchOptionsPanel.Size = new System.Drawing.Size(41, 38);
-            this.ModeSwitchOptionsPanel.TabIndex = 1;
-            // 
-            // ModeSwitchFlowLayoutPanel
-            // 
-            this.ModeSwitchFlowLayoutPanel.Controls.Add(this.ModeSwitchCreateBuckupLabel);
-            this.ModeSwitchFlowLayoutPanel.Location = new System.Drawing.Point(1, 4);
-            this.ModeSwitchFlowLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
-            this.ModeSwitchFlowLayoutPanel.Name = "ModeSwitchFlowLayoutPanel";
-            this.ModeSwitchFlowLayoutPanel.Size = new System.Drawing.Size(40, 34);
-            this.ModeSwitchFlowLayoutPanel.TabIndex = 0;
-            // 
-            // ModeSwitchCreateBuckupLabel
-            // 
-            this.ModeSwitchCreateBuckupLabel.AutoSize = true;
-            this.ModeSwitchCreateBuckupLabel.BackColor = System.Drawing.Color.Transparent;
-            this.ModeSwitchCreateBuckupLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.ModeSwitchCreateBuckupLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.ModeSwitchCreateBuckupLabel.Location = new System.Drawing.Point(0, 0);
-            this.ModeSwitchCreateBuckupLabel.Margin = new System.Windows.Forms.Padding(0);
-            this.ModeSwitchCreateBuckupLabel.Name = "ModeSwitchCreateBuckupLabel";
-            this.ModeSwitchCreateBuckupLabel.Size = new System.Drawing.Size(13, 13);
-            this.ModeSwitchCreateBuckupLabel.TabIndex = 33;
-            this.ModeSwitchCreateBuckupLabel.Text = "b";
-            this.ModeSwitchCreateBuckupLabel.Visible = false;
-            this.ModeSwitchCreateBuckupLabel.Click += new System.EventHandler(this.ModeSwitchCreateBuckupLabel_Click);
             // 
             // DevButton
             // 
@@ -1270,16 +1136,11 @@
             this.ToolsTabPagePanel.ResumeLayout(false);
             this.ToolsTabPageTableLayoutPanel.ResumeLayout(false);
             this.UpdateButtonTableLayoutPanel.ResumeLayout(false);
-            this.UpdateButtonOptionsFlowLayoutPanel.ResumeLayout(false);
-            this.UpdateButtonOptionsFlowLayoutPanel.PerformLayout();
             this.Install2MOTableLayoutPanel.ResumeLayout(false);
             this.Install2MOOptionsFlowLayoutPanel.ResumeLayout(false);
             this.Install2MOOptionsFlowLayoutPanel.PerformLayout();
             this.ModeSwitchTableLayoutPanel.ResumeLayout(false);
             this.ModeSwitchButtonPanel.ResumeLayout(false);
-            this.ModeSwitchOptionsPanel.ResumeLayout(false);
-            this.ModeSwitchFlowLayoutPanel.ResumeLayout(false);
-            this.ModeSwitchFlowLayoutPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1339,22 +1200,13 @@
         private System.Windows.Forms.Button ToolsFixModListButton;
         private System.Windows.Forms.TableLayoutPanel UpdateButtonTableLayoutPanel;
         private System.Windows.Forms.Button btnUpdateMods;
-        private System.Windows.Forms.FlowLayoutPanel UpdateButtonOptionsFlowLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel Install2MOTableLayoutPanel;
         private System.Windows.Forms.Button InstallInModsButton;
         private System.Windows.Forms.FlowLayoutPanel Install2MOOptionsFlowLayoutPanel;
         private System.Windows.Forms.LinkLabel Install2MODirPathOpenFolderLinkLabel;
         internal System.Windows.Forms.Button MOCommonModeSwitchButton;
-        public System.Windows.Forms.LinkLabel llOpenOldPluginsBuckupFolder;
-        public System.Windows.Forms.Label UpdatePluginsLabel;
-        public System.Windows.Forms.Label UseKKmanagerUpdaterLabel;
-        public System.Windows.Forms.Label BleadingEdgeZipmodsLabel;
-        public System.Windows.Forms.Label CheckEnabledModsOnlyLabel;
         private System.Windows.Forms.TableLayoutPanel ModeSwitchTableLayoutPanel;
         private System.Windows.Forms.Panel ModeSwitchButtonPanel;
-        private System.Windows.Forms.Panel ModeSwitchOptionsPanel;
-        private System.Windows.Forms.FlowLayoutPanel ModeSwitchFlowLayoutPanel;
-        public System.Windows.Forms.Label ModeSwitchCreateBuckupLabel;
         private System.Windows.Forms.LinkLabel OpenPresetDirsLinkLabel;
         private System.Windows.Forms.LinkLabel OpenPresetDirsLinkLabelMO;
         private System.Windows.Forms.Button DevButton;

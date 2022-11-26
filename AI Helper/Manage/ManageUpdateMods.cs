@@ -1,8 +1,4 @@
-﻿using AIHelper.Forms.Other;
-using AIHelper.Manage.Update;
-using AIHelper.SharedData;
-using NLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -10,6 +6,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AIHelper.Forms.Other;
+using AIHelper.Manage.Update;
+using NLog;
 using static AIHelper.Manage.ManageModOrganizer;
 
 namespace AIHelper.Manage
@@ -61,7 +60,7 @@ namespace AIHelper.Manage
                     {
                         modName = line;
                     }
-                    else if(Regex.IsMatch(line, "^[a-zA-Z0-9]+::[^:]+::$"))
+                    else if (Regex.IsMatch(line, "^[a-zA-Z0-9]+::[^:]+::$"))
                     {
                         d.Add(modName, line);
                         modName = "";
@@ -81,7 +80,7 @@ namespace AIHelper.Manage
                 var updateInfoList = GetUpdateInfosFromFile(sourceId);
                 if (updateInfoList == null || updateInfoList.Count == 0) return infos;
 
-                foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(ManageSettings.MainForm.CheckEnabledModsOnlyLabel.IsChecked()))
+                foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(UpdateOptions != null ? UpdateOptions.CheckEnabledModsOnlyCheckBox.Checked : true))
                 {
                     var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modname);
                     if (updateInfoList.ContainsKey(modname) && !infos.ContainsKey(modPath))
@@ -102,7 +101,7 @@ namespace AIHelper.Manage
         {
             ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize);
 
-            var updater = new Updater();
+            var updater = new Updater(UpdateOptions);
 
             //update plugins in mo mode
             if (Manage.ManageSettings.IsMoMode) await updater.Update().ConfigureAwait(true);

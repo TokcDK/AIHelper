@@ -91,7 +91,7 @@ namespace AIHelper
                     return;
                 }
 
-                await new Updater().Update(new List<UpdateTargetBase>() { new Mo(new UpdateInfo()) }).ConfigureAwait(true);
+                await new Updater(null).Update(new List<UpdateTargetBase>() { new Mo(new UpdateInfo(null)) }).ConfigureAwait(true);
             }
 
             ManageSettings.MOIsNew = IsMo23OrNever();
@@ -397,9 +397,9 @@ namespace AIHelper
             {
                 _thToolTip.SetToolTip(ToolsFixModListButton, T._("Fix problems in current enabled mods list"));
 
-                _thToolTip.SetToolTip(llOpenOldPluginsBuckupFolder,
-                    T._("Open older plugins buckup folder")
-                    );
+                //_thToolTip.SetToolTip(llOpenOldPluginsBuckupFolder,
+                //    T._("Open older plugins buckup folder")
+                //    );
                 _thToolTip.SetToolTip(btnUpdateMods,
                     T._("Update Mod Organizer and enabled mods") + "\n" +
                     T._("Mod Organizer already have hardcoded info") + "\n" +
@@ -430,12 +430,12 @@ namespace AIHelper
                         " in their folders and vanilla files restored"
                     )
                     );
-                _thToolTip.SetToolTip(ModeSwitchCreateBuckupLabel,
-                    T._("Enables backup creation of selected game before mode switch\n" +
-                    " to be possible to restore Data and Mods dirs.\n" +
-                    "\n" +
-                    "Backup creating using ntfs hardlinks and not consumes any extra space.")
-                    );
+                //_thToolTip.SetToolTip(ModeSwitchCreateBuckupLabel,
+                //    T._("Enables backup creation of selected game before mode switch\n" +
+                //    " to be possible to restore Data and Mods dirs.\n" +
+                //    "\n" +
+                //    "Backup creating using ntfs hardlinks and not consumes any extra space.")
+                //    );
 
                 _thToolTip.SetToolTip(InstallInModsButton, T._("Install mods and userdata, placed in") + " " + ManageSettings.ModsInstallDirName + (MOmode ? T._(
                              " to MO format in Mods when possible"
@@ -1305,13 +1305,6 @@ namespace AIHelper
             Process.Start(ManageSettings.DiscordGroupLink);//Program's discord server
         }
 
-        private void LlOpenOldPluginsBuckupFolder_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            var modUpdatesBakDir = ManageSettings.UpdatedModsOlderVersionsBuckupDirPath;
-            Directory.CreateDirectory(modUpdatesBakDir);
-            Process.Start("explorer.exe", modUpdatesBakDir);
-        }
-
         private void AIGirlHelperTabControl_Selected(object sender, TabControlEventArgs e)
         {
             //FoldersInit();
@@ -1335,76 +1328,24 @@ namespace AIHelper
         private void UpdateButtonOptionsRefresh()
         {
             //UseKKmanagerUpdaterLabel.SetCheck();
-            UseKKmanagerUpdaterLabel.Visible = ManageSettings.IsHaveSideloaderMods && File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath);
+            //UseKKmanagerUpdaterLabel.Visible = ManageSettings.IsHaveSideloaderMods && File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath);
             //UseKKmanagerUpdaterCheckBox.Visible = b && ManageSettings.Games.CurrentGame.IsHaveSideloaderMods;
-            BleadingEdgeZipmodsLabel.Visible = UseKKmanagerUpdaterLabel.Visible;
+            //BleadingEdgeZipmodsLabel.Visible = UseKKmanagerUpdaterLabel.Visible;
             //cbxBleadingEdgeZipmods.Visible = UseKKmanagerUpdaterCheckBox.Visible;
 
-            CheckEnabledModsOnlyLabel.Enabled = UpdatePluginsLabel.IsChecked();
-            btnUpdateMods.Enabled = (UpdatePluginsLabel.Visible && UpdatePluginsLabel.IsChecked()) || (UseKKmanagerUpdaterLabel.Visible && UseKKmanagerUpdaterLabel.IsChecked());
+            //CheckEnabledModsOnlyLabel.Enabled = UpdatePluginsLabel.IsChecked();
+            //btnUpdateMods.Enabled = (UpdatePluginsLabel.Visible && UpdatePluginsLabel.IsChecked()) || (UseKKmanagerUpdaterLabel.Visible && UseKKmanagerUpdaterLabel.IsChecked());
             //btnUpdateMods.Enabled = (UpdatePluginsCheckBox.Visible && UpdatePluginsCheckBox.Checked) || (UseKKmanagerUpdaterCheckBox.Visible && UseKKmanagerUpdaterCheckBox.Checked);
 
             //check bleeding edge txt
             //cbxBleadingEdgeZipmods.Checked = cbxBleadingEdgeZipmods.Visible && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath());
-            BleadingEdgeZipmodsLabel.SetCheck(BleadingEdgeZipmodsLabel.Visible && UseKKmanagerUpdaterLabel.IsChecked() && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath));
-            BleadingEdgeZipmodsLabel.Enabled = BleadingEdgeZipmodsLabel.Visible && UseKKmanagerUpdaterLabel.IsChecked();
+            //BleadingEdgeZipmodsLabel.SetCheck(BleadingEdgeZipmodsLabel.Visible && UseKKmanagerUpdaterLabel.IsChecked() && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath));
+            //BleadingEdgeZipmodsLabel.Enabled = BleadingEdgeZipmodsLabel.Visible && UseKKmanagerUpdaterLabel.IsChecked();
         }
 
         private void AIGirlHelperTabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             SetTooltips();
-        }
-
-        //private void UseKKmanagerUpdaterCheckBox_MouseClick(object sender, MouseEventArgs e)
-        //{
-        //    UpdateButtonOptionsRefresh();
-        //}
-
-        //private void UpdatePluginsCheckBox_MouseClick(object sender, MouseEventArgs e)
-        //{
-        //    UpdateButtonOptionsRefresh();
-        //}
-
-        //private void cbxBleadingEdgeZipmods_CheckedChanged(object sender, EventArgs e)
-        //{
-        //    if ((sender as CheckBox).Checked && !File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()))
-        //    {
-        //        Directory.CreateDirectory(Path.GetDirectoryName(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()));
-        //        File.WriteAllText(ManageSettings.ZipmodsBleedingEdgeMarkFilePath(), string.Empty);
-        //    }
-        //    else if (!(sender as CheckBox).Checked && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath()))
-        //    {
-        //        File.Delete(ManageSettings.ZipmodsBleedingEdgeMarkFilePath());
-        //    }
-
-        //    UpdateButtonOptionsRefresh();
-        //}
-
-        private void UpdatePluginsLabel_Click(object sender, EventArgs e)
-        {
-            RefreshLabelCheckState(sender);
-        }
-
-        private void UseKKmanagerUpdaterLabel_Click(object sender, EventArgs e)
-        {
-            RefreshLabelCheckState(sender);
-        }
-
-        private void BleadingEdgeZipmodsLabel_Click(object sender, EventArgs e)
-        {
-            (sender as Label).SetCheck(!(sender as Label).IsChecked());
-
-            if ((sender as Label).IsChecked() && !File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath))
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(ManageSettings.ZipmodsBleedingEdgeMarkFilePath));
-                File.WriteAllText(ManageSettings.ZipmodsBleedingEdgeMarkFilePath, string.Empty);
-            }
-            else if (!(sender as Label).IsChecked() && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath))
-            {
-                File.Delete(ManageSettings.ZipmodsBleedingEdgeMarkFilePath);
-            }
-
-            UpdateButtonOptionsRefresh();
         }
 
         private void RefreshLabelCheckState(object sender)
@@ -1414,14 +1355,8 @@ namespace AIHelper
             UpdateButtonOptionsRefresh();
         }
 
-        private void CheckEnabledModsOnlyLabel_Click(object sender, EventArgs e)
-        {
-            RefreshLabelCheckState(sender);
-        }
-
         private void ModeSwitchCreateBuckupLabel_Click(object sender, EventArgs e)
         {
-            RefreshLabelCheckState(sender);
         }
 
         private void OpenPresetDirsLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

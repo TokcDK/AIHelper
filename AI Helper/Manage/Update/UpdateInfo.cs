@@ -1,4 +1,5 @@
-﻿using AIHelper.Manage.Update.Sources;
+﻿using AIHelper.Forms.Other;
+using AIHelper.Manage.Update.Sources;
 using AIHelper.Manage.Update.Targets;
 using System.Collections.Generic;
 using System.IO;
@@ -55,6 +56,7 @@ namespace AIHelper.Manage.Update
         /// last error text if any
         /// </summary>
         public StringBuilder LastErrorText { get; internal set; }
+        public UpdateOptionsDialogForm UpdateOptions { get; }
 
         public UpdateInfo()
         {
@@ -62,6 +64,11 @@ namespace AIHelper.Manage.Update
             Report = new List<string>();
             LastErrorText = new StringBuilder();
             Reset();
+        }
+
+        public UpdateInfo(UpdateOptionsDialogForm updateOptions = null)
+        {
+            UpdateOptions = updateOptions;
         }
 
         /// <summary>

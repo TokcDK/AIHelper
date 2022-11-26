@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AIHelper.Forms.Other;
 using AIHelper.Manage.Update.Sources;
 using AIHelper.Manage.Update.Targets;
 using AIHelper.Manage.Update.Targets.Mods;
@@ -28,10 +29,17 @@ namespace AIHelper.Manage.Update
         /// </summary>
         Dictionary<string, Dictionary<string, DateTime>> lastCheckDates;
 
+        public Updater(UpdateOptionsDialogForm updateOptions)
+        {
+            UpdateOptions = updateOptions;
+        }
+
+        public UpdateOptionsDialogForm UpdateOptions { get; }
+
         internal async Task Update(List<UpdateTargetBase> targetList = null)
         {
             bool isUsingTargetList = targetList != null && targetList.Count > 0;
-            UpdateInfo info = !isUsingTargetList ? new UpdateInfo() : targetList[0].Info;
+            UpdateInfo info = !isUsingTargetList ? new UpdateInfo(UpdateOptions) : targetList[0].Info;
             var sources = new List<UpdateSourceBase> //Sources of updates
             {
                 new Github(info)

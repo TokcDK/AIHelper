@@ -29,7 +29,7 @@ namespace AIHelper.Manage.Update
         /// </summary>
         Dictionary<string, Dictionary<string, DateTime>> lastCheckDates;
 
-        public Updater(UpdateOptionsDialogForm updateOptions)
+        public Updater(UpdateOptionsDialogForm updateOptions = null)
         {
             UpdateOptions = updateOptions;
         }

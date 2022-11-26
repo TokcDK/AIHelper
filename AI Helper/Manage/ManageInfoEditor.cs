@@ -247,6 +247,8 @@ namespace AIHelper.Manage
                     curModFlpWidth > f.Width ? curModFlpWidth : f.Width
                     , curModFlpHeight > f.Height ? curModFlpHeight : f.Height
                     );
+
+                updateInfoDatas.Add(infoData);
             }
 
             //modsListFlowPanel.Size = new System.Drawing.Size
@@ -262,6 +264,8 @@ namespace AIHelper.Manage
             f.Size = new System.Drawing.Size(f.Width * 2, f.Height * 2);
             f.Show(ManageSettings.MainForm);
         }
+
+        static List<UpdateInfoData> updateInfoDatas = new List<UpdateInfoData>();
 
         private static void AddOpenWebButton(FlowLayoutPanel currentModFlowPanel, UpdateInfoData infoData)
         {

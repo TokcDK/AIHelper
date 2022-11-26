@@ -413,7 +413,7 @@ namespace AIHelper.Manage
             else File.WriteAllText(gameTxtPath, $"{gamePathToAdd}\r\n");
 
             // update games list
-            SetListOfAddedGames(main);
+            ManageOther.SetListOfAddedGames(main);
 
             return true;
         }

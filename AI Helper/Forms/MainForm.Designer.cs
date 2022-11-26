@@ -43,7 +43,6 @@
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.LaunchPagePanel = new System.Windows.Forms.Panel();
             this.FunctionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.AddGameLabel = new System.Windows.Forms.Label();
             this.pbDiscord = new System.Windows.Forms.PictureBox();
             this.VRGameCheckBox = new System.Windows.Forms.CheckBox();
             this.OpenHelpLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -275,7 +274,6 @@
             // 
             this.LaunchPagePanel.BackColor = System.Drawing.Color.Gray;
             this.LaunchPagePanel.Controls.Add(this.FunctionsFlowLayoutPanel);
-            this.LaunchPagePanel.Controls.Add(this.AddGameLabel);
             this.LaunchPagePanel.Controls.Add(this.pbDiscord);
             this.LaunchPagePanel.Controls.Add(this.VRGameCheckBox);
             this.LaunchPagePanel.Controls.Add(this.OpenHelpLinkLabel);
@@ -306,18 +304,6 @@
             this.FunctionsFlowLayoutPanel.Name = "FunctionsFlowLayoutPanel";
             this.FunctionsFlowLayoutPanel.Size = new System.Drawing.Size(17, 121);
             this.FunctionsFlowLayoutPanel.TabIndex = 33;
-            // 
-            // AddGameLabel
-            // 
-            this.AddGameLabel.AutoSize = true;
-            this.AddGameLabel.BackColor = System.Drawing.Color.Transparent;
-            this.AddGameLabel.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.AddGameLabel.Location = new System.Drawing.Point(285, 37);
-            this.AddGameLabel.Name = "AddGameLabel";
-            this.AddGameLabel.Size = new System.Drawing.Size(13, 13);
-            this.AddGameLabel.TabIndex = 31;
-            this.AddGameLabel.Text = "+";
-            this.AddGameLabel.Click += new System.EventHandler(this.AddGameLabel_Click);
             // 
             // pbDiscord
             // 
@@ -1196,7 +1182,6 @@
         private System.Windows.Forms.LinkLabel OpenPresetDirsLinkLabel;
         private System.Windows.Forms.LinkLabel OpenPresetDirsLinkLabelMO;
         private System.Windows.Forms.Button DevButton;
-        private System.Windows.Forms.Label AddGameLabel;
         internal System.Windows.Forms.ComboBox CurrentGameComboBox;
         internal System.Windows.Forms.CheckBox AutoShortcutRegistryCheckBox;
         internal System.Windows.Forms.Label SelectedGameLabel;

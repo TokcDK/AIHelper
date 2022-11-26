@@ -1239,6 +1239,22 @@ namespace AIHelper.Manage
                 }
             }
 
+            /// <summary>
+            /// Mods meta.ini file content as <see cref="INIFile"/>. Mods filtered by <paramref name="modType"/>
+            /// </summary>
+            /// <param name="modType"></param>
+            /// <returns></returns>
+            public IEnumerable<INIFile> EnumerateModsMetaIni(ModType modType = ModType.ModAny)
+            {
+                foreach(var mod in GetBy(modType))
+                {
+                    var iniPath = Path.Combine(mod.Path, "meta.ini");
+                    if (!File.Exists(iniPath)) continue;
+
+                    yield return ManageIni.GetINIFile(iniPath);
+                }
+            }
+
             internal void Insert(ModData modToInsert, string modNameToPlaceWith = "", bool insertAfter = true, bool skipIfExists = true, bool saveAfterInsert = true)
             {
                 // skip when mod already exists

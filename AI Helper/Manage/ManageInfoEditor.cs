@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using AIHelper.Manage.Update.Sources;
 using INIFileMan;
 using static AIHelper.Manage.ManageModOrganizer;
-using static Microsoft.FSharp.Core.ByRefKinds;
 
 namespace AIHelper.Manage
 {
@@ -165,13 +163,14 @@ namespace AIHelper.Manage
                         {
                             AutoSize = true,
                             Size = new System.Drawing.Size(200, _elHeight),
-                            Margin = new Padding(0),                            
+                            Margin = new Padding(0),
                         };
-                        tb.DataBindings.Add(new Binding("Text", infoData.GitInfo, propertyInfo.Name));
+                        tb.DataBindings.Add(new Binding("Text", infoData, $"{nameof(infoData.GitInfo)}.{propertyInfo.Name}", true, DataSourceUpdateMode.OnPropertyChanged));
                         tb.TextChanged += new System.EventHandler((o, e) =>
                         {
                             if (isReading) return;
 
+                            tb.DataBindings[0].WriteValue(); // force write property valuue before try write ini
                             infoData.GitInfo.Write();
                         });
 
@@ -220,11 +219,12 @@ namespace AIHelper.Manage
                             Size = new System.Drawing.Size(100, _elHeight),
                             Margin = new Padding(0)
                         };
-                        l.DataBindings.Add(new Binding("Checked", infoData.GitInfo, propertyInfo.Name));
+                        l.DataBindings.Add(new Binding("Checked", infoData, $"{nameof(infoData.GitInfo)}.{propertyInfo.Name}", true, DataSourceUpdateMode.OnPropertyChanged));
                         l.CheckedChanged += new System.EventHandler((o, e) =>
                         {
                             if (isReading) return;
 
+                            l.DataBindings[0].WriteValue(); // force write property valuue before try write ini
                             infoData.GitInfo.Write();
                         });
 
@@ -334,7 +334,7 @@ namespace AIHelper.Manage
                 GitInfo = new GitUpdateInfoData(INI);
             }
 
-            public INIFile INI { get; }
+            INIFile INI { get; }
             public string ModName { get; }
             public GitUpdateInfoData GitInfo { get; set; }
         }
@@ -374,16 +374,16 @@ namespace AIHelper.Manage
                 if (hasGitHubUrlData && FileStartsWith.Length > 0)
                 {
                     var fileEnds = FileEndsWith.Length > 0 ? "," + FileEndsWith : "";
-                    var verFromFile = (VersionFromFile ? "," + VersionFromFile : "").ToLowerInvariant();
-                    var newInfo = $"{Marker}::{Owner},{Repository}{FileStartsWith}{fileEnds}{verFromFile}::";
+                    var verFromFile = (VersionFromFile && fileEnds.Length > 0 ? "," + VersionFromFile : "").ToLowerInvariant();
+                    var newInfo = $"{Marker}::{Owner},{Repository},{FileStartsWith}{fileEnds}{verFromFile}::";
 
                     var currentInfo = INI.GetKey(ManageSettings.AiMetaIniSectionName, ManageSettings.AiMetaIniKeyUpdateName);
 
-                    if(!string.Equals(currentInfo, newInfo, System.StringComparison.InvariantCultureIgnoreCase) 
+                    if (!string.Equals(currentInfo, newInfo, System.StringComparison.InvariantCultureIgnoreCase)
                         && !string.Equals(currentInfo.Replace(", ", ","), newInfo, System.StringComparison.InvariantCultureIgnoreCase))
                     {
                         INI.SetKey(ManageSettings.AiMetaIniSectionName, ManageSettings.AiMetaIniKeyUpdateName, newInfo, false);
-                        
+
                         changed = true;
                     }
                 }
@@ -393,7 +393,7 @@ namespace AIHelper.Manage
                 {
                     var site = (Site.StartsWith("http", System.StringComparison.InvariantCultureIgnoreCase) ? "https://" : "") + Site;
                     INI.SetKey(ManageSettings.AiMetaIniSectionName, ManageSettings.AiMetaIniKeyUpdateName, $"{site}/{Owner}/{Repository}", false);
-                    
+
                     changed = true;
                 }
 

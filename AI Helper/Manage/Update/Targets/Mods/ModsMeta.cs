@@ -1,8 +1,8 @@
-﻿using AIHelper.Manage.Update.Targets.Mods.ModsMetaUrl;
-using INIFileMan;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using AIHelper.Manage.Update.Targets.Mods.ModsMetaUrl;
+using INIFileMan;
 
 namespace AIHelper.Manage.Update.Targets.Mods
 {
@@ -36,7 +36,7 @@ namespace AIHelper.Manage.Update.Targets.Mods
                 new Xua(_targetinfo)
             };
 
-            foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(ManageSettings.MainForm.CheckEnabledModsOnlyLabel.IsChecked()))
+            foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(Info.UpdateOptions != null ? Info.UpdateOptions.CheckEnabledModsOnlyCheckBox.Checked : true))
             {
                 var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modname);
 

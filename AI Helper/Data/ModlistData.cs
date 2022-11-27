@@ -31,33 +31,28 @@ namespace AIHelper.Data.Modlist
         /// <summary>
         /// init and load content of modlist for current profile
         /// </summary>
-        public ModlistData()
-        {
-            Load();
-        }
+        public ModlistData() { Load(); }
 
         /// <summary>
         /// init and load content of modlist for selected path
         /// </summary>
-        public ModlistData(string modListPath)
-        {
-            Mods = new List<ModData>();
-            ModsByName = new Dictionary<string, ModData>();
-            Load(modListPath);
-        }
+        public ModlistData(string modListPath) { Load(modListPath); }
 
         /// <summary>
         /// modlist load
         /// </summary>
         void Load(string modListPath = null)
         {
+            // set modlist path depending on input path
             ModlistPath = modListPath ?? ManageSettings.CurrentMoProfileModlistPath;
 
             if (!File.Exists(ModlistPath)) return;
-
+                        
+            // read modlist file
             var modlistContent = File.ReadAllLines(ManageSettings.CurrentMoProfileModlistPath);
-            Array.Reverse(modlistContent);
+            Array.Reverse(modlistContent); // lines in modlist file is reversed
 
+            // fill mod data from modlist
             var modPriority = 0;
             ModData lastSeparator = null;
             foreach (var line in modlistContent)
@@ -65,13 +60,13 @@ namespace AIHelper.Data.Modlist
                 if (string.IsNullOrWhiteSpace(line)) continue; // empty
                 if (line.StartsWith("#", StringComparison.InvariantCulture)) continue; // comment
 
-                // set mod data
+                // init mod data
                 var indexOfSeparatorMarker = line.IndexOf(SeparatorMarker, StringComparison.InvariantCulture);
                 var modName = line.Substring(1);
                 var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modName);
                 var mod = new ModData
                 {
-                    Priority = modPriority,
+                    Priority = modPriority++,
                     IsEnabled = line[0] == '+',
                     IsSeparator = indexOfSeparatorMarker > -1,
                     Name = modName,
@@ -79,6 +74,7 @@ namespace AIHelper.Data.Modlist
                     ParentSeparator = lastSeparator
                 };
 
+                // get meta.ini data if exists
                 var metaIniPath = Path.Combine(mod.Path, "meta.ini");
                 if (File.Exists(metaIniPath)) mod.MetaIni = ManageIni.GetINIFile(metaIniPath);
 
@@ -88,10 +84,9 @@ namespace AIHelper.Data.Modlist
                 // reset separator if was changed
                 if (mod.IsSeparator && lastSeparator != mod.ParentSeparator) lastSeparator = mod;
 
+                // add mod into lists
                 Mods.Add(mod);
                 ModsByName.Add(mod.Name, mod);
-
-                modPriority++;
             }
         }
 

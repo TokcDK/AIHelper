@@ -203,6 +203,7 @@
     <Compile Include="Manage\Functions\IFunctionForFlp.cs" />
     <Compile Include="Manage\Functions\InfoEditorForFlp.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\ModlistFixesData.cs" />
+    <Compile Include="Manage\Functions\ModlistFixes\ModlistFIxesForFlp.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\ModlistRuleMarkers.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\Tags\ITag.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\Tags\SearchTarget\ISearchTargetPrefixTag.cs" />

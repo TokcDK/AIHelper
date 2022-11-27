@@ -25,6 +25,7 @@ namespace AIHelper.Data.Modlist
             IsEnabled = true,
             IsSeparator = false,
             Name = "Overwrite",
+            IsExist = true,
             ParentSeparator = null,
             Path = ManageSettings.CurrentGameOverwriteFolderPath
         };
@@ -51,10 +52,9 @@ namespace AIHelper.Data.Modlist
             ModlistPath = modListPath ?? ManageSettings.CurrentMoProfileModlistPath;
 
             if (!File.Exists(ModlistPath)) return;
-                        
+
             // read modlist file
             var modlistContent = File.ReadAllLines(ManageSettings.CurrentMoProfileModlistPath);
-            Array.Reverse(modlistContent); // lines in modlist file is reversed
 
             // fill mod data from modlist
             var modPriority = 0;
@@ -91,6 +91,8 @@ namespace AIHelper.Data.Modlist
                 // add mod into lists
                 Mods.Add(mod);
                 ModsByName.Add(mod.Name, mod);
+
+                modPriority++;
             }
 
             //// set and add overwrite as mod
@@ -109,75 +111,45 @@ namespace AIHelper.Data.Modlist
             //ModsByName.Add(owerwrite.Name, owerwrite);
         }
 
-        /// <summary>
-        /// Mods meta.ini file content as <see cref="INIFile"/>.
-        /// </summary>
-        /// <param name="modType"></param>
-        /// <returns></returns>
-        public IEnumerable<INIFile> EnumerateModsMetaIni()
         {
-            foreach (var mod in Mods)
             {
-                var ini = mod.MetaIni;
-                if (ini == null) continue;
-
-                yield return ini;
             }
         }
 
-        /// <summary>
-        /// Mods meta.ini file content as <see cref="INIFile"/>. Mods filtered by <paramref name="modType"/>
-        /// </summary>
-        /// <param name="modType"></param>
-        /// <returns></returns>
-        public IEnumerable<INIFile> EnumerateModsMetaIni(ModType modType)
-        {
-            foreach (var mod in GetBy(modType))
             {
-                var iniPath = Path.Combine(mod.Path, "meta.ini");
-                if (!File.Exists(iniPath)) continue;
+                {
 
-                yield return ManageIni.GetINIFile(iniPath);
-            }
-        }
+                    }
 
-        internal void Insert(ModData modToInsert, string modNameToPlaceWith = "", bool insertAfter = true, bool skipIfExists = true, bool saveAfterInsert = true)
-        {
-            // skip when mod already exists
-            var existsMod = GetModByName(modToInsert.Name);
-            if (existsMod != null) { if (skipIfExists) return; Mods.Remove(existsMod); }
+                    item.Priority = modPriority;
+                    newItems.Add(item);
 
-            bool isInsertByPriority = true;
+                    modPriority++;
+                }
 
-            // try insert by mod name
+                {
+
+
             if (!string.IsNullOrWhiteSpace(modNameToPlaceWith))
             {
-                var modToPlace = GetModByName(modNameToPlaceWith);
-                if (modToPlace != null)
-                {
-                    isInsertByPriority = false;
 
-                    Mods.Insert(modToPlace.Priority + (insertAfter ? 1 : 0), modToInsert); // insert after or before
 
-                    if (modToPlace.IsSeparator) modToInsert.ParentSeparator = modToPlace; // set separator if need
                 }
-            }
 
-            // insert by priority if was not inserted by mod name
-            if (isInsertByPriority) if (modToInsert.Priority == -1) Mods.Add(modToInsert); else Mods.Insert(modToInsert.Priority, modToInsert);
+                if (!added) // add in the end when was not added
+                {
+                    modToInsert.Priority = modPriority;
+                    modToInsert.ParentSeparator = null;
+                    newItems.Add(modToInsert);
+                }
 
-            // update priority
-            int priority = 0;
-            foreach (var mod in Mods) mod.Priority = priority++;
+
 
             // update modbyname
             ModsByName = Mods.ToDictionary(k => k.Name, v => v);
 
-            // save when need
-            if (saveAfterInsert) Save();
         }
 
-        private ModData GetModByName(string itemName)
         {
             if (ModsByName.ContainsKey(itemName)) return ModsByName[itemName];
 
@@ -285,7 +257,6 @@ namespace AIHelper.Data.Modlist
         /// <summary>
         /// true when folder is exists in mods
         /// </summary>
-        internal bool IsExist { get => Directory.Exists(Path); }
         /// <summary>
         /// true for separators
         /// </summary>

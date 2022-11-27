@@ -5,17 +5,17 @@ namespace AIHelper.Manage.Rules.ModList
 {
     internal class RuleModForOverlaysPlugin : ModListRulesBase
     {
-        public RuleModForOverlaysPlugin(ModListData modlistData) : base(modlistData)
+        public RuleModForOverlaysPlugin(ModListRulesData modlistData) : base(modlistData)
         {
         }
 
         internal override bool Condition()
         {
             return ModlistData.GamePrefix.Length > 0 && (
-                !Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.ModName, "Overlays").IsNullOrEmptyDirectory("*.png", null, true
+                !Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.Mod.Name, "Overlays").IsNullOrEmptyDirectory("*.png", null, true
                 )
                     )
-                    && !File.Exists(Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.ModName, "BepInEx", "plugins", ModlistData.GamePrefix + "_OverlayMods.dll"));
+                    && !File.Exists(Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.Mod.Name, "BepInEx", "plugins", ModlistData.GamePrefix + "_OverlayMods.dll"));
         }
 
         internal override string Description()
@@ -25,7 +25,7 @@ namespace AIHelper.Manage.Rules.ModList
 
         internal override bool Fix()
         {
-            return FindModWithThePath("BepInEx" + Path.DirectorySeparatorChar + "plugins" + Path.DirectorySeparatorChar + ModlistData.GamePrefix + "_OverlayMods.dll", out OutModName);
+            return FindModWithThePath("BepInEx" + Path.DirectorySeparatorChar + "plugins" + Path.DirectorySeparatorChar + ModlistData.GamePrefix + "_OverlayMods.dll", out _);
         }
     }
 }

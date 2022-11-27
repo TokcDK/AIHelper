@@ -1,9 +1,11 @@
-﻿using AIHelper.Manage.Rules.MetaIniFixes;
-using AIHelper.Manage.Rules.ModList;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
+using AIHelper.Data.Modlist;
+using AIHelper.Manage.Rules.MetaIniFixes;
+using AIHelper.Manage.Rules.ModList;
 
 namespace AIHelper.Manage
 {
@@ -11,16 +13,20 @@ namespace AIHelper.Manage
     {
         internal class ModList
         {
-            readonly ModListData _modlistData;
+            readonly ModListRulesData _modlistData;
             public ModList()
             {
-                _modlistData = new ModListData();
+                _modlistData = new ModListRulesData();
             }
 
             internal void ModlistFixes()
             {
                 var modlistBackupFilePath = ManageModOrganizer.MakeMoProfileModlistFileBuckup("_prefixes");
 
+
+                var modlist = new ModlistData();
+                _modlistData.AllModsList = modlist.GetBy(ModlistData.ModType.ModAny).OrderByDescending(m => m.Priority).ToArray();
+                _modlistData.EnabledModsListAndOverwrite = _modlistData.AllModsList.Where(m => m.IsEnabled).ToArray();
                 var checkForm = new Form
                 {
                     Size = new System.Drawing.Size(300, 50),
@@ -31,21 +37,17 @@ namespace AIHelper.Manage
                 var checkProgress = new ProgressBar
                 {
                     Dock = DockStyle.Fill,
-                    Maximum = _modlistData.EnabledModNamesList.Length
+                    Maximum = _modlistData.EnabledModsListAndOverwrite.Length
                 };
                 var cnt = 0;
                 checkForm.Controls.Add(checkProgress);
                 checkForm.Show();
 
-                _modlistData.AllModNamesList = ManageModOrganizer.GetModNamesListFromActiveMoProfile(false);
-                _modlistData.EnabledModNamesList = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
-                foreach (var modName in _modlistData.EnabledModNamesList)
+                foreach (var mod in modlist.GetBy(ModlistData.ModType.ModEnabled))
                 {
-                    if (string.IsNullOrWhiteSpace(modName)) continue;
-
                     if (cnt < checkProgress.Maximum) checkProgress.Value = cnt;
 
-                    _modlistData.ModName = modName;
+                    _modlistData.Mod = mod;
                     ApplyRules();
 
                     cnt++;
@@ -56,48 +58,52 @@ namespace AIHelper.Manage
 
                 KPlugTweaks();
 
-                var listChanged = _modlistData.Report.Count > 0;
-                bool actionsChanged = false;
-                if (_modlistData.ModsMustBeEnabled.Count > 0)
-                {
-                    foreach (var mod in _modlistData.ModsMustBeEnabled)
-                    {
-                        if (!actionsChanged)
-                        {
-                            actionsChanged = true;
-                            _modlistData.Report.Add(T._("Results") + ":"
-                            + Environment.NewLine
-                            + Environment.NewLine
-                            + T._("Actions") + ":"
-                            + Environment.NewLine
-                            );
-                        }
-                        _modlistData.Report.Add(T._("Mod") + " " + mod.Key + " " + T._("was activated") + ": " + mod.Value);
-                        ManageModOrganizer.ActivateMod(mod.Key);
-                        listChanged = true;
-                    }
-                }
+                _modlistData.Report = _modlistData.AllModsList.Where(m => m.ReportMessages.Count > 0).Select(m => $"{m.Name}: {string.Join($"\n{m.Name}: ", m.ReportMessages)}").ToList();
 
-                if (_modlistData.ModsMustBeDisabled.Count > 0)
-                {
-                    foreach (var modinfo in _modlistData.ModsMustBeDisabled)
-                    {
-                        var mod = modinfo.Key;
-                        if (!actionsChanged)
-                        {
-                            actionsChanged = true;
-                            _modlistData.Report.Add(T._("Results") + ": "
-                            + Environment.NewLine
-                            + Environment.NewLine
-                            + T._("Actions") + ":"
-                            + Environment.NewLine
-                            );
-                        }
-                        _modlistData.Report.Add(T._("Mod") + " " + mod + " " + T._("was deactivated") + ": " + modinfo.Value);
-                        ManageModOrganizer.DeactivateMod(mod);
-                        listChanged = true;
-                    }
-                }
+                var listChanged = _modlistData.Report.Count > 0;
+                //if (listChanged) modlist.Save();
+
+                //bool actionsChanged = false;
+                //if (_ModlistData.Mod.NamesMustBeEnabled.Count > 0)
+                //{
+                //    foreach (var mod in _ModlistData.Mod.NamesMustBeEnabled)
+                //    {
+                //        if (!actionsChanged)
+                //        {
+                //            actionsChanged = true;
+                //            _modlistData.Report.Add(T._("Results") + ":"
+                //            + Environment.NewLine
+                //            + Environment.NewLine
+                //            + T._("Actions") + ":"
+                //            + Environment.NewLine
+                //            );
+                //        }
+                //        _modlistData.Report.Add(T._("Mod") + " " + mod.Key + " " + T._("was activated") + ": " + mod.Value);
+                //        ManageModOrganizer.ActivateMod(mod.Key);
+                //        listChanged = true;
+                //    }
+                //}
+
+                //if (_ModlistData.Mod.NamesMustBeDisabled.Count > 0)
+                //{
+                //    foreach (var modinfo in _ModlistData.Mod.NamesMustBeDisabled)
+                //    {
+                //        var mod = modinfo.Key;
+                //        if (!actionsChanged)
+                //        {
+                //            actionsChanged = true;
+                //            _modlistData.Report.Add(T._("Results") + ": "
+                //            + Environment.NewLine
+                //            + Environment.NewLine
+                //            + T._("Actions") + ":"
+                //            + Environment.NewLine
+                //            );
+                //        }
+                //        _modlistData.Report.Add(T._("Mod") + " " + mod + " " + T._("was deactivated") + ": " + modinfo.Value);
+                //        ManageModOrganizer.DeactivateMod(mod);
+                //        listChanged = true;
+                //    }
+                //}
 
                 //meta.ini fixes/tweaks
                 //var reportCntPre = modlistData.Report.Count;
@@ -172,11 +178,11 @@ namespace AIHelper.Manage
 
                 if (!File.Exists(cfgpath))
                 {
-                    foreach (var modName in _modlistData.EnabledModNamesList)
+                    foreach (var mod in _modlistData.EnabledModsListAndOverwrite)
                     {
-                        if (File.Exists(Path.Combine(ManageSettings.CurrentGameModsDirPath, modName, "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg")))
+                        if (File.Exists(Path.Combine(ManageSettings.CurrentGameModsDirPath, mod.Name, "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg")))
                         {
-                            cfgpath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modName, "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg");
+                            cfgpath = Path.Combine(ManageSettings.CurrentGameModsDirPath, mod.Name, "BepInEx", "config", "KK_Fix_MainGameOptimizations.cfg");
                             break;
                         }
                     }
@@ -211,73 +217,64 @@ namespace AIHelper.Manage
             {
                 foreach (var rule in _modlistData.RulesList)
                 {
-                    if (rule.Condition())
-                    {
-                        var oldMustEnabledCount = _modlistData.ModsMustBeEnabled.Count;
-                        var oldMustEnabledCandidatesCount = _modlistData.ModsMustBeEnabledCandidates.Count;
-                        var oldMustDisaledCount = _modlistData.ModsMustBeDisabled.Count;
-                        var oldMustDisaledCandidatesCount = _modlistData.ModsMustBeDisabledCandidates.Count;
+                    if (!rule.Condition()) continue;
 
-                        if (rule.Fix())
-                        {
-                            if (!_modlistData.ModsMustBeDisabledCandidates.ContainsKey(_modlistData.ModName) && !_modlistData.ModsMustBeDisabled.ContainsKey(_modlistData.ModName))
-                            {
-                                AddCandidates();
-                            }
-                            else
-                            {
-                                _modlistData.ModsMustBeEnabledCandidates.Clear();
-                                AddCandidates();
-                            }
-                            if (oldMustEnabledCount != _modlistData.ModsMustBeEnabled.Count
-                                ||
-                                oldMustEnabledCandidatesCount != _modlistData.ModsMustBeEnabledCandidates.Count
-                                ||
-                                oldMustDisaledCount != _modlistData.ModsMustBeDisabled.Count
-                                ||
-                                oldMustDisaledCandidatesCount != _modlistData.ModsMustBeDisabledCandidates.Count
-                                )
-                            {
-                                var report = T._("For mod") + " \"" + _modlistData.ModName + "\" " + T._("was applied rule") + " \"" + rule.Description() + "\"" + (rule.Result.Length > 0 ? (" " + T._("with result") + ":" + " \" " + rule.Result) : rule.Result);
-                                if (!_modlistData.Report.Contains(report))
-                                {
-                                    _modlistData.Report.Add(report);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            ClearCandidates();
-                        }
-                    }
+                    //var oldMustEnabledCount = _ModlistData.Mod.NamesMustBeEnabled.Count;
+                    //var oldMustEnabledCandidatesCount = _ModlistData.Mod.NamesMustBeEnabledCandidates.Count;
+                    //var oldMustDisaledCount = _ModlistData.Mod.NamesMustBeDisabled.Count;
+                    //var oldMustDisaledCandidatesCount = _ModlistData.Mod.NamesMustBeDisabledCandidates.Count;
+
+                    if (!rule.Fix()) continue; // ClearCandidates();
+
+                    //if (!_ModlistData.Mod.NamesMustBeDisabledCandidates.ContainsKey(_ModlistData.Mod.Name) && !_ModlistData.Mod.NamesMustBeDisabled.ContainsKey(_ModlistData.Mod.Name))
+                    //{
+                    //    AddCandidates();
+                    //}
+                    //else
+                    //{
+                    //    _ModlistData.Mod.NamesMustBeEnabledCandidates.Clear();
+                    //    AddCandidates();
+                    //}
+                    //if (oldMustEnabledCount != _ModlistData.Mod.NamesMustBeEnabled.Count
+                    //    ||
+                    //    oldMustEnabledCandidatesCount != _ModlistData.Mod.NamesMustBeEnabledCandidates.Count
+                    //    ||
+                    //    oldMustDisaledCount != _ModlistData.Mod.NamesMustBeDisabled.Count
+                    //    ||
+                    //    oldMustDisaledCandidatesCount != _ModlistData.Mod.NamesMustBeDisabledCandidates.Count
+                    //    )
+                    //{
+                    //    var report = T._("For mod") + " \"" + _ModlistData.Mod.Name + "\" " + T._("was applied rule") + " \"" + rule.Description() + "\"" + (rule.Result.Length > 0 ? (" " + T._("with result") + ":" + " \" " + rule.Result) : rule.Result);
+                    //    if (!_modlistData.Report.Contains(report)) _modlistData.Report.Add(report);
+                    //}
                 }
             }
 
             private void ClearCandidates()
             {
-                _modlistData.ModsMustBeEnabledCandidates.Clear();
-                _modlistData.ModsMustBeDisabledCandidates.Clear();
+                //_ModlistData.Mod.NamesMustBeEnabledCandidates.Clear();
+                //_ModlistData.Mod.NamesMustBeDisabledCandidates.Clear();
             }
 
             private void AddCandidates()
             {
-                AddCandidatesToMain(_modlistData.ModsMustBeEnabledCandidates, _modlistData.ModsMustBeEnabled);
-                AddCandidatesToMain(_modlistData.ModsMustBeDisabledCandidates, _modlistData.ModsMustBeDisabled);
-                ClearCandidates();
+                //AddCandidatesToMain(_ModlistData.Mod.NamesMustBeEnabledCandidates, _ModlistData.Mod.NamesMustBeEnabled);
+                //AddCandidatesToMain(_ModlistData.Mod.NamesMustBeDisabledCandidates, _ModlistData.Mod.NamesMustBeDisabled);
+                //ClearCandidates();
             }
 
             private static void AddCandidatesToMain(Dictionary<string, string> candidates, Dictionary<string, string> parent)
             {
-                if (candidates.Count > 0)
-                {
-                    foreach (var candidate in candidates)
-                    {
-                        if (!parent.ContainsKey(candidate.Key))
-                        {
-                            parent.Add(candidate.Key, candidate.Value);
-                        }
-                    }
-                }
+                //if (candidates.Count > 0)
+                //{
+                //    foreach (var candidate in candidates)
+                //    {
+                //        if (!parent.ContainsKey(candidate.Key))
+                //        {
+                //            parent.Add(candidate.Key, candidate.Value);
+                //        }
+                //    }
+                //}
             }
         }
     }

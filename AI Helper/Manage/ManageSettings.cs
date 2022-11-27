@@ -1047,7 +1047,7 @@ namespace AIHelper.Manage
                 "MyUserFiles",
                 GameUserDataModName
             };
-            var subPath = (string.IsNullOrWhiteSpace(subDirPath) ? "" : "\\" + subDirPath);
+            var subPath = string.IsNullOrWhiteSpace(subDirPath) ? "" : "\\" + subDirPath;
             var currentGameModsDirPath = CurrentGameModsDirPath;
             foreach (var modName in modNames)
             {

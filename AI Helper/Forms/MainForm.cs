@@ -1352,7 +1352,7 @@ namespace AIHelper
 
         private void RefreshLabelCheckState(object sender)
         {
-            var label = (sender as Label);
+            var label = sender as Label;
             label.SetCheck(!label.IsChecked());
             UpdateButtonOptionsRefresh();
         }

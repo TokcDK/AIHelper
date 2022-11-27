@@ -1,13 +1,15 @@
-﻿using AIHelper.SharedData;
+﻿using AIHelper.Data.Modlist;
+using AIHelper.SharedData;
 using System;
 using System.Collections.Generic;
 
 namespace AIHelper.Manage.Rules.ModList
 {
-    internal class ModListData
+    internal class ModListRulesData
     {
-        internal string[] AllModNamesList;
-        internal string[] EnabledModNamesList;
+        internal ModlistData ModsList;
+        internal ModData[] AllModsList;
+        internal ModData[] EnabledModsListAndOverwrite;
         internal Dictionary<string, string> ModsMustBeEnabled = new Dictionary<string, string>();
         internal Dictionary<string, string> ModsMustBeDisabled = new Dictionary<string, string>();
         internal Dictionary<string, string> ModsMustBeEnabledCandidates = new Dictionary<string, string>();
@@ -19,14 +21,14 @@ namespace AIHelper.Manage.Rules.ModList
         internal string RulesTagInc = "inc:";
         internal List<ModListRulesBase> RulesList;
         internal List<string> Report = new List<string>();
-        internal string ModName;
+        internal ModData Mod;
         internal string GamePrefix;
         internal Dictionary<string, string[]> RulesDict;
         internal Dictionary<string, string[]> RulesDictOverall;
 
 
 
-        public ModListData()
+        public ModListRulesData()
         {
             GamePrefix = ManageSettings.Games.Game.GameAbbreviation;
             RulesList = GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<ModListRulesBase>(this);

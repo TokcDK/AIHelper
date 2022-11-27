@@ -725,9 +725,9 @@ namespace AIHelper.Manage
             }
 
             if (modPath != string.Empty &&
-                (string.Equals(Path.GetFileName(modPath), Path.GetFileName(ManageSettings.CurrentGameModsDirPath), StringComparison.InvariantCultureIgnoreCase)//temp debug check
+                string.Equals(Path.GetFileName(modPath), Path.GetFileName(ManageSettings.CurrentGameModsDirPath), StringComparison.InvariantCultureIgnoreCase)//temp debug check
                                                                                                                                                                //|| string.Equals(Path.GetFileName(modPath), Path.GetFileName(ManageSettings.GetOverwriteFolder()), StringComparison.InvariantCultureIgnoreCase)
-                )
+                
                 )
             {
                 _log.Warn("warning. log path is Mods. ModPath=" + modPath + ". FolderPath=" + folderPath);
@@ -962,7 +962,7 @@ namespace AIHelper.Manage
                     if (symlinkPath.Exists(IsDir))
                     {
                         bool isLink;
-                        if ((isLink = symlinkPath.IsSymlink(targetObjectType) && symlinkPath.GetSymlinkTarget(targetObjectType) == targetObjectPath) || (!IsDir || !symlinkPath.IsEmptyDir()))
+                        if ((isLink = symlinkPath.IsSymlink(targetObjectType) && symlinkPath.GetSymlinkTarget(targetObjectType) == targetObjectPath) || !IsDir || !symlinkPath.IsEmptyDir())
                         {
                             ret = true;
                             // skip if not synlink or exists symlink with valid target
@@ -3015,7 +3015,8 @@ namespace AIHelper.Manage
                 };
             }
 
-            modList.Insert(record, (record.ParentSeparator == null && !string.IsNullOrWhiteSpace(modNameToInsertWith) ? modNameToInsertWith : ""), placeAfter);
+            modList.Insert(record, (record.ParentSeparator == null && !string.IsNullOrWhiteSpace(recordWithWhichInsert) ? recordWithWhichInsert : ""), placeAfter);
+            modList.Save();
 
             //if (modname.Length > 0)
             //{
@@ -3822,7 +3823,7 @@ namespace AIHelper.Manage
         /// <param name="performSave">True if need to save right after add.</param>
         internal static void Add(this CustomExecutables customExecutables, CustomExecutables.CustomExecutable customExecutable, bool performSave = false)
         {
-            customExecutables.List.Add((customExecutables.List.Count + 1) + "", customExecutable);
+            customExecutables.List.Add(customExecutables.List.Count + 1 + "", customExecutable);
             if (performSave)
             {
                 customExecutables.Save();

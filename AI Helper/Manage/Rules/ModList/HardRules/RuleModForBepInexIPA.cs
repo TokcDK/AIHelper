@@ -12,9 +12,9 @@
 //        internal override bool Condition()
 //        {
 //            return !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(
-//                Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName, "BepInEx", "IPA"), "*.dll", null, true
+//                Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.Mod.NameName, "BepInEx", "IPA"), "*.dll", null, true
 //                ) &&
-//                 !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), modlistData.ModName, "BepInEx", "patchers", "BepInEx.IPAVirtualizer.dll"));
+//                 !File.Exists(Path.Combine(ManageSettings.GetCurrentGameModsPath(), ModlistData.Mod.NameName, "BepInEx", "patchers", "BepInEx.IPAVirtualizer.dll"));
 //        }
 
 //        internal override string Description()

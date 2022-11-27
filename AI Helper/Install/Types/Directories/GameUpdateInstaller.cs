@@ -334,7 +334,7 @@ namespace AIHelper.Install.Types.Directories
             string value;
             if (create)
             {
-                value = (files ? updateInfo.CreateFiles : updateInfo.CreateDirs);
+                value = files ? updateInfo.CreateFiles : updateInfo.CreateDirs;
                 if (files)
                 {
                     value = HideContentCommas(value);
@@ -342,7 +342,7 @@ namespace AIHelper.Install.Types.Directories
             }
             else
             {
-                value = (files ? updateInfo.RemoveFiles : updateInfo.RemoveDirs);
+                value = files ? updateInfo.RemoveFiles : updateInfo.RemoveDirs;
             }
 
             foreach (var subPath in value.Split(new[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries))

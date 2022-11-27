@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using AIHelper.Data.Modlist;
 using AIHelper.Forms.Other;
+using AIHelper.Data.Modlist;
 using MAB.DotIgnore;
 using NLog;
 using static AIHelper.Manage.ManageModOrganizer;

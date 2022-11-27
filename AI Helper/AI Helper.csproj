@@ -185,7 +185,7 @@
     <Compile Include="Install\UpdateMaker\UpdateMakerMO.cs" />
     <Compile Include="Install\UpdateMaker\UpdateMakerData.cs" />
     <Compile Include="Install\UpdateMaker\UpdateMakerMods.cs" />
-    <Compile Include="Lists\CategoriesList.cs" />
+    <Compile Include="Data\CategoriesList.cs" />
     <Compile Include="Forms\ExtraSettings\ExtraSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -242,7 +242,7 @@
     <Compile Include="Manage\Rules\MetaIniFixes\MoveAIhelperInfosFromMetaIniNotesToKey1.cs" />
     <Compile Include="Manage\Rules\MetaIniFixes\MoveAIhelperInfosFromMetaIniNotesToKey.cs" />
     <Compile Include="Manage\Rules\ModList\HardRules\RuleModForkPlug.cs" />
-    <Compile Include="Manage\Rules\ModList\ModListData.cs" />
+    <Compile Include="Manage\Rules\ModList\ModListRulesData.cs" />
     <Compile Include="Manage\Rules\ModList\ModListRulesBase.cs" />
     <Compile Include="Manage\Rules\ModList\ModlistRulesTags.cs" />
     <Compile Include="Manage\Rules\ModList\RuleFromRulesFileOverall.cs" />

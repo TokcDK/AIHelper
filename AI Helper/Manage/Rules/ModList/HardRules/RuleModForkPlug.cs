@@ -4,13 +4,13 @@ namespace AIHelper.Manage.Rules.ModList
 {
     internal class RuleModForkPlug : ModListRulesBase
     {
-        public RuleModForkPlug(ModListData modlistData) : base(modlistData)
+        public RuleModForkPlug(ModListRulesData modlistData) : base(modlistData)
         {
         }
 
         internal override bool Condition()
         {
-            return File.Exists(Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.ModName, "Plugins", "kPlug.dll"))
+            return File.Exists(Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.Mod.Name, "Plugins", "kPlug.dll"))
                 ;
         }
 

@@ -8,7 +8,7 @@ namespace AIHelper.Manage.Rules.ModList
 {
     class RuleFromMeta : ModListRulesBase
     {
-        public RuleFromMeta(ModListData modlistData) : base(modlistData)
+        public RuleFromMeta(ModListRulesData modlistData) : base(modlistData)
         {
         }
 
@@ -16,7 +16,7 @@ namespace AIHelper.Manage.Rules.ModList
 
         internal override bool Condition()
         {
-            var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.ModName);
+            var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.Mod.Name);
 
             var metaPath = Path.Combine(modPath, "meta.ini");
             if (!File.Exists(metaPath))
@@ -41,39 +41,37 @@ namespace AIHelper.Manage.Rules.ModList
 
         private bool ParseRulesFromMeta()
         {
-            var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.ModName);
+            var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, ModlistData.Mod.Name);
 
             var metaPath = Path.Combine(modPath, "meta.ini");
-            if (File.Exists(metaPath))
+            if (!File.Exists(metaPath)) return false;
+
+            var ini = ManageIni.GetINIFile(metaPath);
+
+            var metaNotes = ini.GetKey("General", "notes");
+            //var metaComments = ManageINI.GetINIValueIfExist(metaPath, "comments", "General");
+
+            var mlinfo = GetTagInfoTextFromHtml(metaNotes, "mlinfo::").Replace("\\\\", "\\");
+
+            if (!string.IsNullOrWhiteSpace(mlinfo))
             {
-                var ini = ManageIni.GetINIFile(metaPath);
+                return ParseRules(mlinfo.Split(new[] { Environment.NewLine, "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries));
+            }
 
-                var metaNotes = ini.GetKey("General", "notes");
-                //var metaComments = ManageINI.GetINIValueIfExist(metaPath, "comments", "General");
+            //regex to capture all between ::mlinfo:: and ::
+            //::mlinfo::(?:(?!::).)+::
 
-                var mlinfo = GetTagInfoTextFromHtml(metaNotes, "mlinfo::").Replace("\\\\", "\\");
+            //read info from standalone key
+            //need to think about section and key names
+            if (!ini.SectionExistsAndNotEmpty(ManageSettings.AiMetaIniSectionName)) return false;
 
-                if (!string.IsNullOrWhiteSpace(mlinfo))
-                {
-                    return ParseRules(mlinfo.Split(new[] { Environment.NewLine, "\n", "\r" }, StringSplitOptions.RemoveEmptyEntries));
-                }
-
-                //regex to capture all between ::mlinfo:: and ::
-                //::mlinfo::(?:(?!::).)+::
-
-                //read info from standalone key
-                //need to think about section and key names
-                if (ini.SectionExistsAndNotEmpty(ManageSettings.AiMetaIniSectionName))
-                {
-                    if (ini.KeyExists(ManageSettings.AiMetaIniKeyModlistRulesInfoName, ManageSettings.AiMetaIniSectionName))
-                    {
-                        mlinfo = ini.GetKey(ManageSettings.AiMetaIniSectionName, ManageSettings.AiMetaIniKeyModlistRulesInfoName);
-                    }
-                    if (!string.IsNullOrWhiteSpace(mlinfo))
-                    {
-                        return ParseRules(mlinfo.Split(new[] { @"\r\n" }, StringSplitOptions.RemoveEmptyEntries));
-                    }
-                }
+            if (ini.KeyExists(ManageSettings.AiMetaIniKeyModlistRulesInfoName, ManageSettings.AiMetaIniSectionName))
+            {
+                mlinfo = ini.GetKey(ManageSettings.AiMetaIniSectionName, ManageSettings.AiMetaIniKeyModlistRulesInfoName);
+            }
+            if (!string.IsNullOrWhiteSpace(mlinfo))
+            {
+                return ParseRules(mlinfo.Split(new[] { @"\r\n" }, StringSplitOptions.RemoveEmptyEntries));
             }
 
             return false;
@@ -97,10 +95,8 @@ namespace AIHelper.Manage.Rules.ModList
 
                 //html.DocumentNode.SelectNodes("//" + tag + "/text()").ToList().ForEach(x => MessageBox.Show(x.InnerHtml));
                 var nodes = html.DocumentNode.SelectNodes("//" + htmLtag + "/text()");
-                if (nodes == null)
-                {
-                    return string.Empty;
-                }
+                if (nodes == null) return string.Empty;
+
                 var listOfTexts = nodes.ToList();
 
                 var info = new List<string>();

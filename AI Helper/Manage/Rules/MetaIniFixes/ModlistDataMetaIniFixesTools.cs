@@ -8,7 +8,7 @@ namespace AIHelper.Manage.Rules.MetaIniFixes
 {
     class ModlistDataMetaIniFixesTools
     {
-        internal static void ApplyFixes(ModListData modlistData)
+        internal static void ApplyFixes(ModListRulesData modlistData)
         {
             modlistData.Report.Add(Environment.NewLine + "meta.ini fixes:");
 

@@ -10,12 +10,7 @@ namespace AIHelper.Manage.Functions.ModlistFixes.Tags.SearchTarget
     {
         public string Tag => "file:";
 
-        public bool IsFound(string ruleString)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsTrue(string ruleString)
+        public bool IsTrue(ModlistFixesData data)
         {
             throw new NotImplementedException();
         }

@@ -9,7 +9,6 @@ namespace AIHelper.Manage.Functions.ModlistFixes.Tags
     internal interface ITag
     {
         string Tag { get; }
-        bool IsFound(string ruleString);
-        bool IsTrue(string ruleString);
+        bool IsTrue(ModlistFixesData data);
     }
 }

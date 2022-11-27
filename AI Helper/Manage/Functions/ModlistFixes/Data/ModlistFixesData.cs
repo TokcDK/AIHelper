@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using AIHelper.Data.Modlist;
 
-namespace AIHelper.Manage.Functions.ModlistFixes
+namespace AIHelper.Manage.Functions.ModlistFixes.Data
 {
     internal class ModlistFixesData
     {

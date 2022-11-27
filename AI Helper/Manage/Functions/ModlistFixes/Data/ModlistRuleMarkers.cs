@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AIHelper.Manage.Functions.ModlistFixes
+namespace AIHelper.Manage.Functions.ModlistFixes.Data
 {
     internal class ModlistFixesRuleTags
     {

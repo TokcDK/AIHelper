@@ -2989,9 +2989,9 @@ namespace AIHelper.Manage
             var modList = new ModlistData();
 
             // just activate/deactivate if exists
-            if (modList.ModByName.ContainsKey(modname))
+            if (modList.ModsByName.ContainsKey(modname))
             {
-                modList.ModByName[modname].IsEnabled = activate;
+                modList.ModsByName[modname].IsEnabled = activate;
                 modList.Save();
                 return;
             }

@@ -3003,8 +3003,6 @@ namespace AIHelper.Manage
                 Name = modname,
                 Path = Path.Combine(ManageSettings.CurrentGameModsDirPath, modname)
             };
-            record.IsExist = Directory.Exists(record.Path);
-
 
             if (!string.IsNullOrWhiteSpace(modNameToInsertWith)
                 && modNameToInsertWith.EndsWith("_separator", comparisonType: StringComparison.InvariantCulture))
@@ -3015,7 +3013,6 @@ namespace AIHelper.Manage
                     Name = modNameToInsertWith,
                     Path = Path.Combine(ManageSettings.CurrentGameModsDirPath, modNameToInsertWith)
                 };
-                record.ParentSeparator.IsExist = Directory.Exists(record.ParentSeparator.Path);
             }
 
             modList.Insert(record, (record.ParentSeparator == null && !string.IsNullOrWhiteSpace(modNameToInsertWith) ? modNameToInsertWith : ""), placeAfter);

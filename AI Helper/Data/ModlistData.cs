@@ -14,6 +14,10 @@ namespace AIHelper.Data.Modlist
         internal Dictionary<string, ModData> ModsByName = new Dictionary<string, ModData>();
         internal List<ModData> ModsPlusOverwrite { get => new List<ModData>(Mods).Concat(new ModData[1] { Overwrite }).ToList(); }
         internal Dictionary<string, ModData> ModsByNameAndOverwrite { get => new Dictionary<string, ModData>(ModsByName).Concat(new Dictionary<string, ModData> { { Overwrite.Name, Overwrite } }).ToDictionary(k => k.Key, v => v.Value); }
+        
+        /// <summary>
+        /// Overwrite is always exists and enabled
+        /// </summary>
         internal ModData Overwrite = new ModData
         {
             Priority = 999999,
@@ -21,7 +25,6 @@ namespace AIHelper.Data.Modlist
             IsEnabled = true,
             IsSeparator = false,
             Name = "Overwrite",
-            IsExist = true,
             ParentSeparator = null,
             Path = ManageSettings.CurrentGameOverwriteFolderPath
         };
@@ -32,33 +35,28 @@ namespace AIHelper.Data.Modlist
         /// <summary>
         /// init and load content of modlist for current profile
         /// </summary>
-        public ModlistData()
-        {
-            Load();
-        }
+        public ModlistData() { Load(); }
 
         /// <summary>
         /// init and load content of modlist for selected path
         /// </summary>
-        public ModlistData(string modListPath)
-        {
-            Mods = new List<ModData>();
-            ModsByName = new Dictionary<string, ModData>();
-            Load(modListPath);
-        }
+        public ModlistData(string modListPath) { Load(modListPath); }
 
         /// <summary>
         /// modlist load
         /// </summary>
         void Load(string modListPath = null)
         {
+            // set modlist path depending on input path
             ModlistPath = modListPath ?? ManageSettings.CurrentMoProfileModlistPath;
 
             if (!File.Exists(ModlistPath)) return;
-
+                        
+            // read modlist file
             var modlistContent = File.ReadAllLines(ManageSettings.CurrentMoProfileModlistPath);
-            Array.Reverse(modlistContent);
+            Array.Reverse(modlistContent); // lines in modlist file is reversed
 
+            // fill mod data from modlist
             var modPriority = 0;
             ModData lastSeparator = null;
             foreach (var line in modlistContent)
@@ -66,20 +64,21 @@ namespace AIHelper.Data.Modlist
                 if (string.IsNullOrWhiteSpace(line)) continue; // empty
                 if (line.StartsWith("#", StringComparison.InvariantCulture)) continue; // comment
 
-                // set mod data
-                var name = line.Substring(1);
-                var path = Path.Combine(ManageSettings.CurrentGameModsDirPath, name);
+                // init mod data
+                var indexOfSeparatorMarker = line.IndexOf(SeparatorMarker, StringComparison.InvariantCulture);
+                var modName = line.Substring(1);
+                var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modName);
                 var mod = new ModData
                 {
-                    Priority = modPriority,
+                    Priority = modPriority++,
                     IsEnabled = line[0] == '+',
-                    IsSeparator = line.IndexOf(SeparatorMarker, StringComparison.InvariantCulture) > -1,
-                    Name = name,
-                    Path = path,
-                    IsExist = Directory.Exists(path),
+                    IsSeparator = indexOfSeparatorMarker > -1,
+                    Name = modName,
+                    Path = modPath,
                     ParentSeparator = lastSeparator
                 };
 
+                // get meta.ini data if exists
                 var metaIniPath = Path.Combine(mod.Path, "meta.ini");
                 if (File.Exists(metaIniPath)) mod.MetaIni = ManageIni.GetINIFile(metaIniPath);
 
@@ -89,10 +88,9 @@ namespace AIHelper.Data.Modlist
                 // reset separator if was changed
                 if (mod.IsSeparator && lastSeparator != mod.ParentSeparator) lastSeparator = mod;
 
+                // add mod into lists
                 Mods.Add(mod);
                 ModsByName.Add(mod.Name, mod);
-
-                modPriority++;
             }
 
             //// set and add overwrite as mod
@@ -112,7 +110,7 @@ namespace AIHelper.Data.Modlist
         }
 
         /// <summary>
-        /// Mods meta.ini file content as <see cref="INIFile"/>. Mods filtered by <paramref name="modType"/>
+        /// Mods meta.ini file content as <see cref="INIFile"/>.
         /// </summary>
         /// <param name="modType"></param>
         /// <returns></returns>
@@ -287,7 +285,7 @@ namespace AIHelper.Data.Modlist
         /// <summary>
         /// true when folder is exists in mods
         /// </summary>
-        internal bool IsExist;
+        internal bool IsExist { get => Directory.Exists(Path); }
         /// <summary>
         /// true for separators
         /// </summary>
@@ -303,11 +301,19 @@ namespace AIHelper.Data.Modlist
         /// <summary>
         /// Mod relations with other mods
         /// </summary>
+        internal ModRelationsData Relations = null;
+        /// <summary>
+        /// Ini file content for the mod
+        /// </summary>
         internal ModRelationsData Relations = new ModRelationsData();
         /// <summary>
         /// Mod messages
         /// </summary>
         internal List<string> ReportMessages = new List<string>();
+        internal ModRelationsData Relations = null;
+        /// <summary>
+        /// Ini file content for the mod
+        /// </summary>
         internal INIFile MetaIni { get; set; }
     }
 

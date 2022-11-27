@@ -21,7 +21,6 @@ namespace AIHelper.Data.Modlist
             IsEnabled = true,
             IsSeparator = false,
             Name = "Overwrite",
-            IsExist = true,
             ParentSeparator = null,
             Path = ManageSettings.CurrentGameOverwriteFolderPath
         };
@@ -73,7 +72,6 @@ namespace AIHelper.Data.Modlist
                 mod.IsSeparator = indexOfSeparatorMarker > -1;
                 mod.Name = line.Substring(1);
                 mod.Path = Path.Combine(ManageSettings.CurrentGameModsDirPath, mod.Name);
-                mod.IsExist = Directory.Exists(mod.Path);
                 mod.ParentSeparator = lastSeparator;
 
                 var metaIniPath = Path.Combine(mod.Path, "meta.ini");
@@ -265,7 +263,7 @@ namespace AIHelper.Data.Modlist
         /// <summary>
         /// true when folder is exists in mods
         /// </summary>
-        internal bool IsExist;
+        internal bool IsExist { get => Directory.Exists(Path); }
         /// <summary>
         /// true for separators
         /// </summary>

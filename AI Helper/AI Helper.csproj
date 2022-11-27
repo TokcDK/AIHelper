@@ -203,6 +203,15 @@
     <Compile Include="Manage\Functions\IFunctionForFlp.cs" />
     <Compile Include="Manage\Functions\InfoEditorForFlp.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\ModlistRuleMarkers.cs" />
+    <Compile Include="Manage\Functions\ModlistFixes\Tags\ITag.cs" />
+    <Compile Include="Manage\Functions\ModlistFixes\Tags\SearchTarget\ISearchTargetPrefixTag.cs" />
+    <Compile Include="Manage\Functions\ModlistFixes\Tags\SearchType\TagIncompatible.cs" />
+    <Compile Include="Manage\Functions\ModlistFixes\Tags\SearchType\TagRequired.cs" />
+    <Compile Include="Manage\Functions\ModlistFixes\Tags\SearchTarget\TagFile.cs" />
+    <Compile Include="Manage\Functions\ModlistFixes\Tags\SearchType\ISearchTypeTag.cs" />
+    <Compile Include="Manage\Functions\ModlistFixes\Tags\Splitters\TagOr.cs" />
+    <Compile Include="Manage\Functions\ModlistFixes\Tags\Splitters\TagAnd.cs" />
+    <Compile Include="Manage\Functions\ModlistFixes\Tags\Splitters\ISplitterTag.cs" />
     <Compile Include="Manage\Functions\UpdaterForFlp.cs" />
     <Compile Include="Manage\ManageHardlinks.cs" />
     <Compile Include="Manage\ManageInfoEditor.cs" />

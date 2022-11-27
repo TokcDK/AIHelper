@@ -205,6 +205,7 @@
     <Compile Include="Manage\Functions\ModlistFixes\Data\ModlistFixesData.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\ModlistFIxesForFlp.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\Data\ModlistRuleMarkers.cs" />
+    <Compile Include="Manage\Functions\ModlistFixes\RulesParsers\IModlistFixesRulesParser.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\Tags\ITag.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\Tags\SearchTarget\ISearchTargetPrefixTag.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\Tags\SearchType\TagIncompatible.cs" />
@@ -398,9 +399,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Manage\Functions\ModlistFixes\Rules\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="K:\0GIT\symboliclinksupport\SymbolicLinkSupport\SymbolicLinkSupport.csproj">
       <Project>{0f629727-5647-4cb0-946a-1ac4442fd8f2}</Project>

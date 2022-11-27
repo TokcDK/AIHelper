@@ -198,10 +198,11 @@
     <Compile Include="Games\GameBase.cs" />
     <Compile Include="Manage\Functions\AddNewGameForFlp.cs" />
     <Compile Include="Manage\Functions\DataDirCleaner.cs" />
+    <Compile Include="Manage\Functions\FunctionForFlpBase.cs" />
     <Compile Include="Manage\Functions\FunctionsForFlpLoader.cs" />
     <Compile Include="Manage\Functions\IFunctionForFlp.cs" />
     <Compile Include="Manage\Functions\InfoEditorForFlp.cs" />
-    <Compile Include="Manage\Functions\UpdaterFlp.cs" />
+    <Compile Include="Manage\Functions\UpdaterForFlp.cs" />
     <Compile Include="Manage\ManageHardlinks.cs" />
     <Compile Include="Manage\ManageInfoEditor.cs" />
     <Compile Include="Manage\ManageReport.cs" />

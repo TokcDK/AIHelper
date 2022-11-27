@@ -11,13 +11,13 @@ using System.Reflection;
 
 namespace AIHelper.Manage.Functions
 {
-    internal class AddNewGameForFlp : IFunctionForFlp
+    internal class AddNewGameForFlp : FunctionForFlpBase
     {
-        public string Symbol => T._("🎮");
+        public override string Symbol => T._("🎮");
 
-        public string Description => string.Format(T._("Add new game into {0} for management.", Application.ProductName));
+        public override string Description => string.Format(T._("Add new game into {0} for management.", Application.ProductName));
 
-        public void OnClick(object o, EventArgs e)
+        public override void OnClick(object o, EventArgs e)
         {
             ManageOther.AddNewGame(ManageSettings.MainForm);
         }

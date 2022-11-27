@@ -13,15 +13,15 @@ using static AIHelper.Manage.ManageModOrganizer;
 
 namespace AIHelper.Manage.Functions
 {
-    internal class DataDirCleaner : IFunctionForFlp
+    internal class DataDirCleaner : FunctionForFlpBase
     {
         readonly Logger _log = LogManager.GetCurrentClassLogger();
 
-        public string Symbol => "🧹";
+        public override string Symbol => "🧹";
 
-        public string Description => T._("Clean game dir from external files using black and white lists");
+        public override string Description => T._("Clean game dir from external files using black and white lists");
 
-        public void OnClick(object o, EventArgs e)
+        public override void OnClick(object o, EventArgs e)
         {
             Clean();
         }

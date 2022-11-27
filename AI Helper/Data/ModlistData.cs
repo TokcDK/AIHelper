@@ -191,8 +191,8 @@ namespace AIHelper.Data.Modlist
                     case ModType.Separator when mod.IsSeparator:
                     case ModType.ModAny when !mod.IsSeparator:
                     case ModType.ModEnabled when !mod.IsSeparator && mod.IsEnabled:
-                    case ModType.ModDisabled when !mod.IsSeparator && !mod.IsEnabled:
                     case ModType.ModEnabledAndOverwrite when !mod.IsSeparator && mod.IsEnabled:
+                    case ModType.ModDisabled when !mod.IsSeparator && !mod.IsEnabled:
                         if (!exists || mod.IsExist) yield return mod; // mod exists or exists ver is false
                         break;
                 }

@@ -95,7 +95,7 @@ namespace AIHelper.Data.Modlist
         }
 
         /// <summary>
-        /// Mods meta.ini file content as <see cref="INIFile"/>. Mods filtered by <paramref name="modType"/>
+        /// Mods meta.ini file content as <see cref="INIFile"/>.
         /// </summary>
         /// <param name="modType"></param>
         /// <returns></returns>

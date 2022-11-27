@@ -14,6 +14,10 @@ namespace AIHelper.Data.Modlist
         internal Dictionary<string, ModData> ModsByName = new Dictionary<string, ModData>();
         internal List<ModData> ModsPlusOverwrite { get => new List<ModData>(Mods).Concat(new ModData[1] { Overwrite }).ToList(); }
         internal Dictionary<string, ModData> ModsByNameAndOverwrite { get => new Dictionary<string, ModData>(ModsByName).Concat(new Dictionary<string, ModData> { { Overwrite.Name, Overwrite } }).ToDictionary(k => k.Key, v => v.Value); }
+        
+        /// <summary>
+        /// Overwrite is always exists and enabled
+        /// </summary>
         internal ModData Overwrite = new ModData
         {
             Priority = 999999,

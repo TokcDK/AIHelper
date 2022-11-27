@@ -3015,7 +3015,7 @@ namespace AIHelper.Manage
                 };
             }
 
-            modList.Insert(record, (record.ParentSeparator == null && !string.IsNullOrWhiteSpace(recordWithWhichInsert) ? recordWithWhichInsert : ""), placeAfter);
+            modList.Insert(record, (record.ParentSeparator == null && !string.IsNullOrWhiteSpace(modNameToInsertWith) ? modNameToInsertWith : ""), placeAfter);
             modList.Save();
 
             //if (modname.Length > 0)

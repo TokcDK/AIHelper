@@ -17,6 +17,6 @@ namespace AIHelper.Manage.Functions.ModlistFixes
         internal ModData Mod { get; }
 
 
-        internal List<string> Messages = new List<string>();
+        internal List<string> Messages { get; } = new List<string>();
     }
 }

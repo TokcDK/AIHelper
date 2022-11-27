@@ -202,6 +202,7 @@
     <Compile Include="Manage\Functions\FunctionsForFlpLoader.cs" />
     <Compile Include="Manage\Functions\IFunctionForFlp.cs" />
     <Compile Include="Manage\Functions\InfoEditorForFlp.cs" />
+    <Compile Include="Manage\Functions\ModlistFixes\ModlistFixesData.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\ModlistRuleMarkers.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\Tags\ITag.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\Tags\SearchTarget\ISearchTargetPrefixTag.cs" />
@@ -396,7 +397,9 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Manage\Functions\ModlistFixes\Rules\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="K:\0GIT\symboliclinksupport\SymbolicLinkSupport\SymbolicLinkSupport.csproj">
       <Project>{0f629727-5647-4cb0-946a-1ac4442fd8f2}</Project>

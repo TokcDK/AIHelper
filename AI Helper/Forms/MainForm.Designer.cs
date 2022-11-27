@@ -99,7 +99,6 @@
             this.ModeSwitchButtonPanel = new System.Windows.Forms.Panel();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
             this.DevButton = new System.Windows.Forms.Button();
-            this.UpdateInfoEditorButton = new System.Windows.Forms.Button();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -913,7 +912,6 @@
             this.ToolsTabPageTableLayoutPanel.Controls.Add(this.Install2MOTableLayoutPanel, 0, 1);
             this.ToolsTabPageTableLayoutPanel.Controls.Add(this.ModeSwitchTableLayoutPanel, 0, 0);
             this.ToolsTabPageTableLayoutPanel.Controls.Add(this.DevButton, 1, 0);
-            this.ToolsTabPageTableLayoutPanel.Controls.Add(this.UpdateInfoEditorButton, 1, 1);
             this.ToolsTabPageTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ToolsTabPageTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.ToolsTabPageTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
@@ -1075,16 +1073,6 @@
             this.DevButton.UseVisualStyleBackColor = true;
             this.DevButton.Click += new System.EventHandler(this.Dev_Click);
             // 
-            // UpdateInfoEditorButton
-            // 
-            this.UpdateInfoEditorButton.Location = new System.Drawing.Point(174, 41);
-            this.UpdateInfoEditorButton.Name = "UpdateInfoEditorButton";
-            this.UpdateInfoEditorButton.Size = new System.Drawing.Size(163, 32);
-            this.UpdateInfoEditorButton.TabIndex = 33;
-            this.UpdateInfoEditorButton.Text = "Info editor";
-            this.UpdateInfoEditorButton.UseVisualStyleBackColor = true;
-            this.UpdateInfoEditorButton.Click += new System.EventHandler(this.UpdateInfoEditorButton_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1200,7 +1188,6 @@
         internal System.Windows.Forms.TextBox CurrentGameTitleTextBox;
         private System.Windows.Forms.Label AddGameSettingsLabel;
         internal System.Windows.Forms.FlowLayoutPanel FunctionsFlowLayoutPanel;
-        private System.Windows.Forms.Button UpdateInfoEditorButton;
     }
 }
 

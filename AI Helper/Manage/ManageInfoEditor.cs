@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using AIHelper.Data.Modlist;
 using AIHelper.Manage.Update.Sources;
 using INIFileMan;
 using static AIHelper.Manage.ManageModOrganizer;

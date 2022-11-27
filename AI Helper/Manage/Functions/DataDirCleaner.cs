@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using AIHelper.Data.Modlist;
 using AIHelper.Forms.Other;
 using MAB.DotIgnore;
 using NLog;

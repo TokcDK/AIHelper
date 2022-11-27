@@ -197,6 +197,9 @@ namespace AIHelper.Data.Modlist
                         break;
                 }
             }
+
+            // return overwrite as last mod when need
+            if (modType == ModType.ModEnabledAndOverwrite) yield return Overwrite;
         }
 
         /// <summary>

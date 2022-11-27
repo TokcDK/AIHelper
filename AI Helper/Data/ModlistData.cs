@@ -111,51 +111,6 @@ namespace AIHelper.Data.Modlist
             //ModsByName.Add(owerwrite.Name, owerwrite);
         }
 
-        {
-            {
-            }
-        }
-
-            {
-                {
-
-                    }
-
-                    item.Priority = modPriority;
-                    newItems.Add(item);
-
-                    modPriority++;
-                }
-
-                {
-
-
-            if (!string.IsNullOrWhiteSpace(modNameToPlaceWith))
-            {
-
-
-                }
-
-                if (!added) // add in the end when was not added
-                {
-                    modToInsert.Priority = modPriority;
-                    modToInsert.ParentSeparator = null;
-                    newItems.Add(modToInsert);
-                }
-
-
-
-            // update modbyname
-            ModsByName = Mods.ToDictionary(k => k.Name, v => v);
-
-        }
-
-        {
-            if (ModsByName.ContainsKey(itemName)) return ModsByName[itemName];
-
-            return null;
-        }
-
         /// <summary>
         /// get list of mods from all items by selected mod type
         /// </summary>

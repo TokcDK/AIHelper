@@ -31,7 +31,7 @@ namespace AIHelper.Manage.Functions
                 var l = new Label
                 {
                     AutoSize = true,
-                    Text = string.IsNullOrWhiteSpace(f.Symbol) ? "f" : f.Symbol[0] + "",
+                    Text = string.IsNullOrWhiteSpace(f.Symbol) ? "f" : f.Symbol,
                 };
                 if (f is IFunctionForFlpTextOptions fe)
                 {

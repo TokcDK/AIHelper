@@ -285,6 +285,9 @@ namespace AIHelper.Data.Modlist
         /// Mod relations with other mods
         /// </summary>
         internal ModRelationsData Relations = null;
+        /// <summary>
+        /// Ini file content for the mod
+        /// </summary>
         internal INIFile MetaIni { get; set; }
     }
 

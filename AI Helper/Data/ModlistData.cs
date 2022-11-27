@@ -144,7 +144,7 @@ namespace AIHelper.Data.Modlist
         internal void Insert(ModData modToInsert, string modNameToPlaceWith = "", bool insertAfter = true, bool skipIfExists = true, bool saveAfterInsert = true)
         {
             // skip when mod already exists
-            var existsMod = GetModsByName(modToInsert.Name);
+            var existsMod = GetModByName(modToInsert.Name);
             if (existsMod != null) { if (skipIfExists) return; Mods.Remove(existsMod); }
 
             bool isInsertByPriority = true;
@@ -152,7 +152,7 @@ namespace AIHelper.Data.Modlist
             // try insert by mod name
             if (!string.IsNullOrWhiteSpace(modNameToPlaceWith))
             {
-                var modToPlace = GetModsByName(modNameToPlaceWith);
+                var modToPlace = GetModByName(modNameToPlaceWith);
                 if (modToPlace != null)
                 {
                     isInsertByPriority = false;
@@ -177,7 +177,7 @@ namespace AIHelper.Data.Modlist
             if (saveAfterInsert) Save();
         }
 
-        private ModData GetModsByName(string itemName)
+        private ModData GetModByName(string itemName)
         {
             if (ModsByName.ContainsKey(itemName)) return ModsByName[itemName];
 
@@ -301,16 +301,11 @@ namespace AIHelper.Data.Modlist
         /// <summary>
         /// Mod relations with other mods
         /// </summary>
-        internal ModRelationsData Relations = null;
-        /// <summary>
-        /// Ini file content for the mod
-        /// </summary>
         internal ModRelationsData Relations = new ModRelationsData();
         /// <summary>
         /// Mod messages
         /// </summary>
         internal List<string> ReportMessages = new List<string>();
-        internal ModRelationsData Relations = null;
         /// <summary>
         /// Ini file content for the mod
         /// </summary>

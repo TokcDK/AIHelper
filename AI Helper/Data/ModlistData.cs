@@ -65,19 +65,25 @@ namespace AIHelper.Data.Modlist
                 if (string.IsNullOrWhiteSpace(line)) continue; // empty
                 if (line.StartsWith("#", StringComparison.InvariantCulture)) continue; // comment
 
-                var mod = new ModData();
-                mod.Priority = modPriority;
-                mod.IsEnabled = line[0] == '+';
+                // set mod data
                 var indexOfSeparatorMarker = line.IndexOf(SeparatorMarker, StringComparison.InvariantCulture);
-                mod.IsSeparator = indexOfSeparatorMarker > -1;
-                mod.Name = line.Substring(1);
-                mod.Path = Path.Combine(ManageSettings.CurrentGameModsDirPath, mod.Name);
-                mod.ParentSeparator = lastSeparator;
+                var modName = line.Substring(1);
+                var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modName);
+                var mod = new ModData
+                {
+                    Priority = modPriority,
+                    IsEnabled = line[0] == '+',
+                    IsSeparator = indexOfSeparatorMarker > -1,
+                    Name = modName,
+                    Path = modPath,
+                    ParentSeparator = lastSeparator
+                };
 
                 var metaIniPath = Path.Combine(mod.Path, "meta.ini");
                 if (File.Exists(metaIniPath)) mod.MetaIni = ManageIni.GetINIFile(metaIniPath);
 
-                if (!mod.IsSeparator && lastSeparator != null) lastSeparator.Childs.Add(mod); // add subitems references to understand which items is under the group separator
+                // add subitems references to understand which items is under the group separator
+                if (!mod.IsSeparator && lastSeparator != null) lastSeparator.Childs.Add(mod);
 
                 // reset separator if was changed
                 if (mod.IsSeparator && lastSeparator != mod.ParentSeparator) lastSeparator = mod;

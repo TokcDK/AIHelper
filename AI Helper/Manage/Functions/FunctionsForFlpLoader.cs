@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace AIHelper.Manage.Functions
@@ -32,11 +28,16 @@ namespace AIHelper.Manage.Functions
 
             foreach (var f in functions)
             {
-                var l = new System.Windows.Forms.Label
+                var l = new Label
                 {
                     AutoSize = true,
-                    Text = f.Symbol
+                    Text = string.IsNullOrWhiteSpace(f.Symbol) ? "f" : f.Symbol[0] + "",
                 };
+                if (f is IFunctionForFlpTextOptions fe)
+                {
+                    if (fe.Font != null) l.Font = fe.Font;
+                    if (fe.ForeColor != null) l.ForeColor = (Color)fe.ForeColor;
+                }
                 l.Click += new EventHandler((o, e) =>
                 {
                     // place last used control as first
@@ -51,7 +52,7 @@ namespace AIHelper.Manage.Functions
                     //}
                     //flp.Controls.AddRange(controls);
 
-                    f.OnClick(o,e);
+                    f.OnClick(o, e);
                 });
                 ttip.SetToolTip(l, f.Description);
 

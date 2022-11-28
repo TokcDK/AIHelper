@@ -205,7 +205,7 @@
     <Compile Include="Manage\Functions\ModlistFixes\Data\ModlistFixesData.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\ModlistFIxesForFlp.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\Data\ModlistRuleMarkers.cs" />
-    <Compile Include="Manage\Functions\ModlistFixes\RulesParsers\IModlistFixesRulesParser.cs" />
+    <Compile Include="Manage\Functions\ModlistFixes\Rules\Loaders\IModlistFixesRulesLoader.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\Tags\ITag.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\Tags\SearchTarget\ISearchTargetPrefixTag.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\Tags\SearchType\TagIncompatible.cs" />

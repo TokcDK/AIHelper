@@ -7,7 +7,7 @@ using AIHelper.Manage.Functions.ModlistFixes.Data;
 
 namespace AIHelper.Manage.Functions.ModlistFixes.RulesParsers
 {
-    internal interface IModlistFixesRulesParser
+    internal interface IModlistFixesRulesLoader
     {
         void LoadRules(ModlistFixesData data);
     }

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AIHelper.Data.Modlist;
+using AIHelper.Manage.Functions.ModlistFixes.Data;
+using AIHelper.Manage.Functions.ModlistFixes.RulesParsers;
 
 namespace AIHelper.Manage.Functions.ModlistFixes
 {
@@ -14,6 +17,24 @@ namespace AIHelper.Manage.Functions.ModlistFixes
 
         public void OnClick(object o, EventArgs e)
         {
+            Apply();
+        }
+
+        private void Apply()
+        {
+            var modlist = new ModlistData();
+            var loaders = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IModlistFixesRulesLoader>();
+            foreach (var loader in loaders)
+            {
+                loader.LoadRules();
+            }
+
+            foreach(var mod in modlist.Mods)
+            {
+                var modDAta = new ModlistFixesData(mod);
+
+
+            }
         }
     }
 }

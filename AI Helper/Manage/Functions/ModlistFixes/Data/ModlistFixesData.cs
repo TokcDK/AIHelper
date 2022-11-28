@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using AIHelper.Data.Modlist;
 using AIHelper.Manage.Functions.ModlistFixes.Data.Enums;
@@ -69,11 +71,8 @@ namespace AIHelper.Manage.Functions.ModlistFixes.Data
                         if (!string.Equals(prefix.Tag, match.Value)) continue;
 
                         var s = rule.Substring(match.Index + match.Length);
-                        var prefixdata = new ModlistFixesPrefixData(s);
-                        if (prefixdata.SplittersDataList.Count > 0)
-                        {
-                            PrefixesDataList.Add(prefixdata);
-                        }
+                        var prefixdata = new ModlistFixesPrefixData(s, prefix);
+                        if (prefixdata.SplittersDataList != null) PrefixesDataList.Add(prefixdata);
 
                         rule = rule.Remove(match.Index);
                     }
@@ -84,17 +83,109 @@ namespace AIHelper.Manage.Functions.ModlistFixes.Data
     }
     internal class ModlistFixesPrefixData
     {
-        public ModlistFixesPrefixData(string rules)
+        public ModlistFixesPrefixData(string rulesData, ISearchTypeTag prefixType)
         {
-            var rulesList = rules.Split(new[] { "\r\n", "\r", "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
-            foreach (var rule in rulesList)
-            {
+            PrefixType = prefixType;
 
+            var sData = GetSplitterData(rulesData);
+            if (sData == null) return;
+
+            SplittersDataList = sData;
+
+            //var splittersMatches = Regex.Matches(rulesData, @"\|[0-9a-z-A-Z]+\|", RegexOptions.IgnoreCase);
+            //var splitterMatchesStringList = new List<string>();
+            //var max = splittersMatches.Count - 1;
+            //var maxlength = rulesData.Length;
+            //var startIndex = 0;
+            //ModlistFixesRuleTargetData splitterTargetLeft = null;
+            //for (int i = 0; i <= max; i++)
+            //{
+            //    var splitterMatch = splittersMatches[i];
+
+            //    // search tag for the match
+            //    var splitterTag = splitters.FirstOrDefault(t => string.Equals(t.Tag, splitterMatch.Value, System.StringComparison.InvariantCultureIgnoreCase));
+            //    if (splitterTag == default)
+            //    {
+            //        startIndex = splitterMatch.Index + splitterMatch.Length;
+            //        continue;
+            //    }
+
+            //    var splitterData = new ModlistFixesRulesSplitterData(splitterTag);
+
+            //    if (splitterTargetLeft == null)
+            //    {
+            //        var splitterTargetLeftS = rulesData.Substring(startIndex, splitterMatch.Index);
+            //        splitterTargetLeft = new ModlistFixesRuleTargetData(splitterTargetLeftS);
+            //    }
+            //    splitterData.Targets.Add(splitterTargetLeft);
+
+            //    var length = (i == max ? maxlength : splittersMatches[i + 1].Index) - splitterMatch.Index;
+            //    var righttargetStartIndex = splitterMatch.Index + splitterMatch.Length;
+            //    var splitterTargetRightS = rulesData.Substring(righttargetStartIndex, length);
+            //    var splitterTargetRight = new ModlistFixesRuleTargetData(splitterTargetRightS);
+            //    splitterData.Targets.Add(splitterTargetRight);
+
+            //    SplittersDataList.Add(splitterData);
+
+            //    startIndex = righttargetStartIndex;
+            //}
+            //splitterMatchesStringList.Reverse();
+
+            //foreach (var splitter in splitters.OrderBy(s => s.Order))
+            //{
+            //    int splitterIndex = -1;
+            //    int startIndex = 0;
+            //    while ((splitterIndex = rulesData.IndexOf(splitter.Tag, startIndex)) != -1)
+            //    {
+            //        var nexIndex =
+            //    }
+            //}
+        }
+
+        private ModlistFixesRulesSplitterData GetSplitterData(string rulesData)
+        {
+            var splitters = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<ISplitterTag>().ToArray();
+
+            ModlistFixesRulesSplitterData parentSplitterData = null;
+            foreach (var splitter in splitters.OrderBy(s => s.Order))
+            {
+                var dataSplitted = rulesData.Split(new[] { splitter.Tag }, System.StringSplitOptions.RemoveEmptyEntries);
+
+                bool mergingMode = false;
+                object part = null;
+                for (int i = 0; i < dataSplitted.Length; i++)
+                {
+                    string target = dataSplitted[i];
+
+                    if (mergingMode || i >= 1)
+                    {
+                        mergingMode = true;
+
+                        // init splitter data
+                        var sData = new ModlistFixesRulesSplitterData(splitter);
+
+                        // add targets
+                        var tData = new ModlistFixesRuleTargetData(part as string);
+                        sData.Targets.Add(tData);
+                        tData = new ModlistFixesRuleTargetData(target);
+                        sData.Targets.Add(tData);
+
+                        // set as parent
+                        if (parentSplitterData == null) parentSplitterData = sData;
+                        else parentSplitterData.Childs.Add(sData);
+                    }
+                    else
+                    {
+                        part = target;
+                    }
+                }
             }
+
+            return null;
         }
 
         internal ISearchTypeTag PrefixType { get; }
-        internal List<ModlistFixesRulesSplitterData> SplittersDataList { get; } = new List<ModlistFixesRulesSplitterData>();
+        internal ModlistFixesRulesSplitterData SplittersDataList { get; }
     }
     internal class ModlistFixesRulesSplitterData
     {
@@ -105,14 +196,13 @@ namespace AIHelper.Manage.Functions.ModlistFixes.Data
 
         internal ISplitterTag Splitter { get; }
         internal List<ModlistFixesRuleTargetData> Targets { get; } = new List<ModlistFixesRuleTargetData>();
+        internal List<ModlistFixesRulesSplitterData> Childs { get; } = new List<ModlistFixesRulesSplitterData>();
     }
 
     internal class ModlistFixesRuleTargetData
     {
-        public ModlistFixesRuleTargetData(string target, ModlistFixesRuleTargetType type = ModlistFixesRuleTargetType.DirName)
+        public ModlistFixesRuleTargetData(string s)
         {
-            Target = target;
-            Type = type;
         }
 
         internal string Target { get; }

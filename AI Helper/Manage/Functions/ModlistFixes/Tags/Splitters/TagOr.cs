@@ -11,9 +11,11 @@ namespace AIHelper.Manage.Functions.ModlistFixes.Tags.Splitters
     {
         public string Tag => "|or|";
 
+        public int Order => 200;
+
         public bool IsTrue(ModlistFixesData data)
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

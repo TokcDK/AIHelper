@@ -32,25 +32,62 @@ namespace AIHelper.Manage.Functions.ModlistFixes.Data
         {
             if (string.IsNullOrWhiteSpace(rulesString)) return;
             var regex = Regex.Match(rulesString, _rulesMarkerStartsWith + "(.+)" + _rulesMarkerEndsWith);
-            if(!regex.Success) return;
+            if (!regex.Success) return;
 
             var rules = regex.Groups[1].Value;
             if (string.IsNullOrWhiteSpace(rules)) return;
 
-            var rulesData = new ModlistFixesPrefixData(rules);
-            if (rulesData.SplittersDataList.Count == 0) return;
+            var rulesData = new ModlistFixesPrefixesData(rules);
+            if (rulesData.PrefixesDataList.Count == 0) return;
 
             RulesDataList.Add(rulesData);
         }
 
-        internal List<ModlistFixesPrefixData> RulesDataList { get; } = new List<ModlistFixesPrefixData>();
+        internal List<ModlistFixesPrefixesData> RulesDataList { get; } = new List<ModlistFixesPrefixesData>();
+    }
+    internal class ModlistFixesPrefixesData
+    {
+        public ModlistFixesPrefixesData(string rules)
+        {
+            var prefixes = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<ISearchTypeTag>();
+
+            var rulesList = rules.Split(new[] { "\r\n", "\r", "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
+            for (int n = 0; n < rulesList.Length; n++)
+            {
+                var rule = rulesList[n];
+
+                var prefixMatches = Regex.Matches(rule, "[0-9a-z]+:", RegexOptions.IgnoreCase);
+                if (prefixMatches.Count == 0) continue;
+
+                var prefixMatchesCount = prefixMatches.Count;
+                for (int i = prefixMatchesCount - 1; i >= 0; i--)
+                {
+                    var match = prefixMatches[i];
+
+                    foreach (var prefix in prefixes)
+                    {
+                        if (!string.Equals(prefix.Tag, match.Value)) continue;
+
+                        var s = rule.Substring(match.Index + match.Length);
+                        var prefixdata = new ModlistFixesPrefixData(s);
+                        if (prefixdata.SplittersDataList.Count > 0)
+                        {
+                            PrefixesDataList.Add(prefixdata);
+                        }
+
+                        rule = rule.Remove(match.Index);
+                    }
+                }
+            }
+        }
+        internal List<ModlistFixesPrefixData> PrefixesDataList { get; } = new List<ModlistFixesPrefixData>();
     }
     internal class ModlistFixesPrefixData
     {
         public ModlistFixesPrefixData(string rules)
         {
-            var rulesList = rules.Split(new[] {"\r\n","\r","\n" }, System.StringSplitOptions.RemoveEmptyEntries);
-            foreach(var rule in rulesList)
+            var rulesList = rules.Split(new[] { "\r\n", "\r", "\n" }, System.StringSplitOptions.RemoveEmptyEntries);
+            foreach (var rule in rulesList)
             {
 
             }

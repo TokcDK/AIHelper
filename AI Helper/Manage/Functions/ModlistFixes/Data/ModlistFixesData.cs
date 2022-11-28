@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using AIHelper.Data.Modlist;
 using AIHelper.Manage.Functions.ModlistFixes.Data.Enums;
+using AIHelper.Manage.Functions.ModlistFixes.Tags.SearchTarget;
 using AIHelper.Manage.Functions.ModlistFixes.Tags.SearchType;
 using AIHelper.Manage.Functions.ModlistFixes.Tags.Splitters;
 
@@ -204,9 +205,22 @@ namespace AIHelper.Manage.Functions.ModlistFixes.Data
     {
         public ModlistFixesRuleTargetData(string s)
         {
+            var targets = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<ISearchTargetPrefixTag>();
+
+            foreach(var t in targets)
+            {
+                if (!s.StartsWith(t.Tag)) continue;
+
+                Type = t;
+                Target = s.Substring(t.Tag.Length);
+
+                break;
+            }
+
+            if (Type == default) Target = s; // set input string sd default modname value
         }
 
         internal string Target { get; }
-        internal ModlistFixesRuleTargetType Type { get; }
+        internal ISearchTargetPrefixTag Type { get; }
     }
 }

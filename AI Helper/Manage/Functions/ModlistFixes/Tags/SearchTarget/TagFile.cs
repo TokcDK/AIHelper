@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,9 +12,11 @@ namespace AIHelper.Manage.Functions.ModlistFixes.Tags.SearchTarget
     {
         public string Tag => "file:";
 
+        public bool Found(string path) { return File.Exists(path); }
+
         public bool IsTrue(ModlistFixesData data)
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

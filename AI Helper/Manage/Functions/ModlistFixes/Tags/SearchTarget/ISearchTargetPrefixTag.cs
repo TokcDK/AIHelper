@@ -8,5 +8,6 @@ namespace AIHelper.Manage.Functions.ModlistFixes.Tags.SearchTarget
 {
     internal interface ISearchTargetPrefixTag:ITag
     {
+        bool Found(string path);
     }
 }

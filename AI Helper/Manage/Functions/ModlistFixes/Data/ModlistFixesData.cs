@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using AIHelper.Data.Modlist;
 using AIHelper.Manage.Functions.ModlistFixes.Data.Enums;
 using AIHelper.Manage.Functions.ModlistFixes.Tags.SearchType;
@@ -24,17 +25,35 @@ namespace AIHelper.Manage.Functions.ModlistFixes.Data
     }
     internal class ModlistFixesRulesData
     {
+        const string _rulesMarkerStartsWith = "::mlinfo::";
+        const string _rulesMarkerEndsWith = "::";
+
         public ModlistFixesRulesData(string rulesString)
         {
+            if (string.IsNullOrWhiteSpace(rulesString)) return;
+            var regex = Regex.Match(rulesString, _rulesMarkerStartsWith + "(.+)" + _rulesMarkerEndsWith);
+            if(!regex.Success) return;
+
+            var rules = regex.Groups[1].Value;
+            if (string.IsNullOrWhiteSpace(rules)) return;
+
+            var rulesData = new ModlistFixesPrefixData(rules);
+            if (rulesData.SplittersDataList.Count == 0) return;
+
+            RulesDataList.Add(rulesData);
         }
 
         internal List<ModlistFixesPrefixData> RulesDataList { get; } = new List<ModlistFixesPrefixData>();
     }
     internal class ModlistFixesPrefixData
     {
-        public ModlistFixesPrefixData(ISearchTypeTag prefixType)
+        public ModlistFixesPrefixData(string rules)
         {
-            PrefixType = prefixType;
+            var rulesList = rules.Split(new[] {"\r\n","\r","\n" }, System.StringSplitOptions.RemoveEmptyEntries);
+            foreach(var rule in rulesList)
+            {
+
+            }
         }
 
         internal ISearchTypeTag PrefixType { get; }

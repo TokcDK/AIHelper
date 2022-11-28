@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AIHelper.Data.Modlist;
 
 namespace AIHelper.Manage.Functions.ModlistFixes.Data

@@ -203,6 +203,7 @@
     <Compile Include="Manage\Functions\IFunctionForFlp.cs" />
     <Compile Include="Manage\Functions\InfoEditorForFlp.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\Data\ModlistFixesData.cs" />
+    <Compile Include="Manage\Functions\ModlistFixes\Data\Enums\ModlistFixesRuleTargetType.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\ModlistFIxesForFlp.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\Data\ModlistRuleMarkers.cs" />
     <Compile Include="Manage\Functions\ModlistFixes\Rules\Loaders\IModlistFixesRulesLoader.cs" />

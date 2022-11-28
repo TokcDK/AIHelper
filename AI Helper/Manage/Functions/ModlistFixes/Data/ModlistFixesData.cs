@@ -145,6 +145,7 @@ namespace AIHelper.Manage.Functions.ModlistFixes.Data
         private ModlistFixesRulesSplitterData GetSplitterData(string rulesData)
         {
             var splitters = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<ISplitterTag>().ToArray();
+            if (splitters.Length == 0) return null;
 
             ModlistFixesRulesSplitterData parentSplitterData = null;
             foreach (var splitter in splitters.OrderBy(s => s.Order))
@@ -181,7 +182,7 @@ namespace AIHelper.Manage.Functions.ModlistFixes.Data
                 }
             }
 
-            return null;
+            return parentSplitterData;
         }
 
         internal ISearchTypeTag PrefixType { get; }

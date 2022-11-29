@@ -256,7 +256,7 @@ namespace AIHelper.Manage.Functions
 
                 AddButtons(currentModFlowPanel, infoData);
 
-                currentModFlowPanel.Size = new System.Drawing.Size(currentModFlowPanel.Width + 15, currentModFlowPanel.Height + 15);
+                currentModFlowPanel.Size = new System.Drawing.Size(currentModFlowPanel.Width + 15, 300 /*currentModFlowPanel.Height + 15*/);
 
                 modsListFlowPanel.Controls.Add(currentModFlowPanel);
 

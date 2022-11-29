@@ -9,6 +9,8 @@ using AIHelper.Manage.Update.Sources;
 using INIFileMan;
 using System.Windows.Forms;
 using AIHelper.Data.Modlist;
+using System.IO;
+using IniParser.Model;
 
 namespace AIHelper.Manage.Functions
 {
@@ -24,6 +26,8 @@ namespace AIHelper.Manage.Functions
         }
 
         readonly int _elHeight = 13;
+
+        readonly List<UpdateInfoData> _updateInfoDatas = new List<UpdateInfoData>();
 
         internal void OpenInfoEditor()
         {
@@ -50,6 +54,18 @@ namespace AIHelper.Manage.Functions
             p.Controls.Add(modsListFlowPanel);
             f.Controls.Add(p);
 
+            var ttip = new ToolTip
+            {
+                // Set up the delays for the ToolTip.
+                AutoPopDelay = 32000,
+                InitialDelay = 1000,
+                ReshowDelay = 500,
+                UseAnimation = true,
+                UseFading = true,
+                // Force the ToolTip text to be displayed whether or not the form is active.
+                ShowAlways = true
+            };
+
             bool isReading = true;
 
             var mods = new ModlistData();
@@ -70,7 +86,10 @@ namespace AIHelper.Manage.Functions
 
                 var github = new Github(null);
                 var urlMatch = Regex.Match(url, $@"(https?:\/\/){github.Url}\/([^\/]+)\/([^\/]+)", RegexOptions.IgnoreCase);
-                var infoData = new UpdateInfoData(ini);
+                var infoData = new UpdateInfoData(ini)
+                {
+                    ToolTip = ttip
+                };
 
                 if (!updateInfoIsEmpty && updateInfo.StartsWith(github.InfoId))
                 {
@@ -144,18 +163,6 @@ namespace AIHelper.Manage.Functions
 
                     if (propertyType == typeof(string))
                     {
-                        var ttip = new ToolTip
-                        {
-                            // Set up the delays for the ToolTip.
-                            AutoPopDelay = 32000,
-                            InitialDelay = 1000,
-                            ReshowDelay = 500,
-                            UseAnimation = true,
-                            UseFading = true,
-                            // Force the ToolTip text to be displayed whether or not the form is active.
-                            ShowAlways = true
-                        };
-
                         var thePropertyFlowPanel = new FlowLayoutPanel
                         {
                             //Dock = DockStyle.Fill,
@@ -213,18 +220,6 @@ namespace AIHelper.Manage.Functions
                     }
                     else if (propertyType == typeof(bool))
                     {
-                        var ttip = new ToolTip
-                        {
-                            // Set up the delays for the ToolTip.
-                            AutoPopDelay = 32000,
-                            InitialDelay = 1000,
-                            ReshowDelay = 500,
-                            UseAnimation = true,
-                            UseFading = true,
-                            // Force the ToolTip text to be displayed whether or not the form is active.
-                            ShowAlways = true
-                        };
-
                         var l = new CheckBox
                         {
                             AutoSize = true,
@@ -259,7 +254,7 @@ namespace AIHelper.Manage.Functions
 
                 }
 
-                AddOpenWebButton(currentModFlowPanel, infoData);
+                AddButtons(currentModFlowPanel, infoData);
 
                 currentModFlowPanel.Size = new System.Drawing.Size(currentModFlowPanel.Width + 15, currentModFlowPanel.Height + 15);
 
@@ -300,42 +295,75 @@ namespace AIHelper.Manage.Functions
             isReading = false;
         }
 
-        readonly List<UpdateInfoData> _updateInfoDatas = new List<UpdateInfoData>();
-
-        private void AddOpenWebButton(FlowLayoutPanel currentModFlowPanel, UpdateInfoData infoData)
+        private void AddButtons(FlowLayoutPanel currentModFlowPanel, UpdateInfoData infoData)
         {
-            if (infoData.GitInfo.Owner.Length == 0 || infoData.GitInfo.Repository.Length == 0)
-            {
-                return;
-            }
-
             var buttonsFlp = new FlowLayoutPanel
             {
                 FlowDirection = FlowDirection.LeftToRight,
                 Margin = new Padding(0)
             };
-            var site = $"{(infoData.GitInfo.Site.StartsWith("http", System.StringComparison.InvariantCultureIgnoreCase) ? "" : "https://")}{infoData.GitInfo.Site}";
-            var sub = $"/{infoData.GitInfo.Owner}/{infoData.GitInfo.Repository}/releases/latest";
-            var openWebPageButton = new Button()
-            {
-                AutoSize = true,
-                Size = new System.Drawing.Size(40, _elHeight),
-                Text = T._("Open web page")
-            };
-            openWebPageButton.Click += new System.EventHandler((o, e) =>
-            {
-                Process.Start($"{site}{sub}");
-            });
-            buttonsFlp.Controls.Add(openWebPageButton);
-            currentModFlowPanel.Controls.Add(buttonsFlp);
 
-            var buttonsFlpWidth = buttonsFlp.Width + (buttonsFlp.Margin.Horizontal * 2);
-            var buttonsFlpHeight = buttonsFlp.Height + (buttonsFlp.Margin.Vertical * 2);
-            currentModFlowPanel.Size = new System.Drawing.Size
-                (
-                buttonsFlpWidth > currentModFlowPanel.Width ? buttonsFlpWidth : currentModFlowPanel.Width
-                , currentModFlowPanel.Height + buttonsFlpHeight
-                );
+            foreach (var buttonData in new IModUpdateInfoButton[2]
+            {
+                new OpenWebPage(),
+                new OpenModDir(),
+            })
+            {
+                var dirPath = infoData.GitInfo.INI.INIPath.DirectoryName;
+                var openWebPageButton = new Button()
+                {
+                    AutoSize = true,
+                    Size = new System.Drawing.Size(40, _elHeight),
+                    Text = buttonData.Text,
+                };
+                infoData.ToolTip.SetToolTip(openWebPageButton, buttonData.Description);
+                openWebPageButton.Click += new System.EventHandler((o, e) =>
+                {
+                    Process.Start(buttonData.GetProcessStartTarget(infoData));
+                });
+                buttonsFlp.Controls.Add(openWebPageButton);
+                currentModFlowPanel.Controls.Add(buttonsFlp);
+
+                var buttonsFlpWidth = buttonsFlp.Width + (buttonsFlp.Margin.Horizontal * 2);
+                var buttonsFlpHeight = buttonsFlp.Height + (buttonsFlp.Margin.Vertical * 2);
+                currentModFlowPanel.Size = new System.Drawing.Size
+                    (
+                    buttonsFlpWidth > currentModFlowPanel.Width ? buttonsFlpWidth : currentModFlowPanel.Width
+                    , currentModFlowPanel.Height + buttonsFlpHeight
+                    );
+            }
+        }
+
+        public interface IModUpdateInfoButton
+        {
+            string Text { get; }
+            string Description { get; }
+
+            string GetProcessStartTarget(UpdateInfoData infoData);
+        }
+
+        public class OpenWebPage : IModUpdateInfoButton
+        {
+            public string Text => T._("Web");
+
+            public string Description => T._("Open web page of the mod");
+
+            string IModUpdateInfoButton.GetProcessStartTarget(UpdateInfoData infoData)
+            {
+                var site = $"{(infoData.GitInfo.Site.StartsWith("http", System.StringComparison.InvariantCultureIgnoreCase) ? "" : "https://")}{infoData.GitInfo.Site}";
+                var sub = $"/{infoData.GitInfo.Owner}/{infoData.GitInfo.Repository}/releases/latest";
+                
+                return $"{site}{sub}";
+            }
+        }
+
+        public class OpenModDir : IModUpdateInfoButton
+        {
+            public string Text => T._("Dir");
+
+            public string Description => T._("Open directory of the mod");
+
+            string IModUpdateInfoButton.GetProcessStartTarget(UpdateInfoData infoData) => infoData.GitInfo.INI.INIPath.DirectoryName;
         }
 
         public class UpdateInfoData
@@ -350,6 +378,7 @@ namespace AIHelper.Manage.Functions
             INIFile INI { get; }
             public string ModName { get; }
             public GitUpdateInfoData GitInfo { get; set; }
+            public ToolTip ToolTip { get; internal set; }
         }
 
         public class GitUpdateInfoData

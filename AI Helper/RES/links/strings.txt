@@ -1,0 +1,15 @@
+%Characters%
+<ru-RU>
+Персонажи
+%Autors%
+<ru-RU>
+Авторы
+%Mods%
+<ru-RU>
+Моды
+%Resources%
+<ru-RU>
+Ресурсы
+%Other%
+<ru-RU>
+Прочее

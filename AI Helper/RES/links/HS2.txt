@@ -1,0 +1,20 @@
+;Links for AI-Girl game resources
+;
+;lines starting with ";" will be ignored
+;
+;#Groups:
+;##Characters<ru-RU>Персонажи
+;##Mods<ru-RU>Моды
+;##Authors<ru-RU>Авторы
+;##Resources<ru-RU>Ресурсы
+;##Other<ru-RU>Прочее
+;
+;Format:
+;;%groupname%{{link}}%description%{{link}}%link%
+;
+;Resources with characters cards
+Characters{{link}}Very big collection of cards for Illusion and Kiss games<ru-RU>Огромное количество карточек для игр от Illusion и Kiss{{link}}https://db.bepis.io/aishoujo
+Characters{{link}}Illusion cards<ru-RU>Карточки для игр от Illusion{{link}}https://illusioncards.booru.org/index.php?page=post&s=list&tags=honeyselect2
+Characters{{link}}Illusion cards<ru-RU>Карточки для игр от Illusion{{link}}https://kenzato.uk/booru/category/HS2
+Characters{{link}}Cards for Illusion games<ru-RU>Поиск карточек на Pixiv{{link}}https://www.pixiv.net/en/tags/AI%E4%BA%BA%E5%B7%A5%E5%B0%91%E5%A5%B3/artworks
+Characters{{link}}Discord channel with content for Illusion games<ru-RU>Дискорд канал с контентом для игр от Illusion{{link}}https://discord.gg/illusionsoft

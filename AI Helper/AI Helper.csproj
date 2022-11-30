@@ -377,6 +377,15 @@
     <Content Include="RES\basic_games\game_koikatu.py" />
     <Content Include="RES\basic_games\game_roomgirl.py" />
     <Content Include="helpericon.ico" />
+    <Content Include="RES\links\AI.txt" />
+    <Content Include="RES\links\Default.txt" />
+    <Content Include="RES\links\HS.txt" />
+    <Content Include="RES\links\HS2.txt" />
+    <Content Include="RES\links\htmlCategoryItemTemplate.txt" />
+    <Content Include="RES\links\htmlCategoryTemplate.txt" />
+    <Content Include="RES\links\KK.txt" />
+    <Content Include="RES\links\KKS.txt" />
+    <Content Include="RES\links\strings.txt" />
     <Content Include="RES\theme\default\report\ReportTemplate.html" />
   </ItemGroup>
   <ItemGroup>
@@ -583,6 +592,7 @@
 ROBOCOPY "$(TargetDir) " "$(TargetDir)RES\lib\ " *.dll *.pdb /XF "$(TargetName).dll" "$(TargetName).pdb" "$(TargetName).runtimeconfig.json" *.exe *.ini *.config *.manifest *.ico *.log *.txt *.7z *.rar *.zip *.png *.jpg *.lnk /XD logs test AIHInfos RES MO lib Games net6.0-windows "AI Helper Release" [net4] net472 "DEV images" MOTest Downloads "Organized ModPack Dev files" /E /IS /MOVE
 ROBOCOPY "$(ProjectDir)RES\basic_games\ " "$(TargetDir)RES\basicgames\games " *.py
 ROBOCOPY "$(ProjectDir)RES\theme\default\report\ " "$(TargetDir)RES\theme\default\report " ReportTemplate.html
+ROBOCOPY "$(ProjectDir)RES\links\ " "$(TargetDir)RES\links " *.txt
 ROBOCOPY "$(ProjectDir)RES\locale " "$(TargetDir)RES\locale " /MIR
 if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25</PostBuildEvent>
   </PropertyGroup>

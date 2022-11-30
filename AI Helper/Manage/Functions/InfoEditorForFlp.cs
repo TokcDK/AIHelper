@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using AIHelper.Manage.Update.Sources;
-using INIFileMan;
 using System.Windows.Forms;
 using AIHelper.Data.Modlist;
-using System.IO;
-using IniParser.Model;
+using AIHelper.Manage.Update.Sources;
+using INIFileMan;
 
 namespace AIHelper.Manage.Functions
 {
@@ -90,7 +85,7 @@ namespace AIHelper.Manage.Functions
 
                 var github = new Github(null);
                 var urlMatch = Regex.Match(url, $@"(https?:\/\/){github.Url}\/([^\/]+)\/([^\/]+)", RegexOptions.IgnoreCase);
-                var infoData = new UpdateInfoData(ini)
+                var infoData = new UpdateInfoData(mod)
                 {
                     ToolTip = ttip
                 };
@@ -169,7 +164,7 @@ namespace AIHelper.Manage.Functions
 
                 AddButtons(githubDataFlowPanel, infoData);
 
-                githubDataFlowPanel.Size = new System.Drawing.Size(githubDataFlowPanel.Width+10, githubDataFlowPanel.Height+10);
+                githubDataFlowPanel.Size = new System.Drawing.Size(githubDataFlowPanel.Width + 10, githubDataFlowPanel.Height + 10);
                 currentModFlowPanel.Size = new System.Drawing.Size
                     (
                     currentModFlowPanel.Width + githubDataFlowPanel.Width + 15
@@ -390,7 +385,7 @@ namespace AIHelper.Manage.Functions
             {
                 var site = $"{(infoData.GitInfo.Site.StartsWith("http", System.StringComparison.InvariantCultureIgnoreCase) ? "" : "https://")}{infoData.GitInfo.Site}";
                 var sub = $"/{infoData.GitInfo.Owner}/{infoData.GitInfo.Repository}/releases/latest";
-                
+
                 return $"{site}{sub}";
             }
         }
@@ -406,15 +401,15 @@ namespace AIHelper.Manage.Functions
 
         public class UpdateInfoData
         {
-            public UpdateInfoData(INIFile ini)
+            public UpdateInfoData(ModData mod)
             {
-                INI = ini;
-                ModName = ini.INIPath.Directory.Name;
-                GitInfo = new GitUpdateInfoData(INI);
+                Mod = mod;
+                GitInfo = new GitUpdateInfoData(mod);
             }
 
-            INIFile INI { get; }
-            public string ModName { get; }
+            public ModData Mod { get; }
+            public string ModName { get => Mod.Name; }
+            INIFile INI { get => Mod.MetaIni; }
             public GitUpdateInfoData GitInfo { get; set; }
             public ToolTip ToolTip { get; internal set; }
         }
@@ -439,12 +434,10 @@ namespace AIHelper.Manage.Functions
                 {nameof(VersionFromFile), (T._("Version from file"), T._("Determines if need to search version in file name.")) },
             };
 
-            public GitUpdateInfoData(INIFile ini)
-            {
-                INI = ini;
-            }
+            public GitUpdateInfoData(ModData mod) { Mod = mod; }
 
-            public INIFile INI { get; }
+            public ModData Mod { get; }
+            public INIFile INI { get => Mod.MetaIni; }
 
             public void Write()
             {

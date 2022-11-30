@@ -71,6 +71,7 @@ namespace AIHelper.Manage.Functions
             foreach (var mod in mods.ModsPlusOverwrite)
             {
                 var ini = mod.MetaIni;
+                if (ini == null) continue; // skip when no ini
 
                 var hasUrl = ini.KeyExists("url", "General");
                 var hasUpdateInfo = ini.KeyExists(keyName, sectionName);

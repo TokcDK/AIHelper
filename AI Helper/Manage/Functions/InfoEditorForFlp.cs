@@ -301,7 +301,7 @@ namespace AIHelper.Manage.Functions
                     {
                         //AutoSize = true,
                         Text = infoData.GitInfo.Strings[propertyInfo.Name].t,
-                        Size = new System.Drawing.Size(100, _elHeight+10),
+                        Size = new System.Drawing.Size(300, _elHeight+10),
                         Margin = new Padding(0)
                     };
                     l.DataBindings.Add(new Binding("Checked", infoData, $"{nameof(infoData.GitInfo)}.{propertyInfo.Name}", true, DataSourceUpdateMode.OnPropertyChanged));

@@ -29,6 +29,8 @@ namespace AIHelper.Manage.Functions
 
         readonly List<UpdateInfoData> _updateInfoDatas = new List<UpdateInfoData>();
 
+        bool _isReading;
+
         internal void OpenInfoEditor()
         {
             var f = new Form
@@ -66,7 +68,7 @@ namespace AIHelper.Manage.Functions
                 ShowAlways = true
             };
 
-            bool isReading = true;
+            _isReading = true;
 
             var mods = new ModlistData();
             var sectionName = ManageSettings.AiMetaIniSectionName;
@@ -161,121 +163,7 @@ namespace AIHelper.Manage.Functions
                     BorderStyle = BorderStyle.Fixed3D,
                 };
 
-                mname = new Label
-                {
-                    //AutoSize = true,
-                    Text = "-Github---",
-                    Size = new System.Drawing.Size(100, _elHeight * 3),
-                    Margin = new Padding(0)
-                };
-                githubDataFlowPanel.Controls.Add(mname);
-                mnameWidth = mname.Width + (mname.Margin.Horizontal * 2);
-                mnameHeight = mname.Height + (mname.Margin.Vertical * 2);
-                githubDataFlowPanel.Size = new System.Drawing.Size
-                        (mnameWidth > githubDataFlowPanel.Width ? mnameWidth : githubDataFlowPanel.Width
-                        , mnameHeight > githubDataFlowPanel.Height ? mnameHeight : githubDataFlowPanel.Height
-                        );
-                foreach (var propertyInfo in infoData.GitInfo.GetType().GetProperties())
-                {
-                    if (propertyInfo.Name == nameof(infoData.GitInfo.Site)) continue;
-                    if (propertyInfo.Name == nameof(infoData.GitInfo.Strings)) continue;
-                    if (propertyInfo.Name == nameof(infoData.GitInfo.INI)) continue;
-                    if (!propertyInfo.CanWrite) continue;
-
-                    var propertyType = propertyInfo.GetMethod.ReturnType;
-
-                    if (propertyType == typeof(string))
-                    {
-                        var thePropertyFlowPanel = new FlowLayoutPanel
-                        {
-                            //Dock = DockStyle.Fill,
-                            FlowDirection = FlowDirection.LeftToRight,
-                            //AutoScroll = true,
-                            //Size = new System.Drawing.Size(300, 20),
-                            //AutoSize = true,
-                            Margin = new Padding(0)
-                        };
-                        var l = new Label
-                        {
-                            AutoSize = true,
-                            Text = infoData.GitInfo.Strings[propertyInfo.Name].t + ":",
-                            Size = new System.Drawing.Size(100, _elHeight),
-                            Margin = new Padding(0)
-                        };
-                        var tb = new TextBox
-                        {
-                            AutoSize = true,
-                            Size = new System.Drawing.Size(200, _elHeight),
-                            Margin = new Padding(0),
-                        };
-                        tb.DataBindings.Add(new Binding("Text", infoData, $"{nameof(infoData.GitInfo)}.{propertyInfo.Name}", true, DataSourceUpdateMode.OnPropertyChanged));
-                        tb.TextChanged += new System.EventHandler((o, e) =>
-                        {
-                            if (isReading) return;
-
-                            tb.DataBindings[0].WriteValue(); // force write property valuue before try write ini
-                            infoData.GitInfo.Write();
-                        });
-
-                        thePropertyFlowPanel.Controls.Add(l);
-                        thePropertyFlowPanel.Controls.Add(tb);
-
-                        ttip.SetToolTip(l, infoData.GitInfo.Strings[propertyInfo.Name].d);
-                        ttip.SetToolTip(tb, infoData.GitInfo.Strings[propertyInfo.Name].d);
-
-                        var lWidth = l.Width + (l.Margin.Horizontal * 2);
-                        var lHeight = l.Height + (l.Margin.Vertical * 2);
-                        var tbWidth = tb.Width + (tb.Margin.Horizontal * 2);
-                        var tbHeight = tb.Height + (tb.Margin.Vertical * 2);
-                        var ltbWidth = lWidth + tbWidth;
-                        var ltbHeight = lHeight + tbHeight;
-                        thePropertyFlowPanel.Size = new System.Drawing.Size(ltbWidth, ltbHeight);
-
-                        githubDataFlowPanel.Controls.Add(thePropertyFlowPanel);
-
-                        var thePropertyFlowPanelWidth = thePropertyFlowPanel.Width + (thePropertyFlowPanel.Margin.Horizontal * 2);
-                        var thePropertyFlowPanelHeight = thePropertyFlowPanel.Height + (thePropertyFlowPanel.Margin.Vertical * 2);
-                        githubDataFlowPanel.Size = new System.Drawing.Size
-                            (
-                            thePropertyFlowPanelWidth > githubDataFlowPanel.Width ? thePropertyFlowPanelWidth : githubDataFlowPanel.Width
-                            , githubDataFlowPanel.Height + thePropertyFlowPanelHeight
-                            );
-                    }
-                    else if (propertyType == typeof(bool))
-                    {
-                        var l = new CheckBox
-                        {
-                            AutoSize = true,
-                            Text = infoData.GitInfo.Strings[propertyInfo.Name].t,
-                            Size = new System.Drawing.Size(100, _elHeight),
-                            Margin = new Padding(0)
-                        };
-                        l.DataBindings.Add(new Binding("Checked", infoData, $"{nameof(infoData.GitInfo)}.{propertyInfo.Name}", true, DataSourceUpdateMode.OnPropertyChanged));
-                        l.CheckedChanged += new System.EventHandler((o, e) =>
-                        {
-                            if (isReading) return;
-
-                            l.DataBindings[0].WriteValue(); // force write property valuue before try write ini
-                            infoData.GitInfo.Write();
-                        });
-
-
-                        var lWidth = l.Width + (l.Margin.Horizontal * 2);
-                        var lHeight = l.Height + (l.Margin.Vertical * 2);
-
-                        githubDataFlowPanel.Controls.Add(l);
-                        githubDataFlowPanel.Size = new System.Drawing.Size
-                            (
-                            lWidth > githubDataFlowPanel.Width ? lWidth : githubDataFlowPanel.Width
-                            , githubDataFlowPanel.Height + lHeight
-                            );
-
-                        ttip.SetToolTip(l, infoData.GitInfo.Strings[propertyInfo.Name].d);
-                    }
-                    else continue;
-
-
-                }
+                AddGithubData(githubDataFlowPanel, infoData);
 
                 AddButtons(githubDataFlowPanel, infoData);
 
@@ -322,7 +210,125 @@ namespace AIHelper.Manage.Functions
             f.Size = new System.Drawing.Size(f.Width * 2, f.Height * 2);
             f.Show(ManageSettings.MainForm);
 
-            isReading = false;
+            _isReading = false;
+
+        }
+
+        private void AddGithubData(FlowLayoutPanel githubDataFlowPanel, UpdateInfoData infoData)
+        {
+            var repNameLabel = new Label
+            {
+                //AutoSize = true,
+                Text = "-Github---",
+                Size = new System.Drawing.Size(100, _elHeight * 3),
+                Margin = new Padding(0)
+            };
+            githubDataFlowPanel.Controls.Add(repNameLabel);
+            var mnameWidth = repNameLabel.Width + (repNameLabel.Margin.Horizontal * 2);
+            var mnameHeight = repNameLabel.Height + (repNameLabel.Margin.Vertical * 2);
+            githubDataFlowPanel.Size = new System.Drawing.Size
+                    (mnameWidth > githubDataFlowPanel.Width ? mnameWidth : githubDataFlowPanel.Width
+                    , mnameHeight > githubDataFlowPanel.Height ? mnameHeight : githubDataFlowPanel.Height
+                    );
+            foreach (var propertyInfo in infoData.GitInfo.GetType().GetProperties())
+            {
+                if (propertyInfo.Name == nameof(infoData.GitInfo.Site)) continue;
+                if (propertyInfo.Name == nameof(infoData.GitInfo.Strings)) continue;
+                if (propertyInfo.Name == nameof(infoData.GitInfo.INI)) continue;
+                if (!propertyInfo.CanWrite) continue;
+
+                var propertyType = propertyInfo.GetMethod.ReturnType;
+
+                if (propertyType == typeof(string))
+                {
+                    var thePropertyFlowPanel = new FlowLayoutPanel
+                    {
+                        //Dock = DockStyle.Fill,
+                        FlowDirection = FlowDirection.LeftToRight,
+                        //AutoScroll = true,
+                        //Size = new System.Drawing.Size(300, 20),
+                        //AutoSize = true,
+                        Margin = new Padding(0)
+                    };
+                    var l = new Label
+                    {
+                        AutoSize = true,
+                        Text = infoData.GitInfo.Strings[propertyInfo.Name].t + ":",
+                        Size = new System.Drawing.Size(100, _elHeight),
+                        Margin = new Padding(0)
+                    };
+                    var tb = new TextBox
+                    {
+                        AutoSize = true,
+                        Size = new System.Drawing.Size(200, _elHeight),
+                        Margin = new Padding(0),
+                    };
+                    tb.DataBindings.Add(new Binding("Text", infoData, $"{nameof(infoData.GitInfo)}.{propertyInfo.Name}", true, DataSourceUpdateMode.OnPropertyChanged));
+                    tb.TextChanged += new System.EventHandler((o, e) =>
+                    {
+                        if (_isReading) return;
+
+                        tb.DataBindings[0].WriteValue(); // force write property valuue before try write ini
+                        infoData.GitInfo.Write();
+                    });
+
+                    thePropertyFlowPanel.Controls.Add(l);
+                    thePropertyFlowPanel.Controls.Add(tb);
+
+                    infoData.ToolTip.SetToolTip(l, infoData.GitInfo.Strings[propertyInfo.Name].d);
+                    infoData.ToolTip.SetToolTip(tb, infoData.GitInfo.Strings[propertyInfo.Name].d);
+
+                    var lWidth = l.Width + (l.Margin.Horizontal * 2);
+                    var lHeight = l.Height + (l.Margin.Vertical * 2);
+                    var tbWidth = tb.Width + (tb.Margin.Horizontal * 2);
+                    var tbHeight = tb.Height + (tb.Margin.Vertical * 2);
+                    var ltbWidth = lWidth + tbWidth;
+                    var ltbHeight = lHeight + tbHeight;
+                    thePropertyFlowPanel.Size = new System.Drawing.Size(ltbWidth, ltbHeight);
+
+                    githubDataFlowPanel.Controls.Add(thePropertyFlowPanel);
+
+                    var thePropertyFlowPanelWidth = thePropertyFlowPanel.Width + (thePropertyFlowPanel.Margin.Horizontal * 2);
+                    var thePropertyFlowPanelHeight = thePropertyFlowPanel.Height + (thePropertyFlowPanel.Margin.Vertical * 2);
+                    githubDataFlowPanel.Size = new System.Drawing.Size
+                        (
+                        thePropertyFlowPanelWidth > githubDataFlowPanel.Width ? thePropertyFlowPanelWidth : githubDataFlowPanel.Width
+                        , githubDataFlowPanel.Height + thePropertyFlowPanelHeight
+                        );
+                }
+                else if (propertyType == typeof(bool))
+                {
+                    var l = new CheckBox
+                    {
+                        AutoSize = true,
+                        Text = infoData.GitInfo.Strings[propertyInfo.Name].t,
+                        Size = new System.Drawing.Size(100, _elHeight),
+                        Margin = new Padding(0)
+                    };
+                    l.DataBindings.Add(new Binding("Checked", infoData, $"{nameof(infoData.GitInfo)}.{propertyInfo.Name}", true, DataSourceUpdateMode.OnPropertyChanged));
+                    l.CheckedChanged += new System.EventHandler((o, e) =>
+                    {
+                        if (_isReading) return;
+
+                        l.DataBindings[0].WriteValue(); // force write property valuue before try write ini
+                        infoData.GitInfo.Write();
+                    });
+
+
+                    var lWidth = l.Width + (l.Margin.Horizontal * 2);
+                    var lHeight = l.Height + (l.Margin.Vertical * 2);
+
+                    githubDataFlowPanel.Controls.Add(l);
+                    githubDataFlowPanel.Size = new System.Drawing.Size
+                        (
+                        lWidth > githubDataFlowPanel.Width ? lWidth : githubDataFlowPanel.Width
+                        , githubDataFlowPanel.Height + lHeight
+                        );
+
+                    infoData.ToolTip.SetToolTip(l, infoData.GitInfo.Strings[propertyInfo.Name].d);
+                }
+                else continue;
+            }
         }
 
         private void AddButtons(FlowLayoutPanel currentModFlowPanel, UpdateInfoData infoData)

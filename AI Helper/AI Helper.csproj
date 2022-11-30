@@ -376,7 +376,6 @@
     <Content Include="RES\basic_games\game_koikatusunshine.py" />
     <Content Include="RES\basic_games\game_koikatu.py" />
     <Content Include="RES\basic_games\game_roomgirl.py" />
-    <Content Include="RES\ReportTemplate.html" />
     <Content Include="helpericon.ico" />
     <Content Include="RES\theme\default\report\ReportTemplate.html" />
   </ItemGroup>

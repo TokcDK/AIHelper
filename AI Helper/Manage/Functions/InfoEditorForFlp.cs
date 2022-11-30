@@ -218,7 +218,7 @@ namespace AIHelper.Manage.Functions
             var repNameLabel = new Label
             {
                 //AutoSize = true,
-                Text = "-Github---",
+                Text = "Github",
                 Size = new System.Drawing.Size(100, _elHeight * 3),
                 Margin = new Padding(0),
             };
@@ -253,7 +253,7 @@ namespace AIHelper.Manage.Functions
                     {
                         //AutoSize = true,
                         Text = infoData.GitInfo.Strings[propertyInfo.Name].t + ":",
-                        Size = new System.Drawing.Size(100, _elHeight),
+                        Size = new System.Drawing.Size(150, _elHeight),
                         Margin = new Padding(0),
                     };
                     var tb = new TextBox
@@ -297,34 +297,34 @@ namespace AIHelper.Manage.Functions
                 }
                 else if (propertyType == typeof(bool))
                 {
-                    var l = new CheckBox
+                    var cb = new CheckBox
                     {
                         //AutoSize = true,
                         Text = infoData.GitInfo.Strings[propertyInfo.Name].t,
                         Size = new System.Drawing.Size(300, _elHeight+10),
                         Margin = new Padding(0)
                     };
-                    l.DataBindings.Add(new Binding("Checked", infoData, $"{nameof(infoData.GitInfo)}.{propertyInfo.Name}", true, DataSourceUpdateMode.OnPropertyChanged));
-                    l.CheckedChanged += new System.EventHandler((o, e) =>
+                    cb.DataBindings.Add(new Binding("Checked", infoData, $"{nameof(infoData.GitInfo)}.{propertyInfo.Name}", true, DataSourceUpdateMode.OnPropertyChanged));
+                    cb.CheckedChanged += new System.EventHandler((o, e) =>
                     {
                         if (_isReading) return;
 
-                        l.DataBindings[0].WriteValue(); // force write property valuue before try write ini
+                        cb.DataBindings[0].WriteValue(); // force write property valuue before try write ini
                         infoData.GitInfo.Write();
                     });
 
 
-                    var lWidth = l.Width + (l.Margin.Horizontal * 2);
-                    var lHeight = l.Height + (l.Margin.Vertical * 2);
+                    var lWidth = cb.Width + (cb.Margin.Horizontal * 2);
+                    var lHeight = cb.Height + (cb.Margin.Vertical * 2);
 
-                    githubDataFlowPanel.Controls.Add(l);
+                    githubDataFlowPanel.Controls.Add(cb);
                     githubDataFlowPanel.Size = new System.Drawing.Size
                         (
                         lWidth > githubDataFlowPanel.Width ? lWidth : githubDataFlowPanel.Width
                         , githubDataFlowPanel.Height + lHeight
                         );
 
-                    infoData.ToolTip.SetToolTip(l, infoData.GitInfo.Strings[propertyInfo.Name].d);
+                    infoData.ToolTip.SetToolTip(cb, infoData.GitInfo.Strings[propertyInfo.Name].d);
                 }
                 else continue;
             }

@@ -75,9 +75,18 @@ namespace AIHelper.Manage
                 var record = data.Value;
 
                 var @base = record.ContainsKey("base") ? record["base"] : "";
+                string link = "";
+                bool haveKey = record.ContainsKey("link");
+                if (haveKey)
+                {
+                    link =  record["link"];
+                    link = RestoreString(iniInfos, link, "link", @base);
+                }
+                else if (!string.IsNullOrWhiteSpace(@base))
+                {
+                    link = GetKeyValueFromBase(iniInfos, "link", @base);
+                }
 
-                var link = record.ContainsKey("link") ? record["link"] : "";
-                link = RestoreString(iniInfos, link, "link", @base);
                 if (string.IsNullOrWhiteSpace(link)) continue;
 
                 var name = record.ContainsKey("name") ? record["name"] : "";
@@ -166,6 +175,27 @@ namespace AIHelper.Manage
             #endregion old
         }
 
+        private static string GetKeyValueFromBase(LinksInfos iniInfos, string keyName, string parentRecordId)
+        {
+            if (!iniInfos.ContainsKey(parentRecordId)) return "";
+
+            var parent = iniInfos[parentRecordId];
+
+            var parentBase = parent.ContainsKey("base") ? parent["base"] : "";
+
+            bool haveKey = parent.ContainsKey(keyName);
+            if (haveKey)
+            {
+                return RestoreString(iniInfos, parent[keyName], keyName, parentBase);
+            }
+            else if (!string.IsNullOrWhiteSpace(parentBase))
+            {
+                return GetKeyValueFromBase(iniInfos, keyName, parentBase);
+            }
+
+            return "";
+        }
+
         private static string RestoreString(LinksInfos iniInfos, string s, string keyName, string baseRecordID)
         {
             if (!s.Contains("%")) return s;
@@ -174,14 +204,14 @@ namespace AIHelper.Manage
             var retS = s;
             foreach (Match match in matches)
             {
-                if (string.Equals(match.Value, "%base%", StringComparison.InvariantCultureIgnoreCase))
+                if (match.Value == "%base%")
                 {
                     string s1 = ReplaceBase(iniInfos, s, keyName, baseRecordID);
                     if (s1 == null) continue;
 
                     retS = s1;
                 }
-                else
+                else if(match.Value.Contains("/") ) // %base/keyname%
                 {
 
                 }

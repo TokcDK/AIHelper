@@ -342,7 +342,7 @@ namespace AIHelper.Manage.Functions
                 new OpenModDir(),
             })
             {
-                var dirPath = infoData.GitInfo.INI.INIPath.DirectoryName;
+                var dirPath = infoData.Mod.Path;
                 var openWebPageButton = new Button()
                 {
                     AutoSize = true,

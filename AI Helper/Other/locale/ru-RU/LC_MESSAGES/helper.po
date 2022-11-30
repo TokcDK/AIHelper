@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AI Helper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-26 18:56+0500\n"
-"PO-Revision-Date: 2022-10-26 18:56+0500\n"
+"POT-Creation-Date: 2022-11-30 12:46+0500\n"
+"PO-Revision-Date: 2022-11-30 12:53+0500\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.8.7\n"
-"X-Poedit-Basepath: ../../../../\n"
+"X-Poedit-Basepath: ../../../..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: GetString;GetPluralString:1,2;"
 "GetParticularString:1c,2;GetParticularPluralString:1c,2,3;_;_n:1,2;_p:1c,2;"
@@ -666,11 +666,6 @@ msgstr ""
 msgid "Fix problems in current enabled mods list"
 msgstr "Исправление известных проблем в списке подключенных модов"
 
-#: Forms/MainForm.cs:401 Forms/Other/ModeSwitchDialog.cs:154
-#: Forms/Other/UpdateOptionsDialog.cs:144
-msgid "Open older plugins buckup folder"
-msgstr "Открыть папку с резервными копиями старых версий обновленных плагинов"
-
 #: Forms/MainForm.cs:404 Forms/Other/ModeSwitchDialog.cs:157
 #: Forms/Other/UpdateOptionsDialog.cs:147
 msgid "Update Mod Organizer and enabled mods"
@@ -698,20 +693,6 @@ msgid ""
 msgstr ""
 "После проверки обновлений плагинов будет запущен KKManager StandaloneUpdater "
 "для проверки обновлений Sideloader modpack, если для игры это возможно"
-
-#: Forms/MainForm.cs:434 Forms/Other/SwitchModeDialogForm.cs:89
-msgid ""
-"Enables backup creation of selected game before mode switch\n"
-" to be possible to restore Data and Mods dirs.\n"
-"\n"
-"Backup creating using ntfs hardlinks and not consumes any extra space."
-msgstr ""
-"Включает создание резервной копии выбранной игры перед переключением "
-"режима,\n"
-"для возможности ручного восстановления папок Data и Mods.\n"
-"\n"
-"Создание резервной копии использует жесткие ссылки ntfs, на те же файлы и не "
-"расходет свободное место."
 
 #: Forms/MainForm.cs:440
 msgid "Install mods and userdata, placed in"
@@ -753,33 +734,33 @@ msgstr "Файлы {0} не в {1}. Поместите файлы игры {0} �
 msgid "{0} dir created. Move {1} game files there."
 msgstr "Созда папка {0}. Поместите файлы игры {1} туда."
 
-#: Forms/MainForm.cs:585 Manage/ModeSwitch/ModeSwitcherBase.cs:54
+#: Forms/MainForm.cs:587 Manage/ModeSwitch/ModeSwitcherBase.cs:54
 msgid "CommonToMO"
 msgstr "Обычный в МО"
 
-#: Forms/MainForm.cs:586 Forms/MainForm.cs:587 Forms/MainForm.cs:696
+#: Forms/MainForm.cs:588 Forms/MainForm.cs:589 Forms/MainForm.cs:698
 #: Manage/ModeSwitch/ToCommonMode.cs:20
 msgid "Common mode"
 msgstr "Обычный режим"
 
-#: Forms/MainForm.cs:665
+#: Forms/MainForm.cs:667
 msgid "Found mod folders in Mods"
 msgstr "Найдены папки модов в Mods"
 
-#: Forms/MainForm.cs:668
+#: Forms/MainForm.cs:670
 msgid "Mods Ready"
 msgstr "Моды готовы"
 
-#: Forms/MainForm.cs:672 Manage/ModeSwitch/ModeSwitcherBase.cs:54
+#: Forms/MainForm.cs:674 Manage/ModeSwitch/ModeSwitcherBase.cs:54
 msgid "MOToCommon"
 msgstr "MO в Обычный"
 
-#: Forms/MainForm.cs:675 Forms/MainForm.cs:701
+#: Forms/MainForm.cs:677 Forms/MainForm.cs:703
 #: Forms/Other/SwitchModeDialogForm.cs:46 Manage/ModeSwitch/ToMOMode.cs:19
 msgid "MO mode"
 msgstr "MO режим"
 
-#: Forms/MainForm.cs:826
+#: Forms/MainForm.cs:828
 msgid ""
 "Game in Common mode now.\n"
 " To execute Mod Organizer convert game back\n"
@@ -789,7 +770,7 @@ msgstr ""
 " Для запуска Mod Organizer сконвертируйте игру\n"
 " назад в режим для MO кнопкой на вкладке Инструменты"
 
-#: Forms/MainForm.cs:971
+#: Forms/MainForm.cs:973
 msgid ""
 "No compatible for installation formats found in install folder.\n"
 "\n"
@@ -803,12 +784,12 @@ msgstr ""
 "\n"
 "Будет открыта папка установки, куда можно кинуть файлы для установки."
 
-#: Forms/MainForm.cs:980 Forms/MainForm.cs:1279
+#: Forms/MainForm.cs:982 Forms/MainForm.cs:1281
 #: Manage/ModeSwitch/ToCommonMode.cs:17 Manage/ModeSwitch/ToMOMode.cs:15
 msgid "Attention"
 msgstr "Внимание"
 
-#: Forms/MainForm.cs:980
+#: Forms/MainForm.cs:982
 msgid ""
 "Impossible to correctly install/update mods\n"
 "\n"
@@ -818,35 +799,35 @@ msgstr ""
 "\n"
 " в обычном режиме, т.к. файлы были помещены в Data."
 
-#: Forms/MainForm.cs:980 Forms/MainForm.cs:1279
+#: Forms/MainForm.cs:982 Forms/MainForm.cs:1281
 msgid "Switch to MO mode?"
 msgstr "Переключиться в МО режим?"
 
-#: Forms/MainForm.cs:980 Forms/MainForm.cs:1279
+#: Forms/MainForm.cs:982 Forms/MainForm.cs:1281
 msgid "Confirmation"
 msgstr "Подтверждение"
 
-#: Forms/MainForm.cs:994
+#: Forms/MainForm.cs:996
 msgid "Install from"
 msgstr "Установка"
 
-#: Forms/MainForm.cs:1001
+#: Forms/MainForm.cs:1003
 msgid ""
 "All possible mods installed. Install all rest in install folder manually."
 msgstr ""
 "Все возможные моды установлены. Установите оставшиеся в папке установки "
 "вручную."
 
-#: Forms/MainForm.cs:1267
+#: Forms/MainForm.cs:1269
 msgid "Move mouse cursor over wished button or text to see info about it"
 msgstr ""
 "Наведите курсор мыши на желаемую кнопку или текст для просмотра подсказки"
 
-#: Forms/MainForm.cs:1279
+#: Forms/MainForm.cs:1281
 msgid "Correct modlist fixes possible only in MO mode"
 msgstr "Исправление списка модов возможно только в режиме МО"
 
-#: Forms/MainForm.cs:1472
+#: Forms/MainForm.cs:1409
 msgid ""
 "New files created by the game will be stored here. Saves, plugins configs "
 "and other."
@@ -863,7 +844,7 @@ msgid "Move to the new mod"
 msgstr "Поместить в новый мод"
 
 #: Forms/Other/CleanOptionsDialogForm.cs:32
-#: Manage/Functions/DataDirCleaner.cs:37
+#: Manage/Functions/DataDirCleaner.cs:47
 msgid "Ignore symlinks"
 msgstr "Игнорить символические сслыки"
 
@@ -924,7 +905,7 @@ msgid "Check test zipmods pack"
 msgstr "Проверять тестовый зипмод пак"
 
 #: Forms/Other/ModeSwitchDialog.cs:107 Forms/Other/UpdateOptionsDialog.cs:97
-#: Manage/Update/Updater.cs:66
+#: Manage/Update/Updater.cs:74
 msgid "Update plugins"
 msgstr "Обновление плагинов"
 
@@ -935,6 +916,10 @@ msgstr "Только включенные плагины"
 #: Forms/Other/ModeSwitchDialog.cs:109 Forms/Other/UpdateOptionsDialog.cs:99
 msgid "Old versions"
 msgstr "Старые версии"
+
+#: Forms/Other/ModeSwitchDialog.cs:154 Forms/Other/UpdateOptionsDialog.cs:144
+msgid "Open older plugins buckup folder"
+msgstr "Открыть папку с резервными копиями старых версий обновленных плагинов"
 
 #: Forms/Other/ModeSwitchDialog.cs:162 Forms/Other/UpdateOptionsDialog.cs:152
 msgid "Warning! More of packs you check more of memory game will consume."
@@ -1022,6 +1007,20 @@ msgstr "Резервная копия"
 msgid "Switch mode"
 msgstr "Переключить"
 
+#: Forms/Other/SwitchModeDialogForm.cs:89
+msgid ""
+"Enables backup creation of selected game before mode switch\n"
+" to be possible to restore Data and Mods dirs.\n"
+"\n"
+"Backup creating using ntfs hardlinks and not consumes any extra space."
+msgstr ""
+"Включает создание резервной копии выбранной игры перед переключением "
+"режима,\n"
+"для возможности ручного восстановления папок Data и Mods.\n"
+"\n"
+"Создание резервной копии использует жесткие ссылки ntfs, на те же файлы и не "
+"расходет свободное место."
+
 #: Games/Illusion/AIGirlTrial.cs:10 Games/Illusion/AiGirl.cs:12
 msgid "AI-Girl"
 msgstr "ИИ-Девушка"
@@ -1050,11 +1049,11 @@ msgstr "Комнатная девушка"
 msgid "Custom Order Maid 3D2"
 msgstr "Custom Order Maid 3D2"
 
-#: Install/Types/Directories/GameUpdateInstaller.cs:54
+#: Install/Types/Directories/GameUpdateInstaller.cs:55
 msgid "Incorrect current game"
 msgstr "Неверная текущая игра"
 
-#: Install/Types/Directories/GameUpdateInstaller.cs:153
+#: Install/Types/Directories/GameUpdateInstaller.cs:154
 msgid ""
 "Update applied.\n"
 "\n"
@@ -1072,25 +1071,39 @@ msgstr ""
 "моды, \n"
 "почитав информацию наведя курсор на значек справа от имени мода."
 
-#: Install/Types/Directories/GameUpdateInstaller.cs:158
+#: Install/Types/Directories/GameUpdateInstaller.cs:159
 msgid "Update not required."
 msgstr "Обновление не требуется."
 
-#: Install/Types/Directories/GameUpdateInstaller.cs:446
+#: Install/Types/Directories/GameUpdateInstaller.cs:447
 msgid "The marker shows where to sort new zipmods for this sideloader modpack"
 msgstr ""
 "Это маркер, показывающий, куда сортировать новые зпмоды для этого sideloader "
 "модпака"
 
-#: Manage/Functions/DataDirCleaner.cs:34
+#: Manage/Functions/AddNewGameForFlp.cs:16
+msgid "🎮"
+msgstr ""
+
+#: Manage/Functions/AddNewGameForFlp.cs:18
+#, csharp-format
+msgid "Add new game into {0} for management."
+msgstr "Добавить новую игру для управления в {0}."
+
+#: Manage/Functions/DataDirCleaner.cs:23
+msgid "Clean game dir from external files using black and white lists"
+msgstr ""
+"Очистка папки игры от сторонних файлов, используя черный и белый списки"
+
+#: Manage/Functions/DataDirCleaner.cs:44
 msgid "Move into new mod"
 msgstr "Поместить в новый мод"
 
-#: Manage/Functions/DataDirCleaner.cs:41
+#: Manage/Functions/DataDirCleaner.cs:51
 msgid "Ignore shortcurs"
 msgstr "Игнорить ярлыки"
 
-#: Manage/Functions/DataDirCleaner.cs:231
+#: Manage/Functions/DataDirCleaner.cs:241
 #, csharp-format
 msgid ""
 "Cleaning finished! Moved {0} dirs and {1} files. Failed to move {2} items."
@@ -1098,7 +1111,7 @@ msgstr ""
 "Очистка завершена! Перемещено {0} папок {1} файлов. Не удалось переместить "
 "{2}."
 
-#: Manage/Functions/DataDirCleaner.cs:231
+#: Manage/Functions/DataDirCleaner.cs:241
 msgid ""
 "Will be opened the folder where files was moved. You can remove all you dont "
 "need."
@@ -1106,7 +1119,94 @@ msgstr ""
 "Будет открыта папка, куда были перемещены файлы. Можно вручную удалить всё, "
 "что не нужно."
 
-#: Manage/ManageModOrganizer.cs:3464
+#: Manage/Functions/InfoEditorForFlp.cs:14
+msgid "⚒"
+msgstr ""
+
+#: Manage/Functions/InfoEditorForFlp.cs:16
+msgid "Open mods update info editor"
+msgstr "Открыть редактор информации об обновлении модов"
+
+#: Manage/Functions/InfoEditorForFlp.cs:34
+msgid "Mods update info settings"
+msgstr "Настройки информации об обновлении модов"
+
+#: Manage/Functions/InfoEditorForFlp.cs:146
+msgid "Mod dir name"
+msgstr "Имя папки мода"
+
+#: Manage/Functions/InfoEditorForFlp.cs:383
+msgid "Web"
+msgstr "Сайт"
+
+#: Manage/Functions/InfoEditorForFlp.cs:385
+msgid "Open web page of the mod"
+msgstr "Открыть вебсайт мода"
+
+#: Manage/Functions/InfoEditorForFlp.cs:398
+msgid "Dir"
+msgstr "Папка"
+
+#: Manage/Functions/InfoEditorForFlp.cs:400
+msgid "Open directory of the mod"
+msgstr "Открыть папку мода"
+
+#: Manage/Functions/InfoEditorForFlp.cs:433
+msgid "Owner"
+msgstr "Владелец"
+
+#: Manage/Functions/InfoEditorForFlp.cs:433
+msgid "Repository owner"
+msgstr "Владелец репозитория"
+
+#: Manage/Functions/InfoEditorForFlp.cs:434
+msgid "Repository"
+msgstr "Репозиторий"
+
+#: Manage/Functions/InfoEditorForFlp.cs:434
+msgid "Repository name"
+msgstr "Имя репозитория"
+
+#: Manage/Functions/InfoEditorForFlp.cs:435
+msgid "File starts with"
+msgstr "Файл начинается с"
+
+#: Manage/Functions/InfoEditorForFlp.cs:435
+msgid "File to download starts with. Name part before version."
+msgstr ""
+"Файл для загрузки начинается с.. Обычно часть имени перед версией или до "
+"расширения."
+
+#: Manage/Functions/InfoEditorForFlp.cs:436
+msgid "File ends with"
+msgstr "Файл кончается на"
+
+#: Manage/Functions/InfoEditorForFlp.cs:436
+msgid ""
+"File to download ends with. Name part after version. Usually extension here"
+msgstr ""
+"Имя файла для загрузки заканчивается на.. Обычно здесь расширение, когда "
+"используется Версия из файла."
+
+#: Manage/Functions/InfoEditorForFlp.cs:437
+msgid "Version from file"
+msgstr "Версия из файла"
+
+#: Manage/Functions/InfoEditorForFlp.cs:437
+msgid "Determines if need to search version in file name."
+msgstr ""
+"Определяет необходимость поиска версии в имени файла, если репозиторий "
+"содержит разные файлы."
+
+#: Manage/Functions/UpdaterForFlp.cs:11
+msgid "🌐"
+msgstr ""
+
+#: Manage/Functions/UpdaterForFlp.cs:13
+msgid "Check for updates"
+msgstr "Проверка обновлений"
+
+#: Manage/ManageModOrganizer.cs:3230
 msgid "No profiles found for Current game"
 msgstr "Не найдены профили для текущей игры"
 
@@ -1660,19 +1760,19 @@ msgstr "добавлено инфо правила в meta.ini"
 msgid "Downloading"
 msgstr "Загрузка"
 
-#: Manage/Update/Updater.cs:227
+#: Manage/Update/Updater.cs:235
 msgid "updated to version"
 msgstr "обновлен до версии"
 
-#: Manage/Update/Updater.cs:259
+#: Manage/Update/Updater.cs:267
 msgid "have new version but file for update not found"
 msgstr "имеет версию новее, но файл обновления не найден"
 
-#: Manage/Update/Updater.cs:273
+#: Manage/Update/Updater.cs:281
 msgid "Failed to update"
 msgstr "Не удалось обновить"
 
-#: Manage/Update/Updater.cs:276
+#: Manage/Update/Updater.cs:284
 msgid "Details in"
 msgstr "Подробно в"
 

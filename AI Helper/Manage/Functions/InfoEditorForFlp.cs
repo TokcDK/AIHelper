@@ -136,11 +136,10 @@ namespace AIHelper.Manage.Functions
                     Margin = new Padding(10),
                     BorderStyle = BorderStyle.Fixed3D,
                 };
-
                 var mname = new Label
                 {
                     //AutoSize = true,
-                    Text = infoData.ModName + "\r\n-Github---",
+                    Text = infoData.ModName,
                     Size = new System.Drawing.Size(100, _elHeight * 3),
                     Margin = new Padding(0)
                 };
@@ -152,6 +151,30 @@ namespace AIHelper.Manage.Functions
                         , mnameHeight > currentModFlowPanel.Height ? mnameHeight : currentModFlowPanel.Height
                         );
 
+                var githubDataFlowPanel = new FlowLayoutPanel
+                {
+                    //Dock = DockStyle.Fill,
+                    FlowDirection = FlowDirection.TopDown,
+                    AutoScroll = true,
+                    Size = new System.Drawing.Size(10, 10),
+                    Margin = new Padding(10),
+                    BorderStyle = BorderStyle.Fixed3D,
+                };
+
+                mname = new Label
+                {
+                    //AutoSize = true,
+                    Text = "-Github---",
+                    Size = new System.Drawing.Size(100, _elHeight * 3),
+                    Margin = new Padding(0)
+                };
+                githubDataFlowPanel.Controls.Add(mname);
+                mnameWidth = mname.Width + (mname.Margin.Horizontal * 2);
+                mnameHeight = mname.Height + (mname.Margin.Vertical * 2);
+                githubDataFlowPanel.Size = new System.Drawing.Size
+                        (mnameWidth > githubDataFlowPanel.Width ? mnameWidth : githubDataFlowPanel.Width
+                        , mnameHeight > githubDataFlowPanel.Height ? mnameHeight : githubDataFlowPanel.Height
+                        );
                 foreach (var propertyInfo in infoData.GitInfo.GetType().GetProperties())
                 {
                     if (propertyInfo.Name == nameof(infoData.GitInfo.Site)) continue;
@@ -208,14 +231,14 @@ namespace AIHelper.Manage.Functions
                         var ltbHeight = lHeight + tbHeight;
                         thePropertyFlowPanel.Size = new System.Drawing.Size(ltbWidth, ltbHeight);
 
-                        currentModFlowPanel.Controls.Add(thePropertyFlowPanel);
+                        githubDataFlowPanel.Controls.Add(thePropertyFlowPanel);
 
                         var thePropertyFlowPanelWidth = thePropertyFlowPanel.Width + (thePropertyFlowPanel.Margin.Horizontal * 2);
                         var thePropertyFlowPanelHeight = thePropertyFlowPanel.Height + (thePropertyFlowPanel.Margin.Vertical * 2);
-                        currentModFlowPanel.Size = new System.Drawing.Size
+                        githubDataFlowPanel.Size = new System.Drawing.Size
                             (
-                            thePropertyFlowPanelWidth > currentModFlowPanel.Width ? thePropertyFlowPanelWidth : currentModFlowPanel.Width
-                            , currentModFlowPanel.Height + thePropertyFlowPanelHeight
+                            thePropertyFlowPanelWidth > githubDataFlowPanel.Width ? thePropertyFlowPanelWidth : githubDataFlowPanel.Width
+                            , githubDataFlowPanel.Height + thePropertyFlowPanelHeight
                             );
                     }
                     else if (propertyType == typeof(bool))
@@ -240,11 +263,11 @@ namespace AIHelper.Manage.Functions
                         var lWidth = l.Width + (l.Margin.Horizontal * 2);
                         var lHeight = l.Height + (l.Margin.Vertical * 2);
 
-                        currentModFlowPanel.Controls.Add(l);
-                        currentModFlowPanel.Size = new System.Drawing.Size
+                        githubDataFlowPanel.Controls.Add(l);
+                        githubDataFlowPanel.Size = new System.Drawing.Size
                             (
-                            lWidth > currentModFlowPanel.Width ? lWidth : currentModFlowPanel.Width
-                            , currentModFlowPanel.Height + lHeight
+                            lWidth > githubDataFlowPanel.Width ? lWidth : githubDataFlowPanel.Width
+                            , githubDataFlowPanel.Height + lHeight
                             );
 
                         ttip.SetToolTip(l, infoData.GitInfo.Strings[propertyInfo.Name].d);
@@ -254,10 +277,17 @@ namespace AIHelper.Manage.Functions
 
                 }
 
-                AddButtons(currentModFlowPanel, infoData);
+                AddButtons(githubDataFlowPanel, infoData);
 
+                githubDataFlowPanel.Size = new System.Drawing.Size(githubDataFlowPanel.Width+10, githubDataFlowPanel.Height+10);
+                currentModFlowPanel.Size = new System.Drawing.Size
+                    (
+                    currentModFlowPanel.Width + githubDataFlowPanel.Width + 15
+                    , currentModFlowPanel.Height + githubDataFlowPanel.Height + 15
+                    );
                 currentModFlowPanel.Size = new System.Drawing.Size(currentModFlowPanel.Width + 15, 300 /*currentModFlowPanel.Height + 15*/);
 
+                currentModFlowPanel.Controls.Add(githubDataFlowPanel);
                 modsListFlowPanel.Controls.Add(currentModFlowPanel);
 
                 //var curModFlpWidth = currentModFlowPanel.Width + (currentModFlowPanel.Margin.Horizontal * 2);

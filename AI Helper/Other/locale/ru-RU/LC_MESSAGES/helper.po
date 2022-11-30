@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AI Helper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-30 12:46+0500\n"
-"PO-Revision-Date: 2022-11-30 12:53+0500\n"
+"POT-Creation-Date: 2022-11-30 17:12+0500\n"
+"PO-Revision-Date: 2022-11-30 17:13+0500\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -1082,7 +1082,7 @@ msgstr ""
 "модпака"
 
 #: Manage/Functions/AddNewGameForFlp.cs:16
-msgid "🎮"
+msgid "G+"
 msgstr ""
 
 #: Manage/Functions/AddNewGameForFlp.cs:18
@@ -1197,6 +1197,15 @@ msgid "Determines if need to search version in file name."
 msgstr ""
 "Определяет необходимость поиска версии в имени файла, если репозиторий "
 "содержит разные файлы."
+
+#: Manage/Functions/OpenDiscotdForFlp.cs:17
+msgid "🎮"
+msgstr ""
+
+#: Manage/Functions/OpenDiscotdForFlp.cs:19
+#, csharp-format
+msgid "Open 18+ Discord server of {0}"
+msgstr "Открыть 18+Дискорд сервер поддержки {0}"
 
 #: Manage/Functions/UpdaterForFlp.cs:11
 msgid "🌐"

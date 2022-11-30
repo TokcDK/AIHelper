@@ -13,7 +13,7 @@ namespace AIHelper.Manage.Functions
 {
     internal class AddNewGameForFlp : FunctionForFlpBase
     {
-        public override string Symbol => T._("🎮");
+        public override string Symbol => T._("G+"); //🎮
 
         public override string Description => string.Format(T._("Add new game into {0} for management.", Application.ProductName));
 

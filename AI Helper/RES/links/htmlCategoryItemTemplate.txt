@@ -1,0 +1,1 @@
+<a target="_blank" rel="noopener noreferrer" href="%link%">%text%</a><br><p style="color:yellow;display:inline">%description%</p><p style="color:yellow;display:inline"><br></p>

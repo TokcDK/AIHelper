@@ -593,6 +593,7 @@ ROBOCOPY "$(TargetDir) " "$(TargetDir)RES\lib\ " *.dll *.pdb /XF "$(TargetName).
 ROBOCOPY "$(ProjectDir)RES\basic_games\ " "$(TargetDir)RES\basicgames\games " *.py
 ROBOCOPY "$(ProjectDir)RES\theme\default\report\ " "$(TargetDir)RES\theme\default\report " ReportTemplate.html
 ROBOCOPY "$(ProjectDir)RES\links\ " "$(TargetDir)RES\links " *.txt
+ROBOCOPY "$(ProjectDir)RES\links\ini " "$(TargetDir)RES\links\ini "
 ROBOCOPY "$(ProjectDir)RES\locale " "$(TargetDir)RES\locale " /MIR
 if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25</PostBuildEvent>
   </PropertyGroup>

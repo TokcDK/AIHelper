@@ -1,0 +1,1846 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: AI Helper\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-10-26 18:56+0500\n"
+"PO-Revision-Date: 2022-10-26 18:56+0500\n"
+"Last-Translator: \n"
+"Language-Team: Russian\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.7\n"
+"X-Poedit-Basepath: ../../../../\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: GetString;GetPluralString:1,2;"
+"GetParticularString:1c,2;GetParticularPluralString:1c,2,3;_;_n:1,2;_p:1c,2;"
+"_pn:1c,2,3;T_\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:46
+msgid ""
+"Log target selection.\n"
+"\n"
+"Show logs in console window or to file on disk.\n"
+"Other log parameters depend on selected target"
+msgstr ""
+"Выбор цели лога.\n"
+"\n"
+"Выводить лог в консоль или на диск.\n"
+"Другие параметры лога зависят от выбранной цели"
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:48
+msgid "Select all log levels"
+msgstr "Выбрать все уровни лога"
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:49
+msgid "Clear selection of log levels"
+msgstr "Очистка  выбора уровней лога"
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:50
+msgid "Log levels. How many messages will be displayed"
+msgstr "Уровни лога. Как много сообщений будет отображено"
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:52 Forms/MainForm.cs:334
+msgid "Open BepinEx log if found"
+msgstr "Открыть лог BepinEx, если найден"
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:53 Forms/MainForm.cs:335
+msgid ""
+"Click here to select log level\n"
+"Only displays the specified log level and above in the console output"
+msgstr ""
+"Клик -  выбор уровня лога\n"
+"Показывает в консоли сообщения только конкретного уровня и выше"
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:55
+msgid "Click to enable log"
+msgstr "Клините для включения лога"
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:57
+msgid "Open BepInEx documentation"
+msgstr "Открыть страницу с документацией BepinEx"
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:58
+msgid "Open BepInEx configuration file in Notepad"
+msgstr "Открыть файл конфигурации BepInEx в Блокноте"
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:118
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:127
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:264
+msgid "Console"
+msgstr "Консоль"
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:128
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:150
+#: Forms/MainForm.cs:187 Forms/MainForm.cs:206
+msgid "Settings"
+msgstr "Настройки"
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:129
+msgid "target"
+msgstr "цель"
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:130
+msgid "levels"
+msgstr "уровни"
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:262
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:268
+msgid "Disk"
+msgstr "Диск"
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:62
+#: Forms/MainForm.cs:195 Manage/ManageSettings.cs:895
+#: Manage/ManageSettings.cs:968
+msgid "Auto"
+msgstr "Авто"
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:147
+#: Forms/MainForm.cs:207
+msgid "Extra Settings"
+msgstr "Доп. настройки"
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:148
+msgid "Language"
+msgstr "Язык"
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:149
+msgid "Translate Service"
+msgstr "Сервис перевода"
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:169
+msgid "Open file with all settings"
+msgstr "Открыть файл со всеми настройками"
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:170
+msgid "Open XUA documentation"
+msgstr "Открыть страницу с документацией XUA"
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:171
+msgid "List of source languages. From which translate"
+msgstr "Список языков источников. С какого переводить"
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:172
+msgid "List of target languages. To which translate"
+msgstr "Список языков назначения. На какой переводить"
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:173
+msgid "List of translation services"
+msgstr "Список сервисо перевода"
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:176
+msgid ""
+"From XUA documentation.\n"
+"The supported translators are: "
+msgstr ""
+"Из документации XUA.\n"
+"поддерживаемые переводчики: "
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:178
+msgid ""
+"GoogleTranslate, based on the online Google translation service. Does not "
+"require authentication."
+msgstr ""
+"GoogleTranslate, основан на онлайн сервисе перевода Google. Не требует "
+"авторизации."
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:180
+msgid ""
+"GoogleTranslateV2, based on the online Google translation service. Does not "
+"require authentication.No limitations, but unstable.Currently being tested."
+"May replace original version in future since that API is no longer used on "
+"their official translator web."
+msgstr ""
+"GoogleTranslateV2, основан на онлайн сервисе Google translation. Не требует "
+"авторизации. Нет лимита, но нестабилен. Тестируется. Может заменить "
+"оригинальную версию в будущем, т.е. API больше не не используется на их "
+"официальной веб странице перевода."
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:182
+msgid ""
+"GoogleTranslateCompat, same as the above, except requests are served out-of-"
+"process which is needed in some versions of Unity/Mono."
+msgstr ""
+"GoogleTranslateCompat, то, что выше, кроме запросов и обслуживается вне "
+"процесса, что требуется в некоторых версиях Unity/Mono."
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:184
+msgid ""
+"DeepLTranslate, based on the online DeepL translation service. Does not "
+"require authentication. No limitations, but unstable. Remarkable quality."
+msgstr ""
+"DeepLTranslate, основан на онлайн сервисе DeepL. Не требует авторизации. Нет "
+"лимитов, но нестабилен. Хорошее качество."
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:186
+msgid ""
+"DeepLTranslateLegitimate, based on the online DeepL translation service. "
+"Requires an API Key. $4.99 per month and $20 per million characters "
+"translated that month.Expensive but remarkable quality. For now, you must "
+"subscribe to DeepL API(for Developers). - DOES NOT WORK WITH DeepL "
+"Pro(Starter, Advanced and Ultimate)"
+msgstr ""
+"DeepLTranslateLegitimate, основан на онлайн сервисе перевода Deepl. "
+"Требуется ключ API. $4.99 в месяц и $20 за миллион букв, переведенных в "
+"текущем месяце. Дорого, но хорошее качество. Сейчас нужно подписаться на "
+"DeepL API(for Developers). - НЕ РАБОТАЕТ С DeepL Pro(Starter, Advanced and "
+"Ultimate)"
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:188
+msgid ""
+"GoogleTranslateLegitimate, based on the Google cloud translation API. "
+"Requires an API key.\n"
+"Provides trial period of 1 year with $300 credits. Enough for 15 million "
+"characters translations."
+msgstr ""
+"GoogleTranslateLegitimate, основан на облачном API Google. Требует ключ "
+"API.\n"
+"Предоставляет тестовый период сроком на 1 год с кредитами на 300 долларов, "
+"чего хватает на перевод 15 миллионов букв."
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:190
+msgid ""
+"BingTranslate, based on the online Bing translation service. Does not "
+"require authentication.\n"
+"No limitations, but unstable."
+msgstr ""
+"BingTranslate, основан на онлайн сервисе перевода Bing.  Не требует "
+"авторизации.\n"
+"No limitations, but unstable."
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:192
+msgid ""
+"BingTranslateLegitimate, based on the Azure text translation. Requires an "
+"API key.\n"
+"Free up to 2 million characters per month."
+msgstr ""
+"BingTranslateLegitimate, основан на переводе текста от Azure.Требует ключ "
+"API.\n"
+"Бесплатно до 2 миллионов символов в месяц."
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:194
+msgid ""
+"PapagoTranslate, based on the online Google translation service. Does not "
+"require authentication.\n"
+"No limitations, but unstable."
+msgstr ""
+"PapagoTranslate, основан на онлайн сервисе перевода Google. Не требует "
+"авторизации.\n"
+"Без лимитов, но нестабилен."
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:196
+msgid ""
+"BaiduTranslate, based on Baidu translation service. Requires AppId and "
+"AppSecret.\n"
+"Not sure on quotas on this one."
+msgstr ""
+"BaiduTranslate, основан на онлайн сервисе перевода Baidu. Требует AppId и "
+"AppSecret.\n"
+"Точные ограничения на перевод неизвестны."
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:198
+msgid ""
+"YandexTranslate, based on the Yandex translation service. Requires an API "
+"key.\n"
+"Free up to 1 million characters per day, but max 10 million characters per "
+"month."
+msgstr ""
+"YandexTranslate, based on the online Yandex. Требует ключ API.\n"
+"Бесплатно до 1 миллиона букв в день, но не более 10 миллионов в месяц."
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:200
+msgid ""
+"WatsonTranslate, based on IBM's Watson. Requires a URL and an API key.\n"
+"Free up to 1 million characters per month."
+msgstr ""
+"WatsonTranslate, основан на Watson от IBM . Требует URL и ключ API.\n"
+"Бесплатно до 1 миллиона букв в месяц."
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:202
+msgid ""
+"LecPowerTranslator15, based on LEC's Power Translator. Does not require "
+"authentication, but does require the software installed."
+msgstr ""
+"LecPowerTranslator15, основан на Power Translator от LEC. Не требует "
+"авторизации, но требуется установка соответствующего ПО."
+
+#: Forms/ExtraSettings/ExtraSettingsForm.cs:58
+msgid "not found"
+msgstr "не найден"
+
+#: Forms/MainForm.cs:71
+msgid ""
+"Mod Organizer is missing in the app dir. Need to download latest version for "
+"to be able to manage mods by MO. Download latest?"
+msgstr ""
+"Mod Organizer отсутствует в папке программы. Нужно загрузить последнюю "
+"версию для управления модами через него. Загрузить?"
+
+#: Forms/MainForm.cs:71
+msgid "Mod Organizer not found!"
+msgstr "Mod Organizer не найден!"
+
+#: Forms/MainForm.cs:74
+msgid ""
+"Application will exit now. You can manually put Mod Organizer in MO folder "
+"nex to the program."
+msgstr ""
+"Программа завершает работу. Вы можете вручную поместить файлы Mod Organizer "
+"в папку MO рядом с программой."
+
+#: Forms/MainForm.cs:182
+msgid "Current Game"
+msgstr "Текущая игра"
+
+#: Forms/MainForm.cs:183
+msgid "Install"
+msgstr "Установка"
+
+#: Forms/MainForm.cs:184
+msgid "Fix modlist"
+msgstr "Фикс модов"
+
+#: Forms/MainForm.cs:185
+msgid "Update"
+msgstr "Обновление"
+
+#: Forms/MainForm.cs:189 Manage/ManageOther.cs:84
+msgid "Shortcut"
+msgstr "Ярлык"
+
+#: Forms/MainForm.cs:191
+msgid "Registry"
+msgstr "Реестр"
+
+#: Forms/MainForm.cs:192
+msgid "Display"
+msgstr "Экран"
+
+#: Forms/MainForm.cs:194
+msgid "fullscreen"
+msgstr "во весь экран"
+
+#: Forms/MainForm.cs:196
+msgid "Folders"
+msgstr "Папки"
+
+#: Forms/MainForm.cs:197 Forms/MainForm.cs:204
+msgid "Game"
+msgstr "Игра"
+
+#: Forms/MainForm.cs:198
+msgid "Mods"
+msgstr "Моды"
+
+#: Forms/MainForm.cs:199
+msgid "Info"
+msgstr "Инфо"
+
+#: Forms/MainForm.cs:200 Forms/MainForm.cs:201
+msgid "Launch"
+msgstr "Запуск"
+
+#: Forms/MainForm.cs:202
+msgid "Tools"
+msgstr "Инструменты"
+
+#: Forms/MainForm.cs:203
+msgid "Studio"
+msgstr "Студия"
+
+#: Forms/MainForm.cs:205
+msgid "Manager"
+msgstr "Менеджер"
+
+#: Forms/MainForm.cs:208
+msgid "Orig Launcher"
+msgstr "Ориг. лаунчер"
+
+#: Forms/MainForm.cs:209 Manage/ManageReport.cs:71
+msgid "Links"
+msgstr "Ссылки"
+
+#: Forms/MainForm.cs:210
+msgid "Perfomance"
+msgstr "Производительность"
+
+#: Forms/MainForm.cs:211
+msgid "Normal"
+msgstr "Нормально"
+
+#: Forms/MainForm.cs:212
+msgid "Quality"
+msgstr "Качество"
+
+#: Forms/MainForm.cs:296
+msgid ""
+"Illusion games manager.\n"
+"\n"
+"Move mouse over wished button or text to see info about it"
+msgstr ""
+"менеджер игр компании Illusion.\n"
+"\n"
+"Наведите курсор мыши на желаемую кнопку или текст для подсказки"
+
+#: Forms/MainForm.cs:300
+msgid "Selected game title"
+msgstr "Название выбранной игры"
+
+#: Forms/MainForm.cs:303
+msgid "Check to run VR exe instead on standart"
+msgstr "Отметить для запуска VR exe, если есть"
+
+#: Forms/MainForm.cs:305 Forms/MainForm.cs:307
+msgid "Will execute the Game"
+msgstr "Запустит игру"
+
+#: Forms/MainForm.cs:306 Forms/MainForm.cs:310 Forms/MainForm.cs:316
+msgid " from Mod Organizer with attached mods"
+msgstr " из под Mod Organizer с подключенными модами"
+
+#: Forms/MainForm.cs:309 Forms/MainForm.cs:311
+msgid "Will execute Studio"
+msgstr "Запустит Студию"
+
+#: Forms/MainForm.cs:313
+msgid "Will execute Mod Organizer mod manager where you can manage your mods"
+msgstr "Запустит Mod Organizer, где вы можете управлять своими модами"
+
+#: Forms/MainForm.cs:315 Forms/MainForm.cs:317
+msgid "Will execute original game launcher"
+msgstr "Запустит оригинальный лаунчер игры"
+
+#: Forms/MainForm.cs:319
+msgid "Will be opened Settings tab"
+msgstr "Будет открыта вкладка Настройки"
+
+#: Forms/MainForm.cs:320
+msgid "Same as button in Tool tab.\n"
+msgstr "То же, что и кнопка на вкладке Инструменты.\n"
+
+#: Forms/MainForm.cs:322 Forms/MainForm.cs:424
+msgid ""
+"Will convert game from MO Mode to Common mode\n"
+" when you can run exes from Data folder without Mod Organizer.\n"
+" You can convert game back to MO mode\n"
+" when it will be need to install new mods or test your mod config"
+msgstr ""
+"Конвертирует игру из режима для Mod Organizer в Обычный режим,\n"
+" когда вы можете запускать программы напрямую из папки Data, без МО.\n"
+" Вы можете конвертировать игру назад в МО режим,\n"
+" когда понадобится установить новые моды или протестировать существующие"
+
+#: Forms/MainForm.cs:327 Forms/MainForm.cs:428
+msgid ""
+"Will convert the game to MO mode\n"
+" when all mod files will be moved back to Mods folder\n"
+" in their folders and vanilla files restored"
+msgstr ""
+"Конвертирует игру в режим для МО,\n"
+" когда все файлы модов будут перемещены обратно в папку Mods,\n"
+" в их подпапки и ванильные файлы восстановлены"
+
+#: Forms/MainForm.cs:333
+msgid "Discord page. Info, links, support."
+msgstr "Страница Discord. Информация, ссылки, поддержка."
+
+#: Forms/MainForm.cs:340
+msgid ""
+"When checked will create shortcut for the AI Helper on Desktop and will fix "
+"registry if need"
+msgstr ""
+"Когда отмечено, создаст ярлык для AI Helper на Рабочем столе и исправит "
+"реестр, если нужно"
+
+#: Forms/MainForm.cs:341
+msgid "Game Display settings"
+msgstr "Графические настройки игры"
+
+#: Forms/MainForm.cs:342
+msgid "Open Setup.xml in notepad"
+msgstr "Открыть Setup.xml в блокноте"
+
+#: Forms/MainForm.cs:343
+msgid "Select preferred screen resolution"
+msgstr "Выберете предпочитаемое разрешение экрана"
+
+#: Forms/MainForm.cs:344
+msgid "When checked game will be in fullscreen mode"
+msgstr "Когда отмечено, игра запустится в полноэкранном режиме"
+
+#: Forms/MainForm.cs:345
+msgid "Select preferred graphics quality"
+msgstr "Выберете предпочитаемое качество графики"
+
+#: Forms/MainForm.cs:347
+msgid "Will create shortcut in Desktop if not exist"
+msgstr "Создаст ярлык на Рабочем столе, если отсутствует"
+
+#: Forms/MainForm.cs:349
+msgid "Will set Data dir with game files as install dir in registry"
+msgstr "Установит в реестре папку Data с файлами игры как папку установки"
+
+#: Forms/MainForm.cs:352
+msgid "Open Data folder of selected game"
+msgstr "Открывает папку Data выбранной игры"
+
+#: Forms/MainForm.cs:353
+msgid "Open Mods folder of selected game"
+msgstr "Открывает папку Mods выбранной игры"
+
+#: Forms/MainForm.cs:354
+msgid "Open Mod Organizer folder"
+msgstr "Открывает папку Mod Organizer"
+
+#: Forms/MainForm.cs:355
+msgid ""
+"Open Overwrite folder of Mod Organizer with possible new generated files for "
+"selected game\n"
+"\n"
+"Files here have highest priority and will be loaded over any enabled mod "
+"files"
+msgstr ""
+"Открывает папку Overwrite Mod Organizer с возможными новыми генерируемыми "
+"файлыми выбранной игры\n"
+"\n"
+"Файлы здесь имеют наивысший приоритет и будут загружны поверх файлов любых "
+"подключенных модов"
+
+#: Forms/MainForm.cs:356
+msgid ""
+"Open MyUserData folder in Mods if exist\n"
+"\n"
+"Here placed usual User files of Organized ModPack for selected game"
+msgstr ""
+"Открывает папку MyUserData в Mods, если существует\n"
+"\n"
+"Здесь обычно лежат файлы пользователя для выбранной игры"
+
+#: Forms/MainForm.cs:357
+msgid "Open dir for character cards"
+msgstr ""
+"Открыть папку с карточками персонажей. Обычно это папка с наивысшим "
+"приоритетом или папка Data в обычном режиме."
+
+#: Forms/MainForm.cs:358
+msgid "Open dir for character cards using Mod Organizer when game in MO mode."
+msgstr ""
+"Открыть папку с карточками персонажей используя Mod Organizer, когда игра в "
+"МО режиме."
+
+#: Forms/MainForm.cs:360
+msgid "Open list of links for game resources"
+msgstr "Открыть список ссылок на ресурсы для игры"
+
+#: Forms/MainForm.cs:361
+msgid "Open extra setting window for plugins and etc"
+msgstr "Открыть экстра настройки плагинов и т.п."
+
+#: Forms/MainForm.cs:363
+msgid "List of found games. Current"
+msgstr "Список найденных игры. Текущая"
+
+#: Forms/MainForm.cs:368
+msgid "Open folder, where from mod files can be installed fo selected game"
+msgstr "Открыть папку, откуда моды могут быть установлены для текущей игры"
+
+#: Forms/MainForm.cs:369
+msgid ""
+"\n"
+"\n"
+"Here can be placed mod files which you want to install for selected game in "
+"approriate subfolders in mods\n"
+"and then can be installed all by one click on"
+msgstr ""
+"\n"
+"\n"
+"Сюда могут быть помещены файлы модов, которые вы хотите установить для "
+"выбранной игры в соответствующие подпапки в Mods\n"
+"и тогда могут быть установлены одним кликом по кнопке"
+
+#: Forms/MainForm.cs:370
+msgid "button"
+msgstr " кнопка"
+
+#: Forms/MainForm.cs:371
+msgid "which can be found in"
+msgstr "которая расположена на вкладке"
+
+#: Forms/MainForm.cs:371
+msgid "tab page"
+msgstr "вкладка"
+
+#: Forms/MainForm.cs:372
+msgid "Helper recognize"
+msgstr "Помощник распознает"
+
+#: Forms/MainForm.cs:373
+msgid ".dll files of BepinEx plugins"
+msgstr ".dll-файлы плагинов для BepinEx"
+
+#: Forms/MainForm.cs:374
+msgid "Sideloader mod archives"
+msgstr "Архивы модов для плагина Sideloader mod"
+
+#: Forms/MainForm.cs:375
+msgid "Female character cards"
+msgstr "Карточки женских персонажей"
+
+#: Forms/MainForm.cs:376
+msgid "Female character cards in \"f\" subfolder"
+msgstr "Карточки женских персонажей в подпапке \"f\""
+
+#: Forms/MainForm.cs:377
+msgid "Male character cards in \"m\" subfolder"
+msgstr "Карточки мужских персонажей в подпапке \"m\""
+
+#: Forms/MainForm.cs:378
+msgid "Coordinate clothes set cards in \"c\" subfolder"
+msgstr "Карточки координат одежды в подпапке \"c\""
+
+#: Forms/MainForm.cs:379
+msgid "Studio scene cards in \"s\" subfolder"
+msgstr "Карточки сцен Студии в подпапке \"s\""
+
+#: Forms/MainForm.cs:380
+msgid "Cardframe Front cards in \"cf\" subfolder"
+msgstr "Карточки передних планов в подпапке \"cf\""
+
+#: Forms/MainForm.cs:381
+msgid "Cardframe Back cards in \"cf\" subfolder"
+msgstr "Карточки задних планов в подпапке \"cb\""
+
+#: Forms/MainForm.cs:382
+msgid "Script loader scripts"
+msgstr "Скрипты для плагина Script loader"
+
+#: Forms/MainForm.cs:383
+msgid "Housing plan cards in \"h\\01\", \"h\\02\", \"h\\03\" subfolders"
+msgstr "Карточки планов домов в падпапках \"h\\01\", \"h\\02\", \"h\\03\""
+
+#: Forms/MainForm.cs:384
+msgid "Overlays cards in \"o\" subfolder"
+msgstr "Карточки оверлеев в подпапке \"o\""
+
+#: Forms/MainForm.cs:385
+msgid "folders with overlays cards in \"o\" subfolder"
+msgstr "Подпапки с карточками оверлеев в подпапке \"o\""
+
+#: Forms/MainForm.cs:386
+msgid "Subfolders with modfiles"
+msgstr "Подпапки с файлами модов"
+
+#: Forms/MainForm.cs:387
+msgid "Zip archives with mod files"
+msgstr "Zip архивы с папками модов"
+
+#: Forms/MainForm.cs:388
+msgid "Any Rar and 7z archives will be extracted for install"
+msgstr "Любые Rar или 7zip архивы"
+
+#: Forms/MainForm.cs:389
+msgid ""
+"\n"
+"Some recognized mods can be updated instead of be installed as new mod"
+msgstr ""
+"\n"
+"Некоторые опознанные моды могут быть обновлены если присутствуют в папке с "
+"тем же именем."
+
+#: Forms/MainForm.cs:390
+msgid ""
+"\n"
+"Most of mods will be automatically activated except .cs scripts\n"
+"which always optional and often it is cheats or can slowdown/break game"
+msgstr ""
+"\n"
+"Любые Rar и 7z архивы будут распакованы\n"
+"Некоторые распознанные моды будут обновлены вместо установки в новую папку\n"
+"Большинство модов будут автоматически подключены, кроме .cs скриптов\n"
+"которые всегда будут опциональными и часто являются читами, могут замедлить."
+"сломать игру"
+
+#: Forms/MainForm.cs:398
+msgid "Fix problems in current enabled mods list"
+msgstr "Исправление известных проблем в списке подключенных модов"
+
+#: Forms/MainForm.cs:401 Forms/Other/ModeSwitchDialog.cs:154
+#: Forms/Other/UpdateOptionsDialog.cs:144
+msgid "Open older plugins buckup folder"
+msgstr "Открыть папку с резервными копиями старых версий обновленных плагинов"
+
+#: Forms/MainForm.cs:404 Forms/Other/ModeSwitchDialog.cs:157
+#: Forms/Other/UpdateOptionsDialog.cs:147
+msgid "Update Mod Organizer and enabled mods"
+msgstr " Обновление Mod Organizer с подключенными модами"
+
+#: Forms/MainForm.cs:405 Forms/Other/ModeSwitchDialog.cs:158
+#: Forms/Other/UpdateOptionsDialog.cs:148
+msgid "Mod Organizer already have hardcoded info"
+msgstr "Mod Organizer уже имеет информацию об обновлении"
+
+#: Forms/MainForm.cs:406 Forms/Other/ModeSwitchDialog.cs:159
+#: Forms/Other/UpdateOptionsDialog.cs:149
+msgid ""
+"Mods will be updated if there exist info in meta.ini notes or in updateInfo."
+"txt"
+msgstr ""
+"Моды будут обновлени, если есть информация в примечании meta.ini или в файле "
+"updateInfo.txt"
+
+#: Forms/MainForm.cs:407 Forms/Other/ModeSwitchDialog.cs:160
+#: Forms/Other/UpdateOptionsDialog.cs:150
+msgid ""
+"After plugins update check will be executed KKManager StandaloneUpdater for "
+"Sideloader modpack updates check for games where it is possible"
+msgstr ""
+"После проверки обновлений плагинов будет запущен KKManager StandaloneUpdater "
+"для проверки обновлений Sideloader modpack, если для игры это возможно"
+
+#: Forms/MainForm.cs:434 Forms/Other/SwitchModeDialogForm.cs:89
+msgid ""
+"Enables backup creation of selected game before mode switch\n"
+" to be possible to restore Data and Mods dirs.\n"
+"\n"
+"Backup creating using ntfs hardlinks and not consumes any extra space."
+msgstr ""
+"Включает создание резервной копии выбранной игры перед переключением "
+"режима,\n"
+"для возможности ручного восстановления папок Data и Mods.\n"
+"\n"
+"Создание резервной копии использует жесткие ссылки ntfs, на те же файлы и не "
+"расходет свободное место."
+
+#: Forms/MainForm.cs:440
+msgid "Install mods and userdata, placed in"
+msgstr "Установка модов и пользовательских файлов из"
+
+#: Forms/MainForm.cs:441
+msgid " to MO format in Mods when possible"
+msgstr " в MO-формат в Mods, когда возможно"
+
+#: Forms/MainForm.cs:443
+msgid " to the game folder when possible"
+msgstr " в папку игры, если возможно"
+
+#: Forms/MainForm.cs:445
+msgid "Open folder where you can drop/download files for autoinstallation"
+msgstr "Откроет папку, куда вы можете кинуть/загрузить файлы для автоустановки"
+
+#: Forms/MainForm.cs:528
+msgid "Mods dir created"
+msgstr "Папки модов созданы"
+
+#: Forms/MainForm.cs:533
+#, csharp-format
+msgid "{0} game installed in {1}"
+msgstr "Игра {0} установлена в {1}"
+
+#: Forms/MainForm.cs:537
+#, csharp-format
+msgid "{0} archive in {1}"
+msgstr "Архив {0} в {1}"
+
+#: Forms/MainForm.cs:541
+#, csharp-format
+msgid "{0} files not in {1}. Move {0} game files there."
+msgstr "Файлы {0} не в {1}. Поместите файлы игры {0} туда."
+
+#: Forms/MainForm.cs:546
+#, csharp-format
+msgid "{0} dir created. Move {1} game files there."
+msgstr "Созда папка {0}. Поместите файлы игры {1} туда."
+
+#: Forms/MainForm.cs:585 Manage/ModeSwitch/ModeSwitcherBase.cs:54
+msgid "CommonToMO"
+msgstr "Обычный в МО"
+
+#: Forms/MainForm.cs:586 Forms/MainForm.cs:587 Forms/MainForm.cs:696
+#: Manage/ModeSwitch/ToCommonMode.cs:20
+msgid "Common mode"
+msgstr "Обычный режим"
+
+#: Forms/MainForm.cs:665
+msgid "Found mod folders in Mods"
+msgstr "Найдены папки модов в Mods"
+
+#: Forms/MainForm.cs:668
+msgid "Mods Ready"
+msgstr "Моды готовы"
+
+#: Forms/MainForm.cs:672 Manage/ModeSwitch/ModeSwitcherBase.cs:54
+msgid "MOToCommon"
+msgstr "MO в Обычный"
+
+#: Forms/MainForm.cs:675 Forms/MainForm.cs:701
+#: Forms/Other/SwitchModeDialogForm.cs:46 Manage/ModeSwitch/ToMOMode.cs:19
+msgid "MO mode"
+msgstr "MO режим"
+
+#: Forms/MainForm.cs:826
+msgid ""
+"Game in Common mode now.\n"
+" To execute Mod Organizer convert game back\n"
+" to MO mode by button in Tools tab"
+msgstr ""
+"Игра сейчас в обычном режиме.\n"
+" Для запуска Mod Organizer сконвертируйте игру\n"
+" назад в режим для MO кнопкой на вкладке Инструменты"
+
+#: Forms/MainForm.cs:971
+msgid ""
+"No compatible for installation formats found in install folder.\n"
+"\n"
+"It must be archvives, game files or folders with game files.\n"
+"\n"
+"Will be opened installation dir where you can drop files for installation."
+msgstr ""
+"Не найдено совместимых форматов для установки\n"
+"\n"
+"Это должны быть файлы игры или архивы/папки с ними внутри.\n"
+"\n"
+"Будет открыта папка установки, куда можно кинуть файлы для установки."
+
+#: Forms/MainForm.cs:980 Forms/MainForm.cs:1279
+#: Manage/ModeSwitch/ToCommonMode.cs:17 Manage/ModeSwitch/ToMOMode.cs:15
+msgid "Attention"
+msgstr "Внимание"
+
+#: Forms/MainForm.cs:980
+msgid ""
+"Impossible to correctly install/update mods\n"
+"\n"
+" in standart mode because files was moved in Data."
+msgstr ""
+"Нельзя  правильно установить/обновить моды\n"
+"\n"
+" в обычном режиме, т.к. файлы были помещены в Data."
+
+#: Forms/MainForm.cs:980 Forms/MainForm.cs:1279
+msgid "Switch to MO mode?"
+msgstr "Переключиться в МО режим?"
+
+#: Forms/MainForm.cs:980 Forms/MainForm.cs:1279
+msgid "Confirmation"
+msgstr "Подтверждение"
+
+#: Forms/MainForm.cs:994
+msgid "Install from"
+msgstr "Установка"
+
+#: Forms/MainForm.cs:1001
+msgid ""
+"All possible mods installed. Install all rest in install folder manually."
+msgstr ""
+"Все возможные моды установлены. Установите оставшиеся в папке установки "
+"вручную."
+
+#: Forms/MainForm.cs:1267
+msgid "Move mouse cursor over wished button or text to see info about it"
+msgstr ""
+"Наведите курсор мыши на желаемую кнопку или текст для просмотра подсказки"
+
+#: Forms/MainForm.cs:1279
+msgid "Correct modlist fixes possible only in MO mode"
+msgstr "Исправление списка модов возможно только в режиме МО"
+
+#: Forms/MainForm.cs:1472
+msgid ""
+"New files created by the game will be stored here. Saves, plugins configs "
+"and other."
+msgstr ""
+"Новые файлы созданные игрой будут помещены здесь. Сохранения, настройки "
+"плагинов и т.п."
+
+#: Forms/Other/CleanOptionsDialogForm.cs:30
+msgid "Cleaning options"
+msgstr "Опции очистки"
+
+#: Forms/Other/CleanOptionsDialogForm.cs:31
+msgid "Move to the new mod"
+msgstr "Поместить в новый мод"
+
+#: Forms/Other/CleanOptionsDialogForm.cs:32
+#: Manage/Functions/DataDirCleaner.cs:37
+msgid "Ignore symlinks"
+msgstr "Игнорить символические сслыки"
+
+#: Forms/Other/CleanOptionsDialogForm.cs:33
+msgid "Ignore shortcuts"
+msgstr "Игнорить ярлыки"
+
+#: Forms/Other/CleanOptionsDialogForm.cs:78
+msgid ""
+"Instead of bakup folder removed files will be moved into new enabled mod in "
+"top of mods list"
+msgstr ""
+"Вместо папки для резервных копий убираемые файлы будут перемещены в новый "
+"подключенный мод в начале списка"
+
+#: Forms/Other/CleanOptionsDialogForm.cs:81
+msgid "Will ignore any symbolic links"
+msgstr "Будет игнорить любые символические ссылки (замедляет очистку)"
+
+#: Forms/Other/CleanOptionsDialogForm.cs:84
+msgid "Will ignore any shortcuts"
+msgstr "Будет игнорить ярлыки"
+
+#: Forms/Other/DialogFormGeneral.cs:36
+msgid "Options"
+msgstr "Опции"
+
+#: Forms/Other/DialogFormGeneral.cs:37 Forms/Other/ModeSwitchDialog.cs:110
+#: Forms/Other/UpdateOptionsDialog.cs:100
+msgid "Start"
+msgstr "Начать"
+
+#: Forms/Other/DialogFormGeneral.cs:38 Forms/Other/ModeSwitchDialog.cs:111
+#: Forms/Other/SwitchModeDialogForm.cs:49
+#: Forms/Other/UpdateOptionsDialog.cs:101
+msgid "Cancel"
+msgstr "Отмена"
+
+#: Forms/Other/DialogFormGeneral.cs:81
+msgid "Start process"
+msgstr "Начать"
+
+#: Forms/Other/DialogFormGeneral.cs:84
+msgid "Cancel process and close the form"
+msgstr "Отменить и закрыть окно"
+
+#: Forms/Other/ModeSwitchDialog.cs:104 Forms/Other/UpdateOptionsDialog.cs:94
+msgid "Update options"
+msgstr "Варианты обновления"
+
+#: Forms/Other/ModeSwitchDialog.cs:105 Forms/Other/UpdateOptionsDialog.cs:95
+#: Manage/ManageUpdateMods.cs:185
+msgid "Update zipmods"
+msgstr "Обновление зипмодов"
+
+#: Forms/Other/ModeSwitchDialog.cs:106 Forms/Other/UpdateOptionsDialog.cs:96
+msgid "Check test zipmods pack"
+msgstr "Проверять тестовый зипмод пак"
+
+#: Forms/Other/ModeSwitchDialog.cs:107 Forms/Other/UpdateOptionsDialog.cs:97
+#: Manage/Update/Updater.cs:66
+msgid "Update plugins"
+msgstr "Обновление плагинов"
+
+#: Forms/Other/ModeSwitchDialog.cs:108 Forms/Other/UpdateOptionsDialog.cs:98
+msgid "Only enabled plugins"
+msgstr "Только включенные плагины"
+
+#: Forms/Other/ModeSwitchDialog.cs:109 Forms/Other/UpdateOptionsDialog.cs:99
+msgid "Old versions"
+msgstr "Старые версии"
+
+#: Forms/Other/ModeSwitchDialog.cs:162 Forms/Other/UpdateOptionsDialog.cs:152
+msgid "Warning! More of packs you check more of memory game will consume."
+msgstr ""
+"Внимание! Чем больше паков вы отмечаете, тем больше памяти будет расходовать "
+"игра."
+
+#: Forms/Other/ModeSwitchDialog.cs:163 Forms/Other/UpdateOptionsDialog.cs:153
+msgid "Check only what you really using or you can 16+ gb of memory."
+msgstr ""
+"Отмечайте только, если реально используете или памяти 16 гб. или более."
+
+#: Forms/Other/ModeSwitchDialog.cs:164 Forms/Other/UpdateOptionsDialog.cs:154
+msgid "Check if need to run update check for sideloader modpacks."
+msgstr "Отметить, если нужно проверить обновления для Sideloader модпаков."
+
+#: Forms/Other/ModeSwitchDialog.cs:167 Forms/Other/UpdateOptionsDialog.cs:157
+msgid "Check if need to run update check for plugins and Mod Organizer."
+msgstr ""
+"Отметить, если нужно проверить обновления для плагинов и Mod Organizer."
+
+#: Forms/Other/ModeSwitchDialog.cs:169 Forms/Other/UpdateOptionsDialog.cs:159
+msgid "Check updates only for enabled plugins."
+msgstr "Проверять обновления только для подключенных плагинов."
+
+#: Forms/Other/ModeSwitchDialog.cs:172 Forms/Other/UpdateOptionsDialog.cs:162
+msgid "Check also updates of Bleeding Edge Sideloader Modpack in KKManager"
+msgstr ""
+"Проверять также обновление пака Bleeding Edge SIdeloader Modpack в KKManager"
+
+#: Forms/Other/ModeSwitchDialog.cs:173 Forms/Other/UpdateOptionsDialog.cs:163
+msgid ""
+"Bleeding Edge Sideloader modpack contains test versions of zipmods which is "
+"still not added in main modpacks"
+msgstr ""
+"Модпак SIdeloader Bleeding Edge содержит тестовые версии zipmod-ов, которые "
+"всё еще не в основных паках."
+
+#: Forms/Other/ProgressForm/ProgressForm.cs:15
+msgid "Parse"
+msgstr "Обработка"
+
+#: Forms/Other/SwitchModeDialogForm.cs:32
+msgid ""
+"Game mode will be changed to normal when used files will be moved to Data "
+"dir.\n"
+"Game will be executing raw from its exe.\n"
+"If checked Make backup then will be made\n"
+"a file structure backup of Data and Mods dirs\n"
+"using ntfs hard links not consuming disc space."
+msgstr ""
+"Переключение игры в обычный режим, файлы \n"
+"будут перемещены в Data. Запуск игры будет\n"
+"напрямую через её exe. Галочка на Резервная\n"
+"копия включит создание копии папок \n"
+"Mods и Data через ссылки, не тратя место."
+
+#: Forms/Other/SwitchModeDialogForm.cs:39
+msgid ""
+"Game mode will be changed back to MO when used files will be moved from Data "
+"to their\n"
+"mods original locations and new files will\n"
+"be moved in added mod so you can use MO features.\n"
+"Game will be executing from Mod Organizer."
+msgstr ""
+"Игра будет переключена в МО режим и\n"
+"используемые файлы возвращены из Data\n"
+"в папки модов, новые файлы в новый мод.\n"
+"\n"
+"Игра будет запускаться через Mod Organizer."
+
+#: Forms/Other/SwitchModeDialogForm.cs:46
+msgid "Mode switch. Current mode:"
+msgstr "Переключение режима. Текущий:"
+
+#: Forms/Other/SwitchModeDialogForm.cs:46
+msgid "Normal mode"
+msgstr "Обычный"
+
+#: Forms/Other/SwitchModeDialogForm.cs:47
+msgid "Make backup"
+msgstr "Резервная копия"
+
+#: Forms/Other/SwitchModeDialogForm.cs:48
+msgid "Switch mode"
+msgstr "Переключить"
+
+#: Games/Illusion/AIGirlTrial.cs:10 Games/Illusion/AiGirl.cs:12
+msgid "AI-Girl"
+msgstr "ИИ-Девушка"
+
+#: Games/Illusion/HoneySelect.cs:26
+msgid "Honey Select"
+msgstr "Honey Select"
+
+#: Games/Illusion/HoneySelect2.cs:23
+msgid "Honey Select 2"
+msgstr "Honey Select 2"
+
+#: Games/Illusion/Koikatsu.cs:21
+msgid "Koikatsu"
+msgstr "Койкатсу!"
+
+#: Games/Illusion/KoikatsuSunshine.cs:22
+msgid "Koikatsu Sunshine"
+msgstr "Koikatsu Sunshine"
+
+#: Games/Illusion/RoomGirl.cs:23
+msgid "Room Girl"
+msgstr "Комнатная девушка"
+
+#: Games/Kiss/Com3d2.cs:23
+msgid "Custom Order Maid 3D2"
+msgstr "Custom Order Maid 3D2"
+
+#: Install/Types/Directories/GameUpdateInstaller.cs:54
+msgid "Incorrect current game"
+msgstr "Неверная текущая игра"
+
+#: Install/Types/Directories/GameUpdateInstaller.cs:153
+msgid ""
+"Update applied.\n"
+"\n"
+"Will be opened Backup folder.\n"
+"Check content and remove files and dirs which not need for you animore."
+msgstr ""
+"Обновление применено!\n"
+"\n"
+"Будет открыта папка с резервными копиями.\n"
+"Проверьте содержимое и перенесите обратно нужные папки и файлы, ненужные "
+"всегда можете удалить.\n"
+"В папке GameUserData могут быть карточки ваших созданных персонажей!\n"
+"В папке KKManager могут быть папки модпаков.\n"
+"После можно запустить менеджер Mod Organizer и включить или отключить нужные "
+"моды, \n"
+"почитав информацию наведя курсор на значек справа от имени мода."
+
+#: Install/Types/Directories/GameUpdateInstaller.cs:158
+msgid "Update not required."
+msgstr "Обновление не требуется."
+
+#: Install/Types/Directories/GameUpdateInstaller.cs:446
+msgid "The marker shows where to sort new zipmods for this sideloader modpack"
+msgstr ""
+"Это маркер, показывающий, куда сортировать новые зпмоды для этого sideloader "
+"модпака"
+
+#: Manage/Functions/DataDirCleaner.cs:34
+msgid "Move into new mod"
+msgstr "Поместить в новый мод"
+
+#: Manage/Functions/DataDirCleaner.cs:41
+msgid "Ignore shortcurs"
+msgstr "Игнорить ярлыки"
+
+#: Manage/Functions/DataDirCleaner.cs:231
+#, csharp-format
+msgid ""
+"Cleaning finished! Moved {0} dirs and {1} files. Failed to move {2} items."
+msgstr ""
+"Очистка завершена! Перемещено {0} папок {1} файлов. Не удалось переместить "
+"{2}."
+
+#: Manage/Functions/DataDirCleaner.cs:231
+msgid ""
+"Will be opened the folder where files was moved. You can remove all you dont "
+"need."
+msgstr ""
+"Будет открыта папка, куда были перемещены файлы. Можно вручную удалить всё, "
+"что не нужно."
+
+#: Manage/ManageModOrganizer.cs:3464
+msgid "No profiles found for Current game"
+msgstr "Не найдены профили для текущей игры"
+
+#: Manage/ManageOther.cs:57
+msgid "Helper"
+msgstr "Помощник"
+
+#: Manage/ManageOther.cs:61
+msgid "Run"
+msgstr "Запуск"
+
+#: Manage/ManageOther.cs:84
+msgid "created"
+msgstr "создан"
+
+#: Manage/ManageOther.cs:360
+msgid "Select exe in the game dir you want to add.."
+msgstr ""
+"Выберете запускаемый файл в папке игры, которую хотите добавить.. Папка Data "
+"или еще не подготовленная папка с файлами игры."
+
+#: Manage/ManageOther.cs:456
+msgid "Games not found"
+msgstr "Игры не найдены"
+
+#: Manage/ManageOther.cs:457
+msgid "Need atleast one game in subfolder in Games folder"
+msgstr ""
+"Необходима по крайней мере одна игра в подпапке Games или папки Data, Mods и "
+"MO с данными игры"
+
+#: Manage/ManageOther.cs:459
+msgid "List of games"
+msgstr "Список игр"
+
+#: Manage/ManageOther.cs:462
+msgid "The game folder must contain"
+msgstr "Папка игры должна содержать"
+
+#: Manage/ManageOther.cs:463
+msgid "main game data"
+msgstr "основные данные игры"
+
+#: Manage/ManageOther.cs:464
+msgid "game mods in subfolders"
+msgstr "моды для игры"
+
+#: Manage/ManageOther.cs:465
+msgid "Mod Organizer folder with next data"
+msgstr "Папка Mod Organizer со следующими данными"
+
+#: Manage/ManageOther.cs:466
+msgid "profiles folder with mod combinations"
+msgstr "папка профилей с минимум одним профилем"
+
+#: Manage/ManageOther.cs:467
+msgid "list of categories for mods"
+msgstr "список категорий для модов"
+
+#: Manage/ManageOther.cs:468
+msgid "Mod Organizer settings for the game"
+msgstr "настройки Mod Organizer для игры"
+
+#: Manage/ManageOther.cs:469
+msgid "in place of any not exists MO data files will be created empty."
+msgstr "на месте отсутствующих файлов MO будут созданы пустые"
+
+#: Manage/ManageOther.cs:490
+msgid "New games:"
+msgstr "Новые игры:"
+
+#: Manage/ManageRegistry.cs:17
+msgid "Registry fixed! Install dir was set to Data dir."
+msgstr "Реестр исправлен! Папка установке присвоена к Data."
+
+#: Manage/ManageRegistry.cs:24
+msgid "Registry was already fixed"
+msgstr "Реестр уже исправлен"
+
+#: Manage/ManageSettings.cs:374
+msgid "Website"
+msgstr "Вебсайт"
+
+#: Manage/ManageSettings.cs:377
+msgid "click"
+msgstr "клик"
+
+#: Manage/ManageSettings.cs:383
+msgid "Update report"
+msgstr "Отчет об обновлении"
+
+#: Manage/ManageSettings.cs:386
+msgid "Click on line for more info"
+msgstr "Клик по стоке отобразит информацию"
+
+#: Manage/ManageSettings.cs:388
+msgid "No updates found"
+msgstr "Обновлений не найдено"
+
+#: Manage/ManageSettings.cs:896 Manage/ManageSettings.cs:969
+msgid "Afrikaans"
+msgstr "Африканский"
+
+#: Manage/ManageSettings.cs:897 Manage/ManageSettings.cs:970
+msgid "Albanian"
+msgstr "Албанский"
+
+#: Manage/ManageSettings.cs:898 Manage/ManageSettings.cs:971
+msgid "Arabic"
+msgstr "Арабский"
+
+#: Manage/ManageSettings.cs:899 Manage/ManageSettings.cs:972
+msgid "Armenian"
+msgstr "Армянский"
+
+#: Manage/ManageSettings.cs:900 Manage/ManageSettings.cs:973
+msgid "Azerbaijani"
+msgstr "Азербайджанский"
+
+#: Manage/ManageSettings.cs:901 Manage/ManageSettings.cs:974
+msgid "Basque"
+msgstr "Баскский"
+
+#: Manage/ManageSettings.cs:902 Manage/ManageSettings.cs:975
+msgid "Belarusian"
+msgstr "Белорусский"
+
+#: Manage/ManageSettings.cs:903 Manage/ManageSettings.cs:976
+msgid "Bengali"
+msgstr "Бенгальский"
+
+#: Manage/ManageSettings.cs:904 Manage/ManageSettings.cs:977
+msgid "Bulgarian"
+msgstr "Болгарский"
+
+#: Manage/ManageSettings.cs:905 Manage/ManageSettings.cs:978
+msgid "Catalan"
+msgstr "Каталонский"
+
+#: Manage/ManageSettings.cs:906 Manage/ManageSettings.cs:979
+msgid "Chinese"
+msgstr "Китайский"
+
+#: Manage/ManageSettings.cs:907 Manage/ManageSettings.cs:980
+msgid "Croatian"
+msgstr "Хорватский"
+
+#: Manage/ManageSettings.cs:908 Manage/ManageSettings.cs:981
+msgid "Czech"
+msgstr "Чешский"
+
+#: Manage/ManageSettings.cs:909 Manage/ManageSettings.cs:982
+msgid "Danish"
+msgstr "Датский"
+
+#: Manage/ManageSettings.cs:910 Manage/ManageSettings.cs:983
+msgid "Dutch"
+msgstr "Нидерландский"
+
+#: Manage/ManageSettings.cs:911 Manage/ManageSettings.cs:984
+msgid "English"
+msgstr "Английский"
+
+#: Manage/ManageSettings.cs:912 Manage/ManageSettings.cs:985
+msgid "Esperanto"
+msgstr "Эсперанто"
+
+#: Manage/ManageSettings.cs:913 Manage/ManageSettings.cs:986
+msgid "Estonian"
+msgstr "Эстонский"
+
+#: Manage/ManageSettings.cs:914 Manage/ManageSettings.cs:987
+msgid "Filipino"
+msgstr "Филиппинский"
+
+#: Manage/ManageSettings.cs:915 Manage/ManageSettings.cs:988
+msgid "Finnish"
+msgstr "Финский"
+
+#: Manage/ManageSettings.cs:916 Manage/ManageSettings.cs:989
+msgid "French"
+msgstr "Французский"
+
+#: Manage/ManageSettings.cs:917 Manage/ManageSettings.cs:990
+msgid "Galician"
+msgstr "Галицкий"
+
+#: Manage/ManageSettings.cs:918 Manage/ManageSettings.cs:991
+msgid "German"
+msgstr "Немецкий"
+
+#: Manage/ManageSettings.cs:919 Manage/ManageSettings.cs:992
+msgid "Georgian"
+msgstr "Грузинский"
+
+#: Manage/ManageSettings.cs:920 Manage/ManageSettings.cs:993
+msgid "Greek"
+msgstr "Греческий"
+
+#: Manage/ManageSettings.cs:921 Manage/ManageSettings.cs:994
+msgid "Haitian Creole"
+msgstr "Гаитянский Креольский"
+
+#: Manage/ManageSettings.cs:922 Manage/ManageSettings.cs:995
+msgid "Hebrew"
+msgstr "Иврит"
+
+#: Manage/ManageSettings.cs:923 Manage/ManageSettings.cs:996
+msgid "Hindi"
+msgstr "Хинди"
+
+#: Manage/ManageSettings.cs:924 Manage/ManageSettings.cs:997
+msgid "Hungarian"
+msgstr "Венгерский"
+
+#: Manage/ManageSettings.cs:925 Manage/ManageSettings.cs:998
+msgid "Icelandic"
+msgstr "Исландский"
+
+#: Manage/ManageSettings.cs:926 Manage/ManageSettings.cs:999
+msgid "Indonesian"
+msgstr "Индонезийский"
+
+#: Manage/ManageSettings.cs:927 Manage/ManageSettings.cs:1000
+msgid "Irish"
+msgstr "Ирландский"
+
+#: Manage/ManageSettings.cs:928 Manage/ManageSettings.cs:1001
+msgid "Italian"
+msgstr "Итальянский"
+
+#: Manage/ManageSettings.cs:929 Manage/ManageSettings.cs:1002
+msgid "Japanese"
+msgstr "Японский"
+
+#: Manage/ManageSettings.cs:930 Manage/ManageSettings.cs:1003
+msgid "Korean"
+msgstr "Корейский"
+
+#: Manage/ManageSettings.cs:931 Manage/ManageSettings.cs:1004
+msgid "Lao"
+msgstr "Лао"
+
+#: Manage/ManageSettings.cs:932 Manage/ManageSettings.cs:1005
+msgid "Latin"
+msgstr "Латинский"
+
+#: Manage/ManageSettings.cs:933 Manage/ManageSettings.cs:1006
+msgid "Latvian"
+msgstr "Латышский"
+
+#: Manage/ManageSettings.cs:934 Manage/ManageSettings.cs:1007
+msgid "Lithuanian"
+msgstr "Литовский"
+
+#: Manage/ManageSettings.cs:935 Manage/ManageSettings.cs:1008
+msgid "Macedonian"
+msgstr "Македонский"
+
+#: Manage/ManageSettings.cs:936 Manage/ManageSettings.cs:1009
+msgid "Malay"
+msgstr "Малайский"
+
+#: Manage/ManageSettings.cs:937 Manage/ManageSettings.cs:1010
+msgid "Maltese"
+msgstr "Мальтийский"
+
+#: Manage/ManageSettings.cs:938 Manage/ManageSettings.cs:1011
+msgid "Norwegian"
+msgstr "Норвежский"
+
+#: Manage/ManageSettings.cs:939 Manage/ManageSettings.cs:1012
+msgid "Persian"
+msgstr "Персидский"
+
+#: Manage/ManageSettings.cs:940 Manage/ManageSettings.cs:1013
+msgid "Polish"
+msgstr "Польский"
+
+#: Manage/ManageSettings.cs:941 Manage/ManageSettings.cs:1014
+msgid "Portuguese"
+msgstr "Португальский"
+
+#: Manage/ManageSettings.cs:942 Manage/ManageSettings.cs:1015
+msgid "Romanian"
+msgstr "Румынский"
+
+#: Manage/ManageSettings.cs:943 Manage/ManageSettings.cs:1016
+msgid "Russian"
+msgstr "Русский"
+
+#: Manage/ManageSettings.cs:944 Manage/ManageSettings.cs:1017
+msgid "Serbian"
+msgstr "Сербский"
+
+#: Manage/ManageSettings.cs:945 Manage/ManageSettings.cs:1018
+msgid "Slovak"
+msgstr "Словацкий"
+
+#: Manage/ManageSettings.cs:946 Manage/ManageSettings.cs:1019
+msgid "Slovenian"
+msgstr "Словенский"
+
+#: Manage/ManageSettings.cs:947 Manage/ManageSettings.cs:1020
+msgid "Spanish"
+msgstr "Испанский"
+
+#: Manage/ManageSettings.cs:948 Manage/ManageSettings.cs:1021
+msgid "Swahili"
+msgstr "Суахили"
+
+#: Manage/ManageSettings.cs:949 Manage/ManageSettings.cs:1022
+msgid "Swedish"
+msgstr "Шведский"
+
+#: Manage/ManageSettings.cs:950 Manage/ManageSettings.cs:1023
+msgid "Tamil"
+msgstr "Тамильский"
+
+#: Manage/ManageSettings.cs:951 Manage/ManageSettings.cs:1024
+msgid "Telugu"
+msgstr "Телугу"
+
+#: Manage/ManageSettings.cs:952 Manage/ManageSettings.cs:1025
+msgid "Thai"
+msgstr "Тайский"
+
+#: Manage/ManageSettings.cs:953 Manage/ManageSettings.cs:1026
+msgid "Turkish"
+msgstr "Турецкий"
+
+#: Manage/ManageSettings.cs:954 Manage/ManageSettings.cs:1027
+msgid "Ukrainian"
+msgstr "Украинский"
+
+#: Manage/ManageSettings.cs:955 Manage/ManageSettings.cs:1028
+msgid "Urdu"
+msgstr "Урду"
+
+#: Manage/ManageSettings.cs:956 Manage/ManageSettings.cs:1029
+msgid "Vietnamese"
+msgstr "Вьетнамский"
+
+#: Manage/ManageSettings.cs:957 Manage/ManageSettings.cs:1030
+msgid "Welsh"
+msgstr "Валлийский"
+
+#: Manage/ManageSettings.cs:958 Manage/ManageSettings.cs:1031
+msgid "Yiddish"
+msgstr "Идиш"
+
+#: Manage/ManageUpdateMods.cs:155
+msgid "KKManager's and it's Standalone Updater's new created files stored here"
+msgstr "Файлы, созданные KKManager или его программой обновления."
+
+#: Manage/ManageUpdateMods.cs:172
+msgid "Getting zipmods info"
+msgstr "Получение информации о зипмодах"
+
+#: Manage/ManageUpdateMods.cs:179
+msgid "Preactivate mods with Sideloader packs"
+msgstr "Преактивация модов с Sideloader паками"
+
+#: Manage/ManageUpdateMods.cs:191
+msgid "Sorting zipmods"
+msgstr "Сортировка зипмодов"
+
+#: Manage/ModeSwitch/GameBackuper.cs:30
+msgid "Creating backup of Data and Mods for the game"
+msgstr "Создание резервной копии папок Data и Mods выбранной игры"
+
+#: Manage/ModeSwitch/ToCommonMode.cs:19 Manage/ModeSwitch/ToMOMode.cs:17
+msgid "Conversation to"
+msgstr "Конвертация в"
+
+#: Manage/ModeSwitch/ToCommonMode.cs:22
+msgid ""
+"This will move using mod files from Mods folder to Data folder to make it "
+"like common installation variant.\n"
+"You can restore it later back to MO mode.\n"
+"\n"
+"Continue?"
+msgstr ""
+"Используемые файлы модов будут перемещены из папки Mods в папку Data, как "
+"при обычном режиме.\n"
+"Вы можете восстановить всё позднее назад в МО режим.\n"
+"\n"
+"Продолжить?"
+
+#: Manage/ModeSwitch/ToCommonMode.cs:140 Manage/ModeSwitch/ToCommonMode.cs:165
+msgid "Parsing"
+msgstr "Обработка"
+
+#: Manage/ModeSwitch/ToCommonMode.cs:147
+msgid "There is no enabled mods or files in Overwrite"
+msgstr "Не найдено включенных модов или файлов в Overwrite"
+
+#: Manage/ModeSwitch/ToCommonMode.cs:175
+msgid "Nothing to move"
+msgstr "Нечего перемещать"
+
+#: Manage/ModeSwitch/ToCommonMode.cs:217
+msgid ""
+"All mod files now in Data folder! You can restore MO mode by same button."
+msgstr ""
+"Все файлы модов теперь в папке Data! Вы можете восстановить режим МО той же "
+"кнопкой."
+
+#: Manage/ModeSwitch/ToMOMode.cs:21
+msgid ""
+"This will move all mod files back to Mods folder from Data and will switch "
+"to MO mode.\n"
+"\n"
+"Continue?"
+msgstr ""
+"Все файлы модов будут перемещены назад в папку Mods из Data и режим "
+"переключен на режим для МО.\n"
+"\n"
+"Продолжить?"
+
+#: Manage/ModeSwitch/ToMOMode.cs:172
+msgid ""
+"Mod Organizer mode restored! All mod files moved back to Mods folder. If in "
+"Data folder was added new files they also moved in Mods folder as new mod, "
+"check and sort it if need"
+msgstr ""
+"Режим для Mod Organizer восстановлен! Все файлы модов перемещены назад в "
+"папку Mods. Если в папке Data были добавлены новые файлы, они также будут "
+"перемещены в новый мод, проверьте и разберите содержимое, Если нужно"
+
+#: Manage/ModeSwitch/ToMOMode.cs:291
+msgid "Sort files if need"
+msgstr "Разберите файлы, если нужно"
+
+#: Manage/ModeSwitch/ToMOMode.cs:293
+msgid ""
+"<br>This files was added in Common mode<br>and moved as mod after "
+"convertation in MO mode.<br>Date: "
+msgstr ""
+"<br>Эти файлы были добавлены в Обычном режиме<br>и перемещены сюда как новый "
+"мод после конвертации в режим для MO.<br>Дата: "
+
+#: Manage/ModeSwitch/ToMOMode.cs:374
+msgid ""
+"Files in same paths already exist in original mod folder!\n"
+"\n"
+" This folder was created in time of conversion from Common mode to MO mode\n"
+" and because in destination place\n"
+" where mod file must be moved already was other file with same name.\n"
+" It could happen if content of the mod folder was updated\n"
+" when game was in common mode and was made same file in same place.\n"
+" Please check files here and if this files need for you\n"
+" then activate this mod or move files to mod folder with same name\n"
+" and if this files obsolete or just not need anymore then delete this mod "
+"folder."
+msgstr ""
+"Файлы по тем же путям уже существют в папке оригинальной мода\n"
+"\n"
+" Эта папка была создана во время конвертации из Обычного режима в режим для "
+"МО\n"
+" и т.к. в месте назначения,\n"
+" куда файл мода должен быть перемещен, уже был другой такой же файл.\n"
+" Это могло произойти, если содержимое мода было обновлено\n"
+" когда игра была в обычном режиме и был создан тот же файл на том же месте.\n"
+" Проверьте файлы здесь и сли они вам нужны\n"
+", отметьте этот мод галочкой или переместите файлы в папку оригинального "
+"мода\n"
+" , а если эти файлы устарели или просто ен нужны, удалите эту папку."
+
+#: Manage/Rules/ManageRules.cs:29
+msgid "Checking"
+msgstr "Проверка"
+
+#: Manage/Rules/ManageRules.cs:68 Manage/Rules/ManageRules.cs:89
+msgid "Results"
+msgstr "Результаты"
+
+#: Manage/Rules/ManageRules.cs:71 Manage/Rules/ManageRules.cs:92
+msgid "Actions"
+msgstr "Действия"
+
+#: Manage/Rules/ManageRules.cs:75 Manage/Rules/ManageRules.cs:96
+msgid "Mod"
+msgstr "Мод"
+
+#: Manage/Rules/ManageRules.cs:75
+msgid "was activated"
+msgstr "был включен"
+
+#: Manage/Rules/ManageRules.cs:96
+msgid "was deactivated"
+msgstr "был отключен"
+
+#: Manage/Rules/ManageRules.cs:120
+msgid "No known issues found in the enabled mods list"
+msgstr "Известных проблем не найдено среди активных модов"
+
+#: Manage/Rules/ManageRules.cs:127
+msgid "Modlist check report"
+msgstr "Репорт проверки списка модов"
+
+#: Manage/Rules/ManageRules.cs:151
+msgid "No known problems found"
+msgstr "Известных проблем не найдено"
+
+#: Manage/Rules/ManageRules.cs:195
+msgid "kPlug tweaks:"
+msgstr "Твики kPlug:"
+
+#: Manage/Rules/ManageRules.cs:196
+msgid ""
+"KK_Fix_MainGameOptimizations 'Async clothes loading' parameter was set to "
+"'False' to prevent problems with kPlug"
+msgstr ""
+"KK_Fix_MainGameOptimizations: ключ 'Async clothes loading' был установлен в "
+"значение 'False' для предотвращения проблем с kPlug"
+
+#: Manage/Rules/ManageRules.cs:241
+msgid "For mod"
+msgstr "Фикс мода"
+
+#: Manage/Rules/ManageRules.cs:241
+msgid "was applied rule"
+msgstr "было применено правило"
+
+#: Manage/Rules/ManageRules.cs:241
+msgid "with result"
+msgstr "с результатом"
+
+#: Manage/Rules/MetaIniFixes/Copy1stNotesUrlToUrlKey.cs:45
+msgid "added url from notes"
+msgstr "добавлено url из описания"
+
+#: Manage/Rules/MetaIniFixes/ModlistDataMetaIniFixesTools.cs:28
+msgid "Meta info refreshing in progress"
+msgstr "Обновление мета"
+
+#: Manage/Rules/MetaIniFixes/MoveAIhelperInfosFromMetaIniNotesToKey.cs:27
+msgid "fixed game name"
+msgstr "исправлено имя игры"
+
+#: Manage/Rules/MetaIniFixes/MoveAIhelperInfosFromMetaIniNotesToKey1.cs:50
+msgid "moved meta ini info from notes in ini key"
+msgstr "meta.ini инфо перемещено из примечания в ключ ини"
+
+#: Manage/Rules/MetaIniFixes/WriteInfoFromFileifMissing.cs:31
+msgid "added rules info into meta.ini"
+msgstr "добавлено инфо правила в meta.ini"
+
+#: Manage/Update/Sources/Github.cs:111
+msgid "Downloading"
+msgstr "Загрузка"
+
+#: Manage/Update/Updater.cs:227
+msgid "updated to version"
+msgstr "обновлен до версии"
+
+#: Manage/Update/Updater.cs:259
+msgid "have new version but file for update not found"
+msgstr "имеет версию новее, но файл обновления не найден"
+
+#: Manage/Update/Updater.cs:273
+msgid "Failed to update"
+msgstr "Не удалось обновить"
+
+#: Manage/Update/Updater.cs:276
+msgid "Details in"
+msgstr "Подробно в"
+
+#: Properties/Resources.Designer.cs:88
+msgid "defmoini"
+msgstr "defmoini"
+
+#~ msgid ""
+#~ "Cleaning finished! Moved {dirs} dirs and {files} files. Failed to move "
+#~ "{errors} items."
+#~ msgstr ""
+#~ "Очистка закончена! Перемещено: {dirs} папок и {files} файлов. Не удалось "
+#~ "переместить {errors} раз."
+
+#~ msgid "Found new games:"
+#~ msgstr "Найдены новые игры:"
+
+#~ msgid "Characters"
+#~ msgstr "Персонажи"
+
+#~ msgid "Authors"
+#~ msgstr "Авторы"
+
+#~ msgid "Resources"
+#~ msgstr "Ресурсы"
+
+#~ msgid "Other"
+#~ msgstr "Другие"
+
+#~ msgid "CardsMO"
+#~ msgstr "КарточкиМО"
+
+#~ msgid "Cards"
+#~ msgstr "Карточки"
+
+#~ msgid ""
+#~ "Open presets folder\n"
+#~ "\n"
+#~ "Will be opened virtual folder with Mod Organizer in MO mode and data "
+#~ "folder in normal mode.\n"
+#~ "\n"
+#~ "Shift+Click to force open without MO."
+#~ msgstr ""
+#~ "Открыть папку с пресетами\n"
+#~ "\n"
+#~ "Бует открыта виртуальная папка через Mod Organizer в MO режиме и папка в "
+#~ "Data в обычном режиме.\n"
+#~ "\n"
+#~ "Shift+Click для принудительного открытия без MO."
+
+#~ msgid "en-US"
+#~ msgstr "ru-RU"
+
+#~ msgid "Move files from Overwrite folder"
+#~ msgstr "Перемещение файлов из папки перезаписи"
+
+#~ msgid "Move files from Mods folder"
+#~ msgstr "Перемещение файлов из папки с модами"
+
+#~ msgid "Path to file is too long!"
+#~ msgstr "Путь до файла слишком длинный! (<260 до файла и <240 до папки)"
+
+#~ msgid "Long Path can cause mode switch error and mode will not be switched."
+#~ msgstr ""
+#~ "Длинный путь модет вызвать ошибку при переключении режима и его отмену."
+
+#~ msgid "Skip it?"
+#~ msgstr "Пропустить?"
+
+#~ msgid "Too long file path"
+#~ msgstr "Слишком длинный путь до файла"
+
+#~ msgid "Sideloader dirs sorting"
+#~ msgstr "Сортировка папок Sideloader"
+
+#~ msgid "Cleaning KKManager temp dir"
+#~ msgstr "Очистка временной папки KKManager"
+
+#~ msgid "Extracting"
+#~ msgstr "Распаковка"
+
+#~ msgid "Game Ready"
+#~ msgstr "Игра готова"
+
+#~ msgid "MO archive"
+#~ msgstr "Архив MO"
+
+#~ msgid "Game archive"
+#~ msgstr "Архив игры"
+
+#~ msgid "Prepare the game"
+#~ msgstr "Подготовить игру"
+
+#, fuzzy
+#~| msgid "Open Mods folder of selected game"
+#~ msgid "Open {toMo} folder fo selected game"
+#~ msgstr "Открывает папку Mods выбранной игры"
+
+#~ msgid "Female character cards in \"{toMo}\" folder"
+#~ msgstr "Карточки женских персонажей в папке \"{toMO}\""
+
+#~ msgid "BodySliders"
+#~ msgstr "BodySliders"
+
+#~ msgid "AI Helper for Organized ModPack"
+#~ msgstr "AI Helper для Organized ModPack"
+
+#~ msgid ""
+#~ "Automatically get required mod data, converts and moves files from 2MO "
+#~ "folder"
+#~ msgstr ""
+#~ "Автоматически извлекает нужные данные, конвертирует и переносит файлы из "
+#~ "папки 2MO"
+
+#~ msgid "Honey Select 2: Libido"
+#~ msgstr "Honey Select 2: Либидо"
+
+#~ msgid "Information"
+#~ msgstr "Информация"
+
+#~ msgid ""
+#~ "If you click on <b style=\"font-size:20px;color:blue;\">[Info]</b> link "
+#~ "you can view update important update info include requuirements and "
+#~ "incompatibilities for latest update."
+#~ msgstr ""
+#~ "Если кликнуть на <b style=\"font-size:20px;color:blue;\">[Информация]</"
+#~ "b>, можно посмотреть информацию об обновлении, включая требования и "
+#~ "несовместимости последнего обновления."
+
+#~ msgid "Modlist check/fix by known rules"
+#~ msgstr "Исправление списка модов по известным правилам"
+
+#~ msgid "Mods Check/Update"
+#~ msgstr "Проверка\\Обновление модов"
+
+#~ msgid "Open Github page"
+#~ msgstr "Открыть страницу на Github"
+
+#~ msgid "Update check report"
+#~ msgstr "Отчет об обновлении"
+
+#~ msgid "No mod updates found"
+#~ msgstr "Обновлений не найдено"
+
+#~ msgid "Update file not a zip"
+#~ msgstr "Файл обновления не zip"
+
+#~ msgid "Click here to select log level"
+#~ msgstr "Клините для выбора уровня лога"
+
+#~ msgid "Exit"
+#~ msgstr "Выход"
+
+#~ msgid ""
+#~ "Conversation to Common mode\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Конвертация в Обычный режим\n"
+#~ "\n"
+
+#~ msgid "Not all mods in Mods dir"
+#~ msgstr "Не все моды в папке Mods"
+
+#~ msgid "Extract missing"
+#~ msgstr "Извлечь отсутствующие"
+
+#~ msgid "Mods Ready for extract"
+#~ msgstr "Моды готовы для распаковки"
+
+#~ msgid "Extract mods"
+#~ msgstr "Извлечь моды"

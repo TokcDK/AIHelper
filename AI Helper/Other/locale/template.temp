@@ -1,0 +1,1225 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-12-21 13:46+0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: bin/Debug/000000000000/Multy/Games/HoneySelect/Mods/HS_BodySliders_v1.4/Plugins/src/Sliders/SLIDERS.cs:70
+#: bin/Debug/000000000000/Multy/Games/HoneySelect/Mods/HS_BodySliders_v1.4/Plugins/src/Sliders/SLIDERS.cs:79
+#: bin/Debug/Games/HoneySelect/Mods/HS_BodySliders_v1.4/Plugins/src/Sliders/SLIDERS.cs:70
+#: bin/Debug/Games/HoneySelect/Mods/HS_BodySliders_v1.4/Plugins/src/Sliders/SLIDERS.cs:79
+msgid "BodySliders"
+msgstr ""
+
+#: Forms/AI Helper.cs:179
+msgid "Games not found"
+msgstr ""
+
+#: Forms/AI Helper.cs:180
+msgid "Need atleast one game in subfolder in Games folder"
+msgstr ""
+
+#: Forms/AI Helper.cs:182
+msgid "List of games"
+msgstr ""
+
+#: Forms/AI Helper.cs:185
+msgid "The game folder must contain"
+msgstr ""
+
+#: Forms/AI Helper.cs:186
+msgid "main game data"
+msgstr ""
+
+#: Forms/AI Helper.cs:187
+msgid "game mods in subfolders"
+msgstr ""
+
+#: Forms/AI Helper.cs:188
+msgid "Mod Organizer folder with next data"
+msgstr ""
+
+#: Forms/AI Helper.cs:189
+msgid "profiles folder with mod combinations"
+msgstr ""
+
+#: Forms/AI Helper.cs:190
+msgid "list of categories for mods"
+msgstr ""
+
+#: Forms/AI Helper.cs:191
+msgid "Mod Organizer settings for the game"
+msgstr ""
+
+#: Forms/AI Helper.cs:192
+msgid "in place of any not exists MO data files will be created empty."
+msgstr ""
+
+#: Forms/AI Helper.cs:250
+msgid "AI Helper for Organized ModPack"
+msgstr ""
+
+#: Forms/AI Helper.cs:251
+msgid "Current Game"
+msgstr ""
+
+#: Forms/AI Helper.cs:252 Forms/AI Helper.cs:1435 Forms/AI Helper.cs:1487
+msgid "Install from 2MO"
+msgstr ""
+
+#: Forms/AI Helper.cs:253
+msgid "Fix modlist"
+msgstr ""
+
+#: Forms/AI Helper.cs:254
+msgid "Update"
+msgstr ""
+
+#: Forms/AI Helper.cs:256 Forms/AI Helper.cs:275
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:121
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:144
+msgid "Settings"
+msgstr ""
+
+#: Forms/AI Helper.cs:258 Manage/ManageOther.cs:87
+msgid "Shortcut"
+msgstr ""
+
+#: Forms/AI Helper.cs:260
+msgid "Registry"
+msgstr ""
+
+#: Forms/AI Helper.cs:261
+msgid "Display"
+msgstr ""
+
+#: Forms/AI Helper.cs:263
+msgid "fullscreen"
+msgstr ""
+
+#: Forms/AI Helper.cs:264
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:62
+#: Manage/ManageSettings.cs:666 Manage/ManageSettings.cs:739
+msgid "Auto"
+msgstr ""
+
+#: Forms/AI Helper.cs:265
+msgid "Folders"
+msgstr ""
+
+#: Forms/AI Helper.cs:266 Forms/AI Helper.cs:273
+msgid "Game"
+msgstr ""
+
+#: Forms/AI Helper.cs:267 Forms/LinksForm.cs:60
+msgid "Mods"
+msgstr ""
+
+#: Forms/AI Helper.cs:268
+msgid "Info"
+msgstr ""
+
+#: Forms/AI Helper.cs:269 Forms/AI Helper.cs:270 Forms/AI Helper.cs:1094
+msgid "Launch"
+msgstr ""
+
+#: Forms/AI Helper.cs:271
+msgid "Tools"
+msgstr ""
+
+#: Forms/AI Helper.cs:272
+msgid "Studio"
+msgstr ""
+
+#: Forms/AI Helper.cs:274
+msgid "Manager"
+msgstr ""
+
+#: Forms/AI Helper.cs:276
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:141
+msgid "Extra Settings"
+msgstr ""
+
+#: Forms/AI Helper.cs:277
+msgid "Orig Launcher"
+msgstr ""
+
+#: Forms/AI Helper.cs:278 Forms/AI Helper.cs:1365
+msgid "Links"
+msgstr ""
+
+#: Forms/AI Helper.cs:279
+msgid "Perfomance"
+msgstr ""
+
+#: Forms/AI Helper.cs:280
+msgid "Normal"
+msgstr ""
+
+#: Forms/AI Helper.cs:281
+msgid "Quality"
+msgstr ""
+
+#: Forms/AI Helper.cs:330 Forms/AI Helper.cs:358 Forms/AI Helper.cs:376
+#: Forms/AI Helper.cs:385 Forms/AI Helper.cs:413
+msgid "Extracting"
+msgstr ""
+
+#: Forms/AI Helper.cs:344
+msgid "Game Ready"
+msgstr ""
+
+#: Forms/AI Helper.cs:359
+msgid "MO archive"
+msgstr ""
+
+#: Forms/AI Helper.cs:377 Forms/AI Helper.cs:386
+msgid "Game archive"
+msgstr ""
+
+#: Forms/AI Helper.cs:414 Manage/ManageRules.cs:71 Manage/ManageRules.cs:92
+#: Manage/Update/Update.cs:160 Manage/Update/Update.cs:179
+msgid "Mod"
+msgstr ""
+
+#: Forms/AI Helper.cs:453
+msgid "Prepare the game"
+msgstr ""
+
+#: Forms/AI Helper.cs:645
+msgid ""
+"Illusion games manager.\n"
+"\n"
+"Move mouse over wished button or text to see info about it"
+msgstr ""
+
+#: Forms/AI Helper.cs:649
+msgid "Selected game title"
+msgstr ""
+
+#: Forms/AI Helper.cs:652
+msgid "Check to run VR exe instead on standart"
+msgstr ""
+
+#: Forms/AI Helper.cs:656
+msgid ""
+"Automatically get required mod data, converts and moves files from 2MO folder"
+msgstr ""
+
+#: Forms/AI Helper.cs:658
+msgid " to MO format in Mods when possible"
+msgstr ""
+
+#: Forms/AI Helper.cs:660
+msgid " to the game folder when possible"
+msgstr ""
+
+#: Forms/AI Helper.cs:662
+msgid "Fix problems in current enabled mods list"
+msgstr ""
+
+#: Forms/AI Helper.cs:664
+msgid "Update Mod Organizer and enabled mods"
+msgstr ""
+
+#: Forms/AI Helper.cs:665
+msgid "Mod Organizer already have hardcoded info"
+msgstr ""
+
+#: Forms/AI Helper.cs:666
+msgid ""
+"Mods will be updated if there exist info in meta.ini notes or in updateInfo."
+"txt"
+msgstr ""
+
+#: Forms/AI Helper.cs:667
+msgid ""
+"After plugins update check will be executed KKManager StandaloneUpdater for "
+"Sideloader modpack updates check for games where it is possible"
+msgstr ""
+
+#: Forms/AI Helper.cs:670
+msgid "Open older plugins buckup folder"
+msgstr ""
+
+#: Forms/AI Helper.cs:672
+msgid "Open folder where you can drop/download files for autoinstallation"
+msgstr ""
+
+#: Forms/AI Helper.cs:673
+msgid ""
+"When checked will create shortcut for the AI Helper on Desktop and will fix "
+"registry if need"
+msgstr ""
+
+#: Forms/AI Helper.cs:674
+msgid "Game Display settings"
+msgstr ""
+
+#: Forms/AI Helper.cs:675
+msgid "Open Setup.xml in notepad"
+msgstr ""
+
+#: Forms/AI Helper.cs:676
+msgid "Select preferred screen resolution"
+msgstr ""
+
+#: Forms/AI Helper.cs:677
+msgid "When checked game will be in fullscreen mode"
+msgstr ""
+
+#: Forms/AI Helper.cs:678
+msgid "Select preferred graphics quality"
+msgstr ""
+
+#: Forms/AI Helper.cs:680
+msgid "Will create shortcut in Desktop if not exist"
+msgstr ""
+
+#: Forms/AI Helper.cs:682
+msgid "Will set Data dir with game files as install dir in registry"
+msgstr ""
+
+#: Forms/AI Helper.cs:683 Forms/AI Helper.cs:685
+msgid "Will execute the Game"
+msgstr ""
+
+#: Forms/AI Helper.cs:684 Forms/AI Helper.cs:688 Forms/AI Helper.cs:694
+msgid " from Mod Organizer with attached mods"
+msgstr ""
+
+#: Forms/AI Helper.cs:687 Forms/AI Helper.cs:689
+msgid "Will execute Studio"
+msgstr ""
+
+#: Forms/AI Helper.cs:691
+msgid "Will execute Mod Organizer mod manager where you can manage your mods"
+msgstr ""
+
+#: Forms/AI Helper.cs:693 Forms/AI Helper.cs:695
+msgid "Will execute original game launcher"
+msgstr ""
+
+#: Forms/AI Helper.cs:697
+msgid "Will be opened Settings tab"
+msgstr ""
+
+#: Forms/AI Helper.cs:699 Forms/AI Helper.cs:710
+msgid ""
+"Will convert game from MO Mode to Common mode\n"
+" when you can run exes from Data folder without Mod Organizer.\n"
+" You can convert game back to MO mode\n"
+" when it will be need to install new mods or test your mod config"
+msgstr ""
+
+#: Forms/AI Helper.cs:703 Forms/AI Helper.cs:715
+msgid ""
+"Will convert the game to MO mode\n"
+" when all mod files will be moved back to Mods folder\n"
+" in their folders and vanilla files restored"
+msgstr ""
+
+#: Forms/AI Helper.cs:708
+msgid "Same as button in Tool tab.\n"
+msgstr ""
+
+#: Forms/AI Helper.cs:722
+msgid "Open Data folder of selected game"
+msgstr ""
+
+#: Forms/AI Helper.cs:723
+msgid "Open Mods folder of selected game"
+msgstr ""
+
+#: Forms/AI Helper.cs:724
+msgid "Open Mod Organizer folder"
+msgstr ""
+
+#: Forms/AI Helper.cs:725
+msgid ""
+"Open Overwrite folder of Mod Organizer with possible new generated files for "
+"selected game\n"
+"\n"
+"Files here have highest priority and will be loaded over any enabled mod "
+"files"
+msgstr ""
+
+#: Forms/AI Helper.cs:726
+msgid ""
+"Open MyUserData folder in Mods if exist\n"
+"\n"
+"Here placed usual User files of Organized ModPack for selected game"
+msgstr ""
+
+#: Forms/AI Helper.cs:728
+msgid "Open list of links for game resources"
+msgstr ""
+
+#: Forms/AI Helper.cs:729
+msgid "Discord page. Info, links, support."
+msgstr ""
+
+#: Forms/AI Helper.cs:730
+msgid "Open extra setting window for plugins and etc"
+msgstr ""
+
+#: Forms/AI Helper.cs:732
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:52
+msgid "Open BepinEx log if found"
+msgstr ""
+
+#: Forms/AI Helper.cs:733
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:53
+msgid ""
+"Click here to select log level\n"
+"Only displays the specified log level and above in the console output"
+msgstr ""
+
+#: Forms/AI Helper.cs:737
+msgid "List of found games. Current"
+msgstr ""
+
+#: Forms/AI Helper.cs:740
+msgid ""
+"Open 2MO folder fo selected game\n"
+"\n"
+"Here can be placed mod files which you want to install for selected game in "
+"approriate subfolders in mods\n"
+"and then can be installed all by one click on"
+msgstr ""
+
+#: Forms/AI Helper.cs:742
+msgid "button"
+msgstr ""
+
+#: Forms/AI Helper.cs:743
+msgid "which can be found in"
+msgstr ""
+
+#: Forms/AI Helper.cs:743
+msgid "tab page"
+msgstr ""
+
+#: Forms/AI Helper.cs:744
+msgid "Helper recognize"
+msgstr ""
+
+#: Forms/AI Helper.cs:745
+msgid ".dll files of BepinEx plugins in \"2MO\" folder"
+msgstr ""
+
+#: Forms/AI Helper.cs:746
+msgid "Sideloader mod archives in \"2MO\" folder"
+msgstr ""
+
+#: Forms/AI Helper.cs:747
+msgid "Female character cards in \"2MO\" folder"
+msgstr ""
+
+#: Forms/AI Helper.cs:748
+msgid "Female character cards in \"f\" subfolder"
+msgstr ""
+
+#: Forms/AI Helper.cs:749
+msgid "Male character cards in \"m\" subfolder"
+msgstr ""
+
+#: Forms/AI Helper.cs:750
+msgid "Coordinate clothes set cards in \"c\" subfolder"
+msgstr ""
+
+#: Forms/AI Helper.cs:751
+msgid "Studio scene cards in \"s\" subfolder"
+msgstr ""
+
+#: Forms/AI Helper.cs:752
+msgid "Cardframe Front cards in \"cf\" subfolder"
+msgstr ""
+
+#: Forms/AI Helper.cs:753
+msgid "Cardframe Back cards in \"cf\" subfolder"
+msgstr ""
+
+#: Forms/AI Helper.cs:754
+msgid "Script loader scripts in \"2MO\" folder"
+msgstr ""
+
+#: Forms/AI Helper.cs:755
+msgid "Housing plan cards in \"h\\01\", \"h\\02\", \"h\\03\" subfolders"
+msgstr ""
+
+#: Forms/AI Helper.cs:756
+msgid "Overlays cards in \"o\" subfolder"
+msgstr ""
+
+#: Forms/AI Helper.cs:757
+msgid "folders with overlays cards in \"o\" subfolder"
+msgstr ""
+
+#: Forms/AI Helper.cs:758
+msgid "Subfolders with modfiles in \"2MO\" folder"
+msgstr ""
+
+#: Forms/AI Helper.cs:759 Forms/AI Helper.cs:760
+msgid "Zip archives with mod files in \"2MO\" folder"
+msgstr ""
+
+#: Forms/AI Helper.cs:761
+msgid ""
+"Any Rar and 7z archives in \"2MO\" folder will be extracted\n"
+"Some recognized mods can be updated instead of be installed as new mod\n"
+"Most of mods will be automatically activated except .cs scripts\n"
+"which always optional and often it is cheats or can slowdown/break game"
+msgstr ""
+
+#: Forms/AI Helper.cs:863 Forms/AI Helper.cs:1020 Forms/AI Helper.cs:1021
+#: Forms/AI Helper.cs:1509
+msgid "Common mode"
+msgstr ""
+
+#: Forms/AI Helper.cs:868 Forms/AI Helper.cs:1000 Forms/AI Helper.cs:1550
+msgid "MO mode"
+msgstr ""
+
+#: Forms/AI Helper.cs:878
+msgid "Mods dir created"
+msgstr ""
+
+#: Forms/AI Helper.cs:883
+#, csharp-format
+msgid "{0} game installed in {1}"
+msgstr ""
+
+#: Forms/AI Helper.cs:887
+#, csharp-format
+msgid "{0} archive in {1}"
+msgstr ""
+
+#: Forms/AI Helper.cs:891
+#, csharp-format
+msgid "{0} files not in {1}. Move {0} game files there."
+msgstr ""
+
+#: Forms/AI Helper.cs:896
+#, csharp-format
+msgid "{0} dir created. Move {1} game files there."
+msgstr ""
+
+#: Forms/AI Helper.cs:969
+msgid "Found mod folders in Mods"
+msgstr ""
+
+#: Forms/AI Helper.cs:972
+msgid "Mods Ready"
+msgstr ""
+
+#: Forms/AI Helper.cs:980 Forms/AI Helper.cs:1533 Forms/AI Helper.cs:1569
+msgid "MOToCommon"
+msgstr ""
+
+#: Forms/AI Helper.cs:1019 Forms/AI Helper.cs:1533
+msgid "CommonToMO"
+msgstr ""
+
+#: Forms/AI Helper.cs:1166
+msgid ""
+"Game in Common mode now.\n"
+" To execute Mod Organizer convert game back\n"
+" to MO mode by button in Tools tab"
+msgstr ""
+
+#: Forms/AI Helper.cs:1420 Forms/AI Helper.cs:1506 Forms/AI Helper.cs:1550
+#: Forms/AI Helper.cs:2749
+msgid "Attention"
+msgstr ""
+
+#: Forms/AI Helper.cs:1420
+msgid ""
+"Impossible to correctly install/update mods\n"
+"\n"
+" in standart mode because files was moved in Data."
+msgstr ""
+
+#: Forms/AI Helper.cs:1420 Forms/AI Helper.cs:2749
+msgid "Switch to MO mode?"
+msgstr ""
+
+#: Forms/AI Helper.cs:1420 Forms/AI Helper.cs:1512 Forms/AI Helper.cs:1550
+#: Forms/AI Helper.cs:2749
+msgid "Confirmation"
+msgstr ""
+
+#: Forms/AI Helper.cs:1442
+msgid "All possible mods installed. Install all rest in 2MO folder manually."
+msgstr ""
+
+#: Forms/AI Helper.cs:1446
+msgid ""
+"No compatible for installation formats found in 2MO folder.\n"
+"Formats: zip, zipmod, png, png in subfolder, unpacked mod in subfolder"
+msgstr ""
+
+#: Forms/AI Helper.cs:1453
+msgid "Installing"
+msgstr ""
+
+#: Forms/AI Helper.cs:1508 Forms/AI Helper.cs:1550
+msgid "Conversation to"
+msgstr ""
+
+#: Forms/AI Helper.cs:1511
+msgid ""
+"This will move using mod files from Mods folder to Data folder to make it "
+"like common installation variant.\n"
+"You can restore it later back to MO mode.\n"
+"\n"
+"Continue?"
+msgstr ""
+
+#: Forms/AI Helper.cs:1550
+msgid ""
+"This will move all mod files back to Mods folder from Data and will switch "
+"to MO mode.\n"
+"\n"
+"Continue?"
+msgstr ""
+
+#: Forms/AI Helper.cs:1742
+msgid ""
+"Files in same paths already exist in original mod folder!\n"
+"\n"
+" This folder was created in time of conversion from Common mode to MO mode\n"
+" and because in destination place\n"
+" where mod file must be moved already was other file with same name.\n"
+" It could happen if content of the mod folder was updated\n"
+" when game was in common mode and was made same file in same place.\n"
+" Please check files here and if this files need for you\n"
+" then activate this mod or move files to mod folder with same name\n"
+" and if this files obsolete or just not need anymore then delete this mod "
+"folder."
+msgstr ""
+
+#: Forms/AI Helper.cs:1853
+msgid "Sort files if need"
+msgstr ""
+
+#: Forms/AI Helper.cs:1855
+msgid ""
+"<br>This files was added in Common mode<br>and moved as mod after "
+"convertation in MO mode.<br>Date: "
+msgstr ""
+
+#: Forms/AI Helper.cs:1943
+msgid ""
+"Mod Organizer mode restored! All mod files moved back to Mods folder. If in "
+"Data folder was added new files they also moved in Mods folder as new mod, "
+"check and sort it if need"
+msgstr ""
+
+#: Forms/AI Helper.cs:2005
+msgid "There is no enabled mods in Mod Organizer"
+msgstr ""
+
+#: Forms/AI Helper.cs:2059
+msgid "Move files from Overwrite folder"
+msgstr ""
+
+#: Forms/AI Helper.cs:2160
+msgid "Move files from Mods folder"
+msgstr ""
+
+#: Forms/AI Helper.cs:2345
+msgid ""
+"All mod files now in Data folder! You can restore MO mode by same button."
+msgstr ""
+
+#: Forms/AI Helper.cs:2441
+msgid "Path to file is too long!"
+msgstr ""
+
+#: Forms/AI Helper.cs:2443
+msgid "Long Path can cause mode switch error and mode will not be switched."
+msgstr ""
+
+#: Forms/AI Helper.cs:2444
+msgid "Skip it?"
+msgstr ""
+
+#: Forms/AI Helper.cs:2445
+msgid "Too long file path"
+msgstr ""
+
+#: Forms/AI Helper.cs:2737
+msgid "Move mouse cursor over wished button or text to see info about it"
+msgstr ""
+
+#: Forms/AI Helper.cs:2749
+msgid "Correct modlist fixes possible only in MO mode"
+msgstr ""
+
+#: Forms/LinksForm.cs:59
+msgid "Characters"
+msgstr ""
+
+#: Forms/LinksForm.cs:61
+msgid "Authors"
+msgstr ""
+
+#: Forms/LinksForm.cs:62
+msgid "Resources"
+msgstr ""
+
+#: Forms/LinksForm.cs:63
+msgid "Other"
+msgstr ""
+
+#: Forms/ExtraSettings/ExtraSettings.cs:56
+msgid "not found"
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:46
+msgid ""
+"Log target selection.\n"
+"\n"
+"Show logs in console window or to file on disk.\n"
+"Other log parameters depend on selected target"
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:48
+msgid "Select all log levels"
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:49
+msgid "Clear selection of log levels"
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:50
+msgid "Log levels. How many messages will be displayed"
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:55
+msgid "Click to enable log"
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:57
+msgid "Open BepInEx documentation"
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:58
+msgid "Open BepInEx configuration file in Notepad"
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:111
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:120
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:257
+msgid "Console"
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:122
+msgid "target"
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:123
+msgid "levels"
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:255
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:261
+msgid "Disk"
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:142
+msgid "Language"
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:143
+msgid "Translate Service"
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:163
+msgid "Open file with all settings"
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:164
+msgid "Open XUA documentation"
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:165
+msgid "List of source languages. From which translate"
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:166
+msgid "List of target languages. To which translate"
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:167
+msgid "List of translation services"
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:170
+msgid ""
+"From XUA documentation.\n"
+"The supported translators are: "
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:172
+msgid ""
+"GoogleTranslate, based on the online Google translation service. Does not "
+"require authentication."
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:174
+msgid ""
+"GoogleTranslateLegitimate, based on the Google cloud translation API. "
+"Requires an API key.\n"
+"Provides trial period of 1 year with $300 credits. Enough for 15 million "
+"characters translations."
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:176
+msgid ""
+"BingTranslate, based on the online Bing translation service. Does not "
+"require authentication.\n"
+"No limitations, but unstable."
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:178
+msgid ""
+"BingTranslateLegitimate, based on the Azure text translation. Requires an "
+"API key.\n"
+"Free up to 2 million characters per month."
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:180
+msgid ""
+"PapagoTranslate, based on the online Google translation service. Does not "
+"require authentication.\n"
+"No limitations, but unstable."
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:182
+msgid ""
+"BaiduTranslate, based on Baidu translation service. Requires AppId and "
+"AppSecret.\n"
+"Not sure on quotas on this one."
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:184
+msgid ""
+"YandexTranslate, based on the Yandex translation service. Requires an API "
+"key.\n"
+"Free up to 1 million characters per day, but max 10 million characters per "
+"month."
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:186
+msgid ""
+"WatsonTranslate, based on IBM's Watson. Requires a URL and an API key.\n"
+"Free up to 1 million characters per month."
+msgstr ""
+
+#: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:188
+msgid ""
+"LecPowerTranslator15, based on LEC's Power Translator. Does not require "
+"authentication, but does require the software installed."
+msgstr ""
+
+#: Games/Illusion/AISyoujyo.cs:17 Games/Illusion/AISyoujyoTrial.cs:17
+msgid "AI-Girl"
+msgstr ""
+
+#: Games/Illusion/HoneySelect.cs:40
+msgid "Honey Select"
+msgstr ""
+
+#: Games/Illusion/HoneySelect2.cs:30
+msgid "Honey Select 2: Libido"
+msgstr ""
+
+#: Games/Illusion/Koikatsu.cs:27
+msgid "Koikatsu"
+msgstr ""
+
+#: Manage/ManageMO.cs:1143
+msgid "No profiles found for Current game"
+msgstr ""
+
+#: Manage/ManageOther.cs:56
+msgid "Helper"
+msgstr ""
+
+#: Manage/ManageOther.cs:60
+msgid "Run"
+msgstr ""
+
+#: Manage/ManageOther.cs:87
+msgid "created"
+msgstr ""
+
+#: Manage/ManageRegistry.cs:18
+msgid "Registry fixed! Install dir was set to Data dir."
+msgstr ""
+
+#: Manage/ManageRegistry.cs:25
+msgid "Registry was already fixed"
+msgstr ""
+
+#: Manage/ManageRules.cs:32 Manage/Update/Update.cs:82
+msgid "Checking"
+msgstr ""
+
+#: Manage/ManageRules.cs:64 Manage/ManageRules.cs:85
+msgid "Results"
+msgstr ""
+
+#: Manage/ManageRules.cs:67 Manage/ManageRules.cs:88
+msgid "Actions"
+msgstr ""
+
+#: Manage/ManageRules.cs:71
+msgid "was activated"
+msgstr ""
+
+#: Manage/ManageRules.cs:92
+msgid "was deactivated"
+msgstr ""
+
+#: Manage/ManageRules.cs:116
+msgid "No known issues found in the enabled mods list"
+msgstr ""
+
+#: Manage/ManageRules.cs:124
+msgid "Modlist check report"
+msgstr ""
+
+#: Manage/ManageRules.cs:149
+msgid "No known problems found"
+msgstr ""
+
+#: Manage/ManageRules.cs:181
+msgid "Meta info refreshing in progress"
+msgstr ""
+
+#: Manage/ManageRules.cs:247
+msgid "fixed game name"
+msgstr ""
+
+#: Manage/ManageRules.cs:268
+msgid "added url from notes"
+msgstr ""
+
+#: Manage/ManageRules.cs:321
+msgid "For mod"
+msgstr ""
+
+#: Manage/ManageRules.cs:321
+msgid "was applied rule"
+msgstr ""
+
+#: Manage/ManageRules.cs:321
+msgid "with result"
+msgstr ""
+
+#: Manage/ManageSettings.cs:667 Manage/ManageSettings.cs:740
+msgid "Afrikaans"
+msgstr ""
+
+#: Manage/ManageSettings.cs:668 Manage/ManageSettings.cs:741
+msgid "Albanian"
+msgstr ""
+
+#: Manage/ManageSettings.cs:669 Manage/ManageSettings.cs:742
+msgid "Arabic"
+msgstr ""
+
+#: Manage/ManageSettings.cs:670 Manage/ManageSettings.cs:743
+msgid "Armenian"
+msgstr ""
+
+#: Manage/ManageSettings.cs:671 Manage/ManageSettings.cs:744
+msgid "Azerbaijani"
+msgstr ""
+
+#: Manage/ManageSettings.cs:672 Manage/ManageSettings.cs:745
+msgid "Basque"
+msgstr ""
+
+#: Manage/ManageSettings.cs:673 Manage/ManageSettings.cs:746
+msgid "Belarusian"
+msgstr ""
+
+#: Manage/ManageSettings.cs:674 Manage/ManageSettings.cs:747
+msgid "Bengali"
+msgstr ""
+
+#: Manage/ManageSettings.cs:675 Manage/ManageSettings.cs:748
+msgid "Bulgarian"
+msgstr ""
+
+#: Manage/ManageSettings.cs:676 Manage/ManageSettings.cs:749
+msgid "Catalan"
+msgstr ""
+
+#: Manage/ManageSettings.cs:677 Manage/ManageSettings.cs:750
+msgid "Chinese"
+msgstr ""
+
+#: Manage/ManageSettings.cs:678 Manage/ManageSettings.cs:751
+msgid "Croatian"
+msgstr ""
+
+#: Manage/ManageSettings.cs:679 Manage/ManageSettings.cs:752
+msgid "Czech"
+msgstr ""
+
+#: Manage/ManageSettings.cs:680 Manage/ManageSettings.cs:753
+msgid "Danish"
+msgstr ""
+
+#: Manage/ManageSettings.cs:681 Manage/ManageSettings.cs:754
+msgid "Dutch"
+msgstr ""
+
+#: Manage/ManageSettings.cs:682 Manage/ManageSettings.cs:755
+msgid "English"
+msgstr ""
+
+#: Manage/ManageSettings.cs:683 Manage/ManageSettings.cs:756
+msgid "Esperanto"
+msgstr ""
+
+#: Manage/ManageSettings.cs:684 Manage/ManageSettings.cs:757
+msgid "Estonian"
+msgstr ""
+
+#: Manage/ManageSettings.cs:685 Manage/ManageSettings.cs:758
+msgid "Filipino"
+msgstr ""
+
+#: Manage/ManageSettings.cs:686 Manage/ManageSettings.cs:759
+msgid "Finnish"
+msgstr ""
+
+#: Manage/ManageSettings.cs:687 Manage/ManageSettings.cs:760
+msgid "French"
+msgstr ""
+
+#: Manage/ManageSettings.cs:688 Manage/ManageSettings.cs:761
+msgid "Galician"
+msgstr ""
+
+#: Manage/ManageSettings.cs:689 Manage/ManageSettings.cs:762
+msgid "German"
+msgstr ""
+
+#: Manage/ManageSettings.cs:690 Manage/ManageSettings.cs:763
+msgid "Georgian"
+msgstr ""
+
+#: Manage/ManageSettings.cs:691 Manage/ManageSettings.cs:764
+msgid "Greek"
+msgstr ""
+
+#: Manage/ManageSettings.cs:692 Manage/ManageSettings.cs:765
+msgid "Haitian Creole"
+msgstr ""
+
+#: Manage/ManageSettings.cs:693 Manage/ManageSettings.cs:766
+msgid "Hebrew"
+msgstr ""
+
+#: Manage/ManageSettings.cs:694 Manage/ManageSettings.cs:767
+msgid "Hindi"
+msgstr ""
+
+#: Manage/ManageSettings.cs:695 Manage/ManageSettings.cs:768
+msgid "Hungarian"
+msgstr ""
+
+#: Manage/ManageSettings.cs:696 Manage/ManageSettings.cs:769
+msgid "Icelandic"
+msgstr ""
+
+#: Manage/ManageSettings.cs:697 Manage/ManageSettings.cs:770
+msgid "Indonesian"
+msgstr ""
+
+#: Manage/ManageSettings.cs:698 Manage/ManageSettings.cs:771
+msgid "Irish"
+msgstr ""
+
+#: Manage/ManageSettings.cs:699 Manage/ManageSettings.cs:772
+msgid "Italian"
+msgstr ""
+
+#: Manage/ManageSettings.cs:700 Manage/ManageSettings.cs:773
+msgid "Japanese"
+msgstr ""
+
+#: Manage/ManageSettings.cs:701 Manage/ManageSettings.cs:774
+msgid "Korean"
+msgstr ""
+
+#: Manage/ManageSettings.cs:702 Manage/ManageSettings.cs:775
+msgid "Lao"
+msgstr ""
+
+#: Manage/ManageSettings.cs:703 Manage/ManageSettings.cs:776
+msgid "Latin"
+msgstr ""
+
+#: Manage/ManageSettings.cs:704 Manage/ManageSettings.cs:777
+msgid "Latvian"
+msgstr ""
+
+#: Manage/ManageSettings.cs:705 Manage/ManageSettings.cs:778
+msgid "Lithuanian"
+msgstr ""
+
+#: Manage/ManageSettings.cs:706 Manage/ManageSettings.cs:779
+msgid "Macedonian"
+msgstr ""
+
+#: Manage/ManageSettings.cs:707 Manage/ManageSettings.cs:780
+msgid "Malay"
+msgstr ""
+
+#: Manage/ManageSettings.cs:708 Manage/ManageSettings.cs:781
+msgid "Maltese"
+msgstr ""
+
+#: Manage/ManageSettings.cs:709 Manage/ManageSettings.cs:782
+msgid "Norwegian"
+msgstr ""
+
+#: Manage/ManageSettings.cs:710 Manage/ManageSettings.cs:783
+msgid "Persian"
+msgstr ""
+
+#: Manage/ManageSettings.cs:711 Manage/ManageSettings.cs:784
+msgid "Polish"
+msgstr ""
+
+#: Manage/ManageSettings.cs:712 Manage/ManageSettings.cs:785
+msgid "Portuguese"
+msgstr ""
+
+#: Manage/ManageSettings.cs:713 Manage/ManageSettings.cs:786
+msgid "Romanian"
+msgstr ""
+
+#: Manage/ManageSettings.cs:714 Manage/ManageSettings.cs:787
+msgid "Russian"
+msgstr ""
+
+#: Manage/ManageSettings.cs:715 Manage/ManageSettings.cs:788
+msgid "Serbian"
+msgstr ""
+
+#: Manage/ManageSettings.cs:716 Manage/ManageSettings.cs:789
+msgid "Slovak"
+msgstr ""
+
+#: Manage/ManageSettings.cs:717 Manage/ManageSettings.cs:790
+msgid "Slovenian"
+msgstr ""
+
+#: Manage/ManageSettings.cs:718 Manage/ManageSettings.cs:791
+msgid "Spanish"
+msgstr ""
+
+#: Manage/ManageSettings.cs:719 Manage/ManageSettings.cs:792
+msgid "Swahili"
+msgstr ""
+
+#: Manage/ManageSettings.cs:720 Manage/ManageSettings.cs:793
+msgid "Swedish"
+msgstr ""
+
+#: Manage/ManageSettings.cs:721 Manage/ManageSettings.cs:794
+msgid "Tamil"
+msgstr ""
+
+#: Manage/ManageSettings.cs:722 Manage/ManageSettings.cs:795
+msgid "Telugu"
+msgstr ""
+
+#: Manage/ManageSettings.cs:723 Manage/ManageSettings.cs:796
+msgid "Thai"
+msgstr ""
+
+#: Manage/ManageSettings.cs:724 Manage/ManageSettings.cs:797
+msgid "Turkish"
+msgstr ""
+
+#: Manage/ManageSettings.cs:725 Manage/ManageSettings.cs:798
+msgid "Ukrainian"
+msgstr ""
+
+#: Manage/ManageSettings.cs:726 Manage/ManageSettings.cs:799
+msgid "Urdu"
+msgstr ""
+
+#: Manage/ManageSettings.cs:727 Manage/ManageSettings.cs:800
+msgid "Vietnamese"
+msgstr ""
+
+#: Manage/ManageSettings.cs:728 Manage/ManageSettings.cs:801
+msgid "Welsh"
+msgstr ""
+
+#: Manage/ManageSettings.cs:729 Manage/ManageSettings.cs:802
+msgid "Yiddish"
+msgstr ""
+
+#: Manage/Update/Update.cs:165
+msgid "updated to version"
+msgstr ""
+
+#: Manage/Update/Update.cs:183
+msgid "have new version but file for update not found"
+msgstr ""
+
+#: Manage/Update/Update.cs:195
+msgid "Failed to update mod"
+msgstr ""
+
+#: Manage/Update/Update.cs:199
+msgid "Details in"
+msgstr ""
+
+#: Manage/Update/Update.cs:281
+msgid "Information"
+msgstr ""
+
+#: Manage/Update/Update.cs:299
+msgid "Update report"
+msgstr ""
+
+#: Manage/Update/Update.cs:308
+msgid ""
+"If you click on <b style=\"font-size:20px;color:blue;\">[Info]</b> link you "
+"can view update important update info include requuirements and "
+"incompatibilities for latest update."
+msgstr ""
+
+#: Manage/Update/Update.cs:333
+msgid "No updates found"
+msgstr ""
+
+#: Manage/Update/Sources/Github.cs:53
+msgid "Downloading"
+msgstr ""

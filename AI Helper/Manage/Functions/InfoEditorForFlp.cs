@@ -130,22 +130,23 @@ namespace AIHelper.Manage.Functions
                 var currentModFlowPanel = new FlowLayoutPanel
                 {
                     //Dock = DockStyle.Fill,
-                    FlowDirection = FlowDirection.TopDown,
+                    FlowDirection = FlowDirection.LeftToRight,
                     AutoScroll = true,
                     Size = new System.Drawing.Size(10, 10),
                     Margin = new Padding(10),
                     BorderStyle = BorderStyle.Fixed3D,
                 };
-                var mname = new Label
+                var mnameLabel = new Label
                 {
-                    //AutoSize = true,
-                    Text = infoData.ModName,
+                    AutoSize = true,
+                    Text = $"{T._("Name")}: {infoData.ModName}",
                     Size = new System.Drawing.Size(100, _elHeight * 3),
-                    Margin = new Padding(0)
+                    Margin = new Padding(0),
                 };
-                currentModFlowPanel.Controls.Add(mname);
-                var mnameWidth = mname.Width + (mname.Margin.Horizontal * 2);
-                var mnameHeight = mname.Height + (mname.Margin.Vertical * 2);
+                infoData.ToolTip.SetToolTip(mnameLabel, T._("Mod dir name"));
+                currentModFlowPanel.Controls.Add(mnameLabel);
+                var mnameWidth = mnameLabel.Width + (mnameLabel.Margin.Horizontal * 2);
+                var mnameHeight = mnameLabel.Height + (mnameLabel.Margin.Vertical * 2);
                 currentModFlowPanel.Size = new System.Drawing.Size
                         (mnameWidth > currentModFlowPanel.Width ? mnameWidth : currentModFlowPanel.Width
                         , mnameHeight > currentModFlowPanel.Height ? mnameHeight : currentModFlowPanel.Height
@@ -157,7 +158,7 @@ namespace AIHelper.Manage.Functions
                     FlowDirection = FlowDirection.TopDown,
                     AutoScroll = true,
                     Size = new System.Drawing.Size(10, 10),
-                    Margin = new Padding(10),
+                    Margin = new Padding(0),
                     BorderStyle = BorderStyle.Fixed3D,
                 };
 
@@ -165,7 +166,7 @@ namespace AIHelper.Manage.Functions
 
                 AddButtons(githubDataFlowPanel, infoData);
 
-                githubDataFlowPanel.Size = new System.Drawing.Size(githubDataFlowPanel.Width + 10, githubDataFlowPanel.Height + 10);
+                githubDataFlowPanel.Size = new System.Drawing.Size(githubDataFlowPanel.Width + 10, githubDataFlowPanel.Height + 15);
                 currentModFlowPanel.Size = new System.Drawing.Size
                     (
                     currentModFlowPanel.Width + githubDataFlowPanel.Width + 15
@@ -219,7 +220,7 @@ namespace AIHelper.Manage.Functions
                 //AutoSize = true,
                 Text = "-Github---",
                 Size = new System.Drawing.Size(100, _elHeight * 3),
-                Margin = new Padding(0)
+                Margin = new Padding(0),
             };
             githubDataFlowPanel.Controls.Add(repNameLabel);
             var mnameWidth = repNameLabel.Width + (repNameLabel.Margin.Horizontal * 2);
@@ -250,14 +251,14 @@ namespace AIHelper.Manage.Functions
                     };
                     var l = new Label
                     {
-                        AutoSize = true,
+                        //AutoSize = true,
                         Text = infoData.GitInfo.Strings[propertyInfo.Name].t + ":",
                         Size = new System.Drawing.Size(100, _elHeight),
-                        Margin = new Padding(0)
+                        Margin = new Padding(0),
                     };
                     var tb = new TextBox
                     {
-                        AutoSize = true,
+                        //AutoSize = true,
                         Size = new System.Drawing.Size(200, _elHeight),
                         Margin = new Padding(0),
                     };
@@ -298,9 +299,9 @@ namespace AIHelper.Manage.Functions
                 {
                     var l = new CheckBox
                     {
-                        AutoSize = true,
+                        //AutoSize = true,
                         Text = infoData.GitInfo.Strings[propertyInfo.Name].t,
-                        Size = new System.Drawing.Size(100, _elHeight),
+                        Size = new System.Drawing.Size(100, _elHeight+10),
                         Margin = new Padding(0)
                     };
                     l.DataBindings.Add(new Binding("Checked", infoData, $"{nameof(infoData.GitInfo)}.{propertyInfo.Name}", true, DataSourceUpdateMode.OnPropertyChanged));
@@ -334,7 +335,8 @@ namespace AIHelper.Manage.Functions
             var buttonsFlp = new FlowLayoutPanel
             {
                 FlowDirection = FlowDirection.LeftToRight,
-                Margin = new Padding(0)
+                Margin = new Padding(0),
+                BorderStyle = BorderStyle.Fixed3D,
             };
 
             foreach (var buttonData in new IModUpdateInfoButton[2]

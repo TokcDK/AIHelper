@@ -8,13 +8,50 @@ namespace AIHelper.Manage
 {
     internal static class ManageReport
     {
+        internal class LinksInfos : Dictionary<string, Dictionary<string, string>>
+        {
+        }
+        internal class LinkData
+        {
+            internal string Base { get; set; } = "";
+            internal string Category { get; set; } = "";
+            internal string Name { get; set; } = "";
+            internal string Description { get; set; } = "";
+            internal string Link { get; set; }
+        }
+
         private static readonly string _linksSeparator = "{{link}}";
         internal static void ShowReportFromLinks()
         {
+            // get all records data from ini
+            var iniInfos = new LinksInfos();
+            foreach (var iniFilePath in Directory.GetFiles(ManageSettings.LiksIniInfosDirPath, "*.ini", SearchOption.AllDirectories))
+            {
+                var ini = ManageIni.GetINIFile(iniFilePath);
+
+                // get all sections
+                foreach (var sectionName in ini.EnumerateSectionNames())
+                {
+                    if (iniInfos.ContainsKey(sectionName)) continue;
+
+                    var sectionData = new Dictionary<string, string>();
+
+                    // add record keys data
+                    foreach (var keyName in ini.EnumerateSectionKeyNames(sectionName))
+                    {
+                        sectionData.Add(keyName, ini.GetKey(sectionName, keyName));
+                    }
+
+                    // add record data
+                    iniInfos.Add(sectionName, sectionData);
+                }
+            }
+
+
             var groupNames = new Dictionary<string, string>();
 
-            var langID = "<" + ManageSettings.LanuageID + ">";
-            //langID = "<ru-RU>";
+
+            //var langID = "<" + ManageSettings.LanuageID + ">";
 
             string gameLinksPath = ManageSettings.LinksInfoFilePath;
             if (string.IsNullOrWhiteSpace(gameLinksPath)) return;
@@ -56,7 +93,7 @@ namespace AIHelper.Manage
                 var descriptonLink = new List<string>();
                 foreach (var link in category.Value)
                 {
-                    descriptonLink.Add(ManageSettings.UpdateReport.HtmlReportCategoryItemTemplate                        .Replace("%link%", link[1])
+                    descriptonLink.Add(ManageSettings.UpdateReport.HtmlReportCategoryItemTemplate.Replace("%link%", link[1])
                         .Replace("%text%", new Uri(link[1]).Host.ToUpperInvariant())
                         .Replace("%description%", TryGetTranslation(link[0], langID))
                         );

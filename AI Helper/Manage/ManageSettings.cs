@@ -1300,5 +1300,6 @@ namespace AIHelper.Manage
         public static string GameExeNameX32 { get => CurrentGame.GameExeNameX32; }
         public static string GameExeNameVr { get => CurrentGame.GameExeNameVr; }
         public static string GameStudioExeNameX32 { get => CurrentGame.GameStudioExeNameX32; }
+        public static string LiksIniInfosDirPath { get => Path.Combine(CurrentGameLinksInfoDirPath, "ini"); }
     }
 }

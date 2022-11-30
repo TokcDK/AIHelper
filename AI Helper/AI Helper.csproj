@@ -354,11 +354,11 @@
       <Link>.editorconfig</Link>
     </None>
     <None Include="app.manifest" />
-    <None Include="Other\DefaultModOrganizer.ini" />
-    <None Include="Other\locale\ru-RU\LC_MESSAGES\helper.mo" />
-    <None Include="Other\locale\ru-RU\LC_MESSAGES\helper.po" />
-    <None Include="Other\locale\template.pot" />
-    <None Include="Other\locale\template.temp" />
+    <None Include="RES\DefaultModOrganizer.ini" />
+    <None Include="RES\locale\ru-RU\LC_MESSAGES\helper.mo" />
+    <None Include="RES\locale\ru-RU\LC_MESSAGES\helper.po" />
+    <None Include="RES\locale\template.pot" />
+    <None Include="RES\locale\template.temp" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -368,16 +368,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Other\basic_games\game_aigirl.py" />
-    <Content Include="Other\basic_games\game_aigirltrial.py" />
-    <Content Include="Other\basic_games\game_com3d2.py" />
-    <Content Include="Other\basic_games\game_honeyselect.py" />
-    <Content Include="Other\basic_games\game_honeyselect2.py" />
-    <Content Include="Other\basic_games\game_koikatusunshine.py" />
-    <Content Include="Other\basic_games\game_koikatu.py" />
-    <Content Include="Other\basic_games\game_roomgirl.py" />
-    <Content Include="Other\ReportTemplate.html" />
+    <Content Include="RES\basic_games\game_aigirl.py" />
+    <Content Include="RES\basic_games\game_aigirltrial.py" />
+    <Content Include="RES\basic_games\game_com3d2.py" />
+    <Content Include="RES\basic_games\game_honeyselect.py" />
+    <Content Include="RES\basic_games\game_honeyselect2.py" />
+    <Content Include="RES\basic_games\game_koikatusunshine.py" />
+    <Content Include="RES\basic_games\game_koikatu.py" />
+    <Content Include="RES\basic_games\game_roomgirl.py" />
+    <Content Include="RES\ReportTemplate.html" />
     <Content Include="helpericon.ico" />
+    <Content Include="RES\theme\default\report\ReportTemplate.html" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="IWshRuntimeLibrary">
@@ -581,9 +582,9 @@
   <PropertyGroup>
     <PostBuildEvent>:: Move all assemblies and related files to lib folder
 ROBOCOPY "$(TargetDir) " "$(TargetDir)RES\lib\ " *.dll *.pdb /XF "$(TargetName).dll" "$(TargetName).pdb" "$(TargetName).runtimeconfig.json" *.exe *.ini *.config *.manifest *.ico *.log *.txt *.7z *.rar *.zip *.png *.jpg *.lnk /XD logs test AIHInfos RES MO lib Games net6.0-windows "AI Helper Release" [net4] net472 "DEV images" MOTest Downloads "Organized ModPack Dev files" /E /IS /MOVE
-ROBOCOPY "$(ProjectDir)Other\basic_games\ " "$(TargetDir)RES\basicgames\games " *.py
-ROBOCOPY "$(ProjectDir)Other\ " "$(TargetDir)RES\theme\default\report " ReportTemplate.html
-ROBOCOPY "$(ProjectDir)Other\locale " "$(TargetDir)RES\locale " /MIR
+ROBOCOPY "$(ProjectDir)RES\basic_games\ " "$(TargetDir)RES\basicgames\games " *.py
+ROBOCOPY "$(ProjectDir)RES\theme\default\report\ " "$(TargetDir)RES\theme\default\report " ReportTemplate.html
+ROBOCOPY "$(ProjectDir)RES\locale " "$(TargetDir)RES\locale " /MIR
 if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25</PostBuildEvent>
   </PropertyGroup>
 </Project>

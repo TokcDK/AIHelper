@@ -196,6 +196,7 @@
     <Compile Include="Games\Illusion\HoneySelect.cs" />
     <Compile Include="Games\Illusion\AiGirl.cs" />
     <Compile Include="Games\GameBase.cs" />
+    <Compile Include="Manage\Functions\OpenDiscotdForFlp.cs" />
     <Compile Include="Manage\Functions\AddNewGameForFlp.cs" />
     <Compile Include="Manage\Functions\DataDirCleaner.cs" />
     <Compile Include="Manage\Functions\FunctionForFlpBase.cs" />

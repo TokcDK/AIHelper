@@ -73,8 +73,10 @@ namespace AIHelper.Manage.Functions
             var mods = new ModlistData();
             var sectionName = ManageSettings.AiMetaIniSectionName;
             var keyName = ManageSettings.AiMetaIniKeyUpdateName;
-            foreach (var ini in mods.EnumerateModsMetaIni())
+            foreach (var mod in mods.ModsPlusOverwrite)
             {
+                var ini = mod.MetaIni;
+
                 var hasUrl = ini.KeyExists("url", "General");
                 var hasUpdateInfo = ini.KeyExists(keyName, sectionName);
                 if (!hasUrl && !hasUpdateInfo) continue;

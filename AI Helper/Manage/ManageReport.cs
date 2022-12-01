@@ -74,6 +74,10 @@ namespace AIHelper.Manage
                         relinkedToLocalBased = true;
                     }
                 }
+                else
+                {
+
+                }
 
                 if (!relinkedToLocalBased
                     && !id.EndsWith(gameID)

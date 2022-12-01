@@ -90,6 +90,14 @@ namespace AIHelper.Manage
 
                 var category = GetKeyValueFromBase(iniInfos, "category", @base);
                 if (string.IsNullOrWhiteSpace(category)) category = T._("Other");
+
+                var foAdd = new LinkData();
+                foAdd.Name = name;
+                foAdd.Description = description;
+                foAdd.Category = category;
+                foAdd.Link = link;
+
+                if(!dataForAdd.ContainsKey(id)) dataForAdd.Add(id, foAdd);
             }
 
             #region old

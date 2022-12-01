@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using static System.Windows.Forms.LinkLabel;
 
 namespace AIHelper.Manage
 {
@@ -75,21 +76,20 @@ namespace AIHelper.Manage
                 var record = data.Value;
 
                 var @base = record.ContainsKey("base") ? record["base"] : "";
-                string link = "";
-                bool haveKey = record.ContainsKey("link");
-                if (haveKey)
-                {
-                    link =  record["link"];
-                    link = RestoreString(iniInfos, link, "link", @base);
-                }
-                else if (!string.IsNullOrWhiteSpace(@base))
-                {
-                    link = GetKeyValueFromBase(iniInfos, "link", @base);
-                }
+                string link = GetKeyValue(iniInfos, data.Value, "link", @base);
 
+                bool haveKey = record.ContainsKey("link");
+                link = GetKeyValueFromBase(iniInfos, "link", @base);
                 if (string.IsNullOrWhiteSpace(link)) continue;
 
-                var name = record.ContainsKey("name") ? record["name"] : "";
+                var name = GetKeyValueFromBase(iniInfos, "name", @base);
+                if (string.IsNullOrWhiteSpace(name)) name = id;
+
+                var description = GetKeyValueFromBase(iniInfos, "description", @base);
+                if (string.IsNullOrWhiteSpace(description)) description = T._("Open"+" '" + link+"'");
+
+                var category = GetKeyValueFromBase(iniInfos, "category", @base);
+                if (string.IsNullOrWhiteSpace(category)) category = T._("Other");
             }
 
             #region old
@@ -175,28 +175,45 @@ namespace AIHelper.Manage
             #endregion old
         }
 
+        private static string GetKeyValue(LinksInfos iniInfos, Dictionary<string, string> record, string keyName, string parentId)
+        {
+            bool haveKey = record.ContainsKey(keyName);
+            if (haveKey)
+            {
+                return CheckReplaceMarkers(iniInfos, record[keyName], keyName, parentId);
+            }
+            else if (!string.IsNullOrWhiteSpace(parentId))
+            {
+               return GetKeyValueFromBase(iniInfos, keyName, parentId);
+            }
+
+            return "";
+        }
+
         private static string GetKeyValueFromBase(LinksInfos iniInfos, string keyName, string parentRecordId)
         {
             if (!iniInfos.ContainsKey(parentRecordId)) return "";
 
-            var parent = iniInfos[parentRecordId];
+            var parentRecord = iniInfos[parentRecordId];
 
-            var parentBase = parent.ContainsKey("base") ? parent["base"] : "";
+            var parentBase = parentRecord.ContainsKey("base") ? parentRecord["base"] : "";
 
-            bool haveKey = parent.ContainsKey(keyName);
+            bool haveKey = parentRecord.ContainsKey(keyName);
             if (haveKey)
             {
-                return RestoreString(iniInfos, parent[keyName], keyName, parentBase);
+                // have key and key value have no replcacer markers
+                return CheckReplaceMarkers(iniInfos, parentRecord[keyName], keyName, parentBase);
             }
             else if (!string.IsNullOrWhiteSpace(parentBase))
             {
+                // the record have no key name, search it in parent
                 return GetKeyValueFromBase(iniInfos, keyName, parentBase);
             }
 
             return "";
         }
 
-        private static string RestoreString(LinksInfos iniInfos, string s, string keyName, string baseRecordID)
+        private static string CheckReplaceMarkers(LinksInfos iniInfos, string s, string keyName, string baseRecordID)
         {
             if (!s.Contains("%")) return s;
 

@@ -355,6 +355,8 @@
     </None>
     <None Include="app.manifest" />
     <None Include="RES\DefaultModOrganizer.ini" />
+    <None Include="RES\links\ini\base.ini" />
+    <None Include="RES\links\ini\ru-ru.ini" />
     <None Include="RES\locale\ru-RU\LC_MESSAGES\helper.mo" />
     <None Include="RES\locale\ru-RU\LC_MESSAGES\helper.po" />
     <None Include="RES\locale\template.pot" />

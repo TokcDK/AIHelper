@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using static System.Windows.Forms.LinkLabel;
 
 namespace AIHelper.Manage
 {
@@ -86,7 +84,7 @@ namespace AIHelper.Manage
                 if (string.IsNullOrWhiteSpace(name)) name = id;
 
                 var description = GetKeyValueFromBase(iniInfos, "description", @base);
-                if (string.IsNullOrWhiteSpace(description)) description = T._("Open"+" '" + link+"'");
+                if (string.IsNullOrWhiteSpace(description)) description = T._("Open" + " '" + link + "'");
 
                 var category = GetKeyValueFromBase(iniInfos, "category", @base);
                 if (string.IsNullOrWhiteSpace(category)) category = T._("Other");
@@ -97,7 +95,7 @@ namespace AIHelper.Manage
                 foAdd.Category = category;
                 foAdd.Link = link;
 
-                if(!dataForAdd.ContainsKey(id)) dataForAdd.Add(id, foAdd);
+                if (!dataForAdd.ContainsKey(id)) dataForAdd.Add(id, foAdd);
             }
 
             #region old
@@ -192,7 +190,7 @@ namespace AIHelper.Manage
             }
             else if (!string.IsNullOrWhiteSpace(parentId))
             {
-               return GetKeyValueFromBase(iniInfos, keyName, parentId);
+                return GetKeyValueFromBase(iniInfos, keyName, parentId);
             }
 
             return "";
@@ -236,9 +234,16 @@ namespace AIHelper.Manage
 
                     retS = s1;
                 }
-                else if(match.Value.Contains("/") ) // %base/keyname%
+                else if (match.Value.Contains("/")) // %base/keyname%
                 {
+                    var basekey = match.Value.Trim('%').Split('/');
+                    var theParentId = basekey[0];
+                    var theKey = basekey[1];
 
+                    string s1 = ReplaceBase(iniInfos, s, theKey, theParentId == "base" ? baseRecordID : theParentId);
+                    if (s1 == null) continue;
+
+                    retS = s1;
                 }
             }
 

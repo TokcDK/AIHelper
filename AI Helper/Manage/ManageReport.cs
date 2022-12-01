@@ -90,11 +90,6 @@ namespace AIHelper.Manage
                 }
                 if (alreadyHaveTheId) continue; // skip the id because already added
 
-                if(id== "cards.characters.db.bepis.io.all.kks.ru-ru")
-                {
-
-                }
-
                 //if (id.EndsWith(gameAllID))
                 //{
                 //    // relink to gamebased id
@@ -145,8 +140,7 @@ namespace AIHelper.Manage
                 //    }
                 //}
 
-                if (!relinkedToLocalBased
-                    && !id.EndsWith(gameID)
+                if (!id.EndsWith(gameID)
                     && !id.EndsWith($"{gameID}{langID}")
                     && !id.EndsWith(gameAllID)
                     && !id.EndsWith($"{gameAllID}{langID}")
@@ -160,6 +154,29 @@ namespace AIHelper.Manage
                 //}
 
                 var @base = record.ContainsKey("base") ? record["base"] : "";
+                if (@base == id)
+                {
+                    bool checkBase = true;
+                    if (@base.EndsWith(langID))
+                    {
+                        // remove lang id
+                        @base = @base.Remove(@base.Length- langID.Length);
+                        if (iniInfos.ContainsKey(@base)) checkBase = false;
+                    }
+                    if(checkBase && @base.EndsWith(gameID))
+                    {
+                        // remove game id
+                        @base = @base.Remove(@base.Length - gameID.Length);
+                        if (iniInfos.ContainsKey(@base)) checkBase = false;
+                    }
+                    if(checkBase && @base.EndsWith(gameAllID))
+                    {
+                        // remove game id
+                        @base = @base.Remove(@base.Length - gameAllID.Length);
+                        if (iniInfos.ContainsKey(@base)) checkBase = false;
+                    }
+                    if (checkBase) @base = ""; // reset if not found valid id for base
+                }
 
                 string link = GetKeyValue(iniInfos, record, "link", @base);
                 if (string.IsNullOrWhiteSpace(link)) continue;

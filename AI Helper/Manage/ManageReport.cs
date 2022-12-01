@@ -51,6 +51,7 @@ namespace AIHelper.Manage
 
             // build records
             var dataForAdd = new Dictionary<string, LinkData>();
+
             foreach (var info in iniInfos)
             {
                 var data = info;
@@ -58,26 +59,91 @@ namespace AIHelper.Manage
                 var id = data.Key;
                 var record = data.Value;
 
+                // relink .all->.game => .notlang->.lang => .all.lang->.game.lang
                 bool relinkedToLocalBased = false;
-                if (!id.EndsWith(langID))
+                bool alreadyHaveTheId = false;
+                foreach (var (sourceSuffix, targetSuffix, b) in new[]
                 {
-                    //var bid = id.Remove(id.Length - langID.Length);
-                    var localBasedId = $"id{langID}";
+                    (gameAllID, gameID, true), // default record to gamebased record
+                    (langID, langID, false), // not lang based record to lang baed record
+                    ($"{gameAllID}{langID}", $"{gameID}{langID}", true), // default lang based to game lang based
+                })
+                {
+                    if (id.EndsWith(sourceSuffix) != b) continue;
 
-                    if (dataForAdd.ContainsKey(localBasedId)) continue;
+                    var newId = (b ? $"{id.Remove(id.Length - sourceSuffix.Length)}" : id) + targetSuffix;
 
-                    if (iniInfos.ContainsKey(localBasedId))
+                    // break if id already added
+                    if (dataForAdd.ContainsKey(newId))
                     {
-                        id = localBasedId;
-                        record = iniInfos[localBasedId];
-
-                        relinkedToLocalBased = true;
+                        alreadyHaveTheId = true;
+                        break;
                     }
+
+                    if (!iniInfos.ContainsKey(newId)) continue;
+
+                    // when have the id, relink to it
+                    id = newId;
+                    record = iniInfos[newId];
+
+                    relinkedToLocalBased = true; // set to not make checks below
                 }
-                else
+                if (alreadyHaveTheId) continue; // skip the id because already added
+
+                if(id== "cards.characters.db.bepis.io.all.kks.ru-ru")
                 {
 
                 }
+
+                //if (id.EndsWith(gameAllID))
+                //{
+                //    // relink to gamebased id
+
+                //    var gameBasedId = $"{id.Remove(id.Length - gameAllID.Length)}{gameID}";
+
+                //    if (dataForAdd.ContainsKey(gameBasedId)) continue;
+
+                //    if (iniInfos.ContainsKey(gameBasedId))
+                //    {
+                //        id = gameBasedId;
+                //        record = iniInfos[gameBasedId];
+
+                //        relinkedToLocalBased = true;
+                //    }
+                //}
+
+                //if (!id.EndsWith(langID))
+                //{
+                //    // relink to localebased id
+
+                //    var langBasedId = $"{id}{langID}";
+
+                //    if (dataForAdd.ContainsKey(langBasedId)) continue;
+
+                //    if (iniInfos.ContainsKey(langBasedId))
+                //    {
+                //        id = langBasedId;
+                //        record = iniInfos[langBasedId];
+
+                //        relinkedToLocalBased = true;
+                //    }
+                //}
+                //else if (id.EndsWith($"{gameAllID}{langID}"))
+                //{
+                //    // relink to gamebased id
+
+                //    var gameLangBasedId = $"{id.Remove(id.Length - $"{gameAllID}{langID}".Length)}{gameID}{langID}";
+
+                //    if (dataForAdd.ContainsKey(gameLangBasedId)) continue;
+
+                //    if (iniInfos.ContainsKey(gameLangBasedId))
+                //    {
+                //        id = gameLangBasedId;
+                //        record = iniInfos[gameLangBasedId];
+
+                //        relinkedToLocalBased = true;
+                //    }
+                //}
 
                 if (!relinkedToLocalBased
                     && !id.EndsWith(gameID)
@@ -86,13 +152,12 @@ namespace AIHelper.Manage
                     && !id.EndsWith($"{gameAllID}{langID}")
                     ) continue;
 
-                var isLocaleBased = id.EndsWith(langID);
-
-                if (isLocaleBased)
-                {
-                    var nonLocaleId = id.Remove(id.Length - langID.Length);
-                    if (dataForAdd.ContainsKey(nonLocaleId)) dataForAdd.Remove(nonLocaleId);
-                }
+                //var isLocaleBased = id.EndsWith(langID);
+                //if (isLocaleBased)
+                //{
+                //    var nonLocaleId = id.Remove(id.Length - langID.Length);
+                //    if (dataForAdd.ContainsKey(nonLocaleId)) dataForAdd.Remove(nonLocaleId);
+                //}
 
                 var @base = record.ContainsKey("base") ? record["base"] : "";
 

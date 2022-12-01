@@ -56,18 +56,31 @@ namespace AIHelper.Manage
                 var data = info;
 
                 var id = data.Key;
+                var record = data.Value;
 
-                if (id.EndsWith(langID))
+                bool relinkedToLocalBased = false;
+                if (!id.EndsWith(langID))
                 {
+                    //var bid = id.Remove(id.Length - langID.Length);
+                    var localBasedId = $"id{langID}";
 
+                    if (dataForAdd.ContainsKey(localBasedId)) continue;
+
+                    if (iniInfos.ContainsKey(localBasedId))
+                    {
+                        id = localBasedId;
+                        record = iniInfos[localBasedId];
+
+                        relinkedToLocalBased = true;
+                    }
                 }
 
-                if (!id.EndsWith(gameID)
+                if (!relinkedToLocalBased
+                    && !id.EndsWith(gameID)
                     && !id.EndsWith($"{gameID}{langID}")
                     && !id.EndsWith(gameAllID)
                     && !id.EndsWith($"{gameAllID}{langID}")
                     ) continue;
-
 
                 var isLocaleBased = id.EndsWith(langID);
 
@@ -77,20 +90,18 @@ namespace AIHelper.Manage
                     if (dataForAdd.ContainsKey(nonLocaleId)) dataForAdd.Remove(nonLocaleId);
                 }
 
-                var record = data.Value;
-
                 var @base = record.ContainsKey("base") ? record["base"] : "";
 
-                string link = GetKeyValue(iniInfos, data.Value, "link", @base);
+                string link = GetKeyValue(iniInfos, record, "link", @base);
                 if (string.IsNullOrWhiteSpace(link)) continue;
 
-                var name = GetKeyValue(iniInfos, data.Value, "name", @base);
+                var name = GetKeyValue(iniInfos, record, "name", @base);
                 if (string.IsNullOrWhiteSpace(name)) name = id;
 
-                var description = GetKeyValue(iniInfos, data.Value, "description", @base);
+                var description = GetKeyValue(iniInfos, record, "description", @base);
                 if (string.IsNullOrWhiteSpace(description)) description = T._("Open" + " '" + link + "'");
 
-                var category = GetKeyValue(iniInfos, data.Value, "category", @base);
+                var category = GetKeyValue(iniInfos, record, "category", @base);
                 if (string.IsNullOrWhiteSpace(category)) category = T._("Other");
 
                 var foAdd = new LinkData
@@ -103,7 +114,7 @@ namespace AIHelper.Manage
 
                 if (!dataForAdd.ContainsKey(id)) dataForAdd.Add(id, foAdd);
             }
-            
+
             var dddd = "fghfghfgh";
 
             #region old

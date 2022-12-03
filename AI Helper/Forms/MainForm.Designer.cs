@@ -54,7 +54,6 @@
             this.LaunchTabTopTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.LaunchTabTopLeftTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.OpenHelpLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.LaunchLinksLinkLabel = new System.Windows.Forms.LinkLabel();
             this.LaunchTabTopRightTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.LaunchTabTopRightBepinExLogTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.BepInExConsoleCheckBox = new System.Windows.Forms.CheckBox();
@@ -484,7 +483,6 @@
             this.LaunchTabTopLeftTableLayoutPanel.ColumnCount = 1;
             this.LaunchTabTopLeftTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.LaunchTabTopLeftTableLayoutPanel.Controls.Add(this.OpenHelpLinkLabel, 0, 2);
-            this.LaunchTabTopLeftTableLayoutPanel.Controls.Add(this.LaunchLinksLinkLabel, 0, 1);
             this.LaunchTabTopLeftTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LaunchTabTopLeftTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.LaunchTabTopLeftTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
@@ -510,21 +508,6 @@
             this.OpenHelpLinkLabel.Text = "Help";
             this.OpenHelpLinkLabel.Visible = false;
             this.OpenHelpLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenHelpLinkLabel_LinkClicked);
-            // 
-            // LaunchLinksLinkLabel
-            // 
-            this.LaunchLinksLinkLabel.AutoSize = true;
-            this.LaunchLinksLinkLabel.BackColor = System.Drawing.Color.Transparent;
-            this.LaunchLinksLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.LaunchLinksLinkLabel.Font = new System.Drawing.Font("Browallia New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LaunchLinksLinkLabel.LinkColor = System.Drawing.Color.White;
-            this.LaunchLinksLinkLabel.Location = new System.Drawing.Point(3, 21);
-            this.LaunchLinksLinkLabel.Name = "LaunchLinksLinkLabel";
-            this.LaunchLinksLinkLabel.Size = new System.Drawing.Size(32, 16);
-            this.LaunchLinksLinkLabel.TabIndex = 27;
-            this.LaunchLinksLinkLabel.TabStop = true;
-            this.LaunchLinksLinkLabel.Text = "Links>";
-            this.LaunchLinksLinkLabel.Click += new System.EventHandler(this.NewformButton_Click);
             // 
             // LaunchTabTopRightTableLayoutPanel
             // 
@@ -1336,7 +1319,6 @@
         private System.Windows.Forms.TableLayoutPanel LaunchTabTopTableLayoutPanel;
         private System.Windows.Forms.CheckBox VRGameCheckBox;
         private System.Windows.Forms.LinkLabel OpenHelpLinkLabel;
-        private System.Windows.Forms.LinkLabel LaunchLinksLinkLabel;
         private System.Windows.Forms.Label BepInExDisplayedLogLevelLabel;
         private System.Windows.Forms.CheckBox BepInExConsoleCheckBox;
         internal System.Windows.Forms.Label SelectedGameLabel;

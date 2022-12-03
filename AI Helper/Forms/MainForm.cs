@@ -209,7 +209,7 @@ namespace AIHelper
             SettingsButton.Text = T._("Settings");
             ExtraSettingsLinkLabel.Text = T._("Extra Settings");
             JPLauncherRunLinkLabel.Text = T._("Orig Launcher");
-            LaunchLinksLinkLabel.Text = T._("Links");
+            //LaunchLinksLinkLabel.Text = T._("Links");
             QualityComboBox.Items.Add(T._("Perfomance"));
             QualityComboBox.Items.Add(T._("Normal"));
             QualityComboBox.Items.Add(T._("Quality"));
@@ -360,7 +360,7 @@ namespace AIHelper
                 _thToolTip.SetToolTip(OpenPresetDirsLinkLabel, T._("Open dir for character cards"));
                 _thToolTip.SetToolTip(OpenPresetDirsLinkLabelMO, T._("Open dir for character cards using Mod Organizer when game in MO mode."));
 
-                _thToolTip.SetToolTip(LaunchLinksLinkLabel, T._("Open list of links for game resources"));
+                //_thToolTip.SetToolTip(LaunchLinksLinkLabel, T._("Open list of links for game resources"));
                 _thToolTip.SetToolTip(ExtraSettingsLinkLabel, T._("Open extra setting window for plugins and etc"));
 
                 _thToolTip.SetToolTip(CurrentGameComboBox, T._("List of found games. Current") + ": " + ManageSettings.Games.Game.GameDisplayingName);

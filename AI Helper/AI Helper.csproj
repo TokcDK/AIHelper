@@ -203,6 +203,7 @@
     <Compile Include="Manage\Functions\FunctionsForFlpLoader.cs" />
     <Compile Include="Manage\Functions\IFunctionForFlp.cs" />
     <Compile Include="Manage\Functions\InfoEditorForFlp.cs" />
+    <Compile Include="Manage\Functions\ShowReportFromLinksForFlp.cs" />
     <Compile Include="Manage\Functions\UpdaterForFlp.cs" />
     <Compile Include="Manage\Functions\MOModeSwitchForFlp.cs" />
     <Compile Include="Manage\ManageHardlinks.cs" />

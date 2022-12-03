@@ -18,6 +18,6 @@ namespace AIHelper.Manage.Functions
             ManageMOModeSwitch.SwitchBetweenMoAndStandartModes();
         }
 
-        public override Color? ForeColor => ManageSettings.IsMoMode ? Color.Blue: Color.Yellow;
+        public override Color? ForeColor => ManageSettings.IsMoMode ? Color.CornflowerBlue : Color.Yellow;
     }
 }

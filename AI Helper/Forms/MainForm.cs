@@ -201,7 +201,7 @@ namespace AIHelper
             OpenModsFolderLinkLabel.Text = T._("Mods");
             MainTabPage.Text = T._("Info");
             LaunchTabPage.Text = T._("Launch");
-            LaunchTabLaunchLabel.Text = T._("Launch");
+            //LaunchTabLaunchLabel.Text = T._("Launch");
             ToolsTabPage.Text = T._("Tools");
             StudioButton.Text = T._("Studio");
             GameButton.Text = T._("Game");
@@ -296,10 +296,10 @@ namespace AIHelper
             }
             else if (AIGirlHelperTabControl.SelectedTab == LaunchTabPage)
             {
-                _thToolTip.SetToolTip(ProgramNameLabelPart2, ManageSettings.ApplicationProductName + " - " + T._("Illusion games manager.\n\n"
-                        + "Move mouse over wished button or text to see info about it"
-                        )
-                    );
+                //_thToolTip.SetToolTip(ProgramNameLabelPart2, ManageSettings.ApplicationProductName + " - " + T._("Illusion games manager.\n\n"
+                //        + "Move mouse over wished button or text to see info about it"
+                //        )
+                //    );
                 _thToolTip.SetToolTip(SelectedGameLabel, T._("Selected game title"));
 
                 //Launch
@@ -333,7 +333,7 @@ namespace AIHelper
                     )
                     );
 
-                _thToolTip.SetToolTip(pbDiscord, T._("Discord page. Info, links, support."));
+                //_thToolTip.SetToolTip(pbDiscord, T._("Discord page. Info, links, support."));
                 _thToolTip.SetToolTip(OpenLogLinkLabel, T._("Open BepinEx log if found"));
                 _thToolTip.SetToolTip(BepInExDisplayedLogLevelLabel, T._("Click here to select log level\n" +
                     "Only displays the specified log level and above in the console output"));

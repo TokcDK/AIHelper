@@ -320,18 +320,18 @@ namespace AIHelper
                     : T._("Will execute original game launcher")
                     );
                 _thToolTip.SetToolTip(SettingsButton, T._("Will be opened Settings tab"));
-                _thToolTip.SetToolTip(LaunchModeInfoLinkLabel, T._("Same as button in Tool tab.\n")
-                    + (MOmode ? T._(
-                        "Will convert game from MO Mode to Common mode\n" +
-                        " when you can run exes from Data folder without Mod Organizer.\n" +
-                        " You can convert game back to MO mode\n" +
-                        " when it will be need to install new mods or test your mod config"
-                    ) : T._(
-                        "Will convert the game to MO mode\n when all mod files will be moved back to Mods folder\n" +
-                        " in their folders and vanilla files restored"
-                    )
-                    )
-                    );
+                //_thToolTip.SetToolTip(LaunchModeInfoLinkLabel, T._("Same as button in Tool tab.\n")
+                //    + (MOmode ? T._(
+                //        "Will convert game from MO Mode to Common mode\n" +
+                //        " when you can run exes from Data folder without Mod Organizer.\n" +
+                //        " You can convert game back to MO mode\n" +
+                //        " when it will be need to install new mods or test your mod config"
+                //    ) : T._(
+                //        "Will convert the game to MO mode\n when all mod files will be moved back to Mods folder\n" +
+                //        " in their folders and vanilla files restored"
+                //    )
+                //    )
+                //    );
 
                 //_thToolTip.SetToolTip(pbDiscord, T._("Discord page. Info, links, support."));
                 _thToolTip.SetToolTip(OpenLogLinkLabel, T._("Open BepinEx log if found"));
@@ -589,7 +589,7 @@ namespace AIHelper
 
             MOCommonModeSwitchButton.Text = T._("CommonToMO");
             MainService.Text = T._("Common mode");
-            LaunchModeInfoLinkLabel.Text = T._("Common mode");
+            //LaunchModeInfoLinkLabel.Text = T._("Common mode");
             MainService.Enabled = false;
         }
 
@@ -677,7 +677,7 @@ namespace AIHelper
                 MOCommonModeSwitchButton.Text = T._("MOToCommon");
             }
 
-            LaunchModeInfoLinkLabel.Text = T._("MO mode");
+            //LaunchModeInfoLinkLabel.Text = T._("MO mode");
 
             ManageModOrganizer.DummyFiles();
 

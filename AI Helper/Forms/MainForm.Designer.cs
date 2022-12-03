@@ -53,7 +53,6 @@
             this.SettingsButton = new System.Windows.Forms.Button();
             this.LaunchTabTopTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.LaunchTabTopLeftTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.LaunchModeInfoLinkLabel = new System.Windows.Forms.LinkLabel();
             this.OpenHelpLinkLabel = new System.Windows.Forms.LinkLabel();
             this.LaunchLinksLinkLabel = new System.Windows.Forms.LinkLabel();
             this.LaunchTabTopRightTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -484,7 +483,6 @@
             // 
             this.LaunchTabTopLeftTableLayoutPanel.ColumnCount = 1;
             this.LaunchTabTopLeftTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.LaunchTabTopLeftTableLayoutPanel.Controls.Add(this.LaunchModeInfoLinkLabel, 0, 0);
             this.LaunchTabTopLeftTableLayoutPanel.Controls.Add(this.OpenHelpLinkLabel, 0, 2);
             this.LaunchTabTopLeftTableLayoutPanel.Controls.Add(this.LaunchLinksLinkLabel, 0, 1);
             this.LaunchTabTopLeftTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -497,22 +495,6 @@
             this.LaunchTabTopLeftTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.LaunchTabTopLeftTableLayoutPanel.Size = new System.Drawing.Size(70, 86);
             this.LaunchTabTopLeftTableLayoutPanel.TabIndex = 2;
-            // 
-            // LaunchModeInfoLinkLabel
-            // 
-            this.LaunchModeInfoLinkLabel.AutoSize = true;
-            this.LaunchModeInfoLinkLabel.BackColor = System.Drawing.Color.Transparent;
-            this.LaunchModeInfoLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.LaunchModeInfoLinkLabel.Font = new System.Drawing.Font("Browallia New", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LaunchModeInfoLinkLabel.LinkColor = System.Drawing.Color.White;
-            this.LaunchModeInfoLinkLabel.Location = new System.Drawing.Point(3, 0);
-            this.LaunchModeInfoLinkLabel.Name = "LaunchModeInfoLinkLabel";
-            this.LaunchModeInfoLinkLabel.Size = new System.Drawing.Size(46, 16);
-            this.LaunchModeInfoLinkLabel.TabIndex = 21;
-            this.LaunchModeInfoLinkLabel.TabStop = true;
-            this.LaunchModeInfoLinkLabel.Text = "MO mode";
-            this.LaunchModeInfoLinkLabel.VisitedLinkColor = System.Drawing.Color.White;
-            this.LaunchModeInfoLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.MO2StandartButton_Click);
             // 
             // OpenHelpLinkLabel
             // 
@@ -1358,7 +1340,6 @@
         private System.Windows.Forms.Label BepInExDisplayedLogLevelLabel;
         private System.Windows.Forms.CheckBox BepInExConsoleCheckBox;
         internal System.Windows.Forms.Label SelectedGameLabel;
-        private System.Windows.Forms.LinkLabel LaunchModeInfoLinkLabel;
         private System.Windows.Forms.LinkLabel OpenLogLinkLabel;
         private System.Windows.Forms.TableLayoutPanel LaunchTabTopRightTableLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel LaunchTabTopRightBepinExLogTableLayoutPanel;

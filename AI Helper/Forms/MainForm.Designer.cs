@@ -94,7 +94,6 @@
             this.ToolsTabPageTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.ToolsFixModListButton = new System.Windows.Forms.Button();
             this.UpdateButtonTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.btnUpdateMods = new System.Windows.Forms.Button();
             this.Install2MOTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.Install2MOOptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -103,6 +102,8 @@
             this.ModeSwitchButtonPanel = new System.Windows.Forms.Panel();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
             this.DevButton = new System.Windows.Forms.Button();
+            this.FixModlistTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.btnUpdateMods = new System.Windows.Forms.Button();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -132,6 +133,7 @@
             this.Install2MOOptionsFlowLayoutPanel.SuspendLayout();
             this.ModeSwitchTableLayoutPanel.SuspendLayout();
             this.ModeSwitchButtonPanel.SuspendLayout();
+            this.FixModlistTableLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // AIGirlHelperTabControl
@@ -514,8 +516,8 @@
             this.LaunchTabTopRightTableLayoutPanel.ColumnCount = 1;
             this.LaunchTabTopRightTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.LaunchTabTopRightTableLayoutPanel.Controls.Add(this.LaunchTabTopRightBepinExLogTableLayoutPanel, 0, 0);
-            this.LaunchTabTopRightTableLayoutPanel.Controls.Add(this.BepInExDisplayedLogLevelLabel, 0, 1);
-            this.LaunchTabTopRightTableLayoutPanel.Controls.Add(this.VRGameCheckBox, 0, 2);
+            this.LaunchTabTopRightTableLayoutPanel.Controls.Add(this.VRGameCheckBox, 0, 1);
+            this.LaunchTabTopRightTableLayoutPanel.Controls.Add(this.BepInExDisplayedLogLevelLabel, 0, 2);
             this.LaunchTabTopRightTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LaunchTabTopRightTableLayoutPanel.Location = new System.Drawing.Point(402, 0);
             this.LaunchTabTopRightTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
@@ -572,7 +574,7 @@
             // 
             this.BepInExDisplayedLogLevelLabel.AutoSize = true;
             this.BepInExDisplayedLogLevelLabel.BackColor = System.Drawing.Color.Transparent;
-            this.BepInExDisplayedLogLevelLabel.Location = new System.Drawing.Point(3, 21);
+            this.BepInExDisplayedLogLevelLabel.Location = new System.Drawing.Point(3, 42);
             this.BepInExDisplayedLogLevelLabel.Name = "BepInExDisplayedLogLevelLabel";
             this.BepInExDisplayedLogLevelLabel.Size = new System.Drawing.Size(25, 13);
             this.BepInExDisplayedLogLevelLabel.TabIndex = 26;
@@ -582,13 +584,14 @@
             // 
             // VRGameCheckBox
             // 
+            this.VRGameCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.VRGameCheckBox.AutoSize = true;
             this.VRGameCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.VRGameCheckBox.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.VRGameCheckBox.ForeColor = System.Drawing.SystemColors.ScrollBar;
-            this.VRGameCheckBox.Location = new System.Drawing.Point(3, 45);
+            this.VRGameCheckBox.Location = new System.Drawing.Point(29, 24);
             this.VRGameCheckBox.Name = "VRGameCheckBox";
-            this.VRGameCheckBox.Size = new System.Drawing.Size(36, 18);
+            this.VRGameCheckBox.Size = new System.Drawing.Size(36, 15);
             this.VRGameCheckBox.TabIndex = 29;
             this.VRGameCheckBox.Text = "vr";
             this.VRGameCheckBox.UseVisualStyleBackColor = false;
@@ -1030,11 +1033,11 @@
             this.ToolsTabPageTableLayoutPanel.ColumnCount = 2;
             this.ToolsTabPageTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.29412F));
             this.ToolsTabPageTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 49.70588F));
-            this.ToolsTabPageTableLayoutPanel.Controls.Add(this.ToolsFixModListButton, 0, 2);
             this.ToolsTabPageTableLayoutPanel.Controls.Add(this.UpdateButtonTableLayoutPanel, 0, 3);
             this.ToolsTabPageTableLayoutPanel.Controls.Add(this.Install2MOTableLayoutPanel, 0, 1);
             this.ToolsTabPageTableLayoutPanel.Controls.Add(this.ModeSwitchTableLayoutPanel, 0, 0);
             this.ToolsTabPageTableLayoutPanel.Controls.Add(this.DevButton, 1, 0);
+            this.ToolsTabPageTableLayoutPanel.Controls.Add(this.FixModlistTableLayoutPanel, 0, 2);
             this.ToolsTabPageTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ToolsTabPageTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.ToolsTabPageTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
@@ -1051,11 +1054,12 @@
             // 
             this.ToolsFixModListButton.BackColor = System.Drawing.Color.Silver;
             this.ToolsFixModListButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.ToolsFixModListButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ToolsFixModListButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.ToolsFixModListButton.ForeColor = System.Drawing.Color.Black;
-            this.ToolsFixModListButton.Location = new System.Drawing.Point(3, 117);
+            this.ToolsFixModListButton.Location = new System.Drawing.Point(3, 3);
             this.ToolsFixModListButton.Name = "ToolsFixModListButton";
-            this.ToolsFixModListButton.Size = new System.Drawing.Size(122, 30);
+            this.ToolsFixModListButton.Size = new System.Drawing.Size(170, 51);
             this.ToolsFixModListButton.TabIndex = 22;
             this.ToolsFixModListButton.Text = "Fix ModList";
             this.ToolsFixModListButton.UseVisualStyleBackColor = false;
@@ -1067,28 +1071,13 @@
             this.UpdateButtonTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 74.86339F));
             this.UpdateButtonTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.13661F));
             this.UpdateButtonTableLayoutPanel.Controls.Add(this.btnUpdateMods, 0, 0);
-            this.UpdateButtonTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.UpdateButtonTableLayoutPanel.Location = new System.Drawing.Point(0, 171);
             this.UpdateButtonTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.UpdateButtonTableLayoutPanel.Name = "UpdateButtonTableLayoutPanel";
             this.UpdateButtonTableLayoutPanel.RowCount = 1;
             this.UpdateButtonTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.UpdateButtonTableLayoutPanel.Size = new System.Drawing.Size(236, 58);
+            this.UpdateButtonTableLayoutPanel.Size = new System.Drawing.Size(234, 58);
             this.UpdateButtonTableLayoutPanel.TabIndex = 29;
-            // 
-            // btnUpdateMods
-            // 
-            this.btnUpdateMods.BackColor = System.Drawing.Color.Silver;
-            this.btnUpdateMods.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnUpdateMods.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnUpdateMods.ForeColor = System.Drawing.Color.Black;
-            this.btnUpdateMods.Location = new System.Drawing.Point(3, 3);
-            this.btnUpdateMods.Name = "btnUpdateMods";
-            this.btnUpdateMods.Size = new System.Drawing.Size(121, 30);
-            this.btnUpdateMods.TabIndex = 26;
-            this.btnUpdateMods.Text = "Update mods";
-            this.btnUpdateMods.UseVisualStyleBackColor = false;
-            this.btnUpdateMods.Click += new System.EventHandler(this.btnUpdateMods_Click);
             // 
             // Install2MOTableLayoutPanel
             // 
@@ -1111,11 +1100,12 @@
             // 
             this.InstallInModsButton.BackColor = System.Drawing.Color.Silver;
             this.InstallInModsButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.InstallInModsButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.InstallInModsButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.InstallInModsButton.ForeColor = System.Drawing.Color.Black;
             this.InstallInModsButton.Location = new System.Drawing.Point(3, 3);
             this.InstallInModsButton.Name = "InstallInModsButton";
-            this.InstallInModsButton.Size = new System.Drawing.Size(122, 30);
+            this.InstallInModsButton.Size = new System.Drawing.Size(173, 51);
             this.InstallInModsButton.TabIndex = 17;
             this.InstallInModsButton.Text = "Install";
             this.InstallInModsButton.UseVisualStyleBackColor = false;
@@ -1154,33 +1144,34 @@
             this.ModeSwitchTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 76.36364F));
             this.ModeSwitchTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 23.63636F));
             this.ModeSwitchTableLayoutPanel.Controls.Add(this.ModeSwitchButtonPanel, 0, 0);
+            this.ModeSwitchTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ModeSwitchTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.ModeSwitchTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.ModeSwitchTableLayoutPanel.Name = "ModeSwitchTableLayoutPanel";
             this.ModeSwitchTableLayoutPanel.RowCount = 1;
             this.ModeSwitchTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.ModeSwitchTableLayoutPanel.Size = new System.Drawing.Size(171, 38);
+            this.ModeSwitchTableLayoutPanel.Size = new System.Drawing.Size(236, 57);
             this.ModeSwitchTableLayoutPanel.TabIndex = 31;
             // 
             // ModeSwitchButtonPanel
             // 
             this.ModeSwitchButtonPanel.Controls.Add(this.MOCommonModeSwitchButton);
             this.ModeSwitchButtonPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ModeSwitchButtonPanel.Location = new System.Drawing.Point(0, 0);
-            this.ModeSwitchButtonPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.ModeSwitchButtonPanel.Location = new System.Drawing.Point(3, 3);
             this.ModeSwitchButtonPanel.Name = "ModeSwitchButtonPanel";
-            this.ModeSwitchButtonPanel.Size = new System.Drawing.Size(130, 38);
+            this.ModeSwitchButtonPanel.Size = new System.Drawing.Size(174, 51);
             this.ModeSwitchButtonPanel.TabIndex = 0;
             // 
             // MOCommonModeSwitchButton
             // 
             this.MOCommonModeSwitchButton.BackColor = System.Drawing.Color.Silver;
             this.MOCommonModeSwitchButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.MOCommonModeSwitchButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MOCommonModeSwitchButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MOCommonModeSwitchButton.ForeColor = System.Drawing.Color.Black;
-            this.MOCommonModeSwitchButton.Location = new System.Drawing.Point(5, 3);
+            this.MOCommonModeSwitchButton.Location = new System.Drawing.Point(0, 0);
             this.MOCommonModeSwitchButton.Name = "MOCommonModeSwitchButton";
-            this.MOCommonModeSwitchButton.Size = new System.Drawing.Size(122, 30);
+            this.MOCommonModeSwitchButton.Size = new System.Drawing.Size(174, 51);
             this.MOCommonModeSwitchButton.TabIndex = 16;
             this.MOCommonModeSwitchButton.Text = "MOToCommon";
             this.MOCommonModeSwitchButton.UseVisualStyleBackColor = false;
@@ -1195,6 +1186,35 @@
             this.DevButton.Text = "Dev";
             this.DevButton.UseVisualStyleBackColor = true;
             this.DevButton.Click += new System.EventHandler(this.Dev_Click);
+            // 
+            // FixModlistTableLayoutPanel
+            // 
+            this.FixModlistTableLayoutPanel.ColumnCount = 2;
+            this.FixModlistTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 74.86339F));
+            this.FixModlistTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.13661F));
+            this.FixModlistTableLayoutPanel.Controls.Add(this.ToolsFixModListButton, 0, 0);
+            this.FixModlistTableLayoutPanel.Location = new System.Drawing.Point(0, 114);
+            this.FixModlistTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.FixModlistTableLayoutPanel.Name = "FixModlistTableLayoutPanel";
+            this.FixModlistTableLayoutPanel.RowCount = 1;
+            this.FixModlistTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.FixModlistTableLayoutPanel.Size = new System.Drawing.Size(236, 57);
+            this.FixModlistTableLayoutPanel.TabIndex = 33;
+            // 
+            // btnUpdateMods
+            // 
+            this.btnUpdateMods.BackColor = System.Drawing.Color.Silver;
+            this.btnUpdateMods.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnUpdateMods.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnUpdateMods.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnUpdateMods.ForeColor = System.Drawing.Color.Black;
+            this.btnUpdateMods.Location = new System.Drawing.Point(3, 3);
+            this.btnUpdateMods.Name = "btnUpdateMods";
+            this.btnUpdateMods.Size = new System.Drawing.Size(169, 52);
+            this.btnUpdateMods.TabIndex = 26;
+            this.btnUpdateMods.Text = "Update mods";
+            this.btnUpdateMods.UseVisualStyleBackColor = false;
+            this.btnUpdateMods.Click += new System.EventHandler(this.btnUpdateMods_Click);
             // 
             // MainForm
             // 
@@ -1249,6 +1269,7 @@
             this.Install2MOOptionsFlowLayoutPanel.PerformLayout();
             this.ModeSwitchTableLayoutPanel.ResumeLayout(false);
             this.ModeSwitchButtonPanel.ResumeLayout(false);
+            this.FixModlistTableLayoutPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1284,7 +1305,6 @@
         private System.Windows.Forms.TableLayoutPanel ToolsTabPageTableLayoutPanel;
         private System.Windows.Forms.Button ToolsFixModListButton;
         private System.Windows.Forms.TableLayoutPanel UpdateButtonTableLayoutPanel;
-        private System.Windows.Forms.Button btnUpdateMods;
         private System.Windows.Forms.TableLayoutPanel Install2MOTableLayoutPanel;
         private System.Windows.Forms.Button InstallInModsButton;
         private System.Windows.Forms.FlowLayoutPanel Install2MOOptionsFlowLayoutPanel;
@@ -1328,6 +1348,8 @@
         private System.Windows.Forms.TableLayoutPanel LaunchTabTopLeftTableLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel LaunchTabTopAppGameTitleTableLayoutPanel;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnUpdateMods;
+        private System.Windows.Forms.TableLayoutPanel FixModlistTableLayoutPanel;
     }
 }
 

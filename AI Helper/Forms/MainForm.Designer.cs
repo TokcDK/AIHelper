@@ -1130,10 +1130,10 @@
             this.Install2MODirPathOpenFolderLinkLabel.Location = new System.Drawing.Point(0, 0);
             this.Install2MODirPathOpenFolderLinkLabel.Margin = new System.Windows.Forms.Padding(0);
             this.Install2MODirPathOpenFolderLinkLabel.Name = "Install2MODirPathOpenFolderLinkLabel";
-            this.Install2MODirPathOpenFolderLinkLabel.Size = new System.Drawing.Size(17, 15);
+            this.Install2MODirPathOpenFolderLinkLabel.Size = new System.Drawing.Size(21, 15);
             this.Install2MODirPathOpenFolderLinkLabel.TabIndex = 18;
             this.Install2MODirPathOpenFolderLinkLabel.TabStop = true;
-            this.Install2MODirPathOpenFolderLinkLabel.Text = "D";
+            this.Install2MODirPathOpenFolderLinkLabel.Text = "👜";
             this.Install2MODirPathOpenFolderLinkLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             this.Install2MODirPathOpenFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.Install2MODirPathOpenFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.Install2MODirPathOpenFolderLinkLabel_LinkClicked);

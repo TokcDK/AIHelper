@@ -32,14 +32,6 @@
             this.AIGirlHelperTabControl = new System.Windows.Forms.TabControl();
             this.MainTabPage = new System.Windows.Forms.TabPage();
             this.InfoPagePanel = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.LabelPanel2 = new System.Windows.Forms.Panel();
-            this.ModsInfoLabel = new System.Windows.Forms.Label();
-            this.LabelPanel = new System.Windows.Forms.Panel();
-            this.DataInfoLabel = new System.Windows.Forms.Label();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.MainService = new System.Windows.Forms.Button();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.LaunchPagePanel = new System.Windows.Forms.Panel();
             this.FunctionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -99,11 +91,20 @@
             this.ModeSwitchButtonPanel = new System.Windows.Forms.Panel();
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
             this.DevButton = new System.Windows.Forms.Button();
+            this.InfoTabPanel = new System.Windows.Forms.Panel();
+            this.InfoTabTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.LabelPanel2 = new System.Windows.Forms.Panel();
+            this.ModsInfoLabel = new System.Windows.Forms.Label();
+            this.LabelPanel = new System.Windows.Forms.Panel();
+            this.DataInfoLabel = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.MainService = new System.Windows.Forms.Button();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.AIHelperP2Label = new System.Windows.Forms.Label();
+            this.AIHelperP1Label = new System.Windows.Forms.Label();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
-            this.LabelPanel2.SuspendLayout();
-            this.LabelPanel.SuspendLayout();
             this.LaunchTabPage.SuspendLayout();
             this.LaunchPagePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbDiscord)).BeginInit();
@@ -119,6 +120,11 @@
             this.Install2MOOptionsFlowLayoutPanel.SuspendLayout();
             this.ModeSwitchTableLayoutPanel.SuspendLayout();
             this.ModeSwitchButtonPanel.SuspendLayout();
+            this.InfoTabPanel.SuspendLayout();
+            this.InfoTabTableLayoutPanel.SuspendLayout();
+            this.LabelPanel2.SuspendLayout();
+            this.LabelPanel.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // AIGirlHelperTabControl
@@ -132,7 +138,7 @@
             this.AIGirlHelperTabControl.Location = new System.Drawing.Point(0, 0);
             this.AIGirlHelperTabControl.Name = "AIGirlHelperTabControl";
             this.AIGirlHelperTabControl.SelectedIndex = 0;
-            this.AIGirlHelperTabControl.Size = new System.Drawing.Size(354, 187);
+            this.AIGirlHelperTabControl.Size = new System.Drawing.Size(484, 261);
             this.AIGirlHelperTabControl.TabIndex = 0;
             this.AIGirlHelperTabControl.SelectedIndexChanged += new System.EventHandler(this.AIGirlHelperTabControl_SelectedIndexChanged);
             this.AIGirlHelperTabControl.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.AIGirlHelperTabControl_Selecting);
@@ -145,7 +151,7 @@
             this.MainTabPage.Location = new System.Drawing.Point(4, 22);
             this.MainTabPage.Name = "MainTabPage";
             this.MainTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.MainTabPage.Size = new System.Drawing.Size(346, 161);
+            this.MainTabPage.Size = new System.Drawing.Size(476, 235);
             this.MainTabPage.TabIndex = 0;
             this.MainTabPage.Text = "Info";
             this.MainTabPage.UseVisualStyleBackColor = true;
@@ -153,111 +159,12 @@
             // InfoPagePanel
             // 
             this.InfoPagePanel.BackColor = System.Drawing.Color.Gray;
-            this.InfoPagePanel.Controls.Add(this.label2);
-            this.InfoPagePanel.Controls.Add(this.label1);
-            this.InfoPagePanel.Controls.Add(this.LabelPanel2);
-            this.InfoPagePanel.Controls.Add(this.LabelPanel);
-            this.InfoPagePanel.Controls.Add(this.progressBar1);
-            this.InfoPagePanel.Controls.Add(this.MainService);
+            this.InfoPagePanel.Controls.Add(this.InfoTabPanel);
             this.InfoPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.InfoPagePanel.Location = new System.Drawing.Point(3, 3);
             this.InfoPagePanel.Name = "InfoPagePanel";
-            this.InfoPagePanel.Size = new System.Drawing.Size(340, 155);
+            this.InfoPagePanel.Size = new System.Drawing.Size(470, 229);
             this.InfoPagePanel.TabIndex = 0;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.BackColor = System.Drawing.Color.Gray;
-            this.label2.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.label2.Location = new System.Drawing.Point(114, 9);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(45, 31);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "AI";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.Gray;
-            this.label1.Font = new System.Drawing.Font("Lucida Handwriting", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(154, 14);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(84, 24);
-            this.label1.TabIndex = 2;
-            this.label1.Text = " Helper";
-            // 
-            // LabelPanel2
-            // 
-            this.LabelPanel2.Controls.Add(this.ModsInfoLabel);
-            this.LabelPanel2.Location = new System.Drawing.Point(3, 103);
-            this.LabelPanel2.Name = "LabelPanel2";
-            this.LabelPanel2.Size = new System.Drawing.Size(334, 18);
-            this.LabelPanel2.TabIndex = 8;
-            // 
-            // ModsInfoLabel
-            // 
-            this.ModsInfoLabel.AutoEllipsis = true;
-            this.ModsInfoLabel.BackColor = System.Drawing.Color.Gray;
-            this.ModsInfoLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ModsInfoLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ModsInfoLabel.Font = new System.Drawing.Font("Times New Roman", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.ModsInfoLabel.ForeColor = System.Drawing.Color.White;
-            this.ModsInfoLabel.Location = new System.Drawing.Point(0, 0);
-            this.ModsInfoLabel.Name = "ModsInfoLabel";
-            this.ModsInfoLabel.Size = new System.Drawing.Size(334, 18);
-            this.ModsInfoLabel.TabIndex = 6;
-            this.ModsInfoLabel.Text = "...";
-            this.ModsInfoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // LabelPanel
-            // 
-            this.LabelPanel.Controls.Add(this.DataInfoLabel);
-            this.LabelPanel.Location = new System.Drawing.Point(3, 82);
-            this.LabelPanel.Name = "LabelPanel";
-            this.LabelPanel.Size = new System.Drawing.Size(334, 18);
-            this.LabelPanel.TabIndex = 7;
-            // 
-            // DataInfoLabel
-            // 
-            this.DataInfoLabel.AutoEllipsis = true;
-            this.DataInfoLabel.BackColor = System.Drawing.Color.Gray;
-            this.DataInfoLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.DataInfoLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DataInfoLabel.Font = new System.Drawing.Font("Times New Roman", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DataInfoLabel.ForeColor = System.Drawing.Color.White;
-            this.DataInfoLabel.Location = new System.Drawing.Point(0, 0);
-            this.DataInfoLabel.Name = "DataInfoLabel";
-            this.DataInfoLabel.Size = new System.Drawing.Size(334, 18);
-            this.DataInfoLabel.TabIndex = 6;
-            this.DataInfoLabel.Text = "...";
-            this.DataInfoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // progressBar1
-            // 
-            this.progressBar1.BackColor = System.Drawing.Color.White;
-            this.progressBar1.Location = new System.Drawing.Point(3, 137);
-            this.progressBar1.MarqueeAnimationSpeed = 50;
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(334, 13);
-            this.progressBar1.TabIndex = 5;
-            this.progressBar1.Visible = false;
-            // 
-            // MainService
-            // 
-            this.MainService.BackColor = System.Drawing.Color.Silver;
-            this.MainService.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.MainService.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MainService.ForeColor = System.Drawing.Color.Black;
-            this.MainService.Location = new System.Drawing.Point(100, 43);
-            this.MainService.Name = "MainService";
-            this.MainService.Size = new System.Drawing.Size(150, 33);
-            this.MainService.TabIndex = 0;
-            this.MainService.Text = "Prepare the game";
-            this.MainService.UseVisualStyleBackColor = false;
-            this.MainService.Click += new System.EventHandler(this.MainService_Click);
             // 
             // LaunchTabPage
             // 
@@ -265,7 +172,7 @@
             this.LaunchTabPage.Location = new System.Drawing.Point(4, 22);
             this.LaunchTabPage.Name = "LaunchTabPage";
             this.LaunchTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.LaunchTabPage.Size = new System.Drawing.Size(346, 161);
+            this.LaunchTabPage.Size = new System.Drawing.Size(626, 330);
             this.LaunchTabPage.TabIndex = 2;
             this.LaunchTabPage.Text = "Launch";
             this.LaunchTabPage.UseVisualStyleBackColor = true;
@@ -294,7 +201,7 @@
             this.LaunchPagePanel.ForeColor = System.Drawing.SystemColors.ScrollBar;
             this.LaunchPagePanel.Location = new System.Drawing.Point(3, 3);
             this.LaunchPagePanel.Name = "LaunchPagePanel";
-            this.LaunchPagePanel.Size = new System.Drawing.Size(340, 155);
+            this.LaunchPagePanel.Size = new System.Drawing.Size(620, 324);
             this.LaunchPagePanel.TabIndex = 0;
             // 
             // FunctionsFlowLayoutPanel
@@ -523,7 +430,7 @@
             this.SettingsTabPage.Location = new System.Drawing.Point(4, 22);
             this.SettingsTabPage.Name = "SettingsTabPage";
             this.SettingsTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.SettingsTabPage.Size = new System.Drawing.Size(346, 161);
+            this.SettingsTabPage.Size = new System.Drawing.Size(626, 330);
             this.SettingsTabPage.TabIndex = 1;
             this.SettingsTabPage.Text = "Settings";
             this.SettingsTabPage.UseVisualStyleBackColor = true;
@@ -546,7 +453,7 @@
             this.SettingsPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SettingsPagePanel.Location = new System.Drawing.Point(3, 3);
             this.SettingsPagePanel.Name = "SettingsPagePanel";
-            this.SettingsPagePanel.Size = new System.Drawing.Size(340, 155);
+            this.SettingsPagePanel.Size = new System.Drawing.Size(620, 324);
             this.SettingsPagePanel.TabIndex = 1;
             // 
             // AddGameSettingsLabel
@@ -886,7 +793,7 @@
             this.ToolsTabPage.Location = new System.Drawing.Point(4, 22);
             this.ToolsTabPage.Name = "ToolsTabPage";
             this.ToolsTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.ToolsTabPage.Size = new System.Drawing.Size(346, 161);
+            this.ToolsTabPage.Size = new System.Drawing.Size(626, 330);
             this.ToolsTabPage.TabIndex = 3;
             this.ToolsTabPage.Text = "Tools";
             this.ToolsTabPage.UseVisualStyleBackColor = true;
@@ -899,7 +806,7 @@
             this.ToolsTabPagePanel.Location = new System.Drawing.Point(3, 3);
             this.ToolsTabPagePanel.Margin = new System.Windows.Forms.Padding(0);
             this.ToolsTabPagePanel.Name = "ToolsTabPagePanel";
-            this.ToolsTabPagePanel.Size = new System.Drawing.Size(340, 155);
+            this.ToolsTabPagePanel.Size = new System.Drawing.Size(620, 324);
             this.ToolsTabPagePanel.TabIndex = 1;
             // 
             // ToolsTabPageTableLayoutPanel
@@ -921,7 +828,7 @@
             this.ToolsTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.ToolsTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.ToolsTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.ToolsTabPageTableLayoutPanel.Size = new System.Drawing.Size(340, 155);
+            this.ToolsTabPageTableLayoutPanel.Size = new System.Drawing.Size(620, 324);
             this.ToolsTabPageTableLayoutPanel.TabIndex = 0;
             // 
             // ToolsFixModListButton
@@ -930,7 +837,7 @@
             this.ToolsFixModListButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.ToolsFixModListButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.ToolsFixModListButton.ForeColor = System.Drawing.Color.Black;
-            this.ToolsFixModListButton.Location = new System.Drawing.Point(3, 79);
+            this.ToolsFixModListButton.Location = new System.Drawing.Point(3, 165);
             this.ToolsFixModListButton.Name = "ToolsFixModListButton";
             this.ToolsFixModListButton.Size = new System.Drawing.Size(122, 30);
             this.ToolsFixModListButton.TabIndex = 22;
@@ -945,12 +852,12 @@
             this.UpdateButtonTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25.13661F));
             this.UpdateButtonTableLayoutPanel.Controls.Add(this.btnUpdateMods, 0, 0);
             this.UpdateButtonTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.UpdateButtonTableLayoutPanel.Location = new System.Drawing.Point(0, 114);
+            this.UpdateButtonTableLayoutPanel.Location = new System.Drawing.Point(0, 243);
             this.UpdateButtonTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.UpdateButtonTableLayoutPanel.Name = "UpdateButtonTableLayoutPanel";
             this.UpdateButtonTableLayoutPanel.RowCount = 1;
             this.UpdateButtonTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.UpdateButtonTableLayoutPanel.Size = new System.Drawing.Size(171, 41);
+            this.UpdateButtonTableLayoutPanel.Size = new System.Drawing.Size(311, 81);
             this.UpdateButtonTableLayoutPanel.TabIndex = 29;
             // 
             // btnUpdateMods
@@ -975,13 +882,13 @@
             this.Install2MOTableLayoutPanel.Controls.Add(this.InstallInModsButton, 0, 0);
             this.Install2MOTableLayoutPanel.Controls.Add(this.Install2MOOptionsFlowLayoutPanel, 1, 0);
             this.Install2MOTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Install2MOTableLayoutPanel.Location = new System.Drawing.Point(0, 38);
+            this.Install2MOTableLayoutPanel.Location = new System.Drawing.Point(0, 81);
             this.Install2MOTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.Install2MOTableLayoutPanel.Name = "Install2MOTableLayoutPanel";
             this.Install2MOTableLayoutPanel.RowCount = 1;
             this.Install2MOTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.Install2MOTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 38F));
-            this.Install2MOTableLayoutPanel.Size = new System.Drawing.Size(171, 38);
+            this.Install2MOTableLayoutPanel.Size = new System.Drawing.Size(311, 81);
             this.Install2MOTableLayoutPanel.TabIndex = 30;
             // 
             // InstallInModsButton
@@ -1002,10 +909,10 @@
             // 
             this.Install2MOOptionsFlowLayoutPanel.Controls.Add(this.Install2MODirPathOpenFolderLinkLabel);
             this.Install2MOOptionsFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Install2MOOptionsFlowLayoutPanel.Location = new System.Drawing.Point(130, 0);
+            this.Install2MOOptionsFlowLayoutPanel.Location = new System.Drawing.Point(236, 0);
             this.Install2MOOptionsFlowLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.Install2MOOptionsFlowLayoutPanel.Name = "Install2MOOptionsFlowLayoutPanel";
-            this.Install2MOOptionsFlowLayoutPanel.Size = new System.Drawing.Size(41, 38);
+            this.Install2MOOptionsFlowLayoutPanel.Size = new System.Drawing.Size(75, 81);
             this.Install2MOOptionsFlowLayoutPanel.TabIndex = 18;
             // 
             // Install2MODirPathOpenFolderLinkLabel
@@ -1065,7 +972,7 @@
             // 
             // DevButton
             // 
-            this.DevButton.Location = new System.Drawing.Point(174, 3);
+            this.DevButton.Location = new System.Drawing.Point(314, 3);
             this.DevButton.Name = "DevButton";
             this.DevButton.Size = new System.Drawing.Size(163, 32);
             this.DevButton.TabIndex = 32;
@@ -1073,12 +980,154 @@
             this.DevButton.UseVisualStyleBackColor = true;
             this.DevButton.Click += new System.EventHandler(this.Dev_Click);
             // 
+            // InfoTabPanel
+            // 
+            this.InfoTabPanel.Controls.Add(this.InfoTabTableLayoutPanel);
+            this.InfoTabPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.InfoTabPanel.Location = new System.Drawing.Point(0, 0);
+            this.InfoTabPanel.Name = "InfoTabPanel";
+            this.InfoTabPanel.Size = new System.Drawing.Size(470, 229);
+            this.InfoTabPanel.TabIndex = 0;
+            // 
+            // InfoTabTableLayoutPanel
+            // 
+            this.InfoTabTableLayoutPanel.ColumnCount = 3;
+            this.InfoTabTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
+            this.InfoTabTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 90F));
+            this.InfoTabTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
+            this.InfoTabTableLayoutPanel.Controls.Add(this.LabelPanel2, 1, 2);
+            this.InfoTabTableLayoutPanel.Controls.Add(this.LabelPanel, 1, 3);
+            this.InfoTabTableLayoutPanel.Controls.Add(this.progressBar1, 1, 4);
+            this.InfoTabTableLayoutPanel.Controls.Add(this.MainService, 1, 5);
+            this.InfoTabTableLayoutPanel.Controls.Add(this.flowLayoutPanel1, 1, 1);
+            this.InfoTabTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.InfoTabTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.InfoTabTableLayoutPanel.Name = "InfoTabTableLayoutPanel";
+            this.InfoTabTableLayoutPanel.RowCount = 6;
+            this.InfoTabTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.InfoTabTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.InfoTabTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
+            this.InfoTabTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
+            this.InfoTabTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.InfoTabTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.InfoTabTableLayoutPanel.Size = new System.Drawing.Size(470, 229);
+            this.InfoTabTableLayoutPanel.TabIndex = 0;
+            // 
+            // LabelPanel2
+            // 
+            this.LabelPanel2.Controls.Add(this.ModsInfoLabel);
+            this.LabelPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LabelPanel2.Location = new System.Drawing.Point(26, 93);
+            this.LabelPanel2.Name = "LabelPanel2";
+            this.LabelPanel2.Size = new System.Drawing.Size(417, 28);
+            this.LabelPanel2.TabIndex = 14;
+            // 
+            // ModsInfoLabel
+            // 
+            this.ModsInfoLabel.AutoEllipsis = true;
+            this.ModsInfoLabel.BackColor = System.Drawing.Color.Gray;
+            this.ModsInfoLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ModsInfoLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ModsInfoLabel.Font = new System.Drawing.Font("Times New Roman", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.ModsInfoLabel.ForeColor = System.Drawing.Color.White;
+            this.ModsInfoLabel.Location = new System.Drawing.Point(0, 0);
+            this.ModsInfoLabel.Name = "ModsInfoLabel";
+            this.ModsInfoLabel.Size = new System.Drawing.Size(417, 28);
+            this.ModsInfoLabel.TabIndex = 6;
+            this.ModsInfoLabel.Text = "...";
+            this.ModsInfoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // LabelPanel
+            // 
+            this.LabelPanel.Controls.Add(this.DataInfoLabel);
+            this.LabelPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LabelPanel.Location = new System.Drawing.Point(26, 127);
+            this.LabelPanel.Name = "LabelPanel";
+            this.LabelPanel.Size = new System.Drawing.Size(417, 28);
+            this.LabelPanel.TabIndex = 13;
+            // 
+            // DataInfoLabel
+            // 
+            this.DataInfoLabel.AutoEllipsis = true;
+            this.DataInfoLabel.BackColor = System.Drawing.Color.Gray;
+            this.DataInfoLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DataInfoLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DataInfoLabel.Font = new System.Drawing.Font("Times New Roman", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.DataInfoLabel.ForeColor = System.Drawing.Color.White;
+            this.DataInfoLabel.Location = new System.Drawing.Point(0, 0);
+            this.DataInfoLabel.Name = "DataInfoLabel";
+            this.DataInfoLabel.Size = new System.Drawing.Size(417, 28);
+            this.DataInfoLabel.TabIndex = 6;
+            this.DataInfoLabel.Text = "...";
+            this.DataInfoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.BackColor = System.Drawing.Color.White;
+            this.progressBar1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.progressBar1.Location = new System.Drawing.Point(26, 161);
+            this.progressBar1.MarqueeAnimationSpeed = 50;
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(417, 16);
+            this.progressBar1.TabIndex = 12;
+            this.progressBar1.Visible = false;
+            // 
+            // MainService
+            // 
+            this.MainService.BackColor = System.Drawing.Color.Silver;
+            this.MainService.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.MainService.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MainService.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MainService.ForeColor = System.Drawing.Color.Black;
+            this.MainService.Location = new System.Drawing.Point(26, 183);
+            this.MainService.Name = "MainService";
+            this.MainService.Size = new System.Drawing.Size(417, 43);
+            this.MainService.TabIndex = 9;
+            this.MainService.Text = "Prepare the game";
+            this.MainService.UseVisualStyleBackColor = false;
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.AIHelperP1Label);
+            this.flowLayoutPanel1.Controls.Add(this.AIHelperP2Label);
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(26, 25);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(417, 62);
+            this.flowLayoutPanel1.TabIndex = 15;
+            // 
+            // AIHelperP2Label
+            // 
+            this.AIHelperP2Label.AutoSize = true;
+            this.AIHelperP2Label.BackColor = System.Drawing.Color.Gray;
+            this.AIHelperP2Label.Font = new System.Drawing.Font("Lucida Handwriting", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.AIHelperP2Label.ForeColor = System.Drawing.Color.White;
+            this.AIHelperP2Label.Location = new System.Drawing.Point(54, 0);
+            this.AIHelperP2Label.Name = "AIHelperP2Label";
+            this.AIHelperP2Label.Size = new System.Drawing.Size(84, 24);
+            this.AIHelperP2Label.TabIndex = 12;
+            this.AIHelperP2Label.Text = " Helper";
+            this.AIHelperP2Label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // AIHelperP1Label
+            // 
+            this.AIHelperP1Label.AutoSize = true;
+            this.AIHelperP1Label.BackColor = System.Drawing.Color.Gray;
+            this.AIHelperP1Label.Font = new System.Drawing.Font("Lucida Handwriting", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.AIHelperP1Label.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.AIHelperP1Label.Location = new System.Drawing.Point(3, 0);
+            this.AIHelperP1Label.Name = "AIHelperP1Label";
+            this.AIHelperP1Label.Size = new System.Drawing.Size(45, 31);
+            this.AIHelperP1Label.TabIndex = 13;
+            this.AIHelperP1Label.Text = "AI";
+            this.AIHelperP1Label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
-            this.ClientSize = new System.Drawing.Size(354, 187);
+            this.ClientSize = new System.Drawing.Size(484, 261);
             this.Controls.Add(this.AIGirlHelperTabControl);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1090,9 +1139,6 @@
             this.AIGirlHelperTabControl.ResumeLayout(false);
             this.MainTabPage.ResumeLayout(false);
             this.InfoPagePanel.ResumeLayout(false);
-            this.InfoPagePanel.PerformLayout();
-            this.LabelPanel2.ResumeLayout(false);
-            this.LabelPanel.ResumeLayout(false);
             this.LaunchTabPage.ResumeLayout(false);
             this.LaunchPagePanel.ResumeLayout(false);
             this.LaunchPagePanel.PerformLayout();
@@ -1113,6 +1159,12 @@
             this.Install2MOOptionsFlowLayoutPanel.PerformLayout();
             this.ModeSwitchTableLayoutPanel.ResumeLayout(false);
             this.ModeSwitchButtonPanel.ResumeLayout(false);
+            this.InfoTabPanel.ResumeLayout(false);
+            this.InfoTabTableLayoutPanel.ResumeLayout(false);
+            this.LabelPanel2.ResumeLayout(false);
+            this.LabelPanel.ResumeLayout(false);
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1120,10 +1172,6 @@
         #endregion
         private System.Windows.Forms.TabPage MainTabPage;
         private System.Windows.Forms.Panel InfoPagePanel;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Panel LabelPanel;
-        private System.Windows.Forms.Panel LabelPanel2;
         private System.Windows.Forms.TabPage SettingsTabPage;
         private System.Windows.Forms.Panel SettingsPagePanel;
         private System.Windows.Forms.GroupBox DisplaySettingsGroupBox;
@@ -1161,10 +1209,6 @@
         private System.Windows.Forms.LinkLabel FixRegistryLinkLabel;
         internal System.Windows.Forms.PictureBox pbDiscord;
         internal System.Windows.Forms.CheckBox cbxNtlea;
-        internal System.Windows.Forms.Button MainService;
-        internal System.Windows.Forms.Label DataInfoLabel;
-        internal System.Windows.Forms.ProgressBar progressBar1;
-        internal System.Windows.Forms.Label ModsInfoLabel;
         internal System.Windows.Forms.TabControl AIGirlHelperTabControl;
         internal System.Windows.Forms.TabPage LaunchTabPage;
         private System.Windows.Forms.Panel ToolsTabPagePanel;
@@ -1188,6 +1232,17 @@
         internal System.Windows.Forms.TextBox CurrentGameTitleTextBox;
         private System.Windows.Forms.Label AddGameSettingsLabel;
         internal System.Windows.Forms.FlowLayoutPanel FunctionsFlowLayoutPanel;
+        private System.Windows.Forms.Panel InfoTabPanel;
+        private System.Windows.Forms.TableLayoutPanel InfoTabTableLayoutPanel;
+        private System.Windows.Forms.Panel LabelPanel2;
+        internal System.Windows.Forms.Label ModsInfoLabel;
+        private System.Windows.Forms.Panel LabelPanel;
+        internal System.Windows.Forms.Label DataInfoLabel;
+        internal System.Windows.Forms.ProgressBar progressBar1;
+        internal System.Windows.Forms.Button MainService;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Label AIHelperP1Label;
+        private System.Windows.Forms.Label AIHelperP2Label;
     }
 }
 

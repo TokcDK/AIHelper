@@ -93,15 +93,14 @@
             this.DevButton = new System.Windows.Forms.Button();
             this.InfoTabPanel = new System.Windows.Forms.Panel();
             this.InfoTabTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.LabelPanel2 = new System.Windows.Forms.Panel();
-            this.ModsInfoLabel = new System.Windows.Forms.Label();
-            this.LabelPanel = new System.Windows.Forms.Panel();
-            this.DataInfoLabel = new System.Windows.Forms.Label();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.MainService = new System.Windows.Forms.Button();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.AIHelperP2Label = new System.Windows.Forms.Label();
             this.AIHelperP1Label = new System.Windows.Forms.Label();
+            this.InfoLabelsTbleLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.InfoProgressBar1 = new System.Windows.Forms.ProgressBar();
+            this.MainService = new System.Windows.Forms.Button();
+            this.ModsInfoLabel = new System.Windows.Forms.Label();
+            this.DataInfoLabel = new System.Windows.Forms.Label();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -122,9 +121,8 @@
             this.ModeSwitchButtonPanel.SuspendLayout();
             this.InfoTabPanel.SuspendLayout();
             this.InfoTabTableLayoutPanel.SuspendLayout();
-            this.LabelPanel2.SuspendLayout();
-            this.LabelPanel.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
+            this.InfoLabelsTbleLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // AIGirlHelperTabControl
@@ -991,109 +989,28 @@
             // 
             // InfoTabTableLayoutPanel
             // 
-            this.InfoTabTableLayoutPanel.ColumnCount = 3;
-            this.InfoTabTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.InfoTabTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 90F));
-            this.InfoTabTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
-            this.InfoTabTableLayoutPanel.Controls.Add(this.LabelPanel2, 1, 2);
-            this.InfoTabTableLayoutPanel.Controls.Add(this.LabelPanel, 1, 3);
-            this.InfoTabTableLayoutPanel.Controls.Add(this.progressBar1, 1, 4);
-            this.InfoTabTableLayoutPanel.Controls.Add(this.MainService, 1, 5);
-            this.InfoTabTableLayoutPanel.Controls.Add(this.flowLayoutPanel1, 1, 1);
+            this.InfoTabTableLayoutPanel.ColumnCount = 1;
+            this.InfoTabTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.InfoTabTableLayoutPanel.Controls.Add(this.flowLayoutPanel1, 0, 0);
+            this.InfoTabTableLayoutPanel.Controls.Add(this.InfoLabelsTbleLayoutPanel, 0, 1);
             this.InfoTabTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.InfoTabTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.InfoTabTableLayoutPanel.Name = "InfoTabTableLayoutPanel";
-            this.InfoTabTableLayoutPanel.RowCount = 6;
-            this.InfoTabTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.InfoTabTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
-            this.InfoTabTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            this.InfoTabTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            this.InfoTabTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.InfoTabTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.InfoTabTableLayoutPanel.RowCount = 2;
+            this.InfoTabTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.InfoTabTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 60F));
+            this.InfoTabTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.InfoTabTableLayoutPanel.Size = new System.Drawing.Size(470, 229);
             this.InfoTabTableLayoutPanel.TabIndex = 0;
-            // 
-            // LabelPanel2
-            // 
-            this.LabelPanel2.Controls.Add(this.ModsInfoLabel);
-            this.LabelPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LabelPanel2.Location = new System.Drawing.Point(26, 93);
-            this.LabelPanel2.Name = "LabelPanel2";
-            this.LabelPanel2.Size = new System.Drawing.Size(417, 28);
-            this.LabelPanel2.TabIndex = 14;
-            // 
-            // ModsInfoLabel
-            // 
-            this.ModsInfoLabel.AutoEllipsis = true;
-            this.ModsInfoLabel.BackColor = System.Drawing.Color.Gray;
-            this.ModsInfoLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ModsInfoLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ModsInfoLabel.Font = new System.Drawing.Font("Times New Roman", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.ModsInfoLabel.ForeColor = System.Drawing.Color.White;
-            this.ModsInfoLabel.Location = new System.Drawing.Point(0, 0);
-            this.ModsInfoLabel.Name = "ModsInfoLabel";
-            this.ModsInfoLabel.Size = new System.Drawing.Size(417, 28);
-            this.ModsInfoLabel.TabIndex = 6;
-            this.ModsInfoLabel.Text = "...";
-            this.ModsInfoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // LabelPanel
-            // 
-            this.LabelPanel.Controls.Add(this.DataInfoLabel);
-            this.LabelPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LabelPanel.Location = new System.Drawing.Point(26, 127);
-            this.LabelPanel.Name = "LabelPanel";
-            this.LabelPanel.Size = new System.Drawing.Size(417, 28);
-            this.LabelPanel.TabIndex = 13;
-            // 
-            // DataInfoLabel
-            // 
-            this.DataInfoLabel.AutoEllipsis = true;
-            this.DataInfoLabel.BackColor = System.Drawing.Color.Gray;
-            this.DataInfoLabel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.DataInfoLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DataInfoLabel.Font = new System.Drawing.Font("Times New Roman", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.DataInfoLabel.ForeColor = System.Drawing.Color.White;
-            this.DataInfoLabel.Location = new System.Drawing.Point(0, 0);
-            this.DataInfoLabel.Name = "DataInfoLabel";
-            this.DataInfoLabel.Size = new System.Drawing.Size(417, 28);
-            this.DataInfoLabel.TabIndex = 6;
-            this.DataInfoLabel.Text = "...";
-            this.DataInfoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // progressBar1
-            // 
-            this.progressBar1.BackColor = System.Drawing.Color.White;
-            this.progressBar1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.progressBar1.Location = new System.Drawing.Point(26, 161);
-            this.progressBar1.MarqueeAnimationSpeed = 50;
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(417, 16);
-            this.progressBar1.TabIndex = 12;
-            this.progressBar1.Visible = false;
-            // 
-            // MainService
-            // 
-            this.MainService.BackColor = System.Drawing.Color.Silver;
-            this.MainService.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.MainService.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MainService.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MainService.ForeColor = System.Drawing.Color.Black;
-            this.MainService.Location = new System.Drawing.Point(26, 183);
-            this.MainService.Name = "MainService";
-            this.MainService.Size = new System.Drawing.Size(417, 43);
-            this.MainService.TabIndex = 9;
-            this.MainService.Text = "Prepare the game";
-            this.MainService.UseVisualStyleBackColor = false;
             // 
             // flowLayoutPanel1
             // 
             this.flowLayoutPanel1.Controls.Add(this.AIHelperP1Label);
             this.flowLayoutPanel1.Controls.Add(this.AIHelperP2Label);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(26, 25);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(417, 62);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(464, 85);
             this.flowLayoutPanel1.TabIndex = 15;
             // 
             // AIHelperP2Label
@@ -1121,6 +1038,83 @@
             this.AIHelperP1Label.TabIndex = 13;
             this.AIHelperP1Label.Text = "AI";
             this.AIHelperP1Label.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // InfoLabelsTbleLayoutPanel
+            // 
+            this.InfoLabelsTbleLayoutPanel.ColumnCount = 3;
+            this.InfoLabelsTbleLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.InfoLabelsTbleLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 80F));
+            this.InfoLabelsTbleLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
+            this.InfoLabelsTbleLayoutPanel.Controls.Add(this.ModsInfoLabel, 1, 0);
+            this.InfoLabelsTbleLayoutPanel.Controls.Add(this.DataInfoLabel, 1, 1);
+            this.InfoLabelsTbleLayoutPanel.Controls.Add(this.InfoProgressBar1, 1, 2);
+            this.InfoLabelsTbleLayoutPanel.Controls.Add(this.MainService, 1, 3);
+            this.InfoLabelsTbleLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.InfoLabelsTbleLayoutPanel.Location = new System.Drawing.Point(0, 91);
+            this.InfoLabelsTbleLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.InfoLabelsTbleLayoutPanel.Name = "InfoLabelsTbleLayoutPanel";
+            this.InfoLabelsTbleLayoutPanel.RowCount = 4;
+            this.InfoLabelsTbleLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.InfoLabelsTbleLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.InfoLabelsTbleLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.66667F));
+            this.InfoLabelsTbleLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.InfoLabelsTbleLayoutPanel.Size = new System.Drawing.Size(470, 138);
+            this.InfoLabelsTbleLayoutPanel.TabIndex = 16;
+            // 
+            // InfoProgressBar1
+            // 
+            this.InfoProgressBar1.BackColor = System.Drawing.Color.White;
+            this.InfoProgressBar1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.InfoProgressBar1.Location = new System.Drawing.Point(50, 71);
+            this.InfoProgressBar1.MarqueeAnimationSpeed = 50;
+            this.InfoProgressBar1.Name = "InfoProgressBar1";
+            this.InfoProgressBar1.Size = new System.Drawing.Size(370, 17);
+            this.InfoProgressBar1.TabIndex = 20;
+            this.InfoProgressBar1.Visible = false;
+            // 
+            // MainService
+            // 
+            this.MainService.BackColor = System.Drawing.Color.Silver;
+            this.MainService.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.MainService.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MainService.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MainService.ForeColor = System.Drawing.Color.Black;
+            this.MainService.Location = new System.Drawing.Point(50, 94);
+            this.MainService.Name = "MainService";
+            this.MainService.Size = new System.Drawing.Size(370, 41);
+            this.MainService.TabIndex = 19;
+            this.MainService.Text = "Prepare the game";
+            this.MainService.UseVisualStyleBackColor = false;
+            // 
+            // ModsInfoLabel
+            // 
+            this.ModsInfoLabel.AutoEllipsis = true;
+            this.ModsInfoLabel.BackColor = System.Drawing.Color.Gray;
+            this.ModsInfoLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ModsInfoLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ModsInfoLabel.Font = new System.Drawing.Font("Times New Roman", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.ModsInfoLabel.ForeColor = System.Drawing.Color.White;
+            this.ModsInfoLabel.Location = new System.Drawing.Point(50, 0);
+            this.ModsInfoLabel.Name = "ModsInfoLabel";
+            this.ModsInfoLabel.Size = new System.Drawing.Size(370, 34);
+            this.ModsInfoLabel.TabIndex = 18;
+            this.ModsInfoLabel.Text = "...";
+            this.ModsInfoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // DataInfoLabel
+            // 
+            this.DataInfoLabel.AutoEllipsis = true;
+            this.DataInfoLabel.BackColor = System.Drawing.Color.Gray;
+            this.DataInfoLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DataInfoLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DataInfoLabel.Font = new System.Drawing.Font("Times New Roman", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.DataInfoLabel.ForeColor = System.Drawing.Color.White;
+            this.DataInfoLabel.Location = new System.Drawing.Point(50, 34);
+            this.DataInfoLabel.Name = "DataInfoLabel";
+            this.DataInfoLabel.Size = new System.Drawing.Size(370, 34);
+            this.DataInfoLabel.TabIndex = 17;
+            this.DataInfoLabel.Text = "...";
+            this.DataInfoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // MainForm
             // 
@@ -1161,10 +1155,9 @@
             this.ModeSwitchButtonPanel.ResumeLayout(false);
             this.InfoTabPanel.ResumeLayout(false);
             this.InfoTabTableLayoutPanel.ResumeLayout(false);
-            this.LabelPanel2.ResumeLayout(false);
-            this.LabelPanel.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
+            this.InfoLabelsTbleLayoutPanel.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1234,15 +1227,14 @@
         internal System.Windows.Forms.FlowLayoutPanel FunctionsFlowLayoutPanel;
         private System.Windows.Forms.Panel InfoTabPanel;
         private System.Windows.Forms.TableLayoutPanel InfoTabTableLayoutPanel;
-        private System.Windows.Forms.Panel LabelPanel2;
-        internal System.Windows.Forms.Label ModsInfoLabel;
-        private System.Windows.Forms.Panel LabelPanel;
-        internal System.Windows.Forms.Label DataInfoLabel;
-        internal System.Windows.Forms.ProgressBar progressBar1;
-        internal System.Windows.Forms.Button MainService;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Label AIHelperP1Label;
         private System.Windows.Forms.Label AIHelperP2Label;
+        private System.Windows.Forms.TableLayoutPanel InfoLabelsTbleLayoutPanel;
+        internal System.Windows.Forms.Label ModsInfoLabel;
+        internal System.Windows.Forms.Label DataInfoLabel;
+        internal System.Windows.Forms.ProgressBar InfoProgressBar1;
+        internal System.Windows.Forms.Button MainService;
     }
 }
 

@@ -104,6 +104,8 @@
             this.LaunchTabButtonsDownTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.LaunchTabSubMainButtonsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.LaunchTabTopTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.LaunchTabTopRightTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.LaunchTabTopRightBepinExLogTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -129,6 +131,9 @@
             this.LaunchTabTableLayoutPanel.SuspendLayout();
             this.LaunchTabButtonsDownTableLayoutPanel.SuspendLayout();
             this.LaunchTabSubMainButtonsTableLayoutPanel.SuspendLayout();
+            this.LaunchTabTopTableLayoutPanel.SuspendLayout();
+            this.LaunchTabTopRightTableLayoutPanel.SuspendLayout();
+            this.LaunchTabTopRightBepinExLogTableLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // AIGirlHelperTabControl
@@ -317,13 +322,10 @@
             this.LaunchPagePanel.Controls.Add(this.VRGameCheckBox);
             this.LaunchPagePanel.Controls.Add(this.OpenHelpLinkLabel);
             this.LaunchPagePanel.Controls.Add(this.LaunchLinksLinkLabel);
-            this.LaunchPagePanel.Controls.Add(this.BepInExDisplayedLogLevelLabel);
-            this.LaunchPagePanel.Controls.Add(this.BepInExConsoleCheckBox);
             this.LaunchPagePanel.Controls.Add(this.SelectedGameLabel);
             this.LaunchPagePanel.Controls.Add(this.ProgramNameLabelPart1);
             this.LaunchPagePanel.Controls.Add(this.ProgramNameLabelPart2);
             this.LaunchPagePanel.Controls.Add(this.LaunchModeInfoLinkLabel);
-            this.LaunchPagePanel.Controls.Add(this.OpenLogLinkLabel);
             this.LaunchPagePanel.Controls.Add(this.LaunchTabLaunchLabel);
             this.LaunchPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LaunchPagePanel.ForeColor = System.Drawing.SystemColors.ScrollBar;
@@ -977,7 +979,7 @@
             this.OpenLogLinkLabel.BackColor = System.Drawing.Color.Transparent;
             this.OpenLogLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.OpenLogLinkLabel.LinkColor = System.Drawing.Color.WhiteSmoke;
-            this.OpenLogLinkLabel.Location = new System.Drawing.Point(300, 3);
+            this.OpenLogLinkLabel.Location = new System.Drawing.Point(3, 0);
             this.OpenLogLinkLabel.Name = "OpenLogLinkLabel";
             this.OpenLogLinkLabel.Size = new System.Drawing.Size(21, 13);
             this.OpenLogLinkLabel.TabIndex = 20;
@@ -1040,9 +1042,9 @@
             // BepInExConsoleCheckBox
             // 
             this.BepInExConsoleCheckBox.AutoSize = true;
-            this.BepInExConsoleCheckBox.Location = new System.Drawing.Point(320, 4);
+            this.BepInExConsoleCheckBox.Location = new System.Drawing.Point(53, 3);
             this.BepInExConsoleCheckBox.Name = "BepInExConsoleCheckBox";
-            this.BepInExConsoleCheckBox.Size = new System.Drawing.Size(15, 14);
+            this.BepInExConsoleCheckBox.Size = new System.Drawing.Size(14, 11);
             this.BepInExConsoleCheckBox.TabIndex = 25;
             this.BepInExConsoleCheckBox.UseVisualStyleBackColor = true;
             this.BepInExConsoleCheckBox.CheckedChanged += new System.EventHandler(this.ConsoleCheckBox_CheckedChanged);
@@ -1051,7 +1053,7 @@
             // 
             this.BepInExDisplayedLogLevelLabel.AutoSize = true;
             this.BepInExDisplayedLogLevelLabel.BackColor = System.Drawing.Color.Transparent;
-            this.BepInExDisplayedLogLevelLabel.Location = new System.Drawing.Point(294, 16);
+            this.BepInExDisplayedLogLevelLabel.Location = new System.Drawing.Point(3, 17);
             this.BepInExDisplayedLogLevelLabel.Name = "BepInExDisplayedLogLevelLabel";
             this.BepInExDisplayedLogLevelLabel.Size = new System.Drawing.Size(25, 13);
             this.BepInExDisplayedLogLevelLabel.TabIndex = 26;
@@ -1182,6 +1184,7 @@
             this.LaunchTabTopTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
             this.LaunchTabTopTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
             this.LaunchTabTopTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
+            this.LaunchTabTopTableLayoutPanel.Controls.Add(this.LaunchTabTopRightTableLayoutPanel, 2, 0);
             this.LaunchTabTopTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.LaunchTabTopTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.LaunchTabTopTableLayoutPanel.Name = "LaunchTabTopTableLayoutPanel";
@@ -1189,6 +1192,39 @@
             this.LaunchTabTopTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.LaunchTabTopTableLayoutPanel.Size = new System.Drawing.Size(461, 56);
             this.LaunchTabTopTableLayoutPanel.TabIndex = 1;
+            // 
+            // LaunchTabTopRightTableLayoutPanel
+            // 
+            this.LaunchTabTopRightTableLayoutPanel.ColumnCount = 1;
+            this.LaunchTabTopRightTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.LaunchTabTopRightTableLayoutPanel.Controls.Add(this.LaunchTabTopRightBepinExLogTableLayoutPanel, 0, 0);
+            this.LaunchTabTopRightTableLayoutPanel.Controls.Add(this.BepInExDisplayedLogLevelLabel, 0, 1);
+            this.LaunchTabTopRightTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LaunchTabTopRightTableLayoutPanel.Location = new System.Drawing.Point(391, 0);
+            this.LaunchTabTopRightTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.LaunchTabTopRightTableLayoutPanel.Name = "LaunchTabTopRightTableLayoutPanel";
+            this.LaunchTabTopRightTableLayoutPanel.RowCount = 3;
+            this.LaunchTabTopRightTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 48.57143F));
+            this.LaunchTabTopRightTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 51.42857F));
+            this.LaunchTabTopRightTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.LaunchTabTopRightTableLayoutPanel.Size = new System.Drawing.Size(70, 56);
+            this.LaunchTabTopRightTableLayoutPanel.TabIndex = 0;
+            // 
+            // LaunchTabTopRightBepinExLogTableLayoutPanel
+            // 
+            this.LaunchTabTopRightBepinExLogTableLayoutPanel.ColumnCount = 2;
+            this.LaunchTabTopRightBepinExLogTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.LaunchTabTopRightBepinExLogTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.LaunchTabTopRightBepinExLogTableLayoutPanel.Controls.Add(this.BepInExConsoleCheckBox, 1, 0);
+            this.LaunchTabTopRightBepinExLogTableLayoutPanel.Controls.Add(this.OpenLogLinkLabel, 0, 0);
+            this.LaunchTabTopRightBepinExLogTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LaunchTabTopRightBepinExLogTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.LaunchTabTopRightBepinExLogTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.LaunchTabTopRightBepinExLogTableLayoutPanel.Name = "LaunchTabTopRightBepinExLogTableLayoutPanel";
+            this.LaunchTabTopRightBepinExLogTableLayoutPanel.RowCount = 1;
+            this.LaunchTabTopRightBepinExLogTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.LaunchTabTopRightBepinExLogTableLayoutPanel.Size = new System.Drawing.Size(70, 17);
+            this.LaunchTabTopRightBepinExLogTableLayoutPanel.TabIndex = 0;
             // 
             // MainForm
             // 
@@ -1236,6 +1272,11 @@
             this.LaunchTabTableLayoutPanel.ResumeLayout(false);
             this.LaunchTabButtonsDownTableLayoutPanel.ResumeLayout(false);
             this.LaunchTabSubMainButtonsTableLayoutPanel.ResumeLayout(false);
+            this.LaunchTabTopTableLayoutPanel.ResumeLayout(false);
+            this.LaunchTabTopRightTableLayoutPanel.ResumeLayout(false);
+            this.LaunchTabTopRightTableLayoutPanel.PerformLayout();
+            this.LaunchTabTopRightBepinExLogTableLayoutPanel.ResumeLayout(false);
+            this.LaunchTabTopRightBepinExLogTableLayoutPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1316,6 +1357,8 @@
         private System.Windows.Forms.LinkLabel LaunchModeInfoLinkLabel;
         private System.Windows.Forms.LinkLabel OpenLogLinkLabel;
         private System.Windows.Forms.Label LaunchTabLaunchLabel;
+        private System.Windows.Forms.TableLayoutPanel LaunchTabTopRightTableLayoutPanel;
+        private System.Windows.Forms.TableLayoutPanel LaunchTabTopRightBepinExLogTableLayoutPanel;
     }
 }
 

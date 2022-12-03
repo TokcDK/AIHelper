@@ -10,7 +10,6 @@ namespace AIHelper.Games.Illusion
             base.InitActions();
             //CopyMOfiles("MOHS");
         }
-        public override bool IsHaveSideloaderMods => true;
 
         public override string ZipmodManifestGameName => "roomgirl";
 

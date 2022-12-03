@@ -6,5 +6,7 @@
         public override string RegistryInstallDirKey => "INSTALLDIR";
 
         public override string CharacterPresetsFolderSubPath => "UserData\\Chara";
+
+        public override bool IsHaveSideloaderMods => true;
     }
 }

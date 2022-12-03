@@ -13,13 +13,13 @@ namespace AIHelper.Manage.Update
         internal string TargetCurrentVersion;
         internal string SourceLink;
         internal string TargetLastVersion;
-        internal HashSet<string> Excluded;
+        internal HashSet<string> Excluded { get; } = new HashSet<string>();
         internal DirectoryInfo TargetFolderPath;
         internal string[] TargetFolderUpdateInfo;
         /// <summary>
         /// report content about update
         /// </summary>
-        internal List<string> Report;
+        internal List<string> Report = new List<string>();
         internal bool NoRemoteFile;
         /// <summary>
         /// path to update file
@@ -55,14 +55,11 @@ namespace AIHelper.Manage.Update
         /// <summary>
         /// last error text if any
         /// </summary>
-        public StringBuilder LastErrorText { get; internal set; }
+        public StringBuilder LastErrorText { get; } = new StringBuilder();
         public UpdateOptionsDialogForm UpdateOptions { get; }
 
         public UpdateInfo()
-        {
-            Excluded = new HashSet<string>();
-            Report = new List<string>();
-            LastErrorText = new StringBuilder();
+        {                        
             Reset();
         }
 

@@ -26,6 +26,7 @@ namespace AIHelper.Manage.Functions
         {
             Clean();
         }
+        public override Color? ForeColor => Color.Yellow;
 
         /// <summary>
         /// clean Data dir of current selected game from not native files

@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using AIHelper.Games;
 using System.Reflection;
 using System.Diagnostics;
+using System.Drawing;
 
 namespace AIHelper.Manage.Functions
 {
@@ -22,5 +23,6 @@ namespace AIHelper.Manage.Functions
         {
             Process.Start(ManageSettings.DiscordGroupLink);
         }
+        public override Color? ForeColor => Color.DarkBlue;
     }
 }

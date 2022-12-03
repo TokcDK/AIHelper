@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using AIHelper.Data.Modlist;
@@ -19,6 +20,7 @@ namespace AIHelper.Manage.Functions
         {
             OpenInfoEditor();
         }
+        public override Color? ForeColor => Color.LightSkyBlue;
 
         readonly int _elHeight = 13;
 

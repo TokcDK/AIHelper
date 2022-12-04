@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: AI Helper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-12-04 18:10+0500\n"
-"PO-Revision-Date: 2022-12-04 18:12+0500\n"
+"PO-Revision-Date: 2022-12-04 18:14+0500\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -331,7 +331,7 @@ msgstr "Ориг. лаунчер"
 
 #: Forms/MainForm.Designer.cs:892
 msgid "Fix registry"
-msgstr "Исправление реестра"
+msgstr "Фикс реестра"
 
 #: Forms/MainForm.Designer.cs:907 Manage/ManageOther.cs:84
 msgid "Shortcut"
@@ -359,7 +359,7 @@ msgstr "Установка"
 
 #: Forms/MainForm.Designer.cs:1240
 msgid "Fix ModList"
-msgstr "Исправление модлиста"
+msgstr "Фикс модлиста"
 
 #: Forms/MainForm.Designer.cs:1252
 msgid "🗁Folders"

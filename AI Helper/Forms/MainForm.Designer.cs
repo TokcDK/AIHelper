@@ -110,8 +110,7 @@
             this.ToolsFixModListButton = new System.Windows.Forms.Button();
             this.FoldersTabPage = new System.Windows.Forms.TabPage();
             this.FoldersTabPagePanel1 = new System.Windows.Forms.Panel();
-            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
-            this.OpenGameFolderButton = new System.Windows.Forms.Button();
+            this.FoldersTabFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -154,7 +153,6 @@
             this.FixModlistTableLayoutPanel.SuspendLayout();
             this.FoldersTabPage.SuspendLayout();
             this.FoldersTabPagePanel1.SuspendLayout();
-            this.flowLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // AIGirlHelperTabControl
@@ -1309,30 +1307,20 @@
             // FoldersTabPagePanel1
             // 
             this.FoldersTabPagePanel1.BackColor = System.Drawing.Color.Gray;
-            this.FoldersTabPagePanel1.Controls.Add(this.flowLayoutPanel2);
+            this.FoldersTabPagePanel1.Controls.Add(this.FoldersTabFlowLayoutPanel);
             this.FoldersTabPagePanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.FoldersTabPagePanel1.Location = new System.Drawing.Point(3, 3);
             this.FoldersTabPagePanel1.Name = "FoldersTabPagePanel1";
             this.FoldersTabPagePanel1.Size = new System.Drawing.Size(470, 229);
             this.FoldersTabPagePanel1.TabIndex = 0;
             // 
-            // flowLayoutPanel2
+            // FoldersTabFlowLayoutPanel
             // 
-            this.flowLayoutPanel2.Controls.Add(this.OpenGameFolderButton);
-            this.flowLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 0);
-            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(470, 229);
-            this.flowLayoutPanel2.TabIndex = 8;
-            // 
-            // OpenGameFolderButton
-            // 
-            this.OpenGameFolderButton.Location = new System.Drawing.Point(3, 3);
-            this.OpenGameFolderButton.Name = "OpenGameFolderButton";
-            this.OpenGameFolderButton.Size = new System.Drawing.Size(159, 28);
-            this.OpenGameFolderButton.TabIndex = 0;
-            this.OpenGameFolderButton.Text = "Open game dir";
-            this.OpenGameFolderButton.UseVisualStyleBackColor = true;
+            this.FoldersTabFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.FoldersTabFlowLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.FoldersTabFlowLayoutPanel.Name = "FoldersTabFlowLayoutPanel";
+            this.FoldersTabFlowLayoutPanel.Size = new System.Drawing.Size(470, 229);
+            this.FoldersTabFlowLayoutPanel.TabIndex = 8;
             // 
             // MainForm
             // 
@@ -1404,7 +1392,6 @@
             this.FixModlistTableLayoutPanel.ResumeLayout(false);
             this.FoldersTabPage.ResumeLayout(false);
             this.FoldersTabPagePanel1.ResumeLayout(false);
-            this.flowLayoutPanel2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1491,8 +1478,7 @@
         private System.Windows.Forms.Label ResolutionLabel;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Label QualityLabel;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
-        private System.Windows.Forms.Button OpenGameFolderButton;
+        private System.Windows.Forms.FlowLayoutPanel FoldersTabFlowLayoutPanel;
     }
 }
 

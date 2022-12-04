@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AI Helper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-04 20:50+0500\n"
-"PO-Revision-Date: 2022-12-04 20:52+0500\n"
+"POT-Creation-Date: 2022-12-04 21:46+0500\n"
+"PO-Revision-Date: 2022-12-04 21:47+0500\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -42,11 +42,11 @@ msgstr "Очистка  выбора уровней лога"
 msgid "Log levels. How many messages will be displayed"
 msgstr "Уровни лога. Как много сообщений будет отображено"
 
-#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:52 Forms/MainForm.cs:338
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:52 Forms/MainForm.cs:340
 msgid "Open BepinEx log if found"
 msgstr "Открыть лог BepinEx, если найден"
 
-#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:53 Forms/MainForm.cs:339
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:53 Forms/MainForm.cs:341
 msgid ""
 "Click here to select log level\n"
 "Only displays the specified log level and above in the console output"
@@ -74,7 +74,7 @@ msgstr "Консоль"
 
 #: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:128
 #: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:150
-#: Forms/MainForm.Designer.cs:481
+#: Forms/MainForm.Designer.cs:460
 msgid "Settings"
 msgstr "Настройки"
 
@@ -97,7 +97,7 @@ msgid "Auto"
 msgstr "Авто"
 
 #: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:147
-#: Forms/MainForm.Designer.cs:872
+#: Forms/MainForm.Designer.cs:852
 msgid "Extra Settings"
 msgstr "Доп. настройки"
 
@@ -269,149 +269,124 @@ msgstr ""
 msgid "not found"
 msgstr "не найден"
 
-#: Forms/MainForm.Designer.cs:183
+#: Forms/MainForm.Designer.cs:162
 msgid "ℹInfo"
 msgstr "ℹИнфо"
 
-#: Forms/MainForm.Designer.cs:257 Forms/MainForm.Designer.cs:274
+#: Forms/MainForm.Designer.cs:236 Forms/MainForm.Designer.cs:253
 msgid "..."
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:293
+#: Forms/MainForm.Designer.cs:272
 msgid "Prepare the game"
 msgstr "Подготовить игру"
 
-#: Forms/MainForm.Designer.cs:337 Forms/MainForm.Designer.cs:648
+#: Forms/MainForm.Designer.cs:316 Forms/MainForm.Designer.cs:628
 msgid "-  Ằ🌶Ḩelper  -"
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:348
+#: Forms/MainForm.Designer.cs:327
 msgid "🚀Launch"
 msgstr "🚀Запуск"
 
-#: Forms/MainForm.Designer.cs:436
+#: Forms/MainForm.Designer.cs:415
 #: Manage/FoldersTab/Folders/SimpleFolderOpen/OpenGameDirButtonData.cs:14
 msgid "Game"
 msgstr "Игра"
 
-#: Forms/MainForm.Designer.cs:451
+#: Forms/MainForm.Designer.cs:430
 msgid "Studio"
 msgstr "Студия"
 
-#: Forms/MainForm.Designer.cs:466
+#: Forms/MainForm.Designer.cs:445
 msgid "Manager"
 msgstr "Менеджер"
 
-#: Forms/MainForm.Designer.cs:530
+#: Forms/MainForm.Designer.cs:509
 msgid "Help"
 msgstr "Помощь"
 
-#: Forms/MainForm.Designer.cs:589
+#: Forms/MainForm.Designer.cs:569
 msgid "log"
 msgstr "лог"
 
-#: Forms/MainForm.Designer.cs:604
+#: Forms/MainForm.Designer.cs:584
 msgid "vr"
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:616
+#: Forms/MainForm.Designer.cs:596
 msgid "Info"
 msgstr "Инфо"
 
-#: Forms/MainForm.Designer.cs:663
+#: Forms/MainForm.Designer.cs:643
 msgid "GameTitle"
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:674
+#: Forms/MainForm.Designer.cs:654
 msgid "🔧Settings"
 msgstr "🔧Настройки"
 
-#: Forms/MainForm.Designer.cs:706
+#: Forms/MainForm.Designer.cs:686
 msgid "★General"
 msgstr "★Основные"
 
-#: Forms/MainForm.Designer.cs:748
+#: Forms/MainForm.Designer.cs:728
 msgid "Current Game:"
 msgstr "Текущая игра:"
 
-#: Forms/MainForm.Designer.cs:815
+#: Forms/MainForm.Designer.cs:795
 msgid "Add game"
 msgstr "Добавить игру"
 
-#: Forms/MainForm.Designer.cs:845
+#: Forms/MainForm.Designer.cs:825
 msgid "JP Launcher"
 msgstr "Ориг. лаунчер"
 
-#: Forms/MainForm.Designer.cs:857
+#: Forms/MainForm.Designer.cs:837
 msgid "ntlea"
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:886
+#: Forms/MainForm.Designer.cs:866
 msgid "Fix registry"
 msgstr "Фикс реестра"
 
-#: Forms/MainForm.Designer.cs:901 Manage/ManageOther.cs:84
+#: Forms/MainForm.Designer.cs:881 Manage/ManageOther.cs:84
 msgid "Shortcut"
 msgstr "Ярлык"
 
-#: Forms/MainForm.Designer.cs:914
+#: Forms/MainForm.Designer.cs:894
 msgid "Autoshortcut"
 msgstr "Автоярлык"
 
-#: Forms/MainForm.Designer.cs:927
+#: Forms/MainForm.Designer.cs:907
 msgid "🔳Display"
 msgstr "🔳Экран"
 
-#: Forms/MainForm.Designer.cs:972
+#: Forms/MainForm.Designer.cs:952
 msgid "Open game setup file"
 msgstr "Открыть файл настроек игры"
 
-#: Forms/MainForm.Designer.cs:1001
+#: Forms/MainForm.Designer.cs:981
 msgid "Resolution:"
 msgstr "Разрешение:"
 
-#: Forms/MainForm.Designer.cs:1053
+#: Forms/MainForm.Designer.cs:1033
 msgid "Quality:"
 msgstr "Качество:"
 
-#: Forms/MainForm.Designer.cs:1080
+#: Forms/MainForm.Designer.cs:1060
 msgid "fullscreen"
 msgstr "во весь экран"
 
-#: Forms/MainForm.Designer.cs:1092
+#: Forms/MainForm.Designer.cs:1072
 msgid "🔨Tools"
 msgstr "🔨Инструменты"
 
-#: Forms/MainForm.Designer.cs:1153
-msgid "Update mods"
-msgstr "Обновление модов"
-
-#: Forms/MainForm.Designer.cs:1185
-msgid "Install"
-msgstr "Установка"
-
-#: Forms/MainForm.Designer.cs:1211
-msgid "🗁"
-msgstr ""
-
-#: Forms/MainForm.Designer.cs:1251 Forms/MainForm.cs:682
-#: Manage/ModeSwitch/ModeSwitcherBase.cs:54
-msgid "MOToCommon"
-msgstr "MO в Обычный"
-
-#: Forms/MainForm.Designer.cs:1261
-msgid "Dev"
-msgstr ""
-
-#: Forms/MainForm.Designer.cs:1290
-msgid "Fix ModList"
-msgstr "Фикс модлиста"
-
-#: Forms/MainForm.Designer.cs:1302
+#: Forms/MainForm.Designer.cs:1093
 msgid "🗁Folders"
 msgstr "🗁Папки"
 
-#: Forms/MainForm.Designer.cs:1325
+#: Forms/MainForm.Designer.cs:1116
 msgid "AI Helper [Organized modpack]"
 msgstr ""
 
@@ -447,39 +422,39 @@ msgstr "Нормально"
 msgid "Quality"
 msgstr "Качество"
 
-#: Forms/MainForm.cs:304
+#: Forms/MainForm.cs:306
 msgid "Selected game title"
 msgstr "Название выбранной игры"
 
-#: Forms/MainForm.cs:307
+#: Forms/MainForm.cs:309
 msgid "Check to run VR exe instead on standart"
 msgstr "Отметить для запуска VR exe, если есть"
 
-#: Forms/MainForm.cs:309 Forms/MainForm.cs:311
+#: Forms/MainForm.cs:311 Forms/MainForm.cs:313
 msgid "Will execute the Game"
 msgstr "Запустит игру"
 
-#: Forms/MainForm.cs:310 Forms/MainForm.cs:314 Forms/MainForm.cs:320
+#: Forms/MainForm.cs:312 Forms/MainForm.cs:316 Forms/MainForm.cs:322
 msgid " from Mod Organizer with attached mods"
 msgstr " из под Mod Organizer с подключенными модами"
 
-#: Forms/MainForm.cs:313 Forms/MainForm.cs:315
+#: Forms/MainForm.cs:315 Forms/MainForm.cs:317
 msgid "Will execute Studio"
 msgstr "Запустит Студию"
 
-#: Forms/MainForm.cs:317
+#: Forms/MainForm.cs:319
 msgid "Will execute Mod Organizer mod manager where you can manage your mods"
 msgstr "Запустит Mod Organizer, где вы можете управлять своими модами"
 
-#: Forms/MainForm.cs:319 Forms/MainForm.cs:321
+#: Forms/MainForm.cs:321 Forms/MainForm.cs:323
 msgid "Will execute original game launcher"
 msgstr "Запустит оригинальный лаунчер игры"
 
-#: Forms/MainForm.cs:323
+#: Forms/MainForm.cs:325
 msgid "Will be opened Settings tab"
 msgstr "Будет открыта вкладка Настройки"
 
-#: Forms/MainForm.cs:344
+#: Forms/MainForm.cs:346
 msgid ""
 "When checked will create shortcut for the AI Helper on Desktop and will fix "
 "registry if need"
@@ -487,151 +462,77 @@ msgstr ""
 "Когда отмечено, создаст ярлык для AI Helper на Рабочем столе и исправит "
 "реестр, если нужно"
 
-#: Forms/MainForm.cs:347
+#: Forms/MainForm.cs:349
 msgid "Select preferred screen resolution"
 msgstr "Выберете предпочитаемое разрешение экрана"
 
-#: Forms/MainForm.cs:348
+#: Forms/MainForm.cs:350
 msgid "When checked game will be in fullscreen mode"
 msgstr "Когда отмечено, игра запустится в полноэкранном режиме"
 
-#: Forms/MainForm.cs:349
+#: Forms/MainForm.cs:351
 msgid "Select preferred graphics quality"
 msgstr "Выберете предпочитаемое качество графики"
 
-#: Forms/MainForm.cs:351
+#: Forms/MainForm.cs:353
 msgid "Will create shortcut in Desktop if not exist"
 msgstr "Создаст ярлык на Рабочем столе, если отсутствует"
 
-#: Forms/MainForm.cs:353
+#: Forms/MainForm.cs:355
 msgid "Will set Data dir with game files as install dir in registry"
 msgstr "Установит в реестре папку Data с файлами игры как папку установки"
 
-#: Forms/MainForm.cs:365
+#: Forms/MainForm.cs:367
 msgid "Open extra setting window for plugins and etc"
 msgstr "Открыть экстра настройки плагинов и т.п."
 
-#: Forms/MainForm.cs:367
+#: Forms/MainForm.cs:369
 msgid "List of found games. Current"
 msgstr "Список найденных игры. Текущая"
 
-#: Forms/MainForm.cs:402
-msgid "Fix problems in current enabled mods list"
-msgstr "Исправление известных проблем в списке подключенных модов"
-
-#: Forms/MainForm.cs:408 Forms/Other/ModeSwitchDialog.cs:157
-#: Forms/Other/UpdateOptionsDialog.cs:147
-msgid "Update Mod Organizer and enabled mods"
-msgstr " Обновление Mod Organizer с подключенными модами"
-
-#: Forms/MainForm.cs:409 Forms/Other/ModeSwitchDialog.cs:158
-#: Forms/Other/UpdateOptionsDialog.cs:148
-msgid "Mod Organizer already have hardcoded info"
-msgstr "Mod Organizer уже имеет информацию об обновлении"
-
-#: Forms/MainForm.cs:410 Forms/Other/ModeSwitchDialog.cs:159
-#: Forms/Other/UpdateOptionsDialog.cs:149
-msgid ""
-"Mods will be updated if there exist info in meta.ini notes or in updateInfo."
-"txt"
-msgstr ""
-"Моды будут обновлени, если есть информация в примечании meta.ini или в файле "
-"updateInfo.txt"
-
-#: Forms/MainForm.cs:411 Forms/Other/ModeSwitchDialog.cs:160
-#: Forms/Other/UpdateOptionsDialog.cs:150
-msgid ""
-"After plugins update check will be executed KKManager StandaloneUpdater for "
-"Sideloader modpack updates check for games where it is possible"
-msgstr ""
-"После проверки обновлений плагинов будет запущен KKManager StandaloneUpdater "
-"для проверки обновлений Sideloader modpack, если для игры это возможно"
-
-#: Forms/MainForm.cs:428
-msgid ""
-"Will convert game from MO Mode to Common mode\n"
-" when you can run exes from Data folder without Mod Organizer.\n"
-" You can convert game back to MO mode\n"
-" when it will be need to install new mods or test your mod config"
-msgstr ""
-"Конвертирует игру из режима для Mod Organizer в Обычный режим,\n"
-" когда вы можете запускать программы напрямую из папки Data, без МО.\n"
-" Вы можете конвертировать игру назад в МО режим,\n"
-" когда понадобится установить новые моды или протестировать существующие"
-
-#: Forms/MainForm.cs:432
-msgid ""
-"Will convert the game to MO mode\n"
-" when all mod files will be moved back to Mods folder\n"
-" in their folders and vanilla files restored"
-msgstr ""
-"Конвертирует игру в режим для МО,\n"
-" когда все файлы модов будут перемещены обратно в папку Mods,\n"
-" в их подпапки и ванильные файлы восстановлены"
-
-#: Forms/MainForm.cs:444
-msgid "Install mods and userdata, placed in"
-msgstr "Установка модов и пользовательских файлов из"
-
-#: Forms/MainForm.cs:445
-msgid " to MO format in Mods when possible"
-msgstr " в MO-формат в Mods, когда возможно"
-
-#: Forms/MainForm.cs:447
-msgid " to the game folder when possible"
-msgstr " в папку игры, если возможно"
-
-#: Forms/MainForm.cs:449
-msgid "Open folder where you can drop/download files for autoinstallation"
-msgstr "Откроет папку, куда вы можете кинуть/загрузить файлы для автоустановки"
-
-#: Forms/MainForm.cs:536
+#: Forms/MainForm.cs:539
 msgid "Mods dir created"
 msgstr "Папки модов созданы"
 
-#: Forms/MainForm.cs:541
+#: Forms/MainForm.cs:544
 #, csharp-format
 msgid "{0} game installed in {1}"
 msgstr "Игра {0} установлена в {1}"
 
-#: Forms/MainForm.cs:545
+#: Forms/MainForm.cs:548
 #, csharp-format
 msgid "{0} archive in {1}"
 msgstr "Архив {0} в {1}"
 
-#: Forms/MainForm.cs:549
+#: Forms/MainForm.cs:552
 #, csharp-format
 msgid "{0} files not in {1}. Move {0} game files there."
 msgstr "Файлы {0} не в {1}. Поместите файлы игры {0} туда."
 
-#: Forms/MainForm.cs:554
+#: Forms/MainForm.cs:557
 #, csharp-format
 msgid "{0} dir created. Move {1} game files there."
 msgstr "Созда папка {0}. Поместите файлы игры {1} туда."
 
-#: Forms/MainForm.cs:595 Manage/ModeSwitch/ModeSwitcherBase.cs:54
-msgid "CommonToMO"
-msgstr "Обычный в МО"
-
-#: Forms/MainForm.cs:596 Forms/MainForm.cs:706
+#: Forms/MainForm.cs:608 Forms/MainForm.cs:718
 #: Manage/ModeSwitch/ToCommonMode.cs:20
 msgid "Common mode"
 msgstr "Обычный режим"
 
-#: Forms/MainForm.cs:675
+#: Forms/MainForm.cs:687
 msgid "Found mod folders in Mods"
 msgstr "Найдены папки модов в Mods"
 
-#: Forms/MainForm.cs:678
+#: Forms/MainForm.cs:690
 msgid "Mods Ready"
 msgstr "Моды готовы"
 
-#: Forms/MainForm.cs:711 Forms/Other/SwitchModeDialogForm.cs:46
+#: Forms/MainForm.cs:723 Forms/Other/SwitchModeDialogForm.cs:46
 #: Manage/ModeSwitch/ToMOMode.cs:19
 msgid "MO mode"
 msgstr "MO режим"
 
-#: Forms/MainForm.cs:836
+#: Forms/MainForm.cs:848
 msgid ""
 "Game in Common mode now.\n"
 " To execute Mod Organizer convert game back\n"
@@ -641,62 +542,10 @@ msgstr ""
 " Для запуска Mod Organizer сконвертируйте игру\n"
 " назад в режим для MO кнопкой на вкладке Инструменты"
 
-#: Forms/MainForm.cs:981
-msgid ""
-"No compatible for installation formats found in install folder.\n"
-"\n"
-"It must be archvives, game files or folders with game files.\n"
-"\n"
-"Will be opened installation dir where you can drop files for installation."
-msgstr ""
-"Не найдено совместимых форматов для установки\n"
-"\n"
-"Это должны быть файлы игры или архивы/папки с ними внутри.\n"
-"\n"
-"Будет открыта папка установки, куда можно кинуть файлы для установки."
-
-#: Forms/MainForm.cs:990 Forms/MainForm.cs:1258
-#: Manage/ModeSwitch/ToCommonMode.cs:17 Manage/ModeSwitch/ToMOMode.cs:15
-msgid "Attention"
-msgstr "Внимание"
-
-#: Forms/MainForm.cs:990
-msgid ""
-"Impossible to correctly install/update mods\n"
-"\n"
-" in standart mode because files was moved in Data."
-msgstr ""
-"Нельзя  правильно установить/обновить моды\n"
-"\n"
-" в обычном режиме, т.к. файлы были помещены в Data."
-
-#: Forms/MainForm.cs:990 Forms/MainForm.cs:1258
-msgid "Switch to MO mode?"
-msgstr "Переключиться в МО режим?"
-
-#: Forms/MainForm.cs:990 Forms/MainForm.cs:1258
-msgid "Confirmation"
-msgstr "Подтверждение"
-
-#: Forms/MainForm.cs:1004
-msgid "Install from"
-msgstr "Установка"
-
-#: Forms/MainForm.cs:1011
-msgid ""
-"All possible mods installed. Install all rest in install folder manually."
-msgstr ""
-"Все возможные моды установлены. Установите оставшиеся в папке установки "
-"вручную."
-
-#: Forms/MainForm.cs:1246
+#: Forms/MainForm.cs:1155
 msgid "Move mouse cursor over wished button or text to see info about it"
 msgstr ""
 "Наведите курсор мыши на желаемую кнопку или текст для просмотра подсказки"
-
-#: Forms/MainForm.cs:1258
-msgid "Correct modlist fixes possible only in MO mode"
-msgstr "Исправление списка модов возможно только в режиме МО"
 
 #: Forms/Other/CleanOptionsDialogForm.cs:30
 msgid "Cleaning options"
@@ -783,6 +632,30 @@ msgstr "Старые версии"
 #: Forms/Other/ModeSwitchDialog.cs:154 Forms/Other/UpdateOptionsDialog.cs:144
 msgid "Open older plugins buckup folder"
 msgstr "Открыть папку с резервными копиями старых версий обновленных плагинов"
+
+#: Forms/Other/ModeSwitchDialog.cs:157 Forms/Other/UpdateOptionsDialog.cs:147
+msgid "Update Mod Organizer and enabled mods"
+msgstr " Обновление Mod Organizer с подключенными модами"
+
+#: Forms/Other/ModeSwitchDialog.cs:158 Forms/Other/UpdateOptionsDialog.cs:148
+msgid "Mod Organizer already have hardcoded info"
+msgstr "Mod Organizer уже имеет информацию об обновлении"
+
+#: Forms/Other/ModeSwitchDialog.cs:159 Forms/Other/UpdateOptionsDialog.cs:149
+msgid ""
+"Mods will be updated if there exist info in meta.ini notes or in updateInfo."
+"txt"
+msgstr ""
+"Моды будут обновлени, если есть информация в примечании meta.ini или в файле "
+"updateInfo.txt"
+
+#: Forms/Other/ModeSwitchDialog.cs:160 Forms/Other/UpdateOptionsDialog.cs:150
+msgid ""
+"After plugins update check will be executed KKManager StandaloneUpdater for "
+"Sideloader modpack updates check for games where it is possible"
+msgstr ""
+"После проверки обновлений плагинов будет запущен KKManager StandaloneUpdater "
+"для проверки обновлений Sideloader modpack, если для игры это возможно"
 
 #: Forms/Other/ModeSwitchDialog.cs:162 Forms/Other/UpdateOptionsDialog.cs:152
 msgid "Warning! More of packs you check more of memory game will consume."
@@ -950,7 +823,7 @@ msgstr "Карточки"
 
 #: Manage/FoldersTab/Folders/OpenPresetsDir.cs:13
 msgid "Open dir with characters cards"
-msgstr ""
+msgstr "Открыть папку с карточками персонажей"
 
 #: Manage/FoldersTab/Folders/OpenPresetsDir.cs:57
 msgid ""
@@ -962,13 +835,13 @@ msgstr ""
 
 #: Manage/FoldersTab/Folders/OpenPresetsDir.cs:86
 msgid "using Mod Organizer"
-msgstr ""
+msgstr "используя Mod Organizer"
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:7
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:9
 msgid "Open folder, where from mod files can be installed fo selected game"
 msgstr "Открыть папку, откуда моды могут быть установлены для текущей игры"
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:8
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:10
 msgid ""
 "\n"
 "\n"
@@ -982,87 +855,87 @@ msgstr ""
 "выбранной игры в соответствующие подпапки в Mods\n"
 "и тогда могут быть установлены одним кликом по кнопке"
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:9
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:11
 msgid "button"
 msgstr " кнопка"
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:10
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:12
 msgid "which can be found in"
 msgstr "которая расположена на вкладке"
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:10
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:12
 msgid "tab page"
 msgstr "вкладка"
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:11
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:13
 msgid "Helper recognize"
 msgstr "Помощник распознает"
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:12
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:14
 msgid ".dll files of BepinEx plugins"
 msgstr ".dll-файлы плагинов для BepinEx"
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:13
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:15
 msgid "Sideloader mod archives"
 msgstr "Архивы модов для плагина Sideloader mod"
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:14
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:16
 msgid "Female character cards"
 msgstr "Карточки женских персонажей"
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:15
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:17
 msgid "Female character cards in \"f\" subfolder"
 msgstr "Карточки женских персонажей в подпапке \"f\""
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:16
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:18
 msgid "Male character cards in \"m\" subfolder"
 msgstr "Карточки мужских персонажей в подпапке \"m\""
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:17
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:19
 msgid "Coordinate clothes set cards in \"c\" subfolder"
 msgstr "Карточки координат одежды в подпапке \"c\""
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:18
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:20
 msgid "Studio scene cards in \"s\" subfolder"
 msgstr "Карточки сцен Студии в подпапке \"s\""
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:19
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:21
 msgid "Cardframe Front cards in \"cf\" subfolder"
 msgstr "Карточки передних планов в подпапке \"cf\""
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:20
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:22
 msgid "Cardframe Back cards in \"cf\" subfolder"
 msgstr "Карточки задних планов в подпапке \"cb\""
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:21
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:23
 msgid "Script loader scripts"
 msgstr "Скрипты для плагина Script loader"
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:22
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:24
 msgid "Housing plan cards in \"h\\01\", \"h\\02\", \"h\\03\" subfolders"
 msgstr "Карточки планов домов в падпапках \"h\\01\", \"h\\02\", \"h\\03\""
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:23
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:25
 msgid "Overlays cards in \"o\" subfolder"
 msgstr "Карточки оверлеев в подпапке \"o\""
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:24
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:26
 msgid "folders with overlays cards in \"o\" subfolder"
 msgstr "Подпапки с карточками оверлеев в подпапке \"o\""
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:25
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:27
 msgid "Subfolders with modfiles"
 msgstr "Подпапки с файлами модов"
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:26
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:28
 msgid "Zip archives with mod files"
 msgstr "Zip архивы с папками модов"
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:27
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:29
 msgid "Any Rar and 7z archives will be extracted for install"
 msgstr "Любые Rar или 7zip архивы"
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:28
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:30
 msgid ""
 "\n"
 "Some recognized mods can be updated instead of be installed as new mod"
@@ -1071,7 +944,7 @@ msgstr ""
 "Некоторые опознанные моды могут быть обновлены если присутствуют в папке с "
 "тем же именем."
 
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:29
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/Open2MODirButtonData.cs:31
 msgid ""
 "\n"
 "Most of mods will be automatically activated except .cs scripts\n"
@@ -1644,6 +1517,12 @@ msgstr "Сортировка зипмодов"
 msgid "Creating backup of Data and Mods for the game"
 msgstr "Создание резервной копии папок Data и Mods выбранной игры"
 
+#: Manage/ModeSwitch/ToCommonMode.cs:17 Manage/ModeSwitch/ToMOMode.cs:15
+#: Manage/ToolsTab/ButtonsData/FixModlistButtonData.cs:24
+#: Manage/ToolsTab/ButtonsData/InstallModsButtonData.cs:51
+msgid "Attention"
+msgstr "Внимание"
+
 #: Manage/ModeSwitch/ToCommonMode.cs:19 Manage/ModeSwitch/ToMOMode.cs:17
 msgid "Conversation to"
 msgstr "Конвертация в"
@@ -1822,6 +1701,87 @@ msgstr "meta.ini инфо перемещено из примечания в кл
 msgid "added rules info into meta.ini"
 msgstr "добавлено инфо правила в meta.ini"
 
+#: Manage/ToolsTab/ButtonsData/FixModlistButtonData.cs:9
+msgid "Fix modlist"
+msgstr "Фикс модов"
+
+#: Manage/ToolsTab/ButtonsData/FixModlistButtonData.cs:11
+msgid "Fix problems in current enabled mods list"
+msgstr "Исправление известных проблем в списке подключенных модов"
+
+#: Manage/ToolsTab/ButtonsData/FixModlistButtonData.cs:24
+msgid "Correct modlist fixes possible only in MO mode"
+msgstr "Исправление списка модов возможно только в режиме МО"
+
+#: Manage/ToolsTab/ButtonsData/FixModlistButtonData.cs:24
+#: Manage/ToolsTab/ButtonsData/InstallModsButtonData.cs:51
+msgid "Switch to MO mode?"
+msgstr "Переключиться в МО режим?"
+
+#: Manage/ToolsTab/ButtonsData/FixModlistButtonData.cs:24
+#: Manage/ToolsTab/ButtonsData/InstallModsButtonData.cs:51
+msgid "Confirmation"
+msgstr "Подтверждение"
+
+#: Manage/ToolsTab/ButtonsData/InstallModsButtonData.cs:17
+msgid "Install"
+msgstr "Установка"
+
+#: Manage/ToolsTab/ButtonsData/InstallModsButtonData.cs:19
+msgid "Install mods and userdata, placed in"
+msgstr "Установка модов и пользовательских файлов из"
+
+#: Manage/ToolsTab/ButtonsData/InstallModsButtonData.cs:20
+msgid " to MO format in Mods when possible"
+msgstr " в MO-формат в Mods, когда возможно"
+
+#: Manage/ToolsTab/ButtonsData/InstallModsButtonData.cs:21
+msgid " to the game folder when possible"
+msgstr " в папку игры, если возможно"
+
+#: Manage/ToolsTab/ButtonsData/InstallModsButtonData.cs:42
+msgid ""
+"No compatible for installation formats found in install folder.\n"
+"\n"
+"It must be archvives, game files or folders with game files.\n"
+"\n"
+"Will be opened installation dir where you can drop files for installation."
+msgstr ""
+"Не найдено совместимых форматов для установки\n"
+"\n"
+"Это должны быть файлы игры или архивы/папки с ними внутри.\n"
+"\n"
+"Будет открыта папка установки, куда можно кинуть файлы для установки."
+
+#: Manage/ToolsTab/ButtonsData/InstallModsButtonData.cs:51
+msgid ""
+"Impossible to correctly install/update mods\n"
+"\n"
+" in standart mode because files was moved in Data."
+msgstr ""
+"Нельзя  правильно установить/обновить моды\n"
+"\n"
+" в обычном режиме, т.к. файлы были помещены в Data."
+
+#: Manage/ToolsTab/ButtonsData/InstallModsButtonData.cs:72
+msgid ""
+"All possible mods installed. Install all rest in install folder manually."
+msgstr ""
+"Все возможные моды установлены. Установите оставшиеся в папке установки "
+"вручную."
+
+#: Manage/ToolsTab/ButtonsData/MOCommonModeSwitchButtonData.cs:10
+msgid "MO->Common"
+msgstr "MO->Обычный"
+
+#: Manage/ToolsTab/ButtonsData/MOCommonModeSwitchButtonData.cs:10
+msgid "Common->MO"
+msgstr "Обычный->MO"
+
+#: Manage/ToolsTab/ButtonsData/UpdateModsButtonData.cs:10
+msgid "Update"
+msgstr "Обновление"
+
 #: Manage/Update/Sources/Github.cs:111
 msgid "Downloading"
 msgstr "Загрузка"
@@ -1845,6 +1805,45 @@ msgstr "Подробно в"
 #: Properties/Resources.Designer.cs:88
 msgid "defmoini"
 msgstr "defmoini"
+
+#~ msgid "Update mods"
+#~ msgstr "Обновление модов"
+
+#~ msgid "MOToCommon"
+#~ msgstr "MO в Обычный"
+
+#~ msgid "Fix ModList"
+#~ msgstr "Фикс модлиста"
+
+#~ msgid ""
+#~ "Will convert game from MO Mode to Common mode\n"
+#~ " when you can run exes from Data folder without Mod Organizer.\n"
+#~ " You can convert game back to MO mode\n"
+#~ " when it will be need to install new mods or test your mod config"
+#~ msgstr ""
+#~ "Конвертирует игру из режима для Mod Organizer в Обычный режим,\n"
+#~ " когда вы можете запускать программы напрямую из папки Data, без МО.\n"
+#~ " Вы можете конвертировать игру назад в МО режим,\n"
+#~ " когда понадобится установить новые моды или протестировать существующие"
+
+#~ msgid ""
+#~ "Will convert the game to MO mode\n"
+#~ " when all mod files will be moved back to Mods folder\n"
+#~ " in their folders and vanilla files restored"
+#~ msgstr ""
+#~ "Конвертирует игру в режим для МО,\n"
+#~ " когда все файлы модов будут перемещены обратно в папку Mods,\n"
+#~ " в их подпапки и ванильные файлы восстановлены"
+
+#~ msgid "Open folder where you can drop/download files for autoinstallation"
+#~ msgstr ""
+#~ "Откроет папку, куда вы можете кинуть/загрузить файлы для автоустановки"
+
+#~ msgid "CommonToMO"
+#~ msgstr "Обычный в МО"
+
+#~ msgid "Install from"
+#~ msgstr "Установка"
 
 #~ msgid "Folders"
 #~ msgstr "Папки"
@@ -1908,12 +1907,6 @@ msgstr "defmoini"
 
 #~ msgid "Current Game"
 #~ msgstr "Текущая игра"
-
-#~ msgid "Fix modlist"
-#~ msgstr "Фикс модов"
-
-#~ msgid "Update"
-#~ msgstr "Обновление"
 
 #~ msgid "Registry"
 #~ msgstr "Реестр"

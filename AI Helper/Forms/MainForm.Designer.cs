@@ -64,7 +64,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.SelectedGameLabel = new System.Windows.Forms.Label();
             this.SettingsTabPage = new System.Windows.Forms.TabPage();
-            this.SettingsPagePanel = new System.Windows.Forms.Panel();
+            this.SettingsTabPanel = new System.Windows.Forms.Panel();
             this.AddGameSettingsLabel = new System.Windows.Forms.Label();
             this.cbxNtlea = new System.Windows.Forms.CheckBox();
             this.FixRegistryLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -122,7 +122,7 @@
             this.LaunchTabTopRightBepinExLogTableLayoutPanel.SuspendLayout();
             this.LaunchTabTopAppGameTitleTableLayoutPanel.SuspendLayout();
             this.SettingsTabPage.SuspendLayout();
-            this.SettingsPagePanel.SuspendLayout();
+            this.SettingsTabPanel.SuspendLayout();
             this.SettingsFoldersGroupBox.SuspendLayout();
             this.DisplaySettingsGroupBox.SuspendLayout();
             this.ToolsTabPage.SuspendLayout();
@@ -646,7 +646,7 @@
             // 
             // SettingsTabPage
             // 
-            this.SettingsTabPage.Controls.Add(this.SettingsPagePanel);
+            this.SettingsTabPage.Controls.Add(this.SettingsTabPanel);
             this.SettingsTabPage.Location = new System.Drawing.Point(4, 22);
             this.SettingsTabPage.Name = "SettingsTabPage";
             this.SettingsTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -655,26 +655,26 @@
             this.SettingsTabPage.Text = "Settings";
             this.SettingsTabPage.UseVisualStyleBackColor = true;
             // 
-            // SettingsPagePanel
+            // SettingsTabPanel
             // 
-            this.SettingsPagePanel.BackColor = System.Drawing.Color.Gray;
-            this.SettingsPagePanel.Controls.Add(this.AddGameSettingsLabel);
-            this.SettingsPagePanel.Controls.Add(this.cbxNtlea);
-            this.SettingsPagePanel.Controls.Add(this.FixRegistryLinkLabel);
-            this.SettingsPagePanel.Controls.Add(this.CreateShortcutLinkLabel);
-            this.SettingsPagePanel.Controls.Add(this.CurrentGameTitleTextBox);
-            this.SettingsPagePanel.Controls.Add(this.AutoShortcutRegistryCheckBox);
-            this.SettingsPagePanel.Controls.Add(this.JPLauncherRunLinkLabel);
-            this.SettingsPagePanel.Controls.Add(this.ExtraSettingsLinkLabel);
-            this.SettingsPagePanel.Controls.Add(this.CurrentGameLabel);
-            this.SettingsPagePanel.Controls.Add(this.CurrentGameComboBox);
-            this.SettingsPagePanel.Controls.Add(this.SettingsFoldersGroupBox);
-            this.SettingsPagePanel.Controls.Add(this.DisplaySettingsGroupBox);
-            this.SettingsPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SettingsPagePanel.Location = new System.Drawing.Point(3, 3);
-            this.SettingsPagePanel.Name = "SettingsPagePanel";
-            this.SettingsPagePanel.Size = new System.Drawing.Size(470, 229);
-            this.SettingsPagePanel.TabIndex = 1;
+            this.SettingsTabPanel.BackColor = System.Drawing.Color.Gray;
+            this.SettingsTabPanel.Controls.Add(this.AddGameSettingsLabel);
+            this.SettingsTabPanel.Controls.Add(this.cbxNtlea);
+            this.SettingsTabPanel.Controls.Add(this.FixRegistryLinkLabel);
+            this.SettingsTabPanel.Controls.Add(this.CreateShortcutLinkLabel);
+            this.SettingsTabPanel.Controls.Add(this.CurrentGameTitleTextBox);
+            this.SettingsTabPanel.Controls.Add(this.AutoShortcutRegistryCheckBox);
+            this.SettingsTabPanel.Controls.Add(this.JPLauncherRunLinkLabel);
+            this.SettingsTabPanel.Controls.Add(this.ExtraSettingsLinkLabel);
+            this.SettingsTabPanel.Controls.Add(this.CurrentGameLabel);
+            this.SettingsTabPanel.Controls.Add(this.CurrentGameComboBox);
+            this.SettingsTabPanel.Controls.Add(this.SettingsFoldersGroupBox);
+            this.SettingsTabPanel.Controls.Add(this.DisplaySettingsGroupBox);
+            this.SettingsTabPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SettingsTabPanel.Location = new System.Drawing.Point(3, 3);
+            this.SettingsTabPanel.Name = "SettingsTabPanel";
+            this.SettingsTabPanel.Size = new System.Drawing.Size(470, 229);
+            this.SettingsTabPanel.TabIndex = 1;
             // 
             // AddGameSettingsLabel
             // 
@@ -1255,8 +1255,8 @@
             this.LaunchTabTopAppGameTitleTableLayoutPanel.ResumeLayout(false);
             this.LaunchTabTopAppGameTitleTableLayoutPanel.PerformLayout();
             this.SettingsTabPage.ResumeLayout(false);
-            this.SettingsPagePanel.ResumeLayout(false);
-            this.SettingsPagePanel.PerformLayout();
+            this.SettingsTabPanel.ResumeLayout(false);
+            this.SettingsTabPanel.PerformLayout();
             this.SettingsFoldersGroupBox.ResumeLayout(false);
             this.SettingsFoldersGroupBox.PerformLayout();
             this.DisplaySettingsGroupBox.ResumeLayout(false);
@@ -1279,7 +1279,7 @@
         private System.Windows.Forms.TabPage MainTabPage;
         private System.Windows.Forms.Panel InfoPagePanel;
         private System.Windows.Forms.TabPage SettingsTabPage;
-        private System.Windows.Forms.Panel SettingsPagePanel;
+        private System.Windows.Forms.Panel SettingsTabPanel;
         private System.Windows.Forms.GroupBox DisplaySettingsGroupBox;
         private System.Windows.Forms.CheckBox FullScreenCheckBox;
         private System.Windows.Forms.ComboBox ResolutionComboBox;

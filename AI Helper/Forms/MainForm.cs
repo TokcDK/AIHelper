@@ -182,33 +182,33 @@ namespace AIHelper
         private void SetLocalizationStrings()
         {
             this.Text = "AI Helper" + " | " + ManageSettings.Games.Game.GameDisplayingName;
-            CurrentGameLabel.Text = T._("Current Game") + ":";
-            InstallInModsButton.Text = T._("Install");// + " " + ManageSettings.ModsInstallDirName();
-            ToolsFixModListButton.Text = T._("Fix modlist");
-            btnUpdateMods.Text = T._("Update");
+            //CurrentGameLabel.Text = T._("Current Game") + ":";
+            //InstallInModsButton.Text = T._("Install");// + " " + ManageSettings.ModsInstallDirName();
+            //ToolsFixModListButton.Text = T._("Fix modlist");
+            //btnUpdateMods.Text = T._("Update");
             //button1.Text = T._("Prepare the game");
             //CreateShortcutButton.Text = T._("Shortcut");
-            CreateShortcutLinkLabel.Text = T._("Shortcut");
+            //CreateShortcutLinkLabel.Text = T._("Shortcut");
             //FixRegistryButton.Text = T._("Registry");
-            FixRegistryLinkLabel.Text = T._("Registry");
-            DisplaySettingsGroupBox.Text = T._("Display");
-            SetupXmlLinkLabel.Text = DisplaySettingsGroupBox.Text;//Тот же текст
-            FullScreenCheckBox.Text = T._("fullscreen");
-            AutoShortcutRegistryCheckBox.Text = T._("Auto");
-            SettingsFoldersGroupBox.Text = T._("Folders");
-            OpenGameFolderLinkLabel.Text = T._("Game");
-            OpenModsFolderLinkLabel.Text = T._("Mods");
+            //FixRegistryLinkLabel.Text = T._("Registry");
+            //DisplaySettingsGroupBox.Text = T._("Display");
+            //SetupXmlLinkLabel.Text = DisplaySettingsGroupBox.Text;//Тот же текст
+            //FullScreenCheckBox.Text = T._("fullscreen");
+            //AutoShortcutRegistryCheckBox.Text = T._("Auto");
+            //SettingsFoldersGroupBox.Text = T._("Folders");
+            //OpenGameFolderLinkLabel.Text = T._("Game");
+            //OpenModsFolderLinkLabel.Text = T._("Mods");
             //MainTabPage.Text = T._("Info");
             //LaunchTabPage.Text = T._("Launch");
             //LaunchTabLaunchLabel.Text = T._("Launch");
             //ToolsTabPage.Text = T._("Tools");
             //SettingsTabPage.Text = T._("Settings");
-            StudioButton.Text = T._("Studio");
-            GameButton.Text = T._("Game");
-            MOButton.Text = T._("Manager");
-            SettingsButton.Text = T._("Settings");
-            ExtraSettingsLinkLabel.Text = T._("Extra Settings");
-            JPLauncherRunLinkLabel.Text = T._("Orig Launcher");
+            //StudioButton.Text = T._("Studio");
+            //GameButton.Text = T._("Game");
+            //MOButton.Text = T._("Manager");
+            //SettingsButton.Text = T._("Settings");
+            //ExtraSettingsLinkLabel.Text = T._("Extra Settings");
+            //JPLauncherRunLinkLabel.Text = T._("Orig Launcher");
             //LaunchLinksLinkLabel.Text = T._("Links");
             QualityComboBox.Items.Add(T._("Perfomance"));
             QualityComboBox.Items.Add(T._("Normal"));

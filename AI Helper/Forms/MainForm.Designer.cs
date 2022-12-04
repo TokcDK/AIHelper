@@ -751,7 +751,7 @@
             this.CurrentGameLabel.Name = "CurrentGameLabel";
             this.CurrentGameLabel.Size = new System.Drawing.Size(75, 13);
             this.CurrentGameLabel.TabIndex = 8;
-            this.CurrentGameLabel.Text = T._("Current Game:");
+            this.CurrentGameLabel.Text = T._("Current Game") + ":";
             // 
             // ManageGameTableLayoutPanel1
             // 

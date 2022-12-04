@@ -267,6 +267,7 @@
     <Compile Include="Manage\Rules\ModList\HardRules\RuleModForBepInex.cs" />
     <Compile Include="Manage\ToolsTab\ButtonsData\InstallModsButtonData.cs" />
     <Compile Include="Manage\ToolsTab\ButtonsData\FixModlistButtonData.cs" />
+    <Compile Include="Manage\ToolsTab\ButtonsData\DevButtonData.cs" />
     <Compile Include="Manage\ToolsTab\ButtonsData\UpdateModsButtonData.cs" />
     <Compile Include="Manage\ToolsTab\ButtonsData\MOCommonModeSwitchButtonData.cs" />
     <Compile Include="Manage\ToolsTab\ToolsTabButtonsLoader.cs" />

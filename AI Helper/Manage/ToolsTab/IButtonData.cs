@@ -13,4 +13,8 @@ namespace AIHelper.Manage.ToolsTab
 
         void OnClick(object o, EventArgs e);
     }
+    public interface IButtonDataDev
+    {
+        bool IsVisible { get; }
+    }
 }

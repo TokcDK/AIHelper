@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using AIHelper.Manage.ToolsTab;
 
 namespace AIHelper.Manage.Functions
 {
@@ -8,14 +9,14 @@ namespace AIHelper.Manage.Functions
     {
         internal static void Load()
         {
-            var panel = ManageSettings.MainForm.FoldersTabPagePanel;
+            var panel = ManageSettings.MainForm.ToolsTabPagePanel;
 
             var flp = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill
             };
 
-            var datas = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFolderTabButtonData>();
+            var datas = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IToolsTabButtonData>();
 
             var ttip = new ToolTip()
             {
@@ -31,6 +32,8 @@ namespace AIHelper.Manage.Functions
 
             foreach (var d in datas)
             {
+                if (d is IButtonDataDev dev && !dev.IsVisible) continue;
+
                 var b = new Button
                 {
                     AutoSize = true,

@@ -1,4 +1,6 @@
-﻿namespace AIHelper.Manage.FoldersTab.Folders
+﻿using AIHelper.Manage.ToolsTab.ButtonsData;
+
+namespace AIHelper.Manage.FoldersTab.Folders
 {
     internal class Open2MODirButtonData : SimpleFolderOpenBase
     {        
@@ -6,7 +8,7 @@
 
         public override string Description => T._("Open folder, where from mod files can be installed fo selected game") +
                     T._("\n\nHere can be placed mod files which you want to install for selected game in approriate subfolders in mods" +
-                    "\nand then can be installed all by one click on") + " " + ManageSettings.MainForm.InstallInModsButton.Text + " " + T._("button") +
+                    "\nand then can be installed all by one click on") + " " + new InstallModsButtonData().Text + " " + T._("button") +
                     "\n" + T._("which can be found in") + " " + ManageSettings.MainForm.ToolsTabPage.Text + " " + T._("tab page") +
                     "\n\n" + T._("Helper recognize") + ":"
                     + "\n " + T._(".dll files of BepinEx plugins")

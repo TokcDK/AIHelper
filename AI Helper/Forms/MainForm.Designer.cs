@@ -187,7 +187,7 @@
             this.MainTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.MainTabPage.Size = new System.Drawing.Size(476, 235);
             this.MainTabPage.TabIndex = 0;
-            this.MainTabPage.Text = "Info";
+            this.MainTabPage.Text = "ℹInfo";
             this.MainTabPage.UseVisualStyleBackColor = true;
             // 
             // InfoPagePanel
@@ -352,7 +352,7 @@
             this.LaunchTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.LaunchTabPage.Size = new System.Drawing.Size(476, 235);
             this.LaunchTabPage.TabIndex = 2;
-            this.LaunchTabPage.Text = "Launch";
+            this.LaunchTabPage.Text = "🚀Launch";
             this.LaunchTabPage.UseVisualStyleBackColor = true;
             // 
             // LaunchPagePanel
@@ -677,7 +677,7 @@
             this.SettingsTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.SettingsTabPage.Size = new System.Drawing.Size(476, 235);
             this.SettingsTabPage.TabIndex = 1;
-            this.SettingsTabPage.Text = "Settings";
+            this.SettingsTabPage.Text = "🔧Settings";
             this.SettingsTabPage.UseVisualStyleBackColor = true;
             // 
             // SettingsTabPanel
@@ -1037,7 +1037,7 @@
             this.ToolsTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.ToolsTabPage.Size = new System.Drawing.Size(476, 235);
             this.ToolsTabPage.TabIndex = 3;
-            this.ToolsTabPage.Text = "Tools";
+            this.ToolsTabPage.Text = "🔨Tools";
             this.ToolsTabPage.UseVisualStyleBackColor = true;
             // 
             // ToolsTabPagePanel
@@ -1153,10 +1153,10 @@
             this.Install2MODirPathOpenFolderLinkLabel.Location = new System.Drawing.Point(0, 0);
             this.Install2MODirPathOpenFolderLinkLabel.Margin = new System.Windows.Forms.Padding(0);
             this.Install2MODirPathOpenFolderLinkLabel.Name = "Install2MODirPathOpenFolderLinkLabel";
-            this.Install2MODirPathOpenFolderLinkLabel.Size = new System.Drawing.Size(21, 15);
+            this.Install2MODirPathOpenFolderLinkLabel.Size = new System.Drawing.Size(24, 15);
             this.Install2MODirPathOpenFolderLinkLabel.TabIndex = 18;
             this.Install2MODirPathOpenFolderLinkLabel.TabStop = true;
-            this.Install2MODirPathOpenFolderLinkLabel.Text = "👜";
+            this.Install2MODirPathOpenFolderLinkLabel.Text = "🗁";
             this.Install2MODirPathOpenFolderLinkLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             this.Install2MODirPathOpenFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.Install2MODirPathOpenFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.Install2MODirPathOpenFolderLinkLabel_LinkClicked);
@@ -1247,7 +1247,7 @@
             this.FoldersTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.FoldersTabPage.Size = new System.Drawing.Size(476, 235);
             this.FoldersTabPage.TabIndex = 4;
-            this.FoldersTabPage.Text = "Folders";
+            this.FoldersTabPage.Text = "🗁Folders";
             this.FoldersTabPage.UseVisualStyleBackColor = true;
             // 
             // FoldersTabPagePanel1

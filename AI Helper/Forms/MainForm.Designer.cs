@@ -65,25 +65,26 @@
             this.SelectedGameLabel = new System.Windows.Forms.Label();
             this.SettingsTabPage = new System.Windows.Forms.TabPage();
             this.SettingsTabPanel = new System.Windows.Forms.Panel();
+            this.SettingsTabControl = new System.Windows.Forms.TabControl();
+            this.SettingsTabGeneralTabPage = new System.Windows.Forms.TabPage();
+            this.SettingsTabGeneralTabPagePanel = new System.Windows.Forms.Panel();
+            this.SettingsTabGeneralTabPageTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.CurrentGameLabel = new System.Windows.Forms.Label();
+            this.ManageGameTableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.CurrentGamePanel1 = new System.Windows.Forms.Panel();
+            this.CurrentGameTitleTextBox = new System.Windows.Forms.TextBox();
+            this.CurrentGameComboBox = new System.Windows.Forms.ComboBox();
             this.AddGameSettingsLabel = new System.Windows.Forms.Label();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.JPLauncherRunLinkLabel = new System.Windows.Forms.LinkLabel();
             this.cbxNtlea = new System.Windows.Forms.CheckBox();
+            this.ExtraSettingsLinkLabel = new System.Windows.Forms.LinkLabel();
             this.FixRegistryLinkLabel = new System.Windows.Forms.LinkLabel();
             this.CreateShortcutLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.CurrentGameTitleTextBox = new System.Windows.Forms.TextBox();
             this.AutoShortcutRegistryCheckBox = new System.Windows.Forms.CheckBox();
-            this.JPLauncherRunLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.ExtraSettingsLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.CurrentGameLabel = new System.Windows.Forms.Label();
-            this.CurrentGameComboBox = new System.Windows.Forms.ComboBox();
-            this.SettingsFoldersGroupBox = new System.Windows.Forms.GroupBox();
-            this.OpenPresetDirsLinkLabelMO = new System.Windows.Forms.LinkLabel();
-            this.OpenPresetDirsLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.SettingsOpen2MOLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.OpenMOOverwriteFolderLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.OpenMyUserDataFolderLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.OpenModsFolderLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.OpenMOFolderLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.OpenGameFolderLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.SettingsTabDisplayTabPage = new System.Windows.Forms.TabPage();
+            this.SettingsTabGDisplayTabPagePanel = new System.Windows.Forms.Panel();
+            this.SettingsTabDisplayTabPageTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.DisplaySettingsGroupBox = new System.Windows.Forms.GroupBox();
             this.SetupXmlLinkLabel = new System.Windows.Forms.LinkLabel();
             this.QualityComboBox = new System.Windows.Forms.ComboBox();
@@ -104,6 +105,17 @@
             this.DevButton = new System.Windows.Forms.Button();
             this.FixModlistTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.ToolsFixModListButton = new System.Windows.Forms.Button();
+            this.FoldersTabPage = new System.Windows.Forms.TabPage();
+            this.FoldersTabPagePanel1 = new System.Windows.Forms.Panel();
+            this.SettingsFoldersGroupBox = new System.Windows.Forms.GroupBox();
+            this.OpenPresetDirsLinkLabelMO = new System.Windows.Forms.LinkLabel();
+            this.OpenPresetDirsLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.SettingsOpen2MOLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.OpenMOOverwriteFolderLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.OpenMyUserDataFolderLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.OpenModsFolderLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.OpenMOFolderLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.OpenGameFolderLinkLabel = new System.Windows.Forms.LinkLabel();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -123,7 +135,16 @@
             this.LaunchTabTopAppGameTitleTableLayoutPanel.SuspendLayout();
             this.SettingsTabPage.SuspendLayout();
             this.SettingsTabPanel.SuspendLayout();
-            this.SettingsFoldersGroupBox.SuspendLayout();
+            this.SettingsTabControl.SuspendLayout();
+            this.SettingsTabGeneralTabPage.SuspendLayout();
+            this.SettingsTabGeneralTabPagePanel.SuspendLayout();
+            this.SettingsTabGeneralTabPageTableLayoutPanel.SuspendLayout();
+            this.ManageGameTableLayoutPanel1.SuspendLayout();
+            this.CurrentGamePanel1.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
+            this.SettingsTabDisplayTabPage.SuspendLayout();
+            this.SettingsTabGDisplayTabPagePanel.SuspendLayout();
+            this.SettingsTabDisplayTabPageTableLayoutPanel.SuspendLayout();
             this.DisplaySettingsGroupBox.SuspendLayout();
             this.ToolsTabPage.SuspendLayout();
             this.ToolsTabPagePanel.SuspendLayout();
@@ -134,6 +155,9 @@
             this.ModeSwitchTableLayoutPanel.SuspendLayout();
             this.ModeSwitchButtonPanel.SuspendLayout();
             this.FixModlistTableLayoutPanel.SuspendLayout();
+            this.FoldersTabPage.SuspendLayout();
+            this.FoldersTabPagePanel1.SuspendLayout();
+            this.SettingsFoldersGroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // AIGirlHelperTabControl
@@ -142,6 +166,7 @@
             this.AIGirlHelperTabControl.Controls.Add(this.LaunchTabPage);
             this.AIGirlHelperTabControl.Controls.Add(this.SettingsTabPage);
             this.AIGirlHelperTabControl.Controls.Add(this.ToolsTabPage);
+            this.AIGirlHelperTabControl.Controls.Add(this.FoldersTabPage);
             this.AIGirlHelperTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.AIGirlHelperTabControl.HotTrack = true;
             this.AIGirlHelperTabControl.Location = new System.Drawing.Point(0, 0);
@@ -658,41 +683,178 @@
             // SettingsTabPanel
             // 
             this.SettingsTabPanel.BackColor = System.Drawing.Color.Gray;
-            this.SettingsTabPanel.Controls.Add(this.AddGameSettingsLabel);
-            this.SettingsTabPanel.Controls.Add(this.cbxNtlea);
-            this.SettingsTabPanel.Controls.Add(this.FixRegistryLinkLabel);
-            this.SettingsTabPanel.Controls.Add(this.CreateShortcutLinkLabel);
-            this.SettingsTabPanel.Controls.Add(this.CurrentGameTitleTextBox);
-            this.SettingsTabPanel.Controls.Add(this.AutoShortcutRegistryCheckBox);
-            this.SettingsTabPanel.Controls.Add(this.JPLauncherRunLinkLabel);
-            this.SettingsTabPanel.Controls.Add(this.ExtraSettingsLinkLabel);
-            this.SettingsTabPanel.Controls.Add(this.CurrentGameLabel);
-            this.SettingsTabPanel.Controls.Add(this.CurrentGameComboBox);
-            this.SettingsTabPanel.Controls.Add(this.SettingsFoldersGroupBox);
-            this.SettingsTabPanel.Controls.Add(this.DisplaySettingsGroupBox);
+            this.SettingsTabPanel.Controls.Add(this.SettingsTabControl);
             this.SettingsTabPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SettingsTabPanel.Location = new System.Drawing.Point(3, 3);
             this.SettingsTabPanel.Name = "SettingsTabPanel";
             this.SettingsTabPanel.Size = new System.Drawing.Size(470, 229);
             this.SettingsTabPanel.TabIndex = 1;
             // 
+            // SettingsTabControl
+            // 
+            this.SettingsTabControl.Controls.Add(this.SettingsTabGeneralTabPage);
+            this.SettingsTabControl.Controls.Add(this.SettingsTabDisplayTabPage);
+            this.SettingsTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SettingsTabControl.Location = new System.Drawing.Point(0, 0);
+            this.SettingsTabControl.Name = "SettingsTabControl";
+            this.SettingsTabControl.SelectedIndex = 0;
+            this.SettingsTabControl.Size = new System.Drawing.Size(470, 229);
+            this.SettingsTabControl.TabIndex = 15;
+            // 
+            // SettingsTabGeneralTabPage
+            // 
+            this.SettingsTabGeneralTabPage.Controls.Add(this.SettingsTabGeneralTabPagePanel);
+            this.SettingsTabGeneralTabPage.Location = new System.Drawing.Point(4, 22);
+            this.SettingsTabGeneralTabPage.Name = "SettingsTabGeneralTabPage";
+            this.SettingsTabGeneralTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.SettingsTabGeneralTabPage.Size = new System.Drawing.Size(462, 203);
+            this.SettingsTabGeneralTabPage.TabIndex = 0;
+            this.SettingsTabGeneralTabPage.Text = "General";
+            this.SettingsTabGeneralTabPage.UseVisualStyleBackColor = true;
+            // 
+            // SettingsTabGeneralTabPagePanel
+            // 
+            this.SettingsTabGeneralTabPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.SettingsTabGeneralTabPagePanel.Controls.Add(this.SettingsTabGeneralTabPageTableLayoutPanel);
+            this.SettingsTabGeneralTabPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SettingsTabGeneralTabPagePanel.Location = new System.Drawing.Point(3, 3);
+            this.SettingsTabGeneralTabPagePanel.Margin = new System.Windows.Forms.Padding(0);
+            this.SettingsTabGeneralTabPagePanel.Name = "SettingsTabGeneralTabPagePanel";
+            this.SettingsTabGeneralTabPagePanel.Size = new System.Drawing.Size(456, 197);
+            this.SettingsTabGeneralTabPagePanel.TabIndex = 0;
+            // 
+            // SettingsTabGeneralTabPageTableLayoutPanel
+            // 
+            this.SettingsTabGeneralTabPageTableLayoutPanel.ColumnCount = 1;
+            this.SettingsTabGeneralTabPageTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.SettingsTabGeneralTabPageTableLayoutPanel.Controls.Add(this.CurrentGameLabel, 0, 0);
+            this.SettingsTabGeneralTabPageTableLayoutPanel.Controls.Add(this.ManageGameTableLayoutPanel1, 0, 1);
+            this.SettingsTabGeneralTabPageTableLayoutPanel.Controls.Add(this.flowLayoutPanel1, 0, 3);
+            this.SettingsTabGeneralTabPageTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SettingsTabGeneralTabPageTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.SettingsTabGeneralTabPageTableLayoutPanel.Name = "SettingsTabGeneralTabPageTableLayoutPanel";
+            this.SettingsTabGeneralTabPageTableLayoutPanel.RowCount = 4;
+            this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.SettingsTabGeneralTabPageTableLayoutPanel.Size = new System.Drawing.Size(456, 197);
+            this.SettingsTabGeneralTabPageTableLayoutPanel.TabIndex = 0;
+            // 
+            // CurrentGameLabel
+            // 
+            this.CurrentGameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.CurrentGameLabel.AutoSize = true;
+            this.CurrentGameLabel.BackColor = System.Drawing.Color.Transparent;
+            this.CurrentGameLabel.ForeColor = System.Drawing.Color.White;
+            this.CurrentGameLabel.Location = new System.Drawing.Point(3, 7);
+            this.CurrentGameLabel.Name = "CurrentGameLabel";
+            this.CurrentGameLabel.Size = new System.Drawing.Size(75, 13);
+            this.CurrentGameLabel.TabIndex = 8;
+            this.CurrentGameLabel.Text = "Current Game:";
+            // 
+            // ManageGameTableLayoutPanel1
+            // 
+            this.ManageGameTableLayoutPanel1.ColumnCount = 2;
+            this.ManageGameTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.ManageGameTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.ManageGameTableLayoutPanel1.Controls.Add(this.CurrentGamePanel1, 0, 0);
+            this.ManageGameTableLayoutPanel1.Controls.Add(this.AddGameSettingsLabel, 1, 0);
+            this.ManageGameTableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ManageGameTableLayoutPanel1.Location = new System.Drawing.Point(0, 20);
+            this.ManageGameTableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.ManageGameTableLayoutPanel1.Name = "ManageGameTableLayoutPanel1";
+            this.ManageGameTableLayoutPanel1.RowCount = 1;
+            this.ManageGameTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ManageGameTableLayoutPanel1.Size = new System.Drawing.Size(456, 20);
+            this.ManageGameTableLayoutPanel1.TabIndex = 9;
+            // 
+            // CurrentGamePanel1
+            // 
+            this.CurrentGamePanel1.Controls.Add(this.CurrentGameTitleTextBox);
+            this.CurrentGamePanel1.Controls.Add(this.CurrentGameComboBox);
+            this.CurrentGamePanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.CurrentGamePanel1.Location = new System.Drawing.Point(0, 0);
+            this.CurrentGamePanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.CurrentGamePanel1.Name = "CurrentGamePanel1";
+            this.CurrentGamePanel1.Size = new System.Drawing.Size(150, 20);
+            this.CurrentGamePanel1.TabIndex = 0;
+            // 
+            // CurrentGameTitleTextBox
+            // 
+            this.CurrentGameTitleTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.CurrentGameTitleTextBox.BackColor = System.Drawing.SystemColors.Window;
+            this.CurrentGameTitleTextBox.Location = new System.Drawing.Point(0, 0);
+            this.CurrentGameTitleTextBox.Name = "CurrentGameTitleTextBox";
+            this.CurrentGameTitleTextBox.ReadOnly = true;
+            this.CurrentGameTitleTextBox.Size = new System.Drawing.Size(132, 20);
+            this.CurrentGameTitleTextBox.TabIndex = 11;
+            // 
+            // CurrentGameComboBox
+            // 
+            this.CurrentGameComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.CurrentGameComboBox.Cursor = System.Windows.Forms.Cursors.PanSouth;
+            this.CurrentGameComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CurrentGameComboBox.FormattingEnabled = true;
+            this.CurrentGameComboBox.Location = new System.Drawing.Point(0, -1);
+            this.CurrentGameComboBox.Name = "CurrentGameComboBox";
+            this.CurrentGameComboBox.Size = new System.Drawing.Size(150, 21);
+            this.CurrentGameComboBox.TabIndex = 7;
+            this.CurrentGameComboBox.SelectedIndexChanged += new System.EventHandler(this.CurrentGameComboBox_SelectedIndexChanged);
+            // 
             // AddGameSettingsLabel
             // 
+            this.AddGameSettingsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.AddGameSettingsLabel.AutoSize = true;
+            this.AddGameSettingsLabel.BackColor = System.Drawing.Color.Transparent;
             this.AddGameSettingsLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.AddGameSettingsLabel.Location = new System.Drawing.Point(158, 23);
+            this.AddGameSettingsLabel.Location = new System.Drawing.Point(155, 0);
+            this.AddGameSettingsLabel.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.AddGameSettingsLabel.Name = "AddGameSettingsLabel";
-            this.AddGameSettingsLabel.Size = new System.Drawing.Size(55, 13);
+            this.AddGameSettingsLabel.Size = new System.Drawing.Size(55, 20);
             this.AddGameSettingsLabel.TabIndex = 14;
             this.AddGameSettingsLabel.Text = "Add game";
+            this.AddGameSettingsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.AddGameSettingsLabel.Click += new System.EventHandler(this.AddGameLabel_Click);
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.JPLauncherRunLinkLabel);
+            this.flowLayoutPanel1.Controls.Add(this.cbxNtlea);
+            this.flowLayoutPanel1.Controls.Add(this.ExtraSettingsLinkLabel);
+            this.flowLayoutPanel1.Controls.Add(this.FixRegistryLinkLabel);
+            this.flowLayoutPanel1.Controls.Add(this.CreateShortcutLinkLabel);
+            this.flowLayoutPanel1.Controls.Add(this.AutoShortcutRegistryCheckBox);
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 60);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(456, 137);
+            this.flowLayoutPanel1.TabIndex = 10;
+            // 
+            // JPLauncherRunLinkLabel
+            // 
+            this.JPLauncherRunLinkLabel.AutoSize = true;
+            this.JPLauncherRunLinkLabel.BackColor = System.Drawing.Color.Transparent;
+            this.JPLauncherRunLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.JPLauncherRunLinkLabel.LinkColor = System.Drawing.Color.White;
+            this.JPLauncherRunLinkLabel.Location = new System.Drawing.Point(3, 0);
+            this.JPLauncherRunLinkLabel.Name = "JPLauncherRunLinkLabel";
+            this.JPLauncherRunLinkLabel.Size = new System.Drawing.Size(67, 13);
+            this.JPLauncherRunLinkLabel.TabIndex = 10;
+            this.JPLauncherRunLinkLabel.TabStop = true;
+            this.JPLauncherRunLinkLabel.Text = "JP Launcher";
+            this.JPLauncherRunLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // cbxNtlea
             // 
             this.cbxNtlea.AutoSize = true;
             this.cbxNtlea.BackColor = System.Drawing.Color.Transparent;
             this.cbxNtlea.ForeColor = System.Drawing.Color.White;
-            this.cbxNtlea.Location = new System.Drawing.Point(83, 139);
+            this.cbxNtlea.Location = new System.Drawing.Point(76, 3);
             this.cbxNtlea.Name = "cbxNtlea";
             this.cbxNtlea.Size = new System.Drawing.Size(49, 17);
             this.cbxNtlea.TabIndex = 7;
@@ -700,13 +862,27 @@
             this.cbxNtlea.UseVisualStyleBackColor = false;
             this.cbxNtlea.Visible = false;
             // 
+            // ExtraSettingsLinkLabel
+            // 
+            this.ExtraSettingsLinkLabel.AutoSize = true;
+            this.ExtraSettingsLinkLabel.BackColor = System.Drawing.Color.Transparent;
+            this.ExtraSettingsLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.ExtraSettingsLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.ExtraSettingsLinkLabel.Location = new System.Drawing.Point(131, 0);
+            this.ExtraSettingsLinkLabel.Name = "ExtraSettingsLinkLabel";
+            this.ExtraSettingsLinkLabel.Size = new System.Drawing.Size(72, 13);
+            this.ExtraSettingsLinkLabel.TabIndex = 9;
+            this.ExtraSettingsLinkLabel.TabStop = true;
+            this.ExtraSettingsLinkLabel.Text = "Extra Settings";
+            this.ExtraSettingsLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.ExtraSettingsLinkLabel_LinkClicked);
+            // 
             // FixRegistryLinkLabel
             // 
             this.FixRegistryLinkLabel.AutoSize = true;
             this.FixRegistryLinkLabel.BackColor = System.Drawing.Color.Transparent;
             this.FixRegistryLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.FixRegistryLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.FixRegistryLinkLabel.Location = new System.Drawing.Point(265, 73);
+            this.FixRegistryLinkLabel.Location = new System.Drawing.Point(209, 0);
             this.FixRegistryLinkLabel.Name = "FixRegistryLinkLabel";
             this.FixRegistryLinkLabel.Size = new System.Drawing.Size(56, 13);
             this.FixRegistryLinkLabel.TabIndex = 12;
@@ -721,7 +897,7 @@
             this.CreateShortcutLinkLabel.BackColor = System.Drawing.Color.Transparent;
             this.CreateShortcutLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.CreateShortcutLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.CreateShortcutLinkLabel.Location = new System.Drawing.Point(265, 86);
+            this.CreateShortcutLinkLabel.Location = new System.Drawing.Point(271, 0);
             this.CreateShortcutLinkLabel.Name = "CreateShortcutLinkLabel";
             this.CreateShortcutLinkLabel.Size = new System.Drawing.Size(47, 13);
             this.CreateShortcutLinkLabel.TabIndex = 13;
@@ -729,209 +905,55 @@
             this.CreateShortcutLinkLabel.Text = "Shortcut";
             this.CreateShortcutLinkLabel.Click += new System.EventHandler(this.CreateShortcutButton_Click);
             // 
-            // CurrentGameTitleTextBox
-            // 
-            this.CurrentGameTitleTextBox.BackColor = System.Drawing.SystemColors.Window;
-            this.CurrentGameTitleTextBox.Location = new System.Drawing.Point(13, 20);
-            this.CurrentGameTitleTextBox.Name = "CurrentGameTitleTextBox";
-            this.CurrentGameTitleTextBox.ReadOnly = true;
-            this.CurrentGameTitleTextBox.Size = new System.Drawing.Size(115, 20);
-            this.CurrentGameTitleTextBox.TabIndex = 11;
-            // 
             // AutoShortcutRegistryCheckBox
             // 
             this.AutoShortcutRegistryCheckBox.AutoSize = true;
             this.AutoShortcutRegistryCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.AutoShortcutRegistryCheckBox.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.AutoShortcutRegistryCheckBox.ForeColor = System.Drawing.Color.White;
-            this.AutoShortcutRegistryCheckBox.Location = new System.Drawing.Point(268, 59);
+            this.AutoShortcutRegistryCheckBox.Location = new System.Drawing.Point(324, 3);
             this.AutoShortcutRegistryCheckBox.Name = "AutoShortcutRegistryCheckBox";
-            this.AutoShortcutRegistryCheckBox.Size = new System.Drawing.Size(49, 18);
+            this.AutoShortcutRegistryCheckBox.Size = new System.Drawing.Size(87, 18);
             this.AutoShortcutRegistryCheckBox.TabIndex = 0;
-            this.AutoShortcutRegistryCheckBox.Text = "Auto";
+            this.AutoShortcutRegistryCheckBox.Text = "Autoshortcut";
             this.AutoShortcutRegistryCheckBox.UseVisualStyleBackColor = false;
+            this.AutoShortcutRegistryCheckBox.Visible = false;
             this.AutoShortcutRegistryCheckBox.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
             // 
-            // JPLauncherRunLinkLabel
+            // SettingsTabDisplayTabPage
             // 
-            this.JPLauncherRunLinkLabel.AutoSize = true;
-            this.JPLauncherRunLinkLabel.BackColor = System.Drawing.Color.Transparent;
-            this.JPLauncherRunLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.JPLauncherRunLinkLabel.LinkColor = System.Drawing.Color.White;
-            this.JPLauncherRunLinkLabel.Location = new System.Drawing.Point(10, 140);
-            this.JPLauncherRunLinkLabel.Name = "JPLauncherRunLinkLabel";
-            this.JPLauncherRunLinkLabel.Size = new System.Drawing.Size(67, 13);
-            this.JPLauncherRunLinkLabel.TabIndex = 10;
-            this.JPLauncherRunLinkLabel.TabStop = true;
-            this.JPLauncherRunLinkLabel.Text = "JP Launcher";
-            this.JPLauncherRunLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            this.SettingsTabDisplayTabPage.Controls.Add(this.SettingsTabGDisplayTabPagePanel);
+            this.SettingsTabDisplayTabPage.Location = new System.Drawing.Point(4, 22);
+            this.SettingsTabDisplayTabPage.Name = "SettingsTabDisplayTabPage";
+            this.SettingsTabDisplayTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.SettingsTabDisplayTabPage.Size = new System.Drawing.Size(462, 203);
+            this.SettingsTabDisplayTabPage.TabIndex = 1;
+            this.SettingsTabDisplayTabPage.Text = "Display";
+            this.SettingsTabDisplayTabPage.UseVisualStyleBackColor = true;
             // 
-            // ExtraSettingsLinkLabel
+            // SettingsTabGDisplayTabPagePanel
             // 
-            this.ExtraSettingsLinkLabel.AutoSize = true;
-            this.ExtraSettingsLinkLabel.BackColor = System.Drawing.Color.Transparent;
-            this.ExtraSettingsLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.ExtraSettingsLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.ExtraSettingsLinkLabel.Location = new System.Drawing.Point(157, 139);
-            this.ExtraSettingsLinkLabel.Name = "ExtraSettingsLinkLabel";
-            this.ExtraSettingsLinkLabel.Size = new System.Drawing.Size(72, 13);
-            this.ExtraSettingsLinkLabel.TabIndex = 9;
-            this.ExtraSettingsLinkLabel.TabStop = true;
-            this.ExtraSettingsLinkLabel.Text = "Extra Settings";
-            this.ExtraSettingsLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.ExtraSettingsLinkLabel_LinkClicked);
+            this.SettingsTabGDisplayTabPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.SettingsTabGDisplayTabPagePanel.Controls.Add(this.SettingsTabDisplayTabPageTableLayoutPanel);
+            this.SettingsTabGDisplayTabPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SettingsTabGDisplayTabPagePanel.Location = new System.Drawing.Point(3, 3);
+            this.SettingsTabGDisplayTabPagePanel.Margin = new System.Windows.Forms.Padding(0);
+            this.SettingsTabGDisplayTabPagePanel.Name = "SettingsTabGDisplayTabPagePanel";
+            this.SettingsTabGDisplayTabPagePanel.Size = new System.Drawing.Size(456, 197);
+            this.SettingsTabGDisplayTabPagePanel.TabIndex = 1;
             // 
-            // CurrentGameLabel
+            // SettingsTabDisplayTabPageTableLayoutPanel
             // 
-            this.CurrentGameLabel.AutoSize = true;
-            this.CurrentGameLabel.BackColor = System.Drawing.Color.Transparent;
-            this.CurrentGameLabel.ForeColor = System.Drawing.Color.White;
-            this.CurrentGameLabel.Location = new System.Drawing.Point(11, 4);
-            this.CurrentGameLabel.Name = "CurrentGameLabel";
-            this.CurrentGameLabel.Size = new System.Drawing.Size(75, 13);
-            this.CurrentGameLabel.TabIndex = 8;
-            this.CurrentGameLabel.Text = "Current Game:";
-            // 
-            // CurrentGameComboBox
-            // 
-            this.CurrentGameComboBox.Cursor = System.Windows.Forms.Cursors.PanSouth;
-            this.CurrentGameComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CurrentGameComboBox.FormattingEnabled = true;
-            this.CurrentGameComboBox.Location = new System.Drawing.Point(12, 20);
-            this.CurrentGameComboBox.Name = "CurrentGameComboBox";
-            this.CurrentGameComboBox.Size = new System.Drawing.Size(134, 21);
-            this.CurrentGameComboBox.TabIndex = 7;
-            this.CurrentGameComboBox.SelectedIndexChanged += new System.EventHandler(this.CurrentGameComboBox_SelectedIndexChanged);
-            // 
-            // SettingsFoldersGroupBox
-            // 
-            this.SettingsFoldersGroupBox.BackColor = System.Drawing.Color.Transparent;
-            this.SettingsFoldersGroupBox.Controls.Add(this.OpenPresetDirsLinkLabelMO);
-            this.SettingsFoldersGroupBox.Controls.Add(this.OpenPresetDirsLinkLabel);
-            this.SettingsFoldersGroupBox.Controls.Add(this.SettingsOpen2MOLinkLabel);
-            this.SettingsFoldersGroupBox.Controls.Add(this.OpenMOOverwriteFolderLinkLabel);
-            this.SettingsFoldersGroupBox.Controls.Add(this.OpenMyUserDataFolderLinkLabel);
-            this.SettingsFoldersGroupBox.Controls.Add(this.OpenModsFolderLinkLabel);
-            this.SettingsFoldersGroupBox.Controls.Add(this.OpenMOFolderLinkLabel);
-            this.SettingsFoldersGroupBox.Controls.Add(this.OpenGameFolderLinkLabel);
-            this.SettingsFoldersGroupBox.ForeColor = System.Drawing.Color.White;
-            this.SettingsFoldersGroupBox.Location = new System.Drawing.Point(152, 47);
-            this.SettingsFoldersGroupBox.Name = "SettingsFoldersGroupBox";
-            this.SettingsFoldersGroupBox.Size = new System.Drawing.Size(107, 90);
-            this.SettingsFoldersGroupBox.TabIndex = 6;
-            this.SettingsFoldersGroupBox.TabStop = false;
-            this.SettingsFoldersGroupBox.Text = "Folders";
-            // 
-            // OpenPresetDirsLinkLabelMO
-            // 
-            this.OpenPresetDirsLinkLabelMO.AutoSize = true;
-            this.OpenPresetDirsLinkLabelMO.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.OpenPresetDirsLinkLabelMO.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.OpenPresetDirsLinkLabelMO.Location = new System.Drawing.Point(46, 54);
-            this.OpenPresetDirsLinkLabelMO.Name = "OpenPresetDirsLinkLabelMO";
-            this.OpenPresetDirsLinkLabelMO.Size = new System.Drawing.Size(51, 13);
-            this.OpenPresetDirsLinkLabelMO.TabIndex = 7;
-            this.OpenPresetDirsLinkLabelMO.TabStop = true;
-            this.OpenPresetDirsLinkLabelMO.Text = "CardsMO";
-            this.OpenPresetDirsLinkLabelMO.VisitedLinkColor = System.Drawing.Color.Aquamarine;
-            this.OpenPresetDirsLinkLabelMO.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenPresetDirsLinkLabelMO_LinkClicked);
-            // 
-            // OpenPresetDirsLinkLabel
-            // 
-            this.OpenPresetDirsLinkLabel.AutoSize = true;
-            this.OpenPresetDirsLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.OpenPresetDirsLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.OpenPresetDirsLinkLabel.Location = new System.Drawing.Point(46, 39);
-            this.OpenPresetDirsLinkLabel.Name = "OpenPresetDirsLinkLabel";
-            this.OpenPresetDirsLinkLabel.Size = new System.Drawing.Size(34, 13);
-            this.OpenPresetDirsLinkLabel.TabIndex = 6;
-            this.OpenPresetDirsLinkLabel.TabStop = true;
-            this.OpenPresetDirsLinkLabel.Text = "Cards";
-            this.OpenPresetDirsLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
-            this.OpenPresetDirsLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenPresetDirsLinkLabel_LinkClicked);
-            // 
-            // SettingsOpen2MOLinkLabel
-            // 
-            this.SettingsOpen2MOLinkLabel.AutoSize = true;
-            this.SettingsOpen2MOLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.SettingsOpen2MOLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.SettingsOpen2MOLinkLabel.Location = new System.Drawing.Point(5, 54);
-            this.SettingsOpen2MOLinkLabel.Name = "SettingsOpen2MOLinkLabel";
-            this.SettingsOpen2MOLinkLabel.Size = new System.Drawing.Size(30, 13);
-            this.SettingsOpen2MOLinkLabel.TabIndex = 5;
-            this.SettingsOpen2MOLinkLabel.TabStop = true;
-            this.SettingsOpen2MOLinkLabel.Text = "2MO";
-            this.SettingsOpen2MOLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
-            this.SettingsOpen2MOLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.Install2MODirPathOpenFolderLinkLabel_LinkClicked);
-            // 
-            // OpenMOOverwriteFolderLinkLabel
-            // 
-            this.OpenMOOverwriteFolderLinkLabel.AutoSize = true;
-            this.OpenMOOverwriteFolderLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.OpenMOOverwriteFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.OpenMOOverwriteFolderLinkLabel.Location = new System.Drawing.Point(46, 12);
-            this.OpenMOOverwriteFolderLinkLabel.Name = "OpenMOOverwriteFolderLinkLabel";
-            this.OpenMOOverwriteFolderLinkLabel.Size = new System.Drawing.Size(52, 13);
-            this.OpenMOOverwriteFolderLinkLabel.TabIndex = 4;
-            this.OpenMOOverwriteFolderLinkLabel.TabStop = true;
-            this.OpenMOOverwriteFolderLinkLabel.Text = "Overwrite";
-            this.OpenMOOverwriteFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
-            this.OpenMOOverwriteFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenMOOverwriteFolderLinkLabel_LinkClicked);
-            // 
-            // OpenMyUserDataFolderLinkLabel
-            // 
-            this.OpenMyUserDataFolderLinkLabel.AutoSize = true;
-            this.OpenMyUserDataFolderLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.OpenMyUserDataFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.OpenMyUserDataFolderLinkLabel.Location = new System.Drawing.Point(46, 26);
-            this.OpenMyUserDataFolderLinkLabel.Name = "OpenMyUserDataFolderLinkLabel";
-            this.OpenMyUserDataFolderLinkLabel.Size = new System.Drawing.Size(47, 13);
-            this.OpenMyUserDataFolderLinkLabel.TabIndex = 3;
-            this.OpenMyUserDataFolderLinkLabel.TabStop = true;
-            this.OpenMyUserDataFolderLinkLabel.Text = "Userfiles";
-            this.OpenMyUserDataFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
-            this.OpenMyUserDataFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenMyUserDataFolderLinkLabel_LinkClicked);
-            // 
-            // OpenModsFolderLinkLabel
-            // 
-            this.OpenModsFolderLinkLabel.AutoSize = true;
-            this.OpenModsFolderLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.OpenModsFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.OpenModsFolderLinkLabel.Location = new System.Drawing.Point(6, 26);
-            this.OpenModsFolderLinkLabel.Name = "OpenModsFolderLinkLabel";
-            this.OpenModsFolderLinkLabel.Size = new System.Drawing.Size(33, 13);
-            this.OpenModsFolderLinkLabel.TabIndex = 2;
-            this.OpenModsFolderLinkLabel.TabStop = true;
-            this.OpenModsFolderLinkLabel.Text = "Mods";
-            this.OpenModsFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
-            this.OpenModsFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenModsFolderLinkLabel_LinkClicked);
-            // 
-            // OpenMOFolderLinkLabel
-            // 
-            this.OpenMOFolderLinkLabel.AutoSize = true;
-            this.OpenMOFolderLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.OpenMOFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.OpenMOFolderLinkLabel.Location = new System.Drawing.Point(6, 39);
-            this.OpenMOFolderLinkLabel.Name = "OpenMOFolderLinkLabel";
-            this.OpenMOFolderLinkLabel.Size = new System.Drawing.Size(24, 13);
-            this.OpenMOFolderLinkLabel.TabIndex = 1;
-            this.OpenMOFolderLinkLabel.TabStop = true;
-            this.OpenMOFolderLinkLabel.Text = "MO";
-            this.OpenMOFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
-            this.OpenMOFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenMOFolderLinkLabel_LinkClicked);
-            // 
-            // OpenGameFolderLinkLabel
-            // 
-            this.OpenGameFolderLinkLabel.AutoSize = true;
-            this.OpenGameFolderLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.OpenGameFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.OpenGameFolderLinkLabel.Location = new System.Drawing.Point(6, 12);
-            this.OpenGameFolderLinkLabel.Name = "OpenGameFolderLinkLabel";
-            this.OpenGameFolderLinkLabel.Size = new System.Drawing.Size(35, 13);
-            this.OpenGameFolderLinkLabel.TabIndex = 0;
-            this.OpenGameFolderLinkLabel.TabStop = true;
-            this.OpenGameFolderLinkLabel.Text = "Game";
-            this.OpenGameFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
-            this.OpenGameFolderLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenGameFolderLinkLabel_LinkClicked);
+            this.SettingsTabDisplayTabPageTableLayoutPanel.ColumnCount = 1;
+            this.SettingsTabDisplayTabPageTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.SettingsTabDisplayTabPageTableLayoutPanel.Controls.Add(this.DisplaySettingsGroupBox, 0, 0);
+            this.SettingsTabDisplayTabPageTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SettingsTabDisplayTabPageTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.SettingsTabDisplayTabPageTableLayoutPanel.Name = "SettingsTabDisplayTabPageTableLayoutPanel";
+            this.SettingsTabDisplayTabPageTableLayoutPanel.RowCount = 1;
+            this.SettingsTabDisplayTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.SettingsTabDisplayTabPageTableLayoutPanel.Size = new System.Drawing.Size(456, 197);
+            this.SettingsTabDisplayTabPageTableLayoutPanel.TabIndex = 1;
             // 
             // DisplaySettingsGroupBox
             // 
@@ -941,7 +963,7 @@
             this.DisplaySettingsGroupBox.Controls.Add(this.ResolutionComboBox);
             this.DisplaySettingsGroupBox.Controls.Add(this.FullScreenCheckBox);
             this.DisplaySettingsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.DisplaySettingsGroupBox.Location = new System.Drawing.Point(6, 47);
+            this.DisplaySettingsGroupBox.Location = new System.Drawing.Point(3, 3);
             this.DisplaySettingsGroupBox.Name = "DisplaySettingsGroupBox";
             this.DisplaySettingsGroupBox.Size = new System.Drawing.Size(145, 90);
             this.DisplaySettingsGroupBox.TabIndex = 3;
@@ -1217,6 +1239,150 @@
             this.ToolsFixModListButton.UseVisualStyleBackColor = false;
             this.ToolsFixModListButton.Click += new System.EventHandler(this.ToolsFixModListButton_Click);
             // 
+            // FoldersTabPage
+            // 
+            this.FoldersTabPage.Controls.Add(this.FoldersTabPagePanel1);
+            this.FoldersTabPage.Location = new System.Drawing.Point(4, 22);
+            this.FoldersTabPage.Name = "FoldersTabPage";
+            this.FoldersTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.FoldersTabPage.Size = new System.Drawing.Size(476, 235);
+            this.FoldersTabPage.TabIndex = 4;
+            this.FoldersTabPage.Text = "Folders";
+            this.FoldersTabPage.UseVisualStyleBackColor = true;
+            // 
+            // FoldersTabPagePanel1
+            // 
+            this.FoldersTabPagePanel1.BackColor = System.Drawing.Color.Gray;
+            this.FoldersTabPagePanel1.Controls.Add(this.SettingsFoldersGroupBox);
+            this.FoldersTabPagePanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.FoldersTabPagePanel1.Location = new System.Drawing.Point(3, 3);
+            this.FoldersTabPagePanel1.Name = "FoldersTabPagePanel1";
+            this.FoldersTabPagePanel1.Size = new System.Drawing.Size(470, 229);
+            this.FoldersTabPagePanel1.TabIndex = 0;
+            // 
+            // SettingsFoldersGroupBox
+            // 
+            this.SettingsFoldersGroupBox.BackColor = System.Drawing.Color.Transparent;
+            this.SettingsFoldersGroupBox.Controls.Add(this.OpenPresetDirsLinkLabelMO);
+            this.SettingsFoldersGroupBox.Controls.Add(this.OpenPresetDirsLinkLabel);
+            this.SettingsFoldersGroupBox.Controls.Add(this.SettingsOpen2MOLinkLabel);
+            this.SettingsFoldersGroupBox.Controls.Add(this.OpenMOOverwriteFolderLinkLabel);
+            this.SettingsFoldersGroupBox.Controls.Add(this.OpenMyUserDataFolderLinkLabel);
+            this.SettingsFoldersGroupBox.Controls.Add(this.OpenModsFolderLinkLabel);
+            this.SettingsFoldersGroupBox.Controls.Add(this.OpenMOFolderLinkLabel);
+            this.SettingsFoldersGroupBox.Controls.Add(this.OpenGameFolderLinkLabel);
+            this.SettingsFoldersGroupBox.ForeColor = System.Drawing.Color.White;
+            this.SettingsFoldersGroupBox.Location = new System.Drawing.Point(5, 23);
+            this.SettingsFoldersGroupBox.Name = "SettingsFoldersGroupBox";
+            this.SettingsFoldersGroupBox.Size = new System.Drawing.Size(107, 90);
+            this.SettingsFoldersGroupBox.TabIndex = 7;
+            this.SettingsFoldersGroupBox.TabStop = false;
+            this.SettingsFoldersGroupBox.Text = "Folders";
+            // 
+            // OpenPresetDirsLinkLabelMO
+            // 
+            this.OpenPresetDirsLinkLabelMO.AutoSize = true;
+            this.OpenPresetDirsLinkLabelMO.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.OpenPresetDirsLinkLabelMO.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.OpenPresetDirsLinkLabelMO.Location = new System.Drawing.Point(46, 54);
+            this.OpenPresetDirsLinkLabelMO.Name = "OpenPresetDirsLinkLabelMO";
+            this.OpenPresetDirsLinkLabelMO.Size = new System.Drawing.Size(51, 13);
+            this.OpenPresetDirsLinkLabelMO.TabIndex = 7;
+            this.OpenPresetDirsLinkLabelMO.TabStop = true;
+            this.OpenPresetDirsLinkLabelMO.Text = "CardsMO";
+            this.OpenPresetDirsLinkLabelMO.VisitedLinkColor = System.Drawing.Color.Aquamarine;
+            // 
+            // OpenPresetDirsLinkLabel
+            // 
+            this.OpenPresetDirsLinkLabel.AutoSize = true;
+            this.OpenPresetDirsLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.OpenPresetDirsLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.OpenPresetDirsLinkLabel.Location = new System.Drawing.Point(46, 39);
+            this.OpenPresetDirsLinkLabel.Name = "OpenPresetDirsLinkLabel";
+            this.OpenPresetDirsLinkLabel.Size = new System.Drawing.Size(34, 13);
+            this.OpenPresetDirsLinkLabel.TabIndex = 6;
+            this.OpenPresetDirsLinkLabel.TabStop = true;
+            this.OpenPresetDirsLinkLabel.Text = "Cards";
+            this.OpenPresetDirsLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
+            // 
+            // SettingsOpen2MOLinkLabel
+            // 
+            this.SettingsOpen2MOLinkLabel.AutoSize = true;
+            this.SettingsOpen2MOLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.SettingsOpen2MOLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.SettingsOpen2MOLinkLabel.Location = new System.Drawing.Point(5, 54);
+            this.SettingsOpen2MOLinkLabel.Name = "SettingsOpen2MOLinkLabel";
+            this.SettingsOpen2MOLinkLabel.Size = new System.Drawing.Size(30, 13);
+            this.SettingsOpen2MOLinkLabel.TabIndex = 5;
+            this.SettingsOpen2MOLinkLabel.TabStop = true;
+            this.SettingsOpen2MOLinkLabel.Text = "2MO";
+            this.SettingsOpen2MOLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
+            // 
+            // OpenMOOverwriteFolderLinkLabel
+            // 
+            this.OpenMOOverwriteFolderLinkLabel.AutoSize = true;
+            this.OpenMOOverwriteFolderLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.OpenMOOverwriteFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.OpenMOOverwriteFolderLinkLabel.Location = new System.Drawing.Point(46, 12);
+            this.OpenMOOverwriteFolderLinkLabel.Name = "OpenMOOverwriteFolderLinkLabel";
+            this.OpenMOOverwriteFolderLinkLabel.Size = new System.Drawing.Size(52, 13);
+            this.OpenMOOverwriteFolderLinkLabel.TabIndex = 4;
+            this.OpenMOOverwriteFolderLinkLabel.TabStop = true;
+            this.OpenMOOverwriteFolderLinkLabel.Text = "Overwrite";
+            this.OpenMOOverwriteFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
+            // 
+            // OpenMyUserDataFolderLinkLabel
+            // 
+            this.OpenMyUserDataFolderLinkLabel.AutoSize = true;
+            this.OpenMyUserDataFolderLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.OpenMyUserDataFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.OpenMyUserDataFolderLinkLabel.Location = new System.Drawing.Point(46, 26);
+            this.OpenMyUserDataFolderLinkLabel.Name = "OpenMyUserDataFolderLinkLabel";
+            this.OpenMyUserDataFolderLinkLabel.Size = new System.Drawing.Size(47, 13);
+            this.OpenMyUserDataFolderLinkLabel.TabIndex = 3;
+            this.OpenMyUserDataFolderLinkLabel.TabStop = true;
+            this.OpenMyUserDataFolderLinkLabel.Text = "Userfiles";
+            this.OpenMyUserDataFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
+            // 
+            // OpenModsFolderLinkLabel
+            // 
+            this.OpenModsFolderLinkLabel.AutoSize = true;
+            this.OpenModsFolderLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.OpenModsFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.OpenModsFolderLinkLabel.Location = new System.Drawing.Point(6, 26);
+            this.OpenModsFolderLinkLabel.Name = "OpenModsFolderLinkLabel";
+            this.OpenModsFolderLinkLabel.Size = new System.Drawing.Size(33, 13);
+            this.OpenModsFolderLinkLabel.TabIndex = 2;
+            this.OpenModsFolderLinkLabel.TabStop = true;
+            this.OpenModsFolderLinkLabel.Text = "Mods";
+            this.OpenModsFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
+            // 
+            // OpenMOFolderLinkLabel
+            // 
+            this.OpenMOFolderLinkLabel.AutoSize = true;
+            this.OpenMOFolderLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.OpenMOFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.OpenMOFolderLinkLabel.Location = new System.Drawing.Point(6, 39);
+            this.OpenMOFolderLinkLabel.Name = "OpenMOFolderLinkLabel";
+            this.OpenMOFolderLinkLabel.Size = new System.Drawing.Size(24, 13);
+            this.OpenMOFolderLinkLabel.TabIndex = 1;
+            this.OpenMOFolderLinkLabel.TabStop = true;
+            this.OpenMOFolderLinkLabel.Text = "MO";
+            this.OpenMOFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
+            // 
+            // OpenGameFolderLinkLabel
+            // 
+            this.OpenGameFolderLinkLabel.AutoSize = true;
+            this.OpenGameFolderLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.OpenGameFolderLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.OpenGameFolderLinkLabel.Location = new System.Drawing.Point(6, 12);
+            this.OpenGameFolderLinkLabel.Name = "OpenGameFolderLinkLabel";
+            this.OpenGameFolderLinkLabel.Size = new System.Drawing.Size(35, 13);
+            this.OpenGameFolderLinkLabel.TabIndex = 0;
+            this.OpenGameFolderLinkLabel.TabStop = true;
+            this.OpenGameFolderLinkLabel.Text = "Game";
+            this.OpenGameFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1256,9 +1422,20 @@
             this.LaunchTabTopAppGameTitleTableLayoutPanel.PerformLayout();
             this.SettingsTabPage.ResumeLayout(false);
             this.SettingsTabPanel.ResumeLayout(false);
-            this.SettingsTabPanel.PerformLayout();
-            this.SettingsFoldersGroupBox.ResumeLayout(false);
-            this.SettingsFoldersGroupBox.PerformLayout();
+            this.SettingsTabControl.ResumeLayout(false);
+            this.SettingsTabGeneralTabPage.ResumeLayout(false);
+            this.SettingsTabGeneralTabPagePanel.ResumeLayout(false);
+            this.SettingsTabGeneralTabPageTableLayoutPanel.ResumeLayout(false);
+            this.SettingsTabGeneralTabPageTableLayoutPanel.PerformLayout();
+            this.ManageGameTableLayoutPanel1.ResumeLayout(false);
+            this.ManageGameTableLayoutPanel1.PerformLayout();
+            this.CurrentGamePanel1.ResumeLayout(false);
+            this.CurrentGamePanel1.PerformLayout();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
+            this.SettingsTabDisplayTabPage.ResumeLayout(false);
+            this.SettingsTabGDisplayTabPagePanel.ResumeLayout(false);
+            this.SettingsTabDisplayTabPageTableLayoutPanel.ResumeLayout(false);
             this.DisplaySettingsGroupBox.ResumeLayout(false);
             this.DisplaySettingsGroupBox.PerformLayout();
             this.ToolsTabPage.ResumeLayout(false);
@@ -1271,6 +1448,10 @@
             this.ModeSwitchTableLayoutPanel.ResumeLayout(false);
             this.ModeSwitchButtonPanel.ResumeLayout(false);
             this.FixModlistTableLayoutPanel.ResumeLayout(false);
+            this.FoldersTabPage.ResumeLayout(false);
+            this.FoldersTabPagePanel1.ResumeLayout(false);
+            this.SettingsFoldersGroupBox.ResumeLayout(false);
+            this.SettingsFoldersGroupBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1286,14 +1467,7 @@
         private System.Windows.Forms.Panel LaunchPagePanel;
         private System.Windows.Forms.ComboBox QualityComboBox;
         private System.Windows.Forms.TabPage ToolsTabPage;
-        private System.Windows.Forms.GroupBox SettingsFoldersGroupBox;
-        private System.Windows.Forms.LinkLabel OpenModsFolderLinkLabel;
-        private System.Windows.Forms.LinkLabel OpenMOFolderLinkLabel;
-        private System.Windows.Forms.LinkLabel OpenGameFolderLinkLabel;
-        private System.Windows.Forms.LinkLabel OpenMyUserDataFolderLinkLabel;
-        private System.Windows.Forms.LinkLabel OpenMOOverwriteFolderLinkLabel;
         private System.Windows.Forms.Label CurrentGameLabel;
-        private System.Windows.Forms.LinkLabel SettingsOpen2MOLinkLabel;
         private System.Windows.Forms.LinkLabel ExtraSettingsLinkLabel;
         private System.Windows.Forms.LinkLabel JPLauncherRunLinkLabel;
         private System.Windows.Forms.LinkLabel SetupXmlLinkLabel;
@@ -1313,8 +1487,6 @@
         internal System.Windows.Forms.Button MOCommonModeSwitchButton;
         private System.Windows.Forms.TableLayoutPanel ModeSwitchTableLayoutPanel;
         private System.Windows.Forms.Panel ModeSwitchButtonPanel;
-        private System.Windows.Forms.LinkLabel OpenPresetDirsLinkLabel;
-        private System.Windows.Forms.LinkLabel OpenPresetDirsLinkLabelMO;
         private System.Windows.Forms.Button DevButton;
         internal System.Windows.Forms.ComboBox CurrentGameComboBox;
         internal System.Windows.Forms.CheckBox AutoShortcutRegistryCheckBox;
@@ -1351,6 +1523,27 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnUpdateMods;
         private System.Windows.Forms.TableLayoutPanel FixModlistTableLayoutPanel;
+        private System.Windows.Forms.TabControl SettingsTabControl;
+        private System.Windows.Forms.TabPage SettingsTabGeneralTabPage;
+        private System.Windows.Forms.Panel SettingsTabGeneralTabPagePanel;
+        private System.Windows.Forms.TableLayoutPanel SettingsTabGeneralTabPageTableLayoutPanel;
+        private System.Windows.Forms.TableLayoutPanel ManageGameTableLayoutPanel1;
+        private System.Windows.Forms.Panel CurrentGamePanel1;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.TabPage SettingsTabDisplayTabPage;
+        private System.Windows.Forms.Panel SettingsTabGDisplayTabPagePanel;
+        private System.Windows.Forms.TableLayoutPanel SettingsTabDisplayTabPageTableLayoutPanel;
+        private System.Windows.Forms.TabPage FoldersTabPage;
+        private System.Windows.Forms.Panel FoldersTabPagePanel1;
+        private System.Windows.Forms.GroupBox SettingsFoldersGroupBox;
+        private System.Windows.Forms.LinkLabel OpenPresetDirsLinkLabelMO;
+        private System.Windows.Forms.LinkLabel OpenPresetDirsLinkLabel;
+        private System.Windows.Forms.LinkLabel SettingsOpen2MOLinkLabel;
+        private System.Windows.Forms.LinkLabel OpenMOOverwriteFolderLinkLabel;
+        private System.Windows.Forms.LinkLabel OpenMyUserDataFolderLinkLabel;
+        private System.Windows.Forms.LinkLabel OpenModsFolderLinkLabel;
+        private System.Windows.Forms.LinkLabel OpenMOFolderLinkLabel;
+        private System.Windows.Forms.LinkLabel OpenGameFolderLinkLabel;
     }
 }
 

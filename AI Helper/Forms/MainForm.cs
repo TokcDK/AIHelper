@@ -399,17 +399,17 @@ namespace AIHelper
             }
             else if (AIGirlHelperTabControl.SelectedTab == ToolsTabPage)
             {
-                _thToolTip.SetToolTip(ToolsFixModListButton, T._("Fix problems in current enabled mods list"));
+                //_thToolTip.SetToolTip(ToolsFixModListButton, T._("Fix problems in current enabled mods list"));
 
                 //_thToolTip.SetToolTip(llOpenOldPluginsBuckupFolder,
                 //    T._("Open older plugins buckup folder")
                 //    );
-                _thToolTip.SetToolTip(btnUpdateMods,
-                    T._("Update Mod Organizer and enabled mods") + "\n" +
-                    T._("Mod Organizer already have hardcoded info") + "\n" +
-                    T._("Mods will be updated if there exist info in meta.ini notes or in updateInfo.txt") + "\n" +
-                    T._("After plugins update check will be executed KKManager StandaloneUpdater for Sideloader modpack updates check for games where it is possible")
-                    );
+                //_thToolTip.SetToolTip(btnUpdateMods,
+                //    T._("Update Mod Organizer and enabled mods") + "\n" +
+                //    T._("Mod Organizer already have hardcoded info") + "\n" +
+                //    T._("Mods will be updated if there exist info in meta.ini notes or in updateInfo.txt") + "\n" +
+                //    T._("After plugins update check will be executed KKManager StandaloneUpdater for Sideloader modpack updates check for games where it is possible")
+                //    );
                 //var sideloaderPacksWarning = T._("Warning! More of packs you check more of memory game will consume.") + "\n" +
                 //    T._("Check only what you really using or you can 16+ gb of memory.");
                 //_thToolTip.SetToolTip(UseKKmanagerUpdaterLabel, T._("Check if need to run update check for sideloader modpacks.") + "\n\n" +
@@ -424,16 +424,16 @@ namespace AIHelper
                 //    T._("Bleeding Edge Sideloader modpack contains test versions of zipmods which is still not added in main modpacks") + "\n\n" +
                 //    sideloaderPacksWarning
                 //    );
-                _thToolTip.SetToolTip(MOCommonModeSwitchButton, MOmode ? T._(
-                        "Will convert game from MO Mode to Common mode\n" +
-                        " when you can run exes from Data folder without Mod Organizer.\n You can convert game back to MO mode\n" +
-                        " when it will be need to install new mods or test your mod config"
-                    ) : T._(
-                        "Will convert the game to MO mode\n" +
-                        " when all mod files will be moved back to Mods folder\n" +
-                        " in their folders and vanilla files restored"
-                    )
-                    );
+                //_thToolTip.SetToolTip(MOCommonModeSwitchButton, MOmode ? T._(
+                //        "Will convert game from MO Mode to Common mode\n" +
+                //        " when you can run exes from Data folder without Mod Organizer.\n You can convert game back to MO mode\n" +
+                //        " when it will be need to install new mods or test your mod config"
+                //    ) : T._(
+                //        "Will convert the game to MO mode\n" +
+                //        " when all mod files will be moved back to Mods folder\n" +
+                //        " in their folders and vanilla files restored"
+                //    )
+                //    );
                 //_thToolTip.SetToolTip(ModeSwitchCreateBuckupLabel,
                 //    T._("Enables backup creation of selected game before mode switch\n" +
                 //    " to be possible to restore Data and Mods dirs.\n" +
@@ -441,12 +441,13 @@ namespace AIHelper
                 //    "Backup creating using ntfs hardlinks and not consumes any extra space.")
                 //    );
 
-                _thToolTip.SetToolTip(InstallInModsButton, T._("Install mods and userdata, placed in") + " " + ManageSettings.ModsInstallDirName + (MOmode ? T._(
-                             " to MO format in Mods when possible"
-                         ) : T._(
-                             " to the game folder when possible"
-                             )));
-                _thToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Open folder where you can drop/download files for autoinstallation"));
+                //_thToolTip.SetToolTip(InstallInModsButton, T._("Install mods and userdata, placed in") + " " + ManageSettings.ModsInstallDirName + (MOmode ? T._(
+                //             " to MO format in Mods when possible"
+                //         ) : T._(
+                //             " to the game folder when possible"
+                //             )));
+                //_thToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Open folder where you can drop/download files for autoinstallation"));
+                ToolsTabButtonsLoader.Load();
             }
             else if (AIGirlHelperTabControl.SelectedTab == FoldersTabPage)
             {
@@ -967,109 +968,6 @@ namespace AIHelper
 
         private async void InstallInModsButton_Click(object sender, EventArgs e)
         {
-            if (new UpdateMaker().MakeUpdate())
-            {
-                MessageBox.Show("Made update instead");
-                return;
-            }
-
-            List<ModInstallerBase> installers = GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<ModInstallerBase>().OrderBy(o => o.Order).ToList();
-
-            //if (Directory.Exists(Install2MoDirPath) && (Directory.GetFiles(Install2MoDirPath, "*.rar").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.7z").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.cs").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.zipmod").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.zip").Length > 0 || Directory.GetDirectories(Install2MoDirPath, "*").Length > 0))
-            if (!IsInstallDirHasAnyRequiredFileFrom(installers))
-            {
-                MessageBox.Show(T._("No compatible for installation formats found in install folder.\n\nIt must be archvives, game files or folders with game files.\n\nWill be opened installation dir where you can drop files for installation."));
-            }
-            else
-            {
-                OnOffButtons(false);
-
-                //impossible to correctly update mods in common mode
-                if (!ManageSettings.IsMoMode)
-                {
-                    DialogResult result = MessageBox.Show(T._("Attention") + "\n\n" + T._("Impossible to correctly install/update mods\n\n in standart mode because files was moved in Data.") + "\n\n" + T._("Switch to MO mode?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
-                    if (result == DialogResult.OK)
-                    {
-                        ManageMOModeSwitch.SwitchBetweenMoAndStandartModes();
-                    }
-                    else
-                    {
-                        OnOffButtons();
-                        return;
-                    }
-                }
-
-                await Task.Run(() => InstallModFilesAndCleanEmptyFolder(installers)).ConfigureAwait(true);
-
-                InstallInModsButton.Text = T._("Install from") + " " + ManageSettings.ModsInstallDirName;
-
-                OnOffButtons();
-
-                //обновление информации о конфигурации папок игры
-                UpdateData();
-
-                MessageBox.Show(T._("All possible mods installed. Install all rest in install folder manually."));
-            }
-
-            Directory.CreateDirectory(ManageSettings.Install2MoDirPath);
-            Process.Start("explorer.exe", ManageSettings.Install2MoDirPath);
-        }
-
-        private static bool IsInstallDirHasAnyRequiredFileFrom(List<ModInstallerBase> installers)
-        {
-            foreach (var installer in installers)
-            {
-                var IsDirInstaller = installer is DirectoriesInstallerBase;
-                foreach (var mask in installer.Masks)
-                {
-                    if ((IsDirInstaller && ManageFilesFoldersExtensions.IsAnySubDirExistsInTheDir(ManageSettings.Install2MoDirPath, mask))
-                        || (!IsDirInstaller && ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(ManageSettings.Install2MoDirPath, mask, allDirectories: false)))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        private static void InstallModFilesAndCleanEmptyFolder(List<ModInstallerBase> installers)
-        {
-
-            foreach (var installer in installers) installer.Install();
-
-            //string installMessage = T._("Installing");
-            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage));
-            //new RarExtractor().Install();
-            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "."));
-            //new SevenZipExtractor().Install();
-            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + ".."));
-            //new CsScriptsInstaller().Install();
-
-            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "..."));
-            //new ZipInstaller().Install();
-
-            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage));
-            //new BebInExDllInstaller().Install();
-
-            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "."));
-            //new SideloaderZipmod().Install();
-
-            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + ".."));
-            //new PngInstaller().Install();
-
-            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "..."));
-            //new ModFilesFromDir().Install();
-
-            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage));
-            //new CardsFromDirsInstaller().Install();
-
-            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage + "."));
-            ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.Install2MoDirPath, false);
-
-            Directory.CreateDirectory(ManageSettings.Install2MoDirPath);
-
-            //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = T._("Install from") + " " + ManageSettings.ModsInstallDirName()));
         }
 
         private void CreateShortcutButton_Click(object sender, EventArgs e)
@@ -1251,27 +1149,6 @@ namespace AIHelper
 
         private void ToolsFixModListButton_Click(object sender, EventArgs e)
         {
-            OnOffButtons(false);
-            //impossible to correctly update mods in common mode
-            if (!ManageSettings.IsMoMode)
-            {
-                DialogResult result = MessageBox.Show(T._("Attention") + "\n\n" + T._("Correct modlist fixes possible only in MO mode") + "\n\n" + T._("Switch to MO mode?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
-                if (result == DialogResult.OK)
-                {
-                    ManageMOModeSwitch.SwitchBetweenMoAndStandartModes();
-                }
-                else
-                {
-                    OnOffButtons();
-                    return;
-                }
-            }
-
-            new ManageRules.ModList().ModlistFixes();
-
-            OnOffButtons();
-
-            UpdateData();
         }
 
         private void btnUpdateMods_Click(object sender, EventArgs e)

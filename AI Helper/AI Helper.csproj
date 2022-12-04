@@ -265,6 +265,13 @@
     <Compile Include="Manage\Rules\ModList\HardRules\RuleModForSideloaderPlugin.cs" />
     <Compile Include="Manage\Rules\ModList\HardRules\RuleModForBepInexIPA.cs" />
     <Compile Include="Manage\Rules\ModList\HardRules\RuleModForBepInex.cs" />
+    <Compile Include="Manage\ToolsTab\ButtonsData\InstallModsButtonData.cs" />
+    <Compile Include="Manage\ToolsTab\ButtonsData\FixModlistButtonData.cs" />
+    <Compile Include="Manage\ToolsTab\ButtonsData\UpdateModsButtonData.cs" />
+    <Compile Include="Manage\ToolsTab\ButtonsData\MOCommonModeSwitchButtonData.cs" />
+    <Compile Include="Manage\ToolsTab\ToolsTabButtonsLoader.cs" />
+    <Compile Include="Manage\ToolsTab\IButtonData.cs" />
+    <Compile Include="Manage\ToolsTab\IToolsTabButtonData.cs" />
     <Compile Include="Manage\Update\Sort\SideloaderModPackCommunityUserdata.cs" />
     <Compile Include="Manage\Update\Sort\UncensorSelectorBase.cs" />
     <Compile Include="Manage\Update\Sort\SideloaderModPack.cs" />

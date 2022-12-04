@@ -187,7 +187,7 @@
             this.MainTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.MainTabPage.Size = new System.Drawing.Size(476, 235);
             this.MainTabPage.TabIndex = 0;
-            this.MainTabPage.Text = "ℹInfo";
+            this.MainTabPage.Text = T._("ℹInfo");
             this.MainTabPage.UseVisualStyleBackColor = true;
             // 
             // InfoPagePanel
@@ -352,7 +352,7 @@
             this.LaunchTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.LaunchTabPage.Size = new System.Drawing.Size(476, 235);
             this.LaunchTabPage.TabIndex = 2;
-            this.LaunchTabPage.Text = "🚀Launch";
+            this.LaunchTabPage.Text = T._("🚀Launch");
             this.LaunchTabPage.UseVisualStyleBackColor = true;
             // 
             // LaunchPagePanel
@@ -677,7 +677,7 @@
             this.SettingsTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.SettingsTabPage.Size = new System.Drawing.Size(476, 235);
             this.SettingsTabPage.TabIndex = 1;
-            this.SettingsTabPage.Text = "🔧Settings";
+            this.SettingsTabPage.Text = T._("🔧Settings");
             this.SettingsTabPage.UseVisualStyleBackColor = true;
             // 
             // SettingsTabPanel
@@ -709,7 +709,7 @@
             this.SettingsTabGeneralTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.SettingsTabGeneralTabPage.Size = new System.Drawing.Size(462, 203);
             this.SettingsTabGeneralTabPage.TabIndex = 0;
-            this.SettingsTabGeneralTabPage.Text = "★General";
+            this.SettingsTabGeneralTabPage.Text = T._("★General");
             this.SettingsTabGeneralTabPage.UseVisualStyleBackColor = true;
             // 
             // SettingsTabGeneralTabPagePanel
@@ -930,7 +930,7 @@
             this.SettingsTabDisplayTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.SettingsTabDisplayTabPage.Size = new System.Drawing.Size(462, 203);
             this.SettingsTabDisplayTabPage.TabIndex = 1;
-            this.SettingsTabDisplayTabPage.Text = "🔳Display";
+            this.SettingsTabDisplayTabPage.Text = T._("🔳Display");
             this.SettingsTabDisplayTabPage.UseVisualStyleBackColor = true;
             // 
             // SettingsTabGDisplayTabPagePanel
@@ -1039,7 +1039,7 @@
             this.ToolsTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.ToolsTabPage.Size = new System.Drawing.Size(476, 235);
             this.ToolsTabPage.TabIndex = 3;
-            this.ToolsTabPage.Text = "🔨Tools";
+            this.ToolsTabPage.Text = T._("🔨Tools");
             this.ToolsTabPage.UseVisualStyleBackColor = true;
             // 
             // ToolsTabPagePanel
@@ -1249,7 +1249,7 @@
             this.FoldersTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.FoldersTabPage.Size = new System.Drawing.Size(476, 235);
             this.FoldersTabPage.TabIndex = 4;
-            this.FoldersTabPage.Text = "🗁Folders";
+            this.FoldersTabPage.Text = T._("🗁Folders");
             this.FoldersTabPage.UseVisualStyleBackColor = true;
             // 
             // FoldersTabPagePanel1

@@ -187,7 +187,6 @@ namespace AIHelper
             ToolsFixModListButton.Text = T._("Fix modlist");
             btnUpdateMods.Text = T._("Update");
             //button1.Text = T._("Prepare the game");
-            SettingsTabPage.Text = T._("Settings");
             //CreateShortcutButton.Text = T._("Shortcut");
             CreateShortcutLinkLabel.Text = T._("Shortcut");
             //FixRegistryButton.Text = T._("Registry");
@@ -199,10 +198,11 @@ namespace AIHelper
             SettingsFoldersGroupBox.Text = T._("Folders");
             OpenGameFolderLinkLabel.Text = T._("Game");
             OpenModsFolderLinkLabel.Text = T._("Mods");
-            MainTabPage.Text = T._("Info");
-            LaunchTabPage.Text = T._("Launch");
+            //MainTabPage.Text = T._("Info");
+            //LaunchTabPage.Text = T._("Launch");
             //LaunchTabLaunchLabel.Text = T._("Launch");
-            ToolsTabPage.Text = T._("Tools");
+            //ToolsTabPage.Text = T._("Tools");
+            //SettingsTabPage.Text = T._("Settings");
             StudioButton.Text = T._("Studio");
             GameButton.Text = T._("Game");
             MOButton.Text = T._("Manager");

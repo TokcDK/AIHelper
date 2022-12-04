@@ -588,9 +588,9 @@ namespace AIHelper
             StudioButton.Enabled = false;
 
             MOCommonModeSwitchButton.Text = T._("CommonToMO");
-            MainService.Text = T._("Common mode");
+            MainServiceButton.Text = T._("Common mode");
             //LaunchModeInfoLinkLabel.Text = T._("Common mode");
-            MainService.Enabled = false;
+            MainServiceButton.Enabled = false;
         }
 
         private void MOModeSpecificSetup()
@@ -670,7 +670,7 @@ namespace AIHelper
                 ModsInfoLabel.Text = T._("Found mod folders in Mods");
 
                 _mode = 1;
-                MainService.Text = T._("Mods Ready");
+                MainServiceButton.Text = T._("Mods Ready");
 
                 AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
 
@@ -698,12 +698,12 @@ namespace AIHelper
             if (File.Exists(ManageSettings.CurrentGameMoToStandartConvertationOperationsListFilePath))
             {
                 MOmode = false;
-                if (setText) MainService.Text = T._("Common mode");
+                if (setText) MainServiceButton.Text = T._("Common mode");
             }
             else
             {
                 MOmode = true;
-                if (setText) MainService.Text = T._("MO mode");
+                if (setText) MainServiceButton.Text = T._("MO mode");
             }
         }
 

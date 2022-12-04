@@ -38,7 +38,7 @@
             this.ModsInfoLabel = new System.Windows.Forms.Label();
             this.DataInfoLabel = new System.Windows.Forms.Label();
             this.InfoProgressBar1 = new System.Windows.Forms.ProgressBar();
-            this.MainService = new System.Windows.Forms.Button();
+            this.MainServiceButton = new System.Windows.Forms.Button();
             this.InfoTabTopTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.InfoTabAppTitleLabel = new System.Windows.Forms.Label();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
@@ -208,8 +208,8 @@
             this.InfoLabelsTbleLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.InfoLabelsTbleLayoutPanel.Controls.Add(this.ModsInfoLabel, 1, 0);
             this.InfoLabelsTbleLayoutPanel.Controls.Add(this.DataInfoLabel, 1, 1);
-            this.InfoLabelsTbleLayoutPanel.Controls.Add(this.InfoProgressBar1, 1, 2);
-            this.InfoLabelsTbleLayoutPanel.Controls.Add(this.MainService, 1, 3);
+            this.InfoLabelsTbleLayoutPanel.Controls.Add(this.MainServiceButton, 1, 2);
+            this.InfoLabelsTbleLayoutPanel.Controls.Add(this.InfoProgressBar1, 1, 3);
             this.InfoLabelsTbleLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.InfoLabelsTbleLayoutPanel.Location = new System.Drawing.Point(0, 91);
             this.InfoLabelsTbleLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
@@ -217,8 +217,8 @@
             this.InfoLabelsTbleLayoutPanel.RowCount = 4;
             this.InfoLabelsTbleLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.InfoLabelsTbleLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.InfoLabelsTbleLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            this.InfoLabelsTbleLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 35F));
+            this.InfoLabelsTbleLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.InfoLabelsTbleLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.InfoLabelsTbleLayoutPanel.Size = new System.Drawing.Size(470, 138);
             this.InfoLabelsTbleLayoutPanel.TabIndex = 16;
             // 
@@ -262,32 +262,32 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.InfoProgressBar1.BackColor = System.Drawing.Color.White;
-            this.InfoProgressBar1.Location = new System.Drawing.Point(47, 68);
-            this.InfoProgressBar1.Margin = new System.Windows.Forms.Padding(0);
+            this.InfoProgressBar1.Location = new System.Drawing.Point(47, 126);
+            this.InfoProgressBar1.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.InfoProgressBar1.MarqueeAnimationSpeed = 50;
             this.InfoProgressBar1.Name = "InfoProgressBar1";
-            this.InfoProgressBar1.Size = new System.Drawing.Size(376, 20);
+            this.InfoProgressBar1.Size = new System.Drawing.Size(376, 9);
             this.InfoProgressBar1.TabIndex = 20;
             this.InfoProgressBar1.Visible = false;
             // 
-            // MainService
+            // MainServiceButton
             // 
-            this.MainService.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.MainServiceButton.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.MainService.AutoSize = true;
-            this.MainService.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.MainService.BackColor = System.Drawing.Color.Silver;
-            this.MainService.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.MainService.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MainService.ForeColor = System.Drawing.Color.Black;
-            this.MainService.Location = new System.Drawing.Point(47, 88);
-            this.MainService.Margin = new System.Windows.Forms.Padding(0);
-            this.MainService.Name = "MainService";
-            this.MainService.Size = new System.Drawing.Size(376, 50);
-            this.MainService.TabIndex = 19;
-            this.MainService.Text = "Prepare the game";
-            this.MainService.UseVisualStyleBackColor = false;
+            this.MainServiceButton.AutoSize = true;
+            this.MainServiceButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.MainServiceButton.BackColor = System.Drawing.Color.Silver;
+            this.MainServiceButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.MainServiceButton.Font = new System.Drawing.Font("Segoe Print", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MainServiceButton.ForeColor = System.Drawing.Color.Black;
+            this.MainServiceButton.Location = new System.Drawing.Point(47, 68);
+            this.MainServiceButton.Margin = new System.Windows.Forms.Padding(0);
+            this.MainServiceButton.Name = "MainServiceButton";
+            this.MainServiceButton.Size = new System.Drawing.Size(376, 55);
+            this.MainServiceButton.TabIndex = 19;
+            this.MainServiceButton.Text = "Prepare the game";
+            this.MainServiceButton.UseVisualStyleBackColor = false;
             // 
             // InfoTabTopTableLayoutPanel
             // 
@@ -1325,7 +1325,7 @@
         internal System.Windows.Forms.Label ModsInfoLabel;
         internal System.Windows.Forms.Label DataInfoLabel;
         internal System.Windows.Forms.ProgressBar InfoProgressBar1;
-        internal System.Windows.Forms.Button MainService;
+        internal System.Windows.Forms.Button MainServiceButton;
         private System.Windows.Forms.TableLayoutPanel InfoTabTopTableLayoutPanel;
         private System.Windows.Forms.Label InfoTabAppTitleLabel;
         private System.Windows.Forms.TableLayoutPanel LaunchTabTableLayoutPanel;

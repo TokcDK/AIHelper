@@ -109,8 +109,7 @@
             this.FixModlistTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.ToolsFixModListButton = new System.Windows.Forms.Button();
             this.FoldersTabPage = new System.Windows.Forms.TabPage();
-            this.FoldersTabPagePanel1 = new System.Windows.Forms.Panel();
-            this.FoldersTabFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.FoldersTabPagePanel = new System.Windows.Forms.Panel();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -152,7 +151,6 @@
             this.ModeSwitchButtonPanel.SuspendLayout();
             this.FixModlistTableLayoutPanel.SuspendLayout();
             this.FoldersTabPage.SuspendLayout();
-            this.FoldersTabPagePanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // AIGirlHelperTabControl
@@ -1295,7 +1293,7 @@
             // 
             // FoldersTabPage
             // 
-            this.FoldersTabPage.Controls.Add(this.FoldersTabPagePanel1);
+            this.FoldersTabPage.Controls.Add(this.FoldersTabPagePanel);
             this.FoldersTabPage.Location = new System.Drawing.Point(4, 22);
             this.FoldersTabPage.Name = "FoldersTabPage";
             this.FoldersTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -1304,23 +1302,14 @@
             this.FoldersTabPage.Text = "🗁Folders";
             this.FoldersTabPage.UseVisualStyleBackColor = true;
             // 
-            // FoldersTabPagePanel1
+            // FoldersTabPagePanel
             // 
-            this.FoldersTabPagePanel1.BackColor = System.Drawing.Color.Gray;
-            this.FoldersTabPagePanel1.Controls.Add(this.FoldersTabFlowLayoutPanel);
-            this.FoldersTabPagePanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.FoldersTabPagePanel1.Location = new System.Drawing.Point(3, 3);
-            this.FoldersTabPagePanel1.Name = "FoldersTabPagePanel1";
-            this.FoldersTabPagePanel1.Size = new System.Drawing.Size(470, 229);
-            this.FoldersTabPagePanel1.TabIndex = 0;
-            // 
-            // FoldersTabFlowLayoutPanel
-            // 
-            this.FoldersTabFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.FoldersTabFlowLayoutPanel.Location = new System.Drawing.Point(0, 0);
-            this.FoldersTabFlowLayoutPanel.Name = "FoldersTabFlowLayoutPanel";
-            this.FoldersTabFlowLayoutPanel.Size = new System.Drawing.Size(470, 229);
-            this.FoldersTabFlowLayoutPanel.TabIndex = 8;
+            this.FoldersTabPagePanel.BackColor = System.Drawing.Color.Gray;
+            this.FoldersTabPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.FoldersTabPagePanel.Location = new System.Drawing.Point(3, 3);
+            this.FoldersTabPagePanel.Name = "FoldersTabPagePanel";
+            this.FoldersTabPagePanel.Size = new System.Drawing.Size(470, 229);
+            this.FoldersTabPagePanel.TabIndex = 0;
             // 
             // MainForm
             // 
@@ -1391,21 +1380,17 @@
             this.ModeSwitchButtonPanel.ResumeLayout(false);
             this.FixModlistTableLayoutPanel.ResumeLayout(false);
             this.FoldersTabPage.ResumeLayout(false);
-            this.FoldersTabPagePanel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
-        private System.Windows.Forms.TabPage MainTabPage;
         private System.Windows.Forms.Panel InfoPagePanel;
-        private System.Windows.Forms.TabPage SettingsTabPage;
         private System.Windows.Forms.Panel SettingsTabPanel;
         private System.Windows.Forms.CheckBox FullScreenCheckBox;
         private System.Windows.Forms.ComboBox ResolutionComboBox;
         private System.Windows.Forms.Panel LaunchPagePanel;
         private System.Windows.Forms.ComboBox QualityComboBox;
-        private System.Windows.Forms.TabPage ToolsTabPage;
         private System.Windows.Forms.Label CurrentGameLabel;
         private System.Windows.Forms.LinkLabel ExtraSettingsLinkLabel;
         private System.Windows.Forms.LinkLabel JPLauncherRunLinkLabel;
@@ -1419,7 +1404,6 @@
         private System.Windows.Forms.Button ToolsFixModListButton;
         private System.Windows.Forms.TableLayoutPanel UpdateButtonTableLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel Install2MOTableLayoutPanel;
-        private System.Windows.Forms.Button InstallInModsButton;
         private System.Windows.Forms.FlowLayoutPanel Install2MOOptionsFlowLayoutPanel;
         private System.Windows.Forms.LinkLabel Install2MODirPathOpenFolderLinkLabel;
         internal System.Windows.Forms.Button MOCommonModeSwitchButton;
@@ -1471,14 +1455,17 @@
         private System.Windows.Forms.TabPage SettingsTabDisplayTabPage;
         private System.Windows.Forms.Panel SettingsTabGDisplayTabPagePanel;
         private System.Windows.Forms.TableLayoutPanel SettingsTabDisplayTabPageTableLayoutPanel;
-        private System.Windows.Forms.TabPage FoldersTabPage;
-        private System.Windows.Forms.Panel FoldersTabPagePanel1;
         private System.Windows.Forms.LinkLabel OpenSetupXmlLinkLabel;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label ResolutionLabel;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Label QualityLabel;
-        private System.Windows.Forms.FlowLayoutPanel FoldersTabFlowLayoutPanel;
+        internal System.Windows.Forms.Panel FoldersTabPagePanel;
+        internal System.Windows.Forms.Button InstallInModsButton;
+        internal System.Windows.Forms.TabPage MainTabPage;
+        internal System.Windows.Forms.TabPage SettingsTabPage;
+        internal System.Windows.Forms.TabPage ToolsTabPage;
+        internal System.Windows.Forms.TabPage FoldersTabPage;
     }
 }
 

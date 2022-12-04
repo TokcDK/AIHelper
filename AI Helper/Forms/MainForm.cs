@@ -13,6 +13,7 @@ using AIHelper.Install.Types;
 using AIHelper.Install.Types.Directories;
 using AIHelper.Install.UpdateMaker;
 using AIHelper.Manage;
+using AIHelper.Manage.FoldersTab.Folders;
 using AIHelper.Manage.Functions;
 using AIHelper.Manage.Update;
 using AIHelper.Manage.Update.Targets;
@@ -352,13 +353,13 @@ namespace AIHelper
                 _thToolTip.SetToolTip(FixRegistryLinkLabel, T._("Will set Data dir with game files as install dir in registry"));
 
                 //Open Folders
-                _thToolTip.SetToolTip(OpenGameFolderLinkLabel, T._("Open Data folder of selected game"));
-                _thToolTip.SetToolTip(OpenModsFolderLinkLabel, T._("Open Mods folder of selected game"));
-                _thToolTip.SetToolTip(OpenMOFolderLinkLabel, T._("Open Mod Organizer folder"));
-                _thToolTip.SetToolTip(OpenMOOverwriteFolderLinkLabel, T._("Open Overwrite folder of Mod Organizer with possible new generated files for selected game\n\nFiles here have highest priority and will be loaded over any enabled mod files"));
-                _thToolTip.SetToolTip(OpenMyUserDataFolderLinkLabel, T._("Open MyUserData folder in Mods if exist\n\nHere placed usual User files of Organized ModPack for selected game"));
-                _thToolTip.SetToolTip(OpenPresetDirsLinkLabel, T._("Open dir for character cards"));
-                _thToolTip.SetToolTip(OpenPresetDirsLinkLabelMO, T._("Open dir for character cards using Mod Organizer when game in MO mode."));
+                //_thToolTip.SetToolTip(OpenGameFolderLinkLabel, T._("Open Data folder of selected game"));
+                //_thToolTip.SetToolTip(OpenModsFolderLinkLabel, T._("Open Mods folder of selected game"));
+                //_thToolTip.SetToolTip(OpenMOFolderLinkLabel, T._("Open Mod Organizer folder"));
+                //_thToolTip.SetToolTip(OpenMOOverwriteFolderLinkLabel, T._("Open Overwrite folder of Mod Organizer with possible new generated files for selected game\n\nFiles here have highest priority and will be loaded over any enabled mod files"));
+                //_thToolTip.SetToolTip(OpenMyUserDataFolderLinkLabel, T._("Open MyUserData folder in Mods if exist\n\nHere placed usual User files of Organized ModPack for selected game"));
+                //_thToolTip.SetToolTip(OpenPresetDirsLinkLabel, T._("Open dir for character cards"));
+                //_thToolTip.SetToolTip(OpenPresetDirsLinkLabelMO, T._("Open dir for character cards using Mod Organizer when game in MO mode."));
 
                 //_thToolTip.SetToolTip(LaunchLinksLinkLabel, T._("Open list of links for game resources"));
                 _thToolTip.SetToolTip(ExtraSettingsLinkLabel, T._("Open extra setting window for plugins and etc"));
@@ -366,34 +367,34 @@ namespace AIHelper
                 _thToolTip.SetToolTip(CurrentGameComboBox, T._("List of found games. Current") + ": " + ManageSettings.Games.Game.GameDisplayingName);
 
 
-                var toMo = ManageSettings.ModsInstallDirName;
-                _thToolTip.SetToolTip(SettingsOpen2MOLinkLabel,
-                    T._("Open folder, where from mod files can be installed fo selected game") +
-                    T._("\n\nHere can be placed mod files which you want to install for selected game in approriate subfolders in mods" +
-                    "\nand then can be installed all by one click on") + " " + InstallInModsButton.Text + " " + T._("button") +
-                    "\n" + T._("which can be found in") + " " + ToolsTabPage.Text + " " + T._("tab page") +
-                    "\n\n" + T._("Helper recognize") + ":"
-                    + "\n " + T._(".dll files of BepinEx plugins")
-                    + "\n " + T._("Sideloader mod archives")
-                    + "\n " + T._("Female character cards")
-                    + "\n " + T._("Female character cards in \"f\" subfolder")
-                    + "\n " + T._("Male character cards in \"m\" subfolder")
-                    + "\n " + T._("Coordinate clothes set cards in \"c\" subfolder")
-                    + "\n " + T._("Studio scene cards in \"s\" subfolder")
-                    + "\n " + T._("Cardframe Front cards in \"cf\" subfolder")
-                    + "\n " + T._("Cardframe Back cards in \"cf\" subfolder")
-                    + "\n " + T._("Script loader scripts")
-                    + "\n " + T._("Housing plan cards in \"h\\01\", \"h\\02\", \"h\\03\" subfolders")
-                    + "\n " + T._("Overlays cards in \"o\" subfolder")
-                    + "\n " + T._("folders with overlays cards in \"o\" subfolder")
-                    + "\n " + T._("Subfolders with modfiles")
-                    + "\n " + T._("Zip archives with mod files")
-                    + "\n\n" + T._("Any Rar and 7z archives will be extracted for install") +
-                    T._("\nSome recognized mods can be updated instead of be installed as new mod") +
-                    T._("\nMost of mods will be automatically activated except .cs scripts" +
-                    "\nwhich always optional and often it is cheats or can slowdown/break game")
+                //var toMo = ManageSettings.ModsInstallDirName;
+                //_thToolTip.SetToolTip(SettingsOpen2MOLinkLabel,
+                //    T._("Open folder, where from mod files can be installed fo selected game") +
+                //    T._("\n\nHere can be placed mod files which you want to install for selected game in approriate subfolders in mods" +
+                //    "\nand then can be installed all by one click on") + " " + InstallInModsButton.Text + " " + T._("button") +
+                //    "\n" + T._("which can be found in") + " " + ToolsTabPage.Text + " " + T._("tab page") +
+                //    "\n\n" + T._("Helper recognize") + ":"
+                //    + "\n " + T._(".dll files of BepinEx plugins")
+                //    + "\n " + T._("Sideloader mod archives")
+                //    + "\n " + T._("Female character cards")
+                //    + "\n " + T._("Female character cards in \"f\" subfolder")
+                //    + "\n " + T._("Male character cards in \"m\" subfolder")
+                //    + "\n " + T._("Coordinate clothes set cards in \"c\" subfolder")
+                //    + "\n " + T._("Studio scene cards in \"s\" subfolder")
+                //    + "\n " + T._("Cardframe Front cards in \"cf\" subfolder")
+                //    + "\n " + T._("Cardframe Back cards in \"cf\" subfolder")
+                //    + "\n " + T._("Script loader scripts")
+                //    + "\n " + T._("Housing plan cards in \"h\\01\", \"h\\02\", \"h\\03\" subfolders")
+                //    + "\n " + T._("Overlays cards in \"o\" subfolder")
+                //    + "\n " + T._("folders with overlays cards in \"o\" subfolder")
+                //    + "\n " + T._("Subfolders with modfiles")
+                //    + "\n " + T._("Zip archives with mod files")
+                //    + "\n\n" + T._("Any Rar and 7z archives will be extracted for install") +
+                //    T._("\nSome recognized mods can be updated instead of be installed as new mod") +
+                //    T._("\nMost of mods will be automatically activated except .cs scripts" +
+                //    "\nwhich always optional and often it is cheats or can slowdown/break game")
 
-                    );
+                //    );
 
             }
             else if (AIGirlHelperTabControl.SelectedTab == ToolsTabPage)
@@ -446,6 +447,10 @@ namespace AIHelper
                              " to the game folder when possible"
                              )));
                 _thToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Open folder where you can drop/download files for autoinstallation"));
+            }
+            else if (AIGirlHelperTabControl.SelectedTab == FoldersTabPage)
+            {
+                FoldersTabButtonsLoader.Load();
             }
             ////////////////////////////
         }
@@ -1077,40 +1082,9 @@ namespace AIHelper
             ManageMOModeSwitch.SwitchBetweenMoAndStandartModes();
         }
 
-        private void OpenGameFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            if (Directory.Exists(ManageSettings.CurrentGameDataDirPath))
-                Process.Start("explorer.exe", ManageSettings.CurrentGameDataDirPath);
-        }
-
-        private void OpenMOFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            if (Directory.Exists(ManageSettings.AppModOrganizerDirPath))
-                Process.Start("explorer.exe", ManageSettings.AppModOrganizerDirPath);
-        }
-
-        private void OpenModsFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            if (Directory.Exists(ManageSettings.CurrentGameModsDirPath))
-                Process.Start("explorer.exe", ManageSettings.CurrentGameModsDirPath);
-        }
-
         private void Install2MODirPathOpenFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Directory.CreateDirectory(ManageSettings.Install2MoDirPath);
-            Process.Start("explorer.exe", ManageSettings.Install2MoDirPath);
-        }
-
-        private void OpenMyUserDataFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            string userFilesFolder = ManageSettings.GetUserfilesDirectoryPath();
-            if (Directory.Exists(userFilesFolder)) Process.Start("explorer.exe", userFilesFolder);
-        }
-
-        private void OpenMOOverwriteFolderLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            if (Directory.Exists(ManageSettings.CurrentGameOverwriteFolderPath))
-                Process.Start("explorer.exe", ManageSettings.CurrentGameOverwriteFolderPath);
+            new Open2MODirButtonData().OpenDir();
         }
 
         private void OpenLogLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -1307,7 +1281,7 @@ namespace AIHelper
 
         private void PbDiscord_Click(object sender, EventArgs e)
         {
-            Process.Start(ManageSettings.DiscordGroupLink);//Program's discord server
+            //Process.Start(ManageSettings.DiscordGroupLink);//Program's discord server
         }
 
         private void AIGirlHelperTabControl_Selected(object sender, TabControlEventArgs e)
@@ -1355,82 +1329,9 @@ namespace AIHelper
 
         private void RefreshLabelCheckState(object sender)
         {
-            var label = (sender as Label);
-            label.SetCheck(!label.IsChecked());
-            UpdateButtonOptionsRefresh();
-        }
-
-        private void ModeSwitchCreateBuckupLabel_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void OpenPresetDirsLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            OpenPresetDirs(false);
-        }
-
-        private void OpenPresetDirsLinkLabelMO_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            OpenPresetDirs(true);
-        }
-
-        private async void OpenPresetDirs(bool IsMO = false)
-        {
-            await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
-
-            string CharacterDirSubpath = ManageSettings.Games.Game.CharacterPresetsFolderSubPath;
-
-            string exePath = IsMO ? Path.Combine(ManageSettings.AppModOrganizerDirPath, "explorer++", "Explorer++.exe") : "explorer.exe";
-            string presetsDirPath = IsMO && ManageSettings.IsMoMode ? Path.Combine(ManageSettings.CurrentGameDataDirPath) + "\\" + CharacterDirSubpath : ManageSettings.GetUserfilesDirectoryPath(CharacterDirSubpath);
-
-            Directory.CreateDirectory(presetsDirPath);
-
-            if (IsMO && ManageSettings.IsMoMode)
-            {
-                OnOffButtons(false);
-
-                string customExeTitleName = "Cards";
-                string gameUserDataModName = ManageSettings.GameUserDataModName;
-                // Set new app open presets dir profile in mo
-                var explorerPresetsDir = new ManageModOrganizer.CustomExecutables.CustomExecutable
-                {
-                    Title = customExeTitleName,
-                    Binary = exePath,
-                    Arguments = presetsDirPath,
-                    MoTargetMod = gameUserDataModName
-                };
-
-                var GameUserDataFilesModPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, gameUserDataModName);
-                if (!Directory.Exists(GameUserDataFilesModPath))
-                {
-                    Directory.CreateDirectory(GameUserDataFilesModPath);
-                    ManageModOrganizer.WriteMetaIni(
-                        GameUserDataFilesModPath,
-                        categoryNames: "UserData",
-                        version: "1.0",
-                        comments: "",
-                        notes: T._("New files created by the game will be stored here. Saves, plugins configs and other.")
-                        //notes: ManageSettings.KKManagerFilesNotes()
-                        );
-
-                    ManageModOrganizer.InsertMod(
-                        modname: gameUserDataModName,
-                        modAfterWhichInsert: "UserData_separator"
-                        );
-                }
-
-                ManageModOrganizer.InsertCustomExecutable(explorerPresetsDir);
-
-                exePath = ManageSettings.AppMOexePath;
-                presetsDirPath = "moshortcut://:\"" + customExeTitleName + "\"";
-
-                ManageProcess.RunProgram(exePath, presetsDirPath);
-                OnOffButtons();
-            }
-            else
-            {
-                Process.Start(exePath, presetsDirPath);
-            }
+            //var label = (sender as Label);
+            //label.SetCheck(!label.IsChecked());
+            //UpdateButtonOptionsRefresh();
         }
 
         private void Dev_Click(object sender, EventArgs e)

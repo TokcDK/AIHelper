@@ -85,10 +85,13 @@
             this.SettingsTabDisplayTabPage = new System.Windows.Forms.TabPage();
             this.SettingsTabGDisplayTabPagePanel = new System.Windows.Forms.Panel();
             this.SettingsTabDisplayTabPageTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.DisplaySettingsGroupBox = new System.Windows.Forms.GroupBox();
-            this.SetupXmlLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.QualityComboBox = new System.Windows.Forms.ComboBox();
+            this.OpenSetupXmlLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.ResolutionLabel = new System.Windows.Forms.Label();
             this.ResolutionComboBox = new System.Windows.Forms.ComboBox();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.QualityLabel = new System.Windows.Forms.Label();
+            this.QualityComboBox = new System.Windows.Forms.ComboBox();
             this.FullScreenCheckBox = new System.Windows.Forms.CheckBox();
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
             this.ToolsTabPagePanel = new System.Windows.Forms.Panel();
@@ -145,7 +148,8 @@
             this.SettingsTabDisplayTabPage.SuspendLayout();
             this.SettingsTabGDisplayTabPagePanel.SuspendLayout();
             this.SettingsTabDisplayTabPageTableLayoutPanel.SuspendLayout();
-            this.DisplaySettingsGroupBox.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             this.ToolsTabPage.SuspendLayout();
             this.ToolsTabPagePanel.SuspendLayout();
             this.ToolsTabPageTableLayoutPanel.SuspendLayout();
@@ -948,57 +952,69 @@
             // SettingsTabDisplayTabPageTableLayoutPanel
             // 
             this.SettingsTabDisplayTabPageTableLayoutPanel.ColumnCount = 1;
-            this.SettingsTabDisplayTabPageTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.SettingsTabDisplayTabPageTableLayoutPanel.Controls.Add(this.DisplaySettingsGroupBox, 0, 0);
+            this.SettingsTabDisplayTabPageTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.SettingsTabDisplayTabPageTableLayoutPanel.Controls.Add(this.OpenSetupXmlLinkLabel, 0, 0);
+            this.SettingsTabDisplayTabPageTableLayoutPanel.Controls.Add(this.tableLayoutPanel1, 0, 1);
+            this.SettingsTabDisplayTabPageTableLayoutPanel.Controls.Add(this.tableLayoutPanel2, 0, 2);
+            this.SettingsTabDisplayTabPageTableLayoutPanel.Controls.Add(this.FullScreenCheckBox, 0, 3);
             this.SettingsTabDisplayTabPageTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SettingsTabDisplayTabPageTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.SettingsTabDisplayTabPageTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.SettingsTabDisplayTabPageTableLayoutPanel.Name = "SettingsTabDisplayTabPageTableLayoutPanel";
-            this.SettingsTabDisplayTabPageTableLayoutPanel.RowCount = 1;
-            this.SettingsTabDisplayTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.SettingsTabDisplayTabPageTableLayoutPanel.RowCount = 5;
+            this.SettingsTabDisplayTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.SettingsTabDisplayTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.SettingsTabDisplayTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.SettingsTabDisplayTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.SettingsTabDisplayTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.SettingsTabDisplayTabPageTableLayoutPanel.Size = new System.Drawing.Size(456, 197);
             this.SettingsTabDisplayTabPageTableLayoutPanel.TabIndex = 1;
             // 
-            // DisplaySettingsGroupBox
+            // OpenSetupXmlLinkLabel
             // 
-            this.DisplaySettingsGroupBox.BackColor = System.Drawing.Color.Transparent;
-            this.DisplaySettingsGroupBox.Controls.Add(this.SetupXmlLinkLabel);
-            this.DisplaySettingsGroupBox.Controls.Add(this.QualityComboBox);
-            this.DisplaySettingsGroupBox.Controls.Add(this.ResolutionComboBox);
-            this.DisplaySettingsGroupBox.Controls.Add(this.FullScreenCheckBox);
-            this.DisplaySettingsGroupBox.ForeColor = System.Drawing.Color.White;
-            this.DisplaySettingsGroupBox.Location = new System.Drawing.Point(3, 3);
-            this.DisplaySettingsGroupBox.Name = "DisplaySettingsGroupBox";
-            this.DisplaySettingsGroupBox.Size = new System.Drawing.Size(145, 90);
-            this.DisplaySettingsGroupBox.TabIndex = 3;
-            this.DisplaySettingsGroupBox.TabStop = false;
-            this.DisplaySettingsGroupBox.Text = T._("Display");
+            this.OpenSetupXmlLinkLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.OpenSetupXmlLinkLabel.AutoSize = true;
+            this.OpenSetupXmlLinkLabel.Location = new System.Drawing.Point(3, 7);
+            this.OpenSetupXmlLinkLabel.Name = "OpenSetupXmlLinkLabel";
+            this.OpenSetupXmlLinkLabel.Size = new System.Drawing.Size(450, 13);
+            this.OpenSetupXmlLinkLabel.TabIndex = 4;
+            this.OpenSetupXmlLinkLabel.TabStop = true;
+            this.OpenSetupXmlLinkLabel.Text = T._("Open game setup file");
+            this.OpenSetupXmlLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.SetupXmlPathLinkLabel_LinkClicked);
             // 
-            // SetupXmlLinkLabel
+            // tableLayoutPanel1
             // 
-            this.SetupXmlLinkLabel.AutoSize = true;
-            this.SetupXmlLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.SetupXmlLinkLabel.Location = new System.Drawing.Point(6, 0);
-            this.SetupXmlLinkLabel.Name = "SetupXmlLinkLabel";
-            this.SetupXmlLinkLabel.Size = new System.Drawing.Size(41, 13);
-            this.SetupXmlLinkLabel.TabIndex = 6;
-            this.SetupXmlLinkLabel.TabStop = true;
-            this.SetupXmlLinkLabel.Text = T._("Display");
-            this.SetupXmlLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.SetupXmlPathLinkLabel_LinkClicked);
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.Controls.Add(this.ResolutionLabel, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.ResolutionComboBox, 1, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 20);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 1;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(456, 25);
+            this.tableLayoutPanel1.TabIndex = 6;
             // 
-            // QualityComboBox
+            // ResolutionLabel
             // 
-            this.QualityComboBox.Cursor = System.Windows.Forms.Cursors.PanSouth;
-            this.QualityComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.QualityComboBox.FormattingEnabled = true;
-            this.QualityComboBox.Location = new System.Drawing.Point(6, 46);
-            this.QualityComboBox.MaxDropDownItems = 3;
-            this.QualityComboBox.Name = "QualityComboBox";
-            this.QualityComboBox.Size = new System.Drawing.Size(134, 21);
-            this.QualityComboBox.TabIndex = 5;
-            this.QualityComboBox.SelectedIndexChanged += new System.EventHandler(this.QualityComboBox_SelectedIndexChanged);
+            this.ResolutionLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.ResolutionLabel.AutoSize = true;
+            this.ResolutionLabel.BackColor = System.Drawing.Color.Transparent;
+            this.ResolutionLabel.ForeColor = System.Drawing.Color.White;
+            this.ResolutionLabel.Location = new System.Drawing.Point(37, 6);
+            this.ResolutionLabel.Name = "ResolutionLabel";
+            this.ResolutionLabel.Size = new System.Drawing.Size(60, 13);
+            this.ResolutionLabel.TabIndex = 0;
+            this.ResolutionLabel.Text = T._("Resolution:");
+            this.ResolutionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // ResolutionComboBox
             // 
+            this.ResolutionComboBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.ResolutionComboBox.Cursor = System.Windows.Forms.Cursors.PanSouth;
             this.ResolutionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ResolutionComboBox.FormattingEnabled = true;
@@ -1012,21 +1028,65 @@
             "2560 x 1440 (16 : 9)",
             "3200 x 1800 (16 : 9)",
             "3840 x 2160 (16 : 9)"});
-            this.ResolutionComboBox.Location = new System.Drawing.Point(6, 19);
+            this.ResolutionComboBox.Location = new System.Drawing.Point(103, 3);
             this.ResolutionComboBox.MaxDropDownItems = 9;
             this.ResolutionComboBox.Name = "ResolutionComboBox";
-            this.ResolutionComboBox.Size = new System.Drawing.Size(134, 21);
+            this.ResolutionComboBox.Size = new System.Drawing.Size(135, 21);
             this.ResolutionComboBox.TabIndex = 1;
             this.ResolutionComboBox.SelectedIndexChanged += new System.EventHandler(this.ResolutionComboBox_SelectedIndexChanged);
             // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 2;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel2.Controls.Add(this.QualityLabel, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.QualityComboBox, 1, 0);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 45);
+            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 1;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(456, 25);
+            this.tableLayoutPanel2.TabIndex = 7;
+            // 
+            // QualityLabel
+            // 
+            this.QualityLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.QualityLabel.AutoSize = true;
+            this.QualityLabel.BackColor = System.Drawing.Color.Transparent;
+            this.QualityLabel.ForeColor = System.Drawing.Color.White;
+            this.QualityLabel.Location = new System.Drawing.Point(55, 6);
+            this.QualityLabel.Name = "QualityLabel";
+            this.QualityLabel.Size = new System.Drawing.Size(42, 13);
+            this.QualityLabel.TabIndex = 6;
+            this.QualityLabel.Text = T._("Quality:");
+            this.QualityLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // QualityComboBox
+            // 
+            this.QualityComboBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.QualityComboBox.Cursor = System.Windows.Forms.Cursors.PanSouth;
+            this.QualityComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.QualityComboBox.FormattingEnabled = true;
+            this.QualityComboBox.Location = new System.Drawing.Point(103, 3);
+            this.QualityComboBox.MaxDropDownItems = 3;
+            this.QualityComboBox.Name = "QualityComboBox";
+            this.QualityComboBox.Size = new System.Drawing.Size(135, 21);
+            this.QualityComboBox.TabIndex = 5;
+            this.QualityComboBox.SelectedIndexChanged += new System.EventHandler(this.QualityComboBox_SelectedIndexChanged);
+            // 
             // FullScreenCheckBox
             // 
+            this.FullScreenCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.FullScreenCheckBox.AutoSize = true;
             this.FullScreenCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.FullScreenCheckBox.ForeColor = System.Drawing.Color.White;
-            this.FullScreenCheckBox.Location = new System.Drawing.Point(6, 67);
+            this.FullScreenCheckBox.Location = new System.Drawing.Point(3, 73);
             this.FullScreenCheckBox.Name = "FullScreenCheckBox";
-            this.FullScreenCheckBox.Size = new System.Drawing.Size(71, 17);
+            this.FullScreenCheckBox.Size = new System.Drawing.Size(450, 17);
             this.FullScreenCheckBox.TabIndex = 4;
             this.FullScreenCheckBox.Text = T._("fullscreen");
             this.FullScreenCheckBox.UseVisualStyleBackColor = false;
@@ -1439,8 +1499,11 @@
             this.SettingsTabDisplayTabPage.ResumeLayout(false);
             this.SettingsTabGDisplayTabPagePanel.ResumeLayout(false);
             this.SettingsTabDisplayTabPageTableLayoutPanel.ResumeLayout(false);
-            this.DisplaySettingsGroupBox.ResumeLayout(false);
-            this.DisplaySettingsGroupBox.PerformLayout();
+            this.SettingsTabDisplayTabPageTableLayoutPanel.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
             this.ToolsTabPage.ResumeLayout(false);
             this.ToolsTabPagePanel.ResumeLayout(false);
             this.ToolsTabPageTableLayoutPanel.ResumeLayout(false);
@@ -1464,7 +1527,6 @@
         private System.Windows.Forms.Panel InfoPagePanel;
         private System.Windows.Forms.TabPage SettingsTabPage;
         private System.Windows.Forms.Panel SettingsTabPanel;
-        private System.Windows.Forms.GroupBox DisplaySettingsGroupBox;
         private System.Windows.Forms.CheckBox FullScreenCheckBox;
         private System.Windows.Forms.ComboBox ResolutionComboBox;
         private System.Windows.Forms.Panel LaunchPagePanel;
@@ -1473,7 +1535,6 @@
         private System.Windows.Forms.Label CurrentGameLabel;
         private System.Windows.Forms.LinkLabel ExtraSettingsLinkLabel;
         private System.Windows.Forms.LinkLabel JPLauncherRunLinkLabel;
-        private System.Windows.Forms.LinkLabel SetupXmlLinkLabel;
         private System.Windows.Forms.LinkLabel CreateShortcutLinkLabel;
         private System.Windows.Forms.LinkLabel FixRegistryLinkLabel;
         internal System.Windows.Forms.CheckBox cbxNtlea;
@@ -1547,6 +1608,11 @@
         private System.Windows.Forms.LinkLabel OpenModsFolderLinkLabel;
         private System.Windows.Forms.LinkLabel OpenMOFolderLinkLabel;
         private System.Windows.Forms.LinkLabel OpenGameFolderLinkLabel;
+        private System.Windows.Forms.LinkLabel OpenSetupXmlLinkLabel;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.Label ResolutionLabel;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.Label QualityLabel;
     }
 }
 

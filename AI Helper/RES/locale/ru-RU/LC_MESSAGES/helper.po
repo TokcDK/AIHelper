@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AI Helper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-04 18:50+0500\n"
-"PO-Revision-Date: 2022-12-04 18:50+0500\n"
+"POT-Creation-Date: 2022-12-04 19:16+0500\n"
+"PO-Revision-Date: 2022-12-04 19:16+0500\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -74,7 +74,7 @@ msgstr "Консоль"
 
 #: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:128
 #: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:150
-#: Forms/MainForm.Designer.cs:488
+#: Forms/MainForm.Designer.cs:492
 msgid "Settings"
 msgstr "Настройки"
 
@@ -97,7 +97,7 @@ msgid "Auto"
 msgstr "Авто"
 
 #: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:147
-#: Forms/MainForm.Designer.cs:879
+#: Forms/MainForm.Designer.cs:883
 msgid "Extra Settings"
 msgstr "Доп. настройки"
 
@@ -269,172 +269,180 @@ msgstr ""
 msgid "not found"
 msgstr "не найден"
 
-#: Forms/MainForm.Designer.cs:190
+#: Forms/MainForm.Designer.cs:194
 msgid "ℹInfo"
 msgstr "ℹИнфо"
 
-#: Forms/MainForm.Designer.cs:264 Forms/MainForm.Designer.cs:281
+#: Forms/MainForm.Designer.cs:268 Forms/MainForm.Designer.cs:285
 msgid "..."
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:300
+#: Forms/MainForm.Designer.cs:304
 msgid "Prepare the game"
 msgstr "Подготовить игру"
 
-#: Forms/MainForm.Designer.cs:344 Forms/MainForm.Designer.cs:655
+#: Forms/MainForm.Designer.cs:348 Forms/MainForm.Designer.cs:659
 msgid "-  Ằ🌶Ḩelper  -"
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:355
+#: Forms/MainForm.Designer.cs:359
 msgid "🚀Launch"
 msgstr "🚀Запуск"
 
-#: Forms/MainForm.Designer.cs:443 Forms/MainForm.Designer.cs:1386
+#: Forms/MainForm.Designer.cs:447 Forms/MainForm.Designer.cs:1446
 msgid "Game"
 msgstr "Игра"
 
-#: Forms/MainForm.Designer.cs:458
+#: Forms/MainForm.Designer.cs:462
 msgid "Studio"
 msgstr "Студия"
 
-#: Forms/MainForm.Designer.cs:473
+#: Forms/MainForm.Designer.cs:477
 msgid "Manager"
 msgstr "Менеджер"
 
-#: Forms/MainForm.Designer.cs:537
+#: Forms/MainForm.Designer.cs:541
 msgid "Help"
 msgstr "Помощь"
 
-#: Forms/MainForm.Designer.cs:596
+#: Forms/MainForm.Designer.cs:600
 msgid "log"
 msgstr "лог"
 
-#: Forms/MainForm.Designer.cs:611
+#: Forms/MainForm.Designer.cs:615
 msgid "vr"
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:623
+#: Forms/MainForm.Designer.cs:627
 msgid "Info"
 msgstr "Инфо"
 
-#: Forms/MainForm.Designer.cs:670
+#: Forms/MainForm.Designer.cs:674
 msgid "GameTitle"
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:681
+#: Forms/MainForm.Designer.cs:685
 msgid "🔧Settings"
 msgstr "🔧Настройки"
 
-#: Forms/MainForm.Designer.cs:713
+#: Forms/MainForm.Designer.cs:717
 msgid "★General"
 msgstr "★Основные"
 
-#: Forms/MainForm.Designer.cs:755
+#: Forms/MainForm.Designer.cs:759
 msgid "Current Game:"
 msgstr "Текущая игра:"
 
-#: Forms/MainForm.Designer.cs:822
+#: Forms/MainForm.Designer.cs:826
 msgid "Add game"
 msgstr "Добавить игру"
 
-#: Forms/MainForm.Designer.cs:852
+#: Forms/MainForm.Designer.cs:856
 msgid "JP Launcher"
 msgstr "Ориг. лаунчер"
 
-#: Forms/MainForm.Designer.cs:864
+#: Forms/MainForm.Designer.cs:868
 msgid "ntlea"
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:893
+#: Forms/MainForm.Designer.cs:897
 msgid "Fix registry"
 msgstr "Фикс реестра"
 
-#: Forms/MainForm.Designer.cs:908 Manage/ManageOther.cs:84
+#: Forms/MainForm.Designer.cs:912 Manage/ManageOther.cs:84
 msgid "Shortcut"
 msgstr "Ярлык"
 
-#: Forms/MainForm.Designer.cs:921
+#: Forms/MainForm.Designer.cs:925
 msgid "Autoshortcut"
-msgstr ""
+msgstr "Автоярлык"
 
-#: Forms/MainForm.Designer.cs:934
+#: Forms/MainForm.Designer.cs:938
 msgid "🔳Display"
 msgstr "🔳Экран"
 
-#: Forms/MainForm.Designer.cs:974 Forms/MainForm.Designer.cs:985
-msgid "Display"
-msgstr "Экран"
+#: Forms/MainForm.Designer.cs:983
+msgid "Open game setup file"
+msgstr "Открыть файл настроек игры"
 
-#: Forms/MainForm.Designer.cs:1031
+#: Forms/MainForm.Designer.cs:1012
+msgid "Resolution:"
+msgstr "Разрешение:"
+
+#: Forms/MainForm.Designer.cs:1064
+msgid "Quality:"
+msgstr "Качество:"
+
+#: Forms/MainForm.Designer.cs:1091
 msgid "fullscreen"
 msgstr "во весь экран"
 
-#: Forms/MainForm.Designer.cs:1043
+#: Forms/MainForm.Designer.cs:1103
 msgid "🔨Tools"
 msgstr "🔨Инструменты"
 
-#: Forms/MainForm.Designer.cs:1104
+#: Forms/MainForm.Designer.cs:1164
 msgid "Update mods"
 msgstr "Обновление модов"
 
-#: Forms/MainForm.Designer.cs:1136
+#: Forms/MainForm.Designer.cs:1196
 msgid "Install"
 msgstr "Установка"
 
-#: Forms/MainForm.Designer.cs:1162
+#: Forms/MainForm.Designer.cs:1222
 msgid "🗁"
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:1202 Forms/MainForm.cs:677
+#: Forms/MainForm.Designer.cs:1262 Forms/MainForm.cs:677
 #: Manage/ModeSwitch/ModeSwitcherBase.cs:54
 msgid "MOToCommon"
 msgstr "MO в Обычный"
 
-#: Forms/MainForm.Designer.cs:1212
+#: Forms/MainForm.Designer.cs:1272
 msgid "Dev"
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:1241
+#: Forms/MainForm.Designer.cs:1301
 msgid "Fix ModList"
 msgstr "Фикс модлиста"
 
-#: Forms/MainForm.Designer.cs:1253
+#: Forms/MainForm.Designer.cs:1313
 msgid "🗁Folders"
 msgstr "🗁Папки"
 
-#: Forms/MainForm.Designer.cs:1283
+#: Forms/MainForm.Designer.cs:1343
 msgid "Folders"
 msgstr "Папки"
 
-#: Forms/MainForm.Designer.cs:1295
+#: Forms/MainForm.Designer.cs:1355
 msgid "CardsMO"
 msgstr "КарточкиМО"
 
-#: Forms/MainForm.Designer.cs:1308
+#: Forms/MainForm.Designer.cs:1368
 msgid "Cards"
 msgstr "Карточки"
 
-#: Forms/MainForm.Designer.cs:1321
+#: Forms/MainForm.Designer.cs:1381
 msgid "2MO"
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:1334
+#: Forms/MainForm.Designer.cs:1394
 msgid "Overwrite"
 msgstr "Перезапись"
 
-#: Forms/MainForm.Designer.cs:1347
+#: Forms/MainForm.Designer.cs:1407
 msgid "Userfiles"
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:1360
+#: Forms/MainForm.Designer.cs:1420
 msgid "Mods"
 msgstr "Моды"
 
-#: Forms/MainForm.Designer.cs:1373 Manage/Functions/MOModeSwitchForFlp.cs:12
+#: Forms/MainForm.Designer.cs:1433 Manage/Functions/MOModeSwitchForFlp.cs:12
 msgid "MO"
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:1400
+#: Forms/MainForm.Designer.cs:1460
 msgid "AI Helper [Organized modpack]"
 msgstr ""
 
@@ -509,14 +517,6 @@ msgid ""
 msgstr ""
 "Когда отмечено, создаст ярлык для AI Helper на Рабочем столе и исправит "
 "реестр, если нужно"
-
-#: Forms/MainForm.cs:344
-msgid "Game Display settings"
-msgstr "Графические настройки игры"
-
-#: Forms/MainForm.cs:345
-msgid "Open Setup.xml in notepad"
-msgstr "Открыть Setup.xml в блокноте"
 
 #: Forms/MainForm.cs:346
 msgid "Select preferred screen resolution"
@@ -1882,6 +1882,15 @@ msgstr "Подробно в"
 #: Properties/Resources.Designer.cs:88
 msgid "defmoini"
 msgstr "defmoini"
+
+#~ msgid "Display"
+#~ msgstr "Экран"
+
+#~ msgid "Game Display settings"
+#~ msgstr "Графические настройки игры"
+
+#~ msgid "Open Setup.xml in notepad"
+#~ msgstr "Открыть Setup.xml в блокноте"
 
 #~ msgid "Current Game"
 #~ msgstr "Текущая игра"

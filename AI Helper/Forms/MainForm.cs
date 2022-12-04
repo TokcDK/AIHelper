@@ -341,8 +341,8 @@ namespace AIHelper
             else if (AIGirlHelperTabControl.SelectedTab == SettingsTabPage)
             {
                 _thToolTip.SetToolTip(AutoShortcutRegistryCheckBox, T._("When checked will create shortcut for the AI Helper on Desktop and will fix registry if need"));
-                _thToolTip.SetToolTip(DisplaySettingsGroupBox, T._("Game Display settings"));
-                _thToolTip.SetToolTip(SetupXmlLinkLabel, T._("Open Setup.xml in notepad"));
+                //_thToolTip.SetToolTip(DisplaySettingsGroupBox, T._("Game Display settings"));
+                //_thToolTip.SetToolTip(SetupXmlLinkLabel, T._("Open Setup.xml in notepad"));
                 _thToolTip.SetToolTip(ResolutionComboBox, T._("Select preferred screen resolution"));
                 _thToolTip.SetToolTip(FullScreenCheckBox, T._("When checked game will be in fullscreen mode"));
                 _thToolTip.SetToolTip(QualityComboBox, T._("Select preferred graphics quality"));

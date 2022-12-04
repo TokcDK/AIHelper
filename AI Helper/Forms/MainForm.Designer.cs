@@ -37,8 +37,8 @@
             this.InfoLabelsTbleLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.ModsInfoLabel = new System.Windows.Forms.Label();
             this.DataInfoLabel = new System.Windows.Forms.Label();
-            this.InfoProgressBar1 = new System.Windows.Forms.ProgressBar();
             this.MainServiceButton = new System.Windows.Forms.Button();
+            this.InfoProgressBar1 = new System.Windows.Forms.ProgressBar();
             this.InfoTabTopTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.InfoTabAppTitleLabel = new System.Windows.Forms.Label();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
@@ -58,8 +58,8 @@
             this.LaunchTabTopRightBepinExLogTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.BepInExConsoleCheckBox = new System.Windows.Forms.CheckBox();
             this.OpenLogLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.BepInExDisplayedLogLevelLabel = new System.Windows.Forms.Label();
             this.VRGameCheckBox = new System.Windows.Forms.CheckBox();
+            this.BepInExDisplayedLogLevelLabel = new System.Windows.Forms.Label();
             this.LaunchTabTopAppGameTitleTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.SelectedGameLabel = new System.Windows.Forms.Label();
@@ -92,8 +92,8 @@
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
             this.ToolsTabPagePanel = new System.Windows.Forms.Panel();
             this.ToolsTabPageTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.ToolsFixModListButton = new System.Windows.Forms.Button();
             this.UpdateButtonTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.btnUpdateMods = new System.Windows.Forms.Button();
             this.Install2MOTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.InstallInModsButton = new System.Windows.Forms.Button();
             this.Install2MOOptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -103,7 +103,7 @@
             this.MOCommonModeSwitchButton = new System.Windows.Forms.Button();
             this.DevButton = new System.Windows.Forms.Button();
             this.FixModlistTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.btnUpdateMods = new System.Windows.Forms.Button();
+            this.ToolsFixModListButton = new System.Windows.Forms.Button();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
             this.InfoPagePanel.SuspendLayout();
@@ -256,20 +256,6 @@
             this.DataInfoLabel.Text = "...";
             this.DataInfoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // InfoProgressBar1
-            // 
-            this.InfoProgressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.InfoProgressBar1.BackColor = System.Drawing.Color.White;
-            this.InfoProgressBar1.Location = new System.Drawing.Point(47, 126);
-            this.InfoProgressBar1.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
-            this.InfoProgressBar1.MarqueeAnimationSpeed = 50;
-            this.InfoProgressBar1.Name = "InfoProgressBar1";
-            this.InfoProgressBar1.Size = new System.Drawing.Size(376, 9);
-            this.InfoProgressBar1.TabIndex = 20;
-            this.InfoProgressBar1.Visible = false;
-            // 
             // MainServiceButton
             // 
             this.MainServiceButton.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -288,6 +274,21 @@
             this.MainServiceButton.TabIndex = 19;
             this.MainServiceButton.Text = "Prepare the game";
             this.MainServiceButton.UseVisualStyleBackColor = false;
+            this.MainServiceButton.Click += new System.EventHandler(this.MainService_Click);
+            // 
+            // InfoProgressBar1
+            // 
+            this.InfoProgressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.InfoProgressBar1.BackColor = System.Drawing.Color.White;
+            this.InfoProgressBar1.Location = new System.Drawing.Point(47, 126);
+            this.InfoProgressBar1.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            this.InfoProgressBar1.MarqueeAnimationSpeed = 50;
+            this.InfoProgressBar1.Name = "InfoProgressBar1";
+            this.InfoProgressBar1.Size = new System.Drawing.Size(376, 9);
+            this.InfoProgressBar1.TabIndex = 20;
+            this.InfoProgressBar1.Visible = false;
             // 
             // InfoTabTopTableLayoutPanel
             // 
@@ -570,18 +571,6 @@
             this.OpenLogLinkLabel.VisitedLinkColor = System.Drawing.Color.Gainsboro;
             this.OpenLogLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenLogLinkLabel_LinkClicked);
             // 
-            // BepInExDisplayedLogLevelLabel
-            // 
-            this.BepInExDisplayedLogLevelLabel.AutoSize = true;
-            this.BepInExDisplayedLogLevelLabel.BackColor = System.Drawing.Color.Transparent;
-            this.BepInExDisplayedLogLevelLabel.Location = new System.Drawing.Point(3, 42);
-            this.BepInExDisplayedLogLevelLabel.Name = "BepInExDisplayedLogLevelLabel";
-            this.BepInExDisplayedLogLevelLabel.Size = new System.Drawing.Size(25, 13);
-            this.BepInExDisplayedLogLevelLabel.TabIndex = 26;
-            this.BepInExDisplayedLogLevelLabel.Text = "Info";
-            this.BepInExDisplayedLogLevelLabel.Visible = false;
-            this.BepInExDisplayedLogLevelLabel.Click += new System.EventHandler(this.BepInExDisplayedLogLevelLabel_Click);
-            // 
             // VRGameCheckBox
             // 
             this.VRGameCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -596,6 +585,18 @@
             this.VRGameCheckBox.Text = "vr";
             this.VRGameCheckBox.UseVisualStyleBackColor = false;
             this.VRGameCheckBox.Visible = false;
+            // 
+            // BepInExDisplayedLogLevelLabel
+            // 
+            this.BepInExDisplayedLogLevelLabel.AutoSize = true;
+            this.BepInExDisplayedLogLevelLabel.BackColor = System.Drawing.Color.Transparent;
+            this.BepInExDisplayedLogLevelLabel.Location = new System.Drawing.Point(3, 42);
+            this.BepInExDisplayedLogLevelLabel.Name = "BepInExDisplayedLogLevelLabel";
+            this.BepInExDisplayedLogLevelLabel.Size = new System.Drawing.Size(25, 13);
+            this.BepInExDisplayedLogLevelLabel.TabIndex = 26;
+            this.BepInExDisplayedLogLevelLabel.Text = "Info";
+            this.BepInExDisplayedLogLevelLabel.Visible = false;
+            this.BepInExDisplayedLogLevelLabel.Click += new System.EventHandler(this.BepInExDisplayedLogLevelLabel_Click);
             // 
             // LaunchTabTopAppGameTitleTableLayoutPanel
             // 
@@ -1050,21 +1051,6 @@
             this.ToolsTabPageTableLayoutPanel.Size = new System.Drawing.Size(470, 229);
             this.ToolsTabPageTableLayoutPanel.TabIndex = 0;
             // 
-            // ToolsFixModListButton
-            // 
-            this.ToolsFixModListButton.BackColor = System.Drawing.Color.Silver;
-            this.ToolsFixModListButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.ToolsFixModListButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ToolsFixModListButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.ToolsFixModListButton.ForeColor = System.Drawing.Color.Black;
-            this.ToolsFixModListButton.Location = new System.Drawing.Point(3, 3);
-            this.ToolsFixModListButton.Name = "ToolsFixModListButton";
-            this.ToolsFixModListButton.Size = new System.Drawing.Size(170, 51);
-            this.ToolsFixModListButton.TabIndex = 22;
-            this.ToolsFixModListButton.Text = "Fix ModList";
-            this.ToolsFixModListButton.UseVisualStyleBackColor = false;
-            this.ToolsFixModListButton.Click += new System.EventHandler(this.ToolsFixModListButton_Click);
-            // 
             // UpdateButtonTableLayoutPanel
             // 
             this.UpdateButtonTableLayoutPanel.ColumnCount = 2;
@@ -1078,6 +1064,21 @@
             this.UpdateButtonTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.UpdateButtonTableLayoutPanel.Size = new System.Drawing.Size(234, 58);
             this.UpdateButtonTableLayoutPanel.TabIndex = 29;
+            // 
+            // btnUpdateMods
+            // 
+            this.btnUpdateMods.BackColor = System.Drawing.Color.Silver;
+            this.btnUpdateMods.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnUpdateMods.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnUpdateMods.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.btnUpdateMods.ForeColor = System.Drawing.Color.Black;
+            this.btnUpdateMods.Location = new System.Drawing.Point(3, 3);
+            this.btnUpdateMods.Name = "btnUpdateMods";
+            this.btnUpdateMods.Size = new System.Drawing.Size(169, 52);
+            this.btnUpdateMods.TabIndex = 26;
+            this.btnUpdateMods.Text = "Update mods";
+            this.btnUpdateMods.UseVisualStyleBackColor = false;
+            this.btnUpdateMods.Click += new System.EventHandler(this.btnUpdateMods_Click);
             // 
             // Install2MOTableLayoutPanel
             // 
@@ -1201,20 +1202,20 @@
             this.FixModlistTableLayoutPanel.Size = new System.Drawing.Size(236, 57);
             this.FixModlistTableLayoutPanel.TabIndex = 33;
             // 
-            // btnUpdateMods
+            // ToolsFixModListButton
             // 
-            this.btnUpdateMods.BackColor = System.Drawing.Color.Silver;
-            this.btnUpdateMods.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnUpdateMods.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnUpdateMods.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.btnUpdateMods.ForeColor = System.Drawing.Color.Black;
-            this.btnUpdateMods.Location = new System.Drawing.Point(3, 3);
-            this.btnUpdateMods.Name = "btnUpdateMods";
-            this.btnUpdateMods.Size = new System.Drawing.Size(169, 52);
-            this.btnUpdateMods.TabIndex = 26;
-            this.btnUpdateMods.Text = "Update mods";
-            this.btnUpdateMods.UseVisualStyleBackColor = false;
-            this.btnUpdateMods.Click += new System.EventHandler(this.btnUpdateMods_Click);
+            this.ToolsFixModListButton.BackColor = System.Drawing.Color.Silver;
+            this.ToolsFixModListButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.ToolsFixModListButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ToolsFixModListButton.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.ToolsFixModListButton.ForeColor = System.Drawing.Color.Black;
+            this.ToolsFixModListButton.Location = new System.Drawing.Point(3, 3);
+            this.ToolsFixModListButton.Name = "ToolsFixModListButton";
+            this.ToolsFixModListButton.Size = new System.Drawing.Size(170, 51);
+            this.ToolsFixModListButton.TabIndex = 22;
+            this.ToolsFixModListButton.Text = "Fix ModList";
+            this.ToolsFixModListButton.UseVisualStyleBackColor = false;
+            this.ToolsFixModListButton.Click += new System.EventHandler(this.ToolsFixModListButton_Click);
             // 
             // MainForm
             // 

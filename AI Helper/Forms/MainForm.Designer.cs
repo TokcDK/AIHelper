@@ -774,10 +774,10 @@
             this.CurrentGamePanel1.Controls.Add(this.CurrentGameTitleTextBox);
             this.CurrentGamePanel1.Controls.Add(this.CurrentGameComboBox);
             this.CurrentGamePanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.CurrentGamePanel1.Location = new System.Drawing.Point(0, 0);
-            this.CurrentGamePanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.CurrentGamePanel1.Location = new System.Drawing.Point(3, 0);
+            this.CurrentGamePanel1.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.CurrentGamePanel1.Name = "CurrentGamePanel1";
-            this.CurrentGamePanel1.Size = new System.Drawing.Size(150, 20);
+            this.CurrentGamePanel1.Size = new System.Drawing.Size(147, 20);
             this.CurrentGamePanel1.TabIndex = 0;
             // 
             // CurrentGameTitleTextBox
@@ -786,9 +786,10 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.CurrentGameTitleTextBox.BackColor = System.Drawing.SystemColors.Window;
             this.CurrentGameTitleTextBox.Location = new System.Drawing.Point(0, 0);
+            this.CurrentGameTitleTextBox.Margin = new System.Windows.Forms.Padding(0);
             this.CurrentGameTitleTextBox.Name = "CurrentGameTitleTextBox";
             this.CurrentGameTitleTextBox.ReadOnly = true;
-            this.CurrentGameTitleTextBox.Size = new System.Drawing.Size(132, 20);
+            this.CurrentGameTitleTextBox.Size = new System.Drawing.Size(130, 20);
             this.CurrentGameTitleTextBox.TabIndex = 11;
             // 
             // CurrentGameComboBox
@@ -799,6 +800,7 @@
             this.CurrentGameComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.CurrentGameComboBox.FormattingEnabled = true;
             this.CurrentGameComboBox.Location = new System.Drawing.Point(0, -1);
+            this.CurrentGameComboBox.Margin = new System.Windows.Forms.Padding(0);
             this.CurrentGameComboBox.Name = "CurrentGameComboBox";
             this.CurrentGameComboBox.Size = new System.Drawing.Size(150, 21);
             this.CurrentGameComboBox.TabIndex = 7;

@@ -709,7 +709,7 @@
             this.SettingsTabGeneralTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.SettingsTabGeneralTabPage.Size = new System.Drawing.Size(462, 203);
             this.SettingsTabGeneralTabPage.TabIndex = 0;
-            this.SettingsTabGeneralTabPage.Text = "General";
+            this.SettingsTabGeneralTabPage.Text = "★General";
             this.SettingsTabGeneralTabPage.UseVisualStyleBackColor = true;
             // 
             // SettingsTabGeneralTabPagePanel
@@ -928,7 +928,7 @@
             this.SettingsTabDisplayTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.SettingsTabDisplayTabPage.Size = new System.Drawing.Size(462, 203);
             this.SettingsTabDisplayTabPage.TabIndex = 1;
-            this.SettingsTabDisplayTabPage.Text = "Display";
+            this.SettingsTabDisplayTabPage.Text = "🔳Display";
             this.SettingsTabDisplayTabPage.UseVisualStyleBackColor = true;
             // 
             // SettingsTabGDisplayTabPagePanel

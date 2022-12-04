@@ -187,7 +187,7 @@
             this.MainTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.MainTabPage.Size = new System.Drawing.Size(476, 235);
             this.MainTabPage.TabIndex = 0;
-            this.MainTabPage.Text = T._("ℹInfo");
+            this.MainTabPage.Text = "ℹInfo";
             this.MainTabPage.UseVisualStyleBackColor = true;
             // 
             // InfoPagePanel
@@ -297,7 +297,7 @@
             this.MainServiceButton.Name = "MainServiceButton";
             this.MainServiceButton.Size = new System.Drawing.Size(376, 55);
             this.MainServiceButton.TabIndex = 19;
-            this.MainServiceButton.Text = T._("Prepare the game");
+            this.MainServiceButton.Text = "Prepare the game";
             this.MainServiceButton.UseVisualStyleBackColor = false;
             this.MainServiceButton.Click += new System.EventHandler(this.MainService_Click);
             // 
@@ -341,7 +341,7 @@
             this.InfoTabAppTitleLabel.Name = "InfoTabAppTitleLabel";
             this.InfoTabAppTitleLabel.Size = new System.Drawing.Size(470, 91);
             this.InfoTabAppTitleLabel.TabIndex = 2;
-            this.InfoTabAppTitleLabel.Text = T._("-  Ằ🌶Ḩelper  -");
+            this.InfoTabAppTitleLabel.Text = "-  Ằ🌶Ḩelper  -";
             this.InfoTabAppTitleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // LaunchTabPage
@@ -352,7 +352,7 @@
             this.LaunchTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.LaunchTabPage.Size = new System.Drawing.Size(476, 235);
             this.LaunchTabPage.TabIndex = 2;
-            this.LaunchTabPage.Text = T._("🚀Launch");
+            this.LaunchTabPage.Text = "🚀Launch";
             this.LaunchTabPage.UseVisualStyleBackColor = true;
             // 
             // LaunchPagePanel
@@ -401,8 +401,9 @@
             // 
             // FunctionsFlowLayoutPanel
             // 
+            this.FunctionsFlowLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.FunctionsFlowLayoutPanel.BackColor = System.Drawing.Color.Transparent;
-            this.FunctionsFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.FunctionsFlowLayoutPanel.Location = new System.Drawing.Point(1, 108);
             this.FunctionsFlowLayoutPanel.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.FunctionsFlowLayoutPanel.Name = "FunctionsFlowLayoutPanel";
@@ -439,7 +440,7 @@
             this.GameButton.Name = "GameButton";
             this.GameButton.Size = new System.Drawing.Size(189, 46);
             this.GameButton.TabIndex = 15;
-            this.GameButton.Text = T._("Game");
+            this.GameButton.Text = "Game";
             this.GameButton.UseVisualStyleBackColor = false;
             this.GameButton.Click += new System.EventHandler(this.GameButton_Click);
             // 
@@ -454,7 +455,7 @@
             this.StudioButton.Name = "StudioButton";
             this.StudioButton.Size = new System.Drawing.Size(189, 46);
             this.StudioButton.TabIndex = 16;
-            this.StudioButton.Text = T._("Studio");
+            this.StudioButton.Text = "Studio";
             this.StudioButton.UseVisualStyleBackColor = false;
             this.StudioButton.Click += new System.EventHandler(this.StudioButton_Click);
             // 
@@ -469,7 +470,7 @@
             this.MOButton.Name = "MOButton";
             this.MOButton.Size = new System.Drawing.Size(189, 46);
             this.MOButton.TabIndex = 13;
-            this.MOButton.Text = T._("Manager");
+            this.MOButton.Text = "Manager";
             this.MOButton.UseVisualStyleBackColor = false;
             this.MOButton.Click += new System.EventHandler(this.MOButton_Click);
             // 
@@ -484,7 +485,7 @@
             this.SettingsButton.Name = "SettingsButton";
             this.SettingsButton.Size = new System.Drawing.Size(189, 46);
             this.SettingsButton.TabIndex = 14;
-            this.SettingsButton.Text = T._("Settings");
+            this.SettingsButton.Text = "Settings";
             this.SettingsButton.UseVisualStyleBackColor = false;
             this.SettingsButton.Click += new System.EventHandler(this.SettingsButton_Click);
             // 
@@ -533,7 +534,7 @@
             this.OpenHelpLinkLabel.Size = new System.Drawing.Size(25, 16);
             this.OpenHelpLinkLabel.TabIndex = 28;
             this.OpenHelpLinkLabel.TabStop = true;
-            this.OpenHelpLinkLabel.Text = T._("Help");
+            this.OpenHelpLinkLabel.Text = "Help";
             this.OpenHelpLinkLabel.Visible = false;
             this.OpenHelpLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenHelpLinkLabel_LinkClicked);
             // 
@@ -592,7 +593,7 @@
             this.OpenLogLinkLabel.Size = new System.Drawing.Size(21, 13);
             this.OpenLogLinkLabel.TabIndex = 20;
             this.OpenLogLinkLabel.TabStop = true;
-            this.OpenLogLinkLabel.Text = T._("log");
+            this.OpenLogLinkLabel.Text = "log";
             this.OpenLogLinkLabel.VisitedLinkColor = System.Drawing.Color.Gainsboro;
             this.OpenLogLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenLogLinkLabel_LinkClicked);
             // 
@@ -619,7 +620,7 @@
             this.BepInExDisplayedLogLevelLabel.Name = "BepInExDisplayedLogLevelLabel";
             this.BepInExDisplayedLogLevelLabel.Size = new System.Drawing.Size(25, 13);
             this.BepInExDisplayedLogLevelLabel.TabIndex = 26;
-            this.BepInExDisplayedLogLevelLabel.Text = T._("Info");
+            this.BepInExDisplayedLogLevelLabel.Text = "Info";
             this.BepInExDisplayedLogLevelLabel.Visible = false;
             this.BepInExDisplayedLogLevelLabel.Click += new System.EventHandler(this.BepInExDisplayedLogLevelLabel_Click);
             // 
@@ -677,7 +678,7 @@
             this.SettingsTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.SettingsTabPage.Size = new System.Drawing.Size(476, 235);
             this.SettingsTabPage.TabIndex = 1;
-            this.SettingsTabPage.Text = T._("🔧Settings");
+            this.SettingsTabPage.Text = "🔧Settings";
             this.SettingsTabPage.UseVisualStyleBackColor = true;
             // 
             // SettingsTabPanel
@@ -709,7 +710,7 @@
             this.SettingsTabGeneralTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.SettingsTabGeneralTabPage.Size = new System.Drawing.Size(462, 203);
             this.SettingsTabGeneralTabPage.TabIndex = 0;
-            this.SettingsTabGeneralTabPage.Text = T._("★General");
+            this.SettingsTabGeneralTabPage.Text = "★General";
             this.SettingsTabGeneralTabPage.UseVisualStyleBackColor = true;
             // 
             // SettingsTabGeneralTabPagePanel
@@ -751,12 +752,12 @@
             this.CurrentGameLabel.Name = "CurrentGameLabel";
             this.CurrentGameLabel.Size = new System.Drawing.Size(75, 13);
             this.CurrentGameLabel.TabIndex = 8;
-            this.CurrentGameLabel.Text = T._("Current Game") + ":";
+            this.CurrentGameLabel.Text = "Current Game:";
             // 
             // ManageGameTableLayoutPanel1
             // 
             this.ManageGameTableLayoutPanel1.ColumnCount = 2;
-            this.ManageGameTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
+            this.ManageGameTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 157F));
             this.ManageGameTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.ManageGameTableLayoutPanel1.Controls.Add(this.CurrentGamePanel1, 0, 0);
             this.ManageGameTableLayoutPanel1.Controls.Add(this.AddGameSettingsLabel, 1, 0);
@@ -777,7 +778,7 @@
             this.CurrentGamePanel1.Location = new System.Drawing.Point(3, 0);
             this.CurrentGamePanel1.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.CurrentGamePanel1.Name = "CurrentGamePanel1";
-            this.CurrentGamePanel1.Size = new System.Drawing.Size(147, 20);
+            this.CurrentGamePanel1.Size = new System.Drawing.Size(154, 20);
             this.CurrentGamePanel1.TabIndex = 0;
             // 
             // CurrentGameTitleTextBox
@@ -813,12 +814,12 @@
             this.AddGameSettingsLabel.AutoSize = true;
             this.AddGameSettingsLabel.BackColor = System.Drawing.Color.Transparent;
             this.AddGameSettingsLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.AddGameSettingsLabel.Location = new System.Drawing.Point(155, 0);
+            this.AddGameSettingsLabel.Location = new System.Drawing.Point(162, 0);
             this.AddGameSettingsLabel.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
             this.AddGameSettingsLabel.Name = "AddGameSettingsLabel";
             this.AddGameSettingsLabel.Size = new System.Drawing.Size(55, 20);
             this.AddGameSettingsLabel.TabIndex = 14;
-            this.AddGameSettingsLabel.Text = T._("Add game");
+            this.AddGameSettingsLabel.Text = "Add game";
             this.AddGameSettingsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.AddGameSettingsLabel.Click += new System.EventHandler(this.AddGameLabel_Click);
             // 
@@ -848,7 +849,7 @@
             this.JPLauncherRunLinkLabel.Size = new System.Drawing.Size(67, 13);
             this.JPLauncherRunLinkLabel.TabIndex = 10;
             this.JPLauncherRunLinkLabel.TabStop = true;
-            this.JPLauncherRunLinkLabel.Text = T._("JP Launcher");
+            this.JPLauncherRunLinkLabel.Text = "JP Launcher";
             this.JPLauncherRunLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // cbxNtlea
@@ -875,7 +876,7 @@
             this.ExtraSettingsLinkLabel.Size = new System.Drawing.Size(72, 13);
             this.ExtraSettingsLinkLabel.TabIndex = 9;
             this.ExtraSettingsLinkLabel.TabStop = true;
-            this.ExtraSettingsLinkLabel.Text = T._("Extra Settings");
+            this.ExtraSettingsLinkLabel.Text = "Extra Settings";
             this.ExtraSettingsLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.ExtraSettingsLinkLabel_LinkClicked);
             // 
             // FixRegistryLinkLabel
@@ -889,7 +890,7 @@
             this.FixRegistryLinkLabel.Size = new System.Drawing.Size(56, 13);
             this.FixRegistryLinkLabel.TabIndex = 12;
             this.FixRegistryLinkLabel.TabStop = true;
-            this.FixRegistryLinkLabel.Text = T._("Fix registry");
+            this.FixRegistryLinkLabel.Text = "Fix registry";
             this.FixRegistryLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.FixRegistryButton_Click);
             this.FixRegistryLinkLabel.Click += new System.EventHandler(this.FixRegistryButton_Click);
             // 
@@ -904,7 +905,7 @@
             this.CreateShortcutLinkLabel.Size = new System.Drawing.Size(47, 13);
             this.CreateShortcutLinkLabel.TabIndex = 13;
             this.CreateShortcutLinkLabel.TabStop = true;
-            this.CreateShortcutLinkLabel.Text = T._("Shortcut");
+            this.CreateShortcutLinkLabel.Text = "Shortcut";
             this.CreateShortcutLinkLabel.Click += new System.EventHandler(this.CreateShortcutButton_Click);
             // 
             // AutoShortcutRegistryCheckBox
@@ -930,7 +931,7 @@
             this.SettingsTabDisplayTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.SettingsTabDisplayTabPage.Size = new System.Drawing.Size(462, 203);
             this.SettingsTabDisplayTabPage.TabIndex = 1;
-            this.SettingsTabDisplayTabPage.Text = T._("🔳Display");
+            this.SettingsTabDisplayTabPage.Text = "🔳Display";
             this.SettingsTabDisplayTabPage.UseVisualStyleBackColor = true;
             // 
             // SettingsTabGDisplayTabPagePanel
@@ -970,7 +971,7 @@
             this.DisplaySettingsGroupBox.Size = new System.Drawing.Size(145, 90);
             this.DisplaySettingsGroupBox.TabIndex = 3;
             this.DisplaySettingsGroupBox.TabStop = false;
-            this.DisplaySettingsGroupBox.Text = T._("Display");
+            this.DisplaySettingsGroupBox.Text = "Display";
             // 
             // SetupXmlLinkLabel
             // 
@@ -981,7 +982,7 @@
             this.SetupXmlLinkLabel.Size = new System.Drawing.Size(41, 13);
             this.SetupXmlLinkLabel.TabIndex = 6;
             this.SetupXmlLinkLabel.TabStop = true;
-            this.SetupXmlLinkLabel.Text = T._("Display");
+            this.SetupXmlLinkLabel.Text = "Display";
             this.SetupXmlLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.SetupXmlPathLinkLabel_LinkClicked);
             // 
             // QualityComboBox
@@ -1039,7 +1040,7 @@
             this.ToolsTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.ToolsTabPage.Size = new System.Drawing.Size(476, 235);
             this.ToolsTabPage.TabIndex = 3;
-            this.ToolsTabPage.Text = T._("🔨Tools");
+            this.ToolsTabPage.Text = "🔨Tools";
             this.ToolsTabPage.UseVisualStyleBackColor = true;
             // 
             // ToolsTabPagePanel
@@ -1100,7 +1101,7 @@
             this.btnUpdateMods.Name = "btnUpdateMods";
             this.btnUpdateMods.Size = new System.Drawing.Size(169, 52);
             this.btnUpdateMods.TabIndex = 26;
-            this.btnUpdateMods.Text = T._("Update mods");
+            this.btnUpdateMods.Text = "Update mods";
             this.btnUpdateMods.UseVisualStyleBackColor = false;
             this.btnUpdateMods.Click += new System.EventHandler(this.btnUpdateMods_Click);
             // 
@@ -1132,7 +1133,7 @@
             this.InstallInModsButton.Name = "InstallInModsButton";
             this.InstallInModsButton.Size = new System.Drawing.Size(173, 51);
             this.InstallInModsButton.TabIndex = 17;
-            this.InstallInModsButton.Text = T._("Install");
+            this.InstallInModsButton.Text = "Install";
             this.InstallInModsButton.UseVisualStyleBackColor = false;
             this.InstallInModsButton.Click += new System.EventHandler(this.InstallInModsButton_Click);
             // 
@@ -1237,7 +1238,7 @@
             this.ToolsFixModListButton.Name = "ToolsFixModListButton";
             this.ToolsFixModListButton.Size = new System.Drawing.Size(170, 51);
             this.ToolsFixModListButton.TabIndex = 22;
-            this.ToolsFixModListButton.Text = T._("Fix ModList");
+            this.ToolsFixModListButton.Text = "Fix ModList";
             this.ToolsFixModListButton.UseVisualStyleBackColor = false;
             this.ToolsFixModListButton.Click += new System.EventHandler(this.ToolsFixModListButton_Click);
             // 
@@ -1249,7 +1250,7 @@
             this.FoldersTabPage.Padding = new System.Windows.Forms.Padding(3);
             this.FoldersTabPage.Size = new System.Drawing.Size(476, 235);
             this.FoldersTabPage.TabIndex = 4;
-            this.FoldersTabPage.Text = T._("🗁Folders");
+            this.FoldersTabPage.Text = "🗁Folders";
             this.FoldersTabPage.UseVisualStyleBackColor = true;
             // 
             // FoldersTabPagePanel1
@@ -1279,7 +1280,7 @@
             this.SettingsFoldersGroupBox.Size = new System.Drawing.Size(107, 90);
             this.SettingsFoldersGroupBox.TabIndex = 7;
             this.SettingsFoldersGroupBox.TabStop = false;
-            this.SettingsFoldersGroupBox.Text = T._("Folders");
+            this.SettingsFoldersGroupBox.Text = "Folders";
             // 
             // OpenPresetDirsLinkLabelMO
             // 
@@ -1304,7 +1305,7 @@
             this.OpenPresetDirsLinkLabel.Size = new System.Drawing.Size(34, 13);
             this.OpenPresetDirsLinkLabel.TabIndex = 6;
             this.OpenPresetDirsLinkLabel.TabStop = true;
-            this.OpenPresetDirsLinkLabel.Text = T._("Cards");
+            this.OpenPresetDirsLinkLabel.Text = "Cards";
             this.OpenPresetDirsLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
             // 
             // SettingsOpen2MOLinkLabel
@@ -1330,7 +1331,7 @@
             this.OpenMOOverwriteFolderLinkLabel.Size = new System.Drawing.Size(52, 13);
             this.OpenMOOverwriteFolderLinkLabel.TabIndex = 4;
             this.OpenMOOverwriteFolderLinkLabel.TabStop = true;
-            this.OpenMOOverwriteFolderLinkLabel.Text = T._("Overwrite");
+            this.OpenMOOverwriteFolderLinkLabel.Text = "Overwrite";
             this.OpenMOOverwriteFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
             // 
             // OpenMyUserDataFolderLinkLabel
@@ -1356,7 +1357,7 @@
             this.OpenModsFolderLinkLabel.Size = new System.Drawing.Size(33, 13);
             this.OpenModsFolderLinkLabel.TabIndex = 2;
             this.OpenModsFolderLinkLabel.TabStop = true;
-            this.OpenModsFolderLinkLabel.Text = T._("Mods");
+            this.OpenModsFolderLinkLabel.Text = "Mods";
             this.OpenModsFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
             // 
             // OpenMOFolderLinkLabel
@@ -1382,7 +1383,7 @@
             this.OpenGameFolderLinkLabel.Size = new System.Drawing.Size(35, 13);
             this.OpenGameFolderLinkLabel.TabIndex = 0;
             this.OpenGameFolderLinkLabel.TabStop = true;
-            this.OpenGameFolderLinkLabel.Text = T._("Game");
+            this.OpenGameFolderLinkLabel.Text = "Game";
             this.OpenGameFolderLinkLabel.VisitedLinkColor = System.Drawing.Color.Aquamarine;
             // 
             // MainForm

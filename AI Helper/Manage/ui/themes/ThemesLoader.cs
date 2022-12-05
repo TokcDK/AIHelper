@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using AIHelper.Manage.ui.themes;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace AIHelper.Manage.Functions
 {
@@ -49,16 +50,50 @@ namespace AIHelper.Manage.Functions
                 SetTheme(theme, c);
             }
         }
-        internal static void SetDefaultTheme() 
+        internal static void SetDefaultTheme()
         {
-            ManageSettings.CurrentTheme = new DefaultTheme1();
-            SetTheme(ManageSettings.CurrentTheme, ManageSettings.MainForm); 
+            ManageSettings.CurrentTheme = new DefaultTheme();
+            SetTheme(ManageSettings.CurrentTheme, ManageSettings.MainForm);
         }
         internal static void SetDarkTheme() { SetTheme(new DarkThemeVS(), ManageSettings.MainForm); }
 
         internal static void SetRandomColors()
         {
             SetTheme(new RandomColorsTheme(), ManageSettings.MainForm);
+        }
+
+        internal static void SetTheme()
+        {
+            var list = GetList();
+            var cnt = list.Count;
+            ManageSettings.CurrentTheme = list.FirstOrDefault(t => t.Name == new DefaultTheme().Name);
+            
+            var bs = new BindingSource();
+            bs.DataSource = list;
+
+            ManageSettings.MainForm.SelectThemeComboBox.DataSource = bs.DataSource;
+
+            ManageSettings.MainForm.SelectThemeComboBox.DisplayMember = "Name";
+            ManageSettings.MainForm.SelectThemeComboBox.ValueMember = "Name";
+
+            ManageSettings.MainForm.SelectThemeComboBox.SelectedIndexChanged += new EventHandler((o, e) =>
+            {
+                var st = ManageSettings.MainForm.SelectThemeComboBox.SelectedItem as IUITheme;
+
+                SetTheme(st);
+            });
+
+            var ini = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
+
+            if (ini.KeyExists(ManageSettings.IniThemeKeyName, ManageSettings.IniSettingsSectionName))
+            {
+                var themeName = ini.GetKey(ManageSettings.IniSettingsSectionName, ManageSettings.IniThemeKeyName);
+
+                var t = list.FirstOrDefault(n => n.Name == themeName);
+                ManageSettings.CurrentTheme = t == default ? ManageSettings.CurrentTheme : t;
+            }
+
+            ManageSettings.MainForm.SelectThemeComboBox.SelectedItem = ManageSettings.CurrentTheme;
         }
     }
 }

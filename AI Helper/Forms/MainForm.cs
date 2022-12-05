@@ -581,7 +581,7 @@ namespace AIHelper
             SelectedGameLabel.Text = ManageSettings.Games.Game.GameDisplayingName + "❤";
             this.Text = "AI Helper" + " | " + ManageSettings.Games.Game.GameDisplayingName;
 
-            ThemesLoader.SetDefaultTheme();
+            ThemesLoader.SetTheme();
 
             // load dinamic elements
             if (AIGirlHelperTabControl.SelectedTab == FoldersTabPage)

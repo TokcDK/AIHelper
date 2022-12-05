@@ -1305,5 +1305,7 @@ namespace AIHelper.Manage
         /// Current theme of the app
         /// </summary>
         public static IUITheme CurrentTheme { get; internal set; }
+        public static string IniThemeKeyName { get=>"Theme"; }
+        public static string IniSettingsSectionName { get=>"Settings"; }
     }
 }

@@ -81,8 +81,10 @@
             this.FixRegistryLinkLabel = new System.Windows.Forms.LinkLabel();
             this.CreateShortcutLinkLabel = new System.Windows.Forms.LinkLabel();
             this.AutoShortcutRegistryCheckBox = new System.Windows.Forms.CheckBox();
+            this.ThemeSelectLabel = new System.Windows.Forms.Label();
+            this.SelectThemeComboBox = new System.Windows.Forms.ComboBox();
             this.SettingsTabDisplayTabPage = new System.Windows.Forms.TabPage();
-            this.SettingsTabDisplayTabPageBackgroundPanel = new System.Windows.Forms.Panel();
+            this.SettingsTabDisplayTabPageGameBackgroundPanel = new System.Windows.Forms.Panel();
             this.SettingsTabDisplayTabPageTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.OpenSetupXmlLinkLabel = new System.Windows.Forms.LinkLabel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -123,7 +125,7 @@
             this.CurrentGamePanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.SettingsTabDisplayTabPage.SuspendLayout();
-            this.SettingsTabDisplayTabPageBackgroundPanel.SuspendLayout();
+            this.SettingsTabDisplayTabPageGameBackgroundPanel.SuspendLayout();
             this.SettingsTabDisplayTabPageTableLayoutPanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -694,11 +696,15 @@
             this.SettingsTabGeneralTabPageTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.SettingsTabGeneralTabPageTableLayoutPanel.Controls.Add(this.CurrentGameLabel, 0, 0);
             this.SettingsTabGeneralTabPageTableLayoutPanel.Controls.Add(this.ManageGameTableLayoutPanel1, 0, 1);
-            this.SettingsTabGeneralTabPageTableLayoutPanel.Controls.Add(this.flowLayoutPanel1, 0, 3);
+            this.SettingsTabGeneralTabPageTableLayoutPanel.Controls.Add(this.flowLayoutPanel1, 0, 5);
+            this.SettingsTabGeneralTabPageTableLayoutPanel.Controls.Add(this.ThemeSelectLabel, 0, 2);
+            this.SettingsTabGeneralTabPageTableLayoutPanel.Controls.Add(this.SelectThemeComboBox, 0, 3);
             this.SettingsTabGeneralTabPageTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SettingsTabGeneralTabPageTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.SettingsTabGeneralTabPageTableLayoutPanel.Name = "SettingsTabGeneralTabPageTableLayoutPanel";
-            this.SettingsTabGeneralTabPageTableLayoutPanel.RowCount = 4;
+            this.SettingsTabGeneralTabPageTableLayoutPanel.RowCount = 6;
+            this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
@@ -795,8 +801,7 @@
             this.flowLayoutPanel1.Controls.Add(this.FixRegistryLinkLabel);
             this.flowLayoutPanel1.Controls.Add(this.CreateShortcutLinkLabel);
             this.flowLayoutPanel1.Controls.Add(this.AutoShortcutRegistryCheckBox);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 60);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 100);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(456, 137);
@@ -887,27 +892,49 @@
             this.AutoShortcutRegistryCheckBox.Visible = false;
             this.AutoShortcutRegistryCheckBox.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
             // 
+            // ThemeSelectLabel
+            // 
+            this.ThemeSelectLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.ThemeSelectLabel.AutoSize = true;
+            this.ThemeSelectLabel.BackColor = System.Drawing.Color.Transparent;
+            this.ThemeSelectLabel.ForeColor = System.Drawing.Color.White;
+            this.ThemeSelectLabel.Location = new System.Drawing.Point(3, 47);
+            this.ThemeSelectLabel.Name = "ThemeSelectLabel";
+            this.ThemeSelectLabel.Size = new System.Drawing.Size(43, 13);
+            this.ThemeSelectLabel.TabIndex = 11;
+            this.ThemeSelectLabel.Text = "Theme:";
+            // 
+            // SelectThemeComboBox
+            // 
+            this.SelectThemeComboBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.SelectThemeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.SelectThemeComboBox.FormattingEnabled = true;
+            this.SelectThemeComboBox.Location = new System.Drawing.Point(3, 63);
+            this.SelectThemeComboBox.Name = "SelectThemeComboBox";
+            this.SelectThemeComboBox.Size = new System.Drawing.Size(150, 21);
+            this.SelectThemeComboBox.TabIndex = 12;
+            // 
             // SettingsTabDisplayTabPage
             // 
-            this.SettingsTabDisplayTabPage.Controls.Add(this.SettingsTabDisplayTabPageBackgroundPanel);
+            this.SettingsTabDisplayTabPage.Controls.Add(this.SettingsTabDisplayTabPageGameBackgroundPanel);
             this.SettingsTabDisplayTabPage.Location = new System.Drawing.Point(4, 22);
             this.SettingsTabDisplayTabPage.Name = "SettingsTabDisplayTabPage";
             this.SettingsTabDisplayTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.SettingsTabDisplayTabPage.Size = new System.Drawing.Size(458, 203);
+            this.SettingsTabDisplayTabPage.Size = new System.Drawing.Size(462, 203);
             this.SettingsTabDisplayTabPage.TabIndex = 1;
             this.SettingsTabDisplayTabPage.Text = "🔳Display";
             this.SettingsTabDisplayTabPage.UseVisualStyleBackColor = true;
             // 
-            // SettingsTabDisplayTabPageBackgroundPanel
+            // SettingsTabDisplayTabPageGameBackgroundPanel
             // 
-            this.SettingsTabDisplayTabPageBackgroundPanel.BackColor = System.Drawing.Color.Gray;
-            this.SettingsTabDisplayTabPageBackgroundPanel.Controls.Add(this.SettingsTabDisplayTabPageTableLayoutPanel);
-            this.SettingsTabDisplayTabPageBackgroundPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SettingsTabDisplayTabPageBackgroundPanel.Location = new System.Drawing.Point(3, 3);
-            this.SettingsTabDisplayTabPageBackgroundPanel.Margin = new System.Windows.Forms.Padding(0);
-            this.SettingsTabDisplayTabPageBackgroundPanel.Name = "SettingsTabDisplayTabPageBackgroundPanel";
-            this.SettingsTabDisplayTabPageBackgroundPanel.Size = new System.Drawing.Size(452, 197);
-            this.SettingsTabDisplayTabPageBackgroundPanel.TabIndex = 1;
+            this.SettingsTabDisplayTabPageGameBackgroundPanel.BackColor = System.Drawing.Color.Gray;
+            this.SettingsTabDisplayTabPageGameBackgroundPanel.Controls.Add(this.SettingsTabDisplayTabPageTableLayoutPanel);
+            this.SettingsTabDisplayTabPageGameBackgroundPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SettingsTabDisplayTabPageGameBackgroundPanel.Location = new System.Drawing.Point(3, 3);
+            this.SettingsTabDisplayTabPageGameBackgroundPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.SettingsTabDisplayTabPageGameBackgroundPanel.Name = "SettingsTabDisplayTabPageGameBackgroundPanel";
+            this.SettingsTabDisplayTabPageGameBackgroundPanel.Size = new System.Drawing.Size(456, 197);
+            this.SettingsTabDisplayTabPageGameBackgroundPanel.TabIndex = 1;
             // 
             // SettingsTabDisplayTabPageTableLayoutPanel
             // 
@@ -927,7 +954,7 @@
             this.SettingsTabDisplayTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.SettingsTabDisplayTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.SettingsTabDisplayTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.SettingsTabDisplayTabPageTableLayoutPanel.Size = new System.Drawing.Size(452, 197);
+            this.SettingsTabDisplayTabPageTableLayoutPanel.Size = new System.Drawing.Size(456, 197);
             this.SettingsTabDisplayTabPageTableLayoutPanel.TabIndex = 1;
             // 
             // OpenSetupXmlLinkLabel
@@ -937,7 +964,7 @@
             this.OpenSetupXmlLinkLabel.AutoSize = true;
             this.OpenSetupXmlLinkLabel.Location = new System.Drawing.Point(3, 7);
             this.OpenSetupXmlLinkLabel.Name = "OpenSetupXmlLinkLabel";
-            this.OpenSetupXmlLinkLabel.Size = new System.Drawing.Size(446, 13);
+            this.OpenSetupXmlLinkLabel.Size = new System.Drawing.Size(450, 13);
             this.OpenSetupXmlLinkLabel.TabIndex = 4;
             this.OpenSetupXmlLinkLabel.TabStop = true;
             this.OpenSetupXmlLinkLabel.Text = "Open game setup file";
@@ -956,7 +983,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(452, 25);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(456, 25);
             this.tableLayoutPanel1.TabIndex = 6;
             // 
             // ResolutionLabel
@@ -1008,7 +1035,7 @@
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(452, 25);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(456, 25);
             this.tableLayoutPanel2.TabIndex = 7;
             // 
             // QualityLabel
@@ -1046,7 +1073,7 @@
             this.FullScreenCheckBox.ForeColor = System.Drawing.Color.White;
             this.FullScreenCheckBox.Location = new System.Drawing.Point(3, 73);
             this.FullScreenCheckBox.Name = "FullScreenCheckBox";
-            this.FullScreenCheckBox.Size = new System.Drawing.Size(446, 17);
+            this.FullScreenCheckBox.Size = new System.Drawing.Size(450, 17);
             this.FullScreenCheckBox.TabIndex = 4;
             this.FullScreenCheckBox.Text = "fullscreen";
             this.FullScreenCheckBox.UseVisualStyleBackColor = false;
@@ -1151,7 +1178,7 @@
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.SettingsTabDisplayTabPage.ResumeLayout(false);
-            this.SettingsTabDisplayTabPageBackgroundPanel.ResumeLayout(false);
+            this.SettingsTabDisplayTabPageGameBackgroundPanel.ResumeLayout(false);
             this.SettingsTabDisplayTabPageTableLayoutPanel.ResumeLayout(false);
             this.SettingsTabDisplayTabPageTableLayoutPanel.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -1220,7 +1247,7 @@
         private System.Windows.Forms.Panel CurrentGamePanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.TabPage SettingsTabDisplayTabPage;
-        private System.Windows.Forms.Panel SettingsTabDisplayTabPageBackgroundPanel;
+        private System.Windows.Forms.Panel SettingsTabDisplayTabPageGameBackgroundPanel;
         private System.Windows.Forms.TableLayoutPanel SettingsTabDisplayTabPageTableLayoutPanel;
         private System.Windows.Forms.LinkLabel OpenSetupXmlLinkLabel;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
@@ -1234,6 +1261,8 @@
         internal System.Windows.Forms.TabPage FoldersTabPage;
         internal System.Windows.Forms.Panel ToolsTabPageBackgroundPanel;
         private System.Windows.Forms.Panel MainFormBackgroundPanel;
+        private System.Windows.Forms.Label ThemeSelectLabel;
+        internal System.Windows.Forms.ComboBox SelectThemeComboBox;
     }
 }
 

@@ -276,7 +276,7 @@
     <Compile Include="Manage\ToolsTab\IToolsTabButtonData.cs" />
     <Compile Include="Manage\ui\themes\DarkThemeVS.cs" />
     <Compile Include="Manage\ui\themes\OldTheme1.cs" />
-    <Compile Include="Manage\ui\themes\DefaultTheme1.cs" />
+    <Compile Include="Manage\ui\themes\DefaultTheme.cs" />
     <Compile Include="Manage\ui\themes\RandomColorsTheme.cs" />
     <Compile Include="Manage\ui\themes\ThemesLoader.cs" />
     <Compile Include="Manage\ui\themes\IUITheme.cs" />

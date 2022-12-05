@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace AIHelper.Manage.ui.themes
 {
-    internal class DefaultTheme1 : IUITheme
+    internal class DefaultTheme : IUITheme
     {
         public string Name => "Default";
         Color _bg = Color.FromArgb(255, 72, 85, 86);

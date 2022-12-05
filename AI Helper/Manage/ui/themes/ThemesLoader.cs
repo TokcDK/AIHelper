@@ -34,5 +34,10 @@ namespace AIHelper.Manage.Functions
                 ApplyTheme(theme, c);
             }
         }
+
+        internal static void ApplyRandomColors()
+        {
+            ApplyTheme(new RandomColorsTheme(), ManageSettings.MainForm);
+        }
     }
 }

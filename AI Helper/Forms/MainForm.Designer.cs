@@ -213,7 +213,7 @@
             this.ModsInfoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ModsInfoLabel.AutoEllipsis = true;
-            this.ModsInfoLabel.BackColor = System.Drawing.Color.Gray;
+            this.ModsInfoLabel.BackColor = System.Drawing.Color.Transparent;
             this.ModsInfoLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ModsInfoLabel.Font = new System.Drawing.Font("Times New Roman", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.ModsInfoLabel.ForeColor = System.Drawing.Color.White;
@@ -230,7 +230,7 @@
             this.DataInfoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.DataInfoLabel.AutoEllipsis = true;
-            this.DataInfoLabel.BackColor = System.Drawing.Color.Gray;
+            this.DataInfoLabel.BackColor = System.Drawing.Color.Transparent;
             this.DataInfoLabel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DataInfoLabel.Font = new System.Drawing.Font("Times New Roman", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.DataInfoLabel.ForeColor = System.Drawing.Color.White;

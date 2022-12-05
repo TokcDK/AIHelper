@@ -23,6 +23,6 @@ namespace AIHelper.Manage.Functions
         {
             Process.Start(ManageSettings.DiscordGroupLink);
         }
-        public override Color? ForeColor => Color.DarkBlue;
+        public override Color? ForeColor => Color.SkyBlue;
     }
 }

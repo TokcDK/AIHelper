@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AI Helper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-04 21:46+0500\n"
-"PO-Revision-Date: 2022-12-04 21:47+0500\n"
+"POT-Creation-Date: 2022-12-05 22:38+0500\n"
+"PO-Revision-Date: 2022-12-05 22:39+0500\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -42,11 +42,11 @@ msgstr "Очистка  выбора уровней лога"
 msgid "Log levels. How many messages will be displayed"
 msgstr "Уровни лога. Как много сообщений будет отображено"
 
-#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:52 Forms/MainForm.cs:340
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:52 Forms/MainForm.cs:341
 msgid "Open BepinEx log if found"
 msgstr "Открыть лог BepinEx, если найден"
 
-#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:53 Forms/MainForm.cs:341
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:53 Forms/MainForm.cs:342
 msgid ""
 "Click here to select log level\n"
 "Only displays the specified log level and above in the console output"
@@ -74,7 +74,7 @@ msgstr "Консоль"
 
 #: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:128
 #: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:150
-#: Forms/MainForm.Designer.cs:460
+#: Forms/MainForm.Designer.cs:453
 msgid "Settings"
 msgstr "Настройки"
 
@@ -92,12 +92,12 @@ msgid "Disk"
 msgstr "Диск"
 
 #: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:62
-#: Manage/ManageSettings.cs:895 Manage/ManageSettings.cs:968
+#: Manage/ManageSettings.cs:896 Manage/ManageSettings.cs:969
 msgid "Auto"
 msgstr "Авто"
 
 #: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:147
-#: Forms/MainForm.Designer.cs:852
+#: Forms/MainForm.Designer.cs:848
 msgid "Extra Settings"
 msgstr "Доп. настройки"
 
@@ -269,128 +269,132 @@ msgstr ""
 msgid "not found"
 msgstr "не найден"
 
-#: Forms/MainForm.Designer.cs:162
+#: Forms/MainForm.Designer.cs:164
 msgid "ℹInfo"
 msgstr "ℹИнфо"
 
-#: Forms/MainForm.Designer.cs:236 Forms/MainForm.Designer.cs:253
+#: Forms/MainForm.Designer.cs:229 Forms/MainForm.Designer.cs:246
 msgid "..."
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:272
+#: Forms/MainForm.Designer.cs:265
 msgid "Prepare the game"
 msgstr "Подготовить игру"
 
-#: Forms/MainForm.Designer.cs:316 Forms/MainForm.Designer.cs:628
+#: Forms/MainForm.Designer.cs:309 Forms/MainForm.Designer.cs:621
 msgid "-  Ằ🌶Ḩelper  -"
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:327
+#: Forms/MainForm.Designer.cs:320
 msgid "🚀Launch"
 msgstr "🚀Запуск"
 
-#: Forms/MainForm.Designer.cs:415
+#: Forms/MainForm.Designer.cs:408
 #: Manage/FoldersTab/Folders/SimpleFolderOpen/OpenGameDirButtonData.cs:14
 msgid "Game"
 msgstr "Игра"
 
-#: Forms/MainForm.Designer.cs:430
+#: Forms/MainForm.Designer.cs:423
 msgid "Studio"
 msgstr "Студия"
 
-#: Forms/MainForm.Designer.cs:445
+#: Forms/MainForm.Designer.cs:438
 msgid "Manager"
 msgstr "Менеджер"
 
-#: Forms/MainForm.Designer.cs:509
+#: Forms/MainForm.Designer.cs:502
 msgid "Help"
 msgstr "Помощь"
 
-#: Forms/MainForm.Designer.cs:569
+#: Forms/MainForm.Designer.cs:562
 msgid "log"
 msgstr "лог"
 
-#: Forms/MainForm.Designer.cs:584
+#: Forms/MainForm.Designer.cs:577
 msgid "vr"
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:596
+#: Forms/MainForm.Designer.cs:589
 msgid "Info"
 msgstr "Инфо"
 
-#: Forms/MainForm.Designer.cs:643
+#: Forms/MainForm.Designer.cs:636
 msgid "GameTitle"
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:654
+#: Forms/MainForm.Designer.cs:647
 msgid "🔧Settings"
 msgstr "🔧Настройки"
 
-#: Forms/MainForm.Designer.cs:686
+#: Forms/MainForm.Designer.cs:679
 msgid "★General"
 msgstr "★Основные"
 
-#: Forms/MainForm.Designer.cs:728
+#: Forms/MainForm.Designer.cs:725
 msgid "Current Game:"
 msgstr "Текущая игра:"
 
-#: Forms/MainForm.Designer.cs:795
+#: Forms/MainForm.Designer.cs:792
 msgid "Add game"
 msgstr "Добавить игру"
 
-#: Forms/MainForm.Designer.cs:825
+#: Forms/MainForm.Designer.cs:821
 msgid "JP Launcher"
 msgstr "Ориг. лаунчер"
 
-#: Forms/MainForm.Designer.cs:837
+#: Forms/MainForm.Designer.cs:833
 msgid "ntlea"
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:866
+#: Forms/MainForm.Designer.cs:862
 msgid "Fix registry"
 msgstr "Фикс реестра"
 
-#: Forms/MainForm.Designer.cs:881 Manage/ManageOther.cs:84
+#: Forms/MainForm.Designer.cs:877 Manage/ManageOther.cs:84
 msgid "Shortcut"
 msgstr "Ярлык"
 
-#: Forms/MainForm.Designer.cs:894
+#: Forms/MainForm.Designer.cs:890
 msgid "Autoshortcut"
 msgstr "Автоярлык"
 
-#: Forms/MainForm.Designer.cs:907
+#: Forms/MainForm.Designer.cs:905
+msgid "Theme:"
+msgstr "Тема:"
+
+#: Forms/MainForm.Designer.cs:925
 msgid "🔳Display"
 msgstr "🔳Экран"
 
-#: Forms/MainForm.Designer.cs:952
+#: Forms/MainForm.Designer.cs:970
 msgid "Open game setup file"
 msgstr "Открыть файл настроек игры"
 
-#: Forms/MainForm.Designer.cs:981
+#: Forms/MainForm.Designer.cs:999
 msgid "Resolution:"
 msgstr "Разрешение:"
 
-#: Forms/MainForm.Designer.cs:1033
+#: Forms/MainForm.Designer.cs:1051
 msgid "Quality:"
 msgstr "Качество:"
 
-#: Forms/MainForm.Designer.cs:1060
+#: Forms/MainForm.Designer.cs:1078
 msgid "fullscreen"
 msgstr "во весь экран"
 
-#: Forms/MainForm.Designer.cs:1072
+#: Forms/MainForm.Designer.cs:1090
 msgid "🔨Tools"
 msgstr "🔨Инструменты"
 
-#: Forms/MainForm.Designer.cs:1093
+#: Forms/MainForm.Designer.cs:1111
 msgid "🗁Folders"
 msgstr "🗁Папки"
 
-#: Forms/MainForm.Designer.cs:1116
+#: Forms/MainForm.Designer.cs:1142
 msgid "AI Helper [Organized modpack]"
 msgstr ""
 
-#: Forms/MainForm.cs:75
+#: Forms/MainForm.cs:76
 msgid ""
 "Mod Organizer is missing in the app dir. Need to download latest version for "
 "to be able to manage mods by MO. Download latest?"
@@ -398,11 +402,11 @@ msgstr ""
 "Mod Organizer отсутствует в папке программы. Нужно загрузить последнюю "
 "версию для управления модами через него. Загрузить?"
 
-#: Forms/MainForm.cs:75
+#: Forms/MainForm.cs:76
 msgid "Mod Organizer not found!"
 msgstr "Mod Organizer не найден!"
 
-#: Forms/MainForm.cs:78
+#: Forms/MainForm.cs:79
 msgid ""
 "Application will exit now. You can manually put Mod Organizer in MO folder "
 "nex to the program."
@@ -410,51 +414,51 @@ msgstr ""
 "Программа завершает работу. Вы можете вручную поместить файлы Mod Organizer "
 "в папку MO рядом с программой."
 
-#: Forms/MainForm.cs:214
+#: Forms/MainForm.cs:215
 msgid "Perfomance"
 msgstr "Производительность"
 
-#: Forms/MainForm.cs:215
+#: Forms/MainForm.cs:216
 msgid "Normal"
 msgstr "Нормально"
 
-#: Forms/MainForm.cs:216
+#: Forms/MainForm.cs:217
 msgid "Quality"
 msgstr "Качество"
 
-#: Forms/MainForm.cs:306
+#: Forms/MainForm.cs:307
 msgid "Selected game title"
 msgstr "Название выбранной игры"
 
-#: Forms/MainForm.cs:309
+#: Forms/MainForm.cs:310
 msgid "Check to run VR exe instead on standart"
 msgstr "Отметить для запуска VR exe, если есть"
 
-#: Forms/MainForm.cs:311 Forms/MainForm.cs:313
+#: Forms/MainForm.cs:312 Forms/MainForm.cs:314
 msgid "Will execute the Game"
 msgstr "Запустит игру"
 
-#: Forms/MainForm.cs:312 Forms/MainForm.cs:316 Forms/MainForm.cs:322
+#: Forms/MainForm.cs:313 Forms/MainForm.cs:317 Forms/MainForm.cs:323
 msgid " from Mod Organizer with attached mods"
 msgstr " из под Mod Organizer с подключенными модами"
 
-#: Forms/MainForm.cs:315 Forms/MainForm.cs:317
+#: Forms/MainForm.cs:316 Forms/MainForm.cs:318
 msgid "Will execute Studio"
 msgstr "Запустит Студию"
 
-#: Forms/MainForm.cs:319
+#: Forms/MainForm.cs:320
 msgid "Will execute Mod Organizer mod manager where you can manage your mods"
 msgstr "Запустит Mod Organizer, где вы можете управлять своими модами"
 
-#: Forms/MainForm.cs:321 Forms/MainForm.cs:323
+#: Forms/MainForm.cs:322 Forms/MainForm.cs:324
 msgid "Will execute original game launcher"
 msgstr "Запустит оригинальный лаунчер игры"
 
-#: Forms/MainForm.cs:325
+#: Forms/MainForm.cs:326
 msgid "Will be opened Settings tab"
 msgstr "Будет открыта вкладка Настройки"
 
-#: Forms/MainForm.cs:346
+#: Forms/MainForm.cs:347
 msgid ""
 "When checked will create shortcut for the AI Helper on Desktop and will fix "
 "registry if need"
@@ -462,77 +466,77 @@ msgstr ""
 "Когда отмечено, создаст ярлык для AI Helper на Рабочем столе и исправит "
 "реестр, если нужно"
 
-#: Forms/MainForm.cs:349
+#: Forms/MainForm.cs:350
 msgid "Select preferred screen resolution"
 msgstr "Выберете предпочитаемое разрешение экрана"
 
-#: Forms/MainForm.cs:350
+#: Forms/MainForm.cs:351
 msgid "When checked game will be in fullscreen mode"
 msgstr "Когда отмечено, игра запустится в полноэкранном режиме"
 
-#: Forms/MainForm.cs:351
+#: Forms/MainForm.cs:352
 msgid "Select preferred graphics quality"
 msgstr "Выберете предпочитаемое качество графики"
 
-#: Forms/MainForm.cs:353
+#: Forms/MainForm.cs:354
 msgid "Will create shortcut in Desktop if not exist"
 msgstr "Создаст ярлык на Рабочем столе, если отсутствует"
 
-#: Forms/MainForm.cs:355
+#: Forms/MainForm.cs:356
 msgid "Will set Data dir with game files as install dir in registry"
 msgstr "Установит в реестре папку Data с файлами игры как папку установки"
 
-#: Forms/MainForm.cs:367
+#: Forms/MainForm.cs:368
 msgid "Open extra setting window for plugins and etc"
 msgstr "Открыть экстра настройки плагинов и т.п."
 
-#: Forms/MainForm.cs:369
+#: Forms/MainForm.cs:370
 msgid "List of found games. Current"
 msgstr "Список найденных игры. Текущая"
 
-#: Forms/MainForm.cs:539
+#: Forms/MainForm.cs:540
 msgid "Mods dir created"
 msgstr "Папки модов созданы"
 
-#: Forms/MainForm.cs:544
+#: Forms/MainForm.cs:545
 #, csharp-format
 msgid "{0} game installed in {1}"
 msgstr "Игра {0} установлена в {1}"
 
-#: Forms/MainForm.cs:548
+#: Forms/MainForm.cs:549
 #, csharp-format
 msgid "{0} archive in {1}"
 msgstr "Архив {0} в {1}"
 
-#: Forms/MainForm.cs:552
+#: Forms/MainForm.cs:553
 #, csharp-format
 msgid "{0} files not in {1}. Move {0} game files there."
 msgstr "Файлы {0} не в {1}. Поместите файлы игры {0} туда."
 
-#: Forms/MainForm.cs:557
+#: Forms/MainForm.cs:558
 #, csharp-format
 msgid "{0} dir created. Move {1} game files there."
 msgstr "Созда папка {0}. Поместите файлы игры {1} туда."
 
-#: Forms/MainForm.cs:608 Forms/MainForm.cs:718
+#: Forms/MainForm.cs:611 Forms/MainForm.cs:721
 #: Manage/ModeSwitch/ToCommonMode.cs:20
 msgid "Common mode"
 msgstr "Обычный режим"
 
-#: Forms/MainForm.cs:687
+#: Forms/MainForm.cs:690
 msgid "Found mod folders in Mods"
 msgstr "Найдены папки модов в Mods"
 
-#: Forms/MainForm.cs:690
+#: Forms/MainForm.cs:693
 msgid "Mods Ready"
 msgstr "Моды готовы"
 
-#: Forms/MainForm.cs:723 Forms/Other/SwitchModeDialogForm.cs:46
+#: Forms/MainForm.cs:726 Forms/Other/SwitchModeDialogForm.cs:46
 #: Manage/ModeSwitch/ToMOMode.cs:19
 msgid "MO mode"
 msgstr "MO режим"
 
-#: Forms/MainForm.cs:848
+#: Forms/MainForm.cs:851
 msgid ""
 "Game in Common mode now.\n"
 " To execute Mod Organizer convert game back\n"
@@ -542,7 +546,7 @@ msgstr ""
 " Для запуска Mod Organizer сконвертируйте игру\n"
 " назад в режим для MO кнопкой на вкладке Инструменты"
 
-#: Forms/MainForm.cs:1155
+#: Forms/MainForm.cs:1158
 msgid "Move mouse cursor over wished button or text to see info about it"
 msgstr ""
 "Наведите курсор мыши на желаемую кнопку или текст для просмотра подсказки"
@@ -1225,275 +1229,275 @@ msgstr "Реестр уже исправлен"
 msgid "Links"
 msgstr "Ссылки"
 
-#: Manage/ManageSettings.cs:374
+#: Manage/ManageSettings.cs:375
 msgid "Website"
 msgstr "Вебсайт"
 
-#: Manage/ManageSettings.cs:377
+#: Manage/ManageSettings.cs:378
 msgid "click"
 msgstr "клик"
 
-#: Manage/ManageSettings.cs:383
+#: Manage/ManageSettings.cs:384
 msgid "Update report"
 msgstr "Отчет об обновлении"
 
-#: Manage/ManageSettings.cs:386
+#: Manage/ManageSettings.cs:387
 msgid "Click on line for more info"
 msgstr "Клик по стоке отобразит информацию"
 
-#: Manage/ManageSettings.cs:388
+#: Manage/ManageSettings.cs:389
 msgid "No updates found"
 msgstr "Обновлений не найдено"
 
-#: Manage/ManageSettings.cs:896 Manage/ManageSettings.cs:969
+#: Manage/ManageSettings.cs:897 Manage/ManageSettings.cs:970
 msgid "Afrikaans"
 msgstr "Африканский"
 
-#: Manage/ManageSettings.cs:897 Manage/ManageSettings.cs:970
+#: Manage/ManageSettings.cs:898 Manage/ManageSettings.cs:971
 msgid "Albanian"
 msgstr "Албанский"
 
-#: Manage/ManageSettings.cs:898 Manage/ManageSettings.cs:971
+#: Manage/ManageSettings.cs:899 Manage/ManageSettings.cs:972
 msgid "Arabic"
 msgstr "Арабский"
 
-#: Manage/ManageSettings.cs:899 Manage/ManageSettings.cs:972
+#: Manage/ManageSettings.cs:900 Manage/ManageSettings.cs:973
 msgid "Armenian"
 msgstr "Армянский"
 
-#: Manage/ManageSettings.cs:900 Manage/ManageSettings.cs:973
+#: Manage/ManageSettings.cs:901 Manage/ManageSettings.cs:974
 msgid "Azerbaijani"
 msgstr "Азербайджанский"
 
-#: Manage/ManageSettings.cs:901 Manage/ManageSettings.cs:974
+#: Manage/ManageSettings.cs:902 Manage/ManageSettings.cs:975
 msgid "Basque"
 msgstr "Баскский"
 
-#: Manage/ManageSettings.cs:902 Manage/ManageSettings.cs:975
+#: Manage/ManageSettings.cs:903 Manage/ManageSettings.cs:976
 msgid "Belarusian"
 msgstr "Белорусский"
 
-#: Manage/ManageSettings.cs:903 Manage/ManageSettings.cs:976
+#: Manage/ManageSettings.cs:904 Manage/ManageSettings.cs:977
 msgid "Bengali"
 msgstr "Бенгальский"
 
-#: Manage/ManageSettings.cs:904 Manage/ManageSettings.cs:977
+#: Manage/ManageSettings.cs:905 Manage/ManageSettings.cs:978
 msgid "Bulgarian"
 msgstr "Болгарский"
 
-#: Manage/ManageSettings.cs:905 Manage/ManageSettings.cs:978
+#: Manage/ManageSettings.cs:906 Manage/ManageSettings.cs:979
 msgid "Catalan"
 msgstr "Каталонский"
 
-#: Manage/ManageSettings.cs:906 Manage/ManageSettings.cs:979
+#: Manage/ManageSettings.cs:907 Manage/ManageSettings.cs:980
 msgid "Chinese"
 msgstr "Китайский"
 
-#: Manage/ManageSettings.cs:907 Manage/ManageSettings.cs:980
+#: Manage/ManageSettings.cs:908 Manage/ManageSettings.cs:981
 msgid "Croatian"
 msgstr "Хорватский"
 
-#: Manage/ManageSettings.cs:908 Manage/ManageSettings.cs:981
+#: Manage/ManageSettings.cs:909 Manage/ManageSettings.cs:982
 msgid "Czech"
 msgstr "Чешский"
 
-#: Manage/ManageSettings.cs:909 Manage/ManageSettings.cs:982
+#: Manage/ManageSettings.cs:910 Manage/ManageSettings.cs:983
 msgid "Danish"
 msgstr "Датский"
 
-#: Manage/ManageSettings.cs:910 Manage/ManageSettings.cs:983
+#: Manage/ManageSettings.cs:911 Manage/ManageSettings.cs:984
 msgid "Dutch"
 msgstr "Нидерландский"
 
-#: Manage/ManageSettings.cs:911 Manage/ManageSettings.cs:984
+#: Manage/ManageSettings.cs:912 Manage/ManageSettings.cs:985
 msgid "English"
 msgstr "Английский"
 
-#: Manage/ManageSettings.cs:912 Manage/ManageSettings.cs:985
+#: Manage/ManageSettings.cs:913 Manage/ManageSettings.cs:986
 msgid "Esperanto"
 msgstr "Эсперанто"
 
-#: Manage/ManageSettings.cs:913 Manage/ManageSettings.cs:986
+#: Manage/ManageSettings.cs:914 Manage/ManageSettings.cs:987
 msgid "Estonian"
 msgstr "Эстонский"
 
-#: Manage/ManageSettings.cs:914 Manage/ManageSettings.cs:987
+#: Manage/ManageSettings.cs:915 Manage/ManageSettings.cs:988
 msgid "Filipino"
 msgstr "Филиппинский"
 
-#: Manage/ManageSettings.cs:915 Manage/ManageSettings.cs:988
+#: Manage/ManageSettings.cs:916 Manage/ManageSettings.cs:989
 msgid "Finnish"
 msgstr "Финский"
 
-#: Manage/ManageSettings.cs:916 Manage/ManageSettings.cs:989
+#: Manage/ManageSettings.cs:917 Manage/ManageSettings.cs:990
 msgid "French"
 msgstr "Французский"
 
-#: Manage/ManageSettings.cs:917 Manage/ManageSettings.cs:990
+#: Manage/ManageSettings.cs:918 Manage/ManageSettings.cs:991
 msgid "Galician"
 msgstr "Галицкий"
 
-#: Manage/ManageSettings.cs:918 Manage/ManageSettings.cs:991
+#: Manage/ManageSettings.cs:919 Manage/ManageSettings.cs:992
 msgid "German"
 msgstr "Немецкий"
 
-#: Manage/ManageSettings.cs:919 Manage/ManageSettings.cs:992
+#: Manage/ManageSettings.cs:920 Manage/ManageSettings.cs:993
 msgid "Georgian"
 msgstr "Грузинский"
 
-#: Manage/ManageSettings.cs:920 Manage/ManageSettings.cs:993
+#: Manage/ManageSettings.cs:921 Manage/ManageSettings.cs:994
 msgid "Greek"
 msgstr "Греческий"
 
-#: Manage/ManageSettings.cs:921 Manage/ManageSettings.cs:994
+#: Manage/ManageSettings.cs:922 Manage/ManageSettings.cs:995
 msgid "Haitian Creole"
 msgstr "Гаитянский Креольский"
 
-#: Manage/ManageSettings.cs:922 Manage/ManageSettings.cs:995
+#: Manage/ManageSettings.cs:923 Manage/ManageSettings.cs:996
 msgid "Hebrew"
 msgstr "Иврит"
 
-#: Manage/ManageSettings.cs:923 Manage/ManageSettings.cs:996
+#: Manage/ManageSettings.cs:924 Manage/ManageSettings.cs:997
 msgid "Hindi"
 msgstr "Хинди"
 
-#: Manage/ManageSettings.cs:924 Manage/ManageSettings.cs:997
+#: Manage/ManageSettings.cs:925 Manage/ManageSettings.cs:998
 msgid "Hungarian"
 msgstr "Венгерский"
 
-#: Manage/ManageSettings.cs:925 Manage/ManageSettings.cs:998
+#: Manage/ManageSettings.cs:926 Manage/ManageSettings.cs:999
 msgid "Icelandic"
 msgstr "Исландский"
 
-#: Manage/ManageSettings.cs:926 Manage/ManageSettings.cs:999
+#: Manage/ManageSettings.cs:927 Manage/ManageSettings.cs:1000
 msgid "Indonesian"
 msgstr "Индонезийский"
 
-#: Manage/ManageSettings.cs:927 Manage/ManageSettings.cs:1000
+#: Manage/ManageSettings.cs:928 Manage/ManageSettings.cs:1001
 msgid "Irish"
 msgstr "Ирландский"
 
-#: Manage/ManageSettings.cs:928 Manage/ManageSettings.cs:1001
+#: Manage/ManageSettings.cs:929 Manage/ManageSettings.cs:1002
 msgid "Italian"
 msgstr "Итальянский"
 
-#: Manage/ManageSettings.cs:929 Manage/ManageSettings.cs:1002
+#: Manage/ManageSettings.cs:930 Manage/ManageSettings.cs:1003
 msgid "Japanese"
 msgstr "Японский"
 
-#: Manage/ManageSettings.cs:930 Manage/ManageSettings.cs:1003
+#: Manage/ManageSettings.cs:931 Manage/ManageSettings.cs:1004
 msgid "Korean"
 msgstr "Корейский"
 
-#: Manage/ManageSettings.cs:931 Manage/ManageSettings.cs:1004
+#: Manage/ManageSettings.cs:932 Manage/ManageSettings.cs:1005
 msgid "Lao"
 msgstr "Лао"
 
-#: Manage/ManageSettings.cs:932 Manage/ManageSettings.cs:1005
+#: Manage/ManageSettings.cs:933 Manage/ManageSettings.cs:1006
 msgid "Latin"
 msgstr "Латинский"
 
-#: Manage/ManageSettings.cs:933 Manage/ManageSettings.cs:1006
+#: Manage/ManageSettings.cs:934 Manage/ManageSettings.cs:1007
 msgid "Latvian"
 msgstr "Латышский"
 
-#: Manage/ManageSettings.cs:934 Manage/ManageSettings.cs:1007
+#: Manage/ManageSettings.cs:935 Manage/ManageSettings.cs:1008
 msgid "Lithuanian"
 msgstr "Литовский"
 
-#: Manage/ManageSettings.cs:935 Manage/ManageSettings.cs:1008
+#: Manage/ManageSettings.cs:936 Manage/ManageSettings.cs:1009
 msgid "Macedonian"
 msgstr "Македонский"
 
-#: Manage/ManageSettings.cs:936 Manage/ManageSettings.cs:1009
+#: Manage/ManageSettings.cs:937 Manage/ManageSettings.cs:1010
 msgid "Malay"
 msgstr "Малайский"
 
-#: Manage/ManageSettings.cs:937 Manage/ManageSettings.cs:1010
+#: Manage/ManageSettings.cs:938 Manage/ManageSettings.cs:1011
 msgid "Maltese"
 msgstr "Мальтийский"
 
-#: Manage/ManageSettings.cs:938 Manage/ManageSettings.cs:1011
+#: Manage/ManageSettings.cs:939 Manage/ManageSettings.cs:1012
 msgid "Norwegian"
 msgstr "Норвежский"
 
-#: Manage/ManageSettings.cs:939 Manage/ManageSettings.cs:1012
+#: Manage/ManageSettings.cs:940 Manage/ManageSettings.cs:1013
 msgid "Persian"
 msgstr "Персидский"
 
-#: Manage/ManageSettings.cs:940 Manage/ManageSettings.cs:1013
+#: Manage/ManageSettings.cs:941 Manage/ManageSettings.cs:1014
 msgid "Polish"
 msgstr "Польский"
 
-#: Manage/ManageSettings.cs:941 Manage/ManageSettings.cs:1014
+#: Manage/ManageSettings.cs:942 Manage/ManageSettings.cs:1015
 msgid "Portuguese"
 msgstr "Португальский"
 
-#: Manage/ManageSettings.cs:942 Manage/ManageSettings.cs:1015
+#: Manage/ManageSettings.cs:943 Manage/ManageSettings.cs:1016
 msgid "Romanian"
 msgstr "Румынский"
 
-#: Manage/ManageSettings.cs:943 Manage/ManageSettings.cs:1016
+#: Manage/ManageSettings.cs:944 Manage/ManageSettings.cs:1017
 msgid "Russian"
 msgstr "Русский"
 
-#: Manage/ManageSettings.cs:944 Manage/ManageSettings.cs:1017
+#: Manage/ManageSettings.cs:945 Manage/ManageSettings.cs:1018
 msgid "Serbian"
 msgstr "Сербский"
 
-#: Manage/ManageSettings.cs:945 Manage/ManageSettings.cs:1018
+#: Manage/ManageSettings.cs:946 Manage/ManageSettings.cs:1019
 msgid "Slovak"
 msgstr "Словацкий"
 
-#: Manage/ManageSettings.cs:946 Manage/ManageSettings.cs:1019
+#: Manage/ManageSettings.cs:947 Manage/ManageSettings.cs:1020
 msgid "Slovenian"
 msgstr "Словенский"
 
-#: Manage/ManageSettings.cs:947 Manage/ManageSettings.cs:1020
+#: Manage/ManageSettings.cs:948 Manage/ManageSettings.cs:1021
 msgid "Spanish"
 msgstr "Испанский"
 
-#: Manage/ManageSettings.cs:948 Manage/ManageSettings.cs:1021
+#: Manage/ManageSettings.cs:949 Manage/ManageSettings.cs:1022
 msgid "Swahili"
 msgstr "Суахили"
 
-#: Manage/ManageSettings.cs:949 Manage/ManageSettings.cs:1022
+#: Manage/ManageSettings.cs:950 Manage/ManageSettings.cs:1023
 msgid "Swedish"
 msgstr "Шведский"
 
-#: Manage/ManageSettings.cs:950 Manage/ManageSettings.cs:1023
+#: Manage/ManageSettings.cs:951 Manage/ManageSettings.cs:1024
 msgid "Tamil"
 msgstr "Тамильский"
 
-#: Manage/ManageSettings.cs:951 Manage/ManageSettings.cs:1024
+#: Manage/ManageSettings.cs:952 Manage/ManageSettings.cs:1025
 msgid "Telugu"
 msgstr "Телугу"
 
-#: Manage/ManageSettings.cs:952 Manage/ManageSettings.cs:1025
+#: Manage/ManageSettings.cs:953 Manage/ManageSettings.cs:1026
 msgid "Thai"
 msgstr "Тайский"
 
-#: Manage/ManageSettings.cs:953 Manage/ManageSettings.cs:1026
+#: Manage/ManageSettings.cs:954 Manage/ManageSettings.cs:1027
 msgid "Turkish"
 msgstr "Турецкий"
 
-#: Manage/ManageSettings.cs:954 Manage/ManageSettings.cs:1027
+#: Manage/ManageSettings.cs:955 Manage/ManageSettings.cs:1028
 msgid "Ukrainian"
 msgstr "Украинский"
 
-#: Manage/ManageSettings.cs:955 Manage/ManageSettings.cs:1028
+#: Manage/ManageSettings.cs:956 Manage/ManageSettings.cs:1029
 msgid "Urdu"
 msgstr "Урду"
 
-#: Manage/ManageSettings.cs:956 Manage/ManageSettings.cs:1029
+#: Manage/ManageSettings.cs:957 Manage/ManageSettings.cs:1030
 msgid "Vietnamese"
 msgstr "Вьетнамский"
 
-#: Manage/ManageSettings.cs:957 Manage/ManageSettings.cs:1030
+#: Manage/ManageSettings.cs:958 Manage/ManageSettings.cs:1031
 msgid "Welsh"
 msgstr "Валлийский"
 
-#: Manage/ManageSettings.cs:958 Manage/ManageSettings.cs:1031
+#: Manage/ManageSettings.cs:959 Manage/ManageSettings.cs:1032
 msgid "Yiddish"
 msgstr "Идиш"
 
@@ -1777,6 +1781,14 @@ msgstr "MO->Обычный"
 #: Manage/ToolsTab/ButtonsData/MOCommonModeSwitchButtonData.cs:10
 msgid "Common->MO"
 msgstr "Обычный->MO"
+
+#: Manage/ToolsTab/ButtonsData/RandomColorsButtonData.cs:12
+msgid "Random UI colors"
+msgstr "Случайные цвета UI"
+
+#: Manage/ToolsTab/ButtonsData/RandomColorsButtonData.cs:14
+msgid "Random colors for elements"
+msgstr "Случайные цвета для элементов"
 
 #: Manage/ToolsTab/ButtonsData/UpdateModsButtonData.cs:10
 msgid "Update"

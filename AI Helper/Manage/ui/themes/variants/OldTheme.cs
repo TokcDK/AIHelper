@@ -21,7 +21,7 @@ namespace AIHelper.Manage.ui.themes
             {
                 Type = typeof(Button),
                 BackColor = Color.Silver,
-                ForeColor = Color.White,
+                ForeColor = Color.Black,
             },
             new ElementData()
             {

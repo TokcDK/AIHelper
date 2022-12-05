@@ -66,20 +66,24 @@ namespace AIHelper.Manage.ui.themes
             var list = GetList();
             var cnt = list.Count;
             ManageSettings.CurrentTheme = list.FirstOrDefault(t => t.Name == new DefaultTheme().Name);
-            
-            var bs = new BindingSource();
-            bs.DataSource = list;
+
+            var bs = new BindingSource
+            {
+                DataSource = list
+            };
 
             ManageSettings.MainForm.SelectThemeComboBox.DataSource = bs.DataSource;
-
             ManageSettings.MainForm.SelectThemeComboBox.DisplayMember = "Name";
             ManageSettings.MainForm.SelectThemeComboBox.ValueMember = "Name";
 
             ManageSettings.MainForm.SelectThemeComboBox.SelectedIndexChanged += new EventHandler((o, e) =>
             {
-                var st = ManageSettings.MainForm.SelectThemeComboBox.SelectedItem as IUITheme;
+                ManageSettings.CurrentTheme = ManageSettings.MainForm.SelectThemeComboBox.SelectedItem as IUITheme;
 
-                SetTheme(st);
+                var i = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
+                i.SetKey(ManageSettings.IniSettingsSectionName, ManageSettings.IniThemeKeyName, ManageSettings.CurrentTheme.Name);
+
+                SetTheme(ManageSettings.CurrentTheme);
             });
 
             var ini = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
@@ -92,7 +96,11 @@ namespace AIHelper.Manage.ui.themes
                 ManageSettings.CurrentTheme = t == default ? ManageSettings.CurrentTheme : t;
             }
 
+            var sel = ManageSettings.MainForm.SelectThemeComboBox.SelectedIndex;
             ManageSettings.MainForm.SelectThemeComboBox.SelectedItem = ManageSettings.CurrentTheme;
+
+            // set theme manually when index of them is not changed and event did not fired
+            if(sel== ManageSettings.MainForm.SelectThemeComboBox.SelectedIndex) SetTheme(ManageSettings.CurrentTheme);
         }
     }
 }

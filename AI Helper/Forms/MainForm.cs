@@ -15,6 +15,7 @@ using AIHelper.Install.UpdateMaker;
 using AIHelper.Manage;
 using AIHelper.Manage.FoldersTab.Folders;
 using AIHelper.Manage.Functions;
+using AIHelper.Manage.ui.themes;
 using AIHelper.Manage.Update;
 using AIHelper.Manage.Update.Targets;
 using CheckForEmptyDir;

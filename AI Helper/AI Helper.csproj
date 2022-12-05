@@ -274,10 +274,10 @@
     <Compile Include="Manage\ToolsTab\ToolsTabButtonsLoader.cs" />
     <Compile Include="Manage\ToolsTab\IButtonData.cs" />
     <Compile Include="Manage\ToolsTab\IToolsTabButtonData.cs" />
-    <Compile Include="Manage\ui\themes\DarkThemeVS.cs" />
-    <Compile Include="Manage\ui\themes\OldTheme1.cs" />
-    <Compile Include="Manage\ui\themes\DefaultTheme.cs" />
-    <Compile Include="Manage\ui\themes\RandomColorsTheme.cs" />
+    <Compile Include="Manage\ui\themes\variants\DarkTheme.cs" />
+    <Compile Include="Manage\ui\themes\variants\OldTheme.cs" />
+    <Compile Include="Manage\ui\themes\variants\DefaultTheme.cs" />
+    <Compile Include="Manage\ui\themes\variants\CrazyTheme.cs" />
     <Compile Include="Manage\ui\themes\ThemesLoader.cs" />
     <Compile Include="Manage\ui\themes\IUITheme.cs" />
     <Compile Include="Manage\Update\Sort\SideloaderModPackCommunityUserdata.cs" />

@@ -8,9 +8,9 @@ using System.Windows.Forms;
 
 namespace AIHelper.Manage.ui.themes
 {
-    internal class RandomColorsTheme : IUITheme
+    internal class CrazyTheme : IUITheme
     {
-        public string Name => "Random Theme";
+        public string Name => "Crazy";
 
         public List<ElementData> Elements => new List<ElementData>()
         {

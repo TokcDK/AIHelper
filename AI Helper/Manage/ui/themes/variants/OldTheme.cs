@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace AIHelper.Manage.ui.themes
 {
-    internal class OldTheme1 : IUITheme
+    internal class OldTheme : IUITheme
     {
         public string Name => "Old";
         Color _bg = Color.Gray;
@@ -20,7 +20,7 @@ namespace AIHelper.Manage.ui.themes
             new ElementData()
             {
                 Type = typeof(Button),
-                BackColor = Color.FromArgb(255, 102, 115, 117),
+                BackColor = Color.Silver,
                 ForeColor = Color.White,
             },
             new ElementData()

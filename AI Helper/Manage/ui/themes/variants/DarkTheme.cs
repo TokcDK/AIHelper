@@ -5,9 +5,9 @@ using System.Windows.Forms;
 
 namespace AIHelper.Manage.ui.themes
 {
-    internal class DarkThemeVS : IUITheme
+    internal class DarkTheme : IUITheme
     {
-        public string Name => "Dark theme VS";
+        public string Name => "Dark";
 
         public List<ElementData> Elements => new List<ElementData>()
         {

@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using AIHelper.Manage.ui.themes;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
-namespace AIHelper.Manage.Functions
+namespace AIHelper.Manage.ui.themes
 {
     internal class ThemesLoader
     {
@@ -55,11 +54,11 @@ namespace AIHelper.Manage.Functions
             ManageSettings.CurrentTheme = new DefaultTheme();
             SetTheme(ManageSettings.CurrentTheme, ManageSettings.MainForm);
         }
-        internal static void SetDarkTheme() { SetTheme(new DarkThemeVS(), ManageSettings.MainForm); }
+        internal static void SetDarkTheme() { SetTheme(new DarkTheme(), ManageSettings.MainForm); }
 
         internal static void SetRandomColors()
         {
-            SetTheme(new RandomColorsTheme(), ManageSettings.MainForm);
+            SetTheme(new CrazyTheme(), ManageSettings.MainForm);
         }
 
         internal static void SetTheme()

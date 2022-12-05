@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using AIHelper.Manage.ui.themes;
@@ -11,7 +12,21 @@ namespace AIHelper.Manage.Functions
         {
             return GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IUITheme>().ToList();
         }
-        internal static void ApplyTheme(IUITheme theme, Control control)
+        internal static void SetTheme(IUITheme theme)
+        {
+            SetTheme(theme, ManageSettings.MainForm);
+        }
+        internal static void SetRandomTheme()
+        {
+            var list = GetList();
+            var cnt = list.Count;
+            if (cnt == 0) return;
+            var rnd = new Random();
+            var theme = list[rnd.Next(0, cnt - 1)];
+            SetTheme(theme);
+        }
+
+        internal static void SetTheme(IUITheme theme, Control control)
         {
             if (control.Controls == null) return;
 
@@ -31,15 +46,15 @@ namespace AIHelper.Manage.Functions
                     break;
                 }
 
-                ApplyTheme(theme, c);
+                SetTheme(theme, c);
             }
         }
-        internal static void ApplyDefaultTheme() { ApplyTheme(new DefaultTheme1(), ManageSettings.MainForm); }
-        internal static void ApplyDarkTheme() { ApplyTheme(new DarkThemeVS(), ManageSettings.MainForm); }
+        internal static void SetDefaultTheme() { SetTheme(new DefaultTheme1(), ManageSettings.MainForm); }
+        internal static void SetDarkTheme() { SetTheme(new DarkThemeVS(), ManageSettings.MainForm); }
 
-        internal static void ApplyRandomColors()
+        internal static void SetRandomColors()
         {
-            ApplyTheme(new RandomColorsTheme(), ManageSettings.MainForm);
+            SetTheme(new RandomColorsTheme(), ManageSettings.MainForm);
         }
     }
 }

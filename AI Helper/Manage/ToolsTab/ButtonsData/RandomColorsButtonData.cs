@@ -16,7 +16,7 @@ namespace AIHelper.Manage.ToolsTab.ButtonsData
 
         public void OnClick(object o, EventArgs e)
         {
-            ThemesLoader.ApplyRandomColors();
+            ThemesLoader.SetRandomColors();
         }
     }
 }

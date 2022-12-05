@@ -13,7 +13,8 @@ namespace AIHelper.Manage.Functions
         {
             return GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IUITheme>().ToList();
         }
-        internal void ApplyTheme(IUITheme theme, Control control)
+        internal static void ApplyDefaultTheme() { ApplyTheme(new DefaultTheme1(), ManageSettings.MainForm); }
+        internal static void ApplyTheme(IUITheme theme, Control control)
         {
             if (control.Controls == null) return;
 

@@ -61,6 +61,8 @@ namespace AIHelper
             ManageSettings.MainForm = this; // set reference to the form for controls use
 
             CheckMoAndEndInit();
+
+            ThemesLoader.ApplyDefaultTheme();
         }
 
         private async void CheckMoAndEndInit()

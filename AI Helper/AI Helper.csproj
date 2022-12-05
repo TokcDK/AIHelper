@@ -273,6 +273,9 @@
     <Compile Include="Manage\ToolsTab\ToolsTabButtonsLoader.cs" />
     <Compile Include="Manage\ToolsTab\IButtonData.cs" />
     <Compile Include="Manage\ToolsTab\IToolsTabButtonData.cs" />
+    <Compile Include="Manage\ui\themes\DefaultTheme1.cs" />
+    <Compile Include="Manage\ui\themes\FunctionsForFlpLoader.cs" />
+    <Compile Include="Manage\ui\themes\IUITheme.cs" />
     <Compile Include="Manage\Update\Sort\SideloaderModPackCommunityUserdata.cs" />
     <Compile Include="Manage\Update\Sort\UncensorSelectorBase.cs" />
     <Compile Include="Manage\Update\Sort\SideloaderModPack.cs" />

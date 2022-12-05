@@ -78,8 +78,11 @@ namespace AIHelper.Manage.ui.themes
 
             ManageSettings.MainForm.SelectThemeComboBox.SelectedIndexChanged += new EventHandler((o, e) =>
             {
-                ManageSettings.CurrentTheme = ManageSettings.MainForm.SelectThemeComboBox.SelectedItem as IUITheme;
+                var seltheme = ManageSettings.MainForm.SelectThemeComboBox.SelectedItem as IUITheme;
 
+                if (ManageSettings.CurrentTheme == seltheme) return;
+
+                ManageSettings.CurrentTheme = seltheme;
                 var i = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
                 i.SetKey(ManageSettings.IniSettingsSectionName, ManageSettings.IniThemeKeyName, ManageSettings.CurrentTheme.Name);
 

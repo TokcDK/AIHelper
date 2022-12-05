@@ -874,7 +874,7 @@ namespace AIHelper
 
             await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
-            bool isVr = ManageSettings.CurrentGameIsHaveVr;
+            bool isVr = ManageSettings.CurrentGameIsHaveVr && ManageSettings.MainForm.VRGameCheckBox.Checked;
 
             string exePath;
             string arguments = string.Empty;

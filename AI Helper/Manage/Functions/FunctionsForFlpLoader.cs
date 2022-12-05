@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using AIHelper.Manage.ui.themes;
 
 namespace AIHelper.Manage.Functions
 {
@@ -33,6 +34,7 @@ namespace AIHelper.Manage.Functions
                     AutoSize = true,
                     Text = string.IsNullOrWhiteSpace(f.Symbol) ? "f" : f.Symbol,
                 };
+                IUITheme theme = ManageSettings.CurrentTheme;
                 if (f is IFunctionForFlpTextOptions fe)
                 {
                     if (fe.Font != null) l.Font = fe.Font;

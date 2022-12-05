@@ -49,7 +49,11 @@ namespace AIHelper.Manage.Functions
                 SetTheme(theme, c);
             }
         }
-        internal static void SetDefaultTheme() { SetTheme(new DefaultTheme1(), ManageSettings.MainForm); }
+        internal static void SetDefaultTheme() 
+        {
+            ManageSettings.CurrentTheme = new DefaultTheme1();
+            SetTheme(ManageSettings.CurrentTheme, ManageSettings.MainForm); 
+        }
         internal static void SetDarkTheme() { SetTheme(new DarkThemeVS(), ManageSettings.MainForm); }
 
         internal static void SetRandomColors()

@@ -5,10 +5,10 @@ using System.Windows.Forms;
 
 namespace AIHelper.Manage.ui.themes
 {
-    internal class DefaultTheme1 : IUITheme
+    internal class OldTheme1 : IUITheme
     {
-        public string Name => "Default";
-        Color _bg = Color.FromArgb(255, 72, 85, 86);
+        public string Name => "Old";
+        Color _bg = Color.Gray;
 
         public List<ElementData> Elements => new List<ElementData>()
         {

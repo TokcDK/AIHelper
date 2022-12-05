@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using AIHelper.Manage.ui.themes;
@@ -22,13 +20,16 @@ namespace AIHelper.Manage.Functions
             {
                 if (!(childControl is Control c)) continue;
 
-                if (c is Panel p && p.Name.EndsWith("BackgroundPanel"))
-                    c.BackColor = theme.BackColorPanel;// Color.FromArgb(255, 19, 54, 55); //Color.FromArgb(255, 231, 216, 192);
-
-                if (c is Button b)
+                foreach (var el in theme.Elements)
                 {
-                    b.BackColor = theme.BackColorButton;// Color.FromArgb(255, 160, 107, 123); //Color.FromArgb(255, 143, 107, 79);
-                    b.ForeColor = theme.ForeColorButton;// Color.White;
+                    if (childControl.GetType() != el.Type) continue;
+
+                    if (el.ForeColor != default) c.ForeColor = el.ForeColor;
+                    if (el.BackColor != default) c.BackColor = el.BackColor;
+                    if (el.Font != default) c.Font = el.Font;
+                    if (el.BackgroundImage != default) c.BackgroundImage = el.BackgroundImage;
+
+                    break;
                 }
 
                 ApplyTheme(theme, c);

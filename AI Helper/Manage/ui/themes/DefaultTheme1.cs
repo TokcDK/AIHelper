@@ -1,18 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Windows.Forms;
 
 namespace AIHelper.Manage.ui.themes
 {
     internal class DefaultTheme1 : IUITheme
     {
-        public Color BackColorPanel => Color.FromArgb(255, 19, 54, 55);
+        public string Name => "Default";
 
-        public Color BackColorButton => Color.FromArgb(255, 160, 107, 123);
-
-        public Color ForeColorButton => Color.White;
+        public List<ElementData> Elements => new List<ElementData>()
+        {
+            new ElementData()
+            {
+                Type = typeof(Panel),
+                BackColor = Color.Gray,
+            },
+            new ElementData()
+            {
+                Type = typeof(Button),
+                BackColor = Color.Silver,
+                ForeColor = Color.Black,
+            },
+            new ElementData()
+            {
+                Type = typeof(TabControl),
+                BackColor = Color.Gray,
+                ForeColor = Color.Black,
+            },
+        };
     }
 }

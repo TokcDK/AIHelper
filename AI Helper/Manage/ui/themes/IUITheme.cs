@@ -9,8 +9,17 @@ namespace AIHelper.Manage.ui.themes
 {
     public interface IUITheme
     {
-        Color BackColorPanel { get; }
-        Color BackColorButton { get; }
-        Color ForeColorButton { get; }
+        string Name { get; }
+        List<ElementData> Elements { get; }
+    }
+
+    public class ElementData
+    {
+        public Type Type { get; set; }
+
+        public Color ForeColor { get; set; }
+        public Color BackColor { get; set; }
+        public Font Font { get; set; }
+        public Image BackgroundImage { get; set; }
     }
 }

@@ -62,7 +62,7 @@ namespace AIHelper
 
             CheckMoAndEndInit();
 
-            ThemesLoader.ApplyDefaultTheme();
+            ThemesLoader.ApplyDarkTheme();
         }
 
         private async void CheckMoAndEndInit()

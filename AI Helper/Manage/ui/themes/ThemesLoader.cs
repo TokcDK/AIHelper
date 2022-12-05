@@ -11,7 +11,6 @@ namespace AIHelper.Manage.Functions
         {
             return GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IUITheme>().ToList();
         }
-        internal static void ApplyDefaultTheme() { ApplyTheme(new DefaultTheme1(), ManageSettings.MainForm); }
         internal static void ApplyTheme(IUITheme theme, Control control)
         {
             if (control.Controls == null) return;
@@ -35,6 +34,8 @@ namespace AIHelper.Manage.Functions
                 ApplyTheme(theme, c);
             }
         }
+        internal static void ApplyDefaultTheme() { ApplyTheme(new DefaultTheme1(), ManageSettings.MainForm); }
+        internal static void ApplyDarkTheme() { ApplyTheme(new DarkThemeVS(), ManageSettings.MainForm); }
 
         internal static void ApplyRandomColors()
         {

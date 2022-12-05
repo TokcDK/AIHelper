@@ -67,39 +67,41 @@ namespace AIHelper.Manage.ui.themes
             var cnt = list.Count;
             ManageSettings.CurrentTheme = list.FirstOrDefault(t => t.Name == new DefaultTheme().Name);
 
+            // bind combobox to themes list
             var bs = new BindingSource
             {
                 DataSource = list
             };
-
             ManageSettings.MainForm.SelectThemeComboBox.DataSource = bs.DataSource;
             ManageSettings.MainForm.SelectThemeComboBox.DisplayMember = "Name";
             ManageSettings.MainForm.SelectThemeComboBox.ValueMember = "Name";
 
+            // add event to set current theme and write value in ini
             ManageSettings.MainForm.SelectThemeComboBox.SelectedIndexChanged += new EventHandler((o, e) =>
             {
-                var seltheme = ManageSettings.MainForm.SelectThemeComboBox.SelectedItem as IUITheme;
-
-                if (ManageSettings.CurrentTheme == seltheme) return;
-
-                ManageSettings.CurrentTheme = seltheme;
+                ManageSettings.CurrentTheme = ManageSettings.MainForm.SelectThemeComboBox.SelectedItem as IUITheme;
+                
                 var i = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
                 i.SetKey(ManageSettings.IniSettingsSectionName, ManageSettings.IniThemeKeyName, ManageSettings.CurrentTheme.Name);
 
                 SetTheme(ManageSettings.CurrentTheme);
             });
 
+            // try read last selected them name
             var ini = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
-
             if (ini.KeyExists(ManageSettings.IniThemeKeyName, ManageSettings.IniSettingsSectionName))
             {
+                // set theme if found
                 var themeName = ini.GetKey(ManageSettings.IniSettingsSectionName, ManageSettings.IniThemeKeyName);
 
                 var t = list.FirstOrDefault(n => n.Name == themeName);
                 ManageSettings.CurrentTheme = t == default ? ManageSettings.CurrentTheme : t;
             }
 
+            // save selected index to check if combobox event fired
             var sel = ManageSettings.MainForm.SelectThemeComboBox.SelectedIndex;
+
+            // set them as current in combobox
             ManageSettings.MainForm.SelectThemeComboBox.SelectedItem = ManageSettings.CurrentTheme;
 
             // set theme manually when index of them is not changed and event did not fired

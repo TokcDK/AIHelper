@@ -31,8 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.AIGirlHelperTabControl = new System.Windows.Forms.TabControl();
             this.MainTabPage = new System.Windows.Forms.TabPage();
-            this.InfoPagePanel = new System.Windows.Forms.Panel();
-            this.InfoTabPanel = new System.Windows.Forms.Panel();
+            this.InfoTabPageBackgroundPanel = new System.Windows.Forms.Panel();
             this.InfoTabTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.InfoLabelsTbleLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.ModsInfoLabel = new System.Windows.Forms.Label();
@@ -42,7 +41,7 @@
             this.InfoTabTopTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.InfoTabAppTitleLabel = new System.Windows.Forms.Label();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
-            this.LaunchPagePanel = new System.Windows.Forms.Panel();
+            this.LaunchTabPageBackgroundPanel = new System.Windows.Forms.Panel();
             this.LaunchTabTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.LaunchTabButtonsDownTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.FunctionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -64,10 +63,10 @@
             this.label1 = new System.Windows.Forms.Label();
             this.SelectedGameLabel = new System.Windows.Forms.Label();
             this.SettingsTabPage = new System.Windows.Forms.TabPage();
-            this.SettingsTabPanel = new System.Windows.Forms.Panel();
+            this.SettingsTabPageBackgroundPanel = new System.Windows.Forms.Panel();
             this.SettingsTabControl = new System.Windows.Forms.TabControl();
             this.SettingsTabGeneralTabPage = new System.Windows.Forms.TabPage();
-            this.SettingsTabGeneralTabPagePanel = new System.Windows.Forms.Panel();
+            this.SettingsTabGeneralTabPageBackgroundPanel = new System.Windows.Forms.Panel();
             this.SettingsTabGeneralTabPageTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.CurrentGameLabel = new System.Windows.Forms.Label();
             this.ManageGameTableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -83,7 +82,7 @@
             this.CreateShortcutLinkLabel = new System.Windows.Forms.LinkLabel();
             this.AutoShortcutRegistryCheckBox = new System.Windows.Forms.CheckBox();
             this.SettingsTabDisplayTabPage = new System.Windows.Forms.TabPage();
-            this.SettingsTabGDisplayTabPagePanel = new System.Windows.Forms.Panel();
+            this.SettingsTabDisplayTabPageBackgroundPanel = new System.Windows.Forms.Panel();
             this.SettingsTabDisplayTabPageTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.OpenSetupXmlLinkLabel = new System.Windows.Forms.LinkLabel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -94,18 +93,17 @@
             this.QualityComboBox = new System.Windows.Forms.ComboBox();
             this.FullScreenCheckBox = new System.Windows.Forms.CheckBox();
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
-            this.ToolsTabPagePanel = new System.Windows.Forms.Panel();
+            this.ToolsTabPageBackgroundPanel = new System.Windows.Forms.Panel();
             this.FoldersTabPage = new System.Windows.Forms.TabPage();
-            this.FoldersTabPagePanel = new System.Windows.Forms.Panel();
+            this.FoldersTabPageBackgroundPanel = new System.Windows.Forms.Panel();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
-            this.InfoPagePanel.SuspendLayout();
-            this.InfoTabPanel.SuspendLayout();
+            this.InfoTabPageBackgroundPanel.SuspendLayout();
             this.InfoTabTableLayoutPanel.SuspendLayout();
             this.InfoLabelsTbleLayoutPanel.SuspendLayout();
             this.InfoTabTopTableLayoutPanel.SuspendLayout();
             this.LaunchTabPage.SuspendLayout();
-            this.LaunchPagePanel.SuspendLayout();
+            this.LaunchTabPageBackgroundPanel.SuspendLayout();
             this.LaunchTabTableLayoutPanel.SuspendLayout();
             this.LaunchTabButtonsDownTableLayoutPanel.SuspendLayout();
             this.LaunchTabSubMainButtonsTableLayoutPanel.SuspendLayout();
@@ -115,16 +113,16 @@
             this.LaunchTabTopRightBepinExLogTableLayoutPanel.SuspendLayout();
             this.LaunchTabTopAppGameTitleTableLayoutPanel.SuspendLayout();
             this.SettingsTabPage.SuspendLayout();
-            this.SettingsTabPanel.SuspendLayout();
+            this.SettingsTabPageBackgroundPanel.SuspendLayout();
             this.SettingsTabControl.SuspendLayout();
             this.SettingsTabGeneralTabPage.SuspendLayout();
-            this.SettingsTabGeneralTabPagePanel.SuspendLayout();
+            this.SettingsTabGeneralTabPageBackgroundPanel.SuspendLayout();
             this.SettingsTabGeneralTabPageTableLayoutPanel.SuspendLayout();
             this.ManageGameTableLayoutPanel1.SuspendLayout();
             this.CurrentGamePanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.SettingsTabDisplayTabPage.SuspendLayout();
-            this.SettingsTabGDisplayTabPagePanel.SuspendLayout();
+            this.SettingsTabDisplayTabPageBackgroundPanel.SuspendLayout();
             this.SettingsTabDisplayTabPageTableLayoutPanel.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -152,7 +150,7 @@
             // 
             // MainTabPage
             // 
-            this.MainTabPage.Controls.Add(this.InfoPagePanel);
+            this.MainTabPage.Controls.Add(this.InfoTabPageBackgroundPanel);
             this.MainTabPage.ForeColor = System.Drawing.Color.Black;
             this.MainTabPage.Location = new System.Drawing.Point(4, 22);
             this.MainTabPage.Name = "MainTabPage";
@@ -162,24 +160,15 @@
             this.MainTabPage.Text = T._("ℹInfo");
             this.MainTabPage.UseVisualStyleBackColor = true;
             // 
-            // InfoPagePanel
+            // InfoTabPageBackgroundPanel
             // 
-            this.InfoPagePanel.BackColor = System.Drawing.Color.Gray;
-            this.InfoPagePanel.Controls.Add(this.InfoTabPanel);
-            this.InfoPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.InfoPagePanel.Location = new System.Drawing.Point(3, 3);
-            this.InfoPagePanel.Name = "InfoPagePanel";
-            this.InfoPagePanel.Size = new System.Drawing.Size(470, 229);
-            this.InfoPagePanel.TabIndex = 0;
-            // 
-            // InfoTabPanel
-            // 
-            this.InfoTabPanel.Controls.Add(this.InfoTabTableLayoutPanel);
-            this.InfoTabPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.InfoTabPanel.Location = new System.Drawing.Point(0, 0);
-            this.InfoTabPanel.Name = "InfoTabPanel";
-            this.InfoTabPanel.Size = new System.Drawing.Size(470, 229);
-            this.InfoTabPanel.TabIndex = 0;
+            this.InfoTabPageBackgroundPanel.BackColor = System.Drawing.Color.Gray;
+            this.InfoTabPageBackgroundPanel.Controls.Add(this.InfoTabTableLayoutPanel);
+            this.InfoTabPageBackgroundPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.InfoTabPageBackgroundPanel.Location = new System.Drawing.Point(3, 3);
+            this.InfoTabPageBackgroundPanel.Name = "InfoTabPageBackgroundPanel";
+            this.InfoTabPageBackgroundPanel.Size = new System.Drawing.Size(470, 229);
+            this.InfoTabPageBackgroundPanel.TabIndex = 0;
             // 
             // InfoTabTableLayoutPanel
             // 
@@ -318,7 +307,7 @@
             // 
             // LaunchTabPage
             // 
-            this.LaunchTabPage.Controls.Add(this.LaunchPagePanel);
+            this.LaunchTabPage.Controls.Add(this.LaunchTabPageBackgroundPanel);
             this.LaunchTabPage.Location = new System.Drawing.Point(4, 22);
             this.LaunchTabPage.Name = "LaunchTabPage";
             this.LaunchTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -327,16 +316,16 @@
             this.LaunchTabPage.Text = T._("🚀Launch");
             this.LaunchTabPage.UseVisualStyleBackColor = true;
             // 
-            // LaunchPagePanel
+            // LaunchTabPageBackgroundPanel
             // 
-            this.LaunchPagePanel.BackColor = System.Drawing.Color.Gray;
-            this.LaunchPagePanel.Controls.Add(this.LaunchTabTableLayoutPanel);
-            this.LaunchPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LaunchPagePanel.ForeColor = System.Drawing.SystemColors.ScrollBar;
-            this.LaunchPagePanel.Location = new System.Drawing.Point(3, 3);
-            this.LaunchPagePanel.Name = "LaunchPagePanel";
-            this.LaunchPagePanel.Size = new System.Drawing.Size(470, 229);
-            this.LaunchPagePanel.TabIndex = 0;
+            this.LaunchTabPageBackgroundPanel.BackColor = System.Drawing.Color.Gray;
+            this.LaunchTabPageBackgroundPanel.Controls.Add(this.LaunchTabTableLayoutPanel);
+            this.LaunchTabPageBackgroundPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LaunchTabPageBackgroundPanel.ForeColor = System.Drawing.SystemColors.ScrollBar;
+            this.LaunchTabPageBackgroundPanel.Location = new System.Drawing.Point(3, 3);
+            this.LaunchTabPageBackgroundPanel.Name = "LaunchTabPageBackgroundPanel";
+            this.LaunchTabPageBackgroundPanel.Size = new System.Drawing.Size(470, 229);
+            this.LaunchTabPageBackgroundPanel.TabIndex = 0;
             // 
             // LaunchTabTableLayoutPanel
             // 
@@ -645,7 +634,7 @@
             // 
             // SettingsTabPage
             // 
-            this.SettingsTabPage.Controls.Add(this.SettingsTabPanel);
+            this.SettingsTabPage.Controls.Add(this.SettingsTabPageBackgroundPanel);
             this.SettingsTabPage.Location = new System.Drawing.Point(4, 22);
             this.SettingsTabPage.Name = "SettingsTabPage";
             this.SettingsTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -654,15 +643,15 @@
             this.SettingsTabPage.Text = T._("🔧Settings");
             this.SettingsTabPage.UseVisualStyleBackColor = true;
             // 
-            // SettingsTabPanel
+            // SettingsTabPageBackgroundPanel
             // 
-            this.SettingsTabPanel.BackColor = System.Drawing.Color.Gray;
-            this.SettingsTabPanel.Controls.Add(this.SettingsTabControl);
-            this.SettingsTabPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SettingsTabPanel.Location = new System.Drawing.Point(3, 3);
-            this.SettingsTabPanel.Name = "SettingsTabPanel";
-            this.SettingsTabPanel.Size = new System.Drawing.Size(470, 229);
-            this.SettingsTabPanel.TabIndex = 1;
+            this.SettingsTabPageBackgroundPanel.BackColor = System.Drawing.Color.Gray;
+            this.SettingsTabPageBackgroundPanel.Controls.Add(this.SettingsTabControl);
+            this.SettingsTabPageBackgroundPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SettingsTabPageBackgroundPanel.Location = new System.Drawing.Point(3, 3);
+            this.SettingsTabPageBackgroundPanel.Name = "SettingsTabPageBackgroundPanel";
+            this.SettingsTabPageBackgroundPanel.Size = new System.Drawing.Size(470, 229);
+            this.SettingsTabPageBackgroundPanel.TabIndex = 1;
             // 
             // SettingsTabControl
             // 
@@ -677,7 +666,7 @@
             // 
             // SettingsTabGeneralTabPage
             // 
-            this.SettingsTabGeneralTabPage.Controls.Add(this.SettingsTabGeneralTabPagePanel);
+            this.SettingsTabGeneralTabPage.Controls.Add(this.SettingsTabGeneralTabPageBackgroundPanel);
             this.SettingsTabGeneralTabPage.Location = new System.Drawing.Point(4, 22);
             this.SettingsTabGeneralTabPage.Name = "SettingsTabGeneralTabPage";
             this.SettingsTabGeneralTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -686,16 +675,16 @@
             this.SettingsTabGeneralTabPage.Text = T._("★General");
             this.SettingsTabGeneralTabPage.UseVisualStyleBackColor = true;
             // 
-            // SettingsTabGeneralTabPagePanel
+            // SettingsTabGeneralTabPageBackgroundPanel
             // 
-            this.SettingsTabGeneralTabPagePanel.BackColor = System.Drawing.Color.Gray;
-            this.SettingsTabGeneralTabPagePanel.Controls.Add(this.SettingsTabGeneralTabPageTableLayoutPanel);
-            this.SettingsTabGeneralTabPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SettingsTabGeneralTabPagePanel.Location = new System.Drawing.Point(3, 3);
-            this.SettingsTabGeneralTabPagePanel.Margin = new System.Windows.Forms.Padding(0);
-            this.SettingsTabGeneralTabPagePanel.Name = "SettingsTabGeneralTabPagePanel";
-            this.SettingsTabGeneralTabPagePanel.Size = new System.Drawing.Size(456, 197);
-            this.SettingsTabGeneralTabPagePanel.TabIndex = 0;
+            this.SettingsTabGeneralTabPageBackgroundPanel.BackColor = System.Drawing.Color.Gray;
+            this.SettingsTabGeneralTabPageBackgroundPanel.Controls.Add(this.SettingsTabGeneralTabPageTableLayoutPanel);
+            this.SettingsTabGeneralTabPageBackgroundPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SettingsTabGeneralTabPageBackgroundPanel.Location = new System.Drawing.Point(3, 3);
+            this.SettingsTabGeneralTabPageBackgroundPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.SettingsTabGeneralTabPageBackgroundPanel.Name = "SettingsTabGeneralTabPageBackgroundPanel";
+            this.SettingsTabGeneralTabPageBackgroundPanel.Size = new System.Drawing.Size(456, 197);
+            this.SettingsTabGeneralTabPageBackgroundPanel.TabIndex = 0;
             // 
             // SettingsTabGeneralTabPageTableLayoutPanel
             // 
@@ -898,7 +887,7 @@
             // 
             // SettingsTabDisplayTabPage
             // 
-            this.SettingsTabDisplayTabPage.Controls.Add(this.SettingsTabGDisplayTabPagePanel);
+            this.SettingsTabDisplayTabPage.Controls.Add(this.SettingsTabDisplayTabPageBackgroundPanel);
             this.SettingsTabDisplayTabPage.Location = new System.Drawing.Point(4, 22);
             this.SettingsTabDisplayTabPage.Name = "SettingsTabDisplayTabPage";
             this.SettingsTabDisplayTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -907,16 +896,16 @@
             this.SettingsTabDisplayTabPage.Text = T._("🔳Display");
             this.SettingsTabDisplayTabPage.UseVisualStyleBackColor = true;
             // 
-            // SettingsTabGDisplayTabPagePanel
+            // SettingsTabDisplayTabPageBackgroundPanel
             // 
-            this.SettingsTabGDisplayTabPagePanel.BackColor = System.Drawing.Color.Gray;
-            this.SettingsTabGDisplayTabPagePanel.Controls.Add(this.SettingsTabDisplayTabPageTableLayoutPanel);
-            this.SettingsTabGDisplayTabPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SettingsTabGDisplayTabPagePanel.Location = new System.Drawing.Point(3, 3);
-            this.SettingsTabGDisplayTabPagePanel.Margin = new System.Windows.Forms.Padding(0);
-            this.SettingsTabGDisplayTabPagePanel.Name = "SettingsTabGDisplayTabPagePanel";
-            this.SettingsTabGDisplayTabPagePanel.Size = new System.Drawing.Size(456, 197);
-            this.SettingsTabGDisplayTabPagePanel.TabIndex = 1;
+            this.SettingsTabDisplayTabPageBackgroundPanel.BackColor = System.Drawing.Color.Gray;
+            this.SettingsTabDisplayTabPageBackgroundPanel.Controls.Add(this.SettingsTabDisplayTabPageTableLayoutPanel);
+            this.SettingsTabDisplayTabPageBackgroundPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SettingsTabDisplayTabPageBackgroundPanel.Location = new System.Drawing.Point(3, 3);
+            this.SettingsTabDisplayTabPageBackgroundPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.SettingsTabDisplayTabPageBackgroundPanel.Name = "SettingsTabDisplayTabPageBackgroundPanel";
+            this.SettingsTabDisplayTabPageBackgroundPanel.Size = new System.Drawing.Size(456, 197);
+            this.SettingsTabDisplayTabPageBackgroundPanel.TabIndex = 1;
             // 
             // SettingsTabDisplayTabPageTableLayoutPanel
             // 
@@ -1063,7 +1052,7 @@
             // 
             // ToolsTabPage
             // 
-            this.ToolsTabPage.Controls.Add(this.ToolsTabPagePanel);
+            this.ToolsTabPage.Controls.Add(this.ToolsTabPageBackgroundPanel);
             this.ToolsTabPage.Location = new System.Drawing.Point(4, 22);
             this.ToolsTabPage.Name = "ToolsTabPage";
             this.ToolsTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -1072,19 +1061,19 @@
             this.ToolsTabPage.Text = T._("🔨Tools");
             this.ToolsTabPage.UseVisualStyleBackColor = true;
             // 
-            // ToolsTabPagePanel
+            // ToolsTabPageBackgroundPanel
             // 
-            this.ToolsTabPagePanel.BackColor = System.Drawing.Color.Gray;
-            this.ToolsTabPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ToolsTabPagePanel.Location = new System.Drawing.Point(3, 3);
-            this.ToolsTabPagePanel.Margin = new System.Windows.Forms.Padding(0);
-            this.ToolsTabPagePanel.Name = "ToolsTabPagePanel";
-            this.ToolsTabPagePanel.Size = new System.Drawing.Size(470, 229);
-            this.ToolsTabPagePanel.TabIndex = 1;
+            this.ToolsTabPageBackgroundPanel.BackColor = System.Drawing.Color.Gray;
+            this.ToolsTabPageBackgroundPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ToolsTabPageBackgroundPanel.Location = new System.Drawing.Point(3, 3);
+            this.ToolsTabPageBackgroundPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.ToolsTabPageBackgroundPanel.Name = "ToolsTabPageBackgroundPanel";
+            this.ToolsTabPageBackgroundPanel.Size = new System.Drawing.Size(470, 229);
+            this.ToolsTabPageBackgroundPanel.TabIndex = 1;
             // 
             // FoldersTabPage
             // 
-            this.FoldersTabPage.Controls.Add(this.FoldersTabPagePanel);
+            this.FoldersTabPage.Controls.Add(this.FoldersTabPageBackgroundPanel);
             this.FoldersTabPage.Location = new System.Drawing.Point(4, 22);
             this.FoldersTabPage.Name = "FoldersTabPage";
             this.FoldersTabPage.Padding = new System.Windows.Forms.Padding(3);
@@ -1093,14 +1082,14 @@
             this.FoldersTabPage.Text = T._("🗁Folders");
             this.FoldersTabPage.UseVisualStyleBackColor = true;
             // 
-            // FoldersTabPagePanel
+            // FoldersTabPageBackgroundPanel
             // 
-            this.FoldersTabPagePanel.BackColor = System.Drawing.Color.Gray;
-            this.FoldersTabPagePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.FoldersTabPagePanel.Location = new System.Drawing.Point(3, 3);
-            this.FoldersTabPagePanel.Name = "FoldersTabPagePanel";
-            this.FoldersTabPagePanel.Size = new System.Drawing.Size(470, 229);
-            this.FoldersTabPagePanel.TabIndex = 0;
+            this.FoldersTabPageBackgroundPanel.BackColor = System.Drawing.Color.Gray;
+            this.FoldersTabPageBackgroundPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.FoldersTabPageBackgroundPanel.Location = new System.Drawing.Point(3, 3);
+            this.FoldersTabPageBackgroundPanel.Name = "FoldersTabPageBackgroundPanel";
+            this.FoldersTabPageBackgroundPanel.Size = new System.Drawing.Size(470, 229);
+            this.FoldersTabPageBackgroundPanel.TabIndex = 0;
             // 
             // MainForm
             // 
@@ -1118,15 +1107,14 @@
             this.LocationChanged += new System.EventHandler(this.AIHelper_LocationChanged);
             this.AIGirlHelperTabControl.ResumeLayout(false);
             this.MainTabPage.ResumeLayout(false);
-            this.InfoPagePanel.ResumeLayout(false);
-            this.InfoTabPanel.ResumeLayout(false);
+            this.InfoTabPageBackgroundPanel.ResumeLayout(false);
             this.InfoTabTableLayoutPanel.ResumeLayout(false);
             this.InfoLabelsTbleLayoutPanel.ResumeLayout(false);
             this.InfoLabelsTbleLayoutPanel.PerformLayout();
             this.InfoTabTopTableLayoutPanel.ResumeLayout(false);
             this.InfoTabTopTableLayoutPanel.PerformLayout();
             this.LaunchTabPage.ResumeLayout(false);
-            this.LaunchPagePanel.ResumeLayout(false);
+            this.LaunchTabPageBackgroundPanel.ResumeLayout(false);
             this.LaunchTabTableLayoutPanel.ResumeLayout(false);
             this.LaunchTabButtonsDownTableLayoutPanel.ResumeLayout(false);
             this.LaunchTabSubMainButtonsTableLayoutPanel.ResumeLayout(false);
@@ -1140,10 +1128,10 @@
             this.LaunchTabTopAppGameTitleTableLayoutPanel.ResumeLayout(false);
             this.LaunchTabTopAppGameTitleTableLayoutPanel.PerformLayout();
             this.SettingsTabPage.ResumeLayout(false);
-            this.SettingsTabPanel.ResumeLayout(false);
+            this.SettingsTabPageBackgroundPanel.ResumeLayout(false);
             this.SettingsTabControl.ResumeLayout(false);
             this.SettingsTabGeneralTabPage.ResumeLayout(false);
-            this.SettingsTabGeneralTabPagePanel.ResumeLayout(false);
+            this.SettingsTabGeneralTabPageBackgroundPanel.ResumeLayout(false);
             this.SettingsTabGeneralTabPageTableLayoutPanel.ResumeLayout(false);
             this.SettingsTabGeneralTabPageTableLayoutPanel.PerformLayout();
             this.ManageGameTableLayoutPanel1.ResumeLayout(false);
@@ -1153,7 +1141,7 @@
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
             this.SettingsTabDisplayTabPage.ResumeLayout(false);
-            this.SettingsTabGDisplayTabPagePanel.ResumeLayout(false);
+            this.SettingsTabDisplayTabPageBackgroundPanel.ResumeLayout(false);
             this.SettingsTabDisplayTabPageTableLayoutPanel.ResumeLayout(false);
             this.SettingsTabDisplayTabPageTableLayoutPanel.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -1167,11 +1155,10 @@
         }
 
         #endregion
-        private System.Windows.Forms.Panel InfoPagePanel;
-        private System.Windows.Forms.Panel SettingsTabPanel;
+        private System.Windows.Forms.Panel SettingsTabPageBackgroundPanel;
         private System.Windows.Forms.CheckBox FullScreenCheckBox;
         private System.Windows.Forms.ComboBox ResolutionComboBox;
-        private System.Windows.Forms.Panel LaunchPagePanel;
+        private System.Windows.Forms.Panel LaunchTabPageBackgroundPanel;
         private System.Windows.Forms.ComboBox QualityComboBox;
         private System.Windows.Forms.Label CurrentGameLabel;
         private System.Windows.Forms.LinkLabel ExtraSettingsLinkLabel;
@@ -1185,7 +1172,7 @@
         internal System.Windows.Forms.CheckBox AutoShortcutRegistryCheckBox;
         internal System.Windows.Forms.TextBox CurrentGameTitleTextBox;
         private System.Windows.Forms.Label AddGameSettingsLabel;
-        private System.Windows.Forms.Panel InfoTabPanel;
+        private System.Windows.Forms.Panel InfoTabPageBackgroundPanel;
         private System.Windows.Forms.TableLayoutPanel InfoTabTableLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel InfoLabelsTbleLayoutPanel;
         internal System.Windows.Forms.Label ModsInfoLabel;
@@ -1216,25 +1203,25 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TabControl SettingsTabControl;
         private System.Windows.Forms.TabPage SettingsTabGeneralTabPage;
-        private System.Windows.Forms.Panel SettingsTabGeneralTabPagePanel;
+        private System.Windows.Forms.Panel SettingsTabGeneralTabPageBackgroundPanel;
         private System.Windows.Forms.TableLayoutPanel SettingsTabGeneralTabPageTableLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel ManageGameTableLayoutPanel1;
         private System.Windows.Forms.Panel CurrentGamePanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.TabPage SettingsTabDisplayTabPage;
-        private System.Windows.Forms.Panel SettingsTabGDisplayTabPagePanel;
+        private System.Windows.Forms.Panel SettingsTabDisplayTabPageBackgroundPanel;
         private System.Windows.Forms.TableLayoutPanel SettingsTabDisplayTabPageTableLayoutPanel;
         private System.Windows.Forms.LinkLabel OpenSetupXmlLinkLabel;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label ResolutionLabel;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Label QualityLabel;
-        internal System.Windows.Forms.Panel FoldersTabPagePanel;
+        internal System.Windows.Forms.Panel FoldersTabPageBackgroundPanel;
         internal System.Windows.Forms.TabPage MainTabPage;
         internal System.Windows.Forms.TabPage SettingsTabPage;
         internal System.Windows.Forms.TabPage ToolsTabPage;
         internal System.Windows.Forms.TabPage FoldersTabPage;
-        internal System.Windows.Forms.Panel ToolsTabPagePanel;
+        internal System.Windows.Forms.Panel ToolsTabPageBackgroundPanel;
     }
 }
 

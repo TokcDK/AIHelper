@@ -8,7 +8,7 @@ namespace AIHelper.Manage.Functions
     {
         internal static void Load()
         {
-            var panel = ManageSettings.MainForm.FoldersTabPagePanel;
+            var panel = ManageSettings.MainForm.FoldersTabPageBackgroundPanel;
 
             var flp = new FlowLayoutPanel
             {

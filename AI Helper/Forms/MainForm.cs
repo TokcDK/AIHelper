@@ -61,8 +61,6 @@ namespace AIHelper
             ManageSettings.MainForm = this; // set reference to the form for controls use
 
             CheckMoAndEndInit();
-
-            ThemesLoader.ApplyDarkTheme();
         }
 
         private async void CheckMoAndEndInit()
@@ -596,6 +594,8 @@ namespace AIHelper
             {
                 ToolsTabButtonsLoader.Load();
             }
+
+            ThemesLoader.ApplyDefaultTheme();
         }
 
         private void CommonModeSpecificSetup()

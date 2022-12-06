@@ -23,6 +23,7 @@ namespace AIHelper.Manage
                 if (int.TryParse(ww, out int wwi) && int.TryParse(ww, out int whi))
                 {
                     f.Size = new Size(wwi, whi);
+                    isSizeGotFromIni = true;
                 }
             }
 

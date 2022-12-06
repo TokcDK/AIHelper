@@ -908,8 +908,8 @@ namespace AIHelper
             {
                 if (false /*cbxNtlea.Checked*/)
                 {
-                    exePath = ManageSettings.NtleaExePath;
-                    arguments = "\"" + Path.Combine(ManageSettings.CurrentGameDataDirPath, (isVr ? ManageSettings.CurrentGame.GameExeNameVr : ManageSettings.CurrentGameExeName) + ".exe") + "\"" + " \"C932\" \"L0411\"";
+                    //exePath = ManageSettings.NtleaExePath;
+                    //arguments = "\"" + Path.Combine(ManageSettings.CurrentGameDataDirPath, (isVr ? ManageSettings.CurrentGame.GameExeNameVr : ManageSettings.CurrentGameExeName) + ".exe") + "\"" + " \"C932\" \"L0411\"";
                 }
                 else
                 {

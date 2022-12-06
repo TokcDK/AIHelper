@@ -46,9 +46,7 @@ namespace AIHelper
         {
             InitializeComponent();
 
-            var resolution = Screen.PrimaryScreen.Bounds;
-            int w = (int)(resolution.Width / 3.3);
-            this.Size = new Size(w, (int)(w * 0.6));
+            ManageMainFormService.CalcSizeDependOnDesktop(this);
 
             ManageSettings.ApplicationStartupPath = Application.StartupPath;
             ManageSettings.ApplicationProductName = Application.ProductName;

@@ -47,7 +47,8 @@ namespace AIHelper
             InitializeComponent();
 
             var resolution = Screen.PrimaryScreen.Bounds;
-            this.Size = new Size((int)(resolution.Width / 3.5), (int)(resolution.Height / 4.5));
+            int w = (int)(resolution.Width / 3.3);
+            this.Size = new Size(w, (int)(w * 0.6));
 
             ManageSettings.ApplicationStartupPath = Application.StartupPath;
             ManageSettings.ApplicationProductName = Application.ProductName;

@@ -38,8 +38,8 @@ namespace AIHelper.Manage.ui.themes
                 {
                     if (childControl.GetType() != el.Type) continue;
 
-                    if (el.ForeColor != default) c.ForeColor = el.ForeColor;
-                    if (el.BackColor != default) c.BackColor = el.BackColor;
+                    if (el.ForeColor != default && !c.Name.ToLowerInvariant().Contains(ManageSettings.ThemeLabelColorSetIgnoreNameMark)) c.ForeColor = el.ForeColor;
+                    if (el.BackColor != default && !c.Name.ToLowerInvariant().Contains(ManageSettings.ThemeLabelColorSetIgnoreNameMark)) c.BackColor = el.BackColor;
                     if (el.Font != default) c.Font = el.Font;
                     if (el.BackgroundImage != default) c.BackgroundImage = el.BackgroundImage;
 

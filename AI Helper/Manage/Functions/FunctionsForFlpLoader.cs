@@ -24,6 +24,7 @@ namespace AIHelper.Manage.Functions
                 {
                     AutoSize = true,
                     Text = string.IsNullOrWhiteSpace(f.Symbol) ? "f" : f.Symbol,
+                    Name = $"flpf{ManageSettings.ThemeLabelColorSetIgnoreNameMark}"
                 };
                 IUITheme theme = ManageSettings.CurrentTheme;
                 if (f is IFunctionForFlpTextOptions fe)

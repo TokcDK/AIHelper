@@ -48,7 +48,7 @@
             this.BepInExDisplayedLogLevelLabel = new System.Windows.Forms.Label();
             this.LaunchTabTopAppGameTitleTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
-            this.SelectedGameLabel = new System.Windows.Forms.Label();
+            this.SelectedGameLabelOwnColor = new System.Windows.Forms.Label();
             this.SettingsTabPage = new System.Windows.Forms.TabPage();
             this.SettingsTabPageBackgroundPanel = new System.Windows.Forms.Panel();
             this.SettingsTabControl = new System.Windows.Forms.TabControl();
@@ -379,7 +379,7 @@
             this.LaunchTabTopAppGameTitleTableLayoutPanel.ColumnCount = 1;
             this.LaunchTabTopAppGameTitleTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.LaunchTabTopAppGameTitleTableLayoutPanel.Controls.Add(this.label1, 0, 0);
-            this.LaunchTabTopAppGameTitleTableLayoutPanel.Controls.Add(this.SelectedGameLabel, 0, 1);
+            this.LaunchTabTopAppGameTitleTableLayoutPanel.Controls.Add(this.SelectedGameLabelOwnColor, 0, 1);
             this.LaunchTabTopAppGameTitleTableLayoutPanel.Location = new System.Drawing.Point(79, 1);
             this.LaunchTabTopAppGameTitleTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.LaunchTabTopAppGameTitleTableLayoutPanel.Name = "LaunchTabTopAppGameTitleTableLayoutPanel";
@@ -404,20 +404,20 @@
             this.label1.Text = "-  Ằ🌶Ḩelper  -";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // SelectedGameLabel
+            // SelectedGameLabelOwnColor
             // 
-            this.SelectedGameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.SelectedGameLabelOwnColor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.SelectedGameLabel.AutoSize = true;
-            this.SelectedGameLabel.BackColor = System.Drawing.Color.Transparent;
-            this.SelectedGameLabel.Font = new System.Drawing.Font("Monotype Corsiva", 11.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.SelectedGameLabel.ForeColor = System.Drawing.Color.LightPink;
-            this.SelectedGameLabel.Location = new System.Drawing.Point(3, 62);
-            this.SelectedGameLabel.Name = "SelectedGameLabel";
-            this.SelectedGameLabel.Size = new System.Drawing.Size(301, 17);
-            this.SelectedGameLabel.TabIndex = 24;
-            this.SelectedGameLabel.Text = "GameTitle";
-            this.SelectedGameLabel.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.SelectedGameLabelOwnColor.AutoSize = true;
+            this.SelectedGameLabelOwnColor.BackColor = System.Drawing.Color.Transparent;
+            this.SelectedGameLabelOwnColor.Font = new System.Drawing.Font("Monotype Corsiva", 11.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.SelectedGameLabelOwnColor.ForeColor = System.Drawing.Color.LightPink;
+            this.SelectedGameLabelOwnColor.Location = new System.Drawing.Point(3, 62);
+            this.SelectedGameLabelOwnColor.Name = "SelectedGameLabelOwnColor";
+            this.SelectedGameLabelOwnColor.Size = new System.Drawing.Size(301, 17);
+            this.SelectedGameLabelOwnColor.TabIndex = 24;
+            this.SelectedGameLabelOwnColor.Text = "GameTitle";
+            this.SelectedGameLabelOwnColor.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
             // SettingsTabPage
             // 
@@ -1035,7 +1035,7 @@
         private System.Windows.Forms.TableLayoutPanel LaunchTabTopTableLayoutPanel;
         private System.Windows.Forms.LinkLabel OpenHelpLinkLabel;
         private System.Windows.Forms.Label BepInExDisplayedLogLevelLabel;
-        internal System.Windows.Forms.Label SelectedGameLabel;
+        internal System.Windows.Forms.Label SelectedGameLabelOwnColor;
         private System.Windows.Forms.TableLayoutPanel LaunchTabTopRightTableLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel LaunchTabTopRightBepinExLogTableLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel LaunchTabTopLeftTableLayoutPanel;

@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AIHelper.Data.Modlist;
+using AIHelper.Manage.ui.themes;
 using AIHelper.Manage.Update.Sources;
 using INIFileMan;
 using IniParser.Model;
@@ -200,6 +201,8 @@ namespace AIHelper.Manage.Functions
 
                 _updateInfoDatas.Add(infoData);
             }
+
+            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, f);
 
             //modsListFlowPanel.Size = new System.Drawing.Size
             //    (modsListFlowPanel.Width * 2

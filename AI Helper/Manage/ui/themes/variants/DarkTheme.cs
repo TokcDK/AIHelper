@@ -28,6 +28,11 @@ namespace AIHelper.Manage.ui.themes
                 BackColor = Color.FromArgb(255, 56,56,56),
                 ForeColor = Color.White,
             },
+            new ElementData()
+            {
+                Type = typeof(Label),
+                ForeColor = Color.White,
+            },
         };
     }
 }

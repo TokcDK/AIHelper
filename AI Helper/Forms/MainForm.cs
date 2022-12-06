@@ -296,7 +296,7 @@ namespace AIHelper
                 //        + "Move mouse over wished button or text to see info about it"
                 //        )
                 //    );
-                _thToolTip.SetToolTip(SelectedGameLabel, T._("Selected game title"));
+                _thToolTip.SetToolTip(SelectedGameLabelOwnColor, T._("Selected game title"));
 
                 //Launch
                 _thToolTip.SetToolTip(VRGameCheckBox, T._("Check to run VR exe instead on standart"));
@@ -573,7 +573,7 @@ namespace AIHelper
 
             if (AutoShortcutRegistryCheckBox.Checked) ManageOther.AutoShortcutAndRegystry();
 
-            SelectedGameLabel.Text = ManageSettings.Games.Game.GameDisplayingName + "❤";
+            SelectedGameLabelOwnColor.Text = ManageSettings.Games.Game.GameDisplayingName + "❤";
             this.Text = "AI Helper" + " | " + ManageSettings.Games.Game.GameDisplayingName;
 
             ThemesLoader.SetTheme();

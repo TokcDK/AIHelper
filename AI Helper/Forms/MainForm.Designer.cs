@@ -369,11 +369,10 @@
             this.FunctionsFlowLayoutPanel.AutoSize = true;
             this.FunctionsFlowLayoutPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.FunctionsFlowLayoutPanel.BackColor = System.Drawing.Color.Transparent;
-            this.FunctionsFlowLayoutPanel.Location = new System.Drawing.Point(230, 108);
+            this.FunctionsFlowLayoutPanel.Location = new System.Drawing.Point(235, 108);
             this.FunctionsFlowLayoutPanel.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.FunctionsFlowLayoutPanel.Name = "FunctionsFlowLayoutPanel";
-            this.FunctionsFlowLayoutPanel.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
-            this.FunctionsFlowLayoutPanel.Size = new System.Drawing.Size(10, 35);
+            this.FunctionsFlowLayoutPanel.Size = new System.Drawing.Size(0, 35);
             this.FunctionsFlowLayoutPanel.TabIndex = 33;
             this.FunctionsFlowLayoutPanel.WrapContents = false;
             // 
@@ -662,9 +661,9 @@
             this.SettingsTabGeneralTabPageTableLayoutPanel.Name = "SettingsTabGeneralTabPageTableLayoutPanel";
             this.SettingsTabGeneralTabPageTableLayoutPanel.RowCount = 7;
             this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -696,7 +695,7 @@
             this.ManageGameTableLayoutPanel1.Name = "ManageGameTableLayoutPanel1";
             this.ManageGameTableLayoutPanel1.RowCount = 1;
             this.ManageGameTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.ManageGameTableLayoutPanel1.Size = new System.Drawing.Size(456, 20);
+            this.ManageGameTableLayoutPanel1.Size = new System.Drawing.Size(456, 24);
             this.ManageGameTableLayoutPanel1.TabIndex = 9;
             // 
             // CurrentGamePanel1
@@ -707,7 +706,7 @@
             this.CurrentGamePanel1.Location = new System.Drawing.Point(3, 0);
             this.CurrentGamePanel1.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.CurrentGamePanel1.Name = "CurrentGamePanel1";
-            this.CurrentGamePanel1.Size = new System.Drawing.Size(154, 20);
+            this.CurrentGamePanel1.Size = new System.Drawing.Size(154, 24);
             this.CurrentGamePanel1.TabIndex = 0;
             // 
             // CurrentGameTitleTextBox
@@ -742,7 +741,7 @@
             this.ThemeSelectLabel.AutoSize = true;
             this.ThemeSelectLabel.BackColor = System.Drawing.Color.Transparent;
             this.ThemeSelectLabel.ForeColor = System.Drawing.Color.White;
-            this.ThemeSelectLabel.Location = new System.Drawing.Point(3, 47);
+            this.ThemeSelectLabel.Location = new System.Drawing.Point(3, 51);
             this.ThemeSelectLabel.Name = "ThemeSelectLabel";
             this.ThemeSelectLabel.Size = new System.Drawing.Size(43, 13);
             this.ThemeSelectLabel.TabIndex = 11;
@@ -753,7 +752,7 @@
             this.SelectThemeComboBox.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.SelectThemeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.SelectThemeComboBox.FormattingEnabled = true;
-            this.SelectThemeComboBox.Location = new System.Drawing.Point(3, 63);
+            this.SelectThemeComboBox.Location = new System.Drawing.Point(3, 67);
             this.SelectThemeComboBox.Name = "SelectThemeComboBox";
             this.SelectThemeComboBox.Size = new System.Drawing.Size(150, 21);
             this.SelectThemeComboBox.TabIndex = 12;
@@ -773,7 +772,7 @@
             this.OtherSettingsFlowLayoutPanel.Controls.Add(this.FixRegistryLinkLabel);
             this.OtherSettingsFlowLayoutPanel.Controls.Add(this.CreateShortcutLinkLabel);
             this.OtherSettingsFlowLayoutPanel.Controls.Add(this.AutoShortcutRegistryCheckBox);
-            this.OtherSettingsFlowLayoutPanel.Location = new System.Drawing.Point(0, 103);
+            this.OtherSettingsFlowLayoutPanel.Location = new System.Drawing.Point(0, 108);
             this.OtherSettingsFlowLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.OtherSettingsFlowLayoutPanel.Name = "OtherSettingsFlowLayoutPanel";
             this.OtherSettingsFlowLayoutPanel.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
@@ -1124,7 +1123,7 @@
             this.AddGameButton.Location = new System.Drawing.Point(157, 0);
             this.AddGameButton.Margin = new System.Windows.Forms.Padding(0);
             this.AddGameButton.Name = "AddGameButton";
-            this.AddGameButton.Size = new System.Drawing.Size(24, 20);
+            this.AddGameButton.Size = new System.Drawing.Size(24, 24);
             this.AddGameButton.TabIndex = 1;
             this.AddGameButton.Text = "+";
             this.AddGameButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;

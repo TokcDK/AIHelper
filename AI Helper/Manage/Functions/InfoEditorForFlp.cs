@@ -28,6 +28,7 @@ namespace AIHelper.Manage.Functions
         readonly List<UpdateInfoData> _updateInfoDatas = new List<UpdateInfoData>();
 
         bool _isReading;
+        bool _isWriting;
 
         internal void OpenInfoEditor()
         {
@@ -269,9 +270,18 @@ namespace AIHelper.Manage.Functions
                     tb.TextChanged += new System.EventHandler((o, e) =>
                     {
                         if (_isReading) return;
+                        if (_isWriting) return;
 
-                        tb.DataBindings[0].WriteValue(); // force write property valuue before try write ini
-                        infoData.GitInfo.Write();
+                        _isWriting = true;
+
+                        Task.Delay(1000).ContinueWith(t =>
+                        {
+                            tb.DataBindings[0].WriteValue(); // force write property valuue before try write ini
+                            infoData.GitInfo.Write();
+
+                            _isWriting = false;
+                        });
+
                     });
 
                     thePropertyFlowPanel.Controls.Add(l);
@@ -311,9 +321,17 @@ namespace AIHelper.Manage.Functions
                     cb.CheckedChanged += new System.EventHandler((o, e) =>
                     {
                         if (_isReading) return;
+                        if (_isWriting) return;
 
-                        cb.DataBindings[0].WriteValue(); // force write property valuue before try write ini
-                        infoData.GitInfo.Write();
+                        _isWriting = true;
+
+                        Task.Delay(1000).ContinueWith(t =>
+                        {
+                            cb.DataBindings[0].WriteValue(); // force write property valuue before try write ini
+                            infoData.GitInfo.Write();
+
+                            _isWriting = false;
+                        });
                     });
 
 
@@ -332,6 +350,8 @@ namespace AIHelper.Manage.Functions
                 else continue;
             }
         }
+
+
 
         private void AddButtons(FlowLayoutPanel currentModFlowPanel, UpdateInfoData infoData)
         {

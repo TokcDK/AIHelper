@@ -11,11 +11,20 @@ namespace AIHelper.Manage.Functions
     {
         internal static void Load()
         {
-
-            var flp = ManageSettings.MainForm.FunctionsFlowLayoutPanel;
-            flp.Controls.Clear(); // clear old
-
             var functions = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFunctionForFlp>();
+            
+            var panel = ManageSettings.MainForm.FunctionsForFLPTableLayoutPanel;
+
+            var flp = new FlowLayoutPanel
+            {
+                // setup for place in center of 1 cell sized panel
+                // center flp elements settings got from here: https://stackoverflow.com/a/38824845
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                Anchor = AnchorStyles.Top | AnchorStyles.Bottom,
+                AutoScroll = true,
+                WrapContents = false
+            };
 
             var ttip = new ToolTip()
             {
@@ -64,9 +73,11 @@ namespace AIHelper.Manage.Functions
 
                 flp.Controls.Add(l);
                 //list.Add(l);
-
-                // center flp elements settings got from here: https://stackoverflow.com/a/38824845
             }
+
+            if (flp.Controls.Count == 0) return;
+
+            panel.Controls.Add(flp);
         }
     }
 }

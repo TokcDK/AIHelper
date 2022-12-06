@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using AIHelper.Manage.ui.themes;
 
@@ -12,33 +11,12 @@ namespace AIHelper.Manage.Functions
         internal static void Load()
         {
             var functions = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFunctionForFlp>();
-            
+
             var panel = ManageSettings.MainForm.FunctionsForFLPTableLayoutPanel;
 
-            var flp = new FlowLayoutPanel
-            {
-                // setup for place in center of 1 cell sized panel
-                // center flp elements settings got from here: https://stackoverflow.com/a/38824845
-                AutoSize = true,
-                AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                Anchor = AnchorStyles.Top | AnchorStyles.Bottom,
-                AutoScroll = true,
-                WrapContents = false
-            };
+            var flp = new FlowLayoutPanel();
 
-            var ttip = new ToolTip()
-            {
-                // Set up the delays for the ToolTip.
-                AutoPopDelay = 32000,
-                InitialDelay = 1000,
-                ReshowDelay = 500,
-                UseAnimation = true,
-                UseFading = true,
-                // Force the ToolTip text to be displayed whether or not the form is active.
-                ShowAlways = true
-            };
-
-            var list = new List<Control>();
+            var ttip = new ToolTip();
 
             foreach (var f in functions)
             {
@@ -72,10 +50,26 @@ namespace AIHelper.Manage.Functions
                 ttip.SetToolTip(l, f.Description);
 
                 flp.Controls.Add(l);
-                //list.Add(l);
             }
 
             if (flp.Controls.Count == 0) return;
+
+            // setup for place in center of 1 cell sized panel
+            // center flp elements settings got from here: https://stackoverflow.com/a/38824845
+            flp.AutoSize = true;
+            flp.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            flp.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
+            flp.AutoScroll = true;
+            flp.WrapContents = false;
+
+            // Set up the delays for the ToolTip.
+            ttip.AutoPopDelay = 32000;
+            ttip.InitialDelay = 1000;
+            ttip.ReshowDelay = 500;
+            ttip.UseAnimation = true;
+            ttip.UseFading = true;
+            // Force the ToolTip text to be displayed whether or not the form is active.
+            ttip.ShowAlways = true;
 
             panel.Controls.Add(flp);
         }

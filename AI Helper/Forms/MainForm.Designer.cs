@@ -70,7 +70,6 @@
             this.CurrentGamePanel1 = new System.Windows.Forms.Panel();
             this.CurrentGameTitleTextBox = new System.Windows.Forms.TextBox();
             this.CurrentGameComboBox = new System.Windows.Forms.ComboBox();
-            this.AddGameSettingsLabel = new System.Windows.Forms.Label();
             this.ThemeSelectLabel = new System.Windows.Forms.Label();
             this.SelectThemeComboBox = new System.Windows.Forms.ComboBox();
             this.OtherSettingsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
@@ -98,6 +97,7 @@
             this.FoldersTabPage = new System.Windows.Forms.TabPage();
             this.FoldersTabPageBackgroundPanel = new System.Windows.Forms.Panel();
             this.MainFormBackgroundPanel = new System.Windows.Forms.Panel();
+            this.AddGameButton = new System.Windows.Forms.Button();
             this.AIGirlHelperTabControl.SuspendLayout();
             this.MainTabPage.SuspendLayout();
             this.InfoTabPageBackgroundPanel.SuspendLayout();
@@ -689,7 +689,7 @@
             this.ManageGameTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 157F));
             this.ManageGameTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 299F));
             this.ManageGameTableLayoutPanel1.Controls.Add(this.CurrentGamePanel1, 0, 0);
-            this.ManageGameTableLayoutPanel1.Controls.Add(this.AddGameSettingsLabel, 1, 0);
+            this.ManageGameTableLayoutPanel1.Controls.Add(this.AddGameButton, 1, 0);
             this.ManageGameTableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ManageGameTableLayoutPanel1.Location = new System.Drawing.Point(0, 20);
             this.ManageGameTableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
@@ -735,22 +735,6 @@
             this.CurrentGameComboBox.Size = new System.Drawing.Size(150, 21);
             this.CurrentGameComboBox.TabIndex = 7;
             this.CurrentGameComboBox.SelectedIndexChanged += new System.EventHandler(this.CurrentGameComboBox_SelectedIndexChanged);
-            // 
-            // AddGameSettingsLabel
-            // 
-            this.AddGameSettingsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.AddGameSettingsLabel.AutoSize = true;
-            this.AddGameSettingsLabel.BackColor = System.Drawing.Color.Transparent;
-            this.AddGameSettingsLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.AddGameSettingsLabel.Location = new System.Drawing.Point(162, 0);
-            this.AddGameSettingsLabel.Margin = new System.Windows.Forms.Padding(5, 0, 0, 0);
-            this.AddGameSettingsLabel.Name = "AddGameSettingsLabel";
-            this.AddGameSettingsLabel.Size = new System.Drawing.Size(55, 20);
-            this.AddGameSettingsLabel.TabIndex = 14;
-            this.AddGameSettingsLabel.Text = "Add game";
-            this.AddGameSettingsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.AddGameSettingsLabel.Click += new System.EventHandler(this.AddGameLabel_Click);
             // 
             // ThemeSelectLabel
             // 
@@ -1125,6 +1109,28 @@
             this.MainFormBackgroundPanel.Size = new System.Drawing.Size(484, 261);
             this.MainFormBackgroundPanel.TabIndex = 1;
             // 
+            // AddGameButton
+            // 
+            this.AddGameButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.AddGameButton.AutoSize = true;
+            this.AddGameButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.AddGameButton.BackColor = System.Drawing.Color.Transparent;
+            this.AddGameButton.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.AddGameButton.FlatAppearance.BorderSize = 0;
+            this.AddGameButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.AddGameButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.AddGameButton.ForeColor = System.Drawing.Color.White;
+            this.AddGameButton.Location = new System.Drawing.Point(157, 0);
+            this.AddGameButton.Margin = new System.Windows.Forms.Padding(0);
+            this.AddGameButton.Name = "AddGameButton";
+            this.AddGameButton.Size = new System.Drawing.Size(24, 20);
+            this.AddGameButton.TabIndex = 1;
+            this.AddGameButton.Text = "+";
+            this.AddGameButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.AddGameButton.UseVisualStyleBackColor = false;
+            this.AddGameButton.Click += new System.EventHandler(this.AddGameLabel_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1203,7 +1209,6 @@
         internal System.Windows.Forms.ComboBox CurrentGameComboBox;
         internal System.Windows.Forms.CheckBox AutoShortcutRegistryCheckBox;
         internal System.Windows.Forms.TextBox CurrentGameTitleTextBox;
-        private System.Windows.Forms.Label AddGameSettingsLabel;
         private System.Windows.Forms.Panel InfoTabPageBackgroundPanel;
         private System.Windows.Forms.TableLayoutPanel InfoTabTableLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel InfoLabelsTbleLayoutPanel;
@@ -1257,6 +1262,7 @@
         private System.Windows.Forms.CheckBox VRGameCheckBox;
         private System.Windows.Forms.CheckBox BepInExConsoleCheckBox;
         private System.Windows.Forms.LinkLabel OpenLogLinkLabel;
+        private System.Windows.Forms.Button AddGameButton;
     }
 }
 

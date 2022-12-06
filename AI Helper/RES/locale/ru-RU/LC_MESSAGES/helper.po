@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AI Helper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-05 22:38+0500\n"
-"PO-Revision-Date: 2022-12-05 22:39+0500\n"
+"POT-Creation-Date: 2022-12-06 17:21+0500\n"
+"PO-Revision-Date: 2022-12-06 17:22+0500\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -42,11 +42,11 @@ msgstr "Очистка  выбора уровней лога"
 msgid "Log levels. How many messages will be displayed"
 msgstr "Уровни лога. Как много сообщений будет отображено"
 
-#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:52 Forms/MainForm.cs:341
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:52 Forms/MainForm.cs:340
 msgid "Open BepinEx log if found"
 msgstr "Открыть лог BepinEx, если найден"
 
-#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:53 Forms/MainForm.cs:342
+#: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:53 Forms/MainForm.cs:341
 msgid ""
 "Click here to select log level\n"
 "Only displays the specified log level and above in the console output"
@@ -97,7 +97,7 @@ msgid "Auto"
 msgstr "Авто"
 
 #: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:147
-#: Forms/MainForm.Designer.cs:848
+#: Forms/MainForm.Designer.cs:810
 msgid "Extra Settings"
 msgstr "Доп. настройки"
 
@@ -269,23 +269,23 @@ msgstr ""
 msgid "not found"
 msgstr "не найден"
 
-#: Forms/MainForm.Designer.cs:164
+#: Forms/MainForm.Designer.cs:163
 msgid "ℹInfo"
 msgstr "ℹИнфо"
 
-#: Forms/MainForm.Designer.cs:229 Forms/MainForm.Designer.cs:246
+#: Forms/MainForm.Designer.cs:228 Forms/MainForm.Designer.cs:245
 msgid "..."
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:265
+#: Forms/MainForm.Designer.cs:264
 msgid "Prepare the game"
 msgstr "Подготовить игру"
 
-#: Forms/MainForm.Designer.cs:309 Forms/MainForm.Designer.cs:621
+#: Forms/MainForm.Designer.cs:308 Forms/MainForm.Designer.cs:577
 msgid "-  Ằ🌶Ḩelper  -"
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:320
+#: Forms/MainForm.Designer.cs:319
 msgid "🚀Launch"
 msgstr "🚀Запуск"
 
@@ -306,95 +306,95 @@ msgstr "Менеджер"
 msgid "Help"
 msgstr "Помощь"
 
-#: Forms/MainForm.Designer.cs:562
-msgid "log"
-msgstr "лог"
-
-#: Forms/MainForm.Designer.cs:577
-msgid "vr"
-msgstr ""
-
-#: Forms/MainForm.Designer.cs:589
+#: Forms/MainForm.Designer.cs:545
 msgid "Info"
 msgstr "Инфо"
 
-#: Forms/MainForm.Designer.cs:636
+#: Forms/MainForm.Designer.cs:592
 msgid "GameTitle"
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:647
+#: Forms/MainForm.Designer.cs:603
 msgid "🔧Settings"
 msgstr "🔧Настройки"
 
-#: Forms/MainForm.Designer.cs:679
+#: Forms/MainForm.Designer.cs:635
 msgid "★General"
 msgstr "★Основные"
 
-#: Forms/MainForm.Designer.cs:725
+#: Forms/MainForm.Designer.cs:681
 msgid "Current Game:"
 msgstr "Текущая игра:"
 
-#: Forms/MainForm.Designer.cs:792
+#: Forms/MainForm.Designer.cs:748
 msgid "Add game"
 msgstr "Добавить игру"
 
-#: Forms/MainForm.Designer.cs:821
+#: Forms/MainForm.Designer.cs:783
 msgid "JP Launcher"
 msgstr "Ориг. лаунчер"
 
-#: Forms/MainForm.Designer.cs:833
+#: Forms/MainForm.Designer.cs:795
 msgid "ntlea"
 msgstr ""
 
-#: Forms/MainForm.Designer.cs:862
+#: Forms/MainForm.Designer.cs:824
 msgid "Fix registry"
 msgstr "Фикс реестра"
 
-#: Forms/MainForm.Designer.cs:877 Manage/ManageOther.cs:84
+#: Forms/MainForm.Designer.cs:839 Manage/ManageOther.cs:84
 msgid "Shortcut"
 msgstr "Ярлык"
 
-#: Forms/MainForm.Designer.cs:890
+#: Forms/MainForm.Designer.cs:852
 msgid "Autoshortcut"
 msgstr "Автоярлык"
 
-#: Forms/MainForm.Designer.cs:905
+#: Forms/MainForm.Designer.cs:867
 msgid "Theme:"
 msgstr "Тема:"
 
-#: Forms/MainForm.Designer.cs:925
+#: Forms/MainForm.Designer.cs:887
 msgid "🔳Display"
 msgstr "🔳Экран"
 
-#: Forms/MainForm.Designer.cs:970
+#: Forms/MainForm.Designer.cs:932
 msgid "Open game setup file"
 msgstr "Открыть файл настроек игры"
 
-#: Forms/MainForm.Designer.cs:999
+#: Forms/MainForm.Designer.cs:961
 msgid "Resolution:"
 msgstr "Разрешение:"
 
-#: Forms/MainForm.Designer.cs:1051
+#: Forms/MainForm.Designer.cs:1013
 msgid "Quality:"
 msgstr "Качество:"
 
-#: Forms/MainForm.Designer.cs:1078
+#: Forms/MainForm.Designer.cs:1040
 msgid "fullscreen"
 msgstr "во весь экран"
 
-#: Forms/MainForm.Designer.cs:1090
+#: Forms/MainForm.Designer.cs:1052
 msgid "🔨Tools"
 msgstr "🔨Инструменты"
 
-#: Forms/MainForm.Designer.cs:1111
+#: Forms/MainForm.Designer.cs:1073
 msgid "🗁Folders"
 msgstr "🗁Папки"
 
-#: Forms/MainForm.Designer.cs:1142
+#: Forms/MainForm.Designer.cs:1104
+msgid "vr"
+msgstr ""
+
+#: Forms/MainForm.Designer.cs:1131
+msgid "log"
+msgstr "лог"
+
+#: Forms/MainForm.Designer.cs:1145
 msgid "AI Helper [Organized modpack]"
 msgstr ""
 
-#: Forms/MainForm.cs:76
+#: Forms/MainForm.cs:75
 msgid ""
 "Mod Organizer is missing in the app dir. Need to download latest version for "
 "to be able to manage mods by MO. Download latest?"
@@ -402,11 +402,11 @@ msgstr ""
 "Mod Organizer отсутствует в папке программы. Нужно загрузить последнюю "
 "версию для управления модами через него. Загрузить?"
 
-#: Forms/MainForm.cs:76
+#: Forms/MainForm.cs:75
 msgid "Mod Organizer not found!"
 msgstr "Mod Organizer не найден!"
 
-#: Forms/MainForm.cs:79
+#: Forms/MainForm.cs:78
 msgid ""
 "Application will exit now. You can manually put Mod Organizer in MO folder "
 "nex to the program."
@@ -414,51 +414,51 @@ msgstr ""
 "Программа завершает работу. Вы можете вручную поместить файлы Mod Organizer "
 "в папку MO рядом с программой."
 
-#: Forms/MainForm.cs:215
+#: Forms/MainForm.cs:214
 msgid "Perfomance"
 msgstr "Производительность"
 
-#: Forms/MainForm.cs:216
+#: Forms/MainForm.cs:215
 msgid "Normal"
 msgstr "Нормально"
 
-#: Forms/MainForm.cs:217
+#: Forms/MainForm.cs:216
 msgid "Quality"
 msgstr "Качество"
 
-#: Forms/MainForm.cs:307
+#: Forms/MainForm.cs:306
 msgid "Selected game title"
 msgstr "Название выбранной игры"
 
-#: Forms/MainForm.cs:310
+#: Forms/MainForm.cs:309
 msgid "Check to run VR exe instead on standart"
 msgstr "Отметить для запуска VR exe, если есть"
 
-#: Forms/MainForm.cs:312 Forms/MainForm.cs:314
+#: Forms/MainForm.cs:311 Forms/MainForm.cs:313
 msgid "Will execute the Game"
 msgstr "Запустит игру"
 
-#: Forms/MainForm.cs:313 Forms/MainForm.cs:317 Forms/MainForm.cs:323
+#: Forms/MainForm.cs:312 Forms/MainForm.cs:316 Forms/MainForm.cs:322
 msgid " from Mod Organizer with attached mods"
 msgstr " из под Mod Organizer с подключенными модами"
 
-#: Forms/MainForm.cs:316 Forms/MainForm.cs:318
+#: Forms/MainForm.cs:315 Forms/MainForm.cs:317
 msgid "Will execute Studio"
 msgstr "Запустит Студию"
 
-#: Forms/MainForm.cs:320
+#: Forms/MainForm.cs:319
 msgid "Will execute Mod Organizer mod manager where you can manage your mods"
 msgstr "Запустит Mod Organizer, где вы можете управлять своими модами"
 
-#: Forms/MainForm.cs:322 Forms/MainForm.cs:324
+#: Forms/MainForm.cs:321 Forms/MainForm.cs:323
 msgid "Will execute original game launcher"
 msgstr "Запустит оригинальный лаунчер игры"
 
-#: Forms/MainForm.cs:326
+#: Forms/MainForm.cs:325
 msgid "Will be opened Settings tab"
 msgstr "Будет открыта вкладка Настройки"
 
-#: Forms/MainForm.cs:347
+#: Forms/MainForm.cs:346
 msgid ""
 "When checked will create shortcut for the AI Helper on Desktop and will fix "
 "registry if need"
@@ -466,77 +466,77 @@ msgstr ""
 "Когда отмечено, создаст ярлык для AI Helper на Рабочем столе и исправит "
 "реестр, если нужно"
 
-#: Forms/MainForm.cs:350
+#: Forms/MainForm.cs:349
 msgid "Select preferred screen resolution"
 msgstr "Выберете предпочитаемое разрешение экрана"
 
-#: Forms/MainForm.cs:351
+#: Forms/MainForm.cs:350
 msgid "When checked game will be in fullscreen mode"
 msgstr "Когда отмечено, игра запустится в полноэкранном режиме"
 
-#: Forms/MainForm.cs:352
+#: Forms/MainForm.cs:351
 msgid "Select preferred graphics quality"
 msgstr "Выберете предпочитаемое качество графики"
 
-#: Forms/MainForm.cs:354
+#: Forms/MainForm.cs:353
 msgid "Will create shortcut in Desktop if not exist"
 msgstr "Создаст ярлык на Рабочем столе, если отсутствует"
 
-#: Forms/MainForm.cs:356
+#: Forms/MainForm.cs:355
 msgid "Will set Data dir with game files as install dir in registry"
 msgstr "Установит в реестре папку Data с файлами игры как папку установки"
 
-#: Forms/MainForm.cs:368
+#: Forms/MainForm.cs:367
 msgid "Open extra setting window for plugins and etc"
 msgstr "Открыть экстра настройки плагинов и т.п."
 
-#: Forms/MainForm.cs:370
+#: Forms/MainForm.cs:369
 msgid "List of found games. Current"
 msgstr "Список найденных игры. Текущая"
 
-#: Forms/MainForm.cs:540
+#: Forms/MainForm.cs:539
 msgid "Mods dir created"
 msgstr "Папки модов созданы"
 
-#: Forms/MainForm.cs:545
+#: Forms/MainForm.cs:544
 #, csharp-format
 msgid "{0} game installed in {1}"
 msgstr "Игра {0} установлена в {1}"
 
-#: Forms/MainForm.cs:549
+#: Forms/MainForm.cs:548
 #, csharp-format
 msgid "{0} archive in {1}"
 msgstr "Архив {0} в {1}"
 
-#: Forms/MainForm.cs:553
+#: Forms/MainForm.cs:552
 #, csharp-format
 msgid "{0} files not in {1}. Move {0} game files there."
 msgstr "Файлы {0} не в {1}. Поместите файлы игры {0} туда."
 
-#: Forms/MainForm.cs:558
+#: Forms/MainForm.cs:557
 #, csharp-format
 msgid "{0} dir created. Move {1} game files there."
 msgstr "Созда папка {0}. Поместите файлы игры {1} туда."
 
-#: Forms/MainForm.cs:611 Forms/MainForm.cs:721
+#: Forms/MainForm.cs:610 Forms/MainForm.cs:720
 #: Manage/ModeSwitch/ToCommonMode.cs:20
 msgid "Common mode"
 msgstr "Обычный режим"
 
-#: Forms/MainForm.cs:690
+#: Forms/MainForm.cs:689
 msgid "Found mod folders in Mods"
 msgstr "Найдены папки модов в Mods"
 
-#: Forms/MainForm.cs:693
+#: Forms/MainForm.cs:692
 msgid "Mods Ready"
 msgstr "Моды готовы"
 
-#: Forms/MainForm.cs:726 Forms/Other/SwitchModeDialogForm.cs:46
+#: Forms/MainForm.cs:725 Forms/Other/SwitchModeDialogForm.cs:46
 #: Manage/ModeSwitch/ToMOMode.cs:19
 msgid "MO mode"
 msgstr "MO режим"
 
-#: Forms/MainForm.cs:851
+#: Forms/MainForm.cs:850
 msgid ""
 "Game in Common mode now.\n"
 " To execute Mod Organizer convert game back\n"
@@ -546,7 +546,7 @@ msgstr ""
 " Для запуска Mod Organizer сконвертируйте игру\n"
 " назад в режим для MO кнопкой на вкладке Инструменты"
 
-#: Forms/MainForm.cs:1158
+#: Forms/MainForm.cs:1157
 msgid "Move mouse cursor over wished button or text to see info about it"
 msgstr ""
 "Наведите курсор мыши на желаемую кнопку или текст для просмотра подсказки"

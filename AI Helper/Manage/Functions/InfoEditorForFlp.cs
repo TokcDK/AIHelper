@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using AIHelper.Data.Modlist;
 using AIHelper.Manage.Update.Sources;
 using INIFileMan;
+using IniParser.Model;
 
 namespace AIHelper.Manage.Functions
 {
@@ -267,22 +268,7 @@ namespace AIHelper.Manage.Functions
                         Margin = new Padding(0),
                     };
                     tb.DataBindings.Add(new Binding("Text", infoData, $"{nameof(infoData.GitInfo)}.{propertyInfo.Name}", true, DataSourceUpdateMode.OnPropertyChanged));
-                    tb.TextChanged += new System.EventHandler((o, e) =>
-                    {
-                        if (_isReading) return;
-                        if (_isWriting) return;
-
-                        _isWriting = true;
-
-                        Task.Delay(1000).ContinueWith(t =>
-                        {
-                            tb.DataBindings[0].WriteValue(); // force write property valuue before try write ini
-                            infoData.GitInfo.Write();
-
-                            _isWriting = false;
-                        });
-
-                    });
+                    tb.TextChanged += new System.EventHandler((o, e) => { WriteValue(tb, infoData); });
 
                     thePropertyFlowPanel.Controls.Add(l);
                     thePropertyFlowPanel.Controls.Add(tb);
@@ -318,22 +304,7 @@ namespace AIHelper.Manage.Functions
                         Margin = new Padding(0)
                     };
                     cb.DataBindings.Add(new Binding("Checked", infoData, $"{nameof(infoData.GitInfo)}.{propertyInfo.Name}", true, DataSourceUpdateMode.OnPropertyChanged));
-                    cb.CheckedChanged += new System.EventHandler((o, e) =>
-                    {
-                        if (_isReading) return;
-                        if (_isWriting) return;
-
-                        _isWriting = true;
-
-                        Task.Delay(1000).ContinueWith(t =>
-                        {
-                            cb.DataBindings[0].WriteValue(); // force write property valuue before try write ini
-                            infoData.GitInfo.Write();
-
-                            _isWriting = false;
-                        });
-                    });
-
+                    cb.CheckedChanged += new System.EventHandler((o, e) => { WriteValue(cb, infoData); });
 
                     var lWidth = cb.Width + (cb.Margin.Horizontal * 2);
                     var lHeight = cb.Height + (cb.Margin.Vertical * 2);
@@ -351,7 +322,21 @@ namespace AIHelper.Manage.Functions
             }
         }
 
+        private void WriteValue(Control cb, UpdateInfoData infoData)
+        {
+            if (_isReading) return;
+            if (_isWriting) return;
 
+            _isWriting = true;
+
+            Task.Delay(1000).ContinueWith(t =>
+            {
+                cb.DataBindings[0].WriteValue(); // force write property valuue before try write ini
+                infoData.GitInfo.Write();
+
+                _isWriting = false;
+            });
+        }
 
         private void AddButtons(FlowLayoutPanel currentModFlowPanel, UpdateInfoData infoData)
         {

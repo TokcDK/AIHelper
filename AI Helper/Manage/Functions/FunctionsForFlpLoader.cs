@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using AIHelper.Manage.ui.themes;
 
@@ -26,6 +28,8 @@ namespace AIHelper.Manage.Functions
                 // Force the ToolTip text to be displayed whether or not the form is active.
                 ShowAlways = true
             };
+
+            var list = new List<Control>();
 
             foreach (var f in functions)
             {
@@ -59,6 +63,9 @@ namespace AIHelper.Manage.Functions
                 ttip.SetToolTip(l, f.Description);
 
                 flp.Controls.Add(l);
+                //list.Add(l);
+
+                // center flp elements settings got from here: https://stackoverflow.com/a/38824845
             }
         }
     }

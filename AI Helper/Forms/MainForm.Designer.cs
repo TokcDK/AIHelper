@@ -365,13 +365,14 @@
             // 
             // FunctionsFlowLayoutPanel
             // 
-            this.FunctionsFlowLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.FunctionsFlowLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.FunctionsFlowLayoutPanel.AutoSize = true;
+            this.FunctionsFlowLayoutPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.FunctionsFlowLayoutPanel.BackColor = System.Drawing.Color.Transparent;
-            this.FunctionsFlowLayoutPanel.Location = new System.Drawing.Point(1, 108);
+            this.FunctionsFlowLayoutPanel.Location = new System.Drawing.Point(235, 108);
             this.FunctionsFlowLayoutPanel.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.FunctionsFlowLayoutPanel.Name = "FunctionsFlowLayoutPanel";
-            this.FunctionsFlowLayoutPanel.Size = new System.Drawing.Size(468, 35);
+            this.FunctionsFlowLayoutPanel.Size = new System.Drawing.Size(0, 35);
             this.FunctionsFlowLayoutPanel.TabIndex = 33;
             // 
             // LaunchTabSubMainButtonsTableLayoutPanel
@@ -1156,6 +1157,7 @@
             this.LaunchTabPageBackgroundPanel.ResumeLayout(false);
             this.LaunchTabTableLayoutPanel.ResumeLayout(false);
             this.LaunchTabButtonsDownTableLayoutPanel.ResumeLayout(false);
+            this.LaunchTabButtonsDownTableLayoutPanel.PerformLayout();
             this.LaunchTabSubMainButtonsTableLayoutPanel.ResumeLayout(false);
             this.LaunchTabTopTableLayoutPanel.ResumeLayout(false);
             this.LaunchTabTopLeftTableLayoutPanel.ResumeLayout(false);

@@ -30,7 +30,7 @@ namespace AIHelper.Manage
             {
                 // set default size depend on desktop
                 var resolution = Screen.PrimaryScreen.Bounds;
-                int w = (int)(resolution.Width / 3.3);
+                int w = (int)(resolution.Width / 3.2);
                 f.Size = new Size(w, (int)(w * 0.6));
             }
 

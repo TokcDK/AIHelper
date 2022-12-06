@@ -37,7 +37,7 @@ namespace AIHelper.Manage
             // register size changed to save window size
             f.SizeChanged += new EventHandler((o, e) =>
             {
-#if Release
+#if !DEBUG
                 Task.Delay(1000).ContinueWith(t =>
                 {
                     // save window size

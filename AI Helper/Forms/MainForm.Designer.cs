@@ -570,7 +570,7 @@
             this.AddGameButton.BackColor = System.Drawing.Color.Transparent;
             this.AddGameButton.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.AddGameButton.FlatAppearance.BorderSize = 0;
-            this.AddGameButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.AddGameButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.AddGameButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.AddGameButton.ForeColor = System.Drawing.Color.White;
             this.AddGameButton.Location = new System.Drawing.Point(157, 0);
@@ -579,7 +579,6 @@
             this.AddGameButton.Size = new System.Drawing.Size(24, 24);
             this.AddGameButton.TabIndex = 1;
             this.AddGameButton.Text = "+";
-            this.AddGameButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.AddGameButton.UseVisualStyleBackColor = false;
             this.AddGameButton.Click += new System.EventHandler(this.AddGameLabel_Click);
             // 

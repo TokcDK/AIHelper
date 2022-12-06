@@ -37,14 +37,15 @@ namespace AIHelper.Manage
             // register size changed to save window size
             f.SizeChanged += new EventHandler((o, e) =>
             {
-                Task.Delay(1000).ContinueWith(t =>
-                {
-                    // save window size
-                    var ini1 = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
+                // enable only for release
+                //Task.Delay(1000).ContinueWith(t =>
+                //{
+                //    // save window size
+                //    var ini1 = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
 
-                    ini1.SetKey(ManageSettings.IniSettingsSectionName, nameof(f.Width), f.Width + "");
-                    ini1.SetKey(ManageSettings.IniSettingsSectionName, nameof(f.Height), f.Height + "");
-                });
+                //    ini1.SetKey(ManageSettings.IniSettingsSectionName, nameof(f.Width), f.Width + "");
+                //    ini1.SetKey(ManageSettings.IniSettingsSectionName, nameof(f.Height), f.Height + "");
+                //});
             });
         }
     }

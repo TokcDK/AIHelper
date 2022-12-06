@@ -288,14 +288,7 @@ namespace AIHelper
                 ShowAlways = true
             };
 
-            if (AIGirlHelperTabControl.SelectedTab == MainTabPage)
-            {
-                //Main
-                //THToolTip.SetToolTip(button1, T._("Unpacking mods and resources from 'Downloads' and 'RES' folders for game when they are not installed"));              
-
-
-            }
-            else if (AIGirlHelperTabControl.SelectedTab == LaunchTabPage)
+            if (AIGirlHelperTabControl.SelectedTab == LaunchTabPage)
             {
                 FunctionsForFlpLoader.Load();
 
@@ -536,26 +529,28 @@ namespace AIHelper
             if (MOmode && !Directory.Exists(ManageSettings.CurrentGameModsDirPath))
             {
                 Directory.CreateDirectory(ManageSettings.CurrentGameModsDirPath);
-                ModsInfoLabel.Text = T._("Mods dir created");
+                //ModsInfoLabel.Text = T._("Mods dir created");
             }
 
-            if (File.Exists(Path.Combine(ManageSettings.CurrentGameDataDirPath, ManageSettings.CurrentGameExeName + ".exe")))
-            {
-                DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} game installed in {1}"), ManageSettings.CurrentGameDisplayingName, "Data");
-            }
-            else if (File.Exists(Path.Combine(ManageSettings.AppResDirPath, ManageSettings.CurrentGameExeName + ".7z")))
-            {
-                DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} archive in {1}"), "AIGirl", "Data");
-            }
-            else if (Directory.Exists(ManageSettings.CurrentGameDataDirPath))
-            {
-                DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} files not in {1}. Move {0} game files there."), ManageSettings.CurrentGameDirName, "Data");
-            }
-            else
-            {
-                Directory.CreateDirectory(ManageSettings.CurrentGameDataDirPath);
-                DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} dir created. Move {1} game files there."), "Data", ManageSettings.CurrentGameDirName);
-            }
+            //if (File.Exists(Path.Combine(ManageSettings.CurrentGameDataDirPath, ManageSettings.CurrentGameExeName + ".exe")))
+            //{
+            //    //DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} game installed in {1}"), ManageSettings.CurrentGameDisplayingName, "Data");
+            //}
+            //else if (File.Exists(Path.Combine(ManageSettings.AppResDirPath, ManageSettings.CurrentGameExeName + ".7z")))
+            //{
+            //    //DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} archive in {1}"), "AIGirl", "Data");
+            //}
+            //else if (Directory.Exists(ManageSettings.CurrentGameDataDirPath))
+            //{
+            //    //DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} files not in {1}. Move {0} game files there."), ManageSettings.CurrentGameDirName, "Data");
+            //}
+            //else
+            //{
+            //    Directory.CreateDirectory(ManageSettings.CurrentGameDataDirPath);
+            //    //DataInfoLabel.Text = string.Format(CultureInfo.InvariantCulture, T._("{0} dir created. Move {1} game files there."), "Data", ManageSettings.CurrentGameDirName);
+            //}
+
+            Directory.CreateDirectory(ManageSettings.CurrentGameDataDirPath);
 
             if (MOmode)
             {
@@ -602,14 +597,14 @@ namespace AIHelper
         {
             SetupXmlPath = ManageSettings.CurrentGameSetupXmlFilePath;
 
-            ModsInfoLabel.Visible = false;
+            //ModsInfoLabel.Visible = false;
 
             StudioButton.Enabled = false;
 
             //MOCommonModeSwitchButton.Text = T._("CommonToMO");
-            MainServiceButton.Text = T._("Common mode");
+            //MainServiceButton.Text = T._("Common mode");
             //LaunchModeInfoLinkLabel.Text = T._("Common mode");
-            MainServiceButton.Enabled = false;
+            //MainServiceButton.Enabled = false;
         }
 
         private void MOModeSpecificSetup()
@@ -686,10 +681,10 @@ namespace AIHelper
 
             if (!ManageSettings.CurrentGameModsDirPath.IsNullOrEmptyDirectory("*", new string[1] { "_separator" }))
             {
-                ModsInfoLabel.Text = T._("Found mod folders in Mods");
+                //ModsInfoLabel.Text = T._("Found mod folders in Mods");
 
                 _mode = 1;
-                MainServiceButton.Text = T._("Mods Ready");
+                //MainServiceButton.Text = T._("Mods Ready");
 
                 AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
 
@@ -712,18 +707,9 @@ namespace AIHelper
             SetMoModsVariables();
         }
 
-        private void SetMoMode(bool setText = true)
+        private static void SetMoMode(bool setText = true)
         {
-            if (File.Exists(ManageSettings.CurrentGameMoToStandartConvertationOperationsListFilePath))
-            {
-                MOmode = false;
-                if (setText) MainServiceButton.Text = T._("Common mode");
-            }
-            else
-            {
-                MOmode = true;
-                if (setText) MainServiceButton.Text = T._("MO mode");
-            }
+            MOmode = !File.Exists(ManageSettings.CurrentGameMoToStandartConvertationOperationsListFilePath);
         }
 
         internal bool IsDebug;

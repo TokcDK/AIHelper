@@ -10,7 +10,7 @@ namespace AIHelper.Manage
 {
     internal class ManageMainFormService
     {
-        static bool _isWritingSize = false;
+        static bool _isWritingSize;
 
         internal static void CalcSizeDependOnDesktop(Form f)
         {
@@ -53,6 +53,8 @@ namespace AIHelper.Manage
 
                     ini1.SetKey(ManageSettings.IniSettingsSectionName, nameof(f.Width), f.Width + "");
                     ini1.SetKey(ManageSettings.IniSettingsSectionName, nameof(f.Height), f.Height + "");
+
+                    _isWritingSize = false;
                 });
             });
 #endif

@@ -14,18 +14,20 @@ namespace AIHelper.Manage
         {
             // get size from ini
             bool isSizeGotFromIni = false;
+#if !DEBUG
             var ini = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
             if(ini.KeyExists(nameof(f.Width), ManageSettings.IniSettingsSectionName)
                 && ini.KeyExists(nameof(f.Height), ManageSettings.IniSettingsSectionName))
             {
                 var ww = ini.GetKey(ManageSettings.IniSettingsSectionName, nameof(f.Width));
                 var wh = ini.GetKey(ManageSettings.IniSettingsSectionName, nameof(f.Height));
-                if (int.TryParse(ww, out int wwi) && int.TryParse(ww, out int whi))
+                if (int.TryParse(ww, out int wwi) && int.TryParse(wh, out int whi))
                 {
                     f.Size = new Size(wwi, whi);
                     isSizeGotFromIni = true;
                 }
             }
+#endif
 
             if (!isSizeGotFromIni)
             {
@@ -35,10 +37,10 @@ namespace AIHelper.Manage
                 f.Size = new Size(w, (int)(w * 0.6));
             }
 
+#if !DEBUG
             // register size changed to save window size
             f.SizeChanged += new EventHandler((o, e) =>
             {
-#if !DEBUG
                 Task.Delay(1000).ContinueWith(t =>
                 {
                     // save window size
@@ -47,8 +49,8 @@ namespace AIHelper.Manage
                     ini1.SetKey(ManageSettings.IniSettingsSectionName, nameof(f.Width), f.Width + "");
                     ini1.SetKey(ManageSettings.IniSettingsSectionName, nameof(f.Height), f.Height + "");
                 });
-# endif
             });
+#endif
         }
     }
 }

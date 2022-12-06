@@ -10,6 +10,8 @@ namespace AIHelper.Manage
 {
     internal class ManageMainFormService
     {
+        static bool _isWritingSize = false;
+
         internal static void CalcSizeDependOnDesktop(Form f)
         {
             // get size from ini
@@ -36,11 +38,14 @@ namespace AIHelper.Manage
                 int w = (int)(resolution.Width / 3.2);
                 f.Size = new Size(w, (int)(w * 0.6));
             }
-
 #if !DEBUG
             // register size changed to save window size
             f.SizeChanged += new EventHandler((o, e) =>
             {
+                if (_isWritingSize) return;
+
+                _isWritingSize = true;
+
                 Task.Delay(1000).ContinueWith(t =>
                 {
                     // save window size

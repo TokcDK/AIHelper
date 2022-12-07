@@ -331,8 +331,8 @@ namespace AIHelper
 
                 //_thToolTip.SetToolTip(pbDiscord, T._("Discord page. Info, links, support."));
                 _thToolTip.SetToolTip(OpenLogLinkLabel, T._("Open BepinEx log if found"));
-                _thToolTip.SetToolTip(BepInExDisplayedLogLevelLabel, T._("Click here to select log level\n" +
-                    "Only displays the specified log level and above in the console output"));
+                //_thToolTip.SetToolTip(BepInExDisplayedLogLevelLabel, T._("Click here to select log level\n" +
+                //    "Only displays the specified log level and above in the console output"));
             }
             else if (AIGirlHelperTabControl.SelectedTab == SettingsTabPage)
             {
@@ -1042,10 +1042,10 @@ namespace AIHelper
             var bepinExcfg = ManageSettings.BepInExCfgFilePath;
             ManageCfg.WriteCfgValue(bepinExcfg, "Logging.Console", "Enabled", /*" " +*/ (sender as CheckBox).Checked.ToString(CultureInfo.InvariantCulture));
 
-            if (BepInExDisplayedLogLevelLabel.Visible = (sender as CheckBox).Checked)
-            {
-                ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExConsoleCheckBox, BepInExDisplayedLogLevelLabel, true);
-            }
+            //if (BepInExDisplayedLogLevelLabel.Visible = (sender as CheckBox).Checked)
+            //{
+            //    ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExConsoleCheckBox, BepInExDisplayedLogLevelLabel, true);
+            //}
         }
 
         //private void BepInExDisplayedLogLevelLabel_VisibleChanged(object sender, EventArgs e)
@@ -1056,11 +1056,11 @@ namespace AIHelper
         //    }
         //}
 
-        private void BepInExDisplayedLogLevelLabel_Click(object sender, EventArgs e)
-        {
-            if (BepInExConsoleCheckBox.Checked)
-                ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExConsoleCheckBox, BepInExDisplayedLogLevelLabel);
-        }
+        //private void BepInExDisplayedLogLevelLabel_Click(object sender, EventArgs e)
+        //{
+            //if (BepInExConsoleCheckBox.Checked)
+            //    ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExConsoleCheckBox, BepInExDisplayedLogLevelLabel);
+        //}
 
         internal ExtraSettingsForm _extraSettingsForm;
         private void ExtraSettingsLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

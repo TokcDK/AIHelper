@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AIHelper.Manage;
 using NLog;
 using NLog.Fluent;
 
@@ -24,6 +25,9 @@ namespace AIHelper.Forms.Other
         {
             SetTranslations();
             SetTooltips();
+
+            this.Location = ManageSettings.MainForm.Location;
+            this.Size = ManageSettings.MainForm.Size;
         }
 
         private void Form_Closing(object sender, FormClosingEventArgs e)

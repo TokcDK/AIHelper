@@ -87,6 +87,9 @@ namespace AIHelper.Forms.Other
             SetTooltips();
 
             UpdateButtonOptionsRefresh();
+
+            this.Location = ManageSettings.MainForm.Location;
+            this.Size = ManageSettings.MainForm.Size;
         }
 
         private void SetTranslations()

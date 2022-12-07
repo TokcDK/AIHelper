@@ -33,6 +33,17 @@ namespace AIHelper.Manage.ui.themes
                 Type = typeof(Label),
                 ForeColor = Color.White,
             },
+            new ElementData()
+            {
+                Type = typeof(CheckBox),
+                ForeColor = Color.White,
+            },
+            new ElementData()
+            {
+                Type = typeof(TextBox),
+                ForeColor = Color.White,
+                BackColor = Color.FromArgb(255, 56,56,56),
+            },
         };
     }
 }

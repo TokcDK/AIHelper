@@ -1,4 +1,5 @@
 ﻿using AIHelper.Forms.Other;
+using AIHelper.Manage.ui.themes;
 using NLog;
 using System;
 using System.Drawing;
@@ -38,6 +39,7 @@ namespace AIHelper.Manage.ModeSwitch
                 StartPosition = FormStartPosition.Manual
             };
 
+            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, dialog);
             DialogResult result = dialog.ShowDialog();
             if (result != DialogResult.OK)
             {

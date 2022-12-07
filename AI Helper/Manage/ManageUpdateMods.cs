@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using AIHelper.Data.Modlist;
 using AIHelper.Forms.Other;
+using AIHelper.Manage.ui.themes;
 using AIHelper.Manage.Update;
 using NLog;
 using static AIHelper.Manage.ManageModOrganizer;
@@ -28,6 +29,7 @@ namespace AIHelper.Manage
                 StartPosition = FormStartPosition.Manual
             };
 
+            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, UpdateOptions);
             DialogResult result = UpdateOptions.ShowDialog();
             if (result != DialogResult.OK) return;
 

@@ -116,6 +116,7 @@
     <Compile Include="Forms\LogLevelselectionForm.Designer.cs">
       <DependentUpon>LogLevelselectionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Manage\ManageTabs.cs" />
     <Compile Include="Forms\Other\CleanOptionsDialogForm.cs">
       <SubType>Form</SubType>
     </Compile>

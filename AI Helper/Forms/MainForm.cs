@@ -290,8 +290,6 @@ namespace AIHelper
 
             if (AIGirlHelperTabControl.SelectedTab == LaunchTabPage)
             {
-                FunctionsForFlpLoader.Load();
-
                 //_thToolTip.SetToolTip(ProgramNameLabelPart2, ManageSettings.ApplicationProductName + " - " + T._("Illusion games manager.\n\n"
                 //        + "Move mouse over wished button or text to see info about it"
                 //        )
@@ -442,11 +440,10 @@ namespace AIHelper
                 //             " to the game folder when possible"
                 //             )));
                 //_thToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Open folder where you can drop/download files for autoinstallation"));
-                ToolsTabButtonsLoader.Load();
+                
             }
             else if (AIGirlHelperTabControl.SelectedTab == FoldersTabPage)
             {
-                FoldersTabButtonsLoader.Load();
             }
             ////////////////////////////
         }
@@ -578,19 +575,7 @@ namespace AIHelper
 
             ThemesLoader.SetTheme();
 
-            // load dinamic elements
-            if (AIGirlHelperTabControl.SelectedTab == FoldersTabPage)
-            {
-                FoldersTabButtonsLoader.Load();
-            }
-            else if (AIGirlHelperTabControl.SelectedTab == LaunchTabPage)
-            {
-                FunctionsForFlpLoader.Load();
-            }
-            else if (AIGirlHelperTabControl.SelectedTab == ToolsTabPage)
-            {
-                ToolsTabButtonsLoader.Load();
-            }
+            ManageTabs.LoadContent();
         }
 
         private void CommonModeSpecificSetup()
@@ -1206,6 +1191,7 @@ namespace AIHelper
         private void AIGirlHelperTabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
             SetTooltips();
+            ManageTabs.LoadContent();
         }
 
         private void RefreshLabelCheckState(object sender)

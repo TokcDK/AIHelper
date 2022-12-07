@@ -1076,11 +1076,16 @@ namespace AIHelper
                 };
                 _extraSettingsForm.Load += new EventHandler((o, ea) =>
                 {
-                    _extraSettingsForm.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (_extraSettingsForm.Width / 2),
-                        Bounds.Location.Y + /*(Bounds.Height / 2) - (f2.Height / 2) +*/ Bounds.Height);
+                    _extraSettingsForm.Location = ManageSettings.MainForm.Location;
+                    _extraSettingsForm.Size = ManageSettings.MainForm.Size;
+
+                    //_extraSettingsForm.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (_extraSettingsForm.Width / 2),
+                    //    Bounds.Location.Y + /*(Bounds.Height / 2) - (f2.Height / 2) +*/ Bounds.Height);
                 });
                 //extraSettings.Text = T._("Links");
                 //newformButton.Text = @"/\";
+
+                ThemesLoader.SetTheme(ManageSettings.CurrentTheme, _extraSettingsForm);
                 _extraSettingsForm.Show();
                 //extraSettingsForm.Location = new Point(Bounds.Location.X + (Bounds.Width / 2) - (extraSettingsForm.Width / 2),
                 //         Bounds.Location.Y + /*(Bounds.Height / 2) - (f2.Height / 2) +*/ Bounds.Height);

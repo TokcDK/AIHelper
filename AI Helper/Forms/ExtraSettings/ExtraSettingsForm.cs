@@ -1,6 +1,7 @@
 ﻿using AIHelper.Forms.ExtraSettings.Elements;
 using AIHelper.Forms.ExtraSettings.Elements.BepinEx;
 using AIHelper.Manage;
+using AIHelper.Manage.ui.themes;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -48,6 +49,8 @@ namespace AIHelper
                     //element.ElementToPlace.Show();
                     ExtraSettingsFlowLayoutPanel.Controls.Add(element.ElementToShow);
                     element.ElementToShow.ForeColor = this.ForeColor;
+
+                    ThemesLoader.SetTheme(ManageSettings.CurrentTheme, element.ElementToShow);
                     element.ElementToShow.Show();
                 }
                 else
@@ -62,7 +65,6 @@ namespace AIHelper
                     l.Show();
                 }
             }
-
         }
 
         private void ExtraSettings_FormClosing(object sender, FormClosingEventArgs e)

@@ -394,7 +394,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="SymbolicLinkSupport-fork.1.2.2.nupkg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -433,10 +432,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="K:\0GIT\symboliclinksupport\SymbolicLinkSupport\SymbolicLinkSupport.csproj">
-      <Project>{0f629727-5647-4cb0-946a-1ac4442fd8f2}</Project>
-      <Name>SymbolicLinkSupport</Name>
-    </ProjectReference>
     <ProjectReference Include="K:\0GIT\[TokcDK]\LC\LibsCollection\CheckForEmptyDir\CheckForEmptyDir.csproj">
       <Project>{636976fe-5ffe-4e17-bcb1-7b858a78a8a3}</Project>
       <Name>CheckForEmptyDir</Name>
@@ -496,6 +491,9 @@
     </PackageReference>
     <PackageReference Include="SharpCompress">
       <Version>0.32.2</Version>
+    </PackageReference>
+    <PackageReference Include="SymbolicLinkSupport-fork">
+      <Version>1.2.2</Version>
     </PackageReference>
     <PackageReference Include="System.AppContext">
       <Version>4.3.0</Version>

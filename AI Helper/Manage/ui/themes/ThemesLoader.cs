@@ -63,8 +63,11 @@ namespace AIHelper.Manage.ui.themes
 
         internal static void SetTheme()
         {
+            if (ManageSettings.CurrentTheme != default) return;
+
             var list = GetList();
             var cnt = list.Count;
+
             ManageSettings.CurrentTheme = list.FirstOrDefault(t => t.Name == new DefaultTheme().Name);
 
             // bind combobox to themes list

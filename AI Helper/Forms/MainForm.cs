@@ -576,6 +576,8 @@ namespace AIHelper
             ThemesLoader.SetTheme();
 
             ManageTabs.LoadContent();
+
+            GC.Collect();
         }
 
         private void CommonModeSpecificSetup()

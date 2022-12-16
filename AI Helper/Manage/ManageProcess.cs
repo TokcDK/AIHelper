@@ -63,7 +63,7 @@ namespace AIHelper.Manage
             //}
 
             _ = program.Start();
-            program.WaitForExit(1000);
+            program.WaitForExit();
 
             // Показать
             ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize);

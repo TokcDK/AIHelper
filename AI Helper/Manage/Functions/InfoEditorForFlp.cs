@@ -9,7 +9,6 @@ using AIHelper.Data.Modlist;
 using AIHelper.Manage.ui.themes;
 using AIHelper.Manage.Update.Sources;
 using INIFileMan;
-using IniParser.Model;
 
 namespace AIHelper.Manage.Functions
 {

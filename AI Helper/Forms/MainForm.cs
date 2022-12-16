@@ -216,7 +216,11 @@ namespace AIHelper
             QualityComboBox.Items.Add(T._("Quality"));
         }
 
-        private int _mode;
+        /// <summary>
+        /// private int _mode;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
 
         private void MainService_Click(object sender, EventArgs e)
         {
@@ -577,7 +581,7 @@ namespace AIHelper
 
             ManageTabs.LoadContent();
 
-            GC.Collect();
+            //GC.Collect();
         }
 
         private void CommonModeSpecificSetup()
@@ -670,7 +674,7 @@ namespace AIHelper
             {
                 //ModsInfoLabel.Text = T._("Found mod folders in Mods");
 
-                _mode = 1;
+                //_mode = 1;
                 //MainServiceButton.Text = T._("Mods Ready");
 
                 AIGirlHelperTabControl.SelectedTab = LaunchTabPage;

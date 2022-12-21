@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AIHelper.Data.Modlist;
+using AIHelper.Manage.ToolsTab;
 using AIHelper.Manage.ui.themes;
 using AIHelper.Manage.Update.Sources;
 using INIFileMan;
+using IniParser.Model;
 
 namespace AIHelper.Manage.Functions
 {
@@ -65,10 +68,6 @@ namespace AIHelper.Manage.Functions
                 Anchor = AnchorStyles.Left,
                 Height = 25
             };
-            btnAddMod.Click += new EventHandler((o, e) =>
-            {
-                // event to open window of add mod from github
-            });
             tlp.SetRow(btnAddMod, 0);
 
             var p = new Panel
@@ -78,6 +77,96 @@ namespace AIHelper.Manage.Functions
             };
             tlp.SetRow(p, 1);
 
+            btnAddMod.Click += new EventHandler((o, e) =>
+            {
+                LoadAddModPanel(f, p);
+            });
+
+            tlp.Controls.Add(btnAddMod);
+            tlp.Controls.Add(p);
+            f.Controls.Add(tlp);
+
+            LoadGitInfos(f, p);
+
+            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, f);
+
+            //modsListFlowPanel.Size = new System.Drawing.Size
+            //    (modsListFlowPanel.Width * 2
+            //    , modsListFlowPanel.Height * 2
+            //    );
+            //f.Size = new System.Drawing.Size
+            //    (modsListFlowPanel.Width
+            //    + (modsListFlowPanel.Margin.Horizontal * 2)
+            //    , modsListFlowPanel.Height
+            //    + (modsListFlowPanel.Margin.Vertical * 2)
+            //    );
+            f.Size = new System.Drawing.Size(f.Width * 2, f.Height * 2);
+            f.Show(ManageSettings.MainForm);
+
+            _isReading = false;
+
+        }
+
+        private void LoadAddModPanel(Form f, Panel p)
+        {
+            p.Controls.Clear();
+
+            var flp1 = new FlowLayoutPanel();
+            var flp2 = new FlowLayoutPanel();
+
+            var title = new Label();
+            title.Text = "Add new mod";
+            flp2.Controls.Add(title);
+
+            var datas = new[]
+            {
+                ("Url", "https://github.com/Owner/Name"),
+                ("FileStartsWith", ""),
+                ("FileEndssWith", ""),
+            };
+            foreach ((string lt, string tbt) in datas)
+            {
+                var lp3 = new FlowLayoutPanel
+                {
+                    FlowDirection = FlowDirection.LeftToRight,
+                    Margin = new Padding(0)
+                };
+                var lblLink = new Label
+                {
+                    Text = lt
+                };
+                var tbxUrl = new Label
+                {
+                    Text = tbt
+                };
+                lp3.Controls.Add(lblLink);
+                lp3.Controls.Add(tbxUrl);
+                flp2.Controls.Add(lp3);
+            }
+
+            var tryLoadInfo = new Button
+            {
+                Text = "Web"
+            };
+            tryLoadInfo.Click += new EventHandler((o, e) =>
+            {
+                Process.Start("");
+            });
+
+            var DownloadAndAddMod = new Button
+            {
+                Text = "Add"
+            };
+            DownloadAndAddMod.Click += new EventHandler((o, e) =>
+            {
+                // load archive and add
+            });
+
+            p.Controls.Add(flp1);
+        }
+
+        private void LoadGitInfos(Form f, Panel p)
+        {
             var modsListFlowPanel = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -88,9 +177,6 @@ namespace AIHelper.Manage.Functions
             };
 
             p.Controls.Add(modsListFlowPanel);
-            tlp.Controls.Add(btnAddMod);
-            tlp.Controls.Add(p);
-            f.Controls.Add(tlp);
 
             var ttip = new ToolTip
             {
@@ -236,24 +322,6 @@ namespace AIHelper.Manage.Functions
 
                 _updateInfoDatas.Add(infoData);
             }
-
-            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, f);
-
-            //modsListFlowPanel.Size = new System.Drawing.Size
-            //    (modsListFlowPanel.Width * 2
-            //    , modsListFlowPanel.Height * 2
-            //    );
-            //f.Size = new System.Drawing.Size
-            //    (modsListFlowPanel.Width
-            //    + (modsListFlowPanel.Margin.Horizontal * 2)
-            //    , modsListFlowPanel.Height
-            //    + (modsListFlowPanel.Margin.Vertical * 2)
-            //    );
-            f.Size = new System.Drawing.Size(f.Width * 2, f.Height * 2);
-            f.Show(ManageSettings.MainForm);
-
-            _isReading = false;
-
         }
 
         private void AddGithubData(FlowLayoutPanel githubDataFlowPanel, UpdateInfoData infoData)

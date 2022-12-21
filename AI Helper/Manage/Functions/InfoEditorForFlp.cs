@@ -60,7 +60,7 @@ namespace AIHelper.Manage.Functions
 
             var btnAddMod = new Button
             {
-                Text = T._("[+]"),
+                Text = T._("+"),
                 AutoSize = true,
                 Anchor = AnchorStyles.Left,
                 Height = 25

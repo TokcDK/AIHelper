@@ -79,7 +79,7 @@ namespace AIHelper.Manage.Functions
 
             btnAddMod.Click += new EventHandler((o, e) =>
             {
-                LoadAddModPanel(f, p);
+                //LoadAddModPanel(f, p);
             });
 
             tlp.Controls.Add(btnAddMod);
@@ -117,6 +117,7 @@ namespace AIHelper.Manage.Functions
             var title = new Label();
             title.Text = "Add new mod";
             flp2.Controls.Add(title);
+            flp1.Controls.Add(flp2);
 
             var datas = new[]
             {
@@ -141,7 +142,7 @@ namespace AIHelper.Manage.Functions
                 };
                 lp3.Controls.Add(lblLink);
                 lp3.Controls.Add(tbxUrl);
-                flp2.Controls.Add(lp3);
+                flp1.Controls.Add(lp3);
             }
 
             var tryLoadInfo = new Button

@@ -39,11 +39,45 @@ namespace AIHelper.Manage.Functions
                 Text = T._("Mods update info settings") + " (" + ManageSettings.CurrentGameDisplayingName + ")",
                 StartPosition = FormStartPosition.CenterScreen
             };
+            var tlp = new TableLayoutPanel
+            {
+                RowCount = 2,
+                ColumnCount = 1,
+                Dock = DockStyle.Fill,
+                Margin = new Padding(0)
+            };
+            RowStyle rs0 = new RowStyle
+            {
+                SizeType = SizeType.Absolute,
+                Height = 25,                 
+            };
+            RowStyle rs1 = new RowStyle
+            {
+                SizeType = SizeType.AutoSize
+            };
+            tlp.RowStyles.Add(rs0);
+            tlp.RowStyles.Add(rs1);
+
+            var btnAddMod = new Button
+            {
+                Text = T._("[+]"),
+                AutoSize = true,
+                Anchor = AnchorStyles.Left,
+                Height = 25
+            };
+            btnAddMod.Click += new EventHandler((o, e) =>
+            {
+                // event to open window of add mod from github
+            });
+            tlp.SetRow(btnAddMod, 0);
+
             var p = new Panel
             {
                 Dock = DockStyle.Fill,
                 Margin = new Padding(0)
             };
+            tlp.SetRow(p, 1);
+
             var modsListFlowPanel = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -54,7 +88,9 @@ namespace AIHelper.Manage.Functions
             };
 
             p.Controls.Add(modsListFlowPanel);
-            f.Controls.Add(p);
+            tlp.Controls.Add(btnAddMod);
+            tlp.Controls.Add(p);
+            f.Controls.Add(tlp);
 
             var ttip = new ToolTip
             {

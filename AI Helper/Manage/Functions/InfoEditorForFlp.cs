@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AIHelper.Data.Modlist;
 using AIHelper.Manage.ui.themes;
+using AIHelper.Manage.Update;
 using AIHelper.Manage.Update.Sources;
+using AIHelper.Manage.Update.Targets.Mods;
 using INIFileMan;
 
 namespace AIHelper.Manage.Functions
@@ -30,6 +34,10 @@ namespace AIHelper.Manage.Functions
 
         bool _isReading;
         bool _isWriting;
+
+        static readonly RichTextBox _logtb = new RichTextBox() { ReadOnly = true, Width = 200 };
+
+        static void Log(string v) { _logtb.Text += v; }
 
         internal void OpenInfoEditor()
         {
@@ -134,10 +142,14 @@ namespace AIHelper.Manage.Functions
 
             public string LabelText { get; }
             public string TextBoxText { get; set; }
+
+            public TextBox TB;
         }
 
         private void LoadAddModPanel(Form f, Panel p)
         {
+            bool init = true;
+
             p.Controls.Clear();
 
             var mainFlp = new FlowLayoutPanel
@@ -181,6 +193,7 @@ namespace AIHelper.Manage.Functions
                 tb.DataBindings.Add(new Binding(nameof(tb.Text), pData, nameof(pData.TextBoxText), true, DataSourceUpdateMode.OnPropertyChanged));
                 tb.TextChanged += new System.EventHandler((o, e) =>
                 {
+                    if (init) return;
 
                     if (pData.LabelText == urlPropData.LabelText)
                     {
@@ -189,10 +202,9 @@ namespace AIHelper.Manage.Functions
                             if (string.IsNullOrWhiteSpace(tb.Text)) return;
                             if (modnamePropData.TextBoxText != defaultModDirName) return;
 
-                            var name = @"([^\/?]+)";
-                            var m = Regex.Match($@"(https://)?github\.com\/{name}\/{name}.*", tb.Text);
+                            var m = Regex.Match(tb.Text, @"(^.*https?\:\/\/)?github\.com\/([^\/]+)\/([^\/\? ]+).*$", RegexOptions.IgnoreCase);
                             if (!m.Success) return;
-                            if (m.Groups.Count != 3) return;
+                            if (m.Groups.Count != 4) return;
 
                             var owner = m.Groups[2].Value;
                             if (string.IsNullOrWhiteSpace(owner)) return;
@@ -200,13 +212,16 @@ namespace AIHelper.Manage.Functions
                             if (string.IsNullOrWhiteSpace(rep)) return;
 
                             // set repository name as mod name
-                            modnamePropData.TextBoxText = rep; 
+                            modnamePropData.TB.Text = rep;
+
+                            Log(T._("Mod name set from url"));
                         }
                         catch { return; }
                     }
 
                     tb.DataBindings[0].WriteValue();
                 });
+                pData.TB = tb;
 
                 propertyFlp.Controls.Add(l);
                 propertyFlp.Controls.Add(tb);
@@ -249,15 +264,150 @@ namespace AIHelper.Manage.Functions
             };
             DownloadAndAddMod.Click += new EventHandler((o, e) =>
             {
-                // load archive and add
-                //var info = new Update.UpdateInfo();
-                //var ghub = new Github(info);
+                if (init) return;
 
-                //ghub.DownloadFileFromTheLink(new Uri(urlPropData.TextBoxText));
+                // load archive and add
+
+                try
+                {
+                    if (string.IsNullOrWhiteSpace(modnamePropData.TextBoxText))
+                    {
+                        Log(T._("Mod name is empty"));
+                        return;
+                    }
+                    if (string.IsNullOrWhiteSpace(urlPropData.TextBoxText))
+                    {
+                        Log(T._("Url s empty"));
+                        return;
+                    }
+                    if (string.IsNullOrWhiteSpace(startsWithPropData.TextBoxText))
+                    {
+                        Log($"{startsWithPropData.LabelText} {T._("value is empty")}");
+                        return;
+                    }
+
+                    var targetModDirName = modnamePropData.TextBoxText;
+                    var targetUrl = urlPropData.TextBoxText;
+                    var startsWith = startsWithPropData.TextBoxText;
+
+                    var m = Regex.Match(targetUrl, 
+                        @"(^.*https?\:\/\/)?github\.com\/([^\/]+)\/([^\/\? ]+).*$", 
+                        RegexOptions.IgnoreCase);
+                    if (!m.Success)
+                    {
+                        Log(T._("Url is not recognized"));
+                        return;
+                    }
+                    if (m.Groups.Count != 4)
+                    {
+                        Log(T._("Url is not recognized"));
+                        return;
+                    }
+
+                    var owner = m.Groups[2].Value;
+                    if (string.IsNullOrWhiteSpace(owner))
+                    {
+                        Log(T._("Url is not recognized"));
+                        return;
+                    }
+                    var rep = m.Groups[3].Value;
+                    if (string.IsNullOrWhiteSpace(rep))
+                    {
+                        Log(T._("Url is not recognized"));
+                        return;
+                    }
+
+                    var targetDirPathInfo = new DirectoryInfo(Path.Combine(ManageSettings.CurrentGameModsDirPath, targetModDirName));
+                    if (targetDirPathInfo.Exists)
+                    {
+                        Log(T._("Target mod dir is exists!"));
+                        return;
+                    }
+
+                    var info = new Update.UpdateInfo
+                    {
+                        TargetFolderPath = targetDirPathInfo,
+                        TargetFolderUpdateInfo = new string[3] { owner, rep, startsWith }
+                    };
+
+                    if (!string.IsNullOrWhiteSpace(endsWithPropData.TextBoxText))
+                    {
+                        info.TargetFolderUpdateInfo = info.TargetFolderUpdateInfo.Concat(new string[1] { endsWithPropData.TextBoxText }).ToArray();
+                    }
+                    info.TargetFolderUpdateInfo = info.TargetFolderUpdateInfo.Concat(new string[1] { verFromFile.Checked.ToString() }).ToArray();
+
+                    var ghub = new Github(info);
+
+                    info.TargetLastVersion = ghub.GetLastVersion();
+
+                    if (info.TargetLastVersion.Length == 0)
+                    {
+                        Log(T._("Cant get last version"));
+                        return;
+                    }
+
+                    // clean version for more correct comprasion
+                    UpdateTools.CleanVersion(ref info.TargetLastVersion);
+
+                    //if it is last version then run update
+                    if (!info.TargetLastVersion.IsNewerOf("0", false))
+                    {
+                        Log(T._("Version is lesser. Check entered data."));
+                        return;
+                    }
+
+                    var modData = new ModData();
+                    modData.Path = info.TargetFolderPath.FullName;
+                    modData.Name = modnamePropData.TextBoxText;
+                    modData.Priority = 9999;
+
+                    var ginfo = new GitUpdateInfoData(modData);
+                    ginfo.Owner = owner;
+                    ginfo.Repository = rep;
+                    ginfo.FileStartsWith = startsWith;
+                    ginfo.FileEndsWith = endsWithPropData.TextBoxText;
+                    ginfo.VersionFromFile = verFromFile.Checked;
+
+                   GetGHubFile(ghub, ginfo);
+                }
+                catch (Exception ex)
+                {
+                    Log(T._("Error: "+ex.Message));
+                    return;
+                }
             });
             mainFlp.Controls.Add(DownloadAndAddMod);
 
+            _logtb.Width = mainFlp.Width - 10;
+            mainFlp.Controls.Add(_logtb);
+
             p.Controls.Add(mainFlp);
+
+            init = false;
+        }
+
+        private async void GetGHubFile(Github ghub, GitUpdateInfoData ginfo)
+        {
+            bool getfileIsTrue = await ghub.GetFile().ConfigureAwait(true); // download latest file
+            if (!getfileIsTrue)
+            {
+                Log(T._("Cant download file!"));
+                return;
+            }
+
+            var t = new ModsMeta(ghub.Info);
+
+            if (!t.UpdateFiles())
+            {
+                Log(T._("Cant move file into mods dir"));
+                return;
+            }
+
+            ginfo.Mod.MetaIni = new INIFile(Path.Combine(ghub.Info.TargetFolderPath.FullName, "meta.ini"), true);
+
+            ginfo.Write();
+
+            Log(T._("Mod succesfully downloaded and added!"));
         }
 
         private void LoadGitInfos(Form f, Panel p)
@@ -676,10 +826,10 @@ namespace AIHelper.Manage.Functions
                 }
 
                 var url = INI.GetKey("General", "url");
-                if (hasGitHubUrlData && url.Length == 0)
+                if (hasGitHubUrlData && (url == null || url.Length == 0))
                 {
                     var site = (Site.StartsWith("http", System.StringComparison.InvariantCultureIgnoreCase) ? "https://" : "") + Site;
-                    INI.SetKey(ManageSettings.AiMetaIniSectionName, ManageSettings.AiMetaIniKeyUpdateName, $"{site}/{Owner}/{Repository}", false);
+                    INI.SetKey("General", "url", $"{site}/{Owner}/{Repository}", false);
 
                     changed = true;
                 }

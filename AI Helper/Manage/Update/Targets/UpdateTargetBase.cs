@@ -147,7 +147,7 @@ namespace AIHelper.Manage.Update.Targets
 
             //var modname = modGitData.CurrentModName; //Path.GetFileName(Path.GetDirectoryName(filePath));
             var updatingModDirPath = Info.TargetFolderPath.FullName;
-
+            Directory.CreateDirectory(updatingModDirPath);
 
             //var OldModBuckupDirPath = Path.Combine(ManageSettings.GetCurrentGameModsUpdateDir(), "old", info.TargetFolderPath.Name + "_" + info.TargetCurrentVersion);
             //if (Directory.Exists(OldModBuckupDirPath))
@@ -254,6 +254,8 @@ namespace AIHelper.Manage.Update.Targets
                     //        + "</p>"
                     //        );
 
+                    if (!updatingModDirPath.IsAnyFileExistsInTheDir()) Directory.Delete(updatingModDirPath);
+
                     return false;
                 }
             }
@@ -273,6 +275,8 @@ namespace AIHelper.Manage.Update.Targets
 
                 _log.Warn("Failed to update mod" + " " + Info.TargetFolderPath.Name + ":" + Environment.NewLine + ex);
 
+                if (!updatingModDirPath.IsAnyFileExistsInTheDir()) Directory.Delete(updatingModDirPath);
+
                 return false;
             }
 
@@ -281,6 +285,9 @@ namespace AIHelper.Manage.Update.Targets
 
         private string GetDllTargetDir(string fullDllFileName, string updatingModDirPath)
         {
+            if (string.IsNullOrWhiteSpace(Info.BuckupDirPath)) return "";
+            if (!Directory.Exists(Info.BuckupDirPath)) return "";
+
             //search dll with same name and get subpath from this dll
             foreach (var dll in Directory.EnumerateFiles(Info.BuckupDirPath, "*.dll", SearchOption.AllDirectories))
             {
@@ -329,6 +336,15 @@ namespace AIHelper.Manage.Update.Targets
         /// <param name="updatingModDirPath"></param>
         protected void RestoreSomeFiles(string oldModBuckupDirPath, string updatingModDirPath)
         {
+            if (string.IsNullOrWhiteSpace(oldModBuckupDirPath) || string.IsNullOrWhiteSpace(updatingModDirPath))
+            {
+                return;
+            }
+            if (!Directory.Exists(oldModBuckupDirPath) || !Directory.Exists(updatingModDirPath))
+            {
+                return;
+            }
+
             //restore some files files
             foreach (var dir in new DirectoryInfo(oldModBuckupDirPath).EnumerateDirectories("*", SearchOption.AllDirectories))
             {

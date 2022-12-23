@@ -232,7 +232,7 @@ namespace AIHelper.Manage.Update.Sources
                         Info.TargetFolderUpdateInfo[0] = currentOwnerName;
                     }
                     var currentRepName = assetPageMatch.Result("$3");
-                    if (currentRepName != _gitOwner)
+                    if (currentRepName != _gitRepository)
                     {
                         Info.TargetFolderUpdateInfo[1] = currentRepName;
                     }

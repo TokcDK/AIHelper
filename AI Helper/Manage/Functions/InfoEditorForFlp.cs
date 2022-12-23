@@ -260,7 +260,7 @@ namespace AIHelper.Manage.Functions
 
             var DownloadAndAddMod = new Button
             {
-                Text = "Add"
+                Text = T._("Add")
             };
             DownloadAndAddMod.Click += new EventHandler((o, e) =>
             {
@@ -386,7 +386,7 @@ namespace AIHelper.Manage.Functions
             init = false;
         }
 
-        private async void GetGHubFile(Github ghub, GitUpdateInfoData ginfo)
+        private static async void GetGHubFile(Github ghub, GitUpdateInfoData ginfo)
         {
             bool getfileIsTrue = await ghub.GetFile().ConfigureAwait(true); // download latest file
             if (!getfileIsTrue)

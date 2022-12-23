@@ -2,17 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AIHelper.Data.Modlist;
-using AIHelper.Manage.ToolsTab;
 using AIHelper.Manage.ui.themes;
 using AIHelper.Manage.Update.Sources;
 using INIFileMan;
-using IniParser.Model;
 
 namespace AIHelper.Manage.Functions
 {
@@ -53,7 +49,7 @@ namespace AIHelper.Manage.Functions
             RowStyle rs0 = new RowStyle
             {
                 SizeType = SizeType.Absolute,
-                Height = 30,                 
+                Height = 30,
             };
             RowStyle rs1 = new RowStyle
             {
@@ -149,10 +145,11 @@ namespace AIHelper.Manage.Functions
                 Dock = DockStyle.Fill,
                 //AutoScroll = true,
                 Margin = new Padding(0),
-                FlowDirection= FlowDirection.TopDown,
+                FlowDirection = FlowDirection.TopDown,
             };
 
-            var modnamePropData = new PropData(T._("Mod dir name"), "NewMod");
+            var defaultModDirName = "NewMod";
+            var modnamePropData = new PropData(T._("Mod dir name"), defaultModDirName);
             var urlPropData = new PropData("Url", "https://github.com/Owner/Name");
             var startsWithPropData = new PropData(T._("File starts with"), "");
             var endsWithPropData = new PropData(T._("File ends with"), "");
@@ -178,12 +175,36 @@ namespace AIHelper.Manage.Functions
                 };
                 var tb = new TextBox
                 {
-                    Size = new System.Drawing.Size(p.Width-l.Width-20, _elHeight),
-                    Margin= new Padding(1,1,10,1),
+                    Size = new System.Drawing.Size(p.Width - l.Width - 20, _elHeight),
+                    Margin = new Padding(1, 1, 10, 1),
                 };
                 tb.DataBindings.Add(new Binding(nameof(tb.Text), pData, nameof(pData.TextBoxText), true, DataSourceUpdateMode.OnPropertyChanged));
-                tb.TextChanged += new System.EventHandler((o, e) => 
+                tb.TextChanged += new System.EventHandler((o, e) =>
                 {
+
+                    if (pData.LabelText == urlPropData.LabelText)
+                    {
+                        try
+                        {
+                            if (string.IsNullOrWhiteSpace(tb.Text)) return;
+                            if (modnamePropData.TextBoxText != defaultModDirName) return;
+
+                            var name = @"([^\/?]+)";
+                            var m = Regex.Match($@"(https://)?github\.com\/{name}\/{name}.*", tb.Text);
+                            if (!m.Success) return;
+                            if (m.Groups.Count != 3) return;
+
+                            var owner = m.Groups[2].Value;
+                            if (string.IsNullOrWhiteSpace(owner)) return;
+                            var rep = m.Groups[3].Value;
+                            if (string.IsNullOrWhiteSpace(rep)) return;
+
+                            // set repository name as mod name
+                            modnamePropData.TextBoxText = rep; 
+                        }
+                        catch { return; }
+                    }
+
                     tb.DataBindings[0].WriteValue();
                 });
 
@@ -206,7 +227,7 @@ namespace AIHelper.Manage.Functions
                 Text = T._("Version from file"),
                 Checked = false,
                 ForeColor = Color.White,
-                Size = new System.Drawing.Size(p.Width-20, _elHeight+5),
+                Size = new System.Drawing.Size(p.Width - 20, _elHeight + 5),
                 Anchor = AnchorStyles.Left,
                 TextAlign = ContentAlignment.MiddleLeft,
             };
@@ -482,7 +503,7 @@ namespace AIHelper.Manage.Functions
                     {
                         //AutoSize = true,
                         Text = infoData.GitInfo.Strings[propertyInfo.Name].t,
-                        Size = new System.Drawing.Size(300, _elHeight+10),
+                        Size = new System.Drawing.Size(300, _elHeight + 10),
                         Margin = new Padding(0)
                     };
                     cb.DataBindings.Add(new Binding("Checked", infoData, $"{nameof(infoData.GitInfo)}.{propertyInfo.Name}", true, DataSourceUpdateMode.OnPropertyChanged));

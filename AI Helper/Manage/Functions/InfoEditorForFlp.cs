@@ -84,8 +84,8 @@ namespace AIHelper.Manage.Functions
                 Anchor = AnchorStyles.Left,
                 Height = 25
             };
-            controlPanelFlp.Controls.Add(btnAddMod);
             controlPanelFlp.Controls.Add(btnLoadGitInfos);
+            controlPanelFlp.Controls.Add(btnAddMod);
 
             var p = new Panel
             {

@@ -164,18 +164,22 @@ namespace AIHelper.Manage.Update.Targets
                 //MakeBuckup(OldModBuckupDirPath, UpdatingModDirPath);
 
                 int code = 0;
-                string ext;
+                string ext = Path.GetExtension(Info.UpdateFilePath).ToUpperInvariant();
                 if (!File.Exists(Info.UpdateFilePath))
                 {
                     code = -1;
                 }
-                else if ((ext = Path.GetExtension(Info.UpdateFilePath).ToUpperInvariant()) == ".ZIP")
+                else if (ext == ".ZIP")
                 {
                     code = 1;
                 }
                 else if (ext == ".DLL")
                 {
                     code = 2;
+                }
+                else if (ext == ".7Z")
+                {
+                    code = 3;
                 }
 
                 if (code > 0)
@@ -212,6 +216,13 @@ namespace AIHelper.Manage.Update.Targets
                                 Directory.CreateDirectory(targetDir);
                                 var targetFilePath = Path.Combine(targetDir, fullDllFileName);
                                 File.Move(Info.UpdateFilePath, targetFilePath);
+                                break;
+                            }
+
+                        case 3:
+                            {
+                                ManageArchive.Extract7zipTo(Info.UpdateFilePath, Info.TargetFolderPath.FullName);
+
                                 break;
                             }
                     }

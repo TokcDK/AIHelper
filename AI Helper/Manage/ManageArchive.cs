@@ -1,6 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
+using SharpCompress.Archives;
+using SharpCompress.Archives.Rar;
+using SharpCompress.Archives.SevenZip;
+using SharpCompress.Common;
 
 namespace AIHelper.Manage
 {
@@ -90,6 +95,23 @@ namespace AIHelper.Manage
             }
 
             return string.Empty;
+        }
+
+        internal static void Extract7zipTo(string updateFilePath, string dirToExtract)
+        {
+            if (!SevenZipArchive.IsSevenZipFile(updateFilePath)) return;
+
+            using (var archive = SevenZipArchive.Open(updateFilePath))
+            {
+                foreach (var entry in archive.Entries)
+                {
+                    entry.WriteToDirectory(dirToExtract, new ExtractionOptions()
+                    {
+                        ExtractFullPath = true,
+                        Overwrite = true
+                    });
+                }
+            }
         }
     }
 }

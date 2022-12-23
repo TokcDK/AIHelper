@@ -37,7 +37,7 @@ namespace AIHelper.Manage.Functions
 
         static readonly RichTextBox _logtb = new RichTextBox() { ReadOnly = true, Width = 200 };
 
-        static void Log(string v) { _logtb.Text += v; }
+        static void Log(string v) { _logtb.Text += "\r\n" + v; }
 
         internal void OpenInfoEditor()
         {
@@ -290,8 +290,8 @@ namespace AIHelper.Manage.Functions
                     var targetUrl = urlPropData.TextBoxText;
                     var startsWith = startsWithPropData.TextBoxText;
 
-                    var m = Regex.Match(targetUrl, 
-                        @"(^.*https?\:\/\/)?github\.com\/([^\/]+)\/([^\/\? ]+).*$", 
+                    var m = Regex.Match(targetUrl,
+                        @"(^.*https?\:\/\/)?github\.com\/([^\/]+)\/([^\/\? ]+).*$",
                         RegexOptions.IgnoreCase);
                     if (!m.Success)
                     {
@@ -368,11 +368,11 @@ namespace AIHelper.Manage.Functions
                     ginfo.FileEndsWith = endsWithPropData.TextBoxText;
                     ginfo.VersionFromFile = verFromFile.Checked;
 
-                   GetGHubFile(ghub, ginfo);
+                    GetGHubFile(ghub, ginfo);
                 }
                 catch (Exception ex)
                 {
-                    Log(T._("Error: "+ex.Message));
+                    Log(T._("Error: " + ex.Message));
                     return;
                 }
             });

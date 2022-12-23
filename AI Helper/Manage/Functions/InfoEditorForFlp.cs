@@ -383,6 +383,8 @@ namespace AIHelper.Manage.Functions
 
             p.Controls.Add(mainFlp);
 
+            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, p);
+
             init = false;
         }
 

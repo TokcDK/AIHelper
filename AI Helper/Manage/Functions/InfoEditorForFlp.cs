@@ -829,7 +829,7 @@ namespace AIHelper.Manage.Functions
                 if (hasGitHubUrlData && (url == null || url.Length == 0))
                 {
                     var site = (Site.StartsWith("http", System.StringComparison.InvariantCultureIgnoreCase) ? "https://" : "") + Site;
-                    INI.SetKey("General", "url", $"{site}/{Owner}/{Repository}", false);
+                    INI.SetKey("General", "url", $"https://{site}/{Owner}/{Repository}", false);
 
                     changed = true;
                 }

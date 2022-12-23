@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -52,7 +53,7 @@ namespace AIHelper.Manage.Functions
             RowStyle rs0 = new RowStyle
             {
                 SizeType = SizeType.Absolute,
-                Height = 25,                 
+                Height = 30,                 
             };
             RowStyle rs1 = new RowStyle
             {
@@ -61,14 +62,30 @@ namespace AIHelper.Manage.Functions
             tlp.RowStyles.Add(rs0);
             tlp.RowStyles.Add(rs1);
 
+            // control buttons
+            var controlPanelFlp = new FlowLayoutPanel
+            {
+                FlowDirection = FlowDirection.LeftToRight,
+                Margin = new Padding(0),
+                AutoSize = true,
+            };
+            tlp.SetRow(controlPanelFlp, 0);
             var btnAddMod = new Button
             {
-                Text = T._("+"),
+                Text = T._("Add"),
                 AutoSize = true,
                 Anchor = AnchorStyles.Left,
                 Height = 25
             };
-            tlp.SetRow(btnAddMod, 0);
+            var btnLoadGitInfos = new Button
+            {
+                Text = T._("All"),
+                AutoSize = true,
+                Anchor = AnchorStyles.Left,
+                Height = 25
+            };
+            controlPanelFlp.Controls.Add(btnAddMod);
+            controlPanelFlp.Controls.Add(btnLoadGitInfos);
 
             var p = new Panel
             {
@@ -77,18 +94,22 @@ namespace AIHelper.Manage.Functions
             };
             tlp.SetRow(p, 1);
 
+            // button events
             btnAddMod.Click += new EventHandler((o, e) =>
             {
-                //LoadAddModPanel(f, p);
+                LoadAddModPanel(f, p);
+            });
+            btnLoadGitInfos.Click += new EventHandler((o, e) =>
+            {
+                p.Controls.Clear();
+                LoadGitInfos(f, p);
             });
 
-            tlp.Controls.Add(btnAddMod);
+            tlp.Controls.Add(controlPanelFlp);
             tlp.Controls.Add(p);
             f.Controls.Add(tlp);
 
             LoadGitInfos(f, p);
-
-            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, f);
 
             //modsListFlowPanel.Size = new System.Drawing.Size
             //    (modsListFlowPanel.Width * 2
@@ -107,43 +128,89 @@ namespace AIHelper.Manage.Functions
 
         }
 
+        class PropData
+        {
+            public PropData(string labelText, string textBoxText)
+            {
+                LabelText = labelText;
+                TextBoxText = textBoxText;
+            }
+
+            public string LabelText { get; }
+            public string TextBoxText { get; set; }
+        }
+
         private void LoadAddModPanel(Form f, Panel p)
         {
             p.Controls.Clear();
 
-            var flp1 = new FlowLayoutPanel();
-            var flp2 = new FlowLayoutPanel();
-
-            var title = new Label();
-            title.Text = "Add new mod";
-            flp2.Controls.Add(title);
-            flp1.Controls.Add(flp2);
-
-            var datas = new[]
+            var mainFlp = new FlowLayoutPanel
             {
-                ("Url", "https://github.com/Owner/Name"),
-                ("FileStartsWith", ""),
-                ("FileEndssWith", ""),
+                Dock = DockStyle.Fill,
+                //AutoScroll = true,
+                Margin = new Padding(0),
+                FlowDirection= FlowDirection.TopDown,
             };
-            foreach ((string lt, string tbt) in datas)
+
+            var modnamePropData = new PropData(T._("Mod dir name"), "NewMod");
+            var urlPropData = new PropData("Url", "https://github.com/Owner/Name");
+            var startsWithPropData = new PropData(T._("File starts with"), "");
+            var endsWithPropData = new PropData(T._("File ends with"), "");
+            var pDatas = new PropData[]
             {
-                var lp3 = new FlowLayoutPanel
+                modnamePropData,
+                urlPropData,
+                startsWithPropData,
+                endsWithPropData,
+            };
+            foreach (var pData in pDatas)
+            {
+                var propertyFlp = new FlowLayoutPanel
                 {
                     FlowDirection = FlowDirection.LeftToRight,
-                    Margin = new Padding(0)
+                    Margin = new Padding(0),
                 };
-                var lblLink = new Label
+                var l = new Label
                 {
-                    Text = lt
+                    Text = pData.LabelText + ":",
+                    ForeColor = Color.White,
+                    Size = new System.Drawing.Size(150, _elHeight),
                 };
-                var tbxUrl = new Label
+                var tb = new TextBox
                 {
-                    Text = tbt
+                    Size = new System.Drawing.Size(p.Width-l.Width-20, _elHeight),
+                    Margin= new Padding(1,1,10,1),
                 };
-                lp3.Controls.Add(lblLink);
-                lp3.Controls.Add(tbxUrl);
-                flp1.Controls.Add(lp3);
+                tb.DataBindings.Add(new Binding(nameof(tb.Text), pData, nameof(pData.TextBoxText), true, DataSourceUpdateMode.OnPropertyChanged));
+                tb.TextChanged += new System.EventHandler((o, e) => 
+                {
+                    tb.DataBindings[0].WriteValue();
+                });
+
+                propertyFlp.Controls.Add(l);
+                propertyFlp.Controls.Add(tb);
+
+                var lWidth = l.Width + (l.Margin.Horizontal * 2);
+                var lHeight = l.Height + (l.Margin.Vertical * 2);
+                var tbWidth = tb.Width + (tb.Margin.Horizontal * 2);
+                var tbHeight = tb.Height + (tb.Margin.Vertical * 2);
+                var ltbWidth = lWidth + tbWidth;
+                var ltbHeight = lHeight + tbHeight;
+                propertyFlp.Size = new System.Drawing.Size(ltbWidth, ltbHeight);
+
+                mainFlp.Controls.Add(propertyFlp);
             }
+
+            var verFromFile = new CheckBox
+            {
+                Text = T._("Version from file"),
+                Checked = false,
+                ForeColor = Color.White,
+                Size = new System.Drawing.Size(p.Width-20, _elHeight+5),
+                Anchor = AnchorStyles.Left,
+                TextAlign = ContentAlignment.MiddleLeft,
+            };
+            mainFlp.Controls.Add(verFromFile);
 
             var tryLoadInfo = new Button
             {
@@ -151,8 +218,9 @@ namespace AIHelper.Manage.Functions
             };
             tryLoadInfo.Click += new EventHandler((o, e) =>
             {
-                Process.Start("");
+                Process.Start(urlPropData.TextBoxText);
             });
+            mainFlp.Controls.Add(tryLoadInfo);
 
             var DownloadAndAddMod = new Button
             {
@@ -161,9 +229,14 @@ namespace AIHelper.Manage.Functions
             DownloadAndAddMod.Click += new EventHandler((o, e) =>
             {
                 // load archive and add
-            });
+                //var info = new Update.UpdateInfo();
+                //var ghub = new Github(info);
 
-            p.Controls.Add(flp1);
+                //ghub.DownloadFileFromTheLink(new Uri(urlPropData.TextBoxText));
+            });
+            mainFlp.Controls.Add(DownloadAndAddMod);
+
+            p.Controls.Add(mainFlp);
         }
 
         private void LoadGitInfos(Form f, Panel p)
@@ -323,6 +396,8 @@ namespace AIHelper.Manage.Functions
 
                 _updateInfoDatas.Add(infoData);
             }
+
+            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, f);
         }
 
         private void AddGithubData(FlowLayoutPanel githubDataFlowPanel, UpdateInfoData infoData)

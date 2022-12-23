@@ -141,15 +141,24 @@ namespace AIHelper.Manage.Update
 
                     foreach (var tFolderInfo in tFolderInfos) //enumerate all folders with info
                     {
+                        if (tFolderInfo.Key.Contains("EditBodyLoadFix"))
+                        {
+
+                        }
+                        if (tFolderInfo.Key.Contains("COM3D2Toolkit"))
+                        {
+
+                        }
+
                         if (source.IsNotWorkingNow) continue;
 
                         //skip already updated
                         if (info.Excluded.Contains(tFolderInfo.Key)) continue;
 
                         // check only one time per hour
-                        if (sourcePathDateCheckTime.ContainsKey(tFolderInfo.Key))
+                        if (sourcePathDateCheckTime.TryGetValue(tFolderInfo.Key, out DateTime value))
                         {
-                            var lastCheckTimeElapsed = sourcePathDateCheckTime[tFolderInfo.Key] + TimeSpan.FromMinutes(updateCheckTimeout);
+                            var lastCheckTimeElapsed = value + TimeSpan.FromMinutes(updateCheckTimeout);
                             if (checkDateTimeNow < lastCheckTimeElapsed) continue;
                         }
 

@@ -220,11 +220,25 @@ namespace AIHelper.Manage.Update.Sources
                 //}
 
                 var latestReleasePage = WC.DownloadString(Info.SourceLink);
-                string assetsPagePattern = @"src\=\""(https\:\/\/github\.com\/" + _gitOwner + @"\/" + _gitRepository + @"\/releases\/expanded_assets\/([^\""]+))\""";
+                string assetsPagePattern = @"src\=\""(https\:\/\/github\.com\/" + @"([^\/]+)" + @"\/" + @"([^\/]+)" + @"\/releases\/expanded_assets\/([^\""]+))\""";
+                // 1 = full assets page link, 2 - owner name (can be changed and be different from old), 3 - repository name (can be changed), 4 - version
                 var assetPageMatch = Regex.Match(latestReleasePage, assetsPagePattern);
                 if (assetPageMatch.Success)
                 {
-                    if (assetPageMatch.Success) _gitLatestVersion = assetPageMatch.Result("$2");
+                    // check owner and repository names because they can be changed
+                    var currentOwnerName = assetPageMatch.Result("$2");
+                    if (currentOwnerName != _gitOwner)
+                    {
+                        Info.TargetFolderUpdateInfo[0] = currentOwnerName;
+                    }
+                    var currentRepName = assetPageMatch.Result("$3");
+                    if (currentRepName != _gitOwner)
+                    {
+                        Info.TargetFolderUpdateInfo[1] = currentRepName;
+                    }
+
+                    // set latest version and redownload files page from assets page
+                    if (assetPageMatch.Success) _gitLatestVersion = assetPageMatch.Result("$4");
                     latestReleasePage = WC.DownloadString(assetPageMatch.Result("$1")); // redownload assets page as release page
                 }
                 else

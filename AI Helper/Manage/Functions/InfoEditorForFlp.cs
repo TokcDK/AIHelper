@@ -200,7 +200,8 @@ namespace AIHelper.Manage.Functions
                         try
                         {
                             if (string.IsNullOrWhiteSpace(tb.Text)) return;
-                            if (modnamePropData.TextBoxText != defaultModDirName) return;
+                            if (modnamePropData.TextBoxText != defaultModDirName 
+                            && !string.IsNullOrWhiteSpace(modnamePropData.TextBoxText)) return;
 
                             var m = Regex.Match(tb.Text, @"(^.*https?\:\/\/)?github\.com\/([^\/]+)\/([^\/\? ]+).*$", RegexOptions.IgnoreCase);
                             if (!m.Success) return;

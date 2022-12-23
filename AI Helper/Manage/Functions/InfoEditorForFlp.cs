@@ -37,7 +37,7 @@ namespace AIHelper.Manage.Functions
 
         static readonly RichTextBox _logtb = new RichTextBox() { ReadOnly = true, Width = 200 };
 
-        static void Log(string v) { _logtb.Text += "\r\n" + v; }
+        static void Log(string v) { _logtb.Text += v + "\r\n"; }
 
         internal void OpenInfoEditor()
         {

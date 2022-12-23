@@ -259,6 +259,23 @@ namespace AIHelper.Manage.Functions
             });
             mainFlp.Controls.Add(tryLoadInfo);
 
+            var tryOpenDir = new Button
+            {
+                Text = T._("Dir")
+            };
+            tryOpenDir.Click += new EventHandler((o, e) =>
+            {
+                var dirPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modnamePropData.TextBoxText);
+                if (!Directory.Exists(dirPath))
+                {
+                    Log(T._("Mod dir missing. Mod still is not added!"));
+                    return;
+                }
+
+                Process.Start(dirPath);
+            });
+            mainFlp.Controls.Add(tryOpenDir);
+
             var DownloadAndAddMod = new Button
             {
                 Text = T._("Add")

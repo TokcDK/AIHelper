@@ -141,15 +141,6 @@ namespace AIHelper.Manage.Update
 
                     foreach (var tFolderInfo in tFolderInfos) //enumerate all folders with info
                     {
-                        if (tFolderInfo.Key.Contains("EditBodyLoadFix"))
-                        {
-
-                        }
-                        if (tFolderInfo.Key.Contains("COM3D2Toolkit"))
-                        {
-
-                        }
-
                         if (source.IsNotWorkingNow) continue;
 
                         //skip already updated

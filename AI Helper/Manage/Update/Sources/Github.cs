@@ -229,12 +229,12 @@ namespace AIHelper.Manage.Update.Sources
                     var currentOwnerName = assetPageMatch.Result("$2");
                     if (currentOwnerName != _gitOwner)
                     {
-                        Info.TargetFolderUpdateInfo[0] = currentOwnerName;
+                        Info.TargetFolderUpdateInfo[0] = _gitOwner = currentOwnerName;
                     }
                     var currentRepName = assetPageMatch.Result("$3");
                     if (currentRepName != _gitRepository)
                     {
-                        Info.TargetFolderUpdateInfo[1] = currentRepName;
+                        Info.TargetFolderUpdateInfo[1] = _gitRepository = currentRepName;
                     }
 
                     // set latest version and redownload files page from assets page

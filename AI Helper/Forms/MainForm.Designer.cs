@@ -942,7 +942,7 @@
             this.FormRootTableLayoutPanel.Name = "FormRootTableLayoutPanel";
             this.FormRootTableLayoutPanel.RowCount = 2;
             this.FormRootTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
-            this.FormRootTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.FormRootTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.FormRootTableLayoutPanel.Size = new System.Drawing.Size(484, 261);
             this.FormRootTableLayoutPanel.TabIndex = 1;
             // 

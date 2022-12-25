@@ -87,7 +87,7 @@
             this.FoldersTabPageBackgroundPanel = new System.Windows.Forms.Panel();
             this.MainFormBackgroundPanel = new System.Windows.Forms.Panel();
             this.FormRootTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.FormControlButtonsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.FormMinimizeButton = new System.Windows.Forms.Button();
             this.FormCloseButton = new System.Windows.Forms.Button();
             this.FormTitleLabel = new System.Windows.Forms.Label();
@@ -118,7 +118,7 @@
             this.FoldersTabPage.SuspendLayout();
             this.MainFormBackgroundPanel.SuspendLayout();
             this.FormRootTableLayoutPanel.SuspendLayout();
-            this.tableLayoutPanel3.SuspendLayout();
+            this.FormControlButtonsTableLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // AIGirlHelperTabControl
@@ -935,7 +935,7 @@
             this.FormRootTableLayoutPanel.ColumnCount = 1;
             this.FormRootTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.FormRootTableLayoutPanel.Controls.Add(this.AIGirlHelperTabControl, 0, 1);
-            this.FormRootTableLayoutPanel.Controls.Add(this.tableLayoutPanel3, 0, 0);
+            this.FormRootTableLayoutPanel.Controls.Add(this.FormControlButtonsTableLayoutPanel, 0, 0);
             this.FormRootTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.FormRootTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.FormRootTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
@@ -946,30 +946,31 @@
             this.FormRootTableLayoutPanel.Size = new System.Drawing.Size(484, 261);
             this.FormRootTableLayoutPanel.TabIndex = 1;
             // 
-            // tableLayoutPanel3
+            // FormControlButtonsTableLayoutPanel
             // 
-            this.tableLayoutPanel3.ColumnCount = 3;
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 95.04504F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 4.954955F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 23F));
-            this.tableLayoutPanel3.Controls.Add(this.FormMinimizeButton, 1, 0);
-            this.tableLayoutPanel3.Controls.Add(this.FormCloseButton, 2, 0);
-            this.tableLayoutPanel3.Controls.Add(this.FormTitleLabel, 0, 0);
-            this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-            this.tableLayoutPanel3.RowCount = 1;
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(484, 25);
-            this.tableLayoutPanel3.TabIndex = 1;
+            this.FormControlButtonsTableLayoutPanel.BackColor = System.Drawing.Color.Transparent;
+            this.FormControlButtonsTableLayoutPanel.ColumnCount = 3;
+            this.FormControlButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 95.04504F));
+            this.FormControlButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 4.954955F));
+            this.FormControlButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.FormControlButtonsTableLayoutPanel.Controls.Add(this.FormMinimizeButton, 1, 0);
+            this.FormControlButtonsTableLayoutPanel.Controls.Add(this.FormCloseButton, 2, 0);
+            this.FormControlButtonsTableLayoutPanel.Controls.Add(this.FormTitleLabel, 0, 0);
+            this.FormControlButtonsTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.FormControlButtonsTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.FormControlButtonsTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.FormControlButtonsTableLayoutPanel.Name = "FormControlButtonsTableLayoutPanel";
+            this.FormControlButtonsTableLayoutPanel.RowCount = 1;
+            this.FormControlButtonsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.FormControlButtonsTableLayoutPanel.Size = new System.Drawing.Size(484, 25);
+            this.FormControlButtonsTableLayoutPanel.TabIndex = 1;
             // 
             // FormMinimizeButton
             // 
             this.FormMinimizeButton.BackColor = System.Drawing.Color.Transparent;
             this.FormMinimizeButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.FormMinimizeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.FormMinimizeButton.Location = new System.Drawing.Point(438, 0);
+            this.FormMinimizeButton.Location = new System.Drawing.Point(437, 0);
             this.FormMinimizeButton.Margin = new System.Windows.Forms.Padding(0);
             this.FormMinimizeButton.Name = "FormMinimizeButton";
             this.FormMinimizeButton.Size = new System.Drawing.Size(22, 25);
@@ -982,10 +983,10 @@
             this.FormCloseButton.BackColor = System.Drawing.Color.Transparent;
             this.FormCloseButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.FormCloseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.FormCloseButton.Location = new System.Drawing.Point(460, 0);
+            this.FormCloseButton.Location = new System.Drawing.Point(459, 0);
             this.FormCloseButton.Margin = new System.Windows.Forms.Padding(0);
             this.FormCloseButton.Name = "FormCloseButton";
-            this.FormCloseButton.Size = new System.Drawing.Size(24, 25);
+            this.FormCloseButton.Size = new System.Drawing.Size(25, 25);
             this.FormCloseButton.TabIndex = 0;
             this.FormCloseButton.Text = "X";
             this.FormCloseButton.UseVisualStyleBackColor = false;
@@ -998,7 +999,7 @@
             this.FormTitleLabel.Location = new System.Drawing.Point(0, 0);
             this.FormTitleLabel.Margin = new System.Windows.Forms.Padding(0);
             this.FormTitleLabel.Name = "FormTitleLabel";
-            this.FormTitleLabel.Size = new System.Drawing.Size(438, 25);
+            this.FormTitleLabel.Size = new System.Drawing.Size(437, 25);
             this.FormTitleLabel.TabIndex = 2;
             this.FormTitleLabel.Text = "AIHelper";
             this.FormTitleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1052,8 +1053,8 @@
             this.FoldersTabPage.ResumeLayout(false);
             this.MainFormBackgroundPanel.ResumeLayout(false);
             this.FormRootTableLayoutPanel.ResumeLayout(false);
-            this.tableLayoutPanel3.ResumeLayout(false);
-            this.tableLayoutPanel3.PerformLayout();
+            this.FormControlButtonsTableLayoutPanel.ResumeLayout(false);
+            this.FormControlButtonsTableLayoutPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1117,7 +1118,7 @@
         private System.Windows.Forms.Button AddGameButton;
         internal System.Windows.Forms.TableLayoutPanel FunctionsForFLPTableLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel FormRootTableLayoutPanel;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private System.Windows.Forms.TableLayoutPanel FormControlButtonsTableLayoutPanel;
         internal System.Windows.Forms.Button FormMinimizeButton;
         internal System.Windows.Forms.Button FormCloseButton;
         internal System.Windows.Forms.Label FormTitleLabel;

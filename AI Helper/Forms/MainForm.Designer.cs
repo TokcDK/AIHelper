@@ -926,12 +926,14 @@
             this.MainFormBackgroundPanel.Controls.Add(this.FormRootTableLayoutPanel);
             this.MainFormBackgroundPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainFormBackgroundPanel.Location = new System.Drawing.Point(0, 0);
+            this.MainFormBackgroundPanel.Margin = new System.Windows.Forms.Padding(0);
             this.MainFormBackgroundPanel.Name = "MainFormBackgroundPanel";
             this.MainFormBackgroundPanel.Size = new System.Drawing.Size(484, 261);
             this.MainFormBackgroundPanel.TabIndex = 1;
             // 
             // FormRootTableLayoutPanel
             // 
+            this.FormRootTableLayoutPanel.BackColor = System.Drawing.Color.Transparent;
             this.FormRootTableLayoutPanel.ColumnCount = 1;
             this.FormRootTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.FormRootTableLayoutPanel.Controls.Add(this.AIGirlHelperTabControl, 0, 1);

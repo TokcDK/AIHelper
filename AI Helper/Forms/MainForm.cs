@@ -27,7 +27,7 @@ using static AIHelper.Manage.ManageModOrganizer;
 
 namespace AIHelper
 {
-    internal partial class MainForm : Form
+    internal partial class MainForm : Form, IContainerControl
     {
         static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
@@ -47,6 +47,9 @@ namespace AIHelper
             InitializeComponent();
 
             ManageSettings.MainForm = this; // set reference to the form for controls use
+
+            this.DoubleBuffered = true;
+            this.SetStyle(ControlStyles.ResizeRedraw, true);
 
             ManageMainFormService.CalcSizeDependOnDesktop(this);
 
@@ -1207,18 +1210,31 @@ namespace AIHelper
             //UpdateButtonOptionsRefresh();
         }
 
-        private void Dev_Click(object sender, EventArgs e)
-        {
-        }
-
         private void AddGameLabel_Click(object sender, EventArgs e)
         {
             ManageOther.AddNewGame(this);
         }
 
-        private void MO2StandartButton_Click(object sender, LinkLabelLinkClickedEventArgs e)
+        const int WM_NCHITTEST = 0x0084;
+        const int HTCLIENT = 1;
+        const int HTCAPTION = 2;
+        protected override void WndProc(ref Message m)
         {
-
+            base.WndProc(ref m);
+            if (m.Msg != WM_NCHITTEST || m.Result != (IntPtr)HTCLIENT)
+            {
+                return;
+            }
+            m.Result = (IntPtr)HTCAPTION;
+        }
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.Style |= 0x40000;
+                return cp;
+            }
         }
 
         //Disable close window button

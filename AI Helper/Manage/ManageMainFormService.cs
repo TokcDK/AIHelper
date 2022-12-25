@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AIHelper.Utils;
 
 namespace AIHelper.Manage
 {
@@ -68,6 +69,8 @@ namespace AIHelper.Manage
             {
                 ManageSettings.MainForm.WindowState= FormWindowState.Minimized;
             });
+
+            new MouseDragger(ManageSettings.MainForm);
         }
     }
 }

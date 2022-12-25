@@ -324,6 +324,7 @@
     <Compile Include="UserData\StudioScene.cs" />
     <Compile Include="Manage\ManageStrings.cs" />
     <Compile Include="Utils\CFGFiles.cs" />
+    <Compile Include="Utils\MouseDragger.cs" />
     <Compile Include="Utils\FileWriter.cs" />
     <Compile Include="Utils\ParallelPoorMan.cs" />
     <Compile Include="Utils\T.cs" />

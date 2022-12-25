@@ -950,9 +950,9 @@
             // 
             this.FormControlButtonsTableLayoutPanel.BackColor = System.Drawing.Color.Transparent;
             this.FormControlButtonsTableLayoutPanel.ColumnCount = 3;
-            this.FormControlButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 95.04504F));
-            this.FormControlButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 4.954955F));
-            this.FormControlButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.FormControlButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.FormControlButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.FormControlButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.FormControlButtonsTableLayoutPanel.Controls.Add(this.FormMinimizeButton, 1, 0);
             this.FormControlButtonsTableLayoutPanel.Controls.Add(this.FormCloseButton, 2, 0);
             this.FormControlButtonsTableLayoutPanel.Controls.Add(this.FormTitleLabel, 0, 0);
@@ -961,7 +961,7 @@
             this.FormControlButtonsTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.FormControlButtonsTableLayoutPanel.Name = "FormControlButtonsTableLayoutPanel";
             this.FormControlButtonsTableLayoutPanel.RowCount = 1;
-            this.FormControlButtonsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.FormControlButtonsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.FormControlButtonsTableLayoutPanel.Size = new System.Drawing.Size(484, 25);
             this.FormControlButtonsTableLayoutPanel.TabIndex = 1;
             // 
@@ -970,10 +970,10 @@
             this.FormMinimizeButton.BackColor = System.Drawing.Color.Transparent;
             this.FormMinimizeButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.FormMinimizeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.FormMinimizeButton.Location = new System.Drawing.Point(437, 0);
+            this.FormMinimizeButton.Location = new System.Drawing.Point(434, 0);
             this.FormMinimizeButton.Margin = new System.Windows.Forms.Padding(0);
             this.FormMinimizeButton.Name = "FormMinimizeButton";
-            this.FormMinimizeButton.Size = new System.Drawing.Size(22, 25);
+            this.FormMinimizeButton.Size = new System.Drawing.Size(25, 25);
             this.FormMinimizeButton.TabIndex = 1;
             this.FormMinimizeButton.Text = "_";
             this.FormMinimizeButton.UseVisualStyleBackColor = false;
@@ -999,7 +999,7 @@
             this.FormTitleLabel.Location = new System.Drawing.Point(0, 0);
             this.FormTitleLabel.Margin = new System.Windows.Forms.Padding(0);
             this.FormTitleLabel.Name = "FormTitleLabel";
-            this.FormTitleLabel.Size = new System.Drawing.Size(437, 25);
+            this.FormTitleLabel.Size = new System.Drawing.Size(434, 25);
             this.FormTitleLabel.TabIndex = 2;
             this.FormTitleLabel.Text = "AIHelper";
             this.FormTitleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;

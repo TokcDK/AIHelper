@@ -58,6 +58,16 @@ namespace AIHelper.Manage
                 });
             });
 #endif
+
+            ManageSettings.MainForm.FormCloseButton.Click += new EventHandler((o, e) =>
+            {
+                ManageSettings.MainForm.Close();
+                Application.Exit();
+            });
+            ManageSettings.MainForm.FormMinimizeButton.Click += new EventHandler((o, e) =>
+            {
+                ManageSettings.MainForm.WindowState= FormWindowState.Minimized;
+            });
         }
     }
 }

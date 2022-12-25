@@ -46,6 +46,8 @@ namespace AIHelper
         {
             InitializeComponent();
 
+            ManageSettings.MainForm = this; // set reference to the form for controls use
+
             ManageMainFormService.CalcSizeDependOnDesktop(this);
 
             ManageSettings.ApplicationStartupPath = Application.StartupPath;
@@ -57,8 +59,6 @@ namespace AIHelper
                 Application.Exit();
                 return;
             }
-
-            ManageSettings.MainForm = this; // set reference to the form for controls use
 
             CheckMoAndEndInit();
         }
@@ -575,7 +575,7 @@ namespace AIHelper
             if (AutoShortcutRegistryCheckBox.Checked) ManageOther.AutoShortcutAndRegystry();
 
             SelectedGameLabelOwnColor.Text = ManageSettings.Games.Game.GameDisplayingName + "❤";
-            this.Text = "AI Helper" + " | " + ManageSettings.Games.Game.GameDisplayingName;
+            this.FormTitleLabel.Text = "AI Helper" + " | " + ManageSettings.Games.Game.GameDisplayingName;
 
             ThemesLoader.SetTheme();
 

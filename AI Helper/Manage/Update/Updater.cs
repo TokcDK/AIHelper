@@ -147,9 +147,9 @@ namespace AIHelper.Manage.Update
                         if (info.Excluded.Contains(tFolderInfo.Key)) continue;
 
                         // check only one time per hour
-                        if (sourcePathDateCheckTime.ContainsKey(tFolderInfo.Key))
+                        if (sourcePathDateCheckTime.TryGetValue(tFolderInfo.Key, out DateTime value))
                         {
-                            var lastCheckTimeElapsed = sourcePathDateCheckTime[tFolderInfo.Key] + TimeSpan.FromMinutes(updateCheckTimeout);
+                            var lastCheckTimeElapsed = value + TimeSpan.FromMinutes(updateCheckTimeout);
                             if (checkDateTimeNow < lastCheckTimeElapsed) continue;
                         }
 

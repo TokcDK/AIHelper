@@ -1,4 +1,5 @@
 ﻿using AIHelper.Forms.Other;
+using AIHelper.Manage.ui.themes;
 using NLog;
 using System;
 using System.Drawing;
@@ -38,6 +39,7 @@ namespace AIHelper.Manage.ModeSwitch
                 StartPosition = FormStartPosition.Manual
             };
 
+            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, dialog);
             DialogResult result = dialog.ShowDialog();
             if (result != DialogResult.OK)
             {
@@ -49,14 +51,14 @@ namespace AIHelper.Manage.ModeSwitch
 
             await Task.Run(() => Action()).ConfigureAwait(true);
 
-            try
-            {
-                ManageSettings.MainForm.MOCommonModeSwitchButton.Text = MOmode ? T._("MOToCommon") : T._("CommonToMO");
-            }
-            catch (Exception ex)
-            {
-                _log.Info("An error occured while change mode switch button text: \r\n" + ex);
-            }
+            //try
+            //{
+            //    ManageSettings.MainForm.MOCommonModeSwitchButton.Text = MOmode ? T._("MOToCommon") : T._("CommonToMO");
+            //}
+            //catch (Exception ex)
+            //{
+            //    _log.Info("An error occured while change mode switch button text: \r\n" + ex);
+            //}
 
             ManageSettings.MainForm.UpdateData();
 

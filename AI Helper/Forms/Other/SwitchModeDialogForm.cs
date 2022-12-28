@@ -23,6 +23,9 @@ namespace AIHelper.Forms.Other
                 MakeBuckupCheckBox.Checked = false;
                 MakeBuckupCheckBox.Visible = false;
             }
+
+            this.Location = ManageSettings.MainForm.Location;
+            this.Size = ManageSettings.MainForm.Size;
         }
 
         private ToolTip _thToolTip;

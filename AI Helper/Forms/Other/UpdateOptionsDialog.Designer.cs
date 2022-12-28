@@ -100,6 +100,7 @@
             this.UpdateZipmodsCheckBox.AutoSize = true;
             this.UpdateZipmodsCheckBox.Checked = true;
             this.UpdateZipmodsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.UpdateZipmodsCheckBox.ForeColor = System.Drawing.Color.White;
             this.UpdateZipmodsCheckBox.Location = new System.Drawing.Point(3, 3);
             this.UpdateZipmodsCheckBox.Name = "UpdateZipmodsCheckBox";
             this.UpdateZipmodsCheckBox.Size = new System.Drawing.Size(102, 17);
@@ -111,6 +112,7 @@
             // BleadingEdgeZipmodsCheckBox
             // 
             this.BleadingEdgeZipmodsCheckBox.AutoSize = true;
+            this.BleadingEdgeZipmodsCheckBox.ForeColor = System.Drawing.Color.White;
             this.BleadingEdgeZipmodsCheckBox.Location = new System.Drawing.Point(3, 26);
             this.BleadingEdgeZipmodsCheckBox.Name = "BleadingEdgeZipmodsCheckBox";
             this.BleadingEdgeZipmodsCheckBox.Size = new System.Drawing.Size(145, 17);
@@ -124,6 +126,7 @@
             this.UpdatePluginsCheckBox.AutoSize = true;
             this.UpdatePluginsCheckBox.Checked = true;
             this.UpdatePluginsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.UpdatePluginsCheckBox.ForeColor = System.Drawing.Color.White;
             this.UpdatePluginsCheckBox.Location = new System.Drawing.Point(3, 49);
             this.UpdatePluginsCheckBox.Name = "UpdatePluginsCheckBox";
             this.UpdatePluginsCheckBox.Size = new System.Drawing.Size(97, 17);
@@ -137,6 +140,7 @@
             this.CheckEnabledModsOnlyCheckBox.AutoSize = true;
             this.CheckEnabledModsOnlyCheckBox.Checked = true;
             this.CheckEnabledModsOnlyCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.CheckEnabledModsOnlyCheckBox.ForeColor = System.Drawing.Color.White;
             this.CheckEnabledModsOnlyCheckBox.Location = new System.Drawing.Point(3, 72);
             this.CheckEnabledModsOnlyCheckBox.Name = "CheckEnabledModsOnlyCheckBox";
             this.CheckEnabledModsOnlyCheckBox.Size = new System.Drawing.Size(124, 17);

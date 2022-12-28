@@ -18,8 +18,8 @@ namespace AIHelper.Manage.Update.Targets.Mods
         {
         }
 
-        ModInfo _targetinfo;
-        List<ModsMetaUrlBase> _dBs;
+        //ModInfo _targetinfo;
+        //List<ModsMetaUrlBase> _dBs;
 
         /// <summary>
         /// Get enabled mods list infos from meta.ini of each mod
@@ -29,23 +29,22 @@ namespace AIHelper.Manage.Update.Targets.Mods
         {
             var infos = new Dictionary<string, string>();
 
-            _targetinfo = new ModInfo();
+            //_targetinfo = new ModInfo();
 
-            _dBs = new List<ModsMetaUrlBase>
-            {
-                new Xua(_targetinfo)
-            };
+            //_dBs = new List<ModsMetaUrlBase>
+            //{
+            //    new Xua(_targetinfo)
+            //};
 
-            foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(Info.UpdateOptions != null ? Info.UpdateOptions.CheckEnabledModsOnlyCheckBox.Checked : true))
+            foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(Info.UpdateOptions != null && Info.UpdateOptions.CheckEnabledModsOnlyCheckBox.Checked))
             {
                 var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modname);
 
                 var modinfo = GetInfoFromMeta(modPath);
 
-                if (!string.IsNullOrWhiteSpace(modinfo))
-                {
-                    infos.Add(modPath, modinfo/*>*/.Replace(", ", ",")/*<fix of possible problems from space after ,*/);
-                }
+                if (string.IsNullOrWhiteSpace(modinfo)) continue;
+
+                infos.Add(modPath, modinfo/*>*/.Replace(", ", ",")/*<fix of possible problems from space after ,*/);
             }
 
             return infos;
@@ -54,163 +53,77 @@ namespace AIHelper.Manage.Update.Targets.Mods
         private string GetInfoFromMeta(string modPath)
         {
             var metaIniPath = Path.Combine(modPath, "meta.ini");
-            if (!File.Exists(metaIniPath))
-            {
-                return "";
-            }
+            if (!File.Exists(metaIniPath)) return "";
 
             var ini = ManageIni.GetINIFile(metaIniPath);
 
-            //Get by current source ID from notes
-            string val = "";
-            if (ini.KeyExists("notes", "General"))
+            foreach((string s, string k) in new[]
             {
-                val = ini.GetKey("General", "notes");
-            }
-
-            if (string.IsNullOrWhiteSpace(val))
-                return "";
-
-            //updgit::BepInEx,BepInEx,BepInEx_x64::
-            var updateInfo = Regex.Match(val, Info.SourceId + "::([^:]+)::");
-
-            if (updateInfo.Success && !string.IsNullOrWhiteSpace(updateInfo.Value) && updateInfo.Value.StartsWith(Info.SourceId, System.StringComparison.InvariantCultureIgnoreCase))
+                (ManageSettings.AiMetaIniSectionName, ManageSettings.AiMetaIniKeyUpdateName),
+                ("General", "notes"),
+            })
             {
-                return updateInfo.Result("$1");
+                //Get by current source ID from notes
+                if (!ini.KeyExists(k, s)) continue;
+                var val = ini.GetKey(s, k);
+
+                if (string.IsNullOrWhiteSpace(val)) continue;
+
+                //updgit::BepInEx,BepInEx,BepInEx_x64::
+                var updateInfoMatch = Regex.Match(val, $"{Info.SourceId}::([^:]+)::");
+
+                if (!updateInfoMatch.Success) continue;
+                if (string.IsNullOrWhiteSpace(updateInfoMatch.Value)) continue;
+                if (!updateInfoMatch.Value.StartsWith(Info.SourceId,
+                    System.StringComparison.InvariantCultureIgnoreCase)) continue;
+
+                return updateInfoMatch.Groups[1].Value;
             }
-            else
-            {
-                //read info from standalone key
-                //need to think about section and key names
-                if (ini.SectionExistsAndNotEmpty(ManageSettings.AiMetaIniSectionName))
-                {
-                    if (ini.KeyExists(ManageSettings.AiMetaIniKeyUpdateName, ManageSettings.AiMetaIniSectionName))
-                    {
-                        var info = ini.GetKey(ManageSettings.AiMetaIniSectionName, ManageSettings.AiMetaIniKeyUpdateName);
-
-                        return Regex.Match(info, Info.SourceId + "::([^:]+)::").Result("$1");
-                    }
-                }
-            }
-
-            // Get from meta.ini url
-            //val = "";
-            //if (INI.KeyExists("url", "General"))
-            //{
-            //    val = INI.ReadINI("General", "url");
-            //}
-
-            //if (!string.IsNullOrWhiteSpace(val))
-            //{
-            //    targetinfo.moddir = new DirectoryInfo(ModPath);
-            //    targetinfo.url = val;
-
-            //    //hardcoded
-            //    //foreach (var db in DBs)
-            //    //{
-            //    //    if (db.Check() && db.Owner.Length > 0 && db.Project.Length > 0)
-            //    //    {
-            //    //        var starts = db.StartsWith();
-            //    //        if (starts.Length > 0)
-            //    //        {
-            //    //            return db.Owner + "," + db.Project + "," + starts;
-            //    //        }
-            //    //    }
-            //    //}
-
-            //    //from ini plugins
-            //    foreach (var db in GetDB())
-            //    {
-            //        if (targetinfo.url.Contains(db["url.contains"]) && !ContainsFile(db) && db["gitowner"].Length > 0 && db["repository"].Length > 0)
-            //        {
-            //            var parts = GetFilePartsInfo(db);
-
-            //            if (parts[0].Length > 0)
-            //            {
-            //                return db["gitowner"] + "," + db["repository"] + "," + parts[0] + "," + parts[1].Trim() + "," + db["gitversionfromfile"];
-            //            }
-            //        }
-            //    }
-            //}
 
             return "";
         }
 
-        /// <summary>
-        /// true when folder contains file from db
-        /// </summary>
-        /// <param name="db"></param>
-        /// <returns></returns>
-        private bool ContainsFile(Dictionary<string, string> db)
-        {
-            var i = 0;
-            while (db.ContainsKey("skipif.contains.file" + i) && !string.IsNullOrWhiteSpace(db["skipif.contains.file" + i]))
-            {
-                if (File.Exists(Path.GetFullPath(Path.Combine(_targetinfo.Moddir.FullName, db["skipif.contains.file" + i]))))
-                {
-                    return true;
-                }
-                i++;
-            }
-            return false;
-        }
+        //List<Dictionary<string, string>> _dbData;
+        //readonly string[] _dbDataParams = {
+        //    "url.contains",
+        //    "gitowner",
+        //    "repository",
+        //    "bepinexstarts",
+        //    "bepinexends",
+        //    "ipastarts",
+        //    "ipaends",
+        //    "gitversionfromfile",
+        //    "skipif.contains.file0",
+        //    "skipif.contains.file1",
+        //    "skipif.contains.file2",
+        //    "skipif.contains.file3",
+        //    "skipif.contains.file4",
+        //    "skipif.contains.file5"
+        //};
+        //private List<Dictionary<string, string>> GetDb()
+        //{
+        //    if (_dbData != null) return _dbData;
 
-        private string[] GetFilePartsInfo(Dictionary<string, string> db)
-        {
-            if (Directory.Exists(Path.Combine(_targetinfo.Moddir.FullName, "BepInEx")))
-            {
-                return new[] { db["bepinexstarts"], db["bepinexends"] };
-            }
-            else
-            {
-                return new[] { db["ipastarts"], db["ipaends"] };
-            }
-        }
+        //    _dbData = new List<Dictionary<string, string>>();
+        //    var iniNum = 0;
+        //    foreach (var iniFile in Directory.EnumerateFiles(ManageSettings.ModsUpdateDbInfoDir, "*.ini", SearchOption.AllDirectories))
+        //    {
+        //        INIFile ini = ManageIni.GetINIFile(iniFile);
 
-        List<Dictionary<string, string>> _dbData;
-        readonly string[] _dbDataParams = {
-            "url.contains",
-            "gitowner",
-            "repository",
-            "bepinexstarts",
-            "bepinexends",
-            "ipastarts",
-            "ipaends",
-            "gitversionfromfile",
-            "skipif.contains.file0",
-            "skipif.contains.file1",
-            "skipif.contains.file2",
-            "skipif.contains.file3",
-            "skipif.contains.file4",
-            "skipif.contains.file5"
-        };
-        private List<Dictionary<string, string>> GetDb()
-        {
-            if (_dbData == null)
-            {
-                _dbData = new List<Dictionary<string, string>>();
-                var iniNum = 0;
-                foreach (var iniFile in Directory.EnumerateFiles(ManageSettings.ModsUpdateDbInfoDir, "*.ini", SearchOption.AllDirectories))
-                {
-                    INIFile ini = ManageIni.GetINIFile(iniFile);
+        //        _dbData.Add(new Dictionary<string, string>());
 
-                    _dbData.Add(new Dictionary<string, string>());
+        //        foreach (var setting in _dbDataParams)
+        //        {
+        //            var value = "";
+        //            if (ini.KeyExists(setting)) value = ini.GetKey("", setting);
 
-                    foreach (var setting in _dbDataParams)
-                    {
-                        var value = "";
-                        if (ini.KeyExists(setting))
-                        {
-                            value = ini.GetKey("", setting);
-                        }
-                        _dbData[iniNum].Add(setting, value);
-                    }
+        //            _dbData[iniNum].Add(setting, value);
+        //        }
 
-                    iniNum++;
-                }
-            }
+        //        iniNum++;
+        //    }
 
-            return _dbData;
-        }
+        //    return _dbData;
+        //}
     }
 }

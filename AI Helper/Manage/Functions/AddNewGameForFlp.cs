@@ -8,6 +8,7 @@ using GetListOfSubClasses;
 using System.Windows.Forms;
 using AIHelper.Games;
 using System.Reflection;
+using System.Drawing;
 
 namespace AIHelper.Manage.Functions
 {
@@ -21,5 +22,7 @@ namespace AIHelper.Manage.Functions
         {
             ManageOther.AddNewGame(ManageSettings.MainForm);
         }
+
+        public override Color? ForeColor => Color.LightGreen;
     }
 }

@@ -421,7 +421,7 @@ namespace AIHelper.Manage
         public static List<string> GetKnownGames(INIFile ini)
         {
             List<string> list = new List<string>();
-            if (ini == null || ini.Configuration == null) return list;
+            if (ini == null) return list;
 
             var games = ini.GetKey(ManageSettings.SettingsIniSectionName, ManageSettings.KnownGamesIniKeyName);
 
@@ -497,7 +497,7 @@ namespace AIHelper.Manage
                 }
 
                 string selected_game;
-                if (ini.Configuration == null)
+                if (ini == null)
                 {
                     selected_game = "";
                 }

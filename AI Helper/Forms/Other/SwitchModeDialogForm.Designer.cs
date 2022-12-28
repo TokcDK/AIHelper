@@ -85,6 +85,7 @@
             this.MakeBuckupCheckBox.AutoSize = true;
             this.MakeBuckupCheckBox.Checked = true;
             this.MakeBuckupCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.MakeBuckupCheckBox.ForeColor = System.Drawing.Color.White;
             this.MakeBuckupCheckBox.Location = new System.Drawing.Point(3, 131);
             this.MakeBuckupCheckBox.Name = "MakeBuckupCheckBox";
             this.MakeBuckupCheckBox.Size = new System.Drawing.Size(92, 17);

@@ -220,22 +220,36 @@ namespace AIHelper.Manage.Update.Sources
                 //}
 
                 var latestReleasePage = WC.DownloadString(Info.SourceLink);
-                string assetsPagePattern = @"src\=\""(https\:\/\/github\.com\/" + _gitOwner + @"\/" + _gitRepository + @"\/releases\/expanded_assets\/([^\""]+))\""";
-                var assetPageMatch = Regex.Match(latestReleasePage, assetsPagePattern);
+                string assetsPagePattern = @"src\=\""(https\:\/\/github\.com\/" + @"([^\/]+)" + @"\/" + @"([^\/]+)" + @"\/releases\/expanded_assets\/([^\""]+))\""";
+                // 1 = full assets page link, 2 - owner name (can be changed and be different from old), 3 - repository name (can be changed), 4 - version
+                var assetPageMatch = Regex.Match(latestReleasePage, assetsPagePattern, RegexOptions.IgnoreCase);
                 if (assetPageMatch.Success)
                 {
-                    if (assetPageMatch.Success) _gitLatestVersion = assetPageMatch.Result("$2");
+                    // check owner and repository names because they can be changed
+                    var currentOwnerName = assetPageMatch.Result("$2");
+                    if (currentOwnerName != _gitOwner)
+                    {
+                        Info.TargetFolderUpdateInfo[0] = _gitOwner = currentOwnerName;
+                    }
+                    var currentRepName = assetPageMatch.Result("$3");
+                    if (currentRepName != _gitRepository)
+                    {
+                        Info.TargetFolderUpdateInfo[1] = _gitRepository = currentRepName;
+                    }
+
+                    // set latest version and redownload files page from assets page
+                    if (assetPageMatch.Success) _gitLatestVersion = assetPageMatch.Result("$4");
                     latestReleasePage = WC.DownloadString(assetPageMatch.Result("$1")); // redownload assets page as release page
                 }
                 else
                 {
-                    var version = Regex.Match(latestReleasePage, @"/releases/tag/([^\""]+)\""");
+                    var version = Regex.Match(latestReleasePage, @"/releases/tag/([^\""]+)\""", RegexOptions.IgnoreCase);
                     if (version.Success) _gitLatestVersion = version.Result("$1");
                     //GitLatestVersion = version.Value.Remove(version.Value.Length - 1, 1).Remove(0, 14);
                 }
 
                 var linkPattern = @"href\=\""(/" + _gitOwner + "/" + _gitRepository + "/releases/download/" + _gitLatestVersion + "/" + Info.UpdateFileStartsWith + "([^\"]*)" + Info.UpdateFileEndsWith + ")\"";
-                var link2File = Regex.Match(latestReleasePage, linkPattern);
+                var link2File = Regex.Match(latestReleasePage, linkPattern, RegexOptions.IgnoreCase);
                 //var linkPattern = @"href\=\""(/" + GitOwner + "/" + GitRepository + "/releases/download/([^/]+)/" + info.UpdateFileStartsWith + @"([^\""]+)" + info.UpdateFileEndsWith + @")\""";
                 //var link2file = Regex.Match(LatestReleasePage, linkPattern);
                 if (!link2File.Success && Info.VersionFromFile)
@@ -278,7 +292,7 @@ namespace AIHelper.Manage.Update.Sources
                         string theReleaseAssetsPage = WC.DownloadString(assetsMatch.Result("$1")); // download page for the release assets
 
                         linkPattern = @"href\=\""(/" + _gitOwner + "/" + _gitRepository + "/releases/download/([^/]+)/" + Info.UpdateFileStartsWith + @"([^\""]+)" + Info.UpdateFileEndsWith + @")\""";
-                        link2File = Regex.Match(theReleaseAssetsPage, linkPattern);
+                        link2File = Regex.Match(theReleaseAssetsPage, linkPattern, RegexOptions.IgnoreCase);
 
                         if (!link2File.Success) continue;
 
@@ -290,7 +304,7 @@ namespace AIHelper.Manage.Update.Sources
                     {
                         //when author changed username on git
                         linkPattern = @"href\=\""(/[^/]+/" + _gitRepository + "/releases/download/([^/]+)/" + Info.UpdateFileStartsWith + @"([^\""]+)" + Info.UpdateFileEndsWith + @")\""";
-                        link2File = Regex.Match(latestReleasePage, linkPattern);
+                        link2File = Regex.Match(latestReleasePage, linkPattern, RegexOptions.IgnoreCase);
                     }
 
                     if (link2File.Success && !Info.VersionFromFile)
@@ -319,7 +333,7 @@ namespace AIHelper.Manage.Update.Sources
                         if (!getFromLast10Releases)
                         {
                             var pattern = "/releases/download/" + _gitLatestVersion + "/" + Info.UpdateFileStartsWith + "([^\"]+)" + Info.UpdateFileEndsWith + "\"";
-                            var fromfile = Regex.Match(latestReleasePage, pattern);
+                            var fromfile = Regex.Match(latestReleasePage, pattern, RegexOptions.IgnoreCase);
                             if (fromfile.Success)
                             {
                                 _gitLatestVersion = fromfile.Result("$1");

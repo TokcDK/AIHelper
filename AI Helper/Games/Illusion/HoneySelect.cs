@@ -27,6 +27,8 @@ namespace AIHelper.Games.Illusion
 
         public override string GameAbbreviation => "HS";
 
+        public override bool IsHaveSideloaderMods => false;
+
         public override string[,] DirLinkPaths => new string[,]
             {
                     //{

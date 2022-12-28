@@ -8,8 +8,10 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using AIHelper.Data.Modlist;
 using AIHelper.Forms.Other;
+using AIHelper.Manage.ui.themes;
 using MAB.DotIgnore;
 using NLog;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using static AIHelper.Manage.ManageModOrganizer;
 
 namespace AIHelper.Manage.Functions
@@ -26,6 +28,7 @@ namespace AIHelper.Manage.Functions
         {
             Clean();
         }
+        public override Color? ForeColor => Color.Yellow;
 
         /// <summary>
         /// clean Data dir of current selected game from not native files
@@ -60,6 +63,7 @@ namespace AIHelper.Manage.Functions
             //    StartPosition = FormStartPosition.Manual
             //};
 
+            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, options);
             DialogResult result = options.ShowDialog();
             if (result != DialogResult.OK) return;
 

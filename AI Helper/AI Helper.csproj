@@ -116,6 +116,7 @@
     <Compile Include="Forms\LogLevelselectionForm.Designer.cs">
       <DependentUpon>LogLevelselectionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Manage\ManageTabs.cs" />
     <Compile Include="Forms\Other\CleanOptionsDialogForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -196,6 +197,16 @@
     <Compile Include="Games\Illusion\HoneySelect.cs" />
     <Compile Include="Games\Illusion\AiGirl.cs" />
     <Compile Include="Games\GameBase.cs" />
+    <Compile Include="Manage\FoldersTab\FoldersTabButtonsLoader.cs" />
+    <Compile Include="Manage\FoldersTab\Folders\SimpleFolderOpen\Open2MODirButtonData.cs" />
+    <Compile Include="Manage\FoldersTab\Folders\SimpleFolderOpen\OpenMODirButtonData.cs" />
+    <Compile Include="Manage\FoldersTab\Folders\SimpleFolderOpen\OpenModsDirButtonData.cs" />
+    <Compile Include="Manage\FoldersTab\Folders\SimpleFolderOpen\OpenMOOverwriteDirButtonData.cs" />
+    <Compile Include="Manage\FoldersTab\Folders\SimpleFolderOpen\OpenMOUserFilesDirButtonData.cs" />
+    <Compile Include="Manage\FoldersTab\Folders\SimpleFolderOpen\SimpleFolderOpenBase.cs" />
+    <Compile Include="Manage\FoldersTab\IFolderTabButtonData.cs" />
+    <Compile Include="Manage\FoldersTab\Folders\SimpleFolderOpen\OpenGameDirButtonData.cs" />
+    <Compile Include="Manage\FoldersTab\Folders\OpenPresetsDir.cs" />
     <Compile Include="Manage\Functions\OpenDiscotdForFlp.cs" />
     <Compile Include="Manage\Functions\AddNewGameForFlp.cs" />
     <Compile Include="Manage\Functions\DataDirCleaner.cs" />
@@ -203,8 +214,11 @@
     <Compile Include="Manage\Functions\FunctionsForFlpLoader.cs" />
     <Compile Include="Manage\Functions\IFunctionForFlp.cs" />
     <Compile Include="Manage\Functions\InfoEditorForFlp.cs" />
+    <Compile Include="Manage\Functions\ShowReportFromLinksForFlp.cs" />
     <Compile Include="Manage\Functions\UpdaterForFlp.cs" />
+    <Compile Include="Manage\Functions\MOModeSwitchForFlp.cs" />
     <Compile Include="Manage\ManageHardlinks.cs" />
+    <Compile Include="Manage\ManageMainFormService.cs" />
     <Compile Include="Manage\ManageReport.cs" />
     <Compile Include="Manage\ModeSwitch\GameBackuper.cs" />
     <Compile Include="Manage\ManageArchive.cs" />
@@ -253,6 +267,23 @@
     <Compile Include="Manage\Rules\ModList\HardRules\RuleModForSideloaderPlugin.cs" />
     <Compile Include="Manage\Rules\ModList\HardRules\RuleModForBepInexIPA.cs" />
     <Compile Include="Manage\Rules\ModList\HardRules\RuleModForBepInex.cs" />
+    <Compile Include="Manage\ToolsTab\ButtonsData\RandomColorsButtonData.cs" />
+    <Compile Include="Manage\ToolsTab\ButtonsData\InstallModsButtonData.cs" />
+    <Compile Include="Manage\ToolsTab\ButtonsData\FixModlistButtonData.cs" />
+    <Compile Include="Manage\ToolsTab\ButtonsData\DevButtonData.cs" />
+    <Compile Include="Manage\ToolsTab\ButtonsData\UpdateModsButtonData.cs" />
+    <Compile Include="Manage\ToolsTab\ButtonsData\MOCommonModeSwitchButtonData.cs" />
+    <Compile Include="Manage\ToolsTab\ToolsTabButtonsLoader.cs" />
+    <Compile Include="Manage\ToolsTab\IButtonData.cs" />
+    <Compile Include="Manage\ToolsTab\IToolsTabButtonData.cs" />
+    <Compile Include="Manage\ui\themes\variants\CherryBlackTheme.cs" />
+    <Compile Include="Manage\ui\themes\variants\ForestTheme.cs" />
+    <Compile Include="Manage\ui\themes\variants\DarkTheme.cs" />
+    <Compile Include="Manage\ui\themes\variants\OldTheme.cs" />
+    <Compile Include="Manage\ui\themes\variants\DefaultTheme.cs" />
+    <Compile Include="Manage\ui\themes\variants\CrazyTheme.cs" />
+    <Compile Include="Manage\ui\themes\ThemesLoader.cs" />
+    <Compile Include="Manage\ui\themes\IUITheme.cs" />
     <Compile Include="Manage\Update\Sort\SideloaderModPackCommunityUserdata.cs" />
     <Compile Include="Manage\Update\Sort\UncensorSelectorBase.cs" />
     <Compile Include="Manage\Update\Sort\SideloaderModPack.cs" />
@@ -293,6 +324,7 @@
     <Compile Include="UserData\StudioScene.cs" />
     <Compile Include="Manage\ManageStrings.cs" />
     <Compile Include="Utils\CFGFiles.cs" />
+    <Compile Include="Utils\MouseDragger.cs" />
     <Compile Include="Utils\FileWriter.cs" />
     <Compile Include="Utils\ParallelPoorMan.cs" />
     <Compile Include="Utils\T.cs" />
@@ -399,21 +431,16 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="K:\0GIT\symboliclinksupport\SymbolicLinkSupport\SymbolicLinkSupport.csproj">
-      <Project>{0f629727-5647-4cb0-946a-1ac4442fd8f2}</Project>
-      <Name>SymbolicLinkSupport</Name>
-    </ProjectReference>
-    <ProjectReference Include="K:\0GIT\[TokcDK]\LC\LibsCollection\CheckForEmptyDir\CheckForEmptyDir.csproj">
+    <ProjectReference Include="K:\0GIT\[TokcDK]\LibsCollection\Net4\CheckForEmptyDir\CheckForEmptyDir.csproj">
       <Project>{636976fe-5ffe-4e17-bcb1-7b858a78a8a3}</Project>
       <Name>CheckForEmptyDir</Name>
     </ProjectReference>
-    <ProjectReference Include="K:\0GIT\[TokcDK]\LC\LibsCollection\GetListOfSubClasses\GetListOfSubClasses.csproj">
+    <ProjectReference Include="K:\0GIT\[TokcDK]\LibsCollection\Net4\GetListOfSubClasses\GetListOfSubClasses.csproj">
       <Project>{fd599904-9718-4faf-a7b0-48f5d1be39e0}</Project>
       <Name>GetListOfSubClasses</Name>
     </ProjectReference>
-    <ProjectReference Include="K:\0GIT\[TokcDK]\LC\LibsCollection\INIFileMan\INIFileMan.csproj">
+    <ProjectReference Include="K:\0GIT\[TokcDK]\LibsCollection\Net4\INIFileMan\INIFileMan.csproj">
       <Project>{40ac8009-cecd-44d0-b564-96e07237fd1a}</Project>
       <Name>INIFileMan</Name>
     </ProjectReference>
@@ -423,13 +450,10 @@
       <Version>1.1.0</Version>
     </PackageReference>
     <PackageReference Include="FSharp.Core">
-      <Version>6.0.6</Version>
+      <Version>7.0.0</Version>
     </PackageReference>
     <PackageReference Include="HtmlAgilityPack">
       <Version>1.11.46</Version>
-    </PackageReference>
-    <PackageReference Include="ini-parser">
-      <Version>2.5.2</Version>
     </PackageReference>
     <PackageReference Include="MAB.DotIgnore">
       <Version>3.0.2</Version>
@@ -440,12 +464,12 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers">
-      <Version>6.0.0</Version>
+      <Version>7.0.0</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.Platforms">
-      <Version>6.0.5</Version>
+      <Version>7.0.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Win32.Primitives">
       <Version>4.3.0</Version>
@@ -457,13 +481,16 @@
       <Version>0.6.7</Version>
     </PackageReference>
     <PackageReference Include="NLog">
-      <Version>5.0.4</Version>
+      <Version>5.1.0</Version>
     </PackageReference>
     <PackageReference Include="SevenZipSharp">
       <Version>0.64.0</Version>
     </PackageReference>
     <PackageReference Include="SharpCompress">
       <Version>0.32.2</Version>
+    </PackageReference>
+    <PackageReference Include="SymbolicLinkSupport-fork">
+      <Version>1.2.2</Version>
     </PackageReference>
     <PackageReference Include="System.AppContext">
       <Version>4.3.0</Version>
@@ -481,7 +508,7 @@
       <Version>4.3.0</Version>
     </PackageReference>
     <PackageReference Include="System.Diagnostics.DiagnosticSource">
-      <Version>6.0.0</Version>
+      <Version>7.0.0</Version>
     </PackageReference>
     <PackageReference Include="System.Diagnostics.Tools">
       <Version>4.3.0</Version>
@@ -538,7 +565,7 @@
       <Version>4.3.1</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.Caching">
-      <Version>6.0.0</Version>
+      <Version>7.0.0</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.Extensions">
       <Version>4.3.1</Version>

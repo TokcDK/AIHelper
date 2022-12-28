@@ -28,13 +28,13 @@ namespace AIHelper.Manage
                     StartPosition = FormStartPosition.CenterScreen,
                     Text = T._("Checking") + "..."
                 };
-                var checkProgress = new ProgressBar
-                {
-                    Dock = DockStyle.Fill,
-                    Maximum = _modlistData.EnabledModNamesList.Length
-                };
+                //var checkProgress = new ProgressBar
+                //{
+                //    Dock = DockStyle.Fill,
+                //    Maximum = _modlistData.EnabledModNamesList.Length
+                //};
                 var cnt = 0;
-                checkForm.Controls.Add(checkProgress);
+                //checkForm.Controls.Add(checkProgress);
                 checkForm.Show();
 
                 _modlistData.AllModNamesList = ManageModOrganizer.GetModNamesListFromActiveMoProfile(false);
@@ -43,7 +43,7 @@ namespace AIHelper.Manage
                 {
                     if (string.IsNullOrWhiteSpace(modName)) continue;
 
-                    if (cnt < checkProgress.Maximum) checkProgress.Value = cnt;
+                    //if (cnt < checkProgress.Maximum) checkProgress.Value = cnt;
 
                     _modlistData.ModName = modName;
                     ApplyRules();
@@ -51,7 +51,7 @@ namespace AIHelper.Manage
                     cnt++;
                 }
 
-                checkProgress.Dispose();
+                //checkProgress.Dispose();
                 checkForm.Dispose();
 
                 KPlugTweaks();

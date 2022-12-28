@@ -1,10 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using AIHelper.Data.Modlist;
+using AIHelper.Manage.ui.themes;
+using AIHelper.Manage.Update;
 using AIHelper.Manage.Update.Sources;
+using AIHelper.Manage.Update.Targets.Mods;
 using INIFileMan;
 
 namespace AIHelper.Manage.Functions
@@ -19,12 +26,18 @@ namespace AIHelper.Manage.Functions
         {
             OpenInfoEditor();
         }
+        public override Color? ForeColor => Color.LightSkyBlue;
 
         readonly int _elHeight = 13;
 
         readonly List<UpdateInfoData> _updateInfoDatas = new List<UpdateInfoData>();
 
         bool _isReading;
+        bool _isWriting;
+
+        static readonly RichTextBox _logtb = new RichTextBox() { ReadOnly = true, Width = 200 };
+
+        static void Log(string v) { _logtb.Text += v + "\r\n"; }
 
         internal void OpenInfoEditor()
         {
@@ -34,11 +47,391 @@ namespace AIHelper.Manage.Functions
                 Text = T._("Mods update info settings") + " (" + ManageSettings.CurrentGameDisplayingName + ")",
                 StartPosition = FormStartPosition.CenterScreen
             };
+            var tlp = new TableLayoutPanel
+            {
+                RowCount = 2,
+                ColumnCount = 1,
+                Dock = DockStyle.Fill,
+                Margin = new Padding(0)
+            };
+            RowStyle rs0 = new RowStyle
+            {
+                SizeType = SizeType.Absolute,
+                Height = 30,
+            };
+            RowStyle rs1 = new RowStyle
+            {
+                SizeType = SizeType.AutoSize
+            };
+            tlp.RowStyles.Add(rs0);
+            tlp.RowStyles.Add(rs1);
+
+            // control buttons
+            var controlPanelFlp = new FlowLayoutPanel
+            {
+                FlowDirection = FlowDirection.LeftToRight,
+                Margin = new Padding(0),
+                AutoSize = true,
+            };
+            tlp.SetRow(controlPanelFlp, 0);
+            var btnAddMod = new Button
+            {
+                Text = T._("Add"),
+                AutoSize = true,
+                Anchor = AnchorStyles.Left,
+                Height = 25
+            };
+            var btnLoadGitInfos = new Button
+            {
+                Text = T._("All"),
+                AutoSize = true,
+                Anchor = AnchorStyles.Left,
+                Height = 25
+            };
+            controlPanelFlp.Controls.Add(btnLoadGitInfos);
+            controlPanelFlp.Controls.Add(btnAddMod);
+
             var p = new Panel
             {
                 Dock = DockStyle.Fill,
                 Margin = new Padding(0)
             };
+            tlp.SetRow(p, 1);
+
+            // button events
+            btnAddMod.Click += new EventHandler((o, e) =>
+            {
+                LoadAddModPanel(f, p);
+            });
+            btnLoadGitInfos.Click += new EventHandler((o, e) =>
+            {
+                p.Controls.Clear();
+                LoadGitInfos(f, p);
+            });
+
+            tlp.Controls.Add(controlPanelFlp);
+            tlp.Controls.Add(p);
+            f.Controls.Add(tlp);
+
+            LoadGitInfos(f, p);
+
+            //modsListFlowPanel.Size = new System.Drawing.Size
+            //    (modsListFlowPanel.Width * 2
+            //    , modsListFlowPanel.Height * 2
+            //    );
+            //f.Size = new System.Drawing.Size
+            //    (modsListFlowPanel.Width
+            //    + (modsListFlowPanel.Margin.Horizontal * 2)
+            //    , modsListFlowPanel.Height
+            //    + (modsListFlowPanel.Margin.Vertical * 2)
+            //    );
+            f.Size = new System.Drawing.Size(f.Width * 2, f.Height * 2);
+            f.Show(ManageSettings.MainForm);
+
+            _isReading = false;
+
+        }
+
+        class PropData
+        {
+            public PropData(string labelText, string textBoxText)
+            {
+                LabelText = labelText;
+                TextBoxText = textBoxText;
+            }
+
+            public string LabelText { get; }
+            public string TextBoxText { get; set; }
+
+            public TextBox TB;
+        }
+
+        private void LoadAddModPanel(Form f, Panel p)
+        {
+            bool init = true;
+
+            p.Controls.Clear();
+
+            var mainFlp = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                //AutoScroll = true,
+                Margin = new Padding(0),
+                FlowDirection = FlowDirection.TopDown,
+            };
+
+            var defaultModDirName = "NewMod";
+            var modnamePropData = new PropData(T._("Mod dir name"), defaultModDirName);
+            var urlPropData = new PropData("Url", "https://github.com/Owner/Name");
+            var startsWithPropData = new PropData(T._("File starts with"), "");
+            var endsWithPropData = new PropData(T._("File ends with"), "");
+            var pDatas = new PropData[]
+            {
+                modnamePropData,
+                urlPropData,
+                startsWithPropData,
+                endsWithPropData,
+            };
+            foreach (var pData in pDatas)
+            {
+                var propertyFlp = new FlowLayoutPanel
+                {
+                    FlowDirection = FlowDirection.LeftToRight,
+                    Margin = new Padding(0),
+                };
+                var l = new Label
+                {
+                    Text = pData.LabelText + ":",
+                    ForeColor = Color.White,
+                    Size = new System.Drawing.Size(150, _elHeight),
+                };
+                var tb = new TextBox
+                {
+                    Size = new System.Drawing.Size(p.Width - l.Width - 20, _elHeight),
+                    Margin = new Padding(1, 1, 10, 1),
+                };
+                tb.DataBindings.Add(new Binding(nameof(tb.Text), pData, nameof(pData.TextBoxText), true, DataSourceUpdateMode.OnPropertyChanged));
+                tb.TextChanged += new System.EventHandler((o, e) =>
+                {
+                    if (init) return;
+
+                    if (pData.LabelText == urlPropData.LabelText)
+                    {
+                        try
+                        {
+                            if (string.IsNullOrWhiteSpace(tb.Text)) return;
+                            if (!string.IsNullOrWhiteSpace(modnamePropData.TextBoxText) 
+                            && modnamePropData.TextBoxText != defaultModDirName) return;
+
+                            var m = Regex.Match(tb.Text, @"(^.*https?\:\/\/)?github\.com\/([^\/]+)\/([^\/\? ]+).*$", RegexOptions.IgnoreCase);
+                            if (!m.Success) return;
+                            if (m.Groups.Count != 4) return;
+
+                            var owner = m.Groups[2].Value;
+                            if (string.IsNullOrWhiteSpace(owner)) return;
+                            var rep = m.Groups[3].Value;
+                            if (string.IsNullOrWhiteSpace(rep)) return;
+
+                            // set repository name as mod name
+                            modnamePropData.TB.Text = rep;
+
+                            Log(T._("Mod name set from url"));
+                        }
+                        catch { return; }
+                    }
+
+                    tb.DataBindings[0].WriteValue();
+                });
+                pData.TB = tb;
+
+                propertyFlp.Controls.Add(l);
+                propertyFlp.Controls.Add(tb);
+
+                var lWidth = l.Width + (l.Margin.Horizontal * 2);
+                var lHeight = l.Height + (l.Margin.Vertical * 2);
+                var tbWidth = tb.Width + (tb.Margin.Horizontal * 2);
+                var tbHeight = tb.Height + (tb.Margin.Vertical * 2);
+                var ltbWidth = lWidth + tbWidth;
+                var ltbHeight = lHeight + tbHeight;
+                propertyFlp.Size = new System.Drawing.Size(ltbWidth, ltbHeight);
+
+                mainFlp.Controls.Add(propertyFlp);
+            }
+
+            var verFromFile = new CheckBox
+            {
+                Text = T._("Version from file"),
+                Checked = false,
+                ForeColor = Color.White,
+                Size = new System.Drawing.Size(p.Width - 20, _elHeight + 5),
+                Anchor = AnchorStyles.Left,
+                TextAlign = ContentAlignment.MiddleLeft,
+            };
+            mainFlp.Controls.Add(verFromFile);
+
+            var tryLoadInfo = new Button
+            {
+                Text = "Web"
+            };
+            tryLoadInfo.Click += new EventHandler((o, e) =>
+            {
+                Process.Start(urlPropData.TextBoxText);
+            });
+            mainFlp.Controls.Add(tryLoadInfo);
+
+            var tryOpenDir = new Button
+            {
+                Text = T._("Dir")
+            };
+            tryOpenDir.Click += new EventHandler((o, e) =>
+            {
+                var dirPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modnamePropData.TextBoxText);
+                if (!Directory.Exists(dirPath))
+                {
+                    Log(T._("Mod dir missing. Mod still is not added!"));
+                    return;
+                }
+
+                Process.Start(dirPath);
+            });
+            mainFlp.Controls.Add(tryOpenDir);
+
+            var DownloadAndAddMod = new Button
+            {
+                Text = T._("Add")
+            };
+            DownloadAndAddMod.Click += new EventHandler((o, e) =>
+            {
+                if (init) return;
+
+                // load archive and add
+
+                try
+                {
+                    if (string.IsNullOrWhiteSpace(modnamePropData.TextBoxText))
+                    {
+                        Log(T._("Mod name is empty"));
+                        return;
+                    }
+                    if (string.IsNullOrWhiteSpace(urlPropData.TextBoxText))
+                    {
+                        Log(T._("Url s empty"));
+                        return;
+                    }
+                    if (string.IsNullOrWhiteSpace(startsWithPropData.TextBoxText))
+                    {
+                        Log($"{startsWithPropData.LabelText} {T._("value is empty")}");
+                        return;
+                    }
+
+                    var targetModDirName = modnamePropData.TextBoxText;
+                    var targetUrl = urlPropData.TextBoxText;
+                    var startsWith = startsWithPropData.TextBoxText;
+
+                    var m = Regex.Match(targetUrl,
+                        @"(^.*https?\:\/\/)?github\.com\/([^\/]+)\/([^\/\? ]+).*$",
+                        RegexOptions.IgnoreCase);
+                    if (!m.Success)
+                    {
+                        Log(T._("Url is not recognized"));
+                        return;
+                    }
+                    if (m.Groups.Count != 4)
+                    {
+                        Log(T._("Url is not recognized"));
+                        return;
+                    }
+
+                    var owner = m.Groups[2].Value;
+                    if (string.IsNullOrWhiteSpace(owner))
+                    {
+                        Log(T._("Url is not recognized"));
+                        return;
+                    }
+                    var rep = m.Groups[3].Value;
+                    if (string.IsNullOrWhiteSpace(rep))
+                    {
+                        Log(T._("Url is not recognized"));
+                        return;
+                    }
+
+                    var targetDirPathInfo = new DirectoryInfo(Path.Combine(ManageSettings.CurrentGameModsDirPath, targetModDirName));
+                    if (targetDirPathInfo.Exists)
+                    {
+                        Log(T._("Target mod dir is exists!"));
+                        return;
+                    }
+
+                    var info = new Update.UpdateInfo
+                    {
+                        TargetFolderPath = targetDirPathInfo,
+                        TargetFolderUpdateInfo = new string[3] { owner, rep, startsWith }
+                    };
+
+                    if (!string.IsNullOrWhiteSpace(endsWithPropData.TextBoxText))
+                    {
+                        info.TargetFolderUpdateInfo = info.TargetFolderUpdateInfo.Concat(new string[1] { endsWithPropData.TextBoxText }).ToArray();
+                    }
+                    info.TargetFolderUpdateInfo = info.TargetFolderUpdateInfo.Concat(new string[1] { verFromFile.Checked.ToString() }).ToArray();
+
+                    var ghub = new Github(info);
+
+                    info.TargetLastVersion = ghub.GetLastVersion();
+
+                    if (info.TargetLastVersion.Length == 0)
+                    {
+                        Log(T._("Cant get last version"));
+                        return;
+                    }
+
+                    // clean version for more correct comprasion
+                    UpdateTools.CleanVersion(ref info.TargetLastVersion);
+
+                    //if it is last version then run update
+                    if (!info.TargetLastVersion.IsNewerOf("0", false))
+                    {
+                        Log(T._("Version is lesser. Check entered data."));
+                        return;
+                    }
+
+                    var modData = new ModData();
+                    modData.Path = info.TargetFolderPath.FullName;
+                    modData.Name = modnamePropData.TextBoxText;
+                    modData.Priority = 9999;
+
+                    var ginfo = new GitUpdateInfoData(modData);
+                    ginfo.Owner = owner;
+                    ginfo.Repository = rep;
+                    ginfo.FileStartsWith = startsWith;
+                    ginfo.FileEndsWith = endsWithPropData.TextBoxText;
+                    ginfo.VersionFromFile = verFromFile.Checked;
+
+                    GetGHubFile(ghub, ginfo);
+                }
+                catch (Exception ex)
+                {
+                    Log(T._("Error: " + ex.Message));
+                    return;
+                }
+            });
+            mainFlp.Controls.Add(DownloadAndAddMod);
+
+            _logtb.Width = mainFlp.Width - 10;
+            mainFlp.Controls.Add(_logtb);
+
+            p.Controls.Add(mainFlp);
+
+            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, p);
+
+            init = false;
+        }
+
+        private static async void GetGHubFile(Github ghub, GitUpdateInfoData ginfo)
+        {
+            bool getfileIsTrue = await ghub.GetFile().ConfigureAwait(true); // download latest file
+            if (!getfileIsTrue)
+            {
+                Log(T._("Cant download file!"));
+                return;
+            }
+
+            var t = new ModsMeta(ghub.Info);
+
+            if (!t.UpdateFiles())
+            {
+                Log(T._("Cant move file into mods dir"));
+                return;
+            }
+
+            ginfo.Mod.MetaIni = new INIFile(Path.Combine(ghub.Info.TargetFolderPath.FullName, "meta.ini"), true);
+
+            ginfo.Write();
+
+            Log(T._("Mod succesfully downloaded and added!"));
+        }
+
+        private void LoadGitInfos(Form f, Panel p)
+        {
             var modsListFlowPanel = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
@@ -49,7 +442,6 @@ namespace AIHelper.Manage.Functions
             };
 
             p.Controls.Add(modsListFlowPanel);
-            f.Controls.Add(p);
 
             var ttip = new ToolTip
             {
@@ -196,21 +588,7 @@ namespace AIHelper.Manage.Functions
                 _updateInfoDatas.Add(infoData);
             }
 
-            //modsListFlowPanel.Size = new System.Drawing.Size
-            //    (modsListFlowPanel.Width * 2
-            //    , modsListFlowPanel.Height * 2
-            //    );
-            //f.Size = new System.Drawing.Size
-            //    (modsListFlowPanel.Width
-            //    + (modsListFlowPanel.Margin.Horizontal * 2)
-            //    , modsListFlowPanel.Height
-            //    + (modsListFlowPanel.Margin.Vertical * 2)
-            //    );
-            f.Size = new System.Drawing.Size(f.Width * 2, f.Height * 2);
-            f.Show(ManageSettings.MainForm);
-
-            _isReading = false;
-
+            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, f);
         }
 
         private void AddGithubData(FlowLayoutPanel githubDataFlowPanel, UpdateInfoData infoData)
@@ -263,13 +641,7 @@ namespace AIHelper.Manage.Functions
                         Margin = new Padding(0),
                     };
                     tb.DataBindings.Add(new Binding("Text", infoData, $"{nameof(infoData.GitInfo)}.{propertyInfo.Name}", true, DataSourceUpdateMode.OnPropertyChanged));
-                    tb.TextChanged += new System.EventHandler((o, e) =>
-                    {
-                        if (_isReading) return;
-
-                        tb.DataBindings[0].WriteValue(); // force write property valuue before try write ini
-                        infoData.GitInfo.Write();
-                    });
+                    tb.TextChanged += new System.EventHandler((o, e) => { WriteValue(tb, infoData); });
 
                     thePropertyFlowPanel.Controls.Add(l);
                     thePropertyFlowPanel.Controls.Add(tb);
@@ -301,18 +673,11 @@ namespace AIHelper.Manage.Functions
                     {
                         //AutoSize = true,
                         Text = infoData.GitInfo.Strings[propertyInfo.Name].t,
-                        Size = new System.Drawing.Size(300, _elHeight+10),
+                        Size = new System.Drawing.Size(300, _elHeight + 10),
                         Margin = new Padding(0)
                     };
                     cb.DataBindings.Add(new Binding("Checked", infoData, $"{nameof(infoData.GitInfo)}.{propertyInfo.Name}", true, DataSourceUpdateMode.OnPropertyChanged));
-                    cb.CheckedChanged += new System.EventHandler((o, e) =>
-                    {
-                        if (_isReading) return;
-
-                        cb.DataBindings[0].WriteValue(); // force write property valuue before try write ini
-                        infoData.GitInfo.Write();
-                    });
-
+                    cb.CheckedChanged += new System.EventHandler((o, e) => { WriteValue(cb, infoData); });
 
                     var lWidth = cb.Width + (cb.Margin.Horizontal * 2);
                     var lHeight = cb.Height + (cb.Margin.Vertical * 2);
@@ -328,6 +693,22 @@ namespace AIHelper.Manage.Functions
                 }
                 else continue;
             }
+        }
+
+        private void WriteValue(Control cb, UpdateInfoData infoData)
+        {
+            if (_isReading) return;
+            if (_isWriting) return;
+
+            _isWriting = true;
+
+            Task.Delay(1000).ContinueWith(t =>
+            {
+                cb.DataBindings[0].WriteValue(); // force write property valuue before try write ini
+                infoData.GitInfo.Write();
+
+                _isWriting = false;
+            });
         }
 
         private void AddButtons(FlowLayoutPanel currentModFlowPanel, UpdateInfoData infoData)
@@ -465,10 +846,10 @@ namespace AIHelper.Manage.Functions
                 }
 
                 var url = INI.GetKey("General", "url");
-                if (hasGitHubUrlData && url.Length == 0)
+                if (hasGitHubUrlData && (url == null || url.Length == 0))
                 {
                     var site = (Site.StartsWith("http", System.StringComparison.InvariantCultureIgnoreCase) ? "https://" : "") + Site;
-                    INI.SetKey(ManageSettings.AiMetaIniSectionName, ManageSettings.AiMetaIniKeyUpdateName, $"{site}/{Owner}/{Repository}", false);
+                    INI.SetKey("General", "url", $"https://{site}/{Owner}/{Repository}", false);
 
                     changed = true;
                 }

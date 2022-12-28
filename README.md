@@ -22,6 +22,7 @@
  - Select target game exe (HS, KK, AI, HS2, RG, COM3D2)
  
  #### Links
+ - [Download](https://github.com/TokcDK/AIHelper/releases/latest)
  - The Discord Support Group opens by clicking the Discord icon on the Launch tab.
  
 

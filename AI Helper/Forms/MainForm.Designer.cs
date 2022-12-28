@@ -45,7 +45,7 @@
             this.LaunchTabTopRightTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.LaunchTabTopRightBepinExLogTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.LaunchTabTopAppGameTitleTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.label1 = new System.Windows.Forms.Label();
+            this.LaunchTabTheAppTitleLabel = new System.Windows.Forms.Label();
             this.SelectedGameLabelOwnColor = new System.Windows.Forms.Label();
             this.SettingsTabPage = new System.Windows.Forms.TabPage();
             this.SettingsTabPageBackgroundPanel = new System.Windows.Forms.Panel();
@@ -132,7 +132,7 @@
             this.AIGirlHelperTabControl.Location = new System.Drawing.Point(3, 28);
             this.AIGirlHelperTabControl.Name = "AIGirlHelperTabControl";
             this.AIGirlHelperTabControl.SelectedIndex = 0;
-            this.AIGirlHelperTabControl.Size = new System.Drawing.Size(478, 230);
+            this.AIGirlHelperTabControl.Size = new System.Drawing.Size(479, 230);
             this.AIGirlHelperTabControl.TabIndex = 0;
             this.AIGirlHelperTabControl.SelectedIndexChanged += new System.EventHandler(this.AIGirlHelperTabControl_SelectedIndexChanged);
             this.AIGirlHelperTabControl.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.AIGirlHelperTabControl_Selecting);
@@ -144,7 +144,7 @@
             this.LaunchTabPage.Location = new System.Drawing.Point(4, 22);
             this.LaunchTabPage.Name = "LaunchTabPage";
             this.LaunchTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.LaunchTabPage.Size = new System.Drawing.Size(470, 204);
+            this.LaunchTabPage.Size = new System.Drawing.Size(471, 204);
             this.LaunchTabPage.TabIndex = 2;
             this.LaunchTabPage.Text = "🚀Launch";
             this.LaunchTabPage.UseVisualStyleBackColor = true;
@@ -157,7 +157,7 @@
             this.LaunchTabPageBackgroundPanel.ForeColor = System.Drawing.SystemColors.ScrollBar;
             this.LaunchTabPageBackgroundPanel.Location = new System.Drawing.Point(3, 3);
             this.LaunchTabPageBackgroundPanel.Name = "LaunchTabPageBackgroundPanel";
-            this.LaunchTabPageBackgroundPanel.Size = new System.Drawing.Size(464, 198);
+            this.LaunchTabPageBackgroundPanel.Size = new System.Drawing.Size(465, 198);
             this.LaunchTabPageBackgroundPanel.TabIndex = 0;
             // 
             // LaunchTabTableLayoutPanel
@@ -174,7 +174,7 @@
             this.LaunchTabTableLayoutPanel.RowCount = 2;
             this.LaunchTabTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 37.62376F));
             this.LaunchTabTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 62.37624F));
-            this.LaunchTabTableLayoutPanel.Size = new System.Drawing.Size(464, 198);
+            this.LaunchTabTableLayoutPanel.Size = new System.Drawing.Size(465, 198);
             this.LaunchTabTableLayoutPanel.TabIndex = 34;
             // 
             // LaunchTabButtonsDownTableLayoutPanel
@@ -190,7 +190,7 @@
             this.LaunchTabButtonsDownTableLayoutPanel.RowCount = 2;
             this.LaunchTabButtonsDownTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 76.19048F));
             this.LaunchTabButtonsDownTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 23.80952F));
-            this.LaunchTabButtonsDownTableLayoutPanel.Size = new System.Drawing.Size(464, 124);
+            this.LaunchTabButtonsDownTableLayoutPanel.Size = new System.Drawing.Size(465, 124);
             this.LaunchTabButtonsDownTableLayoutPanel.TabIndex = 0;
             // 
             // LaunchTabSubMainButtonsTableLayoutPanel
@@ -209,7 +209,7 @@
             this.LaunchTabSubMainButtonsTableLayoutPanel.RowCount = 2;
             this.LaunchTabSubMainButtonsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.LaunchTabSubMainButtonsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.LaunchTabSubMainButtonsTableLayoutPanel.Size = new System.Drawing.Size(384, 90);
+            this.LaunchTabSubMainButtonsTableLayoutPanel.Size = new System.Drawing.Size(385, 90);
             this.LaunchTabSubMainButtonsTableLayoutPanel.TabIndex = 34;
             // 
             // GameButton
@@ -251,7 +251,7 @@
             this.MOButton.ForeColor = System.Drawing.Color.Black;
             this.MOButton.Location = new System.Drawing.Point(195, 3);
             this.MOButton.Name = "MOButton";
-            this.MOButton.Size = new System.Drawing.Size(186, 39);
+            this.MOButton.Size = new System.Drawing.Size(187, 39);
             this.MOButton.TabIndex = 13;
             this.MOButton.Text = "Manager";
             this.MOButton.UseVisualStyleBackColor = false;
@@ -266,7 +266,7 @@
             this.SettingsButton.ForeColor = System.Drawing.Color.Black;
             this.SettingsButton.Location = new System.Drawing.Point(195, 48);
             this.SettingsButton.Name = "SettingsButton";
-            this.SettingsButton.Size = new System.Drawing.Size(186, 39);
+            this.SettingsButton.Size = new System.Drawing.Size(187, 39);
             this.SettingsButton.TabIndex = 14;
             this.SettingsButton.Text = "Settings";
             this.SettingsButton.UseVisualStyleBackColor = false;
@@ -282,11 +282,14 @@
             this.FunctionsForFLPTableLayoutPanel.Name = "FunctionsForFLPTableLayoutPanel";
             this.FunctionsForFLPTableLayoutPanel.RowCount = 1;
             this.FunctionsForFLPTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.FunctionsForFLPTableLayoutPanel.Size = new System.Drawing.Size(464, 30);
+            this.FunctionsForFLPTableLayoutPanel.Size = new System.Drawing.Size(465, 30);
             this.FunctionsForFLPTableLayoutPanel.TabIndex = 35;
             // 
             // LaunchTabTopTableLayoutPanel
             // 
+            this.LaunchTabTopTableLayoutPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.LaunchTabTopTableLayoutPanel.ColumnCount = 3;
             this.LaunchTabTopTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 17F));
             this.LaunchTabTopTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 66F));
@@ -294,13 +297,12 @@
             this.LaunchTabTopTableLayoutPanel.Controls.Add(this.LaunchTabTopLeftTableLayoutPanel, 0, 0);
             this.LaunchTabTopTableLayoutPanel.Controls.Add(this.LaunchTabTopRightTableLayoutPanel, 2, 0);
             this.LaunchTabTopTableLayoutPanel.Controls.Add(this.LaunchTabTopAppGameTitleTableLayoutPanel, 1, 0);
-            this.LaunchTabTopTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LaunchTabTopTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
             this.LaunchTabTopTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.LaunchTabTopTableLayoutPanel.Name = "LaunchTabTopTableLayoutPanel";
             this.LaunchTabTopTableLayoutPanel.RowCount = 1;
             this.LaunchTabTopTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.LaunchTabTopTableLayoutPanel.Size = new System.Drawing.Size(464, 74);
+            this.LaunchTabTopTableLayoutPanel.Size = new System.Drawing.Size(465, 74);
             this.LaunchTabTopTableLayoutPanel.TabIndex = 1;
             // 
             // LaunchTabTopLeftTableLayoutPanel
@@ -315,7 +317,7 @@
             this.LaunchTabTopLeftTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.LaunchTabTopLeftTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.LaunchTabTopLeftTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.LaunchTabTopLeftTableLayoutPanel.Size = new System.Drawing.Size(78, 74);
+            this.LaunchTabTopLeftTableLayoutPanel.Size = new System.Drawing.Size(79, 74);
             this.LaunchTabTopLeftTableLayoutPanel.TabIndex = 2;
             // 
             // LaunchTabTopRightTableLayoutPanel
@@ -324,7 +326,7 @@
             this.LaunchTabTopRightTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.LaunchTabTopRightTableLayoutPanel.Controls.Add(this.LaunchTabTopRightBepinExLogTableLayoutPanel, 0, 0);
             this.LaunchTabTopRightTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.LaunchTabTopRightTableLayoutPanel.Location = new System.Drawing.Point(384, 0);
+            this.LaunchTabTopRightTableLayoutPanel.Location = new System.Drawing.Point(385, 0);
             this.LaunchTabTopRightTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.LaunchTabTopRightTableLayoutPanel.Name = "LaunchTabTopRightTableLayoutPanel";
             this.LaunchTabTopRightTableLayoutPanel.RowCount = 3;
@@ -353,9 +355,9 @@
             this.LaunchTabTopAppGameTitleTableLayoutPanel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.LaunchTabTopAppGameTitleTableLayoutPanel.ColumnCount = 1;
             this.LaunchTabTopAppGameTitleTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.LaunchTabTopAppGameTitleTableLayoutPanel.Controls.Add(this.label1, 0, 0);
+            this.LaunchTabTopAppGameTitleTableLayoutPanel.Controls.Add(this.LaunchTabTheAppTitleLabel, 0, 0);
             this.LaunchTabTopAppGameTitleTableLayoutPanel.Controls.Add(this.SelectedGameLabelOwnColor, 0, 1);
-            this.LaunchTabTopAppGameTitleTableLayoutPanel.Location = new System.Drawing.Point(78, 0);
+            this.LaunchTabTopAppGameTitleTableLayoutPanel.Location = new System.Drawing.Point(79, 0);
             this.LaunchTabTopAppGameTitleTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.LaunchTabTopAppGameTitleTableLayoutPanel.Name = "LaunchTabTopAppGameTitleTableLayoutPanel";
             this.LaunchTabTopAppGameTitleTableLayoutPanel.RowCount = 2;
@@ -364,20 +366,20 @@
             this.LaunchTabTopAppGameTitleTableLayoutPanel.Size = new System.Drawing.Size(306, 74);
             this.LaunchTabTopAppGameTitleTableLayoutPanel.TabIndex = 1;
             // 
-            // label1
+            // LaunchTabTheAppTitleLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label1.Font = new System.Drawing.Font("Gabriola", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(0, 0);
-            this.label1.Margin = new System.Windows.Forms.Padding(0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(306, 55);
-            this.label1.TabIndex = 25;
-            this.label1.Text = "-  Ằ🌶Ḩelper  -";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.LaunchTabTheAppTitleLabel.AutoSize = true;
+            this.LaunchTabTheAppTitleLabel.BackColor = System.Drawing.Color.Transparent;
+            this.LaunchTabTheAppTitleLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LaunchTabTheAppTitleLabel.Font = new System.Drawing.Font("Gabriola", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LaunchTabTheAppTitleLabel.ForeColor = System.Drawing.Color.White;
+            this.LaunchTabTheAppTitleLabel.Location = new System.Drawing.Point(0, 0);
+            this.LaunchTabTheAppTitleLabel.Margin = new System.Windows.Forms.Padding(0);
+            this.LaunchTabTheAppTitleLabel.Name = "LaunchTabTheAppTitleLabel";
+            this.LaunchTabTheAppTitleLabel.Size = new System.Drawing.Size(306, 55);
+            this.LaunchTabTheAppTitleLabel.TabIndex = 25;
+            this.LaunchTabTheAppTitleLabel.Text = "-  Ằ🌶Ḩelper  -";
+            this.LaunchTabTheAppTitleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // SelectedGameLabelOwnColor
             // 
@@ -400,7 +402,7 @@
             this.SettingsTabPage.Location = new System.Drawing.Point(4, 22);
             this.SettingsTabPage.Name = "SettingsTabPage";
             this.SettingsTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.SettingsTabPage.Size = new System.Drawing.Size(470, 204);
+            this.SettingsTabPage.Size = new System.Drawing.Size(471, 204);
             this.SettingsTabPage.TabIndex = 1;
             this.SettingsTabPage.Text = "🔧Settings";
             this.SettingsTabPage.UseVisualStyleBackColor = true;
@@ -412,7 +414,7 @@
             this.SettingsTabPageBackgroundPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SettingsTabPageBackgroundPanel.Location = new System.Drawing.Point(3, 3);
             this.SettingsTabPageBackgroundPanel.Name = "SettingsTabPageBackgroundPanel";
-            this.SettingsTabPageBackgroundPanel.Size = new System.Drawing.Size(464, 198);
+            this.SettingsTabPageBackgroundPanel.Size = new System.Drawing.Size(465, 198);
             this.SettingsTabPageBackgroundPanel.TabIndex = 1;
             // 
             // SettingsTabControl
@@ -423,7 +425,7 @@
             this.SettingsTabControl.Location = new System.Drawing.Point(0, 0);
             this.SettingsTabControl.Name = "SettingsTabControl";
             this.SettingsTabControl.SelectedIndex = 0;
-            this.SettingsTabControl.Size = new System.Drawing.Size(464, 198);
+            this.SettingsTabControl.Size = new System.Drawing.Size(465, 198);
             this.SettingsTabControl.TabIndex = 15;
             // 
             // SettingsTabGeneralTabPage
@@ -432,7 +434,7 @@
             this.SettingsTabGeneralTabPage.Location = new System.Drawing.Point(4, 22);
             this.SettingsTabGeneralTabPage.Name = "SettingsTabGeneralTabPage";
             this.SettingsTabGeneralTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.SettingsTabGeneralTabPage.Size = new System.Drawing.Size(456, 172);
+            this.SettingsTabGeneralTabPage.Size = new System.Drawing.Size(457, 172);
             this.SettingsTabGeneralTabPage.TabIndex = 0;
             this.SettingsTabGeneralTabPage.Text = "★General";
             this.SettingsTabGeneralTabPage.UseVisualStyleBackColor = true;
@@ -445,7 +447,7 @@
             this.SettingsTabGeneralTabPageBackgroundPanel.Location = new System.Drawing.Point(3, 3);
             this.SettingsTabGeneralTabPageBackgroundPanel.Margin = new System.Windows.Forms.Padding(0);
             this.SettingsTabGeneralTabPageBackgroundPanel.Name = "SettingsTabGeneralTabPageBackgroundPanel";
-            this.SettingsTabGeneralTabPageBackgroundPanel.Size = new System.Drawing.Size(450, 166);
+            this.SettingsTabGeneralTabPageBackgroundPanel.Size = new System.Drawing.Size(451, 166);
             this.SettingsTabGeneralTabPageBackgroundPanel.TabIndex = 0;
             // 
             // SettingsTabGeneralTabPageTableLayoutPanel
@@ -468,7 +470,7 @@
             this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
             this.SettingsTabGeneralTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.SettingsTabGeneralTabPageTableLayoutPanel.Size = new System.Drawing.Size(450, 166);
+            this.SettingsTabGeneralTabPageTableLayoutPanel.Size = new System.Drawing.Size(451, 166);
             this.SettingsTabGeneralTabPageTableLayoutPanel.TabIndex = 0;
             // 
             // CurrentGameLabel
@@ -496,7 +498,7 @@
             this.ManageGameTableLayoutPanel1.Name = "ManageGameTableLayoutPanel1";
             this.ManageGameTableLayoutPanel1.RowCount = 1;
             this.ManageGameTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.ManageGameTableLayoutPanel1.Size = new System.Drawing.Size(450, 24);
+            this.ManageGameTableLayoutPanel1.Size = new System.Drawing.Size(451, 24);
             this.ManageGameTableLayoutPanel1.TabIndex = 9;
             // 
             // CurrentGamePanel1
@@ -598,7 +600,7 @@
             this.OtherSettingsFlowLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.OtherSettingsFlowLayoutPanel.Name = "OtherSettingsFlowLayoutPanel";
             this.OtherSettingsFlowLayoutPanel.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
-            this.OtherSettingsFlowLayoutPanel.Size = new System.Drawing.Size(450, 50);
+            this.OtherSettingsFlowLayoutPanel.Size = new System.Drawing.Size(451, 50);
             this.OtherSettingsFlowLayoutPanel.TabIndex = 10;
             this.OtherSettingsFlowLayoutPanel.WrapContents = false;
             // 
@@ -721,7 +723,7 @@
             this.SettingsTabDisplayTabPage.Location = new System.Drawing.Point(4, 22);
             this.SettingsTabDisplayTabPage.Name = "SettingsTabDisplayTabPage";
             this.SettingsTabDisplayTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.SettingsTabDisplayTabPage.Size = new System.Drawing.Size(456, 172);
+            this.SettingsTabDisplayTabPage.Size = new System.Drawing.Size(457, 172);
             this.SettingsTabDisplayTabPage.TabIndex = 1;
             this.SettingsTabDisplayTabPage.Text = "🔳Display";
             this.SettingsTabDisplayTabPage.UseVisualStyleBackColor = true;
@@ -734,7 +736,7 @@
             this.SettingsTabDisplayTabPageGameBackgroundPanel.Location = new System.Drawing.Point(3, 3);
             this.SettingsTabDisplayTabPageGameBackgroundPanel.Margin = new System.Windows.Forms.Padding(0);
             this.SettingsTabDisplayTabPageGameBackgroundPanel.Name = "SettingsTabDisplayTabPageGameBackgroundPanel";
-            this.SettingsTabDisplayTabPageGameBackgroundPanel.Size = new System.Drawing.Size(450, 166);
+            this.SettingsTabDisplayTabPageGameBackgroundPanel.Size = new System.Drawing.Size(451, 166);
             this.SettingsTabDisplayTabPageGameBackgroundPanel.TabIndex = 1;
             // 
             // SettingsTabDisplayTabPageTableLayoutPanel
@@ -755,7 +757,7 @@
             this.SettingsTabDisplayTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.SettingsTabDisplayTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.SettingsTabDisplayTabPageTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.SettingsTabDisplayTabPageTableLayoutPanel.Size = new System.Drawing.Size(450, 166);
+            this.SettingsTabDisplayTabPageTableLayoutPanel.Size = new System.Drawing.Size(451, 166);
             this.SettingsTabDisplayTabPageTableLayoutPanel.TabIndex = 1;
             // 
             // OpenSetupXmlLinkLabel
@@ -765,7 +767,7 @@
             this.OpenSetupXmlLinkLabel.AutoSize = true;
             this.OpenSetupXmlLinkLabel.Location = new System.Drawing.Point(3, 7);
             this.OpenSetupXmlLinkLabel.Name = "OpenSetupXmlLinkLabel";
-            this.OpenSetupXmlLinkLabel.Size = new System.Drawing.Size(444, 13);
+            this.OpenSetupXmlLinkLabel.Size = new System.Drawing.Size(445, 13);
             this.OpenSetupXmlLinkLabel.TabIndex = 4;
             this.OpenSetupXmlLinkLabel.TabStop = true;
             this.OpenSetupXmlLinkLabel.Text = "Open game setup file";
@@ -784,7 +786,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(450, 25);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(451, 25);
             this.tableLayoutPanel1.TabIndex = 6;
             // 
             // ResolutionLabel
@@ -836,7 +838,7 @@
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(450, 25);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(451, 25);
             this.tableLayoutPanel2.TabIndex = 7;
             // 
             // QualityLabel
@@ -874,7 +876,7 @@
             this.FullScreenCheckBox.ForeColor = System.Drawing.Color.White;
             this.FullScreenCheckBox.Location = new System.Drawing.Point(3, 73);
             this.FullScreenCheckBox.Name = "FullScreenCheckBox";
-            this.FullScreenCheckBox.Size = new System.Drawing.Size(444, 17);
+            this.FullScreenCheckBox.Size = new System.Drawing.Size(445, 17);
             this.FullScreenCheckBox.TabIndex = 4;
             this.FullScreenCheckBox.Text = "fullscreen";
             this.FullScreenCheckBox.UseVisualStyleBackColor = false;
@@ -886,7 +888,7 @@
             this.ToolsTabPage.Location = new System.Drawing.Point(4, 22);
             this.ToolsTabPage.Name = "ToolsTabPage";
             this.ToolsTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.ToolsTabPage.Size = new System.Drawing.Size(470, 204);
+            this.ToolsTabPage.Size = new System.Drawing.Size(471, 204);
             this.ToolsTabPage.TabIndex = 3;
             this.ToolsTabPage.Text = "🔨Tools";
             this.ToolsTabPage.UseVisualStyleBackColor = true;
@@ -898,7 +900,7 @@
             this.ToolsTabPageBackgroundPanel.Location = new System.Drawing.Point(3, 3);
             this.ToolsTabPageBackgroundPanel.Margin = new System.Windows.Forms.Padding(0);
             this.ToolsTabPageBackgroundPanel.Name = "ToolsTabPageBackgroundPanel";
-            this.ToolsTabPageBackgroundPanel.Size = new System.Drawing.Size(464, 198);
+            this.ToolsTabPageBackgroundPanel.Size = new System.Drawing.Size(465, 198);
             this.ToolsTabPageBackgroundPanel.TabIndex = 1;
             // 
             // FoldersTabPage
@@ -907,7 +909,7 @@
             this.FoldersTabPage.Location = new System.Drawing.Point(4, 22);
             this.FoldersTabPage.Name = "FoldersTabPage";
             this.FoldersTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.FoldersTabPage.Size = new System.Drawing.Size(470, 204);
+            this.FoldersTabPage.Size = new System.Drawing.Size(471, 204);
             this.FoldersTabPage.TabIndex = 4;
             this.FoldersTabPage.Text = "🗁Folders";
             this.FoldersTabPage.UseVisualStyleBackColor = true;
@@ -918,17 +920,20 @@
             this.FoldersTabPageBackgroundPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.FoldersTabPageBackgroundPanel.Location = new System.Drawing.Point(3, 3);
             this.FoldersTabPageBackgroundPanel.Name = "FoldersTabPageBackgroundPanel";
-            this.FoldersTabPageBackgroundPanel.Size = new System.Drawing.Size(464, 198);
+            this.FoldersTabPageBackgroundPanel.Size = new System.Drawing.Size(465, 198);
             this.FoldersTabPageBackgroundPanel.TabIndex = 0;
             // 
             // MainFormBackgroundPanel
             // 
+            this.MainFormBackgroundPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.MainFormBackgroundPanel.BackColor = System.Drawing.Color.Transparent;
             this.MainFormBackgroundPanel.Controls.Add(this.FormRootTableLayoutPanel);
-            this.MainFormBackgroundPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainFormBackgroundPanel.Location = new System.Drawing.Point(0, 0);
             this.MainFormBackgroundPanel.Margin = new System.Windows.Forms.Padding(0);
             this.MainFormBackgroundPanel.Name = "MainFormBackgroundPanel";
-            this.MainFormBackgroundPanel.Size = new System.Drawing.Size(484, 261);
+            this.MainFormBackgroundPanel.Size = new System.Drawing.Size(485, 261);
             this.MainFormBackgroundPanel.TabIndex = 1;
             // 
             // FormRootTableLayoutPanel
@@ -945,7 +950,7 @@
             this.FormRootTableLayoutPanel.RowCount = 2;
             this.FormRootTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.FormRootTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.FormRootTableLayoutPanel.Size = new System.Drawing.Size(484, 261);
+            this.FormRootTableLayoutPanel.Size = new System.Drawing.Size(485, 261);
             this.FormRootTableLayoutPanel.TabIndex = 1;
             // 
             // FormControlButtonsTableLayoutPanel
@@ -964,7 +969,7 @@
             this.FormControlButtonsTableLayoutPanel.Name = "FormControlButtonsTableLayoutPanel";
             this.FormControlButtonsTableLayoutPanel.RowCount = 1;
             this.FormControlButtonsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.FormControlButtonsTableLayoutPanel.Size = new System.Drawing.Size(484, 25);
+            this.FormControlButtonsTableLayoutPanel.Size = new System.Drawing.Size(485, 25);
             this.FormControlButtonsTableLayoutPanel.TabIndex = 1;
             // 
             // FormMinimizeButton
@@ -972,7 +977,7 @@
             this.FormMinimizeButton.BackColor = System.Drawing.Color.Transparent;
             this.FormMinimizeButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.FormMinimizeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.FormMinimizeButton.Location = new System.Drawing.Point(434, 0);
+            this.FormMinimizeButton.Location = new System.Drawing.Point(435, 0);
             this.FormMinimizeButton.Margin = new System.Windows.Forms.Padding(0);
             this.FormMinimizeButton.Name = "FormMinimizeButton";
             this.FormMinimizeButton.Size = new System.Drawing.Size(25, 25);
@@ -985,7 +990,7 @@
             this.FormCloseButton.BackColor = System.Drawing.Color.Transparent;
             this.FormCloseButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.FormCloseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.FormCloseButton.Location = new System.Drawing.Point(459, 0);
+            this.FormCloseButton.Location = new System.Drawing.Point(460, 0);
             this.FormCloseButton.Margin = new System.Windows.Forms.Padding(0);
             this.FormCloseButton.Name = "FormCloseButton";
             this.FormCloseButton.Size = new System.Drawing.Size(25, 25);
@@ -1001,7 +1006,7 @@
             this.FormTitleLabel.Location = new System.Drawing.Point(0, 0);
             this.FormTitleLabel.Margin = new System.Windows.Forms.Padding(0);
             this.FormTitleLabel.Name = "FormTitleLabel";
-            this.FormTitleLabel.Size = new System.Drawing.Size(434, 25);
+            this.FormTitleLabel.Size = new System.Drawing.Size(435, 25);
             this.FormTitleLabel.TabIndex = 2;
             this.FormTitleLabel.Text = "AIHelper";
             this.FormTitleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1020,6 +1025,7 @@
             this.Text = "AI Helper [Organized modpack]";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AI_Helper_FormClosing);
             this.LocationChanged += new System.EventHandler(this.AIHelper_LocationChanged);
+            this.SizeChanged += new System.EventHandler(this.MainForm_SizeChanged);
             this.AIGirlHelperTabControl.ResumeLayout(false);
             this.LaunchTabPage.ResumeLayout(false);
             this.LaunchTabPageBackgroundPanel.ResumeLayout(false);
@@ -1090,7 +1096,7 @@
         private System.Windows.Forms.TableLayoutPanel LaunchTabTopRightBepinExLogTableLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel LaunchTabTopLeftTableLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel LaunchTabTopAppGameTitleTableLayoutPanel;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label LaunchTabTheAppTitleLabel;
         private System.Windows.Forms.TabControl SettingsTabControl;
         private System.Windows.Forms.TabPage SettingsTabGeneralTabPage;
         private System.Windows.Forms.Panel SettingsTabGeneralTabPageBackgroundPanel;

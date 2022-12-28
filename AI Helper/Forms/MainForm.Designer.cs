@@ -926,6 +926,7 @@
             this.FormMinimizeButton.BackColor = System.Drawing.Color.Transparent;
             this.FormMinimizeButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.FormMinimizeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.FormMinimizeButton.ForeColor = System.Drawing.Color.White;
             this.FormMinimizeButton.Location = new System.Drawing.Point(432, 0);
             this.FormMinimizeButton.Margin = new System.Windows.Forms.Padding(0);
             this.FormMinimizeButton.Name = "FormMinimizeButton";
@@ -939,6 +940,7 @@
             this.FormCloseButton.BackColor = System.Drawing.Color.Transparent;
             this.FormCloseButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.FormCloseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.FormCloseButton.ForeColor = System.Drawing.Color.White;
             this.FormCloseButton.Location = new System.Drawing.Point(457, 0);
             this.FormCloseButton.Margin = new System.Windows.Forms.Padding(0);
             this.FormCloseButton.Name = "FormCloseButton";
@@ -952,6 +954,7 @@
             this.FormTitleLabel.AutoSize = true;
             this.FormTitleLabel.BackColor = System.Drawing.Color.Transparent;
             this.FormTitleLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.FormTitleLabel.ForeColor = System.Drawing.Color.White;
             this.FormTitleLabel.Location = new System.Drawing.Point(0, 0);
             this.FormTitleLabel.Margin = new System.Windows.Forms.Padding(0);
             this.FormTitleLabel.Name = "FormTitleLabel";

@@ -1215,8 +1215,8 @@ namespace AIHelper
             ManageOther.AddNewGame(this);
         }
 
+        // resize
         const int RESIZE_HANDLE_SIZE = 10;
-
         protected override void WndProc(ref Message m)
         {
             base.WndProc(ref m);

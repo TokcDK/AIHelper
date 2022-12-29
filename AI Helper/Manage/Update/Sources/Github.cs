@@ -64,28 +64,7 @@ namespace AIHelper.Manage.Update.Sources
 
             if (string.IsNullOrWhiteSpace(updateFileName))
             {
-                bool found = false;
-                foreach (var targetDir in new[] { updateDownloadsDir, ManageSettings.Install2MoDirPath })
-                {
-                    foreach (var prefix in new[] { "", "v" })
-                    {
-                        foreach (var ending in new[] { "", ".0" })
-                        {
-                            var possibleName = Info.UpdateFileStartsWith + prefix + Info.TargetLastVersion + ending + Info.UpdateFileEndsWith;
-                            if (File.Exists(Path.Combine(targetDir, possibleName)))
-                            {
-                                found = true;
-                                updateFileName = possibleName;
-                                Info.UpdateFilePath = Path.Combine(targetDir, possibleName);
-                                break;
-                            }
-                        }
-
-                        if (found) break;
-                    }
-
-                    if (found) break;
-                }
+                updateFileName = SearchUpdateFilePath(updateDownloadsDir, Info);
             }
             else
             {
@@ -147,6 +126,26 @@ namespace AIHelper.Manage.Update.Sources
 
                 return true;
             }
+        }
+
+        private string SearchUpdateFilePath(string updateDownloadsDir, UpdateInfo info)
+        {
+            foreach (var targetDir in new[] { updateDownloadsDir, ManageSettings.Install2MoDirPath })
+            {
+                foreach (var prefix in new[] { "", "v" })
+                {
+                    foreach (var ending in new[] { "", ".0" })
+                    {
+                        var possibleName = Info.UpdateFileStartsWith + prefix + Info.TargetLastVersion + ending + Info.UpdateFileEndsWith;
+                        if (!File.Exists(Path.Combine(targetDir, possibleName))) continue;
+
+                        info.UpdateFilePath = Path.Combine(targetDir, possibleName);
+                        return possibleName;
+                    }
+                }
+            }
+
+            return "";
         }
 
         ///// <summary>

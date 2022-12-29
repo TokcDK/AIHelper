@@ -621,6 +621,42 @@ ROBOCOPY "$(ProjectDir)RES\basic_games\ " "$(TargetDir)RES\basicgames\games " *.
 ROBOCOPY "$(ProjectDir)RES\theme\default\report\ " "$(TargetDir)RES\theme\default\report " ReportTemplate.html
 ROBOCOPY "$(ProjectDir)RES\links\ " "$(TargetDir)RES\links " *.txt
 ROBOCOPY "$(ProjectDir)RES\locale " "$(TargetDir)RES\locale " /MIR
+if $(ConfigurationName) == Release (
+MD "$(TargetDir)RELEASE\RES"
+if not exist "$(TargetDir)RELEASE\RES\basicgames" (
+MKLINK "$(TargetDir)RELEASE\RES\basicgames" "$(TargetDir)RES\basicgames" /D
+)
+if not exist "$(TargetDir)RELEASE\RES\libs" (
+MKLINK ( "$(TargetDir)RELEASE\RES\libs" "$(TargetDir)RES\libs" /D
+)
+if not exist "$(TargetDir)RELEASE\RES\locale" (
+MKLINK "$(TargetDir)RELEASE\RES\locale" "$(TargetDir)RES\locale" /D
+)
+if not exist "$(TargetDir)RELEASE\tools\kkmanager" (
+MD "$(TargetDir)RELEASE\RES\tools"
+MKLINK "$(TargetDir)RELEASE\RES\tools\kkmanager" "$(TargetDir)RES\tools\kkmanager" /D
+)
+if not exist "$(TargetDir)RELEASE\$(TargetName).exe" (
+MKLINK "$(TargetDir)RELEASE\$(TargetName).exe" "$(TargetDir)\$(TargetName).exe"
+)
+MD "$(TargetDir)RELEASES"
+powershell Compress-Archive -Path '$(TargetDir)\RELEASE\*' -DestinationPath '$(TargetDir)\RELEASES\$(TargetName) @(VersionNumber).zip' -Force
+)
 if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25</PostBuildEvent>
   </PropertyGroup>
+<PropertyGroup>
+   <PostBuildEventDependsOn>
+     $(PostBuildEventDependsOn);
+     PostBuildMacros;
+   </PostBuildEventDependsOn>    
+</PropertyGroup>
+
+<Target Name="PostBuildMacros">
+  <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+    <Output TaskParameter="Assemblies" ItemName="Targets" />
+  </GetAssemblyIdentity>
+  <ItemGroup>
+    <VersionNumber Include="@(Targets->'%(Version)')"/>
+  </ItemGroup>
+</Target>
 </Project>

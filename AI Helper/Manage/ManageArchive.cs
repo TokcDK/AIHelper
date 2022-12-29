@@ -97,11 +97,28 @@ namespace AIHelper.Manage
             return string.Empty;
         }
 
-        internal static void Extract7zipTo(string updateFilePath, string dirToExtract)
+        internal static void Extract7zipTo(string archiveFilePath, string dirToExtract)
         {
-            if (!SevenZipArchive.IsSevenZipFile(updateFilePath)) return;
+            if (!SevenZipArchive.IsSevenZipFile(archiveFilePath)) return;
 
-            using (var archive = SevenZipArchive.Open(updateFilePath))
+            using (var archive = SevenZipArchive.Open(archiveFilePath))
+            {
+                foreach (var entry in archive.Entries)
+                {
+                    entry.WriteToDirectory(dirToExtract, new ExtractionOptions()
+                    {
+                        ExtractFullPath = true,
+                        Overwrite = true
+                    });
+                }
+            }
+        }
+
+        internal static void ExtractRarTo(string archiveFilePath, string dirToExtract)
+        {
+            if (!RarArchive.IsRarFile(archiveFilePath)) return;
+
+            using (var archive = RarArchive.Open(archiveFilePath))
             {
                 foreach (var entry in archive.Entries)
                 {

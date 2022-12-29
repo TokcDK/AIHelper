@@ -298,7 +298,6 @@ namespace AIHelper.Manage.Update.Targets
             {
                 try
                 {
-                    string ext;
                     if (File.Exists(Path.Combine(updatingModDirPath, file.Name)) ||
                         file.Extension != ".ini"
                             && file.Extension != ".cfg"

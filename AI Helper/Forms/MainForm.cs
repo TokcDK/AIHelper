@@ -959,10 +959,6 @@ namespace AIHelper
             }
         }
 
-        private async void InstallInModsButton_Click(object sender, EventArgs e)
-        {
-        }
-
         private void CreateShortcutButton_Click(object sender, EventArgs e)
         {
             ManageOther.CreateShortcuts(true, false);

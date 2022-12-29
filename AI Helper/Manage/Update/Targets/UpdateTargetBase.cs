@@ -167,7 +167,7 @@ namespace AIHelper.Manage.Update.Targets
                 string ext = Path.GetExtension(Info.UpdateFilePath).ToUpperInvariant();
                 if (!File.Exists(Info.UpdateFilePath))
                 {
-                    code = -1;
+                    code = 0;
                 }
                 else if (ext == ".ZIP")
                 {
@@ -180,6 +180,10 @@ namespace AIHelper.Manage.Update.Targets
                 else if (ext == ".7Z")
                 {
                     code = 3;
+                }
+                else if (ext == ".RAR")
+                {
+                    code = 4;
                 }
 
                 if (code > 0)
@@ -222,6 +226,13 @@ namespace AIHelper.Manage.Update.Targets
                         case 3:
                             {
                                 ManageArchive.Extract7zipTo(Info.UpdateFilePath, Info.TargetFolderPath.FullName);
+
+                                break;
+                            }
+
+                        case 4:
+                            {
+                                ManageArchive.ExtractRarTo(Info.UpdateFilePath, Info.TargetFolderPath.FullName);
 
                                 break;
                             }

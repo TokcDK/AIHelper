@@ -19,6 +19,7 @@ namespace AIHelper.Manage
             {
                 if (createIfNoIni)
                 {
+                    Directory.CreateDirectory(Path.GetDirectoryName(iniPath));
                     File.WriteAllText(iniPath, string.Empty);
                     ini = new INIFile(iniPath);
                 }

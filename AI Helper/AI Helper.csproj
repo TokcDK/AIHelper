@@ -30,7 +30,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>L:\illusion\Organized ModPack\</OutputPath>
+    <OutputPath>M:\DesktopW10\AIH2\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -644,19 +644,18 @@ powershell Compress-Archive -Path '$(TargetDir)\RELEASE\*' -DestinationPath '$(T
 )
 if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25</PostBuildEvent>
   </PropertyGroup>
-<PropertyGroup>
-   <PostBuildEventDependsOn>
+  <PropertyGroup>
+    <PostBuildEventDependsOn>
      $(PostBuildEventDependsOn);
      PostBuildMacros;
-   </PostBuildEventDependsOn>    
-</PropertyGroup>
-
-<Target Name="PostBuildMacros">
-  <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
-    <Output TaskParameter="Assemblies" ItemName="Targets" />
-  </GetAssemblyIdentity>
-  <ItemGroup>
-    <VersionNumber Include="@(Targets->'%(Version)')"/>
-  </ItemGroup>
-</Target>
+   </PostBuildEventDependsOn>
+  </PropertyGroup>
+  <Target Name="PostBuildMacros">
+    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+      <Output TaskParameter="Assemblies" ItemName="Targets" />
+    </GetAssemblyIdentity>
+    <ItemGroup>
+      <VersionNumber Include="@(Targets->'%(Version)')" />
+    </ItemGroup>
+  </Target>
 </Project>

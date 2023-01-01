@@ -30,7 +30,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>M:\DesktopW10\AIH2\</OutputPath>
+    <OutputPath>L:\illusion\Organized ModPack\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -626,8 +626,8 @@ MD "$(TargetDir)RELEASE\RES"
 if not exist "$(TargetDir)RELEASE\RES\basicgames" (
 MKLINK "$(TargetDir)RELEASE\RES\basicgames" "$(TargetDir)RES\basicgames" /D
 )
-if not exist "$(TargetDir)RELEASE\RES\libs" (
-MKLINK ( "$(TargetDir)RELEASE\RES\libs" "$(TargetDir)RES\libs" /D
+if not exist "$(TargetDir)RELEASE\RES\lib" (
+MKLINK ( "$(TargetDir)RELEASE\RES\lib" "$(TargetDir)RES\libs" /D
 )
 if not exist "$(TargetDir)RELEASE\RES\locale" (
 MKLINK "$(TargetDir)RELEASE\RES\locale" "$(TargetDir)RES\locale" /D

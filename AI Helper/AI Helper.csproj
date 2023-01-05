@@ -616,31 +616,32 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>:: Move all assemblies and related files to lib folder
-ROBOCOPY "$(TargetDir) " "$(TargetDir)RES\lib\ " *.dll *.pdb /XF "$(TargetName).dll" "$(TargetName).pdb" "$(TargetName).runtimeconfig.json" *.exe *.ini *.config *.manifest *.ico *.log *.txt *.7z *.rar *.zip *.png *.jpg *.lnk /XD logs test AIHInfos RES MO lib Games net6.0-windows "AI Helper Release" [net4] net472 "DEV images" MOTest Downloads "Organized ModPack Dev files" /E /IS /MOVE
+ROBOCOPY "$(TargetDir) " "$(TargetDir)RES\lib\ " *.dll *.pdb /XF "$(TargetName).dll" "$(TargetName).pdb" "$(TargetName).runtimeconfig.json" *.exe *.ini *.config *.manifest *.ico *.log *.txt *.7z *.rar *.zip *.png *.jpg *.lnk /XD logs test AIHInfos RES MO lib Games net6.0-windows "AI Helper Release" [net4] net472 "DEV images" RELEASE RELEASES MOTest Downloads "Organized ModPack Dev files" /E /IS /MOVE
 ROBOCOPY "$(ProjectDir)RES\basic_games\ " "$(TargetDir)RES\basicgames\games " *.py
 ROBOCOPY "$(ProjectDir)RES\theme\default\report\ " "$(TargetDir)RES\theme\default\report " ReportTemplate.html
 ROBOCOPY "$(ProjectDir)RES\links\ " "$(TargetDir)RES\links " *.txt
 ROBOCOPY "$(ProjectDir)RES\locale " "$(TargetDir)RES\locale " /MIR
+Del "$(TargetDir)RES\lib\*.pdb"
 if $(ConfigurationName) == Release (
-MD "$(TargetDir)RELEASE\RES"
-if not exist "$(TargetDir)RELEASE\RES\basicgames" (
-MKLINK "$(TargetDir)RELEASE\RES\basicgames" "$(TargetDir)RES\basicgames" /D
-)
-if not exist "$(TargetDir)RELEASE\RES\lib" (
-MKLINK ( "$(TargetDir)RELEASE\RES\lib" "$(TargetDir)RES\libs" /D
-)
-if not exist "$(TargetDir)RELEASE\RES\locale" (
-MKLINK "$(TargetDir)RELEASE\RES\locale" "$(TargetDir)RES\locale" /D
-)
-if not exist "$(TargetDir)RELEASE\tools\kkmanager" (
-MD "$(TargetDir)RELEASE\RES\tools"
-MKLINK "$(TargetDir)RELEASE\RES\tools\kkmanager" "$(TargetDir)RES\tools\kkmanager" /D
-)
-if not exist "$(TargetDir)RELEASE\$(TargetName).exe" (
-MKLINK "$(TargetDir)RELEASE\$(TargetName).exe" "$(TargetDir)\$(TargetName).exe"
-)
-MD "$(TargetDir)RELEASES"
-powershell Compress-Archive -Path '$(TargetDir)\RELEASE\*' -DestinationPath '$(TargetDir)\RELEASES\$(TargetName) @(VersionNumber).zip' -Force
+	MD "$(TargetDir)RELEASE\RES"
+	if not exist "$(TargetDir)RELEASE\RES\basicgames" (
+		MKLINK "$(TargetDir)RELEASE\RES\basicgames" "$(TargetDir)RES\basicgames" /D
+	)
+	if not exist "$(TargetDir)RELEASE\RES\lib" (
+		MKLINK ( "$(TargetDir)RELEASE\RES\lib" "$(TargetDir)RES\libs" /D
+	)
+	if not exist "$(TargetDir)RELEASE\RES\locale" (
+		MKLINK "$(TargetDir)RELEASE\RES\locale" "$(TargetDir)RES\locale" /D
+	)
+	if not exist "$(TargetDir)RELEASE\tools\kkmanager" (
+		MD "$(TargetDir)RELEASE\RES\tools"
+		MKLINK "$(TargetDir)RELEASE\RES\tools\kkmanager" "$(TargetDir)RES\tools\kkmanager" /D
+	)
+	if not exist "$(TargetDir)RELEASE\$(TargetName).exe" (
+		MKLINK "$(TargetDir)RELEASE\$(TargetName).exe" "$(TargetDir)\$(TargetName).exe"
+	)
+	MD "$(TargetDir)RELEASES"
+	powershell Compress-Archive -Path '$(TargetDir)\RELEASE\*' -DestinationPath '$(TargetDir)\RELEASES\$(TargetName) @(VersionNumber).zip' -Force
 )
 if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25</PostBuildEvent>
   </PropertyGroup>
@@ -649,6 +650,10 @@ if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25</PostBuildEvent>
      $(PostBuildEventDependsOn);
      PostBuildMacros;
    </PostBuildEventDependsOn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <Target Name="PostBuildMacros">
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">

@@ -1558,7 +1558,14 @@ namespace AIHelper.Manage
             /// list of custom executables
             /// </summary>
             internal Dictionary<string, CustomExecutable> List;
+            /// <summary>
+            /// ModOrganizer.ini of current game
+            /// </summary>
             INIFile _ini;
+            /// <summary>
+            /// settings.ini file in current mo profile
+            /// </summary>
+            INIFile settingsIni;
 
             /// <summary>
             /// Init new custom executables and load from default ModOrganizer.ini path for the selected game.
@@ -1580,7 +1587,6 @@ namespace AIHelper.Manage
             private int _loadedListCustomsCount;
 
             bool NeedSetCurrentProfileSettingsIniSet = true;
-            INIFile settingsIni;
 
             /// <summary>
             /// load customs in list
@@ -1601,17 +1607,13 @@ namespace AIHelper.Manage
                 foreach (var keyData in ini.GetSectionKeyValuePairs("customExecutables"))
                 {
                     var numName = keyData.Key.Split('\\');//numName[0] - number of customexecutable , numName[0] - name of attribute
-                    if (numName.Length != 2)
-                    {
-                        continue;
-                    }
+                    if (numName.Length != 2) continue;
+
                     var customNumber = numName[0];
                     var customKeyName = numName[1];
 
                     if (!List.ContainsKey(customNumber))
-                    {
                         List.Add(customNumber, new CustomExecutable());
-                    }
 
                     List[customNumber].Attribute[customKeyName] = keyData.Value;
                 }
@@ -1632,12 +1634,9 @@ namespace AIHelper.Manage
 
                         settingsIni = ManageIni.GetINIFile(ManageSettings.MoSelectedProfileSettingsPath);
                     }
-                    if (!NeedSetCurrentProfileSettingsIniSet)
+                    else if (settingsIni.KeyExists(customExecutable.Value.Title, "custom_overwrites"))
                     {
-                        if (settingsIni.KeyExists(customExecutable.Value.Title, "custom_overwrites"))
-                        {
-                            customExecutable.Value.MoTargetMod = settingsIni.GetKey("custom_overwrites", customExecutable.Value.Title);
-                        }
+                        customExecutable.Value.MoTargetMod = settingsIni.GetKey("custom_overwrites", customExecutable.Value.Title);
                     }
                 }
 
@@ -1653,10 +1652,7 @@ namespace AIHelper.Manage
             /// </summary>
             internal void Save()
             {
-                if (_ini == null)
-                {
-                    return;
-                }
+                if (_ini == null) return;
 
                 bool changed = false;
                 bool sectionCleared = _loadedListCustomsCount != List.Count || listToRemoveKeys.Count > 0;
@@ -1696,6 +1692,8 @@ namespace AIHelper.Manage
                     }
 
                     // set target mod if exists
+                    if (settingsIni == null)
+                        settingsIni = ManageIni.GetINIFile(ManageSettings.MoSelectedProfileSettingsPath);
                     if (!string.IsNullOrWhiteSpace(customExecutable.Value.MoTargetMod) && settingsIni.GetKey(customExecutable.Value.Title, "custom_overwrites") != customExecutable.Value.MoTargetMod)
                     {
                         settingsIni.SetKey("custom_overwrites", customExecutable.Value.Title, customExecutable.Value.MoTargetMod);

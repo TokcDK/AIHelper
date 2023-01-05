@@ -94,6 +94,7 @@ namespace AIHelper
                         }
                     }
 
+                    this.Close();
                     Application.Exit();
                     return;
                 }

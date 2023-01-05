@@ -64,7 +64,7 @@ namespace AIHelper.Properties {
         ///   Looks up a localized string similar to [General]
         ///gameName=
         ///gamePath=@ByteArray()
-        ///selected_profile=999-KoikPlug Base (My)
+        ///selected_profile=Default
         ///version=2.4.2
         ///first_start=false
         ///group_state=0

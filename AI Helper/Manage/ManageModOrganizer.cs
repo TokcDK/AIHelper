@@ -3234,7 +3234,7 @@ namespace AIHelper.Manage
                     return Path.GetDirectoryName(Directory.GetDirectories(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles"))[0]);
                 }
             }
-            Application.Exit();
+            //Application.Exit();
             return "Default";
         }
 

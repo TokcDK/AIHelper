@@ -1,15 +1,13 @@
-﻿using AIHelper.Data.Modlist;
-using AIHelper.Manage;
-using AIHelper.Manage.Update;
-using NLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using static AIHelper.Manage.ManageModOrganizer;
+using AIHelper.Data.Modlist;
+using AIHelper.Manage;
+using AIHelper.Manage.Update;
 
 namespace AIHelper.Install.Types.Directories
 {
@@ -291,10 +289,7 @@ namespace AIHelper.Install.Types.Directories
                 try
                 {
                     var targetDir = new DirectoryInfo(Path.Combine(ManageSettings.CurrentGameModsDirPath, modDirNameValue.Key));
-                    if (!targetDir.Exists)
-                    {
-                        continue;
-                    }
+                    if (!targetDir.Exists) continue;
 
                     var metainiPath = Path.Combine(targetDir.FullName, "meta.ini");
 
@@ -347,27 +342,18 @@ namespace AIHelper.Install.Types.Directories
 
             foreach (var subPath in value.Split(new[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries))
             {
-                if (string.IsNullOrWhiteSpace(subPath))
-                {
-                    continue;
-                }
+                if (string.IsNullOrWhiteSpace(subPath)) continue;
 
                 try
                 {
                     var targetPath = gameDir + Path.DirectorySeparatorChar + subPath;
                     if (create)
                     {
-                        if (ProceedCreate(targetPath, files))
-                        {
-                            ret = true;
-                        }
+                        if (ProceedCreate(targetPath, files)) ret = true;
                     }
                     else
                     {
-                        if (ProceedRemove(targetPath, subPath, files))
-                        {
-                            ret = true;
-                        }
+                        if (ProceedRemove(targetPath, subPath, files)) ret = true;
                     }
                 }
                 catch (Exception ex)
@@ -392,7 +378,6 @@ namespace AIHelper.Install.Types.Directories
                 value = value
                     .Remove(contents[i].Index, contents[i].Length)
                     .Insert(contents[i].Index, contents[i].Value.Replace(",", ContentCommasHiddenString));
-                ;
             }
 
             return value;
@@ -418,10 +403,7 @@ namespace AIHelper.Install.Types.Directories
                 }
             }
 
-            if (targetPath.Exists(!files) /*&& (!files || (content.Length == 0 || File.ReadAllText(targetPath) == content))*/)
-            {
-                return false;
-            }
+            if (targetPath.Exists(!files)) return false;
 
             if (files)
             {
@@ -451,49 +433,43 @@ namespace AIHelper.Install.Types.Directories
 
         private void SetSkipLists()
         {
-            if (!string.IsNullOrWhiteSpace(updateInfo.SkipExistDirs))
-            {
-                _skipExistDirs = updateInfo.SkipExistDirs.Split(new[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries).ToHashSet();
-            }
-            else
-            {
-                _skipExistDirs = new HashSet<string>();
-            }
-            if (!string.IsNullOrWhiteSpace(updateInfo.SkipExistFiles))
-            {
-                _skipExistFiles = updateInfo.SkipExistFiles.Split(new[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries).ToHashSet();
-            }
-            else
-            {
-                _skipExistFiles = new HashSet<string>();
-            }
+            _skipExistDirs = !string.IsNullOrWhiteSpace(updateInfo.SkipExistDirs)
+                ? updateInfo.SkipExistDirs
+                .Split(new[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries)
+                .ToHashSet()
+                : new HashSet<string>();
+
+            _skipExistFiles = !string.IsNullOrWhiteSpace(updateInfo.SkipExistFiles)
+                ? updateInfo.SkipExistFiles
+                .Split(new[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries)
+                .ToHashSet()
+                : new HashSet<string>();
         }
 
         private bool ProceedRemoveUnusedSeparators()
         {
             if (updateInfo.RemoveUnusedSeparators != "true")
-            {
                 return false;
-            }
 
             var modlist = new ModlistData();
             var bakModsDirPath = Path.Combine(_bakDir, "Mods");
 
             var ret = false;
-            foreach (var separator in new DirectoryInfo(ManageSettings.CurrentGameModsDirPath).GetDirectories("*_separator"))
+            var ModsByName = modlist.Mods.ToDictionary(k => k.Name, v => v);
+            foreach (var separator in new DirectoryInfo(ManageSettings.CurrentGameModsDirPath)
+                .EnumerateDirectories("*_separator"))
             {
-                if (!modlist.ModsByName.ContainsKey(separator.Name))
+                if (ModsByName.ContainsKey(separator.Name)) continue;
+
+                var bakPath = separator.FullName.Replace(ManageSettings.CurrentGameModsDirPath, bakModsDirPath);
+                try
                 {
-                    var bakPath = separator.FullName.Replace(ManageSettings.CurrentGameModsDirPath, bakModsDirPath);
-                    try
-                    {
-                        separator.MoveTo(bakPath);
-                        ret = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.Warn("Failed to remove unusing separator. path:" + separator.FullName + "\r\nError:" + ex);
-                    }
+                    separator.MoveTo(bakPath);
+                    ret = true;
+                }
+                catch (Exception ex)
+                {
+                    _log.Warn("Failed to remove unusing separator. path:" + separator.FullName + "\r\nError:" + ex);
                 }
             }
 

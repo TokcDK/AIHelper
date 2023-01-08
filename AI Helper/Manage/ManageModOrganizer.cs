@@ -2987,9 +2987,10 @@ namespace AIHelper.Manage
             var modList = new ModlistData();
 
             // just activate/deactivate if exists
-            if (modList.ModsByName.ContainsKey(modname))
+            var m = modList.GetModByName(modname);
+            if (m != default)
             {
-                modList.ModsByName[modname].IsEnabled = activate;
+                m.IsEnabled = activate;
                 modList.Save();
                 return;
             }
@@ -3201,7 +3202,7 @@ namespace AIHelper.Manage
                 yield break;
             }
 
-            foreach (var modInfo in new ModlistData().GetBy(modType: onlyEnabled ? ModlistData.ModType.ModEnabled : ModlistData.ModType.ModAny))
+            foreach (var modInfo in new ModlistData().GetBy(modType: onlyEnabled ? ModlistData.ModType.ModEnabled : ModlistData.ModType.ModNoSeparatorsNoOverwrite))
             {
                 yield return modInfo.Name;
             }

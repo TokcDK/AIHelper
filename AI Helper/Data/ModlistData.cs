@@ -11,9 +11,6 @@ namespace AIHelper.Data.Modlist
     {
         internal string ModlistPath = "";
         internal List<ModData> Mods = new List<ModData>();
-        internal Dictionary<string, ModData> ModsByName = new Dictionary<string, ModData>();
-        internal List<ModData> ModsPlusOverwrite { get => new List<ModData>(Mods).Concat(new ModData[1] { Overwrite }).ToList(); }
-        internal Dictionary<string, ModData> ModsByNameAndOverwrite { get => new Dictionary<string, ModData>(ModsByName).Concat(new Dictionary<string, ModData> { { Overwrite.Name, Overwrite } }).ToDictionary(k => k.Key, v => v.Value); }
 
         /// <summary>
         /// Overwrite is always exists and enabled
@@ -90,7 +87,6 @@ namespace AIHelper.Data.Modlist
 
                 // add mod into lists
                 Mods.Add(mod);
-                ModsByName.Add(mod.Name, mod);
             }
         }
 
@@ -151,9 +147,6 @@ namespace AIHelper.Data.Modlist
             int min = usePriority && max > startPrioToRenumFrom ? startPrioToRenumFrom : 0;
             for (int i = min; i < max; i++) Mods[i].Priority++;
 
-            // update modbyname
-            ModsByName = Mods.ToDictionary(k => k.Name, v => v);
-
             // save when need
             if (saveAfterInsert) Save();
         }
@@ -172,11 +165,9 @@ namespace AIHelper.Data.Modlist
             return true;
         }
 
-        private ModData GetModByName(string itemName)
+        internal ModData GetModByName(string modName)
         {
-            if (ModsByName.TryGetValue(itemName, out ModData value)) return value;
-
-            return null;
+            return Mods.FirstOrDefault(m => m.Name == modName);
         }
 
         /// <summary>
@@ -199,17 +190,20 @@ namespace AIHelper.Data.Modlist
                 switch (modType)
                 {
                     case ModType.Separator when mod.IsSeparator:
-                    case ModType.ModAny when !mod.IsSeparator:
+                    case ModType.ModNoSeparatorsNoOverwrite when !mod.IsSeparator:
                     case ModType.ModEnabled when !mod.IsSeparator && mod.IsEnabled:
                     case ModType.ModEnabledAndOverwrite when !mod.IsSeparator && mod.IsEnabled:
                     case ModType.ModDisabled when !mod.IsSeparator && !mod.IsEnabled:
+                    case ModType.ModAny:
                         if (!exists || mod.IsExist) yield return mod; // mod exists or exists ver is false
                         break;
                 }
             }
 
             // return overwrite as last mod when need
-            if (modType == ModType.ModEnabledAndOverwrite) yield return Overwrite;
+            if (modType == ModType.ModEnabledAndOverwrite 
+                || modType == ModType.ModAny) 
+                yield return Overwrite;
         }
 
         /// <summary>
@@ -220,7 +214,7 @@ namespace AIHelper.Data.Modlist
             /// <summary>
             /// any enabled or disabled mods
             /// </summary>
-            ModAny,
+            ModNoSeparatorsNoOverwrite,
             /// <summary>
             /// only enabled mods
             /// </summary>
@@ -237,6 +231,10 @@ namespace AIHelper.Data.Modlist
             /// only enabled mods plus overwrite
             /// </summary>
             ModEnabledAndOverwrite,
+            /// <summary>
+            /// any mod including separators and overwrite
+            /// </summary>
+            ModAny,
         }
 
         /// <summary>

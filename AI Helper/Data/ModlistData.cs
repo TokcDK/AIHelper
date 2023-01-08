@@ -54,7 +54,7 @@ namespace AIHelper.Data.Modlist
                         
             // read modlist file
             var modlistContent = File.ReadAllLines(ManageSettings.CurrentMoProfileModlistPath);
-            Array.Reverse(modlistContent); // lines in modlist file is reversed
+            Array.Reverse(modlistContent); // lines in modlist file are reversed
 
             // fill mod data from modlist
             var modPriority = 0;
@@ -164,7 +164,7 @@ namespace AIHelper.Data.Modlist
 
         private ModData GetModByName(string itemName)
         {
-            if (ModsByName.ContainsKey(itemName)) return ModsByName[itemName];
+            if (ModsByName.TryGetValue(itemName, out ModData value)) return value;
 
             return null;
         }

@@ -130,7 +130,12 @@ namespace AIHelper.Data.Modlist
         {
             // skip when mod already exists
             var existsMod = GetModByName(modToInsert.Name);
-            if (existsMod != null) { if (skipIfExists) return; Mods.Remove(existsMod); }
+            if (existsMod != null) 
+            { 
+                if (skipIfExists) return; 
+
+                Mods.Remove(existsMod); 
+            }
 
             // try insert by mod name
             if (TryInsertByName(modToInsert, modNameToPlaceWith, insertAfter)) return;

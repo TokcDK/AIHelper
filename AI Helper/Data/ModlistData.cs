@@ -132,24 +132,12 @@ namespace AIHelper.Data.Modlist
             var existsMod = GetModByName(modToInsert.Name);
             if (existsMod != null) { if (skipIfExists) return; Mods.Remove(existsMod); }
 
-            bool isInsertByPriority = true;
-
             // try insert by mod name
-            if (!string.IsNullOrWhiteSpace(modNameToPlaceWith))
-            {
-                var modToPlace = GetModByName(modNameToPlaceWith);
-                if (modToPlace != null)
-                {
-                    isInsertByPriority = false;
-
-                    Mods.Insert(modToPlace.Priority + (insertAfter ? 1 : 0), modToInsert); // insert after or before
-
-                    if (modToPlace.IsSeparator) modToInsert.ParentSeparator = modToPlace; // set separator if need
-                }
-            }
+            if (TryInsertByName(modToInsert, modNameToPlaceWith, insertAfter)) return;
 
             // insert by priority if was not inserted by mod name
-            if (isInsertByPriority) if (modToInsert.Priority == -1) Mods.Add(modToInsert); else Mods.Insert(modToInsert.Priority, modToInsert);
+            if (modToInsert.Priority == -1) Mods.Add(modToInsert);
+            else Mods.Insert(modToInsert.Priority, modToInsert);
 
             // update priority
             int priority = 0;
@@ -160,6 +148,20 @@ namespace AIHelper.Data.Modlist
 
             // save when need
             if (saveAfterInsert) Save();
+        }
+
+        private bool TryInsertByName(ModData modToInsert, string modNameToPlaceWith, bool insertAfter)
+        {
+            if (string.IsNullOrWhiteSpace(modNameToPlaceWith)) return false;
+
+            var modToPlace = GetModByName(modNameToPlaceWith);
+            if (modToPlace == null) return false;
+
+            Mods.Insert(modToPlace.Priority + (insertAfter ? 1 : 0), modToInsert); // insert after or before
+
+            if (modToPlace.IsSeparator) modToInsert.ParentSeparator = modToPlace; // set separator if need
+
+            return true;
         }
 
         private ModData GetModByName(string itemName)

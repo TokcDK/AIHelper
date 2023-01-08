@@ -14,7 +14,7 @@ namespace AIHelper.Data.Modlist
         internal Dictionary<string, ModData> ModsByName = new Dictionary<string, ModData>();
         internal List<ModData> ModsPlusOverwrite { get => new List<ModData>(Mods).Concat(new ModData[1] { Overwrite }).ToList(); }
         internal Dictionary<string, ModData> ModsByNameAndOverwrite { get => new Dictionary<string, ModData>(ModsByName).Concat(new Dictionary<string, ModData> { { Overwrite.Name, Overwrite } }).ToDictionary(k => k.Key, v => v.Value); }
-        
+
         /// <summary>
         /// Overwrite is always exists and enabled
         /// </summary>
@@ -51,7 +51,7 @@ namespace AIHelper.Data.Modlist
             ModlistPath = modListPath ?? ManageSettings.CurrentMoProfileModlistPath;
 
             if (!File.Exists(ModlistPath)) return;
-                        
+
             // read modlist file
             var modlistContent = File.ReadAllLines(ManageSettings.CurrentMoProfileModlistPath);
             Array.Reverse(modlistContent); // lines in modlist file are reversed
@@ -130,23 +130,26 @@ namespace AIHelper.Data.Modlist
         {
             // skip when mod already exists
             var existsMod = GetModByName(modToInsert.Name);
-            if (existsMod != null) 
-            { 
-                if (skipIfExists) return; 
+            if (existsMod != null)
+            {
+                if (skipIfExists) return;
 
-                Mods.Remove(existsMod); 
+                Mods.Remove(existsMod);
             }
 
             // try insert by mod name
             if (TryInsertByName(modToInsert, modNameToPlaceWith, insertAfter)) return;
 
             // insert by priority if was not inserted by mod name
-            if (modToInsert.Priority == -1) Mods.Add(modToInsert);
+            bool usePriority = modToInsert.Priority > -1;
+            if (usePriority) Mods.Add(modToInsert);
             else Mods.Insert(modToInsert.Priority, modToInsert);
 
-            // update priority
-            int priority = 0;
-            foreach (var mod in Mods) mod.Priority = priority++;
+            // update priority after inserted mod position
+            int startPrioToRenumFrom = modToInsert.Priority + 1;
+            int max = Mods.Count;
+            int min = usePriority && max > startPrioToRenumFrom ? startPrioToRenumFrom : 0;
+            for (int i = min; i < max; i++) Mods[i].Priority++;
 
             // update modbyname
             ModsByName = Mods.ToDictionary(k => k.Name, v => v);

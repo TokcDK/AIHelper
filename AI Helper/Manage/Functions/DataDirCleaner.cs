@@ -237,7 +237,8 @@ namespace AIHelper.Manage.Functions
                     }
                     else mod.Priority = 0;
 
-                    modlist.Insert(mod, modNameToPlaceWith: modAfter != default ? modAfter.Name : "");
+                    var modName = modAfter != default ? modAfter.Name : "";
+                    modlist.Insert(mod, modNameToPlaceWith: modName);
                 }
             }
 

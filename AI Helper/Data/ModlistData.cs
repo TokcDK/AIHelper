@@ -68,7 +68,9 @@ namespace AIHelper.Data.Modlist
                 {
                     Priority = modPriority++,
                     IsEnabled = line[0] == '+',
-                    Type = indexOfSeparatorMarker > -1 ? ModType.Separator : ModType.Mod,
+                    Type = indexOfSeparatorMarker > -1 
+                    ? ModType.Separator 
+                    : ModType.Mod,
                     Name = modName,
                     Path = modPath,
                     ParentSeparator = lastSeparator
@@ -86,25 +88,6 @@ namespace AIHelper.Data.Modlist
 
                 // add mod into lists
                 Mods.Add(mod);
-            }
-        }
-
-        /// <summary>
-        /// Mods meta.ini file content as <see cref="INIFile"/>.
-        /// </summary>
-        /// <param name="modType"></param>
-        /// <returns></returns>
-        public IEnumerable<INIFile> EnumerateModsMetaIni()
-        {
-            foreach (var mod in Mods
-                .Where(m => 
-               !(m.Type is ModType.Separator) 
-            && !(m.Type is ModType.Overwrite)))
-            {
-                var ini = mod.MetaIni;
-                if (ini == null) continue;
-
-                yield return ini;
             }
         }
 

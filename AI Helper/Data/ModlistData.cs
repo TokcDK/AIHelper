@@ -18,9 +18,8 @@ namespace AIHelper.Data.Modlist
         internal ModData Overwrite = new ModData
         {
             Priority = 999999,
-            IsOverwrite = true,
             IsEnabled = true,
-            IsSeparator = false,
+            Type = ModType.Overwrite,
             Name = "Overwrite",
             ParentSeparator = null,
             Path = ManageSettings.CurrentGameOverwriteFolderPath
@@ -69,7 +68,7 @@ namespace AIHelper.Data.Modlist
                 {
                     Priority = modPriority++,
                     IsEnabled = line[0] == '+',
-                    IsSeparator = indexOfSeparatorMarker > -1,
+                    Type = indexOfSeparatorMarker > -1 ? ModType.Separator : ModType.Mod,
                     Name = modName,
                     Path = modPath,
                     ParentSeparator = lastSeparator
@@ -80,10 +79,10 @@ namespace AIHelper.Data.Modlist
                 if (File.Exists(metaIniPath)) mod.MetaIni = ManageIni.GetINIFile(metaIniPath);
 
                 // add subitems references to understand which items is under the group separator
-                if (!mod.IsSeparator && lastSeparator != null) lastSeparator.Childs.Add(mod);
+                if (!(mod.Type is ModType.Separator) && lastSeparator != null) lastSeparator.Childs.Add(mod);
 
                 // reset separator if was changed
-                if (mod.IsSeparator && lastSeparator != mod.ParentSeparator) lastSeparator = mod;
+                if (mod.Type is ModType.Separator && lastSeparator != mod.ParentSeparator) lastSeparator = mod;
 
                 // add mod into lists
                 Mods.Add(mod);
@@ -97,28 +96,15 @@ namespace AIHelper.Data.Modlist
         /// <returns></returns>
         public IEnumerable<INIFile> EnumerateModsMetaIni()
         {
-            foreach (var mod in Mods)
+            foreach (var mod in Mods
+                .Where(m => 
+               !(m.Type is ModType.Separator) 
+            && !(m.Type is ModType.Overwrite)))
             {
                 var ini = mod.MetaIni;
                 if (ini == null) continue;
 
                 yield return ini;
-            }
-        }
-
-        /// <summary>
-        /// Mods meta.ini file content as <see cref="INIFile"/>. Mods filtered by <paramref name="modType"/>
-        /// </summary>
-        /// <param name="modType"></param>
-        /// <returns></returns>
-        public IEnumerable<INIFile> EnumerateModsMetaIni(ModType modType)
-        {
-            foreach (var mod in GetBy(modType))
-            {
-                var iniPath = Path.Combine(mod.Path, "meta.ini");
-                if (!File.Exists(iniPath)) continue;
-
-                yield return ManageIni.GetINIFile(iniPath);
             }
         }
 
@@ -160,7 +146,7 @@ namespace AIHelper.Data.Modlist
 
             Mods.Insert(modToPlace.Priority + (insertAfter ? 1 : 0), modToInsert); // insert after or before
 
-            if (modToPlace.IsSeparator) modToInsert.ParentSeparator = modToPlace; // set separator if need
+            if (modToPlace.Type is ModType.Separator) modToInsert.ParentSeparator = modToPlace; // set separator if need
 
             return true;
         }
@@ -171,70 +157,16 @@ namespace AIHelper.Data.Modlist
         }
 
         /// <summary>
-        /// get list of mods from all items by selected mod type
-        /// </summary>
-        /// <param name="modType">Enabled, Disabled, Separator</param>
-        /// <returns>list of mods by mod type</returns>
-        internal List<ModData> GetListBy(ModType modType) { return GetBy(modType).ToList(); }
-
-        /// <summary>
         /// get mods from all items by selected mod type
         /// </summary>
         /// <param name="modType">Enabled, Disabled, Separators</param>
         /// <param name="exists">True by default. Determines if add only existing mod folders</param>
         /// <returns>list of mods by mod type</returns>
-        internal IEnumerable<ModData> GetBy(ModType modType, bool exists = true)
+        internal IEnumerable<ModData> EnumerateAll()
         {
-            foreach (var mod in Mods)
-            {
-                switch (modType)
-                {
-                    case ModType.Separator when mod.IsSeparator:
-                    case ModType.ModNoSeparatorsNoOverwrite when !mod.IsSeparator:
-                    case ModType.ModEnabled when !mod.IsSeparator && mod.IsEnabled:
-                    case ModType.ModEnabledAndOverwrite when !mod.IsSeparator && mod.IsEnabled:
-                    case ModType.ModDisabled when !mod.IsSeparator && !mod.IsEnabled:
-                    case ModType.ModAny:
-                        if (!exists || mod.IsExist) yield return mod; // mod exists or exists ver is false
-                        break;
-                }
-            }
+            foreach (var mod in Mods) yield return mod;
 
-            // return overwrite as last mod when need
-            if (modType == ModType.ModEnabledAndOverwrite 
-                || modType == ModType.ModAny) 
-                yield return Overwrite;
-        }
-
-        /// <summary>
-        /// mod type
-        /// </summary>
-        internal enum ModType
-        {
-            /// <summary>
-            /// any enabled or disabled mods
-            /// </summary>
-            ModNoSeparatorsNoOverwrite,
-            /// <summary>
-            /// only enabled mods
-            /// </summary>
-            ModEnabled,
-            /// <summary>
-            /// only disabled mods
-            /// </summary>
-            ModDisabled,
-            /// <summary>
-            /// only separators
-            /// </summary>
-            Separator,
-            /// <summary>
-            /// only enabled mods plus overwrite
-            /// </summary>
-            ModEnabledAndOverwrite,
-            /// <summary>
-            /// any mod including separators and overwrite
-            /// </summary>
-            ModAny,
+            yield return Overwrite;
         }
 
         /// <summary>
@@ -252,6 +184,25 @@ namespace AIHelper.Data.Modlist
                 foreach (var item in writeItems) newModlist.WriteLine((item.IsEnabled ? "+" : "-") + item.Name);
             }
         }
+    }
+
+    /// <summary>
+    /// mod type
+    /// </summary>
+    internal enum ModType
+    {
+        /// <summary>
+        /// common mod in mods dir
+        /// </summary>
+        Mod,
+        /// <summary>
+        /// separator dir
+        /// </summary>
+        Separator,
+        /// <summary>
+        /// overwrite dir
+        /// </summary>
+        Overwrite,
     }
 
     internal class ModData
@@ -273,17 +224,13 @@ namespace AIHelper.Data.Modlist
         /// </summary>
         internal bool IsEnabled;
         /// <summary>
-        /// Determines if mod is overwrite folder
+        /// Type of the mod
         /// </summary>
-        internal bool IsOverwrite = false;
+        internal ModType Type = ModType.Mod;
         /// <summary>
         /// true when folder is exists in mods
         /// </summary>
         internal bool IsExist { get => Directory.Exists(Path); }
-        /// <summary>
-        /// true for separators
-        /// </summary>
-        internal bool IsSeparator = false;
         /// <summary>
         /// parent separator
         /// </summary>

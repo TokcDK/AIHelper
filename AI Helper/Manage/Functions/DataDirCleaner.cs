@@ -230,7 +230,11 @@ namespace AIHelper.Manage.Functions
                     mod.Name = Path.GetFileName(bakDir);
 
                     ModData modAfter = default;
-                    var existBakDirs = modlist.GetListBy(ModlistData.ModType.ModNoSeparatorsNoOverwrite).Where(m => Regex.IsMatch(m.Name, bakDirBaseName + "_[0-9]{14}")).ToArray();
+                    var existBakDirs = modlist.Mods
+                        .Where(m => 
+                        !(m.Type is ModType.Separator)
+                        && !(m.Type is ModType.Overwrite)
+                        && Regex.IsMatch(m.Name, bakDirBaseName + "_[0-9]{14}")).ToArray();
                     if (existBakDirs.Length > 0)
                     {
                         modAfter = existBakDirs.OrderByDescending(m => long.Parse(m.Name.Split('_')[1])).FirstOrDefault();

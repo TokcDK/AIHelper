@@ -1209,7 +1209,9 @@ namespace AIHelper.Manage
 
                 Parallel.ForEach(modlist.Mods, item =>
                 {
-                    if (!item.IsExist || item.IsSeparator) return;
+                    if (!item.IsExist 
+                    || item.Type is ModType.Separator 
+                    || item.Type is ModType.Overwrite) return;
                     if (!Directory.Exists(Path.Combine(item.Path, "mods"))) return;
 
                     foreach (var packDir in Directory.EnumerateDirectories(Path.Combine(item.Path, "mods"), "Sideloader Modpack*"))
@@ -2998,7 +3000,7 @@ namespace AIHelper.Manage
             var record = new ModData
             {
                 IsEnabled = activate,
-                IsSeparator = false,
+                Type = ModType.Mod,
                 Name = modname,
                 Path = Path.Combine(ManageSettings.CurrentGameModsDirPath, modname)
             };
@@ -3008,7 +3010,7 @@ namespace AIHelper.Manage
             {
                 record.ParentSeparator = new ModData
                 {
-                    IsSeparator = true,
+                    Type = ModType.Separator,
                     Name = modNameToInsertWith,
                     Path = Path.Combine(ManageSettings.CurrentGameModsDirPath, modNameToInsertWith)
                 };
@@ -3179,20 +3181,19 @@ namespace AIHelper.Manage
             {
                 RedefineGameMoData();
                 currentMOprofile = ReGetcurrentMOprofile(currentMOprofile);
-                if (currentMOprofile.Length == 0)
-                {
-                    yield break;
-                }
+                if (currentMOprofile.Length == 0) yield break;
 
                 profilemodlistpath = ManageSettings.CurrentMoProfileModlistPath;
             }
 
-            if (!File.Exists(profilemodlistpath))
-            {
-                yield break;
-            }
+            if (!File.Exists(profilemodlistpath)) yield break;
 
-            foreach (var modInfo in new ModlistData().GetBy(modType: onlyEnabled ? ModlistData.ModType.ModEnabled : ModlistData.ModType.ModNoSeparatorsNoOverwrite))
+            foreach (var modInfo in new ModlistData().Mods
+                .Where(m => 
+                m.IsEnabled
+                && !(m.Type is ModType.Separator)
+                && !(m.Type is ModType.Overwrite)
+                ))
             {
                 yield return modInfo.Name;
             }

@@ -531,9 +531,11 @@ namespace AIHelper.Manage
 
             var modlist = new ModlistData();
 
-            Parallel.ForEach(modlist.Mods, (item, state) =>
+            Parallel.ForEach(modlist.Mods, item =>
             {
-                if (item.IsEnabled || !item.IsExist || item.IsSeparator) return;
+                if (item.IsEnabled 
+                || !item.IsExist 
+                || item.Type is ModType.Separator) return;
 
                 if (Directory.Exists(Path.Combine(item.Path, "mods"))
                 || Directory.Exists(Path.Combine(item.Path, "UserData", "chara"))) item.IsEnabled = true;

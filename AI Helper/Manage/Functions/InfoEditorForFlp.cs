@@ -460,7 +460,12 @@ namespace AIHelper.Manage.Functions
             var mods = new ModlistData();
             var sectionName = ManageSettings.AiMetaIniSectionName;
             var keyName = ManageSettings.AiMetaIniKeyUpdateName;
-            foreach (var mod in mods.GetBy(ModlistData.ModType.ModAny))
+            foreach (var mod in mods
+                .Mods
+                .Where(m => 
+                !(m.Type is ModType.Separator)
+                && !(m.Type is ModType.Overwrite)
+                ))
             {
                 var ini = mod.MetaIni;
                 if (ini == null) continue; // skip when no ini

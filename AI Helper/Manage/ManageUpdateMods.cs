@@ -531,6 +531,9 @@ namespace AIHelper.Manage
 
             var modlist = new ModlistData();
 
+            var kkManagerFilesMod = modlist.Mods.FirstOrDefault(m => m.Name == ManageSettings.KKManagerFilesModName);
+            if (kkManagerFilesMod != null && !kkManagerFilesMod.IsEnabled) kkManagerFilesMod.IsEnabled = true;
+
             Parallel.ForEach(modlist.Mods, item =>
             {
                 if (item.IsEnabled 

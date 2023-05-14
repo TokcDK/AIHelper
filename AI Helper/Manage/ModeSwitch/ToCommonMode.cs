@@ -75,15 +75,15 @@ namespace AIHelper.Manage.ModeSwitch
         /// <summary>
         /// List of empty folder paths in vanilla Data directory with no mods
         /// </summary>
-        protected StringBuilder vanillaDataEmptyFoldersList;
+        protected StringBuilder vanillaDataEmptyFolders;
         /// <summary>
         /// список guid zipmod-ов
         /// </summary>
-        protected Dictionary<string, string> zipmodsGuidList;
+        protected Dictionary<string, string> zipmodsGUIDs;
         /// <summary>
         /// список выполненных операций с файлами.
         /// </summary>
-        protected StringBuilder moToStandartConvertationOperationsList;
+        protected StringBuilder moToStandartConvertationOperations;
         /// <summary>
         /// True if any files was parsed
         /// </summary>
@@ -92,32 +92,36 @@ namespace AIHelper.Manage.ModeSwitch
 
         protected void SwitchToCommonMode()
         {
-            // first make game's buckup
-            //if (ManageSettings.MainForm.ModeSwitchCreateBuckupLabel.IsChecked())
+            // First, create a backup of the game
             if (MakeBuckup)
                 new GameBackuper().CreateDataModsBakOfCurrentGame();
 
-            moToStandartConvertationOperationsList = new StringBuilder();
-            vanillaDataEmptyFoldersList = new StringBuilder();
-            zipmodsGuidList = new Dictionary<string, string>();
+            moToStandartConvertationOperations = new StringBuilder();
+            vanillaDataEmptyFolders = new StringBuilder();
+            zipmodsGUIDs = new Dictionary<string, string>();
             longPaths = new ConcurrentBag<string>();
 
             try
             {
+                // Clean BepInEx links from data
                 ManageModOrganizer.CleanBepInExLinksFromData();
 
                 if (!ManageSettings.MoIsNew)
                 {
-                    if (File.Exists(ManageSettings.DummyFilePath) && /*Удалил TESV.exe, который был лаунчером, а не болванкой*/new FileInfo(ManageSettings.DummyFilePath).Length < 10000)
+                    // Delete TESV.exe, which was the game launcher and not a placeholder
+                    if (File.Exists(ManageSettings.DummyFilePath) && new FileInfo(ManageSettings.DummyFilePath).Length < 10000)
                     {
                         File.Delete(ManageSettings.DummyFilePath);
                     }
                 }
 
+                // Create the backup directory
                 Directory.CreateDirectory(ManageSettings.CurrentGameMOmodeDataFilesBakDirPath);
 
-                ManageFilesFoldersExtensions.GetEmptySubfoldersPaths(ManageSettings.CurrentGameDataDirPath, vanillaDataEmptyFoldersList);
+                // Get the paths of empty subfolders in the game data directory
+                ManageFilesFoldersExtensions.GetEmptySubfoldersPaths(ManageSettings.CurrentGameDataDirPath, vanillaDataEmptyFolders);
 
+                // Initialize progress bar
                 var frmProgress = new Form
                 {
                     Size = new Size(200, 50),
@@ -132,31 +136,31 @@ namespace AIHelper.Manage.ModeSwitch
                 frmProgress.Controls.Add(pbProgress);
                 frmProgress.Show();
 
-                //DATA files
-                vanillaDataFilesList = Directory.GetFiles(ManageSettings.CurrentGameDataDirPath, "*.*", SearchOption.AllDirectories);
+                // Get vanilla data files
+                var vanillaDataFiles = Directory.GetFiles(ManageSettings.CurrentGameDataDirPath, "*.*", SearchOption.AllDirectories);
 
-                // OVERWRITE
+                // Parse the OVERWRITE folder
                 var sourceFolder = ManageSettings.CurrentGameOverwriteFolderPath;
                 frmProgress.Text = T._("Parsing") + ":" + Path.GetFileName(sourceFolder);
                 ParseDirectories(sourceFolder, sourceFolder);
 
-                // MODS
-                var enabledModNamesList = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
-                if (!ParsedAny && enabledModNamesList.Length == 0)
+                // Parse the enabled mods
+                var enabledModNames = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
+                if (!ParsedAny && enabledModNames.Length == 0)
                 {
-                    MessageBox.Show(T._("There is no enabled mods or files in Overwrite"));
+                    MessageBox.Show(T._("There are no enabled mods or files in the Overwrite folder"));
                     return;
                 }
-                var enabledModsLength = enabledModNamesList.Length;
-                pbProgress.Maximum = enabledModsLength;
-                for (int m = 0; m < enabledModsLength; m++)
+                var numEnabledMods = enabledModNames.Length;
+                pbProgress.Maximum = numEnabledMods;
+                for (int i = 0; i < numEnabledMods; i++)
                 {
-                    if (m < pbProgress.Maximum)
+                    if (i < pbProgress.Maximum)
                     {
-                        pbProgress.Value = m;
+                        pbProgress.Value = i;
                     }
 
-                    sourceFolder = Path.Combine(ManageSettings.CurrentGameModsDirPath, enabledModNamesList[m]);
+                    sourceFolder = Path.Combine(ManageSettings.CurrentGameModsDirPath, enabledModNames[i]);
                     if (!Directory.Exists(sourceFolder))
                     {
                         continue;
@@ -172,61 +176,57 @@ namespace AIHelper.Manage.ModeSwitch
 
                 if (!ParsedAny)
                 {
-                    MessageBox.Show(T._("Nothing to move"));
+                    MessageBox.Show(T._("There are no files to move"));
                     return;
                 }
 
-                ReplacePathsToVars(ref moToStandartConvertationOperationsList);
-                File.WriteAllText(ManageSettings.CurrentGameMoToStandartConvertationOperationsListFilePath, moToStandartConvertationOperationsList.ToString());
-                moToStandartConvertationOperationsList.Clear();
+                ReplacePathsToVars(ref moToStandartConvertationOperations);
+                File.WriteAllText(ManageSettings.CurrentGameMoToStandartConvertationOperationsListFilePath, moToStandartConvertationOperations.ToString());
+                moToStandartConvertationOperations.Clear();
 
-                var dataWithModsFileslist = Directory.GetFiles(ManageSettings.CurrentGameDataDirPath, "*.*", SearchOption.AllDirectories);
-                ReplacePathsToVars(ref dataWithModsFileslist);
-                File.WriteAllLines(ManageSettings.CurrentGameModdedDataFilesListFilePath, dataWithModsFileslist);
+                // Write the paths of the modded data files to a file
+                var dataWithModsFiles = Directory.GetFiles(ManageSettings.CurrentGameDataDirPath, "*.*", SearchOption.AllDirectories);
+                ReplacePathsToVars(ref dataWithModsFiles);
+                File.WriteAllLines(ManageSettings.CurrentGameModdedDataFilesListFilePath, dataWithModsFiles);
 
-                ReplacePathsToVars(ref vanillaDataFilesList);
-                File.WriteAllLines(ManageSettings.CurrentGameVanillaDataFilesListFilePath, vanillaDataFilesList);
+                // Write the paths of the vanilla data files to a file
+                ReplacePathsToVars(ref vanillaDataFiles);
+                File.WriteAllLines(ManageSettings.CurrentGameVanillaDataFilesListFilePath, vanillaDataFiles);
 
-                if (zipmodsGuidList.Count > 0)
+                if (zipmodsGUIDs.Count > 0)
                 {
-                    //using (var file = new StreamWriter(ManageSettings.GetZipmodsGUIDListFilePath()))
-                    //{
-                    //    foreach (var entry in ZipmodsGUIDList)
-                    //    {
-                    //        file.WriteLine("{0}{{ZIPMOD}}{1}", entry.Key, entry.Value);
-                    //    }
-                    //}
+                    // Write the zipmods GUID list to a file
                     File.WriteAllLines(ManageSettings.CurrentGameZipmodsGuidListFilePath,
-                        zipmodsGuidList.Select(x => x.Key + "{{ZIPMOD}}" + x.Value).ToArray());
+                        zipmodsGUIDs.Select(x => x.Key + "{{ZIPMOD}}" + x.Value).ToArray());
                 }
-                dataWithModsFileslist = null;
+                dataWithModsFiles = null;
 
-                //create normal mode identifier
+                // Create the normal mode identifier
                 SwitchNormalModeIdentifier();
 
-
-                //записать пути до пустых папок, чтобы при восстановлении восстановить и их
-                if (vanillaDataEmptyFoldersList.ToString().Length > 0)
+                // Write the paths of empty folders to a file, so they can be restored later
+                if (vanillaDataEmptyFolders.ToString().Length > 0)
                 {
-                    ReplacePathsToVars(ref vanillaDataEmptyFoldersList);
-                    File.WriteAllText(ManageSettings.CurrentGameVanillaDataEmptyFoldersListFilePath, vanillaDataEmptyFoldersList.ToString());
+                    ReplacePathsToVars(ref vanillaDataEmptyFolders);
+                    File.WriteAllText(ManageSettings.CurrentGameVanillaDataEmptyFoldersListFilePath, vanillaDataEmptyFolders.ToString());
                 }
 
                 MOmode = false;
 
-                MessageBox.Show(T._("All mod files now in Data folder! You can restore MO mode by same button."));
+                MessageBox.Show(T._("All mod files are now in the Data folder! You can restore MO mode by clicking the same button."));
             }
             catch (Exception ex)
             {
-                //восстановление файлов в первоначальные папки
-                RestoreMovedFilesLocation(moToStandartConvertationOperationsList);
+                // Restore moved files to their original locations
+                RestoreMovedFilesLocation(moToStandartConvertationOperations);
 
-                var emptyDirsList = ReplaceVarsToPaths(vanillaDataEmptyFoldersList.ToString());
-                //clean empty folders except whose was already in Data
+                // Get the list of empty directories
+                var emptyDirsList = ReplaceVarsToPaths(vanillaDataEmptyFolders.ToString());
+                // Clean empty folders except those that were already in the Data folder
                 ManageFilesFoldersExtensions.DeleteEmptySubfolders(ManageSettings.CurrentGameDataDirPath, false, emptyDirsList.SplitToLines().ToHashSet(), false);
 
-                //сообщить об ошибке
-                MessageBox.Show("Mode was not switched. Error:" + Environment.NewLine + ex);
+                // Display an error message
+                MessageBox.Show("The mode was not switched. Error:" + Environment.NewLine + ex);
             }
         }
 
@@ -272,7 +272,7 @@ namespace AIHelper.Manage.ModeSwitch
                 // we not deleted symlink in the dir
                 lock (moToStandartConvertationOperationsListLocker)
                 {
-                    moToStandartConvertationOperationsList.AppendLine(dir + operationsSplitStringBase + targetPath); // add symlink operation
+                    moToStandartConvertationOperations.AppendLine(dir + operationsSplitStringBase + targetPath); // add symlink operation
                 }
 
                 ParsedAny = true;
@@ -378,12 +378,12 @@ namespace AIHelper.Manage.ModeSwitch
 
                     dataFilePath.MoveTo(vanillaFileBackupTargetPath);//перенос файла из Data в Bak, если там не было
 
-                    ManageModOrganizer.SaveGuidIfZipMod(sourceFilePath, zipmodsGuidList);
+                    ManageModOrganizer.SaveGuidIfZipMod(sourceFilePath, zipmodsGUIDs);
 
                     sourceFilePath.MoveTo(dataFilePath);
                     lock (moToStandartConvertationOperationsListLocker)
                     {
-                        moToStandartConvertationOperationsList.AppendLine(sourceFilePath + operationsSplitStringBase + dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
+                        moToStandartConvertationOperations.AppendLine(sourceFilePath + operationsSplitStringBase + dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
                     }
 
                     ParsedAny = true;
@@ -406,12 +406,12 @@ namespace AIHelper.Manage.ModeSwitch
                 {
                     Directory.CreateDirectory(destFolder);
 
-                    ManageModOrganizer.SaveGuidIfZipMod(sourceFilePath, zipmodsGuidList);
+                    ManageModOrganizer.SaveGuidIfZipMod(sourceFilePath, zipmodsGUIDs);
 
                     sourceFilePath.MoveTo(dataFilePath);//перенос файла из папки мода в Data
                     lock (moToStandartConvertationOperationsListLocker)
                     {
-                        moToStandartConvertationOperationsList.AppendLine(sourceFilePath + operationsSplitStringBase + dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
+                        moToStandartConvertationOperations.AppendLine(sourceFilePath + operationsSplitStringBase + dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
                     }
 
                     ParsedAny = true;

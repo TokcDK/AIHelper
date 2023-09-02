@@ -23,6 +23,6 @@
  
 #### Ссылки
 - [Скачать](https://github.com/TokcDK/AIHelper/releases/latest)
-- Группа поддержки в Дискорде открывается кликом по иконке Дискорда на вкладке Запуск программы.
+- [Дискорд](https://bit.ly/AIHelperDiscordRU).
  
 

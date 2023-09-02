@@ -23,6 +23,6 @@
  
  #### Links
  - [Download](https://github.com/TokcDK/AIHelper/releases/latest)
- - The Discord Support Group opens by clicking the Discord icon on the Launch tab.
+ - [Discord](https://bit.ly/AIHelperDiscordEN).
  
 

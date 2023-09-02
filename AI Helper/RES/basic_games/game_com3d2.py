@@ -7,7 +7,7 @@ import mobase
 from ..basic_game import BasicGame
 
 
-class IllusionKoikatuGame(BasicGame):
+class IllusionCom3d2Game(BasicGame):
     Name = "Custom order maid 3d2"
     Author = "TokcDK<Denis K>"
     Version = "0.1.0"

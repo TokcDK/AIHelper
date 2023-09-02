@@ -116,6 +116,8 @@
     <Compile Include="Forms\LogLevelselectionForm.Designer.cs">
       <DependentUpon>LogLevelselectionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Games\Illusion\IllGames\HoneyCome.cs" />
+    <Compile Include="Games\Illusion\IllGames\IllGameBase.cs" />
     <Compile Include="Manage\ManageModlistExtensions.cs" />
     <Compile Include="Manage\ManageTabs.cs" />
     <Compile Include="Forms\Other\CleanOptionsDialogForm.cs">
@@ -404,6 +406,7 @@
     <Content Include="RES\basic_games\game_aigirl.py" />
     <Content Include="RES\basic_games\game_aigirltrial.py" />
     <Content Include="RES\basic_games\game_com3d2.py" />
+    <Content Include="RES\basic_games\game_honeycome.py" />
     <Content Include="RES\basic_games\game_honeyselect.py" />
     <Content Include="RES\basic_games\game_honeyselect2.py" />
     <Content Include="RES\basic_games\game_koikatusunshine.py" />

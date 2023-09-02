@@ -7,7 +7,7 @@ import mobase
 from ..basic_game import BasicGame
 
 
-class IllusionKoikatuGame(BasicGame):
+class IllusionKoikatsuGame(BasicGame):
     Name = "Illusion Koikatsu!"
     Author = "TokcDK<Denis K>"
     Version = "0.1.0"

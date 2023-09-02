@@ -7,7 +7,7 @@ import mobase
 from ..basic_game import BasicGame
 
 
-class IllusionHoneySelectGame(BasicGame):
+class IllusionHoneySelect2Game(BasicGame):
     Name = "Illusion Honey Select 2: Libido"
     Author = "TokcDK<Denis K>"
     Version = "0.1.0"

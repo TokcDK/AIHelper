@@ -628,8 +628,8 @@ ROBOCOPY "$(ProjectDir)RES\locale " "$(TargetDir)RES\locale " /MIR
 Del "$(TargetDir)RES\lib\*.pdb"
 if $(ConfigurationName) == Release (
 	MD "$(TargetDir)RELEASE\RES"
-	if not exist "$(TargetDir)RELEASE\RES\basicgames" (
-		MKLINK "$(TargetDir)RELEASE\RES\basicgames" "$(TargetDir)RES\basicgames" /D
+	if not exist "$(TargetDir)RELEASE\MO\plugins\basicgames" (
+		MKLINK "$(TargetDir)RELEASE\MO\plugins\basicgames" "$(TargetDir)MO\plugins\basicgames" /D
 	)
 	if not exist "$(TargetDir)RELEASE\RES\lib" (
 		MKLINK ( "$(TargetDir)RELEASE\RES\lib" "$(TargetDir)RES\libs" /D

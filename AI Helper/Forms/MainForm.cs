@@ -46,15 +46,15 @@ namespace AIHelper
         {
             InitializeComponent();
 
-            ManageSettings.MainForm = this; // set reference to the form for controls use
+            ManageSettings.ApplicationStartupPath = Application.StartupPath;
+            ManageSettings.ApplicationProductName = Application.ProductName;
 
+            ManageSettings.MainForm = this; // set reference to the form for controls use
+            
             this.DoubleBuffered = true;
             this.SetStyle(ControlStyles.ResizeRedraw, true);
 
             ManageMainFormService.CalcSizeDependOnDesktop(this);
-
-            ManageSettings.ApplicationStartupPath = Application.StartupPath;
-            ManageSettings.ApplicationProductName = Application.ProductName;
 
             if (!ManageOther.SetListOfAddedGames(this))
             {

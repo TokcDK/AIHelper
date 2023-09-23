@@ -511,7 +511,20 @@ namespace AIHelper.Manage
                     }
                 }
 
-                ManageSettings.Games.Game = ManageSettings.Games.Games.First(g => g.GameDirName == selected_game);
+                var firstSelectedGame = ManageSettings.Games.Games.FirstOrDefault(g => g.GameDirName == selected_game);
+
+                if (firstSelectedGame != default)
+                {
+                    ManageSettings.Games.Game = firstSelectedGame;
+                }
+                if(ManageSettings.Games.Game == default && ManageSettings.Games?.Games?.Count>0)
+                {
+                    var game = ManageSettings.Games.Games[0];
+
+                    selected_game = game.GameDirName;
+                    ManageSettings.Games.Game = game;
+                }
+
                 var bindingSource1 = new BindingSource();
                 bindingSource1.DataSource = ManageSettings.Games.Games;
                 main.CurrentGameComboBox.DataSource = bindingSource1.DataSource;

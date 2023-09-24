@@ -30,7 +30,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>K:\xgames\AIHelper230902TEST\</OutputPath>
+    <OutputPath>L:\illusion\Organized ModPack\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -41,7 +41,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>K:\xgames\AIHelper230902TEST\</OutputPath>
+    <OutputPath>L:\illusion\Organized ModPack\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -632,7 +632,7 @@ if $(ConfigurationName) == Release (
 		MKLINK "$(TargetDir)RELEASE\MO\plugins\basicgames" "$(TargetDir)MO\plugins\basicgames" /D
 	)
 	if not exist "$(TargetDir)RELEASE\RES\lib" (
-		MKLINK ( "$(TargetDir)RELEASE\RES\lib" "$(TargetDir)RES\libs" /D
+		MKLINK "$(TargetDir)RELEASE\RES\lib" "$(TargetDir)RES\libs" /D
 	)
 	if not exist "$(TargetDir)RELEASE\RES\locale" (
 		MKLINK "$(TargetDir)RELEASE\RES\locale" "$(TargetDir)RES\locale" /D

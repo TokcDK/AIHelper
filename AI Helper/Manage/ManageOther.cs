@@ -511,7 +511,7 @@ namespace AIHelper.Manage
                     }
                 }
 
-                var firstSelectedGame = ManageSettings.Games.Games.FirstOrDefault(g => g.GameDirName == selected_game);
+                var firstSelectedGame = ManageSettings.Games.Games.FirstOrDefault(g => string.Equals(g.GameDirName, selected_game, StringComparison.InvariantCultureIgnoreCase));
 
                 if (firstSelectedGame != default)
                 {

@@ -60,7 +60,13 @@ namespace AIHelper.Manage
                 ManageSettings.CurrentGame.GameStudioExeName,
             })
             {
-                foreach (var customExeTitle in ManageModOrganizer.GetMOcustomExecutableTitleListByExeName(exeName))
+                var customExeTitlesList = ManageModOrganizer.GetMOcustomExecutableTitleListByExeName(exeName).ToArray();
+                if (customExeTitlesList.Length == 0)
+                {
+                    customExeTitlesList = ManageModOrganizer.GetCustomExeTitlesFromBasicGamePlugin(exeName).ToArray();
+                }
+
+                foreach (var customExeTitle in customExeTitlesList)
                 {
                     bool gameExeForcedLibrariesIsSet = ini.SectionExists("forced_libraries")
                         && ini.KeyExists($"{customExeTitle}\\enabled", "forced_libraries")
@@ -80,6 +86,27 @@ namespace AIHelper.Manage
                     ini.SetKey("forced_libraries", $"{customExeTitle}\\{index}\\library", "winhttp.dll");
                     ini.SetKey("forced_libraries", $"{customExeTitle}\\{index}\\process", $"{exeName}.exe");
                     ini.SetKey("forced_libraries", $"{customExeTitle}\\size", "1");
+                }
+            }
+        }
+
+        /// <summary>
+        /// read custom exe info by exe name from current game plugin file
+        /// </summary>
+        /// <param name="exeName"></param>
+        /// <returns></returns>
+        private static IEnumerable<string> GetCustomExeTitlesFromBasicGamePlugin(string exeName)
+        {
+            var pluginPath = ManageSettings.CurrentGameMoGamePyPluginPath;
+            var pluginText = File.ReadAllText(pluginPath);
+
+            foreach(Match customExeInfoMatch in Regex.Matches(pluginText, @"\s*mobase\.ExecutableInfo\(\s*\""([^\""]+)\"",\s*QFileInfo\(self\.gameDirectory\(\), \""Data\/([^\""]+)\""\),"))
+            {
+                var customExeName = customExeInfoMatch.Groups[2].Value;
+                if (customExeName == exeName || Path.GetFileNameWithoutExtension(customExeName) == exeName)
+                {
+                    var customExeTitle = customExeInfoMatch.Groups[1].Value;
+                    yield return customExeTitle;
                 }
             }
         }

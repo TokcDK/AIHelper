@@ -106,7 +106,7 @@ if "%configurationName%" == "Release" (
 	set targetReleaseLibDir=%targetReleaseResDir%\lib
 	if not exist "!targetReleaseLibDir!" (
 		echo make link for the app exe libs dir
-		MKLINK "!targetReleaseLibDir!" "%targetLibDir%"
+		MKLINK "!targetReleaseLibDir!" "%targetLibDir%" /D
 		Del "!targetReleaseLibDir!\*.pdb"
 		Del "!targetReleaseLibDir!\*.xml"
 	)

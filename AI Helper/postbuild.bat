@@ -76,18 +76,18 @@ if "%configurationName%" == "Release" (
 	::make symlinks for dirs and files
 	set targetReleaseBasicGamesPluginsDir=%targetReleaseDir%\%modOrganizerBasicGamesPluginsDirSubPath%
 	if not exist "!targetReleaseBasicGamesPluginsDir!" (
+		echo make link for basic games plugins dir
 		:: make parent dir
 		md "%targetReleaseDir%\%moBasicGamesSubPath%"
 
 		MKLINK "!targetReleaseBasicGamesPluginsDir!" "%targetBasicGamesPluginsDir%" /D
 	)
-	if not exist "%targetReleaseResDir%\lib" (
-		MKLINK "%targetReleaseResDir%\lib" "%targetResDir%\lib" /D
-	)
 	if not exist "%targetReleaseResDir%\locale" (
+		echo make link for locale dir
 		MKLINK "%targetReleaseResDir%\locale" "%targetResLocaleDir%" /D
 	)
 	if not exist "%targetReleaseResDir%\%reportDirSubPath%" (
+		echo make link for report dir
 		:: make parent dir
 		md "%targetReleaseResDir%\%themeDefaultSubPath%"
 
@@ -95,17 +95,24 @@ if "%configurationName%" == "Release" (
 	)
 	set kkManSubpath=tools\kkmanager
 	if not exist "%targetReleaseDir%\!kkManSubpath!" (
+		echo make link for kkman
 		MD "%targetReleaseResDir%\tools"
 		MKLINK "%targetReleaseResDir%\!kkManSubpath!" "%targetResDir%\!kkManSubpath!" /D
 	)
 	if not exist "%targetReleaseDir%\%targetName%.exe" (
+		echo make link for the app exe
 		MKLINK "%targetReleaseDir%\%targetName%.exe" "%targetDir%\%targetName%.exe"
 	)
 	set targetReleaseLibDir=%targetReleaseResDir%\lib
 	if not exist "!targetReleaseLibDir!" (
+		echo make link for the app exe libs dir
 		MKLINK "!targetReleaseLibDir!" "%targetLibDir%"
 		Del "!targetReleaseLibDir!\*.pdb"
 		Del "!targetReleaseLibDir!\*.xml"
+	)
+	if exist "%projectBuildDir%\Games" (
+		echo games dir with base info
+		robocopy "%projectBuildDir%\Games\ " "%targetReleaseDir%\Games\ " *.* /MIR /COPYALL /B /R:3 /W:1
 	)
 
 	:: create archive of the release

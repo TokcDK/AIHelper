@@ -404,6 +404,12 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="BUILD\Games\AIGirl\Data\папки и файлы игры сюда.txt" />
+    <Content Include="BUILD\Games\HoneySelect2\Data\папки и файлы игры сюда.txt" />
+    <Content Include="BUILD\Games\HoneySelect\Data\папки и файлы игры сюда.txt" />
+    <Content Include="BUILD\Games\KoikatsuSunshine\Data\папки и файлы игры сюда.txt" />
+    <Content Include="BUILD\Games\Koikatsu\Data\папки и файлы игры сюда.txt" />
+    <Content Include="BUILD\Games\README.txt" />
     <Content Include="BUILD\MO\plugins\basic_games\games\game_aigirl.py" />
     <Content Include="BUILD\MO\plugins\basic_games\games\game_aigirltrial.py" />
     <Content Include="BUILD\MO\plugins\basic_games\games\game_com3d2.py" />

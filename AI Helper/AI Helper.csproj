@@ -389,11 +389,12 @@
       <Link>.editorconfig</Link>
     </None>
     <None Include="app.manifest" />
-    <None Include="RES\DefaultModOrganizer.ini" />
-    <None Include="RES\locale\ru-RU\LC_MESSAGES\helper.mo" />
-    <None Include="RES\locale\ru-RU\LC_MESSAGES\helper.po" />
-    <None Include="RES\locale\template.pot" />
-    <None Include="RES\locale\template.temp" />
+    <None Include="postbuild.bat" />
+    <None Include="BUILD\MO\DefaultModOrganizer.ini" />
+    <None Include="BUILD\RES\locale\ru-RU\LC_MESSAGES\helper.mo" />
+    <None Include="BUILD\RES\locale\ru-RU\LC_MESSAGES\helper.po" />
+    <None Include="BUILD\RES\locale\template.pot" />
+    <None Include="BUILD\RES\locale\template.temp" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -403,26 +404,33 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="RES\basic_games\game_aigirl.py" />
-    <Content Include="RES\basic_games\game_aigirltrial.py" />
-    <Content Include="RES\basic_games\game_com3d2.py" />
-    <Content Include="RES\basic_games\game_honeycome.py" />
-    <Content Include="RES\basic_games\game_honeyselect.py" />
-    <Content Include="RES\basic_games\game_honeyselect2.py" />
-    <Content Include="RES\basic_games\game_koikatusunshine.py" />
-    <Content Include="RES\basic_games\game_koikatu.py" />
-    <Content Include="RES\basic_games\game_roomgirl.py" />
+    <Content Include="BUILD\MO\plugins\basic_games\games\game_aigirl.py" />
+    <Content Include="BUILD\MO\plugins\basic_games\games\game_aigirltrial.py" />
+    <Content Include="BUILD\MO\plugins\basic_games\games\game_com3d2.py" />
+    <Content Include="BUILD\MO\plugins\basic_games\games\game_honeycome.py" />
+    <Content Include="BUILD\MO\plugins\basic_games\games\game_honeyselect.py" />
+    <Content Include="BUILD\MO\plugins\basic_games\games\game_honeyselect2.py" />
+    <Content Include="BUILD\MO\plugins\basic_games\games\game_koikatusunshine.py" />
+    <Content Include="BUILD\MO\plugins\basic_games\games\game_koikatu.py" />
+    <Content Include="BUILD\MO\plugins\basic_games\games\game_roomgirl.py" />
     <Content Include="helpericon.ico" />
-    <Content Include="RES\links\AI.txt" />
-    <Content Include="RES\links\Default.txt" />
-    <Content Include="RES\links\HS.txt" />
-    <Content Include="RES\links\HS2.txt" />
-    <Content Include="RES\links\htmlCategoryItemTemplate.txt" />
-    <Content Include="RES\links\htmlCategoryTemplate.txt" />
-    <Content Include="RES\links\KK.txt" />
-    <Content Include="RES\links\KKS.txt" />
-    <Content Include="RES\links\strings.txt" />
-    <Content Include="RES\theme\default\report\ReportTemplate.html" />
+    <Content Include="BUILD\RES\links\AI.txt" />
+    <Content Include="BUILD\RES\links\Default.txt" />
+    <Content Include="BUILD\RES\links\HS.txt" />
+    <Content Include="BUILD\RES\links\HS2.txt" />
+    <Content Include="BUILD\RES\links\htmlCategoryItemTemplate.txt" />
+    <Content Include="BUILD\RES\links\htmlCategoryTemplate.txt" />
+    <Content Include="BUILD\RES\links\KK.txt" />
+    <Content Include="BUILD\RES\links\KKS.txt" />
+    <Content Include="BUILD\RES\links\strings.txt" />
+    <Content Include="BUILD\RES\theme\default\report\bg\AI.jpg" />
+    <Content Include="BUILD\RES\theme\default\report\bg\COM3D2.jpg" />
+    <Content Include="BUILD\RES\theme\default\report\bg\HS.jpg" />
+    <Content Include="BUILD\RES\theme\default\report\bg\HS2.jpg" />
+    <Content Include="BUILD\RES\theme\default\report\bg\KK.jpg" />
+    <Content Include="BUILD\RES\theme\default\report\bg\KKS.jpg" />
+    <Content Include="BUILD\RES\theme\default\report\bg\RG.jpg" />
+    <Content Include="BUILD\RES\theme\default\report\ReportTemplate.html" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="IWshRuntimeLibrary">
@@ -619,35 +627,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>:: Move all assemblies and related files to lib folder
-ROBOCOPY "$(TargetDir) " "$(TargetDir)RES\lib\ " *.dll *.pdb /XF "$(TargetName).dll" "$(TargetName).pdb" "$(TargetName).runtimeconfig.json" *.exe *.ini *.config *.manifest *.ico *.log *.txt *.7z *.rar *.zip *.png *.jpg *.lnk /XD logs test AIHInfos RES MO lib Games net6.0-windows "AI Helper Release" [net4] net472 "DEV images" RELEASE RELEASES MOTest Downloads "Organized ModPack Dev files" /E /IS /MOVE
-ROBOCOPY "$(ProjectDir)RES\basic_games\ " "$(TargetDir)MO\plugins\basic_games\games " *.py
-ROBOCOPY "$(ProjectDir)RES\theme\default\report\ " "$(TargetDir)RES\theme\default\report " ReportTemplate.html
-ROBOCOPY "$(ProjectDir)RES\links\ " "$(TargetDir)RES\links " *.txt
-ROBOCOPY "$(ProjectDir)RES\locale " "$(TargetDir)RES\locale " /MIR
-Del "$(TargetDir)RES\lib\*.pdb"
-if $(ConfigurationName) == Release (
-	MD "$(TargetDir)RELEASE\RES"
-	if not exist "$(TargetDir)RELEASE\MO\plugins\basicgames" (
-		MKLINK "$(TargetDir)RELEASE\MO\plugins\basicgames" "$(TargetDir)MO\plugins\basicgames" /D
-	)
-	if not exist "$(TargetDir)RELEASE\RES\lib" (
-		MKLINK "$(TargetDir)RELEASE\RES\lib" "$(TargetDir)RES\libs" /D
-	)
-	if not exist "$(TargetDir)RELEASE\RES\locale" (
-		MKLINK "$(TargetDir)RELEASE\RES\locale" "$(TargetDir)RES\locale" /D
-	)
-	if not exist "$(TargetDir)RELEASE\tools\kkmanager" (
-		MD "$(TargetDir)RELEASE\RES\tools"
-		MKLINK "$(TargetDir)RELEASE\RES\tools\kkmanager" "$(TargetDir)RES\tools\kkmanager" /D
-	)
-	if not exist "$(TargetDir)RELEASE\$(TargetName).exe" (
-		MKLINK "$(TargetDir)RELEASE\$(TargetName).exe" "$(TargetDir)\$(TargetName).exe"
-	)
-	MD "$(TargetDir)RELEASES"
-	powershell Compress-Archive -Path '$(TargetDir)\RELEASE\*' -DestinationPath '$(TargetDir)\RELEASES\$(TargetName) @(VersionNumber).zip' -Force
-)
-if %25errorlevel%25 leq 4 exit 0 else exit %25errorlevel%25</PostBuildEvent>
+    <PostBuildEvent>call "$(ProjectDir)postbuild.bat" "$(TargetDir)" "$(TargetName)" "$(ProjectDir)" "@(VersionNumber)" $(ConfigurationName)
+exit 0</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEventDependsOn>

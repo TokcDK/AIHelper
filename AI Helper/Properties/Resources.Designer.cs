@@ -65,7 +65,7 @@ namespace AIHelper.Properties {
         ///gameName=
         ///gamePath=@ByteArray()
         ///selected_profile=Default
-        ///version=2.4.2
+        ///version=2.4.4
         ///first_start=false
         ///group_state=0
         ///selected_executable=1
@@ -81,7 +81,7 @@ namespace AIHelper.Properties {
         ///size=0
         ///
         ///[geometry]
-        ///modList=@ByteArray(\0\0\0\xff\0\0\0\0\0\0\0\x1\0\0\0\0\0\0\0\b\x1\0\0\0\0\0\0\0\0\0\0\0\n\xb4\x2\0\0\0\x5\0\0\0\t\0\0\0\x1f\0\0\0\x4\0\0\0\x1f\0\0\0\x5 [rest of string was truncated]&quot;;.
+        ///modList=@ByteArray(\0\0\0\xff\0\0\0\0\0\0\0\x1\0\0\0\0\0\0\0\b\x1\0\0\0\0\0\0\0\0\0\0\0\n\xb4\x2\0\0\0\x5\0\0\0\t\0\0\0\x1f\0\0\0\x4\0\0\0\x1f\0\0\0\x5\0\0\0\x1f\0\0\ [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string defmoini {
             get {

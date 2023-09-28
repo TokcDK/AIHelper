@@ -69,7 +69,7 @@ if "%configurationName%" == "Release" (
 	echo Release creation..
 
 	:: recreate release dir
-	rd "%targetReleaseDir%" /s /q
+	if exist "%targetReleaseDir%" rd "%targetReleaseDir%" /s /q
 	md "%targetReleaseDir%"
 	md "%targetReleaseResDir%"
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -137,9 +138,7 @@ namespace AIHelper.Manage
         //        }
         internal static void GetListOfExistsGames()
         {
-            //List<Game> listOfGames = GamesList.GetGamesList();
             List<Type> listOfGames = Inherited.GetListOfInheritedTypes(typeof(GameBase));
-            //var listOfGamesRead = new List<Game>(listOfGames);
 
             var listOfGameDirs = new List<GameBase>();
 
@@ -147,186 +146,135 @@ namespace AIHelper.Manage
 
             // not empty txt diles in games dir where 1st line is exists dir path
             var foundPathInTxt = GetGamesFromTxt();
+
             // dirs in games dir
             var dirs = Directory.EnumerateDirectories(ManageSettings.GamesBaseFolderPath).Concat(foundPathInTxt);
             var added = new HashSet<string>();
-            foreach (var entrie in dirs)
-            {
-                //string gameDir;
-                //if (Path.GetFileName(entrie).StartsWith(ManageSettings.GetMOGameInfoFileIdentifier(), StringComparison.InvariantCultureIgnoreCase) && File.Exists(entrie))
-                //{
-                //    try
-                //    {
-                //        gameDir = Path.GetFullPath(File.ReadAllLines(entrie)[0]); // first line is game directory path
-                //    }
-                //    catch
-                //    {
-                //        // when invalid chars or other reason when getfullpath will fail
-                //        continue;
-                //    }
-                //}
-                //else
-                //{
-                //    gameDir = entrie;
-                //}
-                string gameDirPath = "";
-                try
-                {
-                    gameDirPath = Path.GetFullPath(entrie);
-                }
-                catch { continue; } // skip when invalid chars in path
+            ManageSettings.Games = new GameData();
 
+            foreach (var pathString in dirs)
+            {
+                string gameDirPath = GetGameDirPath(pathString);
+
+                if (string.IsNullOrWhiteSpace(gameDirPath)) continue; // skip invalid path
                 if (!Directory.Exists(gameDirPath)) continue; // skip not exists
                 if (added.Contains(gameDirPath)) continue; // skip duples
 
-                ManageSettings.Games = new GameData();
                 foreach (var gameType in listOfGames)
                 {
-                    //if (gameType == typeof(RootGame)) continue;
-
-                    var game = (GameBase)Activator.CreateInstance(gameType);
-
-                    bool exeInData = File.Exists(Path.Combine(gameDirPath, "Data", game.GameExeName + ".exe"));
-                    bool exeInRoot = File.Exists(Path.Combine(gameDirPath, game.GameExeName + ".exe"));
-
-                    if (!exeInData && exeInRoot)
+                    if(TryAddTheGameIntoGamesList(gameType, gameDirPath, listOfGameDirs, added))
                     {
-                        // when all game files in root dir
-
-                        var dataDir = Path.Combine(gameDirPath, "Data");
-                        Directory.CreateDirectory(dataDir);
-
-                        // move dirs except data into data
-                        foreach (var dir in Directory.GetDirectories(gameDirPath))
-                        {
-                            if (string.Equals(dir, dataDir)) continue;
-
-                            Directory.Move(dir, Path.Combine(dataDir, Path.GetFileName(dir)));
-                        }
-                        // move files into data
-                        foreach (var file in Directory.GetFiles(gameDirPath))
-                        {
-                            File.Move(file, Path.Combine(dataDir, Path.GetFileName(file)));
-                        }
+                        break;
                     }
-
-                    if (!File.Exists(Path.Combine(gameDirPath, "Data", game.GameExeName + ".exe"))) continue;
-
-                    game.GameDirInfo = new DirectoryInfo(gameDirPath);
-                    ManageSettings.Games.Game = game; // temp set current game
-
-                    var mods = Path.Combine(gameDirPath, "Mods");
-                    Directory.CreateDirectory(mods);
-
-                    //  check and write mod organizer dir
-                    var mo = Path.Combine(gameDirPath, ManageSettings.AppModOrganizerDirName);
-                    Directory.CreateDirectory(mo);
-
-                    //  check and write mod organizer ini
-                    var moIni = Path.Combine(mo, ManageSettings.MoIniFileName);
-                    if (!File.Exists(moIni))
-                    {
-                        File.WriteAllText(moIni, Properties.Resources.defmoini);
-
-                        var ini = ManageIni.GetINIFile(moIni);
-
-                        // check mo ini game parameters exist
-                        ini.SetKey("General", "gameName", game.GetGameName());
-                        ini.SetKey("General", "gamePath", "@ByteArray(" + Path.Combine(game.GameDirInfo.Parent.FullName, game.GameDirName).Replace("\\", "\\\\") + ")");
-                        ini.SetKey("General", "selected_profile", "@ByteArray(Default)");
-                        ini.SetKey("Settings", "mod_directory", Path.Combine(gameDirPath, game.GameDirName, "Mods").Replace("\\", "\\\\"));
-                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDirPath, game.GameDirName, "Downloads").Replace("\\", "\\\\"));
-                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDirPath, game.GameDirName, ManageSettings.AppModOrganizerDirName, "profiles").Replace("\\", "\\\\"));
-                        ini.SetKey("Settings", "download_directory", Path.Combine(gameDirPath, game.GameDirName, ManageSettings.AppModOrganizerDirName, "overwrite").Replace("\\", "\\\\"));
-                    }
-
-                    // check and write categories dat
-                    var catDat = Path.Combine(mo, ManageSettings.MoCategoriesFileName);
-                    if (!File.Exists(catDat)) File.WriteAllText(catDat, "");
-
-                    // check and write default profile
-                    var profiles = Path.Combine(mo, ManageSettings.MoProfilesDirName);
-                    var defaultProfile = Path.Combine(profiles, "Default");
-                    if (!Directory.Exists(defaultProfile))
-                    {
-                        Directory.CreateDirectory(defaultProfile);
-                        File.WriteAllText(Path.Combine(defaultProfile, "modlist.txt"), "# This file was automatically generated by Mod Organizer.\r\n");
-                    }
-
-                    listOfGameDirs.Add(game);
-                    added.Add(gameDirPath); // add game path to the added list to prevent duplicates
                 }
             }
-
-            //if (Directory.Exists(GetGamesFolderPath()))
-            //{
-            //    foreach (var game in listOfGamesRead)
-            //    {
-            //        if (!game.IsValidGame())
-            //        {
-            //            listOfGames.Remove(game);
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    listOfGames.Clear();
-            //}
-
-
-            // commented because obsolete
-            ////if (listOfGames.Count == 0)
-            //if (listOfGameDirs.Count == 0)
-            //{
-            //    // root game setup
-            //    try
-            //    {
-            //        if (Directory.Exists(Path.Combine(ManageSettings.ApplicationStartupPath, "Mods"))
-            //            &&
-            //            Directory.Exists(Path.Combine(ManageSettings.ApplicationStartupPath, "Data"))
-            //            &&
-            //            !Path.Combine(ManageSettings.ApplicationStartupPath, "Data").IsNullOrEmptyDirectory(mask: "*.exe", searchForFiles: true, searchForDirs: false, recursive: false)
-            //            //&&
-            //            //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(GetMOdirPath())
-            //            &&
-            //            IsMoFolderValid(AppModOrganizerDirPath)
-            //            //&&
-            //            //Directory.Exists(Path.Combine(GetMOdirPath(), GetMoProfilesDirName())))
-            //            //&&
-            //            //!ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(GetMOdirPath(), GetMoProfilesDirName()))
-            //            &&
-            //            !ManageSymLinkExtensions.IsSymlink(MoIniFilePath)
-            //            &&
-            //            !ManageSymLinkExtensions.IsSymlink(MoCategoriesFilePath)
-            //            )
-            //        {
-            //            var game = new RootGame
-            //            {
-            //                // the app's dir
-            //                GameDirInfo = new DirectoryInfo(ManageSettings.ApplicationStartupPath)
-            //            };
-
-            //            //listOfGames.Add(new RootGame());
-            //            listOfGameDirs.Add(game);
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        _log.Debug("RootGame check failed. Error:" + Environment.NewLine + ex);
-            //    }
-            //}
-
-            //ListOfGames = ListOfGames.Where
-            //(game =>
-            //    Directory.Exists(game.GetGamePath())
-            //    &&
-            //    !ManageFilesFolders.CheckDirectoryNullOrEmpty_Fast(Path.Combine(game.GetGamePath(), GetAppModOrganizerDirName(), GetMoProfilesDirName()))
-            //).ToList();
 
             ManageSettings.Games.Games = listOfGameDirs;
             if (ManageSettings.Games.Games.Count > 0) ManageSettings.Games.Game = listOfGameDirs[0];
 
-            //return listOfGameDirs;
+        }
+
+        private static string GetGameDirPath(string pathString)
+        {
+            string gameDirPath = "";
+            try
+            {
+                gameDirPath = Path.GetFullPath(pathString);
+            }
+            catch { return ""; } // skip when invalid chars in path
+
+            return gameDirPath;
+        }
+
+        private static bool TryAddTheGameIntoGamesList(Type gameType, string gameDirPath, List<GameBase> listOfGameDirs, HashSet<string> added)
+        {
+            var game = (GameBase)Activator.CreateInstance(gameType);
+
+            bool exeInData = File.Exists(Path.Combine(gameDirPath, ManageSettings.DataDirName, game.GameExeName + ".exe"));
+            bool exeInRoot = File.Exists(Path.Combine(gameDirPath, game.GameExeName + ".exe"));
+
+            if (!exeInData && exeInRoot)
+            {
+                SortFilesForMO(gameDirPath);
+            }
+
+            if (!File.Exists(Path.Combine(gameDirPath, ManageSettings.DataDirName, game.GameExeName + ".exe"))) return false;
+
+            game.GameDirInfo = new DirectoryInfo(gameDirPath);
+            ManageSettings.Games.Game = game; // temp set current game
+
+            var mods = Path.Combine(gameDirPath, ManageSettings.ModsDirName);
+            Directory.CreateDirectory(mods);
+
+            //  check and write mod organizer dir
+            var mo = Path.Combine(gameDirPath, ManageSettings.AppModOrganizerDirName);
+            Directory.CreateDirectory(mo);
+
+            //  check and write mod organizer ini
+            CheckAndWriteMOini(mo, game, gameDirPath);
+
+            // check and write categories dat
+            var catDat = Path.Combine(mo, ManageSettings.MoCategoriesFileName);
+            if (!File.Exists(catDat)) File.WriteAllText(catDat, "");
+
+            // check and write default profile
+            WriteDefaultMOProfile(mo);
+
+            listOfGameDirs.Add(game);
+            added.Add(gameDirPath); // add game path to the added list to prevent duplicates
+
+            return true;
+        }
+
+        private static void WriteDefaultMOProfile(string mo)
+        {
+            var profiles = Path.Combine(mo, ManageSettings.MoProfilesDirName);
+            var defaultProfile = Path.Combine(profiles, "Default");
+            if (!Directory.Exists(defaultProfile))
+            {
+                Directory.CreateDirectory(defaultProfile);
+                File.WriteAllText(Path.Combine(defaultProfile, "modlist.txt"), "# This file was automatically generated by Mod Organizer.\r\n");
+            }
+        }
+
+        private static void CheckAndWriteMOini(string mo, GameBase game, string gameDirPath)
+        {
+            var moIni = Path.Combine(mo, ManageSettings.MoIniFileName);
+            if (!File.Exists(moIni))
+            {
+                File.WriteAllText(moIni, Properties.Resources.defmoini);
+
+                var ini = ManageIni.GetINIFile(moIni);
+
+                // check mo ini game parameters exist
+                ini.SetKey("General", "gameName", game.GetGameName());
+                ini.SetKey("General", "gamePath", "@ByteArray(" + Path.Combine(game.GameDirInfo.Parent.FullName, game.GameDirName).Replace("\\", "\\\\") + ")");
+                ini.SetKey("General", "selected_profile", "@ByteArray(Default)");
+                ini.SetKey("Settings", "mod_directory", Path.Combine(gameDirPath, game.GameDirName, ManageSettings.ModsDirName).Replace("\\", "\\\\"));
+                ini.SetKey("Settings", "download_directory", Path.Combine(gameDirPath, game.GameDirName, "Downloads").Replace("\\", "\\\\"));
+                ini.SetKey("Settings", "download_directory", Path.Combine(gameDirPath, game.GameDirName, ManageSettings.AppModOrganizerDirName, "profiles").Replace("\\", "\\\\"));
+                ini.SetKey("Settings", "download_directory", Path.Combine(gameDirPath, game.GameDirName, ManageSettings.AppModOrganizerDirName, "overwrite").Replace("\\", "\\\\"));
+            }
+        }
+
+        private static void SortFilesForMO(string gameDirPath)
+        {
+            // when all game files in root dir
+            var dataDir = Path.Combine(gameDirPath, ManageSettings.DataDirName);
+            Directory.CreateDirectory(dataDir);
+
+            // move dirs except data into data
+            foreach (var dir in Directory.GetDirectories(gameDirPath))
+            {
+                if (string.Equals(dir, dataDir)) continue;
+
+                Directory.Move(dir, Path.Combine(dataDir, Path.GetFileName(dir)));
+            }
+            // move files into data
+            foreach (var file in Directory.GetFiles(gameDirPath))
+            {
+                File.Move(file, Path.Combine(dataDir, Path.GetFileName(file)));
+            }
         }
 
         private static IEnumerable<string> GetGamesFromTxt()

@@ -1309,5 +1309,7 @@ namespace AIHelper.Manage
         public static string IniSettingsSectionName { get => "Settings"; }
         public static string ThemeLabelColorSetIgnoreNameMark { get => "OwnColor"; }
         public static string MOProfileSettingsIniForcedLibrariesSectionName { get => "forced_libraries"; }
+        public static string ModsDirName { get; } = "Mods";
+        public static string DataDirName { get; } = "Data";
     }
 }

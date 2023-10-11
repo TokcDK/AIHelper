@@ -43,7 +43,7 @@ namespace AIHelper.Install.UpdateMaker
         }
         class ContentTypeParserFiles : ContentTypeParser
         {
-            protected override string PathsKeyName => UpdateMaker.Fi;
+            protected override string PathsKeyName => UpdateMaker.FilesKey;
 
             public override void Copy(string gameDirPath, string updateDirPath)
             {

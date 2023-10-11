@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace AIHelper.Install.UpdateMaker
 {
@@ -293,10 +294,29 @@ namespace AIHelper.Install.UpdateMaker
             };
 
             _gameupdatekeys = new Dictionary<string, string>();
-
+            
             var infoIni = ManageIni.GetINIFile(updateMakeInfoFilePath);
-            var dateTimeSuffix = ManageSettings.DateTimeBasedSuffix;
             var updateDir = Path.Combine(ManageSettings.CurrentGameDirPath, "Updates", "Update");
+            if (!InitUpdateDir(updateDir)) return false;
+
+            var contentTypeParsers = new ContentTypeParser[]
+            {
+                new ContentTypeParserDirs(infoIni, _parameter),
+                new ContentTypeParserFiles(infoIni, _parameter)
+            };
+
+            CopyAndAddUpdatePaths(parameters, contentTypeParsers, updateDir);
+
+            WriteUpdateIni(infoIni, updateDir, contentTypeParsers);
+
+            Process.Start(updateDir);
+
+            return true;
+        }
+
+        private bool InitUpdateDir(string updateDir)
+        {
+            var dateTimeSuffix = ManageSettings.DateTimeBasedSuffix;
             if (Directory.Exists(updateDir))
             {
                 try
@@ -310,14 +330,12 @@ namespace AIHelper.Install.UpdateMaker
             }
             Directory.CreateDirectory(updateDir);
 
+            return true;
+        }
+
+        private void CopyAndAddUpdatePaths(List<UpdateMakerBase> parameters, ContentTypeParser[] contentTypeParsers, string updateDir)
+        {
             var updateGameDir = Path.Combine(updateDir, "Games", ManageSettings.CurrentGameDirName);
-
-
-            var contentTypeParsers = new ContentTypeParser[]
-            {
-                new ContentTypeParserDirs(infoIni, _parameter),
-                new ContentTypeParserFiles(infoIni, _parameter)
-            };
 
             foreach (var parameter in parameters)
             {
@@ -326,7 +344,7 @@ namespace AIHelper.Install.UpdateMaker
                 var parameterGameDir = Path.Combine(ManageSettings.CurrentGameDirPath, parameter.DirName);
                 var parameterUpdateDir = Path.Combine(updateGameDir, parameter.DirName);
 
-                foreach(var contentTypeParser in contentTypeParsers)
+                foreach (var contentTypeParser in contentTypeParsers)
                 {
                     if (!contentTypeParser.IsNeedToCopy) continue;
 
@@ -335,12 +353,6 @@ namespace AIHelper.Install.UpdateMaker
                     _gameupdatekeys.Add("Update" + parameter.DirName, parameter.IsAnyFileCopied.ToString().ToLowerInvariant());
                 }
             }
-
-            WriteUpdateIni(infoIni, updateDir, contentTypeParsers);
-
-            Process.Start(updateDir);
-
-            return true;
         }
 
         private void WriteUpdateIni(INIFileMan.INIFile ini, string updateDir, ContentTypeParser[] contentTypeParsers)

@@ -23,36 +23,189 @@ namespace AIHelper.Install.UpdateMaker
             public bool IsNeedToCopy { get => Ini.KeyExists("", PathsKeyName); }
             protected abstract string PathsKeyName { get; }
 
-            public abstract void Copy(string gameDirPath, string updateDirPath);
+            public void Copy(string gameDirPath, string updateDirPath)
+            {
+                var paths = Ini.GetKey("", PathsKeyName).Split(',').Distinct().ToHashSet();
+                Copy(paths, gameDirPath, updateDirPath);
+            }
+            protected abstract void Copy(HashSet<string> paths, string gameDirPath, string updateDirPath);
 
             public abstract void RemoveBlacklisted(string gameDirPath, string updateDirPath);
         }
         class ContentTypeParserDirs : ContentTypeParser
         {
+            public ContentTypeParserDirs(INIFile ini, UpdateMakerBase updateMaker) : base(ini, updateMaker)
+            {
+            }
+
             protected override string PathsKeyName => UpdateMaker.DirsKey;
 
-            public override void Copy(string gameDirPath, string updateDirPath)
+            protected override void Copy(HashSet<string> paths, string gameDirPath, string updateDirPath)
             {
-                throw new System.NotImplementedException();
             }
 
             public override void RemoveBlacklisted(string gameDirPath, string updateDirPath)
             {
                 throw new System.NotImplementedException();
+            }
+
+            private void CopyDirs(HashSet<string> parameterDirs, string parameterGameDir, string parameterUpdateDir)
+            {
+                if (parameterDirs == null || parameterDirs.Count == 0 || string.IsNullOrWhiteSpace(parameterDirs.First()) || !Directory.Exists(parameterGameDir))
+                {
+                    return;
+                }
+
+                bool getAll = false;
+                bool firstCheck = true;
+                foreach (var subPath in parameterDirs)
+                {
+                    if (firstCheck)
+                    {
+                        firstCheck = false;
+
+                        if (subPath == null || subPath == "")
+                        {
+                            break;
+                        }
+                        else if (subPath == "*")
+                        {
+                            getAll = true;
+                            break;
+                        }
+                    }
+
+                    if (CopyDirBySubPath(subPath, parameterGameDir, parameterUpdateDir))
+                    {
+                        UpdateMaker.IsAnyFileCopied = true;
+                    }
+                }
+
+                if (getAll)
+                {
+                    foreach (var dir in Directory.EnumerateDirectories(parameterGameDir, "*"))
+                    {
+                        if (_useBlacklist && dir.ContainsAnyFrom(UpdateMaker.blacklist)) continue;
+
+                        var subPath = dir.Replace(parameterGameDir + Path.DirectorySeparatorChar, string.Empty);
+
+                        if (CopyDirBySubPath(subPath, parameterGameDir, parameterUpdateDir))
+                        {
+                            UpdateMaker.IsAnyFileCopied = true;
+                        }
+                    }
+                }
+            }
+
+            private bool CopyDirBySubPath(string subPath, string sourceDir, string targetDir)
+            {
+                if (_useBlacklist && UpdateMaker.blacklist.Contains(UpdateMaker.DirName + Path.DirectorySeparatorChar + subPath))
+                {
+                    _removeDirsList.Add(subPath);
+                    return false;
+                }
+
+                var path = new DirectoryInfo(sourceDir + Path.DirectorySeparatorChar + subPath);
+
+                if (!path.Exists)
+                {
+                    return false;
+                }
+
+                var targetPath = new DirectoryInfo(targetDir + Path.DirectorySeparatorChar + subPath);
+                targetPath.Parent.Create();
+
+                path.CopyAll(targetPath, exclusions: UpdateMaker.blacklist);
+
+                return true;
             }
         }
         class ContentTypeParserFiles : ContentTypeParser
         {
+            public ContentTypeParserFiles(INIFile ini, UpdateMakerBase updateMaker) : base(ini, updateMaker)
+            {
+            }
+
             protected override string PathsKeyName => UpdateMaker.FilesKey;
 
-            public override void Copy(string gameDirPath, string updateDirPath)
+            protected override void Copy(HashSet<string> paths, string gameDirPath, string updateDirPath)
             {
-                throw new System.NotImplementedException();
+                CopyFiles(paths, gameDirPath, updateDirPath);
             }
 
             public override void RemoveBlacklisted(string gameDirPath, string updateDirPath)
             {
                 throw new System.NotImplementedException();
+            }
+
+            private void CopyFiles(HashSet<string> parameterFiles, string parameterGameDir, string parameterUpdateDir)
+            {
+                if (parameterFiles == null || !Directory.Exists(parameterGameDir))
+                {
+                    return;
+                }
+
+                bool getAll = false;
+                bool firstCheck = true;
+                foreach (var subPath in parameterFiles)
+                {
+                    if (firstCheck)
+                    {
+                        firstCheck = false;
+
+                        if (string.IsNullOrWhiteSpace(subPath)) // first subpath is invalid
+                        {
+                            break;
+                        }
+                        else if (subPath == "*") // parameter * means copy all files
+                        {
+                            getAll = true;
+                            break;
+                        }
+                    }
+
+                    if (CopyFileBySubPath(subPath, parameterGameDir, parameterUpdateDir))
+                    {
+                        UpdateMaker.IsAnyFileCopied = true;
+                    }
+                }
+
+                if (getAll)
+                {
+                    foreach (var file in Directory.EnumerateFiles(parameterGameDir, "*"))
+                    {
+                        if (_useBlacklist && file.ContainsAnyFrom(UpdateMaker.blacklist)) continue;
+
+                        var subPath = file.Replace(parameterGameDir, string.Empty);
+                        if (CopyFileBySubPath(subPath, parameterGameDir, parameterUpdateDir, copyAll: true))
+                        {
+                            UpdateMaker.IsAnyFileCopied = true;
+                        }
+                    }
+                }
+            }
+
+            private bool CopyFileBySubPath(string subPath, string sourceDir, string targetDir, bool copyAll = false)
+            {
+                if (_useBlacklist && copyAll && UpdateMaker.blacklist.Contains(UpdateMaker.DirName + "\\" + subPath)) // dirname before because blacklist record is starts with sourceDir name
+                {
+                    _removeFilesList.Add(subPath);
+                    return false;
+                }
+
+                var path = new FileInfo(sourceDir + Path.DirectorySeparatorChar + subPath);
+
+                if (!path.Exists)
+                {
+                    return false;
+                }
+
+                var targetPath = new FileInfo(targetDir + Path.DirectorySeparatorChar + subPath);
+                targetPath.Directory.Create();
+
+                path.CopyTo(targetPath.FullName);
+
+                return true;
             }
         }
 
@@ -115,8 +268,8 @@ namespace AIHelper.Install.UpdateMaker
 
                 foreach(var contentTypeParser in new ContentTypeParser[] 
                 { 
-                    new ContentTypeParserDirs(), 
-                    new ContentTypeParserFiles() 
+                    new ContentTypeParserDirs(infoIni, _parameter), 
+                    new ContentTypeParserFiles(infoIni, _parameter) 
                 })
                 {
                     if (!contentTypeParser.IsNeedToCopy) continue;
@@ -228,147 +381,6 @@ namespace AIHelper.Install.UpdateMaker
             gameupdateini.WriteFile();
 
             Process.Start(updateDir);
-
-            return true;
-        }
-
-        private void CopyFiles(HashSet<string> parameterFiles, string parameterGameDir, string parameterUpdateDir)
-        {
-            if (parameterFiles == null || !Directory.Exists(parameterGameDir))
-            {
-                return;
-            }
-
-            bool getAll = false;
-            bool firstCheck = true;
-            foreach (var subPath in parameterFiles)
-            {
-                if (firstCheck)
-                {
-                    firstCheck = false;
-
-                    if (string.IsNullOrWhiteSpace(subPath)) // first subpath is invalid
-                    {
-                        break;
-                    }
-                    else if (subPath == "*") // parameter * means copy all files
-                    {
-                        getAll = true;
-                        break;
-                    }
-                }
-
-                if (CopyFileBySubPath(subPath, parameterGameDir, parameterUpdateDir))
-                {
-                    _parameter.IsAnyFileCopied = true;
-                }
-            }
-
-            if (getAll)
-            {
-                foreach (var file in Directory.EnumerateFiles(parameterGameDir, "*"))
-                {
-                    if (_useBlacklist && file.ContainsAnyFrom(_parameter.blacklist)) continue;
-
-                    var subPath = file.Replace(parameterGameDir, string.Empty);
-                    if (CopyFileBySubPath(subPath, parameterGameDir, parameterUpdateDir, copyAll: true))
-                    {
-                        _parameter.IsAnyFileCopied = true;
-                    }
-                }
-            }
-        }
-
-        private bool CopyFileBySubPath(string subPath, string sourceDir, string targetDir, bool copyAll = false)
-        {
-            if (_useBlacklist && copyAll && _parameter.blacklist.Contains(_parameter.DirName + "\\" + subPath)) // dirname before because blacklist record is starts with sourceDir name
-            {
-                _removeFilesList.Add(subPath);
-                return false;
-            }
-
-            var path = new FileInfo(sourceDir + Path.DirectorySeparatorChar + subPath);
-
-            if (!path.Exists)
-            {
-                return false;
-            }
-
-            var targetPath = new FileInfo(targetDir + Path.DirectorySeparatorChar + subPath);
-            targetPath.Directory.Create();
-
-            path.CopyTo(targetPath.FullName);
-
-            return true;
-        }
-
-        private void CopyDirs(string[] parameterDirs, string parameterGameDir, string parameterUpdateDir)
-        {
-            if (string.IsNullOrWhiteSpace(parameterDirs[0]) || !Directory.Exists(parameterGameDir))
-            {
-                return;
-            }
-
-            bool getAll = false;
-            bool firstCheck = true;
-            foreach (var subPath in parameterDirs)
-            {
-                if (firstCheck)
-                {
-                    firstCheck = false;
-
-                    if (subPath == null || subPath == "")
-                    {
-                        break;
-                    }
-                    else if (subPath == "*")
-                    {
-                        getAll = true;
-                        break;
-                    }
-                }
-
-                if (CopyDirBySubPath(subPath, parameterGameDir, parameterUpdateDir))
-                {
-                    _parameter.IsAnyFileCopied = true;
-                }
-            }
-
-            if (getAll)
-            {
-                foreach (var dir in Directory.EnumerateDirectories(parameterGameDir, "*"))
-                {
-                    if (_useBlacklist && dir.ContainsAnyFrom(_parameter.blacklist)) continue;
-
-                    var subPath = dir.Replace(parameterGameDir + Path.DirectorySeparatorChar, string.Empty);
-
-                    if (CopyDirBySubPath(subPath, parameterGameDir, parameterUpdateDir))
-                    {
-                        _parameter.IsAnyFileCopied = true;
-                    }
-                }
-            }
-        }
-
-        private bool CopyDirBySubPath(string subPath, string sourceDir, string targetDir)
-        {
-            if (_useBlacklist && _parameter.blacklist.Contains(_parameter.DirName + Path.DirectorySeparatorChar + subPath))
-            {
-                _removeDirsList.Add(subPath);
-                return false;
-            }
-
-            var path = new DirectoryInfo(sourceDir + Path.DirectorySeparatorChar + subPath);
-
-            if (!path.Exists)
-            {
-                return false;
-            }
-
-            var targetPath = new DirectoryInfo(targetDir + Path.DirectorySeparatorChar + subPath);
-            targetPath.Parent.Create();
-
-            path.CopyAll(targetPath, exclusions: _parameter.blacklist);
 
             return true;
         }

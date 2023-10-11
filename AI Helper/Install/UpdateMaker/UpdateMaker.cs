@@ -1,6 +1,7 @@
 ﻿using AIHelper.Manage;
 using AIHelper.Manage.Update;
 using INIFileMan;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -335,6 +336,15 @@ namespace AIHelper.Install.UpdateMaker
                 }
             }
 
+            WriteUpdateIni(infoIni, updateDir, contentTypeParsers);
+
+            Process.Start(updateDir);
+
+            return true;
+        }
+
+        private void WriteUpdateIni(INIFileMan.INIFile ini, string updateDir, ContentTypeParser[] contentTypeParsers)
+        {
             var gameupdateini = ManageIni.GetINIFile(Path.Combine(updateDir, ManageSettings.GameUpdateInstallerIniFileName));
             gameupdateini.SetKey("", "GameFolderName", ManageSettings.CurrentGameDirName);
             gameupdateini.SetKey("", "IsRoot", "true");
@@ -357,19 +367,15 @@ namespace AIHelper.Install.UpdateMaker
                 gameupdateini.SetKey("", contentTypeParser.RemoveKeyName, string.Join(",", contentTypeParser.RemoveList));
             }
             // set defaults from maker
-            if (infoIni.SectionExistsAndNotEmpty("Default"))
+            if (ini.SectionExistsAndNotEmpty("Default"))
             {
-                foreach (var parameter in infoIni.GetSectionKeyValuePairs("Default"))
+                foreach (var parameter in ini.GetSectionKeyValuePairs("Default"))
                 {
                     gameupdateini.SetKey("", parameter.Key, parameter.Value);
                 }
             }
 
             gameupdateini.WriteFile();
-
-            Process.Start(updateDir);
-
-            return true;
         }
     }
 }

@@ -22,15 +22,37 @@ namespace AIHelper.Install.UpdateMaker
 
             public bool IsNeedToCopy { get => Ini.KeyExists("", PathsKeyName); }
             protected abstract string PathsKeyName { get; }
+            protected abstract string BlacklistKeyName { get; }
+            public abstract string RemoveKeyName { get; }
+            public HashSet<string> RemoveList = new HashSet<string>();
+            protected bool UseBlacklist = false;
 
             public void Copy(string gameDirPath, string updateDirPath)
             {
+                var pathsValue = Ini.GetKey("", BlacklistKeyName);
+                if (pathsValue != null)
+                {
+                    var blacklistedPaths = pathsValue.Split(',').ToHashSet();
+                    if (blacklistedPaths.Count > 0)
+                    {
+                        UseBlacklist = true;
+
+                        foreach (var subpath in blacklistedPaths)
+                        {
+                            var blacklistedSubPath = gameDirPath + Path.DirectorySeparatorChar + subpath;
+                            if (Directory.Exists(blacklistedSubPath) && !RemoveList.Contains(subpath))
+                            {
+                                RemoveList.Add(subpath);
+                            }
+                        }
+                    }
+                }
+
                 var paths = Ini.GetKey("", PathsKeyName).Split(',').Distinct().ToHashSet();
                 Copy(paths, gameDirPath, updateDirPath);
             }
             protected abstract void Copy(HashSet<string> paths, string gameDirPath, string updateDirPath);
 
-            public abstract void RemoveBlacklisted(string gameDirPath, string updateDirPath);
         }
         class ContentTypeParserDirs : ContentTypeParser
         {
@@ -42,12 +64,12 @@ namespace AIHelper.Install.UpdateMaker
 
             protected override void Copy(HashSet<string> paths, string gameDirPath, string updateDirPath)
             {
+                CopyDirs(paths, gameDirPath, updateDirPath);
             }
 
-            public override void RemoveBlacklisted(string gameDirPath, string updateDirPath)
-            {
-                throw new System.NotImplementedException();
-            }
+            protected override string BlacklistKeyName => "BlacklistDirs";
+
+            public override string RemoveKeyName => "RemoveDirs";
 
             private void CopyDirs(HashSet<string> parameterDirs, string parameterGameDir, string parameterUpdateDir)
             {
@@ -99,9 +121,9 @@ namespace AIHelper.Install.UpdateMaker
 
             private bool CopyDirBySubPath(string subPath, string sourceDir, string targetDir)
             {
-                if (_useBlacklist && UpdateMaker.blacklist.Contains(UpdateMaker.DirName + Path.DirectorySeparatorChar + subPath))
+                if (UseBlacklist && UpdateMaker.blacklist.Contains(UpdateMaker.DirName + Path.DirectorySeparatorChar + subPath))
                 {
-                    _removeDirsList.Add(subPath);
+                    RemoveList.Add(subPath);
                     return false;
                 }
 
@@ -133,10 +155,9 @@ namespace AIHelper.Install.UpdateMaker
                 CopyFiles(paths, gameDirPath, updateDirPath);
             }
 
-            public override void RemoveBlacklisted(string gameDirPath, string updateDirPath)
-            {
-                throw new System.NotImplementedException();
-            }
+            protected override string BlacklistKeyName => "BlacklistFiles";
+
+            public override string RemoveKeyName => "RemoveFiles";
 
             private void CopyFiles(HashSet<string> parameterFiles, string parameterGameDir, string parameterUpdateDir)
             {
@@ -187,9 +208,9 @@ namespace AIHelper.Install.UpdateMaker
 
             private bool CopyFileBySubPath(string subPath, string sourceDir, string targetDir, bool copyAll = false)
             {
-                if (_useBlacklist && copyAll && UpdateMaker.blacklist.Contains(UpdateMaker.DirName + "\\" + subPath)) // dirname before because blacklist record is starts with sourceDir name
+                if (UseBlacklist && copyAll && UpdateMaker.blacklist.Contains(UpdateMaker.DirName + "\\" + subPath)) // dirname before because blacklist record is starts with sourceDir name
                 {
-                    _removeFilesList.Add(subPath);
+                    RemoveList.Add(subPath);
                     return false;
                 }
 

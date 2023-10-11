@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
-using AIHelper.Install.UpdateMaker.ContentTypeParsers;
 
 namespace AIHelper.Install.UpdateMaker
 {

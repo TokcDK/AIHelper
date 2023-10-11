@@ -1,4 +1,5 @@
 ﻿using AIHelper.Manage;
+using INIFileMan;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,6 +9,54 @@ namespace AIHelper.Install.UpdateMaker
 {
     class UpdateMaker
     {
+        abstract class ContentTypeParser
+        {
+            protected INIFileMan.INIFile Ini;
+            protected UpdateMakerBase UpdateMaker;
+
+            protected ContentTypeParser(INIFileMan.INIFile ini, UpdateMakerBase updateMaker)
+            {
+                Ini = ini;
+                UpdateMaker = updateMaker;
+            }
+
+            public bool IsNeedToCopy { get => Ini.KeyExists("", PathsKeyName); }
+            protected abstract string PathsKeyName { get; }
+
+            public abstract void Copy(string gameDirPath, string updateDirPath);
+
+            public abstract void RemoveBlacklisted(string gameDirPath, string updateDirPath);
+        }
+        class ContentTypeParserDirs : ContentTypeParser
+        {
+            protected override string PathsKeyName => UpdateMaker.DirsKey;
+
+            public override void Copy(string gameDirPath, string updateDirPath)
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public override void RemoveBlacklisted(string gameDirPath, string updateDirPath)
+            {
+                throw new System.NotImplementedException();
+            }
+        }
+        class ContentTypeParserFiles : ContentTypeParser
+        {
+            protected override string PathsKeyName => UpdateMaker.Fi;
+
+            public override void Copy(string gameDirPath, string updateDirPath)
+            {
+                throw new System.NotImplementedException();
+            }
+
+            public override void RemoveBlacklisted(string gameDirPath, string updateDirPath)
+            {
+                throw new System.NotImplementedException();
+            }
+        }
+
+
         UpdateMakerBase _parameter;
         Dictionary<string, string> _gameupdatekeys;
         bool _useBlacklist;
@@ -64,18 +113,32 @@ namespace AIHelper.Install.UpdateMaker
                 var parameterGameDir = Path.Combine(ManageSettings.CurrentGameDirPath, parameter.DirName);
                 var parameterUpdateDir = Path.Combine(updateGameDir, parameter.DirName);
 
+                foreach(var contentTypeParser in new ContentTypeParser[] 
+                { 
+                    new ContentTypeParserDirs(), 
+                    new ContentTypeParserFiles() 
+                })
+                {
+                    if (!contentTypeParser.IsNeedToCopy) continue;
+
+                    contentTypeParser.Copy(parameterGameDir, parameterUpdateDir);
+
+                    _gameupdatekeys.Add("Update" + parameter.DirName, parameter.IsAnyFileCopied.ToString().ToLowerInvariant());
+
+                    contentTypeParser.RemoveBlacklisted(parameterGameDir, parameterUpdateDir);
+                }
+
                 if (infoIni.KeyExists(parameter.DirsKey))
                 {
                     var parameterDirs = infoIni.GetKey("", parameter.DirsKey).Split(',');
 
+                    CopyDirs(parameterDirs, parameterGameDir, parameterUpdateDir);
+
+                    _gameupdatekeys.Add("Update" + parameter.DirName, parameter.IsAnyFileCopied.ToString().ToLowerInvariant());
+
                     _parameter.blacklist = blacklistDirs;
                     _useBlacklist = !string.IsNullOrWhiteSpace(blValueDirs) && _parameter.blacklist.Count > 0;
-
-                    ParseDirs(parameterDirs, parameterGameDir, parameterUpdateDir);
-
-                    _gameupdatekeys.Add("Update" + parameter.DirName, parameter.Ret.ToString().ToLowerInvariant());
-
-                    if (_useBlacklist && parameter.Ret)
+                    if (_useBlacklist && parameter.IsAnyFileCopied)
                     {
                         foreach (var subpath in _parameter.blacklist)
                         {
@@ -96,19 +159,19 @@ namespace AIHelper.Install.UpdateMaker
                     _parameter.blacklist = _parameter.blacklist.Count > 0 ? blacklistFiles.Concat(_parameter.blacklist).ToHashSet() : blacklistFiles;
                     _useBlacklist = !string.IsNullOrWhiteSpace(blValueFiles) && _parameter.blacklist.Count > 0;
 
-                    ParseFiles(parameterFiles, parameterGameDir, parameterUpdateDir);
+                    CopyFiles(parameterFiles, parameterGameDir, parameterUpdateDir);
 
                     var key = "Update" + parameter.DirName;
                     if (!_gameupdatekeys.ContainsKey(key))
                     {
-                        _gameupdatekeys.Add(key, parameter.Ret.ToString().ToLowerInvariant());
+                        _gameupdatekeys.Add(key, parameter.IsAnyFileCopied.ToString().ToLowerInvariant());
                     }
                     else if (_gameupdatekeys[key] == "false")
                     {
-                        _gameupdatekeys[key] = parameter.Ret.ToString().ToLowerInvariant();
+                        _gameupdatekeys[key] = parameter.IsAnyFileCopied.ToString().ToLowerInvariant();
                     }
 
-                    if (_useBlacklist && parameter.Ret)
+                    if (_useBlacklist && parameter.IsAnyFileCopied)
                     {
                         foreach (var subpath in _parameter.blacklist)
                         {
@@ -169,7 +232,7 @@ namespace AIHelper.Install.UpdateMaker
             return true;
         }
 
-        private void ParseFiles(HashSet<string> parameterFiles, string parameterGameDir, string parameterUpdateDir)
+        private void CopyFiles(HashSet<string> parameterFiles, string parameterGameDir, string parameterUpdateDir)
         {
             if (parameterFiles == null || !Directory.Exists(parameterGameDir))
             {
@@ -197,7 +260,7 @@ namespace AIHelper.Install.UpdateMaker
 
                 if (CopyFileBySubPath(subPath, parameterGameDir, parameterUpdateDir))
                 {
-                    _parameter.Ret = true;
+                    _parameter.IsAnyFileCopied = true;
                 }
             }
 
@@ -210,7 +273,7 @@ namespace AIHelper.Install.UpdateMaker
                     var subPath = file.Replace(parameterGameDir, string.Empty);
                     if (CopyFileBySubPath(subPath, parameterGameDir, parameterUpdateDir, copyAll: true))
                     {
-                        _parameter.Ret = true;
+                        _parameter.IsAnyFileCopied = true;
                     }
                 }
             }
@@ -239,7 +302,7 @@ namespace AIHelper.Install.UpdateMaker
             return true;
         }
 
-        private void ParseDirs(string[] parameterDirs, string parameterGameDir, string parameterUpdateDir)
+        private void CopyDirs(string[] parameterDirs, string parameterGameDir, string parameterUpdateDir)
         {
             if (string.IsNullOrWhiteSpace(parameterDirs[0]) || !Directory.Exists(parameterGameDir))
             {
@@ -267,7 +330,7 @@ namespace AIHelper.Install.UpdateMaker
 
                 if (CopyDirBySubPath(subPath, parameterGameDir, parameterUpdateDir))
                 {
-                    _parameter.Ret = true;
+                    _parameter.IsAnyFileCopied = true;
                 }
             }
 
@@ -281,7 +344,7 @@ namespace AIHelper.Install.UpdateMaker
 
                     if (CopyDirBySubPath(subPath, parameterGameDir, parameterUpdateDir))
                     {
-                        _parameter.Ret = true;
+                        _parameter.IsAnyFileCopied = true;
                     }
                 }
             }

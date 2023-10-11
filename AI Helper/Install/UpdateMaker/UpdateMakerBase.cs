@@ -10,6 +10,6 @@ namespace AIHelper.Install.UpdateMaker
         public virtual string DirsKey => DirName + "Dirs";
         public virtual string FilesKey => DirName + "Files";
 
-        public bool Ret;
+        public bool IsAnyFileCopied;
     }
 }

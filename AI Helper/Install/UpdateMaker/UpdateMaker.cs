@@ -1,4 +1,5 @@
 ﻿using AIHelper.Manage;
+using AIHelper.Manage.Update;
 using INIFileMan;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,34 +26,42 @@ namespace AIHelper.Install.UpdateMaker
             protected abstract string BlacklistKeyName { get; }
             public abstract string RemoveKeyName { get; }
             public HashSet<string> RemoveList = new HashSet<string>();
+            public HashSet<string> IncludedList = new HashSet<string>();
             protected bool UseBlacklist = false;
 
             public void Copy(string gameDirPath, string updateDirPath)
             {
+                var includedPathsValue = Ini.GetKey("", PathsKeyName);
+                if (includedPathsValue != null)
+                {
+                    IncludedList = includedPathsValue.Split(',').Distinct().ToHashSet();
+                }
+
                 var pathsValue = Ini.GetKey("", BlacklistKeyName);
                 if (pathsValue != null)
                 {
-                    var blacklistedPaths = pathsValue.Split(',').ToHashSet();
-                    if (blacklistedPaths.Count > 0)
+                    RemoveList = pathsValue.Split(',').ToHashSet();
+                    UpdateMaker.blacklist = RemoveList;
+                    if (RemoveList.Count > 0)
                     {
                         UseBlacklist = true;
 
-                        foreach (var subpath in blacklistedPaths)
+                        foreach (var subpath in EnumerateSubpathsToRemove(RemoveList, gameDirPath, updateDirPath))
                         {
                             var blacklistedSubPath = gameDirPath + Path.DirectorySeparatorChar + subpath;
                             if (Directory.Exists(blacklistedSubPath) && !RemoveList.Contains(subpath))
                             {
-                                RemoveList.Add(subpath);
+                                if(!RemoveList.Contains(subpath)) RemoveList.Add(subpath);
                             }
                         }
                     }
                 }
 
-                var paths = Ini.GetKey("", PathsKeyName).Split(',').Distinct().ToHashSet();
-                Copy(paths, gameDirPath, updateDirPath);
+                if (IncludedList.Count > 0) Copy(IncludedList, gameDirPath, updateDirPath);
             }
             protected abstract void Copy(HashSet<string> paths, string gameDirPath, string updateDirPath);
 
+            protected abstract IEnumerable<string> EnumerateSubpathsToRemove(HashSet<string> paths, string gameDirPath,string updateDirPath);
         }
         class ContentTypeParserDirs : ContentTypeParser
         {
@@ -107,7 +116,25 @@ namespace AIHelper.Install.UpdateMaker
                 {
                     foreach (var dir in Directory.EnumerateDirectories(parameterGameDir, "*"))
                     {
-                        if (_useBlacklist && dir.ContainsAnyFrom(UpdateMaker.blacklist)) continue;
+                        if (string.IsNullOrWhiteSpace(subpath))
+                        {
+                            continue;
+                        }
+
+                        var dirName = UpdateMaker.DirName + "\\";
+                        if (IncludedList.Contains(subpath) || (subpath.StartsWith(dirName)) && parameterFiles.Contains(subpath.Substring(dirName.Length)))
+                        {
+                            continue; // skip if file is contains in included files list
+                        }
+
+                        var blacklistedSubPath = parameterGameDir + Path.DirectorySeparatorChar + subpath;
+                        if (File.Exists(blacklistedSubPath))
+                        {
+                            //File.Delete(blacklistedSubPath);
+                            if(!RemoveList.Contains(subpath)) RemoveList.Add(subpath);
+                        }
+
+                        if (UseBlacklist && dir.ContainsAnyFrom(UpdateMaker.blacklist)) continue;
 
                         var subPath = dir.Replace(parameterGameDir + Path.DirectorySeparatorChar, string.Empty);
 
@@ -123,7 +150,7 @@ namespace AIHelper.Install.UpdateMaker
             {
                 if (UseBlacklist && UpdateMaker.blacklist.Contains(UpdateMaker.DirName + Path.DirectorySeparatorChar + subPath))
                 {
-                    RemoveList.Add(subPath);
+                    if (!RemoveList.Contains(subPath)) RemoveList.Add(subPath);
                     return false;
                 }
 
@@ -140,6 +167,18 @@ namespace AIHelper.Install.UpdateMaker
                 path.CopyAll(targetPath, exclusions: UpdateMaker.blacklist);
 
                 return true;
+            }
+
+            protected override IEnumerable<string> EnumerateSubpathsToRemove(HashSet<string> paths, string gameDirPath, string updateDirPath)
+            {
+                foreach (var subpath in paths)
+                {
+                    var blacklistedSubPath = gameDirPath + Path.DirectorySeparatorChar + subpath;
+                    if (!Directory.Exists(blacklistedSubPath)) continue;
+
+                    //Directory.Delete(blacklistedSubPath, true);
+                    yield return subpath;
+                }
             }
         }
         class ContentTypeParserFiles : ContentTypeParser
@@ -195,7 +234,7 @@ namespace AIHelper.Install.UpdateMaker
                 {
                     foreach (var file in Directory.EnumerateFiles(parameterGameDir, "*"))
                     {
-                        if (_useBlacklist && file.ContainsAnyFrom(UpdateMaker.blacklist)) continue;
+                        if (UseBlacklist && file.ContainsAnyFrom(UpdateMaker.blacklist)) continue;
 
                         var subPath = file.Replace(parameterGameDir, string.Empty);
                         if (CopyFileBySubPath(subPath, parameterGameDir, parameterUpdateDir, copyAll: true))
@@ -227,6 +266,32 @@ namespace AIHelper.Install.UpdateMaker
                 path.CopyTo(targetPath.FullName);
 
                 return true;
+            }
+
+            protected override IEnumerable<string> EnumerateSubpathsToRemove(HashSet<string> paths, string gameDirPath, string updateDirPath)
+            {
+                var updateGameDir = Path.Combine(updateDirPath, "Games", ManageSettings.CurrentGameDirName);
+
+                foreach (var subpath in paths)
+                {
+                    if (string.IsNullOrWhiteSpace(subpath))
+                    {
+                        continue;
+                    }
+
+                    var dirName = UpdateMaker.DirName + "\\";
+                    if (IncludedList.Contains(subpath) || (subpath.StartsWith(dirName)) && IncludedList.Contains(subpath.Substring(dirName.Length)))
+                    {
+                        continue; // skip if file is in included files list
+                    }
+
+                    var blacklistedSubPath = updateGameDir + Path.DirectorySeparatorChar + subpath;
+                    if (File.Exists(blacklistedSubPath))
+                    {
+                        //File.Delete(blacklistedSubPath);
+                        yield return subpath;
+                    }
+                }
             }
         }
 
@@ -280,6 +345,13 @@ namespace AIHelper.Install.UpdateMaker
 
             var updateGameDir = Path.Combine(updateDir, "Games", ManageSettings.CurrentGameDirName);
 
+
+            var contentTypeParsers = new ContentTypeParser[]
+            {
+                new ContentTypeParserDirs(infoIni, _parameter),
+                new ContentTypeParserFiles(infoIni, _parameter)
+            };
+
             foreach (var parameter in parameters)
             {
                 _parameter = parameter;
@@ -287,19 +359,13 @@ namespace AIHelper.Install.UpdateMaker
                 var parameterGameDir = Path.Combine(ManageSettings.CurrentGameDirPath, parameter.DirName);
                 var parameterUpdateDir = Path.Combine(updateGameDir, parameter.DirName);
 
-                foreach(var contentTypeParser in new ContentTypeParser[] 
-                { 
-                    new ContentTypeParserDirs(infoIni, _parameter), 
-                    new ContentTypeParserFiles(infoIni, _parameter) 
-                })
+                foreach(var contentTypeParser in contentTypeParsers)
                 {
                     if (!contentTypeParser.IsNeedToCopy) continue;
 
                     contentTypeParser.Copy(parameterGameDir, parameterUpdateDir);
 
                     _gameupdatekeys.Add("Update" + parameter.DirName, parameter.IsAnyFileCopied.ToString().ToLowerInvariant());
-
-                    contentTypeParser.RemoveBlacklisted(parameterGameDir, parameterUpdateDir);
                 }
 
                 if (infoIni.KeyExists(parameter.DirsKey))

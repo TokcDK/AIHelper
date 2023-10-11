@@ -118,6 +118,9 @@
     </Compile>
     <Compile Include="Games\Illusion\IllGames\HoneyCome.cs" />
     <Compile Include="Games\Illusion\IllGames\IllGameBase.cs" />
+    <Compile Include="Install\UpdateMaker\ContentTypeParsers\ContentTypeParserBase.cs" />
+    <Compile Include="Install\UpdateMaker\ContentTypeParsers\ContentTypeParserDirs.cs" />
+    <Compile Include="Install\UpdateMaker\ContentTypeParsers\ContentTypeParserFiles.cs" />
     <Compile Include="Manage\ManageModlistExtensions.cs" />
     <Compile Include="Manage\ManageTabs.cs" />
     <Compile Include="Forms\Other\CleanOptionsDialogForm.cs">

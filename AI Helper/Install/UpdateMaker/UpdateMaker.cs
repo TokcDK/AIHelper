@@ -15,12 +15,11 @@ namespace AIHelper.Install.UpdateMaker
         abstract class ContentTypeParser
         {
             protected INIFileMan.INIFile Ini;
-            protected UpdateMakerBase UpdateMaker;
+            internal UpdateMakerBase UpdateMaker;
 
-            protected ContentTypeParser(INIFileMan.INIFile ini, UpdateMakerBase updateMaker)
+            protected ContentTypeParser(INIFileMan.INIFile ini)
             {
                 Ini = ini;
-                UpdateMaker = updateMaker;
             }
 
             public bool IsNeedToCopy { get => Ini.KeyExists("", PathsKeyName); }
@@ -67,7 +66,7 @@ namespace AIHelper.Install.UpdateMaker
         }
         class ContentTypeParserDirs : ContentTypeParser
         {
-            public ContentTypeParserDirs(INIFile ini, UpdateMakerBase updateMaker) : base(ini, updateMaker)
+            public ContentTypeParserDirs(INIFile ini) : base(ini)
             {
             }
 
@@ -162,7 +161,7 @@ namespace AIHelper.Install.UpdateMaker
         }
         class ContentTypeParserFiles : ContentTypeParser
         {
-            public ContentTypeParserFiles(INIFile ini, UpdateMakerBase updateMaker) : base(ini, updateMaker)
+            public ContentTypeParserFiles(INIFile ini) : base(ini)
             {
             }
 
@@ -274,9 +273,7 @@ namespace AIHelper.Install.UpdateMaker
             }
         }
 
-
-        UpdateMakerBase _parameter;
-        Dictionary<string, string> _gameupdatekeys;
+        Dictionary<string, string> _gameupdatekeys = new Dictionary<string, string>();
 
         public bool MakeUpdate()
         {
@@ -292,8 +289,6 @@ namespace AIHelper.Install.UpdateMaker
                 new UpdateMakerMods(),
                 new UpdateMakerData()
             };
-
-            _gameupdatekeys = new Dictionary<string, string>();
             
             var infoIni = ManageIni.GetINIFile(updateMakeInfoFilePath);
             var updateDir = Path.Combine(ManageSettings.CurrentGameDirPath, "Updates", "Update");
@@ -301,8 +296,8 @@ namespace AIHelper.Install.UpdateMaker
 
             var contentTypeParsers = new ContentTypeParser[]
             {
-                new ContentTypeParserDirs(infoIni, _parameter),
-                new ContentTypeParserFiles(infoIni, _parameter)
+                new ContentTypeParserDirs(infoIni),
+                new ContentTypeParserFiles(infoIni)
             };
 
             CopyAndAddUpdatePaths(parameters, contentTypeParsers, updateDir);
@@ -333,24 +328,24 @@ namespace AIHelper.Install.UpdateMaker
             return true;
         }
 
-        private void CopyAndAddUpdatePaths(List<UpdateMakerBase> parameters, ContentTypeParser[] contentTypeParsers, string updateDir)
+        private void CopyAndAddUpdatePaths(List<UpdateMakerBase> updateMakers, ContentTypeParser[] contentTypeParsers, string updateDir)
         {
             var updateGameDir = Path.Combine(updateDir, "Games", ManageSettings.CurrentGameDirName);
 
-            foreach (var parameter in parameters)
+            foreach (var updateMaker in updateMakers)
             {
-                _parameter = parameter;
-
-                var parameterGameDir = Path.Combine(ManageSettings.CurrentGameDirPath, parameter.DirName);
-                var parameterUpdateDir = Path.Combine(updateGameDir, parameter.DirName);
+                var parameterGameDir = Path.Combine(ManageSettings.CurrentGameDirPath, updateMaker.DirName);
+                var parameterUpdateDir = Path.Combine(updateGameDir, updateMaker.DirName);
 
                 foreach (var contentTypeParser in contentTypeParsers)
                 {
+                    contentTypeParser.UpdateMaker = updateMaker;
+
                     if (!contentTypeParser.IsNeedToCopy) continue;
 
                     contentTypeParser.Copy(parameterGameDir, parameterUpdateDir);
 
-                    _gameupdatekeys.Add("Update" + parameter.DirName, parameter.IsAnyFileCopied.ToString().ToLowerInvariant());
+                    _gameupdatekeys.Add("Update" + updateMaker.DirName, updateMaker.IsAnyFileCopied.ToString().ToLowerInvariant());
                 }
             }
         }

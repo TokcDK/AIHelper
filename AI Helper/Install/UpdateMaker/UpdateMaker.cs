@@ -82,7 +82,16 @@ namespace AIHelper.Install.UpdateMaker
 
                     contentTypeParser.Copy(parameterGameDir, parameterUpdateDir);
 
-                    _gameupdatekeys.Add("Update" + updateMaker.DirName, updateMaker.IsAnyFileCopied.ToString().ToLowerInvariant());
+                    var keyName = "Update" + updateMaker.DirName;
+                    var keyValue = updateMaker.IsAnyFileCopied.ToString().ToLowerInvariant();
+                    if (!_gameupdatekeys.ContainsKey(keyName))
+                    {
+                        _gameupdatekeys.Add(keyName, keyValue);
+                    }
+                    else if(updateMaker.IsAnyFileCopied && _gameupdatekeys[keyName] == "false")
+                    {
+                        _gameupdatekeys[keyName] = "true";
+                    }
                 }
             }
         }

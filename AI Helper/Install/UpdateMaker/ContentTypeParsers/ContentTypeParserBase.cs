@@ -16,7 +16,7 @@ namespace AIHelper.Install.UpdateMaker
                 Ini = ini;
             }
 
-            public bool IsNeedToCopy { get => Ini.KeyExists("", PathsKeyName); }
+            public bool IsNeedToCopy { get => Ini.KeyExists(PathsKeyName); }
             protected abstract string PathsKeyName { get; }
             protected abstract string BlacklistKeyName { get; }
             public abstract string RemoveKeyName { get; }

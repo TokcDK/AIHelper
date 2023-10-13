@@ -73,6 +73,7 @@ namespace AIHelper.Install.UpdateMaker
             {
                 var parameterGameDir = Path.Combine(ManageSettings.CurrentGameDirPath, updateMaker.DirName);
                 var parameterUpdateDir = Path.Combine(updateGameDir, updateMaker.DirName);
+                var keyName = "Update" + updateMaker.DirName;
 
                 foreach (var contentTypeParser in contentTypeParsers)
                 {
@@ -82,17 +83,21 @@ namespace AIHelper.Install.UpdateMaker
 
                     contentTypeParser.Copy(parameterGameDir, parameterUpdateDir);
 
-                    var keyName = "Update" + updateMaker.DirName;
                     var keyValue = updateMaker.IsAnyFileCopied.ToString().ToLowerInvariant();
-                    if (!_gameupdatekeys.ContainsKey(keyName))
-                    {
-                        _gameupdatekeys.Add(keyName, keyValue);
-                    }
-                    else if(updateMaker.IsAnyFileCopied && _gameupdatekeys[keyName] == "false")
-                    {
-                        _gameupdatekeys[keyName] = "true";
-                    }
+                    UpdateGameUpdateKey(_gameupdatekeys, keyName, keyValue, updateMaker);
                 }
+            }
+        }
+
+        private void UpdateGameUpdateKey(Dictionary<string, string> gameupdatekeys, string keyName, string keyValue, UpdateMakerBase updateMaker)
+        {
+            if (!_gameupdatekeys.ContainsKey(keyName))
+            {
+                _gameupdatekeys.Add(keyName, keyValue);
+            }
+            else if (updateMaker.IsAnyFileCopied && _gameupdatekeys[keyName] == "false")
+            {
+                _gameupdatekeys[keyName] = "true";
             }
         }
 

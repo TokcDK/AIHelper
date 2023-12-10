@@ -30,9 +30,9 @@ FOR %%D IN (zh-Hans zh-Hant cs de es fr it ja ko pl pt-BR ru tr) DO (
 
 set moBasicGamesSubPath=MO\plugins\basic_games
 set modOrganizerBasicGamesPluginsDirSubPath=%moBasicGamesSubPath%\games
-set projectBasicGamesPluginsDir=%projectResDir%\%modOrganizerBasicGamesPluginsDirSubPath%
+set projectBasicGamesPluginsDir=%projectBuildDir%\%modOrganizerBasicGamesPluginsDirSubPath%
 set targetBasicGamesPluginsDir=%targetDir%%modOrganizerBasicGamesPluginsDirSubPath%
-if exist "%projectBasicGamesPluginsDir%" (
+if exist "%projectBasicGamesPluginsDir%\" (
 	echo copy Mod organizer basic game plugins..
 	robocopy "%projectBasicGamesPluginsDir% " "%targetBasicGamesPluginsDir%\ " *.py /MIR /COPYALL /B /R:3 /W:1
 )

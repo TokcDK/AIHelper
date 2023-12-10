@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 
-from PyQt5.QtCore import QDir, QFileInfo, QStandardPaths
+from PyQt6.QtCore import QDir, QFileInfo, QStandardPaths
 
 import mobase
 

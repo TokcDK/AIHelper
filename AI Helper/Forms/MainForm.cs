@@ -114,19 +114,8 @@ namespace AIHelper
             {
                 MessageBox.Show(T._("Application will exit now. You can manually put Mod Organizer in MO folder nex to the program."));
                 Directory.CreateDirectory("MO");
-                using (var process = new Process())
-                {
-                    try
-                    {
-                        process.StartInfo.UseShellExecute = true;
-                        process.StartInfo.FileName = "https://github.com/Modorganizer2/modorganizer/releases";
-                        process.Start();
-                    }
-                    catch (Exception e)
-                    {
-                        _log.Error($"Failed to open link to MO github page. Error:{e.Message}");
-                    }
-                }
+
+                OpenModOrganizerWebPage();
 
                 this.Close();
                 Application.Exit();
@@ -134,6 +123,23 @@ namespace AIHelper
             }
 
             await new Updater(null).Update(new List<UpdateTargetBase>() { new Mo(new UpdateInfo(null)) }).ConfigureAwait(true);
+        }
+
+        private void OpenModOrganizerWebPage()
+        {
+            using (var process = new Process())
+            {
+                try
+                {
+                    process.StartInfo.UseShellExecute = true;
+                    process.StartInfo.FileName = "https://github.com/Modorganizer2/modorganizer/releases";
+                    process.Start();
+                }
+                catch (Exception e)
+                {
+                    _log.Error($"Failed to open link to MO github page. Error:{e.Message}");
+                }
+            }
         }
 
         //private void FixOldMODirPath()

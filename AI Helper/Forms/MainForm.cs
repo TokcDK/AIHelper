@@ -73,6 +73,37 @@ namespace AIHelper
 
             //FixOldMODirPath();
 
+            await CheckUpdateModOrganizer();
+
+            ManageSettings.MOIsNew = IsMo23OrNever();
+
+            ManageModOrganizer.RedefineGameMoData();
+
+            ManageModOrganizer.CleanMoFolder();
+            //
+            ManageModOrganizer.CheckBaseGamesPy();
+            //
+            ManageSettings.Games.Game.GameName = ManageModOrganizer.GetMoBasicGamePluginGameName();
+
+            CleanLog();
+
+            SetMoMode(false);
+            ManageSettings.Games.Game.InitActions();
+
+            SetLocalizationStrings();
+
+            UpdateData();
+
+            //if (Registry.GetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", null) == null)
+            //{
+            //    FixRegistryButton.Visible = true;
+            //}
+
+            ManageSettings.INITDone = true;
+        }
+
+        private async Task CheckUpdateModOrganizer()
+        {
             if (!File.Exists(ManageSettings.AppMOexePath))
             {
                 var moDownloadOffer = MessageBox.Show(T._("Mod Organizer is missing in the app dir. Need to download latest version for to be able to manage mods by MO. Download latest?"), T._("Mod Organizer not found!"), MessageBoxButtons.OKCancel);
@@ -101,32 +132,6 @@ namespace AIHelper
 
                 await new Updater(null).Update(new List<UpdateTargetBase>() { new Mo(new UpdateInfo(null)) }).ConfigureAwait(true);
             }
-
-            ManageSettings.MOIsNew = IsMo23OrNever();
-
-            ManageModOrganizer.RedefineGameMoData();
-
-            ManageModOrganizer.CleanMoFolder();
-            //
-            ManageModOrganizer.CheckBaseGamesPy();
-            //
-            ManageSettings.Games.Game.GameName = ManageModOrganizer.GetMoBasicGamePluginGameName();
-
-            CleanLog();
-
-            SetMoMode(false);
-            ManageSettings.Games.Game.InitActions();
-
-            SetLocalizationStrings();
-
-            UpdateData();
-
-            //if (Registry.GetValue(@"HKEY_CURRENT_USER\Software\illusion\AI-Syoujyo\AI-SyoujyoTrial", "INSTALLDIR", null) == null)
-            //{
-            //    FixRegistryButton.Visible = true;
-            //}
-
-            ManageSettings.INITDone = true;
         }
 
         //private void FixOldMODirPath()

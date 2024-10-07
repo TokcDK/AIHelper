@@ -104,34 +104,36 @@ namespace AIHelper
 
         private async Task CheckUpdateModOrganizer()
         {
-            if (!File.Exists(ManageSettings.AppMOexePath))
+            if (File.Exists(ManageSettings.AppMOexePath))
             {
-                var moDownloadOffer = MessageBox.Show(T._("Mod Organizer is missing in the app dir. Need to download latest version for to be able to manage mods by MO. Download latest?"), T._("Mod Organizer not found!"), MessageBoxButtons.OKCancel);
-                if (DialogResult.OK != moDownloadOffer)
-                {
-                    MessageBox.Show(T._("Application will exit now. You can manually put Mod Organizer in MO folder nex to the program."));
-                    Directory.CreateDirectory("MO");
-                    using (var process = new Process())
-                    {
-                        try
-                        {
-                            process.StartInfo.UseShellExecute = true;
-                            process.StartInfo.FileName = "https://github.com/Modorganizer2/modorganizer/releases";
-                            process.Start();
-                        }
-                        catch (Exception e)
-                        {
-                            _log.Error($"Failed to open link to MO github page. Error:{e.Message}");
-                        }
-                    }
+                return;
+            }
 
-                    this.Close();
-                    Application.Exit();
-                    return;
+            var moDownloadOffer = MessageBox.Show(T._("Mod Organizer is missing in the app dir. Need to download latest version for to be able to manage mods by MO. Download latest?"), T._("Mod Organizer not found!"), MessageBoxButtons.OKCancel);
+            if (DialogResult.OK != moDownloadOffer)
+            {
+                MessageBox.Show(T._("Application will exit now. You can manually put Mod Organizer in MO folder nex to the program."));
+                Directory.CreateDirectory("MO");
+                using (var process = new Process())
+                {
+                    try
+                    {
+                        process.StartInfo.UseShellExecute = true;
+                        process.StartInfo.FileName = "https://github.com/Modorganizer2/modorganizer/releases";
+                        process.Start();
+                    }
+                    catch (Exception e)
+                    {
+                        _log.Error($"Failed to open link to MO github page. Error:{e.Message}");
+                    }
                 }
 
-                await new Updater(null).Update(new List<UpdateTargetBase>() { new Mo(new UpdateInfo(null)) }).ConfigureAwait(true);
+                this.Close();
+                Application.Exit();
+                return;
             }
+
+            await new Updater(null).Update(new List<UpdateTargetBase>() { new Mo(new UpdateInfo(null)) }).ConfigureAwait(true);
         }
 
         //private void FixOldMODirPath()

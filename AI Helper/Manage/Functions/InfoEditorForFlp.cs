@@ -28,6 +28,22 @@ namespace AIHelper.Manage.Functions
         }
         public override Color? ForeColor => Color.LightSkyBlue;
 
+
+        static RichTextBox _logtb;
+        public static RichTextBox Logtb 
+        {
+            get 
+            {
+                if (_logtb == null) 
+                { 
+                    _logtb = new RichTextBox() { ReadOnly = true, Width = 200 }; 
+                }
+
+                return _logtb;
+            }
+            set => _logtb = value; 
+        }
+
         readonly int _elHeight = 13;
 
         readonly List<UpdateInfoData> _updateInfoDatas = new List<UpdateInfoData>();
@@ -35,7 +51,10 @@ namespace AIHelper.Manage.Functions
         bool _isReading;
         bool _isWriting;
 
-        static readonly RichTextBox _logtb = new RichTextBox() { ReadOnly = true, Width = 200 };
+        private static RichTextBox InitLogTextBox(RichTextBox _logtb)
+        {
+            return _logtb ?? new RichTextBox() { ReadOnly = true, Width = 200 };
+        }
 
         static void Log(string v) { _logtb.Text += v + "\r\n"; }
 

@@ -28,21 +28,7 @@ namespace AIHelper.Manage.Functions
         }
         public override Color? ForeColor => Color.LightSkyBlue;
 
-
-        static RichTextBox _logtb;
-        public static RichTextBox Logtb 
-        {
-            get 
-            {
-                if (_logtb == null) 
-                { 
-                    _logtb = new RichTextBox() { ReadOnly = true, Width = 200 }; 
-                }
-
-                return _logtb;
-            }
-            set => _logtb = value; 
-        }
+        public static RichTextBox Logtb { get; set; }
 
         readonly int _elHeight = 13;
 
@@ -51,9 +37,12 @@ namespace AIHelper.Manage.Functions
         bool _isReading;
         bool _isWriting;
 
-        private static RichTextBox InitLogTextBox(RichTextBox _logtb)
+        private static void InitLogTextBox()
         {
-            return _logtb ?? new RichTextBox() { ReadOnly = true, Width = 200 };
+            if (Logtb == null || !Logtb.IsAccessible || Logtb.IsDisposed)
+            {
+                Logtb = new RichTextBox() { ReadOnly = true, Width = 200 };
+            }
         }
 
         static void Log(string v) { Logtb.Text += v + "\r\n"; }
@@ -415,6 +404,7 @@ namespace AIHelper.Manage.Functions
             });
             mainFlp.Controls.Add(DownloadAndAddMod);
 
+            InitLogTextBox();
             Logtb.Width = mainFlp.Width - 10;
             mainFlp.Controls.Add(Logtb);
 

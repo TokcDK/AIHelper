@@ -56,7 +56,7 @@ namespace AIHelper.Manage.Functions
             return _logtb ?? new RichTextBox() { ReadOnly = true, Width = 200 };
         }
 
-        static void Log(string v) { _logtb.Text += v + "\r\n"; }
+        static void Log(string v) { Logtb.Text += v + "\r\n"; }
 
         internal void OpenInfoEditor()
         {
@@ -415,8 +415,8 @@ namespace AIHelper.Manage.Functions
             });
             mainFlp.Controls.Add(DownloadAndAddMod);
 
-            _logtb.Width = mainFlp.Width - 10;
-            mainFlp.Controls.Add(_logtb);
+            Logtb.Width = mainFlp.Width - 10;
+            mainFlp.Controls.Add(Logtb);
 
             p.Controls.Add(mainFlp);
 

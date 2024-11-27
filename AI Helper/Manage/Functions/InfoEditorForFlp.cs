@@ -382,17 +382,21 @@ namespace AIHelper.Manage.Functions
                         return;
                     }
 
-                    var modData = new ModData();
-                    modData.Path = info.TargetFolderPath.FullName;
-                    modData.Name = modnamePropData.TextBoxText;
-                    modData.Priority = 9999;
+                    var modData = new ModData
+                    {
+                        Path = info.TargetFolderPath.FullName,
+                        Name = modnamePropData.TextBoxText,
+                        Priority = 9999
+                    };
 
-                    var ginfo = new GitUpdateInfoData(modData);
-                    ginfo.Owner = owner;
-                    ginfo.Repository = rep;
-                    ginfo.FileStartsWith = startsWith;
-                    ginfo.FileEndsWith = endsWithPropData.TextBoxText;
-                    ginfo.VersionFromFile = verFromFile.Checked;
+                    var ginfo = new GitUpdateInfoData(modData)
+                    {
+                        Owner = owner,
+                        Repository = rep,
+                        FileStartsWith = startsWith,
+                        FileEndsWith = endsWithPropData.TextBoxText,
+                        VersionFromFile = verFromFile.Checked
+                    };
 
                     GetGHubFile(ghub, ginfo);
                 }

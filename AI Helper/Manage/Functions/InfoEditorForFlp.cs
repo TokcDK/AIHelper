@@ -49,95 +49,94 @@ namespace AIHelper.Manage.Functions
 
         internal void OpenInfoEditor()
         {
-            var f = new Form
+            var modUpdateInfosForm = new Form
             {
                 //Size = new System.Drawing.Size(680, 605),
                 Text = T._("Mods update info settings") + " (" + ManageSettings.CurrentGameDisplayingName + ")",
                 StartPosition = FormStartPosition.CenterScreen
             };
-            var tlp = new TableLayoutPanel
+            var modUpdateInfosTableLayoutPanel = new TableLayoutPanel
             {
                 RowCount = 2,
                 ColumnCount = 1,
                 Dock = DockStyle.Fill,
                 Margin = new Padding(0)
             };
-            RowStyle rs0 = new RowStyle
+            var rowStyleHeader = new RowStyle
             {
                 SizeType = SizeType.Absolute,
                 Height = 30,
             };
-            RowStyle rs1 = new RowStyle
+            var rowStyleContent = new RowStyle
             {
                 SizeType = SizeType.AutoSize
             };
-            tlp.RowStyles.Add(rs0);
-            tlp.RowStyles.Add(rs1);
+            modUpdateInfosTableLayoutPanel.RowStyles.Add(rowStyleHeader);
+            modUpdateInfosTableLayoutPanel.RowStyles.Add(rowStyleContent);
 
             // control buttons
-            var controlPanelFlp = new FlowLayoutPanel
+            var controlPanelFlowLayoutPanel = new FlowLayoutPanel
             {
                 FlowDirection = FlowDirection.LeftToRight,
                 Margin = new Padding(0),
                 AutoSize = true,
             };
-            tlp.SetRow(controlPanelFlp, 0);
-            var btnAddMod = new Button
+            modUpdateInfosTableLayoutPanel.SetRow(controlPanelFlowLayoutPanel, 0);
+            var addNewModButton = new Button
             {
                 Text = T._("Add"),
                 AutoSize = true,
                 Anchor = AnchorStyles.Left,
                 Height = 25
             };
-            var btnLoadGitInfos = new Button
+            var loadGitInfosButton = new Button
             {
                 Text = T._("All"),
                 AutoSize = true,
                 Anchor = AnchorStyles.Left,
                 Height = 25
             };
-            controlPanelFlp.Controls.Add(btnLoadGitInfos);
-            controlPanelFlp.Controls.Add(btnAddMod);
+            controlPanelFlowLayoutPanel.Controls.Add(loadGitInfosButton);
+            controlPanelFlowLayoutPanel.Controls.Add(addNewModButton);
 
-            var p = new Panel
+            var addNewModPanel = new Panel
             {
                 Dock = DockStyle.Fill,
                 Margin = new Padding(0)
             };
-            tlp.SetRow(p, 1);
+            modUpdateInfosTableLayoutPanel.SetRow(addNewModPanel, 1);
 
             // button events
-            btnAddMod.Click += new EventHandler((o, e) =>
+            addNewModButton.Click += new EventHandler((sender, e) =>
             {
-                LoadAddModPanel(f, p);
+                LoadAddModPanel(modUpdateInfosForm, addNewModPanel);
             });
-            btnLoadGitInfos.Click += new EventHandler((o, e) =>
+            loadGitInfosButton.Click += new EventHandler((sender, e) =>
             {
-                p.Controls.Clear();
-                LoadGitInfos(f, p);
+                addNewModPanel.Controls.Clear();
+                LoadGitInfos(modUpdateInfosForm, addNewModPanel);
             });
 
-            tlp.Controls.Add(controlPanelFlp);
-            tlp.Controls.Add(p);
-            f.Controls.Add(tlp);
+            modUpdateInfosTableLayoutPanel.Controls.Add(controlPanelFlowLayoutPanel);
+            modUpdateInfosTableLayoutPanel.Controls.Add(addNewModPanel);
+            modUpdateInfosForm.Controls.Add(modUpdateInfosTableLayoutPanel);
 
-            LoadGitInfos(f, p);
+            LoadGitInfos(modUpdateInfosForm, addNewModPanel);
 
             //modsListFlowPanel.Size = new System.Drawing.Size
             //    (modsListFlowPanel.Width * 2
             //    , modsListFlowPanel.Height * 2
             //    );
-            //f.Size = new System.Drawing.Size
+            //form.Size = new System.Drawing.Size
             //    (modsListFlowPanel.Width
             //    + (modsListFlowPanel.Margin.Horizontal * 2)
             //    , modsListFlowPanel.Height
             //    + (modsListFlowPanel.Margin.Vertical * 2)
             //    );
-            f.Size = new System.Drawing.Size(f.Width * 2, f.Height * 2);
-            f.Show(ManageSettings.MainForm);
+            modUpdateInfosForm.Size = new System.Drawing.Size(modUpdateInfosForm.Width * 2, modUpdateInfosForm.Height * 2);
+            modUpdateInfosForm.Show(ManageSettings.MainForm);
 
             _isReading = false;
-
         }
 
         class PropData

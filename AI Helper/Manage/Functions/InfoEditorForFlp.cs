@@ -295,48 +295,49 @@ namespace AIHelper.Manage.Functions
 
                 try
                 {
+                    string targetModDirName = modnamePropData.TextBoxText;
+                    string targetUrl = urlPropData.TextBoxText;
+                    string startsWith = startsWithPropData.TextBoxText;
+                    string endsWith = endsWithPropData.TextBoxText;
+
                     if (string.IsNullOrWhiteSpace(modnamePropData.TextBoxText))
                     {
                         Log(T._("Mod name is empty"));
                         return;
                     }
-                    if (string.IsNullOrWhiteSpace(urlPropData.TextBoxText))
+                    if (string.IsNullOrWhiteSpace(targetUrl))
                     {
                         Log(T._("Url s empty"));
                         return;
                     }
-                    if (string.IsNullOrWhiteSpace(startsWithPropData.TextBoxText))
+                    if (string.IsNullOrWhiteSpace(startsWith))
                     {
                         Log($"{startsWithPropData.LabelText} {T._("value is empty")}");
                         return;
                     }
 
-                    var targetModDirName = modnamePropData.TextBoxText;
-                    var targetUrl = urlPropData.TextBoxText;
-                    var startsWith = startsWithPropData.TextBoxText;
-
-                    var m = Regex.Match(targetUrl,
+                    var targetUrlGithubMatch = Regex.Match(targetUrl,
                         @"(^.*https?\:\/\/)?github\.com\/([^\/]+)\/([^\/\? ]+).*$",
                         RegexOptions.IgnoreCase);
-                    if (!m.Success)
+                    if (!targetUrlGithubMatch.Success)
                     {
                         Log(T._("Url is not recognized"));
                         return;
                     }
-                    if (m.Groups.Count != 4)
+                    if (targetUrlGithubMatch.Groups.Count != 4)
                     {
                         Log(T._("Url is not recognized"));
                         return;
                     }
 
-                    var owner = m.Groups[2].Value;
-                    if (string.IsNullOrWhiteSpace(owner))
+                    var ownerName = targetUrlGithubMatch.Groups[2].Value;
+                    var repositoryName = targetUrlGithubMatch.Groups[3].Value;
+                    if (string.IsNullOrWhiteSpace(ownerName))
                     {
                         Log(T._("Url is not recognized"));
                         return;
                     }
-                    var rep = m.Groups[3].Value;
-                    if (string.IsNullOrWhiteSpace(rep))
+                    if (string.IsNullOrWhiteSpace(repositoryName))
                     {
                         Log(T._("Url is not recognized"));
                         return;
@@ -349,13 +350,24 @@ namespace AIHelper.Manage.Functions
                         return;
                     }
 
+                    foreach(var modInfo in _updateInfoDatas)
+                    {
+                        if (modInfo.GitInfo.Owner != ownerName) continue;
+                        if (modInfo.GitInfo.Repository != repositoryName) continue;
+                        if (modInfo.GitInfo.FileStartsWith != startsWith) continue;
+                        if (modInfo.GitInfo.FileEndsWith != endsWith) continue;
+
+                        Log(T._($"Mod '{modInfo.ModName}' have same Owner,Repository,start/end"));
+                        return;
+                    }
+
                     var info = new Update.UpdateInfo
                     {
                         TargetFolderPath = targetDirPathInfo,
-                        TargetFolderUpdateInfo = new string[3] { owner, rep, startsWith }
+                        TargetFolderUpdateInfo = new string[3] { ownerName, repositoryName, startsWith }
                     };
 
-                    if (!string.IsNullOrWhiteSpace(endsWithPropData.TextBoxText))
+                    if (!string.IsNullOrWhiteSpace(endsWith))
                     {
                         info.TargetFolderUpdateInfo = info.TargetFolderUpdateInfo.Concat(new string[1] { endsWithPropData.TextBoxText }).ToArray();
                     }
@@ -390,8 +402,8 @@ namespace AIHelper.Manage.Functions
 
                     var ginfo = new GitUpdateInfoData(modData)
                     {
-                        Owner = owner,
-                        Repository = rep,
+                        Owner = ownerName,
+                        Repository = repositoryName,
                         FileStartsWith = startsWith,
                         FileEndsWith = endsWithPropData.TextBoxText,
                         VersionFromFile = verFromFile.Checked

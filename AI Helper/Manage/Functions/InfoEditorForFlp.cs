@@ -139,9 +139,9 @@ namespace AIHelper.Manage.Functions
             _isReading = false;
         }
 
-        class PropData
+        class newModPropData
         {
-            public PropData(string labelText, string textBoxText)
+            public newModPropData(string labelText, string textBoxText)
             {
                 LabelText = labelText;
                 TextBoxText = textBoxText;
@@ -153,13 +153,13 @@ namespace AIHelper.Manage.Functions
             public TextBox TB;
         }
 
-        private void LoadAddModPanel(Form f, Panel p)
+        private void LoadAddModPanel(Form modUpdateInfosForm, Panel addNewModPanel)
         {
-            bool init = true;
+            bool addModPanelIsLoading = true;
 
-            p.Controls.Clear();
+            addNewModPanel.Controls.Clear();
 
-            var mainFlp = new FlowLayoutPanel
+            var modUpdateInfoMainFlp = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 //AutoScroll = true,
@@ -168,18 +168,18 @@ namespace AIHelper.Manage.Functions
             };
 
             var defaultModDirName = "NewMod";
-            var modnamePropData = new PropData(T._("Mod dir name"), defaultModDirName);
-            var urlPropData = new PropData("Url", "https://github.com/Owner/Name");
-            var startsWithPropData = new PropData(T._("File starts with"), "");
-            var endsWithPropData = new PropData(T._("File ends with"), "");
-            var pDatas = new PropData[]
+            var modnamePropData = new newModPropData(T._("Mod dir name"), defaultModDirName);
+            var urlPropData = new newModPropData("Url", "https://github.com/Owner/Name");
+            var startsWithPropData = new newModPropData(T._("File starts with"), "");
+            var endsWithPropData = new newModPropData(T._("File ends with"), "");
+            var newModDatas = new newModPropData[]
             {
                 modnamePropData,
                 urlPropData,
                 startsWithPropData,
                 endsWithPropData,
             };
-            foreach (var pData in pDatas)
+            foreach (var newModData in newModDatas)
             {
                 var propertyFlp = new FlowLayoutPanel
                 {
@@ -188,61 +188,61 @@ namespace AIHelper.Manage.Functions
                 };
                 var l = new Label
                 {
-                    Text = pData.LabelText + ":",
+                    Text = newModData.LabelText + ":",
                     ForeColor = Color.White,
                     Size = new System.Drawing.Size(150, _elHeight),
                 };
-                var tb = new TextBox
+                var urlTextBox = new TextBox
                 {
-                    Size = new System.Drawing.Size(p.Width - l.Width - 20, _elHeight),
+                    Size = new System.Drawing.Size(addNewModPanel.Width - l.Width - 20, _elHeight),
                     Margin = new Padding(1, 1, 10, 1),
                 };
-                tb.DataBindings.Add(new Binding(nameof(tb.Text), pData, nameof(pData.TextBoxText), true, DataSourceUpdateMode.OnPropertyChanged));
-                tb.TextChanged += new System.EventHandler((o, e) =>
+                urlTextBox.DataBindings.Add(new Binding(nameof(urlTextBox.Text), newModData, nameof(newModData.TextBoxText), true, DataSourceUpdateMode.OnPropertyChanged));
+                urlTextBox.TextChanged += new System.EventHandler((o, e) =>
                 {
-                    if (init) return;
+                    if (addModPanelIsLoading) return;
 
-                    if (pData.LabelText == urlPropData.LabelText)
+                    if (newModData.LabelText == urlPropData.LabelText)
                     {
                         try
                         {
-                            if (string.IsNullOrWhiteSpace(tb.Text)) return;
+                            if (string.IsNullOrWhiteSpace(urlTextBox.Text)) return;
                             if (!string.IsNullOrWhiteSpace(modnamePropData.TextBoxText) 
                             && modnamePropData.TextBoxText != defaultModDirName) return;
 
-                            var m = Regex.Match(tb.Text, @"(^.*https?\:\/\/)?github\.com\/([^\/]+)\/([^\/\? ]+).*$", RegexOptions.IgnoreCase);
-                            if (!m.Success) return;
-                            if (m.Groups.Count != 4) return;
+                            var urlGithubMatch = Regex.Match(urlTextBox.Text, @"(^.*https?\:\/\/)?github\.com\/([^\/]+)\/([^\/\? ]+).*$", RegexOptions.IgnoreCase);
+                            if (!urlGithubMatch.Success) return;
+                            if (urlGithubMatch.Groups.Count != 4) return;
 
-                            var owner = m.Groups[2].Value;
-                            if (string.IsNullOrWhiteSpace(owner)) return;
-                            var rep = m.Groups[3].Value;
-                            if (string.IsNullOrWhiteSpace(rep)) return;
+                            var ownerName = urlGithubMatch.Groups[2].Value;
+                            if (string.IsNullOrWhiteSpace(ownerName)) return;
+                            var repositoryName = urlGithubMatch.Groups[3].Value;
+                            if (string.IsNullOrWhiteSpace(repositoryName)) return;
 
                             // set repository name as mod name
-                            modnamePropData.TB.Text = rep;
+                            modnamePropData.TB.Text = repositoryName;
 
                             Log(T._("Mod name set from url"));
                         }
                         catch { return; }
                     }
 
-                    tb.DataBindings[0].WriteValue();
+                    urlTextBox.DataBindings[0].WriteValue();
                 });
-                pData.TB = tb;
+                newModData.TB = urlTextBox;
 
                 propertyFlp.Controls.Add(l);
-                propertyFlp.Controls.Add(tb);
+                propertyFlp.Controls.Add(urlTextBox);
 
                 var lWidth = l.Width + (l.Margin.Horizontal * 2);
                 var lHeight = l.Height + (l.Margin.Vertical * 2);
-                var tbWidth = tb.Width + (tb.Margin.Horizontal * 2);
-                var tbHeight = tb.Height + (tb.Margin.Vertical * 2);
+                var tbWidth = urlTextBox.Width + (urlTextBox.Margin.Horizontal * 2);
+                var tbHeight = urlTextBox.Height + (urlTextBox.Margin.Vertical * 2);
                 var ltbWidth = lWidth + tbWidth;
                 var ltbHeight = lHeight + tbHeight;
                 propertyFlp.Size = new System.Drawing.Size(ltbWidth, ltbHeight);
 
-                mainFlp.Controls.Add(propertyFlp);
+                modUpdateInfoMainFlp.Controls.Add(propertyFlp);
             }
 
             var verFromFile = new CheckBox
@@ -250,11 +250,11 @@ namespace AIHelper.Manage.Functions
                 Text = T._("Version from file"),
                 Checked = false,
                 ForeColor = Color.White,
-                Size = new System.Drawing.Size(p.Width - 20, _elHeight + 5),
+                Size = new System.Drawing.Size(addNewModPanel.Width - 20, _elHeight + 5),
                 Anchor = AnchorStyles.Left,
                 TextAlign = ContentAlignment.MiddleLeft,
             };
-            mainFlp.Controls.Add(verFromFile);
+            modUpdateInfoMainFlp.Controls.Add(verFromFile);
 
             var tryLoadInfo = new Button
             {
@@ -264,7 +264,7 @@ namespace AIHelper.Manage.Functions
             {
                 Process.Start(urlPropData.TextBoxText);
             });
-            mainFlp.Controls.Add(tryLoadInfo);
+            modUpdateInfoMainFlp.Controls.Add(tryLoadInfo);
 
             var tryOpenDir = new Button
             {
@@ -281,7 +281,7 @@ namespace AIHelper.Manage.Functions
 
                 Process.Start(dirPath);
             });
-            mainFlp.Controls.Add(tryOpenDir);
+            modUpdateInfoMainFlp.Controls.Add(tryOpenDir);
 
             var DownloadAndAddMod = new Button
             {
@@ -289,7 +289,7 @@ namespace AIHelper.Manage.Functions
             };
             DownloadAndAddMod.Click += new EventHandler((o, e) =>
             {
-                if (init) return;
+                if (addModPanelIsLoading) return;
 
                 // load archive and add
 
@@ -405,17 +405,17 @@ namespace AIHelper.Manage.Functions
                     return;
                 }
             });
-            mainFlp.Controls.Add(DownloadAndAddMod);
+            modUpdateInfoMainFlp.Controls.Add(DownloadAndAddMod);
 
             InitLogTextBox();
-            Logtb.Width = mainFlp.Width - 10;
-            mainFlp.Controls.Add(Logtb);
+            Logtb.Width = modUpdateInfoMainFlp.Width - 10;
+            modUpdateInfoMainFlp.Controls.Add(Logtb);
 
-            p.Controls.Add(mainFlp);
+            addNewModPanel.Controls.Add(modUpdateInfoMainFlp);
 
-            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, p);
+            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, addNewModPanel);
 
-            init = false;
+            addModPanelIsLoading = false;
         }
 
         private static async void GetGHubFile(Github ghub, GitUpdateInfoData ginfo)

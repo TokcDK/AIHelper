@@ -15,7 +15,7 @@ namespace AIHelper.Manage.Functions
 
         public override void OnClick(object o, EventArgs e)
         {
-            ManageUpdateMods.UpdateMods();
+            _ = ManageUpdateMods.UpdateMods();
         }
         public override Color? ForeColor => Color.LightBlue;
     }

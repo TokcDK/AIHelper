@@ -21,7 +21,7 @@ namespace AIHelper.Manage
 
         static UpdateOptionsDialogForm UpdateOptions;
 
-        public static void UpdateMods()
+        public static async Task UpdateMods()
         {
             UpdateOptions = new UpdateOptionsDialogForm
             {
@@ -35,12 +35,17 @@ namespace AIHelper.Manage
 
             UpdateModsInit();
 
-            //if (ManageSettings.MainForm.UseKKmanagerUpdaterLabel.IsChecked())
-            if (UpdateOptions.UpdateZipmodsCheckBox.Checked) UpdateZipmods();
-
-
             //if (ManageSettings.MainForm.UpdatePluginsLabel.IsChecked())
-            if (UpdateOptions.UpdatePluginsCheckBox.Checked) UpdateByUpdater();
+            if (UpdateOptions.UpdatePluginsCheckBox.Checked)
+            {
+                await UpdateByUpdater().ConfigureAwait(true);
+            }
+
+            //if (ManageSettings.MainForm.UseKKmanagerUpdaterLabel.IsChecked())
+            if (UpdateOptions.UpdateZipmodsCheckBox.Checked)
+            {
+               await UpdateZipmods().ConfigureAwait(true);
+            }
 
             UpdateModsFinalize();
         }
@@ -100,7 +105,7 @@ namespace AIHelper.Manage
             return infos;
         }
 
-        private static async void UpdateByUpdater()
+        private static async Task UpdateByUpdater()
         {
             ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize);
 
@@ -121,17 +126,17 @@ namespace AIHelper.Manage
             ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize);
         }
 
-        private static void UpdateZipmods()
+        private static Task UpdateZipmods()
         {
 
             //run zipmod's check if updater found and only for KK, AI, HS2
-            if (!ManageSettings.Games.Game.IsHaveSideloaderMods || !File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath)) return;
+            if (!ManageSettings.Games.Game.IsHaveSideloaderMods || !File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath)) return Task.CompletedTask;
 
             if (!Manage.ManageSettings.IsMoMode)
             {
                 //run updater normal
                 ManageProcess.RunProgram(ManageSettings.KkManagerStandaloneUpdaterExePath, "\"" + ManageSettings.CurrentGameDataDirPath + "\"");
-                return;
+                return Task.CompletedTask;
             }
 
             //add updater as new exe in mo list if not exists
@@ -195,6 +200,8 @@ namespace AIHelper.Manage
             MoveZipModsFromOverwriteToSourceMod();
 
             progressForm.Dispose();
+
+            return Task.CompletedTask;
         }
 
         static ZipmodGUIIds zipmodsGuidList;

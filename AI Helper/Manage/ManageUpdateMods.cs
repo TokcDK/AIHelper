@@ -357,18 +357,20 @@ namespace AIHelper.Manage
                 //    { "Sideloader Modpack - KK_UncensorSelector", @"^\[KK\]\[Female\].*$" }//sideloader dir name /files regex filter
                 //};
 
-                var dirs = sortingDir.GetDirectories().Where(dirpath => dirpath.Name.StartsWith("Sideloader Modpack", comparisonType: StringComparison.InvariantCultureIgnoreCase) && !ManageSettings.KKManagerUpdateSortDirs.Contains(dirpath.Name));
+                var sideloaderModpackDirs = sortingDir.GetDirectories().Where(dirPath =>
+                    dirPath.Name.StartsWith("Sideloader Modpack", comparisonType: StringComparison.InvariantCultureIgnoreCase) &&
+                    !ManageSettings.KKManagerUpdateSortDirs.Contains(dirPath.Name));
 
-                if (!dirs.Any()) return;
+                if (!sideloaderModpackDirs.Any()) return;
 
-                var modpacks = GetSideloaderModpackTargetDirs();
+                var sideloaderModpacks = GetSideloaderModpackTargetDirs();
 
                 //pBar.Invoke((Action)(() => pBar.Maximum = dirs.Count() + 1));
                 //pBar.Invoke((Action)(() => pBar.Value = 0));
 
                 var timeInfo = ManageSettings.DateTimeBasedSuffix;
 
-                Parallel.ForEach(dirs, dir =>
+                Parallel.ForEach(sideloaderModpackDirs, sideloaderModpackDir =>
                 {
                     //if (pBar.Value < pBar.Maximum)
                     //{
@@ -381,148 +383,148 @@ namespace AIHelper.Manage
                     //}
 
                     //set sideloader dir name
-                    var sideloaderDirName = dir.Name;
+                    var sideloaderDirName = sideloaderModpackDir.Name;
 
                     //progressForm.Text = T._("Sorting") + ":" + sideloaderDirName;
 
-                    var isUnc = IsUncensorSelector(sideloaderDirName);
-                    var isMaleUnc = isUnc && modpacks.ContainsKey(sideloaderDirName + "M");
-                    var isFeMaleUnc = isUnc && modpacks.ContainsKey(sideloaderDirName + "F");
-                    var isSortingModPack = modpacks.ContainsKey(sideloaderDirName) || isMaleUnc || isFeMaleUnc;
-                    Parallel.ForEach(dir.EnumerateFiles("*.*", SearchOption.AllDirectories), f =>
+                    var isUncensorSelector = IsUncensorSelector(sideloaderDirName);
+                    var isMaleUncensorSelector = isUncensorSelector && sideloaderModpacks.ContainsKey(sideloaderDirName + "M");
+                    var isFemaleUncensorSelector = isUncensorSelector && sideloaderModpacks.ContainsKey(sideloaderDirName + "F");
+                    var isSortingModpack = sideloaderModpacks.ContainsKey(sideloaderDirName) || isMaleUncensorSelector || isFemaleUncensorSelector;
+                    Parallel.ForEach(sideloaderModpackDir.EnumerateFiles("*.*", SearchOption.AllDirectories), fileInfo =>
                     {
-                        try
+                    try
+                    {
+                        var filePath = fileInfo.FullName;
+
+                        // Check if TargetIsInSideloader by guid
+                        var guid = ManageArchive.GetZipmodGuid(filePath);
+                        bool isGuid = guid.Length > 0 && zipmodsGuidList.GUIDList.ContainsKey(guid);
+                        string targetModPath = isGuid ? zipmodsGuidList.GUIDList[guid].FileInfo.FullName.GetPathInMods() : "";
+                        var pathElements = !string.IsNullOrWhiteSpace(targetModPath) ? filePath.Replace(sortingDirPath, "").Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries) : null;
+                        var targetZipModDirName = pathElements != null && pathElements.Length > 1 ? pathElements[1] : ""; // %modpath%\mods\%sideloadermodpackdir%
+                        var targetIsInSideloader = targetZipModDirName.ToUpperInvariant().Contains("SIDELOADER MODPACK"); // dir in mods is sideloader
+
+                        if (isGuid && !targetIsInSideloader/*do not touch sideloader files and let them be updated properly*/)//move by guid
                         {
-                            var file = f.FullName;
+                            var targetFilePath = filePath.Replace(sortingDir.FullName, targetModPath);
 
-                            // Check if TargetIsInSideloader by guid
-                            var guid = ManageArchive.GetZipmodGuid(file);
-                            bool isguid = guid.Length > 0 && zipmodsGuidList.GUIDList.ContainsKey(guid);
-                            string targetModPath = isguid ? zipmodsGuidList.GUIDList[guid].FileInfo.FullName.GetPathInMods() : "";
-                            var pathElements = !string.IsNullOrWhiteSpace(targetModPath) ? file.Replace(sortingDirPath, "").Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries) : null;
-                            var targetzipModDirName = pathElements != null && pathElements.Length > 1 ? pathElements[1] : ""; // %modpath%\mods\%sideloadermodpackdir%
-                            var targetIsInSideloader = targetzipModDirName.ToUpperInvariant().Contains("SIDELOADER MODPACK"); // dir in mods is sideloader
 
-                            if (isguid && !targetIsInSideloader/*do not touch sideloader files and let them be updated properly*/)//move by guid
+                            bool isTargetExists = File.Exists(targetFilePath);
+                            bool isSourceExists = File.Exists(filePath);
+
+                            ManageStrings.CheckForLongPath(ref filePath);
+                            ManageStrings.CheckForLongPath(ref targetFilePath);
+
+                            if (!isSourceExists)
                             {
-                                var target = file.Replace(sortingDir.FullName, targetModPath);
-
-
-                                bool isTargetExists = File.Exists(target);
-                                bool isSourceExists = File.Exists(file);
-
-                                ManageStrings.CheckForLongPath(ref file);
-                                ManageStrings.CheckForLongPath(ref target);
-
-                                if (!isSourceExists)
+                                return;
+                            }
+                            else if (isTargetExists)
+                            {
+                                var targetInfo = new FileInfo(targetFilePath);
+                                var sourceInfo = new FileInfo(filePath);
+                                if (targetInfo.Length == sourceInfo.Length && targetInfo.GetCrc32() == sourceInfo.GetCrc32())
                                 {
+                                    sourceInfo.Delete();
                                     return;
                                 }
-                                else if (isTargetExists)
+                                else if (targetInfo.LastWriteTime < sourceInfo.LastWriteTime)
                                 {
-                                    var targetinfo = new FileInfo(target);
-                                    var sourceinfo = new FileInfo(file);
-                                    if (targetinfo.Length == sourceinfo.Length && targetinfo.GetCrc32() == sourceinfo.GetCrc32())
-                                    {
-                                        sourceinfo.Delete();
-                                        return;
-                                    }
-                                    else if (targetinfo.LastWriteTime < sourceinfo.LastWriteTime)
-                                    {
-                                        var tfiletarget = file.Replace(sortingDir.FullName, targetModPath + timeInfo);
+                                    var targetFileTarget = filePath.Replace(sortingDir.FullName, targetModPath + timeInfo);
 
-                                        Directory.CreateDirectory(Path.GetDirectoryName(tfiletarget));
-                                        if (!File.Exists(tfiletarget))
-                                            File.Move(target, tfiletarget); // move older target file
-                                    }
-                                    else
-                                    {
-                                        target = file.Replace(sortingDir.FullName, targetModPath + timeInfo);
-                                    }
+                                    Directory.CreateDirectory(Path.GetDirectoryName(targetFileTarget));
+                                    if (!File.Exists(targetFileTarget))
+                                        File.Move(targetFilePath, targetFileTarget); // move older target file
                                 }
-
-                                Directory.CreateDirectory(Path.GetDirectoryName(target));
-                                try
+                                else
                                 {
-                                    File.Move(file, target);
-                                }
-                                catch (IOException ex)
-                                {
-                                    _log.Error("An error occured while file move. error:\r\n" + ex + "\r\nfile=" + file + "\r\ntarget file=" + target);
+                                    targetFilePath = filePath.Replace(sortingDir.FullName, targetModPath + timeInfo);
                                 }
                             }
-                            else if (isSortingModPack)
+
+                            Directory.CreateDirectory(Path.GetDirectoryName(targetFilePath));
+                            try
                             {
-                                var sortM = isMaleUnc && Path.GetExtension(file).StartsWith(".zip", StringComparison.InvariantCultureIgnoreCase) && (Path.GetFileNameWithoutExtension(file).Contains("[Penis]") || Path.GetFileNameWithoutExtension(file).Contains("[Balls]"));
-                                var sortF = isFeMaleUnc && Path.GetExtension(file).StartsWith(".zip", StringComparison.InvariantCultureIgnoreCase) && Path.GetFileNameWithoutExtension(file).Contains("[Female]");
+                                File.Move(filePath, targetFilePath);
+                            }
+                            catch (IOException ex)
+                            {
+                                _log.Error($"An error occurred while moving the file. Error:\r\n{ex}\r\nFile='{filePath}'\r\nTarget File='{targetFilePath}'");
+                            }
+                        }
+                        else if (isSortingModpack)
+                        {
+                            var sortMale = isMaleUncensorSelector && Path.GetExtension(filePath).StartsWith(".zip", StringComparison.InvariantCultureIgnoreCase) && (Path.GetFileNameWithoutExtension(filePath).Contains("[Penis]") || Path.GetFileNameWithoutExtension(filePath).Contains("[Balls]"));
+                            var sortFemale = isFemaleUncensorSelector && Path.GetExtension(filePath).StartsWith(".zip", StringComparison.InvariantCultureIgnoreCase) && Path.GetFileNameWithoutExtension(filePath).Contains("[Female]");
 
-                                var targetModName = modpacks[sideloaderDirName + (sortF ? "F" : sortM ? "M" : "")];
+                            var targetModName = sideloaderModpacks[sideloaderDirName + (sortFemale ? "F" : sortMale ? "M" : "")];
 
-                                //get target path for the zipmod
-                                var target = ManageSettings.CurrentGameModsDirPath
-                                    + Path.DirectorySeparatorChar + targetModName //mod name
-                                    + Path.DirectorySeparatorChar + "mods" //mods dir
-                                    + Path.DirectorySeparatorChar + sideloaderDirName // sideloader dir name
-                                    + file.Replace(dir.FullName, ""); // file subpath in sideloader dir
+                            //get target path for the zipmod
+                            var targetFilePath = ManageSettings.CurrentGameModsDirPath
+                                + Path.DirectorySeparatorChar + targetModName //mod name
+                                + Path.DirectorySeparatorChar + "mods" //mods dir
+                                + Path.DirectorySeparatorChar + sideloaderDirName // sideloader dir name
+                                + filePath.Replace(sideloaderModpackDir.FullName, ""); // file subpath in sideloader dir
 
-                                bool isTargetExists = File.Exists(target);
-                                bool isSourceExists = File.Exists(file);
+                            bool isTargetExists = File.Exists(targetFilePath);
+                            bool isSourceExists = File.Exists(filePath);
 
-                                ManageStrings.CheckForLongPath(ref file);
-                                ManageStrings.CheckForLongPath(ref target);
+                            ManageStrings.CheckForLongPath(ref filePath);
+                            ManageStrings.CheckForLongPath(ref targetFilePath);
 
-                                if (!isSourceExists)
+                            if (!isSourceExists)
+                            {
+                                return;
+                            }
+                            else if (isTargetExists)
+                            {
+                                var targetInfo = new FileInfo(targetFilePath);
+                                var sourceInfo = new FileInfo(filePath);
+                                if (targetInfo.Length == sourceInfo.Length && targetInfo.GetCrc32() == sourceInfo.GetCrc32())
                                 {
+                                    sourceInfo.Delete();
                                     return;
                                 }
-                                else if (isTargetExists)
+                                else if (targetInfo.LastWriteTime < sourceInfo.LastWriteTime)
                                 {
-                                    var targetinfo = new FileInfo(target);
-                                    var sourceinfo = new FileInfo(file);
-                                    if (targetinfo.Length == sourceinfo.Length && targetinfo.GetCrc32() == sourceinfo.GetCrc32())
-                                    {
-                                        sourceinfo.Delete();
-                                        return;
-                                    }
-                                    else if (targetinfo.LastWriteTime < sourceinfo.LastWriteTime)
-                                    {
-                                        var tfiletarget = ManageSettings.CurrentGameModsDirPath
-                                            + Path.DirectorySeparatorChar + targetModName + timeInfo //mod name
-                                            + Path.DirectorySeparatorChar + "mods" //mods dir
-                                            + Path.DirectorySeparatorChar + sideloaderDirName // sideloader dir name
-                                            + file.Replace(dir.FullName, ""); // file subpath in sideloader dir
+                                    var targetFileTarget = ManageSettings.CurrentGameModsDirPath
+                                        + Path.DirectorySeparatorChar + targetModName + timeInfo //mod name
+                                        + Path.DirectorySeparatorChar + "mods" //mods dir
+                                        + Path.DirectorySeparatorChar + sideloaderDirName // sideloader dir name
+                                        + filePath.Replace(sideloaderModpackDir.FullName, ""); // file subpath in sideloader dir
 
-                                        Directory.CreateDirectory(Path.GetDirectoryName(tfiletarget));
-                                        if (!File.Exists(tfiletarget))
-                                            File.Move(target, tfiletarget); // move older target file
-                                    }
-                                    else
-                                    {
-                                        target = ManageSettings.CurrentGameModsDirPath
-                                            + Path.DirectorySeparatorChar + targetModName + timeInfo //mod name
-                                            + Path.DirectorySeparatorChar + "mods" //mods dir
-                                            + Path.DirectorySeparatorChar + sideloaderDirName // sideloader dir name
-                                            + file.Replace(dir.FullName, ""); // file subpath in sideloader dir
-                                    }
+                                    Directory.CreateDirectory(Path.GetDirectoryName(targetFileTarget));
+                                    if (!File.Exists(targetFileTarget))
+                                        File.Move(targetFilePath, targetFileTarget); // move older target file
                                 }
-
-
-                                Directory.CreateDirectory(Path.GetDirectoryName(target));//create parent dir
-
-                                try
+                                else
                                 {
-                                    File.Move(file, target);//move file to the marked mod
-                                }
-                                catch (IOException ex)
-                                {
-                                    _log.Error("An error occured while file move. error:\r\n" + ex + "\r\nfile=" + file + "\r\ntarget file=" + target);
+                                    targetFilePath = ManageSettings.CurrentGameModsDirPath
+                                        + Path.DirectorySeparatorChar + targetModName + timeInfo //mod name
+                                        + Path.DirectorySeparatorChar + "mods" //mods dir
+                                        + Path.DirectorySeparatorChar + sideloaderDirName // sideloader dir name
+                                        + filePath.Replace(sideloaderModpackDir.FullName, ""); // file subpath in sideloader dir
                                 }
                             }
+
+
+                            Directory.CreateDirectory(Path.GetDirectoryName(targetFilePath));//create parent dir
+
+                            try
+                            {
+                                File.Move(filePath, targetFilePath);//move file to the marked mod
+                            }
+                            catch (IOException ex)
+                            {
+                                _log.Error($"An error occurred while moving the file. Error:\r\n{ex}\r\nFile='{filePath}'\r\nTarget File='{targetFilePath}'");
+                            }
                         }
-                        catch (Exception ex)
-                        {
-                            _log.Error("Failed to sort file " + f + "\r\nerror:\r\n" + ex);
-                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.Error($"Failed to sort file '{fileInfo.FullName}'\r\nError:\r\n{ex}");                    
+                    }
                     });
                 });
             });

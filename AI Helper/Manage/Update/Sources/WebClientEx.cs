@@ -35,7 +35,6 @@ namespace AIHelper.Manage.Update.Sources
 
         protected override WebResponse GetWebResponse(WebRequest request)
         {
-            request.Timeout = 5000; // 5 sec timeout
             WebResponse response = base.GetWebResponse(request);
             ReadCookies(response);
             return response;

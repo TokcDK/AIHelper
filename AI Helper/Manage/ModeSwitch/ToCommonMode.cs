@@ -442,45 +442,50 @@ namespace AIHelper.Manage.ModeSwitch
 
             Parallel.ForEach(operations.ToString().SplitToLines(), record =>
             {
-                try
-                {
-                    if (string.IsNullOrWhiteSpace(record))
-                    {
-                        return;
-                    }
-
-                    var movePaths = record.Split(operationsSplitString, StringSplitOptions.None);
-
-                    if (movePaths.Length != 2)
-                    {
-                        return;
-                    }
-
-                    var filePathInMods = movePaths[0];
-                    var filePathInData = movePaths[1];
-
-                    if (!File.Exists(filePathInData))
-                    {
-                        return;
-                    }
-
-                    if (File.Exists(filePathInMods))
-                    {
-                        return;
-                    }
-
-                    Directory.CreateDirectory(Path.GetDirectoryName(filePathInMods));
-
-                    filePathInData.MoveTo(filePathInMods);
-                }
-                catch (Exception ex)
-                {
-                    _log.Error("error while RestoreMovedFilesLocation. error:\r\n" + ex);
-                }
+                RestoreFileByRecord(record);
             });
 
             //возврат возможных ванильных резервных копий
             MoveVanillaFilesBackToData();
+        }
+
+        private void RestoreFileByRecord(string record)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(record))
+                {
+                    return;
+                }
+
+                var movePaths = record.Split(operationsSplitString, StringSplitOptions.None);
+
+                if (movePaths.Length != 2)
+                {
+                    return;
+                }
+
+                var filePathInMods = movePaths[0];
+                var filePathInData = movePaths[1];
+
+                if (!File.Exists(filePathInData))
+                {
+                    return;
+                }
+
+                if (File.Exists(filePathInMods))
+                {
+                    return;
+                }
+
+                Directory.CreateDirectory(Path.GetDirectoryName(filePathInMods));
+
+                filePathInData.MoveTo(filePathInMods);
+            }
+            catch (Exception ex)
+            {
+                _log.Error("error while RestoreMovedFilesLocation. error:\r\n" + ex);
+            }
         }
     }
 }

@@ -242,17 +242,22 @@ namespace AIHelper.Manage.ModeSwitch
 
             Parallel.ForEach(Directory.EnumerateDirectories(sourceFolder), dir =>
             {
-                if (dir.IsSymlink(ObjectType.Directory))
-                {
-                    ParseDirLink(dir, parentDirPath);
-                }
-                else
-                {
-                    ParseDirectories(dir, parentDirPath);
-                }
+                ParseDirectoryA(dir, parentDirPath);
             });
 
             return true;
+        }
+
+        private void ParseDirectoryA(string dir, string parentDirPath)
+        {
+            if (dir.IsSymlink(ObjectType.Directory))
+            {
+                ParseDirLink(dir, parentDirPath);
+            }
+            else
+            {
+                ParseDirectories(dir, parentDirPath);
+            }
         }
 
         /// <summary>

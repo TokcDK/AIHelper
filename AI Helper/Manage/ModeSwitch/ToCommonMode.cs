@@ -275,10 +275,7 @@ namespace AIHelper.Manage.ModeSwitch
                 symlinkTarget.CreateSymlink(targetPath, isRelative: Path.GetPathRoot(targetPath) == Path.GetPathRoot(symlinkTarget), objectType: ObjectType.Directory);
 
                 // we not deleted symlink in the dir
-                lock (moToStandartConvertationOperationsListLocker)
-                {
-                    moToStandartConvertationOperations.AppendLine(dir + operationsSplitStringBase + targetPath); // add symlink operation
-                }
+                AppendOperation(dir, targetPath);
 
                 ParsedAny = true;
             }
@@ -289,6 +286,14 @@ namespace AIHelper.Manage.ModeSwitch
                 {
                     Directory.CreateDirectory(invalidSymlinkDirMarkerPath);
                 }
+            }
+        }
+
+        private void AppendOperation(string sourcePath, string targetPath)
+        {
+            lock (moToStandartConvertationOperationsListLocker)
+            {
+                moToStandartConvertationOperations.AppendLine(sourcePath + operationsSplitStringBase + targetPath); // add symlink operation
             }
         }
 
@@ -391,11 +396,8 @@ namespace AIHelper.Manage.ModeSwitch
                     ManageModOrganizer.SaveGuidIfZipMod(sourceFilePath, zipmodsGUIDs);
 
                     sourceFilePath.MoveTo(dataFilePath);
-                    lock (moToStandartConvertationOperationsListLocker)
-                    {
-                        moToStandartConvertationOperations.AppendLine(sourceFilePath + operationsSplitStringBase + dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
-                    }
-
+                    AppendOperation(sourceFilePath, dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
+                    
                     ParsedAny = true;
                 }
                 catch (Exception ex)
@@ -419,10 +421,7 @@ namespace AIHelper.Manage.ModeSwitch
                     ManageModOrganizer.SaveGuidIfZipMod(sourceFilePath, zipmodsGUIDs);
 
                     sourceFilePath.MoveTo(dataFilePath);//перенос файла из папки мода в Data
-                    lock (moToStandartConvertationOperationsListLocker)
-                    {
-                        moToStandartConvertationOperations.AppendLine(sourceFilePath + operationsSplitStringBase + dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
-                    }
+                    AppendOperation(sourceFilePath, dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
 
                     ParsedAny = true;
                 }

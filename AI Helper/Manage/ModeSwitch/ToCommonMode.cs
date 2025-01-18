@@ -306,28 +306,33 @@ namespace AIHelper.Manage.ModeSwitch
             //var sourceFilePathsLength = sourceFilePaths.Length;
             Parallel.ForEach(Directory.EnumerateFiles(dir, "*.*"), f =>
             {
-                var sourceFilePath = f;
-                if (ManageStrings.CheckForLongPath(ref sourceFilePath))
-                {
-                    longPaths.Add(sourceFilePath.Substring(4)); // add to long paths list but with removed long path prefix
-                }
-
-                if (NeedSkip(sourceFilePath, parentDirPath))
-                {
-                    return;
-                }
-
-                if (sourceFilePath.IsSymlink(ObjectType.File))
-                {
-                    ParseFileLink(dir, parentDirPath);
-                }
-                else
-                {
-                    ParseFile(sourceFilePath, parentDirPath);
-                }
+                ParseFileA(dir, parentDirPath, f);
             });
 
             return true;
+        }
+
+        private void ParseFileA(string dir, string parentDirPath, string filePath)
+        {
+            var sourceFilePath = filePath;
+            if (ManageStrings.CheckForLongPath(ref sourceFilePath))
+            {
+                longPaths.Add(sourceFilePath.Substring(4)); // add to long paths list but with removed long path prefix
+            }
+
+            if (NeedSkip(sourceFilePath, parentDirPath))
+            {
+                return;
+            }
+
+            if (sourceFilePath.IsSymlink(ObjectType.File))
+            {
+                ParseFileLink(dir, parentDirPath);
+            }
+            else
+            {
+                ParseFile(sourceFilePath, parentDirPath);
+            }
         }
 
         static void ParseFileLink(string linkPath, string parentDirPath)

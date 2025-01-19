@@ -300,12 +300,12 @@ namespace AIHelper.Manage.ModeSwitch
         }
 
         /// <summary>
-        /// Parse files in <paramref name="dir"/> using <paramref name="parentModDirPath"/>
+        /// Parse files in <paramref name="parentDir"/> using <paramref name="parentSourceModDirPath"/>
         /// </summary>
-        /// <param name="dir"></param>
-        /// <param name="parentModDirPath"></param>
+        /// <param name="parentDir"></param>
+        /// <param name="parentSourceModDirPath"></param>
         /// <returns></returns>
-        protected bool ParseFiles(string dir, string parentModDirPath)
+        protected bool ParseFiles(string parentDir, string parentSourceModDirPath)
         {
             //var sourceFilePaths = Directory.GetFiles(dir, "*.*");
             //if (sourceFilePaths.Length == 0)
@@ -316,15 +316,15 @@ namespace AIHelper.Manage.ModeSwitch
             PreParseFiles();
 
             //var sourceFilePathsLength = sourceFilePaths.Length;
-            Parallel.ForEach(Directory.EnumerateFiles(dir, "*.*"), f =>
+            Parallel.ForEach(Directory.EnumerateFiles(parentDir, "*.*"), f =>
             {
-                ParseFileA(f, parentModDirPath);
+                ParseFileA(f, parentSourceModDirPath);
             });
 
             return true;
         }
 
-        private void ParseFileA(string filePath, string parentModDirPath)
+        private void ParseFileA(string filePath, string parentSourceModDirPath)
         {
             var sourceFilePath = filePath;
             if (ManageStrings.CheckForLongPath(ref sourceFilePath))
@@ -332,21 +332,21 @@ namespace AIHelper.Manage.ModeSwitch
                 longPaths.Add(sourceFilePath.Substring(4)); // add to long paths list but with removed long path prefix
             }
 
-            if (NeedSkip(sourceFilePath, parentModDirPath))
+            if (NeedSkip(sourceFilePath, parentSourceModDirPath))
             {
                 return;
             }
 
-            ParseFile(sourceFilePath, parentModDirPath);
+            ParseFile(sourceFilePath, parentSourceModDirPath);
         }
 
-        static void ParseFileLink(string fileSymLinkPath, string parentModDirPath)
+        static void ParseFileLink(string fileSymLinkPath, string parentSourceModDirPath)
         {
             if (fileSymLinkPath.IsValidSymlink(objectType: ObjectType.File))
             {
                 var symlinkTarget = Path.GetFullPath(fileSymLinkPath.GetSymlinkTarget(ObjectType.File));
 
-                var targetFilePath = fileSymLinkPath.Replace(parentModDirPath, ManageSettings.CurrentGameDataDirPath);
+                var targetFilePath = fileSymLinkPath.Replace(parentSourceModDirPath, ManageSettings.CurrentGameDataDirPath);
                 symlinkTarget.CreateSymlink(targetFilePath, isRelative: Path.GetPathRoot(targetFilePath) == Path.GetPathRoot(symlinkTarget), objectType: ObjectType.File);
             }
             else
@@ -360,21 +360,21 @@ namespace AIHelper.Manage.ModeSwitch
         }
 
         /// <summary>
-        /// Parse <paramref name="sourceFilePath"/> using <paramref name="parentModDirPath"/>
+        /// Parse <paramref name="sourceFilePath"/> using <paramref name="parentSourceModDirPath"/>
         /// </summary>
         /// <param name="sourceFilePath"></param>
-        /// <param name="parentModDirPath"></param>
-        protected void ParseFile(string sourceFilePath, string parentModDirPath)
+        /// <param name="parentSourceModDirPath"></param>
+        protected void ParseFile(string sourceFilePath, string parentSourceModDirPath)
         {
             if (sourceFilePath.IsSymlink(ObjectType.File))
             {
                 // parse as file symlink instead
-                ParseFileLink(sourceFilePath, parentModDirPath);
+                ParseFileLink(sourceFilePath, parentSourceModDirPath);
 
                 return;
             }
 
-            var dataFilePath = sourceFilePath.Replace(parentModDirPath, ManageSettings.CurrentGameDataDirPath);
+            var dataFilePath = sourceFilePath.Replace(parentSourceModDirPath, ManageSettings.CurrentGameDataDirPath);
             if (ManageStrings.CheckForLongPath(ref dataFilePath))
             {
                 longPaths.Add(dataFilePath.Substring(4));

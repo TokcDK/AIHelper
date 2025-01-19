@@ -318,13 +318,13 @@ namespace AIHelper.Manage.ModeSwitch
             //var sourceFilePathsLength = sourceFilePaths.Length;
             Parallel.ForEach(Directory.EnumerateFiles(dir, "*.*"), f =>
             {
-                ParseFileA(dir, parentModDirPath, f);
+                ParseFileA(f, parentModDirPath);
             });
 
             return true;
         }
 
-        private void ParseFileA(string dir, string parentModDirPath, string filePath)
+        private void ParseFileA(string filePath, string parentModDirPath)
         {
             var sourceFilePath = filePath;
             if (ManageStrings.CheckForLongPath(ref sourceFilePath))
@@ -353,8 +353,8 @@ namespace AIHelper.Manage.ModeSwitch
             {
                 var symlinkTarget = Path.GetFullPath(fileSymLinkPath.GetSymlinkTarget(ObjectType.File));
 
-                var targetPath = fileSymLinkPath.Replace(parentModDirPath, ManageSettings.CurrentGameDataDirPath);
-                symlinkTarget.CreateSymlink(targetPath, isRelative: Path.GetPathRoot(targetPath) == Path.GetPathRoot(symlinkTarget), objectType: ObjectType.File);
+                var targetFilePath = fileSymLinkPath.Replace(parentModDirPath, ManageSettings.CurrentGameDataDirPath);
+                symlinkTarget.CreateSymlink(targetFilePath, isRelative: Path.GetPathRoot(targetFilePath) == Path.GetPathRoot(symlinkTarget), objectType: ObjectType.File);
             }
             else
             {

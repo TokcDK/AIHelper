@@ -142,60 +142,11 @@ namespace AIHelper.Manage.ModeSwitch
             // Get the paths of empty subfolders in the game data directory
             ManageFilesFoldersExtensions.GetEmptySubfoldersPaths(ManageSettings.CurrentGameDataDirPath, vanillaDataEmptyFolders);
 
-            // Initialize progress bar
-            var frmProgress = new Form
-            {
-                Size = new Size(200, 50),
-                StartPosition = FormStartPosition.CenterScreen,
-                FormBorderStyle = FormBorderStyle.FixedToolWindow
-            };
-            var pbProgress = new ProgressBar
-            {
-                Dock = DockStyle.Bottom
-            };
-
-            frmProgress.Controls.Add(pbProgress);
-            frmProgress.Show();
-
             // Get vanilla data files
             var vanillaDataFiles = Directory.GetFiles(ManageSettings.CurrentGameDataDirPath, "*.*", SearchOption.AllDirectories);
             vanillaDataFilesList = vanillaDataFiles.ToHashSet();
 
-
-            // Parse the OVERWRITE folder
-            var sourceFolder = ManageSettings.CurrentGameOverwriteFolderPath;
-            frmProgress.Text = T._("Parsing") + ":" + Path.GetFileName(sourceFolder);
-            ParseDirectories(sourceFolder, sourceFolder);
-
-            // Parse the enabled mods
-            var enabledModNames = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
-            if (!ParsedAny && enabledModNames.Length == 0)
-            {
-                MessageBox.Show(T._("There are no enabled mods or files in the Overwrite folder"));
-                return;
-            }
-            var numEnabledMods = enabledModNames.Length;
-            pbProgress.Maximum = numEnabledMods;
-            for (int i = 0; i < numEnabledMods; i++)
-            {
-                if (i < pbProgress.Maximum)
-                {
-                    pbProgress.Value = i;
-                }
-
-                sourceFolder = Path.Combine(ManageSettings.CurrentGameModsDirPath, enabledModNames[i]);
-                if (!Directory.Exists(sourceFolder))
-                {
-                    continue;
-                }
-
-                frmProgress.Text = T._("Parsing") + ":" + Path.GetFileName(sourceFolder);
-
-                ParseDirectories(sourceFolder, sourceFolder);
-            }
-
-            pbProgress.Dispose();
-            frmProgress.Dispose();
+            MoveAllEnabledDirsAndFiles();
 
             if (!ParsedAny)
             {
@@ -233,6 +184,69 @@ namespace AIHelper.Manage.ModeSwitch
                 ReplacePathsToVars(ref vanillaDataEmptyFolders);
                 File.WriteAllText(ManageSettings.CurrentGameVanillaDataEmptyFoldersListFilePath, vanillaDataEmptyFolders.ToString());
             }
+        }
+
+        private void MoveAllEnabledDirsAndFiles()
+        {
+            // Initialize progress bar
+            var frmProgress = new Form
+            {
+                Size = new Size(200, 50),
+                StartPosition = FormStartPosition.CenterScreen,
+                FormBorderStyle = FormBorderStyle.FixedToolWindow
+            };
+            var pbProgress = new ProgressBar
+            {
+                Dock = DockStyle.Bottom
+            };
+
+            frmProgress.Controls.Add(pbProgress);
+            frmProgress.Show();
+
+            MoveOverwriteDirsAndFiles(frmProgress, pbProgress);
+
+            MoveEnabledModsDirsAndFiles(frmProgress, pbProgress);
+
+            pbProgress.Dispose();
+            frmProgress.Dispose();
+        }
+
+        private void MoveEnabledModsDirsAndFiles(Form frmProgress, ProgressBar pbProgress)
+        {
+            // Parse the enabled mods
+            var enabledModNames = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
+            if (!ParsedAny && enabledModNames.Length == 0)
+            {
+                MessageBox.Show(T._("There are no enabled mods or files in the Overwrite folder"));
+                return;
+            }
+            var numEnabledMods = enabledModNames.Length;
+            pbProgress.Maximum = numEnabledMods;
+            for (int i = 0; i < numEnabledMods; i++)
+            {
+                if (i < pbProgress.Maximum)
+                {
+                    pbProgress.Value = i;
+                }
+
+                string sourceFolder = Path.Combine(ManageSettings.CurrentGameModsDirPath, enabledModNames[i]);
+                if (!Directory.Exists(sourceFolder))
+                {
+                    continue;
+                }
+
+                frmProgress.Text = T._("Parsing") + ":" + Path.GetFileName(sourceFolder);
+
+                ParseDirectories(sourceFolder, sourceFolder);
+            }
+        }
+
+        private void MoveOverwriteDirsAndFiles(Form frmProgress, ProgressBar pbProgress)
+        {
+            // Parse the OVERWRITE folder
+            string sourceFolder = ManageSettings.CurrentGameOverwriteFolderPath;
+            frmProgress.Text = T._("Parsing") + ":" + Path.GetFileName(sourceFolder);
+            ParseDirectories(sourceFolder, sourceFolder);
         }
 
         private void RevertChangesBackToMOmode()

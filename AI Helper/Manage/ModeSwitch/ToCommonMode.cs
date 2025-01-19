@@ -318,6 +318,7 @@ namespace AIHelper.Manage.ModeSwitch
                     else
                     {
                         dir.CreateSymlink(targetDirPath, isRelative: false, objectType: ObjectType.Directory);
+                        AppendOperation(dir, targetDirPath);
                     }
                 }
                 else
@@ -501,14 +502,14 @@ namespace AIHelper.Manage.ModeSwitch
                 if (!forceCreateSymlink)
                 {
                     sourceFilePath.MoveTo(dataFilePath);//перенос файла из папки мода в Data
-
-                    AppendOperation(sourceFilePath, dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
                 }
                 else
                 {
                     // create symlink
                     sourceFilePath.CreateSymlink(dataFilePath, isRelative: false, objectType: ObjectType.File);
                 }
+
+                AppendOperation(sourceFilePath, dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
 
                 ParsedAny = true;
             }
@@ -543,14 +544,14 @@ namespace AIHelper.Manage.ModeSwitch
                 if (!forceCreateSymlink)
                 {
                     sourceFilePath.MoveTo(dataFilePath);
-
-                    AppendOperation(sourceFilePath, dataFilePath);// запись об операции будет пропущена, если будет какая-то ошибка
                 }
                 else
                 {
                     // create symlink
                     sourceFilePath.CreateSymlink(dataFilePath, isRelative: false, objectType: ObjectType.File);
                 }
+
+                AppendOperation(sourceFilePath, dataFilePath);// запись об операции будет пропущена, если будет какая-то ошибка
 
                 ParsedAny = true;
             }

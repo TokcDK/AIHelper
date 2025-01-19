@@ -32,12 +32,12 @@ namespace AIHelper.Manage.ModeSwitch
         {
         }
 
-        protected override bool NeedSkip(string sourceFilePath, string parentFolder)
+        protected override bool NeedSkip(string sourceFilePath, ParentSourceModData parentSourceModDir)
         {
-            return IsExcludedFileType(sourceFilePath, parentFolder);
+            return IsExcludedFileType(sourceFilePath, parentSourceModDir);
         }
 
-        protected bool IsExcludedFileType(string sourceFilePath, string parentFolder)
+        protected bool IsExcludedFileType(string sourceFilePath, ParentSourceModData parentSourceModDir)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace AIHelper.Manage.ModeSwitch
                 var fileExtension = Path.GetExtension(sourceFilePath);
                 if (string.Equals(fileExtension, ".txt", StringComparison.InvariantCultureIgnoreCase) || fileExtension.IsPictureExtension())
                 {
-                    if (Path.GetFileName(sourceFilePath.Replace(Path.DirectorySeparatorChar + Path.GetFileName(sourceFilePath), string.Empty)) == Path.GetFileName(parentFolder))
+                    if (Path.GetFileName(sourceFilePath.Replace(Path.DirectorySeparatorChar + Path.GetFileName(sourceFilePath), string.Empty)) == Path.GetFileName(parentSourceModDir.Path))
                     {
                         //пропускать картинки и txt в корне папки мода
                         return true;
@@ -260,7 +260,11 @@ namespace AIHelper.Manage.ModeSwitch
 
                 frmProgress.Text = T._("Parsing") + ":" + Path.GetFileName(sourceFolder);
 
-                ParseDirectoryFiles(sourceFolder, sourceFolder);
+                var modDirData = new ParentSourceModData(sourceFolder)
+                {
+                    IsSymlink = sourceFolder.IsSymlink(ObjectType.Directory)
+                };
+                ParseDirectoryFiles(sourceFolder, modDirData);
             }
         }
 
@@ -269,7 +273,10 @@ namespace AIHelper.Manage.ModeSwitch
             // Parse the OVERWRITE folder
             string sourceFolder = ManageSettings.CurrentGameOverwriteFolderPath;
             frmProgress.Text = T._("Parsing") + ":" + Path.GetFileName(sourceFolder);
-            ParseDirectoryFiles(sourceFolder, sourceFolder);
+
+            var parentSourceModData = new ParentSourceModData(sourceFolder);
+
+            ParseDirectoryFiles(sourceFolder, parentSourceModData);
         }
 
         private void RevertChangesBackToMOmode()
@@ -284,32 +291,32 @@ namespace AIHelper.Manage.ModeSwitch
         }
 
         /// <summary>
-        /// Parse files and dirs in <paramref name="sourceFolder"/> using <paramref name="parentSourceModDirPath"/>
+        /// Parse files and dirs in <paramref name="sourceFolder"/> using <paramref name="parentSourceModDir"/>
         /// </summary>
         /// <param name="sourceFolder"></param>
-        /// <param name="parentSourceModDirPath">Parent directory</param>
+        /// <param name="parentSourceModDir">Parent directory</param>
         /// <returns></returns>
-        protected bool ParseDirectoryFiles(string sourceFolder, string parentSourceModDirPath)
+        protected bool ParseDirectoryFiles(string sourceFolder, ParentSourceModData parentSourceModDir)
         {
-            ParseFiles(sourceFolder, parentSourceModDirPath); // parse files of this directory
+            ParseFiles(sourceFolder, parentSourceModDir); // parse files of this directory
 
             Parallel.ForEach(Directory.EnumerateDirectories(sourceFolder), dir =>
             {
-                ParseDirectoryA(dir, parentSourceModDirPath);
+                ParseDirectoryA(dir, parentSourceModDir);
             });
 
             return true;
         }
 
-        private void ParseDirectoryA(string dir, string parentDirPath)
+        private void ParseDirectoryA(string dir, ParentSourceModData parentSourceModDir)
         {
             if (dir.IsSymlink(ObjectType.Directory))
             {
-                ParseDirLink(dir, parentDirPath);
+                ParseDirLink(dir, parentSourceModDir);
             }
             else
             {
-                ParseDirectoryFiles(dir, parentDirPath);
+                ParseDirectoryFiles(dir, parentSourceModDir);
             }
         }
 
@@ -318,13 +325,13 @@ namespace AIHelper.Manage.ModeSwitch
         /// </summary>
         /// <param name="dir"></param>
         /// <param name="parentDirPath"></param>
-        protected void ParseDirLink(string dir, string parentDirPath)
+        protected void ParseDirLink(string dir, ParentSourceModData parentSourceModDir)
         {
             if (dir.IsValidSymlink(objectType: ObjectType.Directory))
             {
                 var symlinkTarget = Path.GetFullPath(dir.GetSymlinkTarget(ObjectType.Directory));
 
-                var targetPath = dir.Replace(parentDirPath, ManageSettings.CurrentGameDataDirPath); // we move to data
+                var targetPath = dir.Replace(parentSourceModDir.Path, ManageSettings.CurrentGameDataDirPath); // we move to data
                 symlinkTarget.CreateSymlink(targetPath, isRelative: Path.GetPathRoot(targetPath) == Path.GetPathRoot(symlinkTarget), objectType: ObjectType.Directory);
 
                 // we not deleted symlink in the dir
@@ -351,12 +358,12 @@ namespace AIHelper.Manage.ModeSwitch
         }
 
         /// <summary>
-        /// Parse files in <paramref name="parentDir"/> using <paramref name="parentSourceModDirPath"/>
+        /// Parse files in <paramref name="parentDir"/> using <paramref name="parentSourceModDir"/>
         /// </summary>
         /// <param name="parentDir"></param>
-        /// <param name="parentSourceModDirPath"></param>
+        /// <param name="parentSourceModDir"></param>
         /// <returns></returns>
-        protected bool ParseFiles(string parentDir, string parentSourceModDirPath)
+        protected bool ParseFiles(string parentDir, ParentSourceModData parentSourceModDir)
         {
             //var sourceFilePaths = Directory.GetFiles(dir, "*.*");
             //if (sourceFilePaths.Length == 0)
@@ -369,13 +376,13 @@ namespace AIHelper.Manage.ModeSwitch
             //var sourceFilePathsLength = sourceFilePaths.Length;
             Parallel.ForEach(Directory.EnumerateFiles(parentDir, "*.*"), f =>
             {
-                ParseFileA(f, parentSourceModDirPath);
+                ParseFileA(f, parentSourceModDir);
             });
 
             return true;
         }
 
-        private void ParseFileA(string filePath, string parentSourceModDirPath)
+        private void ParseFileA(string filePath, ParentSourceModData parentSourceModDir)
         {
             var sourceFilePath = filePath;
             if (ManageStrings.CheckForLongPath(ref sourceFilePath))
@@ -383,21 +390,21 @@ namespace AIHelper.Manage.ModeSwitch
                 longPaths.Add(sourceFilePath.Substring(4)); // add to long paths list but with removed long path prefix
             }
 
-            if (NeedSkip(sourceFilePath, parentSourceModDirPath))
+            if (NeedSkip(sourceFilePath, parentSourceModDir))
             {
                 return;
             }
 
-            ParseFile(sourceFilePath, parentSourceModDirPath);
+            ParseFile(sourceFilePath, parentSourceModDir);
         }
 
-        static void ParseFileLink(string fileSymLinkPath, string parentSourceModDirPath)
+        static void ParseFileLink(string fileSymLinkPath, ParentSourceModData parentSourceModDir)
         {
             if (fileSymLinkPath.IsValidSymlink(objectType: ObjectType.File))
             {
                 var symlinkTarget = Path.GetFullPath(fileSymLinkPath.GetSymlinkTarget(ObjectType.File));
 
-                var targetFilePath = fileSymLinkPath.Replace(parentSourceModDirPath, ManageSettings.CurrentGameDataDirPath);
+                var targetFilePath = fileSymLinkPath.Replace(parentSourceModDir.Path, ManageSettings.CurrentGameDataDirPath);
                 symlinkTarget.CreateSymlink(targetFilePath, isRelative: Path.GetPathRoot(targetFilePath) == Path.GetPathRoot(symlinkTarget), objectType: ObjectType.File);
             }
             else
@@ -415,17 +422,17 @@ namespace AIHelper.Manage.ModeSwitch
         /// </summary>
         /// <param name="sourceFilePath"></param>
         /// <param name="parentSourceModDirPath"></param>
-        protected void ParseFile(string sourceFilePath, string parentSourceModDirPath)
+        protected void ParseFile(string sourceFilePath, ParentSourceModData parentSourceModDir)
         {
             if (sourceFilePath.IsSymlink(ObjectType.File))
             {
                 // parse as file symlink instead
-                ParseFileLink(sourceFilePath, parentSourceModDirPath);
+                ParseFileLink(sourceFilePath, parentSourceModDir);
 
                 return;
             }
 
-            var dataFilePath = sourceFilePath.Replace(parentSourceModDirPath, ManageSettings.CurrentGameDataDirPath);
+            var dataFilePath = sourceFilePath.Replace(parentSourceModDir.Path, ManageSettings.CurrentGameDataDirPath);
             if (ManageStrings.CheckForLongPath(ref dataFilePath))
             {
                 longPaths.Add(dataFilePath.Substring(4));

@@ -12,6 +12,17 @@ namespace AIHelper.Manage.ModeSwitch
 {
     abstract class ModeSwitcherBase
     {
+        protected class ParentSourceModData
+        {
+            public string Path { get; }
+            public bool IsSymlink = false;
+
+            public ParentSourceModData(string path)
+            {
+                Path = path;
+            }
+        }
+
         protected static Logger _log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
@@ -84,7 +95,7 @@ namespace AIHelper.Manage.ModeSwitch
             ManageSettings.MainForm.OnOffButtons();
         }
 
-        protected virtual bool NeedSkip(string sourceFilePath, string sourceFolder)
+        protected virtual bool NeedSkip(string sourceFilePath, ParentSourceModData parentSourceModDir)
         {
             return false;
         }

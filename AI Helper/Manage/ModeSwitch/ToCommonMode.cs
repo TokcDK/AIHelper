@@ -382,56 +382,66 @@ namespace AIHelper.Manage.ModeSwitch
 
             if (File.Exists(dataFilePath))
             {
-                var vanillaFileBackupTargetPath = dataFilePath.Replace(ManageSettings.CurrentGameDataDirPath, ManageSettings.CurrentGameMOmodeDataFilesBakDirPath);
-
-                if (File.Exists(vanillaFileBackupTargetPath) || !vanillaDataFilesList.Contains(dataFilePath))
-                {
-                    return;
-                }
-
-                var bakfolder = Path.GetDirectoryName(vanillaFileBackupTargetPath);
-                try
-                {
-                    Directory.CreateDirectory(bakfolder);
-
-                    dataFilePath.MoveTo(vanillaFileBackupTargetPath);//перенос файла из Data в Bak, если там не было
-
-                    ManageModOrganizer.SaveGuidIfZipMod(sourceFilePath, zipmodsGUIDs);
-
-                    sourceFilePath.MoveTo(dataFilePath);
-                    AppendOperation(sourceFilePath, dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
-                    
-                    ParsedAny = true;
-                }
-                catch (Exception ex)
-                {
-                    // when file is not exist in Data, but file in Bak is exist and file in sourceFolder also exists => return file from Bak to Data
-                    if (!File.Exists(dataFilePath) && File.Exists(vanillaFileBackupTargetPath) && File.Exists(sourceFilePath))
-                    {
-                        File.Move(vanillaFileBackupTargetPath, dataFilePath);
-                    }
-
-                    _log.Error("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + bakfolder + "\r\nData path=" + dataFilePath + "\r\nSource dir path=" + sourceFilePath);
-                }
+                ParseFileExistInData(sourceFilePath, dataFilePath);
             }
             else
             {
-                var destFolder = Path.GetDirectoryName(dataFilePath);
-                try
+                ParseFileMissingInData(sourceFilePath, dataFilePath);
+            }
+        }
+
+        private void ParseFileMissingInData(string sourceFilePath, string dataFilePath)
+        {
+            var destFolder = Path.GetDirectoryName(dataFilePath);
+            try
+            {
+                Directory.CreateDirectory(destFolder);
+
+                ManageModOrganizer.SaveGuidIfZipMod(sourceFilePath, zipmodsGUIDs);
+
+                sourceFilePath.MoveTo(dataFilePath);//перенос файла из папки мода в Data
+                AppendOperation(sourceFilePath, dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
+
+                ParsedAny = true;
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + destFolder + "\r\nData path=" + dataFilePath + "\r\nSource dir path=" + sourceFilePath);
+            }
+        }
+
+        private void ParseFileExistInData(string sourceFilePath, string dataFilePath)
+        {
+            var vanillaFileBackupTargetPath = dataFilePath.Replace(ManageSettings.CurrentGameDataDirPath, ManageSettings.CurrentGameMOmodeDataFilesBakDirPath);
+
+            if (File.Exists(vanillaFileBackupTargetPath) || !vanillaDataFilesList.Contains(dataFilePath))
+            {
+                return;
+            }
+
+            var bakfolder = Path.GetDirectoryName(vanillaFileBackupTargetPath);
+            try
+            {
+                Directory.CreateDirectory(bakfolder);
+
+                dataFilePath.MoveTo(vanillaFileBackupTargetPath);//перенос файла из Data в Bak, если там не было
+
+                ManageModOrganizer.SaveGuidIfZipMod(sourceFilePath, zipmodsGUIDs);
+
+                sourceFilePath.MoveTo(dataFilePath);
+                AppendOperation(sourceFilePath, dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
+
+                ParsedAny = true;
+            }
+            catch (Exception ex)
+            {
+                // when file is not exist in Data, but file in Bak is exist and file in sourceFolder also exists => return file from Bak to Data
+                if (!File.Exists(dataFilePath) && File.Exists(vanillaFileBackupTargetPath) && File.Exists(sourceFilePath))
                 {
-                    Directory.CreateDirectory(destFolder);
-
-                    ManageModOrganizer.SaveGuidIfZipMod(sourceFilePath, zipmodsGUIDs);
-
-                    sourceFilePath.MoveTo(dataFilePath);//перенос файла из папки мода в Data
-                    AppendOperation(sourceFilePath, dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
-
-                    ParsedAny = true;
+                    File.Move(vanillaFileBackupTargetPath, dataFilePath);
                 }
-                catch (Exception ex)
-                {
-                    _log.Error("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + destFolder + "\r\nData path=" + dataFilePath + "\r\nSource dir path=" + sourceFilePath);
-                }
+
+                _log.Error("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + bakfolder + "\r\nData path=" + dataFilePath + "\r\nSource dir path=" + sourceFilePath);
             }
         }
 

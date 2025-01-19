@@ -490,26 +490,14 @@ namespace AIHelper.Manage.ModeSwitch
         private void ParseFileMissingInData(string sourceFilePath, string dataFilePath, bool forceCreateSymlink = false)
         {
             var destFolder = forceCreateSymlink ? "" : Path.GetDirectoryName(dataFilePath);
+            if (!forceCreateSymlink)
+            {
+                Directory.CreateDirectory(destFolder);
+            }
             try
             {
-                if (!forceCreateSymlink)
-                {
-                    Directory.CreateDirectory(destFolder);
-                }
 
-                ManageModOrganizer.SaveGuidIfZipMod(sourceFilePath, zipmodsGUIDs);
-
-                if (!forceCreateSymlink)
-                {
-                    sourceFilePath.MoveTo(dataFilePath);//перенос файла из папки мода в Data
-                }
-                else
-                {
-                    // create symlink
-                    sourceFilePath.CreateSymlink(dataFilePath, isRelative: false, objectType: ObjectType.File);
-                }
-
-                AppendOperation(sourceFilePath, dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
+                MoveFileToData(sourceFilePath, dataFilePath, forceCreateSymlink);
 
                 ParsedAny = true;
             }
@@ -517,6 +505,23 @@ namespace AIHelper.Manage.ModeSwitch
             {
                 _log.Error("Error occured while to common mode switch:" + Environment.NewLine + ex + "\r\npath=" + destFolder + "\r\nData path=" + dataFilePath + "\r\nSource dir path=" + sourceFilePath);
             }
+        }
+
+        private void MoveFileToData(string sourceFilePath, string dataFilePath, bool forceCreateSymlink)
+        {
+            ManageModOrganizer.SaveGuidIfZipMod(sourceFilePath, zipmodsGUIDs);
+
+            if (!forceCreateSymlink)
+            {
+                sourceFilePath.MoveTo(dataFilePath);//перенос файла из папки мода в Data
+            }
+            else
+            {
+                // create symlink
+                sourceFilePath.CreateSymlink(dataFilePath, isRelative: false, objectType: ObjectType.File);
+            }
+
+            AppendOperation(sourceFilePath, dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
         }
 
         private void ParseFileExistInData(string sourceFilePath, string dataFilePath, bool forceCreateSymlink = false)
@@ -530,26 +535,15 @@ namespace AIHelper.Manage.ModeSwitch
             }
 
             var bakfolder = forceCreateSymlink ? "" : Path.GetDirectoryName(vanillaFileBackupTargetPath);
+            if (!forceCreateSymlink)
+            {
+                Directory.CreateDirectory(bakfolder);
+            }
             try
             {
-                if(!forceCreateSymlink)
-                {
-                    Directory.CreateDirectory(bakfolder);
-                }
-
                 dataFilePath.MoveTo(vanillaFileBackupTargetPath); // перенос файла из Data в Bak, если там не было
 
-                ManageModOrganizer.SaveGuidIfZipMod(sourceFilePath, zipmodsGUIDs);
-
-                if (!forceCreateSymlink)
-                {
-                    sourceFilePath.MoveTo(dataFilePath);
-                }
-                else
-                {
-                    // create symlink
-                    sourceFilePath.CreateSymlink(dataFilePath, isRelative: false, objectType: ObjectType.File);
-                }
+                MoveFileToData(sourceFilePath, dataFilePath, forceCreateSymlink);
 
                 AppendOperation(sourceFilePath, dataFilePath);// запись об операции будет пропущена, если будет какая-то ошибка
 

@@ -337,14 +337,7 @@ namespace AIHelper.Manage.ModeSwitch
                 return;
             }
 
-            if (sourceFilePath.IsSymlink(ObjectType.File))
-            {
-                ParseFileLink(sourceFilePath, parentModDirPath);
-            }
-            else
-            {
-                ParseFile(sourceFilePath, parentModDirPath);
-            }
+            ParseFile(sourceFilePath, parentModDirPath);
         }
 
         static void ParseFileLink(string fileSymLinkPath, string parentModDirPath)
@@ -373,6 +366,14 @@ namespace AIHelper.Manage.ModeSwitch
         /// <param name="parentModDirPath"></param>
         protected void ParseFile(string sourceFilePath, string parentModDirPath)
         {
+            if (sourceFilePath.IsSymlink(ObjectType.File))
+            {
+                // parse as file symlink instead
+                ParseFileLink(sourceFilePath, parentModDirPath);
+
+                return;
+            }
+
             var dataFilePath = sourceFilePath.Replace(parentModDirPath, ManageSettings.CurrentGameDataDirPath);
             if (ManageStrings.CheckForLongPath(ref dataFilePath))
             {

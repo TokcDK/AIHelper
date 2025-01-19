@@ -406,55 +406,60 @@ namespace AIHelper.Manage.ModeSwitch
             {
                 if (string.IsNullOrWhiteSpace(operation)) return;
 
-                string[] movePaths = operation.Split(operationsSplitString, StringSplitOptions.None);
-                if (movePaths.Length != 2)
-                {
-                    _log.Warn("Something wrong and where was wrong operation parameters count in MoveFilesByOperationsList. Operation value:\r\n" + operation);
-                    return;
-                }
-
-                if (movePaths[0].CountOf(':') > 1 || movePaths[1].CountOf(':') > 1)
-                {
-                    // must be one ':' in absolute path or no one if relative path
-                    _log.Warn("Something wrong and where was wrong operation parameters value in MoveFilesByOperationsList. Operation value:\r\n" + operation);
-                }
-
-                if (IsDirSymlink(movePaths)) return;
-
-                var filePathInModsExists = File.Exists(movePaths[0]);
-                var filePathInDataExists = File.Exists(movePaths[1]);
-               
-                // skip if was deleted in Data
-                if (!filePathInDataExists) return;
-
-                if (filePathInModsExists)
-                {
-                    //если в Mods на месте планируемого для перемещения назад в Mods файла появился новый файл, то записать информацию о нем в новый мод, чтобы перенести его в новый мод
-                    filesWhichAlreadyHaveSameDestFileInMods.AppendLine(movePaths[1] + operationsSplitStringBase + movePaths[0]);
-                    filesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = true;
-
-                    return;
-                }
-                else
-                {
-                    string modsubfolder = Path.GetDirectoryName(movePaths[0]);
-                    Directory.CreateDirectory(modsubfolder);
-
-                    try//ignore move file error if file will be locked and write in log about this
-                    {
-                        movePaths[1].MoveTo(movePaths[0]);
-
-                        //запись выполненной операции для удаления из общего списка в случае ошибки при переключении из обычного режима
-                        operationsMade.AppendLine(operation);
-
-                        MoveBonemodForCards(movePaths);
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.Error("Failed to move file: '" + Environment.NewLine + movePaths[1] + "' " + Environment.NewLine + "Error:" + Environment.NewLine + ex);
-                    }
-                }
+                MoveFilesByOperation(operation);
             });
+        }
+
+        private void MoveFilesByOperation(string operation)
+        {
+            string[] movePaths = operation.Split(operationsSplitString, StringSplitOptions.None);
+            if (movePaths.Length != 2)
+            {
+                _log.Warn("Something wrong and where was wrong operation parameters count in MoveFilesByOperationsList. Operation value:\r\n" + operation);
+                return;
+            }
+
+            if (movePaths[0].CountOf(':') > 1 || movePaths[1].CountOf(':') > 1)
+            {
+                // must be one ':' in absolute path or no one if relative path
+                _log.Warn("Something wrong and where was wrong operation parameters value in MoveFilesByOperationsList. Operation value:\r\n" + operation);
+            }
+
+            if (IsDirSymlink(movePaths)) return;
+
+            var filePathInModsExists = File.Exists(movePaths[0]);
+            var filePathInDataExists = File.Exists(movePaths[1]);
+
+            // skip if was deleted in Data
+            if (!filePathInDataExists) return;
+
+            if (filePathInModsExists)
+            {
+                //если в Mods на месте планируемого для перемещения назад в Mods файла появился новый файл, то записать информацию о нем в новый мод, чтобы перенести его в новый мод
+                filesWhichAlreadyHaveSameDestFileInMods.AppendLine(movePaths[1] + operationsSplitStringBase + movePaths[0]);
+                filesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = true;
+
+                return;
+            }
+            else
+            {
+                string modsubfolder = Path.GetDirectoryName(movePaths[0]);
+                Directory.CreateDirectory(modsubfolder);
+
+                try//ignore move file error if file will be locked and write in log about this
+                {
+                    movePaths[1].MoveTo(movePaths[0]);
+
+                    //запись выполненной операции для удаления из общего списка в случае ошибки при переключении из обычного режима
+                    operationsMade.AppendLine(operation);
+
+                    MoveBonemodForCards(movePaths);
+                }
+                catch (Exception ex)
+                {
+                    _log.Error("Failed to move file: '" + Environment.NewLine + movePaths[1] + "' " + Environment.NewLine + "Error:" + Environment.NewLine + ex);
+                }
+            }
         }
 
         private bool IsDirSymlink(string[] movePaths)

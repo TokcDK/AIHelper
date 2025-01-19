@@ -300,12 +300,12 @@ namespace AIHelper.Manage.ModeSwitch
         }
 
         /// <summary>
-        /// Parse files in <paramref name="dir"/> using <paramref name="parentDirPath"/>
+        /// Parse files in <paramref name="dir"/> using <paramref name="parentModDirPath"/>
         /// </summary>
         /// <param name="dir"></param>
-        /// <param name="parentDirPath"></param>
+        /// <param name="parentModDirPath"></param>
         /// <returns></returns>
-        protected bool ParseFiles(string dir, string parentDirPath)
+        protected bool ParseFiles(string dir, string parentModDirPath)
         {
             //var sourceFilePaths = Directory.GetFiles(dir, "*.*");
             //if (sourceFilePaths.Length == 0)
@@ -318,13 +318,13 @@ namespace AIHelper.Manage.ModeSwitch
             //var sourceFilePathsLength = sourceFilePaths.Length;
             Parallel.ForEach(Directory.EnumerateFiles(dir, "*.*"), f =>
             {
-                ParseFileA(dir, parentDirPath, f);
+                ParseFileA(dir, parentModDirPath, f);
             });
 
             return true;
         }
 
-        private void ParseFileA(string dir, string parentDirPath, string filePath)
+        private void ParseFileA(string dir, string parentModDirPath, string filePath)
         {
             var sourceFilePath = filePath;
             if (ManageStrings.CheckForLongPath(ref sourceFilePath))
@@ -332,48 +332,48 @@ namespace AIHelper.Manage.ModeSwitch
                 longPaths.Add(sourceFilePath.Substring(4)); // add to long paths list but with removed long path prefix
             }
 
-            if (NeedSkip(sourceFilePath, parentDirPath))
+            if (NeedSkip(sourceFilePath, parentModDirPath))
             {
                 return;
             }
 
             if (sourceFilePath.IsSymlink(ObjectType.File))
             {
-                ParseFileLink(dir, parentDirPath);
+                ParseFileLink(sourceFilePath, parentModDirPath);
             }
             else
             {
-                ParseFile(sourceFilePath, parentDirPath);
+                ParseFile(sourceFilePath, parentModDirPath);
             }
         }
 
-        static void ParseFileLink(string linkPath, string parentDirPath)
+        static void ParseFileLink(string fileSymLinkPath, string parentModDirPath)
         {
-            if (linkPath.IsValidSymlink(objectType: ObjectType.File))
+            if (fileSymLinkPath.IsValidSymlink(objectType: ObjectType.File))
             {
-                var symlinkTarget = Path.GetFullPath(linkPath.GetSymlinkTarget(ObjectType.File));
+                var symlinkTarget = Path.GetFullPath(fileSymLinkPath.GetSymlinkTarget(ObjectType.File));
 
-                var targetPath = linkPath.Replace(parentDirPath, ManageSettings.CurrentGameDataDirPath);
+                var targetPath = fileSymLinkPath.Replace(parentModDirPath, ManageSettings.CurrentGameDataDirPath);
                 symlinkTarget.CreateSymlink(targetPath, isRelative: Path.GetPathRoot(targetPath) == Path.GetPathRoot(symlinkTarget), objectType: ObjectType.File);
             }
             else
             {
-                var invalidSymlinkDirMarkerPath = linkPath + ".InvalidSymLink";
+                var invalidSymlinkDirMarkerPath = fileSymLinkPath + ".InvalidSymLink";
                 if (!File.Exists(invalidSymlinkDirMarkerPath))
                 {
-                    File.WriteAllText(invalidSymlinkDirMarkerPath, "Symlink file '" + linkPath + "' is invalid!");
+                    File.WriteAllText(invalidSymlinkDirMarkerPath, "Symlink file '" + fileSymLinkPath + "' is invalid!");
                 }
             }
         }
 
         /// <summary>
-        /// Parse <paramref name="sourceFilePath"/> using <paramref name="parentDirPath"/>
+        /// Parse <paramref name="sourceFilePath"/> using <paramref name="parentModDirPath"/>
         /// </summary>
         /// <param name="sourceFilePath"></param>
-        /// <param name="parentDirPath"></param>
-        protected void ParseFile(string sourceFilePath, string parentDirPath)
+        /// <param name="parentModDirPath"></param>
+        protected void ParseFile(string sourceFilePath, string parentModDirPath)
         {
-            var dataFilePath = sourceFilePath.Replace(parentDirPath, ManageSettings.CurrentGameDataDirPath);
+            var dataFilePath = sourceFilePath.Replace(parentModDirPath, ManageSettings.CurrentGameDataDirPath);
             if (ManageStrings.CheckForLongPath(ref dataFilePath))
             {
                 longPaths.Add(dataFilePath.Substring(4));

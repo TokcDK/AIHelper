@@ -416,7 +416,7 @@ namespace AIHelper.Manage.ModeSwitch
 
             if (File.Exists(vanillaFileBackupTargetPath) || !vanillaDataFilesList.Contains(dataFilePath))
             {
-                // skip if file already was moved from mod with higher priority
+                // skip if file already was moved from mod with higher priority and was already exist in data, was created bak path
                 return;
             }
 

@@ -1,4 +1,5 @@
 ﻿using NLog;
+using SharpCompress.Common;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -291,18 +292,38 @@ namespace AIHelper.Manage.ModeSwitch
         }
 
         /// <summary>
-        /// Parse files and dirs in <paramref name="sourceFolder"/> using <paramref name="parentSourceModDir"/>
+        /// Parse files and dirs in <paramref name="sourceFolderPath"/> using <paramref name="parentSourceModDir"/>
         /// </summary>
-        /// <param name="sourceFolder"></param>
+        /// <param name="sourceFolderPath"></param>
         /// <param name="parentSourceModDir">Parent directory</param>
         /// <returns></returns>
-        protected bool ParseDirectoryFiles(string sourceFolder, ParentSourceModData parentSourceModDir)
+        protected bool ParseDirectoryFiles(string sourceFolderPath, ParentSourceModData parentSourceModDir)
         {
-            ParseFiles(sourceFolder, parentSourceModDir); // parse files of this directory
+            ParseFiles(sourceFolderPath, parentSourceModDir); // parse files of this directory
 
-            Parallel.ForEach(Directory.EnumerateDirectories(sourceFolder), dir =>
+            bool isModSymlink = parentSourceModDir.IsSymlink;
+
+            Parallel.ForEach(Directory.EnumerateDirectories(sourceFolderPath), dir =>
             {
-                ParseDirectoryA(dir, parentSourceModDir);
+                if (isModSymlink)
+                {
+                    // the files and dirs under symlink mod can be on another disk
+                    // need only make symlink to the dir
+                    string targetDirPath = dir.Replace(parentSourceModDir.Path, ManageSettings.CurrentGameDataDirPath);
+                    if (Directory.Exists(targetDirPath))
+                    {
+                        // target directory exists in data and need to create symlinks for it content instead
+                        ParseDirectoryA(dir, parentSourceModDir);
+                    }
+                    else
+                    {
+                        dir.CreateSymlink(targetDirPath, isRelative: false, objectType: ObjectType.Directory);
+                    }
+                }
+                else
+                {
+                    ParseDirectoryA(dir, parentSourceModDir);
+                }
             });
 
             return true;
@@ -424,6 +445,18 @@ namespace AIHelper.Manage.ModeSwitch
         /// <param name="parentSourceModDirPath"></param>
         protected void ParseFile(string sourceFilePath, ParentSourceModData parentSourceModDir)
         {
+            string parentDirPath = Path.GetDirectoryName(sourceFilePath);
+            if (parentSourceModDir.IsSymlink && parentSourceModDir.Path == Path.GetDirectoryName(sourceFilePath))
+            {
+                // the files and dirs under symlink mod can be on another disk
+                // need only make symlink to the dir
+                string targetFilePath = sourceFilePath.Replace(parentDirPath, ManageSettings.CurrentGameDataDirPath);
+
+                ParseFileCheckInData(sourceFilePath, targetFilePath, forceCreateSymlink: true);
+
+                return;
+            }
+
             if (sourceFilePath.IsSymlink(ObjectType.File))
             {
                 // parse as file symlink instead
@@ -438,27 +471,44 @@ namespace AIHelper.Manage.ModeSwitch
                 longPaths.Add(dataFilePath.Substring(4));
             }
 
-            if (File.Exists(dataFilePath))
+            ParseFileCheckInData(sourceFilePath, dataFilePath);
+        }
+
+        private void ParseFileCheckInData(string sourceFilePath, string targetFilePath, bool forceCreateSymlink = false)
+        {
+            if (File.Exists(targetFilePath))
             {
-                ParseFileExistInData(sourceFilePath, dataFilePath);
+                ParseFileExistInData(sourceFilePath, targetFilePath, forceCreateSymlink);
             }
             else
             {
-                ParseFileMissingInData(sourceFilePath, dataFilePath);
+                ParseFileMissingInData(sourceFilePath, targetFilePath, forceCreateSymlink);
             }
         }
 
-        private void ParseFileMissingInData(string sourceFilePath, string dataFilePath)
+        private void ParseFileMissingInData(string sourceFilePath, string dataFilePath, bool forceCreateSymlink = false)
         {
-            var destFolder = Path.GetDirectoryName(dataFilePath);
+            var destFolder = forceCreateSymlink ? "" : Path.GetDirectoryName(dataFilePath);
             try
             {
-                Directory.CreateDirectory(destFolder);
+                if (!forceCreateSymlink)
+                {
+                    Directory.CreateDirectory(destFolder);
+                }
 
                 ManageModOrganizer.SaveGuidIfZipMod(sourceFilePath, zipmodsGUIDs);
 
-                sourceFilePath.MoveTo(dataFilePath);//перенос файла из папки мода в Data
-                AppendOperation(sourceFilePath, dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
+                if (!forceCreateSymlink)
+                {
+                    sourceFilePath.MoveTo(dataFilePath);//перенос файла из папки мода в Data
+
+                    AppendOperation(sourceFilePath, dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
+                }
+                else
+                {
+                    // create symlink
+                    sourceFilePath.CreateSymlink(dataFilePath, isRelative: false, objectType: ObjectType.File);
+                }
 
                 ParsedAny = true;
             }
@@ -468,7 +518,7 @@ namespace AIHelper.Manage.ModeSwitch
             }
         }
 
-        private void ParseFileExistInData(string sourceFilePath, string dataFilePath)
+        private void ParseFileExistInData(string sourceFilePath, string dataFilePath, bool forceCreateSymlink = false)
         {
             var vanillaFileBackupTargetPath = dataFilePath.Replace(ManageSettings.CurrentGameDataDirPath, ManageSettings.CurrentGameMOmodeDataFilesBakDirPath);
 
@@ -478,17 +528,29 @@ namespace AIHelper.Manage.ModeSwitch
                 return;
             }
 
-            var bakfolder = Path.GetDirectoryName(vanillaFileBackupTargetPath);
+            var bakfolder = forceCreateSymlink ? "" : Path.GetDirectoryName(vanillaFileBackupTargetPath);
             try
             {
-                Directory.CreateDirectory(bakfolder);
+                if(!forceCreateSymlink)
+                {
+                    Directory.CreateDirectory(bakfolder);
+                }
 
-                dataFilePath.MoveTo(vanillaFileBackupTargetPath);//перенос файла из Data в Bak, если там не было
+                dataFilePath.MoveTo(vanillaFileBackupTargetPath); // перенос файла из Data в Bak, если там не было
 
                 ManageModOrganizer.SaveGuidIfZipMod(sourceFilePath, zipmodsGUIDs);
 
-                sourceFilePath.MoveTo(dataFilePath);
-                AppendOperation(sourceFilePath, dataFilePath);//запись об операции будет пропущена, если будет какая-то ошибка
+                if (!forceCreateSymlink)
+                {
+                    sourceFilePath.MoveTo(dataFilePath);
+
+                    AppendOperation(sourceFilePath, dataFilePath);// запись об операции будет пропущена, если будет какая-то ошибка
+                }
+                else
+                {
+                    // create symlink
+                    sourceFilePath.CreateSymlink(dataFilePath, isRelative: false, objectType: ObjectType.File);
+                }
 
                 ParsedAny = true;
             }

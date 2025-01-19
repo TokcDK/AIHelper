@@ -71,7 +71,7 @@ namespace AIHelper.Manage.ModeSwitch
         /// <summary>
         /// File paths list from vanilla Data folder with no mods
         /// </summary>
-        protected string[] vanillaDataFilesList;
+        protected HashSet<string> vanillaDataFilesList;
         /// <summary>
         /// List of empty folder paths in vanilla Data directory with no mods
         /// </summary>
@@ -138,6 +138,8 @@ namespace AIHelper.Manage.ModeSwitch
 
                 // Get vanilla data files
                 var vanillaDataFiles = Directory.GetFiles(ManageSettings.CurrentGameDataDirPath, "*.*", SearchOption.AllDirectories);
+                vanillaDataFilesList = vanillaDataFiles.ToHashSet();
+
 
                 // Parse the OVERWRITE folder
                 var sourceFolder = ManageSettings.CurrentGameOverwriteFolderPath;

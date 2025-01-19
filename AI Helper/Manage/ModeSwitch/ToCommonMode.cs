@@ -284,18 +284,18 @@ namespace AIHelper.Manage.ModeSwitch
         }
 
         /// <summary>
-        /// Parse files and dirs in <paramref name="sourceFolder"/> using <paramref name="parentDirPath"/>
+        /// Parse files and dirs in <paramref name="sourceFolder"/> using <paramref name="parentSourceModDirPath"/>
         /// </summary>
         /// <param name="sourceFolder"></param>
-        /// <param name="parentDirPath">Parent directory</param>
+        /// <param name="parentSourceModDirPath">Parent directory</param>
         /// <returns></returns>
-        protected bool ParseDirectories(string sourceFolder, string parentDirPath)
+        protected bool ParseDirectories(string sourceFolder, string parentSourceModDirPath)
         {
-            ParseFiles(sourceFolder, parentDirPath); // parse files of this directory
+            ParseFiles(sourceFolder, parentSourceModDirPath); // parse files of this directory
 
             Parallel.ForEach(Directory.EnumerateDirectories(sourceFolder), dir =>
             {
-                ParseDirectoryA(dir, parentDirPath);
+                ParseDirectoryA(dir, parentSourceModDirPath);
             });
 
             return true;

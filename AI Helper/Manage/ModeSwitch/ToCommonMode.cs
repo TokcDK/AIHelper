@@ -13,6 +13,8 @@ namespace AIHelper.Manage.ModeSwitch
 {
     class ToCommonMode : ModeSwitcherBase
     {
+        const string ZIPMOD_RECORD_SPLITTER = "{{ZIPMOD}}";
+
         protected override string DialogText =>
                     T._("Attention")
                     + "\n\n"
@@ -143,8 +145,7 @@ namespace AIHelper.Manage.ModeSwitch
             ManageFilesFoldersExtensions.GetEmptySubfoldersPaths(ManageSettings.CurrentGameDataDirPath, vanillaDataEmptyFolders);
 
             // Get vanilla data files
-            var vanillaDataFiles = Directory.GetFiles(ManageSettings.CurrentGameDataDirPath, "*.*", SearchOption.AllDirectories);
-            vanillaDataFilesList = vanillaDataFiles.ToHashSet();
+            var vanillaDataFiles = GetVanillaDataFilesList();
 
             MoveAllEnabledDirsAndFiles();
 
@@ -154,6 +155,19 @@ namespace AIHelper.Manage.ModeSwitch
                 return;
             }
 
+            WriteRevertToMOModeData(vanillaDataFiles);
+        }
+
+        private string[] GetVanillaDataFilesList()
+        {
+            var vanillaDataFiles = Directory.GetFiles(ManageSettings.CurrentGameDataDirPath, "*.*", SearchOption.AllDirectories);
+            vanillaDataFilesList = vanillaDataFiles.ToHashSet();
+
+            return vanillaDataFiles;
+        }
+
+        private void WriteRevertToMOModeData(string[] vanillaDataFiles)
+        {
             ReplacePathsToVars(ref moToStandartConvertationOperations);
             File.WriteAllText(ManageSettings.CurrentGameMoToStandartConvertationOperationsListFilePath, moToStandartConvertationOperations.ToString());
             moToStandartConvertationOperations.Clear();
@@ -167,13 +181,10 @@ namespace AIHelper.Manage.ModeSwitch
             ReplacePathsToVars(ref vanillaDataFiles);
             File.WriteAllLines(ManageSettings.CurrentGameVanillaDataFilesListFilePath, vanillaDataFiles);
 
-            if (zipmodsGUIDs.Count > 0)
-            {
-                // Write the zipmods GUID list to a file
-                File.WriteAllLines(ManageSettings.CurrentGameZipmodsGuidListFilePath,
-                    zipmodsGUIDs.Select(x => x.Key + "{{ZIPMOD}}" + x.Value).ToArray());
-            }
+            WriteZipmodGUIDs();
+
             dataWithModsFiles = null;
+            vanillaDataFiles = null;
 
             // Create the normal mode identifier
             SwitchNormalModeIdentifier();
@@ -184,6 +195,18 @@ namespace AIHelper.Manage.ModeSwitch
                 ReplacePathsToVars(ref vanillaDataEmptyFolders);
                 File.WriteAllText(ManageSettings.CurrentGameVanillaDataEmptyFoldersListFilePath, vanillaDataEmptyFolders.ToString());
             }
+        }
+
+        private void WriteZipmodGUIDs()
+        {
+            if (zipmodsGUIDs.Count == 0)
+            {
+                return;
+            }
+
+            // Write the zipmods GUID list to a file
+            File.WriteAllLines(ManageSettings.CurrentGameZipmodsGuidListFilePath,
+                zipmodsGUIDs.Select(x => x.Key + ZIPMOD_RECORD_SPLITTER + x.Value).ToArray());
         }
 
         private void MoveAllEnabledDirsAndFiles()

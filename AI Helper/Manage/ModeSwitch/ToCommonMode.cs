@@ -260,7 +260,7 @@ namespace AIHelper.Manage.ModeSwitch
 
                 frmProgress.Text = T._("Parsing") + ":" + Path.GetFileName(sourceFolder);
 
-                ParseDirectories(sourceFolder, sourceFolder);
+                ParseDirectoryFiles(sourceFolder, sourceFolder);
             }
         }
 
@@ -269,7 +269,7 @@ namespace AIHelper.Manage.ModeSwitch
             // Parse the OVERWRITE folder
             string sourceFolder = ManageSettings.CurrentGameOverwriteFolderPath;
             frmProgress.Text = T._("Parsing") + ":" + Path.GetFileName(sourceFolder);
-            ParseDirectories(sourceFolder, sourceFolder);
+            ParseDirectoryFiles(sourceFolder, sourceFolder);
         }
 
         private void RevertChangesBackToMOmode()
@@ -289,7 +289,7 @@ namespace AIHelper.Manage.ModeSwitch
         /// <param name="sourceFolder"></param>
         /// <param name="parentSourceModDirPath">Parent directory</param>
         /// <returns></returns>
-        protected bool ParseDirectories(string sourceFolder, string parentSourceModDirPath)
+        protected bool ParseDirectoryFiles(string sourceFolder, string parentSourceModDirPath)
         {
             ParseFiles(sourceFolder, parentSourceModDirPath); // parse files of this directory
 
@@ -309,7 +309,7 @@ namespace AIHelper.Manage.ModeSwitch
             }
             else
             {
-                ParseDirectories(dir, parentDirPath);
+                ParseDirectoryFiles(dir, parentDirPath);
             }
         }
 

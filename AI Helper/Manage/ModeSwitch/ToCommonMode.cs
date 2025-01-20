@@ -14,6 +14,19 @@ namespace AIHelper.Manage.ModeSwitch
 {
     class ToCommonMode : ModeSwitcherBase
     {
+        // 1. Обойти все папки модов одну за другой через метод ParseFolder(inputDirPath, sourceModDirPath), где sourceModDirPath это путь к папке мода, при первом использовании inputDirPath и sourceModDirPath равны
+        // 2. В ParseFolder(inputDirPath, sourceModDirPath) сделать следующее:
+        //  2.1 Если по пути inputDirPath находится invalid symbolic link на папку - пропустить
+        //  2.2 Обойти все файлы и для каждого файла вызвать ParseFile(inputFilePath, sourceModDirPath)
+        //   2.2.1 В ParseFile(inputFilePath, sourceModDirPath) сделать следующее:
+        //    2.2.1.0 Если по пути inputFilePath находится invalid symbolic link на файл - пропустить
+        //    2.2.1.1 Получить targetFilePath заменив в inputFilePath часть пути равную sourceModDirPath на путь к папке Data из переменной currentGameDataPath
+        //    2.2.1.2 Если по пути targetFilePath уже присутствует файл - переместить его в папку backupDataPath в той же подпапке и только после этого обрабатывать файл
+        //    2.2.1.3 Если inputFilePath на другом диске - создать для него символическую ссылку по пути targetFilePath с symbolik link target указывающий на inputFilePath
+        //    2.2.1.4 Если inputFilePath это символическая ссылка - пересоздать символическую ссылку на новом месте с той же symbolik link target как и у inputFilePath, преобразовав путь в абсолютный
+        //
+        //  2.3 Далее в ParseFolder(inputDirPath, sourceModDirPath) обойти все папки и для каждой папки вызвать ParseFolder(inputDirPath, sourceModDirPath), где inputDirPath это путь к папке, а sourceModDirPath c тем же значением sourceModDirPath
+
         const string ZIPMOD_RECORD_SPLITTER = "{{ZIPMOD}}";
 
         protected override string DialogText =>
@@ -87,6 +100,7 @@ namespace AIHelper.Manage.ModeSwitch
         /// список выполненных операций с файлами.
         /// </summary>
         protected StringBuilder moToStandartConvertationOperations;
+        protected HashSet<string> MovedModFiles = new HashSet<string>();
         /// <summary>
         /// True if any files was parsed
         /// </summary>
@@ -305,26 +319,7 @@ namespace AIHelper.Manage.ModeSwitch
 
             Parallel.ForEach(Directory.EnumerateDirectories(sourceFolderPath), dir =>
             {
-                if (isModSymlink)
-                {
-                    // the files and dirs under symlink mod can be on another disk
-                    // need only make symlink to the dir
-                    string targetDirPath = dir.Replace(parentSourceModDir.Path, ManageSettings.CurrentGameDataDirPath);
-                    if (Directory.Exists(targetDirPath))
-                    {
-                        // target directory exists in data and need to create symlinks for it content instead
-                        ParseDirectoryByType(dir, parentSourceModDir);
-                    }
-                    else
-                    {
-                        dir.CreateSymlink(targetDirPath, isRelative: false, objectType: ObjectType.Directory);
-                        AppendOperation(dir, targetDirPath);
-                    }
-                }
-                else
-                {
-                    ParseDirectoryByType(dir, parentSourceModDir);
-                }
+                ParseDirectoryByType(dir, parentSourceModDir);
             });
 
             return true;
@@ -376,6 +371,7 @@ namespace AIHelper.Manage.ModeSwitch
             lock (moToStandartConvertationOperationsListLocker)
             {
                 moToStandartConvertationOperations.AppendLine(sourcePath + operationsSplitStringBase + targetPath); // add symlink operation
+                MovedModFiles.Add(targetPath);
             }
         }
 

@@ -41,7 +41,8 @@ namespace AIHelper.Manage.ModeSwitch
                 ManageSettings.CurrentGameModsDirPath,
             }, dir =>
             {
-                ParseDirectories(dir);
+                BackupCreator2.CopyDirectoryWithLinks(dir, Path.Combine(bakDirPath, Path.GetFileName(dir)));
+                //ParseDirectories(dir);
             });
 
             pbProgress.Dispose();

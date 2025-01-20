@@ -130,10 +130,6 @@ namespace AIHelper.Manage.ModeSwitch
 
         private void InitVars()
         {
-            // First, create a backup of the game
-            if (MakeBackup)
-                new GameBackuper().CreateDataModsBakOfCurrentGame();
-
             moToStandartConvertationOperations = new StringBuilder();
             vanillaDataEmptyFolders = new StringBuilder();
             zipmodsGUIDs = new Dictionary<string, string>();
@@ -436,10 +432,10 @@ namespace AIHelper.Manage.ModeSwitch
         }
 
         /// <summary>
-        /// Parse <paramref name="sourceFilePath"/> using <paramref name="parentSourceModDirPath"/>
+        /// Parse <paramref name="sourceFilePath"/> using <paramref name="parentSourceModDir"/>
         /// </summary>
         /// <param name="sourceFilePath"></param>
-        /// <param name="parentSourceModDirPath"></param>
+        /// <param name="parentSourceModDir"></param>
         protected void ParseFile(string sourceFilePath, ParentSourceModData parentSourceModDir)
         {
             string parentDirPath = Path.GetDirectoryName(sourceFilePath);

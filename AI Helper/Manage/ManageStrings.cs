@@ -16,7 +16,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool CheckForLongPath(ref string path)
         {
-            if (path.Length > 259 && path.Substring(0, 4) != @"\\?\")
+            if (path.Length > 247 && !path.StartsWith(@"\\?\"))
             {
                 _log.Warn("Warning. Path to file has more of 259 characters. It can cause errors in game. Try to make path shorter by rename filename or any folders to it. File:" + Environment.NewLine + path);
                 path = path.ToLongPathWhenNeed(true, true);

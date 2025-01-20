@@ -60,10 +60,13 @@ namespace AIHelper.Manage.ModeSwitch
 
             MakeBackup = dialog.MakeBuckupCheckBox.Checked;
 
+            // First, create a backup of the game
+            if (MakeBackup)
+                new GameBackuper().CreateDataModsBakOfCurrentGame();
+
             if (!dialog.DoNotSwitchCheckBox.Checked)
             {
-                // commented for tests
-                // await Task.Run(() => Action()).ConfigureAwait(true);
+                //await Task.Run(() => Action()).ConfigureAwait(true);
             }
 
             //try

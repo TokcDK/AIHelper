@@ -37,6 +37,7 @@
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.DoNotSwitchCheckBox = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -72,6 +73,7 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.DoNotSwitchCheckBox);
             this.panel2.Controls.Add(this.MakeBuckupCheckBox);
             this.panel2.Controls.Add(this.MessageTextTextBox);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -155,6 +157,17 @@
             this.button2.Text = "Cancel";
             this.button2.UseVisualStyleBackColor = true;
             // 
+            // DoNotSwitchCheckBox
+            // 
+            this.DoNotSwitchCheckBox.AutoSize = true;
+            this.DoNotSwitchCheckBox.ForeColor = System.Drawing.Color.White;
+            this.DoNotSwitchCheckBox.Location = new System.Drawing.Point(101, 131);
+            this.DoNotSwitchCheckBox.Name = "DoNotSwitchCheckBox";
+            this.DoNotSwitchCheckBox.Size = new System.Drawing.Size(91, 17);
+            this.DoNotSwitchCheckBox.TabIndex = 1;
+            this.DoNotSwitchCheckBox.Text = "Do not switch";
+            this.DoNotSwitchCheckBox.UseVisualStyleBackColor = true;
+            // 
             // SwitchModeDialogForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -187,5 +200,6 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         public System.Windows.Forms.CheckBox MakeBuckupCheckBox;
+        public System.Windows.Forms.CheckBox DoNotSwitchCheckBox;
     }
 }

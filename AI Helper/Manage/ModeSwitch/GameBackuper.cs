@@ -53,6 +53,8 @@ namespace AIHelper.Manage.ModeSwitch
 
             Parallel.ForEach(Directory.EnumerateDirectories(sourceFolder), dir =>
             {
+                dir = dir.ToLongPathWhenNeed(isFile: false);
+
                 if (dir.IsSymlink(ObjectType.Directory))
                 {
                     ParseDirLink(dir);
@@ -66,9 +68,21 @@ namespace AIHelper.Manage.ModeSwitch
 
         private void ParseDir(string dir)
         {
-            if (dir.IsEmptyDir())
+            if (dir.IsSymlink(ObjectType.Directory))
+            {
+                var symlinkTarget = Path.GetFullPath(dir.GetSymlinkTarget(ObjectType.Directory));
+
+                var targetPath = dir.Replace(selectedGamePath, ManageSettings.CurrentGameDataDirPath);
+                targetPath = targetPath.ToLongPathWhenNeed(isFile: false);
+
+                symlinkTarget.CreateSymlink(targetPath, isRelative: false, objectType: ObjectType.Directory);
+
+            }
+            else if (dir.IsEmptyDir())
             {
                 var targetDirPath = dir.Replace(selectedGamePath, bakDirPath);
+                targetDirPath = targetDirPath.ToLongPathWhenNeed(isFile: false);
+
                 Directory.CreateDirectory(targetDirPath);
             }
             else
@@ -84,6 +98,8 @@ namespace AIHelper.Manage.ModeSwitch
                 var symlinkTarget = Path.GetFullPath(dir.GetSymlinkTarget(ObjectType.Directory));
 
                 var targetPath = dir.Replace(selectedGamePath, bakDirPath);
+                targetPath = targetPath.ToLongPathWhenNeed(isFile: false);
+
                 symlinkTarget.CreateSymlink(targetPath, isRelative: false, objectType: ObjectType.Directory);
             }
             else
@@ -106,28 +122,42 @@ namespace AIHelper.Manage.ModeSwitch
         }
         protected void ParseFile(string sourceFilePath)
         {
+            sourceFilePath = sourceFilePath.ToLongPathWhenNeed();
+
             var targetFilePath = sourceFilePath.Replace(selectedGamePath, bakDirPath);
 
-            if (!File.Exists(targetFilePath))
+            if (File.Exists(targetFilePath))
             {
-                var targetFileParentDirPath = Path.GetDirectoryName(targetFilePath);
-                try
-                {
-                    Directory.CreateDirectory(targetFileParentDirPath);
+                return;
+            }
+            targetFilePath = targetFilePath.ToLongPathWhenNeed();
 
-                    if (sourceFilePath.IsSymlink(ObjectType.File))
-                    {
-                        ParseFileLink(sourceFilePath);
-                    }
-                    else
+            var targetFileParentDirPath = Path.GetDirectoryName(targetFilePath);
+            targetFileParentDirPath = targetFileParentDirPath.ToLongPathWhenNeed(isFile: false);
+
+            Directory.CreateDirectory(targetFileParentDirPath);
+
+            try
+            {
+                if (sourceFilePath.IsSymlink(ObjectType.File))
+                {
+                    ParseFileLink(sourceFilePath);
+                }
+                else
+                {
+                    if(Path.GetPathRoot(sourceFilePath) == Path.GetPathRoot(targetFilePath))
                     {
                         sourceFilePath.CreateHardlink(targetFilePath);
                     }
+                    else
+                    {
+                        sourceFilePath.CreateSymlink(targetFilePath, isRelative: false, objectType: ObjectType.File);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    _log.Error("Error occured while game buckup file move:" + Environment.NewLine + ex + "\r\npath=" + targetFileParentDirPath + "\r\nData path=" + targetFilePath + "\r\nSource dir path=" + sourceFilePath);
-                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Error occured while game buckup file move:" + Environment.NewLine + ex + "\r\npath=" + targetFileParentDirPath + "\r\nData path=" + targetFilePath + "\r\nSource dir path=" + sourceFilePath);
             }
         }
 

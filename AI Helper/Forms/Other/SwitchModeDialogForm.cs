@@ -22,6 +22,7 @@ namespace AIHelper.Forms.Other
             {
                 MakeBuckupCheckBox.Checked = false;
                 MakeBuckupCheckBox.Visible = false;
+                DoNotSwitchCheckBox.Visible = MakeBuckupCheckBox.Visible;
             }
 
             this.Location = ManageSettings.MainForm.Location;

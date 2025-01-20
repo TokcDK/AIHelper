@@ -60,7 +60,10 @@ namespace AIHelper.Manage.ModeSwitch
 
             MakeBuckup = dialog.MakeBuckupCheckBox.Checked;
 
-            await Task.Run(() => Action()).ConfigureAwait(true);
+            if (!dialog.DoNotSwitchCheckBox.Checked)
+            {
+                await Task.Run(() => Action()).ConfigureAwait(true);
+            }
 
             //try
             //{

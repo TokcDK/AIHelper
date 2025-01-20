@@ -201,7 +201,13 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static string ToLongPathWhenNeed(this string path, bool isFile = true, bool alreadyChecked = false)
         {
-            if (alreadyChecked || (((isFile && path.Length > 259) || (!isFile && path.Length > 247)) && path.Substring(0, 4) != @"\\?\"))
+            if (alreadyChecked 
+                || 
+                (
+                    ((isFile && path.Length > 259) || (!isFile && path.Length > 247)) 
+                    && path.StartsWith(@"\\?\")
+                )
+               )
             {
                 return @"\\?\" + path;
             }

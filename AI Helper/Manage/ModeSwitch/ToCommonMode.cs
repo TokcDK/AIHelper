@@ -313,7 +313,7 @@ namespace AIHelper.Manage.ModeSwitch
                     if (Directory.Exists(targetDirPath))
                     {
                         // target directory exists in data and need to create symlinks for it content instead
-                        ParseDirectoryA(dir, parentSourceModDir);
+                        ParseDirectoryByType(dir, parentSourceModDir);
                     }
                     else
                     {
@@ -323,14 +323,14 @@ namespace AIHelper.Manage.ModeSwitch
                 }
                 else
                 {
-                    ParseDirectoryA(dir, parentSourceModDir);
+                    ParseDirectoryByType(dir, parentSourceModDir);
                 }
             });
 
             return true;
         }
 
-        private void ParseDirectoryA(string dir, ParentSourceModData parentSourceModDir)
+        private void ParseDirectoryByType(string dir, ParentSourceModData parentSourceModDir)
         {
             if (dir.IsSymlink(ObjectType.Directory))
             {

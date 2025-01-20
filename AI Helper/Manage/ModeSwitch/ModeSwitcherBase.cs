@@ -38,7 +38,7 @@ namespace AIHelper.Manage.ModeSwitch
         /// <summary>
         /// When switch to normal mode make backup of Data and Mods dirs using ntfs hard links
         /// </summary>
-        public bool MakeBuckup = true;
+        public bool MakeBackup = true;
 
         public async void Switch()
         {
@@ -58,7 +58,7 @@ namespace AIHelper.Manage.ModeSwitch
                 return;
             }
 
-            MakeBuckup = dialog.MakeBuckupCheckBox.Checked;
+            MakeBackup = dialog.MakeBuckupCheckBox.Checked;
 
             if (!dialog.DoNotSwitchCheckBox.Checked)
             {

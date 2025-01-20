@@ -117,7 +117,7 @@ namespace AIHelper.Manage.ModeSwitch
         private void InitVars()
         {
             // First, create a backup of the game
-            if (MakeBuckup)
+            if (MakeBackup)
                 new GameBackuper().CreateDataModsBakOfCurrentGame();
 
             moToStandartConvertationOperations = new StringBuilder();

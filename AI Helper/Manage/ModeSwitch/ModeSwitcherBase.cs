@@ -62,7 +62,8 @@ namespace AIHelper.Manage.ModeSwitch
 
             if (!dialog.DoNotSwitchCheckBox.Checked)
             {
-                await Task.Run(() => Action()).ConfigureAwait(true);
+                // commented for tests
+                // await Task.Run(() => Action()).ConfigureAwait(true);
             }
 
             //try

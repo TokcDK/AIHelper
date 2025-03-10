@@ -238,13 +238,26 @@ exit /b 0
 :moveToBackup
 set "itemToMove=%~1"
 if exist "!itemToMove!" (
-    for %%I in ("!itemToMove!") do set "itemName=%%~nxI"
-    if "!itemName!"=="" (
-        echo [ERROR] Cannot determine name for "!itemToMove!" to move to backup
+    :: Get the relative path by removing !targetDir! prefix
+    set "relativePath=!itemToMove:*%targetDir%=!"
+    if "!relativePath!"=="!itemToMove!" (
+        echo [ERROR] Item "!itemToMove!" is not under "!targetDir!" - cannot determine relative path
         exit /b 1
     )
-    move "!itemToMove!" "!backupFolder!\!itemName!" || (
-        echo [ERROR] Failed to move "!itemToMove!" to backup
+    :: Remove leading backslash if present
+    if "!relativePath:~0,1!"=="\" set "relativePath=!relativePath:~1!"
+    set "backupDest=!backupFolder!\!relativePath!"
+    
+    :: Create the parent directory structure in backup folder only if it doesn't exist
+    for %%I in ("!backupDest!\..") do set "backupParent=%%~fI"
+    if not exist "!backupParent!\" mkdir "!backupParent!" || (
+        echo [ERROR] Failed to create backup parent directory "!backupParent!"
+        exit /b 1
+    )
+    
+    :: Move the item to the backup location
+    move "!itemToMove!" "!backupDest!" || (
+        echo [ERROR] Failed to move "!itemToMove!" to "!backupDest!"
         exit /b 1
     )
 )

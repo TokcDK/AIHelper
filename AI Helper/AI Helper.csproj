@@ -637,8 +637,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>call "$(ProjectDir)postbuild.bat" "$(TargetDir)" "$(TargetName)" "$(ProjectDir)" "@(VersionNumber)" $(ConfigurationName)
-exit 0</PostBuildEvent>
+    <PostBuildEvent>call "$(ProjectDir)postbuild.bat" "$(TargetDir)" "$(TargetName)" "$(ProjectDir)" "@(VersionNumber)" $(ConfigurationName) || exit /b 1
+exit /b 0</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEventDependsOn>

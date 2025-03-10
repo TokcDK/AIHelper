@@ -213,13 +213,9 @@ if "!linkType!"=="D" (
     )
 )
 if exist "!linkPath!" (
-    rd /s /q "!linkPath!" 2>nul
-    if exist "!linkPath!" (
-        del "!linkPath!" 2>nul
-        if exist "!linkPath!" (
-            echo [ERROR] Failed to remove existing link "!linkPath!"
-            exit /b 1
-        )
+    call :moveToBackup "!linkPath!" || (
+        echo [ERROR] Failed to move existing "!linkPath!" to backup
+        exit /b 1
     )
 )
 if not exist "!parentDir!" (
@@ -240,11 +236,15 @@ if !ERRORLEVEL! NEQ 0 (
 exit /b 0
 
 :moveToBackup
-set "dirToMove=%~1"
-if exist "!dirToMove!\" (
-    for %%I in ("!dirToMove!") do set "dirName=%%~nxI"
-    move "!dirToMove!" "!backupFolder!\!dirName!" || (
-        echo [ERROR] Failed to move "!dirToMove!" to backup
+set "itemToMove=%~1"
+if exist "!itemToMove!" (
+    for %%I in ("!itemToMove!") do set "itemName=%%~nxI"
+    if "!itemName!"=="" (
+        echo [ERROR] Cannot determine name for "!itemToMove!" to move to backup
+        exit /b 1
+    )
+    move "!itemToMove!" "!backupFolder!\!itemName!" || (
+        echo [ERROR] Failed to move "!itemToMove!" to backup
         exit /b 1
     )
 )

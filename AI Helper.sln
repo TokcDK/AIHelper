@@ -24,11 +24,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AI Helper", "WPf\AI Helper\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Normal", "Normal", "{41A01CE2-9E3B-48AF-9000-820E346FBD21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INIFileMan", "K:\0GIT\[TokcDK]\LibsCollection\Net4\INIFileMan\INIFileMan.csproj", "{40AC8009-CECD-44D0-B564-96E07237FD1A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "INIFileMan", "..\LibsCollection\INIFileMan\INIFileMan.csproj", "{40AC8009-CECD-44D0-B564-96E07237FD1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckForEmptyDir", "K:\0GIT\[TokcDK]\LibsCollection\Net4\CheckForEmptyDir\CheckForEmptyDir.csproj", "{636976FE-5FFE-4E17-BCB1-7B858A78A8A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckForEmptyDir", "..\LibsCollection\CheckForEmptyDir\CheckForEmptyDir.csproj", "{636976FE-5FFE-4E17-BCB1-7B858A78A8A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetListOfSubClasses", "K:\0GIT\[TokcDK]\LibsCollection\Net4\GetListOfSubClasses\GetListOfSubClasses.csproj", "{FD599904-9718-4FAF-A7B0-48F5D1BE39E0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetListOfSubClasses", "..\LibsCollection\GetListOfSubClasses\GetListOfSubClasses.csproj", "{FD599904-9718-4FAF-A7B0-48F5D1BE39E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -236,7 +236,7 @@ namespace AIHelper.Manage.Update.Sources
 
                 // Download latest release page
                 _log.Debug("Getting latest release page: " + Info.SourceLink);
-                var latestReleasePage = WC.DownloadString(Info.SourceLink);
+                var latestReleasePage = WebClient.DownloadString(Info.SourceLink);
                 string assetsPagePattern = @"src\=\""(https\:\/\/github\.com\/" + @"([^\/]+)" + @"\/" + @"([^\/]+)" + @"\/releases\/expanded_assets\/([^\""]+))\"""; // 1 = full assets page link, 2 - owner, 3 - repo, 4 - version
                 // 1 = full assets page link, 2 - owner name (can be changed and be different from old), 3 - repository name (can be changed), 4 - version
                 var assetPageMatch = Regex.Match(latestReleasePage, assetsPagePattern, RegexOptions.IgnoreCase);
@@ -259,7 +259,7 @@ namespace AIHelper.Manage.Update.Sources
                     // Set latest version and reload assets page
                     if (assetPageMatch.Success) _gitLatestVersion = assetPageMatch.Result("$4");
                     _log.Debug("Navigating to release assets page: " + assetPageMatch.Result("$1"));
-                    latestReleasePage = WC.DownloadString(assetPageMatch.Result("$1"));
+                    latestReleasePage = WebClient.DownloadString(assetPageMatch.Result("$1"));
                 }
                 else
                 {
@@ -306,11 +306,11 @@ namespace AIHelper.Manage.Update.Sources
                     getFromLast10Releases = true;
                     Info.SourceLink = "https://github.com/" + _gitOwner + "/" + _gitRepository + "/releases";
                     _log.Debug("Searching in last 10 releases: " + Info.SourceLink);
-                    latestReleasePage = WC.DownloadString(Info.SourceLink);
+                    latestReleasePage = WebClient.DownloadString(Info.SourceLink);
                     MatchCollection assetsList = Regex.Matches(latestReleasePage, assetsPagePattern);
                     foreach (Match assetsMatch in assetsList)
                     {
-                        string theReleaseAssetsPage = WC.DownloadString(assetsMatch.Result("$1"));
+                        string theReleaseAssetsPage = WebClient.DownloadString(assetsMatch.Result("$1"));
 
                         linkPattern = @"href\=\""(/" + _gitOwner + "/" + _gitRepository + "/releases/download/([^/]+)/" + Info.UpdateFileStartsWith + @"([^\""]+)" + Info.UpdateFileEndsWith + @")\""";
                         link2File = Regex.Match(theReleaseAssetsPage, linkPattern, RegexOptions.IgnoreCase);
@@ -423,7 +423,7 @@ namespace AIHelper.Manage.Update.Sources
         internal override byte[] DownloadFileFromTheLink(Uri link)
         {
             _log.Info("Downloading file from link: " + link);
-            return WC.DownloadData(link);
+            return WebClient.DownloadData(link);
         }
     }
 }

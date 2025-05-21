@@ -17,7 +17,7 @@ namespace AIHelper.Manage.Update.Sources
 
         internal UpdateInfo Info;
 
-        protected WebClient WC;
+        protected WebClient WebClient;
 
         /// <summary>
         /// when true the source will be skipped in this session
@@ -36,7 +36,7 @@ namespace AIHelper.Manage.Update.Sources
             InitDownloadTimeTimer();
             try
             {
-                await WC.DownloadFileTaskAsync(uri, updateFilePath).ConfigureAwait(true);
+                await WebClient.DownloadFileTaskAsync(uri, updateFilePath).ConfigureAwait(true);
             }
             catch (WebException ex)
             {
@@ -63,7 +63,7 @@ namespace AIHelper.Manage.Update.Sources
         {
             IsCancelDownload = true;
             Info.LastErrorText.AppendLine("Download was freezed by some reason and was cancelled after 10 seconds elapsed.");
-            WC.CancelAsync();
+            WebClient.CancelAsync();
         }
 
         protected UpdateSourceBase(UpdateInfo info)
@@ -78,19 +78,19 @@ namespace AIHelper.Manage.Update.Sources
 
         private void WebClientInit()
         {
-            if (WC == null)
+            if (WebClient == null)
             {
-                WC = new WebClientEx(OnlineTranslatorCookies ?? new CookieContainer())
+                WebClient = new WebClientEx(OnlineTranslatorCookies ?? new CookieContainer())
                 {
                     Encoding = Encoding.UTF8
                 };
 
-                WC.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.Chrome_Iron_Win7);
+                WebClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.Chrome_Iron_Win7);
             }
 
-            WC.DownloadProgressChanged += DownloadProgressChanged;
+            WebClient.DownloadProgressChanged += DownloadProgressChanged;
 
-            WC.DownloadFileCompleted += DownloadFileCompleted;
+            WebClient.DownloadFileCompleted += DownloadFileCompleted;
         }
 
         protected virtual void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
@@ -160,9 +160,9 @@ namespace AIHelper.Manage.Update.Sources
 
         public void Dispose()
         {
-            if (WC != null)
+            if (WebClient != null)
             {
-                WC.Dispose();
+                WebClient.Dispose();
             }
         }
 

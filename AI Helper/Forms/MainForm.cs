@@ -1159,9 +1159,9 @@ namespace AIHelper
         {
         }
 
-        private void btnUpdateMods_Click(object sender, EventArgs e)
+        private async void btnUpdateMods_Click(object sender, EventArgs e)
         {
-            ManageUpdateMods.UpdateMods();
+            await ManageUpdateMods.UpdateMods();
         }
 
         private void PbDiscord_Click(object sender, EventArgs e)

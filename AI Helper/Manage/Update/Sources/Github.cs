@@ -55,15 +55,9 @@ namespace AIHelper.Manage.Update.Sources
         {
             base.DownloadFileCompleted(sender, e);
 
-            if (_dwnpb != null)
-            {
-                _dwnpb.Dispose();
-            }
+            _dwnpb?.Dispose();
 
-            if (_dwnf != null)
-            {
-                _dwnf.Dispose();
-            }
+            _dwnf?.Dispose();
 
             if (e.Error != null)
             {

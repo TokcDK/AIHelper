@@ -207,8 +207,8 @@ namespace AIHelper.Manage.Update
 
                         bool getfileIsTrue = await source.GetFile().ConfigureAwait(true); // download latest file
 
-                        bool updateFilesFailed = false;
-                        if (getfileIsTrue && target.MakeBuckup() && (updateFilesFailed = target.UpdateFiles()) // update folder with new files
+                        bool updateFilesSuccess = false;
+                        if (getfileIsTrue && target.MakeBuckup() && (updateFilesSuccess = target.UpdateFiles()) // update folder with new files
                             )
                         {
                             UpdatedAny = true;
@@ -242,7 +242,7 @@ namespace AIHelper.Manage.Update
                         }
                         else
                         {
-                            if (updateFilesFailed)
+                            if (!updateFilesSuccess)
                             {
                                 // restore check datetime if failed to update
                                 if (oldCheckDateTime == DateTime.MinValue)

@@ -313,6 +313,7 @@
     <Compile Include="Manage\Update\Targets\Mods\ModsBase.cs" />
     <Compile Include="Manage\Update\Targets\UpdateTargetBase.cs" />
     <Compile Include="Manage\Update\Updater.cs" />
+    <Compile Include="Manage\Update\UpdateSystem.cs" />
     <Compile Include="Manage\Update\UpdateTools.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>

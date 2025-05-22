@@ -1,5 +1,8 @@
+using Octokit;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AIHelper.Manage.Update.UpdateNew
 {
@@ -48,6 +51,8 @@ namespace AIHelper.Manage.Update.UpdateNew
         public byte[] Retrieve() => _retrieveFunc();
     }
 
+// ... (другие классы без изменений)
+
     // Example source: GitHub repository
     public class GitHubSource : ISource
     {
@@ -66,19 +71,47 @@ namespace AIHelper.Manage.Update.UpdateNew
 
         public IUpdateInfo GetAvailableUpdate(string currentVersion)
         {
-            // Placeholder: Use GitHub API to check latest release
-            // Compare version from tag/file name with currentVersion
-            // Example logic (to be implemented with real API calls):
-            string latestVersion = "1.2.3"; // Simulated latest version from GitHub
+            // Используем Octokit для получения последнего релиза и поиска нужного файла
+            var latestRelease = GetLatestReleaseAsync().GetAwaiter().GetResult();
+            if (latestRelease == null)
+                return null;
+
+            var asset = latestRelease.Assets.FirstOrDefault(a => a.Name != null && System.Text.RegularExpressions.Regex.IsMatch(a.Name, _fileNamePattern));
+            if (asset == null)
+                return null;
+
+            string latestVersion = latestRelease.TagName ?? latestRelease.Name;
             if (string.Compare(latestVersion, currentVersion, StringComparison.Ordinal) > 0)
             {
                 return new UpdateInfo(latestVersion, () =>
                 {
-                    // Simulated download from GitHub release
-                    return new byte[] { /* file data */ };
+                    // Скачиваем файл через Octokit
+                    var data = DownloadAssetAsync(asset).GetAwaiter().GetResult();
+                    return data;
                 });
             }
             return null;
+        }
+
+        private async Task<Release> GetLatestReleaseAsync()
+        {
+            var client = new GitHubClient(new ProductHeaderValue("AIHelperUpdater"));
+            try
+            {
+                var releases = await client.Repository.Release.GetAll(_author, _repository);
+                return releases?.OrderByDescending(r => r.CreatedAt).FirstOrDefault();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private async Task<byte[]> DownloadAssetAsync(ReleaseAsset asset)
+        {
+            var client = new GitHubClient(new ProductHeaderValue("AIHelperUpdater"));
+            var response = await client.Connection.Get<byte[]>(new Uri(asset.BrowserDownloadUrl), new Dictionary<string, string>(), "application/octet-stream");
+            return response.Body;
         }
     }
 

@@ -239,11 +239,11 @@ namespace AIHelper.Manage.Update.UpdateNew
     public class ModListTarget : ITarget
     {
         public string Name => "Mod List";
-        private readonly string _modOrganizerPath;
+        private readonly string _modsDirPath;
 
-        public ModListTarget(string modOrganizerPath)
+        public ModListTarget(string modsDirPath)
         {
-            _modOrganizerPath = modOrganizerPath ?? throw new ArgumentNullException(nameof(modOrganizerPath));
+            _modsDirPath = modsDirPath ?? throw new ArgumentNullException(nameof(modsDirPath));
         }
 
         public IEnumerable<IUpdateable> GetUpdateables()
@@ -251,10 +251,10 @@ namespace AIHelper.Manage.Update.UpdateNew
             // Placeholder: Iterate over mod folders, read meta.ini for source data
             // Simulated example:
             var mods = new List<IUpdateable>
-        {
-            new ModUpdateable("Mod1", new GitHubSource("gh1", "author", "repo", "mod1-*.zip"), "1.0.0", $"{_modOrganizerPath}\\mods\\Mod1"),
-            new ModUpdateable("Mod2", new LocalFolderSource("lf1", "C:\\Updates", "mod2-*.zip"), "1.0.0", $"{_modOrganizerPath}\\mods\\Mod2")
-        };
+            {
+                new ModUpdateable("Mod1", new GitHubSource("gh1", "author", "repo", "mod1-*.zip"), "1.0.0", $"{_modsDirPath}\\Mod1"),
+                new ModUpdateable("Mod2", new LocalFolderSource("lf1", "C:\\Updates", "mod2-*.zip"), "1.0.0", $"{_modsDirPath}\\Mod2")
+            };
             return mods;
         }
     }

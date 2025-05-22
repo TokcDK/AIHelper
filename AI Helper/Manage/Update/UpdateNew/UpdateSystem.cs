@@ -131,15 +131,46 @@ namespace AIHelper.Manage.Update.UpdateNew
 
         public IUpdateInfo GetAvailableUpdate(string currentVersion)
         {
-            // Placeholder: Check files in _folderPath matching _fileNamePattern
-            // Determine latest version from file name or metadata
-            string latestVersion = "1.0.1"; // Simulated latest version
-            if (string.Compare(latestVersion, currentVersion, StringComparison.Ordinal) > 0)
+            if (!System.IO.Directory.Exists(_folderPath))
+                return null;
+
+            var regex = new System.Text.RegularExpressions.Regex(_fileNamePattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            var files = System.IO.Directory.GetFiles(_folderPath);
+            var versionedFiles = new List<(string FilePath, string Version)>();
+
+            foreach (var file in files)
             {
-                return new UpdateInfo(latestVersion, () =>
+                var fileName = System.IO.Path.GetFileName(file);
+                var match = regex.Match(fileName);
+                if (match.Success && match.Groups.Count > 1)
                 {
-                    // Simulated file read from local folder
-                    return new byte[] { /* file data */ };
+                    var version = match.Groups[1].Value;
+                    versionedFiles.Add((file, version));
+                }
+            }
+
+            if (versionedFiles.Count == 0)
+                return null;
+
+            // Найти файл с самой новой версией
+            var latest = versionedFiles
+                .OrderByDescending(f => f.Version, StringComparer.Ordinal)
+                .FirstOrDefault();
+
+            if (string.Compare(latest.Version, currentVersion, StringComparison.Ordinal) > 0)
+            {
+                return new UpdateInfo(latest.Version, () =>
+                {
+                    try
+                    {
+                        return System.IO.File.Exists(latest.FilePath)
+                            ? System.IO.File.ReadAllBytes(latest.FilePath)
+                            : null;
+                    }
+                    catch
+                    {
+                        return null;
+                    }
                 });
             }
             return null;

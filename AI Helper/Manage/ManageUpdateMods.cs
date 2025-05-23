@@ -91,9 +91,9 @@ namespace AIHelper.Manage
                 foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(UpdateOptions != null ? UpdateOptions.CheckEnabledModsOnlyCheckBox.Checked : true))
                 {
                     var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modname);
-                    if (updateInfoList.ContainsKey(modname) && !infos.ContainsKey(modPath))
+                    if (updateInfoList.TryGetValue(modname, out string value) && !infos.ContainsKey(modPath))
                     {
-                        infos.Add(modname, updateInfoList[modname]);
+                        infos.Add(modname, value);
                     }
                 }
             }

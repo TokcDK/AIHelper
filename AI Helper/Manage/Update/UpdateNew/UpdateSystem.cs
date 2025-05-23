@@ -223,6 +223,8 @@ namespace AIHelper.Manage.Update.UpdateNew
     // Updateable item: Individual mod
     public class ModUpdateable : IUpdateable
     {
+        static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public string Name { get; }
         public ISource Source { get; }
         public string CurrentVersion { get; }
@@ -239,7 +241,7 @@ namespace AIHelper.Manage.Update.UpdateNew
         public void InstallUpdate(byte[] updateData)
         {
             // Placeholder: Apply update based on rules (e.g., extract archive to _modFolderPath)
-            Console.WriteLine($"Installing update for mod {Name} at {_modFolderPath}");
+            Logger.Info($"Installing update for mod {Name} at {_modFolderPath}");
         }
     }
 

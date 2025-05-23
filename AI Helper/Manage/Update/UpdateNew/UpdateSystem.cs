@@ -1,6 +1,9 @@
+using NLog;
 using Octokit;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -180,6 +183,8 @@ namespace AIHelper.Manage.Update.UpdateNew
     // Updateable item: Mod Organizer
     public class ModOrganizerUpdateable : IUpdateable
     {
+        static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public string Name => "Mod Organizer";
         public ISource Source { get; }
         public string CurrentVersion { get; }
@@ -194,7 +199,24 @@ namespace AIHelper.Manage.Update.UpdateNew
         {
             // Placeholder: Save updateData to temp file and run as .exe installer
             // Example: File.WriteAllBytes("temp.exe", updateData); Process.Start("temp.exe");
-            Console.WriteLine($"Installing update for {Name} with data length {updateData.Length}");
+            // Mod Organizer dir path: ManageSettings.AppModOrganizerDirPath
+            // Arguments: /dir="ManageSettings.AppModOrganizerDirPath" /noicons /nocancel /norestart /silent
+            Logger.Info($"Installing update for {Name} with data length {updateData.Length}");
+            try
+            {
+                File.WriteAllBytes("mo-installer.exe", updateData);
+                Process.Start("mo-installer.exe", $"/dir=\"{ManageSettings.AppModOrganizerDirPath}\" /noicons /nocancel /norestart /silent");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Failed to install update for Mod Organizer");
+                throw;
+            }
+            finally
+            {
+                if (File.Exists("mo-installer.exe"))
+                    File.Delete("mo-installer.exe");
+            }
         }
     }
 

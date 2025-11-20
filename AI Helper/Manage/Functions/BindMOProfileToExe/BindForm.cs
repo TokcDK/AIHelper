@@ -99,7 +99,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
         {
             if (ExesComboBox.SelectedItem is string exePath
                 && ProfilesComboBox.SelectedItem is ProfiledData data
-                && !data.BoundExes.Contains(exePath))  // Use pattern matching; check Contains on BindingList
+                && !data.BoundExes.Contains(exePath))
             {
                 data.Add(exePath); 
                 WriteBoundExes();

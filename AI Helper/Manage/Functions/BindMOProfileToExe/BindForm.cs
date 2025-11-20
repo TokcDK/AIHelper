@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -18,16 +19,10 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
         private void ProfilesComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ProfilesComboBox.SelectedItem == null || !(ProfilesComboBox.SelectedItem is ProfiledData data))
+            if (ProfilesComboBox.SelectedItem is ProfiledData data)
             {
-                return;
+                BoundExesListBox.DataSource = data.BoundExes;
             }
-
-            // bound the bound exes list box to BoundExesListBox.DataSource
-            BoundExesListBox.DataSource = new BindingSource
-            {
-                DataSource = data.BoundExes
-            };
         }
 
         private static IEnumerable<string> GetBoundExes(string profileName)
@@ -89,60 +84,32 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
         private void AddExeButton_Click(object sender, EventArgs e)
         {
-            if (ExesComboBox.SelectedItem == null)
+            if (ExesComboBox.SelectedItem is string exePath
+                && ProfilesComboBox.SelectedItem is ProfiledData data
+                && !data.BoundExes.Contains(exePath))  // Use pattern matching; check Contains on BindingList
             {
-                return;
+                data.Add(exePath); 
+                WriteBoundExes();
             }
-
-            string exePath = ExesComboBox.SelectedItem.ToString();
-            if (string.IsNullOrEmpty(exePath)
-                || !(ProfilesComboBox.SelectedItem is ProfiledData data))
-            {
-                return;
-            }
-
-            if (data.BoundExes.Contains(exePath))
-            {
-                return;
-            }
-
-            data.Add(exePath);
-            BoundExesListBox.DataSource = null;
-            BoundExesListBox.DataSource = data.BoundExes;
-
-            WriteBoundExes();
         }
 
         private void RemoveExeButton_Click(object sender, EventArgs e)
         {
-            if (BoundExesListBox.SelectedItem == null)
+            if (BoundExesListBox.SelectedItem is string exePath
+                && ProfilesComboBox.SelectedItem is ProfiledData data)
             {
-                return;
+                data.Remove(exePath);
+                WriteBoundExes();
             }
-            var exePath = BoundExesListBox.SelectedItem.ToString();
-            if (string.IsNullOrEmpty(exePath)
-                || !(ProfilesComboBox.SelectedItem is ProfiledData data))
-            {
-                return;
-            }
-
-            data.Remove(exePath);
-            BoundExesListBox.DataSource = null;
-            BoundExesListBox.DataSource = data.BoundExes;
-
-            WriteBoundExes();
         }
 
         private void WriteBoundExes()
         {
-            if (ProfilesComboBox.SelectedItem == null
-                || !(ProfilesComboBox.SelectedItem is ProfiledData data))
+            if (ProfilesComboBox.SelectedItem is ProfiledData data)
             {
-                return;
+                var boundExeListPath = Path.Combine(ManageSettings.MoCurrentGameProfilesDirPath, data.ProfileName, ManageSettings.MoProfileBoundExesName);
+                File.WriteAllLines(boundExeListPath, data.BoundExes);
             }
-
-            var boundExeListPath = Path.Combine(ManageSettings.MoCurrentGameProfilesDirPath, data.ProfileName, ManageSettings.MoProfileBoundExesName);
-            File.WriteAllLines(boundExeListPath, data.BoundExes);
         }
     }
 
@@ -156,7 +123,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
         }
 
         public string ProfileName { get; set; }
-        public List<string> BoundExes { get; set; }
+        public BindingList<string> BoundExes { get; set; } = new BindingList<string>();
 
         public void Add(string exePath)
         {
@@ -218,7 +185,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
             var profileData = new ProfiledData(this)
             {
                 ProfileName = profileName,
-                BoundExes = filteredExes
+                BoundExes = new BindingList<string>(filteredExes)
             };
             _profileDataReferenced.Add(profileData.ProfileName, profileData);
             _profileDataList.Add(profileData);

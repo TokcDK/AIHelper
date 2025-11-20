@@ -20,6 +20,7 @@ namespace AIHelper.Manage
 {
     static partial class ManageModOrganizer
     {
+
         static readonly Logger _log = LogManager.GetCurrentClassLogger();
         internal static bool IsInOverwriteFolder(this string filePath)
         {
@@ -3827,6 +3828,28 @@ namespace AIHelper.Manage
             if (gameName == null) return "";
 
             return gameName.Result("$1");
+        }
+
+        internal static object GetBoundExes(string profileName)
+        {
+            var boundExeListPath = Path.Combine(ManageSettings.MoCurrentGameProfilesDirPath, profileName, ManageSettings.MoProfileBoundExesName);
+            if (!File.Exists(boundExeListPath))
+            {
+                return Enumerable.Empty<string>();
+            }
+            try
+            {
+                // return only existing unique exe file paths
+                return File.ReadAllLines(boundExeListPath)
+                    .Where(l => !string.IsNullOrWhiteSpace(l) && File.Exists(l))
+                    .Distinct();
+            }
+            catch (Exception ex)  // Catch IOException or general Exception
+            {
+                // Log if available, or show message in UI context
+                _log.Debug($"Error reading bound exes for {profileName}: {ex.Message}");
+                return Enumerable.Empty<string>();
+            }
         }
     }
 

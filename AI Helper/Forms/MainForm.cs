@@ -871,11 +871,12 @@ namespace AIHelper
 
             string exePath;
             string arguments = string.Empty;
+            string oldMOProfileName = "";
             if (MOmode)
             {
-                var getCurrentGameExemoProfileName = ManageSettings.CurrentGameExemoProfileName;
-                var customExeTitleName = getCurrentGameExemoProfileName + (isVr?"VR":"");
-                exePath = ManageSettings.AppMOexePath;
+                var currentGameExemoProfileName = ManageSettings.CurrentGameExemoProfileName;
+                var customExeTitleName = currentGameExemoProfileName + (isVr?"VR":"");
+                exePath = ManageSettings.AppMOexePath; // set Mod organizer exe path
 
                 ManageProcess.KillProcessesByName(ManageModOrganizer.GetExeNameByTitle(customExeTitleName));
 
@@ -896,6 +897,11 @@ namespace AIHelper
                 //}
                 //}
 
+                if(ManageModOrganizer.TryGetMOProfileNameByExeTitle(customExeTitleName, out string profileNameToRun))
+                {
+                    oldMOProfileName = ManageModOrganizer.SetCurrentProfileByName(profileNameToRun);
+                }
+
                 arguments = "moshortcut://:\"" + customExeTitleName + "\"";
             }
             else
@@ -914,6 +920,11 @@ namespace AIHelper
             ManageProcess.KillProcessesByName(Path.GetFileNameWithoutExtension(exePath));
             ManageProcess.RunProgram(exePath, arguments);
 
+            if(MOmode && !string.IsNullOrEmpty(oldMOProfileName))
+            {
+                // return last profile
+                ManageModOrganizer.SetCurrentProfileByName(oldMOProfileName);
+            }
             OnOffButtons();
         }
 

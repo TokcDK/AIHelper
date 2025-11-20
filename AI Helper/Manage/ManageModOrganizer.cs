@@ -2783,6 +2783,32 @@ namespace AIHelper.Manage
         /// <summary>
         /// get title of custom executable by it exe name
         /// </summary>
+        /// <param name="exeTitle"></param>
+        /// <param name="ini"></param>
+        /// <returns></returns>
+        internal static string GetMOcustomExecutableExePathByTitle(string exeTitle, INIFile ini = null)
+        {
+            if (ini == null)
+            {
+                ini = ManageIni.GetINIFile(ManageSettings.AppMOiniFilePath);
+            }
+
+            var customs = new CustomExecutables(ini);
+            foreach (var customExe in customs.List)
+            {
+                if (customExe.Value.Title == exeTitle)
+                {
+                    return customExe.Value.Binary;
+                }
+            }
+
+            _log.Debug($"Executable for title '{exeTitle}' not found.");
+            return null;
+        }
+
+        /// <summary>
+        /// get title of custom executable by it exe name
+        /// </summary>
         /// <param name="exename"></param>
         /// <param name="ini"></param>
         /// <returns></returns>
@@ -3850,6 +3876,47 @@ namespace AIHelper.Manage
                 _log.Debug($"Error reading bound exes for {profileName}: {ex.Message}");
                 return Enumerable.Empty<string>();
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="profileNameToRun"></param>
+        /// <returns>old profile name</returns>
+        internal static string SetCurrentProfileByName(string profileNameToRun)
+        {
+            var ini = ManageIni.GetINIFile(ManageSettings.ModOrganizerIniPath);
+
+            string byteArrayPrefix = "@ByteArray(";
+            string oldProfileIniValue = ini.GetKey("General", "selected_profile");
+            string oldProfile = oldProfileIniValue
+                .Remove(oldProfileIniValue.Length - 1)
+                .Substring(byteArrayPrefix.Length);
+
+            ini.SetKey("General", "selected_profile", $"{byteArrayPrefix}{profileNameToRun})");
+
+            return oldProfile;
+        }
+
+        internal static bool TryGetMOProfileNameByExeTitle(string customExeTitleName, out string profileNameToRun)
+        {
+            profileNameToRun = "";
+            var profileDirs = new DirectoryInfo(ManageSettings.MoCurrentGameProfilesDirPath).GetDirectories()
+                                       .OrderByDescending(profileDir => profileDir.LastWriteTime); // order first which was modified last                
+            string thisExePath = GetMOcustomExecutableExePathByTitle(customExeTitleName);
+            foreach (var profileDir in profileDirs)
+            {
+                var profileName = profileDir.Name;
+                var boundExes = ManageModOrganizer.GetBoundExes(profileName);
+
+                if (boundExes.Contains(thisExePath, StringComparer.OrdinalIgnoreCase))
+                {
+                    profileNameToRun = profileName;
+                    break;
+                }
+            }
+
+            return profileNameToRun.Length > 0;
         }
     }
 

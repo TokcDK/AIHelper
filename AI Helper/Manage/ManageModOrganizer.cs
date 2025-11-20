@@ -3830,7 +3830,7 @@ namespace AIHelper.Manage
             return gameName.Result("$1");
         }
 
-        internal static object GetBoundExes(string profileName)
+        internal static IEnumerable<string> GetBoundExes(string profileName)
         {
             var boundExeListPath = Path.Combine(ManageSettings.MoCurrentGameProfilesDirPath, profileName, ManageSettings.MoProfileBoundExesName);
             if (!File.Exists(boundExeListPath))

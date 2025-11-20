@@ -1,4 +1,4 @@
-﻿namespace AIHelper.Manage.Functions.BindMOProfileToExeForFlp
+﻿namespace AIHelper.Manage.Functions.BindMOProfileToExe
 {
     partial class BindForm
     {
@@ -36,7 +36,7 @@
             this.ExesComboBox = new System.Windows.Forms.ComboBox();
             this.AddExeButton = new System.Windows.Forms.Button();
             this.SaveButton = new System.Windows.Forms.Button();
-            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.BoundExesListBox = new System.Windows.Forms.ListBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -48,7 +48,7 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10.56338F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 235F));
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.listBox1, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.BoundExesListBox, 2, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -106,7 +106,6 @@
             this.ExesComboBox.Name = "ExesComboBox";
             this.ExesComboBox.Size = new System.Drawing.Size(208, 21);
             this.ExesComboBox.TabIndex = 3;
-            this.ExesComboBox.SelectedIndexChanged += new System.EventHandler(this.ExesComboBox_SelectedIndexChanged);
             // 
             // AddExeButton
             // 
@@ -116,6 +115,7 @@
             this.AddExeButton.TabIndex = 4;
             this.AddExeButton.Text = "Add";
             this.AddExeButton.UseVisualStyleBackColor = true;
+            this.AddExeButton.Click += new System.EventHandler(this.AddExeButton_Click);
             // 
             // SaveButton
             // 
@@ -126,14 +126,14 @@
             this.SaveButton.Text = "Save";
             this.SaveButton.UseVisualStyleBackColor = true;
             // 
-            // listBox1
+            // BoundExesListBox
             // 
-            this.listBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(259, 3);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(230, 161);
-            this.listBox1.TabIndex = 1;
+            this.BoundExesListBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.BoundExesListBox.FormattingEnabled = true;
+            this.BoundExesListBox.Location = new System.Drawing.Point(259, 3);
+            this.BoundExesListBox.Name = "BoundExesListBox";
+            this.BoundExesListBox.Size = new System.Drawing.Size(230, 161);
+            this.BoundExesListBox.TabIndex = 1;
             // 
             // BindForm
             // 
@@ -142,7 +142,8 @@
             this.ClientSize = new System.Drawing.Size(492, 167);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "BindForm";
-            this.Text = "bindForm";
+            this.Text = "BindForm";
+            this.Load += new System.EventHandler(this.BindForm_Load);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
@@ -160,6 +161,6 @@
         private System.Windows.Forms.ComboBox ExesComboBox;
         private System.Windows.Forms.Button AddExeButton;
         private System.Windows.Forms.Button SaveButton;
-        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.ListBox BoundExesListBox;
     }
 }

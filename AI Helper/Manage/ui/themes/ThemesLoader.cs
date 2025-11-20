@@ -34,10 +34,14 @@ namespace AIHelper.Manage.ui.themes
                 {
                     if (!el.Type.IsAssignableFrom(c.GetType())) continue;
 
-                    if (el.ForeColor != default && !c.Name.Contains(ManageSettings.ThemeLabelColorSetIgnoreNameMark)) c.ForeColor = el.ForeColor;
-                    if (el.BackColor != default && !c.Name.Contains(ManageSettings.ThemeLabelColorSetIgnoreNameMark)) c.BackColor = el.BackColor;
-                    if (el.Font != default) c.Font = el.Font;
-                    if (el.BackgroundImage != default) c.BackgroundImage = el.BackgroundImage;
+                    if (!el.ForeColor.IsEmpty && !c.Name.Contains(ManageSettings.ThemeLabelColorSetIgnoreNameMark))
+                        c.ForeColor = el.ForeColor;
+                    if (!el.BackColor.IsEmpty && !c.Name.Contains(ManageSettings.ThemeLabelColorSetIgnoreNameMark))
+                        c.BackColor = el.BackColor;
+                    if (el.Font != null)
+                        c.Font = el.Font;
+                    if (el.BackgroundImage != null)
+                        c.BackgroundImage = el.BackgroundImage;
 
                     break;
                 }

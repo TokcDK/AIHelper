@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Security.AccessControl;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using AIHelper.Games;
+﻿using AIHelper.Games;
 using AIHelper.SharedData;
 using GetListOfSubClasses;
 using INIFileMan;
 using NLog;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace AIHelper.Manage
 {
@@ -162,7 +161,7 @@ namespace AIHelper.Manage
 
                 foreach (var gameType in listOfGames)
                 {
-                    if(TryAddTheGameIntoGamesList(gameType, gameDirPath, listOfGameDirs, added))
+                    if (TryAddTheGameIntoGamesList(gameType, gameDirPath, listOfGameDirs, added))
                     {
                         break;
                     }
@@ -465,7 +464,7 @@ namespace AIHelper.Manage
                 {
                     ManageSettings.Games.Game = firstSelectedGame;
                 }
-                if(ManageSettings.Games.Game == default && ManageSettings.Games?.Games?.Count>0)
+                if (ManageSettings.Games.Game == default && ManageSettings.Games?.Games?.Count > 0)
                 {
                     var game = ManageSettings.Games.Games[0];
 

@@ -121,6 +121,13 @@
     <Compile Include="Install\UpdateMaker\ContentTypeParsers\ContentTypeParserBase.cs" />
     <Compile Include="Install\UpdateMaker\ContentTypeParsers\ContentTypeParserDirs.cs" />
     <Compile Include="Install\UpdateMaker\ContentTypeParsers\ContentTypeParserFiles.cs" />
+    <Compile Include="Manage\Functions\BindMOProfileToExe\BindForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Manage\Functions\BindMOProfileToExe\BindForm.Designer.cs">
+      <DependentUpon>BindForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Manage\Functions\BindMOProfileToExe\BindMOProfileToExeForFlp.cs" />
     <Compile Include="Manage\ManageModlistExtensions.cs" />
     <Compile Include="Manage\ManageTabs.cs" />
     <Compile Include="Forms\Other\CleanOptionsDialogForm.cs">
@@ -378,6 +385,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Other\UpdateOptionsDialog.resx">
       <DependentUpon>UpdateOptionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Manage\Functions\BindMOProfileToExe\BindForm.resx">
+      <DependentUpon>BindForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

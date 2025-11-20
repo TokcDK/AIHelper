@@ -3909,7 +3909,7 @@ namespace AIHelper.Manage
                 var profileName = profileDir.Name;
                 var boundExes = ManageModOrganizer.GetBoundExes(profileName);
 
-                if (boundExes.Contains(thisExePath, StringComparer.OrdinalIgnoreCase))
+                if (boundExes.Contains(thisExePath.Replace("/", "\\"), StringComparer.OrdinalIgnoreCase))
                 {
                     profileNameToRun = profileName;
                     break;

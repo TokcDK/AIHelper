@@ -136,9 +136,9 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
     internal class ProfiledData
     {
-        private readonly ProfileBoundExesData _parent;
+        private readonly ProfiledDataFactory _parent;
 
-        public ProfiledData(ProfileBoundExesData parent)
+        public ProfiledData(ProfiledDataFactory parent)
         {
             _parent = parent;
         }
@@ -156,6 +156,21 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
         }
     }
 
+    internal class ProfiledDataFactory
+    {
+        private readonly Action<string, string> _addExeToProfile;
+        private readonly Action<string> _removeExeFromEverywhere;
+
+        public ProfiledDataFactory(Action<string, string> addExeToProfile, Action<string> removeExeFromEverywhere)
+        {
+            _addExeToProfile = addExeToProfile;
+            _removeExeFromEverywhere = removeExeFromEverywhere;
+        }
+
+        public void RemoveExeFromEverywhere(string exePath) => _removeExeFromEverywhere(exePath);
+        public void AddExeToProfile(string exePath, string profileName) => _addExeToProfile(exePath, profileName);
+    }
+
     internal class ProfileBoundExesData
     {
         // _exeProfilePair made to control the exe containing in other profiles
@@ -165,8 +180,15 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
         private readonly List<ProfiledData> _profileDataList = new List<ProfiledData>();
 
+        private readonly ProfiledDataFactory _factory;
+
+        public ProfileBoundExesData()
+        {
+            _factory = new ProfiledDataFactory(AddExeToProfile, RemoveExeFromEverywhere);
+        }
+
         public List<ProfiledData> GetProfiles() => _profileDataList;
-        public void RemoveExeFromEverywhere(string exePath)
+        private void RemoveExeFromEverywhere(string exePath)
         {
             if (_exeProfilePairs.TryGetValue(exePath, out string profileName))
             {
@@ -178,7 +200,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
             }
         }
 
-        public void AddExeToProfile(string exePath, string profileName)
+        private void AddExeToProfile(string exePath, string profileName)
         {
             RemoveExeFromEverywhere(exePath);
             if (_profileDataReferenced.TryGetValue(profileName, out ProfiledData profileData))
@@ -195,7 +217,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
         public void AddProfileData(string profileName, List<string> boundExes)
         {
             var filteredExes = FilterExes(profileName, boundExes);
-            var profileData = new ProfiledData(this)
+            var profileData = new ProfiledData(_factory)
             {
                 ProfileName = profileName,
                 BoundExes = new BindingList<string>(filteredExes)

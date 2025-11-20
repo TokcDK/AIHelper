@@ -28,13 +28,11 @@ namespace AIHelper.Manage.ui.themes
 
         internal static void SetTheme(IUITheme theme, Control control)
         {
-            foreach (var childControl in control.Controls)
+            foreach (Control c in control.Controls)
             {
-                if (!(childControl is Control c)) continue;
-
                 foreach (var el in theme.Elements)
                 {
-                    if (childControl.GetType() != el.Type) continue;
+                    if (c.GetType() != el.Type) continue;
 
                     if (el.ForeColor != default && !c.Name.Contains(ManageSettings.ThemeLabelColorSetIgnoreNameMark)) c.ForeColor = el.ForeColor;
                     if (el.BackColor != default && !c.Name.Contains(ManageSettings.ThemeLabelColorSetIgnoreNameMark)) c.BackColor = el.BackColor;

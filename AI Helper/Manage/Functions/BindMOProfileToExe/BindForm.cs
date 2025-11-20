@@ -61,10 +61,11 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
             // load profiles
             profilesList = new ProfileBoundExesData();
-            var profileDirs = Directory.GetDirectories(ManageSettings.MoCurrentGameProfilesDirPath);
+            var profileDirs = new DirectoryInfo(ManageSettings.MoCurrentGameProfilesDirPath).GetDirectories()
+                                       .OrderByDescending(profileDir => profileDir.LastWriteTime); // order first which was modified last
             foreach (var profileDir in profileDirs)
             {
-                var profileName = Path.GetFileName(profileDir);
+                var profileName = profileDir.Name;
                 var boundExes = GetBoundExes(profileName).ToList();
                 profilesList.AddProfileData(profileName, boundExes);
             }

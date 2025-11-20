@@ -98,17 +98,20 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
         private void WriteBoundExes()
         {
-            if (ProfilesComboBox.SelectedItem is ProfiledData data)
+            foreach(var profile in profilesList.GetProfiles())
             {
-                var boundExeListPath = Path.Combine(ManageSettings.MoCurrentGameProfilesDirPath, data.ProfileName, ManageSettings.MoProfileBoundExesName);
-                try
+                if (profile.IsChanged)
                 {
-                    File.WriteAllLines(boundExeListPath, data.BoundExes);
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(ex, $"Error writing bound exes for profile '{data.ProfileName}'");
-                    MessageBox.Show($"Error writing bound exes for profile '{data.ProfileName}': {ex.Message}", "Write Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    var boundExeListPath = Path.Combine(ManageSettings.MoCurrentGameProfilesDirPath, profile.ProfileName, ManageSettings.MoProfileBoundExesName);
+                    try
+                    {
+                        File.WriteAllLines(boundExeListPath, profile.BoundExes);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error(ex, $"Error writing bound exes for profile '{profile.ProfileName}'");
+                        MessageBox.Show($"Error writing bound exes for profile '{profile.ProfileName}': {ex.Message}", "Write Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
         }
@@ -116,6 +119,9 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
     internal class ProfiledData
     {
+        private bool _isChanged = false;
+        public bool IsChanged => _isChanged;
+
         private readonly ProfiledDataFactory _factory;
 
         public ProfiledData(ProfiledDataFactory factory)
@@ -129,10 +135,19 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
         public void Add(string exePath)
         {
             _factory.AddExeToProfile(exePath, ProfileName);
+            _isChanged = true;
         }
-        public void Remove(string exePath)
+        public void Remove(string exePath, bool onlyRemove = false)
         {
-            _factory.RemoveExeFromEverywhere(exePath);
+            if (onlyRemove)
+            {
+                BoundExes.Remove(exePath);
+            }
+            else
+            {
+                _factory.RemoveExeFromEverywhere(exePath);
+            }
+            _isChanged = true;
         }
     }
 
@@ -174,7 +189,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
             {
                 if (_profileDataReferenced.TryGetValue(profileName, out ProfiledData profileData))
                 {
-                    profileData.BoundExes.Remove(exePath);
+                    profileData.Remove(exePath, true);
                 }
                 _exeProfilePairs.Remove(exePath);
             }

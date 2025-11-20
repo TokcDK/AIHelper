@@ -149,8 +149,6 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
     {
         private readonly Dictionary<string, string> _exeProfilePair = new Dictionary<string, string>();
 
-        private readonly Dictionary<string, List<string>> _profileBoundExes = new Dictionary<string, List<string>>();
-
         private readonly List<ProfiledData> _profileDataList = new List<ProfiledData>();
 
         public List<ProfiledData> GetProfiles() => _profileDataList;
@@ -158,7 +156,6 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
         public void AddProfileData(string profileName, List<string> boundExes)
         {
             var filteredExes = FilterExes(profileName, boundExes);
-            _profileBoundExes.Add(profileName, filteredExes);
             _profileDataList.Add(new ProfiledData
             {
                 ProfileName = profileName,

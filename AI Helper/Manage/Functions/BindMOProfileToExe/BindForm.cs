@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AIHelper.Manage.Functions.BindMOProfileToExe
@@ -23,12 +18,12 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
         private void ProfilesComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(ProfilesComboBox.SelectedItem == null || string.IsNullOrEmpty(ProfilesComboBox.SelectedItem.ToString()))
+            if (ProfilesComboBox.SelectedItem == null || string.IsNullOrEmpty(ProfilesComboBox.SelectedItem.ToString()))
             {
                 return;
             }
 
-            var boundExeListPath = Path.Combine(ManageSettings.MoProfilesDirPath, ProfilesComboBox.SelectedItem.ToString(), ManageSettings.MoProfileBoundExesName);            
+            var boundExeListPath = Path.Combine(ManageSettings.MoProfilesDirPath, ProfilesComboBox.SelectedItem.ToString(), ManageSettings.MoProfileBoundExesName);
 
             if (!File.Exists(boundExeListPath))
             {
@@ -61,7 +56,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
         private void AddExeButton_Click(object sender, EventArgs e)
         {
-            if(ExesComboBox.SelectedItem == null 
+            if (ExesComboBox.SelectedItem == null
                 || string.IsNullOrEmpty(ExesComboBox.SelectedItem.ToString()))
             {
                 return;
@@ -79,7 +74,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
         private void RemoveExeButton_Click(object sender, EventArgs e)
         {
-            if(BoundExesListBox.SelectedItem == null)
+            if (BoundExesListBox.SelectedItem == null)
             {
                 return;
             }

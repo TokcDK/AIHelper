@@ -136,7 +136,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
     internal class ProfiledData
     {
-        private ProfileBoundExesData _parent;
+        private readonly ProfileBoundExesData _parent;
 
         public ProfiledData(ProfileBoundExesData parent)
         {

@@ -70,12 +70,12 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
                 return;
             }
 
-            if (ExesComboBox.Items.Contains(ExesComboBox.SelectedItem.ToString()))
+            if (BoundExesListBox.Items.Contains(ExesComboBox.SelectedItem.ToString()))
             {
                 return;
             }
 
-            currentGameExeList.Add(ExesComboBox.SelectedItem.ToString());
+            BoundExesListBox.Items.Add(ExesComboBox.SelectedItem.ToString());
         }
     }
 }

@@ -160,18 +160,10 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
         public void AddExeToProfile(string exePath, string profileName)
         {
             RemoveExeFromEverywhere(exePath);
-
             if (_profileDataReferenced.TryGetValue(profileName, out ProfiledData profileData))
             {
                 profileData.BoundExes.Add(exePath);
-                if(!_exeProfilePairs.ContainsKey(exePath))
-                {
-                    _exeProfilePairs.Add(exePath, profileName);
-                }
-                else
-                {
-                    _exeProfilePairs[exePath] = profileName;
-                }
+                _exeProfilePairs.Add(exePath, profileName);
             }
             else
             {

@@ -8,9 +8,9 @@ namespace AIHelper.Manage.ui.themes
     internal class OldTheme : IUITheme
     {
         public string Name => "Old";
-        Color _bg = Color.Gray;
+        private readonly Color _bg = Color.Gray;
 
-        public List<ElementData> Elements => new List<ElementData>()
+        public IReadOnlyList<ElementData> Elements => new List<ElementData>()
         {
             new ElementData()
             {
@@ -29,6 +29,6 @@ namespace AIHelper.Manage.ui.themes
                 BackColor = _bg,
                 ForeColor = Color.Black,
             },
-        };
+        }.AsReadOnly();
     }
 }

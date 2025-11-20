@@ -10,7 +10,7 @@ namespace AIHelper.Manage.ui.themes
     public interface IUITheme
     {
         string Name { get; }
-        List<ElementData> Elements { get; }
+        IReadOnlyList<ElementData> Elements { get; }
     }
 
     public class ElementData

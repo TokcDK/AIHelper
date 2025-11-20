@@ -12,7 +12,7 @@ namespace AIHelper.Manage.ui.themes
     {
         public string Name => "Crazy";
 
-        public List<ElementData> Elements => new List<ElementData>()
+        public IReadOnlyList<ElementData> Elements => new List<ElementData>()
         {
             new ElementData()
             {
@@ -31,7 +31,7 @@ namespace AIHelper.Manage.ui.themes
                 BackColor = RandomColor,
                 ForeColor = RandomColor,
             },
-        };
+        }.AsReadOnly();
 
         readonly Random _rnd = new Random();
         Color RandomColor => Color.FromArgb(255, _rnd.Next(0, 255), _rnd.Next(0, 255), _rnd.Next(0, 255));

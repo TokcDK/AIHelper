@@ -9,7 +9,7 @@ namespace AIHelper.Manage.ui.themes
     {
         public string Name => "Forest";
 
-        public List<ElementData> Elements => new List<ElementData>()
+        public IReadOnlyList<ElementData> Elements => new List<ElementData>()
         {
             new ElementData()
             {
@@ -44,6 +44,6 @@ namespace AIHelper.Manage.ui.themes
                 ForeColor = Color.Black,
                 BackColor = Color.FromArgb(255, 152, 188, 98),
             },
-        };
+        }.AsReadOnly();
     }
 }

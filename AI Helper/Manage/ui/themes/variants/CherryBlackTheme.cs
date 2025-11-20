@@ -12,7 +12,7 @@ namespace AIHelper.Manage.ui.themes
         readonly Color MainText = Color.White;
         readonly Color BGPanels = Color.FromArgb(255, 233, 76, 61);
         readonly Color BGOther = Color.FromArgb(255, 45, 41, 38);
-        public List<ElementData> Elements => new List<ElementData>()
+        public IReadOnlyList<ElementData> Elements => new List<ElementData>()
         {
             new ElementData()
             {
@@ -47,6 +47,6 @@ namespace AIHelper.Manage.ui.themes
                 ForeColor = MainText,
                 BackColor = BGOther,
             },
-        };
+        }.AsReadOnly();
     }
 }

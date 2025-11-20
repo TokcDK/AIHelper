@@ -8,9 +8,9 @@ namespace AIHelper.Manage.ui.themes
     internal class DefaultTheme : IUITheme
     {
         public string Name => "Default";
-        Color _bg = Color.FromArgb(255, 72, 85, 86);
+        private readonly Color _bg = Color.FromArgb(255, 72, 85, 86);
 
-        public List<ElementData> Elements => new List<ElementData>()
+        public IReadOnlyList<ElementData> Elements => new List<ElementData>()
         {
             new ElementData()
             {
@@ -29,6 +29,6 @@ namespace AIHelper.Manage.ui.themes
                 BackColor = _bg,
                 ForeColor = Color.Black,
             },
-        };
+        }.AsReadOnly();
     }
 }

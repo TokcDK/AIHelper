@@ -73,7 +73,6 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
             var bs = new BindingSource
             {
                 DataSource = profilesList.GetProfiles(),
-                //DataMember = "ProfileName"
             };
             ProfilesComboBox.DataSource = bs;
             ProfilesComboBox.DisplayMember = "ProfileName";

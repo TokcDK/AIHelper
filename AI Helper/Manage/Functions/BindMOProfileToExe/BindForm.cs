@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -99,7 +98,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
                 return;
             }
 
-            data.BoundExes.Add(exePath);
+            data.Add(exePath);
             BoundExesListBox.DataSource = null;
             BoundExesListBox.DataSource = data.BoundExes;
 
@@ -119,7 +118,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
                 return;
             }
 
-            data.BoundExes.Remove(exePath);
+            data.Remove(exePath);
             BoundExesListBox.DataSource = null;
             BoundExesListBox.DataSource = data.BoundExes;
 
@@ -139,28 +138,82 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
         }
     }
 
-    class ProfiledData
+    internal class ProfiledData
     {
+        private ProfileBoundExesData _parent;
+
+        public ProfiledData(ProfileBoundExesData parent)
+        {
+            _parent = parent;
+        }
+
         public string ProfileName { get; set; }
         public List<string> BoundExes { get; set; }
+
+        public void Add(string exePath)
+        {
+            _parent.AddExeToProfile(exePath, ProfileName);
+        }
+        public void Remove(string exePath)
+        {
+            _parent.RemoveExeFromEverywhere(exePath);
+        }
     }
 
-    class ProfileBoundExesData
+    internal class ProfileBoundExesData
     {
-        private readonly Dictionary<string, string> _exeProfilePair = new Dictionary<string, string>();
+        // _exeProfilePair made to control the exe containing in other profiles
+        // because we can have exe bound only for one profile
+        private readonly Dictionary<string, string> _exeProfilePairs = new Dictionary<string, string>();
+        private readonly Dictionary<string, ProfiledData> _profileDataReferenced = new Dictionary<string, ProfiledData>();
 
         private readonly List<ProfiledData> _profileDataList = new List<ProfiledData>();
 
         public List<ProfiledData> GetProfiles() => _profileDataList;
-        
+        public void RemoveExeFromEverywhere(string exePath)
+        {
+            if (_exeProfilePairs.TryGetValue(exePath, out string profileName))
+            {
+                if (_profileDataReferenced.TryGetValue(profileName, out ProfiledData profileData))
+                {
+                    profileData.BoundExes.Remove(exePath);
+                }
+                _exeProfilePairs.Remove(exePath);
+            }
+        }
+
+        public void AddExeToProfile(string exePath, string profileName)
+        {
+            RemoveExeFromEverywhere(exePath);
+
+            if (_profileDataReferenced.TryGetValue(profileName, out ProfiledData profileData))
+            {
+                profileData.BoundExes.Add(exePath);
+                if(!_exeProfilePairs.ContainsKey(exePath))
+                {
+                    _exeProfilePairs.Add(exePath, profileName);
+                }
+                else
+                {
+                    _exeProfilePairs[exePath] = profileName;
+                }
+            }
+            else
+            {
+                throw new ArgumentException($"Profile '{profileName}' does not exist.", nameof(profileName));
+            }
+        }
+
         public void AddProfileData(string profileName, List<string> boundExes)
         {
             var filteredExes = FilterExes(profileName, boundExes);
-            _profileDataList.Add(new ProfiledData
+            var profileData = new ProfiledData(this)
             {
                 ProfileName = profileName,
                 BoundExes = filteredExes
-            });
+            };
+            _profileDataReferenced.Add(profileData.ProfileName, profileData);
+            _profileDataList.Add(profileData);
         }
 
         // filter out exes that are already bound to another profile
@@ -169,13 +222,13 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
             List<string> filteredExes = new List<string>();
             foreach (var exe in boundExes)
             {
-                if (_exeProfilePair.ContainsKey(exe))
+                if (_exeProfilePairs.ContainsKey(exe))
                 {
                     // Exe is already bound to another profile, skip it
                     continue;
                 }
                 filteredExes.Add(exe);
-                _exeProfilePair.Add(exe, profileName);
+                _exeProfilePairs.Add(exe, profileName);
             }
 
             return filteredExes;

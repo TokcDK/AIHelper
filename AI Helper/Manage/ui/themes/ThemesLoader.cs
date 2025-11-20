@@ -28,8 +28,6 @@ namespace AIHelper.Manage.ui.themes
 
         internal static void SetTheme(IUITheme theme, Control control)
         {
-            if (control.Controls == null) return;
-
             foreach (var childControl in control.Controls)
             {
                 if (!(childControl is Control c)) continue;

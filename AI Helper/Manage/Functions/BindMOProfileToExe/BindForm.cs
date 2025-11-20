@@ -82,33 +82,46 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
         private void AddExeButton_Click(object sender, EventArgs e)
         {
-            if (ExesComboBox.SelectedItem == null
-                || string.IsNullOrEmpty(ExesComboBox.SelectedItem.ToString())
+            if (ExesComboBox.SelectedItem == null)
+            {
+                return;
+            }
+
+            string exePath = ExesComboBox.SelectedItem.ToString();
+            if (string.IsNullOrEmpty(exePath)
                 || !(ProfilesComboBox.SelectedItem is ProfiledData data))
             {
                 return;
             }
-            string exePath = ExesComboBox.SelectedItem.ToString();
 
-            if (profilesList.ProfileContainsExe(data.ProfileName, exePath))
+            if (data.BoundExes.Contains(exePath))
             {
                 return;
             }
 
-            profilesList.AddExeToProfile(exePath, data.ProfileName);
+            data.BoundExes.Add(exePath);
+            BoundExesListBox.DataSource = null;
+            BoundExesListBox.DataSource = data.BoundExes;
 
             WriteBoundExes();
         }
 
         private void RemoveExeButton_Click(object sender, EventArgs e)
         {
-            if (BoundExesListBox.SelectedItem == null || !(ProfilesComboBox.SelectedItem is ProfiledData data))
+            if (BoundExesListBox.SelectedItem == null)
+            {
+                return;
+            }
+            var exePath = BoundExesListBox.SelectedItem.ToString();
+            if (string.IsNullOrEmpty(exePath)
+                || !(ProfilesComboBox.SelectedItem is ProfiledData data))
             {
                 return;
             }
 
-            var exePath = BoundExesListBox.SelectedItem.ToString();
-            profilesList.RemoveExeFromProfile(exePath, data.ProfileName);
+            data.BoundExes.Remove(exePath);
+            BoundExesListBox.DataSource = null;
+            BoundExesListBox.DataSource = data.BoundExes;
 
             WriteBoundExes();
         }

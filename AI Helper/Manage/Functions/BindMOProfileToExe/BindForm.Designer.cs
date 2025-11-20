@@ -34,10 +34,10 @@
             this.ProfilesComboBox = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.ExesComboBox = new System.Windows.Forms.ComboBox();
-            this.AddExeButton = new System.Windows.Forms.Button();
             this.SaveButton = new System.Windows.Forms.Button();
             this.BoundExesListBox = new System.Windows.Forms.ListBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.AddExeButton = new System.Windows.Forms.Button();
             this.RemoveExeButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -90,7 +90,7 @@
             this.ProfilesComboBox.FormattingEnabled = true;
             this.ProfilesComboBox.Location = new System.Drawing.Point(3, 16);
             this.ProfilesComboBox.Name = "ProfilesComboBox";
-            this.ProfilesComboBox.Size = new System.Drawing.Size(208, 21);
+            this.ProfilesComboBox.Size = new System.Drawing.Size(220, 21);
             this.ProfilesComboBox.TabIndex = 1;
             this.ProfilesComboBox.SelectedIndexChanged += new System.EventHandler(this.ProfilesComboBox_SelectedIndexChanged);
             // 
@@ -109,19 +109,8 @@
             this.ExesComboBox.FormattingEnabled = true;
             this.ExesComboBox.Location = new System.Drawing.Point(3, 56);
             this.ExesComboBox.Name = "ExesComboBox";
-            this.ExesComboBox.Size = new System.Drawing.Size(208, 21);
+            this.ExesComboBox.Size = new System.Drawing.Size(220, 21);
             this.ExesComboBox.TabIndex = 3;
-            // 
-            // AddExeButton
-            // 
-            this.AddExeButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.AddExeButton.Location = new System.Drawing.Point(3, 3);
-            this.AddExeButton.Name = "AddExeButton";
-            this.AddExeButton.Size = new System.Drawing.Size(15, 74);
-            this.AddExeButton.TabIndex = 4;
-            this.AddExeButton.Text = ">";
-            this.AddExeButton.UseVisualStyleBackColor = true;
-            this.AddExeButton.Click += new System.EventHandler(this.AddExeButton_Click);
             // 
             // SaveButton
             // 
@@ -155,6 +144,17 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(21, 161);
             this.tableLayoutPanel2.TabIndex = 2;
+            // 
+            // AddExeButton
+            // 
+            this.AddExeButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.AddExeButton.Location = new System.Drawing.Point(3, 3);
+            this.AddExeButton.Name = "AddExeButton";
+            this.AddExeButton.Size = new System.Drawing.Size(15, 74);
+            this.AddExeButton.TabIndex = 4;
+            this.AddExeButton.Text = ">";
+            this.AddExeButton.UseVisualStyleBackColor = true;
+            this.AddExeButton.Click += new System.EventHandler(this.AddExeButton_Click);
             // 
             // RemoveExeButton
             // 

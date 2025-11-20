@@ -136,11 +136,11 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
     internal class ProfiledData
     {
-        private readonly ProfiledDataFactory _parent;
+        private readonly ProfiledDataFactory _factory;
 
-        public ProfiledData(ProfiledDataFactory parent)
+        public ProfiledData(ProfiledDataFactory factory)
         {
-            _parent = parent;
+            _factory = factory;
         }
 
         public string ProfileName { get; set; }
@@ -148,11 +148,11 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
         public void Add(string exePath)
         {
-            _parent.AddExeToProfile(exePath, ProfileName);
+            _factory.AddExeToProfile(exePath, ProfileName);
         }
         public void Remove(string exePath)
         {
-            _parent.RemoveExeFromEverywhere(exePath);
+            _factory.RemoveExeFromEverywhere(exePath);
         }
     }
 

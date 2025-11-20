@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using AIHelper.Manage.ui.themes;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -92,6 +93,8 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
                 currentGameExeList.Add(studioExePath);
             }
             ExesComboBox.DataSource = currentGameExeList;
+
+            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, this);
         }
 
         private void AddExeButton_Click(object sender, EventArgs e)

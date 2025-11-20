@@ -70,7 +70,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
                 return;
             }
 
-            if (!ExesComboBox.Items.Contains(ExesComboBox.SelectedItem.ToString()))
+            if (ExesComboBox.Items.Contains(ExesComboBox.SelectedItem.ToString()))
             {
                 return;
             }

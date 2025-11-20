@@ -74,8 +74,16 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
             // load game exes
             currentGameExeList = new List<string>();
             var studioExeName = ManageSettings.Games.Game.GameStudioExeName;
-            currentGameExeList.Add(Path.Combine(gameDirPath, ManageSettings.DataDirName, gameExeName + ".exe"));
-            currentGameExeList.Add(Path.Combine(gameDirPath, ManageSettings.DataDirName, studioExeName + ".exe"));
+            var gameExePath = Path.Combine(gameDirPath, ManageSettings.DataDirName, gameExeName + ".exe");
+            if (File.Exists(gameExePath))
+            {
+                currentGameExeList.Add(gameExePath);
+            }
+            var studioExePath = Path.Combine(gameDirPath, ManageSettings.DataDirName, studioExeName + ".exe");
+            if (File.Exists(studioExePath))
+            {
+                currentGameExeList.Add(studioExePath);
+            }
             ExesComboBox.DataSource = currentGameExeList;
         }
 

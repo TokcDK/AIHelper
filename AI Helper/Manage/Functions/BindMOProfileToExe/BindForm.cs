@@ -39,6 +39,10 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
         private void BindForm_Load(object sender, EventArgs e)
         {
+            this.Text = T._("Bind Mod Organizer Profile to Game Executable");
+            label1.Text = T._("Profile");
+            label2.Text = T._("Exe");
+
             var gameExeName = ManageSettings.Games.Game.GameExeName;
             var gameDirPath = ManageSettings.Games.Game.GameDirInfo.FullName;
 
@@ -46,6 +50,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
             moProfilesList = new List<string>();
             moProfilesList.AddRange(Directory.GetDirectories(ManageSettings.MoCurrentGameProfilesDirPath).Select(d => Path.GetFileName(d)));
             ProfilesComboBox.DataSource = moProfilesList;
+            ProfilesComboBox.SelectedIndex = moProfilesList.IndexOf(ManageSettings.GetMoSelectedProfileDirName());
 
             // load game exes
             currentGameExeList = new List<string>();

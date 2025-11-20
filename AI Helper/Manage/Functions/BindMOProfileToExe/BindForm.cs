@@ -120,7 +120,15 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
             if (ProfilesComboBox.SelectedItem is ProfiledData data)
             {
                 var boundExeListPath = Path.Combine(ManageSettings.MoCurrentGameProfilesDirPath, data.ProfileName, ManageSettings.MoProfileBoundExesName);
-                File.WriteAllLines(boundExeListPath, data.BoundExes);
+                try
+                {
+                    File.WriteAllLines(boundExeListPath, data.BoundExes);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, $"Error writing bound exes for profile '{data.ProfileName}'");
+                    MessageBox.Show($"Error writing bound exes for profile '{data.ProfileName}': {ex.Message}", "Write Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
     }

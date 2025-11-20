@@ -65,7 +65,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
             var bs = new BindingSource
             {
-                DataSource = profilesList.GetProfilesData(),
+                DataSource = profilesList.GetProfiles(),
                 //DataMember = "ProfileName"
             };
             ProfilesComboBox.DataSource = bs;
@@ -153,7 +153,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
         private readonly List<ProfiledData> _profileDataList = new List<ProfiledData>();
 
-        public List<ProfiledData> GetProfilesData() => _profileDataList;
+        public List<ProfiledData> GetProfiles() => _profileDataList;
         
         public void AddProfileData(string profileName, List<string> boundExes)
         {

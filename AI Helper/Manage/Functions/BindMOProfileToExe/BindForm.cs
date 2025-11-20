@@ -28,10 +28,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
                 return;
             }
 
-            var gameDirPath = ManageSettings.Games.Game.GameDirInfo.FullName;
-            var modOrganizerDirPath = Path.Combine(gameDirPath, ManageSettings.AppModOrganizerDirName);
-            var moProfilesDir = Path.Combine(modOrganizerDirPath, ManageSettings.MoProfilesDirName);
-            var boundExeListPath = Path.Combine(moProfilesDir, ProfilesComboBox.SelectedItem.ToString(), "boundexes.txt");            
+            var boundExeListPath = Path.Combine(ManageSettings.MoProfilesDirPath, ProfilesComboBox.SelectedItem.ToString(), ManageSettings.MoProfileBoundExesName);            
 
             if (!File.Exists(boundExeListPath))
             {
@@ -46,19 +43,19 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
         private void BindForm_Load(object sender, EventArgs e)
         {
-            moProfilesList = new List<string>();
+            var gameExeName = ManageSettings.Games.Game.GameExeName;
             var gameDirPath = ManageSettings.Games.Game.GameDirInfo.FullName;
-            var modOrganizerDirPath = Path.Combine(gameDirPath, ManageSettings.AppModOrganizerDirName);
-            var moProfilesDir = Path.Combine(modOrganizerDirPath, ManageSettings.MoProfilesDirName);
-            moProfilesList.AddRange(Directory.GetDirectories(moProfilesDir).Select(d => Path.GetFileName(d)));
+
+            // load profiles
+            moProfilesList = new List<string>();
+            moProfilesList.AddRange(Directory.GetDirectories(ManageSettings.MoProfilesDirPath).Select(d => Path.GetFileName(d)));
             ProfilesComboBox.DataSource = moProfilesList;
 
+            // load game exes
             currentGameExeList = new List<string>();
-            var gameExeName = ManageSettings.Games.Game.GameExeName;
             var studioExeName = ManageSettings.Games.Game.GameStudioExeName;
             currentGameExeList.Add(Path.Combine(gameDirPath, ManageSettings.DataDirName, gameExeName + ".exe"));
             currentGameExeList.Add(Path.Combine(gameDirPath, ManageSettings.DataDirName, studioExeName + ".exe"));
-
             ExesComboBox.DataSource = currentGameExeList;
         }
 
@@ -100,16 +97,8 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
                 return;
             }
 
-            var gameDirPath = ManageSettings.Games.Game.GameDirInfo.FullName;
-            var modOrganizerDirPath = Path.Combine(gameDirPath, ManageSettings.AppModOrganizerDirName);
-            var moProfilesDir = Path.Combine(modOrganizerDirPath, ManageSettings.MoProfilesDirName);
-            var boundExeListPath = Path.Combine(moProfilesDir, ProfilesComboBox.SelectedItem.ToString(), "boundexes.txt");
-            var boundExes = new List<string>();
-            foreach(var item in BoundExesListBox.Items)
-            {
-                boundExes.Add(item.ToString());
-            }
-            File.WriteAllLines(boundExeListPath, boundExes);
+            var boundExeListPath = Path.Combine(ManageSettings.MoProfilesDirPath, ProfilesComboBox.SelectedItem.ToString(), ManageSettings.MoProfileBoundExesName);
+            File.WriteAllLines(boundExeListPath, BoundExesListBox.Items.Cast<string>());
         }
     }
 }

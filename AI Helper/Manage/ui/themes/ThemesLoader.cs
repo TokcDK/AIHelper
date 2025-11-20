@@ -32,7 +32,7 @@ namespace AIHelper.Manage.ui.themes
             {
                 foreach (var el in theme.Elements)
                 {
-                    if (c.GetType() != el.Type) continue;
+                    if (!el.Type.IsAssignableFrom(c.GetType())) continue;
 
                     if (el.ForeColor != default && !c.Name.Contains(ManageSettings.ThemeLabelColorSetIgnoreNameMark)) c.ForeColor = el.ForeColor;
                     if (el.BackColor != default && !c.Name.Contains(ManageSettings.ThemeLabelColorSetIgnoreNameMark)) c.BackColor = el.BackColor;

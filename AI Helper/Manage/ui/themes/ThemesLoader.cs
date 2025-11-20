@@ -28,27 +28,35 @@ namespace AIHelper.Manage.ui.themes
 
         internal static void SetTheme(IUITheme theme, Control control)
         {
+            // Apply to the current control first
+            ApplyElementProperties(theme, control);
+
+            // Then recurse on children
             foreach (Control c in control.Controls)
             {
-                foreach (var el in theme.Elements)
-                {
-                    if (!el.Type.IsAssignableFrom(c.GetType())) continue;
-
-                    if (!el.ForeColor.IsEmpty && !c.Name.Contains(ManageSettings.ThemeLabelColorSetIgnoreNameMark))
-                        c.ForeColor = el.ForeColor;
-                    if (!el.BackColor.IsEmpty && !c.Name.Contains(ManageSettings.ThemeLabelColorSetIgnoreNameMark))
-                        c.BackColor = el.BackColor;
-                    if (el.Font != null)
-                        c.Font = el.Font;
-                    if (el.BackgroundImage != null)
-                        c.BackgroundImage = el.BackgroundImage;
-
-                    break;
-                }
-
                 SetTheme(theme, c);
             }
         }
+
+        private static void ApplyElementProperties(IUITheme theme, Control c)
+        {
+            foreach (var el in theme.Elements)
+            {
+                if (!el.Type.IsAssignableFrom(c.GetType())) continue;
+
+                if (!el.ForeColor.IsEmpty && !c.Name.Contains(ManageSettings.ThemeLabelColorSetIgnoreNameMark))
+                    c.ForeColor = el.ForeColor;
+                if (!el.BackColor.IsEmpty && !c.Name.Contains(ManageSettings.ThemeLabelColorSetIgnoreNameMark))
+                    c.BackColor = el.BackColor;
+                if (el.Font != null)
+                    c.Font = el.Font;
+                if (el.BackgroundImage != null)
+                    c.BackgroundImage = el.BackgroundImage;
+
+                break;  // Assume one match per type
+            }
+        }
+
         internal static void SetDefaultTheme()
         {
             ManageSettings.CurrentTheme = new DefaultTheme();

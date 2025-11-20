@@ -939,12 +939,17 @@ namespace AIHelper
 
             await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
+            string oldMOProfileName = "";
             if (MOmode)
             {
                 ManageProcess.KillProcessesByName(ManageSettings.StudioExeName);
                 ManageProcess.KillProcessesByName(Path.GetFileNameWithoutExtension(ManageSettings.AppMOexePath));
 
                 var studio = ManageModOrganizer.GetMOcustomExecutableTitleByExeName(ManageSettings.StudioExeName);
+                if (ManageModOrganizer.TryGetMOProfileNameByExeTitle(studio, out string profileNameToRun))
+                {
+                    oldMOProfileName = ManageModOrganizer.SetCurrentProfileByName(profileNameToRun);
+                }
                 ManageProcess.RunProgram(ManageSettings.AppMOexePath, "moshortcut://:" + studio);
             }
             else
@@ -953,6 +958,11 @@ namespace AIHelper
 
                 var exe = Path.Combine(ManageSettings.CurrentGameDataDirPath, ManageSettings.StudioExeName + ".exe");
                 ManageProcess.RunProgram(exe, string.Empty);
+            }
+            if (MOmode && !string.IsNullOrEmpty(oldMOProfileName))
+            {
+                // return last profile
+                ManageModOrganizer.SetCurrentProfileByName(oldMOProfileName);
             }
             OnOffButtons();
         }

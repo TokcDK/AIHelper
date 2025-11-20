@@ -154,51 +154,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
         private readonly List<ProfiledData> _profileDataList = new List<ProfiledData>();
 
         public List<ProfiledData> GetProfilesData() => _profileDataList;
-
-        public IEnumerable<string> Profiles => _profileBoundExes.Keys;
-
-        public bool ProfileContainsExe(string profileName, string exePath)
-        {
-            return _profileBoundExes.ContainsKey(profileName) && _profileBoundExes[profileName].Contains(exePath);
-        }
-
-        public bool AlreadyExistInTheOtherProfile(string exePath, string profileName)
-        {
-            return _exeProfilePair.ContainsKey(exePath) && _exeProfilePair[exePath] != profileName;
-        }
-
-        public void AddExeToProfile(string exePath, string profileName)
-        {
-            if (_exeProfilePair.TryGetValue(exePath, out string boundProfileName))
-            {
-                if (boundProfileName != profileName)
-                {
-                    _profileBoundExes[boundProfileName].Remove(exePath); // remove from old profile
-                    if (!_profileBoundExes.ContainsKey(exePath))
-                    {
-                        _profileBoundExes[profileName].Add(exePath);
-                        _exeProfilePair[exePath] = profileName;
-                    }
-                }
-            }
-            else
-            {
-                _profileBoundExes[profileName].Add(exePath);
-                _exeProfilePair.Add(exePath, profileName);
-            }
-        }
-        public void RemoveExeFromProfile(string exePath, string profileName)
-        {
-            if (_exeProfilePair.TryGetValue(exePath, out string boundProfileName))
-            {
-                if (boundProfileName == profileName)
-                {
-                    _profileBoundExes[profileName].Remove(exePath);
-                    _exeProfilePair.Remove(exePath);
-                }
-            }
-        }
-
+        
         public void AddProfileData(string profileName, List<string> boundExes)
         {
             var filteredExes = FilterExes(profileName, boundExes);
@@ -226,23 +182,6 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
             }
 
             return filteredExes;
-        }
-
-        internal List<string> GetBoundExes(string profileName)
-        {   
-            if(string.IsNullOrEmpty(profileName))
-            {
-                throw new ArgumentNullException(nameof(profileName));
-            }
-
-            if (_profileBoundExes.TryGetValue(profileName, out List<string> boundExes))
-            {
-                return boundExes;
-            }
-
-            var emptyBoundExesList = new List<string>();
-            _profileBoundExes.Add(profileName, emptyBoundExesList);
-            return emptyBoundExesList; // or return an empty list if preferred
         }
     }
 }

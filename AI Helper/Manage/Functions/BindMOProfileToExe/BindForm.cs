@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -9,6 +10,8 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 {
     public partial class BindForm : Form
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         public BindForm()
         {
             InitializeComponent();
@@ -28,14 +31,23 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
         private static IEnumerable<string> GetBoundExes(string profileName)
         {
             var boundExeListPath = Path.Combine(ManageSettings.MoCurrentGameProfilesDirPath, profileName, ManageSettings.MoProfileBoundExesName);
-
             if (!File.Exists(boundExeListPath))
             {
-                return new List<string>();
+                return Enumerable.Empty<string>();
             }
-
-            return File.ReadAllLines(boundExeListPath)
-                .Where(l => !string.IsNullOrWhiteSpace(l) && File.Exists(l));
+            try
+            {
+                // return only existing unique exe file paths
+                return File.ReadAllLines(boundExeListPath)
+                    .Where(l => !string.IsNullOrWhiteSpace(l) && File.Exists(l))
+                    .Distinct();
+            }
+            catch (Exception ex)  // Catch IOException or general Exception
+            {
+                // Log if available, or show message in UI context
+                _logger.Debug($"Error reading bound exes for {profileName}: {ex.Message}");
+                return Enumerable.Empty<string>();
+            }
         }
 
         private void BindForm_Load(object sender, EventArgs e)

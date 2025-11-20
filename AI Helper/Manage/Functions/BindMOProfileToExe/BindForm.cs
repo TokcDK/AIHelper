@@ -31,7 +31,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
             var gameDirPath = ManageSettings.Games.Game.GameDirInfo.FullName;
             var modOrganizerDirPath = Path.Combine(gameDirPath, ManageSettings.AppModOrganizerDirName);
             var moProfilesDir = Path.Combine(modOrganizerDirPath, ManageSettings.MoProfilesDirName);
-            var boundExeListPath = Path.Combine(moProfilesDir, "boundexes.txt");            
+            var boundExeListPath = Path.Combine(moProfilesDir, ProfilesComboBox.SelectedItem.ToString(), "boundexes.txt");            
 
             if (!File.Exists(boundExeListPath))
             {
@@ -76,6 +76,40 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
             }
 
             BoundExesListBox.Items.Add(ExesComboBox.SelectedItem.ToString());
+
+            WriteBoundExes();
+        }
+
+        private void RemoveExeButton_Click(object sender, EventArgs e)
+        {
+            if(BoundExesListBox.SelectedItem == null)
+            {
+                return;
+            }
+
+            BoundExesListBox.Items.Remove(BoundExesListBox.SelectedItem);
+
+            WriteBoundExes();
+        }
+
+        private void WriteBoundExes()
+        {
+            if (ProfilesComboBox.SelectedItem == null
+                || string.IsNullOrEmpty(ProfilesComboBox.SelectedItem.ToString()))
+            {
+                return;
+            }
+
+            var gameDirPath = ManageSettings.Games.Game.GameDirInfo.FullName;
+            var modOrganizerDirPath = Path.Combine(gameDirPath, ManageSettings.AppModOrganizerDirName);
+            var moProfilesDir = Path.Combine(modOrganizerDirPath, ManageSettings.MoProfilesDirName);
+            var boundExeListPath = Path.Combine(moProfilesDir, ProfilesComboBox.SelectedItem.ToString(), "boundexes.txt");
+            var boundExes = new List<string>();
+            foreach(var item in BoundExesListBox.Items)
+            {
+                boundExes.Add(item.ToString());
+            }
+            File.WriteAllLines(boundExeListPath, boundExes);
         }
     }
 }

@@ -37,8 +37,11 @@
             this.AddExeButton = new System.Windows.Forms.Button();
             this.SaveButton = new System.Windows.Forms.Button();
             this.BoundExesListBox = new System.Windows.Forms.ListBox();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.RemoveExeButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -49,6 +52,7 @@
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 235F));
             this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.BoundExesListBox, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -63,7 +67,6 @@
             this.flowLayoutPanel1.Controls.Add(this.ProfilesComboBox);
             this.flowLayoutPanel1.Controls.Add(this.label2);
             this.flowLayoutPanel1.Controls.Add(this.ExesComboBox);
-            this.flowLayoutPanel1.Controls.Add(this.AddExeButton);
             this.flowLayoutPanel1.Controls.Add(this.SaveButton);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
@@ -83,6 +86,7 @@
             // 
             // ProfilesComboBox
             // 
+            this.ProfilesComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ProfilesComboBox.FormattingEnabled = true;
             this.ProfilesComboBox.Location = new System.Drawing.Point(3, 16);
             this.ProfilesComboBox.Name = "ProfilesComboBox";
@@ -101,6 +105,7 @@
             // 
             // ExesComboBox
             // 
+            this.ExesComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ExesComboBox.FormattingEnabled = true;
             this.ExesComboBox.Location = new System.Drawing.Point(3, 56);
             this.ExesComboBox.Name = "ExesComboBox";
@@ -109,17 +114,18 @@
             // 
             // AddExeButton
             // 
-            this.AddExeButton.Location = new System.Drawing.Point(3, 83);
+            this.AddExeButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.AddExeButton.Location = new System.Drawing.Point(3, 3);
             this.AddExeButton.Name = "AddExeButton";
-            this.AddExeButton.Size = new System.Drawing.Size(75, 23);
+            this.AddExeButton.Size = new System.Drawing.Size(15, 74);
             this.AddExeButton.TabIndex = 4;
-            this.AddExeButton.Text = "Add";
+            this.AddExeButton.Text = ">";
             this.AddExeButton.UseVisualStyleBackColor = true;
             this.AddExeButton.Click += new System.EventHandler(this.AddExeButton_Click);
             // 
             // SaveButton
             // 
-            this.SaveButton.Location = new System.Drawing.Point(3, 112);
+            this.SaveButton.Location = new System.Drawing.Point(3, 83);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(75, 23);
             this.SaveButton.TabIndex = 5;
@@ -135,6 +141,32 @@
             this.BoundExesListBox.Size = new System.Drawing.Size(230, 161);
             this.BoundExesListBox.TabIndex = 1;
             // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.ColumnCount = 1;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.Controls.Add(this.AddExeButton, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.RemoveExeButton, 0, 1);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(232, 3);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 2;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(21, 161);
+            this.tableLayoutPanel2.TabIndex = 2;
+            // 
+            // RemoveExeButton
+            // 
+            this.RemoveExeButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.RemoveExeButton.Location = new System.Drawing.Point(3, 83);
+            this.RemoveExeButton.Name = "RemoveExeButton";
+            this.RemoveExeButton.Size = new System.Drawing.Size(15, 75);
+            this.RemoveExeButton.TabIndex = 6;
+            this.RemoveExeButton.Text = "<";
+            this.RemoveExeButton.UseVisualStyleBackColor = true;
+            this.RemoveExeButton.Click += new System.EventHandler(this.RemoveExeButton_Click);
+            // 
             // BindForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -147,6 +179,7 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
+            this.tableLayoutPanel2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -162,5 +195,7 @@
         private System.Windows.Forms.Button AddExeButton;
         private System.Windows.Forms.Button SaveButton;
         private System.Windows.Forms.ListBox BoundExesListBox;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.Button RemoveExeButton;
     }
 }

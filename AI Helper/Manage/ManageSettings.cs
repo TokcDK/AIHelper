@@ -165,7 +165,6 @@ namespace AIHelper.Manage
 
         public static string MoProfilesDirName => "Profiles";
 
-
         private static string GeneralMoPath => AppModOrganizerDirPath;
 
 

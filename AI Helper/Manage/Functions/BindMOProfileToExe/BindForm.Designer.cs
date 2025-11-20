@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.label1 = new System.Windows.Forms.Label();
+            this.ProfileLabel = new System.Windows.Forms.Label();
             this.ProfilesComboBox = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.ExesLabel = new System.Windows.Forms.Label();
             this.ExesComboBox = new System.Windows.Forms.ComboBox();
             this.BoundExesListBox = new System.Windows.Forms.ListBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
@@ -61,14 +61,14 @@
             // 
             // label1
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 7);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(41, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Profiles";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.ProfileLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.ProfileLabel.AutoSize = true;
+            this.ProfileLabel.Location = new System.Drawing.Point(3, 7);
+            this.ProfileLabel.Name = "label1";
+            this.ProfileLabel.Size = new System.Drawing.Size(41, 13);
+            this.ProfileLabel.TabIndex = 0;
+            this.ProfileLabel.Text = "Profiles";
+            this.ProfileLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // ProfilesComboBox
             // 
@@ -83,14 +83,14 @@
             // 
             // label2
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 47);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(40, 13);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Games";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
+            this.ExesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.ExesLabel.AutoSize = true;
+            this.ExesLabel.Location = new System.Drawing.Point(3, 47);
+            this.ExesLabel.Name = "label2";
+            this.ExesLabel.Size = new System.Drawing.Size(40, 13);
+            this.ExesLabel.TabIndex = 2;
+            this.ExesLabel.Text = "Games";
+            this.ExesLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
             // ExesComboBox
             // 
@@ -170,9 +170,9 @@
             this.tableLayoutPanel4.ColumnCount = 1;
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel4.Controls.Add(this.ExesComboBox, 0, 3);
-            this.tableLayoutPanel4.Controls.Add(this.label2, 0, 2);
+            this.tableLayoutPanel4.Controls.Add(this.ExesLabel, 0, 2);
             this.tableLayoutPanel4.Controls.Add(this.ProfilesComboBox, 0, 1);
-            this.tableLayoutPanel4.Controls.Add(this.label1, 0, 0);
+            this.tableLayoutPanel4.Controls.Add(this.ProfileLabel, 0, 0);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
@@ -205,9 +205,9 @@
         #endregion
 
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label ProfileLabel;
         private System.Windows.Forms.ComboBox ProfilesComboBox;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label ExesLabel;
         private System.Windows.Forms.ComboBox ExesComboBox;
         private System.Windows.Forms.Button AddExeButton;
         private System.Windows.Forms.ListBox BoundExesListBox;

@@ -53,8 +53,8 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
         private void BindForm_Load(object sender, EventArgs e)
         {
             this.Text = T._("Bind Mod Organizer Profile to Game Executable");
-            label1.Text = T._("Profile");
-            label2.Text = T._("Exe");
+            ProfileLabel.Text = T._("Profile");
+            ExesLabel.Text = T._("Exes");
 
             var gameExeName = ManageSettings.Games.Game.GameExeName;
             var gameDirPath = ManageSettings.Games.Game.GameDirInfo.FullName;

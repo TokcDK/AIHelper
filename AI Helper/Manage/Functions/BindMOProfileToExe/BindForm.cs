@@ -23,7 +23,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
                 return;
             }
 
-            var boundExeListPath = Path.Combine(ManageSettings.MoProfilesDirPath, ProfilesComboBox.SelectedItem.ToString(), ManageSettings.MoProfileBoundExesName);
+            var boundExeListPath = Path.Combine(ManageSettings.MoCurrentGameProfilesDirPath, ProfilesComboBox.SelectedItem.ToString(), ManageSettings.MoProfileBoundExesName);
 
             if (!File.Exists(boundExeListPath))
             {
@@ -32,8 +32,9 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
             var boundExes = File.ReadAllLines(boundExeListPath)
                 .Where(l => !string.IsNullOrWhiteSpace(l) && File.Exists(l))
-                .ToList();
-            BoundExesListBox.DataSource = boundExes;
+                .ToArray();
+            BoundExesListBox.Items.Clear();
+            BoundExesListBox.Items.AddRange(boundExes);
         }
 
         private void BindForm_Load(object sender, EventArgs e)
@@ -43,7 +44,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
             // load profiles
             moProfilesList = new List<string>();
-            moProfilesList.AddRange(Directory.GetDirectories(ManageSettings.MoProfilesDirPath).Select(d => Path.GetFileName(d)));
+            moProfilesList.AddRange(Directory.GetDirectories(ManageSettings.MoCurrentGameProfilesDirPath).Select(d => Path.GetFileName(d)));
             ProfilesComboBox.DataSource = moProfilesList;
 
             // load game exes
@@ -92,7 +93,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
                 return;
             }
 
-            var boundExeListPath = Path.Combine(ManageSettings.MoProfilesDirPath, ProfilesComboBox.SelectedItem.ToString(), ManageSettings.MoProfileBoundExesName);
+            var boundExeListPath = Path.Combine(ManageSettings.MoCurrentGameProfilesDirPath, ProfilesComboBox.SelectedItem.ToString(), ManageSettings.MoProfileBoundExesName);
             File.WriteAllLines(boundExeListPath, BoundExesListBox.Items.Cast<string>());
         }
     }

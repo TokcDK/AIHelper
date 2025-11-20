@@ -166,6 +166,7 @@ namespace AIHelper.Manage
         public static string MoProfilesDirName => "Profiles";
         public static string MoProfilesDirPath => Path.Combine(AppModOrganizerDirPath, MoProfilesDirName);
         public static string MoProfileBoundExesName => "boundexes.txt";
+        public static string MoCurrentGameProfilesDirPath => Path.Combine(Games.Game.GamePath, AppModOrganizerDirName, MoProfilesDirName);
 
         private static string GeneralMoPath => AppModOrganizerDirPath;
 

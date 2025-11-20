@@ -34,7 +34,6 @@
             this.ProfilesComboBox = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.ExesComboBox = new System.Windows.Forms.ComboBox();
-            this.SaveButton = new System.Windows.Forms.Button();
             this.BoundExesListBox = new System.Windows.Forms.ListBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.AddExeButton = new System.Windows.Forms.Button();
@@ -67,7 +66,6 @@
             this.flowLayoutPanel1.Controls.Add(this.ProfilesComboBox);
             this.flowLayoutPanel1.Controls.Add(this.label2);
             this.flowLayoutPanel1.Controls.Add(this.ExesComboBox);
-            this.flowLayoutPanel1.Controls.Add(this.SaveButton);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 3);
@@ -111,15 +109,6 @@
             this.ExesComboBox.Name = "ExesComboBox";
             this.ExesComboBox.Size = new System.Drawing.Size(220, 21);
             this.ExesComboBox.TabIndex = 3;
-            // 
-            // SaveButton
-            // 
-            this.SaveButton.Location = new System.Drawing.Point(3, 83);
-            this.SaveButton.Name = "SaveButton";
-            this.SaveButton.Size = new System.Drawing.Size(75, 23);
-            this.SaveButton.TabIndex = 5;
-            this.SaveButton.Text = "Save";
-            this.SaveButton.UseVisualStyleBackColor = true;
             // 
             // BoundExesListBox
             // 
@@ -193,7 +182,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox ExesComboBox;
         private System.Windows.Forms.Button AddExeButton;
-        private System.Windows.Forms.Button SaveButton;
         private System.Windows.Forms.ListBox BoundExesListBox;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Button RemoveExeButton;

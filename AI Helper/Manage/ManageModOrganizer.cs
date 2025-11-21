@@ -46,34 +46,50 @@ namespace AIHelper.Manage
                 ManageSettings.CurrentGame.GameStudioExeName,
             })
             {
-                var customExeTitlesList = ManageModOrganizer.GetMOcustomExecutableTitleListByExeName(exeName).ToArray();
-                if (customExeTitlesList.Length == 0)
-                {
-                    customExeTitlesList = ManageModOrganizer.GetCustomExeTitlesFromBasicGamePlugin(exeName).ToArray();
-                }
+                string[] customExeTitlesList = GetCustomExecutableTitles(exeName);
 
                 foreach (var customExeTitle in customExeTitlesList)
                 {
-                    bool gameExeForcedLibrariesIsSet = ini.SectionExists(forcedLibrariesSectionName)
-                        && ini.KeyExists($"{customExeTitle}\\enabled", forcedLibrariesSectionName)
-                        && ini.GetKey(forcedLibrariesSectionName, $"{customExeTitle}\\enabled") == "true"
-                        && ini.KeyExists($"{customExeTitle}\\{index}\\enabled", forcedLibrariesSectionName)
-                        && ini.GetKey(forcedLibrariesSectionName, $"{customExeTitle}\\{index}\\enabled") == "true"
-                        && ini.KeyExists($"{customExeTitle}\\{index}\\library", forcedLibrariesSectionName)
-                        && ini.GetKey(forcedLibrariesSectionName, $"{customExeTitle}\\{index}\\library") == "winhttp.dll"
-                        && ini.KeyExists($"{customExeTitle}\\{index}\\library", forcedLibrariesSectionName)
-                        && ini.GetKey(forcedLibrariesSectionName, $"{customExeTitle}\\{index}\\process") == $"{exeName}.exe"
-                        ;
-
-                    if (gameExeForcedLibrariesIsSet) continue;
-
-                    ini.SetKey(forcedLibrariesSectionName, $"{customExeTitle}\\enabled", "true");
-                    ini.SetKey(forcedLibrariesSectionName, $"{customExeTitle}\\{index}\\enabled", "true");
-                    ini.SetKey(forcedLibrariesSectionName, $"{customExeTitle}\\{index}\\library", "winhttp.dll");
-                    ini.SetKey(forcedLibrariesSectionName, $"{customExeTitle}\\{index}\\process", $"{exeName}.exe");
-                    ini.SetKey(forcedLibrariesSectionName, $"{customExeTitle}\\size", "1");
+                    AddWinHttpForcedLibraryIfMissing(ini, index, forcedLibrariesSectionName, exeName, customExeTitle);
                 }
             }
+        }
+
+        private static string[] GetCustomExecutableTitles(string exeName)
+        {
+            var customExeTitlesList = ManageModOrganizer.GetMOcustomExecutableTitleListByExeName(exeName).ToArray();
+            if (customExeTitlesList.Length == 0)
+            {
+                customExeTitlesList = ManageModOrganizer.GetCustomExeTitlesFromBasicGamePlugin(exeName).ToArray();
+            }
+
+            return customExeTitlesList;
+        }
+
+        private static void AddWinHttpForcedLibraryIfMissing(INIFile ini, int index, string forcedLibrariesSectionName, string exeName, string customExeTitle)
+        {
+            bool gameExeForcedLibrariesIsSet = GetGameExeForcedLibrariesIsSet(ini, index, forcedLibrariesSectionName, exeName, customExeTitle);
+
+            if (gameExeForcedLibrariesIsSet) return;
+
+            ini.SetKey(forcedLibrariesSectionName, $"{customExeTitle}\\enabled", "true");
+            ini.SetKey(forcedLibrariesSectionName, $"{customExeTitle}\\{index}\\enabled", "true");
+            ini.SetKey(forcedLibrariesSectionName, $"{customExeTitle}\\{index}\\library", "winhttp.dll");
+            ini.SetKey(forcedLibrariesSectionName, $"{customExeTitle}\\{index}\\process", $"{exeName}.exe");
+            ini.SetKey(forcedLibrariesSectionName, $"{customExeTitle}\\size", "1");
+        }
+
+        private static bool GetGameExeForcedLibrariesIsSet(INIFile ini, int index, string forcedLibrariesSectionName, string exeName, string customExeTitle)
+        {
+            return ini.SectionExists(forcedLibrariesSectionName)
+                                    && ini.KeyExists($"{customExeTitle}\\enabled", forcedLibrariesSectionName)
+                                    && ini.GetKey(forcedLibrariesSectionName, $"{customExeTitle}\\enabled") == "true"
+                                    && ini.KeyExists($"{customExeTitle}\\{index}\\enabled", forcedLibrariesSectionName)
+                                    && ini.GetKey(forcedLibrariesSectionName, $"{customExeTitle}\\{index}\\enabled") == "true"
+                                    && ini.KeyExists($"{customExeTitle}\\{index}\\library", forcedLibrariesSectionName)
+                                    && ini.GetKey(forcedLibrariesSectionName, $"{customExeTitle}\\{index}\\library") == "winhttp.dll"
+                                    && ini.KeyExists($"{customExeTitle}\\{index}\\library", forcedLibrariesSectionName)
+                                    && ini.GetKey(forcedLibrariesSectionName, $"{customExeTitle}\\{index}\\process") == $"{exeName}.exe";
         }
 
         /// <summary>

@@ -163,7 +163,7 @@ namespace AIHelper.Manage
                 return true;
             }
             else
-            {                    
+            {
                 if (
 
                    File.Exists(
@@ -384,47 +384,7 @@ namespace AIHelper.Manage
                 ManageSettings.CurrentGameOverwriteFolderPath
             };
 
-            string typeFolder = string.Empty;
-            string targetFolderName = string.Empty;
-            switch (type)
-            {
-                case "f":
-                    typeFolder = "chara";
-                    targetFolderName = "female";
-                    break;
-                case "m":
-                    typeFolder = "chara";
-                    targetFolderName = "male";
-                    break;
-                case "c":
-                    targetFolderName = "coordinate";
-                    //TypeFolder = "";
-                    break;
-                case "h":
-                case "h1":
-                case "h2":
-                case "h3":
-                case "h4":
-                    typeFolder = "housing";
-                    targetFolderName = type.Length == 2 ? "0" + type.Remove(0, 1) : string.Empty;
-                    break;
-                case "cf":
-                    typeFolder = "cardframe";
-                    targetFolderName = "Front";
-                    break;
-                case "cb":
-                    typeFolder = "cardframe";
-                    targetFolderName = "Back";
-                    break;
-                case "o":
-                    //TypeFolder = "";
-                    targetFolderName = "Overlays";
-                    break;
-                case "s":
-                    typeFolder = "studio";
-                    targetFolderName = "scene";
-                    break;
-            }
+            (string typeFolder, string targetFolderName) = ResolveUserDataType(type);
 
             int targetFoldersLength = targetFolders.Length;
             for (int i = 0; i < targetFoldersLength; i++)
@@ -441,6 +401,36 @@ namespace AIHelper.Manage
             }
 
             return Path.Combine(ManageSettings.CurrentGameOverwriteFolderPath, "UserData", typeFolder, targetFolderName);
+        }
+
+        private static (string, string) ResolveUserDataType(string type)
+        {
+            switch (type)
+            {
+                case "f":
+                    return ("chara", "female");
+                case "m":
+                    return ("chara", "male");
+                case "c":
+                    return ("coordinate", "");
+                case "h":
+                case "h1":
+                case "h2":
+                case "h3":
+                case "h4":
+                    return ("housing", type.Length == 2 ? "0" + type.Remove(0, 1) : string.Empty);
+                case "cf":
+                    return ("cardframe", "Front");
+                case "cb":
+                    return ("cardframe", "Back");
+                case "o":
+                    return ("", "Overlays");
+                case "s":
+                    return ("studio", "scene");
+                    break;
+                default:
+                    return ("", "");
+            }
         }
 
         public static string GetTheDllFromSubfolders(string dir, string fileName, string extension)

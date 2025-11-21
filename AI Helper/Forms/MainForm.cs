@@ -258,7 +258,7 @@ namespace AIHelper
         private void CreateSetupXmlPath()
         {
             string screenWidth = Screen.PrimaryScreen.Bounds.Width.ToString(CultureInfo.InvariantCulture);
-            //string screenHeight = Screen.PrimaryScreen.Bounds.Height.ToString();
+            
             int[] width = { 1280, 1366, 1536, 1600, 1920, 2048, 2560, 3200, 3840 };
             if (int.Parse(screenWidth, CultureInfo.InvariantCulture) > width[width.Length - 1])
             {
@@ -347,8 +347,6 @@ namespace AIHelper
             ThemesLoader.SetTheme();
 
             ManageTabs.LoadContent();
-
-            //GC.Collect();
         }
 
         private void CommonModeSpecificSetup()
@@ -600,7 +598,6 @@ namespace AIHelper
 
                 ManageSettings.Games.Game = ManageSettings.Games.Games[(sender as ComboBox).SelectedIndex];
                 ManageOther.SetSelectedGameIndexAndBasicVariables(this);
-                //ManageSettings.Games.CurrentGameListIndex = (sender as ComboBox).SelectedIndex;
                 ActionsOnGameChanged();
 
                 ManageIni.GetINIFile(ManageSettings.AiHelperIniPath).SetKey("Settings", "selected_game", ManageSettings.CurrentGameDirName);
@@ -663,12 +660,11 @@ namespace AIHelper
             }
             else
             {
-                //newformButton.Text = @"\/";
                 _extraSettingsForm.Close();
             }
         }
 
-        private async void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private async void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             OnOffButtons(false);
 

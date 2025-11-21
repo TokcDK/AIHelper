@@ -8,7 +8,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 {
     internal class BindMOProfileToExeForFlp : FunctionForFlpBase
     {
-        public override string Symbol => T._("࿊"); //࿊
+        public override string Symbol => T._("P"); //࿊
 
         public override string Description => T._("Bind the Game or Studio to run with specific Mod Organizer profile.");
 

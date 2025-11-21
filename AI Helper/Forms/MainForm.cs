@@ -378,8 +378,6 @@ namespace AIHelper
             new Thread(obj => RunSlowActions()).Start();
 
             SetupXmlPath = ManageModOrganizer.GetSetupXmlPathForCurrentProfile();
-
-            SetMoModsVariables();
         }
 
         private static void SetMoMode(bool setText = true)

@@ -318,69 +318,99 @@ namespace AIHelper.Manage
                 if (remove)
                 {
                     // remove files mode
-                    try
-                    {
-                        if (File.Exists(targetFilePath) && (File.Exists(sourceFilePath)
-                            || ManageSymLinkExtensions.IsSymlink(targetFilePath))) File.Delete(targetFilePath);
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.Error("BepInExPreloadersFix error:" + Environment.NewLine + ex);
-                    }
+                    RemoveBepInExPreloaderFile(sourceFilePath, targetFilePath);
                 }
                 else
                 {
                     // add file mode
-                    try
-                    {
-
-                        sourceFilePath = ManageModOrganizer.GetLastPath(sourceFilePath); // get path in last mod in MO load order
-
-
-                        //skip file if not in enabled mod
-                        bool isNotExistsSource = false;
-                        if ((isNotExistsSource = !File.Exists(sourceFilePath)) || !ManageModOrganizer.IsInEnabledModOrOverwrite(sourceFilePath))//skip if no active mod found
-                        {
-                            if (File.Exists(targetFilePath)) File.Delete(targetFilePath);
-
-                            if (isNotExistsSource) _log.Warn($"{nameof(BepInExPreloadersFix)}, Source path is not exists: {sourceFilePath}");
-
-                            continue;
-                        }
-
-                        if (File.Exists(targetFilePath))
-                        {
-                            // chack if latest version of the target file when exists
-                            if (
-                                ManageSymLinkExtensions.IsSymlink(targetFilePath)
-                                ||
-                                new FileInfo(targetFilePath).Length != new FileInfo(sourceFilePath).Length
-                                ||
-                                FileVersionInfo.GetVersionInfo(targetFilePath).ProductVersion != FileVersionInfo.GetVersionInfo(sourceFilePath).ProductVersion
-                                )
-                            {
-                                File.Delete(targetFilePath); // remove when old or invalid
-                            }
-                            else
-                            {
-                                continue; // do not touch when actual and valid
-                            }
-                        }
-
-                        // copy actual version of the file
-                        Directory.CreateDirectory(Path.GetDirectoryName(targetFilePath));
-                        File.Copy(sourceFilePath, targetFilePath);
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.Error("BepInExPreloadersFix error:" + Environment.NewLine + ex);
-                    }
+                    TryCopyBepInExPreloaderFile(sourceFilePath, targetFilePath);
                 }
             }
 
             // clean empty dirs in bepinex fir
             ManageFilesFoldersExtensions.DeleteEmptySubfolders(Path.Combine(ManageSettings.CurrentGameDataDirPath, "BepInEx"), true);
 
+        }
+
+        private static void RemoveBepInExPreloaderFile(string sourceFilePath, string targetFilePath)
+        {
+            try
+            {
+                if (File.Exists(targetFilePath) && (File.Exists(sourceFilePath)
+                    || ManageSymLinkExtensions.IsSymlink(targetFilePath))) File.Delete(targetFilePath);
+            }
+            catch (Exception ex)
+            {
+                _log.Error("BepInExPreloadersFix error:" + Environment.NewLine + ex);
+            }
+        }
+
+        private static void TryCopyBepInExPreloaderFile(string sourceFilePath, string targetFilePath)
+        {
+            try
+            {
+                sourceFilePath = ManageModOrganizer.GetLastPath(sourceFilePath); // get path in last mod in MO load order
+
+                //skip file if not in enabled mod
+                if (!IsBepInExPreloaderSourceEnabled(sourceFilePath, targetFilePath))
+                {
+                    return;
+                }
+
+                if (!ShouldCopyBepInExPreloaderFile(sourceFilePath, targetFilePath))
+                {
+                    return;
+                }
+
+                // copy actual version of the file
+                Directory.CreateDirectory(Path.GetDirectoryName(targetFilePath));
+                File.Copy(sourceFilePath, targetFilePath);
+            }
+            catch (Exception ex)
+            {
+                _log.Error("BepInExPreloadersFix error:" + Environment.NewLine + ex);
+            }
+        }
+
+        private static bool IsBepInExPreloaderSourceEnabled(string sourceFilePath, string targetFilePath)
+        {
+            bool isNotExistsSource = false;
+            if ((isNotExistsSource = !File.Exists(sourceFilePath)) || !ManageModOrganizer.IsInEnabledModOrOverwrite(sourceFilePath))//skip if no active mod found
+            {
+                if (File.Exists(targetFilePath)) File.Delete(targetFilePath);
+
+                if (isNotExistsSource) _log.Warn($"{nameof(BepInExPreloadersFix)}, Source path is not exists: {sourceFilePath}");
+
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool ShouldCopyBepInExPreloaderFile(string sourceFilePath, string targetFilePath)
+        {
+            if (!File.Exists(targetFilePath))
+            {
+                return true;
+            }
+
+            // chack if latest version of the target file when exists
+            if (
+                ManageSymLinkExtensions.IsSymlink(targetFilePath)
+                ||
+                new FileInfo(targetFilePath).Length != new FileInfo(sourceFilePath).Length
+                ||
+                FileVersionInfo.GetVersionInfo(targetFilePath).ProductVersion != FileVersionInfo.GetVersionInfo(sourceFilePath).ProductVersion
+                )
+            {
+                File.Delete(targetFilePath); // remove when old or invalid
+            }
+            else
+            {
+                return false; // do not touch when actual and valid
+            }
+
+            return true;
         }
 
         /// <summary>

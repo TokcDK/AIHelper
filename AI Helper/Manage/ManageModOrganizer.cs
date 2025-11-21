@@ -104,12 +104,17 @@ namespace AIHelper.Manage
 
             foreach (Match customExeInfoMatch in Regex.Matches(pluginText, @"\s*mobase\.ExecutableInfo\(\s*\""([^\""]+)\"",\s*QFileInfo\(self\.gameDirectory\(\), \""Data\/([^\""]+)\""\),"))
             {
-                var customExeName = customExeInfoMatch.Groups[2].Value;
-                if (customExeName == exeName || Path.GetFileNameWithoutExtension(customExeName) == exeName)
-                {
-                    var customExeTitle = customExeInfoMatch.Groups[1].Value;
-                    yield return customExeTitle;
-                }
+                return GetCustomExeTitleIfMatches(exeName, customExeInfoMatch);
+            }
+        }
+
+        private static IEnumerable<string> GetCustomExeTitleIfMatches(string exeName, Match customExeInfoMatch)
+        {
+            var customExeName = customExeInfoMatch.Groups[2].Value;
+            if (customExeName == exeName || Path.GetFileNameWithoutExtension(customExeName) == exeName)
+            {
+                var customExeTitle = customExeInfoMatch.Groups[1].Value;
+                yield return customExeTitle;
             }
         }
 

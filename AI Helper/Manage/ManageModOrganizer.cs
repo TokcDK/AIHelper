@@ -1,4 +1,10 @@
-﻿using System;
+﻿using AIHelper.Data.Modlist;
+using AIHelper.Games;
+using AIHelper.Manage.MOiniCustomExeFixers;
+using CheckForEmptyDir;
+using INIFileMan;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -8,12 +14,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using AIHelper.Data.Modlist;
-using AIHelper.Games;
-using AIHelper.Manage.MOiniCustomExeFixers;
-using CheckForEmptyDir;
-using INIFileMan;
-using NLog;
 using static AIHelper.Manage.ManageModOrganizer;
 
 namespace AIHelper.Manage
@@ -34,18 +34,6 @@ namespace AIHelper.Manage
         public static void CleanBepInExLinksFromData()
         {
             MOUSFSLoadingFix(true);
-            ////удаление файлов BepinEx
-            //ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "doorstop_config.ini"));
-            //ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "winhttp.dll"));
-            //string BepInExDir = Path.Combine(Properties.Settings.Default.DataPath, "BepInEx");
-            //if (Directory.Exists(BepInExDir))
-            //{
-            //    Directory.Delete(BepInExDir, true);
-            //}
-
-            ////удаление ссылок на папки плагинов BepinEx
-            //ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "UserData", "MaterialEditor"), true);
-            //ManageFilesFolders.DeleteIfSymlink(Path.Combine(Properties.Settings.Default.DataPath, "UserData", "Overlays"), true);
         }
 
         public static void PreloadingSetup()
@@ -102,7 +90,7 @@ namespace AIHelper.Manage
             var pluginPath = ManageSettings.CurrentGameMoGamePyPluginPath;
             var pluginText = File.ReadAllText(pluginPath);
 
-            foreach(Match customExeInfoMatch in Regex.Matches(pluginText, @"\s*mobase\.ExecutableInfo\(\s*\""([^\""]+)\"",\s*QFileInfo\(self\.gameDirectory\(\), \""Data\/([^\""]+)\""\),"))
+            foreach (Match customExeInfoMatch in Regex.Matches(pluginText, @"\s*mobase\.ExecutableInfo\(\s*\""([^\""]+)\"",\s*QFileInfo\(self\.gameDirectory\(\), \""Data\/([^\""]+)\""\),"))
             {
                 var customExeName = customExeInfoMatch.Groups[2].Value;
                 if (customExeName == exeName || Path.GetFileNameWithoutExtension(customExeName) == exeName)
@@ -168,31 +156,18 @@ namespace AIHelper.Manage
 
         internal static bool IsFileDirExistsInDataOrOverwrite(string filedir, out string source)
         {
-            //string filePathInOverwrite =
-            //           Path.GetFullPath(
-            //               Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath() + Path.DirectorySeparatorChar + filedir)
-            //                           );
             if (File.Exists(
                        Path.GetFullPath(
                            Path.Combine(ManageSettings.CurrentGameMoOverwritePath + Path.DirectorySeparatorChar + filedir)
                                        )
                        )
-              //||
-              //Directory.Exists(
-              //    Path.GetFullPath(
-              //        Path.Combine(ManageSettings.GetCurrentGameMOOverwritePath() + Path.DirectorySeparatorChar + filedir)
-              //                    )
-              //                )
               )
             {
                 source = "overwrite";
                 return true;
             }
             else
-            {
-                //var FilePathInData = Path.GetFullPath(
-                //           Path.Combine(ManageSettings.GetCurrentGameDataPath() + Path.DirectorySeparatorChar + filedir)
-                //                       );
+            {                    
                 if (
 
                    File.Exists(
@@ -200,12 +175,6 @@ namespace AIHelper.Manage
                            Path.Combine(ManageSettings.CurrentGameDataDirPath + Path.DirectorySeparatorChar + filedir)
                                        )
                                    )
-                   //||
-                   //Directory.Exists(
-                   //    Path.GetFullPath(
-                   //        Path.Combine(ManageSettings.GetCurrentGameDataPath() + Path.DirectorySeparatorChar + filedir)
-                   //                    )
-                   //                )
                    )
                 {
                     source = "data";
@@ -308,15 +277,6 @@ namespace AIHelper.Manage
                     }
                 }
             }
-
-            //if (RemoveLinks)
-            //{
-            //    ManageFilesFolders.DeleteEmptySubfolders(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx"));
-            //}
-            //else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx")))
-            //{
-            //    ManageFilesFolders.HideFileFolder(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx"));
-            //}
         }
 
         private static void BepInExPreloadersFix(bool remove = false)
@@ -349,11 +309,6 @@ namespace AIHelper.Manage
 
                         sourceFilePath = ManageModOrganizer.GetLastPath(sourceFilePath); // get path in last mod in MO load order
 
-                        //skip file if source not exists
-                        //if (!File.Exists(sourceFilePath))
-                        //{
-                        //    continue;
-                        //}
 
                         //skip file if not in enabled mod
                         bool isNotExistsSource = false;
@@ -399,10 +354,6 @@ namespace AIHelper.Manage
             // clean empty dirs in bepinex fir
             ManageFilesFoldersExtensions.DeleteEmptySubfolders(Path.Combine(ManageSettings.CurrentGameDataDirPath, "BepInEx"), true);
 
-            //else if (Directory.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx")))
-            //{
-            //    ManageFilesFolders.HideFileFolder(Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx"));
-            //}
         }
 
         /// <summary>
@@ -741,7 +692,6 @@ namespace AIHelper.Manage
             string modPath;
             var folderPath = modPath = inputPath;
             while (!string.Equals(folderPath/*.TrimEnd(new char[] { '/', '\\' })*/ , ManageSettings.CurrentGameModsDirPath/*.TrimEnd(new char[] { '/', '\\' })*/, StringComparison.InvariantCultureIgnoreCase)
-                //&& !string.Equals(folderPath, ManageSettings.GetOverwriteFolder(), StringComparison.InvariantCultureIgnoreCase)
                 )
             {
                 modPath = folderPath;
@@ -876,37 +826,6 @@ namespace AIHelper.Manage
 
             ParseLinkInfo(new FileInfo(ManageSettings.OverallLinkInfoFilePath), out List<string> _, true);
 
-            //var linkInfosList = new List<string>();
-            //var infoFileName = ManageSettings.GetLinkInfoFileName();
-            ////check overwrite
-            //linkInfosList.AddExistFilePathsUsing(ManageSettings.GetCurrentGameOverwriteFolderPath(), infoFileName);
-
-            //var modsLinkInfoFile = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), infoFileName);
-            ////create link for mods root info file
-            ////ParseLinkInfo(modsLinkInfoFile);
-            //if (File.Exists(modsLinkInfoFile))
-            //{
-            //    linkInfosList.Add(modsLinkInfoFile);
-            //}
-
-            ////check mod dirs
-            //Parallel.ForEach(ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(), modName =>
-            //{
-            //    var dir = Path.Combine(ManageSettings.GetCurrentGameModsDirPath(), modName);
-            //    linkInfosList.AddExistFilePathsUsing(dir, infoFileName);
-            //});
-
-            //// create links
-            //// parallel iterate mods because mod order is not important here
-            //var sw = new StreamWriter(ManageSettings.GetOverallLinkInfoFilePath());
-            //Parallel.ForEach(linkInfosList, file =>
-            //{
-            //    if (ParseLinkInfo(new FileInfo(file), out List<string> newLines, false))
-            //    {
-            //        sw.WriteLineAsync(string.Join(Environment.NewLine, newLines));// write lines in new file
-            //    }
-            //});
-            //sw.Dispose();
         }
 
         private static bool ParseLinkInfo(FileInfo linkinfo, out List<string> newLines, bool overall = false)
@@ -1062,113 +981,6 @@ namespace AIHelper.Manage
             return inputString;
         }
 
-        //private static void ParseLinkInfo(FileInfo linkinfo)
-        //{
-        //    if (!linkinfo.Exists || linkinfo.Length == 0)
-        //    {
-        //        // skip if link info file is empty
-        //        return;
-        //    }
-
-        //    using (StreamReader reader = new StreamReader(linkinfo.FullName))
-        //    {
-        //        string line;
-        //        while ((line = reader.ReadLine()) != null)
-        //        {
-        //            if (string.IsNullOrWhiteSpace(line) || line.StartsWith(";"))
-        //            {
-        //                // skip empty lines and comments
-        //                continue;
-        //            }
-
-        //            var info = line.Split(',');
-        //            var infoLength = info.Length;
-        //            if (infoLength < 2 || infoLength > 3)
-        //            {
-        //                continue;
-        //            }
-        //            bool HasTargetLinkNameSet = infoLength == 3; // if set target link name, use it else use object name
-
-        //            bool IsDir = info[0] == "d";
-        //            if (!IsDir && info[0] != "f")
-        //            {
-        //                // if type is incorrect or info invalid
-        //                continue;
-        //            }
-
-        //            if (HasTargetLinkNameSet && ManageFilesFoldersExtensions.ContainsAnyInvalidCharacters(info[2]))
-        //            {
-        //                // if target link name has invalid chars
-        //                continue;
-        //            }
-
-        //            var targetObjectPath = info[1].IndexOf(".\\") != -1 ? Path.GetFullPath(linkinfo.Directory.FullName + Path.DirectorySeparatorChar + info[1]) // get full path if it was relative. current directory will be linkinfo file's directory
-        //                : info[1]; // path is not relative
-
-        //            if (ManageFilesFoldersExtensions.ContainsAnyInvalidCharacters(targetObjectPath))
-        //            {
-        //                // if object path has invalid chars
-        //                continue;
-        //            }
-
-        //            // skip if target object is not exists
-        //            if (!targetObjectPath.Exists(IsDir))
-        //            {
-        //                continue;
-        //            }
-
-        //            var targetObjectType = IsDir ? ObjectType.Directory : ObjectType.File;
-
-        //            if (targetObjectPath.IsSymlink(targetObjectType))
-        //            {
-        //                if (targetObjectPath.IsValidSymlink())
-        //                {
-        //                    // get symlink target if object is symlink
-        //                    targetObjectPath = targetObjectPath.GetSymlinkTarget(targetObjectType);
-        //                }
-        //                else
-        //                {
-        //                    _log.Debug("Warning! Link info file has invalid simlink as target of path. File:" + linkinfo.FullName + "\r\n");
-        //                    // skip if target object is invalid symlink
-        //                    continue;
-        //                }
-        //            }
-
-        //            var symlinkPath = Path.Combine(linkinfo.Directory.FullName,
-        //                HasTargetLinkNameSet ? info[2] : Path.GetFileName(targetObjectPath)); // get object name or name from info is was set
-
-        //            if (symlinkPath.Exists(IsDir))
-        //            {
-        //                bool isLink;
-        //                if ((isLink = symlinkPath.IsSymlink(targetObjectType) && symlinkPath.GetSymlinkTarget(targetObjectType) == targetObjectPath) || (!IsDir || !symlinkPath.IsEmptyDir()))
-        //                {
-        //                    // skip if not synlink or exists symlink with valid target
-        //                    continue;
-        //                }
-        //                else
-        //                {
-        //                    // delene invalid symlink
-        //                    if (IsDir)
-        //                    {
-        //                        Directory.Delete(symlinkPath);
-        //                    }
-        //                    else
-        //                    {
-        //                        File.Delete(symlinkPath);
-        //                    }
-        //                }
-        //            }
-
-        //            // create symlink
-        //            targetObjectPath.CreateSymlink(symlinkPath
-        //                , isRelative: false
-        //                , objectType: targetObjectType);
-
-        //            //return; // info found, stop read file // commented because can be several links now
-        //        }
-        //    }
-        //}
-
         /// <summary>
         /// detect female or male uncensors in dir
         /// </summary>
@@ -1238,8 +1050,8 @@ namespace AIHelper.Manage
 
                 Parallel.ForEach(modlist.Mods, item =>
                 {
-                    if (!item.IsExist 
-                    || item.Type is ModType.Separator 
+                    if (!item.IsExist
+                    || item.Type is ModType.Separator
                     || item.Type is ModType.Overwrite) return;
                     if (!Directory.Exists(Path.Combine(item.Path, "mods"))) return;
 
@@ -1380,11 +1192,8 @@ namespace AIHelper.Manage
 
             SetCommonIniValues(ini);
 
-            //await Task.Run(() => SetCustomExecutablesIniValues(INI)).ConfigureAwait(true);
             FixCustomExecutablesIniValues();
             ManageSettings.SetModOrganizerINISettingsForTheGame = false;
-
-            //ManageSettings.CurrentGameIsChanging = false;
         }
 
         /// <summary>
@@ -1897,8 +1706,6 @@ namespace AIHelper.Manage
                 };
 
 
-#pragma warning disable IDE1006 // Naming Styles
-#pragma warning disable CA1822 // Mark members as static
                 /// <summary>
                 /// (Required!) title of custom executable
                 /// </summary>
@@ -1938,307 +1745,8 @@ namespace AIHelper.Manage
                 /// (Optional) Steam app id for binary. Empty by default.
                 /// </summary>
                 internal string SteamAppId { get => Attribute["steamAppID"]; set => Attribute["steamAppID"] = value; }
-
-#pragma warning restore CA1822 // Mark members as static
-#pragma warning restore IDE1006 // Naming Styles
             }
         }
-
-        //private static void SetCustomExecutablesIniValues(INIFile INI)
-        //{
-        //    if (ManageSettings.SetModOrganizerINISettingsForTheGame)
-        //    {
-        //        return;
-        //    }
-
-        //    ManageSettings.SetModOrganizerINISettingsForTheGame = true;
-
-        //    string[,] IniValues = new string[,] { };
-
-        //    if (!ManageSettings.MOIsNew)
-        //    {
-        //        IniValues = new string[,]
-        //            {
-        //            //customExecutables
-        //            {
-        //                ManageSettings.GetCurrentGameEXEName()
-        //                ,
-        //                @"1\title"
-        //            }
-        //        ,
-        //            {
-        //                Path.Combine(ManageSettings.GetCurrentGameDataPath(), ManageSettings.GetCurrentGameEXEName() + ".exe")
-        //                ,
-        //                @"1\binary"
-        //            }
-        //        ,
-        //            {
-        //                ManageSettings.GetCurrentGameDataPath()
-        //                ,
-        //                @"1\workingDirectory"
-        //            }
-        //        ,
-        //            {
-        //                "true"
-        //                ,
-        //                @"1\ownicon"
-        //            }
-        //        ,
-        //            {
-        //                ManageSettings.GetINISettingsEXEName()
-        //                ,
-        //                @"2\title"
-        //            }
-        //        ,
-        //            {
-        //                ManageSettings.GetSettingsEXEPath()
-        //                ,
-        //                @"2\binary"
-        //            }
-        //        ,
-        //            {
-        //                ManageSettings.GetCurrentGameDataPath()
-        //                ,
-        //                @"2\workingDirectory"
-        //            }
-        //        ,
-        //            {
-        //                "true"
-        //                ,
-        //                @"2\ownicon"
-        //            }
-        //        //,
-        //        //    {
-        //        //        "Explore Virtual Folder"
-        //        //        ,
-        //        //        @"3\title"
-        //        //    }
-        //        //,
-        //        //    {
-        //        //        Path.Combine(SettingsManage.GetMOdirPath(), "explorer++", "Explorer++.exe")
-        //        //        ,
-        //        //        @"3\binary"
-        //        //    }
-        //        //,
-        //        //    {
-        //        //        SettingsManage.GetDataPath()
-        //        //        ,
-        //        //        @"3\arguments"
-        //        //    }
-        //        //,
-        //        //    {
-        //        //        Path.Combine(SettingsManage.GetMOdirPath(), "explorer++")
-        //        //        ,
-        //        //        @"3\workingDirectory"
-        //        //    }
-        //        //,
-        //        //    {
-        //        //        "true"
-        //        //        ,
-        //        //        @"3\ownicon"
-        //        //    }
-        //        //,
-        //        //    {
-        //        //        "Skyrim"
-        //        //        ,
-        //        //        @"4\title"
-        //        //    }
-        //        //,
-        //        //    {
-        //        //        Path.Combine(SettingsManage.GetDataPath(), SettingsManage.GetCurrentGameEXEName() + ".exe")
-        //        //        ,
-        //        //        @"4\binary"
-        //        //    }
-        //        //,
-        //        //    {
-        //        //        SettingsManage.GetDataPath()
-        //        //        ,
-        //        //        @"4\workingDirectory"
-        //        //    }
-        //        ,
-        //            {
-        //                Path.Combine(ManageSettings.GetStudioEXEName())
-        //                ,
-        //                @"3\title"
-        //            }
-        //        ,
-        //            {
-        //                Path.Combine(ManageSettings.GetCurrentGameDataPath(),ManageSettings.GetStudioEXEName()+".exe")
-        //                ,
-        //                @"3\binary"
-        //            }
-        //        ,
-        //            {
-        //                ManageSettings.GetCurrentGameDataPath()
-        //                ,
-        //                @"3\workingDirectory"
-        //            }
-        //        ,
-        //            {
-        //                "true"
-        //                ,
-        //                @"3\ownicon"
-        //            }
-        //        };
-        //    }
-
-
-        //    Dictionary<string, string> IniValuesDict = new Dictionary<string, string>();
-
-        //    string[,] iniParameters =
-        //        {
-        //            {
-        //               "title"
-        //               ,
-        //               "rs"
-        //            }
-        //        ,
-        //            {
-        //                "binary"
-        //            ,
-        //                "rs"
-        //            }
-        //        ,
-        //            {
-        //                "workingDirectory"
-        //            ,
-        //                "rs"
-        //            }
-        //        ,
-        //            {
-        //                "arguments"
-        //            ,
-        //                "s"
-        //            }
-        //        ,
-        //            {
-        //                "toolbar"
-        //            ,
-        //                "b"
-        //            }
-        //        ,
-        //            {
-        //                "ownicon"
-        //            ,
-        //                "b"
-        //            }
-        //        ,
-        //            {
-        //                "steamAppID"
-        //            ,
-        //                "s"
-        //            }
-        //        ,
-        //            {
-        //                "hide"
-        //            ,
-        //                "b"
-        //            }
-        //    };
-
-        //    int resultindex = 0;//конечное количество добавленных exe
-        //    if (!ManageSettings.MOIsNew)
-        //    {
-        //        //заполнить словарь значениями массива строк
-        //        resultindex = 1;//конечное количество добавленных exe
-        //        int IniValuesLength = IniValues.Length / 2;//длина массива, деленая на 2 т.к. каждый элемент состоит из двух
-        //        int exclude = 0;//будет равен индексу, который надо пропустить
-        //        int skippedCnt = 0;//счет количества пропущенных, нужно для правильного подсчета resultindex
-        //        for (int i = 0; i < IniValuesLength; i++)
-        //        {
-        //            var curindex = int.Parse(IniValues[i, 1].Split(new string[1] { @"\" }, StringSplitOptions.None)[0], CultureInfo.InvariantCulture);
-        //            var parameterName = IniValues[i, 1].Split(new string[1] { @"\" }, StringSplitOptions.None)[1];
-
-        //            if (curindex == exclude)
-        //            {
-        //                continue;
-        //            }
-        //            else if (exclude != 0)
-        //            {
-        //                exclude = 0;
-        //            }
-        //            //Если название пустое, то пропускать все значения с таким индексом
-        //            if (parameterName == "title" && IniValues[i, 0].Length == 0)
-        //            {
-        //                exclude = curindex;
-        //                skippedCnt++;
-        //                continue;
-        //            }
-
-        //            if (curindex - skippedCnt > resultindex && exclude == 0)
-        //            {
-        //                resultindex++;
-        //            }
-
-        //            var ResultparameterName = resultindex + @"\" + parameterName;
-
-        //            if (!IniValuesDict.ContainsKey(ResultparameterName))
-        //            {
-        //                IniValuesDict.Add(ResultparameterName, IniValues[i, 0]);
-        //            }
-        //        }
-        //    }
-
-        //    var ExecutablesCount = resultindex;
-        //    //try
-        //    //{
-        //    //    ExecutablesCount = int.Parse(IniValues[IniValuesLength - 1, 1].Split(new string[1] { @"\" }, StringSplitOptions.None)[0]);
-        //    //}
-        //    //catch
-        //    //{
-        //    //    return;//если не число, выйти
-        //    //}
-
-        //    AddCustomExecutables(INI, out Dictionary<string, string> customExecutables, ref ExecutablesCount);
-
-        //    if (customExecutables.Count > 0)
-        //    {
-        //        //очистка секции
-        //        INI.ClearSection("customExecutables", false);
-        //        foreach (var pair in customExecutables)
-        //        {
-        //            if (!IniValuesDict.ContainsKey(pair.Key))
-        //            {
-        //                IniValuesDict.Add(pair.Key, pair.Value);
-        //            }
-        //        }
-
-        //        int cnt = 1;
-        //        int iniParametersLength = iniParameters.Length / 2;
-        //        while (cnt <= ExecutablesCount)
-        //        {
-        //            for (int i = 0; i < iniParametersLength; i++)
-        //            {
-        //                string key = cnt + @"\" + iniParameters[i, 0];
-        //                string IniValue;
-        //                bool keyExists = IniValuesDict.ContainsKey(key);
-        //                string subquote = key.EndsWith(@"\arguments", StringComparison.InvariantCulture) && keyExists ? "\\\"" : string.Empty;
-        //                if (keyExists)
-        //                {
-        //                    IniValue = subquote + IniValuesDict[key].Replace(@"\", key.EndsWith(@"\arguments", StringComparison.InvariantCulture) ? @"\\" : "/") + subquote;
-        //                }
-        //                else
-        //                {
-        //                    IniValue = subquote + (iniParameters[i, 1].EndsWith("b", StringComparison.InvariantCulture) ? "false" : string.Empty) + subquote;
-        //                }
-
-        //                INI.WriteINI("customExecutables", key, IniValue, false);
-        //            }
-        //            cnt++;
-        //        }
-
-        //        //Hardcoded exe Game exe and Explorer++
-        //        //ExecutablesCount += 2;
-
-        //        INI.WriteINI("customExecutables", "size", ExecutablesCount.ToString(CultureInfo.InvariantCulture));
-        //    }
-        //    else
-        //    {
-        //        INI.SaveINI(true, true);
-        //    }
-
-        //    ManageSettings.SetModOrganizerINISettingsForTheGame = false;
-        //}
 
         /// <summary>
         /// true if MO have base plugin
@@ -2249,245 +1757,6 @@ namespace AIHelper.Manage
             var ver = GetMoVersion();
             return ver != null && ver.Length > 2 && ver[0] == '2' && int.Parse(ver[2].ToString(), CultureInfo.InvariantCulture) > 2;
         }
-
-        //private static void AddCustomExecutables(INIFile INI, out Dictionary<string, string> customExecutables, ref int ExecutablesCount)
-        //{
-        //    customExecutables = new Dictionary<string, string>();
-
-        //    var exists = INI.ReadSectionValuesToArray("customExecutables");
-
-        //    var exeEqual = 0;
-        //    var OneexeNotEqual = false;
-        //    var executablesCount = ExecutablesCount;
-        //    Dictionary<string, string> customs = new Dictionary<string, string>();
-
-        //    if (!ManageSettings.MOIsNew)
-        //    {
-        //        var CurrentGame = ManageSettings.Games.CurrentGame;
-        //        if (CurrentGame.GetGameEXENameX32().Length > 0 && File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), CurrentGame.GetGameEXENameX32() + ".exe")))
-        //        {
-        //            executablesCount++;
-        //            exeEqual++;
-        //            customs.Add(executablesCount + @"\title", CurrentGame.GetGameEXENameX32());
-        //            customs.Add(executablesCount + @"\binary", Path.Combine(ManageSettings.GetCurrentGameDataPath(), CurrentGame.GetGameEXENameX32() + ".exe"));
-        //            customs.Add(executablesCount + @"\workingDirectory", ManageSettings.GetCurrentGameDataPath());
-        //        }
-        //        if (CurrentGame.GetGameStudioEXENameX32().Length > 0 && File.Exists(Path.Combine(ManageSettings.GetCurrentGameDataPath(), CurrentGame.GetGameStudioEXENameX32() + ".exe")))
-        //        {
-        //            executablesCount++;
-        //            customs.Add(executablesCount + @"\title", CurrentGame.GetGameStudioEXENameX32());
-        //            customs.Add(executablesCount + @"\binary", Path.Combine(ManageSettings.GetCurrentGameDataPath(), CurrentGame.GetGameStudioEXENameX32() + ".exe"));
-        //            customs.Add(executablesCount + @"\workingDirectory", ManageSettings.GetCurrentGameDataPath());
-        //        }
-        //    }
-        //    else
-        //    {
-        //        foreach (var value in ManagePython.GetExecutableInfosFromPyPlugin())
-        //        {
-        //            if (string.IsNullOrWhiteSpace(value.Key) || !File.Exists(value.Value))
-        //            {
-        //                continue;
-        //            }
-
-        //            executablesCount++;
-        //            customs.Add(executablesCount + @"\title", value.Key);
-        //            customs.Add(executablesCount + @"\binary", value.Value);
-        //            customs.Add(executablesCount + @"\arguments", string.Empty);
-        //            customs.Add(executablesCount + @"\workingDirectory", Path.GetDirectoryName(value.Value));
-        //            customs.Add(executablesCount + @"\ownicon", "true");
-        //        }
-        //    }
-
-        //    string[] pathExclusions =
-        //        {
-        //        "BepInEx" + Path.DirectorySeparatorChar + "plugins",
-        //        //"Lec.ExtProtocol",
-        //        //"ezTransXP.ExtProtocol",
-        //        ".ExtProtocol",
-        //        //"Common.ExtProtocol.Executor",
-        //        "UnityCrashHandler64",
-        //        Path.DirectorySeparatorChar + "IPA",
-        //        "WideSliderPatch"
-        //        };
-
-        //    {
-        //        //Добавление exe из Data
-        //        //Parallel.ForEach(Directory.EnumerateFileSystemEntries(ManageSettings.GetDataPath(), "*.exe", SearchOption.AllDirectories),
-        //        //    exePath =>
-        //        //    {
-        //        //        try
-        //        //        {
-        //        //            if (exeEqual > 9)
-        //        //            {
-        //        //                return;
-        //        //            }
-
-        //        //            var exeName = Path.GetFileNameWithoutExtension(exePath);
-        //        //            if (exeName.Length > 0 && !customs.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
-        //        //            {
-        //        //                executablesCount++;
-        //        //                if (!OneexeNotEqual)
-        //        //                {
-        //        //                    if (exists.Contains(exePath))
-        //        //                    {
-        //        //                        exeEqual++;
-        //        //                    }
-        //        //                    else
-        //        //                    {
-        //        //                        exeEqual = 0;
-        //        //                        OneexeNotEqual = true;
-        //        //                    }
-        //        //                }
-
-        //        //                customs.Add(executablesCount + @"\title", exeName);
-        //        //                customs.Add(executablesCount + @"\binary", exePath);
-        //        //            }
-        //        //        }
-        //        //        catch { }
-
-        //        //    });
-        //    }
-
-        //    foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetCurrentGameDataPath(), "*.exe", SearchOption.AllDirectories))
-        //    {
-        //        try
-        //        {
-        //            if (exeEqual > 9)
-        //            {
-        //                return;
-        //            }
-
-        //            var exeName = Path.GetFileNameWithoutExtension(exePath);
-        //            if (exeName.Length > 0 && !customs.Values.Contains(exeName) && Path.GetDirectoryName(exePath) != ManageSettings.GetCurrentGameDataPath() && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
-        //            {
-        //                executablesCount++;
-        //                if (!OneexeNotEqual)
-        //                {
-        //                    if (exists.Contains(exePath))
-        //                    {
-        //                        exeEqual++;
-        //                    }
-        //                    else
-        //                    {
-        //                        exeEqual = 0;
-        //                        OneexeNotEqual = true;
-        //                    }
-        //                }
-
-        //                customs.Add(executablesCount + @"\title", exeName);
-        //                customs.Add(executablesCount + @"\binary", exePath);
-        //            }
-        //        }
-        //        catch { }
-        //    }
-
-        //    {
-        //        //foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetDataPath(), "*.exe", SearchOption.AllDirectories))
-        //        //{
-        //        //    string exeName = Path.GetFileNameWithoutExtension(exePath);
-        //        //    if (exeName.Length > 0 && !customExecutables.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
-        //        //    {
-        //        //        ExecutablesCount++;
-        //        //        customExecutables.Add(ExecutablesCount + @"\title", exeName);
-        //        //        customExecutables.Add(ExecutablesCount + @"\binary", exePath);
-        //        //    }
-        //        //}
-        //        //Добавление exe из Mods
-        //        //Parallel.ForEach(Directory.EnumerateFileSystemEntries(ManageSettings.GetModsPath(), "*.exe", SearchOption.AllDirectories),
-        //        //    exePath =>
-        //        //    {
-        //        //        try
-        //        //        {
-        //        //            if (exeEqual > 9)
-        //        //            {
-        //        //                return;
-        //        //            }
-
-        //        //            string exeName = Path.GetFileNameWithoutExtension(exePath);
-        //        //            if (exeName.Length > 0 && !customs.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
-        //        //            {
-        //        //                executablesCount++;
-        //        //                if (!OneexeNotEqual)
-        //        //                {
-        //        //                    if (exists.Contains(exePath))
-        //        //                    {
-        //        //                        exeEqual++;
-        //        //                    }
-        //        //                    else
-        //        //                    {
-        //        //                        exeEqual = 0;
-        //        //                        OneexeNotEqual = true;
-        //        //                    }
-        //        //                }
-
-        //        //                customs.Add(executablesCount + @"\title", exeName);
-        //        //                customs.Add(executablesCount + @"\binary", exePath);
-        //        //            }
-        //        //        }
-        //        //        catch { }
-
-        //        //    });
-        //        //foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetModsPath(), "*.exe", SearchOption.AllDirectories))
-        //        //{
-        //        //    string exeName = Path.GetFileNameWithoutExtension(exePath);
-        //        //    if (Path.GetFileNameWithoutExtension(exePath).Length > 0 && !customExecutables.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
-        //        //    {
-        //        //        ExecutablesCount++;
-        //        //        customExecutables.Add(ExecutablesCount + @"\title", exeName);
-        //        //        customExecutables.Add(ExecutablesCount + @"\binary", exePath);
-        //        //    }
-        //        //}
-        //    }
-
-        //    foreach (var exePath in Directory.EnumerateFiles(ManageSettings.GetCurrentGameModsPath(), "*.exe", SearchOption.AllDirectories))
-        //    {
-        //        try
-        //        {
-        //            if (exeEqual > 9)
-        //            {
-        //                return;
-        //            }
-
-        //            string exeName = Path.GetFileNameWithoutExtension(exePath);
-        //            if (exeName.Length > 0 && !customs.Values.Contains(exeName) && !ManageStrings.IsStringAContainsAnyStringFromStringArray(exePath, pathExclusions, true))
-        //            {
-        //                executablesCount++;
-        //                if (!OneexeNotEqual)
-        //                {
-        //                    if (exists.Contains(exePath))
-        //                    {
-        //                        exeEqual++;
-        //                    }
-        //                    else
-        //                    {
-        //                        exeEqual = 0;
-        //                        OneexeNotEqual = true;
-        //                    }
-        //                }
-
-        //                customs.Add(executablesCount + @"\title", exeName);
-        //                customs.Add(executablesCount + @"\binary", exePath);
-        //            }
-        //        }
-        //        catch { }
-        //    }
-
-        //    //добавление hardcoded exe
-        //    //executablesCount++;
-        //    //customs.Add(executablesCount + @"\title", "Skyrim");
-        //    //customs.Add(executablesCount + @"\binary", Path.Combine(ManageSettings.ApplicationStartupPath, "TESV.exe"));
-        //    //customs.Add(executablesCount + @"\workingDirectory", ManageSettings.ApplicationStartupPath);
-        //    //customs.Add(executablesCount + @"\ownicon", "true");
-        //    //executablesCount++;
-        //    //customs.Add(executablesCount + @"\title", "Explore Virtual Folder");
-        //    //customs.Add(executablesCount + @"\binary", Path.Combine(ManageSettings.GetMOdirPath(), "explorer++", "Explorer++.exe"));
-        //    //customs.Add(executablesCount + @"\workingDirectory", Path.Combine(ManageSettings.GetMOdirPath(), "explorer++"));
-        //    //customs.Add(executablesCount + @"\arguments", ManageSettings.GetCurrentGameDataPath());
-        //    //customs.Add(executablesCount + @"\ownicon", "true");
-
-        //    customExecutables = customs;
-        //    ExecutablesCount = executablesCount;
-        //}
 
         private static void SetCommonIniValues(INIFile ini)
         {
@@ -2764,21 +2033,6 @@ namespace AIHelper.Manage
                 ini.WriteFile();
             }
         }
-
-        //internal static Dictionary<string, string> GetMOcustomExecutablesList()
-        //{
-        //    var INI = ManageIni.GetINIFile(ManageSettings.GetMOiniPath());
-        //    var customs = INI.ReadSectionKeyValuePairsToDictionary("customExecutables");
-        //    var retDict = new Dictionary<string, string>();
-        //    foreach (var pair in customs)
-        //    {
-        //        if (pair.Key.EndsWith(@"\title", StringComparison.InvariantCulture))
-        //        {
-        //            retDict.Add(pair.Value, customs[pair.Key.Split('\\')[0] + @"\binary"]);
-        //        }
-        //    }
-        //    return retDict;
-        //}
 
         /// <summary>
         /// get title of custom executable by it exe name
@@ -3071,8 +2325,8 @@ namespace AIHelper.Manage
                 };
             }
 
-            var modName = record.ParentSeparator == null && !string.IsNullOrWhiteSpace(modNameToInsertWith) 
-                ? modNameToInsertWith 
+            var modName = record.ParentSeparator == null && !string.IsNullOrWhiteSpace(modNameToInsertWith)
+                ? modNameToInsertWith
                 : "";
             modList.Insert(record, modName, placeAfter);
         }
@@ -3192,27 +2446,6 @@ namespace AIHelper.Manage
         public static string[] GetModNamesListFromActiveMoProfile(bool onlyEnabled = true)
         {
             return EnumerateModNamesListFromActiveMoProfile(onlyEnabled).ToArray();
-
-            //string[] lines;
-            //if (onlyEnabled)
-            //{
-            //    //все строки с + в начале
-            //    lines = File.ReadAllLines(profilemodlistpath).Where(line => line.Length > 0 && line[0] == '+').ToArray();
-            //}
-            //else
-            //{
-            //    //все строки кроме сепараторов
-            //    lines = File.ReadAllLines(profilemodlistpath).Where(line => line.Length > 0 && line[0] != '#' && (line.Length < 10 || !line.EndsWith("_separator", StringComparison.InvariantCulture))).ToArray();
-            //}
-            ////Array.Reverse(lines); //убрал, т.к. дулаю архив с резервными копиями
-            //int linesLength = lines.Length;
-            //for (int l = 0; l < linesLength; l++)
-            //{
-            //    //remove +-
-            //    lines[l] = lines[l].Remove(0, 1);
-            //}
-
-            //return lines;
         }
 
         /// <summary>
@@ -3244,7 +2477,7 @@ namespace AIHelper.Manage
             if (!File.Exists(profilemodlistpath)) yield break;
 
             foreach (var modInfo in new ModlistData().Mods
-                .Where(m => 
+                .Where(m =>
                 m.IsEnabled
                 && !(m.Type is ModType.Separator)
                 && !(m.Type is ModType.Overwrite)
@@ -3367,15 +2600,6 @@ namespace AIHelper.Manage
                     pathInModsElements = pathInModsElements.Skip(1).ToArray();
                 }
 
-                //foreach (var element in pathInModsElements)
-                //{
-                //    if (i > 1)
-                //    {
-                //        subpath += i > 2 ? Path.DirectorySeparatorChar.ToString() : string.Empty;
-                //        subpath += element;
-                //    }
-                //    i++;
-                //}
                 string subpath = string.Join(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture), pathInModsElements);
 
                 if (!ManageSettings.IsMoMode)
@@ -3461,25 +2685,6 @@ namespace AIHelper.Manage
         public static string GetMetaParameterValue(string metaFilePath, string neededValue)
         {
             return ManageIni.GetIniValueIfExist(metaFilePath, neededValue);
-
-            //using (StreamReader sr = new StreamReader(MetaFilePath))
-            //{
-            //    string line;
-            //    while (!sr.EndOfStream)
-            //    {
-            //        line = sr.ReadLine();
-
-            //        if (line.Length > 0)
-            //        {
-            //            if (line.StartsWith(NeededValue + "=", StringComparison.InvariantCulture))
-            //            {
-            //                return line.Remove(0, (NeededValue + "=").Length);
-            //            }
-            //        }
-            //    }
-            //}
-
-            //return string.Empty;
         }
 
         public static string GetModFromModListContainsTheName(string name, bool onlyFromEnabledMods = true)
@@ -3671,7 +2876,6 @@ namespace AIHelper.Manage
             if (!File.Exists(ManageSettings.ModOrganizerIniPath)) return;
 
             var ini = ManageIni.GetINIFile(ManageSettings.ModOrganizerIniPath);
-            //if (INI == null) return;
 
             string gameName;
             //updated game name

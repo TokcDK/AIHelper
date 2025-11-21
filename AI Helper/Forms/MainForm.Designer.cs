@@ -131,7 +131,6 @@
             this.AIGirlHelperTabControl.Size = new System.Drawing.Size(476, 228);
             this.AIGirlHelperTabControl.TabIndex = 0;
             this.AIGirlHelperTabControl.SelectedIndexChanged += new System.EventHandler(this.AIGirlHelperTabControl_SelectedIndexChanged);
-            this.AIGirlHelperTabControl.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.AIGirlHelperTabControl_Selecting);
             this.AIGirlHelperTabControl.Selected += new System.Windows.Forms.TabControlEventHandler(this.AIGirlHelperTabControl_Selected);
             // 
             // LaunchTabPage

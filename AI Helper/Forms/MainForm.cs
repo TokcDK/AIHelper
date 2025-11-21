@@ -668,10 +668,6 @@ namespace AIHelper
             }
         }
 
-        private void AIGirlHelperTabControl_Selecting(object sender, TabControlCancelEventArgs e)
-        {
-        }
-
         private async void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             OnOffButtons(false);

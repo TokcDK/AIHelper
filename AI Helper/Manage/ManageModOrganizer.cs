@@ -118,14 +118,8 @@ namespace AIHelper.Manage
             }
         }
 
-        public static void CopyModOrganizerUserFiles(string moDirAltName)
-        {
-            //var game = Data.CurrentGame.GetCurrentGameIndex()];
-            string gameMoDirPath = Path.Combine(ManageSettings.CurrentGameDirPath, "MO");
-            string gameMoDirPathAlt = Path.Combine(ManageSettings.CurrentGameDirPath, moDirAltName);
-
-            // dirs and files required for work
-            var subPaths = new Dictionary<string, ObjectType>
+        // dirs and files required for work
+        private static readonly Dictionary<string, ObjectType> _requiredMoUserPaths = new Dictionary<string, ObjectType>
             {
                 { "Profiles", ObjectType.Directory },
                 { "Overwrite", ObjectType.Directory },
@@ -133,25 +127,36 @@ namespace AIHelper.Manage
                 { "ModOrganizer.ini", ObjectType.File }
             };
 
-            foreach (var subPath in subPaths)
+        public static void CopyModOrganizerUserFiles(string moDirAltName)
+        {
+            //var game = Data.CurrentGame.GetCurrentGameIndex()];
+            string gameMoDirPath = Path.Combine(ManageSettings.CurrentGameDirPath, "MO");
+            string gameMoDirPathAlt = Path.Combine(ManageSettings.CurrentGameDirPath, moDirAltName);
+
+            foreach (var subPath in _requiredMoUserPaths)
             {
-                try
+                CopyModOrganizerUserSubPathIfMissing(gameMoDirPath, gameMoDirPathAlt, subPath);
+            }
+        }
+
+        private static void CopyModOrganizerUserSubPathIfMissing(string gameMoDirPath, string gameMoDirPathAlt, KeyValuePair<string, ObjectType> subPath)
+        {
+            try
+            {
+                var altpath = Path.GetFullPath(Path.Combine(gameMoDirPathAlt, subPath.Key));
+                var workpath = Path.GetFullPath(Path.Combine(gameMoDirPath, subPath.Key));
+                if (subPath.Value == ObjectType.Directory && Directory.Exists(altpath) && (!Directory.Exists(workpath) || !ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(workpath, allDirectories: true)))
                 {
-                    var altpath = Path.GetFullPath(Path.Combine(gameMoDirPathAlt, subPath.Key));
-                    var workpath = Path.GetFullPath(Path.Combine(gameMoDirPath, subPath.Key));
-                    if (subPath.Value == ObjectType.Directory && Directory.Exists(altpath) && (!Directory.Exists(workpath) || !ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(workpath, allDirectories: true)))
-                    {
-                        ManageFilesFoldersExtensions.CopyAll(altpath, workpath);
-                    }
-                    else if (subPath.Value == ObjectType.File && File.Exists(altpath) && !File.Exists(workpath))
-                    {
-                        File.Copy(altpath, workpath);
-                    }
+                    ManageFilesFoldersExtensions.CopyAll(altpath, workpath);
                 }
-                catch (Exception ex)
+                else if (subPath.Value == ObjectType.File && File.Exists(altpath) && !File.Exists(workpath))
                 {
-                    _log.Error("An error occured while MO files coping. error:\r\n" + ex);
+                    File.Copy(altpath, workpath);
                 }
+            }
+            catch (Exception ex)
+            {
+                _log.Error("An error occured while MO files coping. error:\r\n" + ex);
             }
         }
 

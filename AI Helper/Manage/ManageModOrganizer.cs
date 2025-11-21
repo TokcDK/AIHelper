@@ -259,51 +259,58 @@ namespace AIHelper.Manage
                 }
                 else
                 {
-                    if (linkPath.Exists && linkPath.IsSymlink())
-                    {
-                        if (linkPath.IsValidSymlink(objectPath.FullName))
-                        {
-                            continue;
-                        }
-                    }
-
-                    try
-                    {
-                        if (ManageSymLinkExtensions.CreateSymlink
-                          (
-                           objectPath.FullName
-                           ,
-                           linkPath.FullName
-                           ,
-                           true
-                           ,
-                           ObjectType.Directory
-                          ))
-                        {
-                        }
-                        else
-                        {
-                            // need when dir in data exists and have content, then content will be move to target
-                            ManageFilesFoldersExtensions.MoveContent(linkPath.FullName, objectPath.FullName);
-
-                            ManageSymLinkExtensions.CreateSymlink
-                                (
-                                 objectPath.FullName
-                                 ,
-                                 linkPath.FullName
-                                 ,
-                                 true
-                                 ,
-                                 ObjectType.Directory
-                                );
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.Error("An error occured while symlink creation:\r\n" + ex);
-                    }
+                    CreateOrUpdateDirectorySymlink(objectPath, linkPath);
                 }
             }
+        }
+
+        private static bool CreateOrUpdateDirectorySymlink(DirectoryInfo objectPath, DirectoryInfo linkPath)
+        {
+            if (linkPath.Exists && linkPath.IsSymlink())
+            {
+                if (linkPath.IsValidSymlink(objectPath.FullName))
+                {
+                    return false;
+                }
+            }
+
+            try
+            {
+                if (ManageSymLinkExtensions.CreateSymlink
+                  (
+                   objectPath.FullName
+                   ,
+                   linkPath.FullName
+                   ,
+                   true
+                   ,
+                   ObjectType.Directory
+                  ))
+                {
+                }
+                else
+                {
+                    // need when dir in data exists and have content, then content will be move to target
+                    ManageFilesFoldersExtensions.MoveContent(linkPath.FullName, objectPath.FullName);
+
+                    ManageSymLinkExtensions.CreateSymlink
+                        (
+                         objectPath.FullName
+                         ,
+                         linkPath.FullName
+                         ,
+                         true
+                         ,
+                         ObjectType.Directory
+                        );
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error("An error occured while symlink creation:\r\n" + ex);
+            }
+
+            return true;
         }
 
         private static void BepInExPreloadersFix(bool remove = false)

@@ -427,7 +427,6 @@ namespace AIHelper.Manage
                     return ("", "Overlays");
                 case "s":
                     return ("studio", "scene");
-                    break;
                 default:
                     return ("", "");
             }

@@ -1107,7 +1107,6 @@ namespace AIHelper.Manage
         {
             if (!File.Exists(ManageSettings.CachedGUIDFilePath))
             {
-                cachedGUIDList = new Dictionary<string, string>();
                 return false;
             }
 

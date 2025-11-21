@@ -2221,43 +2221,7 @@ namespace AIHelper.Manage
             bool isEnabled;
             if (!(isEnabled = fileLines.Contains("+" + line.Remove(0, 1))) && !fileLines.Contains("-" + line.Remove(0, 1)))
             {
-                int fileLinesLength = fileLines.Length;
-                bool insertWithMod = insertWithThisMod.Length > 0;
-                position = insertWithMod ? fileLinesLength : position;
-                using (StreamWriter writer = new StreamWriter(moModlistPath))
-                {
-                    for (int lineNumber = 0; lineNumber < position; lineNumber++)
-                    {
-                        if (insertWithMod && fileLines[lineNumber].Length > 0 && string.Compare(fileLines[lineNumber].Remove(0, 1), insertWithThisMod, true, CultureInfo.InvariantCulture) == 0)
-                        {
-                            if (placeAfter)
-                            {
-                                position = lineNumber;
-                            }
-                            else
-                            {
-                                writer.WriteLine(fileLines[lineNumber]);
-                                position = lineNumber + 1;
-                            }
-                            break;
-
-                        }
-                        else
-                        {
-                            writer.WriteLine(fileLines[lineNumber]);
-                        }
-                    }
-
-                    writer.WriteLine(line);
-
-                    if (position < fileLinesLength)
-                    {
-                        for (int lineNumber = position; lineNumber < fileLinesLength; lineNumber++)
-                        {
-                            writer.WriteLine(fileLines[lineNumber]);
-                        }
-                    }
-                }
+                InsertLineInModlistFileInternal(moModlistPath, line, position, insertWithThisMod, placeAfter, fileLines);
             }
             else
             {
@@ -2269,6 +2233,57 @@ namespace AIHelper.Manage
                 fileLines = fileLines.Replace(prefix + line.Remove(0, 1), line);
                 File.WriteAllLines(moModlistPath, fileLines);
             }
+        }
+
+        private static void InsertLineInModlistFileInternal(string moModlistPath, string line, int position, string insertWithThisMod, bool placeAfter, string[] fileLines)
+        {
+            int fileLinesLength = fileLines.Length;
+            bool insertWithMod = insertWithThisMod.Length > 0;
+            position = insertWithMod ? fileLinesLength : position;
+            using (StreamWriter writer = new StreamWriter(moModlistPath))
+            {
+                for (int lineNumber = 0; lineNumber < position; lineNumber++)
+                {                    
+                    if (TryFindInsertPositionInModlist(insertWithThisMod, placeAfter, fileLines, insertWithMod, writer, lineNumber, ref position))
+                    {
+                        break;
+                    }
+                }
+
+                writer.WriteLine(line);
+
+                if (position < fileLinesLength)
+                {
+                    for (int lineNumber = position; lineNumber < fileLinesLength; lineNumber++)
+                    {
+                        writer.WriteLine(fileLines[lineNumber]);
+                    }
+                }
+            }
+        }
+
+        private static bool TryFindInsertPositionInModlist(string insertWithThisMod, bool placeAfter, string[] fileLines, bool insertWithMod, StreamWriter writer, int lineNumber, ref int position)
+        {
+            if (insertWithMod && fileLines[lineNumber].Length > 0 && string.Compare(fileLines[lineNumber].Remove(0, 1), insertWithThisMod, true, CultureInfo.InvariantCulture) == 0)
+            {
+                if (placeAfter)
+                {
+                    position = lineNumber;
+                }
+                else
+                {
+                    writer.WriteLine(fileLines[lineNumber]);
+                    position = lineNumber + 1;
+                }
+                return true;
+
+            }
+            else
+            {
+                writer.WriteLine(fileLines[lineNumber]);
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -2395,7 +2410,7 @@ namespace AIHelper.Manage
             }
             else
             {
-                ret = Path.GetDirectoryName(Directory.GetDirectories(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles"))[0]))
+                ret = Path.GetDirectoryName(Directory.GetDirectories(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles"))[0]);
                 return true;
             }
 

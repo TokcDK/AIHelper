@@ -1313,5 +1313,6 @@ namespace AIHelper.Manage
         public static string MOProfileSettingsIniForcedLibrariesSectionName { get => "forced_libraries"; }
         public static string ModsDirName { get; } = "Mods";
         public static string DataDirName { get; } = "Data";
+        public static string MoOverwriteDirName => "Overwrite";
     }
 }

@@ -121,10 +121,10 @@ namespace AIHelper.Manage
         // dirs and files required for work
         private static readonly Dictionary<string, ObjectType> _requiredMoUserPaths = new Dictionary<string, ObjectType>
             {
-                { "Profiles", ObjectType.Directory },
-                { "Overwrite", ObjectType.Directory },
-                { "categories.dat", ObjectType.File },
-                { "ModOrganizer.ini", ObjectType.File }
+                { ManageSettings.MoProfilesDirName, ObjectType.Directory },
+                { ManageSettings.MoOverwriteDirName, ObjectType.Directory },
+                { ManageSettings.MoCategoriesFileName, ObjectType.File },
+                { ManageSettings.MoIniFileName, ObjectType.File }
             };
 
         public static void CopyModOrganizerUserFiles(string moDirAltName)

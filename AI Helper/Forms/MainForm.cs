@@ -1,26 +1,20 @@
-﻿using System;
+﻿using AIHelper.Manage;
+using AIHelper.Manage.FoldersTab.Folders;
+using AIHelper.Manage.ui.themes;
+using AIHelper.Manage.Update;
+using AIHelper.Manage.Update.Targets;
+using CheckForEmptyDir;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using AIHelper.Install.Types;
-using AIHelper.Install.Types.Directories;
-using AIHelper.Install.UpdateMaker;
-using AIHelper.Manage;
-using AIHelper.Manage.FoldersTab.Folders;
-using AIHelper.Manage.Functions;
-using AIHelper.Manage.ui.themes;
-using AIHelper.Manage.Update;
-using AIHelper.Manage.Update.Targets;
-using CheckForEmptyDir;
-using INIFileMan;
-using NLog;
 using static AIHelper.Manage.ManageModOrganizer;
 
 //using Crc32C;
@@ -50,7 +44,7 @@ namespace AIHelper
             ManageSettings.ApplicationProductName = Application.ProductName;
 
             ManageSettings.MainForm = this; // set reference to the form for controls use
-            
+
             this.DoubleBuffered = true;
             this.SetStyle(ControlStyles.ResizeRedraw, true);
 
@@ -461,7 +455,7 @@ namespace AIHelper
                 //             " to the game folder when possible"
                 //             )));
                 //_thToolTip.SetToolTip(Install2MODirPathOpenFolderLinkLabel, T._("Open folder where you can drop/download files for autoinstallation"));
-                
+
             }
             else if (AIGirlHelperTabControl.SelectedTab == FoldersTabPage)
             {
@@ -875,7 +869,7 @@ namespace AIHelper
             if (MOmode)
             {
                 var currentGameExemoProfileName = ManageSettings.CurrentGameExemoProfileName;
-                var customExeTitleName = currentGameExemoProfileName + (isVr?"VR":"");
+                var customExeTitleName = currentGameExemoProfileName + (isVr ? "VR" : "");
                 exePath = ManageSettings.AppMOexePath; // set Mod organizer exe path
 
                 ManageProcess.KillProcessesByName(ManageModOrganizer.GetExeNameByTitle(customExeTitleName));
@@ -897,7 +891,7 @@ namespace AIHelper
                 //}
                 //}
 
-                if(ManageModOrganizer.TryGetMOProfileNameByExeTitle(customExeTitleName, out string profileNameToRun))
+                if (ManageModOrganizer.TryGetMOProfileNameByExeTitle(customExeTitleName, out string profileNameToRun))
                 {
                     oldMOProfileName = ManageModOrganizer.SetCurrentProfileByName(profileNameToRun);
                 }
@@ -920,7 +914,7 @@ namespace AIHelper
             ManageProcess.KillProcessesByName(Path.GetFileNameWithoutExtension(exePath));
             ManageProcess.RunProgram(exePath, arguments);
 
-            if(MOmode && !string.IsNullOrEmpty(oldMOProfileName))
+            if (MOmode && !string.IsNullOrEmpty(oldMOProfileName))
             {
                 // return last profile
                 ManageModOrganizer.SetCurrentProfileByName(oldMOProfileName);
@@ -1083,8 +1077,8 @@ namespace AIHelper
 
         //private void BepInExDisplayedLogLevelLabel_Click(object sender, EventArgs e)
         //{
-            //if (BepInExConsoleCheckBox.Checked)
-            //    ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExConsoleCheckBox, BepInExDisplayedLogLevelLabel);
+        //if (BepInExConsoleCheckBox.Checked)
+        //    ManageSettings.SwitchBepInExDisplayedLogLevelValue(BepInExConsoleCheckBox, BepInExDisplayedLogLevelLabel);
         //}
 
         internal ExtraSettingsForm _extraSettingsForm;

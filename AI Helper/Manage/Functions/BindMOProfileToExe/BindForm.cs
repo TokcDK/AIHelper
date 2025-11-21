@@ -81,7 +81,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
                 && ProfilesComboBox.SelectedItem is ProfiledData data
                 && !data.BoundExes.Contains(exePath))
             {
-                data.Add(exePath); 
+                data.Add(exePath);
                 WriteBoundExes();
             }
         }
@@ -98,7 +98,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
 
         private void WriteBoundExes()
         {
-            foreach(var profile in profilesList.GetProfiles())
+            foreach (var profile in profilesList.GetProfiles())
             {
                 if (profile.IsChanged)
                 {

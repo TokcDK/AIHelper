@@ -2363,29 +2363,44 @@ namespace AIHelper.Manage
         {
             while (!Directory.Exists(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles", currentMOprofile)))
             {
-                if (Directory.Exists(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles", ManageSettings.CurrentGameExeName)))
+                if (TryGetCurrentMoProfileCandidate(out var value))
                 {
-                    return ManageSettings.CurrentGameExeName;
-                }
-                else if (Directory.Exists(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles", ManageSettings.CurrentGameDisplayingName)))
-                {
-                    return ManageSettings.CurrentGameDisplayingName;
-                }
-                else if (Directory.Exists(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles", ManageSettings.CurrentGameDirName)))
-                {
-                    return ManageSettings.CurrentGameDirName;
-                }
-                else if (Directory.GetDirectories(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles")).Length == 0)
-                {
-                    MessageBox.Show(T._("No profiles found for Current game") + " " + ManageSettings.CurrentGameDisplayingName);
-                }
-                else
-                {
-                    return Path.GetDirectoryName(Directory.GetDirectories(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles"))[0]);
+                    return value;
                 }
             }
             //Application.Exit();
             return "Default";
+        }
+
+        private static bool TryGetCurrentMoProfileCandidate(out string ret)
+        {
+            if (Directory.Exists(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles", ManageSettings.CurrentGameExeName)))
+            {
+                ret = ManageSettings.CurrentGameExeName;
+                return true;
+            }
+            else if (Directory.Exists(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles", ManageSettings.CurrentGameDisplayingName)))
+            {
+                ret = ManageSettings.CurrentGameDisplayingName;
+                return true;
+            }
+            else if (Directory.Exists(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles", ManageSettings.CurrentGameDirName)))
+            {
+                ret = ManageSettings.CurrentGameDirName;
+                return true;
+            }
+            else if (Directory.GetDirectories(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles")).Length == 0)
+            {
+                MessageBox.Show(T._("No profiles found for Current game") + " " + ManageSettings.CurrentGameDisplayingName);
+            }
+            else
+            {
+                ret = Path.GetDirectoryName(Directory.GetDirectories(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles"))[0]))
+                return true;
+            }
+
+            ret = string.Empty;
+            return false;
         }
 
         public static string GetLastMoFileDirPathFromEnabledModsOfActiveMoProfile(string[] pathInMods, bool[] isDir)
@@ -2394,39 +2409,44 @@ namespace AIHelper.Manage
             int d = 0;
             try
             {
-                if (pathInMods == null)
-                {
-                    return path;
-                }
-
-                foreach (var pathCandidate in pathInMods)
-                {
-                    path = pathCandidate;
-
-                    if (!string.IsNullOrWhiteSpace(path))
-                    {
-                        if ((isDir[d] && Directory.Exists(pathCandidate)) || (!isDir[d] && File.Exists(pathCandidate)))
-                        {
-                            return pathCandidate;
-                        }
-                        else
-                        {
-                            path = GetLastPath(pathCandidate, isDir[d]);
-                            if (!string.IsNullOrWhiteSpace(path) && path != pathCandidate)
-                            {
-                                return path;
-                            }
-                        }
-                    }
-
-                    d++;
-                }
-
-                return path;
+                return FindLastExistingPathInMods(pathInMods, isDir, ref path, ref d);
             }
             catch (Exception ex)
             {
                 _log.Error("An error occured while path get:\r\n" + ex + "\r\npath=" + path);
+            }
+
+            return path;
+        }
+
+        private static string FindLastExistingPathInMods(string[] pathInMods, bool[] isDir, ref string path, ref int d)
+        {
+            if (pathInMods == null)
+            {
+                return path;
+            }
+
+            foreach (var pathCandidate in pathInMods)
+            {
+                path = pathCandidate;
+
+                if (!string.IsNullOrWhiteSpace(path))
+                {
+                    if ((isDir[d] && Directory.Exists(pathCandidate)) || (!isDir[d] && File.Exists(pathCandidate)))
+                    {
+                        return pathCandidate;
+                    }
+                    else
+                    {
+                        path = GetLastPath(pathCandidate, isDir[d]);
+                        if (!string.IsNullOrWhiteSpace(path) && path != pathCandidate)
+                        {
+                            return path;
+                        }
+                    }
+                }
+
+                d++;
             }
 
             return path;

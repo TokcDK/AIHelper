@@ -106,7 +106,7 @@ namespace AIHelper
             var moDownloadOffer = MessageBox.Show(T._("Mod Organizer is missing in the app dir. Need to download latest version for to be able to manage mods by MO. Download latest?"), T._("Mod Organizer not found!"), MessageBoxButtons.OKCancel);
             if (DialogResult.OK != moDownloadOffer)
             {
-                MessageBox.Show(T._("Application will exit now. You can manually put Mod Organizer in MO folder nex to the program."));
+                MessageBox.Show(T._("Application will exit now. You can manually put Mod Organizer in MO folder next to the program."));
                 Directory.CreateDirectory("MO");
 
                 OpenModOrganizerWebPage();

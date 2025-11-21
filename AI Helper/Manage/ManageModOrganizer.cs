@@ -248,19 +248,23 @@ namespace AIHelper.Manage
             int objectLinkPathsLength = objectLinkPaths.Length / 2;
             for (int i = 0; i < objectLinkPathsLength; i++)
             {
+                ProcessObjectLinkAtIndex(removeLinks, objectLinkPaths, i);
+            }
+        }
+
+        private static void ProcessObjectLinkAtIndex(bool removeLinks, string[,] objectLinkPaths, int i)
+        {
+            var linkPath = new DirectoryInfo(objectLinkPaths[i, 1]);
+
+            if (removeLinks)
+            {
+                ManageSymLinkExtensions.DeleteIfSymlink(linkPath.FullName);
+            }
+            else
+            {
                 // try to find last not empty dir path
-                var objectPath = new DirectoryInfo(ManageModOrganizer.GetLastPath(objectLinkPaths[i, 0], isDir: true, tryFindWithContent: true)); ;
-
-                var linkPath = new DirectoryInfo(objectLinkPaths[i, 1]);
-
-                if (removeLinks)
-                {
-                    ManageSymLinkExtensions.DeleteIfSymlink(linkPath.FullName);
-                }
-                else
-                {
-                    CreateOrUpdateDirectorySymlink(objectPath, linkPath);
-                }
+                var objectPath = new DirectoryInfo(ManageModOrganizer.GetLastPath(objectLinkPaths[i, 0], isDir: true, tryFindWithContent: true));
+                CreateOrUpdateDirectorySymlink(objectPath, linkPath);
             }
         }
 
@@ -276,34 +280,7 @@ namespace AIHelper.Manage
 
             try
             {
-                if (ManageSymLinkExtensions.CreateSymlink
-                  (
-                   objectPath.FullName
-                   ,
-                   linkPath.FullName
-                   ,
-                   true
-                   ,
-                   ObjectType.Directory
-                  ))
-                {
-                }
-                else
-                {
-                    // need when dir in data exists and have content, then content will be move to target
-                    ManageFilesFoldersExtensions.MoveContent(linkPath.FullName, objectPath.FullName);
-
-                    ManageSymLinkExtensions.CreateSymlink
-                        (
-                         objectPath.FullName
-                         ,
-                         linkPath.FullName
-                         ,
-                         true
-                         ,
-                         ObjectType.Directory
-                        );
-                }
+                CreateSymlinkOrMoveDirectoryContent(objectPath, linkPath);
             }
             catch (Exception ex)
             {
@@ -311,6 +288,38 @@ namespace AIHelper.Manage
             }
 
             return true;
+        }
+
+        private static void CreateSymlinkOrMoveDirectoryContent(DirectoryInfo objectPath, DirectoryInfo linkPath)
+        {
+            if (ManageSymLinkExtensions.CreateSymlink
+                              (
+                               objectPath.FullName
+                               ,
+                               linkPath.FullName
+                               ,
+                               true
+                               ,
+                               ObjectType.Directory
+                              ))
+            {
+            }
+            else
+            {
+                // need when dir in data exists and have content, then content will be move to target
+                ManageFilesFoldersExtensions.MoveContent(linkPath.FullName, objectPath.FullName);
+
+                ManageSymLinkExtensions.CreateSymlink
+                    (
+                     objectPath.FullName
+                     ,
+                     linkPath.FullName
+                     ,
+                     true
+                     ,
+                     ObjectType.Directory
+                    );
+            }
         }
 
         private static void BepInExPreloadersFix(bool remove = false)

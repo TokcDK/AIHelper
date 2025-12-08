@@ -16,10 +16,10 @@ namespace AIHelper.Manage.ModeSwitch.DataFullBuilder.Services
     {
         private static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
-        private const string MetaFolderName = "[NATIVE-MODE-META]";
-        private const string ErrorLogFileName = "creation-errors.log";
-        private const string OverwriteFolderName = "Overwrite";
-        private const string DataFolderName = "Data";
+        private readonly string MetaFolderName = ManageSettings.CommonModeMetaDirName;
+        private const string ErrorLogFileName = "build-errors.log";
+        private readonly string OverwriteFolderName = ManageSettings.MoOverwriteDirName;
+        private readonly string DataFolderName = ManageSettings.DataDirName;
 
         private readonly IFileSystemHelper _fileSystemHelper;
 

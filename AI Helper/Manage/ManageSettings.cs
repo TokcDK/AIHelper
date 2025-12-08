@@ -1315,5 +1315,7 @@ namespace AIHelper.Manage
         public static string ModsDirName { get; } = "Mods";
         public static string DataDirName { get; } = "Data";
         public static string MoOverwriteDirName => "Overwrite";
+
+        public static string CommonModeMetaDirName { get; } = "[COMMON-MODE-META]";
     }
 }

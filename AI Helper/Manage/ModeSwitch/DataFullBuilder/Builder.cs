@@ -13,7 +13,7 @@ namespace AIHelper.Manage.ModeSwitch.DataFullBuilder
 {
     internal class Builder
     {
-        protected static Logger _log = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
         internal static void Build(string[] args)
         {

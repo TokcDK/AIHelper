@@ -1,3 +1,7 @@
+using AIHelper.Manage.ModeSwitch.DataFullBuilder.interfaces;
+using AIHelper.Manage.ModeSwitch.DataFullBuilder.Interfaces;
+using AIHelper.Manage.ModeSwitch.DataFullBuilder.Models;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -5,14 +9,13 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AIHelper.Manage.ModeSwitch.DataFullBuilder.interfaces;
-using AIHelper.Manage.ModeSwitch.DataFullBuilder.Interfaces;
-using AIHelper.Manage.ModeSwitch.DataFullBuilder.Models;
 
 namespace AIHelper.Manage.ModeSwitch.DataFullBuilder.Services
 {
     public sealed class DataFullBuilder : IDataFullBuilder
     {
+        private static readonly Logger _log = LogManager.GetCurrentClassLogger();
+
         private const string MetaFolderName = "[NATIVE-MODE-META]";
         private const string ErrorLogFileName = "creation-errors.log";
         private const string OverwriteFolderName = "Overwrite";
@@ -35,7 +38,7 @@ namespace AIHelper.Manage.ModeSwitch.DataFullBuilder.Services
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
 
-            Console.WriteLine("Starting build process...");
+            _log.Info("Starting build process...");
             var stopwatch = Stopwatch.StartNew();
             var result = new BuildResult();
 
@@ -50,17 +53,17 @@ namespace AIHelper.Manage.ModeSwitch.DataFullBuilder.Services
             _fileSystemHelper.CreateDirectory(outputPath);
             _fileSystemHelper.CreateDirectory(metaFolderPath);
 
-            Console.WriteLine("Output structure created. Setting up error logger...");
+            _log.Info("Output structure created. Setting up error logger...");
             using (var errorLogger = new ErrorLogger(errorLogPath))
             {
                 try
                 {
                     // Get source folders in priority order
-                    Console.WriteLine("Retrieving source folders in priority order...");
+                    _log.Info("Retrieving source folders in priority order...");
                     var sourceFolders = GetSourceFoldersInPriorityOrder(configuration, errorLogger);
 
                     // Build virtual file system
-                    Console.WriteLine("Building virtual file system...");
+                    _log.Info("Building virtual file system...");
                     var vfsBuilder = new VirtualFileSystemBuilder(_fileSystemHelper, errorLogger);
                     var vfs = vfsBuilder.Build(sourceFolders, configuration.MaxDegreeOfParallelism);
 
@@ -68,21 +71,21 @@ namespace AIHelper.Manage.ModeSwitch.DataFullBuilder.Services
                     result.TotalDirectories = vfs.Directories.Count;
 
                     // Create directory structure
-                    Console.WriteLine("Creating directory structure...");
+                    _log.Info("Creating directory structure...");
                     CreateDirectoryStructure(outputPath, vfs.Directories.Keys, errorLogger);
 
                     // Create links for files
-                    Console.WriteLine("Creating file links...");
+                    _log.Info("Creating file links...");
                     CreateFileLinks(outputPath, vfs.Files.Values, configuration, errorLogger);
 
                     result.HardLinksCreated = _hardLinksCreated;
                     result.SymbolicLinksCreated = _symbolicLinksCreated;
                     result.Success = true;
-                    Console.WriteLine("Build completed successfully.");
+                    _log.Info("Build completed successfully.");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Build failed with exception.");
+                    _log.Info("Build failed with exception.");
                     errorLogger.LogError(outputPath, "Build", ex);
                     result.Success = false;
                 }
@@ -93,7 +96,7 @@ namespace AIHelper.Manage.ModeSwitch.DataFullBuilder.Services
 
             stopwatch.Stop();
             result.ElapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-            Console.WriteLine($"Build process finished. Total time: {result.ElapsedMilliseconds} ms.");
+            _log.Info($"Build process finished. Total time: {result.ElapsedMilliseconds} ms.");
 
             return result;
         }

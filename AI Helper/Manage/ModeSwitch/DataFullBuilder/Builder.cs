@@ -24,11 +24,11 @@ namespace AIHelper.Manage.ModeSwitch.DataFullBuilder
 
                 var configuration = new BuildConfiguration
                 {
-                    DataFolderPath = System.IO.Path.Combine(basePath, "Data"),
-                    ModsFolderPath = System.IO.Path.Combine(basePath, "Mods"),
-                    OverwriteFolderPath = System.IO.Path.Combine(basePath, "Overwrite"),
-                    LoadOrderFilePath = System.IO.Path.Combine(basePath, "modlist.txt"),
-                    OutputFolderPath = System.IO.Path.Combine(basePath, "Data-full"),
+                    DataFolderPath = ManageSettings.CurrentGameDataDirPath,
+                    ModsFolderPath = ManageSettings.CurrentGameModsDirPath,
+                    OverwriteFolderPath = ManageSettings.CurrentGameOverwriteFolderPath,
+                    LoadOrderFilePath = ManageSettings.CurrentMoProfileModlistPath,
+                    OutputFolderPath = ManageSettings.CurrentGameNativeModeFullDataDirPath,
                     MaxDegreeOfParallelism = -1 // Use all available cores
                 };
 

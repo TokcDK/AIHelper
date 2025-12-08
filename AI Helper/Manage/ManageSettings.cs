@@ -672,6 +672,7 @@ namespace AIHelper.Manage
 
 
         internal static string CurrentGameDataDirPath => Path.Combine(CurrentGameDirPath, "Data");
+        internal static string CurrentGameNativeModeFullDataDirPath => $"{CurrentGameDataDirPath}-full";
 
 
         internal static string AppModOrganizerDirName => "MO";

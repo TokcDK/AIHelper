@@ -39,8 +39,8 @@ namespace AIHelper.Manage.ModeSwitch.DataFullBuilder
                 _log.Info($"  Output folder: {configuration.OutputFolderPath}");
                 _log.Info("");
 
-                IFileSystemHelper fileSystemHelper = new FileSystemHelper();
-                Services.DataFullBuilder builder = new Services.DataFullBuilder(
+                var fileSystemHelper = new FileSystemHelper();
+                var builder = new Services.DataFullBuilder(
                     fileSystemHelper);
 
                 var result = builder.Build(configuration);

@@ -40,8 +40,7 @@ namespace AIHelper.Manage.ModeSwitch.DataFullBuilder
                 _log.Info("");
 
                 var fileSystemHelper = new FileSystemHelper();
-                var builder = new Services.DataFullBuilder(
-                    fileSystemHelper);
+                var builder = new Services.DataFullBuilder(fileSystemHelper);
 
                 var result = builder.Build(configuration);
 

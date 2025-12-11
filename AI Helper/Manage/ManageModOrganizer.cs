@@ -2291,7 +2291,7 @@ namespace AIHelper.Manage
         /// <param name="notes"></param>
         public static void WriteMetaIni(string moddir, string categoryNames = "", string version = "", string comments = "", string notes = "")
         {
-            new MetaIniInfo().Set(moddir, categoryNames, version, comments, notes);
+            MetaIniInfo.Set(moddir, categoryNames, version, comments, notes);
         }
 
         /// <summary>
@@ -3132,7 +3132,7 @@ namespace AIHelper.Manage
                 );
         }
 
-        public void Set(string moddir, string categoryNames = "", string version = "", string comments = "", string notes = "")
+        public static void Set(string moddir, string categoryNames = "", string version = "", string comments = "", string notes = "")
         {
             if (!Directory.Exists(moddir))
             {

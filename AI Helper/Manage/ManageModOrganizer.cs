@@ -2000,10 +2000,7 @@ namespace AIHelper.Manage
         /// <param name="newCustomExecutable"></param>
         internal static void InsertCustomExecutable(CustomExecutables.CustomExecutable newCustomExecutable, INIFile ini = null, bool insertOnlyMissingBinary = true)
         {
-            if (ini == null)
-            {
-                ini = ManageIni.GetINIFile(ManageSettings.AppMOiniFilePath);
-            }
+            ini = ini ?? ManageIni.GetINIFile(ManageSettings.AppMOiniFilePath);
 
             var customExcutables = new CustomExecutables(ini);
             string customToUpdate = "";

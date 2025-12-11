@@ -2779,12 +2779,7 @@ namespace AIHelper.Manage
 
             var ini = ManageIni.GetINIFile(ManageSettings.ModOrganizerIniPath);
 
-            string gameName;
-            //updated game name
-            if (string.IsNullOrWhiteSpace(gameName = ini.GetKey("General", "gameName")) || gameName != ManageSettings.MoCurrentGameName)
-            {
-                ini.SetKey("General", "gameName", ManageSettings.MoCurrentGameName, false);
-            }
+            SetMoCustomExeUpdatedGameName(ini);
 
             //clear pluginBlacklist section of MO ini to prevent plugin_python.dll exist there
             if (ini.SectionExistsAndNotEmpty("pluginBlacklist"))
@@ -2806,6 +2801,20 @@ namespace AIHelper.Manage
             customs.Save();
 
             ini.SetKey("PluginPersistance", @"Python%20Proxy\tryInit", "false");
+        }
+
+        /// <summary>
+        /// updated game name
+        /// </summary>
+        /// <param name="ini"></param>
+        /// <returns></returns>
+        private static void SetMoCustomExeUpdatedGameName(INIFile ini)
+        {
+            string gameName;
+            if (string.IsNullOrWhiteSpace(gameName = ini.GetKey("General", "gameName")) || gameName != ManageSettings.MoCurrentGameName)
+            {
+                ini.SetKey("General", "gameName", ManageSettings.MoCurrentGameName, false);
+            }
         }
 
         /// <summary>

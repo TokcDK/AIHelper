@@ -1314,5 +1314,45 @@ namespace AIHelper.Manage
         public static string ModsDirName { get; } = "Mods";
         public static string DataDirName { get; } = "Data";
         public static string MoOverwriteDirName => "Overwrite";
+
+        public static string[] MoFilesForCleanList => new[]
+            {
+                    @"MOFolder\plugins\bsa_*.dll",
+                    //@"MOFolder\plugins\bsa_extractor.dll",
+                    //@"MOFolder\plugins\bsa_packer.dll",
+                    @"MOFolder\plugins\check_fnis.dll",
+                    @"MOFolder\plugins\DDSPreview.py",
+                    @"MOFolder\plugins\FNIS*.py",
+                    //@"MOFolder\plugins\FNISPatches.py",
+                    //@"MOFolder\plugins\FNISTool.py",
+                    //@"MOFolder\plugins\FNISToolReset.py",
+                    @"MOFolder\plugins\Form43Checker.py",
+                    @"MOFolder\plugins\game_*.dll",
+                    //@"MOFolder\plugins\game_enderal.dll",
+                    //@"MOFolder\plugins\game_fallout3.dll",
+                    //@"MOFolder\plugins\game_fallout4.dll",
+                    //@"MOFolder\plugins\game_fallout4vr.dll",
+                    //@"MOFolder\plugins\game_falloutNV.dll",
+                    //@"MOFolder\plugins\game_morrowind.dll",
+                    //@"MOFolder\plugins\game_oblivion.dll",
+                    //@"MOFolder\plugins\game_skyrimse.dll",
+                    //@"MOFolder\plugins\game_skyrimvr.dll",
+                    //@"MOFolder\plugins\game_ttw.dll",
+                    //@"MOFolder\plugins\game_skyrim.dll",
+                    //@"MOFolder\plugins\game_enderalse.dll",
+                    @"MOFolder\plugins\installer_bain.dll",
+                    @"MOFolder\plugins\installer_bundle.dll",
+                    @"MOFolder\plugins\installer_fomod.dll",
+                    @"MOFolder\plugins\installer_ncc.dll",
+                    @"MOFolder\plugins\installer_omod.dll",
+                    @"MOFolder\plugins\preview_bsa.dll",
+                    @"MOFolder\plugins\ScriptExtenderPluginChecker.py",
+                    @"MOFolder\plugins\installer_fomod_csharp.dll",
+                    @"MOFolder\plugins\data\OMODFramework*.*",
+                    @"MOFolder\plugins\data\DDS\",
+                    !ManageModOrganizer.GetMoVersion().StartsWith("2.3",StringComparison.InvariantCulture) 
+                        ? @"MOFolder\plugins\modorganizer-basic_games\"
+                        : ""
+            };
     }
 }

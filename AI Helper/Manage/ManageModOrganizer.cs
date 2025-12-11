@@ -1104,7 +1104,14 @@ namespace AIHelper.Manage
 
                     foreach (var packDir in Directory.EnumerateDirectories(Path.Combine(item.Path, "mods"), "Sideloader Modpack*"))
                     {
-                        LoadZipmods(packDir);
+                        try
+                        {
+                            LoadZipmods(packDir);
+                        }
+                        catch (Exception ex) // catch in case when the packDir is symlink to invalid location
+                        {
+                            _log.Error("Error loading zipmods from sideloader modpack dir: {0}\r\n{1}", packDir, ex.ToString());
+                        }
                     }
                 });
 

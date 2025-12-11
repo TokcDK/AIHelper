@@ -23,6 +23,9 @@ namespace AIHelper.Manage
     {
 
         static readonly Logger _log = LogManager.GetCurrentClassLogger();
+
+        const string CachedCUIDFileSplitter = "|>|";
+
         internal static bool IsInOverwriteFolder(this string filePath)
         {
             return filePath.ToUpperInvariant().Contains(ManageSettings.CurrentGameOverwriteFolderPath.ToUpperInvariant());
@@ -1174,16 +1177,18 @@ namespace AIHelper.Manage
 
         static void WriteCachedGUID(ConcurrentDictionary<string, ZipmodInfo> gUIDList)
         {
-            var list = new Dictionary<string, ZipmodInfo>(gUIDList); // get copy of list because it will be removed
+            var guidListCopy = new Dictionary<string, ZipmodInfo>(gUIDList); // get copy of list because it will be removed
 
             Directory.CreateDirectory(Path.GetDirectoryName(ManageSettings.CachedGUIDFilePath));
 
             var sw = new StreamWriter(ManageSettings.CachedGUIDFilePath);
-            foreach (var pair in list) sw.WriteLine(pair.Value.FileInfo.FullName + cachedCUIDFileSplitter + pair.Key);
+            foreach (var pair in guidListCopy)
+            {
+                sw.WriteLine(pair.Value.FileInfo.FullName + CachedCUIDFileSplitter + pair.Key);
+            }
+
             sw.Dispose();
         }
-
-        const string cachedCUIDFileSplitter = "|>|";
 
         /// <summary>
         /// Fill cached guid list from file
@@ -1200,7 +1205,7 @@ namespace AIHelper.Manage
             {
                 if (string.IsNullOrWhiteSpace(line)) continue;
 
-                var data = line.Split(new[] { cachedCUIDFileSplitter }, StringSplitOptions.None);
+                var data = line.Split(new[] { CachedCUIDFileSplitter }, StringSplitOptions.None);
 
                 if (data.Length != 2) continue;
 

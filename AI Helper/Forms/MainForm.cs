@@ -463,7 +463,7 @@ namespace AIHelper
             if (MOmode)
             {
                 ManageProcess.KillProcessesByName(Path.GetFileNameWithoutExtension(ManageSettings.AppMOexePath));
-                ManageProcess.RunProgram(ManageSettings.AppMOexePath, string.Empty);
+                ManageProcess.RunProgramAndWaitHidden(ManageSettings.AppMOexePath, string.Empty);
             }
             else
             {
@@ -509,7 +509,7 @@ namespace AIHelper
             }
 
             ManageProcess.KillProcessesByName(Path.GetFileNameWithoutExtension(exePath));
-            ManageProcess.RunProgram(exePath, arguments);
+            ManageProcess.RunProgramAndWaitHidden(exePath, arguments);
 
             if (MOmode && !string.IsNullOrEmpty(oldMOProfileName))
             {
@@ -541,14 +541,14 @@ namespace AIHelper
                 {
                     oldMOProfileName = ManageModOrganizer.SetCurrentProfileByName(profileNameToRun);
                 }
-                ManageProcess.RunProgram(ManageSettings.AppMOexePath, "moshortcut://:" + studio);
+                ManageProcess.RunProgramAndWaitHidden(ManageSettings.AppMOexePath, "moshortcut://:" + studio);
             }
             else
             {
                 ManageProcess.KillProcessesByName(ManageSettings.StudioExeName);
 
                 var exe = Path.Combine(ManageSettings.CurrentGameDataDirPath, ManageSettings.StudioExeName + ".exe");
-                ManageProcess.RunProgram(exe, string.Empty);
+                ManageProcess.RunProgramAndWaitHidden(exe, string.Empty);
             }
             if (MOmode && !string.IsNullOrEmpty(oldMOProfileName))
             {
@@ -670,11 +670,11 @@ namespace AIHelper
 
             if (MOmode)
             {
-                ManageProcess.RunProgram(ManageSettings.AppMOexePath, "moshortcut://:" + ManageSettings.IniSettingsExeName);
+                ManageProcess.RunProgramAndWaitHidden(ManageSettings.AppMOexePath, "moshortcut://:" + ManageSettings.IniSettingsExeName);
             }
             else
             {
-                ManageProcess.RunProgram(Path.Combine(ManageSettings.CurrentGameDataDirPath, ManageSettings.IniSettingsExeName + ".exe"), string.Empty);
+                ManageProcess.RunProgramAndWaitHidden(Path.Combine(ManageSettings.CurrentGameDataDirPath, ManageSettings.IniSettingsExeName + ".exe"), string.Empty);
             }
             OnOffButtons();
         }

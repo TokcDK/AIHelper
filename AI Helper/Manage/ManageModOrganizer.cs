@@ -3041,19 +3041,7 @@ namespace AIHelper.Manage
 
         internal static void OpenModOrganizerWebPage()
         {
-            using (var process = new Process())
-            {
-                try
-                {
-                    process.StartInfo.UseShellExecute = true;
-                    process.StartInfo.FileName = "https://github.com/Modorganizer2/modorganizer/releases";
-                    process.Start();
-                }
-                catch (Exception e)
-                {
-                    _log.Error($"Failed to open link to MO github page. Error:{e.Message}");
-                }
-            }
+            ManageProcess.SimpleRunProcess("https://github.com/Modorganizer2/modorganizer/releases");
         }
     }
 

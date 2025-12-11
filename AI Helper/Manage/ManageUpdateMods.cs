@@ -135,7 +135,7 @@ namespace AIHelper.Manage
             if (!Manage.ManageSettings.IsMoMode)
             {
                 //run updater normal
-                ManageProcess.RunProgram(ManageSettings.KkManagerStandaloneUpdaterExePath, "\"" + ManageSettings.CurrentGameDataDirPath + "\"");
+                ManageProcess.RunProgramAndWaitHidden(ManageSettings.KkManagerStandaloneUpdaterExePath, "\"" + ManageSettings.CurrentGameDataDirPath + "\"");
                 return Task.CompletedTask;
             }
 
@@ -190,7 +190,7 @@ namespace AIHelper.Manage
             FixKKmanagerUpdaterFailedDownloads();
 
             progressForm.Text = T._("Update zipmods") + "..";
-            ManageProcess.RunProgram(ManageSettings.AppMOexePath, "moshortcut://:" + ManageModOrganizer.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
+            ManageProcess.RunProgramAndWaitHidden(ManageSettings.AppMOexePath, "moshortcut://:" + ManageModOrganizer.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
 
             //restore modlist
             ManageModOrganizer.RestoreModlist();

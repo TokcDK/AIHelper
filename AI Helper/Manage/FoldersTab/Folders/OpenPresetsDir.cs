@@ -69,7 +69,7 @@ namespace AIHelper.Manage.FoldersTab
                 exePath = ManageSettings.AppMOexePath;
                 presetsDirPath = "moshortcut://:\"" + customExeTitleName + "\"";
 
-                ManageProcess.RunProgram(exePath, presetsDirPath);
+                ManageProcess.RunProgramAndWaitHidden(exePath, presetsDirPath);
 
                 ManageSettings.MainForm.OnOffButtons();
             }

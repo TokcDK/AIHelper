@@ -5,6 +5,7 @@ using CheckForEmptyDir;
 using INIFileMan;
 using NLog;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -1090,7 +1091,7 @@ namespace AIHelper.Manage
 
         internal class ZipmodGUIIds
         {
-            internal Dictionary<string, ZipmodInfo> GUIDList;
+            internal ConcurrentDictionary<string, ZipmodInfo> GUIDList;
             readonly Dictionary<string, string> cachedGUIDList;
 
             /// <summary>
@@ -1099,7 +1100,7 @@ namespace AIHelper.Manage
             /// <param name="LoadInfos">Load infos from active modlist right after init</param>
             public ZipmodGUIIds(bool LoadInfos = true)
             {
-                GUIDList = new Dictionary<string, ZipmodInfo>();
+                GUIDList = new ConcurrentDictionary<string, ZipmodInfo>();
                 cachedGUIDList = new Dictionary<string, string>();
                 if (LoadInfos) LoadAll();
             }
@@ -1139,8 +1140,6 @@ namespace AIHelper.Manage
                 });
             }
 
-            private readonly object GUIDListAddLock = new object();
-
             internal void Load(string zipmodPath)
             {
                 //zipmod GUID save
@@ -1162,10 +1161,7 @@ namespace AIHelper.Manage
                     SubPath = GetRelativeSubPathInMods(zipmodPath)
                 };
 
-                lock (GUIDListAddLock)
-                {
-                    if (!GUIDList.ContainsKey(guid)) GUIDList.Add(guid, zipmodInfo);
-                }
+                GUIDList.TryAdd(guid, zipmodInfo);
             }
         }
 
@@ -1176,7 +1172,7 @@ namespace AIHelper.Manage
             internal string SubPath;
         }
 
-        static void WriteCachedGUID(Dictionary<string, ZipmodInfo> gUIDList)
+        static void WriteCachedGUID(ConcurrentDictionary<string, ZipmodInfo> gUIDList)
         {
             var list = new Dictionary<string, ZipmodInfo>(gUIDList); // get copy of list because it will be removed
 

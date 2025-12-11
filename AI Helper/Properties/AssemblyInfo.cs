@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("AI Helper")]
-[assembly: AssemblyCopyright("Copyright © Denis K<TokcDK> 2019-2023")]
+[assembly: AssemblyCopyright("Denis K<TokcDK> 2019-2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,6 +32,6 @@ using System.Runtime.InteropServices;
 // Можно задать все значения или принять номера сборки и редакции по умолчанию 
 // используя "*", как показано ниже:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("23.12.10.1")]
-[assembly: AssemblyFileVersion("23.12.10.1")]
+[assembly: AssemblyVersion("26.12.11.1")]
+[assembly: AssemblyFileVersion("26.12.11.1")]
 [assembly: NeutralResourcesLanguage("en")]

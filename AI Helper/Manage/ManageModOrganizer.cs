@@ -2559,10 +2559,7 @@ namespace AIHelper.Manage
             }
             else
             {
-                if (File.Exists(possiblePath))
-                {
-                    return true;
-                }
+                return File.Exists(possiblePath);
             }
 
             return false;

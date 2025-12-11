@@ -2773,6 +2773,7 @@ namespace AIHelper.Manage
             return resultCategory;
         }
 
+        #region MoIniFixes
         internal static void MoIniFixes()
         {
             if (!File.Exists(ManageSettings.ModOrganizerIniPath)) return;
@@ -2781,12 +2782,27 @@ namespace AIHelper.Manage
 
             SetMoCustomExeUpdatedGameName(ini);
 
-            //clear pluginBlacklist section of MO ini to prevent plugin_python.dll exist there
+            ClearPluginBlacklistSection(ini);
+
+            ProcessCustomExecutables(ini);
+
+            SetPythonProxyTryInit(ini);
+        }
+
+        /// <summary>
+        /// clear pluginBlacklist section of MO ini to prevent plugin_python.dll exist there
+        /// </summary>
+        /// <param name="ini"></param>
+        private static void ClearPluginBlacklistSection(INIFile ini)
+        {
             if (ini.SectionExistsAndNotEmpty("pluginBlacklist"))
             {
                 ini.DeleteSection("pluginBlacklist", false);
             }
+        }
 
+        private static void ProcessCustomExecutables(INIFile ini)
+        {
             bool selectedExecutableNeedToSet = true;
             var customs = new CustomExecutables(ini);
             foreach (var custom in customs.List)
@@ -2799,7 +2815,10 @@ namespace AIHelper.Manage
             }
 
             customs.Save();
+        }
 
+        private static void SetPythonProxyTryInit(INIFile ini)
+        {
             ini.SetKey("PluginPersistance", @"Python%20Proxy\tryInit", "false");
         }
 
@@ -2846,7 +2865,7 @@ namespace AIHelper.Manage
             {
                 custom.Value.MoTargetMod = ManageSettings.KKManagerFilesModName;
             }
-        }
+        } 
 
         /// <summary>
         /// Set selected_executable number to game exe
@@ -2867,6 +2886,7 @@ namespace AIHelper.Manage
 
             return selectedExecutableNeedToSet;
         }
+        #endregion
 
         /// <summary>
         /// clean MO folder from some useless files for illusion games

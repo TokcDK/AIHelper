@@ -1119,6 +1119,8 @@ namespace AIHelper.Manage
 
                     foreach (var packDir in Directory.EnumerateDirectories(Path.Combine(item.Path, "mods"), "Sideloader Modpack*"))
                     {
+                        if (!Directory.Exists(packDir)) continue;
+
                         Parallel.ForEach(Directory.EnumerateFiles(packDir, "*.zip*", SearchOption.AllDirectories), zipmod =>
                         {
                             Load(zipmod);

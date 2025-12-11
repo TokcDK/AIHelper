@@ -296,33 +296,12 @@ namespace AIHelper.Manage
 
         private static void CreateSymlinkOrMoveDirectoryContent(DirectoryInfo objectPath, DirectoryInfo linkPath)
         {
-            if (ManageSymLinkExtensions.CreateSymlink
-                              (
-                               objectPath.FullName
-                               ,
-                               linkPath.FullName
-                               ,
-                               true
-                               ,
-                               ObjectType.Directory
-                              ))
-            {
-            }
-            else
+            if (!ManageSymLinkExtensions.CreateSymlink(objectPath.FullName,linkPath.FullName,true,ObjectType.Directory))
             {
                 // need when dir in data exists and have content, then content will be move to target
                 ManageFilesFoldersExtensions.MoveContent(linkPath.FullName, objectPath.FullName);
 
-                ManageSymLinkExtensions.CreateSymlink
-                    (
-                     objectPath.FullName
-                     ,
-                     linkPath.FullName
-                     ,
-                     true
-                     ,
-                     ObjectType.Directory
-                    );
+                ManageSymLinkExtensions.CreateSymlink(objectPath.FullName,linkPath.FullName,true,ObjectType.Directory);
             }
         }
 
@@ -414,7 +393,7 @@ namespace AIHelper.Manage
                 return true;
             }
 
-            // chack if latest version of the target file when exists
+            // check if latest version of the target file when exists
             if (
                 ManageSymLinkExtensions.IsSymlink(targetFilePath)
                 ||

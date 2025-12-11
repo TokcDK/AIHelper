@@ -1119,16 +1119,24 @@ namespace AIHelper.Manage
 
                     foreach (var packDir in Directory.EnumerateDirectories(Path.Combine(item.Path, "mods"), "Sideloader Modpack*"))
                     {
-                        if (!Directory.Exists(packDir)) continue;
-
-                        Parallel.ForEach(Directory.EnumerateFiles(packDir, "*.zip*", SearchOption.AllDirectories), zipmod =>
-                        {
-                            Load(zipmod);
-                        });
+                        LoadZipmods(packDir);
                     }
                 });
 
                 Task.Run(() => WriteCachedGUID(GUIDList)).ConfigureAwait(false); // not need to wait while will be writed
+            }
+
+            private void LoadZipmods(string packDir)
+            {
+                if (!Directory.Exists(packDir))
+                {
+                    return;
+                }
+
+                Parallel.ForEach(Directory.EnumerateFiles(packDir, "*.zip*", SearchOption.AllDirectories), zipmod =>
+                {
+                    Load(zipmod);
+                });
             }
 
             private readonly object GUIDListAddLock = new object();
@@ -1141,7 +1149,10 @@ namespace AIHelper.Manage
                     return;
                 }
 
-                string guid = cachedGUIDList.ContainsKey(zipmodPath) ? cachedGUIDList[zipmodPath] : ManageArchive.GetZipmodGuid(zipmodPath);
+                string guid = cachedGUIDList.TryGetValue(zipmodPath, out string cachedGuid) 
+                    ? cachedGuid 
+                    : ManageArchive.GetZipmodGuid(zipmodPath);
+
                 if (string.IsNullOrWhiteSpace(guid)) return;
 
                 var zipmodInfo = new ZipmodInfo

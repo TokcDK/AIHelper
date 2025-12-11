@@ -2845,48 +2845,40 @@ namespace AIHelper.Manage
                     continue;
                 }
 
-                if (path.EndsWith("\\", StringComparison.InvariantCulture) && Directory.Exists(path))
+                TryRemoveMOFileOrDirectory(path);
+            }
+        }
+
+        private static void TryRemoveMOFileOrDirectory(string path)
+        {
+            bool isDir = path.EndsWith("\\", StringComparison.InvariantCulture) && Directory.Exists(path);
+            path = isDir
+                ? path.TrimEnd('\\')
+                : path;
+
+            var searchDir = new DirectoryInfo(Path.GetDirectoryName(path));
+            if (!searchDir.Exists)
+            {
+                return;
+            }
+            var searchPattern = Path.GetFileName(path);
+            foreach (FileSystemInfo foundFile in searchDir.EnumerateFiles(searchPattern))
+            {
+                try
                 {
-                    var trimmedPath = path.TrimEnd('\\');
-                    var searchDir = new DirectoryInfo(Path.GetDirectoryName(trimmedPath));
-                    if (!searchDir.Exists)
+                    foundFile.Attributes = FileAttributes.Normal;
+                    if(isDir)
                     {
-                        continue;
+                        Directory.Delete(foundFile.FullName, true);
                     }
-                    var searchPattern = Path.GetFileName(trimmedPath);
-                    foreach (var foundDir in searchDir.EnumerateDirectories(searchPattern))
+                    else
                     {
-                        try
-                        {
-                            foundDir.Attributes = FileAttributes.Normal;
-                            foundDir.Delete(true);
-                        }
-                        catch (Exception ex)
-                        {
-                            _log.Error("An error occured while MO dir cleaning from useless files. Error:\r\n" + ex);
-                        }
+                        foundFile.Delete();
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    var searchDir = new DirectoryInfo(Path.GetDirectoryName(path));
-                    if (!searchDir.Exists)
-                    {
-                        continue;
-                    }
-                    var searchPattern = Path.GetFileName(path);
-                    foreach (var foundFile in searchDir.EnumerateFiles(searchPattern))
-                    {
-                        try
-                        {
-                            foundFile.Attributes = FileAttributes.Normal;
-                            foundFile.Delete();
-                        }
-                        catch (Exception ex)
-                        {
-                            _log.Error("An error occured while MO dir cleaning from useless files. Error:\r\n" + ex);
-                        }
-                    }
+                    _log.Error("An error occured while MO dir cleaning from useless files. Error:\r\n" + ex);
                 }
             }
         }

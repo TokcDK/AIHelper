@@ -2802,14 +2802,7 @@ namespace AIHelper.Manage
                     custom.Value.Title = custom.Value.Title.Replace(' ', '_');
                 }
 
-                // Set selected_executable number to game exe
-                if (selectedExecutableNeedToSet && Path.GetFileNameWithoutExtension(custom.Value.Binary) == CustomExecutables.NormalizePath(ManageSettings.CurrentGameExeName))
-                {
-                    selectedExecutableNeedToSet = false;
-                    var index = custom.Key;
-                    ini.SetKey("General", "selected_executable", index, false);
-                    ini.SetKey("Widgets", "MainWindow_executablesListBox_index", index, false);
-                }
+                selectedExecutableNeedToSet = SetSelectedExNumToGameExe(selectedExecutableNeedToSet, ini, custom);
 
                 // set target mod for kkmanager exe's
                 if (!string.Equals(custom.Value.MoTargetMod, ManageSettings.KKManagerFilesModName, StringComparison.InvariantCultureIgnoreCase)
@@ -2828,6 +2821,26 @@ namespace AIHelper.Manage
             customs.Save();
 
             ini.SetKey("PluginPersistance", @"Python%20Proxy\tryInit", "false");
+        }
+
+        /// <summary>
+        /// Set selected_executable number to game exe
+        /// </summary>
+        /// <param name="selectedExecutableNeedToSet"></param>
+        /// <param name="ini"></param>
+        /// <param name="custom"></param>
+        /// <returns></returns>
+        private static bool SetSelectedExNumToGameExe(bool selectedExecutableNeedToSet, INIFile ini, KeyValuePair<string, CustomExecutables.CustomExecutable> custom)
+        {
+            if (selectedExecutableNeedToSet && Path.GetFileNameWithoutExtension(custom.Value.Binary) == CustomExecutables.NormalizePath(ManageSettings.CurrentGameExeName))
+            {
+                selectedExecutableNeedToSet = false;
+                var index = custom.Key;
+                ini.SetKey("General", "selected_executable", index, false);
+                ini.SetKey("Widgets", "MainWindow_executablesListBox_index", index, false);
+            }
+
+            return selectedExecutableNeedToSet;
         }
 
         /// <summary>

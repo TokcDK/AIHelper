@@ -26,6 +26,8 @@ namespace AIHelper.Manage
 
         const string CachedCUIDFileSplitter = "|>|";
 
+        internal static readonly char[] PathSeparatorChars = new char[] { '\\', '/' };
+
         internal static bool IsInOverwriteFolder(this string filePath)
         {
             return filePath.ToUpperInvariant().Contains(ManageSettings.CurrentGameOverwriteFolderPath.ToUpperInvariant());
@@ -426,7 +428,7 @@ namespace AIHelper.Manage
             {
                 //remove Mods path slit and get 1st element as modname
                 var noModsPath = sourceFilePath.Replace(ManageSettings.CurrentGameModsDirPath, string.Empty);
-                var splittedPath = noModsPath.Split(new char[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
+                var splittedPath = noModsPath.Split(PathSeparatorChars, StringSplitOptions.RemoveEmptyEntries);
                 var modname = splittedPath[0];
 
                 foreach (var name in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile()) if (modname == name) return true;

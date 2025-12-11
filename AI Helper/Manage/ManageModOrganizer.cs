@@ -2796,31 +2796,47 @@ namespace AIHelper.Manage
             var customs = new CustomExecutables(ini);
             foreach (var custom in customs.List)
             {
-                // fix spaces in exe title to prevent errors because it
-                if (custom.Value.Title.IndexOf(' ') != -1)
-                {
-                    custom.Value.Title = custom.Value.Title.Replace(' ', '_');
-                }
+                FixSpacesInCustomExeTitle(custom);
 
                 selectedExecutableNeedToSet = SetSelectedExNumToGameExe(selectedExecutableNeedToSet, ini, custom);
 
-                // set target mod for kkmanager exe's
-                if (!string.Equals(custom.Value.MoTargetMod, ManageSettings.KKManagerFilesModName, StringComparison.InvariantCultureIgnoreCase)
-                    && Directory.Exists(Path.Combine(ManageSettings.CurrentGameModsDirPath, ManageSettings.KKManagerFilesModName))
-                    && ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(true).Any(n => n == ManageSettings.KKManagerFilesModName)
-                    &&
-                    (Path.GetFileName(custom.Value.Binary) == ManageSettings.KkManagerExeName
-                    ||
-                    Path.GetFileName(custom.Value.Binary) == ManageSettings.KkManagerStandaloneUpdaterExeName)
-                    )
-                {
-                    custom.Value.MoTargetMod = ManageSettings.KKManagerFilesModName;
-                }
+                SetTargetModForKKManagerExe(custom);
             }
 
             customs.Save();
 
             ini.SetKey("PluginPersistance", @"Python%20Proxy\tryInit", "false");
+        }
+
+        /// <summary>
+        /// fix spaces in exe title to prevent errors because it
+        /// </summary>
+        /// <param name="custom"></param>
+        private static void FixSpacesInCustomExeTitle(KeyValuePair<string, CustomExecutables.CustomExecutable> custom)
+        {
+            if (custom.Value.Title.IndexOf(' ') != -1)
+            {
+                custom.Value.Title = custom.Value.Title.Replace(' ', '_');
+            }
+        }
+
+        /// <summary>
+        /// set target mod for kkmanager exe's
+        /// </summary>
+        /// <param name="custom"></param>
+        private static void SetTargetModForKKManagerExe(KeyValuePair<string, CustomExecutables.CustomExecutable> custom)
+        {
+            if (!string.Equals(custom.Value.MoTargetMod, ManageSettings.KKManagerFilesModName, StringComparison.InvariantCultureIgnoreCase)
+                && Directory.Exists(Path.Combine(ManageSettings.CurrentGameModsDirPath, ManageSettings.KKManagerFilesModName))
+                && ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(true).Any(n => n == ManageSettings.KKManagerFilesModName)
+                &&
+                (Path.GetFileName(custom.Value.Binary) == ManageSettings.KkManagerExeName
+                ||
+                Path.GetFileName(custom.Value.Binary) == ManageSettings.KkManagerStandaloneUpdaterExeName)
+                )
+            {
+                custom.Value.MoTargetMod = ManageSettings.KKManagerFilesModName;
+            }
         }
 
         /// <summary>

@@ -76,31 +76,6 @@ namespace AIHelper.Manage.Update.Targets
             }
         }
 
-        //private void UpdateBaseGamesPlugin()
-        //{
-        //    var archive = info.source.DownloadFileFromTheLink(new Uri("https://github.com/ModOrganizer2/modorganizer-basic_games/archive/master.zip"));
-
-        //    if (archive == null)
-        //    {
-        //        return;
-        //    }
-
-        //    try
-        //    {
-        //        var BaseGamesPluginPath = Path.Combine(ManageSettings.GetModsUpdateDirDownloadsPath(), "modorganizer-basic_games.zip");
-        //        File.WriteAllBytes(BaseGamesPluginPath, archive);
-
-        //        using (ZipArchive zip = ZipFile.OpenRead(info.UpdateFilePath))
-        //        {
-        //            zip.ExtractToDirectory(Path.Combine(ManageSettings.GetMOdirPath(), "plugins"));
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _log.Debug("error while modorganizer-basic_games extraction\r\n" + ex);
-        //    }
-        //}
-
         internal override void SetCurrentVersion()
         {
             Info.UpdateFileEndsWith = ".exe";

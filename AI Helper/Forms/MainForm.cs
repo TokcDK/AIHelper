@@ -67,20 +67,17 @@ namespace AIHelper
         {
             InitializeComponent();
 
-            //--- Resizable borderless form settings  
-            FormBorderStyle = FormBorderStyle.None;
-            DoubleBuffered = true;
-            SetStyle(ControlStyles.ResizeRedraw, true);
-            MinimumSize = new Size(480, 260);
-            //---
-
             ManageSettings.ApplicationStartupPath = Application.StartupPath;
             ManageSettings.ApplicationProductName = Application.ProductName;
 
             ManageSettings.MainForm = this; // set reference to the form for controls use
 
+            //--- Resizable borderless form settings  
+            this.FormBorderStyle = FormBorderStyle.None;
             this.DoubleBuffered = true;
             this.SetStyle(ControlStyles.ResizeRedraw, true);
+            this.MinimumSize = new Size(480, 260);
+            //---
 
             ManageMainFormService.CalcSizeDependOnDesktop(this);
 

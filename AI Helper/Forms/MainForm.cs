@@ -21,6 +21,34 @@ namespace AIHelper
 {
     internal partial class MainForm : Form, IContainerControl
     {
+        #region Resizable borderless form Constants
+
+        // Windows Messages
+        private const int WM_NCHITTEST = 0x0084;
+
+        // Hit Test Results
+        private const int HTCLIENT = 1;
+        private const int HTCAPTION = 2;
+        private const int HTLEFT = 10;
+        private const int HTRIGHT = 11;
+        private const int HTTOP = 12;
+        private const int HTTOPLEFT = 13;
+        private const int HTTOPRIGHT = 14;
+        private const int HTBOTTOM = 15;
+        private const int HTBOTTOMLEFT = 16;
+        private const int HTBOTTOMRIGHT = 17;
+
+        #endregion
+
+        #region Resizable borderless form Properties
+
+        /// <summary>
+        /// Gets or sets the border thickness for resize detection.
+        /// </summary>
+        public int ResizeBorderThickness { get; set; } = 6;
+
+        #endregion
+
         static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
         internal bool IsDebug;
@@ -38,6 +66,13 @@ namespace AIHelper
         public MainForm()
         {
             InitializeComponent();
+
+            //--- Resizable borderless form settings  
+            FormBorderStyle = FormBorderStyle.None;
+            DoubleBuffered = true;
+            SetStyle(ControlStyles.ResizeRedraw, true);
+            MinimumSize = new Size(200, 150);
+            //---
 
             ManageSettings.ApplicationStartupPath = Application.StartupPath;
             ManageSettings.ApplicationProductName = Application.ProductName;
@@ -58,6 +93,51 @@ namespace AIHelper
 
             CheckMoAndEndInit();
         }
+
+        #region Resizable borderless form WndProc Override
+
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+
+            if (m.Msg == WM_NCHITTEST && (int)m.Result == HTCLIENT)
+            {
+                m.Result = (IntPtr)GetHitTestResult(PointToClient(Cursor.Position));
+            }
+        }
+
+        private int GetHitTestResult(Point cursor)
+        {
+            int resizeBorder = ResizeBorderThickness;
+            int clientWidth = ClientSize.Width;
+            int clientHeight = ClientSize.Height;
+
+            bool isTop = cursor.Y < resizeBorder;
+            bool isBottom = cursor.Y >= clientHeight - resizeBorder;
+            bool isLeft = cursor.X < resizeBorder;
+            bool isRight = cursor.X >= clientWidth - resizeBorder;
+
+            if (isTop)
+            {
+                if (isLeft) return HTTOPLEFT;
+                if (isRight) return HTTOPRIGHT;
+                return HTTOP;
+            }
+
+            if (isBottom)
+            {
+                if (isLeft) return HTBOTTOMLEFT;
+                if (isRight) return HTBOTTOMRIGHT;
+                return HTBOTTOM;
+            }
+
+            if (isLeft) return HTLEFT;
+            if (isRight) return HTRIGHT;
+
+            return HTCLIENT;
+        }
+
+        #endregion
 
         private async void CheckMoAndEndInit()
         {

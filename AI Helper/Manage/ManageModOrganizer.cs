@@ -2954,13 +2954,13 @@ namespace AIHelper.Manage
             var pyname = ManageSettings.Games.Game.BasicGamePluginName;
             if (string.IsNullOrWhiteSpace(pyname)) return;
 
-            var TargetPyInfo = new FileInfo(Path.Combine(moTargetBaseGamesPluginGamesDirPath, pyname + ".py"));
-            var SourcePyInfo = new FileInfo(Path.Combine(moSourceBaseGamesPluginGamesDirPath, pyname + ".py"));
+            var targetPyInfo = new FileInfo(Path.Combine(moTargetBaseGamesPluginGamesDirPath, pyname + ".py"));
+            var sourcePyInfo = new FileInfo(Path.Combine(moSourceBaseGamesPluginGamesDirPath, pyname + ".py"));
 
-            if (SourcePyInfo.Exists && (!TargetPyInfo.Exists || SourcePyInfo.Length != TargetPyInfo.Length))
+            if (sourcePyInfo.Exists && (!targetPyInfo.Exists || sourcePyInfo.Length != targetPyInfo.Length))
             {
-                TargetPyInfo.Directory.Create();
-                SourcePyInfo.CopyTo(TargetPyInfo.FullName, true);
+                targetPyInfo.Directory.Create();
+                sourcePyInfo.CopyTo(targetPyInfo.FullName, true);
             }
         }
 

@@ -213,10 +213,10 @@ namespace AIHelper
             QualityComboBox.Items.Add(T._("Quality"));
 
             this.LaunchTabPage.Text = T._("🚀Launch");
-            this.GameButton.Text = T._("Game");
-            this.StudioButton.Text = T._("Studio");
-            this.MOButton.Text = T._("Manager");
-            this.SettingsButton.Text = T._("Settings");
+            this.GameButton.Text = T._("▶  Game");
+            this.StudioButton.Text = T._("🎨  Studio");
+            this.MOButton.Text = T._("📦  Manager");
+            this.SettingsButton.Text = T._("⚙  Settings");
             this.LaunchTabTheAppTitleLabel.Text = T._("-  Ằ🌶Ḩelper  -");
             this.SelectedGameLabelOwnColor.Text = T._("GameTitle");
             this.SettingsTabPage.Text = T._("🔧Settings");

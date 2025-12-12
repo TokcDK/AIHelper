@@ -241,7 +241,7 @@ namespace AIHelper
             this.FormMinimizeButton.Text = T._("_");
             this.FormCloseButton.Text = T._("X");
             this.FormTitleLabel.Text = T._("AIHelper");
-            this.Text = T._("AI Helper [Organized modpack]");
+            this.Text = string.Format("{0} [{1}]", T._("AI Helper"), T._("Organized modpack"));
         }
 
         /// <summary>

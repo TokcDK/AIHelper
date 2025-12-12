@@ -61,7 +61,7 @@ namespace AIHelper
         /// <summary>
         /// Get or set MO mode for current game
         /// </summary>
-        private static bool MOmode { get => ManageSettings.IsMoMode; set => ManageSettings.IsMoMode = value; }
+        private static bool IsMoMode { get => ManageSettings.IsMoMode; set => ManageSettings.IsMoMode = value; }
 
         public MainForm()
         {
@@ -276,16 +276,16 @@ namespace AIHelper
                 //Launch
                 _thToolTip.SetToolTip(VRGameCheckBox, T._("Check to run VR exe instead on standart"));
 
-                _thToolTip.SetToolTip(GameButton, MOmode ? T._("Will execute the Game")
+                _thToolTip.SetToolTip(GameButton, IsMoMode ? T._("Will execute the Game")
                     + T._(" from Mod Organizer with attached mods")
                     : T._("Will execute the Game")
                     );
-                _thToolTip.SetToolTip(StudioButton, MOmode ? T._("Will execute Studio")
+                _thToolTip.SetToolTip(StudioButton, IsMoMode ? T._("Will execute Studio")
                     + T._(" from Mod Organizer with attached mods")
                     : T._("Will execute Studio")
                     );
                 _thToolTip.SetToolTip(MOButton, T._("Will execute Mod Organizer mod manager where you can manage your mods"));
-                _thToolTip.SetToolTip(JPLauncherRunLinkLabel, MOmode ?
+                _thToolTip.SetToolTip(JPLauncherRunLinkLabel, IsMoMode ?
                       T._("Will execute original game launcher")
                     + T._(" from Mod Organizer with attached mods")
                     : T._("Will execute original game launcher")
@@ -320,7 +320,7 @@ namespace AIHelper
 
         private void SetScreenSettings()
         {
-            if (!MOmode) SetupXmlPath = ManageSettings.CurrentGameSetupXmlFilePathinData;
+            if (!IsMoMode) SetupXmlPath = ManageSettings.CurrentGameSetupXmlFilePathinData;
 
             //set Settings
             if (!File.Exists(SetupXmlPath)) CreateSetupXmlPath();
@@ -393,14 +393,14 @@ namespace AIHelper
             SetMoMode();
 
             Directory.CreateDirectory(ManageSettings.CurrentGameDataDirPath);
-            if (MOmode && !Directory.Exists(ManageSettings.CurrentGameModsDirPath))
+            if (IsMoMode && !Directory.Exists(ManageSettings.CurrentGameModsDirPath))
             {
                 Directory.CreateDirectory(ManageSettings.CurrentGameModsDirPath);
             }
 
             Directory.CreateDirectory(ManageSettings.CurrentGameDataDirPath);
 
-            if (MOmode)
+            if (IsMoMode)
             {
                 MOModeSpecificSetup();
             }
@@ -462,7 +462,7 @@ namespace AIHelper
 
         private static void SetMoMode(bool setText = true)
         {
-            MOmode = !File.Exists(ManageSettings.CurrentGameMoToStandartConvertationOperationsListFilePath);
+            IsMoMode = !File.Exists(ManageSettings.CurrentGameMoToStandartConvertationOperationsListFilePath);
         }
 
         private void EnableDisableSomeTools()
@@ -540,7 +540,7 @@ namespace AIHelper
 
             await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
-            if (MOmode)
+            if (IsMoMode)
             {
                 ManageProcess.KillProcessesByName(Path.GetFileNameWithoutExtension(ManageSettings.AppMOexePath));
                 ManageProcess.RunProgramAndWaitHidden(ManageSettings.AppMOexePath, string.Empty);
@@ -568,7 +568,7 @@ namespace AIHelper
             string exePath;
             string arguments = string.Empty;
             string oldMOProfileName = "";
-            if (MOmode)
+            if (IsMoMode)
             {
                 var currentGameExemoProfileName = ManageSettings.CurrentGameExemoProfileName;
                 var customExeTitleName = currentGameExemoProfileName + (isVr ? "VR" : "");
@@ -591,7 +591,7 @@ namespace AIHelper
             ManageProcess.KillProcessesByName(Path.GetFileNameWithoutExtension(exePath));
             ManageProcess.RunProgramAndWaitHidden(exePath, arguments);
 
-            if (MOmode && !string.IsNullOrEmpty(oldMOProfileName))
+            if (IsMoMode && !string.IsNullOrEmpty(oldMOProfileName))
             {
                 // return last profile
                 ManageModOrganizer.SetCurrentProfileByName(oldMOProfileName);
@@ -611,7 +611,7 @@ namespace AIHelper
             await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
             string oldMOProfileName = "";
-            if (MOmode)
+            if (IsMoMode)
             {
                 ManageProcess.KillProcessesByName(ManageSettings.StudioExeName);
                 ManageProcess.KillProcessesByName(Path.GetFileNameWithoutExtension(ManageSettings.AppMOexePath));
@@ -630,7 +630,7 @@ namespace AIHelper
                 var exe = Path.Combine(ManageSettings.CurrentGameDataDirPath, ManageSettings.StudioExeName + ".exe");
                 ManageProcess.RunProgramAndWaitHidden(exe, string.Empty);
             }
-            if (MOmode && !string.IsNullOrEmpty(oldMOProfileName))
+            if (IsMoMode && !string.IsNullOrEmpty(oldMOProfileName))
             {
                 // return last profile
                 ManageModOrganizer.SetCurrentProfileByName(oldMOProfileName);
@@ -748,7 +748,7 @@ namespace AIHelper
 
             await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
-            if (MOmode)
+            if (IsMoMode)
             {
                 ManageProcess.RunProgramAndWaitHidden(ManageSettings.AppMOexePath, "moshortcut://:" + ManageSettings.IniSettingsExeName);
             }

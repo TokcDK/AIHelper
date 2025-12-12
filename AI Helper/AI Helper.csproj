@@ -408,7 +408,6 @@
     <None Include="BUILD\RES\locale\ru-RU\LC_MESSAGES\helper.mo" />
     <None Include="BUILD\RES\locale\ru-RU\LC_MESSAGES\helper.po" />
     <None Include="BUILD\RES\locale\template.pot" />
-    <None Include="BUILD\RES\locale\template.temp" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

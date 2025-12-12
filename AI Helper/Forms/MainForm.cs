@@ -761,16 +761,28 @@ namespace AIHelper
 
         private void AI_Helper_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (ManageSettings.Games.Game == null) return;
+            var ini = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
 
-            try
+            foreach (var (condition, sectionName, keyName, value) in new (bool condition, string sectionName, string keyName, string value)[]
             {
-                //write last game folder name
-                ManageIni.GetINIFile(ManageSettings.AiHelperIniPath).SetKey("Settings", "selected_game", ManageSettings.CurrentGameDirName);
-            }
-            catch (Exception ex)
+                (ManageSettings.Games.Game != null, "Settings", "selected_game", ManageSettings.CurrentGameDirName),
+                (this.Width > 0, "Settings", "Width", this.Width.ToString()),
+                (this.Height > 0, "Settings", "Height", this.Height.ToString()),
+            })
             {
-                _log.Debug("An error occered in time of the app closing. error:\r\n" + ex);
+                try
+                {
+                    if (!condition)
+                    {
+                        _log.Debug($"Skipping ini setting save for section '{sectionName}', key '{keyName}' due to condition being false.");
+                        continue;
+                    }
+                    ini.SetKey(sectionName, keyName, value);
+                }
+                catch (Exception ex)
+                {
+                    _log.Debug("An error occurred in time of ini settings save while the app closing . error:\r\n" + ex);
+                }
             }
         }
 

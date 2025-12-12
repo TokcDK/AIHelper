@@ -3073,7 +3073,7 @@ namespace AIHelper.Manage
         /// <summary>
         /// Restore basic game plugin files to Mod Organizer from temp folder
         /// </summary>
-        internal static void RestoreModOrganizerBasicGamePluginFiles()
+        internal static void RestoreMissingModOrganizerBasicGamePluginFiles()
         {
             string basicGamesPluginFilesTempDirPath = ManageSettings.BasicGamesPluginFilesTempDirPath;
 

@@ -315,7 +315,7 @@ namespace AIHelper.Manage
                 // create data dir and main dummy exe
                 string dataDirPath = Path.Combine(newGameDirPath, ManageSettings.DataDirName);
                 Directory.CreateDirectory(dataDirPath);
-                string dummyExePath = Path.Combine(dataDirPath, "Koikatsu.exe");
+                string dummyExePath = Path.Combine(dataDirPath, "Koikatu.exe");
                 File.WriteAllText(dummyExePath, "This is dummy game exe file.");
                 File.WriteAllText(Path.Combine(dataDirPath, "InitSetting.exe"), "This is dummy InitSetting exe file.");
                 Directory.CreateDirectory(Path.Combine(dataDirPath, "Koikatsu_data"));

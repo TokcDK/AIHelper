@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace AIHelper.Manage.Update.Targets
 {
@@ -12,6 +13,13 @@ namespace AIHelper.Manage.Update.Targets
 
         string _moDirPath;
         string _moExePath;
+        private static readonly string[] _baseFilesToBackup = new[]
+            {
+                @".\ModOrganizer.ini",
+                @".\categories.dat",
+                @".\explorer++\Explorer++RU.dll",
+                @".\explorer++\config.xml",
+            };
 
         /// <summary>
         /// Get MO update info
@@ -42,8 +50,6 @@ namespace AIHelper.Manage.Update.Targets
         {
             try
             {
-                ManageModOrganizer.PreserveModOrganizerBasicGamePluginFiles();
-
                 using (var installer = new Process())
                 {
                     installer.StartInfo.FileName = Info.UpdateFilePath;
@@ -53,8 +59,7 @@ namespace AIHelper.Manage.Update.Targets
                     installer.WaitForExit();
 
                     RestoreSomeFiles(Info.BuckupDirPath, _moDirPath);
-
-                    ManageModOrganizer.RestoreModOrganizerBasicGamePluginFiles();
+                    ManageModOrganizer.RestoreMissingModOrganizerBasicGamePluginFiles();
 
                     if (installer.ExitCode != 0)
                     {
@@ -108,13 +113,13 @@ namespace AIHelper.Manage.Update.Targets
 
         internal override string[] RestorePathsList()
         {
-            return new[]
-            {
-                @".\ModOrganizer.ini",
-                @".\categories.dat",
-                @".\explorer++\Explorer++RU.dll",
-                @".\explorer++\config.xml",
-            };
+            return _baseFilesToBackup;
+        }
+
+        internal override bool MakeBuckup()
+        {
+            ManageModOrganizer.PreserveModOrganizerBasicGamePluginFiles();
+            return base.MakeBuckup();
         }
     }
 }

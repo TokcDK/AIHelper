@@ -211,6 +211,37 @@ namespace AIHelper
             QualityComboBox.Items.Add(T._("Perfomance"));
             QualityComboBox.Items.Add(T._("Normal"));
             QualityComboBox.Items.Add(T._("Quality"));
+
+            this.LaunchTabPage.Text = T._("🚀Launch");
+            this.GameButton.Text = T._("Game");
+            this.StudioButton.Text = T._("Studio");
+            this.MOButton.Text = T._("Manager");
+            this.SettingsButton.Text = T._("Settings");
+            this.LaunchTabTheAppTitleLabel.Text = T._("-  Ằ🌶Ḩelper  -");
+            this.SelectedGameLabelOwnColor.Text = T._("GameTitle");
+            this.SettingsTabPage.Text = T._("🔧Settings");
+            this.SettingsTabGeneralTabPage.Text = T._("★General");
+            this.CurrentGameLabel.Text = T._("Current Game:");
+            this.AddGameButton.Text = T._("+");
+            this.ThemeSelectLabel.Text = T._("Theme:");
+            this.OpenLogLinkLabel.Text = T._("log");
+            this.VRGameCheckBox.Text = T._("vr");
+            this.JPLauncherRunLinkLabel.Text = T._("JP Launcher");
+            this.ExtraSettingsLinkLabel.Text = T._("Extra Settings");
+            this.FixRegistryLinkLabel.Text = T._("Fix registry");
+            this.CreateShortcutLinkLabel.Text = T._("Shortcut");
+            this.AutoShortcutRegistryCheckBox.Text = T._("Autoshortcut");
+            this.SettingsTabDisplayTabPage.Text = T._("🔳Display");
+            this.OpenSetupXmlLinkLabel.Text = T._("Open game setup file");
+            this.ResolutionLabel.Text = T._("Resolution:");
+            this.QualityLabel.Text = T._("Quality:");
+            this.FullScreenCheckBox.Text = T._("fullscreen");
+            this.ToolsTabPage.Text = T._("🔨Tools");
+            this.FoldersTabPage.Text = T._("🗁Folders");
+            this.FormMinimizeButton.Text = T._("_");
+            this.FormCloseButton.Text = T._("X");
+            this.FormTitleLabel.Text = T._("AIHelper");
+            this.Text = T._("AI Helper [Organized modpack]");
         }
 
         /// <summary>

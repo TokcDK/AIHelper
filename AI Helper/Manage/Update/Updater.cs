@@ -310,6 +310,8 @@ namespace AIHelper.Manage.Update
         {
             using (StreamWriter sw = new StreamWriter(ManageSettings.UpdateCheckDateTimesFilePath))
             {
+                Directory.CreateDirectory(Path.GetDirectoryName(ManageSettings.UpdateCheckDateTimesFilePath));
+
                 foreach (var source in lastCheckDates)
                 {
                     foreach (var data in source.Value)

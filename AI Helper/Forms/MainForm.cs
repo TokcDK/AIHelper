@@ -185,11 +185,8 @@ namespace AIHelper
                 return;
             }
 
-            ManageModOrganizer.PreserveModOrganizerBasicGamePluginFiles();
-
             await new Updater(null).Update(new List<UpdateTargetBase>() { new Mo(new UpdateInfo(null)) }).ConfigureAwait(true);
 
-            ManageModOrganizer.RestoreModOrganizerBasicGamePluginFiles();
         }
 
         private static void CleanLog()

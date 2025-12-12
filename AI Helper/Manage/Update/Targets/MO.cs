@@ -42,18 +42,19 @@ namespace AIHelper.Manage.Update.Targets
         {
             try
             {
+                ManageModOrganizer.PreserveModOrganizerBasicGamePluginFiles();
+
                 using (var installer = new Process())
                 {
                     installer.StartInfo.FileName = Info.UpdateFilePath;
                     installer.StartInfo.Arguments = "/dir=\"" + _moDirPath + "\" /noicons /nocancel /norestart /silent";
-                    //installer.StartInfo.WorkingDirectory = Path.GetDirectoryName(info.UpdateFilePath);
 
                     installer.Start();
                     installer.WaitForExit();
 
-                    //UpdateBaseGamesPlugin();
-
                     RestoreSomeFiles(Info.BuckupDirPath, _moDirPath);
+
+                    ManageModOrganizer.RestoreModOrganizerBasicGamePluginFiles();
 
                     if (installer.ExitCode != 0)
                     {

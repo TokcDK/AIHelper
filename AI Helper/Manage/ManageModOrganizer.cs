@@ -3093,8 +3093,16 @@ namespace AIHelper.Manage
                     File.Copy(tempBasicGamePluginFile, moBasicGamePluginFilePath);
                 }
             }
+
+            try
+            {
+               Directory.Delete(basicGamesPluginFilesTempDirPath, true);
+            }
+            catch
+            {
+                _log.Warn("Can't delete temp basic game plugin files dir: " + basicGamesPluginFilesTempDirPath);
+            }
         }
-    }
 
     class MetaIniInfo
     {

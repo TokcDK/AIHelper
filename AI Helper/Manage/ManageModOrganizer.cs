@@ -298,12 +298,12 @@ namespace AIHelper.Manage
 
         private static void CreateSymlinkOrMoveDirectoryContent(DirectoryInfo objectPath, DirectoryInfo linkPath)
         {
-            if (!ManageSymLinkExtensions.CreateSymlink(objectPath.FullName,linkPath.FullName,true,ObjectType.Directory))
+            if (!ManageSymLinkExtensions.CreateSymlink(objectPath.FullName, linkPath.FullName, true, ObjectType.Directory))
             {
                 // need when dir in data exists and have content, then content will be move to target
                 ManageFilesFoldersExtensions.MoveContent(linkPath.FullName, objectPath.FullName);
 
-                ManageSymLinkExtensions.CreateSymlink(objectPath.FullName,linkPath.FullName,true,ObjectType.Directory);
+                ManageSymLinkExtensions.CreateSymlink(objectPath.FullName, linkPath.FullName, true, ObjectType.Directory);
             }
         }
 
@@ -1139,8 +1139,8 @@ namespace AIHelper.Manage
                     return;
                 }
 
-                string guid = cachedGUIDList.TryGetValue(zipmodPath, out string cachedGuid) 
-                    ? cachedGuid 
+                string guid = cachedGUIDList.TryGetValue(zipmodPath, out string cachedGuid)
+                    ? cachedGuid
                     : ManageArchive.GetZipmodGuid(zipmodPath);
 
                 if (string.IsNullOrWhiteSpace(guid)) return;
@@ -2242,7 +2242,7 @@ namespace AIHelper.Manage
             using (StreamWriter writer = new StreamWriter(moModlistPath))
             {
                 for (int lineNumber = 0; lineNumber < position; lineNumber++)
-                {                    
+                {
                     if (TryFindInsertPositionInModlist(insertWithThisMod, placeAfter, fileLines, insertWithMod, writer, lineNumber, ref position))
                     {
                         break;
@@ -2866,7 +2866,7 @@ namespace AIHelper.Manage
             {
                 custom.Value.MoTargetMod = ManageSettings.KKManagerFilesModName;
             }
-        } 
+        }
 
         /// <summary>
         /// Set selected_executable number to game exe
@@ -2926,7 +2926,7 @@ namespace AIHelper.Manage
                 try
                 {
                     foundFile.Attributes = FileAttributes.Normal;
-                    if(isDir)
+                    if (isDir)
                     {
                         Directory.Delete(foundFile.FullName, true);
                     }
@@ -3043,6 +3043,56 @@ namespace AIHelper.Manage
         internal static void OpenModOrganizerWebPage()
         {
             ManageProcess.SimpleRunProcess("https://github.com/Modorganizer2/modorganizer/releases");
+        }
+
+        /// <summary>
+        /// preserve basic game plugin files from Mod Organizer to temp folder, before MO update for example, because MO removing thw all files when installing
+        /// </summary>
+        internal static void PreserveModOrganizerBasicGamePluginFiles()
+        {
+            var moBaseGamesPluginGamesDirPath = ManageSettings.MoBaseGamesPluginGamesDirPath;
+
+            if (!Directory.Exists(moBaseGamesPluginGamesDirPath))
+            {
+                return;
+            }
+
+            string basicGamesPluginFilesTempDirPath = ManageSettings.BasicGamesPluginFilesTempDirPath;
+
+            foreach (var basicGamePluginFile in Directory.GetFiles(moBaseGamesPluginGamesDirPath, "game_*.py"))
+            {
+                var tempBasicGamePluginFilePath = Path.Combine(basicGamesPluginFilesTempDirPath, Path.GetFileName(basicGamePluginFile));
+                if (!File.Exists(tempBasicGamePluginFilePath))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(tempBasicGamePluginFilePath));
+                    File.Copy(basicGamePluginFile, tempBasicGamePluginFilePath);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Restore basic game plugin files to Mod Organizer from temp folder
+        /// </summary>
+        internal static void RestoreModOrganizerBasicGamePluginFiles()
+        {
+            string basicGamesPluginFilesTempDirPath = ManageSettings.BasicGamesPluginFilesTempDirPath;
+
+            if (!Directory.Exists(basicGamesPluginFilesTempDirPath))
+            {
+                return;
+            }
+
+            var moBaseGamesPluginGamesDirPath = ManageSettings.MoBaseGamesPluginGamesDirPath;
+
+            foreach (var tempBasicGamePluginFile in Directory.GetFiles(basicGamesPluginFilesTempDirPath, "game_*.py"))
+            {
+                var moBasicGamePluginFilePath = Path.Combine(moBaseGamesPluginGamesDirPath, Path.GetFileName(tempBasicGamePluginFile));
+                if (!File.Exists(moBasicGamePluginFilePath))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(moBasicGamePluginFilePath));
+                    File.Copy(tempBasicGamePluginFile, moBasicGamePluginFilePath);
+                }
+            }
         }
     }
 

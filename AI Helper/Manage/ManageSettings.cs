@@ -1354,5 +1354,7 @@ namespace AIHelper.Manage
                         ? @"MOFolder\plugins\modorganizer-basic_games\"
                         : ""
             };
+
+        public static string BasicGamesPluginFilesTempDirPath => Path.Combine(ManageSettings.AppResDirPath, "temp_basic_games_plugin_files");
     }
 }

@@ -71,7 +71,7 @@ namespace AIHelper
             FormBorderStyle = FormBorderStyle.None;
             DoubleBuffered = true;
             SetStyle(ControlStyles.ResizeRedraw, true);
-            MinimumSize = new Size(200, 150);
+            MinimumSize = new Size(480, 260);
             //---
 
             ManageSettings.ApplicationStartupPath = Application.StartupPath;

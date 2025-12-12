@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AI Helper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-12 20:19+0500\n"
-"PO-Revision-Date: 2025-12-12 20:24+0500\n"
+"POT-Creation-Date: 2025-12-12 20:27+0500\n"
+"PO-Revision-Date: 2025-12-12 20:28+0500\n"
 "Last-Translator: TokcDK <tokcdk@gmail.com>\n"
 "Language-Team: Russian <tokcdk@gmail.com>\n"
 "Language: ru\n"
@@ -74,7 +74,7 @@ msgstr "Консоль"
 
 #: Forms/ExtraSettings/Elements/BepinEx/BepinExForm.cs:128
 #: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:150
-#: Forms/MainForm.Designer.cs:266 Forms/MainForm.cs:219 Forms/MainForm.cs:222
+#: Forms/MainForm.cs:219 Forms/MainForm.cs:222
 msgid "Settings"
 msgstr "Настройки"
 
@@ -97,7 +97,7 @@ msgid "Auto"
 msgstr "Авто"
 
 #: Forms/ExtraSettings/Elements/XUnityAutotranslator/XUnityAutotranslatorForm.cs:147
-#: Forms/MainForm.Designer.cs:623 Forms/MainForm.cs:230
+#: Forms/MainForm.cs:230
 msgid "Extra Settings"
 msgstr "Доп. настройки"
 
@@ -269,120 +269,6 @@ msgstr ""
 msgid "not found"
 msgstr "не найден"
 
-#: Forms/MainForm.Designer.cs:144
-msgid "🚀Launch"
-msgstr "🚀Запуск"
-
-#: Forms/MainForm.Designer.cs:221 Forms/MainForm.cs:216
-#: Manage/FoldersTab/Folders/SimpleFolderOpen/OpenGameDirButtonData.cs:14
-msgid "Game"
-msgstr "Игра"
-
-#: Forms/MainForm.Designer.cs:236 Forms/MainForm.cs:217
-msgid "Studio"
-msgstr "Студия"
-
-#: Forms/MainForm.Designer.cs:251 Forms/MainForm.cs:218
-msgid "Manager"
-msgstr "Менеджер"
-
-#: Forms/MainForm.Designer.cs:331 Forms/MainForm.cs:220
-msgid "-  Ằ🌶Ḩelper  -"
-msgstr ""
-
-#: Forms/MainForm.Designer.cs:346 Forms/MainForm.cs:221
-msgid "GameTitle"
-msgstr "Игра"
-
-#: Forms/MainForm.Designer.cs:357
-msgid "🔧Settings"
-msgstr "🔧Настройки"
-
-#: Forms/MainForm.Designer.cs:389
-msgid "★General"
-msgstr "★Основные"
-
-#: Forms/MainForm.Designer.cs:436 Forms/MainForm.cs:224
-msgid "Current Game:"
-msgstr "Текущая игра:"
-
-#: Forms/MainForm.Designer.cs:508 Forms/MainForm.cs:225
-msgid "+"
-msgstr ""
-
-#: Forms/MainForm.Designer.cs:522 Forms/MainForm.cs:226
-msgid "Theme:"
-msgstr "Тема:"
-
-#: Forms/MainForm.Designer.cs:579 Forms/MainForm.cs:227
-msgid "log"
-msgstr "лог"
-
-#: Forms/MainForm.Designer.cs:593 Forms/MainForm.cs:228
-msgid "vr"
-msgstr ""
-
-#: Forms/MainForm.Designer.cs:609 Forms/MainForm.cs:229
-msgid "JP Launcher"
-msgstr "Ориг. лаунчер"
-
-#: Forms/MainForm.Designer.cs:637 Forms/MainForm.cs:231
-msgid "Fix registry"
-msgstr "Фикс реестра"
-
-#: Forms/MainForm.Designer.cs:652 Forms/MainForm.cs:232
-#: Manage/ManageOther.cs:84
-msgid "Shortcut"
-msgstr "Ярлык"
-
-#: Forms/MainForm.Designer.cs:665 Forms/MainForm.cs:233
-msgid "Autoshortcut"
-msgstr "Автоярлык"
-
-#: Forms/MainForm.Designer.cs:678
-msgid "🔳Display"
-msgstr "🔳Экран"
-
-#: Forms/MainForm.Designer.cs:723 Forms/MainForm.cs:235
-msgid "Open game setup file"
-msgstr "Открыть файл настроек игры"
-
-#: Forms/MainForm.Designer.cs:752 Forms/MainForm.cs:236
-msgid "Resolution:"
-msgstr "Разрешение:"
-
-#: Forms/MainForm.Designer.cs:804 Forms/MainForm.cs:237
-msgid "Quality:"
-msgstr "Качество:"
-
-#: Forms/MainForm.Designer.cs:831 Forms/MainForm.cs:238
-msgid "fullscreen"
-msgstr "во весь экран"
-
-#: Forms/MainForm.Designer.cs:843
-msgid "🔨Tools"
-msgstr "🔨Инструменты"
-
-#: Forms/MainForm.Designer.cs:864
-msgid "🗁Folders"
-msgstr "🗁Папки"
-
-#: Forms/MainForm.Designer.cs:934 Forms/MainForm.cs:241
-msgid "_"
-msgstr ""
-
-#: Forms/MainForm.Designer.cs:948 Forms/MainForm.cs:242
-msgid "X"
-msgstr ""
-
-#: Forms/MainForm.Designer.cs:962 Forms/MainForm.cs:243
-msgid "AIHelper"
-msgstr "АйХелпер"
-
-#: Forms/MainForm.Designer.cs:977
-msgid "AI Helper [Organized modpack]"
-msgstr "АйХелпер для Organized ModPack"
-
 #: Forms/MainForm.cs:175
 msgid ""
 "Mod Organizer is missing in the app dir. Need to download latest version for "
@@ -427,17 +313,38 @@ msgstr "Запуск"
 msgid "▶"
 msgstr ""
 
+#: Forms/MainForm.cs:216
+#: Manage/FoldersTab/Folders/SimpleFolderOpen/OpenGameDirButtonData.cs:14
+msgid "Game"
+msgstr "Игра"
+
 #: Forms/MainForm.cs:217
 msgid "🎨"
 msgstr ""
+
+#: Forms/MainForm.cs:217
+msgid "Studio"
+msgstr "Студия"
 
 #: Forms/MainForm.cs:218
 msgid "📦"
 msgstr ""
 
+#: Forms/MainForm.cs:218
+msgid "Manager"
+msgstr "Менеджер"
+
 #: Forms/MainForm.cs:219
 msgid "⚙"
 msgstr ""
+
+#: Forms/MainForm.cs:220
+msgid "-  Ằ🌶Ḩelper  -"
+msgstr ""
+
+#: Forms/MainForm.cs:221
+msgid "GameTitle"
+msgstr "Игра"
 
 #: Forms/MainForm.cs:222
 msgid "🔧"
@@ -451,6 +358,42 @@ msgstr ""
 msgid "General"
 msgstr "Основные"
 
+#: Forms/MainForm.cs:224
+msgid "Current Game:"
+msgstr "Текущая игра:"
+
+#: Forms/MainForm.cs:225
+msgid "+"
+msgstr ""
+
+#: Forms/MainForm.cs:226
+msgid "Theme:"
+msgstr "Тема:"
+
+#: Forms/MainForm.cs:227
+msgid "log"
+msgstr "лог"
+
+#: Forms/MainForm.cs:228
+msgid "vr"
+msgstr ""
+
+#: Forms/MainForm.cs:229
+msgid "JP Launcher"
+msgstr "Ориг. лаунчер"
+
+#: Forms/MainForm.cs:231
+msgid "Fix registry"
+msgstr "Фикс реестра"
+
+#: Forms/MainForm.cs:232 Manage/ManageOther.cs:84
+msgid "Shortcut"
+msgstr "Ярлык"
+
+#: Forms/MainForm.cs:233
+msgid "Autoshortcut"
+msgstr "Автоярлык"
+
 #: Forms/MainForm.cs:234
 msgid "🔳"
 msgstr ""
@@ -459,9 +402,25 @@ msgstr ""
 msgid "Display"
 msgstr "Экран"
 
+#: Forms/MainForm.cs:235
+msgid "Open game setup file"
+msgstr "Открыть файл настроек игры"
+
+#: Forms/MainForm.cs:236
+msgid "Resolution:"
+msgstr "Разрешение:"
+
+#: Forms/MainForm.cs:237
+msgid "Quality:"
+msgstr "Качество:"
+
+#: Forms/MainForm.cs:238
+msgid "fullscreen"
+msgstr "во весь экран"
+
 #: Forms/MainForm.cs:239
 msgid "🔨"
-msgstr "Инструменты"
+msgstr ""
 
 #: Forms/MainForm.cs:239
 msgid "Tools"
@@ -474,6 +433,18 @@ msgstr ""
 #: Forms/MainForm.cs:240
 msgid "Folders"
 msgstr "Папки"
+
+#: Forms/MainForm.cs:241
+msgid "_"
+msgstr ""
+
+#: Forms/MainForm.cs:242
+msgid "X"
+msgstr ""
+
+#: Forms/MainForm.cs:243
+msgid "AIHelper"
+msgstr "АйХелпер"
 
 #: Forms/MainForm.cs:244
 msgid "AI Helper"
@@ -1933,6 +1904,27 @@ msgstr "Подробно в"
 #: Properties/Resources.Designer.cs:88
 msgid "defmoini"
 msgstr "defmoini"
+
+#~ msgid "🚀Launch"
+#~ msgstr "🚀Запуск"
+
+#~ msgid "🔧Settings"
+#~ msgstr "🔧Настройки"
+
+#~ msgid "★General"
+#~ msgstr "★Основные"
+
+#~ msgid "🔳Display"
+#~ msgstr "🔳Экран"
+
+#~ msgid "🔨Tools"
+#~ msgstr "🔨Инструменты"
+
+#~ msgid "🗁Folders"
+#~ msgstr "🗁Папки"
+
+#~ msgid "AI Helper [Organized modpack]"
+#~ msgstr "АйХелпер для Organized ModPack"
 
 #~ msgid "Move mouse cursor over wished button or text to see info about it"
 #~ msgstr ""

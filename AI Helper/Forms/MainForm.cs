@@ -85,6 +85,7 @@ namespace AIHelper
             {
                 this.Enabled = false;
                 Application.Exit();
+                this.Close();
                 return;
             }
 

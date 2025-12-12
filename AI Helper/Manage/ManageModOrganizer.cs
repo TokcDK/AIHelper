@@ -3096,7 +3096,7 @@ namespace AIHelper.Manage
 
             try
             {
-               Directory.Delete(basicGamesPluginFilesTempDirPath, true);
+                Directory.Delete(basicGamesPluginFilesTempDirPath, true);
             }
             catch
             {
@@ -3104,171 +3104,172 @@ namespace AIHelper.Manage
             }
         }
 
-    class MetaIniInfo
-    {
-        INIFile _ini;
-        public MetaIniParams Get(string moddir)
+        class MetaIniInfo
         {
-            string metaPath = Path.Combine(moddir, "meta.ini");
-            if (!File.Exists(metaPath))
+            INIFile _ini;
+            public MetaIniParams Get(string moddir)
             {
-                return null;
-            }
-
-            _ini = ManageIni.GetINIFile(metaPath);
-
-            return new MetaIniParams(
-                _ini.GetKey("General", "gameName"),
-                _ini.GetKey("General", "category").Trim('\"'),
-                _ini.GetKey("General", "version"),
-                _ini.GetKey("General", "comments"),
-                _ini.GetKey("General", "notes"),
-                _ini.GetKey("General", "url")
-                );
-        }
-
-        public static void Set(string moddir, string categoryNames = "", string version = "", string comments = "", string notes = "")
-        {
-            if (!Directory.Exists(moddir))
-            {
-                return;
-            }
-
-            string metaPath = Path.Combine(moddir, "meta.ini");
-            if (!File.Exists(metaPath))
-            {
-                File.WriteAllText(metaPath, ManageSettings.DefaultMetaIni);
-            }
-
-            INIFile ini = ManageIni.GetINIFile(metaPath);
-
-            if (!ini.KeyExists("category", "General") || (categoryNames.Replace(",", "").Length > 0 && ini.GetKey("General", "category").Trim('\"').Length == 0))
-            {
-                ini.SetKey("General", "category", "\"" + GetCategoryIndexForTheName(categoryNames) + "\"");
-            }
-
-            if (version.Length > 0)
-            {
-                ManageModOrganizer.ConvertMODateVersion(ref version, false);
-                ini.SetKey("General", "version", version);
-            }
-
-            ini.SetKey("General", "gameName", ManageSettings.MoCurrentGameName);
-
-            if (comments.Length > 0)
-            {
-                ini.SetKey("General", "comments", comments.ToHexForMetaIni());
-            }
-
-            if (notes.Length > 0)
-            {
-                ini.SetKey("General", "notes", ("\"" + notes.Replace(Environment.NewLine, "<br>") + "\"").ToHexForMetaIni());
-            }
-
-            ini.SetKey("General", "validated", "true");
-        }
-
-        public class MetaIniParams
-        {
-            public string GameName;
-            public string Category;
-            public string Version;
-            public string Comments;
-            public string Notes;
-            public string Url;
-
-            public MetaIniParams(string gameName, string category, string version, string comments, string notes, string url)
-            {
-                GameName = gameName;
-                Category = category;
-                Version = version;
-                Comments = comments;
-                Notes = notes;
-                Url = url;
-            }
-        }
-    }
-
-    class CategoriesInfo
-    {
-        public List<CategoryLineInfo> Records = new List<CategoryLineInfo>();
-
-        string _categoriesFilePath;
-        int RecordsInitCount;
-
-        public CategoriesInfo(string categoriesFilePath = null)
-        {
-            Get(categoriesFilePath ?? ManageSettings.CurrentGameMOcategoriesFilePath);
-        }
-
-        public string Add(string categoryName, bool doSave = false)
-        {
-            Records.Add(new CategoryLineInfo(new[] { Records.Count + 1 + "", categoryName, "", "0" }));
-
-            return Records.Count + 1 + "";
-        }
-
-        private void Get(string categoriesFilePath)
-        {
-            if (!File.Exists(categoriesFilePath))
-            {
-                return;
-            }
-
-            _categoriesFilePath = categoriesFilePath;
-
-            using (StreamReader reader = new StreamReader(categoriesFilePath))
-            {
-                string[] lineData;
-                while (!reader.EndOfStream)
+                string metaPath = Path.Combine(moddir, "meta.ini");
+                if (!File.Exists(metaPath))
                 {
-                    lineData = reader.ReadLine().Split('|');
-                    if (lineData == null || lineData.Length != 4)
+                    return null;
+                }
+
+                _ini = ManageIni.GetINIFile(metaPath);
+
+                return new MetaIniParams(
+                    _ini.GetKey("General", "gameName"),
+                    _ini.GetKey("General", "category").Trim('\"'),
+                    _ini.GetKey("General", "version"),
+                    _ini.GetKey("General", "comments"),
+                    _ini.GetKey("General", "notes"),
+                    _ini.GetKey("General", "url")
+                    );
+            }
+
+            public static void Set(string moddir, string categoryNames = "", string version = "", string comments = "", string notes = "")
+            {
+                if (!Directory.Exists(moddir))
+                {
+                    return;
+                }
+
+                string metaPath = Path.Combine(moddir, "meta.ini");
+                if (!File.Exists(metaPath))
+                {
+                    File.WriteAllText(metaPath, ManageSettings.DefaultMetaIni);
+                }
+
+                INIFile ini = ManageIni.GetINIFile(metaPath);
+
+                if (!ini.KeyExists("category", "General") || (categoryNames.Replace(",", "").Length > 0 && ini.GetKey("General", "category").Trim('\"').Length == 0))
+                {
+                    ini.SetKey("General", "category", "\"" + GetCategoryIndexForTheName(categoryNames) + "\"");
+                }
+
+                if (version.Length > 0)
+                {
+                    ManageModOrganizer.ConvertMODateVersion(ref version, false);
+                    ini.SetKey("General", "version", version);
+                }
+
+                ini.SetKey("General", "gameName", ManageSettings.MoCurrentGameName);
+
+                if (comments.Length > 0)
+                {
+                    ini.SetKey("General", "comments", comments.ToHexForMetaIni());
+                }
+
+                if (notes.Length > 0)
+                {
+                    ini.SetKey("General", "notes", ("\"" + notes.Replace(Environment.NewLine, "<br>") + "\"").ToHexForMetaIni());
+                }
+
+                ini.SetKey("General", "validated", "true");
+            }
+
+            public class MetaIniParams
+            {
+                public string GameName;
+                public string Category;
+                public string Version;
+                public string Comments;
+                public string Notes;
+                public string Url;
+
+                public MetaIniParams(string gameName, string category, string version, string comments, string notes, string url)
+                {
+                    GameName = gameName;
+                    Category = category;
+                    Version = version;
+                    Comments = comments;
+                    Notes = notes;
+                    Url = url;
+                }
+            }
+        }
+
+        public class CategoriesInfo
+        {
+            public List<CategoryLineInfo> Records = new List<CategoryLineInfo>();
+
+            string _categoriesFilePath;
+            int RecordsInitCount;
+
+            public CategoriesInfo(string categoriesFilePath = null)
+            {
+                Get(categoriesFilePath ?? ManageSettings.CurrentGameMOcategoriesFilePath);
+            }
+
+            public string Add(string categoryName, bool doSave = false)
+            {
+                Records.Add(new CategoryLineInfo(new[] { Records.Count + 1 + "", categoryName, "", "0" }));
+
+                return Records.Count + 1 + "";
+            }
+
+            private void Get(string categoriesFilePath)
+            {
+                if (!File.Exists(categoriesFilePath))
+                {
+                    return;
+                }
+
+                _categoriesFilePath = categoriesFilePath;
+
+                using (StreamReader reader = new StreamReader(categoriesFilePath))
+                {
+                    string[] lineData;
+                    while (!reader.EndOfStream)
                     {
-                        continue;
+                        lineData = reader.ReadLine().Split('|');
+                        if (lineData == null || lineData.Length != 4)
+                        {
+                            continue;
+                        }
+
+                        Records.Add(new CategoryLineInfo(lineData));
                     }
-
-                    Records.Add(new CategoryLineInfo(lineData));
                 }
+
+                RecordsInitCount = Records.Count;
             }
 
-            RecordsInitCount = Records.Count;
-        }
-
-        internal void Save()
-        {
-            if (RecordsInitCount == Records.Count)
+            internal void Save()
             {
-                // not changed
-                return;
-            }
-
-            using (StreamWriter writer = new StreamWriter(_categoriesFilePath))
-            {
-                foreach (var record in Records)
+                if (RecordsInitCount == Records.Count)
                 {
-                    writer.WriteLine(record.ID + "|" + record.Name + "|" + record.NexisID + "|" + record.ParentID);
+                    // not changed
+                    return;
+                }
+
+                using (StreamWriter writer = new StreamWriter(_categoriesFilePath))
+                {
+                    foreach (var record in Records)
+                    {
+                        writer.WriteLine(record.ID + "|" + record.Name + "|" + record.NexisID + "|" + record.ParentID);
+                    }
                 }
             }
-        }
 
-        public class CategoryLineInfo
-        {
-            public string ID;
-            public string Name;
-            public string NexisID = "";
-            public string ParentID = "0";
-
-            /// <summary>
-            /// ID + Name + NexisID + ParentID
-            /// </summary>
-            /// <param name="categoryInfo"></param>
-            public CategoryLineInfo(string[] categoryInfo)
+            public class CategoryLineInfo
             {
-                ID = categoryInfo[0];
-                Name = categoryInfo[1];
-                NexisID = categoryInfo[2];
-                ParentID = categoryInfo[3];
+                public string ID;
+                public string Name;
+                public string NexisID = "";
+                public string ParentID = "0";
+
+                /// <summary>
+                /// ID + Name + NexisID + ParentID
+                /// </summary>
+                /// <param name="categoryInfo"></param>
+                public CategoryLineInfo(string[] categoryInfo)
+                {
+                    ID = categoryInfo[0];
+                    Name = categoryInfo[1];
+                    NexisID = categoryInfo[2];
+                    ParentID = categoryInfo[3];
+                }
             }
         }
     }

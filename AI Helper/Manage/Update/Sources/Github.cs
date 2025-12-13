@@ -89,6 +89,12 @@ namespace AIHelper.Manage.Update.Sources
         // Download file with progress UI
         private async Task<bool> DownloadTheFile()
         {
+            if (_dwnf != null)
+            {
+                _log.Warn("Download UI is already active. Aborting new download request.");
+                return false; // prevent multiple download UIs
+            }
+
             // Get update downloads directory
             var updateDownloadsDir = ManageSettings.ModsUpdateDirDownloadsPath;
             Directory.CreateDirectory(updateDownloadsDir);
@@ -206,6 +212,7 @@ namespace AIHelper.Manage.Update.Sources
             try
             {
                 _dwnpb?.Dispose();
+                _dwnpb = null;
             }
             catch (Exception ex)
             {
@@ -215,6 +222,7 @@ namespace AIHelper.Manage.Update.Sources
             try
             {
                 _dwnf?.Dispose();
+                _dwnf = null;
             }
             catch (Exception ex)
             {

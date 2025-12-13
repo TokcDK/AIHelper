@@ -272,7 +272,7 @@ namespace AIHelper.Manage.Update.Targets
             if (!Directory.Exists(oldModBuckupDirPath) 
                 || !Directory.Exists(updatingModDirPath)) return;
 
-            //restore some files files
+            // restore some dirs
             foreach (var dir in new DirectoryInfo(oldModBuckupDirPath).EnumerateDirectories("*", SearchOption.AllDirectories))
             {
                 try
@@ -287,13 +287,13 @@ namespace AIHelper.Manage.Update.Targets
 
                     dir.FullName.CopyAll(targetPath);
                 }
-                catch// (Exception ex)
+                catch (Exception ex)
                 {
-                    //_log.Debug("Update: Failed to move file to bak dir. error:" + Environment.NewLine + ex);
+                    _log.Debug("Update: Failed to move file to bak dir. error:" + Environment.NewLine + ex);
                 }
             }
 
-            //restore some files files
+            // restore some files
             foreach (var file in new DirectoryInfo(oldModBuckupDirPath).EnumerateFiles("*", SearchOption.AllDirectories))
             {
                 try
@@ -315,9 +315,9 @@ namespace AIHelper.Manage.Update.Targets
 
                     File.Copy(file.FullName, targetFilePath);
                 }
-                catch// (Exception ex)
+                catch (Exception ex)
                 {
-                    //_log.Debug("Update: Failed to move file to bak dir. error:" + Environment.NewLine + ex);
+                    _log.Debug("Update: Failed to move file to bak dir. error:" + Environment.NewLine + ex);
                 }
             }
         }
@@ -327,7 +327,7 @@ namespace AIHelper.Manage.Update.Targets
             if (string.IsNullOrWhiteSpace(oldModBuckupDirPath) 
                 || string.IsNullOrWhiteSpace(updatingModDirPath)) return;
 
-            //restore old dirs
+            // restore old dirs
             foreach (var folder in Directory.GetDirectories(oldModBuckupDirPath))
             {
                 try
@@ -343,7 +343,7 @@ namespace AIHelper.Manage.Update.Targets
                     _log.Error("Restore: Failed to move dir to mod dir. error:" + Environment.NewLine + ex);
                 }
             }
-            //restore old files
+            // restore old files
             foreach (var file in Directory.GetFiles(oldModBuckupDirPath))
             {
                 try
@@ -421,11 +421,6 @@ namespace AIHelper.Manage.Update.Targets
                         file = new FileInfo(filePath.GetSymlinkTarget());
                     }
 
-                    //string ext;
-                    //if ((ext = Path.GetExtension(file)) == ".ini" || ext == ".cfg" || (Path.GetFileName(Path.GetDirectoryName(file)) == UpdatingModDirPath && ext.IsPictureExtension()))
-                    //{
-                    //    continue;
-                    //}
                     var backupPath = file.FullName.Replace(updatingModDirPath, oldModBuckupDirPath);
                     Directory.CreateDirectory(Path.GetDirectoryName(backupPath));
                     if (RestoreList.Contains(file.FullName) || isSynlinkTarget)

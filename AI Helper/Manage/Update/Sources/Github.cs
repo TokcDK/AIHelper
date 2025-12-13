@@ -308,9 +308,9 @@ namespace AIHelper.Manage.Update.Sources
         }
 
         // Internal variables for Github info
-        string _gitOwner;
-        string _gitRepository;
-        string _gitLatestVersion;
+        private string _gitOwner;
+        private string _gitRepository;
+        private string _gitLatestVersion;
 
         // Get latest version and file link from Github releases
         #region GetLatestGithubVersionFromReleases Private Constants

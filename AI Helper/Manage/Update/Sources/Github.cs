@@ -184,12 +184,12 @@ namespace AIHelper.Manage.Update.Sources
         }
 
         // Search for update file by pattern
-        private static readonly string[] _prefixes = new[]
+        private static readonly string[] _updateFilePrefixes = new[]
         {
             "",
             "v"
         };
-        private readonly string[] _suffixes = new[]
+        private readonly string[] _updateFileSuffixes = new[]
         {
             "",
             ".0"
@@ -198,9 +198,9 @@ namespace AIHelper.Manage.Update.Sources
         {
             foreach (var targetDir in new[] { updateDownloadsDir, ManageSettings.Install2MoDirPath })
             {
-                foreach (var prefix in _prefixes)
+                foreach (var prefix in _updateFilePrefixes)
                 {
-                    foreach (var suffix in _suffixes)
+                    foreach (var suffix in _updateFileSuffixes)
                     {
                         var candidateUpdateFileName = $"{Info.UpdateFileStartsWith}{prefix}{Info.TargetLastVersion}{suffix}{Info.UpdateFileEndsWith}";
                         if (!File.Exists(Path.Combine(targetDir, candidateUpdateFileName)))

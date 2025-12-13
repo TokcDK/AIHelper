@@ -184,26 +184,39 @@ namespace AIHelper.Manage.Update.Sources
         }
 
         // Search for update file by pattern
+        private static readonly string[] _prefixes = new[]
+        {
+            "",
+            "v"
+        };
+        private readonly string[] _suffixes = new[]
+        {
+            "",
+            ".0"
+        };
         private string SearchUpdateFilePath(string updateDownloadsDir, UpdateInfo info)
         {
             foreach (var targetDir in new[] { updateDownloadsDir, ManageSettings.Install2MoDirPath })
             {
-                foreach (var prefix in new[] { "", "v" })
+                foreach (var prefix in _prefixes)
                 {
-                    foreach (var ending in new[] { "", ".0" })
+                    foreach (var suffix in _suffixes)
                     {
-                        var possibleName = Info.UpdateFileStartsWith + prefix + Info.TargetLastVersion + ending + Info.UpdateFileEndsWith;
-                        if (!File.Exists(Path.Combine(targetDir, possibleName))) continue;
+                        var candidateUpdateFileName = $"{Info.UpdateFileStartsWith}{prefix}{Info.TargetLastVersion}{suffix}{Info.UpdateFileEndsWith}";
+                        if (!File.Exists(Path.Combine(targetDir, candidateUpdateFileName)))
+                        {
+                            continue;
+                        }
 
-                        info.UpdateFilePath = Path.Combine(targetDir, possibleName);
-                        _log.Debug("Found update file: " + info.UpdateFilePath);
-                        return possibleName;
+                        info.UpdateFilePath = Path.Combine(targetDir, candidateUpdateFileName);
+                        _log.Debug("Found update file: {0}", info.UpdateFilePath);
+                        return candidateUpdateFileName;
                     }
                 }
             }
 
             _log.Debug("Update file not found by pattern.");
-            return "";
+            return string.Empty;
         }
 
         // Get latest version from Github

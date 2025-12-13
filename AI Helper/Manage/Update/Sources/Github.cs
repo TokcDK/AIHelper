@@ -335,6 +335,12 @@ namespace AIHelper.Manage.Update.Sources
         /// </summary>
         private void InitializeGitHubRepositoryInfo()
         {
+            if (Info.TargetFolderUpdateInfo == null || Info.TargetFolderUpdateInfo.Length < 3)
+            {
+                _log.Error("Invalid TargetFolderUpdateInfo configuration");
+                throw new InvalidOperationException("Invalid GitHub repository configuration");
+            }
+
             _gitOwner = Info.TargetFolderUpdateInfo[0];
             _gitRepository = Info.TargetFolderUpdateInfo[1];
             Info.UpdateFileStartsWith = Info.TargetFolderUpdateInfo[2];

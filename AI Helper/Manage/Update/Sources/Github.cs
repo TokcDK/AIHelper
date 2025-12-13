@@ -65,8 +65,7 @@ namespace AIHelper.Manage.Update.Sources
             base.DownloadFileCompleted(sender, e);
 
             // Release progress bar and form resources
-            _dwnpb?.Dispose();
-            _dwnf?.Dispose();
+            DisposeDownloadUi();
 
             // Log download result
             if (e.Error != null)
@@ -84,8 +83,8 @@ namespace AIHelper.Manage.Update.Sources
         }
 
         // Static variables for progress form
-        static Form _dwnf;
-        static ProgressBar _dwnpb;
+        private static Form _dwnf;
+        private static ProgressBar _dwnpb;
 
         // Download file with progress UI
         private async Task<bool> DownloadTheFile()
@@ -93,9 +92,12 @@ namespace AIHelper.Manage.Update.Sources
             // Get update downloads directory
             var updateDownloadsDir = ManageSettings.ModsUpdateDirDownloadsPath;
             Directory.CreateDirectory(updateDownloadsDir);
+            _log.Debug("Ensured update downloads directory exists: " + updateDownloadsDir);
 
             // Determine update file name
-            var updateFileName = Info.UpdateFilePath.Length > 0 ? Path.GetFileName(Info.UpdateFilePath) : Path.GetFileName(Info.DownloadLink);
+            var updateFileName = !string.IsNullOrWhiteSpace(Info.UpdateFilePath)
+                ? Path.GetFileName(Info.UpdateFilePath)
+                : Path.GetFileName(Info.DownloadLink);
 
             if (string.IsNullOrWhiteSpace(updateFileName))
             {
@@ -106,6 +108,7 @@ namespace AIHelper.Manage.Update.Sources
             else
             {
                 Info.UpdateFilePath = Path.Combine(updateDownloadsDir, updateFileName);
+                _log.Debug("Resolved update file path: " + Info.UpdateFilePath);
             }
 
             // Check alternative update file path
@@ -117,35 +120,22 @@ namespace AIHelper.Manage.Update.Sources
             }
 
             // Create and show progress form
-            _dwnpb = new ProgressBar
-            {
-                Dock = DockStyle.Bottom,
-                Maximum = 100
-            };
-            _dwnf = new Form
-            {
-                StartPosition = FormStartPosition.CenterScreen,
-                TopMost = true,
-                Size = new Size(400, 50),
-                Text = T._("Downloading") + ": " + updateFileName,
-                FormBorderStyle = FormBorderStyle.FixedToolWindow
-            };
-            _dwnf.Controls.Add(_dwnpb);
-            _dwnf.Show();
+            CreateAndShowDownloadUi(updateFileName);
 
             // Check if file needs to be downloaded
-            if (!File.Exists(Info.UpdateFilePath)
-                || (!Info.VersionFromFile && File.Exists(Info.UpdateFilePath) && !updateFileName.Contains(Info.TargetLastVersion))
-                || new FileInfo(Info.UpdateFilePath).Length == 0
-                )
+            var shouldDownload = ShouldDownload(updateFileName, Info.UpdateFilePath, out var downloadReason);
+            _log.Debug("Download decision: shouldDownload=" + shouldDownload
+                       + ", reason=" + downloadReason
+                       + ", updateFilePath=" + Info.UpdateFilePath);
+
+            if (shouldDownload)
             {
                 // If download link is empty
                 if (string.IsNullOrWhiteSpace(Info.DownloadLink))
                 {
                     Info.NoRemoteFile = true;
                     _log.Warn("Download link is empty. File will not be downloaded.");
-                    _dwnpb.Dispose();
-                    _dwnf.Dispose();
+                    DisposeDownloadUi();
                     return false;
                 }
 
@@ -154,7 +144,10 @@ namespace AIHelper.Manage.Update.Sources
                 await DownloadFileTaskAsync(new Uri(Info.DownloadLink), Info.UpdateFilePath).ConfigureAwait(true);
 
                 // Check if download completed successfully
-                var completed = IsCompletedDownload && File.Exists(Info.UpdateFilePath) && new FileInfo(Info.UpdateFilePath).Length != 0;
+                var completed = IsCompletedDownload
+                                && File.Exists(Info.UpdateFilePath)
+                                && new FileInfo(Info.UpdateFilePath).Length != 0;
+
                 if (!completed)
                 {
                     _log.Warn("File download not completed or file is corrupted: " + Info.UpdateFilePath);
@@ -163,13 +156,14 @@ namespace AIHelper.Manage.Update.Sources
                 {
                     _log.Info("File successfully downloaded: " + Info.UpdateFilePath);
                 }
+
+                // Note: original behavior does NOT dispose the progress UI here (kept as-is).
                 return completed;
             }
             else
             {
                 // If file already exists
-                _dwnpb.Dispose();
-                _dwnf.Dispose();
+                DisposeDownloadUi();
 
                 if (new FileInfo(Info.UpdateFilePath).Length == 0)
                 {
@@ -182,6 +176,83 @@ namespace AIHelper.Manage.Update.Sources
                 return true;
             }
         }
+
+        #region DownloadTheFile Helper Methods
+
+        private static void CreateAndShowDownloadUi(string fileName)
+        {
+            _dwnpb = new ProgressBar
+            {
+                Dock = DockStyle.Bottom,
+                Maximum = 100
+            };
+            _dwnf = new Form
+            {
+                StartPosition = FormStartPosition.CenterScreen,
+                TopMost = true,
+                Size = new Size(400, 50),
+                Text = T._("Downloading") + ": " + fileName,
+                FormBorderStyle = FormBorderStyle.FixedToolWindow
+            };
+            _dwnf.Controls.Add(_dwnpb);
+            _dwnf.Show();
+
+            _log.Debug("Download UI shown. Title: " + _dwnf.Text);
+        }
+
+        private static void DisposeDownloadUi()
+        {
+            // Keep disposal safe for repeated calls / edge cases (Dispose is normally idempotent).
+            try
+            {
+                _dwnpb?.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _log.Debug("Failed to dispose ProgressBar: " + ex);
+            }
+
+            try
+            {
+                _dwnf?.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _log.Debug("Failed to dispose Form: " + ex);
+            }
+        }
+
+        private bool ShouldDownload(string fileName, string updateFilePath, out string reason)
+        {
+            // Preserve the original short-circuit intent/order:
+            //  1) missing file
+            //  2) wrong version in name (when not using VersionFromFile)
+            //  3) zero length file
+            if (!File.Exists(updateFilePath))
+            {
+                reason = "file does not exist";
+                return true;
+            }
+
+            if (!Info.VersionFromFile && !fileName.Contains(Info.TargetLastVersion))
+            {
+                reason = "existing filename does not contain target version: " + Info.TargetLastVersion;
+                return true;
+            }
+
+            // Only touch FileInfo when needed (matches original OR-chain short-circuit behavior).
+            var length = new FileInfo(updateFilePath).Length;
+            if (length == 0)
+            {
+                reason = "existing file has zero length";
+                return true;
+            }
+
+            reason = "existing file is valid";
+            return false;
+        }
+
+        #endregion
 
         // Search for update file by pattern
         private static readonly string[] _updateFilePrefixes = new[]

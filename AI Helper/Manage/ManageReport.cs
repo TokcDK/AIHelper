@@ -1,23 +1,45 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace AIHelper.Manage
 {
     internal static class ManageReport
     {
+        static readonly Logger _log = LogManager.GetCurrentClassLogger();
+
         private static readonly string _linksSeparator = "{{link}}";
+        private static readonly string HeaderText = T._("Links");
+
         internal static void ShowReportFromLinks()
         {
+            //langID = "<ru-RU>";
+            var langID = "<" + ManageSettings.LanuageID + ">";
+
             var groupNames = new Dictionary<string, string>();
 
-            var langID = "<" + ManageSettings.LanuageID + ">";
-            //langID = "<ru-RU>";
+            var links = BuildLinks(langID, groupNames);
+            if (links.Length == 0) return;
 
+            // <CategoryName, <linkTitle,Url>>
+            Dictionary<string, List<string[]>> linksInfo = BuildLinksInfo(links);
+
+            if (!BuildAndOpenHtmlReport(linksInfo, langID, groupNames))
+            {
+                BuildAndOpenTxtReport(linksInfo);
+            }
+
+        }
+
+        private static string[] BuildLinks(string langID, Dictionary<string, string> groupNames)
+        {
             string gameLinksPath = ManageSettings.LinksInfoFilePath;
-            if (string.IsNullOrWhiteSpace(gameLinksPath)) return;
+            if (string.IsNullOrWhiteSpace(gameLinksPath)) return Array.Empty<string>();
 
             string[] strings = File.ReadAllLines(gameLinksPath).Where(line => line.StartsWith(";##", StringComparison.InvariantCulture)).ToArray();
             foreach (var line in strings)
@@ -34,8 +56,12 @@ namespace AIHelper.Manage
 
             string[] links = File.ReadAllLines(gameLinksPath).Where(line => !line.StartsWith(";", StringComparison.InvariantCulture)).ToArray();
 
-            string lastgroup = string.Empty;
-            var linksInfo = new Dictionary<string, List<string[]>>();
+            return links;
+        }
+
+        private static Dictionary<string, List<string[]>> BuildLinksInfo(string[] links)
+        {
+            Dictionary<string, List<string[]>> linksInfo = new Dictionary<string, List<string[]>>();
 
             // add info
             foreach (var line in links)
@@ -49,17 +75,29 @@ namespace AIHelper.Manage
                 linksInfo[category].Add(new[] { info[1], info[2] });
             }
 
-            // create html string
+            return linksInfo;
+        }
+
+        private static bool BuildAndOpenHtmlReport(Dictionary<string, List<string[]>> linksInfo, string langID, Dictionary<string, string> groupNames)
+        {
             var categoriesInfo = new List<string>();
             foreach (var category in linksInfo)
             {
                 var descriptonLink = new List<string>();
+                int i = 0;
                 foreach (var link in category.Value)
                 {
-                    descriptonLink.Add(ManageSettings.UpdateReport.HtmlReportCategoryItemTemplate                        .Replace("%link%", link[1])
+                    if (link.Length != 2)
+                    {
+                        _log.Debug("Useful links report html: Invalid titleUrlData format. Must be Title-Url pair. Index:{0}, Length: {1}, Values: {2}", i, link.Length, string.Join(", ", link));
+                    }
+
+                    descriptonLink.Add(ManageSettings.UpdateReport.HtmlReportCategoryItemTemplate.Replace("%link%", link[1])
                         .Replace("%text%", new Uri(link[1]).Host.ToUpperInvariant())
                         .Replace("%description%", TryGetTranslation(link[0], langID))
                         );
+
+                    i++;
                 }
 
                 categoriesInfo.Add(ManageSettings.UpdateReport.HtmlReportCategoryTemplate.Replace("%category%", groupNames.TryGetValue(category.Key)).Replace("%items%", string.Join("<br>", descriptonLink)));
@@ -68,7 +106,7 @@ namespace AIHelper.Manage
             // create new report contet
             var reportMessage = File.ReadAllText(ManageSettings.UpdateReport.ReportFilePath)
              .Replace(ManageSettings.UpdateReport.BgImageLinkPathPattern, ManageSettings.UpdateReport.CurrentGameBgFilePath)
-             .Replace(ManageSettings.UpdateReport.ModsUpdateReportHeaderTextPattern, T._("Links"))
+             .Replace(ManageSettings.UpdateReport.ModsUpdateReportHeaderTextPattern, HeaderText)
              .Replace(ManageSettings.UpdateReport.SingleModUpdateReportsTextSectionPattern, string.Join(ManageSettings.UpdateReport.HtmlBetweenModsText, categoriesInfo) + "<br>")
              .Replace(ManageSettings.UpdateReport.ModsUpdateInfoNoticePattern, ManageSettings.UpdateReport.ModsUpdateInfoNoticeText);
 
@@ -77,24 +115,61 @@ namespace AIHelper.Manage
             Directory.CreateDirectory(Path.GetDirectoryName(htmlfile));// fix missing parent directory error
 
             File.WriteAllText(htmlfile, reportMessage);
-            using (var process = new System.Diagnostics.Process())
+            try
             {
-                try
+                Process.Start(htmlfile);
+            }
+            catch (Exception e)
+            {
+                _log.Debug("Useful links report: Failed to open html. Error: {1}", e.Message);
+                return false;
+            }
+
+            return true;
+        }
+
+        private static void BuildAndOpenTxtReport(Dictionary<string, List<string[]>> linksInfo)
+        {
+            var txt = new StringBuilder();
+            txt.AppendLine(ManageSettings.CurrentGame.GameName);
+            txt.AppendLine();
+            txt.AppendLine();
+            foreach (var category in linksInfo)
+            {
+                txt.AppendLine(category.Key + ":"); // add category name
+
+                int i = 0;
+                foreach (var titleUrlData in category.Value)
                 {
-                    process.StartInfo.UseShellExecute = true;
-                    process.StartInfo.FileName = htmlfile;
-                    process.Start();
+                    if (titleUrlData.Length != 2)
+                    {
+                        _log.Debug("Useful links report txt: Invalid titleUrlData format. Must be Title-Url pair. Index:{0}, Length: {1}, Values: {2}", i, titleUrlData.Length, string.Join(", ", titleUrlData));
+                    }
+                    txt.AppendLine($"  {titleUrlData[0]}: {titleUrlData[1]}");
+
+                    i++;
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
+
+                txt.AppendLine();
+            }
+
+            var txtReportFilePath = Path.Combine(ManageSettings.CurrentGameLinksInfoDirPath, ManageSettings.CurrentGame.GameAbbreviation + ".txt");
+
+            File.WriteAllText(txtReportFilePath, txt.ToString());
+
+            try
+            {
+                Process.Start(txtReportFilePath);
+            }
+            catch (Exception e)
+            {
+                _log.Debug("Useful links report: Failed to open txt. Error: {1}", e.Message);
             }
         }
 
         private static string TryGetValue(this Dictionary<string, string> dictionary, string key)
         {
-            if (dictionary.ContainsKey(key)) return dictionary[key];
+            if (dictionary.TryGetValue(key, out string value)) return value;
 
             return key;
         }

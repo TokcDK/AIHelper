@@ -210,9 +210,9 @@ namespace AIHelper
         private void SetLocalizationStrings()
         {
             this.Text = "AI Helper" + " | " + ManageSettings.Games.Game.GameDisplayingName;
-            QualityComboBox.Items.Add(T._("Perfomance"));
-            QualityComboBox.Items.Add(T._("Normal"));
-            QualityComboBox.Items.Add(T._("Quality"));
+            //QualityComboBox.Items.Add(T._("Perfomance"));
+            //QualityComboBox.Items.Add(T._("Normal"));
+            //QualityComboBox.Items.Add(T._("Quality"));
 
             this.LaunchTabPage.Text = string.Format("{0} {1}", T._("🚀"), T._("Launch"));
             this.GameButton.Text = string.Format("{0} {1}", T._("▶"), T._("Game"));
@@ -234,10 +234,10 @@ namespace AIHelper
             this.CreateShortcutLinkLabel.Text = T._("Shortcut");
             this.AutoShortcutRegistryCheckBox.Text = T._("Autoshortcut");
             this.SettingsTabDisplayTabPage.Text = string.Format("{0} {1}", T._("🔳"), T._("Display"));
-            this.OpenSetupXmlLinkLabel.Text = T._("Open game setup file");
-            this.ResolutionLabel.Text = T._("Resolution:");
-            this.QualityLabel.Text = T._("Quality:");
-            this.FullScreenCheckBox.Text = T._("fullscreen");
+            //this.OpenSetupXmlLinkLabel.Text = T._("Open game setup file");
+            //this.ResolutionLabel.Text = T._("Resolution:");
+            //this.QualityLabel.Text = T._("Quality:");
+            //this.FullScreenCheckBox.Text = T._("fullscreen");
             this.ToolsTabPage.Text = string.Format("{0} {1}", T._("🔨"), T._("Tools"));
             this.FoldersTabPage.Text = string.Format("{0} {1}", T._("🗁"), T._("Folders"));
             this.FormMinimizeButton.Text = T._("_");
@@ -326,9 +326,9 @@ namespace AIHelper
             else if (AIGirlHelperTabControl.SelectedTab == SettingsTabPage)
             {
                 _thToolTip.SetToolTip(AutoShortcutRegistryCheckBox, T._("When checked will create shortcut for the AI Helper on Desktop and will fix registry if need"));
-                _thToolTip.SetToolTip(ResolutionComboBox, T._("Select preferred screen resolution"));
-                _thToolTip.SetToolTip(FullScreenCheckBox, T._("When checked game will be in fullscreen mode"));
-                _thToolTip.SetToolTip(QualityComboBox, T._("Select preferred graphics quality"));
+                //_thToolTip.SetToolTip(ResolutionComboBox, T._("Select preferred screen resolution"));
+                //_thToolTip.SetToolTip(FullScreenCheckBox, T._("When checked game will be in fullscreen mode"));
+                //_thToolTip.SetToolTip(QualityComboBox, T._("Select preferred graphics quality"));
                 _thToolTip.SetToolTip(CreateShortcutLinkLabel, T._("Will create shortcut in Desktop if not exist"));
                 _thToolTip.SetToolTip(FixRegistryLinkLabel, T._("Will set Data dir with game files as install dir in registry"));
 
@@ -346,71 +346,6 @@ namespace AIHelper
             {
             }
             ////////////////////////////
-        }
-
-        private void SetScreenSettings()
-        {
-            if (!IsMoMode) SetupXmlPath = ManageSettings.CurrentGameSetupXmlFilePathinData;
-
-            //set Settings
-            if (!File.Exists(SetupXmlPath)) CreateSetupXmlPath();
-
-            ResolutionComboBox.Text = ManageXml.ReadXmlValue(SetupXmlPath, "Setting/Size", ResolutionComboBox.Text);
-            FullScreenCheckBox.Checked = bool.Parse(ManageXml.ReadXmlValue(SetupXmlPath, "Setting/FullScreen", FullScreenCheckBox.Checked + ""));
-
-            string quality = ManageXml.ReadXmlValue(SetupXmlPath, "Setting/Quality", "2");
-            //если качество будет за пределами диапазона 0-2, тогда будет равно 1 - нормально
-            if (quality != "0" && quality != "1" && quality != "2") quality = "1";
-
-            QualityComboBox.SelectedIndex = int.Parse(quality, CultureInfo.InvariantCulture);
-        }
-
-        private void CreateSetupXmlPath()
-        {
-            string screenWidth = Screen.PrimaryScreen.Bounds.Width.ToString(CultureInfo.InvariantCulture);
-            
-            int[] width = { 1280, 1366, 1536, 1600, 1920, 2048, 2560, 3200, 3840 };
-            if (int.Parse(screenWidth, CultureInfo.InvariantCulture) > width[width.Length - 1])
-            {
-                ResolutionComboBox.SelectedItem = width.Length - 1;
-                SetScreenResolution(ResolutionComboBox.Items[width.Length - 1].ToString());
-            }
-            else
-            {
-                for (int w = 0; w < width.Length; w++)
-                {
-                    if (int.Parse(screenWidth, CultureInfo.InvariantCulture) > width[w]) continue;
-
-                    string selectedRes = ResolutionComboBox.Items[w].ToString();
-                    ResolutionComboBox.Text = selectedRes;
-                    SetScreenResolution(selectedRes);
-                    break;
-                }
-            }
-        }
-
-        private static void SetScreenResolution(string resolution)
-        {
-            ManageModOrganizer.CheckMoUserdata();
-
-            if (!File.Exists(SetupXmlPath))
-            {
-                // write default setup.xml
-                Directory.CreateDirectory(Path.GetDirectoryName(SetupXmlPath));
-                File.WriteAllText(SetupXmlPath, ManageSettings.DefaultSetupXmlValue, Encoding.GetEncoding("UTF-16"));
-            }
-
-            ManageXml.ChangeSetupXmlValue(SetupXmlPath, "Setting/Size", resolution);
-            string[] wh = resolution.Replace("(16 : 9)", string.Empty).Trim().Split('x');
-            ManageXml.ChangeSetupXmlValue(SetupXmlPath, "Setting/Width", wh[0].Trim());
-            ManageXml.ChangeSetupXmlValue(SetupXmlPath, "Setting/Height", wh[1].Trim());
-        }
-
-        private static void SetGraphicsQuality(string quality)
-        {
-            ManageModOrganizer.CheckMoUserdata();
-
-            ManageXml.ChangeSetupXmlValue(SetupXmlPath, "Setting/Quality", quality);
         }
 
         /// <summary>
@@ -444,8 +379,6 @@ namespace AIHelper
             CurrentGameComboBox.SelectedIndex = ManageSettings.CurrentGameIndex;
 
             GetEnableDisableLaunchTabButtons();
-
-            SetScreenSettings();
 
             SetTooltips();
 
@@ -546,7 +479,7 @@ namespace AIHelper
 
         private void ResolutionComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SetScreenResolution((sender as ComboBox).SelectedItem.ToString());
+            //SetScreenResolution((sender as ComboBox).SelectedItem.ToString());
         }
 
         private void FullScreenCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -670,7 +603,7 @@ namespace AIHelper
 
         private void QualityComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SetGraphicsQuality((sender as ComboBox).SelectedIndex.ToString(CultureInfo.InvariantCulture));
+            //SetGraphicsQuality((sender as ComboBox).SelectedIndex.ToString(CultureInfo.InvariantCulture));
         }
 
         private void AIHelper_LocationChanged(object sender, EventArgs e)
@@ -841,6 +774,24 @@ namespace AIHelper
         private void AddGameLabel_Click(object sender, EventArgs e)
         {
             ManageOther.AddNewGame(this);
+        }
+
+        private void SettingsTabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (SettingsTabControl.SelectedIndex)
+            {
+                case 1:
+                    var gameSettingsUserControl = ManageSettings.Games.Game.GameSettingsControl;
+                    if (gameSettingsUserControl != null)
+                    {
+                        gameSettingsUserControl.Dock = DockStyle.Fill;
+                        SettingsTabDisplayTabPageGameBackgroundPanel.Controls.Clear();
+                        SettingsTabDisplayTabPageGameBackgroundPanel.Controls.Add(gameSettingsUserControl);
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

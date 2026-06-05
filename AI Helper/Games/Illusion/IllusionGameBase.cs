@@ -1,4 +1,6 @@
-﻿namespace AIHelper.Games.Illusion
+﻿using System.Windows.Forms;
+
+namespace AIHelper.Games.Illusion
 {
     public abstract class IllusionGameBase : GameBase
     {
@@ -8,5 +10,6 @@
         public override string CharacterPresetsFolderSubPath => "UserData\\Chara";
 
         public override bool IsHaveSideloaderMods => true;
+        public override UserControl GameSettingsControl { get => new IllusionGameSettingsUserControl(); }
     }
 }

@@ -1264,7 +1264,21 @@ namespace AIHelper.Manage
         public static bool AutoShortcutRegistryCheckBoxChecked { get; internal set; } = true;
         public static bool INITDone { get; internal set; } = false;
         public static int CurrentGameListIndex { get; internal set; } = 0;
-        public static string SetupXmlPath { get; internal set; } = "";
+        
+        private static string _setupXmlPath = "";
+        public static string SetupXmlPath 
+        { 
+            get
+            { 
+                if (!string.IsNullOrWhiteSpace(_setupXmlPath) && File.Exists(_setupXmlPath)) return _setupXmlPath;
+                return _setupXmlPath = ManageSettings.CurrentGameSetupXmlFilePathinData;
+            } 
+            internal set
+            {
+                _setupXmlPath = value;
+            } 
+        }
+
         public static string XUAiniPath { get; internal set; }
         public static bool CurrentGameIsChanging { get; internal set; }
         public static bool SetModOrganizerINISettingsForTheGame { get; internal set; }

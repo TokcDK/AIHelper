@@ -67,7 +67,7 @@ namespace AIHelper
                     //https://github.com/adamhathcock/sharpcompress/blob/master/USAGE.md
                     if (Path.GetExtension(sourceFile) != ".rar") return;
 
-                    using (var archive = RarArchive.Open(sourceFile))
+                    using (var archive = RarArchive.OpenArchive(sourceFile))
                     {
                         foreach (var entry in archive.Entries.Where(entry => !entry.IsDirectory))
                         {

@@ -116,6 +116,13 @@
     <Compile Include="Forms\LogLevelselectionForm.Designer.cs">
       <DependentUpon>LogLevelselectionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Games\Illusion\IllusionGameSattingsHelper.cs" />
+    <Compile Include="Games\Illusion\IllusionGameSettingsUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Games\Illusion\IllusionGameSettingsUserControl.Designer.cs">
+      <DependentUpon>IllusionGameSettingsUserControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Games\Illusion\IllGames\HoneyCome.cs" />
     <Compile Include="Games\Illusion\IllGames\IllGameBase.cs" />
     <Compile Include="Install\UpdateMaker\ContentTypeParsers\ContentTypeParserBase.cs" />
@@ -385,6 +392,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Other\UpdateOptionsDialog.resx">
       <DependentUpon>UpdateOptionsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Illusion\IllusionGameSettingsUserControl.resx">
+      <DependentUpon>IllusionGameSettingsUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Manage\Functions\BindMOProfileToExe\BindForm.resx">
       <DependentUpon>BindForm.cs</DependentUpon>

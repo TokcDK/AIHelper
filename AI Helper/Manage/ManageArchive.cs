@@ -101,7 +101,7 @@ namespace AIHelper.Manage
         {
             if (!SevenZipArchive.IsSevenZipFile(archiveFilePath)) return;
 
-            using (var archive = SevenZipArchive.Open(archiveFilePath))
+            using (var archive = SevenZipArchive.OpenArchive(archiveFilePath))
             {
                 foreach (var entry in archive.Entries)
                 {
@@ -118,7 +118,7 @@ namespace AIHelper.Manage
         {
             if (!RarArchive.IsRarFile(archiveFilePath)) return;
 
-            using (var archive = RarArchive.Open(archiveFilePath))
+            using (var archive = RarArchive.OpenArchive(archiveFilePath))
             {
                 foreach (var entry in archive.Entries)
                 {

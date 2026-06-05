@@ -1,6 +1,7 @@
 ﻿using AIHelper.Manage;
 using NLog;
 using System.IO;
+using System.Windows.Forms;
 
 namespace AIHelper.Games
 {
@@ -11,6 +12,13 @@ namespace AIHelper.Games
         {
             //InitActions();
         }
+
+        public abstract string BasicGamePluginName { get; }
+
+        /// <summary>
+        /// manifest/game name
+        /// </summary>
+        public abstract string ZipmodManifestGameName { get; }
 
         public virtual void InitActions() { }
 
@@ -24,11 +32,6 @@ namespace AIHelper.Games
         /// name of the game's folder
         /// </summary>
         protected string GamefolderName { get; set; }
-
-        /// <summary>
-        /// manifest/game name
-        /// </summary>
-        public abstract string ZipmodManifestGameName { get; }
 
         /// <summary>
         /// title of current game. GameName value for MO ini GameName parameter
@@ -208,31 +211,33 @@ namespace AIHelper.Games
             };
 
         public virtual string[,] ObjectsForMove => new string[,]
-            {
-                    {
-                        Path.Combine(ManageSettings.CurrentGameModsDirPath, "BepInEx", "BepInEx", "core", "BepInEx.Preloader.Core.dll")
-                        ,
-                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "BepInEx", "core", "BepInEx.Preloader.Core.dll")
-                    }
+        {
+                {
+                    Path.Combine(ManageSettings.CurrentGameModsDirPath, "BepInEx", "BepInEx", "core", "BepInEx.Preloader.Core.dll")
                     ,
-                    {
-                        Path.Combine(ManageSettings.CurrentGameModsDirPath, "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
-                        ,
-                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "BepInEx", "core", "BepInEx.Preloader.dll")
-                    }
+                    Path.Combine(ManageSettings.CurrentGameDataDirPath, "BepInEx", "core", "BepInEx.Preloader.Core.dll")
+                }
+                ,
+                {
+                    Path.Combine(ManageSettings.CurrentGameModsDirPath, "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
                     ,
-                    {
-                        Path.Combine(ManageSettings.CurrentGameModsDirPath, "BepInEx", "doorstop_config.ini")
-                        ,
-                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "doorstop_config.ini")
-                    }
+                    Path.Combine(ManageSettings.CurrentGameDataDirPath, "BepInEx", "core", "BepInEx.Preloader.dll")
+                }
+                ,
+                {
+                    Path.Combine(ManageSettings.CurrentGameModsDirPath, "BepInEx", "doorstop_config.ini")
                     ,
-                    {
-                        Path.Combine(ManageSettings.CurrentGameModsDirPath, "BepInEx", "winhttp.dll")
-                        ,
-                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "winhttp.dll")
-                    }
-            };
+                    Path.Combine(ManageSettings.CurrentGameDataDirPath, "doorstop_config.ini")
+                }
+                ,
+                {
+                    Path.Combine(ManageSettings.CurrentGameModsDirPath, "BepInEx", "winhttp.dll")
+                    ,
+                    Path.Combine(ManageSettings.CurrentGameDataDirPath, "winhttp.dll")
+                }
+        };
+
+        public virtual UserControl GameSettingsControl { get => null; }
 
         internal string GetGameName()
         {
@@ -261,6 +266,6 @@ namespace AIHelper.Games
         //    return string.Empty;
         //}
 
-        public abstract string BasicGamePluginName { get; }
+
     }
 }

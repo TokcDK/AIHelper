@@ -20,9 +20,7 @@ namespace AIHelper.Manage
         {
             //langID = "<ru-RU>";
             var langID = "<" + ManageSettings.LanuageID + ">";
-
             var groupNames = new Dictionary<string, string>();
-
             var links = BuildLinks(langID, groupNames);
             if (links.Length == 0) return;
 
@@ -41,17 +39,12 @@ namespace AIHelper.Manage
             string gameLinksPath = ManageSettings.LinksInfoFilePath;
             if (string.IsNullOrWhiteSpace(gameLinksPath)) return Array.Empty<string>();
 
-            string[] strings = File.ReadAllLines(gameLinksPath).Where(line => line.StartsWith(";##", StringComparison.InvariantCulture)).ToArray();
+            var strings = File.ReadAllLines(gameLinksPath)
+                .Where(line => line.StartsWith(";##", StringComparison.InvariantCulture))
+                .ToArray();
             foreach (var line in strings)
             {
-                var en = Regex.Match(line, ";##([^<]+)");
-                if (!en.Success) continue;
-
-                var t = Regex.Match(line, langID + "([^<]+)");
-                if (!t.Success) continue;
-                if (groupNames.ContainsKey(en.Groups[1].Value)) continue;
-
-                groupNames.Add(en.Groups[1].Value, t.Groups[1].Value);
+                AddGroupNameFromLine(line, langID, groupNames);
             }
 
             string[] links = File.ReadAllLines(gameLinksPath).Where(line => !line.StartsWith(";", StringComparison.InvariantCulture)).ToArray();
@@ -59,23 +52,44 @@ namespace AIHelper.Manage
             return links;
         }
 
+        private static void AddGroupNameFromLine(string line, string langID, Dictionary<string, string> groupNames)
+        {
+            var en = Regex.Match(line, ";##([^<]+)");
+            if (!en.Success) return;
+
+            var t = Regex.Match(line, langID + "([^<]+)");
+            if (!t.Success) return;
+            if (groupNames.ContainsKey(en.Groups[1].Value)) return;
+
+            groupNames.Add(en.Groups[1].Value, t.Groups[1].Value);
+        }
+
         private static Dictionary<string, List<string[]>> BuildLinksInfo(string[] links)
         {
-            Dictionary<string, List<string[]>> linksInfo = new Dictionary<string, List<string[]>>();
+            var linksInfo = new Dictionary<string, List<string[]>>();
 
             // add info
             foreach (var line in links)
             {
-                var info = line.Split(new string[] { _linksSeparator }, StringSplitOptions.None);
-                if (info.Length != 3) continue;
-
-                var category = info[0];
-                if (!linksInfo.ContainsKey(category)) linksInfo.Add(category, new List<string[]>());
-
-                linksInfo[category].Add(new[] { info[1], info[2] });
+                AddLinkEntryFromLine(line, linksInfo);
             }
 
             return linksInfo;
+        }
+
+        private static void AddLinkEntryFromLine(string line, Dictionary<string, List<string[]>> linksInfo)
+        {
+            var info = line.Split(new string[] { _linksSeparator }, StringSplitOptions.None);
+            if (info.Length != 3) return;
+
+            var category = info[0];
+            if (!linksInfo.TryGetValue(category, out List<string[]> categoryEntries))
+            {
+                categoryEntries = new List<string[]>();
+                linksInfo.Add(category, categoryEntries);
+            }
+
+            categoryEntries.Add(new[] { info[1], info[2] });
         }
 
         private static bool BuildAndOpenHtmlReport(Dictionary<string, List<string[]>> linksInfo, string langID, Dictionary<string, string> groupNames)

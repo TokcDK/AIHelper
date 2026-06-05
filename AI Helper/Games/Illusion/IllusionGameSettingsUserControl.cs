@@ -282,6 +282,12 @@ namespace AIHelper.Games.Illusion
                     string sizeLabel = GetVal(SIZE_SETTING_KEY);
                     int ri = Array.FindIndex(Resolutions, r => r.Label == sizeLabel);
                     _cboResolution.SelectedIndex = ri >= 0 ? ri : 0;
+
+                    // Update XML to have consistent Width and Height values based on label
+                    var (label, rw, rh) = Resolutions[_cboResolution.SelectedIndex];
+                    SetVal(WIDTH_SETTING_KEY, rw);
+                    SetVal(HEIGHT_SETTING_KEY, rh);
+                    SaveXml();
                 }
 
                 // Quality

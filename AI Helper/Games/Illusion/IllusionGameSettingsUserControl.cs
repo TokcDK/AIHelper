@@ -66,6 +66,7 @@ namespace AIHelper.Games.Illusion
         private ComboBox _cboDisplay;
         private CheckBox _chkFullScreen;
         private LinkLabel _lblOpenInNotepad;
+        private LinkLabel _lblReloadFromXml;
         private Label _lblResolution, _lblQuality, _lblLanguage, _lblDisplay, _lblFullScreen;
 
         // ── UI Construction ───────────────────────────────────────────
@@ -92,6 +93,7 @@ namespace AIHelper.Games.Illusion
             // Add controls row by row
             // Row 0 – Open setup xml in notepad
             _lblOpenInNotepad = MakeOpenInNotepadLinkLabel();
+            _lblReloadFromXml = MakeReloadLinkLabel();
 
             // Row 1 – Resolution
             _lblResolution = MakeLabel(T._("Resolution:"));
@@ -125,6 +127,7 @@ namespace AIHelper.Games.Illusion
             _chkFullScreen.CheckedChanged += OnSettingChanged;
 
             _table.Controls.Add(_lblOpenInNotepad, 0, 0);
+            _table.Controls.Add(_lblReloadFromXml, 1, 0);
             int row = 1;
             foreach (var (lbl, ctrl) in new (Control, Control)[]
             {
@@ -142,6 +145,23 @@ namespace AIHelper.Games.Illusion
 
             Controls.Add(_table);
             ResumeLayout(true);
+        }
+
+        private LinkLabel MakeReloadLinkLabel()
+        {
+            var ll = new LinkLabel
+            {
+                Text = T._("Reload settings from XML"),
+                Dock = DockStyle.Fill,
+                TextAlign = System.Drawing.ContentAlignment.MiddleLeft,
+                Margin = new Padding(2),
+            };
+            ll.Click += (s, e) =>
+            {
+                LoadXml();
+                PopulateControls();
+            };
+            return ll;
         }
 
         private LinkLabel MakeOpenInNotepadLinkLabel()

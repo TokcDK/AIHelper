@@ -1065,6 +1065,23 @@ namespace AIHelper.Manage
             return $"{CurrentGameOverwriteFolderPath}{subPath}";
         }
 
+        private static Control _gameSettingsParentControl;
+        internal static void ReloadGameSettings(Control gameSettingsParentControl = null)
+        {
+            gameSettingsParentControl = gameSettingsParentControl ?? _gameSettingsParentControl;
+            if (gameSettingsParentControl == null) return;
+            
+            _gameSettingsParentControl = gameSettingsParentControl;
+
+            var selectedGameSettingsUserControl = ManageSettings.Games.Game.GameSettingsControl;
+            if (selectedGameSettingsUserControl != null)
+            {
+                selectedGameSettingsUserControl.Dock = DockStyle.Fill;
+                gameSettingsParentControl.Controls.Clear();
+                gameSettingsParentControl.Controls.Add(selectedGameSettingsUserControl);
+            }
+        }
+
         /// <summary>
         /// True when mo mode activated
         /// </summary>

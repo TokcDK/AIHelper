@@ -752,13 +752,7 @@ namespace AIHelper
             switch (SettingsTabControl.SelectedIndex)
             {
                 case 1:
-                    var gameSettingsUserControl = ManageSettings.Games.Game.GameSettingsControl;
-                    if (gameSettingsUserControl != null)
-                    {
-                        gameSettingsUserControl.Dock = DockStyle.Fill;
-                        SettingsTabDisplayTabPageGameBackgroundPanel.Controls.Clear();
-                        SettingsTabDisplayTabPageGameBackgroundPanel.Controls.Add(gameSettingsUserControl);
-                    }
+                    ManageSettings.ReloadGameSettings(SettingsTabDisplayTabPageGameBackgroundPanel);
                     break;
                 default:
                     break;

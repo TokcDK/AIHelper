@@ -114,7 +114,7 @@ namespace AIHelper.Manage
                     i++;
                 }
 
-                categoriesInfo.Add(ManageSettings.UpdateReport.HtmlReportCategoryTemplate.Replace("%category%", groupNames.TryGetValue(category.Key)).Replace("%items%", string.Join("<br>", descriptonLink)));
+                categoriesInfo.Add(ManageSettings.UpdateReport.HtmlReportCategoryTemplate.Replace("%category%", groupNames.GetValueOrFallbackToKey(category.Key)).Replace("%items%", string.Join("<br>", descriptonLink)));
             }
 
             // create new report contet
@@ -181,7 +181,7 @@ namespace AIHelper.Manage
             }
         }
 
-        private static string TryGetValue(this Dictionary<string, string> dictionary, string key)
+        private static string GetValueOrFallbackToKey(this Dictionary<string, string> dictionary, string key)
         {
             if (dictionary.TryGetValue(key, out string value)) return value;
 

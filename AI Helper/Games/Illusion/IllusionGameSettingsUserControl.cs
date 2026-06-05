@@ -261,10 +261,20 @@ namespace AIHelper.Games.Illusion
             _loading = true;
             try
             {
-                // Resolution – match by label
-                string sizeLabel = GetVal(SIZE_SETTING_KEY);
-                int ri = Array.FindIndex(Resolutions, r => r.Label == sizeLabel);
-                _cboResolution.SelectedIndex = ri >= 0 ? ri : 0;
+                // Resolution – first load by Width and Height, if not found then fallback to label matching
+                int w = int.TryParse(GetVal(WIDTH_SETTING_KEY), out int tw) ? tw : -1;
+                int h = int.TryParse(GetVal(HEIGHT_SETTING_KEY), out int th) ? th : -1;
+                if(w > 0 && h > 0)
+                {
+                    int ri = Array.FindIndex(Resolutions, r => r.W == w && r.H == h);
+                    _cboResolution.SelectedIndex = ri >= 0 ? ri : 0;
+                }
+                else
+                {
+                    string sizeLabel = GetVal(SIZE_SETTING_KEY);
+                    int ri = Array.FindIndex(Resolutions, r => r.Label == sizeLabel);
+                    _cboResolution.SelectedIndex = ri >= 0 ? ri : 0;
+                }
 
                 // Quality
                 if (int.TryParse(GetVal(QUALITY_SETTING_KEY), out int q))

@@ -268,6 +268,14 @@ namespace AIHelper.Games.Illusion
                 {
                     int ri = Array.FindIndex(Resolutions, r => r.W == w && r.H == h);
                     _cboResolution.SelectedIndex = ri >= 0 ? ri : 0;
+
+                    // Check if label matches resolution, if not then update XML to have consistent Size label
+                    string resolutionLabel = Resolutions[_cboResolution.SelectedIndex].Label;
+                    if (resolutionLabel != GetVal(SIZE_SETTING_KEY))
+                    {
+                        SetVal(SIZE_SETTING_KEY, resolutionLabel);
+                        SaveXml();
+                    }
                 }
                 else
                 {

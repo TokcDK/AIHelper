@@ -210,10 +210,6 @@ namespace AIHelper
         private void SetLocalizationStrings()
         {
             this.Text = "AI Helper" + " | " + ManageSettings.Games.Game.GameDisplayingName;
-            //QualityComboBox.Items.Add(T._("Perfomance"));
-            //QualityComboBox.Items.Add(T._("Normal"));
-            //QualityComboBox.Items.Add(T._("Quality"));
-
             this.LaunchTabPage.Text = string.Format("{0} {1}", T._("🚀"), T._("Launch"));
             this.GameButton.Text = string.Format("{0} {1}", T._("▶"), T._("Game"));
             this.StudioButton.Text = string.Format("{0} {1}", T._("🎨"), T._("Studio"));
@@ -234,10 +230,6 @@ namespace AIHelper
             this.CreateShortcutLinkLabel.Text = T._("Shortcut");
             this.AutoShortcutRegistryCheckBox.Text = T._("Autoshortcut");
             this.SettingsTabDisplayTabPage.Text = string.Format("{0} {1}", T._("🔳"), T._("Display"));
-            //this.OpenSetupXmlLinkLabel.Text = T._("Open game setup file");
-            //this.ResolutionLabel.Text = T._("Resolution:");
-            //this.QualityLabel.Text = T._("Quality:");
-            //this.FullScreenCheckBox.Text = T._("fullscreen");
             this.ToolsTabPage.Text = string.Format("{0} {1}", T._("🔨"), T._("Tools"));
             this.FoldersTabPage.Text = string.Format("{0} {1}", T._("🗁"), T._("Folders"));
             this.FormMinimizeButton.Text = T._("_");
@@ -477,17 +469,6 @@ namespace AIHelper
             ManageIni.GetINIFile(ManageSettings.AiHelperIniPath).SetKey("Settings", "autoCreateShortcutAndFixRegystry", ManageSettings.AutoShortcutRegistryCheckBoxChecked.ToString(CultureInfo.InvariantCulture));
         }
 
-        private void ResolutionComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //SetScreenResolution((sender as ComboBox).SelectedItem.ToString());
-        }
-
-        private void FullScreenCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            ManageOther.CheckBoxChangeColor(sender as CheckBox);
-            ManageXml.ChangeSetupXmlValue(SetupXmlPath, "Setting/FullScreen", (sender as CheckBox).Checked.ToString(CultureInfo.InvariantCulture).ToLowerInvariant());
-        }
-
         private void FixRegistryButton_Click(object sender, EventArgs e)
         {
             FixRegistryLinkLabel.Enabled = false;
@@ -599,11 +580,6 @@ namespace AIHelper
                 ManageModOrganizer.SetCurrentProfileByName(oldMOProfileName);
             }
             OnOffButtons();
-        }
-
-        private void QualityComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            //SetGraphicsQuality((sender as ComboBox).SelectedIndex.ToString(CultureInfo.InvariantCulture));
         }
 
         private void AIHelper_LocationChanged(object sender, EventArgs e)
@@ -747,11 +723,6 @@ namespace AIHelper
                     _log.Debug("An error occurred in time of ini settings save while the app closing . error:\r\n" + ex);
                 }
             }
-        }
-
-        private void SetupXmlPathLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            if (File.Exists(SetupXmlPath)) Process.Start("notepad.exe", SetupXmlPath);
         }
 
         private void AIGirlHelperTabControl_Selected(object sender, TabControlEventArgs e)

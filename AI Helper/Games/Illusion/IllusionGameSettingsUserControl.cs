@@ -65,6 +65,7 @@ namespace AIHelper.Games.Illusion
         private ComboBox _cboLanguage;
         private ComboBox _cboDisplay;
         private CheckBox _chkFullScreen;
+        private LinkLabel _lblOpenInNotepad;
         private Label _lblResolution, _lblQuality, _lblLanguage, _lblDisplay, _lblFullScreen;
 
         // ── UI Construction ───────────────────────────────────────────
@@ -72,11 +73,12 @@ namespace AIHelper.Games.Illusion
         {
             SuspendLayout();
 
+            int maxRows = 6;
             _table = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 2,
-                RowCount = 5,
+                RowCount = maxRows,
                 Padding = new Padding(8),
             };
 
@@ -84,30 +86,34 @@ namespace AIHelper.Games.Illusion
             _table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 38f));
             _table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 62f));
 
-            for (int i = 0; i < 5; i++)
-                _table.RowStyles.Add(new RowStyle(SizeType.Percent, 20f));
+            for (int i = 0; i < maxRows; i++)
+                _table.RowStyles.Add(new RowStyle(SizeType.Percent, 100f / maxRows));
 
-            // Row 0 – Resolution
+            // Add controls row by row
+            // Row 0 – Open setup xml in notepad
+            _lblOpenInNotepad = MakeOpenInNotepadLinkLabel();
+
+            // Row 1 – Resolution
             _lblResolution = MakeLabel(T._("Resolution:"));
             _cboResolution = MakeCombo(Resolutions.Select(r => r.Label).ToArray());
             _cboResolution.SelectedIndexChanged += OnResolutionChanged;
 
-            // Row 1 – Quality
+            // Row 2 – Quality
             _lblQuality = MakeLabel(T._("Quality:"));
             _cboQuality = MakeCombo(QualityItems);
             _cboQuality.SelectedIndexChanged += OnSettingChanged;
 
-            // Row 2 – Language
+            // Row 3 – Language
             _lblLanguage = MakeLabel(T._("Language:"));
             _cboLanguage = MakeCombo(LanguageItems);
             _cboLanguage.SelectedIndexChanged += OnSettingChanged;
 
-            // Row 3 – Display
+            // Row 4 – Display
             _lblDisplay = MakeLabel(T._("Display:"));
             _cboDisplay = MakeCombo(Enumerable.Range(0, 4).Select(i => String.Format(T._("Display {0}"), i)).ToArray());
             _cboDisplay.SelectedIndexChanged += OnSettingChanged;
 
-            // Row 4 – FullScreen
+            // Row 5 – FullScreen
             _lblFullScreen = MakeLabel(T._("Full Screen:"));
             _chkFullScreen = new CheckBox
             {
@@ -118,7 +124,8 @@ namespace AIHelper.Games.Illusion
             };
             _chkFullScreen.CheckedChanged += OnSettingChanged;
 
-            int row = 0;
+            _table.Controls.Add(_lblOpenInNotepad, 0, 0);
+            int row = 1;
             foreach (var (lbl, ctrl) in new (Control, Control)[]
             {
                 (_lblResolution, _cboResolution),
@@ -135,6 +142,30 @@ namespace AIHelper.Games.Illusion
 
             Controls.Add(_table);
             ResumeLayout(true);
+        }
+
+        private LinkLabel MakeOpenInNotepadLinkLabel()
+        {
+            var ll = new LinkLabel
+            {
+                Text = T._("Open game setup file"),
+                Dock = DockStyle.Fill,
+                TextAlign = System.Drawing.ContentAlignment.MiddleLeft,
+                Margin = new Padding(2),
+            };
+            ll.Click += (s, e) =>
+            {
+                try
+                {
+                    System.Diagnostics.Process.Start("notepad.exe", _xmlPath);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(string.Format(T._("Failed to open Notepad: {0}"), ex.Message), T._("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            };
+
+            return ll;
         }
 
         private static Label MakeLabel(string text) => new Label

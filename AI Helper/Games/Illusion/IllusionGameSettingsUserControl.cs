@@ -167,7 +167,14 @@ namespace AIHelper.Games.Illusion
             else
             {
                 // Create default document
-                _doc = new XDocument(
+                _doc = GetDefaultSetupXml();
+                SaveXml();
+            }
+        }
+
+        private static XDocument GetDefaultSetupXml()
+        {
+            return new XDocument(
                     new XDeclaration("1.0", "utf-16", null),
                     new XElement("Setting",
                         new XElement(SIZE_SETTING_KEY, DEFAULT_SCREEN_SIZE_LABEL),
@@ -178,8 +185,6 @@ namespace AIHelper.Games.Illusion
                         new XElement(DISPLAY_SETTING_KEY, DEFAULT_DISPLAY),
                         new XElement(LANGUAGE_SETTING_KEY, DEFAULT_LANGUAGE)
                     ));
-                SaveXml();
-            }
         }
 
         private void SaveXml()

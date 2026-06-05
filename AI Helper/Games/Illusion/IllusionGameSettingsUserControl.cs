@@ -261,34 +261,7 @@ namespace AIHelper.Games.Illusion
             _loading = true;
             try
             {
-                // Resolution – first load by Width and Height, if not found then fallback to label matching
-                int w = int.TryParse(GetVal(WIDTH_SETTING_KEY), out int tw) ? tw : -1;
-                int h = int.TryParse(GetVal(HEIGHT_SETTING_KEY), out int th) ? th : -1;
-                if(w > 0 && h > 0)
-                {
-                    int ri = Array.FindIndex(Resolutions, r => r.W == w && r.H == h);
-                    _cboResolution.SelectedIndex = ri >= 0 ? ri : 0;
-
-                    // Check if label matches resolution, if not then update XML to have consistent Size label
-                    string resolutionLabel = Resolutions[_cboResolution.SelectedIndex].Label;
-                    if (resolutionLabel != GetVal(SIZE_SETTING_KEY))
-                    {
-                        SetVal(SIZE_SETTING_KEY, resolutionLabel);
-                        SaveXml();
-                    }
-                }
-                else
-                {
-                    string sizeLabel = GetVal(SIZE_SETTING_KEY);
-                    int ri = Array.FindIndex(Resolutions, r => r.Label == sizeLabel);
-                    _cboResolution.SelectedIndex = ri >= 0 ? ri : 0;
-
-                    // Update XML to have consistent Width and Height values based on label
-                    var (label, rw, rh) = Resolutions[_cboResolution.SelectedIndex];
-                    SetVal(WIDTH_SETTING_KEY, rw);
-                    SetVal(HEIGHT_SETTING_KEY, rh);
-                    SaveXml();
-                }
+                SetResolution();
 
                 // Quality
                 if (int.TryParse(GetVal(QUALITY_SETTING_KEY), out int q))
@@ -301,10 +274,43 @@ namespace AIHelper.Games.Illusion
                 // Display
                 if (int.TryParse(GetVal(DISPLAY_SETTING_KEY), out int disp))
                     _cboDisplay.SelectedIndex = ManageMath.Clamp(disp, 0, _cboDisplay.Items.Count - 1);
+
                 // FullScreen
                 _chkFullScreen.Checked = GetVal(FULLSCREEN_SETTING_KEY).Equals("true", StringComparison.OrdinalIgnoreCase);
             }
             finally { _loading = false; }
+        }
+
+        private void SetResolution()
+        {
+            // Resolution – first load by Width and Height, if not found then fallback to label matching
+            int w = int.TryParse(GetVal(WIDTH_SETTING_KEY), out int tw) ? tw : -1;
+            int h = int.TryParse(GetVal(HEIGHT_SETTING_KEY), out int th) ? th : -1;
+            if (w > 0 && h > 0)
+            {
+                int ri = Array.FindIndex(Resolutions, r => r.W == w && r.H == h);
+                _cboResolution.SelectedIndex = ri >= 0 ? ri : 0;
+
+                // Check if label matches resolution, if not then update XML to have consistent Size label
+                string resolutionLabel = Resolutions[_cboResolution.SelectedIndex].Label;
+                if (resolutionLabel != GetVal(SIZE_SETTING_KEY))
+                {
+                    SetVal(SIZE_SETTING_KEY, resolutionLabel);
+                    SaveXml();
+                }
+            }
+            else
+            {
+                string sizeLabel = GetVal(SIZE_SETTING_KEY);
+                int ri = Array.FindIndex(Resolutions, r => r.Label == sizeLabel);
+                _cboResolution.SelectedIndex = ri >= 0 ? ri : 0;
+
+                // Update XML to have consistent Width and Height values based on label
+                var (label, rw, rh) = Resolutions[_cboResolution.SelectedIndex];
+                SetVal(WIDTH_SETTING_KEY, rw);
+                SetVal(HEIGHT_SETTING_KEY, rh);
+                SaveXml();
+            }
         }
 
         // ── Event Handlers ────────────────────────────────────────────

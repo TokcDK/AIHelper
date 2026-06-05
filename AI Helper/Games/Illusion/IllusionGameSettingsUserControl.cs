@@ -212,16 +212,15 @@ namespace AIHelper.Games.Illusion
 
                 // Quality
                 if (int.TryParse(GetVal(QUALITY_SETTING_KEY), out int q))
-                    _cboQuality.SelectedIndex = IllusionGameSattingsHelper.Clamp(q, 0, QualityItems.Length - 1);
+                    _cboQuality.SelectedIndex = ManageMath.Clamp(q, 0, QualityItems.Length - 1);
 
                 // Language
                 if (int.TryParse(GetVal(LANGUAGE_SETTING_KEY), out int lang))
-                    _cboLanguage.SelectedIndex = IllusionGameSattingsHelper.Clamp(lang, 0, LanguageItems.Length - 1);
+                    _cboLanguage.SelectedIndex = ManageMath.Clamp(lang, 0, LanguageItems.Length - 1);
 
                 // Display
                 if (int.TryParse(GetVal(DISPLAY_SETTING_KEY), out int disp))
-                    _cboDisplay.SelectedIndex = IllusionGameSattingsHelper.Clamp(disp, 0, _cboDisplay.Items.Count - 1);
-
+                    _cboDisplay.SelectedIndex = ManageMath.Clamp(disp, 0, _cboDisplay.Items.Count - 1);
                 // FullScreen
                 _chkFullScreen.Checked = GetVal(FULLSCREEN_SETTING_KEY).Equals("true", StringComparison.OrdinalIgnoreCase);
             }

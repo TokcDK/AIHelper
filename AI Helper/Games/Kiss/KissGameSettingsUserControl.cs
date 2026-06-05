@@ -28,6 +28,8 @@ namespace AIHelper.Games.Kiss
             PopulateControls();
         }
 
+        // Screen category keys
+        const string SCREEN_CATEGORY_KEY = "Screen";
         const string FULLSCREEN_SETTING_KEY = "FullScreen";
         const string WIDTH_SETTING_KEY = "ScreenSizeNow.width";
         const string HEIGHT_SETTING_KEY = "ScreenSizeNow.height";
@@ -42,7 +44,7 @@ namespace AIHelper.Games.Kiss
         private bool _loading;
 
         // Predefined resolution options
-        private static readonly (string Label, int W, int H)[] Resolutions =
+        private static readonly List<(string Label, int W, int H)> Resolutions = new List<(string Label, int W, int H)>
         {
             ("854 x 480 (16 : 9)",   854,  480),
             ("800 x 600 (4 : 3)",    800,  600),
@@ -264,8 +266,36 @@ namespace AIHelper.Games.Kiss
             }
         }
 
-        private string GetVal(string key) => _doc.Root?.Element(key)?.Value ?? string.Empty;
-        private void SetVal(string key, object val) => _doc.Root?.SetElementValue(key, val);
+        private string GetVal(string key, string categoryName = "") 
+        {
+
+            //<?xml version="1.0" encoding="utf-8" standalone="no"?>
+            //<!--CM3D2 Config-->
+            //<Config Version="22501">
+            //  <System>
+            //    <SysButtonShowAlways>true</SysButtonShowAlways>
+            //  </System>
+            //  <Screen>
+            //    <FullScreen>false</FullScreen>
+            //    <ScreenSizeNow.width>1280</ScreenSizeNow.width>
+            //    <ScreenSizeNow.height>720</ScreenSizeNow.height>
+            //    <Antialias>X2</Antialias>
+            //    <ShadowQuality>Medium</ShadowQuality>
+            //    <TextureQuality>High</TextureQuality>
+            //    <VSync>false</VSync>
+            //    <TargetFPS>60</TargetFPS>
+            //    <ViewFps>false</ViewFps>
+            //    <Bloom>true</Bloom>
+            //    <BloomValue>50</BloomValue>
+            //    <ScreenShotSuperSize>X1</ScreenShotSuperSize>
+            //    <ManAlpha>50</ManAlpha>
+            //  </Screen>
+            //</Config>
+
+            var elem = _doc.Root?.Element(string.IsNullOrEmpty(categoryName) ? SCREEN_CATEGORY_KEY : categoryName)?.Element(key);
+            return elem != null ? elem.Value : string.Empty;
+        }
+        private void SetVal(string key, object val, string categoryName = null) => _doc.Root?.Element(string.IsNullOrEmpty(categoryName) ? SCREEN_CATEGORY_KEY : categoryName)?.SetElementValue(key, val);
 
 
         // ── Populate UI from XML ──────────────────────────────────────
@@ -277,11 +307,11 @@ namespace AIHelper.Games.Kiss
                 SetResolution();
 
                 // Quality
-                var s = GetVal(QUALITY_SETTING_KEY);
-                _cboQuality.SelectedValue = s;
+                var s = GetVal(QUALITY_SETTING_KEY, SCREEN_CATEGORY_KEY);
+                _cboQuality.SelectedItem = s;
 
                 // FullScreen
-                _chkFullScreen.Checked = GetVal(FULLSCREEN_SETTING_KEY).Equals("true", StringComparison.OrdinalIgnoreCase);
+                _chkFullScreen.Checked = GetVal(FULLSCREEN_SETTING_KEY, SCREEN_CATEGORY_KEY).Equals("true", StringComparison.OrdinalIgnoreCase);
             }
             finally { _loading = false; }
         }
@@ -289,22 +319,29 @@ namespace AIHelper.Games.Kiss
         private void SetResolution()
         {
             // Resolution – first load by Width and Height, if not found then fallback to label matching
-            string wStr = GetVal(WIDTH_SETTING_KEY);
+            string wStr = GetVal(WIDTH_SETTING_KEY, SCREEN_CATEGORY_KEY);
             int w = int.TryParse(wStr, out int tw) ? tw : -1;
-            string hStr = GetVal(HEIGHT_SETTING_KEY);
+            string hStr = GetVal(HEIGHT_SETTING_KEY, SCREEN_CATEGORY_KEY);
             int h = int.TryParse(hStr, out int th) ? th : -1;
             if (w > 0 && h > 0)
             {
-                int ri = Array.FindIndex(Resolutions, r => r.W == w && r.H == h);
+                int ri = Resolutions.FindIndex(r => r.W == w && r.H == h);
+                if(ri < 0)
+                {
+                    string label = $"{w} x {h}";
+                    Resolutions.Add((label, w, h));
+                    _cboResolution.Items.Add(label);
+                    ri = Resolutions.Count - 1;
+                }
                 _cboResolution.SelectedIndex = ri >= 0 ? ri : 0;
             }
             else
             {
-                SetVal(WIDTH_SETTING_KEY, DEFAULT_SCREEN_WIDTH);
-                SetVal(HEIGHT_SETTING_KEY, DEFAULT_SCREEN_HEIGHT);
+                SetVal(WIDTH_SETTING_KEY, DEFAULT_SCREEN_WIDTH, SCREEN_CATEGORY_KEY);
+                SetVal(HEIGHT_SETTING_KEY, DEFAULT_SCREEN_HEIGHT, SCREEN_CATEGORY_KEY);
                 SaveXml();
 
-                int ri = Array.FindIndex(Resolutions, r => r.W == DEFAULT_SCREEN_WIDTH && r.H == DEFAULT_SCREEN_HEIGHT);
+                int ri = Resolutions.FindIndex(r => r.W == DEFAULT_SCREEN_WIDTH && r.H == DEFAULT_SCREEN_HEIGHT);
                 _cboResolution.SelectedIndex = ri >= 0 ? ri : 0;
 
             }
@@ -315,8 +352,8 @@ namespace AIHelper.Games.Kiss
         {
             if (_loading || _cboResolution.SelectedIndex < 0) return;
             var (_, w, h) = Resolutions[_cboResolution.SelectedIndex];
-            SetVal(WIDTH_SETTING_KEY, w);
-            SetVal(HEIGHT_SETTING_KEY, h);
+            SetVal(WIDTH_SETTING_KEY, w, SCREEN_CATEGORY_KEY);
+            SetVal(HEIGHT_SETTING_KEY, h, SCREEN_CATEGORY_KEY);
             SaveXml();
         }
 
@@ -325,9 +362,9 @@ namespace AIHelper.Games.Kiss
             if (_loading) return;
 
             if (sender == _cboQuality)
-                SetVal(QUALITY_SETTING_KEY, _cboQuality.SelectedIndex);
+                SetVal(QUALITY_SETTING_KEY, _cboQuality.SelectedItem, SCREEN_CATEGORY_KEY);
             else if (sender == _chkFullScreen)
-                SetVal(FULLSCREEN_SETTING_KEY, _chkFullScreen.Checked.ToString().ToLower());
+                SetVal(FULLSCREEN_SETTING_KEY, _chkFullScreen.Checked.ToString().ToLower(), SCREEN_CATEGORY_KEY);
 
             SaveXml();
         }

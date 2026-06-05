@@ -1,4 +1,6 @@
-﻿namespace AIHelper.Games.Kiss
+﻿using System.IO;
+
+namespace AIHelper.Games.Kiss
 {
     class Com3d2 : GameBase
     {
@@ -27,6 +29,11 @@
         public override string GameAbbreviation => "COM3D2";
 
         public override string CharacterPresetsFolderSubPath => "Preset";
+
+        public override string GetGameConfigFilePath(string parentPath)
+        {
+            return Path.Combine(parentPath, "config.xml");
+        }
 
         public override string[,] DirLinkPaths => new string[,]
             {

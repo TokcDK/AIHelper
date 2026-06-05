@@ -26,7 +26,7 @@ namespace AIHelper.Games.Illusion
 
         public IllusionGameSettingsUserControl()
         {
-            _xmlPath = ManageSettings.CurrentGameSetupXmlFilePathinData;
+            _xmlPath = ManageSettings.SetupXmlPath;
             AutoScaleMode = AutoScaleMode.Font;
             MinimumSize = new System.Drawing.Size(450, 165);
             Size = new System.Drawing.Size(450, 165);

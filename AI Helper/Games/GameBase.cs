@@ -238,6 +238,7 @@ namespace AIHelper.Games
         };
 
         public virtual UserControl GameSettingsControl { get => null; }
+        public virtual string GetGameConfigFilePath(string parentPath) => string.Empty;
 
         internal string GetGameName()
         {

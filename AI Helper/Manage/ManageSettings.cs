@@ -567,11 +567,15 @@ namespace AIHelper.Manage
         internal static string CurrentGameParentDirPath => ManageSettings.Games.Game.GameDirInfo.Parent.FullName;
 
 
-        internal static string CurrentGameSetupXmlFilePath => Path.Combine(ManageSettings.CurrentGameOverwriteFolderPath, "UserData", "setup.xml");
+        internal static string CurrentGameSetupXmlFilePath => GetCurrentGameConfigPath(ManageSettings.CurrentGameOverwriteFolderPath);
 
 
-        internal static string CurrentGameSetupXmlFilePathinData => Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "setup.xml");
+        internal static string CurrentGameSetupXmlFilePathinData => GetCurrentGameConfigPath(ManageSettings.CurrentGameDataDirPath);
 
+        internal static string GetCurrentGameConfigPath(string parentPath)
+        {
+            return CurrentGame.GetGameConfigFilePath(parentPath);
+        }
 
         internal static int CurrentGameIndex => 0;
 
@@ -1288,7 +1292,9 @@ namespace AIHelper.Manage
             get
             { 
                 if (!string.IsNullOrWhiteSpace(_setupXmlPath) && File.Exists(_setupXmlPath)) return _setupXmlPath;
-                return _setupXmlPath = ManageSettings.CurrentGameSetupXmlFilePathinData;
+                
+                string lastFilePath = ManageModOrganizer.GetLastPath(ManageSettings.CurrentGameSetupXmlFilePathinData);
+                return _setupXmlPath = lastFilePath;
             } 
             internal set
             {

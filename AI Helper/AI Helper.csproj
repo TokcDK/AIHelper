@@ -125,6 +125,12 @@
     </Compile>
     <Compile Include="Games\Illusion\IllGames\HoneyCome.cs" />
     <Compile Include="Games\Illusion\IllGames\IllGameBase.cs" />
+    <Compile Include="Games\Kiss\KissGameSettingsUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Games\Kiss\KissGameSettingsUserControl.Designer.cs">
+      <DependentUpon>KissGameSettingsUserControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Install\UpdateMaker\ContentTypeParsers\ContentTypeParserBase.cs" />
     <Compile Include="Install\UpdateMaker\ContentTypeParsers\ContentTypeParserDirs.cs" />
     <Compile Include="Install\UpdateMaker\ContentTypeParsers\ContentTypeParserFiles.cs" />
@@ -396,6 +402,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Games\Illusion\IllusionGameSettingsUserControl.resx">
       <DependentUpon>IllusionGameSettingsUserControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Games\Kiss\KissGameSettingsUserControl.resx">
+      <DependentUpon>KissGameSettingsUserControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Manage\Functions\BindMOProfileToExe\BindForm.resx">
       <DependentUpon>BindForm.cs</DependentUpon>

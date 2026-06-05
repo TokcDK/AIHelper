@@ -1,30 +1,21 @@
 ﻿using AIHelper.Manage;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
-namespace AIHelper.Games.Illusion
+namespace AIHelper.Games.Kiss
 {
-    public partial class IllusionGameSettingsUserControl : UserControl
+    public partial class KissGameSettingsUserControl : UserControl
     {
-        const string SIZE_SETTING_KEY = "Size";
-        const string WIDTH_SETTING_KEY = "Width";
-        const string HEIGHT_SETTING_KEY = "Height";
-        const string QUALITY_SETTING_KEY = "Quality";
-        const string FULLSCREEN_SETTING_KEY = "FullScreen";
-        const string DISPLAY_SETTING_KEY = "Display";
-        const string LANGUAGE_SETTING_KEY = "Language";
-        const string DEFAULT_SCREEN_SIZE_LABEL = "1280 x 720 (16 : 9)";
-        const string DEFAULT_SCREEN_WIDTH = "1280";
-        const string DEFAULT_SCREEN_HEIGHT = "720";
-        const int DEFAULT_QUALITY = 2;
-        const bool DEFAULT_FULLSCREEN = false;
-        const int DEFAULT_DISPLAY = 0;
-        const int DEFAULT_LANGUAGE = 0;
-
-        public IllusionGameSettingsUserControl()
+        public KissGameSettingsUserControl()
         {
             InitializeComponent();
 
@@ -36,6 +27,15 @@ namespace AIHelper.Games.Illusion
             LoadXml();
             PopulateControls();
         }
+
+        const string FULLSCREEN_SETTING_KEY = "FullScreen";
+        const string WIDTH_SETTING_KEY = "ScreenSizeNow.width";
+        const string HEIGHT_SETTING_KEY = "ScreenSizeNow.height";
+        const string QUALITY_SETTING_KEY = "TextureQuality";
+        const int DEFAULT_SCREEN_WIDTH = 1280;
+        const int DEFAULT_SCREEN_HEIGHT = 720;
+        const string DEFAULT_QUALITY = "High";
+        const bool DEFAULT_FULLSCREEN = false;
 
         private readonly string _xmlPath;
         private XDocument _doc;
@@ -57,19 +57,16 @@ namespace AIHelper.Games.Illusion
             ("3840 x 2160 (16 : 9)",3840, 2160),
         };
 
-        private static readonly string[] QualityItems = { "Performance", "Normal", "Quality" };
-        private static readonly string[] LanguageItems = { T._("Japanese"), T._("English"), T._("German"), T._("French") };
+        private static readonly string[] QualityItems = { "Low", "Medium", "High" };
 
         // ── Controls ──────────────────────────────────────────────────
         private TableLayoutPanel _table;
         private ComboBox _cboResolution;
         private ComboBox _cboQuality;
-        private ComboBox _cboLanguage;
-        private ComboBox _cboDisplay;
         private CheckBox _chkFullScreen;
         private LinkLabel _lblOpenInNotepad;
         private LinkLabel _lblReloadFromXml;
-        private Label _lblResolution, _lblQuality, _lblLanguage, _lblDisplay, _lblFullScreen;
+        private Label _lblResolution, _lblQuality, _lblFullScreen;
 
         // ── UI Construction ───────────────────────────────────────────
         private void BuildLayout()
@@ -107,16 +104,6 @@ namespace AIHelper.Games.Illusion
             _cboQuality = MakeCombo(QualityItems);
             _cboQuality.SelectedIndexChanged += OnSettingChanged;
 
-            // Row 3 – Language
-            _lblLanguage = MakeLabel(T._("Language:"));
-            _cboLanguage = MakeCombo(LanguageItems);
-            _cboLanguage.SelectedIndexChanged += OnSettingChanged;
-
-            // Row 4 – Display
-            _lblDisplay = MakeLabel(T._("Display:"));
-            _cboDisplay = MakeCombo(Enumerable.Range(0, 4).Select(i => String.Format(T._("Display {0}"), i)).ToArray());
-            _cboDisplay.SelectedIndexChanged += OnSettingChanged;
-
             // Row 5 – FullScreen
             _lblFullScreen = MakeLabel(T._("Full Screen:"));
             _chkFullScreen = new CheckBox
@@ -135,8 +122,6 @@ namespace AIHelper.Games.Illusion
             {
                 (_lblResolution, _cboResolution),
                 (_lblQuality,    _cboQuality),
-                (_lblLanguage,   _cboLanguage),
-                (_lblDisplay,    _cboDisplay),
                 (_lblFullScreen, _chkFullScreen),
             })
             {
@@ -227,17 +212,43 @@ namespace AIHelper.Games.Illusion
 
         private static XDocument GetDefaultSetupXml()
         {
+            //<?xml version="1.0" encoding="utf-8" standalone="no"?>
+            //<!--CM3D2 Config-->
+            //<Config Version="22501">
+            //  <System>
+            //    <SysButtonShowAlways>true</SysButtonShowAlways>
+            //  </System>
+            //  <Screen>
+            //    <FullScreen>false</FullScreen>
+            //    <ScreenSizeNow.width>1280</ScreenSizeNow.width>
+            //    <ScreenSizeNow.height>720</ScreenSizeNow.height>
+            //    <Antialias>X2</Antialias>
+            //    <ShadowQuality>Medium</ShadowQuality>
+            //    <TextureQuality>High</TextureQuality>
+            //    <VSync>false</VSync>
+            //    <TargetFPS>60</TargetFPS>
+            //    <ViewFps>false</ViewFps>
+            //    <Bloom>true</Bloom>
+            //    <BloomValue>50</BloomValue>
+            //    <ScreenShotSuperSize>X1</ScreenShotSuperSize>
+            //    <ManAlpha>50</ManAlpha>
+            //  </Screen>
+            //</Config>
             return new XDocument(
-                    new XDeclaration("1.0", "utf-16", null),
-                    new XElement("Setting",
-                        new XElement(SIZE_SETTING_KEY, DEFAULT_SCREEN_SIZE_LABEL),
+                new XDeclaration("1.0", "utf-8", "no"),
+                new XElement("Config",
+                    new XAttribute("Version", "1510"),
+                    new XElement("System",
+                        new XElement("SysButtonShowAlways", "true")
+                    ),
+                    new XElement("Screen",
+                        new XElement(FULLSCREEN_SETTING_KEY, DEFAULT_FULLSCREEN.ToString().ToLower()),
                         new XElement(WIDTH_SETTING_KEY, DEFAULT_SCREEN_WIDTH),
                         new XElement(HEIGHT_SETTING_KEY, DEFAULT_SCREEN_HEIGHT),
-                        new XElement(QUALITY_SETTING_KEY, DEFAULT_QUALITY),
-                        new XElement(FULLSCREEN_SETTING_KEY, DEFAULT_FULLSCREEN),
-                        new XElement(DISPLAY_SETTING_KEY, DEFAULT_DISPLAY),
-                        new XElement(LANGUAGE_SETTING_KEY, DEFAULT_LANGUAGE)
-                    ));
+                        new XElement(QUALITY_SETTING_KEY, DEFAULT_QUALITY)
+                    )
+                )
+            );
         }
 
         private void SaveXml()
@@ -266,16 +277,8 @@ namespace AIHelper.Games.Illusion
                 SetResolution();
 
                 // Quality
-                if (int.TryParse(GetVal(QUALITY_SETTING_KEY), out int q))
-                    _cboQuality.SelectedIndex = ManageMath.Clamp(q, 0, QualityItems.Length - 1);
-
-                // Language
-                if (int.TryParse(GetVal(LANGUAGE_SETTING_KEY), out int lang))
-                    _cboLanguage.SelectedIndex = ManageMath.Clamp(lang, 0, LanguageItems.Length - 1);
-
-                // Display
-                if (int.TryParse(GetVal(DISPLAY_SETTING_KEY), out int disp))
-                    _cboDisplay.SelectedIndex = ManageMath.Clamp(disp, 0, _cboDisplay.Items.Count - 1);
+                var s = GetVal(QUALITY_SETTING_KEY);
+                _cboQuality.SelectedValue = s;
 
                 // FullScreen
                 _chkFullScreen.Checked = GetVal(FULLSCREEN_SETTING_KEY).Equals("true", StringComparison.OrdinalIgnoreCase);
@@ -286,32 +289,24 @@ namespace AIHelper.Games.Illusion
         private void SetResolution()
         {
             // Resolution – first load by Width and Height, if not found then fallback to label matching
-            int w = int.TryParse(GetVal(WIDTH_SETTING_KEY), out int tw) ? tw : -1;
-            int h = int.TryParse(GetVal(HEIGHT_SETTING_KEY), out int th) ? th : -1;
+            string wStr = GetVal(WIDTH_SETTING_KEY);
+            int w = int.TryParse(wStr, out int tw) ? tw : -1;
+            string hStr = GetVal(HEIGHT_SETTING_KEY);
+            int h = int.TryParse(hStr, out int th) ? th : -1;
             if (w > 0 && h > 0)
             {
                 int ri = Array.FindIndex(Resolutions, r => r.W == w && r.H == h);
                 _cboResolution.SelectedIndex = ri >= 0 ? ri : 0;
-
-                // Check if label matches resolution, if not then update XML to have consistent Size label
-                string resolutionLabel = Resolutions[_cboResolution.SelectedIndex].Label;
-                if (resolutionLabel != GetVal(SIZE_SETTING_KEY))
-                {
-                    SetVal(SIZE_SETTING_KEY, resolutionLabel);
-                    SaveXml();
-                }
             }
             else
             {
-                string sizeLabel = GetVal(SIZE_SETTING_KEY);
-                int ri = Array.FindIndex(Resolutions, r => r.Label == sizeLabel);
+                SetVal(WIDTH_SETTING_KEY, DEFAULT_SCREEN_WIDTH);
+                SetVal(HEIGHT_SETTING_KEY, DEFAULT_SCREEN_HEIGHT);
+                SaveXml();
+
+                int ri = Array.FindIndex(Resolutions, r => r.W == DEFAULT_SCREEN_WIDTH && r.H == DEFAULT_SCREEN_HEIGHT);
                 _cboResolution.SelectedIndex = ri >= 0 ? ri : 0;
 
-                // Update XML to have consistent Width and Height values based on label
-                var (label, rw, rh) = Resolutions[_cboResolution.SelectedIndex];
-                SetVal(WIDTH_SETTING_KEY, rw);
-                SetVal(HEIGHT_SETTING_KEY, rh);
-                SaveXml();
             }
         }
 
@@ -319,9 +314,7 @@ namespace AIHelper.Games.Illusion
         private void OnResolutionChanged(object sender, EventArgs e)
         {
             if (_loading || _cboResolution.SelectedIndex < 0) return;
-
-            var (label, w, h) = Resolutions[_cboResolution.SelectedIndex];
-            SetVal(SIZE_SETTING_KEY, label);
+            var (_, w, h) = Resolutions[_cboResolution.SelectedIndex];
             SetVal(WIDTH_SETTING_KEY, w);
             SetVal(HEIGHT_SETTING_KEY, h);
             SaveXml();
@@ -333,10 +326,6 @@ namespace AIHelper.Games.Illusion
 
             if (sender == _cboQuality)
                 SetVal(QUALITY_SETTING_KEY, _cboQuality.SelectedIndex);
-            else if (sender == _cboLanguage)
-                SetVal(LANGUAGE_SETTING_KEY, _cboLanguage.SelectedIndex);
-            else if (sender == _cboDisplay)
-                SetVal(DISPLAY_SETTING_KEY, _cboDisplay.SelectedIndex);
             else if (sender == _chkFullScreen)
                 SetVal(FULLSCREEN_SETTING_KEY, _chkFullScreen.Checked.ToString().ToLower());
 

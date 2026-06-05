@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Windows.Forms;
 
 namespace AIHelper.Games.Kiss
 {
@@ -29,6 +30,8 @@ namespace AIHelper.Games.Kiss
         public override string GameAbbreviation => "COM3D2";
 
         public override string CharacterPresetsFolderSubPath => "Preset";
+
+        public override UserControl GameSettingsControl =>  new KissGameSettingsUserControl();
 
         public override string GetGameConfigFilePath(string parentPath)
         {

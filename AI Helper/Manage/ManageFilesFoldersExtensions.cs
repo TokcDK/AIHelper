@@ -735,6 +735,12 @@ namespace AIHelper.Manage
             if (cleanEmptyDirs) DeleteEmptySubfolders(sourceDirectory.FullName, true);
         }
 
+        /// <summary>
+        /// Move file to target path. If file with same name exist in target path it will be renamed with current date and time in format "yyyy_MM_dd_HH_mm_ss" and then moved to target path. If <paramref name="overwrite"/> is true, then existing file will be renamed with ".moveBak" extension and after moving source file to target path, if ".moveBak" file exist, it will be deleted if target file exist or restored if target file not exist. So in this case no files will be lost.
+        /// </summary>
+        /// <param name="fileInfo"></param>
+        /// <param name="targetPath"></param>
+        /// <param name="overwrite"></param>
         public static void MoveToWithBackup(this FileInfo fileInfo, string targetPath, bool overwrite = false)
         {
             if (File.Exists(targetPath))

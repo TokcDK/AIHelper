@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace AIHelper.Manage
 {
@@ -90,6 +91,65 @@ namespace AIHelper.Manage
                     _log.Error("Cant kill process \"" + process.ProcessName + "\" with id" + process.Id + ". Error:\r\n" + ex);
                 }
             }
+        }
+
+        internal static (string, string, string) GetGameStudioLaunchExecutionParameters(bool isGame)
+        {
+            string exePath;
+            string arguments = string.Empty;
+            string oldMOProfileName = string.Empty;
+
+            bool isVr = ManageSettings.CurrentGameIsHaveVr && ManageSettings.MainForm.VRGameCheckBox.Checked;
+
+            if (ManageSettings.IsMoMode)
+            {
+                var customMOExeTitle = isGame ? ManageSettings.CurrentGameExemoProfileName + (isVr ? "VR" : "") 
+                    : ManageModOrganizer.GetMOcustomExecutableTitleByExeName(ManageSettings.StudioExeName);
+                exePath = ManageSettings.AppMOexePath; // set Mod organizer exe path
+
+                if (ManageModOrganizer.TryGetMOProfileNameByExeTitle(customMOExeTitle, out string profileNameToRun))
+                {
+                    oldMOProfileName = ManageModOrganizer.SetCurrentProfileByName(profileNameToRun);
+                }
+
+                arguments = "moshortcut://:\"" + customMOExeTitle + "\"";
+            }
+            else
+            {
+                string exeName = isGame ? (isVr ? ManageSettings.CurrentGame.GameExeNameVr : ManageSettings.CurrentGameExeName) : ManageSettings.StudioExeName;
+                exePath = Path.Combine(ManageSettings.CurrentGameDataDirPath, exeName + ".exe");
+            }
+
+            return (exePath, arguments, oldMOProfileName);
+        }
+
+        internal static void OnAfterRunMainGameStudioExe(string oldMOProfileName)
+        {
+            if (ManageSettings.IsMoMode && !string.IsNullOrEmpty(oldMOProfileName))
+            {
+                // return last profile
+                ManageModOrganizer.SetCurrentProfileByName(oldMOProfileName);
+            }
+        }
+
+        /// <summary>
+        /// Execute the main game or studio exe, depending on the parameter. Before executing, it will wait if the game is changing, then kill all processes with the same name as the exe to prevent multiple instances, and after execution, it will return to the previous MO profile if in MO mode.
+        /// </summary>
+        /// <param name="isGame">Indicates whether to run the main game (true) or the studio (false).</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        internal async static Task RunMainGameStudioExe(bool isGame)
+        {
+            ManageSettings.MainForm.OnOffButtons(false);
+
+            await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
+
+            var (exePath, arguments, oldMOProfileName) = ManageProcess.GetGameStudioLaunchExecutionParameters(isGame);
+
+            ManageProcess.KillProcessesByName(Path.GetFileNameWithoutExtension(exePath));
+            ManageProcess.RunProgramAndWaitHidden(exePath, arguments);
+            ManageProcess.OnAfterRunMainGameStudioExe(oldMOProfileName);
+
+            ManageSettings.MainForm.OnOffButtons();
         }
     }
 }

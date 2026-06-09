@@ -496,83 +496,17 @@ namespace AIHelper
 
         private async void GameButton_Click(object sender, EventArgs e)
         {
-            OnOffButtons(false);
+            await ManageProcess.RunMainGameStudioExe(true);
+        }
 
-            await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
-
-            bool isVr = ManageSettings.CurrentGameIsHaveVr && ManageSettings.MainForm.VRGameCheckBox.Checked;
-
-            string exePath;
-            string arguments = string.Empty;
-            string oldMOProfileName = "";
-            if (IsMoMode)
-            {
-                var currentGameExemoProfileName = ManageSettings.CurrentGameExemoProfileName;
-                var customExeTitleName = currentGameExemoProfileName + (isVr ? "VR" : "");
-                exePath = ManageSettings.AppMOexePath; // set Mod organizer exe path
-
-                ManageProcess.KillProcessesByName(ManageModOrganizer.GetExeNameByTitle(customExeTitleName));
-
-                if (ManageModOrganizer.TryGetMOProfileNameByExeTitle(customExeTitleName, out string profileNameToRun))
-                {
-                    oldMOProfileName = ManageModOrganizer.SetCurrentProfileByName(profileNameToRun);
-                }
-
-                arguments = "moshortcut://:\"" + customExeTitleName + "\"";
-            }
-            else
-            {
-                exePath = Path.Combine(ManageSettings.CurrentGameDataDirPath, (isVr ? ManageSettings.CurrentGame.GameExeNameVr : ManageSettings.CurrentGameExeName) + ".exe");
-            }
-
-            ManageProcess.KillProcessesByName(Path.GetFileNameWithoutExtension(exePath));
-            ManageProcess.RunProgramAndWaitHidden(exePath, arguments);
-
-            if (IsMoMode && !string.IsNullOrEmpty(oldMOProfileName))
-            {
-                // return last profile
-                ManageModOrganizer.SetCurrentProfileByName(oldMOProfileName);
-            }
-            OnOffButtons();
+        private async void StudioButton_Click(object sender, EventArgs e)
+        {
+            await ManageProcess.RunMainGameStudioExe(false);
         }
 
         internal void OnOffButtons(bool switchOn = true)
         {
             AIGirlHelperTabControl.Invoke((Action)(() => AIGirlHelperTabControl.Enabled = switchOn));
-        }
-
-        private async void StudioButton_Click(object sender, EventArgs e)
-        {
-            OnOffButtons(false);
-
-            await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
-
-            string oldMOProfileName = "";
-            if (IsMoMode)
-            {
-                ManageProcess.KillProcessesByName(ManageSettings.StudioExeName);
-                ManageProcess.KillProcessesByName(Path.GetFileNameWithoutExtension(ManageSettings.AppMOexePath));
-
-                var studio = ManageModOrganizer.GetMOcustomExecutableTitleByExeName(ManageSettings.StudioExeName);
-                if (ManageModOrganizer.TryGetMOProfileNameByExeTitle(studio, out string profileNameToRun))
-                {
-                    oldMOProfileName = ManageModOrganizer.SetCurrentProfileByName(profileNameToRun);
-                }
-                ManageProcess.RunProgramAndWaitHidden(ManageSettings.AppMOexePath, "moshortcut://:" + studio);
-            }
-            else
-            {
-                ManageProcess.KillProcessesByName(ManageSettings.StudioExeName);
-
-                var exe = Path.Combine(ManageSettings.CurrentGameDataDirPath, ManageSettings.StudioExeName + ".exe");
-                ManageProcess.RunProgramAndWaitHidden(exe, string.Empty);
-            }
-            if (IsMoMode && !string.IsNullOrEmpty(oldMOProfileName))
-            {
-                // return last profile
-                ManageModOrganizer.SetCurrentProfileByName(oldMOProfileName);
-            }
-            OnOffButtons();
         }
 
         private void AIHelper_LocationChanged(object sender, EventArgs e)

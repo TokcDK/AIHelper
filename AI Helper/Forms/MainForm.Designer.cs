@@ -913,7 +913,6 @@
         private System.Windows.Forms.Panel MainFormBackgroundPanel;
         private System.Windows.Forms.Label ThemeSelectLabel;
         internal System.Windows.Forms.ComboBox SelectThemeComboBox;
-        private System.Windows.Forms.CheckBox VRGameCheckBox;
         private System.Windows.Forms.CheckBox BepInExConsoleCheckBox;
         private System.Windows.Forms.LinkLabel OpenLogLinkLabel;
         private System.Windows.Forms.Button AddGameButton;
@@ -924,6 +923,7 @@
         internal System.Windows.Forms.Button FormCloseButton;
         internal System.Windows.Forms.Label FormTitleLabel;
         private System.Windows.Forms.TableLayoutPanel BepInExLogTableLayoutPanel;
+        public System.Windows.Forms.CheckBox VRGameCheckBox;
     }
 }
 

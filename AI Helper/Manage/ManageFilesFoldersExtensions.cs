@@ -837,5 +837,34 @@ namespace AIHelper.Manage
                 ? path
                 : path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
         }
+
+        /// <summary>
+        /// Compares two files for equality by checking their sizes and the first 1KB of their contents. This is a quick check and may not guarantee that the files are identical, but it can be useful for a fast comparison.
+        /// </summary>
+        /// <param name="sourcePyInfo"></param>
+        /// <param name="targetPyInfo"></param>
+        /// <returns></returns>
+        internal static bool FilesAreEqual(this FileInfo sourcePyInfo, FileInfo targetPyInfo)
+        {
+            const int BYTES_TO_CHECK = 1024; // Check the first 1KB for a quick comparison
+            if (sourcePyInfo.Length != targetPyInfo.Length)
+                return false;
+            using (FileStream fs1 = sourcePyInfo.OpenRead())
+            using (FileStream fs2 = targetPyInfo.OpenRead())
+            {
+                byte[] buffer1 = new byte[BYTES_TO_CHECK];
+                byte[] buffer2 = new byte[BYTES_TO_CHECK];
+                int bytesRead1 = fs1.Read(buffer1, 0, BYTES_TO_CHECK);
+                int bytesRead2 = fs2.Read(buffer2, 0, BYTES_TO_CHECK);
+                if (bytesRead1 != bytesRead2)
+                    return false;
+                for (int i = 0; i < bytesRead1; i++)
+                {
+                    if (buffer1[i] != buffer2[i])
+                        return false;
+                }
+            }
+            return true;
+        }
     }
 }

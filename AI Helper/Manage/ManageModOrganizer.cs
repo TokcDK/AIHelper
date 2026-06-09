@@ -2991,16 +2991,29 @@ namespace AIHelper.Manage
         internal static void CheckBaseGamesPy()
         {
             string moTargetBaseGamesPluginGamesDirPath = ManageSettings.MoBaseGamesPluginGamesDirPath;
-            if (!Directory.Exists(moTargetBaseGamesPluginGamesDirPath)) return;
+            if (!Directory.Exists(moTargetBaseGamesPluginGamesDirPath))
+            {
+                _log.Warn($"Base games plugin games dir not found in MO folder, path: {moTargetBaseGamesPluginGamesDirPath}");
+                return;
+            }
 
             string pyname = ManageSettings.Games.Game.BasicGamePluginName;
-            if (string.IsNullOrWhiteSpace(pyname)) return;
+            if (string.IsNullOrWhiteSpace(pyname))
+            {
+                _log.Warn($"Base game plugin name is empty, check MO ini General gameName parameter, value: {pyname}");
+                return;
+            }
 
             string moSourceBaseGamesPluginGamesDirPath = ManageSettings.AppResBasicGamesDir;
             var sourcePyInfo = new FileInfo(Path.Combine(moSourceBaseGamesPluginGamesDirPath, $"{pyname}.py"));
+            if (!sourcePyInfo.Exists)
+            {
+                _log.Warn($"Source py file for base game plugin not found, path: {sourcePyInfo.FullName}");
+                return;
+            }
 
             var targetPyInfo = new FileInfo(Path.Combine(moTargetBaseGamesPluginGamesDirPath, $"{pyname}.py"));
-            if (sourcePyInfo.Exists && (!targetPyInfo.Exists || sourcePyInfo.Length != targetPyInfo.Length))
+            if (!targetPyInfo.Exists || sourcePyInfo.Length != targetPyInfo.Length || !ManageFilesFoldersExtensions.FilesAreEqual(sourcePyInfo, targetPyInfo))
             {
                 targetPyInfo.Directory.Create();
                 sourcePyInfo.CopyTo(targetPyInfo.FullName, true);

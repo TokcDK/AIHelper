@@ -558,6 +558,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool IsPictureExtension(this string fileExtension)
         {
+            fileExtension = fileExtension.ToLowerInvariant();
             return !string.IsNullOrWhiteSpace(fileExtension) && (fileExtension == ".jpg" || fileExtension == ".png" || fileExtension == ".bmp");
         }
 

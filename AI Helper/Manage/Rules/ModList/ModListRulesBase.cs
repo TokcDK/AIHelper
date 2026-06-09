@@ -55,7 +55,7 @@ namespace AIHelper.Manage.Rules.ModList
                 return true;
             }
 
-            if (IsExistInDataOrOverwrite(inSubPath, out foundModName))
+            if (TryGetAnyFileSourceInDataOrOverwrite(inSubPath, out foundModName))
             {
                 return true;
             }
@@ -110,7 +110,7 @@ namespace AIHelper.Manage.Rules.ModList
             return false;
         }
 
-        private static bool IsExistInDataOrOverwrite(string[] inSubPath, out string foundModName)
+        private static bool TryGetAnyFileSourceInDataOrOverwrite(string[] inSubPath, out string foundModName)
         {
             for (int i = 0; i < inSubPath.Length; i++)
             {

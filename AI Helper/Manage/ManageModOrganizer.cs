@@ -190,11 +190,11 @@ namespace AIHelper.Manage
         internal static bool TryGetFileSourceInDataOrOverwrite(string filedir, out string source)
         {
             if (File.Exists(
-                       Path.GetFullPath(
-                           Path.Combine(ManageSettings.CurrentGameMoOverwritePath + Path.DirectorySeparatorChar + filedir)
-                                       )
-                       )
-              )
+                Path.GetFullPath(
+                    Path.Combine(ManageSettings.CurrentGameMoOverwritePath + Path.DirectorySeparatorChar + filedir)
+                                 )
+                            )
+                )
             {
                 source = ManageSettings.MoOverwriteDirName;
                 return true;

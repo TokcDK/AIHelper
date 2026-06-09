@@ -2611,22 +2611,6 @@ namespace AIHelper.Manage
         }
         #endregion
 
-        /// <summary>
-        /// Gets setup.xml path from latest enabled mod like must be in Mod Organizer
-        /// </summary>
-        /// <returns></returns>
-        public static string GetSetupXmlPathForCurrentProfile()
-        {
-            if (ManageSettings.IsMoMode)
-            {
-                return GetLastPath(ManageSettings.CurrentGameSetupXmlFilePath);
-            }
-            else
-            {
-                return ManageSettings.CurrentGameSetupXmlFilePathinData;
-            }
-        }
-
         public static string GetMetaParameterValue(string metaFilePath, string neededValue)
         {
             return ManageIni.GetIniValueIfExist(metaFilePath, neededValue);

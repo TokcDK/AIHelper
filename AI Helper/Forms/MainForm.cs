@@ -55,10 +55,6 @@ namespace AIHelper
         internal bool IsBetaTest;
 
         /// <summary>
-        /// Get or set path to setup.xml graphic settings for current game
-        /// </summary>
-        private static string SetupXmlPath { get => ManageSettings.SetupXmlPath; set => ManageSettings.SetupXmlPath = value; }
-        /// <summary>
         /// Get or set MO mode for current game
         /// </summary>
         private static bool IsMoMode { get => ManageSettings.IsMoMode; set => ManageSettings.IsMoMode = value; }
@@ -387,8 +383,6 @@ namespace AIHelper
 
         private void CommonModeSpecificSetup()
         {
-            SetupXmlPath = ManageSettings.CurrentGameSetupXmlFilePath;
-
             StudioButton.Enabled = false;
         }
 
@@ -412,8 +406,6 @@ namespace AIHelper
 
             //try start in another thread for perfomance purposes
             new Thread(obj => RunSlowActions()).Start();
-
-            SetupXmlPath = ManageModOrganizer.GetSetupXmlPathForCurrentProfile();
         }
 
         private static void SetMoMode(bool setText = true)

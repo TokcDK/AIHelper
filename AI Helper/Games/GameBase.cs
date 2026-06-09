@@ -244,29 +244,5 @@ namespace AIHelper.Games
         {
             return !string.IsNullOrWhiteSpace(GameName) ? GameName : GameName = ManageModOrganizer.GetMoBasicGamePluginGameName();
         }
-
-        //protected string SearchGameFolder()
-        //{
-        //    try
-        //    {
-        //        if (Directory.Exists(ManageSettings.GetCurrentGameParentDirPath()))
-        //        {
-        //            foreach (var folder in Directory.EnumerateDirectories(ManageSettings.GetCurrentGameParentDirPath()))
-        //            {
-        //                if (File.Exists(Path.Combine(folder, "Data", GetGameExeName() + ".exe")))
-        //                {
-        //                    return Path.GetFileName(folder);
-        //                }
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _log.Debug("An error occured while SearchGameFolder. error:\r\n" + ex);
-        //    }
-        //    return string.Empty;
-        //}
-
-
     }
 }

@@ -2996,7 +2996,7 @@ namespace AIHelper.Manage
             }
 
             var targetPyInfo = new FileInfo(Path.Combine(moTargetBaseGamesPluginGamesDirPath, $"{pyname}.py"));
-            if (!targetPyInfo.Exists || sourcePyInfo.Length != targetPyInfo.Length || !ManageFilesFoldersExtensions.FilesAreEqual(sourcePyInfo, targetPyInfo))
+            if (!targetPyInfo.Exists || !ManageFilesFoldersExtensions.FilesAreEqual(sourcePyInfo, targetPyInfo))
             {
                 targetPyInfo.Directory.Create();
                 sourcePyInfo.CopyTo(targetPyInfo.FullName, true);

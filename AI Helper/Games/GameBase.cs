@@ -10,7 +10,6 @@ namespace AIHelper.Games
         protected readonly static Logger _log = LogManager.GetCurrentClassLogger();
         public GameBase()
         {
-            //InitActions();
         }
 
         public abstract string BasicGamePluginName { get; }
@@ -52,18 +51,6 @@ namespace AIHelper.Games
         /// </summary>
         /// <returns></returns>
         public virtual string GameDirName { get => GameDirInfo.Name; }
-        //return SearchGameFolder();
-        //protected string GetTheGameFolderName(string defaultGameFolderName)
-        //{
-        //    if (GamefolderName.Length > 0 || (GamefolderName = SearchGameFolder()).Length > 0)
-        //    {
-        //        return GamefolderName;
-        //    }
-        //    else
-        //    {
-        //        return defaultGameFolderName;
-        //    }
-        //}
 
         public virtual string GameDisplayingName { get => GameDirName; }
 
@@ -167,24 +154,6 @@ namespace AIHelper.Games
 
         public virtual string[,] DirLinkPaths => new string[,]
             {
-                    //{
-                    //    Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
-                    //    ,
-                    //    Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx", "core", "BepInEx.Preloader.dll")
-                    //}
-                    //,
-                    //{
-                    //    Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "doorstop_config.ini")
-                    //    ,
-                    //    Path.Combine(ManageSettings.GetCurrentGameDataPath(), "doorstop_config.ini")
-                    //}
-                    //,
-                    //{
-                    //    Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "winhttp.dll")
-                    //    ,
-                    //    Path.Combine(ManageSettings.GetCurrentGameDataPath(), "winhttp.dll")
-                    //}
-                    //,
                     {
                         Path.Combine(ManageSettings.CurrentGameModsDirPath, "MyUserData", "UserData", "MaterialEditor")
                         ,

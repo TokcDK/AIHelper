@@ -78,41 +78,40 @@ namespace AIHelper.Manage.Rules.ModList
             foreach (var subModName in ModlistData.AllModNamesList)
             {
                 ///add modname to already checked
-                if (!alreadyChecked.Contains(subModName))
-                {
-                    alreadyChecked.Add(subModName);
-                }
+                alreadyChecked.Add(subModName);
 
                 for (int i = 0; i < inSubPath.Length; i++)
                 {
                     var filePath = Path.Combine(ManageSettings.CurrentGameModsDirPath, subModName) + Path.DirectorySeparatorChar + inSubPath[i];
-                    if (subModName != ModlistData.ModName && File.Exists(filePath))
+                    if (subModName == ModlistData.ModName || !File.Exists(filePath))
                     {
-                        foundModName = subModName;
+                        continue;
+                    }
 
-                        //when mod enabled return true and not add
-                        if (ModlistData.EnabledModNamesList.Contains(foundModName))
-                        {
-                            return true;
-                        }
+                    foundModName = subModName;
 
-                        ///Check if path not exists in rest of Enabled mods
-                        if (IsRestOfEnabledModsContainsSameFile(alreadyChecked, inSubPath[i]))
-                        {
-                            return true;
-                        }
-
-                        //else if mod not enabled then add it for activation
-                        if (!dontAddCandidate)
-                        {
-                            if (!ModlistData.ModsMustBeEnabledCandidates.ContainsKey(foundModName))
-                            {
-                                ModlistData.ModsMustBeEnabledCandidates.Add(foundModName, "req:" + subModName);
-                            }
-                        }
-
+                    //when mod enabled return true and not add
+                    if (ModlistData.EnabledModNamesList.Contains(foundModName))
+                    {
                         return true;
                     }
+
+                    ///Check if path not exists in rest of Enabled mods
+                    if (IsRestOfEnabledModsContainsSameFile(alreadyChecked, inSubPath[i]))
+                    {
+                        return true;
+                    }
+
+                    //else if mod not enabled then add it for activation
+                    if (!dontAddCandidate)
+                    {
+                        if (!ModlistData.ModsMustBeEnabledCandidates.ContainsKey(foundModName))
+                        {
+                            ModlistData.ModsMustBeEnabledCandidates.Add(foundModName, "req:" + subModName);
+                        }
+                    }
+
+                    return true;
                 }
             }
 

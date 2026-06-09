@@ -114,7 +114,7 @@ namespace AIHelper.Manage.Rules.ModList
         {
             for (int i = 0; i < inSubPath.Length; i++)
             {
-                if (ManageModOrganizer.IsFileDirExistsInDataOrOverwrite(inSubPath[i], out string source))
+                if (ManageModOrganizer.TryGetFileSourceInDataOrOverwrite(inSubPath[i], out string source))
                 {
                     foundModName = source;
                     return true;
@@ -221,7 +221,7 @@ namespace AIHelper.Manage.Rules.ModList
         private bool ParseIncSearchFileInEnabledMods(string modname, string ruleData)
         {
             ruleData = ruleData.Remove(0, 5).TrimStart();
-            if (ManageModOrganizer.IsFileDirExistsInDataOrOverwrite(ruleData, out _))
+            if (ManageModOrganizer.TryGetFileSourceInDataOrOverwrite(ruleData, out _))
             {
                 if (!ModlistData.ModsMustBeDisabled.ContainsKey(modname))
                 {

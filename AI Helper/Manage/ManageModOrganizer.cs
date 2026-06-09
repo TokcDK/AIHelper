@@ -187,7 +187,7 @@ namespace AIHelper.Manage
             }
         }
 
-        internal static bool IsFileDirExistsInDataOrOverwrite(string filedir, out string source)
+        internal static bool TryGetFileSourceInDataOrOverwrite(string filedir, out string source)
         {
             if (File.Exists(
                        Path.GetFullPath(

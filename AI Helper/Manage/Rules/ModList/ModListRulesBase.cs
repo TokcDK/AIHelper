@@ -60,9 +60,6 @@ namespace AIHelper.Manage.Rules.ModList
                 return true;
             }
 
-            //AllModsList = ManageMO.GetModNamesListFromActiveMOProfile(false);
-            //EnabledModsList = ManageMO.GetModNamesListFromActiveMOProfile();
-
             foundModName = string.Empty;
             HashSet<string> alreadyChecked = new HashSet<string>();
             foreach (var subModName in ModlistData.AllModNamesList)
@@ -99,31 +96,8 @@ namespace AIHelper.Manage.Rules.ModList
                             {
                                 ModlistData.ModsMustBeEnabledCandidates.Add(foundModName, "req:" + subModName);
                             }
-
-                            //if (modeANDOR > 0)
-                            //{
-                            //    if (!modlistData.ModsMustBeEnabledCandidates.ContainsKey(FoundModName))
-                            //    {
-                            //        modlistData.ModsMustBeEnabledCandidates.Add(FoundModName, "req:" + SubModName);
-                            //    }
-                            //}
-                            //else
-                            //{
-                            //    if (!modlistData.ModsMustBeEnabledCandidates.ContainsKey(FoundModName))
-                            //    {
-                            //        modlistData.ModsMustBeEnabledCandidates.Add(FoundModName, "req:" + SubModName);
-                            //    }
-                            //    //if (!modlistData.ModsMustBeEnabled.Contains(FoundModName))
-                            //    //{
-                            //    //    modlistData.ModsMustBeEnabled.Add(FoundModName);
-                            //    //}
-                            //}
                         }
 
-                        //if (!ModsMustBeEnabled.Contains(FoundModName))
-                        //{
-                        //    ModsMustBeEnabled.Add(FoundModName);
-                        //}
                         return true;
                     }
                 }

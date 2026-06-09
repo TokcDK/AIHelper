@@ -16,7 +16,7 @@ namespace AIHelper.Manage
         /// <summary>
         /// reference to the main form
         /// </summary>
-        public static MainForm MainForm { get; internal set; }
+        public static MainForm MainForm { get => MainForm.Instance; }
 
         public static GameData Games { get; set; } = new GameData();
 

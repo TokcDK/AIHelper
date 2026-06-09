@@ -62,6 +62,7 @@ namespace AIHelper
         /// Get or set MO mode for current game
         /// </summary>
         private static bool IsMoMode { get => ManageSettings.IsMoMode; set => ManageSettings.IsMoMode = value; }
+        public static MainForm Instance { get; private set; }
 
         public MainForm()
         {
@@ -70,7 +71,7 @@ namespace AIHelper
             ManageSettings.ApplicationStartupPath = Application.StartupPath;
             ManageSettings.ApplicationProductName = Application.ProductName;
 
-            ManageSettings.MainForm = this; // set reference to the form for controls use
+            Instance = this; // set instance for static access
 
             //--- Resizable borderless form settings  
             this.FormBorderStyle = FormBorderStyle.None;

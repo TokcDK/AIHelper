@@ -866,5 +866,18 @@ namespace AIHelper.Manage
             }
             return true;
         }
+
+        internal static bool StringFilesEqual(FileInfo sourcePyInfo, FileInfo targetPyInfo)
+        {
+            try
+            {
+                return sourcePyInfo.FullName == targetPyInfo.FullName || (sourcePyInfo.Exists && targetPyInfo.Exists && sourcePyInfo.Length == targetPyInfo.Length && sourcePyInfo.GetHashCode() == targetPyInfo.GetHashCode());
+            }
+            catch (Exception ex)
+            {
+                _log.Error($"Error in {nameof(StringFilesEqual)}:" + Environment.NewLine + "sourceFilePath=" + sourcePyInfo.FullName + Environment.NewLine + "targetFilePath=" + targetPyInfo.FullName + Environment.NewLine + ex);
+                return false;
+            }
+        }
     }
 }

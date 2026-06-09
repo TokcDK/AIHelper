@@ -103,12 +103,9 @@ namespace AIHelper.Manage.Rules.ModList
                     }
 
                     //else if mod not enabled then add it for activation
-                    if (!dontAddCandidate)
+                    if (!dontAddCandidate && !ModlistData.ModsMustBeEnabledCandidates.ContainsKey(foundModName))
                     {
-                        if (!ModlistData.ModsMustBeEnabledCandidates.ContainsKey(foundModName))
-                        {
-                            ModlistData.ModsMustBeEnabledCandidates.Add(foundModName, "req:" + subModName);
-                        }
+                        ModlistData.ModsMustBeEnabledCandidates.Add(foundModName, "req:" + subModName);
                     }
 
                     return true;

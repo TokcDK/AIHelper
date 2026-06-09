@@ -30,6 +30,12 @@ namespace AIHelper.Manage
             return $"{w / gcd}:{h / gcd}";
         }
 
+        /// <summary>
+        /// Calculates the greatest common divisor (GCD) of two integers using the Euclidean algorithm.
+        /// </summary>
+        /// <param name="a">The first integer.</param>
+        /// <param name="b">The second integer.</param>
+        /// <returns>The greatest common divisor of the two integers.</returns>
         private static int GCD(int a, int b)
         {
             while (b != 0)

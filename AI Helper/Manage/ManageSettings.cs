@@ -676,6 +676,7 @@ namespace AIHelper.Manage
 
 
         internal static string CurrentGameDataDirPath => Path.Combine(CurrentGameDirPath, "Data");
+        internal static string CurrentGameNativeModeFullDataDirPath => $"{CurrentGameDataDirPath}-full";
 
 
         internal static string AppModOrganizerDirName => "MO";
@@ -1393,5 +1394,6 @@ namespace AIHelper.Manage
             };
 
         public static string BasicGamesPluginFilesTempDirPath => Path.Combine(ManageSettings.AppResDirPath, "temp_basic_games_plugin_files");
+        public static string CommonModeMetaDirName { get; } = "[COMMON-MODE-META]";
     }
 }

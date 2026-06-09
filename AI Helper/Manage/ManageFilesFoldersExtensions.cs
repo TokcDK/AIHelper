@@ -721,7 +721,7 @@ namespace AIHelper.Manage
                 var targetPath = Path.Combine(targetDirectory.FullName, fi.Name);
                 if (File.Exists(targetPath) && !overwriteFiles) continue;
 
-                fi.MoveTo(targetPath, overwrite: overwriteFiles);
+                fi.MoveToWithBackup(targetPath, overwrite: overwriteFiles);
             }
 
             // move each subdirectory using recursion.
@@ -735,7 +735,7 @@ namespace AIHelper.Manage
             if (cleanEmptyDirs) DeleteEmptySubfolders(sourceDirectory.FullName, true);
         }
 
-        public static void MoveTo(this FileInfo fileInfo, string targetPath, bool overwrite = false)
+        public static void MoveToWithBackup(this FileInfo fileInfo, string targetPath, bool overwrite = false)
         {
             if (File.Exists(targetPath))
             {

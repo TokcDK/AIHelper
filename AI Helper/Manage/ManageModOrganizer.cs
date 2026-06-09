@@ -196,7 +196,7 @@ namespace AIHelper.Manage
                        )
               )
             {
-                source = "overwrite";
+                source = ManageSettings.MoOverwriteDirName;
                 return true;
             }
             else
@@ -210,7 +210,7 @@ namespace AIHelper.Manage
                                    )
                    )
                 {
-                    source = "data";
+                    source = ManageSettings.DataDirName;
                     return true;
                 }
             }

@@ -59,8 +59,9 @@
             this.ThemeSelectLabel = new System.Windows.Forms.Label();
             this.SelectThemeComboBox = new System.Windows.Forms.ComboBox();
             this.OtherSettingsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.BepInExConsoleCheckBox = new System.Windows.Forms.CheckBox();
+            this.BepInExLogTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.OpenLogLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.BepInExConsoleCheckBox = new System.Windows.Forms.CheckBox();
             this.VRGameCheckBox = new System.Windows.Forms.CheckBox();
             this.JPLauncherRunLinkLabel = new System.Windows.Forms.LinkLabel();
             this.ExtraSettingsLinkLabel = new System.Windows.Forms.LinkLabel();
@@ -96,6 +97,7 @@
             this.ManageGameTableLayoutPanel1.SuspendLayout();
             this.CurrentGamePanel1.SuspendLayout();
             this.OtherSettingsFlowLayoutPanel.SuspendLayout();
+            this.BepInExLogTableLayoutPanel.SuspendLayout();
             this.SettingsTabDisplayTabPage.SuspendLayout();
             this.ToolsTabPage.SuspendLayout();
             this.FoldersTabPage.SuspendLayout();
@@ -526,8 +528,7 @@
             this.OtherSettingsFlowLayoutPanel.AutoSize = true;
             this.OtherSettingsFlowLayoutPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.OtherSettingsFlowLayoutPanel.BackColor = System.Drawing.Color.Transparent;
-            this.OtherSettingsFlowLayoutPanel.Controls.Add(this.BepInExConsoleCheckBox);
-            this.OtherSettingsFlowLayoutPanel.Controls.Add(this.OpenLogLinkLabel);
+            this.OtherSettingsFlowLayoutPanel.Controls.Add(this.BepInExLogTableLayoutPanel);
             this.OtherSettingsFlowLayoutPanel.Controls.Add(this.VRGameCheckBox);
             this.OtherSettingsFlowLayoutPanel.Controls.Add(this.JPLauncherRunLinkLabel);
             this.OtherSettingsFlowLayoutPanel.Controls.Add(this.ExtraSettingsLinkLabel);
@@ -542,15 +543,19 @@
             this.OtherSettingsFlowLayoutPanel.TabIndex = 10;
             this.OtherSettingsFlowLayoutPanel.WrapContents = false;
             // 
-            // BepInExConsoleCheckBox
+            // BepInExLogTableLayoutPanel
             // 
-            this.BepInExConsoleCheckBox.AutoSize = true;
-            this.BepInExConsoleCheckBox.Location = new System.Drawing.Point(3, 3);
-            this.BepInExConsoleCheckBox.Name = "BepInExConsoleCheckBox";
-            this.BepInExConsoleCheckBox.Size = new System.Drawing.Size(15, 14);
-            this.BepInExConsoleCheckBox.TabIndex = 32;
-            this.BepInExConsoleCheckBox.UseVisualStyleBackColor = true;
-            this.BepInExConsoleCheckBox.CheckedChanged += new System.EventHandler(this.ConsoleCheckBox_CheckedChanged);
+            this.BepInExLogTableLayoutPanel.ColumnCount = 2;
+            this.BepInExLogTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.BepInExLogTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.BepInExLogTableLayoutPanel.Controls.Add(this.OpenLogLinkLabel, 1, 0);
+            this.BepInExLogTableLayoutPanel.Controls.Add(this.BepInExConsoleCheckBox, 0, 0);
+            this.BepInExLogTableLayoutPanel.Location = new System.Drawing.Point(3, 3);
+            this.BepInExLogTableLayoutPanel.Name = "BepInExLogTableLayoutPanel";
+            this.BepInExLogTableLayoutPanel.RowCount = 1;
+            this.BepInExLogTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.BepInExLogTableLayoutPanel.Size = new System.Drawing.Size(43, 18);
+            this.BepInExLogTableLayoutPanel.TabIndex = 33;
             // 
             // OpenLogLinkLabel
             // 
@@ -559,7 +564,7 @@
             this.OpenLogLinkLabel.BackColor = System.Drawing.Color.Transparent;
             this.OpenLogLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.OpenLogLinkLabel.LinkColor = System.Drawing.Color.WhiteSmoke;
-            this.OpenLogLinkLabel.Location = new System.Drawing.Point(24, 5);
+            this.OpenLogLinkLabel.Location = new System.Drawing.Point(23, 3);
             this.OpenLogLinkLabel.Name = "OpenLogLinkLabel";
             this.OpenLogLinkLabel.Size = new System.Drawing.Size(21, 13);
             this.OpenLogLinkLabel.TabIndex = 31;
@@ -568,13 +573,23 @@
             this.OpenLogLinkLabel.VisitedLinkColor = System.Drawing.Color.Gainsboro;
             this.OpenLogLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OpenLogLinkLabel_LinkClicked);
             // 
+            // BepInExConsoleCheckBox
+            // 
+            this.BepInExConsoleCheckBox.AutoSize = true;
+            this.BepInExConsoleCheckBox.Location = new System.Drawing.Point(3, 3);
+            this.BepInExConsoleCheckBox.Name = "BepInExConsoleCheckBox";
+            this.BepInExConsoleCheckBox.Size = new System.Drawing.Size(14, 14);
+            this.BepInExConsoleCheckBox.TabIndex = 32;
+            this.BepInExConsoleCheckBox.UseVisualStyleBackColor = true;
+            this.BepInExConsoleCheckBox.CheckedChanged += new System.EventHandler(this.ConsoleCheckBox_CheckedChanged);
+            // 
             // VRGameCheckBox
             // 
             this.VRGameCheckBox.AutoSize = true;
             this.VRGameCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.VRGameCheckBox.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.VRGameCheckBox.ForeColor = System.Drawing.Color.White;
-            this.VRGameCheckBox.Location = new System.Drawing.Point(51, 3);
+            this.VRGameCheckBox.Location = new System.Drawing.Point(52, 3);
             this.VRGameCheckBox.Name = "VRGameCheckBox";
             this.VRGameCheckBox.Size = new System.Drawing.Size(36, 18);
             this.VRGameCheckBox.TabIndex = 30;
@@ -589,7 +604,7 @@
             this.JPLauncherRunLinkLabel.BackColor = System.Drawing.Color.Transparent;
             this.JPLauncherRunLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.JPLauncherRunLinkLabel.LinkColor = System.Drawing.Color.White;
-            this.JPLauncherRunLinkLabel.Location = new System.Drawing.Point(93, 0);
+            this.JPLauncherRunLinkLabel.Location = new System.Drawing.Point(94, 0);
             this.JPLauncherRunLinkLabel.Name = "JPLauncherRunLinkLabel";
             this.JPLauncherRunLinkLabel.Size = new System.Drawing.Size(67, 13);
             this.JPLauncherRunLinkLabel.TabIndex = 10;
@@ -603,7 +618,7 @@
             this.ExtraSettingsLinkLabel.BackColor = System.Drawing.Color.Transparent;
             this.ExtraSettingsLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.ExtraSettingsLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.ExtraSettingsLinkLabel.Location = new System.Drawing.Point(166, 0);
+            this.ExtraSettingsLinkLabel.Location = new System.Drawing.Point(167, 0);
             this.ExtraSettingsLinkLabel.Name = "ExtraSettingsLinkLabel";
             this.ExtraSettingsLinkLabel.Size = new System.Drawing.Size(72, 13);
             this.ExtraSettingsLinkLabel.TabIndex = 9;
@@ -617,7 +632,7 @@
             this.FixRegistryLinkLabel.BackColor = System.Drawing.Color.Transparent;
             this.FixRegistryLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.FixRegistryLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.FixRegistryLinkLabel.Location = new System.Drawing.Point(244, 0);
+            this.FixRegistryLinkLabel.Location = new System.Drawing.Point(245, 0);
             this.FixRegistryLinkLabel.Name = "FixRegistryLinkLabel";
             this.FixRegistryLinkLabel.Size = new System.Drawing.Size(56, 13);
             this.FixRegistryLinkLabel.TabIndex = 12;
@@ -632,7 +647,7 @@
             this.CreateShortcutLinkLabel.BackColor = System.Drawing.Color.Transparent;
             this.CreateShortcutLinkLabel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.CreateShortcutLinkLabel.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.CreateShortcutLinkLabel.Location = new System.Drawing.Point(306, 0);
+            this.CreateShortcutLinkLabel.Location = new System.Drawing.Point(307, 0);
             this.CreateShortcutLinkLabel.Name = "CreateShortcutLinkLabel";
             this.CreateShortcutLinkLabel.Size = new System.Drawing.Size(47, 13);
             this.CreateShortcutLinkLabel.TabIndex = 13;
@@ -646,7 +661,7 @@
             this.AutoShortcutRegistryCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.AutoShortcutRegistryCheckBox.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.AutoShortcutRegistryCheckBox.ForeColor = System.Drawing.Color.White;
-            this.AutoShortcutRegistryCheckBox.Location = new System.Drawing.Point(359, 3);
+            this.AutoShortcutRegistryCheckBox.Location = new System.Drawing.Point(360, 3);
             this.AutoShortcutRegistryCheckBox.Name = "AutoShortcutRegistryCheckBox";
             this.AutoShortcutRegistryCheckBox.Size = new System.Drawing.Size(87, 18);
             this.AutoShortcutRegistryCheckBox.TabIndex = 0;
@@ -844,6 +859,8 @@
             this.CurrentGamePanel1.PerformLayout();
             this.OtherSettingsFlowLayoutPanel.ResumeLayout(false);
             this.OtherSettingsFlowLayoutPanel.PerformLayout();
+            this.BepInExLogTableLayoutPanel.ResumeLayout(false);
+            this.BepInExLogTableLayoutPanel.PerformLayout();
             this.SettingsTabDisplayTabPage.ResumeLayout(false);
             this.ToolsTabPage.ResumeLayout(false);
             this.FoldersTabPage.ResumeLayout(false);
@@ -906,6 +923,7 @@
         internal System.Windows.Forms.Button FormMinimizeButton;
         internal System.Windows.Forms.Button FormCloseButton;
         internal System.Windows.Forms.Label FormTitleLabel;
+        private System.Windows.Forms.TableLayoutPanel BepInExLogTableLayoutPanel;
     }
 }
 

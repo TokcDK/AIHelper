@@ -35,7 +35,7 @@ namespace AIHelper.Manage.Rules.ModList
         /// <returns></returns>
         protected bool FindModWithThePath(string inSubPath, out string foundModName, int modeAndor = 0, bool dontAddCandidate = false)
         {
-            return FindModWithThePath(new[] { inSubPath }, out foundModName, modeAndor, dontAddCandidate);
+            return TryFindModWithPaths(new[] { inSubPath }, out foundModName, modeAndor, dontAddCandidate);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace AIHelper.Manage.Rules.ModList
         /// <param name="foundModName">mod name of found mod</param>
         /// <param name="modeAndor">0-none, 1-and, 2-or</param>
         /// <returns></returns>
-        protected bool FindModWithThePath(string[] inSubPath, out string foundModName, int modeAndor = 0, bool dontAddCandidate = false)
+        protected bool TryFindModWithPaths(string[] inSubPath, out string foundModName, int modeAndor = 0, bool dontAddCandidate = false)
         {
             RemoveRulesTagFile(ref inSubPath);
 

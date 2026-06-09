@@ -217,8 +217,10 @@ namespace AIHelper.Manage
         {
             //https://stackoverflow.com/questions/9993561/c-sharp-open-file-path-starting-with-userprofile
             var gameNameByExe = ManageSettings.CurrentGameExeName.Replace("_64", string.Empty).Replace("_32", string.Empty);
-            var userprofile = Path.Combine("%USERPROFILE%", "appdata", "locallow", "illusion__" + gameNameByExe.Replace("Trial", string.Empty), gameNameByExe, "output_log.txt");
-            var outputLog = Environment.ExpandEnvironmentVariables(userprofile);
+            //var userprofile = Path.Combine("%USERPROFILE%", "appdata", "locallow", "illusion__" + gameNameByExe.Replace("Trial", string.Empty), gameNameByExe, "output_log.txt");
+            //var outputLog = Environment.ExpandEnvironmentVariables(userprofile);
+
+            string outputLog = ManageModOrganizer.GetLastPath(Path.Combine(ManageSettings.CurrentGameDataDirPath, "BepInEx", "LogOutput.log"));
             if (File.Exists(outputLog))
             {
                 Process.Start("explorer.exe", outputLog);

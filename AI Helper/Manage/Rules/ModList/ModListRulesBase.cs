@@ -235,10 +235,6 @@ namespace AIHelper.Manage.Rules.ModList
         {
             if (ModlistData.EnabledModNamesList.Contains(ruleData))
             {
-                //if (!modlistData.ModsMustBeDisabledCandidates.Contains(modname))
-                //{
-                //    modlistData.ModsMustBeDisabledCandidates.Add(modname);
-                //}
                 if (!ModlistData.ModsMustBeDisabled.ContainsKey(modname))
                 {
                     ModlistData.ModsMustBeDisabled.Add(modname, "inc:" + ruleData);
@@ -253,10 +249,6 @@ namespace AIHelper.Manage.Rules.ModList
             ruleData = ruleData.Remove(0, 5).TrimStart();
             if (ManageModOrganizer.IsFileDirExistsInDataOrOverwrite(ruleData, out _))
             {
-                //if (!modlistData.ModsMustBeDisabledCandidates.Contains(modname))
-                //{
-                //    modlistData.ModsMustBeDisabledCandidates.Add(modname);
-                //}
                 if (!ModlistData.ModsMustBeDisabled.ContainsKey(modname))
                 {
                     ModlistData.ModsMustBeDisabled.Add(modname, "inc:" + ruleData);
@@ -269,10 +261,6 @@ namespace AIHelper.Manage.Rules.ModList
                 var targetfilePath = Path.GetFullPath(modPath + Path.DirectorySeparatorChar + ruleData);
                 if (File.Exists(targetfilePath) || Directory.Exists(targetfilePath))
                 {
-                    //if (!modlistData.ModsMustBeDisabledCandidates.Contains(modname))
-                    //{
-                    //    modlistData.ModsMustBeDisabledCandidates.Add(modname);
-                    //}
                     if (!ModlistData.ModsMustBeDisabled.ContainsKey(modname))
                     {
                         ModlistData.ModsMustBeDisabled.Add(modname, "inc:" + ruleData);

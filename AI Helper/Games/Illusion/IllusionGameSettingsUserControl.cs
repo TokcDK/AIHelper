@@ -296,7 +296,8 @@ namespace AIHelper.Games.Illusion
                 int ri = Resolutions.FindIndex(r => r.W == w && r.H == h);
                 if (ri < 0)
                 {
-                    string label = $"{w} x {h}";
+                    // set label as "width x height (calculated aspect ratio in standart form)"
+                    string label = String.Format("{0} x {1} ({2})", w, h, ManageMath.GetAspectRatio(w, h));
                     Resolutions.Add((label, w, h));
                     _cboResolution.Items.Add(label);
                     ri = Resolutions.Count - 1;

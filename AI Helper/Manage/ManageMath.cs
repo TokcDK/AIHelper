@@ -23,5 +23,22 @@ namespace AIHelper.Manage
             if (value.CompareTo(max) > 0) return max;
             return value;
         }
+
+        internal static object GetAspectRatio(int w, int h)
+        {
+            int gcd = GCD(w, h);
+            return $"{w / gcd}:{h / gcd}";
+        }
+
+        private static int GCD(int a, int b)
+        {
+            while (b != 0)
+            {
+                int temp = b;
+                b = a % b;
+                a = temp;
+            }
+            return a;
+        }
     }
 }

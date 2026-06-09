@@ -125,6 +125,7 @@
     </Compile>
     <Compile Include="Games\Illusion\IllGames\HoneyCome.cs" />
     <Compile Include="Games\Illusion\IllGames\IllGameBase.cs" />
+    <Compile Include="Games\Kiss\KissGameBase.cs" />
     <Compile Include="Games\Kiss\KissGameSettingsUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace AIHelper.Games.Kiss
 {
-    class Com3d2 : GameBase
+    class Com3d2 : KissGameBase
     {
         public override void InitActions()
         {
@@ -16,8 +16,6 @@ namespace AIHelper.Games.Kiss
 
         public override string ZipmodManifestGameName => "com3d2";
 
-        public override bool IsHaveSideloaderMods => false;
-
         //public override string GameDirName => base.GameDirName;
         //return GetTheGameFolderName("Koikatsu");
         public override string GameExeName => "COM3D2x64";
@@ -28,54 +26,6 @@ namespace AIHelper.Games.Kiss
         public override string GameStudioExeName => "CharaStudio";
 
         public override string GameAbbreviation => "COM3D2";
-
-        public override string CharacterPresetsFolderSubPath => "Preset";
-
-        public override UserControl GameSettingsControl =>  new KissGameSettingsUserControl();
-
-        public override string GetGameConfigFilePath(string parentPath)
-        {
-            return Path.Combine(parentPath, "config.xml");
-        }
-
-        public override string[,] DirLinkPaths => new string[,]
-            {
-                    //{
-                    //    Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
-                    //    ,
-                    //    Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx", "core", "BepInEx.Preloader.dll")
-                    //}
-                    //,
-                    //{
-                    //    Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "doorstop_config.ini")
-                    //    ,
-                    //    Path.Combine(ManageSettings.GetCurrentGameDataPath(), "doorstop_config.ini")
-                    //}
-                    //,
-                    //{
-                    //    Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "winhttp.dll")
-                    //    ,
-                    //    Path.Combine(ManageSettings.GetCurrentGameDataPath(), "winhttp.dll")
-                    //}
-                    //,
-                    //{
-                    //    Path.Combine(ManageSettings.GetCurrentGameMoOverwritePath(), "UserData", "MaterialEditor")
-                    //    ,
-                    //    Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "MaterialEditor")
-                    //}
-                    //,
-                    //{
-                    //    Path.Combine(ManageSettings.GetCurrentGameMoOverwritePath(), "UserData", "Overlays")
-                    //    ,
-                    //    Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "Overlays")
-                    //}
-                    //,
-                    //{
-                    //    Path.Combine(ManageSettings.GetCurrentGameMoOverwritePath(), "UserData", "cap")
-                    //    ,
-                    //    Path.Combine(ManageSettings.GetCurrentGameDataPath(), "UserData", "cap")
-                    //}
-            };
 
         public override string BasicGamePluginName => "game_com3d2";
     }

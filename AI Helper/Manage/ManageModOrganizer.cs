@@ -2990,16 +2990,16 @@ namespace AIHelper.Manage
         /// </summary>
         internal static void CheckBaseGamesPy()
         {
-            var moTargetBaseGamesPluginGamesDirPath = ManageSettings.MoBaseGamesPluginGamesDirPath;
-            var moSourceBaseGamesPluginGamesDirPath = ManageSettings.AppResBasicGamesDir;
+            string moTargetBaseGamesPluginGamesDirPath = ManageSettings.MoBaseGamesPluginGamesDirPath;
             if (!Directory.Exists(moTargetBaseGamesPluginGamesDirPath)) return;
 
-            var pyname = ManageSettings.Games.Game.BasicGamePluginName;
+            string pyname = ManageSettings.Games.Game.BasicGamePluginName;
             if (string.IsNullOrWhiteSpace(pyname)) return;
 
-            var targetPyInfo = new FileInfo(Path.Combine(moTargetBaseGamesPluginGamesDirPath, pyname + ".py"));
-            var sourcePyInfo = new FileInfo(Path.Combine(moSourceBaseGamesPluginGamesDirPath, pyname + ".py"));
+            string moSourceBaseGamesPluginGamesDirPath = ManageSettings.AppResBasicGamesDir;
+            var sourcePyInfo = new FileInfo(Path.Combine(moSourceBaseGamesPluginGamesDirPath, $"{pyname}.py"));
 
+            var targetPyInfo = new FileInfo(Path.Combine(moTargetBaseGamesPluginGamesDirPath, $"{pyname}.py"));
             if (sourcePyInfo.Exists && (!targetPyInfo.Exists || sourcePyInfo.Length != targetPyInfo.Length))
             {
                 targetPyInfo.Directory.Create();

@@ -805,5 +805,30 @@ namespace AIHelper.Manage
         {
             return IsDir ? Directory.Exists(path) : File.Exists(path);
         }
+
+
+        /// <summary>
+        /// Normalizes separators and removes trailing slashes for directory-root comparisons.
+        /// </summary>
+        internal static string NormalizeDirectoryPath(string path)
+        {
+            path = NormalizePath(path);
+            return string.IsNullOrEmpty(path)
+                ? path
+                : path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        }
+
+        /// <summary>
+        /// Normalizes path separators to the platform directory separator.
+        /// </summary>
+        internal static string NormalizePath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                return path;
+
+            return Path.AltDirectorySeparatorChar == Path.DirectorySeparatorChar
+                ? path
+                : path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+        }
     }
 }

@@ -221,6 +221,7 @@ namespace AIHelper.Manage
             //var outputLog = Environment.ExpandEnvironmentVariables(userprofile);
 
             string outputLog = ManageModOrganizer.GetLastPath(Path.Combine(ManageSettings.CurrentGameDataDirPath, "BepInEx", "LogOutput.log"));
+
             if (File.Exists(outputLog))
             {
                 Process.Start("explorer.exe", outputLog);
@@ -2462,108 +2463,154 @@ namespace AIHelper.Manage
             return path;
         }
 
+        #region ModOrganizerFileDirLastPathCheck
         /// <summary>
-        /// Return last path for <paramref name="inputPath"/> in active Mod Organizer game profile.
-        /// Can be set <paramref name="isDir"/> if object path is directory (file path by default).
-        /// Can be set <paramref name="onlyEnabled"/> to determine if need to search only in enabled or all mods.
+        /// Returns the highest-priority path for <paramref name="inputPath"/> in the active Mod Organizer profile.
+        /// Priority: Overwrite -> Mods in profile order -> first empty dir fallback -> original input path.
         /// </summary>
-        /// <param name="inputPath">input path to dir or file</param>
-        /// <param name="isDir">search dir else file</param>
-        /// <param name="onlyEnabled">find only in enabled mods</param>
-        /// <param name="tryFindWithContent">try to find not empty dir</param>
-        /// <returns>Path in mod with hightest priority. When <paramref name="isDir"/> and <paramref name="tryFindWithContent"/> will try to find not empty dir. When not found will return <paramref name="inputPath"/></returns>
+        /// <param name="inputPath">Source file or directory path.</param>
+        /// <param name="isDir">True when searching for a directory; false for a file.</param>
+        /// <param name="onlyEnabled">True to search only enabled mods.</param>
+        /// <param name="tryFindWithContent">For directories: prefer a non-empty directory, but remember the first empty one as fallback.</param>
+        /// <returns>
+        /// The resolved highest-priority path, or the first empty directory fallback, or the original <paramref name="inputPath"/>.
+        /// </returns>
         public static string GetLastPath(string inputPath, bool isDir = false, bool onlyEnabled = true, bool tryFindWithContent = false)
         {
+            // Guard: nothing to process.
             if (string.IsNullOrWhiteSpace(inputPath))
-            {
                 return inputPath;
-            }
 
-            string firstFoundPath = string.Empty;
+            string firstFoundPath = null;
+
             try
             {
-                string modsOverwrite = inputPath.Contains(ManageSettings.CurrentGameMoOverwritePath) ? ManageSettings.CurrentGameMoOverwritePath : ManageSettings.CurrentGameModsDirPath;
+                // Cache and normalize base paths once.
+                string overwriteDir = ManageFilesFoldersExtensions.NormalizeDirectoryPath(ManageSettings.CurrentGameMoOverwritePath);
+                string modsDir = ManageFilesFoldersExtensions.NormalizeDirectoryPath(ManageSettings.CurrentGameModsDirPath);
+                string dataDir = ManageFilesFoldersExtensions.NormalizeDirectoryPath(ManageSettings.CurrentGameDataDirPath);
+                string normalizedInputPath = ManageFilesFoldersExtensions.NormalizePath(inputPath);
 
-                //искать путь только для ссылки в Mods или в Data
-                if (!ManageStrings.IsStringAContainsStringB(inputPath, modsOverwrite) && !ManageStrings.IsStringAContainsStringB(inputPath, ManageSettings.CurrentGameDataDirPath))
+                // Resolve relative subpath depending on source root.
+                if (TryGetRelativePath(normalizedInputPath, overwriteDir, out string subpath))
+                {
+                    // Path is already under Overwrite; keep relative path as-is.
+                }
+                else if (TryGetRelativePath(normalizedInputPath, modsDir, out subpath))
+                {
+                    // Path is under Mods; remove the first segment (mod name).
+                    subpath = RemoveFirstPathSegment(subpath);
+                }
+                else if (!TryGetRelativePath(normalizedInputPath, dataDir, out subpath))
+                {
+                    // Unknown root; do not alter the input path.
                     return inputPath;
-
-                //отсеивание первого элемента с именем мода
-                //string subpath = string.Empty;
-
-                string[] pathInModsElements = inputPath
-                    .Replace(modsOverwrite, string.Empty)
-                    .Split(Path.DirectorySeparatorChar)
-                    .Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
-
-                //для мода в mods пропустить имя этого мода
-                if (modsOverwrite == ManageSettings.CurrentGameModsDirPath)
-                {
-                    pathInModsElements = pathInModsElements.Skip(1).ToArray();
                 }
 
-                string subpath = string.Join(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture), pathInModsElements);
-
+                // If MO mode is disabled, map directly into Data.
                 if (!ManageSettings.IsMoMode)
+                    return string.IsNullOrEmpty(subpath) ? dataDir : Path.Combine(dataDir, subpath);
+
+                // Priority 1: Overwrite always wins.
+                string overwriteCandidate = string.IsNullOrEmpty(subpath)
+                    ? overwriteDir
+                    : Path.Combine(overwriteDir, subpath);
+
+                if (IsLastPathFound(overwriteCandidate, ref firstFoundPath, isDir, tryFindWithContent))
+                    return overwriteCandidate;
+
+                // Priority 2: Search mods in active profile order.
+                foreach (string modName in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(onlyEnabled))
                 {
-                    return Path.Combine(ManageSettings.CurrentGameDataDirPath, subpath);
-                }
+                    if (string.IsNullOrWhiteSpace(modName))
+                        continue;
 
-                //check in Overwrite 1st
-                string overwritePath = ManageSettings.CurrentGameMoOverwritePath + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
+                    string candidate = string.IsNullOrEmpty(subpath)
+                        ? Path.Combine(modsDir, modName)
+                        : Path.Combine(modsDir, modName, subpath);
 
-                if (IsLastPathFound(overwritePath, ref firstFoundPath, isDir, tryFindWithContent))
-                {
-                    return overwritePath;
-                }
-
-                //поиск по списку модов
-                string modsPath = ManageSettings.CurrentGameModsDirPath;
-                foreach (var modName in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(onlyEnabled))
-                {
-                    string possiblePath = Path.Combine(modsPath, modName) + Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture) + subpath;
-
-                    if (IsLastPathFound(possiblePath, ref firstFoundPath, isDir, tryFindWithContent))
-                    {
-                        return possiblePath;
-                    }
+                    if (IsLastPathFound(candidate, ref firstFoundPath, isDir, tryFindWithContent))
+                        return candidate;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                _log.Error("An error occured while path get:\r\n" + ex + "\r\ninputPath=" + inputPath);
             }
 
-            return firstFoundPath.Length > 0 ? firstFoundPath : inputPath;
+            // Return first empty dir fallback when available; otherwise return the original input.
+            return firstFoundPath ?? inputPath;
         }
 
-        private static bool IsLastPathFound(string possiblePath, ref string firstFoundPath, bool isDir, bool tryFindWithContent)
+        /// <summary>
+        /// Checks whether <paramref name="fullPath"/> is located under <paramref name="baseDir"/>
+        /// and returns the relative path when it is.
+        /// </summary>
+        private static bool TryGetRelativePath(string fullPath, string baseDir, out string relativePath)
         {
-            if (isDir)
+            relativePath = null;
+
+            if (string.IsNullOrEmpty(fullPath) || string.IsNullOrEmpty(baseDir))
+                return false;
+
+            if (!fullPath.StartsWith(baseDir, StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            // Exact match: relative path is empty.
+            if (fullPath.Length == baseDir.Length)
             {
-                if (Directory.Exists(possiblePath))
-                {
-                    if (tryFindWithContent && possiblePath.IsEmptyDir())
-                    {
-                        if (firstFoundPath.Length == 0)
-                        {
-                            // set found path if not set
-                            firstFoundPath = possiblePath;
-                        }
-                        return false;
-                    }
-                    else
-                    {
-                        return true;
-                    }
-                }
+                relativePath = string.Empty;
+                return true;
             }
-            else
-            {
-                return File.Exists(possiblePath);
-            }
+
+            // Prevent false positives like "Mods" vs "ModsBackup".
+            char nextChar = fullPath[baseDir.Length];
+            if (nextChar != Path.DirectorySeparatorChar && nextChar != Path.AltDirectorySeparatorChar)
+                return false;
+
+            relativePath = fullPath.Substring(baseDir.Length + 1);
+            return true;
+        }
+
+        /// <summary>
+        /// Removes the first path segment, used to strip mod name from "Mods\ModName\...".
+        /// </summary>
+        private static string RemoveFirstPathSegment(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                return string.Empty;
+
+            int sepIndex = path.IndexOf(Path.DirectorySeparatorChar);
+            if (sepIndex < 0)
+                sepIndex = path.IndexOf(Path.AltDirectorySeparatorChar);
+
+            return sepIndex >= 0 ? path.Substring(sepIndex + 1) : string.Empty;
+        }
+
+        /// <summary>
+        /// Validates file/dir existence and remembers the first empty directory as fallback when requested.
+        /// </summary>
+        private static bool IsLastPathFound(string path, ref string firstFoundPath, bool isDir, bool tryFindWithContent)
+        {
+            // File search: existence is enough.
+            if (!isDir)
+                return File.Exists(path);
+
+            // Directory search: it must exist first.
+            if (!Directory.Exists(path))
+                return false;
+
+            // Accept directory immediately when content is not required or directory is not empty.
+            if (!tryFindWithContent || !path.IsEmptyDir())
+                return true;
+
+            // Remember the first empty directory as fallback.
+            if (firstFoundPath == null)
+                firstFoundPath = path;
 
             return false;
         }
+        #endregion
 
         /// <summary>
         /// Gets setup.xml path from latest enabled mod like must be in Mod Organizer

@@ -352,10 +352,7 @@ namespace AIHelper.Manage.Rules.ModList
                     return false;
                 }
             }
-            //if (addCandidates)
-            //{
-            //    AddCandidates();
-            //}
+
             return true;
         }
 
@@ -366,10 +363,6 @@ namespace AIHelper.Manage.Rules.ModList
             {
                 if (ParseReqSearchFileModNameInMods(modname, subRule, 2))
                 {
-                    //if (addCandidates)
-                    //{
-                    //    AddCandidates();
-                    //}
                     return true;
                 }
             }
@@ -399,46 +392,34 @@ namespace AIHelper.Manage.Rules.ModList
 
         private bool ParseReqSearchModNameInMods(string modname, string ruleData, int modeAndor = 0)
         {
-            if (!ModlistData.EnabledModNamesList.Contains(ruleData))
+            if (ModlistData.EnabledModNamesList.Contains(ruleData))
             {
-                if (ModlistData.AllModNamesList.Contains(ruleData))
+                return false;
+            }
+
+            if (ModlistData.AllModNamesList.Contains(ruleData))
+            {
+                if (modeAndor > 0)
                 {
-                    if (modeAndor > 0)
+                    if (!ModlistData.ModsMustBeEnabledCandidates.ContainsKey(ruleData))
                     {
-                        if (!ModlistData.ModsMustBeEnabledCandidates.ContainsKey(ruleData))
-                        {
-                            ModlistData.ModsMustBeEnabledCandidates.Add(ruleData, modname + ">req:" + ruleData);
-                        }
+                        ModlistData.ModsMustBeEnabledCandidates.Add(ruleData, modname + ">req:" + ruleData);
                     }
-                    else
-                    {
-                        if (!ModlistData.ModsMustBeEnabled.ContainsKey(ruleData))
-                        {
-                            ModlistData.ModsMustBeEnabled.Add(ruleData, modname + ">req:" + ruleData);
-                        }
-                    }
-                    return true;
                 }
                 else
                 {
-                    if (!ModlistData.ModsMustBeDisabled.ContainsKey(modname))
+                    if (!ModlistData.ModsMustBeEnabled.ContainsKey(ruleData))
                     {
-                        ModlistData.ModsMustBeDisabled.Add(modname, modname + ">req:" + ruleData);
+                        ModlistData.ModsMustBeEnabled.Add(ruleData, modname + ">req:" + ruleData);
                     }
-                    //if (modeANDOR > 0)
-                    //{
-                    //    if (!modlistData.ModsMustBeDisabledCandidates.Contains(modname))
-                    //    {
-                    //        modlistData.ModsMustBeDisabledCandidates.Add(modname);
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    if (!modlistData.ModsMustBeDisabledCandidates.Contains(modname))
-                    //    {
-                    //        modlistData.ModsMustBeDisabledCandidates.Add(modname);
-                    //    }
-                    //}
+                }
+                return true;
+            }
+            else
+            {
+                if (!ModlistData.ModsMustBeDisabled.ContainsKey(modname))
+                {
+                    ModlistData.ModsMustBeDisabled.Add(modname, modname + ">req:" + ruleData);
                 }
             }
             return false;
@@ -446,40 +427,7 @@ namespace AIHelper.Manage.Rules.ModList
 
         private bool ParseReqSearchFileInMods(string modname, string ruleData, int modeAndor = 0)
         {
-            return FindModWithThePath(ruleData, out _, modeAndor);
-
-            //ruleData = ruleData.Remove(0, 5).TrimStart();
-            //if (ManageMOMods.IsFileDirExistsInDataOROverwrite(ruleData, out _))
-            //{
-            //    return true;
-            //}
-            //foreach (var SubModName in modlistData.AllModsList)
-            //{
-            //    var modPath = Path.Combine(ManageSettings.GetCurrentGameModsPath(), SubModName);
-            //    var targetfilePath = Path.GetFullPath(modPath + Path.DirectorySeparatorChar + ruleData);
-            //    if (File.Exists(targetfilePath) || Directory.Exists(targetfilePath))
-            //    {
-            //        if (!modlistData.EnabledModsList.Contains(SubModName))
-            //        {
-            //            if (modeANDOR > 0)
-            //            {
-            //                if (!modlistData.ModsMustBeEnabledCandidates.Contains(ruleData))
-            //                {
-            //                    modlistData.ModsMustBeEnabledCandidates.Add(ruleData);
-            //                }
-            //            }
-            //            else
-            //            {
-            //                if (!modlistData.ModsMustBeEnabled.Contains(modname))
-            //                {
-            //                    modlistData.ModsMustBeEnabled.Add(modname);
-            //                }
-            //            }
-            //        }
-            //        return true;
-            //    }
-            //}
-            //return false;
+            return FindModWithThePath(ruleData, out _, modeAndor);            
         }
 
         protected bool IsModListRule(string line)

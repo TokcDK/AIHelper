@@ -60,7 +60,20 @@ namespace AIHelper.Manage.Rules.ModList
                 return true;
             }
 
-            foundModName = string.Empty;
+            if (TryFindModWithPathInOtherMods(inSubPath, dontAddCandidate, out foundModName))
+            {
+                return true;
+            }
+
+            if (!ModlistData.ModsMustBeDisabled.ContainsKey(ModlistData.ModName))
+            {
+                ModlistData.ModsMustBeDisabled.Add(ModlistData.ModName, "req:" + string.Join(",", inSubPath));
+            }
+
+            return false;
+        }
+        private bool TryFindModWithPathInOtherMods(string[] inSubPath, bool dontAddCandidate, out string foundModName)
+        {
             HashSet<string> alreadyChecked = new HashSet<string>();
             foreach (var subModName in ModlistData.AllModNamesList)
             {
@@ -102,10 +115,8 @@ namespace AIHelper.Manage.Rules.ModList
                     }
                 }
             }
-            if (!ModlistData.ModsMustBeDisabled.ContainsKey(ModlistData.ModName))
-            {
-                ModlistData.ModsMustBeDisabled.Add(ModlistData.ModName, "req:" + string.Join(",", inSubPath));
-            }
+
+            foundModName = string.Empty;
 
             return false;
         }

@@ -1310,9 +1310,17 @@ namespace AIHelper.Manage
         public static string ApplicationProductName { get; internal set; }
 
         /// <summary>
+        /// Dir of Mod Organizer resources of the app for managed games
+        /// </summary>
+        public static string AppResMODir { get => Path.Combine(AppResDirPath, AppModOrganizerDirName); }
+        /// <summary>
+        /// Dir of Mod Organizer plugins for managed games
+        /// </summary>
+        public static string AppResMOPluginsDir { get => Path.Combine(AppResMODir, "plugins"); }
+        /// <summary>
         /// Dir of Mod Organizer Basic game plugins for managed games
         /// </summary>
-        public static string AppResBasicGamesDir { get => Path.Combine(AppResDirPath, "basicgames", "games"); }
+        public static string AppResBasicGamesDir { get => Path.Combine(AppResMOPluginsDir, "basic_games", "games"); }
         /// <summary>
         /// Directory name the dir where functions data dirs are located
         /// </summary>

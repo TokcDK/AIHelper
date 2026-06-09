@@ -13,9 +13,9 @@ if "%projectDir%" == "" goto :exit
 if "%versionNumber%" == "" goto :exit
 if "%configurationName%" == "" goto :exit
 
-set projectBuildDir=%projectDir%BUILD
+set projectBuildDir=%projectDir%\BUILD
 set projectResDir=%projectBuildDir%\RES
-set targetResDir=%targetDir%RES
+set targetResDir=%targetDir%\RES
 
 echo move libs..
 set targetLibDir=%targetResDir%\lib
@@ -25,13 +25,13 @@ ROBOCOPY "%targetDir% " "%targetLibDir% " *.dll *.pdb *.xml /XF "%targetName%.dl
 ::lib lang dirs
 FOR %%D IN (zh-Hans zh-Hant cs de es fr it ja ko pl pt-BR ru tr) DO (
 	if exist "%targetLibDir%\%%D" rd "%targetLibDir%\%%D" /s /q
-	if exist "%targetDir%%%D" move "%targetDir%%%D" "%targetLibDir%\"
+	if exist "%targetDir%\%%D" move "%targetDir%\%%D" "%targetLibDir%\"
 )
 
 set moBasicGamesSubPath=MO\plugins\basic_games
 set modOrganizerBasicGamesPluginsDirSubPath=%moBasicGamesSubPath%\games
 set projectBasicGamesPluginsDir=%projectBuildDir%\%modOrganizerBasicGamesPluginsDirSubPath%
-set targetBasicGamesPluginsDir=%targetDir%%modOrganizerBasicGamesPluginsDirSubPath%
+set targetBasicGamesPluginsDir=%targetResDir%\%modOrganizerBasicGamesPluginsDirSubPath%
 if exist "%projectBasicGamesPluginsDir%\" (
 	echo copy Mod organizer basic game plugins..
 	robocopy "%projectBasicGamesPluginsDir% " "%targetBasicGamesPluginsDir%\ " *.py /MIR /COPYALL /B /R:3 /W:1

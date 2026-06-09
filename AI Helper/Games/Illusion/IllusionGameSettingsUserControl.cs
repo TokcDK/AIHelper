@@ -1,5 +1,6 @@
 ﻿using AIHelper.Manage;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -42,7 +43,7 @@ namespace AIHelper.Games.Illusion
         private bool _loading;
 
         // Predefined resolution options
-        private static readonly (string Label, int W, int H)[] Resolutions =
+        private static readonly List<(string Label, int W, int H)> Resolutions = new List<(string Label, int W, int H)>
         {
             ("854 x 480 (16 : 9)",   854,  480),
             ("800 x 600 (4 : 3)",    800,  600),
@@ -290,7 +291,16 @@ namespace AIHelper.Games.Illusion
             int h = int.TryParse(GetVal(HEIGHT_SETTING_KEY), out int th) ? th : -1;
             if (w > 0 && h > 0)
             {
-                int ri = Array.FindIndex(Resolutions, r => r.W == w && r.H == h);
+                // Try to find resolution by Width and Height, if not found then add new entry with label based on width and height
+
+                int ri = Resolutions.FindIndex(r => r.W == w && r.H == h);
+                if (ri < 0)
+                {
+                    string label = $"{w} x {h}";
+                    Resolutions.Add((label, w, h));
+                    _cboResolution.Items.Add(label);
+                    ri = Resolutions.Count - 1;
+                }
                 _cboResolution.SelectedIndex = ri >= 0 ? ri : 0;
 
                 // Check if label matches resolution, if not then update XML to have consistent Size label
@@ -303,8 +313,10 @@ namespace AIHelper.Games.Illusion
             }
             else
             {
+                // Fallback to label matching if Width and Height are not valid
+
                 string sizeLabel = GetVal(SIZE_SETTING_KEY);
-                int ri = Array.FindIndex(Resolutions, r => r.Label == sizeLabel);
+                int ri = Resolutions.FindIndex(r => r.Label == sizeLabel);
                 _cboResolution.SelectedIndex = ri >= 0 ? ri : 0;
 
                 // Update XML to have consistent Width and Height values based on label

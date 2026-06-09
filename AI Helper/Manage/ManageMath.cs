@@ -24,6 +24,12 @@ namespace AIHelper.Manage
             return value;
         }
 
+        /// <summary>
+        /// Calculates the aspect ratio of a given width and height by finding their greatest common divisor (GCD) and returning the ratio in the format "width:height".
+        /// </summary>
+        /// <param name="w">The width.</param>
+        /// <param name="h">The height.</param>
+        /// <returns>The aspect ratio in the format "width:height", "16:9" for example.</returns>
         internal static object GetAspectRatio(int w, int h)
         {
             int gcd = GCD(w, h);

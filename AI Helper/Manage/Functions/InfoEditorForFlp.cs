@@ -149,7 +149,7 @@ namespace AIHelper.Manage.Functions
             {
                 if (modUpdateInfosTabControl.SelectedTab == addModTabPage && addModTabPage.Controls.Count == 0)
                 {
-                    LoadAddModPanel(modUpdateInfosForm, addModTabPage);
+                    LoadAddModPanel(addModTabPage);
                 }
             };
 
@@ -197,7 +197,7 @@ namespace AIHelper.Manage.Functions
             public TextBox TB;
         }
 
-        private void LoadAddModPanel(Form modUpdateInfosForm, Control addModContainer)
+        private void LoadAddModPanel(Control addModContainer)
         {
             bool addModPanelIsLoading = true;
 

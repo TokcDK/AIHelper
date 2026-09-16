@@ -2,68 +2,60 @@
 using System;
 using System.ComponentModel;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
 namespace AIHelper.Manage.Update.Sources
 {
     /// <summary>
-    /// Base for sources
+    /// Base for update sources. A source knows how to find the latest version
+    /// of a target and how to download the file for it.
+    /// <para>
+    /// One instance is used for a whole update run and is handed the current
+    /// <see cref="UpdateInfo"/> by the owner (<see cref="Updater"/>) before
+    /// every folder. Instances own a <see cref="WebClientEx"/> and a download
+    /// watchdog timer, so they must be disposed by whoever created them.
+    /// </para>
     /// </summary>
     abstract class UpdateSourceBase : IDisposable
     {
-        protected static Logger _log = LogManager.GetCurrentClassLogger();
+        protected static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
+        /// <summary>
+        /// How long a download may go without reporting progress before it is
+        /// considered frozen and cancelled.
+        /// </summary>
+        private const double DownloadWatchdogIntervalMilliseconds = 10000;
+
+        /// <summary>
+        /// Current update request state. Assigned by <see cref="Updater"/>
+        /// before every folder is processed.
+        /// </summary>
         internal UpdateInfo Info;
 
-        protected WebClient WebClient;
+        protected WebClientEx WebClient;
 
         /// <summary>
-        /// when true the source will be skipped in this session
+        /// When true the source is skipped for the rest of the session, for
+        /// example after hitting a GitHub rate limit.
         /// </summary>
-        internal bool IsNotWorkingNow = false;
+        internal bool IsNotWorkingNow;
 
-        System.Timers.Timer Timer;
-        /// <summary>
-        /// download file
-        /// </summary>
-        /// <param name="uri"></param>
-        /// <param name="updateFilePath"></param>
-        /// <returns></returns>
-        protected async Task DownloadFileTaskAsync(Uri uri, string updateFilePath)
+        private System.Timers.Timer _downloadWatchdog;
+        private bool _isCancelDownload;
+        private bool _isCompletedDownload;
+        private bool _disposed;
+
+        /// <summary>True when the last download finished without being cancelled.</summary>
+        protected bool IsCompletedDownload
         {
-            InitDownloadTimeTimer();
-            try
-            {
-                await WebClient.DownloadFileTaskAsync(uri, updateFilePath).ConfigureAwait(true);
-            }
-            catch (WebException ex)
-            {
-                _log.Warn("An error occured while file downloading. \r\nLink:" + Info.DownloadLink + "\r\nError:\r\n" + ex);
-                Info.LastErrorText.AppendLine(" >" + ex.Message);
-            }
+            get { return _isCompletedDownload; }
         }
 
-        /// <summary>
-        /// made for causes when for some reason downloading is freezing like when reqrypt run
-        /// </summary>
-        private void InitDownloadTimeTimer()
+        /// <summary>True when the watchdog cancelled the last download.</summary>
+        protected bool IsCancelDownload
         {
-            Timer = new System.Timers.Timer
-            {
-                Interval = 10000 // 10 second timeout if download is freezed
-            };
-            Timer.Elapsed += CancelDownload;
-            Timer.Start();
-        }
-
-        bool IsCancelDownload;
-        private void CancelDownload(object sender, ElapsedEventArgs e)
-        {
-            IsCancelDownload = true;
-            Info.LastErrorText.AppendLine("Download was freezed by some reason and was cancelled after 10 seconds elapsed.");
-            WebClient.CancelAsync();
+            get { return _isCancelDownload; }
         }
 
         protected UpdateSourceBase(UpdateInfo info)
@@ -72,112 +64,225 @@ namespace AIHelper.Manage.Update.Sources
             WebClientInit();
         }
 
-        protected UpdateSourceBase()
+        /// <summary>
+        /// Downloads <paramref name="uri"/> to <paramref name="updateFilePath"/>.
+        /// Never throws: a failure is logged, recorded in
+        /// <see cref="UpdateInfo"/> and reported through the return value.
+        /// </summary>
+        /// <param name="uri">Remote file.</param>
+        /// <param name="updateFilePath">Local destination path.</param>
+        /// <returns>True when the file was downloaded and is not empty.</returns>
+        protected async Task<bool> DownloadFileTaskAsync(Uri uri, string updateFilePath)
         {
+            StartDownloadWatchdog();
+
+            // a big archive needs a much larger budget than a release page
+            var previousTimeout = WebClient.RequestTimeoutMilliseconds;
+            WebClient.RequestTimeoutMilliseconds = WebClientEx.DownloadRequestTimeoutMilliseconds;
+
+            try
+            {
+                await WebClient.DownloadFileTaskAsync(uri, updateFilePath).ConfigureAwait(true);
+            }
+            catch (WebException ex)
+            {
+                _log.Warn(ex, "An error occured while file downloading.\r\nLink:" + Info.DownloadLink);
+                Info.AppendError(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _log.Warn(ex, "An unexpected error occured while file downloading.\r\nLink:" + Info.DownloadLink);
+                Info.AppendError(ex.Message);
+            }
+            finally
+            {
+                WebClient.RequestTimeoutMilliseconds = previousTimeout;
+                StopDownloadWatchdog();
+            }
+
+            return IsCompletedDownload && UpdateIo.GetFileLengthOrZero(updateFilePath) != 0;
         }
 
         private void WebClientInit()
         {
             if (WebClient == null)
             {
-                WebClient = new WebClientEx(OnlineTranslatorCookies ?? new CookieContainer())
+                WebClient = new WebClientEx(new CookieContainer())
                 {
-                    Encoding = Encoding.UTF8
+                    Encoding = System.Text.Encoding.UTF8
                 };
 
-                WebClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.Chrome_Iron_Win7);
+                WebClient.Headers.Add(HttpRequestHeader.UserAgent, UserAgents.ChromeIronWin7);
             }
 
             WebClient.DownloadProgressChanged += DownloadProgressChanged;
-
             WebClient.DownloadFileCompleted += DownloadFileCompleted;
         }
 
         protected virtual void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            RestartTimer();
+            RestartDownloadWatchdog();
         }
 
-        private void RestartTimer()
+        /// <summary>
+        /// Starts (or restarts) the freeze watchdog for a new download and
+        /// clears the flags of the previous one.
+        /// </summary>
+        private void StartDownloadWatchdog()
         {
-            // restart timer when progress is changing
-            Timer.Stop();
-            Timer.Start();
+            StopDownloadWatchdog();
+
+            _isCancelDownload = false;
+            _isCompletedDownload = false;
+
+            _downloadWatchdog = new System.Timers.Timer(DownloadWatchdogIntervalMilliseconds)
+            {
+                // fire once instead of every interval
+                AutoReset = false
+            };
+            _downloadWatchdog.Elapsed += DownloadWatchdogElapsed;
+            _downloadWatchdog.Start();
         }
 
-        protected bool IsCompletedDownload;
+        private void RestartDownloadWatchdog()
+        {
+            var watchdog = _downloadWatchdog;
+            if (watchdog == null) return;
+
+            try
+            {
+                watchdog.Stop();
+                watchdog.Start();
+            }
+            catch (ObjectDisposedException)
+            {
+                // the download finished while this progress event was in flight
+            }
+        }
+
+        private void StopDownloadWatchdog()
+        {
+            var watchdog = _downloadWatchdog;
+            if (watchdog == null) return;
+
+            _downloadWatchdog = null;
+
+            try
+            {
+                watchdog.Stop();
+                watchdog.Elapsed -= DownloadWatchdogElapsed;
+                watchdog.Dispose();
+            }
+            catch (Exception ex)
+            {
+                _log.Debug("Failed to release the download watchdog. error:" + Environment.NewLine + ex);
+            }
+        }
+
+        private void DownloadWatchdogElapsed(object sender, ElapsedEventArgs e)
+        {
+            _isCancelDownload = true;
+            Info.AppendError("Download was freezed by some reason and was cancelled after 10 seconds elapsed.");
+
+            try
+            {
+                WebClient.CancelAsync();
+            }
+            catch (Exception ex)
+            {
+                _log.Debug("Failed to cancel a frozen download. error:" + Environment.NewLine + ex);
+            }
+        }
+
         protected virtual void DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            if (!IsCancelDownload)
-                IsCompletedDownload = true;
-            ReleaseTimer();
-        }
+            if (!_isCancelDownload) _isCompletedDownload = true;
 
-        private void ReleaseTimer()
-        {
-            // stop timer and dispose
-            Timer.Stop();
-            Timer.Dispose();
+            StopDownloadWatchdog();
         }
 
         /// <summary>
-        /// url of selected web resource
+        /// Url of the selected web resource, used to build download links.
         /// </summary>
-        internal virtual string Url { get => ""; }
+        internal virtual string Url
+        {
+            get { return ""; }
+        }
 
         /// <summary>
-        /// source name for info purposes
+        /// Source name for info purposes.
         /// </summary>
         internal abstract string Title { get; }
 
         /// <summary>
-        /// id for identidy updateinfo like 'updgit::bbepis,XUnity.AutoTranslator,XUnity.AutoTranslator-BepIn-5x-::'
+        /// Id used to recognise an update record, for example
+        /// 'updgit::bbepis,XUnity.AutoTranslator,XUnity.AutoTranslator-BepIn-5x-::'.
         /// </summary>
         internal abstract string InfoId { get; }
 
-        public CookieContainer OnlineTranslatorCookies { get; private set; }
-
         /// <summary>
-        /// function to get version of selected target
+        /// Gets the latest version of the currently selected target.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Version string, or empty when it could not be resolved.</returns>
         internal abstract string GetLastVersion();
 
         /// <summary>
-        /// function to get download file from selected link
+        /// Downloads the file of the currently selected target.
         /// </summary>
-        /// <returns></returns>
-        internal virtual byte[] DownloadFileFromTheLink(Uri link)
-        {
-            return null;
-        }
-
-        /// <summary>
-        /// function of download update of selected file
-        /// </summary>
-        /// <returns></returns>
+        /// <returns>True when a usable file is available on disk.</returns>
         internal abstract Task<bool> GetFile();
 
-        public void Dispose()
+        /// <summary>
+        /// Reads a small resource into memory. Returns an empty array on
+        /// failure instead of throwing.
+        /// </summary>
+        /// <param name="link">Resource to read.</param>
+        /// <returns>Payload bytes, or an empty array.</returns>
+        internal virtual byte[] DownloadFileFromTheLink(Uri link)
         {
-            if (WebClient != null)
-            {
-                WebClient.Dispose();
-            }
+            return Array.Empty<byte>();
         }
 
         /// <summary>
-        /// check if source stop work
+        /// True when the source must be skipped for the rest of the session.
         /// </summary>
-        /// <param name="info"></param>
-        /// <returns></returns>
+        /// <param name="info">Current update state.</param>
         internal virtual bool CheckIfStopWork(UpdateInfo info)
         {
             return false;
         }
 
-        internal virtual void Pause()
+        /// <summary>
+        /// Waits a little before the next request to the same source, so the
+        /// updater does not look like a scraper. Awaitable on purpose: the
+        /// update pass runs on the UI thread and must not be blocked.
+        /// </summary>
+        internal virtual Task PauseAsync()
         {
+            return Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed) return;
+
+            _disposed = true;
+
+            if (!disposing) return;
+
+            StopDownloadWatchdog();
+
+            if (WebClient != null)
+            {
+                WebClient.Dispose();
+                WebClient = null;
+            }
         }
     }
 }

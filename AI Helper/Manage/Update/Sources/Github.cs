@@ -4,195 +4,126 @@ using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AIHelper.Manage.Update.Sources
 {
+    /// <summary>
+    /// Update source for GitHub releases.
+    /// <para>
+    /// The latest version is read from the release page: first from the
+    /// "expanded assets" link (which also carries the owner, the repository and
+    /// the tag), then from the release tag as a fallback. The download link is
+    /// then matched against the file name prefix/suffix of the update record.
+    /// </para>
+    /// <para>
+    /// Every value that comes from an update record is escaped before it is used
+    /// in a regular expression, because prefixes such as "[Female]" would
+    /// otherwise be interpreted as a character class.
+    /// </para>
+    /// </summary>
     class Github : UpdateSourceBase
     {
-        // Constructor: initialize Github update source
-        public Github(UpdateInfo info) : base(info)
+        static Github()
         {
-            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12; // enable TLS 1.2 for github
-            _log.Info("Initialized Github update source for: " + (info?.TargetFolderPath?.Name ?? "unknown"));
+            // GitHub no longer accepts older TLS versions
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
         }
 
-        // Source URL
-        internal override string Url { get => "github.com"; }
-
-        // Source identifier
-        internal override string InfoId => "updgit";
-
-        // Source title
-        internal override string Title => "Github";
-
-        // Main method to download file
-        internal async override Task<bool> GetFile()
+        public Github(UpdateInfo info) : base(info)
         {
-            _log.Info("Requested file download for: " + (Info?.TargetFolderPath?.Name ?? "unknown"));
+        }
+
+        /// <summary>Source url, without the scheme.</summary>
+        internal override string Url
+        {
+            get { return "github.com"; }
+        }
+
+        /// <summary>Source identifier.</summary>
+        internal override string InfoId
+        {
+            get { return "updgit"; }
+        }
+
+        /// <summary>Source title.</summary>
+        internal override string Title
+        {
+            get { return "Github"; }
+        }
+
+        /// <summary>
+        /// Downloads the update file of the current target. Never throws: a
+        /// failure is logged, recorded and reported through the return value so
+        /// one broken mod cannot abort the whole update pass.
+        /// </summary>
+        /// <returns>True when a usable file is available on disk.</returns>
+        internal override async Task<bool> GetFile()
+        {
+            _log.Info("Update: requested a file download for: " + GetTargetName());
+
             try
             {
-                // Start file download
                 var result = await DownloadTheFile().ConfigureAwait(true);
-                _log.Info("File download result: " + result);
+                _log.Info("Update: file download result: " + result);
                 return result;
             }
             catch (Exception ex)
             {
-                _log.Error(ex, "Error while downloading file for: " + (Info?.TargetFolderPath?.Name ?? "unknown"));
-                throw;
+                _log.Error(ex, "Update: error while downloading the file of: " + GetTargetName());
+                Info.AppendError(ex.Message);
+                DisposeDownloadUi();
+                return false;
             }
         }
 
-        // Download progress event handler
         protected override void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             base.DownloadProgressChanged(sender, e);
 
-            // Update progress bar
-            if (e.ProgressPercentage <= _dwnpb.Maximum)
-            {
-                _dwnpb.Value = e.ProgressPercentage;
-            }
-            _log.Debug($"Download progress: {e.ProgressPercentage}% for {Info?.UpdateFilePath}");
+            // raised on a thread pool thread, so the UI update must be marshalled
+            SetDownloadProgress(e.ProgressPercentage);
+
+            _log.Debug("Update: download progress " + e.ProgressPercentage + "% for " + Info.UpdateFilePath);
         }
 
-        // Download completed event handler
         protected override void DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             base.DownloadFileCompleted(sender, e);
 
-            // Release progress bar and form resources
+            // release the progress window and the progress bar
             DisposeDownloadUi();
 
-            // Log download result
             if (e.Error != null)
             {
-                _log.Error(e.Error, "Error on file download completion: " + (Info?.UpdateFilePath ?? "unknown"));
+                _log.Error(e.Error, "Update: error on file download completion: " + Info.UpdateFilePath);
             }
             else if (e.Cancelled)
             {
-                _log.Warn("File download cancelled: " + (Info?.UpdateFilePath ?? "unknown"));
+                _log.Warn("Update: file download cancelled: " + Info.UpdateFilePath);
             }
             else
             {
-                _log.Info("File download completed: " + (Info?.UpdateFilePath ?? "unknown"));
+                _log.Info("Update: file download completed: " + Info.UpdateFilePath);
             }
         }
 
-        // Static variables for progress form
-        private static Form _dwnf;
-        private static ProgressBar _dwnpb;
+        #region Download UI
 
-        // Download file with progress UI
-        private async Task<bool> DownloadTheFile()
-        {
-            if (_dwnf != null)
-            {
-                _log.Warn("Download UI is already active. Aborting new download request.");
-                return false; // prevent multiple download UIs
-            }
-
-            // Get update downloads directory
-            var updateDownloadsDir = ManageSettings.ModsUpdateDirDownloadsPath;
-            Directory.CreateDirectory(updateDownloadsDir);
-            _log.Debug("Ensured update downloads directory exists: " + updateDownloadsDir);
-
-            // Determine update file name
-            var updateFileName = !string.IsNullOrWhiteSpace(Info.UpdateFilePath)
-                ? Path.GetFileName(Info.UpdateFilePath)
-                : Path.GetFileName(Info.DownloadLink);
-
-            if (string.IsNullOrWhiteSpace(updateFileName))
-            {
-                // Search for update file name by pattern
-                updateFileName = SearchUpdateFilePath(updateDownloadsDir, Info);
-                _log.Debug("Searching for update file name: " + updateFileName);
-            }
-            else
-            {
-                Info.UpdateFilePath = Path.Combine(updateDownloadsDir, updateFileName);
-                _log.Debug("Resolved update file path: " + Info.UpdateFilePath);
-            }
-
-            // Check alternative update file path
-            string altUpdateFilePath = Path.Combine(ManageSettings.Install2MoDirPath, updateFileName);
-            if (Info.VersionFromFile && !File.Exists(Info.UpdateFilePath) && File.Exists(altUpdateFilePath))
-            {
-                Info.UpdateFilePath = altUpdateFilePath;
-                _log.Info("Using alternative update file path: " + altUpdateFilePath);
-            }
-
-            // Create and show progress form
-            CreateAndShowDownloadUi(updateFileName);
-
-            // Check if file needs to be downloaded
-            var shouldDownload = ShouldDownload(updateFileName, Info.UpdateFilePath, out var downloadReason);
-            _log.Debug("Download decision: shouldDownload=" + shouldDownload
-                       + ", reason=" + downloadReason
-                       + ", updateFilePath=" + Info.UpdateFilePath);
-
-            if (shouldDownload)
-            {
-                // If download link is empty
-                if (string.IsNullOrWhiteSpace(Info.DownloadLink))
-                {
-                    Info.NoRemoteFile = true;
-                    _log.Warn("Download link is empty. File will not be downloaded.");
-                    DisposeDownloadUi();
-                    return false;
-                }
-
-                // Start file download
-                _log.Info("Starting file download: " + Info.DownloadLink);
-                await DownloadFileTaskAsync(new Uri(Info.DownloadLink), Info.UpdateFilePath).ConfigureAwait(true);
-
-                // Check if download completed successfully
-                var completed = IsCompletedDownload
-                                && File.Exists(Info.UpdateFilePath)
-                                && new FileInfo(Info.UpdateFilePath).Length != 0;
-
-                if (!completed)
-                {
-                    _log.Warn("File download not completed or file is corrupted: " + Info.UpdateFilePath);
-                }
-                else
-                {
-                    _log.Info("File successfully downloaded: " + Info.UpdateFilePath);
-                }
-
-                // Note: original behavior does NOT dispose the progress UI here (kept as-is).
-                return completed;
-            }
-            else
-            {
-                // If file already exists
-                DisposeDownloadUi();
-
-                if (new FileInfo(Info.UpdateFilePath).Length == 0)
-                {
-                    _log.Warn("File with zero length found and will be deleted: " + Info.UpdateFilePath);
-                    File.Delete(Info.UpdateFilePath);
-                    return false;
-                }
-
-                _log.Info("File already exists and does not require downloading: " + Info.UpdateFilePath);
-                return true;
-            }
-        }
-
-        #region DownloadTheFile Helper Methods
+        // the updater shows one download at a time, so the controls are static
+        private static Form _downloadForm;
+        private static ProgressBar _downloadProgressBar;
 
         private static void CreateAndShowDownloadUi(string fileName)
         {
-            _dwnpb = new ProgressBar
+            _downloadProgressBar = new ProgressBar
             {
                 Dock = DockStyle.Bottom,
                 Maximum = 100
             };
-            _dwnf = new Form
+
+            _downloadForm = new Form
             {
                 StartPosition = FormStartPosition.CenterScreen,
                 TopMost = true,
@@ -200,42 +131,211 @@ namespace AIHelper.Manage.Update.Sources
                 Text = T._("Downloading") + ": " + fileName,
                 FormBorderStyle = FormBorderStyle.FixedToolWindow
             };
-            _dwnf.Controls.Add(_dwnpb);
-            _dwnf.Show();
 
-            _log.Debug("Download UI shown. Title: " + _dwnf.Text);
+            _downloadForm.Controls.Add(_downloadProgressBar);
+            _downloadForm.Show();
+
+            _log.Debug("Update: download UI shown. Title: " + _downloadForm.Text);
         }
 
         private static void DisposeDownloadUi()
         {
-            // Keep disposal safe for repeated calls / edge cases (Dispose is normally idempotent).
-            try
+            var progressBar = _downloadProgressBar;
+            _downloadProgressBar = null;
+
+            if (progressBar != null)
             {
-                _dwnpb?.Dispose();
-                _dwnpb = null;
-            }
-            catch (Exception ex)
-            {
-                _log.Debug("Failed to dispose ProgressBar: " + ex);
+                try
+                {
+                    progressBar.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    _log.Debug("Update: failed to dispose the download progress bar. error:" + Environment.NewLine + ex);
+                }
             }
 
-            try
+            var form = _downloadForm;
+            _downloadForm = null;
+
+            if (form != null)
             {
-                _dwnf?.Dispose();
-                _dwnf = null;
-            }
-            catch (Exception ex)
-            {
-                _log.Debug("Failed to dispose Form: " + ex);
+                try
+                {
+                    form.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    _log.Debug("Update: failed to dispose the download window. error:" + Environment.NewLine + ex);
+                }
             }
         }
 
+        /// <summary>
+        /// Sets the progress bar value, marshalling to the UI thread when the
+        /// call comes from the WebClient callback thread.
+        /// </summary>
+        private static void SetDownloadProgress(int percentage)
+        {
+            var progressBar = _downloadProgressBar;
+            if (progressBar == null || progressBar.IsDisposed) return;
+
+            if (progressBar.Minimum > percentage) percentage = progressBar.Minimum;
+            if (progressBar.Maximum < percentage) percentage = progressBar.Maximum;
+
+            if (!progressBar.InvokeRequired)
+            {
+                progressBar.Value = percentage;
+                return;
+            }
+
+            try
+            {
+                progressBar.BeginInvoke((Action)(() =>
+                {
+                    var bar = _downloadProgressBar;
+                    if (bar == null || bar.IsDisposed) return;
+
+                    bar.Value = percentage;
+                }));
+            }
+            catch (Exception ex)
+            {
+                _log.Debug("Update: failed to marshal the download progress. error:" + Environment.NewLine + ex);
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Resolves the update file name, decides whether it must be downloaded
+        /// and downloads it when needed.
+        /// </summary>
+        /// <returns>True when a usable file is available on disk.</returns>
+        private async Task<bool> DownloadTheFile()
+        {
+            if (_downloadForm != null)
+            {
+                _log.Warn("Update: a download UI is already active. Aborting the new download request.");
+                return false; // prevent multiple download UIs
+            }
+
+            var updateDownloadsDir = ManageSettings.ModsUpdateDirDownloadsPath;
+            Directory.CreateDirectory(updateDownloadsDir);
+            _log.Debug("Update: ensured the update downloads directory exists: " + updateDownloadsDir);
+
+            var updateFileName = ResolveUpdateFileName(updateDownloadsDir);
+
+            CreateAndShowDownloadUi(updateFileName);
+
+            try
+            {
+                var shouldDownload = ShouldDownload(updateFileName, Info.UpdateFilePath, out var downloadReason);
+
+                _log.Debug("Update: download decision: shouldDownload=" + shouldDownload
+                           + ", reason=" + downloadReason
+                           + ", updateFilePath=" + Info.UpdateFilePath);
+
+                if (!shouldDownload)
+                {
+                    // the file is already downloaded, only drop it when it is empty
+                    if (UpdateIo.GetFileLengthOrZero(Info.UpdateFilePath) == 0)
+                    {
+                        _log.Warn("Update: a zero length update file was found and will be deleted: " + Info.UpdateFilePath);
+                        UpdateIo.TryDeleteFile(Info.UpdateFilePath);
+                        return false;
+                    }
+
+                    _log.Info("Update: the file already exists and does not require downloading: " + Info.UpdateFilePath);
+                    return true;
+                }
+
+                if (string.IsNullOrWhiteSpace(Info.DownloadLink))
+                {
+                    Info.NoRemoteFile = true;
+                    _log.Warn("Update: the download link is empty. The file will not be downloaded.");
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(Info.UpdateFilePath))
+                {
+                    // never hand a directory path to WebClient
+                    Info.NoRemoteFile = true;
+                    _log.Warn("Update: the local update file path is empty. The file will not be downloaded.");
+                    return false;
+                }
+
+                _log.Info("Update: starting the file download: " + Info.DownloadLink);
+
+                var completed = await DownloadFileTaskAsync(new Uri(Info.DownloadLink), Info.UpdateFilePath).ConfigureAwait(true);
+
+                if (completed)
+                {
+                    _log.Info("Update: file successfully downloaded: " + Info.UpdateFilePath);
+                }
+                else
+                {
+                    _log.Warn("Update: the file download did not complete or the file is corrupted: " + Info.UpdateFilePath);
+                }
+
+                return completed;
+            }
+            finally
+            {
+                // the window must be released on every path, including a failed download
+                DisposeDownloadUi();
+            }
+        }
+
+        /// <summary>
+        /// Resolves the name of the update file and the local path it is stored
+        /// at, taking a manually downloaded file into account.
+        /// </summary>
+        /// <param name="updateDownloadsDir">Directory the file is downloaded to.</param>
+        /// <returns>The file name, or an empty string when it cannot be resolved.</returns>
+        private string ResolveUpdateFileName(string updateDownloadsDir)
+        {
+            var updateFileName = !string.IsNullOrWhiteSpace(Info.UpdateFilePath)
+                ? Path.GetFileName(Info.UpdateFilePath)
+                : Path.GetFileName(Info.DownloadLink);
+
+            if (string.IsNullOrWhiteSpace(updateFileName))
+            {
+                // look for a file that was downloaded manually earlier
+                updateFileName = FindExistingUpdateFile(Info);
+                _log.Debug("Update: searched for an existing update file, found: '" + updateFileName + "'");
+            }
+            else
+            {
+                Info.UpdateFilePath = Path.Combine(updateDownloadsDir, updateFileName);
+                _log.Debug("Update: resolved the update file path: " + Info.UpdateFilePath);
+            }
+
+            // check the alternative update file path
+            var altUpdateFilePath = Path.Combine(ManageSettings.Install2MoDirPath, updateFileName);
+
+            if (Info.VersionFromFile
+                && !File.Exists(Info.UpdateFilePath)
+                && File.Exists(altUpdateFilePath))
+            {
+                Info.UpdateFilePath = altUpdateFilePath;
+                _log.Info("Update: using the alternative update file path: " + altUpdateFilePath);
+            }
+
+            return updateFileName;
+        }
+
+        /// <summary>
+        /// Decides whether the update file must be downloaded. The checks are
+        /// ordered from the cheapest to the most expensive and stop at the first
+        /// reason to download.
+        /// </summary>
+        /// <param name="fileName">Resolved file name.</param>
+        /// <param name="updateFilePath">Local path of the file.</param>
+        /// <param name="reason">Reason the decision was taken, for logging.</param>
+        /// <returns>True when the file must be downloaded.</returns>
         private bool ShouldDownload(string fileName, string updateFilePath, out string reason)
         {
-            // Preserve the original short-circuit intent/order:
-            //  1) missing file
-            //  2) wrong version in name (when not using VersionFromFile)
-            //  3) zero length file
             if (!File.Exists(updateFilePath))
             {
                 reason = "file does not exist";
@@ -248,9 +348,8 @@ namespace AIHelper.Manage.Update.Sources
                 return true;
             }
 
-            // Only touch FileInfo when needed (matches original OR-chain short-circuit behavior).
-            var length = new FileInfo(updateFilePath).Length;
-            if (length == 0)
+            // the file may be removed by another process between the checks
+            if (UpdateIo.GetFileLengthOrZero(updateFilePath) == 0)
             {
                 reason = "existing file has zero length";
                 return true;
@@ -260,179 +359,215 @@ namespace AIHelper.Manage.Update.Sources
             return false;
         }
 
-        #endregion
-
-        // Search for update file by pattern
-        private static readonly string[] _updateFilePrefixes = new[]
+        /// <summary>
+        /// Searches the download directories for a file matching the update
+        /// record, so a manually downloaded archive is reused.
+        /// </summary>
+        /// <param name="info">Current update state.</param>
+        /// <returns>The file name, or an empty string when nothing was found.</returns>
+        private string FindExistingUpdateFile(UpdateInfo info)
         {
-            "",
-            "v"
-        };
-        private readonly string[] _updateFileSuffixes = new[]
-        {
-            "",
-            ".0"
-        };
-        private string SearchUpdateFilePath(string updateDownloadsDir, UpdateInfo info)
-        {
-            foreach (var targetDir in new[] { updateDownloadsDir, ManageSettings.Install2MoDirPath })
+            foreach (var targetDir in new[] { ManageSettings.ModsUpdateDirDownloadsPath, ManageSettings.Install2MoDirPath })
             {
                 foreach (var prefix in _updateFilePrefixes)
                 {
                     foreach (var suffix in _updateFileSuffixes)
                     {
-                        var candidateUpdateFileName = $"{Info.UpdateFileStartsWith}{prefix}{Info.TargetLastVersion}{suffix}{Info.UpdateFileEndsWith}";
-                        if (!File.Exists(Path.Combine(targetDir, candidateUpdateFileName)))
-                        {
-                            continue;
-                        }
+                        var candidateUpdateFileName =
+                            info.UpdateFileStartsWith + prefix + info.TargetLastVersion + suffix + info.UpdateFileEndsWith;
+
+                        if (!File.Exists(Path.Combine(targetDir, candidateUpdateFileName))) continue;
 
                         info.UpdateFilePath = Path.Combine(targetDir, candidateUpdateFileName);
-                        _log.Debug("Found update file: {0}", info.UpdateFilePath);
+                        _log.Debug("Update: found the update file: " + info.UpdateFilePath);
                         return candidateUpdateFileName;
                     }
                 }
             }
 
-            _log.Debug("Update file not found by pattern.");
+            _log.Debug("Update: no update file found by pattern.");
             return string.Empty;
         }
 
-        // Get latest version from Github
+        /// <summary>
+        /// Name prefixes tried when searching for an already downloaded file.
+        /// </summary>
+        static readonly string[] _updateFilePrefixes =
+        {
+            "",
+            "v"
+        };
+
+        /// <summary>
+        /// Name suffixes tried when searching for an already downloaded file.
+        /// </summary>
+        static readonly string[] _updateFileSuffixes =
+        {
+            "",
+            ".0"
+        };
+
+        /// <summary>
+        /// Gets the latest version of the current target from GitHub releases.
+        /// </summary>
+        /// <returns>Version string, or empty when it could not be resolved.</returns>
         internal override string GetLastVersion()
         {
-            _log.Info("Requested latest version for: " + (Info?.TargetFolderPath?.Name ?? "unknown"));
+            _log.Info("Update: requested the latest version for: " + GetTargetName());
+
             var version = GetLatestGithubVersionFromReleases();
-            _log.Info("Latest version: " + version);
+
+            _log.Info("Update: latest version: " + version);
             return version;
         }
 
-        // Internal variables for Github info
+        #region Github info
+
         private string _gitOwner;
         private string _gitRepository;
         private string _gitLatestVersion;
 
-        // Get latest version and file link from Github releases
-        #region GetLatestGithubVersionFromReleases Private Constants
-
         /// <summary>
-        /// Regex pattern to extract assets page info from GitHub release page.
-        /// Groups: 1 = full assets page link, 2 = owner, 3 = repo, 4 = version
+        /// Regex pattern to extract the assets page info from a GitHub release page.
+        /// Groups: 1 = full assets page link, 2 = owner, 3 = repo, 4 = version.
         /// </summary>
         private const string AssetsPageRegexPattern =
             @"src\=\""(https\:\/\/github\.com\/([^\/]+)\/([^\/]+)\/releases\/expanded_assets\/([^\""]+))\""";
 
-        /// <summary>
-        /// Regex pattern to extract version from release tag.
-        /// </summary>
+        /// <summary>Regex pattern to extract the version from a release tag.</summary>
         private const string VersionTagRegexPattern = @"/releases/tag/([^\""]+)\""";
 
         private const string GitHubBaseUrl = "https://github.com";
         private const string TrueUpperCase = "TRUE";
         private const string FalseUpperCase = "FALSE";
-        private const int MinValidLinkLength = 7;
         private const string HrefPrefix = "href=";
+
+        /// <summary>
+        /// Smallest accepted download link match: 'href=' + two quotes + at
+        /// least one character, so an empty 'href=""' is rejected.
+        /// </summary>
+        private const int MinValidLinkLength = 7;
+
+        /// <summary>How many releases the fallback search walks through.</summary>
+        private const int MaxReleasesToSearch = 10;
+
+        /// <summary>Upper bound of the random pause between GitHub requests.</summary>
+        private const int MaxPauseMilliseconds = 500;
+
+        private static readonly Random _pauseRandom = new Random();
+        private static readonly object _pauseRandomLock = new object();
 
         #endregion
 
+        /// <summary>
+        /// Resolves the latest version and the download link from the release
+        /// pages of the current target.
+        /// </summary>
+        /// <returns>Version string, or empty when it could not be resolved.</returns>
         private string GetLatestGithubVersionFromReleases()
         {
             try
             {
-                // Extract owner, repository, and file name pattern info
+                // extract owner, repository and file name pattern info
                 InitializeGitHubRepositoryInfo();
 
-                // Download latest release page
-                _log.Debug("Getting latest release page: " + Info.SourceLink);
-                var latestReleasePage = WebClient.DownloadString(Info.SourceLink);
+                _log.Debug("Update: getting the latest release page: " + Info.SourceLink);
+                var releasePage = WebClient.DownloadString(Info.SourceLink);
 
-                // Parse assets page for version and owner/repo information
-                var assetsPageFound = TryParseAndLoadAssetsPage(ref latestReleasePage);
-                if (!assetsPageFound)
+                // parse the assets page for the version and the owner/repository info
+                var assetsPageFound = TryParseAndLoadAssetsPage(
+                    ref releasePage,
+                    out string currentOwnerName,
+                    out string currentRepositoryName);
+
+                if (assetsPageFound)
                 {
-                    // Alternative way to get version
-                    TryExtractVersionFromReleaseTag(latestReleasePage);
+                    ApplyRenamedRepository(currentOwnerName, currentRepositoryName);
+                }
+                else
+                {
+                    // alternative way to get the version
+                    TryExtractVersionFromReleaseTag(releasePage);
                 }
 
-                // Search for update file link
-                var updateFileMatch = SearchForUpdateFileLink(latestReleasePage);
+                // search for the update file link
+                var updateFileMatch = SearchForUpdateFileLink(releasePage);
 
-                // Search for file locally if not found on GitHub
+                // search for the file locally when it is not on GitHub
                 if (!updateFileMatch.Success && Info.VersionFromFile)
                 {
                     var localFileVersion = TryFindUpdateFileLocally();
-                    if (localFileVersion != null)
-                    {
-                        return localFileVersion;
-                    }
+                    if (localFileVersion != null) return localFileVersion;
                 }
 
-                // Retry search for file link if author changed username
+                // retry the search for the file link if the author changed username
                 if (!updateFileMatch.Success)
                 {
-                    updateFileMatch = SearchForFileLinkWithFlexibleOwner(latestReleasePage);
+                    updateFileMatch = SearchForFileLinkWithFlexibleOwner(releasePage);
                 }
 
-                // Search in last 10 releases if file not found
+                // search in the last releases when the file is still not found
                 var searchedInMultipleReleases = false;
                 if (!updateFileMatch.Success && Info.VersionFromFile)
                 {
                     var searchResult = SearchInLast10Releases();
                     updateFileMatch = searchResult.Match;
-                    latestReleasePage = searchResult.PageContent;
+                    releasePage = searchResult.PageContent;
                     searchedInMultipleReleases = searchResult.Found;
 
-                    // Check if download is needed if version is already up to date
-                    if (updateFileMatch.Success && !Info.VersionFromFile)
+                    // nothing to download when the installed version is already newer
+                    if (updateFileMatch.Success && IsCurrentVersionNewerThanRelease(updateFileMatch))
                     {
-                        if (IsCurrentVersionNewerThanRelease(updateFileMatch))
-                        {
-                            Info.DownloadLink = "";
-                            _log.Info("Current version is newer, download is not required.");
-                            return _gitLatestVersion;
-                        }
+                        Info.DownloadLink = "";
+                        _log.Info("Update: the current version is newer, the download is not required.");
+                        return _gitLatestVersion;
                     }
                 }
 
-                // Form download link for file
-                return BuildDownloadLinkAndExtractVersion(updateFileMatch, latestReleasePage, searchedInMultipleReleases);
+                return BuildDownloadLinkAndExtractVersion(updateFileMatch, releasePage, searchedInMultipleReleases);
             }
             catch (Exception ex)
             {
-                // Handle errors when getting release info
-                _log.Warn("Failed to check update. Error:\r\n" + ex);
-                Info.LastErrorText.Append(" >" + ex.Message);
+                _log.Warn(ex, "Update: failed to check for an update.");
+                Info.AppendError(ex.Message);
             }
 
             return "";
         }
 
-        #region GetLatestGithubVersionFromReleases Helper Methods
+        #region GetLatestGithubVersionFromReleases helper methods
 
         /// <summary>
-        /// Initializes GitHub repository information from the update info configuration array.
+        /// Initializes the GitHub repository information from the update record
+        /// of the current folder.
         /// </summary>
+        /// <exception cref="InvalidOperationException">
+        /// Thrown when the update record does not describe a GitHub repository.
+        /// </exception>
         private void InitializeGitHubRepositoryInfo()
         {
-            if (Info.TargetFolderUpdateInfo == null || Info.TargetFolderUpdateInfo.Length < 3)
+            var updateRecord = Info.TargetFolderUpdateInfo;
+
+            if (updateRecord == null || updateRecord.Length < 3)
             {
-                _log.Error("Invalid TargetFolderUpdateInfo configuration");
+                _log.Error("Update: invalid TargetFolderUpdateInfo configuration.");
                 throw new InvalidOperationException("Invalid GitHub repository configuration");
             }
 
-            _gitOwner = Info.TargetFolderUpdateInfo[0];
-            _gitRepository = Info.TargetFolderUpdateInfo[1];
-            Info.UpdateFileStartsWith = Info.TargetFolderUpdateInfo[2];
+            _gitOwner = updateRecord[0];
+            _gitRepository = updateRecord[1];
+            Info.UpdateFileStartsWith = updateRecord[2];
 
-            // Set UpdateFileEndsWith if not already set and value is not a boolean flag
+            // set UpdateFileEndsWith if not already set and the value is not a boolean flag
             if (Info.UpdateFileEndsWith.Length == 0)
             {
-                var hasAdditionalParam = Info.TargetFolderUpdateInfo.Length > 3;
+                var hasAdditionalParam = updateRecord.Length > 3;
+
                 if (hasAdditionalParam)
                 {
-                    var paramValue = Info.TargetFolderUpdateInfo[3].ToUpperInvariant();
+                    var paramValue = (updateRecord[3] ?? string.Empty).ToUpperInvariant();
                     var isNotBooleanFlag = paramValue != TrueUpperCase && paramValue != FalseUpperCase;
-                    Info.UpdateFileEndsWith = isNotBooleanFlag ? Info.TargetFolderUpdateInfo[3] : "";
+                    Info.UpdateFileEndsWith = isNotBooleanFlag ? updateRecord[3] : "";
                 }
                 else
                 {
@@ -440,286 +575,333 @@ namespace AIHelper.Manage.Update.Sources
                 }
             }
 
-            var lastElementIndex = Info.TargetFolderUpdateInfo.Length - 1;
-            Info.VersionFromFile = Info.TargetFolderUpdateInfo[lastElementIndex].ToUpperInvariant() == TrueUpperCase;
-            Info.SourceLink = $"{GitHubBaseUrl}/{_gitOwner}/{_gitRepository}/releases/latest";
+            var lastElementIndex = updateRecord.Length - 1;
+            Info.VersionFromFile = (updateRecord[lastElementIndex] ?? string.Empty).ToUpperInvariant() == TrueUpperCase;
+            Info.SourceLink = GitHubBaseUrl + "/" + _gitOwner + "/" + _gitRepository + "/releases/latest";
 
-            _log.Debug($"Initialized GitHub info - Owner: {_gitOwner}, Repository: {_gitRepository}, " +
-                       $"FileStartsWith: '{Info.UpdateFileStartsWith}', FileEndsWith: '{Info.UpdateFileEndsWith}', " +
-                       $"VersionFromFile: {Info.VersionFromFile}");
+            _log.Debug("Update: initialized GitHub info - Owner: " + _gitOwner
+                       + ", Repository: " + _gitRepository
+                       + ", FileStartsWith: '" + Info.UpdateFileStartsWith
+                       + "', FileEndsWith: '" + Info.UpdateFileEndsWith
+                       + "', VersionFromFile: " + Info.VersionFromFile);
         }
 
         /// <summary>
-        /// Tries to parse assets page from release page and load its content.
-        /// Also updates owner and repository names if they have changed on GitHub.
+        /// Keeps the update record of the current folder in sync when the
+        /// repository was renamed on GitHub.
         /// </summary>
-        /// <param name="releasePage">Release page content. Updated with assets page content if successful.</param>
-        /// <returns>True if assets page was successfully parsed and loaded.</returns>
-        private bool TryParseAndLoadAssetsPage(ref string releasePage)
+        /// <param name="currentOwnerName">Owner name read from the release page.</param>
+        /// <param name="currentRepositoryName">Repository name read from the release page.</param>
+        private void ApplyRenamedRepository(string currentOwnerName, string currentRepositoryName)
         {
-            // 1 = full assets page link, 2 - owner name (can be changed and be different from old), 
-            // 3 - repository name (can be changed), 4 - version
+            if (!string.IsNullOrWhiteSpace(currentOwnerName) && currentOwnerName != _gitOwner)
+            {
+                _gitOwner = currentOwnerName;
+                ApplyUpdateRecordChange(0, currentOwnerName);
+                _log.Warn("Update: the repository owner name changed to: " + _gitOwner);
+            }
+
+            if (!string.IsNullOrWhiteSpace(currentRepositoryName) && currentRepositoryName != _gitRepository)
+            {
+                _gitRepository = currentRepositoryName;
+                ApplyUpdateRecordChange(1, currentRepositoryName);
+                _log.Warn("Update: the repository name changed to: " + _gitRepository);
+            }
+        }
+
+        private void ApplyUpdateRecordChange(int index, string newValue)
+        {
+            var updateRecord = Info.TargetFolderUpdateInfo;
+
+            if (updateRecord == null || index < 0 || index >= updateRecord.Length) return;
+
+            updateRecord[index] = newValue;
+        }
+
+        /// <summary>
+        /// Tries to parse the assets page out of the release page and loads its
+        /// content. Also reports the owner and repository names found on the
+        /// page, which may differ from the configured ones.
+        /// </summary>
+        /// <param name="releasePage">Release page content, replaced with the assets page content on success.</param>
+        /// <param name="ownerName">Owner name read from the assets link.</param>
+        /// <param name="repositoryName">Repository name read from the assets link.</param>
+        /// <returns>True when the assets page was parsed and loaded.</returns>
+        private bool TryParseAndLoadAssetsPage(ref string releasePage, out string ownerName, out string repositoryName)
+        {
+            ownerName = _gitOwner;
+            repositoryName = _gitRepository;
+
+            // 1 = full assets page link, 2 = owner name (can be changed and be different from the old),
+            // 3 = repository name (can be changed), 4 = version
             var assetPageMatch = Regex.Match(releasePage, AssetsPageRegexPattern, RegexOptions.IgnoreCase);
 
             if (!assetPageMatch.Success)
             {
-                _log.Debug("Assets page pattern not found in release page");
+                _log.Debug("Update: the assets page pattern was not found in the release page.");
                 return false;
             }
 
-            // Check and update owner and repository names if changed
-            var currentOwnerName = assetPageMatch.Result("$2");
-            if (currentOwnerName != _gitOwner)
-            {
-                Info.TargetFolderUpdateInfo[0] = _gitOwner = currentOwnerName;
-                _log.Warn("Repository owner name changed to: " + _gitOwner);
-            }
+            ownerName = assetPageMatch.Result("$2");
+            repositoryName = assetPageMatch.Result("$3");
 
-            var currentRepoName = assetPageMatch.Result("$3");
-            if (currentRepoName != _gitRepository)
-            {
-                Info.TargetFolderUpdateInfo[1] = _gitRepository = currentRepoName;
-                _log.Warn("Repository name changed to: " + _gitRepository);
-            }
-
-            // Set latest version and reload assets page
             _gitLatestVersion = assetPageMatch.Result("$4");
-            _log.Debug("Extracted version from assets page: " + _gitLatestVersion);
+            _log.Debug("Update: extracted the version from the assets page: " + _gitLatestVersion);
 
             var assetsPageUrl = assetPageMatch.Result("$1");
-            _log.Debug("Navigating to release assets page: " + assetsPageUrl);
+            _log.Debug("Update: navigating to the release assets page: " + assetsPageUrl);
             releasePage = WebClient.DownloadString(assetsPageUrl);
 
             return true;
         }
 
         /// <summary>
-        /// Alternative method to extract version from release tag pattern.
+        /// Alternative way to extract the version from the release tag pattern.
         /// </summary>
-        /// <param name="releasePage">The release page content.</param>
+        /// <param name="releasePage">Release page content.</param>
         private void TryExtractVersionFromReleaseTag(string releasePage)
         {
             var versionMatch = Regex.Match(releasePage, VersionTagRegexPattern, RegexOptions.IgnoreCase);
+
             if (versionMatch.Success)
             {
                 _gitLatestVersion = versionMatch.Result("$1");
-                _log.Debug("Extracted version from release tag: " + _gitLatestVersion);
+                _log.Debug("Update: extracted the version from the release tag: " + _gitLatestVersion);
             }
             else
             {
-                _log.Debug("Could not extract version from release tag pattern");
+                _log.Debug("Update: could not extract the version from the release tag pattern.");
             }
         }
 
         /// <summary>
-        /// Searches for the update file download link in the release page.
+        /// Searches the release page for the download link of the update file.
         /// </summary>
-        /// <param name="releasePage">The release page content.</param>
-        /// <returns>Match result for the file link.</returns>
+        /// <param name="releasePage">Release page content.</param>
+        /// <returns>Match for the file link.</returns>
         private Match SearchForUpdateFileLink(string releasePage)
         {
-            var linkPattern = BuildFileLinkPattern(_gitOwner, _gitRepository, _gitLatestVersion, false);
-            _log.Debug($"Searching for update file: {Info.UpdateFileStartsWith}*{Info.UpdateFileEndsWith}");
+            var linkPattern = BuildFileLinkPattern(_gitOwner, _gitRepository, _gitLatestVersion);
+
+            _log.Debug("Update: searching for the update file: " + Info.UpdateFileStartsWith + "*" + Info.UpdateFileEndsWith);
             return Regex.Match(releasePage, linkPattern, RegexOptions.IgnoreCase);
         }
 
         /// <summary>
-        /// Searches for file link with flexible owner pattern (for cases when author changed username).
+        /// Searches the release page for the file link with a flexible owner
+        /// pattern, for the case when the author changed their username.
         /// </summary>
-        /// <param name="releasePage">The release page content.</param>
-        /// <returns>Match result for the file link.</returns>
+        /// <param name="releasePage">Release page content.</param>
+        /// <returns>Match for the file link.</returns>
         private Match SearchForFileLinkWithFlexibleOwner(string releasePage)
         {
-            // when author changed username on git
-            _log.Debug("Retrying file search with flexible owner pattern (author may have changed username)");
-            var linkPattern = @"href\=\""(/[^/]+/" + _gitRepository + "/releases/download/" +
-                              _gitLatestVersion + "/" + Info.UpdateFileStartsWith +
-                              @"([^\""]*)" + Info.UpdateFileEndsWith + @")\""";
+            _log.Debug("Update: retrying the file search with the flexible owner pattern (the author may have changed username).");
+
+            var linkPattern = @"href\=\""(/[^/]+/" + Regex.Escape(_gitRepository)
+                              + "/releases/download/" + Regex.Escape(_gitLatestVersion) + "/"
+                              + Regex.Escape(Info.UpdateFileStartsWith) + @"([^\""]*)"
+                              + Regex.Escape(Info.UpdateFileEndsWith) + @")\""";
+
             return Regex.Match(releasePage, linkPattern);
         }
 
         /// <summary>
-        /// Builds regex pattern for finding file download link.
+        /// Builds the regex pattern that finds the download link of the update
+        /// file. Every value that comes from the update record or from the page
+        /// is escaped, because a prefix such as "[Female]" would otherwise be
+        /// treated as a character class.
         /// </summary>
         /// <param name="owner">Repository owner.</param>
-        /// <param name="repo">Repository name.</param>
+        /// <param name="repository">Repository name.</param>
         /// <param name="version">Release version.</param>
-        /// <param name="captureVersion">Whether to capture version in the pattern.</param>
         /// <returns>Regex pattern string.</returns>
-        private string BuildFileLinkPattern(string owner, string repo, string version, bool captureVersion)
+        private string BuildFileLinkPattern(string owner, string repository, string version)
         {
-            var versionPart = captureVersion ? "([^/]+)" : version;
-            return @"href\=\""(/" + owner + "/" + repo + "/releases/download/" +
-                   versionPart + "/" + Info.UpdateFileStartsWith +
-                   @"([^\""]*)" + Info.UpdateFileEndsWith + @")\""";
+            return @"href\=\""(/" + Regex.Escape(owner) + "/" + Regex.Escape(repository)
+                   + "/releases/download/" + Regex.Escape(version) + "/"
+                   + Regex.Escape(Info.UpdateFileStartsWith) + @"([^\""]*)"
+                   + Regex.Escape(Info.UpdateFileEndsWith) + @")\""";
         }
 
         /// <summary>
-        /// Tries to find update file in local directory.
+        /// Tries to find the update file in the local "install to MO" directory.
         /// </summary>
-        /// <returns>Version string if file found locally, null otherwise.</returns>
+        /// <returns>Version string when a usable file was found, null otherwise.</returns>
         private string TryFindUpdateFileLocally()
         {
-            _log.Debug($"Searching for update file locally in: {ManageSettings.Install2MoDirPath}");
+            _log.Debug("Update: searching for the update file locally in: " + ManageSettings.Install2MoDirPath);
             Directory.CreateDirectory(ManageSettings.Install2MoDirPath);
 
             var searchPattern = Info.UpdateFileStartsWith + "*" + Info.UpdateFileEndsWith;
             var localFiles = Directory.GetFiles(ManageSettings.Install2MoDirPath, searchPattern);
 
-            _log.Debug($"Found {localFiles.Length} potential local files matching pattern: {searchPattern}");
+            _log.Debug("Update: found " + localFiles.Length + " potential local files matching the pattern: " + searchPattern);
+
+            // clean into a local, the shared state must not be modified from here
+            var installedVersion = UpdateTools.CleanVersion(Info.TargetCurrentVersion);
 
             foreach (var file in localFiles)
             {
                 var fileName = Path.GetFileName(file);
-                var versionPattern = Info.UpdateFileStartsWith + "(.*)" + Info.UpdateFileEndsWith;
+
+                var versionPattern = Regex.Escape(Info.UpdateFileStartsWith) + "(.*)" + Regex.Escape(Info.UpdateFileEndsWith);
                 var versionMatch = Regex.Match(fileName, versionPattern);
 
-                if (!versionMatch.Success)
-                {
-                    continue;
-                }
+                if (!versionMatch.Success) continue;
 
-                var extractedVersion = versionMatch.Groups[1].Value;
-                UpdateTools.CleanVersion(ref extractedVersion);
-                UpdateTools.CleanVersion(ref Info.TargetCurrentVersion);
+                var extractedVersion = UpdateTools.CleanVersion(versionMatch.Groups[1].Value);
 
-                if (extractedVersion == _gitLatestVersion || extractedVersion.IsNewerOf(Info.TargetCurrentVersion))
+                if (extractedVersion == _gitLatestVersion || extractedVersion.IsNewerOf(installedVersion))
                 {
                     Info.UpdateFilePath = file;
-                    _log.Info("File found locally with version: " + extractedVersion);
+                    _log.Info("Update: file found locally with version: " + extractedVersion);
                     return extractedVersion;
                 }
 
-                _log.Debug($"Local file '{fileName}' version '{extractedVersion}' is not newer than current");
+                _log.Debug("Update: the local file '" + fileName + "' version '" + extractedVersion
+                           + "' is not newer than the current one.");
             }
 
-            _log.Debug("No suitable update file found locally");
+            _log.Debug("Update: no suitable update file found locally.");
             return null;
         }
 
         /// <summary>
-        /// Result structure for last 10 releases search operation.
+        /// Result of the fallback search through the last releases.
         /// </summary>
-        private struct ReleasesSearchResult
+        private readonly struct ReleasesSearchResult
         {
-            public Match Match;
-            public string PageContent;
-            public bool Found;
+            internal ReleasesSearchResult(Match match, string pageContent, bool found)
+            {
+                Match = match;
+                PageContent = pageContent;
+                Found = found;
+            }
+
+            /// <summary>Match for the file link.</summary>
+            internal Match Match { get; }
+
+            /// <summary>Page the match was found on.</summary>
+            internal string PageContent { get; }
+
+            /// <summary>True when the file link was actually found.</summary>
+            internal bool Found { get; }
         }
 
         /// <summary>
-        /// Searches through last 10 releases for the update file.
+        /// Searches the assets pages of the last releases for the update file.
         /// </summary>
-        /// <returns>Search result containing match, page content, and success flag.</returns>
+        /// <returns>The match, the page it was found on and whether it was found.</returns>
         private ReleasesSearchResult SearchInLast10Releases()
         {
-            var result = new ReleasesSearchResult { Found = true };
+            var releasesListUrl = GitHubBaseUrl + "/" + _gitOwner + "/" + _gitRepository + "/releases";
+            _log.Debug("Update: searching the last " + MaxReleasesToSearch + " releases: " + releasesListUrl);
 
-            // search in releases assets
-            Info.SourceLink = $"{GitHubBaseUrl}/{_gitOwner}/{_gitRepository}/releases";
-            _log.Debug("Searching in last 10 releases: " + Info.SourceLink);
-
-            var releasesListPage = WebClient.DownloadString(Info.SourceLink);
+            var releasesListPage = WebClient.DownloadString(releasesListUrl);
             var assetsList = Regex.Matches(releasesListPage, AssetsPageRegexPattern);
 
-            _log.Debug($"Found {assetsList.Count} releases to search through");
+            _log.Debug("Update: found " + assetsList.Count + " release assets pages to search through.");
+
+            var linkPattern = @"href\=\""(/" + Regex.Escape(_gitOwner) + "/" + Regex.Escape(_gitRepository)
+                              + "/releases/download/([^/]+)/" + Regex.Escape(Info.UpdateFileStartsWith)
+                              + @"([^\""]+)" + Regex.Escape(Info.UpdateFileEndsWith) + @")\""";
+
+            var searchedCount = 0;
 
             foreach (Match assetsMatch in assetsList)
             {
+                // the page can contain more links than the wanted number of releases
+                if (searchedCount >= MaxReleasesToSearch) break;
+                searchedCount++;
+
                 var assetsPageUrl = assetsMatch.Result("$1");
                 var releaseAssetsPage = WebClient.DownloadString(assetsPageUrl);
 
-                var linkPattern = @"href\=\""(/" + _gitOwner + "/" + _gitRepository +
-                                  "/releases/download/([^/]+)/" + Info.UpdateFileStartsWith +
-                                  @"([^\""]+)" + Info.UpdateFileEndsWith + @")\""";
-
                 var fileMatch = Regex.Match(releaseAssetsPage, linkPattern, RegexOptions.IgnoreCase);
 
-                if (fileMatch.Success)
-                {
-                    _log.Debug($"Found update file in release: {assetsMatch.Result("$4")}");
-                    result.Match = fileMatch;
-                    result.PageContent = releaseAssetsPage;
-                    return result;
-                }
+                if (!fileMatch.Success) continue;
+
+                _log.Debug("Update: found the update file in the release: " + assetsMatch.Result("$4"));
+                return new ReleasesSearchResult(fileMatch, releaseAssetsPage, true);
             }
 
-            // Retry search for file link if author changed username
-            _log.Debug("Retrying search with flexible owner pattern in releases list");
-            var flexibleLinkPattern = @"href\=\""(/[^/]+/" + _gitRepository +
-                                      "/releases/download/([^/]+)/" + Info.UpdateFileStartsWith +
-                                      @"([^\""]+)" + Info.UpdateFileEndsWith + @")\""";
+            // retry the search with a flexible owner pattern, the author may have changed username
+            _log.Debug("Update: retrying the search with the flexible owner pattern in the releases list.");
 
-            result.Match = Regex.Match(releasesListPage, flexibleLinkPattern, RegexOptions.IgnoreCase);
-            result.PageContent = releasesListPage;
+            var flexibleLinkPattern = @"href\=\""(/[^/]+/" + Regex.Escape(_gitRepository)
+                                      + "/releases/download/([^/]+)/" + Regex.Escape(Info.UpdateFileStartsWith)
+                                      + @"([^\""]+)" + Regex.Escape(Info.UpdateFileEndsWith) + @")\""";
 
-            if (result.Match.Success)
+            var flexibleMatch = Regex.Match(releasesListPage, flexibleLinkPattern, RegexOptions.IgnoreCase);
+
+            if (flexibleMatch.Success)
             {
-                _log.Debug("Found file with flexible owner pattern");
+                _log.Debug("Update: found the file with the flexible owner pattern.");
             }
             else
             {
-                _log.Debug("Update file not found in any of the last 10 releases");
+                _log.Debug("Update: the update file was not found in any of the last " + MaxReleasesToSearch + " releases.");
             }
 
-            return result;
+            return new ReleasesSearchResult(flexibleMatch, releasesListPage, flexibleMatch.Success);
         }
 
         /// <summary>
-        /// Checks if current version is newer than the version from releases.
+        /// Checks whether the installed version is already newer than the
+        /// version found in the last releases.
         /// </summary>
-        /// <param name="fileMatch">Match containing release version info.</param>
-        /// <returns>True if current version is newer and download can be skipped.</returns>
+        /// <param name="fileMatch">Match containing the release version.</param>
+        /// <returns>True when the download can be skipped.</returns>
         private bool IsCurrentVersionNewerThanRelease(Match fileMatch)
         {
-            UpdateTools.CleanVersion(ref _gitLatestVersion);
-            UpdateTools.CleanVersion(ref Info.TargetCurrentVersion);
+            // clean into locals, the shared state must not be modified from here
+            var latestVersion = UpdateTools.CleanVersion(_gitLatestVersion);
+            var currentVersion = UpdateTools.CleanVersion(Info.TargetCurrentVersion);
+            var releaseVersion = UpdateTools.CleanVersion(fileMatch.Result("$2"));
 
-            var releaseVersion = fileMatch.Result("$2");
-            UpdateTools.CleanVersion(ref releaseVersion);
+            // return empty when the current version and the release version are newer than the last version from releases
+            var isCurrentNewer = currentVersion.IsNewerOf(releaseVersion);
+            var isLatestNewer = latestVersion.IsNewerOf(releaseVersion);
 
-            // return empty when current version and release version is newer of last version from releases
-            var isCurrentNewer = Info.TargetCurrentVersion.IsNewerOf(releaseVersion);
-            var isLatestNewer = _gitLatestVersion.IsNewerOf(releaseVersion);
-
-            _log.Debug($"Version comparison - Current: {Info.TargetCurrentVersion}, " +
-                       $"Release: {releaseVersion}, Latest: {_gitLatestVersion}, " +
-                       $"CurrentNewer: {isCurrentNewer}, LatestNewer: {isLatestNewer}");
+            _log.Debug("Update: version comparison - Current: " + currentVersion
+                       + ", Release: " + releaseVersion
+                       + ", Latest: " + latestVersion
+                       + ", CurrentNewer: " + isCurrentNewer
+                       + ", LatestNewer: " + isLatestNewer);
 
             return isCurrentNewer && isLatestNewer;
         }
 
         /// <summary>
-        /// Builds the final download link and extracts version information.
+        /// Builds the final download link and extracts the version information.
         /// </summary>
         /// <param name="fileMatch">Match for the file link.</param>
-        /// <param name="releasePage">The release page content.</param>
-        /// <param name="fromMultipleReleases">Whether the search was done across multiple releases.</param>
-        /// <returns>Version string or empty if not found.</returns>
+        /// <param name="releasePage">Release page content.</param>
+        /// <param name="fromMultipleReleases">Whether the search walked through several releases.</param>
+        /// <returns>Version string, or empty when it could not be resolved.</returns>
         private string BuildDownloadLinkAndExtractVersion(Match fileMatch, string releasePage, bool fromMultipleReleases)
         {
-            var isValidLink = fileMatch.Success &&
-                              fileMatch.Value.Length > MinValidLinkLength &&
-                              fileMatch.Value.StartsWith(HrefPrefix, StringComparison.InvariantCultureIgnoreCase);
+            var isValidLink = fileMatch.Success
+                              && fileMatch.Value.Length > MinValidLinkLength
+                              && fileMatch.Value.StartsWith(HrefPrefix, StringComparison.InvariantCultureIgnoreCase);
 
             if (isValidLink)
             {
                 Info.DownloadLink = "https://" + Url + fileMatch.Result("$1");
-                _log.Info("Download link for file: " + Info.DownloadLink);
+                _log.Info("Update: download link for the file: " + Info.DownloadLink);
 
-                // Get version from file name if needed
+                // get the version from the file name if needed
                 ExtractVersionFromFileName(fileMatch, releasePage, fromMultipleReleases);
 
                 return _gitLatestVersion;
             }
 
-            // Log if file link not found
             LogFileLinkNotFound(fileMatch);
 
             if (!Info.VersionFromFile && _gitLatestVersion.Length > 0)
             {
                 Info.DownloadLink = "";
-                _log.Debug("Returning version without download link: " + _gitLatestVersion);
+                _log.Debug("Update: returning the version without a download link: " + _gitLatestVersion);
                 return _gitLatestVersion;
             }
 
@@ -727,80 +909,125 @@ namespace AIHelper.Manage.Update.Sources
         }
 
         /// <summary>
-        /// Extracts version from file name when VersionFromFile is enabled.
+        /// Extracts the version from the file name when the update record asks
+        /// for it.
         /// </summary>
         /// <param name="fileMatch">Match for the file link.</param>
-        /// <param name="releasePage">The release page content.</param>
-        /// <param name="fromMultipleReleases">Whether the search was done across multiple releases.</param>
+        /// <param name="releasePage">Release page content.</param>
+        /// <param name="fromMultipleReleases">Whether the search walked through several releases.</param>
         private void ExtractVersionFromFileName(Match fileMatch, string releasePage, bool fromMultipleReleases)
         {
             if (Info.VersionFromFile)
             {
                 if (!fromMultipleReleases)
                 {
-                    var pattern = "/releases/download/" + _gitLatestVersion + "/" +
-                                  Info.UpdateFileStartsWith + "([^\"]+)" + Info.UpdateFileEndsWith + "\"";
+                    var pattern = "/releases/download/" + Regex.Escape(_gitLatestVersion) + "/"
+                                  + Regex.Escape(Info.UpdateFileStartsWith) + "([^\"]+)"
+                                  + Regex.Escape(Info.UpdateFileEndsWith) + "\"";
+
                     var versionFromFile = Regex.Match(releasePage, pattern, RegexOptions.IgnoreCase);
 
                     if (versionFromFile.Success)
                     {
                         _gitLatestVersion = versionFromFile.Result("$1");
-                        _log.Debug("Version from file: " + _gitLatestVersion);
+                        _log.Debug("Update: version from the file: " + _gitLatestVersion);
                     }
                 }
                 else
                 {
                     _gitLatestVersion = fileMatch.Result("$3");
-                    _log.Debug("Version from last releases: " + _gitLatestVersion);
+                    _log.Debug("Update: version from the last releases: " + _gitLatestVersion);
                 }
             }
             else if (fromMultipleReleases)
             {
                 _gitLatestVersion = fileMatch.Result("$2");
-                _log.Debug("Version from last releases (without file): " + _gitLatestVersion);
+                _log.Debug("Update: version from the last releases (without file): " + _gitLatestVersion);
             }
         }
 
         /// <summary>
-        /// Logs detailed information when file link is not found.
+        /// Logs the details of a file link that was not found.
         /// </summary>
-        /// <param name="fileMatch">Match result for the file link.</param>
+        /// <param name="fileMatch">Match for the file link.</param>
         private void LogFileLinkNotFound(Match fileMatch)
         {
             var linkInfo = fileMatch.Success ? ": " + fileMatch.Value : " not found";
 
-            _log.Info("GitHub sublink to file not found or incorrect.\r\n\t" +
-                      "Mod:" + Info.TargetFolderPath.Name + "\r\n\t" +
-                      "link:" + Info.SourceLink + "\r\n\t" +
-                      "file:" + Info.UpdateFileStartsWith + "*" + Info.UpdateFileEndsWith +
-                      " =>(Link to file" + linkInfo + ")");
+            _log.Info("GitHub sublink to file not found or incorrect.\r\n\t"
+                      + "Mod:" + GetTargetName() + "\r\n\t"
+                      + "link:" + Info.SourceLink + "\r\n\t"
+                      + "file:" + Info.UpdateFileStartsWith + "*" + Info.UpdateFileEndsWith
+                      + " =>(Link to file" + linkInfo + ")");
         }
 
         #endregion
 
-        // Check if source should stop working (e.g. due to rate limiting)
+        /// <summary>
+        /// True when the source hit a GitHub rate limit and must be skipped for
+        /// the rest of the session.
+        /// </summary>
+        /// <param name="info">Current update state.</param>
         internal override bool CheckIfStopWork(UpdateInfo info)
         {
-            var s = info.LastErrorText.ToString();
-            var b = s.Contains("(429) too many requests");
-            if (b) _log.Warn("Source " + this.Title + " will be skipped for a while because stop approve requests. Error:\r\n" + s);
+            var lastError = info.LastError;
 
-            return b;
+            var shouldStop = lastError.IndexOf("(429)", StringComparison.OrdinalIgnoreCase) >= 0
+                             || lastError.IndexOf("too many requests", StringComparison.OrdinalIgnoreCase) >= 0;
+
+            if (shouldStop)
+            {
+                _log.Warn("Source " + Title + " will be skipped for a while because it stopped approving requests. Error:\r\n" + lastError);
+            }
+
+            return shouldStop;
         }
 
-        // Pause between Github requests
-        internal override void Pause()
+        /// <summary>
+        /// Waits a random short time before the next request so the updater does
+        /// not look like a scraper. Awaitable, so the UI thread is not blocked.
+        /// </summary>
+        internal override async Task PauseAsync()
         {
-            int ms = (int)(new Random().NextDouble() * 500);
-            _log.Debug("Pause between requests to Github: " + ms + " ms");
-            Thread.Sleep(ms);
+            var milliseconds = NextPauseMilliseconds();
+
+            _log.Debug("Update: pause between requests to Github: " + milliseconds + " ms");
+
+            await Task.Delay(milliseconds).ConfigureAwait(true);
         }
 
-        // Download file from link
+        /// <summary>
+        /// Reads a file into memory.
+        /// </summary>
+        /// <param name="link">File to read.</param>
+        /// <returns>Payload bytes, or an empty array on failure.</returns>
         internal override byte[] DownloadFileFromTheLink(Uri link)
         {
-            _log.Info("Downloading file from link: " + link);
-            return WebClient.DownloadData(link);
+            _log.Info("Update: downloading a file from the link: " + link);
+
+            try
+            {
+                return WebClient.DownloadData(link);
+            }
+            catch (Exception ex)
+            {
+                _log.Warn(ex, "Update: failed to download from the link: " + link);
+                return Array.Empty<byte>();
+            }
+        }
+
+        private static int NextPauseMilliseconds()
+        {
+            // Random is not thread-safe, and a new instance would repeat the seed
+            lock (_pauseRandomLock)
+            {
+                return _pauseRandom.Next(0, MaxPauseMilliseconds);
+            }
+        }
+
+        private string GetTargetName()
+        {
+            return Info == null || Info.TargetFolderPath == null ? "unknown" : Info.TargetFolderPath.Name;
         }
     }
 }

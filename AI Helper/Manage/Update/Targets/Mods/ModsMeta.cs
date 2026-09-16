@@ -1,42 +1,41 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using AIHelper.Manage.Update.Targets.Mods.ModsMetaUrl;
-using INIFileMan;
 
 namespace AIHelper.Manage.Update.Targets.Mods
 {
-    internal class ModInfo
-    {
-        internal string Url;
-        internal DirectoryInfo Moddir;
-    }
-
+    /// <summary>
+    /// Target for mods that carry their update record in meta.ini, either in the
+    /// AIHelper section or in the notes written by Mod Organizer.
+    /// </summary>
     class ModsMeta : ModsBase
     {
+        /// <summary>
+        /// Sections and keys that may hold the update record, in the order they
+        /// are searched.
+        /// </summary>
+        static readonly (string Section, string Key)[] UpdateRecordLocations =
+        {
+            (ManageSettings.AiMetaIniSectionName, ManageSettings.AiMetaIniKeyUpdateName),
+            ("General", "notes"),
+        };
+
         public ModsMeta(UpdateInfo info) : base(info)
         {
         }
 
-        //ModInfo _targetinfo;
-        //List<ModsMetaUrlBase> _dBs;
-
         /// <summary>
-        /// Get enabled mods list infos from meta.ini of each mod
+        /// Gets the enabled mods whose meta.ini contains an update record for
+        /// the current source.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Mod folder path to update record pairs.</returns>
         internal override Dictionary<string, string> GetUpdateInfos()
         {
             var infos = new Dictionary<string, string>();
 
-            //_targetinfo = new ModInfo();
+            var onlyEnabledMods = Info.UpdateOptions != null && Info.UpdateOptions.CheckEnabledModsOnlyCheckBox.Checked;
 
-            //_dBs = new List<ModsMetaUrlBase>
-            //{
-            //    new Xua(_targetinfo)
-            //};
-
-            foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(Info.UpdateOptions != null && Info.UpdateOptions.CheckEnabledModsOnlyCheckBox.Checked))
+            foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(onlyEnabledMods))
             {
                 var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modname);
 
@@ -44,38 +43,39 @@ namespace AIHelper.Manage.Update.Targets.Mods
 
                 if (string.IsNullOrWhiteSpace(modinfo)) continue;
 
-                infos.Add(modPath, modinfo/*>*/.Replace(", ", ",")/*<fix of possible problems from space after ,*/);
+                // indexer instead of Add: a duplicated mod name must not throw
+                infos[modPath] = NormalizeUpdateRecord(modinfo);
             }
 
             return infos;
         }
 
+        /// <summary>
+        /// Reads the update record of the current source from a mod's meta.ini.
+        /// </summary>
+        /// <param name="modPath">Mod folder.</param>
+        /// <returns>The record without the source prefix, or an empty string.</returns>
         private string GetInfoFromMeta(string modPath)
         {
-            var metaIniPath = Path.Combine(modPath, "meta.ini");
+            var metaIniPath = Path.Combine(modPath, MetaIniFileName);
             if (!File.Exists(metaIniPath)) return "";
 
             var ini = ManageIni.GetINIFile(metaIniPath);
 
-            foreach((string s, string k) in new[]
+            foreach (var location in UpdateRecordLocations)
             {
-                (ManageSettings.AiMetaIniSectionName, ManageSettings.AiMetaIniKeyUpdateName),
-                ("General", "notes"),
-            })
-            {
-                //Get by current source ID from notes
-                if (!ini.KeyExists(k, s)) continue;
-                var val = ini.GetKey(s, k);
+                if (!ini.KeyExists(location.Key, location.Section)) continue;
+
+                var val = ini.GetKey(location.Section, location.Key);
 
                 if (string.IsNullOrWhiteSpace(val)) continue;
 
-                //updgit::BepInEx,BepInEx,BepInEx_x64::
-                var updateInfoMatch = Regex.Match(val, $"{Info.SourceId}::([^:]+)::");
+                // the record looks like 'updgit::BepInEx,BepInEx,BepInEx_x64::'
+                // the source id is escaped because it is data, not a pattern
+                var updateInfoMatch = Regex.Match(val, Regex.Escape(Info.SourceId) + "::(.+?)::");
 
                 if (!updateInfoMatch.Success) continue;
                 if (string.IsNullOrWhiteSpace(updateInfoMatch.Value)) continue;
-                if (!updateInfoMatch.Value.StartsWith(Info.SourceId,
-                    System.StringComparison.InvariantCultureIgnoreCase)) continue;
 
                 return updateInfoMatch.Groups[1].Value;
             }
@@ -83,47 +83,14 @@ namespace AIHelper.Manage.Update.Targets.Mods
             return "";
         }
 
-        //List<Dictionary<string, string>> _dbData;
-        //readonly string[] _dbDataParams = {
-        //    "url.contains",
-        //    "gitowner",
-        //    "repository",
-        //    "bepinexstarts",
-        //    "bepinexends",
-        //    "ipastarts",
-        //    "ipaends",
-        //    "gitversionfromfile",
-        //    "skipif.contains.file0",
-        //    "skipif.contains.file1",
-        //    "skipif.contains.file2",
-        //    "skipif.contains.file3",
-        //    "skipif.contains.file4",
-        //    "skipif.contains.file5"
-        //};
-        //private List<Dictionary<string, string>> GetDb()
-        //{
-        //    if (_dbData != null) return _dbData;
-
-        //    _dbData = new List<Dictionary<string, string>>();
-        //    var iniNum = 0;
-        //    foreach (var iniFile in Directory.EnumerateFiles(ManageSettings.ModsUpdateDbInfoDir, "*.ini", SearchOption.AllDirectories))
-        //    {
-        //        INIFile ini = ManageIni.GetINIFile(iniFile);
-
-        //        _dbData.Add(new Dictionary<string, string>());
-
-        //        foreach (var setting in _dbDataParams)
-        //        {
-        //            var value = "";
-        //            if (ini.KeyExists(setting)) value = ini.GetKey("", setting);
-
-        //            _dbData[iniNum].Add(setting, value);
-        //        }
-
-        //        iniNum++;
-        //    }
-
-        //    return _dbData;
-        //}
+        /// <summary>
+        /// Normalises the separators of an update record so a record written by
+        /// hand with a space after each comma still parses.
+        /// </summary>
+        /// <param name="updateRecord">Record read from meta.ini.</param>
+        private static string NormalizeUpdateRecord(string updateRecord)
+        {
+            return updateRecord.Replace(", ", ",");
+        }
     }
 }

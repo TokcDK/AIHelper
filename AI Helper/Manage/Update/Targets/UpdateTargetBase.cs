@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -7,74 +6,125 @@ using NLog;
 
 namespace AIHelper.Manage.Update.Targets
 {
-    //Base for targets
+    /// <summary>
+    /// Base for update targets. A target knows which folders can be updated,
+    /// how to read their current version and how to replace their files.
+    /// <para>
+    /// The update itself is destructive by design: the old content is moved
+    /// into a backup directory first (<see cref="MakeBackup"/>), the new files
+    /// are extracted over the folder, and the backup is restored when anything
+    /// fails (<see cref="RestoreBackup"/>).
+    /// </para>
+    /// </summary>
     abstract class UpdateTargetBase
     {
-        protected static Logger _log = LogManager.GetCurrentClassLogger();
+        protected static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
+        /// <summary>File that stores the metadata of a Mod Organizer mod.</summary>
+        internal const string MetaIniFileName = "meta.ini";
+
+        /// <summary>Section of <see cref="MetaIniFileName"/> that holds the version.</summary>
+        internal const string MetaIniVersionSection = "General";
+
+        /// <summary>Key of <see cref="MetaIniFileName"/> that holds the version.</summary>
+        internal const string MetaIniVersionKey = "version";
+
+        /// <summary>Extensions that <see cref="PerformUpdate"/> knows how to apply.</summary>
+        static readonly string[] SupportedUpdateExtensions = { ".ZIP", ".DLL", ".7Z", ".RAR" };
+
+        /// <summary>
+        /// Current update request state. Assigned by <see cref="Updater"/>
+        /// before every folder is processed.
+        /// </summary>
         internal UpdateInfo Info;
+
+        /// <summary>
+        /// Path to the backup copy of the target folder.
+        /// </summary>
+        internal string BackupDirPath;
+
+        /// <summary>
+        /// Files and folders that must be restored into the updated folder.
+        /// </summary>
+        protected readonly HashSet<string> RestoreList = new HashSet<string>();
 
         protected UpdateTargetBase(UpdateInfo info)
         {
             this.Info = info;
-
-            UpdateFilenameSubPathData = new Dictionary<string, string>
-            {
-                //{ "ScriptLoader.dll", "BepInEx" + Path.DirectorySeparatorChar + "plugins" },
-                //{ "GraphicsSettings.dll", "BepInEx" + Path.DirectorySeparatorChar + "plugins" },
-                //{ "HS2_Heelz.dll", "BepInEx" + Path.DirectorySeparatorChar + "plugins" },
-                //{ "AI_Heelz.dll", "BepInEx" + Path.DirectorySeparatorChar + "plugins" }
-            };
         }
 
         /// <summary>
-        /// List of folders paths with extracted update infos
+        /// Gets the folders that can be updated, as
+        /// "folder name or path" to "update record" pairs.
         /// </summary>
-        /// <returns></returns>
-        internal abstract Dictionary<string, string> GetUpdateInfos();//list of ModName\UpdateInfo pairs
+        /// <returns>The folders to process, or null when there are none.</returns>
+        internal abstract Dictionary<string, string> GetUpdateInfos();
 
         /// <summary>
-        /// target data for update of some folders when, for example, downloaded dll and need to get correct target folder for it
+        /// Replaces the files of the current folder with the downloaded ones.
         /// </summary>
-        internal Dictionary<string, string> UpdateFilenameSubPathData;
-
-        /// <summary>
-        /// Update folder with new files
-        /// </summary>
-        /// <returns></returns>
+        /// <returns>True when the folder was updated.</returns>
         internal abstract bool UpdateFiles();
 
         /// <summary>
-        /// Path to buckup copy of target folder
+        /// Reads the version currently installed in the current folder.
         /// </summary>
-        internal string BuckupDirPath;
+        internal abstract void SetCurrentVersion();
 
         /// <summary>
-        /// Make target folder buckup
+        /// Lets a target adjust the request before the source resolves the
+        /// latest version.
+        /// <para>
+        /// Called after <see cref="UpdateInfo.Reset"/> and
+        /// <see cref="SetCurrentVersion"/>, and before
+        /// <see cref="Sources.UpdateSourceBase.GetLastVersion"/>. Targets that
+        /// need to constrain the file name the source looks for override this
+        /// instead of doing it as a side effect of another method.
+        /// </para>
         /// </summary>
-        internal virtual bool MakeBuckup()
+        internal virtual void PrepareUpdateRequest()
+        {
+        }
+
+        /// <summary>
+        /// Folder that contains the target folders, or an empty string when the
+        /// folder keys are already absolute paths.
+        /// </summary>
+        internal virtual string GetParentFolderPath()
+        {
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Copies the current folder into <see cref="BackupDirPath"/> so the
+        /// update can be undone.
+        /// </summary>
+        /// <returns>True when a usable backup exists.</returns>
+        internal virtual bool MakeBackup()
         {
             try
             {
-                BuckupDirPath = Path.Combine(ManageSettings.UpdatedModsOlderVersionsBuckupDirPath, Info.TargetFolderPath.Name + "_" + Info.TargetCurrentVersion);
-                if (Directory.Exists(BuckupDirPath))
+                BackupDirPath = Path.Combine(
+                    ManageSettings.UpdatedModsOlderVersionsBuckupDirPath,
+                    Info.TargetFolderPath.Name + "_" + Info.TargetCurrentVersion);
+
+                if (Directory.Exists(BackupDirPath))
                 {
-                    BuckupDirPath += ManageSettings.DateTimeBasedSuffix;
+                    BackupDirPath += ManageSettings.DateTimeBasedSuffix;
                 }
 
-                Info.BuckupDirPath = BuckupDirPath;
+                Info.BackupDirPath = BackupDirPath;
 
                 //set RestoreList
-                RestoreList = new HashSet<string>();
-                foreach (var path in Info.Target.RestorePathsList())
+                RestoreList.Clear();
+                foreach (var path in RestorePathsList())
                 {
                     if (string.IsNullOrWhiteSpace(path)) continue;
 
-                    var p = Path.GetFullPath(Path.Combine(Info.BuckupDirPath, path));
-                    RestoreList.Add(p);
+                    RestoreList.Add(Path.GetFullPath(Path.Combine(Info.BackupDirPath, path)));
                 }
 
-                foreach (var path in Info.Target.RestorePathsListExtra())
+                foreach (var path in RestorePathsListExtra())
                 {
                     if (string.IsNullOrWhiteSpace(path)) continue;
 
@@ -91,53 +141,66 @@ namespace AIHelper.Manage.Update.Targets
                     RestoreList.Add(path);
                 }
 
-                MakeBuckup(BuckupDirPath, Info.TargetFolderPath.FullName);
+                MakeBackup(BackupDirPath, Info.TargetFolderPath.FullName);
 
-                return Directory.Exists(BuckupDirPath);
+                if (!Directory.Exists(BackupDirPath)) return false;
+
+                // a folder with content must have produced a backup with content,
+                // otherwise the mod would be overwritten without a way back
+                if (Info.TargetFolderPath.FullName.IsAnyFileExistsInTheDir()
+                    && !BackupDirPath.IsAnyFileExistsInTheDir())
+                {
+                    _log.Warn("Update: backup of '" + Info.TargetFolderPath.Name + "' is empty while the folder is not. Update skipped.");
+                    return false;
+                }
+
+                return true;
             }
             catch (Exception ex)
             {
-                _log.Warn("An error occured while buckup creation:\r\n" + ex);
+                _log.Warn(ex, "An error occured while backup creation.");
                 return false;
             }
         }
 
         /// <summary>
-        /// restore mod from buckup
+        /// Puts the content of <see cref="BackupDirPath"/> back into the target
+        /// folder, undoing a failed update.
         /// </summary>
-        internal virtual void RestoreBuckup()
+        internal virtual void RestoreBackup()
         {
-            RestoreModFromBuckup(BuckupDirPath, Info.TargetFolderPath.FullName);
+            RestoreModFromBackup(BackupDirPath, Info.TargetFolderPath.FullName);
         }
 
+        /// <summary>
+        /// Extracts or installs the downloaded file into the current folder.
+        /// </summary>
+        /// <returns>True when the folder was updated.</returns>
         protected bool PerformUpdate()
         {
-            if (!Path
-                .GetFileNameWithoutExtension(Info.UpdateFilePath)
-                .StartsWith(Info.UpdateFileStartsWith, StringComparison.InvariantCultureIgnoreCase)
-               && 
-               !Path
-               .GetFileNameWithoutExtension(Info.UpdateFilePath)
-               .ToUpperInvariant()
-               .StartsWith(Path.GetFileNameWithoutExtension(Info.UpdateFileStartsWith)
-               .ToUpperInvariant(), StringComparison.InvariantCultureIgnoreCase)
-                )
-            {
-                return false;
-            }
+            if (!IsUpdateFileForThisTarget()) return false;
 
-            // Move file from 2mo to downloads when it was manally downloaded in 2mo
-            if (Info.UpdateFilePath.StartsWith(ManageSettings.Install2MoDirPath))
+            // Move file from 2mo to downloads when it was manually downloaded in 2mo
+            if (UpdateIo.IsUnderPath(Info.UpdateFilePath, ManageSettings.Install2MoDirPath))
             {
-                // set new path in downloads
-                var newFilePathInDownloads = Info.UpdateFilePath.Replace(ManageSettings.Install2MoDirPath, ManageSettings.ModsUpdateDirDownloadsPath);
+                Directory.CreateDirectory(ManageSettings.ModsUpdateDirDownloadsPath);
+
+                // keep the sub path the file had under the 2mo directory
+                var newFilePathInDownloads = UpdateIo.RemapPath(
+                    Info.UpdateFilePath,
+                    ManageSettings.Install2MoDirPath,
+                    ManageSettings.ModsUpdateDirDownloadsPath);
+
+                UpdateIo.EnsureParentDirectory(newFilePathInDownloads);
+                UpdateIo.TryDeleteFile(newFilePathInDownloads);
+
                 // move file to new path
                 File.Move(Info.UpdateFilePath, newFilePathInDownloads);
-                // set change path to new
+
+                // set changed path to new
                 Info.UpdateFilePath = newFilePathInDownloads;
             }
 
-            //var modname = modGitData.CurrentModName; //Path.GetFileName(Path.GetDirectoryName(filePath));
             var updatingModDirPath = Info.TargetFolderPath.FullName;
             Directory.CreateDirectory(updatingModDirPath);
 
@@ -147,66 +210,31 @@ namespace AIHelper.Manage.Update.Targets
             {
                 if (File.Exists(Info.UpdateFilePath))
                 {
-                    string ext = Path.GetExtension(Info.UpdateFilePath).ToUpperInvariant();
-
-                    if (ext == ".ZIP")
-                    {
-                        using (ZipArchive archive = ZipFile.OpenRead(Info.UpdateFilePath))
-                        {
-                            archive.ExtractToDirectory(updatingModDirPath);
-                        }
-                    }
-                    else if (ext == ".DLL")
-                    {
-                        var fullDllFileName = Path.GetFileName(Info.UpdateFilePath);
-                        string targetDir;
-                        if (UpdateFilenameSubPathData.TryGetValue(fullDllFileName, out string value)) //get subpath from predefined list
-                        {
-                            targetDir = updatingModDirPath + Path.DirectorySeparatorChar + value;
-                        }
-                        else if ((targetDir = GetDllTargetDir(fullDllFileName, updatingModDirPath)).Length > 0)//search dll path in buckup dir
-                        {
-                            Directory.CreateDirectory(targetDir);
-                        }
-                        else// if (Info.TargetFolderUpdateInfo[0] == "BepInEx")//default BepInEx plugins dir
-                        {
-                            targetDir = Path.Combine(updatingModDirPath, "BepInEx", "plugins");
-                        }
-
-                        Directory.CreateDirectory(targetDir);
-                        var targetFilePath = Path.Combine(targetDir, fullDllFileName);
-                        File.Move(Info.UpdateFilePath, targetFilePath);
-                    }
-                    else if (ext == ".7Z")
-                    {
-                        ManageArchive.Extract7zipTo(Info.UpdateFilePath, Info.TargetFolderPath.FullName);
-                    }
-                    else if (ext == ".RAR")
-                    {
-                        ManageArchive.ExtractRarTo(Info.UpdateFilePath, Info.TargetFolderPath.FullName);
-                    }
-
-                    success = true;
+                    success = ApplyUpdateFile(Info.UpdateFilePath, updatingModDirPath);
                 }
 
                 if (success)
                 {
-                    RestoreSomeFiles(Info.BuckupDirPath, updatingModDirPath);
+                    RestoreSomeFiles(Info.BackupDirPath, updatingModDirPath);
 
-                    ManageIni.WriteIniValue(Path.Combine(updatingModDirPath, "meta.ini"), "General", "version", Info.TargetLastVersion);
+                    ManageIni.WriteIniValue(
+                        Path.Combine(updatingModDirPath, MetaIniFileName),
+                        MetaIniVersionSection,
+                        MetaIniVersionKey,
+                        Info.TargetLastVersion);
                 }
                 else
                 {
-                    if (!updatingModDirPath.IsAnyFileExistsInTheDir()) Directory.Delete(updatingModDirPath);
+                    if (!updatingModDirPath.IsAnyFileExistsInTheDir()) UpdateIo.TryDeleteDirectory(updatingModDirPath);
 
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                _log.Warn("Failed to update mod" + " " + Info.TargetFolderPath.Name + ":" + Environment.NewLine + ex);
+                _log.Warn(ex, "Failed to update mod" + " " + Info.TargetFolderPath.Name);
 
-                if (!updatingModDirPath.IsAnyFileExistsInTheDir()) Directory.Delete(updatingModDirPath);
+                if (!updatingModDirPath.IsAnyFileExistsInTheDir()) UpdateIo.TryDeleteDirectory(updatingModDirPath);
 
                 return false;
             }
@@ -214,74 +242,146 @@ namespace AIHelper.Manage.Update.Targets
             return true;
         }
 
+        /// <summary>
+        /// Applies the downloaded archive or dll to the folder.
+        /// </summary>
+        /// <param name="updateFilePath">Downloaded file.</param>
+        /// <param name="updatingModDirPath">Folder to update.</param>
+        /// <returns>True when the file was applied.</returns>
+        private bool ApplyUpdateFile(string updateFilePath, string updatingModDirPath)
+        {
+            string ext = Path.GetExtension(updateFilePath).ToUpperInvariant();
+
+            if (ext == ".ZIP")
+            {
+                using (ZipArchive archive = ZipFile.OpenRead(updateFilePath))
+                {
+                    archive.ExtractToDirectory(updatingModDirPath);
+                }
+            }
+            else if (ext == ".DLL")
+            {
+                var fullDllFileName = Path.GetFileName(updateFilePath);
+
+                var targetDir = GetDllTargetDir(fullDllFileName, updatingModDirPath);
+
+                if (string.IsNullOrWhiteSpace(targetDir))
+                {
+                    // default BepInEx plugins dir
+                    targetDir = Path.Combine(updatingModDirPath, "BepInEx", "plugins");
+                }
+
+                Directory.CreateDirectory(targetDir);
+                File.Move(updateFilePath, Path.Combine(targetDir, fullDllFileName));
+            }
+            else if (ext == ".7Z")
+            {
+                ManageArchive.Extract7zipTo(updateFilePath, updatingModDirPath);
+            }
+            else if (ext == ".RAR")
+            {
+                ManageArchive.ExtractRarTo(updateFilePath, updatingModDirPath);
+            }
+            else
+            {
+                // never report success for a file that was not applied, otherwise
+                // the mod is marked as up to date and will not be retried
+                _log.Warn("Update: unsupported update file extension '" + ext + "' for '"
+                          + Info.TargetFolderPath.Name + "'. Supported: "
+                          + string.Join(", ", SupportedUpdateExtensions) + ".");
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// True when the downloaded file matches the prefix of the update
+        /// record. The prefix can be a plain name ("BepInEx") or a name with an
+        /// extension ("Mod.Organizer-"), so the file name is compared both with
+        /// and without its extension.
+        /// </summary>
+        private bool IsUpdateFileForThisTarget()
+        {
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(Info.UpdateFilePath);
+            var prefixWithoutExtension = Path.GetFileNameWithoutExtension(Info.UpdateFileStartsWith);
+
+            return fileNameWithoutExtension.StartsWith(
+                       Info.UpdateFileStartsWith,
+                       StringComparison.InvariantCultureIgnoreCase)
+                   || fileNameWithoutExtension.ToUpperInvariant().StartsWith(
+                       prefixWithoutExtension.ToUpperInvariant(),
+                       StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        /// <summary>
+        /// Finds the folder a dll lived in before the update, so an updated dll
+        /// lands in the same sub folder.
+        /// </summary>
+        /// <param name="fullDllFileName">File name of the dll.</param>
+        /// <param name="updatingModDirPath">Folder being updated.</param>
+        /// <returns>Target folder, or an empty string when the dll is new.</returns>
         private string GetDllTargetDir(string fullDllFileName, string updatingModDirPath)
         {
-            if (string.IsNullOrWhiteSpace(Info.BuckupDirPath)) return string.Empty;
-            if (!Directory.Exists(Info.BuckupDirPath)) return string.Empty;
+            if (string.IsNullOrWhiteSpace(Info.BackupDirPath)) return string.Empty;
+            if (!Directory.Exists(Info.BackupDirPath)) return string.Empty;
 
             //search dll with same name and get subpath from this dll
-            foreach (var dll in Directory.EnumerateFiles(Info.BuckupDirPath, "*.dll", SearchOption.AllDirectories))
+            foreach (var dll in Directory.EnumerateFiles(Info.BackupDirPath, "*.dll", SearchOption.AllDirectories))
             {
                 if (Path.GetFileName(dll) != fullDllFileName) continue;
 
-                return Path.GetDirectoryName(dll).Replace(Info.BuckupDirPath, updatingModDirPath);
+                var dllDirPath = Path.GetDirectoryName(dll);
+                if (string.IsNullOrWhiteSpace(dllDirPath)) return string.Empty;
+
+                return UpdateIo.RemapPath(dllDirPath, Info.BackupDirPath, updatingModDirPath);
             }
-            return string.Empty;
-        }
 
-        internal abstract void SetCurrentVersion();
-
-        internal virtual string GetParentFolderPath()
-        {
             return string.Empty;
         }
 
         /// <summary>
-        /// list of files and folder which need to be restore in updated folder
+        /// Files and folders that must survive an update, relative to the mod
+        /// folder, for example ".\meta.ini".
         /// </summary>
-        /// <returns></returns>
         internal virtual string[] RestorePathsList()
         {
-            return new[] { string.Empty };
+            return new string[0];
         }
 
         /// <summary>
-        /// list of folders from game's list of symlink target object
+        /// Folders from the game's list of symlink targets that must be checked
+        /// for links pointing into the updated mod.
         /// </summary>
-        /// <returns></returns>
         internal virtual string[] RestorePathsListExtra()
         {
-            return new[] { string.Empty };
+            return new string[0];
         }
 
         /// <summary>
-        /// file which need to be restored to updating dir
+        /// Copies the files listed in <see cref="RestoreList"/> plus user
+        /// configuration back into the updated folder.
         /// </summary>
-        protected HashSet<string> RestoreList;
-
-        /// <summary>
-        /// restore some files like cfg
-        /// </summary>
-        /// <param name="oldModBuckupDirPath"></param>
-        /// <param name="updatingModDirPath"></param>
-        protected void RestoreSomeFiles(string oldModBuckupDirPath, string updatingModDirPath)
+        /// <param name="oldModBackupDirPath">Backup of the previous version.</param>
+        /// <param name="updatingModDirPath">Folder being updated.</param>
+        protected void RestoreSomeFiles(string oldModBackupDirPath, string updatingModDirPath)
         {
-            if (string.IsNullOrWhiteSpace(oldModBuckupDirPath) 
+            if (string.IsNullOrWhiteSpace(oldModBackupDirPath)
                 || string.IsNullOrWhiteSpace(updatingModDirPath)) return;
 
-            if (!Directory.Exists(oldModBuckupDirPath) 
+            if (!Directory.Exists(oldModBackupDirPath)
                 || !Directory.Exists(updatingModDirPath)) return;
 
             // restore some dirs
-            foreach (var dir in new DirectoryInfo(oldModBuckupDirPath).EnumerateDirectories("*", SearchOption.AllDirectories))
+            foreach (var dir in new DirectoryInfo(oldModBackupDirPath).EnumerateDirectories("*", SearchOption.AllDirectories))
             {
                 try
                 {
                     if (Directory.Exists(Path.Combine(updatingModDirPath, dir.Name))
                         || !RestoreList.Contains(dir.FullName)) continue;
 
-                    var targetPath = dir.FullName.Replace(oldModBuckupDirPath, updatingModDirPath);
-                    Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
+                    var targetPath = dir.FullName.Replace(oldModBackupDirPath, updatingModDirPath);
+                    UpdateIo.EnsureParentDirectory(targetPath);
 
                     if (!Directory.Exists(dir.FullName)) continue;
 
@@ -289,90 +389,120 @@ namespace AIHelper.Manage.Update.Targets
                 }
                 catch (Exception ex)
                 {
-                    _log.Debug("Update: Failed to move file to bak dir. error:" + Environment.NewLine + ex);
+                    _log.Debug("Update: failed to restore a directory. error:" + Environment.NewLine + ex);
                 }
             }
 
             // restore some files
-            foreach (var file in new DirectoryInfo(oldModBuckupDirPath).EnumerateFiles("*", SearchOption.AllDirectories))
+            foreach (var file in new DirectoryInfo(oldModBackupDirPath).EnumerateFiles("*", SearchOption.AllDirectories))
             {
                 try
                 {
-                    if (File.Exists(Path.Combine(updatingModDirPath, file.Name)) ||
-                        file.Extension != ".ini"
-                            && file.Extension != ".cfg"
-                            && (file.DirectoryName != oldModBuckupDirPath || !file.Extension.IsPictureExtension())
-                            && !RestoreList.Contains(file.FullName)
-                        ) continue;
+                    if (!ShouldRestoreFile(file, oldModBackupDirPath, updatingModDirPath)) continue;
 
-                    var targetFilePath = file.FullName
-                        .Replace(oldModBuckupDirPath, updatingModDirPath);
+                    var targetFilePath = file.FullName.Replace(oldModBackupDirPath, updatingModDirPath);
 
-                    Directory.CreateDirectory(Path.GetDirectoryName(targetFilePath));
+                    UpdateIo.EnsureParentDirectory(targetFilePath);
 
-                    if (!File.Exists(file.FullName) 
-                        || File.Exists(targetFilePath))  continue;
+                    if (!File.Exists(file.FullName)
+                        || File.Exists(targetFilePath)) continue;
 
                     File.Copy(file.FullName, targetFilePath);
                 }
                 catch (Exception ex)
                 {
-                    _log.Debug("Update: Failed to move file to bak dir. error:" + Environment.NewLine + ex);
+                    _log.Debug("Update: failed to restore a file. error:" + Environment.NewLine + ex);
                 }
             }
         }
 
-        private static void RestoreModFromBuckup(string oldModBuckupDirPath, string updatingModDirPath)
+        /// <summary>
+        /// True when a backed up file must be copied into the updated folder.
+        /// A file is restored when it is a config file, a picture that lived in
+        /// the root of the mod, or one of the explicitly listed restore paths —
+        /// and only when the update did not bring its own copy.
+        /// </summary>
+        /// <param name="file">File from the backup.</param>
+        /// <param name="oldModBackupDirPath">Backup of the previous version.</param>
+        /// <param name="updatingModDirPath">Folder being updated.</param>
+        private bool ShouldRestoreFile(FileInfo file, string oldModBackupDirPath, string updatingModDirPath)
         {
-            if (string.IsNullOrWhiteSpace(oldModBuckupDirPath) 
+            if (File.Exists(Path.Combine(updatingModDirPath, file.Name))) return false;
+
+            var isConfigFile = file.Extension == ".ini" || file.Extension == ".cfg";
+
+            var isRootPicture = file.DirectoryName == oldModBackupDirPath && file.Extension.IsPictureExtension();
+
+            return isConfigFile
+                   || isRootPicture
+                   || RestoreList.Contains(file.FullName);
+        }
+
+        /// <summary>
+        /// Puts the previous version of the folder back, replacing whatever the
+        /// failed update left behind.
+        /// </summary>
+        /// <param name="oldModBackupDirPath">Backup of the previous version.</param>
+        /// <param name="updatingModDirPath">Folder that was being updated.</param>
+        private static void RestoreModFromBackup(string oldModBackupDirPath, string updatingModDirPath)
+        {
+            if (string.IsNullOrWhiteSpace(oldModBackupDirPath)
                 || string.IsNullOrWhiteSpace(updatingModDirPath)) return;
 
             // restore old dirs
-            foreach (var folder in Directory.GetDirectories(oldModBuckupDirPath))
+            foreach (var folder in Directory.GetDirectories(oldModBackupDirPath))
             {
                 try
                 {
-                    var targetPath = folder.Replace(oldModBuckupDirPath, updatingModDirPath);
-                    if (Directory.Exists(targetPath)) Directory.Delete(targetPath, true);
+                    var targetPath = folder.Replace(oldModBackupDirPath, updatingModDirPath);
 
-                    Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
+                    if (Directory.Exists(targetPath))
+                    {
+                        _log.Info("Restore: replacing '" + targetPath + "' with the backed up version.");
+                        UpdateIo.TryDeleteDirectory(targetPath, true);
+                    }
+
+                    UpdateIo.EnsureParentDirectory(targetPath);
                     if (Directory.Exists(folder)) Directory.Move(folder, targetPath);
                 }
                 catch (Exception ex)
                 {
-                    _log.Error("Restore: Failed to move dir to mod dir. error:" + Environment.NewLine + ex);
+                    _log.Error(ex, "Restore: failed to move dir to mod dir.");
                 }
             }
+
             // restore old files
-            foreach (var file in Directory.GetFiles(oldModBuckupDirPath))
+            foreach (var file in Directory.GetFiles(oldModBackupDirPath))
             {
                 try
                 {
-                    var targetPath = file.Replace(oldModBuckupDirPath, updatingModDirPath);
-                    if (File.Exists(targetPath)) File.Delete(targetPath);
+                    var targetPath = file.Replace(oldModBackupDirPath, updatingModDirPath);
 
-                    Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
+                    if (File.Exists(targetPath)) UpdateIo.TryDeleteFile(targetPath);
+
+                    UpdateIo.EnsureParentDirectory(targetPath);
                     if (File.Exists(file)) File.Move(file, targetPath);
                 }
                 catch (Exception ex)
                 {
-                    _log.Error("Restore: Failed to move file to mod dir. error:" + Environment.NewLine + ex);
+                    _log.Error(ex, "Restore: failed to move file to mod dir.");
                 }
             }
 
-            ManageFilesFoldersExtensions.DeleteEmptySubfolders(oldModBuckupDirPath);
+            ManageFilesFoldersExtensions.DeleteEmptySubfolders(oldModBackupDirPath);
         }
 
         /// <summary>
-        /// move/copy some files to buckup dir
+        /// Moves the content of the folder into the backup directory. Folders
+        /// and files that must be restored later are copied instead of moved.
         /// </summary>
-        /// <param name="oldModBuckupDirPath"></param>
-        /// <param name="updatingModDirPath"></param>
-        private void MakeBuckup(string oldModBuckupDirPath, string updatingModDirPath)
+        /// <param name="oldModBackupDirPath">Backup directory to fill.</param>
+        /// <param name="updatingModDirPath">Folder being updated.</param>
+        private void MakeBackup(string oldModBackupDirPath, string updatingModDirPath)
         {
-            Directory.CreateDirectory(oldModBuckupDirPath);
+            Directory.CreateDirectory(oldModBackupDirPath);
 
-            //buckup old dirs
+            //backup old dirs
             foreach (var folderPath in new DirectoryInfo(updatingModDirPath).EnumerateDirectories())
             {
                 try
@@ -387,26 +517,28 @@ namespace AIHelper.Manage.Update.Targets
                         folder = new DirectoryInfo(folder.GetSymlinkTarget());
                     }
 
-                    var backupPath = new DirectoryInfo(folder.FullName.Replace(updatingModDirPath, oldModBuckupDirPath));
-                    Directory.CreateDirectory(Path.GetDirectoryName(backupPath.FullName));
-                    if (folder.Exists)
+                    var backupPath = new DirectoryInfo(folder.FullName.Replace(updatingModDirPath, oldModBackupDirPath));
+                    UpdateIo.EnsureParentDirectory(backupPath.FullName);
+
+                    if (!folder.Exists) continue;
+
+                    if (isSynlinkTarget)
                     {
-                        if (isSynlinkTarget)
-                        {
-                            folder.CopyAll(backupPath);
-                        }
-                        else
-                        {
-                            folder.MoveTo(backupPath.FullName);
-                        }
+                        folder.CopyAll(backupPath);
+                    }
+                    else
+                    {
+                        _log.Debug("Update: moving '" + folder.FullName + "' to backup '" + backupPath.FullName + "'.");
+                        folder.MoveTo(backupPath.FullName);
                     }
                 }
                 catch (Exception ex)
                 {
-                    _log.Error("Update: Filed to move dir to bak dir. error:" + Environment.NewLine + ex);
+                    _log.Error(ex, "Update: failed to move dir to bak dir.");
                 }
             }
-            //buckup old files
+
+            //backup old files
             foreach (var filePath in new DirectoryInfo(updatingModDirPath).EnumerateFiles())
             {
                 try
@@ -421,20 +553,22 @@ namespace AIHelper.Manage.Update.Targets
                         file = new FileInfo(filePath.GetSymlinkTarget());
                     }
 
-                    var backupPath = file.FullName.Replace(updatingModDirPath, oldModBuckupDirPath);
-                    Directory.CreateDirectory(Path.GetDirectoryName(backupPath));
+                    var backupPath = file.FullName.Replace(updatingModDirPath, oldModBackupDirPath);
+                    UpdateIo.EnsureParentDirectory(backupPath);
+
                     if (RestoreList.Contains(file.FullName) || isSynlinkTarget)
                     {
                         file.CopyTo(backupPath);
                     }
                     else
                     {
+                        _log.Debug("Update: moving '" + file.FullName + "' to backup '" + backupPath + "'.");
                         file.MoveTo(backupPath);
                     }
                 }
                 catch (Exception ex)
                 {
-                    _log.Error("Update: Failed to move file to bak dir. error:" + Environment.NewLine + ex);
+                    _log.Error(ex, "Update: failed to move file to bak dir.");
                 }
             }
         }

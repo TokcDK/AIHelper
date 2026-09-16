@@ -6,7 +6,8 @@ using System.Linq;
 namespace AIHelper.Manage.Update.Targets.Mods
 {
     /// <summary>
-    /// Base for mods
+    /// Base for mods. A mod is a folder below the current game's mods directory
+    /// and its installed version is stored in meta.ini.
     /// </summary>
     abstract class ModsBase : UpdateTargetBase
     {
@@ -15,9 +16,10 @@ namespace AIHelper.Manage.Update.Targets.Mods
         }
 
         /// <summary>
-        /// Update mod's folder with new files
+        /// Replaces the files of the current mod with the downloaded ones
+        /// (see <see cref="UpdateTargetBase.PerformUpdate"/>).
         /// </summary>
-        /// <returns></returns>
+        /// <returns>True when the mod was updated.</returns>
         internal override bool UpdateFiles()
         {
             return PerformUpdate();
@@ -30,38 +32,54 @@ namespace AIHelper.Manage.Update.Targets.Mods
 
         internal override void SetCurrentVersion()
         {
-            var metaPath = Path.Combine(Info.TargetFolderPath.FullName, "meta.ini");
-            if (File.Exists(metaPath))
+            var metaPath = Path.Combine(Info.TargetFolderPath.FullName, MetaIniFileName);
+
+            if (!File.Exists(metaPath))
             {
-                var version = ManageIni.GetIniValueIfExist(metaPath, "version", "General");
-                ManageModOrganizer.ConvertMODateVersion(ref version);
-                Info.TargetCurrentVersion = version;
+                // without meta.ini there is no installed version to compare against
+                Info.TargetCurrentVersion = string.Empty;
+                return;
             }
+
+            var version = ManageIni.GetIniValueIfExist(metaPath, MetaIniVersionKey, MetaIniVersionSection);
+            ManageModOrganizer.ConvertMODateVersion(ref version);
+            Info.TargetCurrentVersion = version;
         }
 
         internal override string[] RestorePathsList()
         {
             return new[]
             {
-                @".\meta.ini"
+                "meta.ini"
             };
         }
 
+        /// <summary>
+        /// Link paths of the current game that may point into the mod being
+        /// updated. The updater uses them to keep symlinked content in sync.
+        /// </summary>
+        /// <returns>The distinct link paths, or an empty array.</returns>
         internal override string[] RestorePathsListExtra()
         {
-            string[,] objectLinkPaths = ManageSettings.Games.Game.DirLinkPaths;
+            var objectLinkPaths = ManageSettings.Games.Game.DirLinkPaths;
 
-            int objectLinkPathsLength = objectLinkPaths.Length / 2;
-            HashSet<string> links = new HashSet<string>(objectLinkPathsLength);
+            var links = new HashSet<string>();
 
-            for (int i = 0; i < objectLinkPathsLength; i++)
+            if (objectLinkPaths == null) return new string[0];
+
+            var rows = objectLinkPaths.GetLength(0);
+
+            // the table is "mod side path" / "game side link path" pairs
+            if (objectLinkPaths.GetLength(1) < 2) return new string[0];
+
+            for (int i = 0; i < rows; i++)
             {
                 var linkPath = objectLinkPaths[i, 1];
 
-                if (links.Contains(linkPath))
-                {
-                    links.Add(linkPath);
-                }
+                if (string.IsNullOrWhiteSpace(linkPath)) continue;
+
+                // HashSet de-duplicates the paths by itself
+                links.Add(linkPath);
             }
 
             return links.ToArray();

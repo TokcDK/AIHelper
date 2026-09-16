@@ -349,3 +349,6 @@ healthchecksdb
 
 # workbuddy-ai
 .workbuddy-ai/
+
+# local using libs
+.libs/

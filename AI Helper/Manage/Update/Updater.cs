@@ -236,11 +236,14 @@ namespace AIHelper.Manage.Update
             if (string.IsNullOrWhiteSpace(info.TargetLastVersion)) return;
 
             // clean version for more correct comparison
-            UpdateTools.CleanVersion(ref info.TargetLastVersion);
-            UpdateTools.CleanVersion(ref info.TargetCurrentVersion);
-
+            string cleanedTargetLastVersion = info.TargetLastVersion;
+            string cleanedTargetCurrentVersion = info.TargetCurrentVersion;
+            UpdateTools.CleanVersion(ref cleanedTargetLastVersion);
+            UpdateTools.CleanVersion(ref cleanedTargetCurrentVersion);
+            info.TargetLastVersion = cleanedTargetLastVersion;  
+            info.TargetCurrentVersion = cleanedTargetCurrentVersion;
             //if it is not newer then there is nothing to do
-            if (!info.TargetLastVersion.IsNewerOf(info.TargetCurrentVersion, false)) return;
+            if (!cleanedTargetLastVersion.IsNewerOf(cleanedTargetCurrentVersion, false)) return;
 
             await source.PauseAsync().ConfigureAwait(true);
 

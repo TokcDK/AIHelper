@@ -384,7 +384,9 @@ namespace AIHelper.Manage.Functions
                     }
 
                     // clean version for more correct comprasion
-                    UpdateTools.CleanVersion(ref info.TargetLastVersion);
+                    string targetLastVersion = info.TargetLastVersion;
+                    UpdateTools.CleanVersion(ref targetLastVersion);
+                    info.TargetLastVersion = targetLastVersion;
 
                     //if it is last version then run update
                     if (!info.TargetLastVersion.IsNewerOf("0", false))

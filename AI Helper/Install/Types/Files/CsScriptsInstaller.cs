@@ -4,6 +4,9 @@ using System.IO;
 
 namespace AIHelper.Install.Types.Files
 {
+    /// <summary>
+    /// Installs cs scripts to the scripts subdir of their mod dir
+    /// </summary>
     class CsScriptsInstaller : FilesInstallerBase
     {
         public override string[] Masks => new[] { "*.cs" };
@@ -12,54 +15,22 @@ namespace AIHelper.Install.Types.Files
         {
             string name = Path.GetFileNameWithoutExtension(csFile.Name);
             string author = string.Empty;
-            string description = string.Empty;
-            string modname = "[script]" + name;
-            string moddir = Path.Combine(ManageSettings.CurrentGameModsDirPath, modname);
+            string modName = "[script]" + name;
+            string modDir = Path.Combine(ManageSettings.CurrentGameModsDirPath, modName);
 
-            using (StreamReader sReader = new StreamReader(csFile.FullName))
+            string description = ReadDescription(csFile);
+
+            string scriptsDir = Path.Combine(modDir, "scripts");
+            if (!Directory.Exists(scriptsDir))
             {
-                string line;
-                bool readDescriptionMode = false;
-                int i = 0;
-                while (!sReader.EndOfStream || (!readDescriptionMode && i == 10))
-                {
-                    line = sReader.ReadLine();
-
-                    if (!readDescriptionMode /*&& Line.Length > 0 уже есть эта проверка в StringEx.IsStringAContainsStringB*/ && ManageStrings.IsStringAContainsStringB(line, "/*"))
-                    {
-                        readDescriptionMode = true;
-                        line = line.Replace("/*", string.Empty);
-                        if (line.Length > 0)
-                        {
-                            description += line + "<br>";
-                        }
-                    }
-                    else
-                    {
-                        if (ManageStrings.IsStringAContainsStringB(line, "*/"))
-                        {
-                            readDescriptionMode = false;
-                            line = line.Replace("*/", string.Empty);
-                        }
-
-                        description += line + "<br>";
-
-                        if (!readDescriptionMode)
-                        {
-                            break;
-                        }
-                    }
-
-                    i++;
-                }
-            }
-            string scriptsdir = Path.Combine(moddir, "scripts");
-            if (!Directory.Exists(scriptsdir))
-            {
-                Directory.CreateDirectory(scriptsdir);
+                Directory.CreateDirectory(scriptsDir);
             }
 
-            string fileTargetPath = Path.Combine(scriptsdir, name + ".cs");
+            string fileTargetPath = Path.Combine(scriptsDir, name + ".cs");
+
+            // time of the installing file must be read before the file is moved or deleted
+            string fileLastModificationTime = File.GetLastWriteTime(csFile.FullName).ToString("yyyyMMddHHmm", CultureInfo.InvariantCulture);
+
             bool isUpdate = false;
             //резервная копия, если файл существовал
             if (File.Exists(fileTargetPath))
@@ -80,10 +51,9 @@ namespace AIHelper.Install.Types.Files
                 csFile.MoveTo(fileTargetPath);
             }
 
-            string fileLastModificationTime = File.GetLastWriteTime(csFile.FullName).ToString("yyyyMMddHHmm", CultureInfo.InvariantCulture);
             //запись meta.ini
             ManageModOrganizer.WriteMetaIni(
-                moddir
+                modDir
                 ,
                 isUpdate ? string.Empty : "ScriptLoader scripts"
                 ,
@@ -94,7 +64,7 @@ namespace AIHelper.Install.Types.Files
                 isUpdate ? string.Empty : "<br>" + "Author" + ": " + author + "<br><br>" + (description.Length > 0 ? description : name)
                 );
 
-            ManageModOrganizer.ActivateDeactivateInsertMod(modname, false, "ScriptLoader scripts_separator");
+            ManageModOrganizer.ActivateDeactivateInsertMod(modName, false, "ScriptLoader scripts_separator");
 
             return true;
 
@@ -123,6 +93,56 @@ namespace AIHelper.Install.Types.Files
             //        }
             //    }
             //}
+        }
+
+        /// <summary>
+        /// Reads the description of the script from its head comment
+        /// </summary>
+        /// <param name="csFile">Installing cs file</param>
+        /// <returns>Description of the script</returns>
+        private static string ReadDescription(FileInfo csFile)
+        {
+            string description = string.Empty;
+
+            using (var sReader = new StreamReader(csFile.FullName))
+            {
+                bool readDescriptionMode = false;
+                while (!sReader.EndOfStream)
+                {
+                    string line = sReader.ReadLine();
+                    if (line == null)
+                    {
+                        break;
+                    }
+
+                    if (!readDescriptionMode /*&& Line.Length > 0 уже есть эта проверка в StringEx.IsStringAContainsStringB*/ && ManageStrings.IsStringAContainsStringB(line, "/*"))
+                    {
+                        readDescriptionMode = true;
+                        line = line.Replace("/*", string.Empty);
+                        if (line.Length > 0)
+                        {
+                            description += line + "<br>";
+                        }
+                    }
+                    else
+                    {
+                        if (ManageStrings.IsStringAContainsStringB(line, "*/"))
+                        {
+                            readDescriptionMode = false;
+                            line = line.Replace("*/", string.Empty);
+                        }
+
+                        description += line + "<br>";
+
+                        if (!readDescriptionMode)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return description;
         }
     }
 }

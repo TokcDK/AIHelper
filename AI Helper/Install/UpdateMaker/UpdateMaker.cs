@@ -1,16 +1,21 @@
-﻿using AIHelper.Manage;
-using AIHelper.Manage.Update;
-using System;
+﻿using AIHelper.Install.Types.Directories;
+using AIHelper.Manage;
+using INIFileMan;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Security.Cryptography;
 
 namespace AIHelper.Install.UpdateMaker
 {
-    partial class UpdateMaker
+    /// <summary>
+    /// Creates the game update package from the selected content of the current game dir
+    /// </summary>
+    class UpdateMaker
     {
-        Dictionary<string, string> _gameupdatekeys = new Dictionary<string, string>();
+        /// <summary>
+        /// Game update keys which must be written in the game update ini
+        /// </summary>
+        private readonly Dictionary<string, string> _gameUpdateKeys = new Dictionary<string, string>();
 
         public bool MakeUpdate()
         {
@@ -20,13 +25,13 @@ namespace AIHelper.Install.UpdateMaker
                 return false;
             }
 
-            List<UpdateMakerBase> parameters = new List<UpdateMakerBase>()
+            var updateMakers = new List<UpdateMakerBase>
             {
                 new UpdateMakerMO(),
                 new UpdateMakerMods(),
                 new UpdateMakerData()
             };
-            
+
             var infoIni = ManageIni.GetINIFile(updateMakeInfoFilePath);
             var updateDir = Path.Combine(ManageSettings.CurrentGameDirPath, "Updates", "Update");
             if (!InitUpdateDir(updateDir)) return false;
@@ -37,7 +42,7 @@ namespace AIHelper.Install.UpdateMaker
                 new ContentTypeParserFiles(infoIni)
             };
 
-            CopyAndAddUpdatePaths(parameters, contentTypeParsers, updateDir);
+            CopyAndAddUpdatePaths(updateMakers, contentTypeParsers, updateDir);
 
             WriteUpdateIni(infoIni, updateDir, contentTypeParsers);
 
@@ -46,6 +51,9 @@ namespace AIHelper.Install.UpdateMaker
             return true;
         }
 
+        /// <summary>
+        /// Creates the update dir and moves the old update dir in the backup one
+        /// </summary>
         private bool InitUpdateDir(string updateDir)
         {
             var dateTimeSuffix = ManageSettings.DateTimeBasedSuffix;
@@ -65,75 +73,85 @@ namespace AIHelper.Install.UpdateMaker
             return true;
         }
 
+        /// <summary>
+        /// Copies content of every content type to the update dir and collects the game update keys
+        /// </summary>
         private void CopyAndAddUpdatePaths(List<UpdateMakerBase> updateMakers, ContentTypeParserBase[] contentTypeParsers, string updateDir)
         {
             var updateGameDir = Path.Combine(updateDir, "Games", ManageSettings.CurrentGameDirName);
 
             foreach (var updateMaker in updateMakers)
             {
-                var parameterGameDir = Path.Combine(ManageSettings.CurrentGameDirPath, updateMaker.DirName);
-                var parameterUpdateDir = Path.Combine(updateGameDir, updateMaker.DirName);
+                var gameDir = Path.Combine(ManageSettings.CurrentGameDirPath, updateMaker.DirName);
+                var updateDirOfTheContentType = Path.Combine(updateGameDir, updateMaker.DirName);
                 var keyName = "Update" + updateMaker.DirName;
 
                 foreach (var contentTypeParser in contentTypeParsers)
                 {
-                    contentTypeParser.UpdateMaker = updateMaker;
+                    contentTypeParser.Maker = updateMaker;
 
                     if (!contentTypeParser.IsNeedToCopy) continue;
 
-                    contentTypeParser.Copy(parameterGameDir, parameterUpdateDir);
+                    contentTypeParser.CopyIncludedContent(gameDir, updateDirOfTheContentType);
 
-                    var keyValue = updateMaker.IsAnyFileCopied.ToString().ToLowerInvariant();
-                    UpdateGameUpdateKey(_gameupdatekeys, keyName, keyValue, updateMaker);
+                    UpdateGameUpdateKey(keyName, updateMaker);
                 }
             }
         }
 
-        private void UpdateGameUpdateKey(Dictionary<string, string> gameupdatekeys, string keyName, string keyValue, UpdateMakerBase updateMaker)
+        /// <summary>
+        /// Adds or updates the game update key of the content type
+        /// </summary>
+        private void UpdateGameUpdateKey(string keyName, UpdateMakerBase updateMaker)
         {
-            if (!_gameupdatekeys.ContainsKey(keyName))
+            var keyValue = updateMaker.IsAnyFileCopied.ToString().ToLowerInvariant();
+
+            if (!_gameUpdateKeys.ContainsKey(keyName))
             {
-                _gameupdatekeys.Add(keyName, keyValue);
+                _gameUpdateKeys.Add(keyName, keyValue);
             }
-            else if (updateMaker.IsAnyFileCopied && _gameupdatekeys[keyName] == "false")
+            else if (updateMaker.IsAnyFileCopied && _gameUpdateKeys[keyName] == "false")
             {
-                _gameupdatekeys[keyName] = "true";
+                _gameUpdateKeys[keyName] = "true";
             }
         }
 
-        private void WriteUpdateIni(INIFileMan.INIFile ini, string updateDir, ContentTypeParserBase[] contentTypeParsers)
+        /// <summary>
+        /// Writes the game update ini with the collected keys, remove lists and defaults
+        /// </summary>
+        private void WriteUpdateIni(INIFile ini, string updateDir, ContentTypeParserBase[] contentTypeParsers)
         {
-            var gameupdateini = ManageIni.GetINIFile(Path.Combine(updateDir, ManageSettings.GameUpdateInstallerIniFileName));
-            gameupdateini.SetKey("", "GameFolderName", ManageSettings.CurrentGameDirName);
-            gameupdateini.SetKey("", "IsRoot", "true");
+            var gameUpdateIni = ManageIni.GetINIFile(Path.Combine(updateDir, ManageSettings.GameUpdateInstallerIniFileName));
+            gameUpdateIni.SetKey("", "GameFolderName", ManageSettings.CurrentGameDirName);
+            gameUpdateIni.SetKey("", "IsRoot", "true");
             // add keys
-            foreach (var parameter in _gameupdatekeys)
+            foreach (var parameter in _gameUpdateKeys)
             {
-                gameupdateini.SetKey("", parameter.Key, parameter.Value);
+                gameUpdateIni.SetKey("", parameter.Key, parameter.Value);
             }
             // add other missing keys and their default values
-            foreach (var parameter in new Types.Directories.GameUpdateInfo().Keys)
+            foreach (var parameter in new GameUpdateInfo().Keys)
             {
-                if (!gameupdateini.KeyExists(parameter.Key, ""))
+                if (!gameUpdateIni.KeyExists(parameter.Key, ""))
                 {
-                    gameupdateini.SetKey("", parameter.Key, parameter.Value);
+                    gameUpdateIni.SetKey("", parameter.Key, parameter.Value);
                 }
             }
             // set removelists
             foreach (var contentTypeParser in contentTypeParsers)
             {
-                gameupdateini.SetKey("", contentTypeParser.RemoveKeyName, string.Join(",", contentTypeParser.RemoveList));
+                gameUpdateIni.SetKey("", contentTypeParser.RemoveKeyName, string.Join(",", contentTypeParser.RemoveList));
             }
             // set defaults from maker
             if (ini.SectionExistsAndNotEmpty("Default"))
             {
                 foreach (var parameter in ini.GetSectionKeyValuePairs("Default"))
                 {
-                    gameupdateini.SetKey("", parameter.Key, parameter.Value);
+                    gameUpdateIni.SetKey("", parameter.Key, parameter.Value);
                 }
             }
 
-            gameupdateini.WriteFile();
+            gameUpdateIni.WriteFile();
         }
     }
 }

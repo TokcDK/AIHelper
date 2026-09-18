@@ -1,5 +1,4 @@
 ﻿using AIHelper.Manage;
-using NLog;
 using System;
 using System.IO;
 using System.Linq;
@@ -7,8 +6,17 @@ using static AIHelper.Manage.ManageModOrganizer;
 
 namespace AIHelper.Install.Types.Files.Archive
 {
+    /// <summary>
+    /// Installs zipmods: archives with the sideloader manifest which are not extracted
+    /// but placed in the mods subfolder of their mod dir
+    /// </summary>
     class SideloaderZipmodInstaller : ArchiveInstallerBase
     {
+        /// <summary>
+        /// Extensions of the files which are moved to the mod dir of the installing zipmod
+        /// </summary>
+        private static readonly string[] RelatedFilesExtensions = { ".txt", ".png", ".jpg", ".jpeg", ".bmp", ".doc", ".rtf" };
+
         // zipmods it is archives but they will not be extracted
         public override int Order => base.Order * 5;
 
@@ -16,7 +24,7 @@ namespace AIHelper.Install.Types.Files.Archive
 
         protected override bool Get(FileInfo zipfile)
         {
-            SideloaderZipmodInfo zipmod = GetManifestFromZipFile(zipfile.FullName);
+            var zipmod = GetManifestFromZipFile(zipfile.FullName);
 
             if (zipmod == null)
             {
@@ -37,77 +45,93 @@ namespace AIHelper.Install.Types.Files.Archive
             string modName = zipmod.name.Length == 0 ? zipArchiveName : zipmod.name.RemoveInvalidPathChars();
             // add author name to mod name like '[author] modname'
             modName = ManageStrings.AddAuthorToNameIfNeed(modName, zipmod.author);
-            //устанавливать имя папки из имени архива, если оно длиннее
-            // заархивировано, т.к. имя из манифеста обычно чище
-            //if (zipArchiveName.Length > modName.Length)
-            //{
-            //    modName = zipArchiveName;
-            //    //добавление автора к имени папки, если не пустое и валидное
-            //    modName = ManageStrings.AddAuthorToNameIfNeed(zipmod.name, zipmod.author);
-            //}
 
-            // paths setup
-            //string zipmoddirpath = GetResultTargetDirPathWithNameCheck(ManageSettings.GetCurrentGameModsPath(), name);
-            string modDirPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modName);
-            string modsSubDirPath = Path.Combine(modDirPath, "mods");
-            string targetZipFile = Path.Combine(modsSubDirPath, zipArchiveName + ".zipmod");
-
-            // check, if target zipmod is exists and if so then just update it
-            bool update = false;
-            string anyFileName = string.Empty;
-            if (Directory.Exists(modDirPath))
-            {
-                if (File.Exists(targetZipFile) || (anyFileName = ManageFilesFoldersExtensions.IsAnyFileWithSameExtensionContainsNameOfTheFile(modsSubDirPath, zipArchiveName, "*.zip")).Length > 0)
-                {
-                    if (File.GetLastWriteTime(zipfile.FullName) > File.GetLastWriteTime(targetZipFile))
-                    {
-                        update = true;
-                        File.Delete(anyFileName.Length > 0 ? anyFileName : targetZipFile);
-                    }
-                }
-            }
-            else
-            {
-                modDirPath = ManageFilesFoldersExtensions.GetResultTargetDirPathWithNameCheck(ManageSettings.CurrentGameModsDirPath, modName);
-                modsSubDirPath = Path.Combine(modDirPath, "mods");
-                targetZipFile = Path.Combine(modsSubDirPath, zipArchiveName + ".zipmod");
-            }
+            // paths setup and removing of the older zipmod file when the zipmod is updated
+            var target = ResolveTargetPaths(modName, zipArchiveName, zipfile.FullName);
 
             // move zipmod in it mod dir in Mods
-            Directory.CreateDirectory(modsSubDirPath);
-            File.Move(zipfile.FullName, targetZipFile);
+            Directory.CreateDirectory(target.ModsSubDirPath);
+            zipfile.MoveTo(target.TargetZipFile);
 
-            // Move files starting with same name to the same mod folder
-            string[] possibleFilesOfTheMod = Directory.GetFiles(ManageSettings.Install2MoDirPath, "*.*").Where(file => Path.GetFileName(file).Trim().StartsWith(zipArchiveName, StringComparison.InvariantCultureIgnoreCase) && ManageStrings.IsStringAContainsAnyStringFromStringArray(Path.GetExtension(file), new string[7] { ".txt", ".png", ".jpg", ".jpeg", ".bmp", ".doc", ".rtf" })).ToArray();
-            int possibleFilesOfTheModLength = possibleFilesOfTheMod.Length;
-            if (possibleFilesOfTheModLength > 0)
-            {
-                for (int n = 0; n < possibleFilesOfTheModLength; n++)
-                {
-                    if (File.Exists(possibleFilesOfTheMod[n]))
-                    {
-                        File.Move(possibleFilesOfTheMod[n], Path.Combine(modDirPath, Path.GetFileName(possibleFilesOfTheMod[n]).Replace(zipArchiveName, Path.GetFileNameWithoutExtension(modDirPath))));
-                    }
-                }
-            }
+            MoveRelatedFilesToModDir(target.ModDirPath, zipArchiveName);
 
             // write meta.ini in thetarget mod's dir
             ManageModOrganizer.WriteMetaIni(
-                modDirPath
+                target.ModDirPath
                 ,
                 string.Empty
                 ,
                 zipmod.version
                 ,
-                update ? string.Empty : "Requires: Sideloader plugin"
+                target.IsUpdate ? string.Empty : "Requires: Sideloader plugin"
                 ,
-                update ? string.Empty : "<br>Author: " + zipmod.author + "<br><br>" + zipmod.description + "<br><br>" + zipmod.website + (gameEmpty ? "<br>WARNING: Game field for the Sideloader plugin was empty. Check the plugin manually if need." : string.Empty)
+                target.IsUpdate ? string.Empty : "<br>Author: " + zipmod.author + "<br><br>" + zipmod.description + "<br><br>" + zipmod.website + (gameEmpty ? "<br>WARNING: Game field for the Sideloader plugin was empty. Check the plugin manually if need." : string.Empty)
                 );
 
             // insert modlist record of the mod
-            ManageModOrganizer.ActivateDeactivateInsertMod(Path.GetFileName(modDirPath), true);
+            ManageModOrganizer.ActivateDeactivateInsertMod(Path.GetFileName(target.ModDirPath), true);
 
             return true;
+        }
+
+        /// <summary>
+        /// Resolves paths of the mod dir of the zipmod and removes the older zipmod file when the zipmod is updated
+        /// </summary>
+        /// <param name="modName">Name of the mod dir</param>
+        /// <param name="zipArchiveName">Name of the zipmod archive without extension</param>
+        /// <param name="zipFilePath">Path of the installing zipmod file</param>
+        /// <returns>Paths of the mod dir and its mods subdir with the target zipmod file and the update flag</returns>
+        private static (string ModDirPath, string ModsSubDirPath, string TargetZipFile, bool IsUpdate) ResolveTargetPaths(string modName, string zipArchiveName, string zipFilePath)
+        {
+            string modDirPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modName);
+
+            if (!Directory.Exists(modDirPath))
+            {
+                modDirPath = ManageFilesFoldersExtensions.GetResultTargetDirPathWithNameCheck(ManageSettings.CurrentGameModsDirPath, modName);
+                string newModsSubDirPath = Path.Combine(modDirPath, "mods");
+
+                return (modDirPath, newModsSubDirPath, Path.Combine(newModsSubDirPath, zipArchiveName + ".zipmod"), false);
+            }
+
+            string modsSubDirPath = Path.Combine(modDirPath, "mods");
+            string targetZipFile = Path.Combine(modsSubDirPath, zipArchiveName + ".zipmod");
+
+            // check, if target zipmod is exists and if so then just update it
+            bool isUpdate = false;
+            string anyFileName = string.Empty;
+            if (File.Exists(targetZipFile) || (anyFileName = ManageFilesFoldersExtensions.IsAnyFileWithSameExtensionContainsNameOfTheFile(modsSubDirPath, zipArchiveName, "*.zip")).Length > 0)
+            {
+                if (File.GetLastWriteTime(zipFilePath) > File.GetLastWriteTime(targetZipFile))
+                {
+                    isUpdate = true;
+                    File.Delete(anyFileName.Length > 0 ? anyFileName : targetZipFile);
+                }
+            }
+
+            return (modDirPath, modsSubDirPath, targetZipFile, isUpdate);
+        }
+
+        /// <summary>
+        /// Moves files which names are started with the zipmod archive name to the mod dir of the zipmod
+        /// </summary>
+        /// <param name="modDirPath">Mod dir of the installing zipmod</param>
+        /// <param name="zipArchiveName">Name of the zipmod archive without extension</param>
+        private static void MoveRelatedFilesToModDir(string modDirPath, string zipArchiveName)
+        {
+            string[] possibleFilesOfTheMod = Directory.GetFiles(ManageSettings.Install2MoDirPath, "*.*")
+                .Where(file => Path.GetFileName(file).Trim().StartsWith(zipArchiveName, StringComparison.InvariantCultureIgnoreCase)
+                    && ManageStrings.IsStringAContainsAnyStringFromStringArray(Path.GetExtension(file), RelatedFilesExtensions))
+                .ToArray();
+
+            foreach (var possibleFile in possibleFilesOfTheMod)
+            {
+                if (!File.Exists(possibleFile))
+                {
+                    continue;
+                }
+
+                File.Move(possibleFile, Path.Combine(modDirPath, Path.GetFileName(possibleFile).Replace(zipArchiveName, Path.GetFileNameWithoutExtension(modDirPath))));
+            }
         }
     }
 }

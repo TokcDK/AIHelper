@@ -5,7 +5,6 @@
     /// </summary>
     class MaleCharacterCardInstaller : CharacterCardInstallerBase
     {
-        protected override string targetFolderName => "male";
         public override string[] Masks => new[] { "m" };
     }
 }

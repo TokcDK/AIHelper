@@ -8,24 +8,22 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
     /// </summary>
     class HomeProjectCardInstaller : CardsFromDirsInstallerBase
     {
-        protected override string typeFolder => "housing";
-
-        protected override string targetFolderName => Mask.Length == 2 ? "0" + Mask.Substring(1) : string.Empty;
-
         public override string[] Masks => new[] { "h", "h1", "h2", "h3", "h4" };
 
         protected override string TargetSuffix => "Housing";
 
         protected override bool MoveByContentType(string contentType, string dir, string targetFolder, bool moveInThisFolder = false)
         {
-            var ret = false;
+            var anyMoved = false;
 
             if (contentType.Length == 2)
             {
                 foreach (var file in Directory.GetFiles(dir))
                 {
-                    ret = true;
-                    File.Move(file, ManageFilesFoldersExtensions.GetResultTargetFilePathWithNameCheck(targetFolder, Path.GetFileNameWithoutExtension(file), ".png"));
+                    File.Move(file, ManageFilesFoldersExtensions.GetResultTargetFilePathWithNameCheck(
+                        targetFolder, Path.GetFileNameWithoutExtension(file), CardsImageExtension));
+
+                    anyMoved = true;
                 }
             }
             else
@@ -33,15 +31,25 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
                 foreach (var typeDir in Directory.GetDirectories(dir))
                 {
                     string hSubDirName = Path.GetFileName(typeDir);
+                    string targetSubDir = Path.Combine(targetFolder, hSubDirName);
+                    if (!Directory.Exists(targetSubDir))
+                    {
+                        Directory.CreateDirectory(targetSubDir);
+                    }
+
                     foreach (var file in Directory.GetFiles(typeDir))
                     {
-                        ret = true;
-                        File.Move(file, ManageFilesFoldersExtensions.GetResultTargetFilePathWithNameCheck(Path.Combine(targetFolder, hSubDirName), Path.GetFileNameWithoutExtension(file), ".png"));
+                        File.Move(file, ManageFilesFoldersExtensions.GetResultTargetFilePathWithNameCheck(
+                            targetSubDir, Path.GetFileNameWithoutExtension(file), CardsImageExtension));
+
+                        anyMoved = true;
                     }
                 }
             }
 
-            return ret;
+            return anyMoved;
         }
+
+        private const string CardsImageExtension = ".png";
     }
 }

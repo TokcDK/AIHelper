@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AIHelper.Install.UpdateMaker.Parameters
+﻿namespace AIHelper.Install.UpdateMaker.Parameters
 {
+    /// <summary>
+    /// Parameter of the update maker which is parsed from the ini file
+    /// </summary>
     public interface IUpdateMakerIniParameter
     {
         /// <summary>
@@ -19,9 +16,9 @@ namespace AIHelper.Install.UpdateMaker.Parameters
         int Priority { get; }
 
         /// <summary>
-        /// InitActions 
+        /// Value of the parameter from the ini
         /// </summary>
-        string iniValue { get; set; }
+        string IniValue { get; set; }
 
         /// <summary>
         /// Parse file or dir path

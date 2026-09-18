@@ -191,6 +191,7 @@
     <Compile Include="Install\Types\Directories\CardsFromDir\Characters\MaleCharacterCardInstaller.cs" />
     <Compile Include="Install\Types\Directories\CardsFromDir\Characters\FemaleCharacterCardInstaller.cs" />
     <Compile Include="Install\Types\Directories\DirectoriesInstallerBase.cs" />
+    <Compile Include="Install\Types\Directories\GameUpdateInfo.cs" />
     <Compile Include="Install\Types\Directories\GameUpdateInstaller.cs" />
     <Compile Include="Install\Types\Directories\ModFilesFromDirInstaller.cs" />
     <Compile Include="Install\Types\Files\Archive\Extractors\ArchiveExtractorBase.cs" />
@@ -206,7 +207,7 @@
     <Compile Include="Install\Types\Files\Cards\PngInstaller.cs" />
     <Compile Include="Install\Types\Files\FilesInstallerBase.cs" />
     <Compile Include="Install\Types\ModInstallerBase.cs" />
-    <Compile Include="Install\UpdateMaker\Parameters\FilesBlackList.cs" />
+    <Compile Include="Install\UpdateMaker\Parameters\BlacklistDirs.cs" />
     <Compile Include="Install\UpdateMaker\Parameters\IUpdateMakerIniParameter.cs" />
     <Compile Include="Install\UpdateMaker\LogConsole.cs" />
     <Compile Include="Install\UpdateMaker\UpdateMaker.cs" />

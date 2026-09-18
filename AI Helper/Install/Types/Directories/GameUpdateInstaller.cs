@@ -11,55 +11,62 @@ using AIHelper.Manage.Update;
 
 namespace AIHelper.Install.Types.Directories
 {
+    /// <summary>
+    /// Installs the game update which is created by the update maker
+    /// </summary>
     class GameUpdateInstaller : DirectoriesInstallerBase
     {
+        /// <summary>
+        /// Separators of the sub paths lists in the update ini
+        /// </summary>
+        private static readonly string[] SubPathSeparators = { ", ", "," };
+
         public override int Order => base.Order / 5;
 
-        DirectoryInfo _dir;
-        GameUpdateInfo updateInfo;
-        bool IsRoot;
-        string _dateTimeSuffix;
-        string _backupsDir;
-        string _bakDir;
+        private static string GameUpdateInfoFileName => ManageSettings.GameUpdateInstallerIniFileName;
 
-        static string _gameUpdateInfoFileName { get => ManageSettings.GameUpdateInstallerIniFileName; }
-        HashSet<string> _skipExistDirs;
-        HashSet<string> _skipExistFiles;
-        private bool crcfiles;
-        private bool sizeFiles;
-        private bool writetimefiles;
+        private DirectoryInfo _dir;
+        private GameUpdateInfo _updateInfo;
+        private bool _isRoot;
+        private string _dateTimeSuffix;
+        private string _backupsDir;
+        private string _bakDir;
+        private HashSet<string> _skipExistDirs;
+        private HashSet<string> _skipExistFiles;
+        private bool _crcFiles;
+        private bool _sizeFiles;
+        private bool _writeTimeFiles;
 
         protected override bool Get(DirectoryInfo dir)
         {
             _dir = dir;
-            var updateInfoIniFilePath = Path.Combine(dir.FullName, _gameUpdateInfoFileName);
+            var updateInfoIniFilePath = Path.Combine(dir.FullName, GameUpdateInfoFileName);
             if (!File.Exists(updateInfoIniFilePath))
             {
                 // not update
                 return false;
             }
 
-            updateInfo = new GameUpdateInfo(updateInfoIniFilePath);
+            _updateInfo = new GameUpdateInfo(updateInfoIniFilePath);
 
-            if (string.IsNullOrWhiteSpace(updateInfo.GameFolderName))
+            if (string.IsNullOrWhiteSpace(_updateInfo.GameFolderName))
             {
                 // empty game folder name
                 return false;
             }
 
-            if (ManageSettings.CurrentGameDirName != updateInfo.GameFolderName)
+            if (ManageSettings.CurrentGameDirName != _updateInfo.GameFolderName)
             {
                 // incorrect game
-                MessageBox.Show(updateInfo.GameFolderName + ": " + T._("Incorrect current game"));
+                MessageBox.Show(_updateInfo.GameFolderName + ": " + T._("Incorrect current game"));
                 return false;
             }
 
-            bool updated = false;
-            crcfiles = updateInfo.CRCFiles == "true";
-            sizeFiles = updateInfo.SizeFiles == "true";
-            writetimefiles = updateInfo.WriteTimeFiles == "true";
+            _crcFiles = _updateInfo.CRCFiles == "true";
+            _sizeFiles = _updateInfo.SizeFiles == "true";
+            _writeTimeFiles = _updateInfo.WriteTimeFiles == "true";
 
-            IsRoot = updateInfo.IsRoot == "true";
+            _isRoot = _updateInfo.IsRoot == "true";
 
             _dateTimeSuffix = ManageSettings.DateTimeBasedSuffix;
 
@@ -77,199 +84,171 @@ namespace AIHelper.Install.Types.Directories
             Directory.CreateDirectory(_bakDir);
 
             // proceed update actions
-            if (ProceedRenameDirs())
-            {
-                updated = true;
-            }
-
-            // proceed update actions
-            if (ProceedRenameFiles())
-            {
-                updated = true;
-            }
-
-            // proceed update actions
-            if (ProceedRemoveDirs())
-            {
-                updated = true;
-            }
-
-            // proceed update actions
-            if (ProceedRemoveFiles())
-            {
-                updated = true;
-            }
-
-            // proceed update actions
-            if (ProceedUpdateMods())
-            {
-                updated = true;
-            }
-            // proceed update actions
-            if (ProceedUpdateData())
-            {
-                updated = true;
-            }
-
-            // proceed update actions
-            if (ProceedUpdateMO())
-            {
-                updated = true;
-            }
-
-            // proceed update actions
-            if (ProceedCreateDirs())
-            {
-                updated = true;
-            }
-
-            // proceed update actions
-            if (ProceedCreateFiles())
-            {
-                updated = true;
-            }
-
-            // proceed update actions
-            if (ProceedRemoveUnusedSeparators())
-            {
-                updated = true;
-            }
-
-            // proceed update actions
-            if (ProceedFixes())
-            {
-                updated = true;
-            }
+            var updated = ProceedUpdateActions();
 
             // clean update info and folder
-            //File.Delete(Path.Combine(dir.FullName, _gameUpdateInfoFileName));
+            //File.Delete(Path.Combine(dir.FullName, GameUpdateInfoFileName));
             //ManageFilesFolders.DeleteEmptySubfolders(dirPath: dir.FullName, deleteThisDir: true);
             // move dir to bak instead of delete
             dir.MoveTo(Path.Combine(_bakDir, dir.Name) + _dateTimeSuffix);
 
             if (updated)
             {
-                MessageBox.Show(updateInfo.GameFolderName + ": " + T._("Update applied.\n\nWill be opened Backup folder.\nCheck content and remove files and dirs which not need for you animore."));
+                MessageBox.Show(_updateInfo.GameFolderName + ": " + T._("Update applied.\n\nWill be opened Backup folder.\nCheck content and remove files and dirs which not need for you animore."));
                 Process.Start(_bakDir);
             }
             else
             {
-                MessageBox.Show(updateInfo.GameFolderName + ": " + T._("Update not required."));
+                MessageBox.Show(_updateInfo.GameFolderName + ": " + T._("Update not required."));
             }
 
             return updated;
         }
 
-        private bool ProceedRenameFiles()
+        /// <summary>
+        /// Proceeds all update actions in the order which is required by the update
+        /// </summary>
+        /// <returns>True when at least one action changed something</returns>
+        private bool ProceedUpdateActions()
         {
-            string gameDir = ManageSettings.CurrentGameDirPath;
-            string value = updateInfo.RenameFiles;
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                return false;
-            }
+            var updated = false;
 
-            var ret = false;
-
-            foreach (var data in value.Split(new[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (var updateAction in GetUpdateActions())
             {
-                try
+                if (updateAction())
                 {
-                    var renData = data.Split(':');
-                    if (renData.Length != 2)
-                    {
-                        continue;
-                    }
-
-                    var subPath = renData[0];
-                    var renName = renData[1];
-
-                    var targetPath = gameDir + Path.DirectorySeparatorChar + subPath;
-
-                    if (!File.Exists(targetPath))
-                    {
-                        continue;
-                    }
-
-                    ret = true;
-
-                    var newPath = Path.Combine(Path.GetDirectoryName(targetPath), renName);
-                    if (File.Exists(newPath))
-                    {
-                        // move to bak if exists new path
-                        File.Move(targetPath, _bakDir + Path.DirectorySeparatorChar + subPath);
-                    }
-                    else
-                    {
-                        // rename dir to new
-                        File.Move(targetPath, newPath);
-                    }
+                    updated = true;
                 }
-                catch { }
             }
 
-            return ret;
+            return updated;
         }
 
+        /// <summary>
+        /// Update actions in the order of their execution
+        /// </summary>
+        private IEnumerable<Func<bool>> GetUpdateActions()
+        {
+            yield return ProceedRenameDirs;
+            yield return ProceedRenameFiles;
+            yield return ProceedRemoveDirs;
+            yield return ProceedRemoveFiles;
+            yield return ProceedUpdateMods;
+            yield return ProceedUpdateData;
+            yield return ProceedUpdateMO;
+            yield return ProceedCreateDirs;
+            yield return ProceedCreateFiles;
+            yield return ProceedRemoveUnusedSeparators;
+            yield return ProceedFixes;
+        }
+
+        /// <summary>
+        /// Renames files of the game by the 'subPath:newName' records of the update ini
+        /// </summary>
+        private bool ProceedRenameFiles()
+        {
+            return ProceedRenameEntries(_updateInfo.RenameFiles, isDir: false);
+        }
+
+        /// <summary>
+        /// Renames dirs of the game by the 'subPath:newName' records of the update ini
+        /// </summary>
         private bool ProceedRenameDirs()
         {
-            string gameDir = ManageSettings.CurrentGameDirPath;
-            string value = updateInfo.RenameDirs;
+            return ProceedRenameEntries(_updateInfo.RenameDirs, isDir: true);
+        }
+
+        /// <summary>
+        /// Renames game entries by the 'subPath:newName' records of the update ini.
+        /// Entry is moved to the backup dir when the new name is already used.
+        /// </summary>
+        /// <param name="value">List of the 'subPath:newName' records</param>
+        /// <param name="isDir">True when dirs must be renamed else files</param>
+        /// <returns>True when at least one entry must be renamed</returns>
+        private bool ProceedRenameEntries(string value, bool isDir)
+        {
             if (string.IsNullOrWhiteSpace(value))
             {
                 return false;
             }
 
-            var ret = false;
+            var anyRenamed = false;
 
-            foreach (var data in value.Split(new[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (var record in SplitSubPaths(value))
             {
                 try
                 {
-                    var renData = data.Split(':');
-                    if (renData.Length != 2)
+                    var renameData = record.Split(':');
+                    if (renameData.Length != 2)
                     {
                         continue;
                     }
 
-                    var subPath = renData[0];
-                    var renName = renData[1];
+                    var subPath = renameData[0];
+                    var newName = renameData[1];
 
-                    var targetPath = gameDir + Path.DirectorySeparatorChar + subPath;
+                    var targetPath = ManageSettings.CurrentGameDirPath + Path.DirectorySeparatorChar + subPath;
 
-                    if (!Directory.Exists(targetPath))
+                    if (!(isDir ? Directory.Exists(targetPath) : File.Exists(targetPath)))
                     {
                         continue;
                     }
 
-                    ret = true;
+                    anyRenamed = true;
 
-                    var newPath = Path.Combine(Path.GetDirectoryName(targetPath), renName);
-                    if (Directory.Exists(newPath))
+                    var newPath = Path.Combine(Path.GetDirectoryName(targetPath), newName);
+                    if (isDir ? Directory.Exists(newPath) : File.Exists(newPath))
                     {
                         // move to bak if exists new path
-                        Directory.Move(targetPath, _bakDir + Path.DirectorySeparatorChar + subPath);
+                        MoveEntryToBak(targetPath, subPath, isDir);
                     }
                     else
                     {
-                        // rename dir to new
-                        Directory.Move(targetPath, newPath);
+                        // rename entry to new name
+                        MoveEntry(targetPath, newPath, isDir);
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    _log.Warn("Failed to rename " + (isDir ? "dir" : "file") + ". Record:" + record + "\r\nError:" + ex);
+                }
             }
 
-            return ret;
+            return anyRenamed;
+        }
+
+        /// <summary>
+        /// Moves the game entry to the backup dir
+        /// </summary>
+        /// <param name="targetPath">Path of the entry which must be moved to the backup dir</param>
+        /// <param name="subPath">Sub path of the entry relative to the game dir</param>
+        /// <param name="isDir">True when dir must be moved else file</param>
+        private void MoveEntryToBak(string targetPath, string subPath, bool isDir)
+        {
+            MoveEntry(targetPath, _bakDir + Path.DirectorySeparatorChar + subPath, isDir);
+        }
+
+        /// <summary>
+        /// Moves the file or dir to the selected path
+        /// </summary>
+        /// <param name="sourcePath">Source path of the entry</param>
+        /// <param name="targetPath">Target path of the entry</param>
+        /// <param name="isDir">True when dir must be moved else file</param>
+        private static void MoveEntry(string sourcePath, string targetPath, bool isDir)
+        {
+            if (isDir)
+            {
+                Directory.Move(sourcePath, targetPath);
+            }
+            else
+            {
+                File.Move(sourcePath, targetPath);
+            }
         }
 
         private bool ProceedFixes()
         {
-            return updateInfo.ApplyFixes == "true" && FixIniValues();
-        }
-
-        private static bool FixIniValues()
-        {
-            return MetaIniNotesTweaks();
+            return _updateInfo.ApplyFixes == "true" && MetaIniNotesTweaks();
         }
 
         private static bool MetaIniNotesTweaks()
@@ -305,7 +284,7 @@ namespace AIHelper.Install.Types.Directories
                 }
                 catch (Exception ex)
                 {
-                    _log.Warn("Failed to apply notes default value. Mod name:" + modDirNameValue.Value + "\r\nError:" + ex);
+                    _log.Warn("Failed to apply notes default value. Mod name:" + modDirNameValue.Key + "\r\nError:" + ex);
                 }
             }
 
@@ -314,46 +293,51 @@ namespace AIHelper.Install.Types.Directories
 
         private bool ProceedCreateFiles()
         {
-            return !string.IsNullOrWhiteSpace(updateInfo.CreateFiles) && ProceedCreateRemove(files: true, create: true);
+            return !string.IsNullOrWhiteSpace(_updateInfo.CreateFiles) && ProceedCreateRemove(files: true, create: true);
         }
 
         private bool ProceedCreateDirs()
         {
-            return !string.IsNullOrWhiteSpace(updateInfo.CreateDirs) && ProceedCreateRemove(files: false, create: true);
+            return !string.IsNullOrWhiteSpace(_updateInfo.CreateDirs) && ProceedCreateRemove(files: false, create: true);
         }
 
+        /// <summary>
+        /// Creates or removes files or dirs which are listed in the corresponding update ini key
+        /// </summary>
+        /// <param name="files">True when files must be processed else dirs</param>
+        /// <param name="create">True when entries must be created else removed</param>
+        /// <returns>True when at least one entry was created or removed</returns>
         private bool ProceedCreateRemove(bool files = true, bool create = true)
         {
-            var ret = false;
+            var anyProcessed = false;
             string gameDir = ManageSettings.CurrentGameDirPath;
-            string value;
-            if (create)
+
+            string value = create
+                ? (files ? _updateInfo.CreateFiles : _updateInfo.CreateDirs)
+                : (files ? _updateInfo.RemoveFiles : _updateInfo.RemoveDirs);
+
+            if (string.IsNullOrWhiteSpace(value))
             {
-                value = (files ? updateInfo.CreateFiles : updateInfo.CreateDirs);
-                if (files)
-                {
-                    value = HideContentCommas(value);
-                }
-            }
-            else
-            {
-                value = (files ? updateInfo.RemoveFiles : updateInfo.RemoveDirs);
+                return false;
             }
 
-            foreach (var subPath in value.Split(new[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries))
+            if (create && files)
             {
-                if (string.IsNullOrWhiteSpace(subPath)) continue;
+                value = HideContentCommas(value);
+            }
 
+            foreach (var subPath in SplitSubPaths(value))
+            {
                 try
                 {
                     var targetPath = gameDir + Path.DirectorySeparatorChar + subPath;
                     if (create)
                     {
-                        if (ProceedCreate(targetPath, files)) ret = true;
+                        if (ProceedCreate(targetPath, files)) anyProcessed = true;
                     }
                     else
                     {
-                        if (ProceedRemove(targetPath, subPath, files)) ret = true;
+                        if (ProceedRemove(targetPath, subPath, files)) anyProcessed = true;
                     }
                 }
                 catch (Exception ex)
@@ -362,8 +346,20 @@ namespace AIHelper.Install.Types.Directories
                 }
             }
 
-            return ret;
+            return anyProcessed;
         }
+
+        /// <summary>
+        /// Markers of the created file content in the CreateFiles update ini key
+        /// </summary>
+        private const string CreateFileContentBeginMarker = "|begin ";
+
+        private const string CreateFileContentEndMarker = " end|";
+
+        /// <summary>
+        /// Placeholder of the commas which are placed inside the created file content
+        /// </summary>
+        private const string ContentCommasHiddenString = "%comma%";
 
         /// <summary>
         /// hide commas in creating file's content because comma using as splitter
@@ -383,27 +379,33 @@ namespace AIHelper.Install.Types.Directories
             return value;
         }
 
-        static string CreateFileContendBeginMarker { get => "|begin "; }
-        static string CreateFileContendEndMarker { get => " end|"; }
-        static string ContentCommasHiddenString { get => "%comma%"; }
-
+        /// <summary>
+        /// Creates the file or dir by the target path.
+        /// Path of the file can contain the file content placed between the begin and end markers.
+        /// </summary>
+        /// <param name="targetPath">Path of the created entry with an optional file content</param>
+        /// <param name="files">True when file must be created else dir</param>
+        /// <returns>True when entry was created</returns>
         private static bool ProceedCreate(string targetPath, bool files = true)
         {
-            string content = "";
+            string content = string.Empty;
             if (files)
             {
                 // has content
-                int contentBeginIndex = targetPath.IndexOf(CreateFileContendBeginMarker);
+                int contentBeginIndex = targetPath.IndexOf(CreateFileContentBeginMarker, StringComparison.Ordinal);
                 if (contentBeginIndex != -1)
                 {
-                    var startIndex = contentBeginIndex + CreateFileContendBeginMarker.Length;
-                    var contentLength = targetPath.IndexOf(CreateFileContendEndMarker) - startIndex;
+                    var startIndex = contentBeginIndex + CreateFileContentBeginMarker.Length;
+                    var contentLength = targetPath.IndexOf(CreateFileContentEndMarker, StringComparison.Ordinal) - startIndex;
                     content = UnhideCommasAndSpecTextReplace(targetPath.Substring(startIndex, contentLength)); // file's content with unhidden commas
                     targetPath = targetPath.Remove(contentBeginIndex); // file's path
                 }
             }
 
-            if (targetPath.Exists(!files)) return false;
+            if (files ? File.Exists(targetPath) : Directory.Exists(targetPath))
+            {
+                return false;
+            }
 
             if (files)
             {
@@ -431,41 +433,45 @@ namespace AIHelper.Install.Types.Directories
                 ;
         }
 
+        /// <summary>
+        /// Splits comma separated list of sub paths and skips empty records
+        /// </summary>
+        /// <param name="value">Comma separated list of sub paths</param>
+        private static IEnumerable<string> SplitSubPaths(string value)
+        {
+            return string.IsNullOrWhiteSpace(value)
+                ? Enumerable.Empty<string>()
+                : value.Split(SubPathSeparators, StringSplitOptions.RemoveEmptyEntries);
+        }
+
         private void SetSkipLists()
         {
-            _skipExistDirs = !string.IsNullOrWhiteSpace(updateInfo.SkipExistDirs)
-                ? updateInfo.SkipExistDirs
-                .Split(new[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries)
-                .ToHashSet()
-                : new HashSet<string>();
-
-            _skipExistFiles = !string.IsNullOrWhiteSpace(updateInfo.SkipExistFiles)
-                ? updateInfo.SkipExistFiles
-                .Split(new[] { ", ", "," }, StringSplitOptions.RemoveEmptyEntries)
-                .ToHashSet()
-                : new HashSet<string>();
+            _skipExistDirs = SplitSubPaths(_updateInfo.SkipExistDirs).ToHashSet();
+            _skipExistFiles = SplitSubPaths(_updateInfo.SkipExistFiles).ToHashSet();
         }
 
         private bool ProceedRemoveUnusedSeparators()
         {
-            if (updateInfo.RemoveUnusedSeparators != "true")
+            if (_updateInfo.RemoveUnusedSeparators != "true")
+            {
                 return false;
+            }
 
             var modlist = new ModlistData();
             var bakModsDirPath = Path.Combine(_bakDir, "Mods");
 
-            var ret = false;
-            var ModsByName = modlist.Mods.ToDictionary(k => k.Name, v => v);
+            var anyRemoved = false;
+            var modsByName = modlist.Mods.ToDictionary(mod => mod.Name, mod => mod);
             foreach (var separator in new DirectoryInfo(ManageSettings.CurrentGameModsDirPath)
                 .EnumerateDirectories("*_separator"))
             {
-                if (ModsByName.ContainsKey(separator.Name)) continue;
+                if (modsByName.ContainsKey(separator.Name)) continue;
 
                 var bakPath = separator.FullName.Replace(ManageSettings.CurrentGameModsDirPath, bakModsDirPath);
                 try
                 {
                     separator.MoveTo(bakPath);
-                    ret = true;
+                    anyRemoved = true;
                 }
                 catch (Exception ex)
                 {
@@ -473,55 +479,58 @@ namespace AIHelper.Install.Types.Directories
                 }
             }
 
-            return ret;
+            return anyRemoved;
         }
 
         private bool ProceedRemoveFiles()
         {
-            return !string.IsNullOrWhiteSpace(updateInfo.RemoveFiles) && ProceedCreateRemove(files: true, create: false);
+            return !string.IsNullOrWhiteSpace(_updateInfo.RemoveFiles) && ProceedCreateRemove(files: true, create: false);
         }
 
         private bool ProceedRemoveDirs()
         {
-            return !string.IsNullOrWhiteSpace(updateInfo.RemoveDirs) && ProceedCreateRemove(files: false, create: false);
+            return !string.IsNullOrWhiteSpace(_updateInfo.RemoveDirs) && ProceedCreateRemove(files: false, create: false);
         }
 
+        /// <summary>
+        /// Moves the game entry to the backup dir when the entry exists
+        /// </summary>
+        /// <param name="targetPath">Path of the entry in the game dir</param>
+        /// <param name="subPath">Sub path of the entry relative to the game dir</param>
+        /// <param name="files">True when file must be removed else dir</param>
+        /// <returns>True when entry was moved to the backup dir</returns>
         private bool ProceedRemove(string targetPath, string subPath, bool files = true)
         {
-            var ret = false;
-
-            var buckupPath = _bakDir + Path.DirectorySeparatorChar + subPath;
-            if ((files && File.Exists(targetPath)) || (!files && Directory.Exists(targetPath)))
+            var backupPath = _bakDir + Path.DirectorySeparatorChar + subPath;
+            if (!(files ? File.Exists(targetPath) : Directory.Exists(targetPath)))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(buckupPath));
-                if (files)
-                {
-                    ret = true;
-                    File.Move(targetPath, buckupPath);
-                }
-                else
-                {
-                    ret = true;
-                    Directory.Move(targetPath, buckupPath);
-                }
+                return false;
             }
 
-            return ret;
+            Directory.CreateDirectory(Path.GetDirectoryName(backupPath));
+            MoveEntry(targetPath, backupPath, !files);
+
+            return true;
         }
 
         private bool ProceedUpdateMO()
         {
-            return updateInfo.UpdateMO == "true" && ProceedUpdateFiles("MO");
+            return _updateInfo.UpdateMO == "true" && ProceedUpdateFiles("MO");
         }
 
         private bool ProceedUpdateData()
         {
-            return updateInfo.UpdateData == "true" && ProceedUpdateFiles("Data");
+            return _updateInfo.UpdateData == "true" && ProceedUpdateFiles("Data");
         }
 
+        /// <summary>
+        /// Replaces files of the selected subdir of the game by the newer files of the update
+        /// </summary>
+        /// <param name="targetDirName">Name of the game subdir which files must be updated</param>
+        /// <returns>True when at least one file was processed</returns>
         private bool ProceedUpdateFiles(string targetDirName)
         {
-            var updateGameDir = IsRoot ? Path.Combine(_dir.FullName, "Games", updateInfo.GameFolderName) : Path.Combine(_dir.FullName);
+            var updateGameDir = _isRoot ? Path.Combine(_dir.FullName, "Games", _updateInfo.GameFolderName) : _dir.FullName;
             var updateTargetSubDir = Path.Combine(updateGameDir, targetDirName);
 
             if (!Directory.Exists(updateTargetSubDir))
@@ -529,12 +538,12 @@ namespace AIHelper.Install.Types.Directories
                 return false;
             }
 
-            var ret = false;
+            var anyUpdated = false;
 
-            var updateTargetBuckupSubDir = Path.Combine(_bakDir, targetDirName);
-            if (!Directory.Exists(updateTargetBuckupSubDir))
+            var updateTargetBackupSubDir = Path.Combine(_bakDir, targetDirName);
+            if (!Directory.Exists(updateTargetBackupSubDir))
             {
-                Directory.CreateDirectory(updateTargetBuckupSubDir);
+                Directory.CreateDirectory(updateTargetBackupSubDir);
             }
 
             // replace files by newer
@@ -554,33 +563,33 @@ namespace AIHelper.Install.Types.Directories
 
                     var targetPath = targetFileInfo.FullName;// default target path in game's target subdir
 
-                    bool MoveIt = true;
+                    bool moveIt = true;
                     if (targetFileInfo.Exists)
                     {
-                        var fileBakBath = updateFileInfo.FullName.Replace(updateGameDir, _bakDir);// file's path in bak dir
+                        var fileBakPath = updateFileInfo.FullName.Replace(updateGameDir, _bakDir);// file's path in bak dir
 
                         // remove game file to bak if:
-                        if ((writetimefiles && updateFileInfo.LastWriteTime > targetFileInfo.LastWriteTime) // update file is newer
-                            || (sizeFiles && updateFileInfo.Length != targetFileInfo.Length) // update file has different size
-                            || (crcfiles && updateFileInfo.GetCrc32() != targetFileInfo.GetCrc32())) // update file has different crc32
+                        if ((_writeTimeFiles && updateFileInfo.LastWriteTime > targetFileInfo.LastWriteTime) // update file is newer
+                            || (_sizeFiles && updateFileInfo.Length != targetFileInfo.Length) // update file has different size
+                            || (_crcFiles && updateFileInfo.GetCrc32() != targetFileInfo.GetCrc32())) // update file has different crc32
                         {
                             // just move current file in buckup because lastwrite time can be newer in actually older file and it will not be replaced by updated
-                            Directory.CreateDirectory(Path.GetDirectoryName(fileBakBath));// create parent dir
-                            targetFileInfo.MoveTo(fileBakBath); // move exist older target file to bak dir
+                            Directory.CreateDirectory(Path.GetDirectoryName(fileBakPath));// create parent dir
+                            targetFileInfo.MoveTo(fileBakPath); // move exist older target file to bak dir
                         }
                         else
                         {
-                            MoveIt = false; // dont move update file because target was not removed
+                            moveIt = false; // dont move update file because target was not removed
                         }
                     }
 
-                    if (MoveIt)
+                    if (moveIt)
                     {
                         Directory.CreateDirectory(Path.GetDirectoryName(targetPath));// create parent dir
                         updateFileInfo.MoveTo(targetPath); // move update file to target if it is newer or to bak dir if older
                     }
 
-                    ret = true;
+                    anyUpdated = true;
                 }
                 catch (Exception ex)
                 {
@@ -588,17 +597,22 @@ namespace AIHelper.Install.Types.Directories
                 }
             }
 
-            return ret;
+            return anyUpdated;
         }
 
         private bool ProceedUpdateMods()
         {
-            return updateInfo.UpdateMods == "true" && ProceedUpdateDirs("Mods");
+            return _updateInfo.UpdateMods == "true" && ProceedUpdateDirs("Mods");
         }
 
+        /// <summary>
+        /// Replaces dirs of the selected subdir of the game by the newer dirs of the update
+        /// </summary>
+        /// <param name="dirName">Name of the game subdir which dirs must be updated</param>
+        /// <returns>True when at least one dir was processed</returns>
         private bool ProceedUpdateDirs(string dirName)
         {
-            var updateGameDir = IsRoot ? Path.Combine(_dir.FullName, "Games", updateInfo.GameFolderName) : _dir.FullName;
+            var updateGameDir = _isRoot ? Path.Combine(_dir.FullName, "Games", _updateInfo.GameFolderName) : _dir.FullName;
             var updateTargetDir = new DirectoryInfo(Path.Combine(updateGameDir, dirName));
 
             if (!updateTargetDir.Exists)
@@ -606,13 +620,13 @@ namespace AIHelper.Install.Types.Directories
                 return false;
             }
 
-            var ret = false;
+            var anyUpdated = false;
 
             // create mods buckup dir
-            var targetDirBuckupPath = Path.Combine(_bakDir, dirName);
-            if (!Directory.Exists(targetDirBuckupPath))
+            var targetDirBackupPath = Path.Combine(_bakDir, dirName);
+            if (!Directory.Exists(targetDirBackupPath))
             {
-                Directory.CreateDirectory(targetDirBuckupPath);
+                Directory.CreateDirectory(targetDirBackupPath);
             }
 
             // replace folders by updated
@@ -643,14 +657,14 @@ namespace AIHelper.Install.Types.Directories
                         }
 
                         // move exist older target dir to bak
-                        var existsTargetGameModDirBak = existsTargetGameSubDir.FullName.Replace(ManageSettings.CurrentGameModsDirPath, targetDirBuckupPath);
+                        var existsTargetGameModDirBak = existsTargetGameSubDir.FullName.Replace(ManageSettings.CurrentGameModsDirPath, targetDirBackupPath);
                         existsTargetGameSubDir.MoveTo(existsTargetGameModDirBak);
                     }
 
                     // move new update dir to target
                     updateSubDir.MoveTo(targetGameSubDir.FullName);
 
-                    ret = true;
+                    anyUpdated = true;
                 }
                 catch (Exception ex)
                 {
@@ -659,9 +673,15 @@ namespace AIHelper.Install.Types.Directories
 
             }
 
-            return ret;
+            return anyUpdated;
         }
 
+        /// <summary>
+        /// Compares versions from the meta.ini of the update mod dir and the game mod dir
+        /// </summary>
+        /// <param name="modDir">Dir of the mod in the update</param>
+        /// <param name="currentGameModDir">Dir of the mod in the game</param>
+        /// <returns>True when version of the update mod is newer or cannot be compared</returns>
         private static bool IsNewer(string modDir, string currentGameModDir)
         {
             var metaIniUpdatePath = Path.Combine(modDir, "meta.ini");
@@ -672,133 +692,10 @@ namespace AIHelper.Install.Types.Directories
                 return true;
             }
 
-            var UpdateVersion = ManageIni.GetINIFile(metaIniUpdatePath, false).GetKey("General", "version");
-            var GameVersion = ManageIni.GetINIFile(metaIniGamePath, false).GetKey("General", "version");
+            var updateVersion = ManageIni.GetINIFile(metaIniUpdatePath, false).GetKey("General", "version");
+            var gameVersion = ManageIni.GetINIFile(metaIniGamePath, false).GetKey("General", "version");
 
-            return UpdateVersion.IsNewerOf(GameVersion);
-        }
-    }
-
-    class GameUpdateInfo
-    {
-        internal readonly Dictionary<string, string> Keys = new Dictionary<string, string>()
-        {
-            { nameof(GameFolderName), string.Empty },
-            { nameof(UpdateData), "false" },
-            { nameof(UpdateMods), "false" },
-            { nameof(IsRoot), "false" },
-            { nameof(UpdateMO), "false" },
-            { nameof(RenameFiles), string.Empty },
-            { nameof(RenameDirs), string.Empty },
-            { nameof(RemoveFiles), string.Empty },
-            { nameof(RemoveDirs), string.Empty },
-            { nameof(RemoveUnusedSeparators), "false" },
-            { nameof(SkipExistDirs), string.Empty },
-            { nameof(SkipExistFiles), string.Empty },
-            { nameof(CreateDirs), string.Empty },
-            { nameof(CreateFiles), string.Empty },
-            { nameof(ApplyFixes), "false" },
-            { nameof(CRCFiles), "false" },
-            { nameof(SizeFiles), "true" },
-            { nameof(WriteTimeFiles), "true" },
-        };
-
-        /// <summary>
-        /// Name of game's folder name which need to update
-        /// </summary>
-        internal string GameFolderName { get => Keys[nameof(GameFolderName)]; set => Keys[nameof(GameFolderName)] = value; }
-        /// <summary>
-        /// Update Data folder
-        /// </summary>
-        internal string UpdateData { get => Keys[nameof(UpdateData)]; set => Keys[nameof(UpdateData)] = value; }
-        /// <summary>
-        /// Update mod dirs in Mods folder
-        /// </summary>
-        internal string UpdateMods { get => Keys[nameof(UpdateMods)]; set => Keys[nameof(UpdateMods)] = value; }
-        /// <summary>
-        /// Update files in MO dir of the game to newer
-        /// </summary>
-        internal string UpdateMO { get => Keys[nameof(UpdateMO)]; set => Keys[nameof(UpdateMO)] = value; }
-        /// <summary>
-        /// Root means aihelper root dir as update dir root
-        /// </summary>
-        internal string IsRoot { get => Keys[nameof(IsRoot)]; set => Keys[nameof(IsRoot)] = value; }
-        /// <summary>
-        /// List of files to remove
-        /// </summary>
-        public string RenameFiles { get => Keys[nameof(RenameFiles)]; set => Keys[nameof(RenameFiles)] = value; }
-        /// <summary>
-        /// List of dirs to remove
-        /// </summary>
-        public string RenameDirs { get => Keys[nameof(RenameDirs)]; set => Keys[nameof(RenameDirs)] = value; }
-        /// <summary>
-        /// List of files to remove
-        /// </summary>
-        public string RemoveFiles { get => Keys[nameof(RemoveFiles)]; set => Keys[nameof(RemoveFiles)] = value; }
-        /// <summary>
-        /// List of dirs to remove
-        /// </summary>
-        public string RemoveDirs { get => Keys[nameof(RemoveDirs)]; set => Keys[nameof(RemoveDirs)] = value; }
-        /// <summary>
-        /// Determines if need to remove unused separators which is not updated modlist
-        /// </summary>
-        public string RemoveUnusedSeparators { get => Keys[nameof(RemoveUnusedSeparators)]; set => Keys[nameof(RemoveUnusedSeparators)] = value; }
-        /// <summary>
-        /// List of subpaths for dirs which must be skipped and not touched if already exist in current game
-        /// </summary>
-        public string SkipExistDirs { get => Keys[nameof(SkipExistDirs)]; set => Keys[nameof(SkipExistDirs)] = value; }
-        /// <summary>
-        /// List of subpaths for files which must be skipped and not touched if already exist in current game
-        /// </summary>
-        public string SkipExistFiles { get => Keys[nameof(SkipExistFiles)]; set => Keys[nameof(SkipExistFiles)] = value; }
-
-        /// <summary>
-        /// Dirs which must be created after update
-        /// </summary>
-        public string CreateDirs { get => Keys[nameof(CreateDirs)]; set => Keys[nameof(CreateDirs)] = value; }
-        /// <summary>
-        /// Files which must be created after update
-        /// </summary>
-        public string CreateFiles { get => Keys[nameof(CreateFiles)]; set => Keys[nameof(CreateFiles)] = value; }
-
-        /// <summary>
-        /// various game fixes and tweaks
-        /// </summary>
-        public string ApplyFixes { get => Keys[nameof(ApplyFixes)]; set => Keys[nameof(ApplyFixes)] = value; }
-        /// <summary>
-        /// check crc32 while check if file need to update. (slow)
-        /// </summary>
-        public string CRCFiles { get => Keys[nameof(CRCFiles)]; set => Keys[nameof(CRCFiles)] = value; }
-        /// <summary>
-        /// check size while check if file need to update
-        /// </summary>
-        public string SizeFiles { get => Keys[nameof(SizeFiles)]; set => Keys[nameof(SizeFiles)] = value; }
-        /// <summary>
-        /// check last write time while check if file need to update
-        /// </summary>
-        public string WriteTimeFiles { get => Keys[nameof(SizeFiles)]; set => Keys[nameof(SizeFiles)] = value; }
-
-        public GameUpdateInfo(string updateInfoPath = "")
-        {
-            if (updateInfoPath.Length > 0)
-            {
-                Get(updateInfoPath);
-            }
-        }
-
-        void Get(string updateInfoPath)
-        {
-            var updateInfoIni = ManageIni.GetINIFile(updateInfoPath);
-
-            var keys = Keys.Keys.ToArray();
-            for (int i = 0; i < keys.Length; i++)
-            {
-                var keyName = keys[i];
-                if (updateInfoIni.KeyExists(keyName))
-                {
-                    Keys[keyName] = updateInfoIni.GetKey("", keyName);
-                }
-            }
+            return updateVersion.IsNewerOf(gameVersion);
         }
     }
 }

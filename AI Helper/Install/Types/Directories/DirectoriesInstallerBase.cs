@@ -1,6 +1,4 @@
-﻿using AIHelper.Forms.Other;
-using System;
-using System.IO;
+﻿using System.IO;
 
 namespace AIHelper.Install.Types.Directories
 {
@@ -20,49 +18,7 @@ namespace AIHelper.Install.Types.Directories
 
         protected bool GetAll(DirectoryInfo directoryInfo)
         {
-            if (!directoryInfo.Exists)
-            {
-                return false;
-            }
-
-            bool ret = false;
-
-            ProgressForm progress = new ProgressForm();
-
-            foreach (var mask in Masks)
-            {
-                Mask = mask;
-
-                var list = directoryInfo.GetDirectories(mask);
-
-                progress.SetMax(list.Length);
-
-                for (int i = 0; i < list.Length; i++)
-                {
-                    progress.SetProgress(i);
-
-                    if (list[i].Exists)
-                    {
-                        progress.SetInfo(list[i].Name);
-
-                        try
-                        {
-                            if (Get(list[i]))
-                            {
-                                ret = true;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            _log.Error("An error occured while parse by dir installer. error\r\n" + ex);
-                        }
-                    }
-                }
-            }
-
-            progress.Dispose();
-
-            return ret;
+            return ProcessEntries(directoryInfo, mask => directoryInfo.GetDirectories(mask), Get, "dir installer");
         }
 
         protected abstract bool Get(DirectoryInfo directoryInfo);

@@ -1,13 +1,17 @@
 ﻿using AIHelper.Manage;
+using System;
 using System.IO;
 
 namespace AIHelper.Install.Types.Files.Cards
 {
-    class PngInstaller : FilesInstallerBase
+    /// <summary>
+    /// Installs png images as character cards
+    /// </summary>
+    class PngInstaller : CardsInstallerBase
     {
-        public override string[] Masks => new[] { "*" + ext };
+        private const string ImageExtension = ".png";
 
-        const string ext = ".png";
+        public override string[] Masks => new[] { "*" + ImageExtension };
 
         protected override bool Get(FileInfo pngInfo)
         {
@@ -20,12 +24,14 @@ namespace AIHelper.Install.Types.Files.Cards
 
             try
             {
-                var targetImagePath = ManageFilesFoldersExtensions.GetResultTargetFilePathWithNameCheck(ManageModOrganizer.GetUserDataSubFolder(" Chars", "f"), Path.GetFileNameWithoutExtension(pngInfo.Name), ext);
+                var targetImagePath = ManageFilesFoldersExtensions.GetResultTargetFilePathWithNameCheck(
+                    ManageModOrganizer.GetUserDataSubFolder(" Chars", "f"), Path.GetFileNameWithoutExtension(pngInfo.Name), ImageExtension);
 
                 pngInfo.MoveTo(targetImagePath);
             }
-            catch
+            catch (Exception ex)
             {
+                _log.Warn("Failed to install png. path:" + pngInfo.FullName + "\r\nError:" + ex);
                 return false;
             }
 

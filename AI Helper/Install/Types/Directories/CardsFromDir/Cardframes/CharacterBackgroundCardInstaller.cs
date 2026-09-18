@@ -5,8 +5,6 @@
     /// </summary>
     class CharacterBackgroundCardInstaller : CardframesCardInstallerBase
     {
-        protected override string targetFolderName => "Back";
-
         public override string[] Masks => new[] { "cb" };
     }
 }

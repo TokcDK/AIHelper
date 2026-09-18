@@ -352,3 +352,6 @@ healthchecksdb
 
 # local using libs
 .libs/
+
+# git
+.github/

@@ -26,6 +26,7 @@ namespace AIHelper.Manage.Functions
         {
             OpenInfoEditor();
         }
+
         public override Color? ForeColor => Color.LightSkyBlue;
 
         public static RichTextBox Logtb { get; set; }
@@ -34,8 +35,17 @@ namespace AIHelper.Manage.Functions
 
         readonly List<UpdateInfoData> _updateInfoDatas = new List<UpdateInfoData>();
 
+        // Cache of already built mod info blocks. They are built once and reused,
+        // For the new added mods from 'add mod' form the new instances are appended only when a mod was successfully downloaded and added without reread all infos again.
+        readonly List<ModInfoBuild> _modInfoBuilds = new List<ModInfoBuild>();
+
         bool _isReading;
         bool _isWriting;
+
+        // Controls of the currently opened editor (used by filter and by "add mod" flow).
+        FlowLayoutPanel _modsListFlowPanel;
+        TextBox _filterTextBox;
+        ToolTip _toolTip;
 
         private static void InitLogTextBox()
         {
@@ -47,14 +57,31 @@ namespace AIHelper.Manage.Functions
 
         static void Log(string v) { Logtb.Text += v + "\r\n"; }
 
+        private static ToolTip CreateToolTip()
+        {
+            return new ToolTip
+            {
+                AutoPopDelay = 32000,
+                InitialDelay = 1000,
+                ReshowDelay = 500,
+                UseAnimation = true,
+                UseFading = true,
+                ShowAlways = true
+            };
+        }
+
         internal void OpenInfoEditor()
         {
+            // A fresh editor session: reset caches so mod infos are read once per form.
+            _modInfoBuilds.Clear();
+            _updateInfoDatas.Clear();
+
             var modUpdateInfosForm = new Form
             {
-                //Size = new System.Drawing.Size(680, 605),
                 Text = T._("Mods update info settings") + " (" + ManageSettings.CurrentGameDisplayingName + ")",
                 StartPosition = FormStartPosition.CenterScreen
             };
+
             var modUpdateInfosTableLayoutPanel = new TableLayoutPanel
             {
                 RowCount = 2,
@@ -62,86 +89,103 @@ namespace AIHelper.Manage.Functions
                 Dock = DockStyle.Fill,
                 Margin = new Padding(0)
             };
-            var rowStyleHeader = new RowStyle
+            modUpdateInfosTableLayoutPanel.RowStyles.Add(new RowStyle
             {
                 SizeType = SizeType.Absolute,
                 Height = 30,
-            };
-            var rowStyleContent = new RowStyle
+            });
+            modUpdateInfosTableLayoutPanel.RowStyles.Add(new RowStyle
             {
-                SizeType = SizeType.AutoSize
-            };
-            modUpdateInfosTableLayoutPanel.RowStyles.Add(rowStyleHeader);
-            modUpdateInfosTableLayoutPanel.RowStyles.Add(rowStyleContent);
+                SizeType = SizeType.Percent,
+                Height = 100,
+            });
 
-            // control buttons
-            var controlPanelFlowLayoutPanel = new FlowLayoutPanel
+            // Header: filter field which dynamically filters all displayed mod infos.
+            var filterFlowLayoutPanel = new FlowLayoutPanel
             {
                 FlowDirection = FlowDirection.LeftToRight,
+                Dock = DockStyle.Fill,
                 Margin = new Padding(0),
-                AutoSize = true,
             };
-            modUpdateInfosTableLayoutPanel.SetRow(controlPanelFlowLayoutPanel, 0);
-            var addNewModButton = new Button
+            var filterLabel = new Label
             {
-                Text = T._("Add"),
+                Text = T._("Filter") + ":",
                 AutoSize = true,
                 Anchor = AnchorStyles.Left,
-                Height = 25
             };
-            var loadGitInfosButton = new Button
+            _filterTextBox = new TextBox
             {
-                Text = T._("All"),
-                AutoSize = true,
+                Width = 320,
                 Anchor = AnchorStyles.Left,
-                Height = 25
             };
-            controlPanelFlowLayoutPanel.Controls.Add(loadGitInfosButton);
-            controlPanelFlowLayoutPanel.Controls.Add(addNewModButton);
+            _filterTextBox.TextChanged += (o, e) => ApplyFilter();
+            filterFlowLayoutPanel.Controls.Add(filterLabel);
+            filterFlowLayoutPanel.Controls.Add(_filterTextBox);
+            modUpdateInfosTableLayoutPanel.SetRow(filterFlowLayoutPanel, 0);
 
-            var addNewModPanel = new Panel
+            // Content: tab control with tab pages instead of the two buttons.
+            var modUpdateInfosTabControl = new TabControl
             {
                 Dock = DockStyle.Fill,
-                Margin = new Padding(0)
+                Margin = new Padding(0),
             };
-            modUpdateInfosTableLayoutPanel.SetRow(addNewModPanel, 1);
 
-            // button events
-            addNewModButton.Click += new EventHandler((sender, e) =>
-            {
-                LoadAddModPanel(modUpdateInfosForm, addNewModPanel);
-            });
-            loadGitInfosButton.Click += new EventHandler((sender, e) =>
-            {
-                addNewModPanel.Controls.Clear();
-                LoadGitInfos(modUpdateInfosForm, addNewModPanel);
-            });
+            var allModsTabPage = new TabPage { Text = T._("All"), UseVisualStyleBackColor = true };
+            var addModTabPage = new TabPage { Text = T._("Add"), UseVisualStyleBackColor = true };
 
-            modUpdateInfosTableLayoutPanel.Controls.Add(controlPanelFlowLayoutPanel);
-            modUpdateInfosTableLayoutPanel.Controls.Add(addNewModPanel);
+            _modsListFlowPanel = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                AutoScroll = true,
+                Margin = new Padding(0),
+            };
+            allModsTabPage.Controls.Add(_modsListFlowPanel);
+
+            modUpdateInfosTabControl.TabPages.Add(allModsTabPage);
+            modUpdateInfosTabControl.TabPages.Add(addModTabPage);
+
+            // Build "Add mod" tab page lazily on its first selection.
+            modUpdateInfosTabControl.SelectedIndexChanged += (o, e) =>
+            {
+                if (modUpdateInfosTabControl.SelectedTab == addModTabPage && addModTabPage.Controls.Count == 0)
+                {
+                    LoadAddModPanel(addModTabPage);
+                }
+            };
+
+            modUpdateInfosTableLayoutPanel.SetRow(modUpdateInfosTabControl, 1);
+            modUpdateInfosTableLayoutPanel.Controls.Add(filterFlowLayoutPanel);
+            modUpdateInfosTableLayoutPanel.Controls.Add(modUpdateInfosTabControl);
             modUpdateInfosForm.Controls.Add(modUpdateInfosTableLayoutPanel);
 
-            LoadGitInfos(modUpdateInfosForm, addNewModPanel);
+            // Build and cache all mod infos once.
+            LoadGitInfos(modUpdateInfosForm, _modsListFlowPanel);
 
-            //modsListFlowPanel.Size = new System.Drawing.Size
-            //    (modsListFlowPanel.Width * 2
-            //    , modsListFlowPanel.Height * 2
-            //    );
-            //form.Size = new System.Drawing.Size
-            //    (modsListFlowPanel.Width
-            //    + (modsListFlowPanel.Margin.Horizontal * 2)
-            //    , modsListFlowPanel.Height
-            //    + (modsListFlowPanel.Margin.Vertical * 2)
-            //    );
             modUpdateInfosForm.Size = new System.Drawing.Size(modUpdateInfosForm.Width * 2, modUpdateInfosForm.Height * 2);
             modUpdateInfosForm.Show(ManageSettings.MainForm);
 
             _isReading = false;
         }
 
-        class newModPropData
+        private void ApplyFilter()
         {
-            public newModPropData(string labelText, string textBoxText)
+            if (_modsListFlowPanel == null) return;
+
+            var filterText = _filterTextBox == null ? "" : _filterTextBox.Text.Trim();
+
+            _modsListFlowPanel.SuspendLayout();
+            foreach (var modInfoBuild in _modInfoBuilds)
+            {
+                modInfoBuild.Control.Visible =
+                    filterText.Length == 0
+                    || modInfoBuild.Filter.IndexOf(filterText, System.StringComparison.InvariantCultureIgnoreCase) >= 0;
+            }
+            _modsListFlowPanel.ResumeLayout();
+        }
+
+        class NewModPropData
+        {
+            public NewModPropData(string labelText, string textBoxText)
             {
                 LabelText = labelText;
                 TextBoxText = textBoxText;
@@ -153,31 +197,34 @@ namespace AIHelper.Manage.Functions
             public TextBox TB;
         }
 
-        private void LoadAddModPanel(Form modUpdateInfosForm, Panel addNewModPanel)
+        private void LoadAddModPanel(Control addModContainer)
         {
             bool addModPanelIsLoading = true;
 
-            addNewModPanel.Controls.Clear();
+            addModContainer.Controls.Clear();
 
             var modUpdateInfoMainFlp = new FlowLayoutPanel
             {
                 Dock = DockStyle.Fill,
-                //AutoScroll = true,
                 Margin = new Padding(0),
                 FlowDirection = FlowDirection.TopDown,
             };
 
+            // Tab page content gets its real width only when the tab is displayed;
+            // guard against an uninitialized width so control sizes stay valid.
+            int containerWidth = addModContainer.Width > 200 ? addModContainer.Width : 200;
+
             var defaultModDirName = "NewMod";
-            var modnamePropData = new newModPropData(T._("Mod dir name"), defaultModDirName);
-            var urlPropData = new newModPropData("Url", "https://github.com/Owner/Name");
-            var startsWithPropData = new newModPropData(T._("File starts with"), "");
-            var endsWithPropData = new newModPropData(T._("File ends with"), "");
-            var newModDatas = new newModPropData[]
+            var modnamePropData = new NewModPropData(T._("Mod dir name"), defaultModDirName);
+            var urlPropData = new NewModPropData("Url", "https://github.com/Owner/Name");
+            var startsWithPropData = new NewModPropData(T._("File starts with"), "");
+            var endsWithPropData = new NewModPropData(T._("File ends with"), "");
+            var newModDatas = new NewModPropData[]
             {
-                modnamePropData,
-                urlPropData,
-                startsWithPropData,
-                endsWithPropData,
+            modnamePropData,
+            urlPropData,
+            startsWithPropData,
+            endsWithPropData,
             };
             foreach (var newModData in newModDatas)
             {
@@ -194,7 +241,7 @@ namespace AIHelper.Manage.Functions
                 };
                 var urlTextBox = new TextBox
                 {
-                    Size = new System.Drawing.Size(addNewModPanel.Width - l.Width - 20, _elHeight),
+                    Size = new System.Drawing.Size(containerWidth - l.Width - 20, _elHeight),
                     Margin = new Padding(1, 1, 10, 1),
                 };
                 urlTextBox.DataBindings.Add(new Binding(nameof(urlTextBox.Text), newModData, nameof(newModData.TextBoxText), true, DataSourceUpdateMode.OnPropertyChanged));
@@ -207,7 +254,7 @@ namespace AIHelper.Manage.Functions
                         try
                         {
                             if (string.IsNullOrWhiteSpace(urlTextBox.Text)) return;
-                            if (!string.IsNullOrWhiteSpace(modnamePropData.TextBoxText) 
+                            if (!string.IsNullOrWhiteSpace(modnamePropData.TextBoxText)
                             && modnamePropData.TextBoxText != defaultModDirName) return;
 
                             var urlGithubMatch = Regex.Match(urlTextBox.Text, @"(^.*https?\:\/\/)?github\.com\/([^\/]+)\/([^\/\? ]+).*$", RegexOptions.IgnoreCase);
@@ -250,7 +297,7 @@ namespace AIHelper.Manage.Functions
                 Text = T._("Version from file"),
                 Checked = false,
                 ForeColor = Color.White,
-                Size = new System.Drawing.Size(addNewModPanel.Width - 20, _elHeight + 5),
+                Size = new System.Drawing.Size(containerWidth - 20, _elHeight + 5),
                 Anchor = AnchorStyles.Left,
                 TextAlign = ContentAlignment.MiddleLeft,
             };
@@ -350,7 +397,7 @@ namespace AIHelper.Manage.Functions
                         return;
                     }
 
-                    foreach(var modInfo in _updateInfoDatas)
+                    foreach (var modInfo in _updateInfoDatas)
                     {
                         if (modInfo.GitInfo.Owner != ownerName) continue;
                         if (modInfo.GitInfo.Repository != repositoryName) continue;
@@ -383,12 +430,10 @@ namespace AIHelper.Manage.Functions
                         return;
                     }
 
-                    // clean version for more correct comprasion
                     string targetLastVersion = info.TargetLastVersion;
                     UpdateTools.CleanVersion(ref targetLastVersion);
                     info.TargetLastVersion = targetLastVersion;
 
-                    //if it is last version then run update
                     if (!info.TargetLastVersion.IsNewerOf("0", false))
                     {
                         Log(T._("Version is lesser. Check entered data."));
@@ -422,17 +467,17 @@ namespace AIHelper.Manage.Functions
             modUpdateInfoMainFlp.Controls.Add(DownloadAndAddMod);
 
             InitLogTextBox();
-            Logtb.Width = modUpdateInfoMainFlp.Width - 10;
+            Logtb.Width = containerWidth - 10;
             modUpdateInfoMainFlp.Controls.Add(Logtb);
 
-            addNewModPanel.Controls.Add(modUpdateInfoMainFlp);
+            addModContainer.Controls.Add(modUpdateInfoMainFlp);
 
-            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, addNewModPanel);
+            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, addModContainer);
 
             addModPanelIsLoading = false;
         }
 
-        private static async void GetGHubFile(Github ghub, GitUpdateInfoData ginfo)
+        private async void GetGHubFile(Github ghub, GitUpdateInfoData ginfo)
         {
             bool getfileIsTrue = await ghub.GetFile().ConfigureAwait(true); // download latest file
             if (!getfileIsTrue)
@@ -454,32 +499,47 @@ namespace AIHelper.Manage.Functions
             ginfo.Write();
 
             Log(T._("Mod succesfully downloaded and added!"));
+
+            // The mod was successfully downloaded and added: build one new
+            // ModInfoBuild with the entered values and append it to the cache.
+            AddNewModInfoBuild(ginfo);
         }
 
-        private void LoadGitInfos(Form f, Panel p)
+        private void AddNewModInfoBuild(GitUpdateInfoData ginfo)
         {
-            var modsListFlowPanel = new FlowLayoutPanel
+            if (_modsListFlowPanel == null) return;
+
+            if (_toolTip == null) _toolTip = CreateToolTip();
+
+            var infoData = new UpdateInfoData(ginfo.Mod)
             {
-                Dock = DockStyle.Fill,
-                //FlowDirection = FlowDirection.TopDown,
-                AutoScroll = true,
-                //Size = new System.Drawing.Size(500, 300),
-                Margin = new Padding(0)
+                GitInfo = ginfo,
+                ToolTip = _toolTip,
             };
 
-            p.Controls.Add(modsListFlowPanel);
+            _isReading = true;
+            var modInfoBuild = new ModInfoBuild(infoData, _toolTip, _elHeight, WriteValue);
+            _isReading = false;
 
-            var ttip = new ToolTip
+            _modInfoBuilds.Add(modInfoBuild);
+            _updateInfoDatas.Add(infoData);
+            _modsListFlowPanel.Controls.Add(modInfoBuild.Control);
+
+            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, modInfoBuild.Control);
+
+            ApplyFilter();
+        }
+
+        private void LoadGitInfos(Form f, FlowLayoutPanel modsListFlowPanel)
+        {
+            // Already read ModInfoBuild instances are cached: do not rebuild them.
+            if (_modInfoBuilds.Count > 0)
             {
-                // Set up the delays for the ToolTip.
-                AutoPopDelay = 32000,
-                InitialDelay = 1000,
-                ReshowDelay = 500,
-                UseAnimation = true,
-                UseFading = true,
-                // Force the ToolTip text to be displayed whether or not the form is active.
-                ShowAlways = true
-            };
+                ApplyFilter();
+                return;
+            }
+
+            _toolTip = CreateToolTip();
 
             _isReading = true;
 
@@ -488,7 +548,7 @@ namespace AIHelper.Manage.Functions
             var keyName = ManageSettings.AiMetaIniKeyUpdateName;
             foreach (var mod in mods
                 .Mods
-                .Where(m => 
+                .Where(m =>
                 !(m.Type is ModType.Separator)
                 && !(m.Type is ModType.Overwrite)
                 ))
@@ -511,7 +571,7 @@ namespace AIHelper.Manage.Functions
                 var urlMatch = Regex.Match(url, $@"(https?:\/\/){github.Url}\/([^\/]+)\/([^\/]+)", RegexOptions.IgnoreCase);
                 var infoData = new UpdateInfoData(mod)
                 {
-                    ToolTip = ttip
+                    ToolTip = _toolTip
                 };
 
                 if (!updateInfoIsEmpty && updateInfo.StartsWith(github.InfoId))
@@ -550,180 +610,22 @@ namespace AIHelper.Manage.Functions
                     continue;
                 }
 
-                var currentModFlowPanel = new FlowLayoutPanel
-                {
-                    //Dock = DockStyle.Fill,
-                    FlowDirection = FlowDirection.LeftToRight,
-                    AutoScroll = true,
-                    Size = new System.Drawing.Size(10, 10),
-                    Margin = new Padding(10),
-                    BorderStyle = BorderStyle.Fixed3D,
-                };
-                var mnameLabel = new Label
-                {
-                    AutoSize = true,
-                    Text = $"{T._("Name")}: {infoData.ModName}",
-                    Size = new System.Drawing.Size(100, _elHeight * 3),
-                    Margin = new Padding(0),
-                };
-                infoData.ToolTip.SetToolTip(mnameLabel, T._("Mod dir name"));
-                currentModFlowPanel.Controls.Add(mnameLabel);
-                var mnameWidth = mnameLabel.Width + (mnameLabel.Margin.Horizontal * 2);
-                var mnameHeight = mnameLabel.Height + (mnameLabel.Margin.Vertical * 2);
-                currentModFlowPanel.Size = new System.Drawing.Size
-                        (mnameWidth > currentModFlowPanel.Width ? mnameWidth : currentModFlowPanel.Width
-                        , mnameHeight > currentModFlowPanel.Height ? mnameHeight : currentModFlowPanel.Height
-                        );
+                var modInfoBuild = new ModInfoBuild(infoData, _toolTip, _elHeight, WriteValue);
 
-                var githubDataFlowPanel = new FlowLayoutPanel
-                {
-                    //Dock = DockStyle.Fill,
-                    FlowDirection = FlowDirection.TopDown,
-                    AutoScroll = true,
-                    Size = new System.Drawing.Size(10, 10),
-                    Margin = new Padding(0),
-                    BorderStyle = BorderStyle.Fixed3D,
-                };
+                _modInfoBuilds.Add(modInfoBuild);
+                _updateInfoDatas.Add(infoData);
+                modsListFlowPanel.Controls.Add(modInfoBuild.Control);
 
-                AddGithubData(githubDataFlowPanel, infoData);
-
-                AddButtons(githubDataFlowPanel, infoData);
-
-                githubDataFlowPanel.Size = new System.Drawing.Size(githubDataFlowPanel.Width + 10, githubDataFlowPanel.Height + 15);
-                currentModFlowPanel.Size = new System.Drawing.Size
-                    (
-                    currentModFlowPanel.Width + githubDataFlowPanel.Width + 15
-                    , currentModFlowPanel.Height + githubDataFlowPanel.Height + 15
-                    );
-                currentModFlowPanel.Size = new System.Drawing.Size(currentModFlowPanel.Width + 15, 300 /*currentModFlowPanel.Height + 15*/);
-
-                currentModFlowPanel.Controls.Add(githubDataFlowPanel);
-                modsListFlowPanel.Controls.Add(currentModFlowPanel);
-
-                //var curModFlpWidth = currentModFlowPanel.Width + (currentModFlowPanel.Margin.Horizontal * 2);
-                //var curModFlpHeight = currentModFlowPanel.Height + (currentModFlowPanel.Margin.Vertical * 2);
-                //modsListFlowPanel.Size = new System.Drawing.Size
-                //    (
-                //    curModFlpWidth > modsListFlowPanel.Width ? curModFlpWidth : modsListFlowPanel.Width
-                //    , curModFlpHeight > modsListFlowPanel.Height ? curModFlpHeight : modsListFlowPanel.Height
-                //    );
-
-                var curModFlpWidth = currentModFlowPanel.Width + (currentModFlowPanel.Margin.Horizontal * 2);
-                var curModFlpHeight = currentModFlowPanel.Height + (currentModFlowPanel.Margin.Vertical * 2);
+                var curModFlpWidth = modInfoBuild.Control.Width + (modInfoBuild.Control.Margin.Horizontal * 2);
+                var curModFlpHeight = modInfoBuild.Control.Height + (modInfoBuild.Control.Margin.Vertical * 2);
                 f.Size = new System.Drawing.Size
                     (
                     curModFlpWidth > f.Width ? curModFlpWidth : f.Width
                     , curModFlpHeight > f.Height ? curModFlpHeight : f.Height
                     );
-
-                _updateInfoDatas.Add(infoData);
             }
 
             ThemesLoader.SetTheme(ManageSettings.CurrentTheme, f);
-        }
-
-        private void AddGithubData(FlowLayoutPanel githubDataFlowPanel, UpdateInfoData infoData)
-        {
-            var repNameLabel = new Label
-            {
-                //AutoSize = true,
-                Text = "Github",
-                Size = new System.Drawing.Size(100, _elHeight * 3),
-                Margin = new Padding(0),
-            };
-            githubDataFlowPanel.Controls.Add(repNameLabel);
-            var mnameWidth = repNameLabel.Width + (repNameLabel.Margin.Horizontal * 2);
-            var mnameHeight = repNameLabel.Height + (repNameLabel.Margin.Vertical * 2);
-            githubDataFlowPanel.Size = new System.Drawing.Size
-                    (mnameWidth > githubDataFlowPanel.Width ? mnameWidth : githubDataFlowPanel.Width
-                    , mnameHeight > githubDataFlowPanel.Height ? mnameHeight : githubDataFlowPanel.Height
-                    );
-            foreach (var propertyInfo in infoData.GitInfo.GetType().GetProperties())
-            {
-                if (propertyInfo.Name == nameof(infoData.GitInfo.Site)) continue;
-                if (propertyInfo.Name == nameof(infoData.GitInfo.Strings)) continue;
-                if (propertyInfo.Name == nameof(infoData.GitInfo.INI)) continue;
-                if (!propertyInfo.CanWrite) continue;
-
-                var propertyType = propertyInfo.GetMethod.ReturnType;
-
-                if (propertyType == typeof(string))
-                {
-                    var thePropertyFlowPanel = new FlowLayoutPanel
-                    {
-                        //Dock = DockStyle.Fill,
-                        FlowDirection = FlowDirection.LeftToRight,
-                        //AutoScroll = true,
-                        //Size = new System.Drawing.Size(300, 20),
-                        //AutoSize = true,
-                        Margin = new Padding(0)
-                    };
-                    var l = new Label
-                    {
-                        //AutoSize = true,
-                        Text = infoData.GitInfo.Strings[propertyInfo.Name].t + ":",
-                        Size = new System.Drawing.Size(150, _elHeight),
-                        Margin = new Padding(0),
-                    };
-                    var tb = new TextBox
-                    {
-                        //AutoSize = true,
-                        Size = new System.Drawing.Size(200, _elHeight),
-                        Margin = new Padding(0),
-                    };
-                    tb.DataBindings.Add(new Binding("Text", infoData, $"{nameof(infoData.GitInfo)}.{propertyInfo.Name}", true, DataSourceUpdateMode.OnPropertyChanged));
-                    tb.TextChanged += new System.EventHandler((o, e) => { WriteValue(tb, infoData); });
-
-                    thePropertyFlowPanel.Controls.Add(l);
-                    thePropertyFlowPanel.Controls.Add(tb);
-
-                    infoData.ToolTip.SetToolTip(l, infoData.GitInfo.Strings[propertyInfo.Name].d);
-                    infoData.ToolTip.SetToolTip(tb, infoData.GitInfo.Strings[propertyInfo.Name].d);
-
-                    var lWidth = l.Width + (l.Margin.Horizontal * 2);
-                    var lHeight = l.Height + (l.Margin.Vertical * 2);
-                    var tbWidth = tb.Width + (tb.Margin.Horizontal * 2);
-                    var tbHeight = tb.Height + (tb.Margin.Vertical * 2);
-                    var ltbWidth = lWidth + tbWidth;
-                    var ltbHeight = lHeight + tbHeight;
-                    thePropertyFlowPanel.Size = new System.Drawing.Size(ltbWidth, ltbHeight);
-
-                    githubDataFlowPanel.Controls.Add(thePropertyFlowPanel);
-
-                    var thePropertyFlowPanelWidth = thePropertyFlowPanel.Width + (thePropertyFlowPanel.Margin.Horizontal * 2);
-                    var thePropertyFlowPanelHeight = thePropertyFlowPanel.Height + (thePropertyFlowPanel.Margin.Vertical * 2);
-                    githubDataFlowPanel.Size = new System.Drawing.Size
-                        (
-                        thePropertyFlowPanelWidth > githubDataFlowPanel.Width ? thePropertyFlowPanelWidth : githubDataFlowPanel.Width
-                        , githubDataFlowPanel.Height + thePropertyFlowPanelHeight
-                        );
-                }
-                else if (propertyType == typeof(bool))
-                {
-                    var cb = new CheckBox
-                    {
-                        //AutoSize = true,
-                        Text = infoData.GitInfo.Strings[propertyInfo.Name].t,
-                        Size = new System.Drawing.Size(300, _elHeight + 10),
-                        Margin = new Padding(0)
-                    };
-                    cb.DataBindings.Add(new Binding("Checked", infoData, $"{nameof(infoData.GitInfo)}.{propertyInfo.Name}", true, DataSourceUpdateMode.OnPropertyChanged));
-                    cb.CheckedChanged += new System.EventHandler((o, e) => { WriteValue(cb, infoData); });
-
-                    var lWidth = cb.Width + (cb.Margin.Horizontal * 2);
-                    var lHeight = cb.Height + (cb.Margin.Vertical * 2);
-
-                    githubDataFlowPanel.Controls.Add(cb);
-                    githubDataFlowPanel.Size = new System.Drawing.Size
-                        (
-                        lWidth > githubDataFlowPanel.Width ? lWidth : githubDataFlowPanel.Width
-                        , githubDataFlowPanel.Height + lHeight
-                        );
-
-                    infoData.ToolTip.SetToolTip(cb, infoData.GitInfo.Strings[propertyInfo.Name].d);
-                }
-                else continue;
-            }
         }
 
         private void WriteValue(Control cb, UpdateInfoData infoData)
@@ -742,43 +644,242 @@ namespace AIHelper.Manage.Functions
             });
         }
 
-        private void AddButtons(FlowLayoutPanel currentModFlowPanel, UpdateInfoData infoData)
+        /// <summary>
+        /// Builds the UI block of a single mod github info and keeps it together
+        /// with the text used to filter it.
+        /// </summary>
+        private class ModInfoBuild
         {
-            var buttonsFlp = new FlowLayoutPanel
-            {
-                FlowDirection = FlowDirection.LeftToRight,
-                Margin = new Padding(0),
-                BorderStyle = BorderStyle.Fixed3D,
-            };
+            private readonly UpdateInfoData _infoData;
+            private readonly ToolTip _toolTip;
+            private readonly int _elHeight;
+            private readonly Action<Control, UpdateInfoData> _writeValue;
 
-            foreach (var buttonData in new IModUpdateInfoButton[2]
+            public ModInfoBuild(UpdateInfoData infoData, ToolTip toolTip, int elHeight, Action<Control, UpdateInfoData> writeValue)
             {
-                new OpenWebPage(),
-                new OpenModDir(),
-            })
+                _infoData = infoData;
+                _toolTip = toolTip;
+                _elHeight = elHeight;
+                _writeValue = writeValue;
+
+                Control = Build();
+            }
+
+            /// <summary>The control element with all added mod info elements.</summary>
+            public Control Control { get; }
+
+            public UpdateInfoData InfoData => _infoData;
+
+            /// <summary>
+            /// Getter-only text used to filter the mod: merged "Mod dir name",
+            /// "url", github "Owner" and github "repository".
+            /// </summary>
+            public string Filter =>
+                string.Join(" ", new[] { _infoData.ModName, Url, _infoData.GitInfo.Owner, _infoData.GitInfo.Repository });
+
+            private string Url
             {
-                var dirPath = infoData.Mod.Path;
-                var openWebPageButton = new Button()
+                get
+                {
+                    var site = _infoData.GitInfo.Site;
+                    if (string.IsNullOrWhiteSpace(site)) site = "github.com";
+                    if (!site.StartsWith("http", System.StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        site = "https://" + site;
+                    }
+
+                    return $"{site}/{_infoData.GitInfo.Owner}/{_infoData.GitInfo.Repository}";
+                }
+            }
+
+            private FlowLayoutPanel Build()
+            {
+                var currentModFlowPanel = new FlowLayoutPanel
+                {
+                    FlowDirection = FlowDirection.LeftToRight,
+                    AutoScroll = true,
+                    Size = new System.Drawing.Size(10, 10),
+                    Margin = new Padding(10),
+                    BorderStyle = BorderStyle.Fixed3D,
+                };
+
+                var mnameLabel = new Label
                 {
                     AutoSize = true,
-                    Size = new System.Drawing.Size(40, _elHeight),
-                    Text = buttonData.Text,
+                    Text = $"{T._("Name")}: {_infoData.ModName}",
+                    Size = new System.Drawing.Size(100, _elHeight * 3),
+                    Margin = new Padding(0),
                 };
-                infoData.ToolTip.SetToolTip(openWebPageButton, buttonData.Description);
-                openWebPageButton.Click += new System.EventHandler((o, e) =>
-                {
-                    Process.Start(buttonData.GetProcessStartTarget(infoData));
-                });
-                buttonsFlp.Controls.Add(openWebPageButton);
-                currentModFlowPanel.Controls.Add(buttonsFlp);
+                _toolTip.SetToolTip(mnameLabel, T._("Mod dir name"));
+                currentModFlowPanel.Controls.Add(mnameLabel);
 
-                var buttonsFlpWidth = buttonsFlp.Width + (buttonsFlp.Margin.Horizontal * 2);
-                var buttonsFlpHeight = buttonsFlp.Height + (buttonsFlp.Margin.Vertical * 2);
+                var mnameWidth = mnameLabel.Width + (mnameLabel.Margin.Horizontal * 2);
+                var mnameHeight = mnameLabel.Height + (mnameLabel.Margin.Vertical * 2);
+                currentModFlowPanel.Size = new System.Drawing.Size
+                        (mnameWidth > currentModFlowPanel.Width ? mnameWidth : currentModFlowPanel.Width
+                        , mnameHeight > currentModFlowPanel.Height ? mnameHeight : currentModFlowPanel.Height
+                        );
+
+                var githubDataFlowPanel = new FlowLayoutPanel
+                {
+                    FlowDirection = FlowDirection.TopDown,
+                    AutoScroll = true,
+                    Size = new System.Drawing.Size(10, 10),
+                    Margin = new Padding(0),
+                    BorderStyle = BorderStyle.Fixed3D,
+                };
+
+                AddGithubData(githubDataFlowPanel);
+                AddButtons(githubDataFlowPanel);
+
+                githubDataFlowPanel.Size = new System.Drawing.Size(githubDataFlowPanel.Width + 10, githubDataFlowPanel.Height + 15);
                 currentModFlowPanel.Size = new System.Drawing.Size
                     (
-                    buttonsFlpWidth > currentModFlowPanel.Width ? buttonsFlpWidth : currentModFlowPanel.Width
-                    , currentModFlowPanel.Height + buttonsFlpHeight
+                    currentModFlowPanel.Width + githubDataFlowPanel.Width + 15
+                    , currentModFlowPanel.Height + githubDataFlowPanel.Height + 15
                     );
+                currentModFlowPanel.Size = new System.Drawing.Size(currentModFlowPanel.Width + 15, 300);
+
+                currentModFlowPanel.Controls.Add(githubDataFlowPanel);
+
+                return currentModFlowPanel;
+            }
+
+            private void AddGithubData(FlowLayoutPanel githubDataFlowPanel)
+            {
+                var repNameLabel = new Label
+                {
+                    Text = "Github",
+                    Size = new System.Drawing.Size(100, _elHeight * 3),
+                    Margin = new Padding(0),
+                };
+                githubDataFlowPanel.Controls.Add(repNameLabel);
+                var mnameWidth = repNameLabel.Width + (repNameLabel.Margin.Horizontal * 2);
+                var mnameHeight = repNameLabel.Height + (repNameLabel.Margin.Vertical * 2);
+                githubDataFlowPanel.Size = new System.Drawing.Size
+                        (mnameWidth > githubDataFlowPanel.Width ? mnameWidth : githubDataFlowPanel.Width
+                        , mnameHeight > githubDataFlowPanel.Height ? mnameHeight : githubDataFlowPanel.Height
+                        );
+
+                foreach (var propertyInfo in _infoData.GitInfo.GetType().GetProperties())
+                {
+                    if (propertyInfo.Name == nameof(_infoData.GitInfo.Site)) continue;
+                    if (propertyInfo.Name == nameof(_infoData.GitInfo.Strings)) continue;
+                    if (propertyInfo.Name == nameof(_infoData.GitInfo.INI)) continue;
+                    if (!propertyInfo.CanWrite) continue;
+
+                    var propertyType = propertyInfo.GetMethod.ReturnType;
+
+                    if (propertyType == typeof(string))
+                    {
+                        var thePropertyFlowPanel = new FlowLayoutPanel
+                        {
+                            FlowDirection = FlowDirection.LeftToRight,
+                            Margin = new Padding(0)
+                        };
+                        var l = new Label
+                        {
+                            Text = _infoData.GitInfo.Strings[propertyInfo.Name].t + ":",
+                            Size = new System.Drawing.Size(150, _elHeight),
+                            Margin = new Padding(0),
+                        };
+                        var tb = new TextBox
+                        {
+                            Size = new System.Drawing.Size(200, _elHeight),
+                            Margin = new Padding(0),
+                        };
+                        tb.DataBindings.Add(new Binding("Text", _infoData, $"{nameof(_infoData.GitInfo)}.{propertyInfo.Name}", true, DataSourceUpdateMode.OnPropertyChanged));
+                        tb.TextChanged += (o, e) => _writeValue(tb, _infoData);
+
+                        thePropertyFlowPanel.Controls.Add(l);
+                        thePropertyFlowPanel.Controls.Add(tb);
+
+                        _toolTip.SetToolTip(l, _infoData.GitInfo.Strings[propertyInfo.Name].d);
+                        _toolTip.SetToolTip(tb, _infoData.GitInfo.Strings[propertyInfo.Name].d);
+
+                        var lWidth = l.Width + (l.Margin.Horizontal * 2);
+                        var lHeight = l.Height + (l.Margin.Vertical * 2);
+                        var tbWidth = tb.Width + (tb.Margin.Horizontal * 2);
+                        var tbHeight = tb.Height + (tb.Margin.Vertical * 2);
+                        var ltbWidth = lWidth + tbWidth;
+                        var ltbHeight = lHeight + tbHeight;
+                        thePropertyFlowPanel.Size = new System.Drawing.Size(ltbWidth, ltbHeight);
+
+                        githubDataFlowPanel.Controls.Add(thePropertyFlowPanel);
+
+                        var thePropertyFlowPanelWidth = thePropertyFlowPanel.Width + (thePropertyFlowPanel.Margin.Horizontal * 2);
+                        var thePropertyFlowPanelHeight = thePropertyFlowPanel.Height + (thePropertyFlowPanel.Margin.Vertical * 2);
+                        githubDataFlowPanel.Size = new System.Drawing.Size
+                            (
+                            thePropertyFlowPanelWidth > githubDataFlowPanel.Width ? thePropertyFlowPanelWidth : githubDataFlowPanel.Width
+                            , githubDataFlowPanel.Height + thePropertyFlowPanelHeight
+                            );
+                    }
+                    else if (propertyType == typeof(bool))
+                    {
+                        var cb = new CheckBox
+                        {
+                            Text = _infoData.GitInfo.Strings[propertyInfo.Name].t,
+                            Size = new System.Drawing.Size(300, _elHeight + 10),
+                            Margin = new Padding(0)
+                        };
+                        cb.DataBindings.Add(new Binding("Checked", _infoData, $"{nameof(_infoData.GitInfo)}.{propertyInfo.Name}", true, DataSourceUpdateMode.OnPropertyChanged));
+                        cb.CheckedChanged += (o, e) => _writeValue(cb, _infoData);
+
+                        var lWidth = cb.Width + (cb.Margin.Horizontal * 2);
+                        var lHeight = cb.Height + (cb.Margin.Vertical * 2);
+
+                        githubDataFlowPanel.Controls.Add(cb);
+                        githubDataFlowPanel.Size = new System.Drawing.Size
+                            (
+                            lWidth > githubDataFlowPanel.Width ? lWidth : githubDataFlowPanel.Width
+                            , githubDataFlowPanel.Height + lHeight
+                            );
+
+                        _toolTip.SetToolTip(cb, _infoData.GitInfo.Strings[propertyInfo.Name].d);
+                    }
+                    else continue;
+                }
+            }
+
+            private void AddButtons(FlowLayoutPanel currentModFlowPanel)
+            {
+                var buttonsFlp = new FlowLayoutPanel
+                {
+                    FlowDirection = FlowDirection.LeftToRight,
+                    Margin = new Padding(0),
+                    BorderStyle = BorderStyle.Fixed3D,
+                };
+
+                foreach (var buttonData in new IModUpdateInfoButton[2]
+                {
+                new OpenWebPage(),
+                new OpenModDir(),
+                })
+                {
+                    var openWebPageButton = new Button()
+                    {
+                        AutoSize = true,
+                        Size = new System.Drawing.Size(40, _elHeight),
+                        Text = buttonData.Text,
+                    };
+                    _toolTip.SetToolTip(openWebPageButton, buttonData.Description);
+                    openWebPageButton.Click += (o, e) =>
+                    {
+                        Process.Start(buttonData.GetProcessStartTarget(_infoData));
+                    };
+                    buttonsFlp.Controls.Add(openWebPageButton);
+
+                    var buttonsFlpWidth = buttonsFlp.Width + (buttonsFlp.Margin.Horizontal * 2);
+                    var buttonsFlpHeight = buttonsFlp.Height + (buttonsFlp.Margin.Vertical * 2);
+                    currentModFlowPanel.Size = new System.Drawing.Size
+                        (
+                        buttonsFlpWidth > currentModFlowPanel.Width ? buttonsFlpWidth : currentModFlowPanel.Width
+                        , currentModFlowPanel.Height + buttonsFlpHeight
+                        );
+                }
+
+                currentModFlowPanel.Controls.Add(buttonsFlp);
             }
         }
 
@@ -841,13 +942,13 @@ namespace AIHelper.Manage.Functions
             public bool VersionFromFile { get; set; } = false;
 
             internal Dictionary<string, (string t, string d)> Strings { get; } = new Dictionary<string, (string t, string d)>()
-            {
-                {nameof(Owner), (T._("Owner"), T._("Repository owner")) },
-                {nameof(Repository), (T._("Repository"), T._("Repository name")) },
-                {nameof(FileStartsWith), (T._("File starts with"), T._("File to download starts with. Name part before version.")) },
-                {nameof(FileEndsWith), (T._("File ends with"), T._("File to download ends with. Name part after version. Usually extension here")) },
-                {nameof(VersionFromFile), (T._("Version from file"), T._("Determines if need to search version in file name.")) },
-            };
+        {
+            {nameof(Owner), (T._("Owner"), T._("Repository owner")) },
+            {nameof(Repository), (T._("Repository"), T._("Repository name")) },
+            {nameof(FileStartsWith), (T._("File starts with"), T._("File to download starts with. Name part before version.")) },
+            {nameof(FileEndsWith), (T._("File ends with"), T._("File to download ends with. Name part after version. Usually extension here")) },
+            {nameof(VersionFromFile), (T._("Version from file"), T._("Determines if need to search version in file name.")) },
+        };
 
             public GitUpdateInfoData(ModData mod) { Mod = mod; }
 

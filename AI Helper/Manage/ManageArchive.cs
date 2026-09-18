@@ -1,7 +1,7 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using SharpCompress.Archives;
 using SharpCompress.Archives.Rar;
 using SharpCompress.Archives.SevenZip;
@@ -11,13 +11,17 @@ namespace AIHelper.Manage
 {
     class ManageArchive
     {
+        static readonly Logger _log = LogManager.GetCurrentClassLogger();
+
+        private const string ZipExtension = ".zip";
+
         public static void UnpackArchivesToSubfoldersWithSameName(string dirForSearch, string extension)
         {
-            if (dirForSearch.Length == 0 || extension.Length == 0) return;
+            if (string.IsNullOrWhiteSpace(dirForSearch) || string.IsNullOrWhiteSpace(extension)) return;
 
-            if (extension.Substring(0, 1) != ".") extension = "." + extension;
+            if (extension[0] != '.') extension = "." + extension;
 
-            if (extension.Length == 0 || !Directory.Exists(dirForSearch)) return;
+            if (!Directory.Exists(dirForSearch)) return;
 
             foreach (var file in Directory.GetFiles(dirForSearch, "*" + extension, SearchOption.AllDirectories))
             {
@@ -26,7 +30,7 @@ namespace AIHelper.Manage
 
                 try
                 {
-                    if (string.Equals(extension, "zip", StringComparison.InvariantCultureIgnoreCase))
+                    if (string.Equals(extension, ZipExtension, StringComparison.InvariantCultureIgnoreCase))
                     {
                         using (ZipArchive archive = ZipFile.OpenRead(file)) archive.ExtractToDirectory(targetDir);
                     }
@@ -37,9 +41,10 @@ namespace AIHelper.Manage
                     //File.Delete(file);
                     File.Move(file, file + ".Extracted" + ManageSettings.DateTimeBasedSuffix);
                 }
-                catch
+                catch (Exception ex)
                 {
                     //if decompression failed
+                    _log.Warn("Failed to unpack the archive " + file + ". Error:\r\n" + ex.Message);
                 }
             }
         }
@@ -54,7 +59,7 @@ namespace AIHelper.Manage
                 // We count only named (i.e. that are with files) entries
                 foreach (var entry in inputArchive.Entries) if (!string.IsNullOrEmpty(entry.Name)) count++;
             }
-            else if (zipFilePath.Length > 0)
+            else if (!string.IsNullOrWhiteSpace(zipFilePath))
             {
                 using (ZipArchive archive = ZipFile.Open(zipFilePath, ZipArchiveMode.Read))
                 {
@@ -72,7 +77,7 @@ namespace AIHelper.Manage
 
             var ext = Path.GetExtension(zipmodPath);
             if (!string.Equals(ext, ".zipmod", StringComparison.InvariantCultureIgnoreCase)
-                && !string.Equals(ext, ".zip", StringComparison.InvariantCultureIgnoreCase))
+                && !string.Equals(ext, ZipExtension, StringComparison.InvariantCultureIgnoreCase))
             {
                 return string.Empty;
             }
@@ -90,8 +95,9 @@ namespace AIHelper.Manage
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                _log.Warn("Failed to read zipmod guid from " + zipmodPath + ". Error:\r\n" + ex.Message);
             }
 
             return string.Empty;

@@ -96,7 +96,11 @@ namespace AIHelper.Manage.ModeSwitch
                             {
                                 Directory.CreateDirectory(path);
                             }
-                            catch { }
+                            catch (Exception ex)
+                            {
+                                //not critical: the empty dir existed before the switch, failing to restore it is reported only
+                                _log.Warn("Failed to restore the empty dir '" + path + "'. Error:\r\n" + ex);
+                            }
                         }
                     }
                 }
@@ -225,7 +229,6 @@ namespace AIHelper.Manage.ModeSwitch
                 try
                 {
                     //если zipmod guid присутствует в сохраненных, переместить его на место удаленного
-                    string ext;
                     string guid;
                     if ((guid = IsZipmodCanBeMovedByGUID(file)).Length > 0)
                     {
@@ -320,10 +323,13 @@ namespace AIHelper.Manage.ModeSwitch
                 return;
             }
 
-            Parallel.ForEach(filesWhichAlreadyHaveSameDestFileInMods.ToString().SplitToLines(), fromToPathsLine =>
+            //NOTE: must stay sequential. Every record writes the same NOTE!.txt and meta.ini of the new mod
+            //and does a read-modify-write of modlist.txt, so running this in parallel corrupts the mod list
+            //and can throw IOException on the shared note file.
+            foreach (var fromToPathsLine in filesWhichAlreadyHaveSameDestFileInMods.ToString().SplitToLines())
             {
                 MoveTheExistFileInNewMod(fromToPathsLine);
-            });
+            }
         }
 
         private void MoveTheExistFileInNewMod(string fromToPathsLine)
@@ -346,11 +352,7 @@ namespace AIHelper.Manage.ModeSwitch
             }
             else
             {
-                while (Path.GetDirectoryName(modName) != ManageSettings.CurrentGameModsDirPath)
-                {
-                    modName = Path.GetDirectoryName(modName);
-                }
-                modName = Path.GetFileName(modName);
+                modName = GetModFolderName(targetFolderPath);
             }
 
             //Новое имя для новой целевой папки мода
@@ -441,7 +443,7 @@ namespace AIHelper.Manage.ModeSwitch
             if (filePathInModsExists)
             {
                 //если в Mods на месте планируемого для перемещения назад в Mods файла появился новый файл, то записать информацию о нем в новый мод, чтобы перенести его в новый мод
-                filesWhichAlreadyHaveSameDestFileInMods.AppendLine(movePaths[1] + operationsSplitStringBase + movePaths[0]);
+                AppendLineThreadSafe(filesWhichAlreadyHaveSameDestFileInMods, movePaths[1] + operationsSplitStringBase + movePaths[0]);
                 filesWhichAlreadyHaveSameDestFileInModsIsNotEmpty = true;
 
                 return;
@@ -456,7 +458,7 @@ namespace AIHelper.Manage.ModeSwitch
                     movePaths[1].MoveTo(movePaths[0]);
 
                     //запись выполненной операции для удаления из общего списка в случае ошибки при переключении из обычного режима
-                    operationsMade.AppendLine(operation);
+                    AppendLineThreadSafe(operationsMade, operation);
 
                     MoveBonemodForCards(movePaths);
                 }
@@ -492,16 +494,50 @@ namespace AIHelper.Manage.ModeSwitch
 
                 (movePaths[1] + ".bonemod.txt").MoveTo(movePaths[0] + ".bonemod.txt");
                 //запись выполненной операции для удаления из общего списка в случае ошибки при переключении из обычного режима
-                operationsMade.AppendLine(movePaths[1] + ".bonemod.txt" + operationsSplitStringBase + movePaths[0] + ".bonemod.txt");
+                AppendLineThreadSafe(operationsMade, movePaths[1] + ".bonemod.txt" + operationsSplitStringBase + movePaths[0] + ".bonemod.txt");
             }
             catch (Exception ex)
             {
-                _log.Error("An error occured while file moving." + "MovePaths[0]=" + movePaths[0] + ";MovePaths[1]=" + movePaths[0] + ".error:\r\n" + ex);
+                _log.Error("An error occured while file moving." + "MovePaths[0]=" + movePaths[0] + ";MovePaths[1]=" + movePaths[1] + ".error:\r\n" + ex);
             }
         }
 
-        private bool FillZipModsGUID(Dictionary<string, string> zipmodsGuidList)
+        /// <summary>
+        /// Get the name of the mod folder <paramref name="pathInMods"/> belongs to by walking up to the Mods directory
+        /// </summary>
+        /// <param name="pathInMods">Path of a file or folder inside the Mods directory</param>
+        /// <returns>
+        /// Mod folder name, or an empty string when <paramref name="pathInMods"/> is not inside the Mods directory.
+        /// The caller falls back to a date based mod name in that case, so the file is never lost.
+        /// </returns>
+        private static string GetModFolderName(string pathInMods)
         {
+            var modsDirPath = ManageSettings.CurrentGameModsDirPath;
+            var currentPath = pathInMods;
+
+            while (!string.IsNullOrEmpty(currentPath))
+            {
+                var parentPath = Path.GetDirectoryName(currentPath);
+
+                if (string.IsNullOrEmpty(parentPath))
+                {
+                    // reached the drive root without finding the Mods directory
+                    _log.Warn("Failed to detect the mod folder name for path: " + pathInMods);
+                    return string.Empty;
+                }
+
+                if (string.Equals(parentPath, modsDirPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    return Path.GetFileName(currentPath);
+                }
+
+                currentPath = parentPath;
+            }
+
+            return string.Empty;
+        }
+
+        private bool FillZipModsGUID(Dictionary<string, string> zipmodsGuidList)        {
             if (!File.Exists(ManageSettings.CurrentGameZipmodsGuidListFilePath)) return false;
 
             using (var sr = new StreamReader(ManageSettings.CurrentGameZipmodsGuidListFilePath))

@@ -39,17 +39,17 @@ namespace AIHelper.Manage
             string gameLinksPath = ManageSettings.LinksInfoFilePath;
             if (string.IsNullOrWhiteSpace(gameLinksPath)) return Array.Empty<string>();
 
-            var strings = File.ReadAllLines(gameLinksPath)
-                .Where(line => line.StartsWith(";##", StringComparison.InvariantCulture))
-                .ToArray();
-            foreach (var line in strings)
+            var lines = File.ReadAllLines(gameLinksPath);
+
+            foreach (var line in lines)
             {
-                AddGroupNameFromLine(line, langID, groupNames);
+                if (line.StartsWith(";##", StringComparison.InvariantCulture))
+                {
+                    AddGroupNameFromLine(line, langID, groupNames);
+                }
             }
 
-            string[] links = File.ReadAllLines(gameLinksPath).Where(line => !line.StartsWith(";", StringComparison.InvariantCulture)).ToArray();
-
-            return links;
+            return lines.Where(line => !line.StartsWith(";", StringComparison.InvariantCulture)).ToArray();
         }
 
         private static void AddGroupNameFromLine(string line, string langID, Dictionary<string, string> groupNames)
@@ -107,7 +107,7 @@ namespace AIHelper.Manage
                     }
 
                     descriptonLink.Add(ManageSettings.UpdateReport.HtmlReportCategoryItemTemplate.Replace("%link%", link[1])
-                        .Replace("%text%", new Uri(link[1]).Host.ToUpperInvariant())
+                        .Replace("%text%", GetHostName(link[1]).ToUpperInvariant())
                         .Replace("%description%", TryGetTranslation(link[0], langID))
                         );
 
@@ -135,7 +135,7 @@ namespace AIHelper.Manage
             }
             catch (Exception e)
             {
-                _log.Debug("Useful links report: Failed to open html. Error: {1}", e.Message);
+                _log.Debug("Useful links report: Failed to open html. Error: {0}", e.Message);
                 return false;
             }
 
@@ -177,7 +177,24 @@ namespace AIHelper.Manage
             }
             catch (Exception e)
             {
-                _log.Debug("Useful links report: Failed to open txt. Error: {1}", e.Message);
+                _log.Debug("Useful links report: Failed to open txt. Error: {0}", e.Message);
+            }
+        }
+
+        /// <summary>
+        /// returns host name of the <paramref name="url"/> or the url itself when it is not valid url
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        private static string GetHostName(string url)
+        {
+            try
+            {
+                return new Uri(url).Host;
+            }
+            catch (UriFormatException)
+            {
+                return url;
             }
         }
 
@@ -196,11 +213,11 @@ namespace AIHelper.Manage
         /// <returns></returns>
         private static string TryGetTranslation(this string str, string languageID)
         {
-            var o = Regex.Match(str, "^([^<]+)");
             var t = Regex.Match(str, languageID + "([^<]+)");
-            if (!t.Success) return o.Groups[1].Value;
+            if (t.Success) return t.Groups[1].Value;
 
-            return t.Groups[1].Value;
+            var o = Regex.Match(str, "^([^<]+)");
+            return o.Success ? o.Groups[1].Value : str;
         }
     }
 }

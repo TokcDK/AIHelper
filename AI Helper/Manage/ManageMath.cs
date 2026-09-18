@@ -29,11 +29,17 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="w">The width.</param>
         /// <param name="h">The height.</param>
-        /// <returns>The aspect ratio in the format "width:height", "16:9" for example.</returns>
-        internal static object GetAspectRatio(int w, int h)
+        /// <returns>The aspect ratio in the format "width:height", "16:9" for example. Returns "width:height" of the input values when ratio can not be calculated.</returns>
+        internal static string GetAspectRatio(int w, int h)
         {
+            if (w <= 0 || h <= 0)
+            {
+                // ratio is undefined for not positive values
+                return $"{w}:{h}";
+            }
+
             int gcd = GCD(w, h);
-            return $"{w / gcd}:{h / gcd}";
+            return gcd > 0 ? $"{w / gcd}:{h / gcd}" : $"{w}:{h}";
         }
 
         /// <summary>

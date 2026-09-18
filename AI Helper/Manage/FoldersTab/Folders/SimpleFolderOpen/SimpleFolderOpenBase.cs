@@ -24,7 +24,9 @@ namespace AIHelper.Manage.FoldersTab.Folders
         /// </summary>
         public void OpenDir()
         {
-            if (!Directory.Exists(ManageSettings.CurrentGameDataDirPath)) return;
+            //guard the directory that is actually opened: DirPath is overridden per button
+            //(Mods, Overwrite, MO dir, 2MO dir, user files) and has nothing to do with the Data dir
+            if (!Directory.Exists(DirPath)) return;
 
             Process.Start("explorer.exe", DirPath);
         }

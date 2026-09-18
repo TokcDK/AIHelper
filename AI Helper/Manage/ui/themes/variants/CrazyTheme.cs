@@ -34,6 +34,7 @@ namespace AIHelper.Manage.ui.themes
         }.AsReadOnly();
 
         readonly Random _rnd = new Random();
-        Color RandomColor => Color.FromArgb(255, _rnd.Next(0, 255), _rnd.Next(0, 255), _rnd.Next(0, 255));
+        //Next(0, 256): Next's upper bound is exclusive, so 255 was never produced and no channel could be fully bright
+        Color RandomColor => Color.FromArgb(255, _rnd.Next(0, 256), _rnd.Next(0, 256), _rnd.Next(0, 256));
     }
 }

@@ -113,6 +113,39 @@ namespace AIHelper.Manage.ModeSwitch
 
         protected bool MOmode { get => ManageSettings.IsMoMode; set => ManageSettings.IsMoMode = value; }
 
+        /// <summary>
+        /// Locker for <see cref="AppendLineThreadSafe"/>. The mode switch parsers run inside
+        /// <see cref="System.Threading.Tasks.Parallel"/>, so any shared state they touch must be locked.
+        /// </summary>
+        private readonly object _sharedStateLocker = new object();
+
+        /// <summary>
+        /// Append <paramref name="line"/> to <paramref name="target"/> in a thread safe way.
+        /// <see cref="StringBuilder"/> is not thread safe, so parallel appends can corrupt its content or throw.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="line"></param>
+        protected void AppendLineThreadSafe(StringBuilder target, string line)
+        {
+            lock (_sharedStateLocker)
+            {
+                target.AppendLine(line);
+            }
+        }
+
+        /// <summary>
+        /// Execute <paramref name="action"/> while holding the shared state lock, so a parallel parser
+        /// cannot interleave a read-modify-write cycle on a shared file (for example modlist.txt)
+        /// </summary>
+        /// <param name="action"></param>
+        protected void RunWithSharedStateLock(Action action)
+        {
+            lock (_sharedStateLocker)
+            {
+                action();
+            }
+        }
+
         protected static string operationsSplitStringBase { get => "|MovedTo|"; }
         protected string[] operationsSplitString = new string[1] { operationsSplitStringBase };
 

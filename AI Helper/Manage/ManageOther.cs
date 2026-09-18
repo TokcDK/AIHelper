@@ -17,7 +17,11 @@ namespace AIHelper.Manage
     static class ManageOther
     {
         static readonly Logger _log = LogManager.GetCurrentClassLogger();
-        internal static async void WaitIfGameIsChanging()
+
+        /// <summary>
+        /// Wait while the game is changing or MO ini settings are setting
+        /// </summary>
+        internal static async Task WaitIfGameIsChanging()
         {
             if (!ManageSettings.IsMoMode)
             {
@@ -39,7 +43,8 @@ namespace AIHelper.Manage
 
         public static void CheckBoxChangeColor(CheckBox checkBox)
         {
-            checkBox.ForeColor = checkBox.Checked ? Color.FromArgb(192, 255, 192) : Color.White;
+            // same checked color as for labels to keep the app style
+            checkBox.ForeColor = checkBox.Checked ? ManageLabelExtensions.Checked : Color.White;
         }
 
         public static void AutoShortcutAndRegystry()
@@ -86,7 +91,7 @@ namespace AIHelper.Manage
 
         internal static void SwitchFormMinimizedNormalAll(Form[] forms, bool forceMinimize = false, bool forceMaximize = false)
         {
-            foreach (var form in forms) SwitchFormMinimizedNormal(form);
+            foreach (var form in forms) SwitchFormMinimizedNormal(form, forceMinimize, forceMaximize);
         }
 
         internal static void SwitchFormMinimizedNormal(Form form, bool forceMinimize = false, bool forceMaximize = false)
@@ -94,8 +99,10 @@ namespace AIHelper.Manage
             //http://www.cyberforum.ru/windows-forms/thread31052.html
             if (form == null || form.IsDisposed)
             {
+                return;
             }
-            else if (forceMinimize || form.WindowState == FormWindowState.Normal)
+
+            if (forceMinimize || form.WindowState == FormWindowState.Normal)
             {
                 form.WindowState = FormWindowState.Minimized;
 
@@ -175,14 +182,16 @@ namespace AIHelper.Manage
 
         private static string GetGameDirPath(string pathString)
         {
-            string gameDirPath = "";
             try
             {
-                gameDirPath = Path.GetFullPath(pathString);
+                return Path.GetFullPath(pathString);
             }
-            catch { return ""; } // skip when invalid chars in path
-
-            return gameDirPath;
+            catch (Exception ex)
+            {
+                // skip when invalid chars in path
+                _log.Debug("Invalid game path skipped. Path=" + pathString + "\r\nError:\r\n" + ex.Message);
+                return "";
+            }
         }
 
         private static bool TryAddTheGameIntoGamesList(Type gameType, string gameDirPath, List<GameBase> listOfGameDirs, HashSet<string> added)
@@ -239,21 +248,23 @@ namespace AIHelper.Manage
         private static void CheckAndWriteMOini(string mo, GameBase game, string gameDirPath)
         {
             var moIni = Path.Combine(mo, ManageSettings.MoIniFileName);
-            if (!File.Exists(moIni))
+            if (File.Exists(moIni))
             {
-                File.WriteAllText(moIni, Properties.Resources.defmoini);
-
-                var ini = ManageIni.GetINIFile(moIni);
-
-                // check mo ini game parameters exist
-                ini.SetKey("General", "gameName", game.GetGameName());
-                ini.SetKey("General", "gamePath", "@ByteArray(" + Path.Combine(game.GameDirInfo.Parent.FullName, game.GameDirName).Replace("\\", "\\\\") + ")");
-                ini.SetKey("General", "selected_profile", "@ByteArray(Default)");
-                ini.SetKey("Settings", "mod_directory", Path.Combine(gameDirPath, game.GameDirName, ManageSettings.ModsDirName).Replace("\\", "\\\\"));
-                ini.SetKey("Settings", "download_directory", Path.Combine(gameDirPath, game.GameDirName, "Downloads").Replace("\\", "\\\\"));
-                ini.SetKey("Settings", "download_directory", Path.Combine(gameDirPath, game.GameDirName, ManageSettings.AppModOrganizerDirName, "profiles").Replace("\\", "\\\\"));
-                ini.SetKey("Settings", "download_directory", Path.Combine(gameDirPath, game.GameDirName, ManageSettings.AppModOrganizerDirName, "overwrite").Replace("\\", "\\\\"));
+                return;
             }
+
+            File.WriteAllText(moIni, Properties.Resources.defmoini);
+
+            var ini = ManageIni.GetINIFile(moIni);
+
+            // check mo ini game parameters exist
+            ini.SetKey("General", "gameName", game.GetGameName());
+            ini.SetKey("General", "gamePath", "@ByteArray(" + Path.Combine(game.GameDirInfo.Parent.FullName, game.GameDirName).Replace("\\", "\\\\") + ")");
+            ini.SetKey("General", "selected_profile", "@ByteArray(Default)");
+            ini.SetKey("Settings", "mod_directory", Path.Combine(gameDirPath, ManageSettings.ModsDirName).Replace("\\", "\\\\"));
+            ini.SetKey("Settings", "download_directory", Path.Combine(gameDirPath, "Downloads").Replace("\\", "\\\\"));
+            ini.SetKey("Settings", "profiles_directory", Path.Combine(gameDirPath, ManageSettings.AppModOrganizerDirName, "profiles").Replace("\\", "\\\\"));
+            ini.SetKey("Settings", "overwrite_directory", Path.Combine(gameDirPath, ManageSettings.AppModOrganizerDirName, "overwrite").Replace("\\", "\\\\"));
         }
 
         private static void SortFilesForMO(string gameDirPath)
@@ -284,17 +295,19 @@ namespace AIHelper.Manage
             {
                 if (new FileInfo(txt).Length < 4) continue;
 
-                StreamReader sr = new StreamReader(txt);
-                while (!sr.EndOfStream)
+                using (StreamReader sr = new StreamReader(txt))
                 {
-                    var line = sr.ReadLine();
-                    if (string.IsNullOrWhiteSpace(line)) continue;
-                    if (line.TrimStart().StartsWith(";")) continue;
+                    while (!sr.EndOfStream)
+                    {
+                        var line = sr.ReadLine();
+                        if (string.IsNullOrWhiteSpace(line)) continue;
+                        if (line.TrimStart().StartsWith(";")) continue;
 
-                    var path = Path.GetFullPath(line);
-                    if (!Directory.Exists(path)) continue;
+                        var path = GetGameDirPath(line);
+                        if (string.IsNullOrWhiteSpace(path) || !Directory.Exists(path)) continue;
 
-                    yield return path;
+                        yield return path;
+                    }
                 }
             }
         }
@@ -323,7 +336,7 @@ namespace AIHelper.Manage
                 string userDataDirPath = Path.Combine(dataDirPath, "UserData");
                 Directory.CreateDirectory(userDataDirPath);
                 // create setup.xml file in UserData
-                File.WriteAllText(Path.Combine(userDataDirPath, "setup.xml"), "<?xml version=\"1.0\" encoding=\"utf-16\"?>\\r\\n<Setting>\\r\\n  <Size>1280 x 720 (16 : 9)</Size>\\r\\n  <Width>1280</Width>\\r\\n  <Height>720</Height>\\r\\n  <Quality>2</Quality>\\r\\n  <FullScreen>false</FullScreen>\\r\\n  <Display>0</Display>\\r\\n  <Language>0</Language>\\r\\n</Setting>");
+                File.WriteAllText(Path.Combine(userDataDirPath, "setup.xml"), ManageSettings.DefaultSetupXmlValue);
 
                 // create mods dir
                 string modsDirPath = Path.Combine(newGameDirPath, ManageSettings.ModsDirName);
@@ -349,8 +362,9 @@ namespace AIHelper.Manage
 
                 return dummyExePath;
             }
-            catch
+            catch (Exception ex)
             {
+                _log.Error("Failed to create the dummy game. Error:\r\n" + ex);
                 return "";
             }
         }
@@ -377,29 +391,12 @@ namespace AIHelper.Manage
             string exeName = Path.GetFileNameWithoutExtension(newGameMainExePath);
 
             // check if exe is exe of one of valid games
-            bool invalid = true;
-            foreach (var gameType in Inherited.GetListOfInheritedTypes(typeof(GameBase)))
-            {
-                var game = (GameBase)Activator.CreateInstance(gameType);
-                if (game.GameExeName == exeName
-                    || game.GameExeNameX32 == exeName
-                    || game.GameExeNameVr == exeName
-                    || game.GameStudioExeName == exeName
-                    || game.GameStudioExeNameX32 == exeName
-                    || game.IniSettingsExeName == exeName
-                    )
-                {
-                    invalid = false;
-                    break;
-                }
-            }
-
-            if (invalid) return false;
+            if (!IsKnownGameExe(exeName)) return false;
 
             string gameTxtPath = Path.Combine(ManageSettings.GamesBaseFolderPath, $"{exeName}.txt");
 
             string parentDir = Path.GetDirectoryName(newGameMainExePath);
-            bool isInData = string.Equals(Path.GetFileName(parentDir), "data", StringComparison.InvariantCultureIgnoreCase);
+            bool isInData = string.Equals(Path.GetFileName(parentDir), ManageSettings.DataDirName, StringComparison.InvariantCultureIgnoreCase);
 
             string gamePathToAdd = isInData ? Path.GetDirectoryName(parentDir) : parentDir;
 
@@ -428,6 +425,31 @@ namespace AIHelper.Manage
             return true;
         }
 
+        /// <summary>
+        /// true when exe with the <paramref name="exeName"/> name is main or additional exe of one of the known games
+        /// </summary>
+        /// <param name="exeName"></param>
+        /// <returns></returns>
+        private static bool IsKnownGameExe(string exeName)
+        {
+            foreach (var gameType in Inherited.GetListOfInheritedTypes(typeof(GameBase)))
+            {
+                var game = (GameBase)Activator.CreateInstance(gameType);
+                if (game.GameExeName == exeName
+                    || game.GameExeNameX32 == exeName
+                    || game.GameExeNameVr == exeName
+                    || game.GameStudioExeName == exeName
+                    || game.GameStudioExeNameX32 == exeName
+                    || game.IniSettingsExeName == exeName
+                    )
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public static List<string> GetKnownGames(INIFile ini)
         {
             List<string> list = new List<string>();
@@ -438,11 +460,8 @@ namespace AIHelper.Manage
             if (!string.IsNullOrWhiteSpace(games))
             {
                 var gamesList = games.Split('|');
-                if (gamesList != null && gamesList.Length > 0)
-                {
-                    gamesList = gamesList.Where(p => Directory.Exists(p)).Distinct().ToArray();
-                    foreach (var path in gamesList) list.Add(path);
-                }
+                gamesList = gamesList.Where(p => Directory.Exists(p)).Distinct().ToArray();
+                foreach (var path in gamesList) list.Add(path);
             }
 
             return list;
@@ -509,61 +528,27 @@ namespace AIHelper.Manage
                     }
                 }
 
-                string selected_game;
-                if (ini == null)
-                {
-                    selected_game = "";
-                }
-                else
-                {
-                    selected_game = ini.GetKey(ManageSettings.SettingsIniSectionName, ManageSettings.SelectedGameIniKeyName);
-                    if (string.IsNullOrWhiteSpace(selected_game))
-                    {
-                        var game = ManageSettings.Games.Games[0];
-                        selected_game = game.GameDirName;
-                    }
-                }
+                var games = ManageSettings.Games.Games ?? new List<GameBase>();
 
-                var firstSelectedGame = ManageSettings.Games.Games.FirstOrDefault(g => string.Equals(g.GameDirName, selected_game, StringComparison.InvariantCultureIgnoreCase));
+                // selected game folder name saved in the app ini
+                string selectedGameName = ini == null
+                    ? string.Empty
+                    : ini.GetKey(ManageSettings.SettingsIniSectionName, ManageSettings.SelectedGameIniKeyName);
 
-                if (firstSelectedGame != default)
+                var selectedGame = games.FirstOrDefault(g => string.Equals(g.GameDirName, selectedGameName, StringComparison.InvariantCultureIgnoreCase));
+                if (selectedGame == null && games.Count > 0)
                 {
-                    ManageSettings.Games.Game = firstSelectedGame;
-                }
-                if (ManageSettings.Games.Game == default && ManageSettings.Games?.Games?.Count > 0)
-                {
-                    var game = ManageSettings.Games.Games[0];
-
-                    selected_game = game.GameDirName;
-                    ManageSettings.Games.Game = game;
+                    // select the first game when saved game folder name was not found in the games list
+                    selectedGame = games[0];
                 }
 
-                var bindingSource1 = new BindingSource();
-                bindingSource1.DataSource = ManageSettings.Games.Games;
-                main.CurrentGameComboBox.DataSource = bindingSource1.DataSource;
-                main.CurrentGameComboBox.DisplayMember = "GameDirName";
-                main.CurrentGameComboBox.ValueMember = "GameDirName";
+                if (selectedGame != null) ManageSettings.Games.Game = selectedGame;
 
-                //foreach (var game in ManageSettings.Games.Games)
-                //{
-                //    CurrentGameComboBox.Items.Add(game.GameDirName);
-                //}
-                if (ManageSettings.Games.Games.Count == 1) main.CurrentGameComboBox.Enabled = false;
-
-                //SetSelectedGameIndexAndBasicVariables(ManageSettings.GetCurrentGameIndexByFolderName(
-                //        ManageSettings.Games.Games
-                //        ,
-                //        selected_game
-                //        ));
+                UpdateGamesListUi(main, games);
 
                 ini.SetKey(ManageSettings.SettingsIniSectionName, ManageSettings.KnownGamesIniKeyName, string.Join("|", ManageSettings.KnownGames));
 
-                try
-                {
-                    main.CurrentGameTitleTextBox.Text = ManageSettings.Games.Game.GameDisplayingName;
-                    main.CurrentGameTitleTextBox.Enabled = false;
-                }
-                catch (Exception ex) { _log.Info("Error while game title setup. Set more specific exception there. Error:\r\n" + ex); }
+                SetCurrentGameTitle(main);
             }
             catch (Exception ex)
             {
@@ -572,6 +557,34 @@ namespace AIHelper.Manage
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// update games list controls of the <paramref name="main"/> form
+        /// </summary>
+        /// <param name="main"></param>
+        /// <param name="games"></param>
+        private static void UpdateGamesListUi(MainForm main, List<GameBase> games)
+        {
+            main.CurrentGameComboBox.DataSource = games;
+            main.CurrentGameComboBox.DisplayMember = "GameDirName";
+            main.CurrentGameComboBox.ValueMember = "GameDirName";
+
+            // no reason to switch the game when it is the only one
+            main.CurrentGameComboBox.Enabled = games.Count != 1;
+        }
+
+        /// <summary>
+        /// set current game title in the <paramref name="main"/> form
+        /// </summary>
+        /// <param name="main"></param>
+        private static void SetCurrentGameTitle(MainForm main)
+        {
+            var currentGame = ManageSettings.Games.Game;
+            if (currentGame == null) return;
+
+            main.CurrentGameTitleTextBox.Text = currentGame.GameDisplayingName;
+            main.CurrentGameTitleTextBox.Enabled = false;
         }
 
         public static void SetSelectedGameIndexAndBasicVariables(MainForm main)

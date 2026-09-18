@@ -20,31 +20,35 @@ namespace AIHelper.Manage
 
             GC.Collect();//reduce memory usage before run a program
 
-            Process program = new Process();
-
-            //MessageBox.Show("outdir=" + outdir);
-            program.StartInfo.FileName = fileName;
-
-            if (arguments.Length > 0)
+            using (var program = new Process())
             {
-                program.StartInfo.Arguments = arguments;
+                //MessageBox.Show("outdir=" + outdir);
+                program.StartInfo.FileName = fileName;
+
+                if (arguments.Length > 0)
+                {
+                    program.StartInfo.Arguments = arguments;
+                }
+
+                if (!ManageSettings.IsMoMode|| string.IsNullOrWhiteSpace(program.StartInfo.Arguments))
+                {
+                    program.StartInfo.WorkingDirectory = Path.GetDirectoryName(fileName);
+                }
+
+                // свернуть
+                ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize);
+
+                try
+                {
+                    _ = program.Start();
+                    program.WaitForExit();
+                }
+                finally
+                {
+                    // Показать
+                    ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize);
+                }
             }
-
-            if (!ManageSettings.IsMoMode|| string.IsNullOrWhiteSpace(program.StartInfo.Arguments))
-            {
-                program.StartInfo.WorkingDirectory = Path.GetDirectoryName(fileName);
-            }
-
-            // свернуть
-            ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize);
-
-            _ = program.Start();
-            program.WaitForExit();
-
-            // Показать
-            ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize);
-
-            program.Dispose();
         }
 
         internal static void SimpleRunProcess(string fileName, string arguments = "")
@@ -82,24 +86,32 @@ namespace AIHelper.Manage
 
             foreach (var process in GetProcesses(processName))
             {
-                try
+                // dispose the process handle after use
+                using (process)
                 {
-                    process.Kill();
-                }
-                catch (Exception ex)
-                {
-                    _log.Error("Cant kill process \"" + process.ProcessName + "\" with id" + process.Id + ". Error:\r\n" + ex);
+                    try
+                    {
+                        process.Kill();
+                    }
+                    catch (Exception ex)
+                    {
+                        _log.Error("Cant kill process \"" + process.ProcessName + "\" with id" + process.Id + ". Error:\r\n" + ex);
+                    }
                 }
             }
         }
 
-        internal static (string, string, string) GetGameStudioLaunchExecutionParameters(bool isGame)
+        /// <summary>
+        /// Get exe path and arguments to launch the main game or the studio
+        /// </summary>
+        /// <param name="isGame">Indicates whether to run the main game (true) or the studio (false).</param>
+        /// <param name="isVr">true when the game must be launched in vr mode</param>
+        /// <returns>exe path, arguments and old mo profile name which must be restored after the launch</returns>
+        internal static (string, string, string) GetGameStudioLaunchExecutionParameters(bool isGame, bool isVr)
         {
             string exePath;
             string arguments = string.Empty;
             string oldMOProfileName = string.Empty;
-
-            bool isVr = ManageSettings.CurrentGameIsHaveVr && ManageSettings.MainForm.VRGameCheckBox.Checked;
 
             if (ManageSettings.IsMoMode)
             {
@@ -143,7 +155,9 @@ namespace AIHelper.Manage
 
             await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
-            var (exePath, arguments, oldMOProfileName) = ManageProcess.GetGameStudioLaunchExecutionParameters(isGame);
+            bool isVr = ManageSettings.CurrentGameIsHaveVr && ManageSettings.MainForm.VRGameCheckBox.Checked;
+
+            var (exePath, arguments, oldMOProfileName) = ManageProcess.GetGameStudioLaunchExecutionParameters(isGame, isVr);
 
             ManageProcess.KillProcessesByName(Path.GetFileNameWithoutExtension(exePath));
             ManageProcess.RunProgramAndWaitHidden(exePath, arguments);

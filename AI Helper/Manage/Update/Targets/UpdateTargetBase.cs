@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using NLog;
 
 namespace AIHelper.Manage.Update.Targets
@@ -135,7 +136,10 @@ namespace AIHelper.Manage.Update.Targets
 
                     var modPath = ManageModOrganizer.GetPathInMods(dirinfo.GetSymlinkTarget());
 
-                    if (Path.GetFileName(modPath) != Info.TargetFolderPath.FullName) continue;
+                    //GetPathInMods returns a full path like "<Mods>\<mod name>", so it must be compared
+                    //with FullName. Comparing it against Path.GetFileName(...) was always unequal, which
+                    //silently kept every extra restore path out of RestoreList.
+                    if (!string.Equals(modPath, Info.TargetFolderPath.FullName, StringComparison.OrdinalIgnoreCase)) continue;
 
                     // if parsing mod path is same then add for bak
                     RestoreList.Add(path);
@@ -427,7 +431,11 @@ namespace AIHelper.Manage.Update.Targets
         /// <param name="updatingModDirPath">Folder being updated.</param>
         private bool ShouldRestoreFile(FileInfo file, string oldModBackupDirPath, string updatingModDirPath)
         {
-            if (File.Exists(Path.Combine(updatingModDirPath, file.Name))) return false;
+            //the check must use the file's own target path. Comparing only file.Name against the root of
+            //updatingModDirPath treated any same named file in the root as a collision and skipped restoring
+            //a nested file whose real target path was free.
+            var targetFilePath = file.FullName.Replace(oldModBackupDirPath, updatingModDirPath);
+            if (File.Exists(targetFilePath)) return false;
 
             var isConfigFile = file.Extension == ".ini" || file.Extension == ".cfg";
 
@@ -448,6 +456,12 @@ namespace AIHelper.Manage.Update.Targets
         {
             if (string.IsNullOrWhiteSpace(oldModBackupDirPath)
                 || string.IsNullOrWhiteSpace(updatingModDirPath)) return;
+
+            //same guard as RestoreSomeFiles: MakeBackup can report failure before it ever created the backup
+            //directory, and Directory.GetDirectories below would then throw DirectoryNotFoundException and
+            //abort the whole update pass instead of just failing this one folder
+            if (!Directory.Exists(oldModBackupDirPath)
+                || !Directory.Exists(updatingModDirPath)) return;
 
             // restore old dirs
             foreach (var folder in Directory.GetDirectories(oldModBackupDirPath))
@@ -503,7 +517,10 @@ namespace AIHelper.Manage.Update.Targets
             Directory.CreateDirectory(oldModBackupDirPath);
 
             //backup old dirs
-            foreach (var folderPath in new DirectoryInfo(updatingModDirPath).EnumerateDirectories())
+            //NOTE: materialized, because the loop below moves the entries out of the very directory
+            //being enumerated. Enumerating while moving makes the walk skip entries, which would leave
+            //files out of the backup that the rollback depends on.
+            foreach (var folderPath in new DirectoryInfo(updatingModDirPath).EnumerateDirectories().ToArray())
             {
                 try
                 {
@@ -517,7 +534,10 @@ namespace AIHelper.Manage.Update.Targets
                         folder = new DirectoryInfo(folder.GetSymlinkTarget());
                     }
 
-                    var backupPath = new DirectoryInfo(folder.FullName.Replace(updatingModDirPath, oldModBackupDirPath));
+                    //The backup path must come from the entry's own path. Using folder.FullName here would
+                    //use the resolved symlink target, which lives outside updatingModDirPath: the Replace
+                    //would not match and the copy would target its own source.
+                    var backupPath = new DirectoryInfo(folderPath.FullName.Replace(updatingModDirPath, oldModBackupDirPath));
                     UpdateIo.EnsureParentDirectory(backupPath.FullName);
 
                     if (!folder.Exists) continue;
@@ -539,7 +559,7 @@ namespace AIHelper.Manage.Update.Targets
             }
 
             //backup old files
-            foreach (var filePath in new DirectoryInfo(updatingModDirPath).EnumerateFiles())
+            foreach (var filePath in new DirectoryInfo(updatingModDirPath).EnumerateFiles().ToArray())
             {
                 try
                 {
@@ -553,7 +573,8 @@ namespace AIHelper.Manage.Update.Targets
                         file = new FileInfo(filePath.GetSymlinkTarget());
                     }
 
-                    var backupPath = file.FullName.Replace(updatingModDirPath, oldModBackupDirPath);
+                    //same as for directories: the backup path belongs to the entry, not to the link target
+                    var backupPath = filePath.FullName.Replace(updatingModDirPath, oldModBackupDirPath);
                     UpdateIo.EnsureParentDirectory(backupPath);
 
                     if (RestoreList.Contains(file.FullName) || isSynlinkTarget)

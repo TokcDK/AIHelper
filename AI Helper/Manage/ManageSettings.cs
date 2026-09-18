@@ -669,13 +669,13 @@ namespace AIHelper.Manage
         internal static string AppResDirPath => Path.Combine(ManageSettings.ApplicationStartupPath, "RES");
 
 
-        internal static string CurrentGameModsDirPath => Path.Combine(CurrentGameDirPath, "Mods");
+        internal static string CurrentGameModsDirPath => Path.Combine(CurrentGameDirPath, CurrentGameModsDirName);
 
 
         internal static string DownloadsPath => Path.Combine(CurrentGameDirPath, "Downloads");
 
 
-        internal static string CurrentGameDataDirPath => Path.Combine(CurrentGameDirPath, "Data");
+        internal static string CurrentGameDataDirPath => Path.Combine(CurrentGameDirPath, CurrentGameDataDirName);
 
 
         internal static string AppModOrganizerDirName => "MO";
@@ -800,38 +800,37 @@ namespace AIHelper.Manage
 
         internal static void SwitchBepInExDisplayedLogLevelValue(CheckBox bepInExConsoleCheckBox, Label bepInExDisplayedLogLevelLabel, bool onlyShow = false, string targetSectionName = "Logging.Console")
         {
-            //string curValue = ManageINI.GetINIValueIfExist(ManageSettings.GetBepInExCfgFilePath(), "DisplayedLogLevel", "Logging.Console");
-            string curValue = ManageCfg.GetCfgValueIfExist(BepInExCfgFilePath, "DisplayedLogLevel", "Logging.Console");
+            string curValue = ManageCfg.GetCfgValueIfExist(BepInExCfgFilePath, "DisplayedLogLevel", targetSectionName);
 
             //in BepinEx 5.4 looks like DisplayedLogLevel was deleted 
             if (curValue.Length == 0) bepInExDisplayedLogLevelLabel.Visible = false;
             if (onlyShow)
             {
                 bepInExDisplayedLogLevelLabel.Text = curValue;
+                return;
             }
-            else //switch
-            {
-                string[] values = { "None", "Fatal", "Error", "Warning", "Message", "Info", "Debug", "All" };
 
-                bool setNext = false;
-                foreach (var value in values)
+            //switch
+            string[] values = { "None", "Fatal", "Error", "Warning", "Message", "Info", "Debug", "All" };
+
+            bool setNext = false;
+            foreach (var value in values)
+            {
+                if (setNext)
                 {
-                    if (setNext)
-                    {
-                        //ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", /*" " +*/ value);
-                        ManageCfg.WriteCfgValue(BepInExCfgFilePath, targetSectionName, "DisplayedLogLevel", /*" " +*/ value);
-                        bepInExDisplayedLogLevelLabel.Text = value;
-                        return;
-                    }
-                    if (value == curValue)
-                    {
-                        setNext = true;
-                    }
+                    ManageCfg.WriteCfgValue(BepInExCfgFilePath, targetSectionName, "DisplayedLogLevel", value);
+                    bepInExDisplayedLogLevelLabel.Text = value;
+                    return;
                 }
-                //ManageINI.WriteINIValue(ManageSettings.GetBepInExCfgFilePath(), "Logging.Console", "DisplayedLogLevel", /*" " +*/ values[0]);
-                ManageCfg.WriteCfgValue(BepInExCfgFilePath, "Logging.Console", "DisplayedLogLevel", /*" " +*/ values[0]);
-                bepInExDisplayedLogLevelLabel.Text = values[0];
+                if (value == curValue)
+                {
+                    setNext = true;
+                }
             }
+
+            // set first value when current value was not found in the values list
+            ManageCfg.WriteCfgValue(BepInExCfgFilePath, targetSectionName, "DisplayedLogLevel", values[0]);
+            bepInExDisplayedLogLevelLabel.Text = values[0];
         }
 
         /// <summary>
@@ -1054,11 +1053,11 @@ namespace AIHelper.Manage
                 "MyUserFiles",
                 GameUserDataModName
             };
-            var subPath = (string.IsNullOrWhiteSpace(subDirPath) ? "" : "\\" + subDirPath);
             var currentGameModsDirPath = CurrentGameModsDirPath;
             foreach (var modName in modNames)
             {
-                var dirPath = Path.Combine(currentGameModsDirPath, modName) + subPath;
+                var dirPath = Path.Combine(currentGameModsDirPath, modName);
+                if (!string.IsNullOrWhiteSpace(subDirPath)) dirPath = Path.Combine(dirPath, subDirPath);
 
                 if (Directory.Exists(dirPath))
                 {
@@ -1066,7 +1065,9 @@ namespace AIHelper.Manage
                 }
             }
 
-            return $"{CurrentGameOverwriteFolderPath}{subPath}";
+            return string.IsNullOrWhiteSpace(subDirPath)
+                ? CurrentGameOverwriteFolderPath
+                : Path.Combine(CurrentGameOverwriteFolderPath, subDirPath);
         }
 
         private static Control _gameSettingsParentControl;
@@ -1091,7 +1092,7 @@ namespace AIHelper.Manage
         /// </summary>
         /// <returns></returns>
 
-        internal static bool IsMoMode = true;
+        internal static bool IsMoMode { get; set; } = true;
 
 
         internal static string CurrentGameInstallDirPath => Path.Combine(AppResDirPath, "install", CurrentGameDirName);
@@ -1360,8 +1361,12 @@ namespace AIHelper.Manage
         public static string DataDirName { get; } = "Data";
         public static string MoOverwriteDirName => "Overwrite";
 
-        public static string[] MoFilesForCleanList => new[]
+        public static string[] MoFilesForCleanList
+        {
+            get
             {
+                var filesForClean = new List<string>
+                {
                     @"MOFolder\plugins\bsa_*.dll",
                     //@"MOFolder\plugins\bsa_extractor.dll",
                     //@"MOFolder\plugins\bsa_packer.dll",
@@ -1394,11 +1399,19 @@ namespace AIHelper.Manage
                     @"MOFolder\plugins\ScriptExtenderPluginChecker.py",
                     @"MOFolder\plugins\installer_fomod_csharp.dll",
                     @"MOFolder\plugins\data\OMODFramework*.*",
-                    @"MOFolder\plugins\data\DDS\",
-                    !ManageModOrganizer.GetMoVersion().StartsWith("2.3",StringComparison.InvariantCulture) 
-                        ? @"MOFolder\plugins\modorganizer-basic_games\"
-                        : ""
-            };
+                    @"MOFolder\plugins\data\DDS\"
+                };
+
+                // basic games plugin files dir is missing in mo 2.3 and older
+                var moVersion = ManageModOrganizer.GetMoVersion();
+                if (string.IsNullOrWhiteSpace(moVersion) || !moVersion.StartsWith("2.3", StringComparison.InvariantCulture))
+                {
+                    filesForClean.Add(@"MOFolder\plugins\modorganizer-basic_games\");
+                }
+
+                return filesForClean.ToArray();
+            }
+        }
 
         public static string BasicGamesPluginFilesTempDirPath => Path.Combine(ManageSettings.AppResDirPath, "temp_basic_games_plugin_files");
     }

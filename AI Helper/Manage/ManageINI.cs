@@ -19,7 +19,13 @@ namespace AIHelper.Manage
             {
                 if (createIfNoIni)
                 {
-                    Directory.CreateDirectory(Path.GetDirectoryName(iniPath));
+                    // Directory.CreateDirectory throws on empty path, which happens for a bare file name
+                    string iniDirectory = Path.GetDirectoryName(iniPath);
+                    if (!string.IsNullOrEmpty(iniDirectory))
+                    {
+                        Directory.CreateDirectory(iniDirectory);
+                    }
+
                     ini = new INIFile(iniPath, true);
                 }
                 else
@@ -57,7 +63,6 @@ namespace AIHelper.Manage
             }
             GetINIFile(iniPath).SetKey(section, key, value, doSaveIni);
             return true;
-            //return false;
         }
     }
 }

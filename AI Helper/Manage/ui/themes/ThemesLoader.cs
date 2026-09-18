@@ -22,7 +22,8 @@ namespace AIHelper.Manage.ui.themes
             var cnt = list.Count;
             if (cnt == 0) return;
             var rnd = new Random();
-            var theme = list[rnd.Next(0, cnt - 1)];
+            //Random.Next(min, max) is exclusive of max, so cnt - 1 excluded the last theme
+            var theme = list[rnd.Next(0, cnt)];
             SetTheme(theme);
         }
 

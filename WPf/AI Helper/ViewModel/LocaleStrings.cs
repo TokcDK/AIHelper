@@ -1,6 +1,4 @@
-﻿using Localization;
-
-namespace AIHelper.ViewModel
+﻿namespace AIHelper.ViewModel
 {
     public class LocaleStrings
     {

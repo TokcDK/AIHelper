@@ -1,12 +1,15 @@
 ﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using NLog;
 using static AIHelper.Manage.ManageModOrganizer;
 
 namespace AIHelper.Manage.MOiniCustomExeFixers
 {
     public class MainExesPathFixer : ICustomExePathFixerBase
     {
+        static readonly Logger _log = LogManager.GetCurrentClassLogger();
+
         public void TryFix(CustomExeFixData data)
         {
             // fix main exe data.Paths
@@ -45,7 +48,11 @@ namespace AIHelper.Manage.MOiniCustomExeFixers
 
                             isAnyChanged = true;
                         }
-                        catch { }
+                        catch (Exception ex)
+                        {
+                            //not critical: the path is left as is when it cannot be rebuilt
+                            _log.Warn("Failed to fix the custom exe path '" + data.Path + "'. Error:\r\n" + ex);
+                        }
                     }
 
                     if (!isAnyChanged) return;

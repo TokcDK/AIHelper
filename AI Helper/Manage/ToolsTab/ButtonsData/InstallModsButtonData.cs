@@ -9,11 +9,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using AIHelper.Manage.Functions;
 using AIHelper.Install.Types.Directories;
+using NLog;
 
 namespace AIHelper.Manage.ToolsTab.ButtonsData
 {
     internal class InstallModsButtonData : IToolsTabButtonData
     {
+        static readonly Logger _log = LogManager.GetCurrentClassLogger();
+
         public string Text => T._("Install");
 
         public string Description => T._("Install mods and userdata, placed in") + " " + ManageSettings.ModsInstallDirName + (ManageSettings.IsMoMode ? 
@@ -28,52 +31,67 @@ namespace AIHelper.Manage.ToolsTab.ButtonsData
 
         internal static async void Install()
         {
-            if (new UpdateMaker().MakeUpdate())
+            //NOTE: this stays async void because OnClick is a synchronous event handler and cannot await it.
+            //An exception thrown after the first await of an async void method cannot be caught by the caller
+            //and would crash the process, so the whole body must be guarded here.
+            try
             {
-                MessageBox.Show("Made update instead");
-                return;
-            }
-
-            List<ModInstallerBase> installers = GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<ModInstallerBase>().OrderBy(o => o.Order).ToList();
-
-            //if (Directory.Exists(Install2MoDirPath) && (Directory.GetFiles(Install2MoDirPath, "*.rar").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.7z").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.cs").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.zipmod").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.zip").Length > 0 || Directory.GetDirectories(Install2MoDirPath, "*").Length > 0))
-            if (!IsInstallDirHasAnyRequiredFileFrom(installers))
-            {
-                MessageBox.Show(T._("No compatible for installation formats found in install folder.\n\nIt must be archvives, game files or folders with game files.\n\nWill be opened installation dir where you can drop files for installation."));
-            }
-            else
-            {
-                ManageSettings.MainForm.OnOffButtons(false);
-
-                //impossible to correctly update mods in common mode
-                if (!ManageSettings.IsMoMode)
+                if (new UpdateMaker().MakeUpdate())
                 {
-                    DialogResult result = MessageBox.Show(T._("Attention") + "\n\n" + T._("Impossible to correctly install/update mods\n\n in standart mode because files was moved in Data.") + "\n\n" + T._("Switch to MO mode?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
-                    if (result == DialogResult.OK)
-                    {
-                        ManageMOModeSwitch.SwitchBetweenMoAndStandartModes();
-                    }
-                    else
-                    {
-                        ManageSettings.MainForm.OnOffButtons();
-                        return;
-                    }
+                    MessageBox.Show("Made update instead");
+                    return;
                 }
 
-                await Task.Run(() => InstallModFilesAndCleanEmptyFolder(installers)).ConfigureAwait(true);
+                List<ModInstallerBase> installers = GetListOfSubClasses.Inherited.GetListOfinheritedSubClasses<ModInstallerBase>().OrderBy(o => o.Order).ToList();
 
-                //this.Text = T._("Install from") + " " + ManageSettings.ModsInstallDirName;
+                //if (Directory.Exists(Install2MoDirPath) && (Directory.GetFiles(Install2MoDirPath, "*.rar").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.7z").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.png").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.cs").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.dll").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.zipmod").Length > 0 || Directory.GetFiles(Install2MoDirPath, "*.zip").Length > 0 || Directory.GetDirectories(Install2MoDirPath, "*").Length > 0))
+                if (!IsInstallDirHasAnyRequiredFileFrom(installers))
+                {
+                    MessageBox.Show(T._("No compatible for installation formats found in install folder.\n\nIt must be archvives, game files or folders with game files.\n\nWill be opened installation dir where you can drop files for installation."));
+                }
+                else
+                {
+                    ManageSettings.MainForm.OnOffButtons(false);
 
-                ManageSettings.MainForm.OnOffButtons();
+                    //impossible to correctly update mods in common mode
+                    if (!ManageSettings.IsMoMode)
+                    {
+                        DialogResult result = MessageBox.Show(T._("Attention") + "\n\n" + T._("Impossible to correctly install/update mods\n\n in standart mode because files was moved in Data.") + "\n\n" + T._("Switch to MO mode?"), T._("Confirmation"), MessageBoxButtons.OKCancel);
+                        if (result == DialogResult.OK)
+                        {
+                            ManageMOModeSwitch.SwitchBetweenMoAndStandartModes();
+                        }
+                        else
+                        {
+                            ManageSettings.MainForm.OnOffButtons();
+                            return;
+                        }
+                    }
 
-                //обновление информации о конфигурации папок игры
-                ManageSettings.MainForm.UpdateData();
+                    await Task.Run(() => InstallModFilesAndCleanEmptyFolder(installers)).ConfigureAwait(true);
 
-                MessageBox.Show(T._("All possible mods installed. Install all rest in install folder manually."));
+                    //this.Text = T._("Install from") + " " + ManageSettings.ModsInstallDirName;
+
+                    ManageSettings.MainForm.OnOffButtons();
+
+                    //обновление информации о конфигурации папок игры
+                    ManageSettings.MainForm.UpdateData();
+
+                    MessageBox.Show(T._("All possible mods installed. Install all rest in install folder manually."));
+                }
+
+                Directory.CreateDirectory(ManageSettings.Install2MoDirPath);
+                Process.Start("explorer.exe", ManageSettings.Install2MoDirPath);
             }
+            catch (Exception ex)
+            {
+                _log.Error("Failed to install mods. Error:\r\n" + ex);
 
-            Directory.CreateDirectory(ManageSettings.Install2MoDirPath);
-            Process.Start("explorer.exe", ManageSettings.Install2MoDirPath);
+                MessageBox.Show(T._("Failed to install mods.") + Environment.NewLine + ex.Message);
+
+                //never leave the main form disabled after a failure
+                ManageSettings.MainForm.OnOffButtons();
+            }
         }
 
         private static bool IsInstallDirHasAnyRequiredFileFrom(List<ModInstallerBase> installers)

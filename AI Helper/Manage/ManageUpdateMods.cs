@@ -50,11 +50,16 @@ namespace AIHelper.Manage
             UpdateModsFinalize();
         }
 
+        /// <summary>
+        /// read mod name - update info pairs from the update info file
+        /// </summary>
+        /// <param name="sourceId">reserved for the sources separation, the file is shared between the sources now</param>
+        /// <returns>mod name - update info pairs or empty dictionary when the file is missing</returns>
         public static Dictionary<string, string> GetUpdateInfosFromFile(string sourceId)
         {
             var d = new Dictionary<string, string>();
 
-            if (!File.Exists(ManageSettings.UpdateInfosFilePath)) return null;
+            if (!File.Exists(ManageSettings.UpdateInfosFilePath)) return d;
 
             using (StreamReader sr = new StreamReader(ManageSettings.UpdateInfosFilePath))
             {
@@ -82,16 +87,17 @@ namespace AIHelper.Manage
         internal static Dictionary<string, string> GetUpdateInfos(string sourceId, bool onlyActive = true)
         {
             var infos = new Dictionary<string, string>();
-            string[] modNamesList = null;
             try
             {
                 var updateInfoList = GetUpdateInfosFromFile(sourceId);
-                if (updateInfoList == null || updateInfoList.Count == 0) return infos;
+                if (updateInfoList.Count == 0) return infos;
 
-                foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(UpdateOptions != null ? UpdateOptions.CheckEnabledModsOnlyCheckBox.Checked : true))
+                // update options of the dialog are used when the dialog was created
+                bool enabledModsOnly = UpdateOptions != null ? UpdateOptions.CheckEnabledModsOnlyCheckBox.Checked : onlyActive;
+
+                foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(enabledModsOnly))
                 {
-                    var modPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modname);
-                    if (updateInfoList.ContainsKey(modname) && !infos.ContainsKey(modPath))
+                    if (updateInfoList.ContainsKey(modname) && !infos.ContainsKey(modname))
                     {
                         infos.Add(modname, updateInfoList[modname]);
                     }
@@ -99,7 +105,7 @@ namespace AIHelper.Manage
             }
             catch (Exception ex)
             {
-                _log.Error("An error while get update infos:\r\n" + ex + "\r\ninfos count=" + infos.Count + (modNamesList != null ? "\r\nModsList count=" + modNamesList.Length : "ModsList is null"));
+                _log.Error("An error while get update infos:\r\n" + ex + "\r\ninfos count=" + infos.Count);
             }
 
             return infos;
@@ -407,51 +413,12 @@ namespace AIHelper.Manage
 
                         if (isGuid && !targetIsInSideloader/*do not touch sideloader files and let them be updated properly*/)//move by guid
                         {
-                            var targetFilePath = filePath.Replace(sortingDir.FullName, targetModPath);
-
-
-                            bool isTargetExists = File.Exists(targetFilePath);
-                            bool isSourceExists = File.Exists(filePath);
-
-                            ManageStrings.CheckForLongPath(ref filePath);
-                            ManageStrings.CheckForLongPath(ref targetFilePath);
-
-                            if (!isSourceExists)
-                            {
-                                return;
-                            }
-                            else if (isTargetExists)
-                            {
-                                var targetInfo = new FileInfo(targetFilePath);
-                                var sourceInfo = new FileInfo(filePath);
-                                if (targetInfo.Length == sourceInfo.Length && targetInfo.GetCrc32() == sourceInfo.GetCrc32())
-                                {
-                                    sourceInfo.Delete();
-                                    return;
-                                }
-                                else if (targetInfo.LastWriteTime < sourceInfo.LastWriteTime)
-                                {
-                                    var targetFileTarget = filePath.Replace(sortingDir.FullName, targetModPath + timeInfo);
-
-                                    Directory.CreateDirectory(Path.GetDirectoryName(targetFileTarget));
-                                    if (!File.Exists(targetFileTarget))
-                                        File.Move(targetFilePath, targetFileTarget); // move older target file
-                                }
-                                else
-                                {
-                                    targetFilePath = filePath.Replace(sortingDir.FullName, targetModPath + timeInfo);
-                                }
-                            }
-
-                            Directory.CreateDirectory(Path.GetDirectoryName(targetFilePath));
-                            try
-                            {
-                                File.Move(filePath, targetFilePath);
-                            }
-                            catch (IOException ex)
-                            {
-                                _log.Error($"An error occurred while moving the file. Error:\r\n{ex}\r\nFile='{filePath}'\r\nTarget File='{targetFilePath}'");
-                            }
+                            // target mod path is known by the zipmod guid
+                            MoveZipmodFile(
+                                filePath,
+                                filePath.Replace(sortingDir.FullName, targetModPath),
+                                filePath.Replace(sortingDir.FullName, targetModPath + timeInfo)
+                                );
                         }
                         else if (isSortingModpack)
                         {
@@ -460,65 +427,15 @@ namespace AIHelper.Manage
 
                             var targetModName = sideloaderModpacks[sideloaderDirName + (sortFemale ? "F" : sortMale ? "M" : "")];
 
+                            // file subpath in the sideloader dir
+                            var fileSubPathInSideloaderDir = filePath.Replace(sideloaderModpackDir.FullName, "");
+
                             //get target path for the zipmod
-                            var targetFilePath = ManageSettings.CurrentGameModsDirPath
-                                + Path.DirectorySeparatorChar + targetModName //mod name
-                                + Path.DirectorySeparatorChar + "mods" //mods dir
-                                + Path.DirectorySeparatorChar + sideloaderDirName // sideloader dir name
-                                + filePath.Replace(sideloaderModpackDir.FullName, ""); // file subpath in sideloader dir
-
-                            bool isTargetExists = File.Exists(targetFilePath);
-                            bool isSourceExists = File.Exists(filePath);
-
-                            ManageStrings.CheckForLongPath(ref filePath);
-                            ManageStrings.CheckForLongPath(ref targetFilePath);
-
-                            if (!isSourceExists)
-                            {
-                                return;
-                            }
-                            else if (isTargetExists)
-                            {
-                                var targetInfo = new FileInfo(targetFilePath);
-                                var sourceInfo = new FileInfo(filePath);
-                                if (targetInfo.Length == sourceInfo.Length && targetInfo.GetCrc32() == sourceInfo.GetCrc32())
-                                {
-                                    sourceInfo.Delete();
-                                    return;
-                                }
-                                else if (targetInfo.LastWriteTime < sourceInfo.LastWriteTime)
-                                {
-                                    var targetFileTarget = ManageSettings.CurrentGameModsDirPath
-                                        + Path.DirectorySeparatorChar + targetModName + timeInfo //mod name
-                                        + Path.DirectorySeparatorChar + "mods" //mods dir
-                                        + Path.DirectorySeparatorChar + sideloaderDirName // sideloader dir name
-                                        + filePath.Replace(sideloaderModpackDir.FullName, ""); // file subpath in sideloader dir
-
-                                    Directory.CreateDirectory(Path.GetDirectoryName(targetFileTarget));
-                                    if (!File.Exists(targetFileTarget))
-                                        File.Move(targetFilePath, targetFileTarget); // move older target file
-                                }
-                                else
-                                {
-                                    targetFilePath = ManageSettings.CurrentGameModsDirPath
-                                        + Path.DirectorySeparatorChar + targetModName + timeInfo //mod name
-                                        + Path.DirectorySeparatorChar + "mods" //mods dir
-                                        + Path.DirectorySeparatorChar + sideloaderDirName // sideloader dir name
-                                        + filePath.Replace(sideloaderModpackDir.FullName, ""); // file subpath in sideloader dir
-                                }
-                            }
-
-
-                            Directory.CreateDirectory(Path.GetDirectoryName(targetFilePath));//create parent dir
-
-                            try
-                            {
-                                File.Move(filePath, targetFilePath);//move file to the marked mod
-                            }
-                            catch (IOException ex)
-                            {
-                                _log.Error($"An error occurred while moving the file. Error:\r\n{ex}\r\nFile='{filePath}'\r\nTarget File='{targetFilePath}'");
-                            }
+                            MoveZipmodFile(
+                                filePath,
+                                GetSideloaderTargetFilePath(targetModName, sideloaderDirName, fileSubPathInSideloaderDir, string.Empty),
+                                GetSideloaderTargetFilePath(targetModName, sideloaderDirName, fileSubPathInSideloaderDir, timeInfo)
+                                );
                         }
                     }
                     catch (Exception ex)
@@ -528,6 +445,81 @@ namespace AIHelper.Manage
                     });
                 });
             });
+        }
+
+        /// <summary>
+        /// Move the zipmod file to the target path.
+        /// When the target file is already exists: identical files are deduplicated (source file is removed),
+        /// older target file is moved to the <paramref name="olderTargetFilePath"/>,
+        /// else the source file is moved to the <paramref name="olderTargetFilePath"/> to keep the target file.
+        /// </summary>
+        /// <param name="filePath">source zipmod file path</param>
+        /// <param name="targetFilePath">required target zipmod file path</param>
+        /// <param name="olderTargetFilePath">target file path with the date suffix which is used for the older file</param>
+        private static void MoveZipmodFile(string filePath, string targetFilePath, string olderTargetFilePath)
+        {
+            bool isTargetExists = File.Exists(targetFilePath);
+            bool isSourceExists = File.Exists(filePath);
+
+            ManageStrings.CheckForLongPath(ref filePath);
+            ManageStrings.CheckForLongPath(ref targetFilePath);
+            ManageStrings.CheckForLongPath(ref olderTargetFilePath);
+
+            if (!isSourceExists)
+            {
+                return;
+            }
+            else if (isTargetExists)
+            {
+                var targetInfo = new FileInfo(targetFilePath);
+                var sourceInfo = new FileInfo(filePath);
+                if (targetInfo.Length == sourceInfo.Length && targetInfo.GetCrc32() == sourceInfo.GetCrc32())
+                {
+                    // same file already moved before
+                    sourceInfo.Delete();
+                    return;
+                }
+                else if (targetInfo.LastWriteTime < sourceInfo.LastWriteTime)
+                {
+                    // keep the older target file
+                    Directory.CreateDirectory(Path.GetDirectoryName(olderTargetFilePath));
+                    if (!File.Exists(olderTargetFilePath))
+                        File.Move(targetFilePath, olderTargetFilePath); // move older target file
+                }
+                else
+                {
+                    // keep the target file and place the source file near it
+                    targetFilePath = olderTargetFilePath;
+                }
+            }
+
+            Directory.CreateDirectory(Path.GetDirectoryName(targetFilePath));//create parent dir
+
+            try
+            {
+                File.Move(filePath, targetFilePath);//move file to the marked mod
+            }
+            catch (IOException ex)
+            {
+                _log.Error($"An error occurred while moving the file. Error:\r\n{ex}\r\nFile='{filePath}'\r\nTarget File='{targetFilePath}'");
+            }
+        }
+
+        /// <summary>
+        /// Get target file path for the zipmod of the sideloader modpack dir inside the target mod
+        /// </summary>
+        /// <param name="targetModName">name of the mod which is target for the sideloader modpack</param>
+        /// <param name="sideloaderDirName">name of the sideloader modpack dir in the mods dir of the target mod</param>
+        /// <param name="fileSubPath">file sub path in the sideloader dir</param>
+        /// <param name="targetModNameSuffix">suffix for the target mod name, used for the date marked mod name</param>
+        /// <returns></returns>
+        private static string GetSideloaderTargetFilePath(string targetModName, string sideloaderDirName, string fileSubPath, string targetModNameSuffix)
+        {
+            return ManageSettings.CurrentGameModsDirPath
+                + Path.DirectorySeparatorChar + targetModName + targetModNameSuffix //mod name
+                + Path.DirectorySeparatorChar + "mods" //mods dir
+                + Path.DirectorySeparatorChar + sideloaderDirName // sideloader dir name
+                + fileSubPath; // file subpath in sideloader dir
         }
 
         /// <summary>

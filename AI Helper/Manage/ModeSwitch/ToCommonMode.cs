@@ -53,31 +53,32 @@ namespace AIHelper.Manage.ModeSwitch
 
         protected bool IsExcludedFileType(string sourceFilePath, ParentSourceModData parentSourceModDir)
         {
-            try
-            {
-                //skip images and txt in mod root folder
-                var fileExtension = Path.GetExtension(sourceFilePath);
-                if (string.Equals(fileExtension, ".txt", StringComparison.InvariantCultureIgnoreCase) || fileExtension.IsPictureExtension())
-                {
-                    if (Path.GetFileName(sourceFilePath.Replace(Path.DirectorySeparatorChar + Path.GetFileName(sourceFilePath), string.Empty)) == Path.GetFileName(parentSourceModDir.Path))
-                    {
-                        //пропускать картинки и txt в корне папки мода
-                        return true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _log.Error("error while image skip. error:" + ex);
-            }
-
             //skip meta.ini
-            if (Path.GetFileName(sourceFilePath) == "meta.ini")
+            if (string.Equals(Path.GetFileName(sourceFilePath), "meta.ini", StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }
 
-            return false;
+            //skip images and txt in mod root folder
+            var fileExtension = Path.GetExtension(sourceFilePath);
+            if (!string.Equals(fileExtension, ".txt", StringComparison.OrdinalIgnoreCase) && !fileExtension.IsPictureExtension())
+            {
+                return false;
+            }
+
+            try
+            {
+                //the file is in the mod root folder when its own directory is the mod directory
+                return string.Equals(
+                    Path.GetDirectoryName(sourceFilePath),
+                    parentSourceModDir.Path.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar),
+                    StringComparison.OrdinalIgnoreCase);
+            }
+            catch (Exception ex)
+            {
+                _log.Error("error while image skip. error:" + ex);
+                return false;
+            }
         }
 
         /// <summary>
@@ -194,9 +195,6 @@ namespace AIHelper.Manage.ModeSwitch
 
             WriteZipmodGUIDs();
 
-            dataWithModsFiles = null;
-            vanillaDataFiles = null;
-
             // Create the normal mode identifier
             SwitchNormalModeIdentifier();
 
@@ -310,8 +308,6 @@ namespace AIHelper.Manage.ModeSwitch
         protected bool ParseDirectoryFiles(string sourceFolderPath, ParentSourceModData parentSourceModDir)
         {
             ParseFiles(sourceFolderPath, parentSourceModDir); // parse files of this directory
-
-            bool isModSymlink = parentSourceModDir.IsSymlink;
 
             Parallel.ForEach(Directory.EnumerateDirectories(sourceFolderPath), dir =>
             {

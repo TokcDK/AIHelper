@@ -51,20 +51,19 @@ namespace AIHelper.Manage
 
             XmlNode node = xmlDoc.SelectSingleNode(nodename);
 
-            if (node == null || (node.InnerText == value && xmlFound))
-            {
-            }
-            else
-            {
-                node.InnerText = value;
+            if (node == null) return;
 
-                if (!xmlFound)
-                {
-                    xmlpath = ManageModOrganizer.GetLastPath(xmlpath, false, true);
-                }
+            // nothing to save when value is not changed
+            if (xmlFound && node.InnerText == value) return;
 
-                xmlDoc.Save(xmlpath);
+            node.InnerText = value;
+
+            if (!xmlFound)
+            {
+                xmlpath = ManageModOrganizer.GetLastPath(xmlpath, false, true);
             }
+
+            xmlDoc.Save(xmlpath);
         }
 
         public static string ReadXmlValue(string xml, string nodename, string defaultresult = "", bool isXmlString = false)

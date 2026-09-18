@@ -112,7 +112,11 @@ namespace AIHelper.Manage.Rules.ModList
                     {
                         if ((tx = text.InnerHtml.TrimEnd()).EndsWith(infoEndTag, StringComparison.InvariantCulture))
                         {
-                            info.Add(tx.TrimStart().Remove(tx.Length - infoEndTag.Length));
+                            //the index must be taken from the same string it is applied to: tx.TrimStart()
+                            //is shorter than tx whenever there is leading whitespace, which made Remove throw
+                            //and the whole rule text get lost in the catch below
+                            var trimmedText = tx.TrimStart();
+                            info.Add(trimmedText.Remove(trimmedText.Length - infoEndTag.Length));
                             break;
                         }
                         else

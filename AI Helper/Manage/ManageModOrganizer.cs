@@ -93,7 +93,7 @@ namespace AIHelper.Manage
                                     && ini.GetKey(forcedLibrariesSectionName, $"{customExeTitle}\\{index}\\enabled") == "true"
                                     && ini.KeyExists($"{customExeTitle}\\{index}\\library", forcedLibrariesSectionName)
                                     && ini.GetKey(forcedLibrariesSectionName, $"{customExeTitle}\\{index}\\library") == "winhttp.dll"
-                                    && ini.KeyExists($"{customExeTitle}\\{index}\\library", forcedLibrariesSectionName)
+                                    && ini.KeyExists($"{customExeTitle}\\{index}\\process", forcedLibrariesSectionName)
                                     && ini.GetKey(forcedLibrariesSectionName, $"{customExeTitle}\\{index}\\process") == $"{exeName}.exe";
         }
 
@@ -188,9 +188,7 @@ namespace AIHelper.Manage
 
         internal static bool TryGetFileSourceInDataOrOverwrite(string filedir, out string source)
         {
-            var overwritePath = Path.GetFullPath(
-                    Path.Combine(ManageSettings.CurrentGameOverwriteFolderPath + Path.DirectorySeparatorChar + filedir)
-                                 );
+            var overwritePath = Path.GetFullPath(Path.Combine(ManageSettings.CurrentGameOverwriteFolderPath, filedir));
             if (File.Exists(overwritePath))
             {
                 source = ManageSettings.MoOverwriteDirName;
@@ -198,9 +196,7 @@ namespace AIHelper.Manage
             }
             else
             {
-                var dataPath = Path.GetFullPath(
-                    Path.Combine(ManageSettings.CurrentGameDataDirPath + Path.DirectorySeparatorChar + filedir)
-                                 );
+                var dataPath = Path.GetFullPath(Path.Combine(ManageSettings.CurrentGameDataDirPath, filedir));
                 if (File.Exists(dataPath))
                 {
                     source = ManageSettings.DataDirName;
@@ -437,7 +433,7 @@ namespace AIHelper.Manage
         {
             string[] targetFolders = new string[3]
             {
-                firstCandidateFolder.Substring(0,1)== " " ? Path.Combine(ManageSettings.CurrentGameModsDirPath, "OrganizedModPack Downloaded"+firstCandidateFolder) : firstCandidateFolder,
+                !string.IsNullOrEmpty(firstCandidateFolder) && firstCandidateFolder[0] == ' ' ? Path.Combine(ManageSettings.CurrentGameModsDirPath, "OrganizedModPack Downloaded"+firstCandidateFolder) : firstCandidateFolder,
                 Path.Combine(ManageSettings.CurrentGameModsDirPath, "MyUserData"),
                 ManageSettings.CurrentGameOverwriteFolderPath
             };
@@ -572,17 +568,19 @@ namespace AIHelper.Manage
 
                     author = dllInfo.LegalCopyright;
                     //"Copyright © AuthorName 2019"
-                    if (!string.IsNullOrEmpty(author))
-                    {
-                        if (author.Length >= 4)//удаление года, строка должна быть не менее 4 символов для этого
-                        {
-                            author = author.Remove(author.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim();
-                        }
-                    }
-                    else
+                    if (string.IsNullOrEmpty(author))
                     {
                         author = string.Empty;
+                        continue;
                     }
+
+                    if (author.Length >= 4)//удаление года, строка должна быть не менее 4 символов для этого
+                    {
+                        author = author.Remove(author.Length - 4, 4).Replace("Copyright © ", string.Empty).Trim();
+                    }
+
+                    // author from the first dll which has it
+                    if (author.Length > 0) break;
                 }
             }
 
@@ -593,8 +591,9 @@ namespace AIHelper.Manage
                     using (StreamReader sr = new StreamReader(txtFilePath))
                     {
                         string line = sr.ReadLine();
+                        if (string.IsNullOrWhiteSpace(line)) continue;
 
-                        if (line.ToUpperInvariant().StartsWith("BY ", StringComparison.InvariantCultureIgnoreCase) || line.ToUpperInvariant().StartsWith("AUTHOR: ", StringComparison.InvariantCultureIgnoreCase) || line.ToUpperInvariant().StartsWith("AUTHOR ", StringComparison.InvariantCultureIgnoreCase))
+                        if (line.StartsWith("BY ", StringComparison.OrdinalIgnoreCase) || line.StartsWith("AUTHOR: ", StringComparison.OrdinalIgnoreCase) || line.StartsWith("AUTHOR ", StringComparison.OrdinalIgnoreCase))
                         {
                             author = line.Split(' ')[1];
                         }
@@ -714,7 +713,7 @@ namespace AIHelper.Manage
 
             void ReadManifestValues(string manifestXml, bool isXmlString = false)
             {
-                guid = ManageXml.ReadXmlValue(manifestXml, "manifest/name", string.Empty, isXmlString: isXmlString);
+                guid = ManageXml.ReadXmlValue(manifestXml, "manifest/guid", string.Empty, isXmlString: isXmlString);
                 name = ManageXml.ReadXmlValue(manifestXml, "manifest/name", string.Empty, isXmlString: isXmlString);
                 version = ManageXml.ReadXmlValue(manifestXml, "manifest/version", "0", isXmlString: isXmlString);
                 author = ManageXml.ReadXmlValue(manifestXml, "manifest/author", "Unknown author", isXmlString: isXmlString);
@@ -856,8 +855,8 @@ namespace AIHelper.Manage
             var filePath = Path.Combine(inputDir, fileName);
             if (File.Exists(filePath)) inputList.Add(filePath);
 
-            // parallel iterate mods because mod order is not important here
-            Parallel.ForEach(Directory.EnumerateDirectories(inputDir), dir => { inputList.AddExistFilePathsUsing(dir, fileName); });
+            // iterate sequentially because the list is not thread safe
+            foreach (var dir in Directory.EnumerateDirectories(inputDir)) inputList.AddExistFilePathsUsing(dir, fileName);
         }
 
         /// <summary>
@@ -1111,7 +1110,7 @@ namespace AIHelper.Manage
                     }
                 });
 
-                Task.Run(() => WriteCachedGUID(GUIDList)).ConfigureAwait(false); // not need to wait while will be writed
+                Task.Run(() => WriteCachedGUID(GUIDList)); // not need to wait while will be writed
             }
 
             private void LoadZipmods(string packDir)
@@ -1159,19 +1158,30 @@ namespace AIHelper.Manage
             internal string SubPath;
         }
 
+        /// <summary>
+        /// write cached guid list in the cache file
+        /// </summary>
+        /// <param name="gUIDList"></param>
         static void WriteCachedGUID(ConcurrentDictionary<string, ZipmodInfo> gUIDList)
         {
             var guidListCopy = new Dictionary<string, ZipmodInfo>(gUIDList); // get copy of list because it will be removed
 
-            Directory.CreateDirectory(Path.GetDirectoryName(ManageSettings.CachedGUIDFilePath));
-
-            var sw = new StreamWriter(ManageSettings.CachedGUIDFilePath);
-            foreach (var pair in guidListCopy)
+            try
             {
-                sw.WriteLine(pair.Value.FileInfo.FullName + CachedCUIDFileSplitter + pair.Key);
-            }
+                Directory.CreateDirectory(Path.GetDirectoryName(ManageSettings.CachedGUIDFilePath));
 
-            sw.Dispose();
+                using (var sw = new StreamWriter(ManageSettings.CachedGUIDFilePath))
+                {
+                    foreach (var pair in guidListCopy)
+                    {
+                        sw.WriteLine(pair.Value.FileInfo.FullName + CachedCUIDFileSplitter + pair.Key);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Failed to write cached guid list to " + ManageSettings.CachedGUIDFilePath + ". Error:\r\n" + ex);
+            }
         }
 
         /// <summary>
@@ -1234,7 +1244,7 @@ namespace AIHelper.Manage
         internal static string GetMoVersion()
         {
             var exeversion = System.Diagnostics.FileVersionInfo.GetVersionInfo(ManageSettings.AppMOexePath);
-            return exeversion.FileVersion;
+            return exeversion.FileVersion ?? string.Empty;
         }
 
         public static void SetModOrganizerIniSettingsForTheGame()
@@ -1256,15 +1266,17 @@ namespace AIHelper.Manage
         }
 
         /// <summary>
-        /// returns filename
+        /// make backup of the modlist.txt file of the current mo profile when it differs from the last backup
         /// </summary>
         /// <param name="suffix"></param>
-        /// <returns></returns>
-        internal static string MakeMoProfileModlistFileBuckup(string suffix = "")
+        /// <returns>created backup file name or empty string when backup is not required</returns>
+        internal static string MakeMoProfileModlistBackup(string suffix = "")
         {
             var modlistPath = ManageSettings.CurrentMoProfileModlistPath;
+            if (!File.Exists(modlistPath)) return string.Empty;
+
             var lastBackup = GetLastBak(suffix);
-            if (lastBackup == null || (File.Exists(modlistPath) && File.Exists(lastBackup) && File.ReadAllText(lastBackup) != File.ReadAllText(modlistPath)))
+            if (lastBackup == null || (File.Exists(lastBackup) && File.ReadAllText(lastBackup) != File.ReadAllText(modlistPath)))
             {
                 var targetFile = modlistPath + "." + DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss", CultureInfo.InvariantCulture) + suffix;
                 File.Copy(modlistPath, targetFile);
@@ -2369,43 +2381,59 @@ namespace AIHelper.Manage
             }
         }
 
+        /// <summary>
+        /// return the profile name which is exists in the current game mo profiles dir
+        /// </summary>
+        /// <param name="currentMOprofile">profile name from the mo ini</param>
+        /// <returns>exists profile name or "Default"</returns>
         private static string ReGetcurrentMOprofile(string currentMOprofile)
         {
-            while (!Directory.Exists(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles", currentMOprofile)))
+            if (Directory.Exists(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles", currentMOprofile)))
             {
-                if (TryGetCurrentMoProfileCandidate(out var value))
-                {
-                    return value;
-                }
+                return currentMOprofile;
             }
-            //Application.Exit();
-            return "Default";
+
+            // try to find any other suitable profile when profile from mo ini is missing
+            return TryGetCurrentMoProfileCandidate(out var candidate)
+                ? candidate
+                : "Default";
         }
 
         private static bool TryGetCurrentMoProfileCandidate(out string ret)
         {
-            if (Directory.Exists(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles", ManageSettings.CurrentGameExeName)))
+            var profilesDirPath = Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles");
+            if (!Directory.Exists(profilesDirPath))
             {
-                ret = ManageSettings.CurrentGameExeName;
-                return true;
+                ret = string.Empty;
+                return false;
             }
-            else if (Directory.Exists(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles", ManageSettings.CurrentGameDisplayingName)))
+
+            var candidateProfiles = new[]
             {
-                ret = ManageSettings.CurrentGameDisplayingName;
-                return true;
-            }
-            else if (Directory.Exists(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles", ManageSettings.CurrentGameDirName)))
+                ManageSettings.CurrentGameExeName,
+                ManageSettings.CurrentGameDisplayingName,
+                ManageSettings.CurrentGameDirName
+            };
+
+            foreach (var candidateProfile in candidateProfiles)
             {
-                ret = ManageSettings.CurrentGameDirName;
-                return true;
+                if (!string.IsNullOrWhiteSpace(candidateProfile)
+                    && Directory.Exists(Path.Combine(profilesDirPath, candidateProfile)))
+                {
+                    ret = candidateProfile;
+                    return true;
+                }
             }
-            else if (Directory.GetDirectories(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles")).Length == 0)
+
+            var profileDirs = Directory.GetDirectories(profilesDirPath);
+            if (profileDirs.Length == 0)
             {
                 MessageBox.Show(T._("No profiles found for Current game") + " " + ManageSettings.CurrentGameDisplayingName);
             }
             else
             {
-                ret = Path.GetDirectoryName(Directory.GetDirectories(Path.Combine(ManageSettings.CurrentGameModOrganizerDirPath, "profiles"))[0]);
+                // take name of the first found profile dir
+                ret = Path.GetFileName(profileDirs[0]);
                 return true;
             }
 
@@ -2946,8 +2974,10 @@ namespace AIHelper.Manage
             {
                 return;
             }
+
             var searchPattern = Path.GetFileName(path);
-            foreach (FileSystemInfo foundFile in searchDir.EnumerateFiles(searchPattern))
+            // both files and directories are required because list contains patterns for both of them
+            foreach (FileSystemInfo foundFile in searchDir.EnumerateFileSystemInfos(searchPattern))
             {
                 try
                 {
@@ -3011,9 +3041,7 @@ namespace AIHelper.Manage
         {
             Match gameName = Regex.Match(File.ReadAllText(Path.Combine(ManageSettings.MoBaseGamesPluginGamesDirPath, ManageSettings.Games.Game.BasicGamePluginName + ".py")), @"GameName \= \""([^\""]+)\""");
 
-            if (gameName == null) return "";
-
-            return gameName.Result("$1");
+            return gameName.Success ? gameName.Groups[1].Value : "";
         }
 
         internal static IEnumerable<string> GetBoundExes(string profileName)
@@ -3039,7 +3067,7 @@ namespace AIHelper.Manage
         }
 
         /// <summary>
-        /// 
+        /// Set selected profile in the MO ini
         /// </summary>
         /// <param name="profileNameToRun"></param>
         /// <returns>old profile name</returns>
@@ -3047,13 +3075,9 @@ namespace AIHelper.Manage
         {
             var ini = ManageIni.GetINIFile(ManageSettings.ModOrganizerIniPath);
 
-            string byteArrayPrefix = "@ByteArray(";
-            string oldProfileIniValue = ini.GetKey("General", "selected_profile");
-            string oldProfile = oldProfileIniValue
-                .Remove(oldProfileIniValue.Length - 1)
-                .Substring(byteArrayPrefix.Length);
+            string oldProfile = MOremoveByteArray(ini.GetKey("General", "selected_profile"));
 
-            ini.SetKey("General", "selected_profile", $"{byteArrayPrefix}{profileNameToRun})");
+            ini.SetKey("General", "selected_profile", $"@ByteArray({profileNameToRun})");
 
             return oldProfile;
         }
@@ -3061,9 +3085,12 @@ namespace AIHelper.Manage
         internal static bool TryGetMOProfileNameByExeTitle(string customExeTitleName, out string profileNameToRun)
         {
             profileNameToRun = "";
+
+            string thisExePath = GetMOcustomExecutableExePathByTitle(customExeTitleName);
+            if (string.IsNullOrWhiteSpace(thisExePath)) return false;
+
             var profileDirs = new DirectoryInfo(ManageSettings.MoCurrentGameProfilesDirPath).GetDirectories()
                                        .OrderByDescending(profileDir => profileDir.LastWriteTime); // order first which was modified last                
-            string thisExePath = GetMOcustomExecutableExePathByTitle(customExeTitleName);
             foreach (var profileDir in profileDirs)
             {
                 var profileName = profileDir.Name;
@@ -3145,7 +3172,6 @@ namespace AIHelper.Manage
 
         class MetaIniInfo
         {
-            INIFile _ini;
             public MetaIniParams Get(string moddir)
             {
                 string metaPath = Path.Combine(moddir, "meta.ini");
@@ -3154,15 +3180,15 @@ namespace AIHelper.Manage
                     return null;
                 }
 
-                _ini = ManageIni.GetINIFile(metaPath);
+                INIFile ini = ManageIni.GetINIFile(metaPath);
 
                 return new MetaIniParams(
-                    _ini.GetKey("General", "gameName"),
-                    _ini.GetKey("General", "category").Trim('\"'),
-                    _ini.GetKey("General", "version"),
-                    _ini.GetKey("General", "comments"),
-                    _ini.GetKey("General", "notes"),
-                    _ini.GetKey("General", "url")
+                    ini.GetKey("General", "gameName"),
+                    ini.GetKey("General", "category").Trim('\"'),
+                    ini.GetKey("General", "version"),
+                    ini.GetKey("General", "comments"),
+                    ini.GetKey("General", "notes"),
+                    ini.GetKey("General", "url")
                     );
             }
 
@@ -3261,8 +3287,11 @@ namespace AIHelper.Manage
                     string[] lineData;
                     while (!reader.EndOfStream)
                     {
-                        lineData = reader.ReadLine().Split('|');
-                        if (lineData == null || lineData.Length != 4)
+                        var line = reader.ReadLine();
+                        if (string.IsNullOrWhiteSpace(line)) continue;
+
+                        lineData = line.Split('|');
+                        if (lineData.Length != 4)
                         {
                             continue;
                         }
@@ -3282,7 +3311,12 @@ namespace AIHelper.Manage
                     return;
                 }
 
-                using (StreamWriter writer = new StreamWriter(_categoriesFilePath))
+                // use default categories file when it was not set while init (file was not exists)
+                var categoriesFilePath = string.IsNullOrWhiteSpace(_categoriesFilePath)
+                    ? ManageSettings.CurrentGameMOcategoriesFilePath
+                    : _categoriesFilePath;
+
+                using (StreamWriter writer = new StreamWriter(categoriesFilePath))
                 {
                     foreach (var record in Records)
                     {

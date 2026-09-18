@@ -11,7 +11,6 @@ using AIHelper.Forms.Other;
 using AIHelper.Manage.ui.themes;
 using MAB.DotIgnore;
 using NLog;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using static AIHelper.Manage.ManageModOrganizer;
 
 namespace AIHelper.Manage.Functions
@@ -135,19 +134,20 @@ namespace AIHelper.Manage.Functions
             Directory.CreateDirectory(Path.GetDirectoryName(whiteListPath)); // create parent dir
             if (File.Exists(whiteListPath))
             {
-                // add missing hardcoded masks
+                // collect every mask already present in the file
                 var existsMasks = new HashSet<string>();
                 var lines = File.ReadAllLines(whiteListPath);
                 foreach (var line in lines)
                 {
                     if (string.IsNullOrWhiteSpace(line)) continue;
                     if (line.TrimStart().StartsWith("#")) continue;
-                    if (hardcodedWhiteList.Contains(line)) continue;
 
                     existsMasks.Add(line);
                 }
 
                 // check for new hardcoded masks need to add
+                //NOTE: existsMasks must contain the hardcoded masks too, otherwise this set is always
+                //equal to hardcodedWhiteList and every run appends the whole list to the file again
                 var masksToAdd = new HashSet<string>();
                 foreach (var mask in hardcodedWhiteList)
                 {
@@ -195,16 +195,19 @@ namespace AIHelper.Manage.Functions
                 (blackList, true),
             })
             {
+                //NOTE: the candidates must be materialized before moving, because MoveItem modifies the very
+                //tree that EnumerateDirectories/EnumerateFiles walk lazily. Enumerating while moving makes the
+                //walk skip entries or throw.
                 // move dirs first
                 foreach (var item in new DirectoryInfo(dataDipPath).EnumerateDirectories("*", SearchOption.AllDirectories)
-                    .Where(i => (isIgnored ? list.IsIgnored(i) : !list.IsIgnored(i)) && i.Exists && (!isIgnoreSymlinks || !i.IsSymlink())))
+                    .Where(i => (isIgnored ? list.IsIgnored(i) : !list.IsIgnored(i)) && i.Exists && (!isIgnoreSymlinks || !i.IsSymlink())).ToArray())
                 {
                     if (MoveItem(item, bakDir, dataDipPathLength)) { dirs++; } else { errors++; }
                     //tbxInfo.Text = T._($"Move files: D{dirs}/F{files}/!{errors}");
                 }
                 // move files
                 foreach (var item in new DirectoryInfo(dataDipPath).EnumerateFiles("*.*", SearchOption.AllDirectories)
-                    .Where(i => (isIgnored ? list.IsIgnored(i) : !list.IsIgnored(i)) && i.Exists && (!isIgnoreSymlinks || !i.IsSymlink()) && (!isIgnoreShortcuts || i.Extension != ".lnk")))
+                    .Where(i => (isIgnored ? list.IsIgnored(i) : !list.IsIgnored(i)) && i.Exists && (!isIgnoreSymlinks || !i.IsSymlink()) && (!isIgnoreShortcuts || i.Extension != ".lnk")).ToArray())
                 {
                     if (MoveItem(item, bakDir, dataDipPathLength)) { files++; } else { errors++; }
                     //tbxInfo.Text = T._($"Move files: D{dirs}/F{files}/!{errors}");
@@ -264,8 +267,10 @@ namespace AIHelper.Manage.Functions
 
                 return true;
             }
-            catch (IOException ex)
+            catch (Exception ex)
             {
+                //catch every failure, not only IOException: a single locked or access denied item
+                //(UnauthorizedAccessException) would otherwise abort the whole clean run half way
                 _log.Error($"{nameof(DataDirCleaner)}/{nameof(Clean)}: Failed to move dir '{item.FullName}'. Error:\r\n{ex}");
                 return false;
             }

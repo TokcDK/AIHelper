@@ -11,6 +11,21 @@ namespace AIHelper.Manage
     internal static class ManageStringsExtensions
     {
         /// <summary>
+        /// Prefix which allows to use paths longer than MAX_PATH with win32 file api
+        /// </summary>
+        internal const string LongPathPrefix = @"\\?\";
+
+        /// <summary>
+        /// Maximal safe length of a file path (including file name)
+        /// </summary>
+        internal const int MaxPathLengthForFile = 259;
+
+        /// <summary>
+        /// Maximal safe length of a directory path
+        /// </summary>
+        internal const int MaxPathLengthForDirectory = 247;
+
+        /// <summary>
         /// Calculate count of char <paramref name="c"/> in input string <paramref name="s"/>
         /// </summary>
         /// <param name="s"></param>
@@ -159,9 +174,16 @@ namespace AIHelper.Manage
 
             return c;
         }
+        /// <summary>
+        /// Convert hexed string like \x440 to normal string.
+        /// Escape can have 2-4 hex digits because <see cref="ToHex(char, bool)"/> uses "X2" format
+        /// and characters above U+00FF (for example cyrillic or CJK) are written with more than 2 digits.
+        /// </summary>
+        /// <param name="inputString"></param>
+        /// <returns></returns>
         internal static string UnHex(this string inputString)
         {
-            var matches = Regex.Matches(inputString, @"\\x[0-9a-f]{3}");
+            var matches = Regex.Matches(inputString, @"\\x[0-9a-fA-F]{2,4}");
             for (int i = matches.Count - 1; i >= 0; i--)
             {
                 char unhexed = matches[i].Value.UnHex(true);
@@ -197,24 +219,23 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="path"></param>
         /// <param name="isFile"></param>
-        /// <param name="alreadyChecked"></param>
+        /// <param name="alreadyChecked">true when caller already checked the path length and only prefix adding is required</param>
         /// <returns></returns>
         internal static string ToLongPathWhenNeed(this string path, bool isFile = true, bool alreadyChecked = false)
         {
-            if (alreadyChecked 
-                || 
-                (
-                    ((isFile && path.Length > 259) || (!isFile && path.Length > 247)) 
-                    && path.StartsWith(@"\\?\")
-                )
-               )
+            if (string.IsNullOrEmpty(path) || path.StartsWith(LongPathPrefix, StringComparison.Ordinal))
             {
-                return @"\\?\" + path;
-            }
-            else
-            {
+                // nothing to do when path is empty or already has the long path prefix
                 return path;
             }
+
+            bool pathIsTooLong = alreadyChecked
+                || (isFile ? path.Length > MaxPathLengthForFile : path.Length > MaxPathLengthForDirectory);
+
+            // long path prefix requires fully qualified path with backslash separators
+            return pathIsTooLong
+                ? LongPathPrefix + ManageFilesFoldersExtensions.NormalizePath(path)
+                : path;
         }
 
         internal static double GetProductVersionToFloatNumber(string fileProductVersion)
@@ -283,25 +304,27 @@ namespace AIHelper.Manage
         }
 
         /// <summary>
-        /// Renames the file name so that the target path does not exist. 
-        /// Name will be like "filename (#)"
+        /// Returns the same file with a name which is not exists in it's folder yet.
+        /// Name will be like "filename (#)".
         /// </summary>
         /// <param name="targetFileInfo">Input FileInfo of existing file</param>
-        /// <returns></returns>
+        /// <returns>FileInfo with not existing name or input <paramref name="targetFileInfo"/> when it is not exists</returns>
         public static FileInfo GetNewTargetName(this FileInfo targetFileInfo)
         {
-            if (!targetFileInfo.Exists) return targetFileInfo;
+            if (targetFileInfo == null || !targetFileInfo.Exists) return targetFileInfo;
 
             string name = Path.GetFileNameWithoutExtension(targetFileInfo.Name);
-            int nameIndex = 1;
-            string targetName = name;
-            while (Directory.Exists(Path.Combine(targetFileInfo.DirectoryName, targetName, targetFileInfo.Extension)))
+            string extension = targetFileInfo.Extension;
+
+            int nameIndex = 0;
+            string targetPath = Path.Combine(targetFileInfo.DirectoryName, name + extension);
+            while (File.Exists(targetPath))
             {
-                targetName = name + " (" + nameIndex + ")";
                 nameIndex++;
+                targetPath = Path.Combine(targetFileInfo.DirectoryName, name + " (" + nameIndex + ")" + extension);
             }
 
-            return new FileInfo(Path.Combine(targetFileInfo.DirectoryName, targetName, targetFileInfo.Extension));
+            return new FileInfo(targetPath);
         }
 
         /// <summary>

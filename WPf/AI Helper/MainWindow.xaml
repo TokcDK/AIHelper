@@ -44,12 +44,12 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="AI Helper" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontFamily="Lucida Handwriting">
-                        <TextBlock.BitmapEffect>
-                            <DropShadowBitmapEffect Color="Black" Direction="-25" ShadowDepth="10" Softness=".35"/>
-                        </TextBlock.BitmapEffect>
+                    <TextBlock Text="AI Helper" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontFamily="Lucida Handwriting">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="Black" Direction="-25" ShadowDepth="10" BlurRadius="5" Opacity="0.5"/>
+                        </TextBlock.Effect>
                     </TextBlock>
-                    <TextBlock Text="{Binding GamesList.Game.GameName}" Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="14" FontFamily="Lucida Handwriting" Foreground="#FFF1B7DC"/>
+                    <TextBlock Text="{Binding GamesList.Game.GameName}" Grid.Column="0" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="14" FontFamily="Lucida Handwriting" Foreground="#FFF1B7DC"/>
 
                     <Button Grid.Row="1" VerticalAlignment="Top" Height="33" Width="150" FontFamily="Segoe Print" FontSize="9.75" Command="{Binding OnPrepareGame_Click}">Prepare the game</Button>
                 </Grid>
@@ -67,9 +67,9 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Text="AI Helper" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" FontFamily="Lucida Handwriting">
-                        <TextBlock.BitmapEffect>
-                            <DropShadowBitmapEffect Color="Black" Direction="-25" ShadowDepth="10" Softness=".35"/>
-                        </TextBlock.BitmapEffect>
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="Black" Direction="-25" ShadowDepth="10" BlurRadius="5" Opacity="0.5"/>
+                        </TextBlock.Effect>
                     </TextBlock>
                     <TextBlock Text="{Binding GamesList.Game.GameName}" Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" FontSize="14" FontFamily="Lucida Handwriting" Foreground="#FFF1B7DC"/>
 

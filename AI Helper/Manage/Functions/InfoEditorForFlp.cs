@@ -13,11 +13,14 @@ using AIHelper.Manage.Update;
 using AIHelper.Manage.Update.Sources;
 using AIHelper.Manage.Update.Targets.Mods;
 using INIFileMan;
+using NLog;
 
 namespace AIHelper.Manage.Functions
 {
     internal class InfoEditorForFlp : FunctionForFlpBase
     {
+        static readonly Logger _log = LogManager.GetCurrentClassLogger();
+
         public override string Symbol => T._("⚒");
 
         public override string Description => T._("Open mods update info editor");
@@ -271,7 +274,11 @@ namespace AIHelper.Manage.Functions
 
                             Log(T._("Mod name set from url"));
                         }
-                        catch { return; }
+                        catch (Exception ex)
+                        {
+                            _log.Warn("Failed to set the mod name from the url. Error:\r\n" + ex);
+                            return;
+                        }
                     }
 
                     urlTextBox.DataBindings[0].WriteValue();
@@ -479,30 +486,41 @@ namespace AIHelper.Manage.Functions
 
         private async void GetGHubFile(Github ghub, GitUpdateInfoData ginfo)
         {
-            bool getfileIsTrue = await ghub.GetFile().ConfigureAwait(true); // download latest file
-            if (!getfileIsTrue)
+            //NOTE: this stays async void because the enclosing LoadAddModPanel is synchronous, so the caller
+            //cannot await it. An exception thrown after the first await of an async void method cannot be caught
+            //by the caller and would crash the process, so the whole body must be guarded here.
+            try
             {
-                Log(T._("Cant download file!"));
-                return;
+                bool getfileIsTrue = await ghub.GetFile().ConfigureAwait(true); // download latest file
+                if (!getfileIsTrue)
+                {
+                    Log(T._("Cant download file!"));
+                    return;
+                }
+
+                var t = new ModsMeta(ghub.Info);
+
+                if (!t.UpdateFiles())
+                {
+                    Log(T._("Cant move file into mods dir"));
+                    return;
+                }
+
+                ginfo.Mod.MetaIni = new INIFile(Path.Combine(ghub.Info.TargetFolderPath.FullName, "meta.ini"), true);
+
+                ginfo.Write();
+
+                Log(T._("Mod succesfully downloaded and added!"));
+
+                // The mod was successfully downloaded and added: build one new
+                // ModInfoBuild with the entered values and append it to the cache.
+                AddNewModInfoBuild(ginfo);
             }
-
-            var t = new ModsMeta(ghub.Info);
-
-            if (!t.UpdateFiles())
+            catch (Exception ex)
             {
-                Log(T._("Cant move file into mods dir"));
-                return;
+                Log(T._("Error: ") + ex.Message);
+                _log.Error("Failed to download and add the mod. Error:\r\n" + ex);
             }
-
-            ginfo.Mod.MetaIni = new INIFile(Path.Combine(ghub.Info.TargetFolderPath.FullName, "meta.ini"), true);
-
-            ginfo.Write();
-
-            Log(T._("Mod succesfully downloaded and added!"));
-
-            // The mod was successfully downloaded and added: build one new
-            // ModInfoBuild with the entered values and append it to the cache.
-            AddNewModInfoBuild(ginfo);
         }
 
         private void AddNewModInfoBuild(GitUpdateInfoData ginfo)
@@ -980,8 +998,10 @@ namespace AIHelper.Manage.Functions
                 var url = INI.GetKey("General", "url");
                 if (hasGitHubUrlData && (url == null || url.Length == 0))
                 {
-                    var site = (Site.StartsWith("http", System.StringComparison.InvariantCultureIgnoreCase) ? "https://" : "") + Site;
-                    INI.SetKey("General", "url", $"https://{site}/{Owner}/{Repository}", false);
+                    //only add the scheme when Site does not already carry one, otherwise the result
+                    //becomes "https://https://..."
+                    var site = (Site.StartsWith("http", System.StringComparison.InvariantCultureIgnoreCase) ? "" : "https://") + Site;
+                    INI.SetKey("General", "url", $"{site}/{Owner}/{Repository}", false);
 
                     changed = true;
                 }

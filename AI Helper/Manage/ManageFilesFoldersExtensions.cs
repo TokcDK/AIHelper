@@ -7,10 +7,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AIHelper.Manage
 {
@@ -124,7 +122,7 @@ namespace AIHelper.Manage
         /// <param name="exclusions"></param>
         public static void DeleteEmptySubfolders(string dirPath, bool deleteThisDir, string[] exclusions)
         {
-            DeleteEmptySubfolders(dirPath, deleteThisDir, exclusions.ToHashSet(), false);
+            DeleteEmptySubfolders(dirPath, deleteThisDir, exclusions == null ? null : new HashSet<string>(exclusions), false);
         }
 
         /// <summary>
@@ -195,9 +193,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         public static void GetEmptySubfoldersPaths(string dirPath, StringBuilder pathsList)
         {
-            if (!Directory.Exists(dirPath)) return;
-
-            if (pathsList == null) pathsList = new StringBuilder();
+            if (!Directory.Exists(dirPath) || pathsList == null) return;
 
             string[] subfolders = Directory.GetDirectories(dirPath, "*");
             int subfoldersLength = subfolders.Length;
@@ -287,7 +283,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         public static bool ContainsAnyInvalidCharacters(string path)
         {
-            return (path.Length > 0 && path.IndexOfAny(Path.GetInvalidPathChars()) >= 0);
+            return !string.IsNullOrEmpty(path) && path.IndexOfAny(Path.GetInvalidPathChars()) >= 0;
         }
 
         /// <summary>
@@ -314,11 +310,16 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="folder"></param>
         /// <param name="name"></param>
-        /// <param name="extension"></param>
+        /// <param name="extension">extension with or without leading dot</param>
         /// <returns></returns>
         public static string GetResultTargetFilePathWithNameCheck(string folder, string name, string extension = "")
         {
-            var resultPath = Path.Combine(folder, name + (extension.Length > 0 && extension.Substring(0, 1) != "." ? "." : string.Empty) + extension);
+            if (!string.IsNullOrEmpty(extension) && extension[0] != '.')
+            {
+                extension = "." + extension;
+            }
+
+            var resultPath = Path.Combine(folder, name + extension);
             int i = 0;
             while (File.Exists(resultPath))
             {
@@ -432,6 +433,8 @@ namespace AIHelper.Manage
                 {
                     if (!File.Exists(targetFile))
                     {
+                        // no conflict with target file, move source file as is
+                        File.Move(sourceFile, targetFile);
                         continue;
                     }
 
@@ -479,18 +482,14 @@ namespace AIHelper.Manage
         /// <returns></returns>
         private static string GetNewNewWithCurrentDate(string target, bool isFile = true)
         {
-            if (isFile)
-            {
-                return Path.Combine(Path.GetDirectoryName(target)
-                     + Path.GetFileNameWithoutExtension(target)
-                     + "_" + DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss", CultureInfo.InvariantCulture)
-                     + Path.GetExtension(target)
-                    );
-            }
-            else
-            {
-                return target + "_" + DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss", CultureInfo.InvariantCulture);
-            }
+            string dateSuffix = "_" + DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss", CultureInfo.InvariantCulture);
+
+            return isFile
+                ? Path.Combine(
+                    Path.GetDirectoryName(target),
+                    Path.GetFileNameWithoutExtension(target) + dateSuffix + Path.GetExtension(target)
+                    )
+                : target + dateSuffix;
         }
 
         /// <summary>
@@ -737,7 +736,8 @@ namespace AIHelper.Manage
         }
 
         /// <summary>
-        /// Move file to target path. If file with same name exist in target path it will be renamed with current date and time in format "yyyy_MM_dd_HH_mm_ss" and then moved to target path. If <paramref name="overwrite"/> is true, then existing file will be renamed with ".moveBak" extension and after moving source file to target path, if ".moveBak" file exist, it will be deleted if target file exist or restored if target file not exist. So in this case no files will be lost.
+        /// Move file to target path. If file with same name exist in target path it will be renamed with "(#)" suffix
+        /// to keep it and then moved to target path. If <paramref name="overwrite"/> is true, then existing file will be renamed with ".moveBak" extension and after moving source file to target path, if ".moveBak" file exist, it will be deleted if target file exist or restored if target file not exist. So in this case no files will be lost.
         /// </summary>
         /// <param name="fileInfo"></param>
         /// <param name="targetPath"></param>
@@ -775,7 +775,9 @@ namespace AIHelper.Manage
                 }
                 else
                 {
-                    fileInfo = new FileInfo(targetPath).GetNewTargetName();
+                    // move existing target file to the new name to free the target path for the source file
+                    var existingTarget = new FileInfo(targetPath);
+                    existingTarget.MoveTo(existingTarget.GetNewTargetName().FullName);
                 }
             }
 
@@ -789,7 +791,8 @@ namespace AIHelper.Manage
         /// <param name="dirLinksList"></param>
         internal static void GetFolderSymlinks(string dirPath, List<string> dirLinksList)
         {
-            Parallel.ForEach(Directory.EnumerateDirectories(dirPath), dir =>
+            // iterate sequentially because the list is not thread safe
+            foreach (var dir in Directory.EnumerateDirectories(dirPath))
             {
                 if (dir.IsSymlink())
                 {
@@ -799,7 +802,7 @@ namespace AIHelper.Manage
                 {
                     GetFolderSymlinks(dir, dirLinksList);
                 }
-            });
+            }
         }
 
         /// <summary>
@@ -867,15 +870,25 @@ namespace AIHelper.Manage
             return true;
         }
 
+        /// <summary>
+        /// true when both infos point to the same file or when the files have the same size and content.
+        /// </summary>
+        /// <param name="sourcePyInfo"></param>
+        /// <param name="targetPyInfo"></param>
+        /// <returns></returns>
         internal static bool StringFilesEqual(FileInfo sourcePyInfo, FileInfo targetPyInfo)
         {
             try
             {
-                return sourcePyInfo.FullName == targetPyInfo.FullName || (sourcePyInfo.Exists && targetPyInfo.Exists && sourcePyInfo.Length == targetPyInfo.Length && sourcePyInfo.GetHashCode() == targetPyInfo.GetHashCode());
+                if (sourcePyInfo == null || targetPyInfo == null) return false;
+
+                if (string.Equals(sourcePyInfo.FullName, targetPyInfo.FullName, StringComparison.OrdinalIgnoreCase)) return true;
+
+                return sourcePyInfo.Exists && targetPyInfo.Exists && sourcePyInfo.FilesAreEqual(targetPyInfo);
             }
             catch (Exception ex)
             {
-                _log.Error($"Error in {nameof(StringFilesEqual)}:" + Environment.NewLine + "sourceFilePath=" + sourcePyInfo.FullName + Environment.NewLine + "targetFilePath=" + targetPyInfo.FullName + Environment.NewLine + ex);
+                _log.Error($"Error in {nameof(StringFilesEqual)}:" + Environment.NewLine + "sourceFilePath=" + sourcePyInfo?.FullName + Environment.NewLine + "targetFilePath=" + targetPyInfo?.FullName + Environment.NewLine + ex);
                 return false;
             }
         }

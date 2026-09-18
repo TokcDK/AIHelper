@@ -36,7 +36,6 @@ namespace AIHelper.Manage.Rules.MetaIniFixes
             iniFixesForm.Show();
             iniFixesForm.Activate();
 
-            bool inIchanged = false;
             var preModlistCount = modlistData.Report.Count;
             foreach (var mod in allDirsList)
             {
@@ -48,6 +47,10 @@ namespace AIHelper.Manage.Rules.MetaIniFixes
                 if (!File.Exists(modMetaIniPath)) continue;
 
                 var ini = ManageIni.GetINIFile(modMetaIniPath);
+
+                //must be scoped to one mod: a shared flag kept the value of the previous mod, so every
+                //meta.ini after the first fixed one was written back even when nothing had changed
+                bool inIchanged = false;
 
                 foreach (var fix in Inherited.GetInheritedSubClasses<ModlistDataMetaIniFixesBase>(modlistData, ini, mod))
                 {

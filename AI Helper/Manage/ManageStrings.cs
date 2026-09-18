@@ -13,12 +13,15 @@ namespace AIHelper.Manage
         /// if path is long, will be added prefix "\\?\" for long paths.
         /// </summary>
         /// <param name="path"></param>
-        /// <returns></returns>
+        /// <returns>true when path was changed to long path format</returns>
         internal static bool CheckForLongPath(ref string path)
         {
-            if (path.Length > 247 && !path.StartsWith(@"\\?\"))
+            if (path.Length > ManageStringsExtensions.MaxPathLengthForDirectory
+                && !path.StartsWith(ManageStringsExtensions.LongPathPrefix, StringComparison.Ordinal))
             {
-                _log.Warn("Warning. Path to file has more of 259 characters. It can cause errors in game. Try to make path shorter by rename filename or any folders to it. File:" + Environment.NewLine + path);
+                _log.Warn("Warning. Path has more of " + ManageStringsExtensions.MaxPathLengthForDirectory
+                    + " characters. It can cause errors in game. Try to make path shorter by rename filename or any folders to it. File:"
+                    + Environment.NewLine + path);
                 path = path.ToLongPathWhenNeed(true, true);
                 return true;
             }
@@ -165,22 +168,17 @@ namespace AIHelper.Manage
         public static string AddAuthorToNameIfNeed(string name, string author)
         {
             //добавление имени автора в начало имени папки
-            if (name.StartsWith("[" + ManageSettings.CurrentGame.GameAbbreviation + "][", System.StringComparison.InvariantCulture) || (name.StartsWith("[", System.StringComparison.InvariantCulture) && !name.StartsWith("[" + ManageSettings.CurrentGame.GameAbbreviation + "]", System.StringComparison.InvariantCulture)) || ManageStrings.IsStringAContainsStringB(name, author))
-            {
-            }
-            else if (author.Length > 0)
-            {
-                //проверка на любые невалидные для имени папки символы
-                if (ManageFilesFoldersExtensions.ContainsAnyInvalidCharacters(author))
-                {
-                }
-                else
-                {
-                    name = "[" + author + "] " + name;
-                }
-            }
+            bool nameAlreadyHasAuthorOrGameMark =
+                name.StartsWith("[" + ManageSettings.CurrentGame.GameAbbreviation + "][", StringComparison.InvariantCulture)
+                || (name.StartsWith("[", StringComparison.InvariantCulture) && !name.StartsWith("[" + ManageSettings.CurrentGame.GameAbbreviation + "]", StringComparison.InvariantCulture))
+                || ManageStrings.IsStringAContainsStringB(name, author);
 
-            return name;
+            //проверка на любые невалидные для имени папки символы
+            bool authorIsValid = author.Length > 0 && !ManageFilesFoldersExtensions.ContainsAnyInvalidCharacters(author);
+
+            return nameAlreadyHasAuthorOrGameMark || !authorIsValid
+                ? name
+                : "[" + author + "] " + name;
         }
 
         public static bool IsStringAContainsAnyStringFromStringArray(string stringA, string[] stringArray, bool ignoreCase = false)
@@ -189,7 +187,7 @@ namespace AIHelper.Manage
             {
                 if (ignoreCase)
                 {
-                    if (IsStringAContainsStringB(stringA, stringB) || IsStringAContainsStringB(stringA.ToUpperInvariant(), stringB.ToUpperInvariant()))
+                    if (IsStringAContainsStringB(stringA.ToUpperInvariant(), stringB.ToUpperInvariant()))
                     {
                         return true;
                     }

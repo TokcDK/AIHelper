@@ -1,6 +1,7 @@
 ﻿using CheckForEmptyDir;
 using NLog;
 using SymbolicLinkSupport;
+using System;
 using System.IO;
 
 namespace AIHelper.Manage
@@ -489,7 +490,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool IsValidSymlinkTargetEquals(this DirectoryInfo symlink, string requiredTargetPath)
         {
-            return symlink.Exists && symlink.IsSymlink() && symlink.IsValidSymlink() && symlink.GetSymlinkTarget() == requiredTargetPath;
+            return symlink.Exists && symlink.IsSymlink() && symlink.IsValidSymlink() && SymlinkTargetEquals(symlink.GetSymlinkTarget(), requiredTargetPath);
         }
 
         /// <summary>
@@ -500,7 +501,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool IsSymlinkTargetEquals(this FileInfo symlink, string requiredTargetPath)
         {
-            return symlink.Exists && symlink.IsSymlink() && symlink.GetSymlinkTarget() == requiredTargetPath;
+            return symlink.Exists && symlink.IsSymlink() && SymlinkTargetEquals(symlink.GetSymlinkTarget(), requiredTargetPath);
         }
 
         /// <summary>
@@ -511,8 +512,29 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static bool IsSymlinkTargetEquals(this DirectoryInfo symlink, string requiredTargetPath)
         {
-            string targetPath;
-            return symlink.Exists && symlink.IsSymlink() && ((targetPath = symlink.GetSymlinkTarget()) == requiredTargetPath || Path.GetFullPath(targetPath) == Path.GetFullPath(requiredTargetPath));
+            return symlink.Exists && symlink.IsSymlink() && SymlinkTargetEquals(symlink.GetSymlinkTarget(), requiredTargetPath);
+        }
+
+        /// <summary>
+        /// compare symlink target path with the required path. Both full and not normalized values are checked
+        /// </summary>
+        /// <param name="symlinkTargetPath"></param>
+        /// <param name="requiredTargetPath"></param>
+        /// <returns></returns>
+        private static bool SymlinkTargetEquals(string symlinkTargetPath, string requiredTargetPath)
+        {
+            if (string.IsNullOrWhiteSpace(symlinkTargetPath) || string.IsNullOrWhiteSpace(requiredTargetPath)) return false;
+
+            if (symlinkTargetPath == requiredTargetPath) return true;
+
+            try
+            {
+                return Path.GetFullPath(symlinkTargetPath) == Path.GetFullPath(requiredTargetPath);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

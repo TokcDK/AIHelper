@@ -1,5 +1,6 @@
 ﻿using AIHelper.Manage.Rules.MetaIniFixes;
 using AIHelper.Manage.Rules.ModList;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,6 +10,8 @@ namespace AIHelper.Manage
 {
     internal class ManageRules
     {
+        static readonly Logger _log = LogManager.GetCurrentClassLogger();
+
         internal class ModList
         {
             readonly ModListData _modlistData;
@@ -19,7 +22,7 @@ namespace AIHelper.Manage
 
             internal void ModlistFixes()
             {
-                var modlistBackupFilePath = ManageModOrganizer.MakeMoProfileModlistFileBuckup("_prefixes");
+                var modlistBackupFilePath = ManageModOrganizer.MakeMoProfileModlistBackup("_prefixes");
 
                 var checkForm = new Form
                 {
@@ -28,50 +31,34 @@ namespace AIHelper.Manage
                     StartPosition = FormStartPosition.CenterScreen,
                     Text = T._("Checking") + "..."
                 };
-                //var checkProgress = new ProgressBar
-                //{
-                //    Dock = DockStyle.Fill,
-                //    Maximum = _modlistData.EnabledModNamesList.Length
-                //};
-                var cnt = 0;
-                //checkForm.Controls.Add(checkProgress);
                 checkForm.Show();
 
-                _modlistData.AllModNamesList = ManageModOrganizer.GetModNamesListFromActiveMoProfile(false);
-                _modlistData.EnabledModNamesList = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
-                foreach (var modName in _modlistData.EnabledModNamesList)
+                try
                 {
-                    if (string.IsNullOrWhiteSpace(modName)) continue;
+                    _modlistData.AllModNamesList = ManageModOrganizer.GetModNamesListFromActiveMoProfile(false);
+                    _modlistData.EnabledModNamesList = ManageModOrganizer.GetModNamesListFromActiveMoProfile();
+                    foreach (var modName in _modlistData.EnabledModNamesList)
+                    {
+                        if (string.IsNullOrWhiteSpace(modName)) continue;
 
-                    //if (cnt < checkProgress.Maximum) checkProgress.Value = cnt;
-
-                    _modlistData.ModName = modName;
-                    ApplyRules();
-
-                    cnt++;
+                        _modlistData.ModName = modName;
+                        ApplyRules();
+                    }
                 }
-
-                //checkProgress.Dispose();
-                checkForm.Dispose();
+                finally
+                {
+                    checkForm.Dispose();
+                }
 
                 KPlugTweaks();
 
                 var listChanged = _modlistData.Report.Count > 0;
-                bool actionsChanged = false;
+                bool actionsReportHeaderAdded = false;
                 if (_modlistData.ModsMustBeEnabled.Count > 0)
                 {
                     foreach (var mod in _modlistData.ModsMustBeEnabled)
                     {
-                        if (!actionsChanged)
-                        {
-                            actionsChanged = true;
-                            _modlistData.Report.Add(T._("Results") + ":"
-                            + Environment.NewLine
-                            + Environment.NewLine
-                            + T._("Actions") + ":"
-                            + Environment.NewLine
-                            );
-                        }
+                        AddActionsReportHeader(ref actionsReportHeaderAdded);
                         _modlistData.Report.Add(T._("Mod") + " " + mod.Key + " " + T._("was activated") + ": " + mod.Value);
                         ManageModOrganizer.ActivateMod(mod.Key);
                         listChanged = true;
@@ -83,16 +70,7 @@ namespace AIHelper.Manage
                     foreach (var modinfo in _modlistData.ModsMustBeDisabled)
                     {
                         var mod = modinfo.Key;
-                        if (!actionsChanged)
-                        {
-                            actionsChanged = true;
-                            _modlistData.Report.Add(T._("Results") + ": "
-                            + Environment.NewLine
-                            + Environment.NewLine
-                            + T._("Actions") + ":"
-                            + Environment.NewLine
-                            );
-                        }
+                        AddActionsReportHeader(ref actionsReportHeaderAdded);
                         _modlistData.Report.Add(T._("Mod") + " " + mod + " " + T._("was deactivated") + ": " + modinfo.Value);
                         ManageModOrganizer.DeactivateMod(mod);
                         listChanged = true;
@@ -106,45 +84,13 @@ namespace AIHelper.Manage
 
                 if (_modlistData.Report.Count > 0)
                 {
-                    var reportMessage = string.Empty;
-                    if (listChanged)
-                    {
-                        reportMessage += string.Join(Environment.NewLine, _modlistData.Report);
-                        //ReportMessage += T._("Results") + ":"
-                        //    + Environment.NewLine
-                        //    + Environment.NewLine
-                        //    + string.Join(Environment.NewLine, modlistData.Report);
-                    }
-                    else
-                    {
-                        reportMessage += T._("No known issues found in the enabled mods list")
+                    var reportMessage = listChanged
+                        ? string.Join(Environment.NewLine, _modlistData.Report)
+                        : T._("No known issues found in the enabled mods list")
                            + Environment.NewLine
                            + string.Join(Environment.NewLine, _modlistData.Report);
-                    }
 
-                    var reportForm = new Form
-                    {
-                        Text = T._("Modlist check report"),
-                        //ReportForm.Size = new System.Drawing.Size(500,700);
-                        AutoSize = true,
-                        FormBorderStyle = FormBorderStyle.FixedDialog,
-                        StartPosition = FormStartPosition.CenterScreen
-                    };
-                    var reportTb = new RichTextBox
-                    {
-                        Size = new System.Drawing.Size(700, 900),
-                        WordWrap = true,
-                        Dock = DockStyle.Fill,
-                        ReadOnly = true,
-                        //ReportTB.BackColor = System.Drawing.Color.Gray;
-                        Text = reportMessage,
-                        ScrollBars = RichTextBoxScrollBars.Both
-                    };
-
-                    reportForm.Controls.Add(reportTb);
-                    reportForm.Show();
-
-                    //MessageBox.Show(ReportMessage);
+                    ShowModlistReport(reportMessage);
                 }
                 else
                 {
@@ -157,10 +103,58 @@ namespace AIHelper.Manage
                     {
                         File.Delete(modlistBackupFilePath);
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        // not critical, backup file will be removed on the next check
+                        _log.Debug("Failed to delete the modlist backup file " + modlistBackupFilePath + ". Error: " + ex.Message);
                     }
                 }
+            }
+
+            /// <summary>
+            /// show report of the modlist check
+            /// </summary>
+            /// <param name="reportMessage"></param>
+            private static void ShowModlistReport(string reportMessage)
+            {
+                var reportForm = new Form
+                {
+                    Text = T._("Modlist check report"),
+                    //ReportForm.Size = new System.Drawing.Size(500,700);
+                    AutoSize = true,
+                    FormBorderStyle = FormBorderStyle.FixedDialog,
+                    StartPosition = FormStartPosition.CenterScreen
+                };
+                var reportTb = new RichTextBox
+                {
+                    Size = new System.Drawing.Size(700, 900),
+                    WordWrap = true,
+                    Dock = DockStyle.Fill,
+                    ReadOnly = true,
+                    //ReportTB.BackColor = System.Drawing.Color.Gray;
+                    Text = reportMessage,
+                    ScrollBars = RichTextBoxScrollBars.Both
+                };
+
+                reportForm.Controls.Add(reportTb);
+                reportForm.Show();
+            }
+
+            /// <summary>
+            /// Add report header for the actions section once before first action record
+            /// </summary>
+            /// <param name="headerAdded">flag of the header already added state</param>
+            private void AddActionsReportHeader(ref bool headerAdded)
+            {
+                if (headerAdded) return;
+
+                headerAdded = true;
+                _modlistData.Report.Add(T._("Results") + ":"
+                    + Environment.NewLine
+                    + Environment.NewLine
+                    + T._("Actions") + ":"
+                    + Environment.NewLine
+                    );
             }
 
             /// <summary>

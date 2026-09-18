@@ -46,8 +46,13 @@ namespace AIHelper.Manage.ModeSwitch
                     {
                         if (entryWithPrefix.IsSymlink(objectType: ObjectType.File))
                         {
+                            //NOTE: argument order matters. CreateSymlink(objectPath, symlinkPath) creates the link
+                            //AT symlinkPath pointing TO objectPath, so the original file must be the receiver.
+                            //Passing them the other way round made this a silent no-op (the not yet created backup
+                            //path was used as the link target, so CreateSymlink returned early) and symlinked files
+                            //were never backed up.
                             string linkTarget = Path.GetFullPath(entryWithPrefix.GetSymlinkTarget(ObjectType.File));
-                            targetPathWithPrefix.CreateSymlink(linkTarget, isRelative: false, ObjectType.File);
+                            linkTarget.CreateSymlink(targetPathWithPrefix, isRelative: false, ObjectType.File);
                         }
                         else
                         {

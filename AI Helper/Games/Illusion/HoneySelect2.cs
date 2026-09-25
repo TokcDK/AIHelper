@@ -17,6 +17,16 @@ namespace AIHelper.Games.Illusion
 
         public override string GameAbbreviation => "HS2";
 
+        /// <summary>
+        /// AI Girl writes the same tags, so a card with them can not be told apart
+        /// from a HoneySelect 2 card.
+        /// </summary>
+        public override IReadOnlyList<string> CardMarkers => new[]
+        {
+            "【AIS_Chara】",
+            "【AIS_Clothes】",
+        };
+
         public override IReadOnlyList<PathPair> DirLinkPaths => CreateMyUserDataDirLinks();
 
         public override string BasicGamePluginName => "game_honeyselect2";

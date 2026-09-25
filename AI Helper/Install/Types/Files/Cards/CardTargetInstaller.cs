@@ -18,6 +18,13 @@ namespace AIHelper.Install.Types.Files.Cards
     /// <see cref="CardFileDetector"/>) and files the card by that.
     /// </para>
     /// <para>
+    /// A card which belongs to another game than the selected one is not filed
+    /// among the cards of the selected game, which would never look at it. It goes
+    /// into a sub folder named after the game it belongs to (see
+    /// <see cref="CardGameMatcher"/>), so it stays apart and can be moved to that
+    /// game.
+    /// </para>
+    /// <para>
     /// It is ordered behind the archive extractors, so it sees the cards which were
     /// just unpacked, and in front of every other card installer, so those only get
     /// the files whose content could not be recognized. Cards it moved are
@@ -59,7 +66,8 @@ namespace AIHelper.Install.Types.Files.Cards
             }
 
             string targetFolder;
-            if (!CardTargetFolderResolver.TryGetTargetFolder(card.Kind, out targetFolder))
+            string foreignGameId;
+            if (!CardTargetFolderResolver.TryGetTargetFolder(card, out targetFolder, out foreignGameId))
             {
                 return false;
             }
@@ -71,6 +79,9 @@ namespace AIHelper.Install.Types.Files.Cards
 
             try
             {
+                // the game folder of a card of another game does not exist yet
+                Directory.CreateDirectory(targetFolder);
+
                 var targetPath = ManageFilesFoldersExtensions.GetResultTargetFilePathWithNameCheck(
                     targetFolder, Path.GetFileNameWithoutExtension(cardInfo.Name), CardImageExtension);
 
@@ -78,7 +89,8 @@ namespace AIHelper.Install.Types.Files.Cards
 
                 CardTargetRegistry.Register(sourcePath);
 
-                _log.Info("Card filed by content. " + card + " from:" + sourcePath + " to:" + targetPath);
+                _log.Info("Card filed by content. " + card + " from:" + sourcePath + " to:" + targetPath
+                    + (string.IsNullOrEmpty(foreignGameId) ? string.Empty : " (card of another game:" + foreignGameId + ")"));
 
                 return true;
             }

@@ -138,6 +138,7 @@
     <Compile Include="Install\Cards\CardContentKind.cs" />
     <Compile Include="Install\Cards\CardFileDetector.cs" />
     <Compile Include="Install\Cards\CardFileInfo.cs" />
+    <Compile Include="Install\Cards\CardGameMatcher.cs" />
     <Compile Include="Install\Cards\CardTargetFolderResolver.cs" />
     <Compile Include="Install\Cards\CardTargetRegistry.cs" />
     <Compile Include="Install\Cards\MessagePackLite.cs" />

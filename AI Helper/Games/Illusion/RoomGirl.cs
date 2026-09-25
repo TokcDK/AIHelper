@@ -17,6 +17,11 @@ namespace AIHelper.Games.Illusion
 
         public override string GameAbbreviation => "RG";
 
+        public override IReadOnlyList<string> CardMarkers => new[]
+        {
+            "【RG_Chara】",
+        };
+
         public override IReadOnlyList<PathPair> DirLinkPaths => CreateMyUserDataDirLinks();
 
         public override string BasicGamePluginName => "game_roomgirl";

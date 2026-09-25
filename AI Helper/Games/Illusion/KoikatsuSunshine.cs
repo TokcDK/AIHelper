@@ -20,6 +20,11 @@ namespace AIHelper.Games.Illusion
 
         public override string GameAbbreviation => "KKS";
 
+        public override IReadOnlyList<string> CardMarkers => new[]
+        {
+            "【KoiKatuCharaSun】",
+        };
+
         public override IReadOnlyList<PathPair> DirLinkPaths => new[]
         {
             DirLink(

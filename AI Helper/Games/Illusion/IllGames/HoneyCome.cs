@@ -13,6 +13,12 @@ namespace AIHelper.Games.Illusion.IllGames
 
         public override string GameAbbreviation => "HC";
 
+        public override IReadOnlyList<string> CardMarkers => new[]
+        {
+            "【HCChara】",
+            "【HCPChara】",
+        };
+
         public override IReadOnlyList<PathPair> DirLinkPaths => CreateMyUserDataDirLinks();
 
         public override string BasicGamePluginName => "game_honeycome";

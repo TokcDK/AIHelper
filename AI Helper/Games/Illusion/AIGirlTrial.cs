@@ -1,4 +1,6 @@
-﻿namespace AIHelper.Games.Illusion
+﻿using System.Collections.Generic;
+
+namespace AIHelper.Games.Illusion
 {
     public class AIGirlTrial : IllusionGameBase
     {
@@ -8,7 +10,16 @@
 
         public override string GameDisplayingName => T._("AI-Girl") + "Trial";
 
-        public override string GameAbbreviation => "AI";
+        public override string GameAbbreviation => "AIS";
+
+        /// <summary>
+        /// The trial build writes the tags of the released game.
+        /// </summary>
+        public override IReadOnlyList<string> CardMarkers => new[]
+        {
+            "【AIS_Chara】",
+            "【AIS_Clothes】",
+        };
 
         public override string BasicGamePluginName => "game_aigirltrial";
     }

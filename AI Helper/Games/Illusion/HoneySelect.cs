@@ -25,6 +25,17 @@ namespace AIHelper.Games.Illusion
 
         public override string GameAbbreviation => "HS";
 
+        /// <summary>
+        /// The tags of this game name the sex of the character already.
+        /// </summary>
+        public override IReadOnlyList<string> CardMarkers => new[]
+        {
+            "【HoneySelectCharaFemale】",
+            "【HoneySelectCharaMale】",
+            "【HoneySelectClothesFemale】",
+            "【HoneySelectClothesMale】",
+        };
+
         public override bool IsHaveSideloaderMods => false;
 
         public override IReadOnlyList<PathPair> DirLinkPaths => CreateMyUserDataDirLinks();

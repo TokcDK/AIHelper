@@ -22,6 +22,18 @@ namespace AIHelper.Games.Illusion
 
         public override string GameAbbreviation => "KK";
 
+        /// <summary>
+        /// The Steam build of the game and its special patch write their own tags,
+        /// and they are Koikatsu cards as well.
+        /// </summary>
+        public override IReadOnlyList<string> CardMarkers => new[]
+        {
+            "【KoiKatuChara】",
+            "【KoiKatuCharaS】",
+            "【KoiKatuCharaSP】",
+            "【KoiKatuClothes】",
+        };
+
         public override IReadOnlyList<PathPair> DirLinkPaths => new[]
         {
             DirLink(

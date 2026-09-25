@@ -109,6 +109,17 @@ namespace AIHelper.Games
         public abstract string GameAbbreviation { get; }
 
         /// <summary>
+        /// tags the game writes behind the preview image of its cards, used to tell
+        /// which game a card belongs to
+        /// </summary>
+        /// <remarks>
+        /// A tag can be shared by several games (AI Girl and HoneySelect 2 both write
+        /// 【AIS_Chara】), so a tag names a set of games rather than a single one.
+        /// </remarks>
+        /// <returns>the tags, never null</returns>
+        public virtual IReadOnlyList<string> CardMarkers => Array.Empty<string>();
+
+        /// <summary>
         /// main game's vr exe name of selected game
         /// </summary>
         /// <returns></returns>

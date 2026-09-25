@@ -355,3 +355,5 @@ healthchecksdb
 
 # git
 .github/
+
+tests/

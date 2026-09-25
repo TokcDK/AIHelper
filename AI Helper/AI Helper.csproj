@@ -141,6 +141,7 @@
     <Compile Include="Install\Cards\CardTargetFolderResolver.cs" />
     <Compile Include="Install\Cards\CardTargetRegistry.cs" />
     <Compile Include="Install\Cards\MessagePackLite.cs" />
+    <Compile Include="Install\InstallProgress.cs" />
     <Compile Include="Install\UpdateMaker\ContentTypeParsers\ContentTypeParserBase.cs" />
     <Compile Include="Install\UpdateMaker\ContentTypeParsers\ContentTypeParserDirs.cs" />
     <Compile Include="Install\UpdateMaker\ContentTypeParsers\ContentTypeParserFiles.cs" />
@@ -151,6 +152,7 @@
       <DependentUpon>BindForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Manage\Functions\BindMOProfileToExe\BindMOProfileToExeForFlp.cs" />
+    <Compile Include="Manage\Logging\InstallLogTarget.cs" />
     <Compile Include="Manage\ManageMath.cs" />
     <Compile Include="Manage\ManageModlistExtensions.cs" />
     <Compile Include="Manage\ManageTabs.cs" />
@@ -166,7 +168,12 @@
     <Compile Include="Forms\Other\DialogFormGeneral.Designer.cs">
       <DependentUpon>DialogFormGeneral.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Other\ProgressForm\ProgressForm.cs" />
+    <Compile Include="Forms\Other\InstallProgressForm\InstallProgressForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Other\InstallProgressForm\InstallProgressForm.Designer.cs">
+      <DependentUpon>InstallProgressForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Other\SwitchModeDialogForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -394,6 +401,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Other\DialogFormGeneral.resx">
       <DependentUpon>DialogFormGeneral.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Other\InstallProgressForm\InstallProgressForm.resx">
+      <DependentUpon>InstallProgressForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Other\SwitchModeDialogForm.resx">
       <DependentUpon>SwitchModeDialogForm.cs</DependentUpon>

@@ -1,5 +1,4 @@
-﻿using AIHelper.Forms.Other;
-using NLog;
+﻿using NLog;
 using System;
 using System.IO;
 
@@ -38,6 +37,9 @@ namespace AIHelper.Install.Types
         /// and passes each found entry to <paramref name="processEntry"/>.
         /// <br/>
         /// Error of a single entry is logged and does not interrupt processing of the other entries.
+        /// <br/>
+        /// The processed entries are reported to <see cref="InstallProgress"/>, which is what
+        /// the install window shows as the progress of the running step.
         /// </summary>
         /// <typeparam name="T">Type of the processed file system entry</typeparam>
         /// <param name="directoryInfo">Directory which content must be processed</param>
@@ -59,18 +61,18 @@ namespace AIHelper.Install.Types
 
             bool anyProcessed = false;
 
-            using (var progress = new ProgressForm())
+            // the step progress is only taken from the outermost loop of the step,
+            // InstallProgress decides that from the nesting depth
+            InstallProgress.EnterStepScope();
+
+            try
             {
                 foreach (var mask in Masks)
                 {
                     var entries = getEntries(mask);
 
-                    progress.SetMax(entries.Length);
-
                     for (int i = 0; i < entries.Length; i++)
                     {
-                        progress.SetProgress(i);
-
                         var entry = entries[i];
 
                         if (!entry.Exists)
@@ -78,7 +80,7 @@ namespace AIHelper.Install.Types
                             continue;
                         }
 
-                        progress.SetInfo(entry.Name);
+                        InstallProgress.ReportStepProgress(i + 1, entries.Length, entry.Name);
 
                         try
                         {
@@ -93,6 +95,10 @@ namespace AIHelper.Install.Types
                         }
                     }
                 }
+            }
+            finally
+            {
+                InstallProgress.ExitStepScope();
             }
 
             return anyProcessed;

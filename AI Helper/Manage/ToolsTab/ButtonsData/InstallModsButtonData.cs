@@ -1,4 +1,6 @@
 ﻿using System;
+using AIHelper.Forms.Other;
+using AIHelper.Install;
 using AIHelper.Install.Cards;
 using AIHelper.Install.Types;
 using AIHelper.Install.UpdateMaker;
@@ -6,7 +8,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using AIHelper.Manage.Functions;
 using AIHelper.Install.Types.Directories;
@@ -30,11 +31,8 @@ namespace AIHelper.Manage.ToolsTab.ButtonsData
             Install();
         }
 
-        internal static async void Install()
+        internal static void Install()
         {
-            //NOTE: this stays async void because OnClick is a synchronous event handler and cannot await it.
-            //An exception thrown after the first await of an async void method cannot be caught by the caller
-            //and would crash the process, so the whole body must be guarded here.
             try
             {
                 if (new UpdateMaker().MakeUpdate())
@@ -49,11 +47,15 @@ namespace AIHelper.Manage.ToolsTab.ButtonsData
                 if (!IsInstallDirHasAnyRequiredFileFrom(installers))
                 {
                     MessageBox.Show(T._("No compatible for installation formats found in install folder.\n\nIt must be archvives, game files or folders with game files.\n\nWill be opened installation dir where you can drop files for installation."));
-                }
-                else
-                {
-                    ManageSettings.MainForm.OnOffButtons(false);
 
+                    OpenInstallFolder();
+                    return;
+                }
+
+                ManageSettings.MainForm.OnOffButtons(false);
+
+                try
+                {
                     //impossible to correctly update mods in common mode
                     if (!ManageSettings.IsMoMode)
                     {
@@ -64,25 +66,26 @@ namespace AIHelper.Manage.ToolsTab.ButtonsData
                         }
                         else
                         {
-                            ManageSettings.MainForm.OnOffButtons();
                             return;
                         }
                     }
 
-                    await Task.Run(() => InstallModFilesAndCleanEmptyFolder(installers)).ConfigureAwait(true);
-
-                    //this.Text = T._("Install from") + " " + ManageSettings.ModsInstallDirName;
-
-                    ManageSettings.MainForm.OnOffButtons();
+                    // The window owns the install. It does nothing until its own install
+                    // button is pressed, so no file is moved before the user asks for it,
+                    // and it shows the progress of every step and the log while it runs.
+                    using (var installForm = new InstallProgressForm(() => InstallModFilesAndCleanEmptyFolder(installers)))
+                    {
+                        installForm.ShowDialog(ManageSettings.MainForm);
+                    }
 
                     //обновление информации о конфигурации папок игры
                     ManageSettings.MainForm.UpdateData();
-
-                    MessageBox.Show(T._("All possible mods installed. Install all rest in install folder manually."));
                 }
-
-                Directory.CreateDirectory(ManageSettings.Install2MoDirPath);
-                Process.Start("explorer.exe", ManageSettings.Install2MoDirPath);
+                finally
+                {
+                    //never leave the main form disabled
+                    ManageSettings.MainForm.OnOffButtons();
+                }
             }
             catch (Exception ex)
             {
@@ -92,6 +95,23 @@ namespace AIHelper.Manage.ToolsTab.ButtonsData
 
                 //never leave the main form disabled after a failure
                 ManageSettings.MainForm.OnOffButtons();
+            }
+        }
+
+        /// <summary>
+        /// Opens the folder the user drops the files to install into.
+        /// </summary>
+        private static void OpenInstallFolder()
+        {
+            try
+            {
+                Directory.CreateDirectory(ManageSettings.Install2MoDirPath);
+
+                Process.Start("explorer.exe", ManageSettings.Install2MoDirPath);
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Failed to open the install folder. Error:\r\n" + ex);
             }
         }
 
@@ -119,7 +139,28 @@ namespace AIHelper.Manage.ToolsTab.ButtonsData
             //the card installers skip files of this run
             CardTargetRegistry.Clear();
 
-            foreach (var installer in installers) installer.Install();
+            InstallProgress.BeginRun(installers.Count);
+
+            try
+            {
+                for (int i = 0; i < installers.Count; i++)
+                {
+                    var installer = installers[i];
+
+                    // the installer type name is what tells the user which kind of
+                    // content the step handles
+                    InstallProgress.BeginStep(i + 1, installer.GetType().Name);
+
+                    var installedSomething = installer.Install();
+
+                    _log.Info("Step " + (i + 1) + "/" + installers.Count + " finished: " + installer.GetType().Name
+                        + (installedSomething ? " (installed something)" : " (nothing to install)"));
+                }
+            }
+            finally
+            {
+                InstallProgress.EndRun();
+            }
 
             //string installMessage = T._("Installing");
             //InstallInModsButton.Invoke((Action)(() => InstallInModsButton.Text = installMessage));

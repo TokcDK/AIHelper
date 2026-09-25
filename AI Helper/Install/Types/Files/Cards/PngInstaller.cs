@@ -1,4 +1,5 @@
-﻿using AIHelper.Manage;
+﻿using AIHelper.Install.Cards;
+using AIHelper.Manage;
 using System;
 using System.IO;
 
@@ -7,6 +8,12 @@ namespace AIHelper.Install.Types.Files.Cards
     /// <summary>
     /// Installs png images as character cards
     /// </summary>
+    /// <remarks>
+    /// This installer has only the file name to go by, so it treats every png as a
+    /// female character card. <see cref="CardTargetInstaller"/> runs first and takes
+    /// the cards whose content it could recognize, which leaves only the unknown
+    /// images here.
+    /// </remarks>
     class PngInstaller : CardsInstallerBase
     {
         private const string ImageExtension = ".png";
@@ -21,6 +28,11 @@ namespace AIHelper.Install.Types.Files.Cards
             //{
             //    IsCharaCard = true;
             //}
+
+            if (CardTargetRegistry.IsClaimed(pngInfo.FullName))
+            {
+                return false;
+            }
 
             try
             {

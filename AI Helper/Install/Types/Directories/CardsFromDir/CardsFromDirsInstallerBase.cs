@@ -1,4 +1,5 @@
-﻿using AIHelper.Manage;
+﻿using AIHelper.Install.Cards;
+using AIHelper.Manage;
 using System.IO;
 
 namespace AIHelper.Install.Types.Directories.CardsFromDir
@@ -63,6 +64,13 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
             //Для всех, сброс png из корневой папки в целевую
             foreach (var imagePath in Directory.GetFiles(dir, "*" + CardImageExtension))
             {
+                // a card whose content was already recognized has been filed by
+                // CardTargetInstaller and must not be processed a second time
+                if (CardTargetRegistry.IsClaimed(imagePath))
+                {
+                    continue;
+                }
+
                 var targetImagePath = ManageFilesFoldersExtensions.GetResultTargetFilePathWithNameCheck(
                     targetFolder, Path.GetFileNameWithoutExtension(imagePath), CardImageExtension);
 

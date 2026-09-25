@@ -135,6 +135,12 @@
     <Compile Include="Games\Kiss\KissGameSettingsUserControl.Designer.cs">
       <DependentUpon>KissGameSettingsUserControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Install\Cards\CardContentKind.cs" />
+    <Compile Include="Install\Cards\CardFileDetector.cs" />
+    <Compile Include="Install\Cards\CardFileInfo.cs" />
+    <Compile Include="Install\Cards\CardTargetFolderResolver.cs" />
+    <Compile Include="Install\Cards\CardTargetRegistry.cs" />
+    <Compile Include="Install\Cards\MessagePackLite.cs" />
     <Compile Include="Install\UpdateMaker\ContentTypeParsers\ContentTypeParserBase.cs" />
     <Compile Include="Install\UpdateMaker\ContentTypeParsers\ContentTypeParserDirs.cs" />
     <Compile Include="Install\UpdateMaker\ContentTypeParsers\ContentTypeParserFiles.cs" />
@@ -200,6 +206,7 @@
     <Compile Include="Install\Types\Files\Archive\Extractors\SevenZipExtractor.cs" />
     <Compile Include="Install\Types\Files\BebInExDllInstaller.cs" />
     <Compile Include="Install\Types\Directories\CardsFromDir\CardsFromDirsInstallerBase.cs" />
+    <Compile Include="Install\Types\Files\Cards\CardTargetInstaller.cs" />
     <Compile Include="Install\Types\Files\Cards\CardsInstallerBase.cs" />
     <Compile Include="Install\Types\Files\CsScriptsInstaller.cs" />
     <Compile Include="Install\Types\Files\Archive\SideloaderZipmodInstaller.cs" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using AIHelper.Install.Cards;
 using AIHelper.Install.Types;
 using AIHelper.Install.UpdateMaker;
 using System.Collections.Generic;
@@ -114,6 +115,9 @@ namespace AIHelper.Manage.ToolsTab.ButtonsData
 
         private static void InstallModFilesAndCleanEmptyFolder(List<ModInstallerBase> installers)
         {
+            //the cards filed by their content during the previous run must not make
+            //the card installers skip files of this run
+            CardTargetRegistry.Clear();
 
             foreach (var installer in installers) installer.Install();
 

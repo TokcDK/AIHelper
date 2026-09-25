@@ -116,7 +116,10 @@
     <Compile Include="Forms\LogLevelselectionForm.Designer.cs">
       <DependentUpon>LogLevelselectionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Games\Illusion\IllusionGameSattingsHelper.cs" />
+    <Compile Include="Games\PathPair.cs" />
+    <Compile Include="Games\Settings\ScreenResolutions.cs" />
+    <Compile Include="Games\Settings\SettingsLayout.cs" />
+    <Compile Include="Games\Settings\SettingsXmlFile.cs" />
     <Compile Include="Games\Illusion\IllusionGameSettingsUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -170,9 +173,6 @@
     <Compile Include="Forms\Other\UpdateOptionsDialog.Designer.cs">
       <DependentUpon>UpdateOptionsDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Games\BaseGamePyFileInfo.cs" />
-    <Compile Include="Games\GamesList.cs" />
-    <Compile Include="Games\IGame.cs" />
     <Compile Include="Games\Illusion\RoomGirl.cs" />
     <Compile Include="Games\Illusion\HoneySelect2.cs" />
     <Compile Include="Games\Illusion\IllusionGameBase.cs" />

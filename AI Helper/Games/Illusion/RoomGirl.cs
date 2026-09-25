@@ -1,20 +1,14 @@
-﻿using AIHelper.Manage;
-using System.IO;
+﻿using System.Collections.Generic;
 
 namespace AIHelper.Games.Illusion
 {
     public class RoomGirl : IllusionGameBase
     {
-        public override void InitActions()
-        {
-            base.InitActions();
-            //CopyMOfiles("MOHS");
-        }
+        // ManageModOrganizer.CopyModOrganizerUserFiles("MOHS") is not called for
+        // this game yet, so InitActions() is left as it is.
 
         public override string ZipmodManifestGameName => "roomgirl";
 
-        //public override string GameDirName => base.GameDirName;
-        //return GetTheGameFolderName("HoneySelect2");
         public override string GameExeName => "RoomGirl";
 
         public override string GameStudioExeName => "StudioNEOV2";
@@ -23,38 +17,7 @@ namespace AIHelper.Games.Illusion
 
         public override string GameAbbreviation => "RG";
 
-        public override string[,] DirLinkPaths => new string[,]
-            {
-                    //{
-                    //    Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
-                    //    ,
-                    //    Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx", "core", "BepInEx.Preloader.dll")
-                    //}
-                    //,
-                    //{
-                    //    Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "doorstop_config.ini")
-                    //    ,
-                    //    Path.Combine(ManageSettings.GetCurrentGameDataPath(), "doorstop_config.ini")
-                    //}
-                    //,
-                    //{
-                    //    Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "winhttp.dll")
-                    //    ,
-                    //    Path.Combine(ManageSettings.GetCurrentGameDataPath(), "winhttp.dll")
-                    //}
-                    //,
-                    {
-                        Path.Combine(ManageSettings.CurrentGameModsDirPath, "MyUserData", "UserData", "cap")
-                        ,
-                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "cap")
-                    }
-                    ,
-                    {
-                        Path.Combine(ManageSettings.CurrentGameModsDirPath, "MyUserData", "UserData", "studioneo", "BetterSceneLoader")
-                        ,
-                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "studioneo", "BetterSceneLoader")
-                    }
-            };
+        public override IReadOnlyList<PathPair> DirLinkPaths => CreateMyUserDataDirLinks();
 
         public override string BasicGamePluginName => "game_roomgirl";
     }

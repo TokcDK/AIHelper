@@ -1,4 +1,5 @@
 ﻿using AIHelper.Manage;
+using System.Collections.Generic;
 using System.IO;
 
 namespace AIHelper.Games.Illusion
@@ -10,12 +11,9 @@ namespace AIHelper.Games.Illusion
             base.InitActions();
             ManageModOrganizer.CopyModOrganizerUserFiles("MOKK");
         }
-        public override bool IsHaveSideloaderMods => true;
 
-        public override string ZipmodManifestGameName => "koikatsu";
+        public override string ZipmodManifestGameName => "koikatu";
 
-        //public override string GameDirName => base.GameDirName;
-        //return GetTheGameFolderName("Koikatsu");
         public override string GameExeName => "Koikatu";
 
         public override string GameDisplayingName => T._("Koikatsu");
@@ -24,44 +22,18 @@ namespace AIHelper.Games.Illusion
 
         public override string GameAbbreviation => "KK";
 
-        public override string[,] DirLinkPaths => new string[,]
-            {
-                    //{
-                    //    Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
-                    //    ,
-                    //    Path.Combine(ManageSettings.GetCurrentGameDataPath(), "BepInEx", "core", "BepInEx.Preloader.dll")
-                    //}
-                    //,
-                    //{
-                    //    Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "doorstop_config.ini")
-                    //    ,
-                    //    Path.Combine(ManageSettings.GetCurrentGameDataPath(), "doorstop_config.ini")
-                    //}
-                    //,
-                    //{
-                    //    Path.Combine(ManageSettings.GetCurrentGameModsPath(), "BepInEx", "winhttp.dll")
-                    //    ,
-                    //    Path.Combine(ManageSettings.GetCurrentGameDataPath(), "winhttp.dll")
-                    //}
-                    //,
-                    {
-                        Path.Combine(ManageSettings.CurrentGameMoOverwritePath, "UserData", "MaterialEditor")
-                        ,
-                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "MaterialEditor")
-                    }
-                    ,
-                    {
-                        Path.Combine(ManageSettings.CurrentGameMoOverwritePath, "UserData", "Overlays")
-                        ,
-                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "Overlays")
-                    }
-                    ,
-                    {
-                        Path.Combine(ManageSettings.CurrentGameMoOverwritePath, "UserData", "cap")
-                        ,
-                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "cap")
-                    }
-            };
+        public override IReadOnlyList<PathPair> DirLinkPaths => new[]
+        {
+            DirLink(
+                Path.Combine(ManageSettings.CurrentGameMoOverwritePath, UserDataDirName, "MaterialEditor"),
+                Path.Combine(ManageSettings.CurrentGameDataDirPath, UserDataDirName, "MaterialEditor")),
+            DirLink(
+                Path.Combine(ManageSettings.CurrentGameMoOverwritePath, UserDataDirName, "Overlays"),
+                Path.Combine(ManageSettings.CurrentGameDataDirPath, UserDataDirName, "Overlays")),
+            DirLink(
+                Path.Combine(ManageSettings.CurrentGameMoOverwritePath, UserDataDirName, "cap"),
+                Path.Combine(ManageSettings.CurrentGameDataDirPath, UserDataDirName, "cap")),
+        };
 
         public override string BasicGamePluginName => "game_koikatu";
     }

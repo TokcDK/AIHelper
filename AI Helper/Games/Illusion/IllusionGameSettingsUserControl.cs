@@ -1,232 +1,87 @@
-﻿using AIHelper.Manage;
+﻿using AIHelper.Games.Settings;
+using AIHelper.Manage;
+using NLog;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
 namespace AIHelper.Games.Illusion
 {
+    /// <summary>
+    /// Settings tab of the Illusion games. Edits the <c>UserData\setup.xml</c> of
+    /// the currently selected game.
+    /// </summary>
     public partial class IllusionGameSettingsUserControl : UserControl
     {
-        const string SIZE_SETTING_KEY = "Size";
-        const string WIDTH_SETTING_KEY = "Width";
-        const string HEIGHT_SETTING_KEY = "Height";
-        const string QUALITY_SETTING_KEY = "Quality";
-        const string FULLSCREEN_SETTING_KEY = "FullScreen";
-        const string DISPLAY_SETTING_KEY = "Display";
-        const string LANGUAGE_SETTING_KEY = "Language";
-        const string DEFAULT_SCREEN_SIZE_LABEL = "1280 x 720 (16 : 9)";
-        const string DEFAULT_SCREEN_WIDTH = "1280";
-        const string DEFAULT_SCREEN_HEIGHT = "720";
-        const int DEFAULT_QUALITY = 2;
-        const bool DEFAULT_FULLSCREEN = false;
-        const int DEFAULT_DISPLAY = 0;
-        const int DEFAULT_LANGUAGE = 0;
+        private static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
-        public IllusionGameSettingsUserControl()
-        {
-            InitializeComponent();
+        private const string SIZE_SETTING_KEY = "Size";
+        private const string WIDTH_SETTING_KEY = "Width";
+        private const string HEIGHT_SETTING_KEY = "Height";
+        private const string QUALITY_SETTING_KEY = "Quality";
+        private const string FULLSCREEN_SETTING_KEY = "FullScreen";
+        private const string DISPLAY_SETTING_KEY = "Display";
+        private const string LANGUAGE_SETTING_KEY = "Language";
 
-            _xmlPath = ManageSettings.SetupXmlPath;
-            AutoScaleMode = AutoScaleMode.Font;
-            MinimumSize = new System.Drawing.Size(450, 165);
-            Size = new System.Drawing.Size(450, 165);
-            BuildLayout();
-            LoadXml();
-            PopulateControls();
-        }
+        private const string DEFAULT_SCREEN_SIZE_LABEL = "1280 x 720 (16 : 9)";
+        private const string DEFAULT_SCREEN_WIDTH = "1280";
+        private const string DEFAULT_SCREEN_HEIGHT = "720";
+        private const int DEFAULT_QUALITY = 2;
+        private const bool DEFAULT_FULLSCREEN = false;
+        private const int DEFAULT_DISPLAY = 0;
+        private const int DEFAULT_LANGUAGE = 0;
 
-        private readonly string _xmlPath;
-        private XDocument _doc;
-        private bool _loading;
+        /// <summary>
+        /// Number of monitors the game can be told to use.
+        /// </summary>
+        private const int DISPLAY_COUNT = 4;
 
-        // Predefined resolution options
-        private static readonly List<(string Label, int W, int H)> Resolutions = new List<(string Label, int W, int H)>
-        {
-            ("854 x 480 (16 : 9)",   854,  480),
-            ("800 x 600 (4 : 3)",    800,  600),
-            ("1024 x 579 (16 : 9)", 1024,  576),
-            ("1024 x 768 (4 : 3)",  1024,  768),
-            ("1280 x 720 (16 : 9)", 1280,  720),
-            ("1366 x 768 (16 : 9)", 1366,  768),
-            ("1536 x 864 (16 : 9)", 1536,  864),
-            ("1600 x 900 (16 : 9)", 1600,  900),
-            ("1920 x 1080 (16 : 9)",1920, 1080),
-            ("2560 x 1440 (16 : 9)",2560, 1440),
-            ("3840 x 2160 (16 : 9)",3840, 2160),
-        };
+        /// <summary>
+        /// Row count of the grid: one row of links plus resolution, quality,
+        /// language, display and full screen.
+        /// </summary>
+        private const int LAYOUT_ROWS = 6;
 
         private static readonly string[] QualityItems = { "Performance", "Normal", "Quality" };
         private static readonly string[] LanguageItems = { T._("Japanese"), T._("English"), T._("German"), T._("French") };
 
-        // ── Controls ──────────────────────────────────────────────────
+        private readonly SettingsXmlFile _settings;
+        private readonly ScreenResolutions _resolutions = new ScreenResolutions();
+
         private TableLayoutPanel _table;
         private ComboBox _cboResolution;
         private ComboBox _cboQuality;
         private ComboBox _cboLanguage;
         private ComboBox _cboDisplay;
         private CheckBox _chkFullScreen;
-        private LinkLabel _lblOpenInNotepad;
-        private LinkLabel _lblReloadFromXml;
-        private Label _lblResolution, _lblQuality, _lblLanguage, _lblDisplay, _lblFullScreen;
 
-        // ── UI Construction ───────────────────────────────────────────
-        private void BuildLayout()
+        /// <summary>
+        /// Set while the controls are filled from the file, so the change
+        /// handlers do not write the values straight back.
+        /// </summary>
+        private bool _loading;
+
+        public IllusionGameSettingsUserControl()
         {
-            SuspendLayout();
+            InitializeComponent();
 
-            int maxRows = 6;
-            _table = new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                ColumnCount = 2,
-                RowCount = maxRows,
-                Padding = new Padding(8),
-            };
+            _settings = new SettingsXmlFile(ManageSettings.SetupXmlPath, Encoding.Unicode, CreateDefaultSetupXml);
 
-            // Column styles: label 38% | control 62%
-            _table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 38f));
-            _table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 62f));
+            AutoScaleMode = AutoScaleMode.Font;
+            MinimumSize = new System.Drawing.Size(450, 165);
+            Size = new System.Drawing.Size(450, 165);
 
-            for (int i = 0; i < maxRows; i++)
-                _table.RowStyles.Add(new RowStyle(SizeType.Percent, 100f / maxRows));
-
-            // Add controls row by row
-            // Row 0 – Open setup xml in notepad
-            _lblOpenInNotepad = MakeOpenInNotepadLinkLabel();
-            _lblReloadFromXml = MakeReloadLinkLabel();
-
-            // Row 1 – Resolution
-            _lblResolution = MakeLabel(T._("Resolution:"));
-            _cboResolution = MakeCombo(Resolutions.Select(r => r.Label).ToArray());
-            _cboResolution.SelectedIndexChanged += OnResolutionChanged;
-
-            // Row 2 – Quality
-            _lblQuality = MakeLabel(T._("Quality:"));
-            _cboQuality = MakeCombo(QualityItems);
-            _cboQuality.SelectedIndexChanged += OnSettingChanged;
-
-            // Row 3 – Language
-            _lblLanguage = MakeLabel(T._("Language:"));
-            _cboLanguage = MakeCombo(LanguageItems);
-            _cboLanguage.SelectedIndexChanged += OnSettingChanged;
-
-            // Row 4 – Display
-            _lblDisplay = MakeLabel(T._("Display:"));
-            _cboDisplay = MakeCombo(Enumerable.Range(0, 4).Select(i => String.Format(T._("Display {0}"), i)).ToArray());
-            _cboDisplay.SelectedIndexChanged += OnSettingChanged;
-
-            // Row 5 – FullScreen
-            _lblFullScreen = MakeLabel(T._("Full Screen:"));
-            _chkFullScreen = new CheckBox
-            {
-                Dock = DockStyle.Fill,
-                Text = string.Empty,
-                Anchor = AnchorStyles.Left | AnchorStyles.Top,
-                Margin = new Padding(2),
-            };
-            _chkFullScreen.CheckedChanged += OnSettingChanged;
-
-            _table.Controls.Add(_lblOpenInNotepad, 0, 0);
-            _table.Controls.Add(_lblReloadFromXml, 1, 0);
-            int row = 1;
-            foreach (var (lbl, ctrl) in new (Control, Control)[]
-            {
-                (_lblResolution, _cboResolution),
-                (_lblQuality,    _cboQuality),
-                (_lblLanguage,   _cboLanguage),
-                (_lblDisplay,    _cboDisplay),
-                (_lblFullScreen, _chkFullScreen),
-            })
-            {
-                _table.Controls.Add(lbl, 0, row);
-                _table.Controls.Add(ctrl, 1, row);
-                row++;
-            }
-
-            Controls.Add(_table);
-            ResumeLayout(true);
+            BuildLayout();
+            _settings.Load();
+            PopulateControls();
         }
 
-        private LinkLabel MakeReloadLinkLabel()
-        {
-            var ll = new LinkLabel
-            {
-                Text = T._("Reload settings from XML"),
-                Dock = DockStyle.Fill,
-                TextAlign = System.Drawing.ContentAlignment.MiddleLeft,
-                Margin = new Padding(2),
-            };
-            ll.Click += (s, e) =>
-            {
-                LoadXml();
-                PopulateControls();
-            };
-            return ll;
-        }
-
-        private LinkLabel MakeOpenInNotepadLinkLabel()
-        {
-            var ll = new LinkLabel
-            {
-                Text = T._("Open game setup file"),
-                Dock = DockStyle.Fill,
-                TextAlign = System.Drawing.ContentAlignment.MiddleLeft,
-                Margin = new Padding(2),
-            };
-            ll.Click += (s, e) =>
-            {
-                try
-                {
-                    System.Diagnostics.Process.Start("notepad.exe", _xmlPath);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(string.Format(T._("Failed to open Notepad: {0}"), ex.Message), T._("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            };
-
-            return ll;
-        }
-
-        private static Label MakeLabel(string text) => new Label
-        {
-            Text = text,
-            Dock = DockStyle.Fill,
-            TextAlign = System.Drawing.ContentAlignment.MiddleRight,
-            Margin = new Padding(2),
-        };
-
-        private static ComboBox MakeCombo(string[] items)
-        {
-            var c = new ComboBox
-            {
-                Dock = DockStyle.Fill,
-                DropDownStyle = ComboBoxStyle.DropDownList,
-                Margin = new Padding(2),
-            };
-            c.Items.AddRange(items);
-            return c;
-        }
-
-        // ── XML I/O ───────────────────────────────────────────────────
-        private void LoadXml()
-        {
-            if (File.Exists(_xmlPath) && new FileInfo(_xmlPath).Length > 0)
-            {
-                _doc = XDocument.Load(_xmlPath);
-            }
-            else
-            {
-                // Create default document
-                _doc = GetDefaultSetupXml();
-                SaveXml();
-            }
-        }
-
-        private static XDocument GetDefaultSetupXml()
+        /// <summary>
+        /// Builds the contents of a setup file that does not exist yet.
+        /// </summary>
+        private static XDocument CreateDefaultSetupXml()
         {
             return new XDocument(
                     new XDeclaration("1.0", "utf-16", null),
@@ -241,103 +96,139 @@ namespace AIHelper.Games.Illusion
                     ));
         }
 
-        private void SaveXml()
+        // ── UI Construction ───────────────────────────────────────────
+        private void BuildLayout()
         {
-            var dir = Path.GetDirectoryName(_xmlPath);
-            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
+            SuspendLayout();
 
-            // Write UTF-16
-            using (var sw = new StreamWriter(_xmlPath, false, System.Text.Encoding.Unicode))
-            {
-                _doc.Save(sw);
-            }
+            _table = SettingsLayout.CreateTable(LAYOUT_ROWS);
+
+            var openLink = SettingsLayout.CreateLink(T._("Open game setup file"), OnOpenSetupFile);
+            var reloadLink = SettingsLayout.CreateLink(T._("Reload settings from XML"), OnReloadFromXml);
+
+            _cboResolution = SettingsLayout.CreateDropDown(_resolutions.Labels(), OnResolutionChanged);
+            _cboQuality = SettingsLayout.CreateDropDown(QualityItems, OnSettingChanged);
+            _cboLanguage = SettingsLayout.CreateDropDown(LanguageItems, OnSettingChanged);
+            _cboDisplay = SettingsLayout.CreateDropDown(
+                Enumerable.Range(0, DISPLAY_COUNT).Select(i => String.Format(T._("Display {0}"), i)).ToArray(),
+                OnSettingChanged);
+            _chkFullScreen = SettingsLayout.CreateCheckBox(OnSettingChanged);
+
+            _table.Controls.Add(openLink, 0, 0);
+            _table.Controls.Add(reloadLink, 1, 0);
+            SettingsLayout.AddRow(_table, 1, T._("Resolution:"), _cboResolution);
+            SettingsLayout.AddRow(_table, 2, T._("Quality:"), _cboQuality);
+            SettingsLayout.AddRow(_table, 3, T._("Language:"), _cboLanguage);
+            SettingsLayout.AddRow(_table, 4, T._("Display:"), _cboDisplay);
+            SettingsLayout.AddRow(_table, 5, T._("Full Screen:"), _chkFullScreen);
+
+            Controls.Add(_table);
+            ResumeLayout(true);
         }
 
-        private string GetVal(string key) => _doc.Root?.Element(key)?.Value ?? string.Empty;
-        private void SetVal(string key, object val) => _doc.Root?.SetElementValue(key, val);
-
-
-        // ── Populate UI from XML ──────────────────────────────────────
+        // ── Populate UI from the file ─────────────────────────────────
         private void PopulateControls()
         {
             _loading = true;
             try
             {
-                SetResolution();
+                SelectResolution();
 
-                // Quality
-                if (int.TryParse(GetVal(QUALITY_SETTING_KEY), out int q))
-                    _cboQuality.SelectedIndex = ManageMath.Clamp(q, 0, QualityItems.Length - 1);
+                if (int.TryParse(_settings.GetValue(QUALITY_SETTING_KEY), out var quality))
+                {
+                    _cboQuality.SelectedIndex = ManageMath.Clamp(quality, 0, QualityItems.Length - 1);
+                }
 
-                // Language
-                if (int.TryParse(GetVal(LANGUAGE_SETTING_KEY), out int lang))
-                    _cboLanguage.SelectedIndex = ManageMath.Clamp(lang, 0, LanguageItems.Length - 1);
+                if (int.TryParse(_settings.GetValue(LANGUAGE_SETTING_KEY), out var language))
+                {
+                    _cboLanguage.SelectedIndex = ManageMath.Clamp(language, 0, LanguageItems.Length - 1);
+                }
 
-                // Display
-                if (int.TryParse(GetVal(DISPLAY_SETTING_KEY), out int disp))
-                    _cboDisplay.SelectedIndex = ManageMath.Clamp(disp, 0, _cboDisplay.Items.Count - 1);
+                if (int.TryParse(_settings.GetValue(DISPLAY_SETTING_KEY), out var display))
+                {
+                    _cboDisplay.SelectedIndex = ManageMath.Clamp(display, 0, _cboDisplay.Items.Count - 1);
+                }
 
-                // FullScreen
-                _chkFullScreen.Checked = GetVal(FULLSCREEN_SETTING_KEY).Equals("true", StringComparison.OrdinalIgnoreCase);
+                _chkFullScreen.Checked = _settings.GetValue(FULLSCREEN_SETTING_KEY).Equals("true", StringComparison.OrdinalIgnoreCase);
             }
-            finally { _loading = false; }
+            finally
+            {
+                _loading = false;
+            }
+
+            // the changes above are only selection changes, but a resolution that
+            // had to be added or repaired is worth writing back
+            _settings.Save();
         }
 
-        private void SetResolution()
+        /// <summary>
+        /// Selects the resolution stored in the file, preferring the pixel size
+        /// over the label.
+        /// </summary>
+        private void SelectResolution()
         {
-            // Resolution – first load by Width and Height, if not found then fallback to label matching
-            int w = int.TryParse(GetVal(WIDTH_SETTING_KEY), out int tw) ? tw : -1;
-            int h = int.TryParse(GetVal(HEIGHT_SETTING_KEY), out int th) ? th : -1;
-            if (w > 0 && h > 0)
+            var width = int.TryParse(_settings.GetValue(WIDTH_SETTING_KEY), out var w) ? w : -1;
+            var height = int.TryParse(_settings.GetValue(HEIGHT_SETTING_KEY), out var h) ? h : -1;
+
+            if (width <= 0 || height <= 0)
             {
-                // Try to find resolution by Width and Height, if not found then add new entry with label based on width and height
+                // no usable pixel size, fall back to the stored label and make the
+                // pixel size consistent with it again
+                var byLabel = _resolutions.IndexOfLabel(_settings.GetValue(SIZE_SETTING_KEY));
+                _cboResolution.SelectedIndex = byLabel >= 0 ? byLabel : 0;
 
-                int ri = Resolutions.FindIndex(r => r.W == w && r.H == h);
-                if (ri < 0)
-                {
-                    // set label as "width x height (calculated aspect ratio in standart form)"
-                    string label = string.Format("{0} x {1} ({2})", w, h, ManageMath.GetAspectRatio(w, h));
-                    Resolutions.Add((label, w, h));
-                    _cboResolution.Items.Add(label);
-                    ri = Resolutions.Count - 1;
-                }
-                _cboResolution.SelectedIndex = ri >= 0 ? ri : 0;
-
-                // Check if label matches resolution, if not then update XML to have consistent Size label
-                string resolutionLabel = Resolutions[_cboResolution.SelectedIndex].Label;
-                if (resolutionLabel != GetVal(SIZE_SETTING_KEY))
-                {
-                    SetVal(SIZE_SETTING_KEY, resolutionLabel);
-                    SaveXml();
-                }
+                var fromLabel = _resolutions[_cboResolution.SelectedIndex];
+                _settings.SetValue(WIDTH_SETTING_KEY, fromLabel.Width);
+                _settings.SetValue(HEIGHT_SETTING_KEY, fromLabel.Height);
+                return;
             }
-            else
+
+            var index = _resolutions.IndexOf(width, height);
+
+            if (index < 0)
             {
-                // Fallback to label matching if Width and Height are not valid
-
-                string sizeLabel = GetVal(SIZE_SETTING_KEY);
-                int ri = Resolutions.FindIndex(r => r.Label == sizeLabel);
-                _cboResolution.SelectedIndex = ri >= 0 ? ri : 0;
-
-                // Update XML to have consistent Width and Height values based on label
-                var (label, rw, rh) = Resolutions[_cboResolution.SelectedIndex];
-                SetVal(WIDTH_SETTING_KEY, rw);
-                SetVal(HEIGHT_SETTING_KEY, rh);
-                SaveXml();
+                // the game uses a resolution the list does not know yet, add it so
+                // the user can keep it selected
+                index = _resolutions.Add(width, height);
+                _cboResolution.Items.Add(_resolutions[index].Label);
             }
+
+            _cboResolution.SelectedIndex = index;
+
+            // the label is what the game reads back, so keep it in sync with the
+            // numbers instead of leaving a stale one behind
+            _settings.SetValue(SIZE_SETTING_KEY, _resolutions[index].Label);
         }
 
         // ── Event Handlers ────────────────────────────────────────────
+        private void OnOpenSetupFile(object sender, EventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start("notepad.exe", _settings.FilePath);
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Can not open the game setup file '" + _settings.FilePath + "' in Notepad.\r\n" + ex);
+                MessageBox.Show(string.Format(T._("Failed to open Notepad: {0}"), ex.Message), T._("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void OnReloadFromXml(object sender, EventArgs e)
+        {
+            _settings.Load();
+            PopulateControls();
+        }
+
         private void OnResolutionChanged(object sender, EventArgs e)
         {
             if (_loading || _cboResolution.SelectedIndex < 0) return;
 
-            var (label, w, h) = Resolutions[_cboResolution.SelectedIndex];
-            SetVal(SIZE_SETTING_KEY, label);
-            SetVal(WIDTH_SETTING_KEY, w);
-            SetVal(HEIGHT_SETTING_KEY, h);
-            SaveXml();
+            var resolution = _resolutions[_cboResolution.SelectedIndex];
+            _settings.SetValue(SIZE_SETTING_KEY, resolution.Label);
+            _settings.SetValue(WIDTH_SETTING_KEY, resolution.Width);
+            _settings.SetValue(HEIGHT_SETTING_KEY, resolution.Height);
+            _settings.Save();
         }
 
         private void OnSettingChanged(object sender, EventArgs e)
@@ -345,15 +236,15 @@ namespace AIHelper.Games.Illusion
             if (_loading) return;
 
             if (sender == _cboQuality)
-                SetVal(QUALITY_SETTING_KEY, _cboQuality.SelectedIndex);
+                _settings.SetValue(QUALITY_SETTING_KEY, _cboQuality.SelectedIndex);
             else if (sender == _cboLanguage)
-                SetVal(LANGUAGE_SETTING_KEY, _cboLanguage.SelectedIndex);
+                _settings.SetValue(LANGUAGE_SETTING_KEY, _cboLanguage.SelectedIndex);
             else if (sender == _cboDisplay)
-                SetVal(DISPLAY_SETTING_KEY, _cboDisplay.SelectedIndex);
+                _settings.SetValue(DISPLAY_SETTING_KEY, _cboDisplay.SelectedIndex);
             else if (sender == _chkFullScreen)
-                SetVal(FULLSCREEN_SETTING_KEY, _chkFullScreen.Checked.ToString().ToLower());
+                _settings.SetValue(FULLSCREEN_SETTING_KEY, _chkFullScreen.Checked.ToString().ToLowerInvariant());
 
-            SaveXml();
+            _settings.Save();
         }
     }
 }

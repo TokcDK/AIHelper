@@ -241,18 +241,15 @@ namespace AIHelper.Manage
 
             BepInExPreloadersFix(removeLinks);
 
-            string[,] objectLinkPaths = ManageSettings.Games.Game.DirLinkPaths;
-
-            int objectLinkPathsLength = objectLinkPaths.Length / 2;
-            for (int i = 0; i < objectLinkPathsLength; i++)
+            foreach (var objectLinkPath in ManageSettings.Games.Game.DirLinkPaths)
             {
-                ProcessObjectLinkAtIndex(removeLinks, objectLinkPaths, i);
+                ProcessObjectLink(removeLinks, objectLinkPath);
             }
         }
 
-        private static void ProcessObjectLinkAtIndex(bool removeLinks, string[,] objectLinkPaths, int i)
+        private static void ProcessObjectLink(bool removeLinks, PathPair objectLinkPath)
         {
-            var linkPath = new DirectoryInfo(objectLinkPaths[i, 1]);
+            var linkPath = new DirectoryInfo(objectLinkPath.Target);
 
             if (removeLinks)
             {
@@ -261,7 +258,7 @@ namespace AIHelper.Manage
             else
             {
                 // try to find last not empty dir path
-                var objectPath = new DirectoryInfo(ManageModOrganizer.GetLastPath(objectLinkPaths[i, 0], isDir: true, tryFindWithContent: true));
+                var objectPath = new DirectoryInfo(ManageModOrganizer.GetLastPath(objectLinkPath.Source, isDir: true, tryFindWithContent: true));
                 CreateOrUpdateDirectorySymlink(objectPath, linkPath);
             }
         }
@@ -301,13 +298,10 @@ namespace AIHelper.Manage
 
         private static void BepInExPreloadersFix(bool remove = false)
         {
-            string[,] bepInExFilesPaths = ManageSettings.Games.Game.ObjectsForMove;
-
-            int bepInExFilesPathsLength = bepInExFilesPaths.Length / 2;
-            for (int i = 0; i < bepInExFilesPathsLength; i++)
+            foreach (var bepInExFilePaths in ManageSettings.Games.Game.ObjectsForMove)
             {
-                var sourceFilePath = bepInExFilesPaths[i, 0]; // source file, which to copy
-                var targetFilePath = bepInExFilesPaths[i, 1]; // target file path, where to copy
+                var sourceFilePath = bepInExFilePaths.Source; // source file, which to copy
+                var targetFilePath = bepInExFilePaths.Target; // target file path, where to copy
                 if (remove)
                 {
                     // remove files mode

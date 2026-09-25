@@ -181,7 +181,7 @@ namespace AIHelper.Manage
                 : "[" + author + "] " + name;
         }
 
-        public static bool IsStringAContainsAnyStringFromStringArray(string stringA, string[] stringArray, bool ignoreCase = false)
+        public static bool IsStringAContainsAnyStringFromStringArray(string stringA, IEnumerable<string> stringArray, bool ignoreCase = false)
         {
             foreach (var stringB in stringArray)
             {

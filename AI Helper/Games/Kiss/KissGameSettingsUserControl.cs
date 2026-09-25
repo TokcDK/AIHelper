@@ -1,218 +1,78 @@
-﻿using AIHelper.Manage;
+﻿using AIHelper.Games.Settings;
+using AIHelper.Manage;
+using NLog;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
 namespace AIHelper.Games.Kiss
 {
+    /// <summary>
+    /// Settings tab of the Kiss games. Edits the <c>config.xml</c> of the
+    /// currently selected game.
+    /// </summary>
     public partial class KissGameSettingsUserControl : UserControl
     {
-        public KissGameSettingsUserControl()
-        {
-            InitializeComponent();
+        private static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
-            _xmlPath = ManageSettings.SetupXmlPath;
-            AutoScaleMode = AutoScaleMode.Font;
-            MinimumSize = new System.Drawing.Size(450, 165);
-            Size = new System.Drawing.Size(450, 165);
-            BuildLayout();
-            LoadXml();
-            PopulateControls();
-        }
+        /// <summary>
+        /// Category the screen settings live in.
+        /// </summary>
+        private const string SCREEN_CATEGORY_KEY = "Screen";
 
-        // Screen category keys
-        const string SCREEN_CATEGORY_KEY = "Screen";
-        const string FULLSCREEN_SETTING_KEY = "FullScreen";
-        const string WIDTH_SETTING_KEY = "ScreenSizeNow.width";
-        const string HEIGHT_SETTING_KEY = "ScreenSizeNow.height";
-        const string QUALITY_SETTING_KEY = "TextureQuality";
-        const int DEFAULT_SCREEN_WIDTH = 1280;
-        const int DEFAULT_SCREEN_HEIGHT = 720;
-        const string DEFAULT_QUALITY = "High";
-        const bool DEFAULT_FULLSCREEN = false;
+        private const string FULLSCREEN_SETTING_KEY = "FullScreen";
+        private const string WIDTH_SETTING_KEY = "ScreenSizeNow.width";
+        private const string HEIGHT_SETTING_KEY = "ScreenSizeNow.height";
+        private const string QUALITY_SETTING_KEY = "TextureQuality";
 
-        private readonly string _xmlPath;
-        private XDocument _doc;
-        private bool _loading;
+        private const int DEFAULT_SCREEN_WIDTH = 1280;
+        private const int DEFAULT_SCREEN_HEIGHT = 720;
+        private const string DEFAULT_QUALITY = "High";
+        private const bool DEFAULT_FULLSCREEN = false;
 
-        // Predefined resolution options
-        private static readonly List<(string Label, int W, int H)> Resolutions = new List<(string Label, int W, int H)>
-        {
-            ("854 x 480 (16 : 9)",   854,  480),
-            ("800 x 600 (4 : 3)",    800,  600),
-            ("1024 x 579 (16 : 9)", 1024,  576),
-            ("1024 x 768 (4 : 3)",  1024,  768),
-            ("1280 x 720 (16 : 9)", 1280,  720),
-            ("1366 x 768 (16 : 9)", 1366,  768),
-            ("1536 x 864 (16 : 9)", 1536,  864),
-            ("1600 x 900 (16 : 9)", 1600,  900),
-            ("1920 x 1080 (16 : 9)",1920, 1080),
-            ("2560 x 1440 (16 : 9)",2560, 1440),
-            ("3840 x 2160 (16 : 9)",3840, 2160),
-        };
+        /// <summary>
+        /// Row count of the grid. The Kiss games have fewer settings than the
+        /// Illusion ones, the spare rows keep this tab the same height.
+        /// </summary>
+        private const int LAYOUT_ROWS = 6;
 
         private static readonly string[] QualityItems = { "Low", "Medium", "High" };
 
-        // ── Controls ──────────────────────────────────────────────────
+        private readonly SettingsXmlFile _settings;
+        private readonly ScreenResolutions _resolutions = new ScreenResolutions();
+
         private TableLayoutPanel _table;
         private ComboBox _cboResolution;
         private ComboBox _cboQuality;
         private CheckBox _chkFullScreen;
-        private LinkLabel _lblOpenInNotepad;
-        private LinkLabel _lblReloadFromXml;
-        private Label _lblResolution, _lblQuality, _lblFullScreen;
 
-        // ── UI Construction ───────────────────────────────────────────
-        private void BuildLayout()
+        /// <summary>
+        /// Set while the controls are filled from the file, so the change
+        /// handlers do not write the values straight back.
+        /// </summary>
+        private bool _loading;
+
+        public KissGameSettingsUserControl()
         {
-            SuspendLayout();
+            InitializeComponent();
 
-            int maxRows = 6;
-            _table = new TableLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                ColumnCount = 2,
-                RowCount = maxRows,
-                Padding = new Padding(8),
-            };
+            // the CM3D2 config is UTF-8, a file that already exists keeps its own encoding
+            _settings = new SettingsXmlFile(ManageSettings.SetupXmlPath, new UTF8Encoding(false), CreateDefaultSetupXml);
 
-            // Column styles: label 38% | control 62%
-            _table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 38f));
-            _table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 62f));
+            AutoScaleMode = AutoScaleMode.Font;
+            MinimumSize = new System.Drawing.Size(450, 165);
+            Size = new System.Drawing.Size(450, 165);
 
-            for (int i = 0; i < maxRows; i++)
-                _table.RowStyles.Add(new RowStyle(SizeType.Percent, 100f / maxRows));
-
-            // Add controls row by row
-            // Row 0 – Open setup xml in notepad
-            _lblOpenInNotepad = MakeOpenInNotepadLinkLabel();
-            _lblReloadFromXml = MakeReloadLinkLabel();
-
-            // Row 1 – Resolution
-            _lblResolution = MakeLabel(T._("Resolution:"));
-            _cboResolution = MakeCombo(Resolutions.Select(r => r.Label).ToArray());
-            _cboResolution.SelectedIndexChanged += OnResolutionChanged;
-
-            // Row 2 – Quality
-            _lblQuality = MakeLabel(T._("Quality:"));
-            _cboQuality = MakeCombo(QualityItems);
-            _cboQuality.SelectedIndexChanged += OnSettingChanged;
-
-            // Row 5 – FullScreen
-            _lblFullScreen = MakeLabel(T._("Full Screen:"));
-            _chkFullScreen = new CheckBox
-            {
-                Dock = DockStyle.Fill,
-                Text = string.Empty,
-                Anchor = AnchorStyles.Left | AnchorStyles.Top,
-                Margin = new Padding(2),
-            };
-            _chkFullScreen.CheckedChanged += OnSettingChanged;
-
-            _table.Controls.Add(_lblOpenInNotepad, 0, 0);
-            _table.Controls.Add(_lblReloadFromXml, 1, 0);
-            int row = 1;
-            foreach (var (lbl, ctrl) in new (Control, Control)[]
-            {
-                (_lblResolution, _cboResolution),
-                (_lblQuality,    _cboQuality),
-                (_lblFullScreen, _chkFullScreen),
-            })
-            {
-                _table.Controls.Add(lbl, 0, row);
-                _table.Controls.Add(ctrl, 1, row);
-                row++;
-            }
-
-            Controls.Add(_table);
-            ResumeLayout(true);
+            BuildLayout();
+            _settings.Load();
+            PopulateControls();
         }
 
-        private LinkLabel MakeReloadLinkLabel()
-        {
-            var ll = new LinkLabel
-            {
-                Text = T._("Reload settings from XML"),
-                Dock = DockStyle.Fill,
-                TextAlign = System.Drawing.ContentAlignment.MiddleLeft,
-                Margin = new Padding(2),
-            };
-            ll.Click += (s, e) =>
-            {
-                LoadXml();
-                PopulateControls();
-            };
-            return ll;
-        }
-
-        private LinkLabel MakeOpenInNotepadLinkLabel()
-        {
-            var ll = new LinkLabel
-            {
-                Text = T._("Open game setup file"),
-                Dock = DockStyle.Fill,
-                TextAlign = System.Drawing.ContentAlignment.MiddleLeft,
-                Margin = new Padding(2),
-            };
-            ll.Click += (s, e) =>
-            {
-                try
-                {
-                    System.Diagnostics.Process.Start("notepad.exe", _xmlPath);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(string.Format(T._("Failed to open Notepad: {0}"), ex.Message), T._("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            };
-
-            return ll;
-        }
-
-        private static Label MakeLabel(string text) => new Label
-        {
-            Text = text,
-            Dock = DockStyle.Fill,
-            TextAlign = System.Drawing.ContentAlignment.MiddleRight,
-            Margin = new Padding(2),
-        };
-
-        private static ComboBox MakeCombo(string[] items)
-        {
-            var c = new ComboBox
-            {
-                Dock = DockStyle.Fill,
-                DropDownStyle = ComboBoxStyle.DropDownList,
-                Margin = new Padding(2),
-            };
-            c.Items.AddRange(items);
-            return c;
-        }
-
-        // ── XML I/O ───────────────────────────────────────────────────
-        private void LoadXml()
-        {
-            if (File.Exists(_xmlPath) && new FileInfo(_xmlPath).Length > 0)
-            {
-                _doc = XDocument.Load(_xmlPath);
-            }
-            else
-            {
-                // Create default document
-                _doc = GetDefaultSetupXml();
-                SaveXml();
-            }
-        }
-
-        private static XDocument GetDefaultSetupXml()
+        /// <summary>
+        /// Builds the contents of a config file that does not exist yet.
+        /// </summary>
+        private static XDocument CreateDefaultSetupXml()
         {
             //<?xml version="1.0" encoding="utf-8" standalone="no"?>
             //<!--CM3D2 Config-->
@@ -243,8 +103,8 @@ namespace AIHelper.Games.Kiss
                     new XElement("System",
                         new XElement("SysButtonShowAlways", "true")
                     ),
-                    new XElement("Screen",
-                        new XElement(FULLSCREEN_SETTING_KEY, DEFAULT_FULLSCREEN.ToString().ToLower()),
+                    new XElement(SCREEN_CATEGORY_KEY,
+                        new XElement(FULLSCREEN_SETTING_KEY, DEFAULT_FULLSCREEN.ToString().ToLowerInvariant()),
                         new XElement(WIDTH_SETTING_KEY, DEFAULT_SCREEN_WIDTH),
                         new XElement(HEIGHT_SETTING_KEY, DEFAULT_SCREEN_HEIGHT),
                         new XElement(QUALITY_SETTING_KEY, DEFAULT_QUALITY)
@@ -253,109 +113,113 @@ namespace AIHelper.Games.Kiss
             );
         }
 
-        private void SaveXml()
+        // ── UI Construction ───────────────────────────────────────────
+        private void BuildLayout()
         {
-            var dir = Path.GetDirectoryName(_xmlPath);
-            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
+            SuspendLayout();
 
-            // Write UTF-16
-            using (var sw = new StreamWriter(_xmlPath, false, System.Text.Encoding.Unicode))
-            {
-                _doc.Save(sw);
-            }
+            _table = SettingsLayout.CreateTable(LAYOUT_ROWS);
+
+            var openLink = SettingsLayout.CreateLink(T._("Open game setup file"), OnOpenSetupFile);
+            var reloadLink = SettingsLayout.CreateLink(T._("Reload settings from XML"), OnReloadFromXml);
+
+            _cboResolution = SettingsLayout.CreateDropDown(_resolutions.Labels(), OnResolutionChanged);
+            _cboQuality = SettingsLayout.CreateDropDown(QualityItems, OnSettingChanged);
+            _chkFullScreen = SettingsLayout.CreateCheckBox(OnSettingChanged);
+
+            _table.Controls.Add(openLink, 0, 0);
+            _table.Controls.Add(reloadLink, 1, 0);
+            SettingsLayout.AddRow(_table, 1, T._("Resolution:"), _cboResolution);
+            SettingsLayout.AddRow(_table, 2, T._("Quality:"), _cboQuality);
+            SettingsLayout.AddRow(_table, 3, T._("Full Screen:"), _chkFullScreen);
+
+            Controls.Add(_table);
+            ResumeLayout(true);
         }
 
-        private string GetVal(string key, string categoryName = "") 
-        {
-
-            //<?xml version="1.0" encoding="utf-8" standalone="no"?>
-            //<!--CM3D2 Config-->
-            //<Config Version="22501">
-            //  <System>
-            //    <SysButtonShowAlways>true</SysButtonShowAlways>
-            //  </System>
-            //  <Screen>
-            //    <FullScreen>false</FullScreen>
-            //    <ScreenSizeNow.width>1280</ScreenSizeNow.width>
-            //    <ScreenSizeNow.height>720</ScreenSizeNow.height>
-            //    <Antialias>X2</Antialias>
-            //    <ShadowQuality>Medium</ShadowQuality>
-            //    <TextureQuality>High</TextureQuality>
-            //    <VSync>false</VSync>
-            //    <TargetFPS>60</TargetFPS>
-            //    <ViewFps>false</ViewFps>
-            //    <Bloom>true</Bloom>
-            //    <BloomValue>50</BloomValue>
-            //    <ScreenShotSuperSize>X1</ScreenShotSuperSize>
-            //    <ManAlpha>50</ManAlpha>
-            //  </Screen>
-            //</Config>
-
-            var elem = _doc.Root?.Element(string.IsNullOrEmpty(categoryName) ? SCREEN_CATEGORY_KEY : categoryName)?.Element(key);
-            return elem != null ? elem.Value : string.Empty;
-        }
-        private void SetVal(string key, object val, string categoryName = null) => _doc.Root?.Element(string.IsNullOrEmpty(categoryName) ? SCREEN_CATEGORY_KEY : categoryName)?.SetElementValue(key, val);
-
-
-        // ── Populate UI from XML ──────────────────────────────────────
+        // ── Populate UI from the file ─────────────────────────────────
         private void PopulateControls()
         {
             _loading = true;
             try
             {
-                SetResolution();
+                SelectResolution();
 
-                // Quality
-                var s = GetVal(QUALITY_SETTING_KEY, SCREEN_CATEGORY_KEY);
-                _cboQuality.SelectedItem = s;
+                _cboQuality.SelectedItem = _settings.GetValue(SCREEN_CATEGORY_KEY, QUALITY_SETTING_KEY);
 
-                // FullScreen
-                _chkFullScreen.Checked = GetVal(FULLSCREEN_SETTING_KEY, SCREEN_CATEGORY_KEY).Equals("true", StringComparison.OrdinalIgnoreCase);
+                _chkFullScreen.Checked = _settings.GetValue(SCREEN_CATEGORY_KEY, FULLSCREEN_SETTING_KEY)
+                    .Equals("true", StringComparison.OrdinalIgnoreCase);
             }
-            finally { _loading = false; }
+            finally
+            {
+                _loading = false;
+            }
+
+            // the changes above are only selection changes, but a resolution that
+            // had to be added is worth writing back
+            _settings.Save();
         }
 
-        private void SetResolution()
+        /// <summary>
+        /// Selects the resolution stored in the file, falling back to the default
+        /// one when the stored size is unusable.
+        /// </summary>
+        private void SelectResolution()
         {
-            // Resolution – first load by Width and Height, if not found then fallback to label matching
-            string wStr = GetVal(WIDTH_SETTING_KEY, SCREEN_CATEGORY_KEY);
-            int w = int.TryParse(wStr, out int tw) ? tw : -1;
-            string hStr = GetVal(HEIGHT_SETTING_KEY, SCREEN_CATEGORY_KEY);
-            int h = int.TryParse(hStr, out int th) ? th : -1;
-            if (w > 0 && h > 0)
-            {
-                int ri = Resolutions.FindIndex(r => r.W == w && r.H == h);
-                if(ri < 0)
-                {
-                    // set label as "width x height (calculated aspect ratio in standart form)"
-                    string label = string.Format("{0} x {1} ({2})", w, h, ManageMath.GetAspectRatio(w, h));
-                    Resolutions.Add((label, w, h));
-                    _cboResolution.Items.Add(label);
-                    ri = Resolutions.Count - 1;
-                }
-                _cboResolution.SelectedIndex = ri >= 0 ? ri : 0;
-            }
-            else
-            {
-                SetVal(WIDTH_SETTING_KEY, DEFAULT_SCREEN_WIDTH, SCREEN_CATEGORY_KEY);
-                SetVal(HEIGHT_SETTING_KEY, DEFAULT_SCREEN_HEIGHT, SCREEN_CATEGORY_KEY);
-                SaveXml();
+            var width = int.TryParse(_settings.GetValue(SCREEN_CATEGORY_KEY, WIDTH_SETTING_KEY), out var w) ? w : -1;
+            var height = int.TryParse(_settings.GetValue(SCREEN_CATEGORY_KEY, HEIGHT_SETTING_KEY), out var h) ? h : -1;
 
-                int ri = Resolutions.FindIndex(r => r.W == DEFAULT_SCREEN_WIDTH && r.H == DEFAULT_SCREEN_HEIGHT);
-                _cboResolution.SelectedIndex = ri >= 0 ? ri : 0;
+            if (width <= 0 || height <= 0)
+            {
+                _settings.SetValue(SCREEN_CATEGORY_KEY, WIDTH_SETTING_KEY, DEFAULT_SCREEN_WIDTH);
+                _settings.SetValue(SCREEN_CATEGORY_KEY, HEIGHT_SETTING_KEY, DEFAULT_SCREEN_HEIGHT);
 
+                var defaultIndex = _resolutions.IndexOf(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT);
+                _cboResolution.SelectedIndex = defaultIndex >= 0 ? defaultIndex : 0;
+                return;
             }
+
+            var index = _resolutions.IndexOf(width, height);
+
+            if (index < 0)
+            {
+                // the game uses a resolution the list does not know yet, add it so
+                // the user can keep it selected
+                index = _resolutions.Add(width, height);
+                _cboResolution.Items.Add(_resolutions[index].Label);
+            }
+
+            _cboResolution.SelectedIndex = index;
         }
 
         // ── Event Handlers ────────────────────────────────────────────
+        private void OnOpenSetupFile(object sender, EventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start("notepad.exe", _settings.FilePath);
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Can not open the game config file '" + _settings.FilePath + "' in Notepad.\r\n" + ex);
+                MessageBox.Show(string.Format(T._("Failed to open Notepad: {0}"), ex.Message), T._("Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void OnReloadFromXml(object sender, EventArgs e)
+        {
+            _settings.Load();
+            PopulateControls();
+        }
+
         private void OnResolutionChanged(object sender, EventArgs e)
         {
             if (_loading || _cboResolution.SelectedIndex < 0) return;
-            var (_, w, h) = Resolutions[_cboResolution.SelectedIndex];
-            SetVal(WIDTH_SETTING_KEY, w, SCREEN_CATEGORY_KEY);
-            SetVal(HEIGHT_SETTING_KEY, h, SCREEN_CATEGORY_KEY);
-            SaveXml();
+
+            var resolution = _resolutions[_cboResolution.SelectedIndex];
+            _settings.SetValue(SCREEN_CATEGORY_KEY, WIDTH_SETTING_KEY, resolution.Width);
+            _settings.SetValue(SCREEN_CATEGORY_KEY, HEIGHT_SETTING_KEY, resolution.Height);
+            _settings.Save();
         }
 
         private void OnSettingChanged(object sender, EventArgs e)
@@ -363,11 +227,11 @@ namespace AIHelper.Games.Kiss
             if (_loading) return;
 
             if (sender == _cboQuality)
-                SetVal(QUALITY_SETTING_KEY, _cboQuality.SelectedItem, SCREEN_CATEGORY_KEY);
+                _settings.SetValue(SCREEN_CATEGORY_KEY, QUALITY_SETTING_KEY, _cboQuality.SelectedItem);
             else if (sender == _chkFullScreen)
-                SetVal(FULLSCREEN_SETTING_KEY, _chkFullScreen.Checked.ToString().ToLower(), SCREEN_CATEGORY_KEY);
+                _settings.SetValue(SCREEN_CATEGORY_KEY, FULLSCREEN_SETTING_KEY, _chkFullScreen.Checked.ToString().ToLowerInvariant());
 
-            SaveXml();
+            _settings.Save();
         }
     }
 }

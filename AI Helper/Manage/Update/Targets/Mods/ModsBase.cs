@@ -61,25 +61,14 @@ namespace AIHelper.Manage.Update.Targets.Mods
         /// <returns>The distinct link paths, or an empty array.</returns>
         internal override string[] RestorePathsListExtra()
         {
-            var objectLinkPaths = ManageSettings.Games.Game.DirLinkPaths;
-
             var links = new HashSet<string>();
 
-            if (objectLinkPaths == null) return new string[0];
-
-            var rows = objectLinkPaths.GetLength(0);
-
-            // the table is "mod side path" / "game side link path" pairs
-            if (objectLinkPaths.GetLength(1) < 2) return new string[0];
-
-            for (int i = 0; i < rows; i++)
+            foreach (var objectLinkPath in ManageSettings.Games.Game.DirLinkPaths)
             {
-                var linkPath = objectLinkPaths[i, 1];
-
-                if (string.IsNullOrWhiteSpace(linkPath)) continue;
+                if (string.IsNullOrWhiteSpace(objectLinkPath.Target)) continue;
 
                 // HashSet de-duplicates the paths by itself
-                links.Add(linkPath);
+                links.Add(objectLinkPath.Target);
             }
 
             return links.ToArray();

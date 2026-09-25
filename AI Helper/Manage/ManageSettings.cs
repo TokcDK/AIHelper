@@ -1082,7 +1082,15 @@ namespace AIHelper.Manage
             if (selectedGameSettingsUserControl != null)
             {
                 selectedGameSettingsUserControl.Dock = DockStyle.Fill;
-                gameSettingsParentControl.Controls.Clear();
+
+                // Controls.Clear() only detaches the children, it does not dispose
+                // them, so the settings control of the game that was selected before
+                // would stay alive for the whole session
+                for (var i = gameSettingsParentControl.Controls.Count - 1; i >= 0; i--)
+                {
+                    gameSettingsParentControl.Controls[i].Dispose();
+                }
+
                 gameSettingsParentControl.Controls.Add(selectedGameSettingsUserControl);
             }
         }

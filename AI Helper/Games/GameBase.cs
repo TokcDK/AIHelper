@@ -1,16 +1,52 @@
 ﻿using AIHelper.Manage;
 using NLog;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
 namespace AIHelper.Games
 {
+    /// <summary>
+    /// Base preset of one supported game. Every non abstract subclass found by
+    /// reflection is offered to the user, so a new game only has to add a class
+    /// and fill in the members it actually differs in.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="Manage.ManageOther.GetListOfExistsGames"/> builds the game list
+    /// from <c>Inherited.GetListOfInheritedTypes(typeof(GameBase))</c>, which
+    /// instantiates every concrete subclass through its parameterless
+    /// constructor. Do not declare a constructor with parameters here, and keep
+    /// intermediate classes abstract.
+    /// </remarks>
     public abstract class GameBase
     {
-        protected readonly static Logger _log = LogManager.GetCurrentClassLogger();
-        public GameBase()
-        {
-        }
+        protected static readonly Logger _log = LogManager.GetCurrentClassLogger();
+
+        /// <summary>
+        /// Folder the mod loader reads its plugins from.
+        /// </summary>
+        protected const string BepInExDirName = "BepInEx";
+
+        /// <summary>
+        /// Standard data folder of the older Illusion games.
+        /// </summary>
+        protected const string AbdataDirName = "abdata";
+
+        /// <summary>
+        /// Folder the game stores its user data in.
+        /// </summary>
+        protected const string UserDataDirName = "UserData";
+
+        /// <summary>
+        /// Folder Mod Organizer uses as the source of the linked user data.
+        /// </summary>
+        protected const string MyUserDataDirName = "MyUserData";
+
+        /// <summary>
+        /// Suffix Unity adds to the name of the data folder of an executable.
+        /// </summary>
+        protected const string DataDirSuffix = "_Data";
 
         public abstract string BasicGamePluginName { get; }
 
@@ -21,7 +57,6 @@ namespace AIHelper.Games
 
         public virtual void InitActions() { }
 
-        //public string gamefolderPath { get; set; } = string.Empty;
         /// <summary>
         /// true if game have sideloader zipmods
         /// </summary>
@@ -47,10 +82,17 @@ namespace AIHelper.Games
         public virtual string RegistryInstallDirKey { get; }
 
         /// <summary>
+        /// The game's install folder. Set by <see cref="Manage.ManageOther"/>
+        /// while the game list is built, so it is never null for a game the user
+        /// can select.
+        /// </summary>
+        public DirectoryInfo GameDirInfo { get; set; }
+
+        /// <summary>
         /// search and return game folder name
         /// </summary>
-        /// <returns></returns>
-        public virtual string GameDirName { get => GameDirInfo.Name; }
+        /// <returns>the folder name, or an empty string while the game folder is not known yet</returns>
+        public virtual string GameDirName { get => GameDirInfo?.Name ?? string.Empty; }
 
         public virtual string GameDisplayingName { get => GameDirName; }
 
@@ -96,9 +138,9 @@ namespace AIHelper.Games
         /// <returns></returns>
         public virtual string GameStudioExeNameX32 { get; }
 
-        public DirectoryInfo GameDirInfo;
-
+        /// <summary>
         /// game's path of selected game
+        /// </summary>
         public virtual string GamePath { get => GameDirInfo.FullName; set { GameDirInfo = new DirectoryInfo(value); } }
 
         /// <summary>
@@ -134,84 +176,109 @@ namespace AIHelper.Games
         /// <summary>
         /// additional exe paths for selected game
         /// </summary>
-        /// <returns></returns>
-        public virtual string[] AdditionalExecutables => null;
+        /// <returns>the extra executables, never null</returns>
+        public virtual IReadOnlyList<string> AdditionalExecutables => Array.Empty<string>();
 
-        public virtual string[] GameStandartFolderNames
+        /// <summary>
+        /// Folder names the game itself owns. Content inside them must not be
+        /// moved one level up while an archive is unpacked.
+        /// </summary>
+        public virtual IReadOnlyList<string> GameStandardFolderNames
         {
             get
             {
-                if (GameExeNameX32.Length > 0 && GameStudioExeNameX32.Length > 0)
+                var folderNames = new List<string>
                 {
-                    return new string[] { "abdata", "UserData", GameExeName + "_Data", GameExeNameX32 + "_Data", GameStudioExeName + "_Data", GameStudioExeNameX32 + "_Data", "BepInEx" };
-                }
-                else
-                {
-                    return new string[] { "abdata", "UserData", GameExeName + "_Data", GameStudioExeName + "_Data", "BepInEx" };
-                }
+                    AbdataDirName,
+                    UserDataDirName,
+                    GameExeName + DataDirSuffix,
+                    GameStudioExeName + DataDirSuffix,
+                    BepInExDirName
+                };
+
+                // a game may have an x32 build of one executable without the
+                // other one, so each name is checked on its own
+                if (!string.IsNullOrEmpty(GameExeNameX32)) folderNames.Add(GameExeNameX32 + DataDirSuffix);
+                if (!string.IsNullOrEmpty(GameStudioExeNameX32)) folderNames.Add(GameStudioExeNameX32 + DataDirSuffix);
+
+                return folderNames;
             }
         }
 
-        public virtual string[,] DirLinkPaths => new string[,]
-            {
-                    {
-                        Path.Combine(ManageSettings.CurrentGameModsDirPath, "MyUserData", "UserData", "MaterialEditor")
-                        ,
-                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "MaterialEditor")
-                    }
-                    ,
-                    {
-                        Path.Combine(ManageSettings.CurrentGameModsDirPath, "MyUserData", "UserData", "Overlays")
-                        ,
-                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "Overlays")
-                    }
-                    ,
-                    {
-                        Path.Combine(ManageSettings.CurrentGameModsDirPath, "MyUserData", "UserData", "cap")
-                        ,
-                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "cap")
-                    }
-                    ,
-                    {
-                        Path.Combine(ManageSettings.CurrentGameModsDirPath, "MyUserData", "UserData", "studioneo", "BetterSceneLoader")
-                        ,
-                        Path.Combine(ManageSettings.CurrentGameDataDirPath, "UserData", "studioneo", "BetterSceneLoader")
-                    }
-            };
-
-        public virtual string[,] ObjectsForMove => new string[,]
+        /// <summary>
+        /// Directory link pairs of the game. <see cref="PathPair.Source"/> is the
+        /// real folder, <see cref="PathPair.Target"/> is where the link is created.
+        /// </summary>
+        public virtual IReadOnlyList<PathPair> DirLinkPaths => new[]
         {
-                {
-                    Path.Combine(ManageSettings.CurrentGameModsDirPath, "BepInEx", "BepInEx", "core", "BepInEx.Preloader.Core.dll")
-                    ,
-                    Path.Combine(ManageSettings.CurrentGameDataDirPath, "BepInEx", "core", "BepInEx.Preloader.Core.dll")
-                }
-                ,
-                {
-                    Path.Combine(ManageSettings.CurrentGameModsDirPath, "BepInEx", "BepInEx", "core", "BepInEx.Preloader.dll")
-                    ,
-                    Path.Combine(ManageSettings.CurrentGameDataDirPath, "BepInEx", "core", "BepInEx.Preloader.dll")
-                }
-                ,
-                {
-                    Path.Combine(ManageSettings.CurrentGameModsDirPath, "BepInEx", "doorstop_config.ini")
-                    ,
-                    Path.Combine(ManageSettings.CurrentGameDataDirPath, "doorstop_config.ini")
-                }
-                ,
-                {
-                    Path.Combine(ManageSettings.CurrentGameModsDirPath, "BepInEx", "winhttp.dll")
-                    ,
-                    Path.Combine(ManageSettings.CurrentGameDataDirPath, "winhttp.dll")
-                }
+            DirLink(
+                Path.Combine(ManageSettings.CurrentGameModsDirPath, MyUserDataDirName, UserDataDirName, "MaterialEditor"),
+                Path.Combine(ManageSettings.CurrentGameDataDirPath, UserDataDirName, "MaterialEditor")),
+            DirLink(
+                Path.Combine(ManageSettings.CurrentGameModsDirPath, MyUserDataDirName, UserDataDirName, "Overlays"),
+                Path.Combine(ManageSettings.CurrentGameDataDirPath, UserDataDirName, "Overlays")),
+            DirLink(
+                Path.Combine(ManageSettings.CurrentGameModsDirPath, MyUserDataDirName, UserDataDirName, "cap"),
+                Path.Combine(ManageSettings.CurrentGameDataDirPath, UserDataDirName, "cap")),
+            DirLink(
+                Path.Combine(ManageSettings.CurrentGameModsDirPath, MyUserDataDirName, UserDataDirName, "studioneo", "BetterSceneLoader"),
+                Path.Combine(ManageSettings.CurrentGameDataDirPath, UserDataDirName, "studioneo", "BetterSceneLoader")),
         };
 
+        /// <summary>
+        /// File pairs that have to be moved out of the mod folder into the game
+        /// folder so the mod loader can start.
+        /// </summary>
+        public virtual IReadOnlyList<PathPair> ObjectsForMove => new[]
+        {
+            FileCopy(
+                Path.Combine(ManageSettings.CurrentGameModsDirPath, BepInExDirName, BepInExDirName, "core", "BepInEx.Preloader.Core.dll"),
+                Path.Combine(ManageSettings.CurrentGameDataDirPath, BepInExDirName, "core", "BepInEx.Preloader.Core.dll")),
+            FileCopy(
+                Path.Combine(ManageSettings.CurrentGameModsDirPath, BepInExDirName, BepInExDirName, "core", "BepInEx.Preloader.dll"),
+                Path.Combine(ManageSettings.CurrentGameDataDirPath, BepInExDirName, "core", "BepInEx.Preloader.dll")),
+            FileCopy(
+                Path.Combine(ManageSettings.CurrentGameModsDirPath, BepInExDirName, "doorstop_config.ini"),
+                Path.Combine(ManageSettings.CurrentGameDataDirPath, "doorstop_config.ini")),
+            FileCopy(
+                Path.Combine(ManageSettings.CurrentGameModsDirPath, BepInExDirName, "winhttp.dll"),
+                Path.Combine(ManageSettings.CurrentGameDataDirPath, "winhttp.dll")),
+        };
+
+        /// <summary>
+        /// Settings tab of the game, or null when the game has no editable settings.
+        /// </summary>
+        /// <remarks>
+        /// A new control is built on every read, so the caller owns it and has to
+        /// dispose the instance it replaced.
+        /// </remarks>
         public virtual UserControl GameSettingsControl { get => null; }
+
         public virtual string GetGameConfigFilePath(string parentPath) => string.Empty;
 
+        /// <summary>
+        /// A directory link pair: <paramref name="objectPath"/> is the real folder,
+        /// <paramref name="linkPath"/> is where the link is created.
+        /// </summary>
+        protected static PathPair DirLink(string objectPath, string linkPath) => new PathPair(objectPath, linkPath);
+
+        /// <summary>
+        /// A file pair: <paramref name="sourcePath"/> is copied to <paramref name="targetPath"/>.
+        /// </summary>
+        protected static PathPair FileCopy(string sourcePath, string targetPath) => new PathPair(sourcePath, targetPath);
+
+        /// <summary>
+        /// GameName as it is written into the Mod Organizer ini, looked up in the
+        /// basic game plugin when it was not set yet.
+        /// </summary>
         internal string GetGameName()
         {
-            return !string.IsNullOrWhiteSpace(GameName) ? GameName : GameName = ManageModOrganizer.GetMoBasicGamePluginGameName();
+            if (string.IsNullOrWhiteSpace(GameName))
+            {
+                GameName = ManageModOrganizer.GetMoBasicGamePluginGameName();
+            }
+
+            return GameName;
         }
     }
 }

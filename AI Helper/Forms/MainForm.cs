@@ -272,6 +272,16 @@ namespace AIHelper
         }
 
         /// <summary>
+        /// The colour editor, while it is open.
+        /// </summary>
+        /// <remarks>
+        /// Held rather than opened and forgotten, for two reasons: clicking Edit again brings
+        /// the window which is already open to the front instead of opening a second one over
+        /// it, and the theme row has to be put back the way it was when it closes.
+        /// </remarks>
+        private ThemeEditorForm _themeEditor;
+
+        /// <summary>
         /// Opens the editor for the colours of the theme in use.
         /// </summary>
         /// <remarks>
@@ -282,10 +292,35 @@ namespace AIHelper
         /// </remarks>
         private void EditThemeButton_Click(object sender, EventArgs e)
         {
-            ThemeEditorForm.Edit(this);
+            // one editor at a time: a second one would be editing a palette the first one
+            // is already applying, and there would be no way to tell which is which
+            if (_themeEditor != null && !_themeEditor.IsDisposed)
+            {
+                if (_themeEditor.WindowState == FormWindowState.Minimized)
+                {
+                    _themeEditor.WindowState = FormWindowState.Normal;
+                }
 
-            // the colours may have changed, and saving them makes a theme which the list
-            // has not been told about yet
+                _themeEditor.Activate();
+                return;
+            }
+
+            _themeEditor = ThemeEditorForm.Open(this);
+            _themeEditor.FormClosed += ThemeEditorForm_Closed;
+
+            UpdateCustomThemeButtons();
+        }
+
+        /// <summary>
+        /// Puts the theme row back the way it was when the editor closes.
+        /// </summary>
+        private void ThemeEditorForm_Closed(object sender, FormClosedEventArgs e)
+        {
+            if (ReferenceEquals(sender, _themeEditor)) _themeEditor = null;
+
+            // this window may be going away as well, which closes the editor with it
+            if (IsDisposed || Disposing) return;
+
             UpdateCustomThemeButtons();
         }
 
@@ -409,8 +444,15 @@ namespace AIHelper
         {
             var isCustom = SelectedCustomTheme != null;
 
-            RenameThemeButton.Enabled = isCustom;
-            DeleteThemeButton.Enabled = isCustom;
+            // while the colours are being edited, the theme behind the editor must not be
+            // swapped: the editor is changing a copy of it, and choosing another one would
+            // leave the window and the list disagreeing about what is being edited
+            var isEditing = ThemesLoader.IsEditingColours;
+
+            SelectThemeComboBox.Enabled = !isEditing;
+            SaveThemeButton.Enabled = !isEditing;
+            RenameThemeButton.Enabled = isCustom && !isEditing;
+            DeleteThemeButton.Enabled = isCustom && !isEditing;
         }
 
         private void SelectThemeComboBox_SelectedIndexChanged(object sender, EventArgs e)

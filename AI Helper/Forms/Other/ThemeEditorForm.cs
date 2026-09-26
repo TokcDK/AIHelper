@@ -55,19 +55,96 @@ namespace AIHelper.Forms.Other
         }
 
         /// <summary>
-        /// Opens the editor and returns once it has been closed.
+        /// Opens the editor and hands it back to whoever opened it.
         /// </summary>
         /// <remarks>
-        /// Modal, so the theme list underneath cannot be changed while an edit is in
-        /// progress. Closing keeps the colours which are on screen; saving them is a
-        /// separate step, taken from the theme list afterwards.
+        /// <para>
+        /// Shown rather than shown as a dialog, because the colours are judged on the main
+        /// window: it has to stay visible and usable while the edit is going on. A dialog
+        /// would disable it, and the window would then have to be closed to see the result.
+        /// </para>
+        /// <para>
+        /// The caller keeps the window it is given and closes it. That is also what stops a
+        /// second editor being opened over the first, and it is why nothing here disposes
+        /// anything: the window disposes itself when it is closed.
+        /// </para>
         /// </remarks>
-        internal static void Edit(IWin32Window owner)
+        internal static ThemeEditorForm Open(IWin32Window owner)
         {
-            using (var editor = new ThemeEditorForm())
+            var editor = new ThemeEditorForm();
+
+            editor.PlaceBesideOwner(owner as Form);
+            editor.Show(owner);
+
+            return editor;
+        }
+
+        /// <summary>
+        /// The distance left between this window and the one it belongs to.
+        /// </summary>
+        private const int Gap = 8;
+
+        /// <summary>
+        /// Puts the window where the window it edits can still be seen.
+        /// </summary>
+        private void PlaceBesideOwner(Form owner)
+        {
+            if (owner == null) return;
+
+            // the designer's CentreParent would put it straight over the window whose
+            // colours are being changed, which is the one thing it must not cover
+            StartPosition = FormStartPosition.Manual;
+
+            Location = PlacementBeside(
+                owner.Bounds,
+                Size,
+                Screen.FromControl(owner).WorkingArea);
+        }
+
+        /// <summary>
+        /// Where a window of <paramref name="windowSize"/> goes so that it does not cover
+        /// the window it belongs to.
+        /// </summary>
+        /// <remarks>
+        /// To the right of the owner when the screen has room, to its left when it does not,
+        /// under it when neither side fits, and centred on it only when there is nowhere
+        /// else - on a screen that small something has to be covered. The answer is always
+        /// brought inside the working area, so the window cannot open off the screen.
+        /// <para>
+        /// Worked out apart from any window, so where a window would be put can be checked
+        /// without opening one.
+        /// </para>
+        /// </remarks>
+        internal static Point PlacementBeside(Rectangle owner, Size windowSize, Rectangle workingArea)
+        {
+            int x, y;
+
+            if (owner.Right + Gap + windowSize.Width <= workingArea.Right)
             {
-                editor.ShowDialog(owner);
+                // beside it, level with its top
+                x = owner.Right + Gap;
+                y = owner.Top;
             }
+            else if (owner.Left - Gap - windowSize.Width >= workingArea.Left)
+            {
+                x = owner.Left - Gap - windowSize.Width;
+                y = owner.Top;
+            }
+            else if (owner.Bottom + Gap + windowSize.Height <= workingArea.Bottom)
+            {
+                // under it, the way the extra settings window is placed
+                x = owner.Left;
+                y = owner.Bottom + Gap;
+            }
+            else
+            {
+                x = owner.Left + ((owner.Width - windowSize.Width) / 2);
+                y = owner.Top + ((owner.Height - windowSize.Height) / 2);
+            }
+
+            return new Point(
+                Math.Max(workingArea.Left, Math.Min(x, workingArea.Right - windowSize.Width)),
+                Math.Max(workingArea.Top, Math.Min(y, workingArea.Bottom - windowSize.Height)));
         }
 
         /// <summary>
@@ -289,6 +366,20 @@ namespace AIHelper.Forms.Other
         }
 
         /// <summary>
+        /// Closes the window, keeping the colours it changed.
+        /// </summary>
+        /// <remarks>
+        /// The button is not given a dialog result, because this window is not a dialog: a
+        /// dialog result does nothing at all on a window shown with <c>Show</c>, so the close
+        /// has to be asked for. Closing is also what the Escape and Enter keys reach, through
+        /// the form's cancel and accept buttons, which both point at this one.
+        /// </remarks>
+        private void BtnClose_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        /// <summary>
         /// Gives one element a colour and shows the result.
         /// </summary>
         /// <param name="updateText">
@@ -434,7 +525,7 @@ namespace AIHelper.Forms.Other
             btnResetElement.Text = T._("Reset element");
             btnResetAll.Text = T._("Reset all");
             btnClose.Text = T._("Close");
-            lblHintMutedLabel.Text = T._("Changes apply at once. Use Save to keep them as a theme.");
+            lblHintMutedLabel.Text = T._("Changes apply at once. Close the window, then use Save to keep them.");
         }
 
         private UiTooltip _toolTip;
@@ -463,7 +554,7 @@ namespace AIHelper.Forms.Other
             _toolTip.Set(btnFromScreen, T._("Take the colour of a pixel anywhere on the screen"));
             _toolTip.Set(btnResetElement, T._("Put this element back to the colour the theme gave it"));
             _toolTip.Set(btnResetAll, T._("Put every element back to the colours the theme gave them"));
-            _toolTip.Set(lblHintMutedLabel, T._("Saving is a separate step: use Save beside the theme list to keep these colours as a theme"));
+            _toolTip.Set(lblHintMutedLabel, T._("Saving is a separate step: close this window, then use Save beside the theme list to keep these colours"));
         }
     }
 }

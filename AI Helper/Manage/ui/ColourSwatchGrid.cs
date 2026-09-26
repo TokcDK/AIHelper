@@ -69,7 +69,13 @@ namespace AIHelper.Manage.ui
         /// <summary>
         /// Raised when one of the colours is clicked.
         /// </summary>
-        internal event Action<Color> ColourPicked;
+        /// <remarks>
+        /// Public, unlike the rest of this class, and it has to stay that way: the form
+        /// designer finds the events it may attach through <c>TypeDescriptor</c>, which only
+        /// surfaces public ones. An internal event makes the designer refuse to open any form
+        /// which uses this control, with "the type has no event named ...".
+        /// </remarks>
+        public event Action<Color> ColourPicked;
 
         /// <summary>
         /// Colour of the line around each cell. Set from the palette so the grid reads as

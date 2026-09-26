@@ -13,10 +13,24 @@
         /// <param name="disposing">истинно, если управляемый ресурс должен быть удален; иначе ложно.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                // the colour editor is a window of its own, so components.Dispose does not
+                // reach it. It is closed here, before the controls it reports to are gone,
+                // so that closing it cannot find the theme row already disposed.
+                if (_themeEditor != null && !_themeEditor.IsDisposed)
+                {
+                    _themeEditor.Close();
+                }
+
+                _themeEditor = null;
+
+                if (components != null)
+                {
+                    components.Dispose();
+                }
             }
+
             base.Dispose(disposing);
         }
 

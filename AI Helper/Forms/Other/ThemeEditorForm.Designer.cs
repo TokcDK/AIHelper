@@ -265,7 +265,7 @@
             this.lblHintMutedLabel.Name = "lblHintMutedLabel";
             this.lblHintMutedLabel.Size = new System.Drawing.Size(0, 15);
             this.lblHintMutedLabel.TabIndex = 0;
-            this.lblHintMutedLabel.Text = "Changes show straight away. Use Save to keep them as a theme.";
+            this.lblHintMutedLabel.Text = "Changes apply at once. Close the window, then use Save to keep them.";
             // 
             // btnResetAll
             // 
@@ -287,7 +287,6 @@
             this.btnClose.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.btnClose.AutoSize = true;
             this.btnClose.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnClose.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnClose.Location = new System.Drawing.Point(566, 4);
             this.btnClose.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
             this.btnClose.MinimumSize = new System.Drawing.Size(96, 32);
@@ -296,6 +295,7 @@
             this.btnClose.Size = new System.Drawing.Size(110, 32);
             this.btnClose.TabIndex = 2;
             this.btnClose.Text = "Close";
+            this.btnClose.Click += new System.EventHandler(this.BtnClose_Click);
             // 
             // ThemeEditorForm
             // 

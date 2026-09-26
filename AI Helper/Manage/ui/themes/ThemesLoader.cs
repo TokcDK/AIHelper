@@ -101,11 +101,142 @@ namespace AIHelper.Manage.ui.themes
         }
 
         /// <summary>
-        /// Every theme the application knows, discovered from the assembly.
+        /// Every theme the application knows: the compiled ones, then the ones the user
+        /// saved.
         /// </summary>
+        /// <remarks>
+        /// <see cref="CustomTheme"/> is the shape a saved theme is read into, not a theme
+        /// of its own, so the discovery is told to leave it out. Without that it would
+        /// hand back an empty instance of it and the list would show a nameless entry.
+        /// </remarks>
         internal static List<IUITheme> GetList()
         {
-            return GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IUITheme>().ToList();
+            var themes = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IUITheme>()
+                .Where(theme => !(theme is CustomTheme))
+                .ToList();
+
+            themes.AddRange(CustomThemeStore.LoadAll());
+
+            return themes;
+        }
+
+        /// <summary>
+        /// Tells whether a theme is one the user saved, which is what decides whether it
+        /// can be renamed and deleted.
+        /// </summary>
+        internal static bool IsCustomTheme(IUITheme theme)
+        {
+            return theme is CustomTheme;
+        }
+
+        /// <summary>
+        /// Keeps the colours the window is showing as a theme of the user's own, and
+        /// switches to it.
+        /// </summary>
+        /// <remarks>
+        /// The colours are taken from what is on screen rather than from any theme by
+        /// name, which is the point of the feature: the random theme draws a new set every
+        /// time it is applied, and this is how a set worth keeping is kept.
+        /// </remarks>
+        internal static CustomTheme SaveCurrentAsCustomTheme(string name)
+        {
+            var saved = CustomThemeStore.Save(name, CurrentPalette ?? FallbackPalette);
+            if (saved == null) return null;
+
+            // the list is rebuilt from disk, so the instance to use from now on is the
+            // one the list holds rather than the one just written
+            var themes = ReloadThemeList();
+
+            var stored = themes.FirstOrDefault(theme =>
+                theme is CustomTheme && string.Equals(theme.Name, saved.Name, StringComparison.CurrentCultureIgnoreCase));
+
+            var current = stored as CustomTheme ?? saved;
+
+            SwitchToTheme(current);
+            RememberThemeName(current);
+
+            return current;
+        }
+
+        /// <summary>
+        /// Renames a theme the user saved.
+        /// </summary>
+        /// <returns><c>false</c> when the theme could not be written.</returns>
+        internal static bool RenameCustomTheme(CustomTheme theme, string newName)
+        {
+            if (theme == null) return false;
+
+            if (!CustomThemeStore.Rename(theme, newName)) return false;
+
+            ReloadThemeList();
+
+            // the settings file remembers the theme by name, so a rename of the theme in
+            // use has to be written there too or the next start would fall back
+            if (IsCurrent(theme)) RememberThemeName(theme);
+
+            SyncThemeSelector();
+
+            return true;
+        }
+
+        /// <summary>
+        /// Removes a theme the user saved, falling back to the default one when it was
+        /// the theme in use.
+        /// </summary>
+        internal static bool DeleteCustomTheme(CustomTheme theme)
+        {
+            if (theme == null) return false;
+
+            var wasCurrent = IsCurrent(theme);
+
+            if (!CustomThemeStore.Delete(theme)) return false;
+
+            ReloadThemeList();
+
+            if (wasCurrent)
+            {
+                SetDefaultTheme();
+                RememberThemeName(ManageSettings.CurrentTheme);
+            }
+            else
+            {
+                SyncThemeSelector();
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Tells whether the given theme is the one being shown.
+        /// </summary>
+        /// <remarks>
+        /// Compared by name rather than by instance, because a theme read from disk is a
+        /// new instance each time the list is rebuilt.
+        /// </remarks>
+        private static bool IsCurrent(IUITheme theme)
+        {
+            var current = ManageSettings.CurrentTheme;
+
+            return current != null
+                && theme != null
+                && string.Equals(current.Name, theme.Name, StringComparison.CurrentCultureIgnoreCase);
+        }
+
+        /// <summary>
+        /// Rebuilds the theme list and puts it back into the selector.
+        /// </summary>
+        /// <returns>The themes which exist now.</returns>
+        private static List<IUITheme> ReloadThemeList()
+        {
+            var themes = GetList();
+
+            var selector = GetThemeSelector();
+            if (selector != null && _isSelectorBound)
+            {
+                BindThemeSelector(selector, themes);
+            }
+
+            return themes;
         }
 
         /// <summary>
@@ -275,12 +406,19 @@ namespace AIHelper.Manage.ui.themes
         /// Fills the selector with the known themes and wires it to apply the chosen
         /// one.
         /// </summary>
+        /// <remarks>
+        /// Safe to call again after the list has changed. The handler is detached before
+        /// the data source is replaced and attached again afterwards, because replacing
+        /// the source moves the selection and would otherwise look like the user choosing
+        /// a theme, and because subscribing twice would apply every theme twice.
+        /// </remarks>
         private static void BindThemeSelector(ComboBox selector, List<IUITheme> themes)
         {
+            selector.SelectedIndexChanged -= OnThemeSelected;
+            selector.DataSource = null;
             selector.DataSource = themes;
             selector.DisplayMember = "Name";
             selector.ValueMember = "Name";
-
             selector.SelectedIndexChanged += OnThemeSelected;
         }
 
@@ -297,10 +435,21 @@ namespace AIHelper.Manage.ui.themes
 
             ManageSettings.CurrentTheme = theme;
 
-            ManageIni.GetINIFile(ManageSettings.AiHelperIniPath)
-                .SetKey(ManageSettings.IniSettingsSectionName, ManageSettings.IniThemeKeyName, theme.Name);
+            RememberThemeName(theme);
 
             SetTheme(theme);
+        }
+
+        /// <summary>
+        /// Writes the name of a theme into the settings file, so the same one is applied
+        /// the next time the application starts.
+        /// </summary>
+        private static void RememberThemeName(IUITheme theme)
+        {
+            if (theme == null) return;
+
+            ManageIni.GetINIFile(ManageSettings.AiHelperIniPath)
+                .SetKey(ManageSettings.IniSettingsSectionName, ManageSettings.IniThemeKeyName, theme.Name);
         }
 
         /// <summary>

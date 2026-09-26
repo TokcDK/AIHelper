@@ -564,6 +564,15 @@ namespace AIHelper.Manage
 
         internal static string AiHelperIniPath => Path.Combine(ManageSettings.ApplicationStartupPath, ManageSettings.ApplicationProductName + ".ini");
 
+        /// <summary>
+        /// Folder the themes the user made are kept in, one file per theme.
+        /// </summary>
+        /// <remarks>
+        /// Beside the settings file rather than under RES. RES is replaced when the
+        /// application is updated, and a theme the user made is theirs to keep.
+        /// </remarks>
+        internal static string CustomThemesFolder => Path.Combine(ManageSettings.ApplicationStartupPath, "themes");
+
         internal static int GetCurrentGameIndexByFolderName(List<GameBase> listOfGames, string folderName)
         {
             // return first game index if was not found game folder name in ini or ini was empty

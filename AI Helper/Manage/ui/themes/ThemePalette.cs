@@ -227,6 +227,12 @@ namespace AIHelper.Manage.ui.themes
         {
             var contrastDirection = IsDark ? Color.White : Color.Black;
 
+            // The accent is the one role that several others are derived from and that
+            // nothing derived, so it is settled first. A palette which does not say what
+            // its accent is gets a neutral one taken from its surface, rather than leaving
+            // every accent coloured control on its designer colour.
+            if (Accent.IsEmpty && !Surface.IsEmpty) Accent = Blend(Surface, Contrast(Surface), 0.55f);
+
             // roles a theme can leave out entirely, defaulted before anything is
             // derived from them
             if (Link.IsEmpty) Link = Accent;

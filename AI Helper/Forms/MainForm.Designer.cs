@@ -63,7 +63,11 @@
             this.CurrentGameComboBox = new System.Windows.Forms.ComboBox();
             this.AddGameButton = new System.Windows.Forms.Button();
             this.ThemeSelectLabel = new System.Windows.Forms.Label();
+            this.ThemeSelectTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.SelectThemeComboBox = new System.Windows.Forms.ComboBox();
+            this.SaveThemeButton = new System.Windows.Forms.Button();
+            this.RenameThemeButton = new System.Windows.Forms.Button();
+            this.DeleteThemeButton = new System.Windows.Forms.Button();
             this.OtherSettingsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.BepInExLogTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.BepInExConsoleCheckBox = new System.Windows.Forms.CheckBox();
@@ -97,6 +101,7 @@
             this.SettingsTabGeneralTabPage.SuspendLayout();
             this.SettingsTabGeneralTabPageBackgroundPanel.SuspendLayout();
             this.SettingsTabGeneralTabPageTableLayoutPanel.SuspendLayout();
+            this.ThemeSelectTableLayoutPanel.SuspendLayout();
             this.ManageGameTableLayoutPanel1.SuspendLayout();
             this.CurrentGamePanel1.SuspendLayout();
             this.OtherSettingsFlowLayoutPanel.SuspendLayout();
@@ -481,7 +486,7 @@
             this.SettingsTabGeneralTabPageTableLayoutPanel.Controls.Add(this.CurrentGameLabel, 0, 0);
             this.SettingsTabGeneralTabPageTableLayoutPanel.Controls.Add(this.ManageGameTableLayoutPanel1, 0, 1);
             this.SettingsTabGeneralTabPageTableLayoutPanel.Controls.Add(this.ThemeSelectLabel, 0, 2);
-            this.SettingsTabGeneralTabPageTableLayoutPanel.Controls.Add(this.SelectThemeComboBox, 0, 3);
+            this.SettingsTabGeneralTabPageTableLayoutPanel.Controls.Add(this.ThemeSelectTableLayoutPanel, 0, 3);
             this.SettingsTabGeneralTabPageTableLayoutPanel.Controls.Add(this.OtherSettingsFlowLayoutPanel, 0, 4);
             this.SettingsTabGeneralTabPageTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SettingsTabGeneralTabPageTableLayoutPanel.Location = new System.Drawing.Point(16, 14);
@@ -585,16 +590,95 @@
             this.ThemeSelectLabel.Text = "Theme:";
             this.ThemeSelectLabel.TextAlign = System.Drawing.ContentAlignment.BottomLeft;
             // 
+            // ThemeSelectTableLayoutPanel
+            // 
+            // The theme list, with what can be done to the themes beside it. Saving takes
+            // the colours which are on screen, so it stays available whatever is selected;
+            // renaming and deleting only apply to a theme the user made, so those two are
+            // enabled by the form depending on the selection.
+            this.ThemeSelectTableLayoutPanel.ColumnCount = 4;
+            this.ThemeSelectTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ThemeSelectTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.ThemeSelectTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.ThemeSelectTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.ThemeSelectTableLayoutPanel.Controls.Add(this.SelectThemeComboBox, 0, 0);
+            this.ThemeSelectTableLayoutPanel.Controls.Add(this.SaveThemeButton, 1, 0);
+            this.ThemeSelectTableLayoutPanel.Controls.Add(this.RenameThemeButton, 2, 0);
+            this.ThemeSelectTableLayoutPanel.Controls.Add(this.DeleteThemeButton, 3, 0);
+            this.ThemeSelectTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ThemeSelectTableLayoutPanel.Location = new System.Drawing.Point(0, 80);
+            this.ThemeSelectTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0, 0, 0, 6);
+            this.ThemeSelectTableLayoutPanel.Name = "ThemeSelectTableLayoutPanel";
+            this.ThemeSelectTableLayoutPanel.RowCount = 1;
+            this.ThemeSelectTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ThemeSelectTableLayoutPanel.Size = new System.Drawing.Size(550, 23);
+            this.ThemeSelectTableLayoutPanel.TabIndex = 3;
+            // 
             // SelectThemeComboBox
             // 
             this.SelectThemeComboBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SelectThemeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.SelectThemeComboBox.FormattingEnabled = true;
-            this.SelectThemeComboBox.Location = new System.Drawing.Point(0, 80);
-            this.SelectThemeComboBox.Margin = new System.Windows.Forms.Padding(0, 0, 0, 6);
+            this.SelectThemeComboBox.Location = new System.Drawing.Point(0, 0);
+            this.SelectThemeComboBox.Margin = new System.Windows.Forms.Padding(0);
             this.SelectThemeComboBox.Name = "SelectThemeComboBox";
-            this.SelectThemeComboBox.Size = new System.Drawing.Size(550, 23);
-            this.SelectThemeComboBox.TabIndex = 3;            // 
+            this.SelectThemeComboBox.Size = new System.Drawing.Size(352, 23);
+            this.SelectThemeComboBox.TabIndex = 0;
+            this.SelectThemeComboBox.SelectedIndexChanged += new System.EventHandler(this.SelectThemeComboBox_SelectedIndexChanged);
+            // 
+            // SaveThemeButton
+            // 
+            this.SaveThemeButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.SaveThemeButton.AutoSize = true;
+            this.SaveThemeButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.SaveThemeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.SaveThemeButton.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.SaveThemeButton.Location = new System.Drawing.Point(358, 0);
+            this.SaveThemeButton.Margin = new System.Windows.Forms.Padding(6, 0, 0, 0);
+            this.SaveThemeButton.Name = "SaveThemeButton";
+            this.SaveThemeButton.Padding = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.SaveThemeButton.Size = new System.Drawing.Size(54, 23);
+            this.SaveThemeButton.TabIndex = 1;
+            this.SaveThemeButton.Text = "Save";
+            this.SaveThemeButton.UseVisualStyleBackColor = false;
+            this.SaveThemeButton.Click += new System.EventHandler(this.SaveThemeButton_Click);
+            // 
+            // RenameThemeButton
+            // 
+            this.RenameThemeButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.RenameThemeButton.AutoSize = true;
+            this.RenameThemeButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.RenameThemeButton.Enabled = false;
+            this.RenameThemeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.RenameThemeButton.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.RenameThemeButton.Location = new System.Drawing.Point(418, 0);
+            this.RenameThemeButton.Margin = new System.Windows.Forms.Padding(6, 0, 0, 0);
+            this.RenameThemeButton.Name = "RenameThemeButton";
+            this.RenameThemeButton.Padding = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.RenameThemeButton.Size = new System.Drawing.Size(72, 23);
+            this.RenameThemeButton.TabIndex = 2;
+            this.RenameThemeButton.Text = "Rename";
+            this.RenameThemeButton.UseVisualStyleBackColor = false;
+            this.RenameThemeButton.Click += new System.EventHandler(this.RenameThemeButton_Click);
+            // 
+            // DeleteThemeButton
+            // 
+            this.DeleteThemeButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.DeleteThemeButton.AutoSize = true;
+            this.DeleteThemeButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.DeleteThemeButton.Enabled = false;
+            this.DeleteThemeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DeleteThemeButton.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.DeleteThemeButton.Location = new System.Drawing.Point(496, 0);
+            this.DeleteThemeButton.Margin = new System.Windows.Forms.Padding(6, 0, 0, 0);
+            this.DeleteThemeButton.Name = "DeleteThemeButton";
+            this.DeleteThemeButton.Padding = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.DeleteThemeButton.Size = new System.Drawing.Size(54, 23);
+            this.DeleteThemeButton.TabIndex = 3;
+            this.DeleteThemeButton.Text = "Delete";
+            this.DeleteThemeButton.UseVisualStyleBackColor = false;
+            this.DeleteThemeButton.Click += new System.EventHandler(this.DeleteThemeButton_Click);
+            // 
             // OtherSettingsFlowLayoutPanel
             // 
             this.OtherSettingsFlowLayoutPanel.AutoScroll = true;
@@ -831,6 +915,8 @@
             this.SettingsTabGeneralTabPage.ResumeLayout(false);
             this.SettingsTabGeneralTabPageBackgroundPanel.ResumeLayout(false);
             this.SettingsTabGeneralTabPageTableLayoutPanel.ResumeLayout(false);
+            this.ThemeSelectTableLayoutPanel.ResumeLayout(false);
+            this.ThemeSelectTableLayoutPanel.PerformLayout();
             this.ManageGameTableLayoutPanel1.ResumeLayout(false);
             this.CurrentGamePanel1.ResumeLayout(false);
             this.CurrentGamePanel1.PerformLayout();
@@ -881,6 +967,10 @@
         private System.Windows.Forms.Button AddGameButton;
         private System.Windows.Forms.Label ThemeSelectLabel;
         internal System.Windows.Forms.ComboBox SelectThemeComboBox;
+        private System.Windows.Forms.TableLayoutPanel ThemeSelectTableLayoutPanel;
+        private System.Windows.Forms.Button SaveThemeButton;
+        private System.Windows.Forms.Button RenameThemeButton;
+        private System.Windows.Forms.Button DeleteThemeButton;
         private System.Windows.Forms.FlowLayoutPanel OtherSettingsFlowLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel BepInExLogTableLayoutPanel;
         private System.Windows.Forms.CheckBox BepInExConsoleCheckBox;

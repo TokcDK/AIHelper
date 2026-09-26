@@ -1,4 +1,5 @@
-﻿using AIHelper.Manage;
+﻿using AIHelper.Forms.Other;
+using AIHelper.Manage;
 using AIHelper.Manage.FoldersTab.Folders;
 using AIHelper.Manage.ui;
 using AIHelper.Manage.ui.themes;
@@ -225,6 +226,9 @@ namespace AIHelper
             this.CurrentGameLabel.Text = T._("Current Game:");
             this.AddGameButton.Text = T._("+");
             this.ThemeSelectLabel.Text = T._("Theme:");
+            this.SaveThemeButton.Text = T._("Save");
+            this.RenameThemeButton.Text = T._("Rename");
+            this.DeleteThemeButton.Text = T._("Delete");
             this.OpenLogLinkLabel.Text = T._("log");
             this.VRGameCheckBox.Text = T._("vr");
             this.JPLauncherRunLinkLabel.Text = T._("JP Launcher");
@@ -253,6 +257,141 @@ namespace AIHelper
         {
             AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
             return;
+        }
+
+        /// <summary>
+        /// The theme the list is showing, when it is one the user made.
+        /// </summary>
+        /// <remarks>
+        /// Only a theme the user made can be renamed or deleted: the others are compiled
+        /// into the application and would come back on the next start.
+        /// </remarks>
+        private CustomTheme SelectedCustomTheme
+        {
+            get { return SelectThemeComboBox.SelectedItem as CustomTheme; }
+        }
+
+        /// <summary>
+        /// Keeps the colours which are on screen now as a theme of the user's own.
+        /// </summary>
+        /// <remarks>
+        /// This is what the random theme is for: it draws a new set every time it is
+        /// applied, and this is how a set worth keeping is kept.
+        /// </remarks>
+        private void SaveThemeButton_Click(object sender, EventArgs e)
+        {
+            var name = ThemeNameDialogForm.Ask(
+                this,
+                T._("Save theme"),
+                CustomTheme.SuggestName(),
+                candidate => DescribeThemeNameProblem(candidate, null));
+
+            if (name == null) return;
+
+            if (ThemesLoader.SaveCurrentAsCustomTheme(name) == null)
+            {
+                MessageBox.Show(this,
+                    T._("The theme could not be saved. See the log for details."),
+                    T._("Save theme"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+
+            UpdateCustomThemeButtons();
+        }
+
+        /// <summary>
+        /// Renames the theme the list is showing.
+        /// </summary>
+        private void RenameThemeButton_Click(object sender, EventArgs e)
+        {
+            var theme = SelectedCustomTheme;
+            if (theme == null) return;
+
+            var name = ThemeNameDialogForm.Ask(
+                this,
+                T._("Rename theme"),
+                theme.Name,
+                candidate => DescribeThemeNameProblem(candidate, theme));
+
+            if (name == null) return;
+
+            if (!ThemesLoader.RenameCustomTheme(theme, name))
+            {
+                MessageBox.Show(this,
+                    T._("The theme could not be renamed. See the log for details."),
+                    T._("Rename theme"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+
+            UpdateCustomThemeButtons();
+        }
+
+        /// <summary>
+        /// Deletes the theme the list is showing, after asking.
+        /// </summary>
+        private void DeleteThemeButton_Click(object sender, EventArgs e)
+        {
+            var theme = SelectedCustomTheme;
+            if (theme == null) return;
+
+            var answer = MessageBox.Show(this,
+                string.Format(T._("Delete the theme \"{0}\"?"), theme.Name),
+                T._("Delete theme"),
+                MessageBoxButtons.OKCancel,
+                MessageBoxIcon.Warning);
+
+            if (answer != DialogResult.OK) return;
+
+            if (!ThemesLoader.DeleteCustomTheme(theme))
+            {
+                MessageBox.Show(this,
+                    T._("The theme could not be deleted. See the log for details."),
+                    T._("Delete theme"),
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+
+            UpdateCustomThemeButtons();
+        }
+
+        /// <summary>
+        /// Returns why a theme cannot be given a name, or <c>null</c> when it can.
+        /// </summary>
+        /// <param name="except">
+        /// The theme being renamed, which is allowed to keep the name it already has.
+        /// </param>
+        private static string DescribeThemeNameProblem(string name, CustomTheme except)
+        {
+            if (string.IsNullOrEmpty(name)) return T._("A theme needs a name.");
+
+            if (CustomThemeStore.IsNameTaken(name, except))
+            {
+                return string.Format(T._("There is already a theme named \"{0}\". Please use another name."), name);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Lets renaming and deleting be used only while a theme the user made is selected.
+        /// </summary>
+        /// <remarks>
+        /// Called whenever the selection moves, including when it is moved by the theme
+        /// loader rather than by the user.
+        /// </remarks>
+        private void UpdateCustomThemeButtons()
+        {
+            var isCustom = SelectedCustomTheme != null;
+
+            RenameThemeButton.Enabled = isCustom;
+            DeleteThemeButton.Enabled = isCustom;
+        }
+
+        private void SelectThemeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            UpdateCustomThemeButtons();
         }
 
         /// <summary>
@@ -307,6 +446,11 @@ namespace AIHelper
                 _thToolTip.Set(FixRegistryLinkLabel, T._("Will set Data dir with game files as install dir in registry"));
 
                 _thToolTip.Set(ExtraSettingsLinkLabel, T._("Open extra setting window for plugins and etc"));
+
+                _thToolTip.Set(SelectThemeComboBox, T._("Colours of the window. Themes you saved yourself are in this list too"));
+                _thToolTip.Set(SaveThemeButton, T._("Save the colours which are on screen now as a new theme"));
+                _thToolTip.Set(RenameThemeButton, T._("Give the selected theme another name. Only a theme you saved yourself can be renamed"));
+                _thToolTip.Set(DeleteThemeButton, T._("Remove the selected theme. Only a theme you saved yourself can be deleted"));
 
                 _thToolTip.Set(CurrentGameComboBox, T._("List of found games. Current") + ": " + ManageSettings.Games.Game.GameDisplayingName);
             }

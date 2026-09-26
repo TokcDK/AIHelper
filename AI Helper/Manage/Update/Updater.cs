@@ -5,6 +5,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AIHelper.Forms.Other;
+using AIHelper.Manage.Report;
 using AIHelper.Manage.Update.Sources;
 using AIHelper.Manage.Update.Targets;
 using AIHelper.Manage.Update.Targets.Mods;
@@ -269,7 +270,7 @@ namespace AIHelper.Manage.Update
 
                 info.Excluded.Add(tFolderInfo.Key); // add path to excluded to skip it next time if will be found for other source or target
 
-                info.Report.Add(BuildSuccessReportLine(info));
+                info.Report.Add(BuildSuccessReportEntry(info));
             }
             else
             {
@@ -281,13 +282,13 @@ namespace AIHelper.Manage.Update
 
                 if (info.NoRemoteFile)
                 {
-                    info.Report.Add(BuildNoRemoteFileReportLine(info));
+                    info.Report.Add(BuildNoRemoteFileReportEntry(info));
                 }
                 else
                 {
                     target.RestoreBackup();
 
-                    info.Report.Add(BuildFailedReportLine(info));
+                    info.Report.Add(BuildFailedReportEntry(info));
 
                     _log.Warn("Failed to update" + " " + info.TargetFolderPath.Name);
                 }
@@ -450,71 +451,54 @@ namespace AIHelper.Manage.Update
 
         #endregion
 
-        #region Report line builders
+        #region Report entry builders
 
-        /// <summary>
-        /// The optional "visit the release page" suffix of a report line.
-        /// </summary>
-        private static string BuildInfoLinkSuffix(UpdateInfo info)
+        /// <summary>Entry for a folder that was updated.</summary>
+        private static ReportEntry BuildSuccessReportEntry(UpdateInfo info)
         {
-            return !string.IsNullOrWhiteSpace(info.SourceLink)
-                ? ManageSettings.UpdateReport.InfoLinkPattern + info.SourceLink
-                : string.Empty;
-        }
+            var entry = new ReportEntry(
+                ReportEntryStatus.Success,
+                info.TargetFolderPath.Name,
+                ReportSettings.UpdatedToVersionText)
+            {
+                TargetVersion = info.TargetLastVersion,
+                SourceLink = info.SourceLink
+            };
 
-        /// <summary>Report line for a folder that was updated.</summary>
-        private static string BuildSuccessReportLine(UpdateInfo info)
-        {
             // the current version is only worth showing when it is not already part of the name
-            var currentVersionIsInName = info.TargetFolderPath.Name.Contains(info.TargetCurrentVersion);
+            if (!info.TargetFolderPath.Name.Contains(info.TargetCurrentVersion))
+            {
+                entry.CurrentVersion = info.TargetCurrentVersion;
+            }
 
-            return ManageSettings.UpdateReport.HtmlBeforeModReportSuccessLine
-                + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage
-                + ManageSettings.UpdateReport.HtmlModReportPreModnameTags
-                + info.TargetFolderPath.Name
-                + ManageSettings.UpdateReport.HtmlModReportPostModnameTags
-                + (currentVersionIsInName
-                    ? ""
-                    : " "
-                        + ManageSettings.UpdateReport.HtmlModReportPreVersionTags
-                        + info.TargetCurrentVersion
-                        + ManageSettings.UpdateReport.HtmlModReportPostVersionTags)
-                + " "
-                + T._("updated to version")
-                + " "
-                + ManageSettings.UpdateReport.HtmlModReportPreVersionTags
-                + info.TargetLastVersion
-                + ManageSettings.UpdateReport.HtmlModReportPostVersionTags
-                + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage
-                + ManageSettings.UpdateReport.HtmlAfterModReportLine
-                + BuildInfoLinkSuffix(info);
+            return entry;
         }
 
-        /// <summary>Report line for a folder that has a new version but no file.</summary>
-        private static string BuildNoRemoteFileReportLine(UpdateInfo info)
+        /// <summary>Entry for a folder that has a new version but no file.</summary>
+        private static ReportEntry BuildNoRemoteFileReportEntry(UpdateInfo info)
         {
-            return ManageSettings.UpdateReport.HtmlBeforeModReportWarningLine
-                + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage
-                + ManageSettings.UpdateReport.HtmlModReportPreModnameTags
-                + info.TargetFolderPath.Name
-                + ManageSettings.UpdateReport.HtmlModReportPostModnameTags
-                + " "
-                + T._("have new version but file for update not found")
-                + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage
-                + ManageSettings.UpdateReport.HtmlAfterModReportLine
-                + BuildInfoLinkSuffix(info);
+            return new ReportEntry(
+                ReportEntryStatus.Warning,
+                info.TargetFolderPath.Name,
+                ReportSettings.NoUpdateFileText)
+            {
+                TargetVersion = info.TargetLastVersion,
+                SourceLink = info.SourceLink
+            };
         }
 
-        /// <summary>Report line for a folder that could not be updated.</summary>
-        private static string BuildFailedReportLine(UpdateInfo info)
+        /// <summary>Entry for a folder that could not be updated.</summary>
+        private static ReportEntry BuildFailedReportEntry(UpdateInfo info)
         {
-            return ManageSettings.UpdateReport.HtmlBeforeModReportErrorLine
-                + ManageSettings.UpdateReport.HtmlModReportInLineBeforeMainMessage
-                + T._("Failed to update") + " " + info.TargetFolderPath.Name
-                + ManageSettings.UpdateReport.HtmlModReportInLineAfterMainMessage
-                + info.TakeAndClearError()
-                + " (" + T._("Details in") + " " + ManageSettings.ApplicationProductName + ".log" + ")"
-                + ManageSettings.UpdateReport.HtmlAfterModReportLine;
+            return new ReportEntry(
+                ReportEntryStatus.Failed,
+                info.TargetFolderPath.Name,
+                ReportSettings.FailedToUpdateText)
+            {
+                Details = info.TakeAndClearError()
+                          + " (" + ReportSettings.DetailsInText + " "
+                          + ManageSettings.ApplicationProductName + ".log" + ")"
+            };
         }
 
         #endregion
@@ -608,113 +592,14 @@ namespace AIHelper.Manage.Update
         }
 
         /// <summary>
-        /// Builds the report HTML from the collected lines and opens it in the
-        /// default browser.
+        /// Builds the update report from the entries collected during the pass
+        /// and opens it in the default application for html.
         /// </summary>
         private void ShowReport(UpdateInfo info)
         {
-            var newReport = new List<string>();
-
-            foreach (var line in info.Report)
-            {
-                var infoLinkIndex = line.IndexOf(ManageSettings.UpdateReport.InfoLinkPattern, StringComparison.Ordinal);
-
-                if (infoLinkIndex < 0)
-                {
-                    newReport.Add(line);
-                    continue;
-                }
-
-                var reportLine = line.Substring(0, infoLinkIndex);
-                var infoLink = line.Substring(infoLinkIndex + ManageSettings.UpdateReport.InfoLinkPattern.Length);
-
-                newReport.Add(reportLine.Replace(
-                    ManageSettings.UpdateReport.HtmlAfterModReportLine,
-                    ManageSettings.UpdateReport.HtmlModReportPreVersionTags
-                        + ManageSettings.UpdateReport.PreInfoLinkTitleText
-                        + ManageSettings.UpdateReport.HtmlModReportPostVersionTags
-                        + ManageSettings.UpdateReport.HtmlPreInfoLinkHtml
-                        + infoLink
-                        + ManageSettings.UpdateReport.HtmlAfterInfoLinkHtml
-                        + ManageSettings.UpdateReport.InfoLinkText
-                        + ManageSettings.UpdateReport.HtmlAfterInfoLinkText
-                        + ManageSettings.UpdateReport.HtmlModReportPreVersionTags
-                        + ManageSettings.UpdateReport.PostInfoLinkTitleText
-                        + ManageSettings.UpdateReport.HtmlModReportPostVersionTags
-                        + ManageSettings.UpdateReport.HtmlAfterModReportLine));
-            }
-
-            var noModsInfo = newReport.Count == 0;
-
-            string reportMessage = BuildReportMessage(newReport, noModsInfo);
-
-            var htmlfile = ManageSettings.UpdateReportHtmlFilePath;
-
-            try
-            {
-                var htmlDirPath = Path.GetDirectoryName(htmlfile);
-                if (!string.IsNullOrWhiteSpace(htmlDirPath))
-                {
-                    Directory.CreateDirectory(htmlDirPath); // fix missing parent directory error
-                }
-
-                File.WriteAllText(htmlfile, reportMessage);
-            }
-            catch (Exception ex)
-            {
-                _log.Warn(ex, "Update: failed to write the update report to '" + htmlfile + "'.");
-                return;
-            }
-
-            using (var process = new System.Diagnostics.Process())
-            {
-                try
-                {
-                    process.StartInfo.UseShellExecute = true;
-                    process.StartInfo.FileName = htmlfile;
-                    process.Start();
-                }
-                catch (Exception ex)
-                {
-                    _log.Warn(ex, "Update: failed to open the update report '" + htmlfile + "'.");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Fills the report template when it is available, and falls back to a
-        /// self-contained HTML document when it is not.
-        /// </summary>
-        private static string BuildReportMessage(List<string> newReport, bool noModsInfo)
-        {
-            var modsReport = noModsInfo
-                ? ManageSettings.UpdateReport.NoModsUpdatesFoundText
-                : string.Join(ManageSettings.UpdateReport.HtmlBetweenModsText, newReport);
-
-            var reportTemplatePath = ManageSettings.UpdateReport.ReportFilePath;
-
-            if (File.Exists(reportTemplatePath))
-            {
-                try
-                {
-                    return File.ReadAllText(reportTemplatePath)
-                        .Replace(ManageSettings.UpdateReport.BgImageLinkPathPattern, ManageSettings.UpdateReport.CurrentGameBgFilePath)
-                        .Replace(ManageSettings.UpdateReport.ModsUpdateReportHeaderTextPattern, ManageSettings.UpdateReport.TitleText)
-                        .Replace(ManageSettings.UpdateReport.SingleModUpdateReportsTextSectionPattern, modsReport + "<br>")
-                        .Replace(ManageSettings.UpdateReport.ModsUpdateInfoNoticePattern, noModsInfo ? "" : ManageSettings.UpdateReport.ModsUpdateInfoNoticeText);
-                }
-                catch (Exception ex)
-                {
-                    _log.Warn(ex, "Update: failed to read the report template '" + reportTemplatePath + "'.");
-                }
-            }
-
-            return ManageSettings.UpdateReport.HtmlBeginText
-                + ManageSettings.UpdateReport.TitleText
-                + ManageSettings.UpdateReport.HtmlAfterHeaderText
-                + modsReport
-                + "<br>"
-                + ManageSettings.UpdateReport.HtmLendText;
+            ReportPublisher.PublishAndOpen(
+                ReportSettings.UpdateReportHtmlFilePath,
+                UpdateReportBuilder.BuildHtml(info.Report));
         }
     }
 }

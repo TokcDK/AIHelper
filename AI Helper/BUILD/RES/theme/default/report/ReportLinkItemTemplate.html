@@ -1,0 +1,28 @@
+<!--
+  AIHelper · report link item template
+  ------------------------------------------------------------
+  One link card of the "useful links" report.
+
+  Markers, each written with a percent sign on both sides:
+  search, domain, initial, link, text, description, host.
+
+  Do not write a marker name between percent signs anywhere else
+  in this file, not even in a comment: every occurrence is
+  replaced.
+-->
+<article class="card" data-s="%search%">
+  <span class="fav" aria-hidden="true">
+    <img src="https://www.google.com/s2/favicons?sz=64&amp;domain=%domain%" alt="" onerror="this.remove()" loading="lazy">
+    <span style="position:absolute">%initial%</span>
+  </span>
+  <div class="card-main">
+    <a class="title" href="%link%" target="_blank" rel="noopener noreferrer">%text% <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg></a>
+    <p class="desc">%description%</p>
+    <div class="meta">
+      <span class="host">%host%</span>
+    </div>
+  </div>
+  <button class="copy" data-url="%link%" title="Копировать ссылку" aria-label="Копировать ссылку">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>
+  </button>
+</article>

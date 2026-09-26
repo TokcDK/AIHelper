@@ -1,0 +1,29 @@
+<!--
+  AIHelper · report update item template
+  ------------------------------------------------------------
+  One entry of the "mods update" report.
+
+  Markers, each written with a percent sign on both sides:
+  status, search, icon, name, message, version, visitUrl,
+  visitLabel, details.
+
+  Do not write a marker name between percent signs anywhere else
+  in this file, not even in a comment: every occurrence is
+  replaced.
+
+  The status marker is "ok", "warn" or "err" and drives the card
+  colour. The version tag, the visit link and the details
+  paragraph are hidden by the stylesheet while they are empty.
+-->
+<article class="card card--%status%" data-s="%search%">
+  <span class="entry-ico" aria-hidden="true">%icon%</span>
+  <div class="card-main">
+    <span class="entry-name">%name%</span>
+    <p class="desc">%message%</p>
+    <div class="meta">
+      <span class="tag ver">%version%</span>
+      <a class="tag visit" href="%visitUrl%" target="_blank" rel="noopener noreferrer">%visitLabel%</a>
+    </div>
+    <p class="entry-details">%details%</p>
+  </div>
+</article>

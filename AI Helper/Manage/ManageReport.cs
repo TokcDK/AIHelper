@@ -1,223 +1,108 @@
-﻿using NLog;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
+using AIHelper.Manage.Report;
+using NLog;
 
 namespace AIHelper.Manage
 {
+    /// <summary>
+    /// The "useful links" report of the current game: the links are read from the
+    /// per game links info file, rendered through the theme templates and opened
+    /// in the default application for html. When the page cannot be produced the
+    /// links are written as plain text instead, so they are never lost.
+    /// <para>
+    /// The work itself is delegated: <see cref="ReportLinkParser"/> reads the info
+    /// file, <see cref="ReportRenderer"/> fills the templates and
+    /// <see cref="ReportPublisher"/> writes and opens the result.
+    /// </para>
+    /// </summary>
     internal static class ManageReport
     {
         static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
-        private static readonly string _linksSeparator = "{{link}}";
-        private static readonly string HeaderText = T._("Links");
-
         internal static void ShowReportFromLinks()
         {
-            //langID = "<ru-RU>";
-            var langID = "<" + ManageSettings.LanuageID + ">";
-            var groupNames = new Dictionary<string, string>();
-            var links = BuildLinks(langID, groupNames);
-            if (links.Length == 0) return;
+            var linksInfoFilePath = ManageSettings.LinksInfoFilePath;
+            if (string.IsNullOrWhiteSpace(linksInfoFilePath)) return;
 
-            // <CategoryName, <linkTitle,Url>>
-            Dictionary<string, List<string[]>> linksInfo = BuildLinksInfo(links);
+            var languageTag = ManageSettings.LanuageID;
 
-            if (!BuildAndOpenHtmlReport(linksInfo, langID, groupNames))
+            var categories = ReadCategories(linksInfoFilePath, languageTag);
+            if (categories.Count == 0) return;
+
+            if (!PublishHtmlReport(categories, languageTag))
             {
-                BuildAndOpenTxtReport(linksInfo);
-            }
-
-        }
-
-        private static string[] BuildLinks(string langID, Dictionary<string, string> groupNames)
-        {
-            string gameLinksPath = ManageSettings.LinksInfoFilePath;
-            if (string.IsNullOrWhiteSpace(gameLinksPath)) return Array.Empty<string>();
-
-            var lines = File.ReadAllLines(gameLinksPath);
-
-            foreach (var line in lines)
-            {
-                if (line.StartsWith(";##", StringComparison.InvariantCulture))
-                {
-                    AddGroupNameFromLine(line, langID, groupNames);
-                }
-            }
-
-            return lines.Where(line => !line.StartsWith(";", StringComparison.InvariantCulture)).ToArray();
-        }
-
-        private static void AddGroupNameFromLine(string line, string langID, Dictionary<string, string> groupNames)
-        {
-            var en = Regex.Match(line, ";##([^<]+)");
-            if (!en.Success) return;
-
-            var t = Regex.Match(line, langID + "([^<]+)");
-            if (!t.Success) return;
-            if (groupNames.ContainsKey(en.Groups[1].Value)) return;
-
-            groupNames.Add(en.Groups[1].Value, t.Groups[1].Value);
-        }
-
-        private static Dictionary<string, List<string[]>> BuildLinksInfo(string[] links)
-        {
-            var linksInfo = new Dictionary<string, List<string[]>>();
-
-            // add info
-            foreach (var line in links)
-            {
-                AddLinkEntryFromLine(line, linksInfo);
-            }
-
-            return linksInfo;
-        }
-
-        private static void AddLinkEntryFromLine(string line, Dictionary<string, List<string[]>> linksInfo)
-        {
-            var info = line.Split(new string[] { _linksSeparator }, StringSplitOptions.None);
-            if (info.Length != 3) return;
-
-            var category = info[0];
-            if (!linksInfo.TryGetValue(category, out List<string[]> categoryEntries))
-            {
-                categoryEntries = new List<string[]>();
-                linksInfo.Add(category, categoryEntries);
-            }
-
-            categoryEntries.Add(new[] { info[1], info[2] });
-        }
-
-        private static bool BuildAndOpenHtmlReport(Dictionary<string, List<string[]>> linksInfo, string langID, Dictionary<string, string> groupNames)
-        {
-            var categoriesInfo = new List<string>();
-            foreach (var category in linksInfo)
-            {
-                var descriptonLink = new List<string>();
-                int i = 0;
-                foreach (var link in category.Value)
-                {
-                    if (link.Length != 2)
-                    {
-                        _log.Debug("Useful links report html: Invalid titleUrlData format. Must be Title-Url pair. Index:{0}, Length: {1}, Values: {2}", i, link.Length, string.Join(", ", link));
-                    }
-
-                    descriptonLink.Add(ManageSettings.UpdateReport.HtmlReportCategoryItemTemplate.Replace("%link%", link[1])
-                        .Replace("%text%", GetHostName(link[1]).ToUpperInvariant())
-                        .Replace("%description%", TryGetTranslation(link[0], langID))
-                        );
-
-                    i++;
-                }
-
-                categoriesInfo.Add(ManageSettings.UpdateReport.HtmlReportCategoryTemplate.Replace("%category%", groupNames.GetValueOrFallbackToKey(category.Key)).Replace("%items%", string.Join("<br>", descriptonLink)));
-            }
-
-            // create new report contet
-            var reportMessage = File.ReadAllText(ManageSettings.UpdateReport.ReportFilePath)
-             .Replace(ManageSettings.UpdateReport.BgImageLinkPathPattern, ManageSettings.UpdateReport.CurrentGameBgFilePath)
-             .Replace(ManageSettings.UpdateReport.ModsUpdateReportHeaderTextPattern, HeaderText)
-             .Replace(ManageSettings.UpdateReport.SingleModUpdateReportsTextSectionPattern, string.Join(ManageSettings.UpdateReport.HtmlBetweenModsText, categoriesInfo) + "<br>")
-             .Replace(ManageSettings.UpdateReport.ModsUpdateInfoNoticePattern, ManageSettings.UpdateReport.ModsUpdateInfoNoticeText);
-
-            var htmlfile = Path.Combine(ManageSettings.CurrentGameLinksInfoDirPath, ManageSettings.CurrentGame.GameAbbreviation + ".html");
-
-            Directory.CreateDirectory(Path.GetDirectoryName(htmlfile));// fix missing parent directory error
-
-            File.WriteAllText(htmlfile, reportMessage);
-            try
-            {
-                Process.Start(htmlfile);
-            }
-            catch (Exception e)
-            {
-                _log.Debug("Useful links report: Failed to open html. Error: {0}", e.Message);
-                return false;
-            }
-
-            return true;
-        }
-
-        private static void BuildAndOpenTxtReport(Dictionary<string, List<string[]>> linksInfo)
-        {
-            var txt = new StringBuilder();
-            txt.AppendLine(ManageSettings.CurrentGame.GameName);
-            txt.AppendLine();
-            txt.AppendLine();
-            foreach (var category in linksInfo)
-            {
-                txt.AppendLine(category.Key + ":"); // add category name
-
-                int i = 0;
-                foreach (var titleUrlData in category.Value)
-                {
-                    if (titleUrlData.Length != 2)
-                    {
-                        _log.Debug("Useful links report txt: Invalid titleUrlData format. Must be Title-Url pair. Index:{0}, Length: {1}, Values: {2}", i, titleUrlData.Length, string.Join(", ", titleUrlData));
-                    }
-                    txt.AppendLine($"  {titleUrlData[0]}: {titleUrlData[1]}");
-
-                    i++;
-                }
-
-                txt.AppendLine();
-            }
-
-            var txtReportFilePath = Path.Combine(ManageSettings.CurrentGameLinksInfoDirPath, ManageSettings.CurrentGame.GameAbbreviation + ".txt");
-
-            File.WriteAllText(txtReportFilePath, txt.ToString());
-
-            try
-            {
-                Process.Start(txtReportFilePath);
-            }
-            catch (Exception e)
-            {
-                _log.Debug("Useful links report: Failed to open txt. Error: {0}", e.Message);
+                PublishTextReport(categories);
             }
         }
 
         /// <summary>
-        /// returns host name of the <paramref name="url"/> or the url itself when it is not valid url
+        /// Reads and parses the links info file. A file that cannot be read is
+        /// logged and treated as empty.
         /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        private static string GetHostName(string url)
+        private static List<ReportLinkCategory> ReadCategories(string linksInfoFilePath, string languageTag)
         {
             try
             {
-                return new Uri(url).Host;
+                return ReportLinkParser.Parse(File.ReadAllLines(linksInfoFilePath), languageTag);
             }
-            catch (UriFormatException)
+            catch (Exception ex)
             {
-                return url;
+                _log.Warn(ex, "Report: failed to read the links info file '" + linksInfoFilePath + "'.");
+                return new List<ReportLinkCategory>();
             }
         }
 
-        private static string GetValueOrFallbackToKey(this Dictionary<string, string> dictionary, string key)
+        /// <summary>Renders the links into the report page and opens it.</summary>
+        /// <returns>True when the page was written and handed to the shell.</returns>
+        private static bool PublishHtmlReport(IReadOnlyList<ReportLinkCategory> categories, string languageTag)
         {
-            if (dictionary.TryGetValue(key, out string value)) return value;
+            var renderer = new ReportRenderer(ReportTemplates.Load(), languageTag);
+            var gameName = ReportSettings.GameName;
 
-            return key;
+            var page = new ReportPage
+            {
+                LanguageTag = languageTag,
+                Theme = ReportSettings.DefaultTheme,
+                BackgroundImagePath = ReportSettings.BackgroundImagePath,
+                PageTitle = ReportSettings.LinksReportTitleText + " — " + gameName,
+                EyebrowText = gameName,
+                HeaderText = ReportSettings.LinksReportTitleText,
+                NoticeText = ReportSettings.NoticeText,
+                SectionsHtml = renderer.RenderLinkSections(categories)
+            };
+
+            return ReportPublisher.PublishAndOpen(
+                ReportSettings.LinksReportHtmlFilePath,
+                renderer.RenderPage(page));
         }
 
         /// <summary>
-        /// 
+        /// Writes the links as plain text, used when the report page cannot be
+        /// produced.
         /// </summary>
-        /// <param name="str"></param>
-        /// <param name="languageID">string like <ru-RU></param>
-        /// <returns></returns>
-        private static string TryGetTranslation(this string str, string languageID)
+        private static void PublishTextReport(IReadOnlyList<ReportLinkCategory> categories)
         {
-            var t = Regex.Match(str, languageID + "([^<]+)");
-            if (t.Success) return t.Groups[1].Value;
+            var text = new StringBuilder();
+            text.AppendLine(ManageSettings.CurrentGame.GameName);
+            text.AppendLine();
+            text.AppendLine();
 
-            var o = Regex.Match(str, "^([^<]+)");
-            return o.Success ? o.Groups[1].Value : str;
+            foreach (var category in categories)
+            {
+                text.AppendLine(category.Key + ":"); // group name as written in the info file
+
+                foreach (var link in category.Links)
+                {
+                    text.AppendLine("  " + link.RawTitle + ": " + link.Url);
+                }
+
+                text.AppendLine();
+            }
+
+            ReportPublisher.PublishAndOpen(ReportSettings.LinksReportTextFilePath, text.ToString());
         }
     }
 }

@@ -264,6 +264,14 @@
     <Compile Include="Manage\ManageHardlinks.cs" />
     <Compile Include="Manage\ManageMainFormService.cs" />
     <Compile Include="Manage\ManageReport.cs" />
+    <Compile Include="Manage\Report\ReportLinkParser.cs" />
+    <Compile Include="Manage\Report\ReportModels.cs" />
+    <Compile Include="Manage\Report\ReportPublisher.cs" />
+    <Compile Include="Manage\Report\ReportRenderer.cs" />
+    <Compile Include="Manage\Report\ReportSettings.cs" />
+    <Compile Include="Manage\Report\ReportTemplates.cs" />
+    <Compile Include="Manage\Report\ReportText.cs" />
+    <Compile Include="Manage\Report\UpdateReportBuilder.cs" />
     <Compile Include="Manage\ModeSwitch\BackupCreator2.cs" />
     <Compile Include="Manage\ModeSwitch\GameBackuper.cs" />
     <Compile Include="Manage\ManageArchive.cs" />
@@ -469,8 +477,6 @@
     <Content Include="BUILD\RES\links\Default.txt" />
     <Content Include="BUILD\RES\links\HS.txt" />
     <Content Include="BUILD\RES\links\HS2.txt" />
-    <Content Include="BUILD\RES\links\htmlCategoryItemTemplate.txt" />
-    <Content Include="BUILD\RES\links\htmlCategoryTemplate.txt" />
     <Content Include="BUILD\RES\links\KK.txt" />
     <Content Include="BUILD\RES\links\KKS.txt" />
     <Content Include="BUILD\RES\links\strings.txt" />
@@ -481,7 +487,10 @@
     <Content Include="BUILD\RES\theme\default\report\bg\KK.jpg" />
     <Content Include="BUILD\RES\theme\default\report\bg\KKS.jpg" />
     <Content Include="BUILD\RES\theme\default\report\bg\RG.jpg" />
+    <Content Include="BUILD\RES\theme\default\report\ReportLinkItemTemplate.html" />
+    <Content Include="BUILD\RES\theme\default\report\ReportSectionTemplate.html" />
     <Content Include="BUILD\RES\theme\default\report\ReportTemplate.html" />
+    <Content Include="BUILD\RES\theme\default\report\ReportUpdateItemTemplate.html" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="IWshRuntimeLibrary">

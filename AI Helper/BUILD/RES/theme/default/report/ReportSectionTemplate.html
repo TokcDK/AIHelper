@@ -1,0 +1,29 @@
+<!--
+  AIHelper · report section template
+  ------------------------------------------------------------
+  One collapsible section of a report page. Used for the link
+  categories of the "useful links" report and for the single
+  "updated mods" section of the "mods update" report.
+
+  Markers, each written with a percent sign on both sides:
+  sectionId, icon, category, subtitle, count, items.
+
+  Do not write a marker name between percent signs anywhere else
+  in this file, not even in a comment: every occurrence is
+  replaced, and a replaced "items" would duplicate the section
+  body.
+-->
+<details class="cat" id="cat-%sectionId%" open>
+  <summary>
+    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+    <span class="cat-ico">%icon%</span>
+    <span>
+      <h2>%category%</h2>
+      <p class="sub">%subtitle%</p>
+    </span>
+    <span class="badge">%count%</span>
+  </summary>
+  <div class="cat-body">
+    <div class="grid">%items%</div>
+  </div>
+</details>

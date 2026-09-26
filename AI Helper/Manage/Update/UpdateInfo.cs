@@ -1,4 +1,5 @@
 ﻿using AIHelper.Forms.Other;
+using AIHelper.Manage.Report;
 using AIHelper.Manage.Update.Sources;
 using AIHelper.Manage.Update.Targets;
 using System.Collections.Generic;
@@ -48,8 +49,11 @@ namespace AIHelper.Manage.Update
         /// </summary>
         internal string[] TargetFolderUpdateInfo { get; set; }
 
-        /// <summary>Report lines collected during the run.</summary>
-        internal List<string> Report { get; } = new List<string>();
+        /// <summary>
+        /// Entries collected during the run. They carry the facts only, the
+        /// report markup is built from them once the pass is over.
+        /// </summary>
+        internal List<ReportEntry> Report { get; } = new List<ReportEntry>();
 
         /// <summary>True when the source has a newer version but no downloadable file.</summary>
         internal bool NoRemoteFile { get; set; }

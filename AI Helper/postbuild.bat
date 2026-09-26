@@ -82,7 +82,7 @@ if exist "%projectBasicGamesPluginsDir%\" (
 	echo copy Mod organizer basic game plugins..
 	robocopy "%projectBasicGamesPluginsDir% " "%targetBasicGamesPluginsDir%\ " *.py /MIR /COPYALL /B /R:3 /W:1
 )
-:: 4b. HTML report template plus the per-game background images beside it.
+:: 4b. HTML report templates plus the per-game background images beside them.
 set themeDefaultSubPath=theme\default
 set reportDirSubPath=%themeDefaultSubPath%\report
 set reportTemplateFileName=ReportTemplate.html
@@ -91,8 +91,8 @@ set projectReportTemplatePath=%projectReportDir%\%reportTemplateFileName%
 set targetReportDir=%targetResDir%\%reportDirSubPath%
 set targetReportTemplatePath=%targetReportDir%\%reportTemplateFileName%
 if exist "%projectReportTemplatePath%" (
-	echo copy %reportTemplateFileName% and game backgrounds..
-	robocopy "%projectReportDir% " "%targetReportDir%\ " %reportTemplateFileName% *.jpg /MIR /COPYALL /B /R:3 /W:1
+	echo copy report templates and game backgrounds..
+	robocopy "%projectReportDir% " "%targetReportDir%\ " *.html *.jpg /MIR /COPYALL /B /R:3 /W:1
 )
 :: 4c. Web link definitions consumed by the links UI.
 set projectResLinksDir=%projectResDir%\links

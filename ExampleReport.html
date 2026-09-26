@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ссылки — ModsUpdateReport</title>
+<style>
+/* ============================================================
+   ModsUpdateReport · Links page
+   Self-contained stylesheet (works offline, no CDN required)
+   ============================================================ */
+
+:root{
+  /* change this to your own wallpaper if needed */
+  --bg-image: url("L:/illusion/Organized ModPack/RES/theme/default/report/bg/KK.jpg");
+
+  --accent:        #34d399;
+  --accent-soft:   rgba(52,211,153,.14);
+  --accent-2:      #fbbf24;
+  --accent-3:      #60a5fa;
+
+  --bg:            #070b16;
+  --panel:         rgba(16,22,38,.62);
+  --panel-2:       rgba(255,255,255,.045);
+  --panel-hover:   rgba(255,255,255,.075);
+  --stroke:        rgba(255,255,255,.10);
+  --stroke-strong: rgba(255,255,255,.18);
+
+  --text:          #eef2f8;
+  --muted:         #9fabc0;
+  --dim:           #7b879c;
+
+  --shadow-lg: 0 30px 60px -20px rgba(0,0,0,.75);
+  --shadow-sm: 0 10px 24px -12px rgba(0,0,0,.65);
+  --radius: 18px;
+  --veil: linear-gradient(180deg, rgba(7,11,22,.82) 0%, rgba(7,11,22,.90) 45%, rgba(7,11,22,.96) 100%);
+}
+
+html[data-theme="light"]{
+  --accent:        #0f9b6c;
+  --accent-soft:   rgba(15,155,108,.12);
+  --accent-2:      #b45309;
+  --accent-3:      #2563eb;
+
+  --bg:            #eef1f7;
+  --panel:         rgba(255,255,255,.78);
+  --panel-2:       rgba(255,255,255,.62);
+  --panel-hover:   rgba(255,255,255,.92);
+  --stroke:        rgba(16,24,40,.10);
+  --stroke-strong: rgba(16,24,40,.18);
+
+  --text:          #131a27;
+  --muted:         #52607a;
+  --dim:           #6b7890;
+
+  --shadow-lg: 0 30px 60px -28px rgba(16,24,40,.35);
+  --shadow-sm: 0 10px 24px -16px rgba(16,24,40,.35);
+  --veil: linear-gradient(180deg, rgba(238,241,247,.80) 0%, rgba(238,241,247,.88) 45%, rgba(238,241,247,.95) 100%);
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+
+html{ scroll-behavior:smooth; }
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Inter","Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",system-ui,sans-serif;
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+/* ---------- background layers ---------- */
+.bg-photo,
+.bg-veil,
+.bg-glow{ position:fixed; inset:0; pointer-events:none; }
+.bg-photo{
+  z-index:-3;
+  background-image:var(--bg-image);
+  background-position:center;
+  background-size:cover;
+  background-repeat:no-repeat;
+  filter:blur(18px) saturate(115%);
+  transform:scale(1.08);
+}
+.bg-veil{ z-index:-2; background:var(--veil); }
+.bg-glow{
+  z-index:-1;
+  background:
+    radial-gradient(60vw 42vw at 12% -8%,  rgba(52,211,153,.18), transparent 60%),
+    radial-gradient(52vw 40vw at 92% 4%,   rgba(96,165,250,.16), transparent 62%),
+    radial-gradient(70vw 50vw at 50% 110%, rgba(251,191,36,.10), transparent 60%);
+}
+html[data-theme="light"] .bg-photo{ filter:blur(22px) saturate(105%) brightness(1.1); }
+
+/* ---------- layout ---------- */
+.wrap{ width:min(1120px,92vw); margin-inline:auto; }
+
+/* ---------- top bar ---------- */
+.topbar{
+  position:sticky; top:0; z-index:40;
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  background:color-mix(in srgb, var(--bg) 62%, transparent);
+  border-bottom:1px solid var(--stroke);
+}
+.topbar .wrap{ display:flex; align-items:center; gap:14px; height:62px; }
+.brand{ display:flex; align-items:center; gap:11px; font-weight:700; letter-spacing:.2px; }
+.brand .mark{
+  width:32px;height:32px;border-radius:10px;display:grid;place-items:center;
+  background:linear-gradient(140deg,var(--accent),var(--accent-3));
+  color:#04120c; font-size:15px; font-weight:900;
+  box-shadow:0 8px 20px -8px var(--accent);
+}
+.brand small{ display:block; font-weight:500; font-size:11.5px; color:var(--dim); letter-spacing:.14em; text-transform:uppercase; line-height:1; }
+.brand .name{ font-size:15px; line-height:1.15; }
+.spacer{ flex:1; }
+
+.icon-btn{
+  display:inline-grid; place-items:center;
+  width:38px;height:38px; border-radius:11px;
+  border:1px solid var(--stroke); background:var(--panel-2); color:var(--text);
+  cursor:pointer; transition:.18s ease;
+}
+.icon-btn:hover{ background:var(--panel-hover); border-color:var(--stroke-strong); transform:translateY(-1px); }
+.icon-btn svg{ width:18px;height:18px; }
+
+/* ---------- hero ---------- */
+header.hero{ padding:56px 0 26px; text-align:center; }
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:6px 14px; border-radius:999px;
+  border:1px solid var(--stroke); background:var(--panel-2);
+  color:var(--muted); font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; font-weight:600;
+}
+.eyebrow .dot{ width:7px;height:7px;border-radius:50%;background:var(--accent); box-shadow:0 0 0 4px var(--accent-soft); }
+h1{
+  margin:20px 0 10px;
+  font-size:clamp(2.6rem,7vw,4.2rem);
+  line-height:1.02; font-weight:800; letter-spacing:-.025em;
+  background:linear-gradient(180deg,var(--text),color-mix(in srgb,var(--text) 55%, transparent));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.lede{ margin:0 auto; max-width:60ch; color:var(--muted); font-size:1.03rem; }
+.lede b{ color:var(--accent-2); font-weight:650; }
+
+/* ---------- toolbar ---------- */
+.toolbar{
+  margin:30px 0 22px; padding:12px;
+  display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+  background:var(--panel); border:1px solid var(--stroke); border-radius:16px;
+  box-shadow:var(--shadow-sm);
+  backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  position:sticky; top:74px; z-index:30;
+}
+.search{ position:relative; flex:1 1 280px; min-width:220px; }
+.search svg{ position:absolute; left:14px; top:50%; transform:translateY(-50%); width:18px;height:18px; color:var(--dim); pointer-events:none; }
+.search input{
+  width:100%; padding:12px 84px 12px 42px;
+  border-radius:12px; border:1px solid var(--stroke);
+  background:var(--panel-2); color:var(--text);
+  font-size:15px; font-family:inherit; outline:none; transition:.18s ease;
+}
+.search input::placeholder{ color:var(--dim); }
+.search input:focus{ border-color:var(--accent); background:var(--panel-hover); box-shadow:0 0 0 4px var(--accent-soft); }
+.kbd{
+  position:absolute; right:12px; top:50%; transform:translateY(-50%);
+  font-size:11px; color:var(--dim); border:1px solid var(--stroke); border-radius:6px;
+  padding:3px 7px; background:var(--panel-2); font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+.btn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:11px 15px; border-radius:12px; cursor:pointer;
+  border:1px solid var(--stroke); background:var(--panel-2); color:var(--text);
+  font:inherit; font-size:14px; font-weight:600; transition:.18s ease; white-space:nowrap;
+}
+.btn:hover{ background:var(--panel-hover); border-color:var(--stroke-strong); transform:translateY(-1px); }
+.btn svg{ width:16px;height:16px; }
+.btn.ghost{ background:transparent; }
+.count{ margin-left:auto; font-size:13px; color:var(--dim); padding-right:4px; white-space:nowrap; }
+.count b{ color:var(--accent); }
+
+/* ---------- category ---------- */
+.cat{
+  margin:0 0 18px;
+  background:var(--panel); border:1px solid var(--stroke); border-radius:var(--radius);
+  box-shadow:var(--shadow-lg);
+  backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  overflow:hidden;
+}
+.cat > summary{
+  list-style:none; cursor:pointer; user-select:none;
+  display:flex; align-items:center; gap:14px;
+  padding:18px 20px; transition:background .18s ease;
+}
+.cat > summary::-webkit-details-marker{ display:none; }
+.cat > summary:hover{ background:var(--panel-2); }
+.cat > summary:focus-visible{ outline:2px solid var(--accent); outline-offset:-2px; }
+.cat .chev{ width:18px;height:18px; color:var(--dim); transition:transform .22s ease; flex:none; }
+.cat[open] .chev{ transform:rotate(90deg); color:var(--accent); }
+.cat .cat-ico{
+  width:38px;height:38px;border-radius:11px; flex:none; display:grid; place-items:center;
+  background:var(--accent-soft); color:var(--accent); border:1px solid var(--stroke);
+}
+.cat .cat-ico svg{ width:19px;height:19px; }
+.cat h2{ margin:0; font-size:1.06rem; font-weight:700; letter-spacing:-.01em; }
+.cat .sub{ margin:2px 0 0; font-size:12.8px; color:var(--dim); font-weight:450; }
+.badge{
+  margin-left:auto; flex:none;
+  font-size:12px; font-weight:700; color:var(--accent);
+  background:var(--accent-soft); border:1px solid color-mix(in srgb,var(--accent) 35%, transparent);
+  padding:4px 11px; border-radius:999px;
+}
+.cat-body{ padding:4px 16px 18px; }
+.grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:12px; }
+
+/* ---------- link card ---------- */
+.card{
+  position:relative; display:flex; gap:14px; align-items:flex-start;
+  padding:15px 16px; border-radius:14px;
+  border:1px solid var(--stroke); background:var(--panel-2);
+  transition:transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+.card::after{
+  content:""; position:absolute; inset:0; border-radius:14px; pointer-events:none;
+  background:linear-gradient(135deg,var(--accent-soft),transparent 55%);
+  opacity:0; transition:opacity .2s ease;
+}
+.card:hover{ transform:translateY(-3px); background:var(--panel-hover); border-color:color-mix(in srgb,var(--accent) 42%, transparent); box-shadow:var(--shadow-sm); }
+.card:hover::after{ opacity:1; }
+.fav{
+  width:42px;height:42px;border-radius:12px;flex:none; overflow:hidden;
+  display:grid; place-items:center; position:relative; z-index:1;
+  background:linear-gradient(150deg,rgba(255,255,255,.10),rgba(255,255,255,.02));
+  border:1px solid var(--stroke); font-weight:800; font-size:17px; color:var(--accent);
+}
+.fav img{ width:24px;height:24px; display:block; }
+.card-main{ min-width:0; flex:1; position:relative; z-index:1; }
+.card a.title{
+  display:inline-flex; align-items:center; gap:6px;
+  color:var(--text); text-decoration:none; font-weight:700; font-size:15px; letter-spacing:.01em;
+  word-break:break-word;
+}
+.card a.title:hover{ color:var(--accent); }
+.card a.title svg{ width:13px;height:13px; opacity:.5; flex:none; }
+.card a.title:hover svg{ opacity:1; }
+.card a.title::before{ content:""; position:absolute; inset:0; border-radius:14px; } /* full-card click */
+.desc{ margin:5px 0 0; font-size:13.6px; color:var(--muted); }
+.meta{ margin-top:9px; display:flex; flex-wrap:wrap; align-items:center; gap:7px; }
+.tag{
+  font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+  padding:3px 9px; border-radius:999px;
+  color:var(--accent-3); background:color-mix(in srgb,var(--accent-3) 14%, transparent);
+  border:1px solid color-mix(in srgb,var(--accent-3) 28%, transparent);
+}
+.tag.warn{ color:var(--accent-2); background:color-mix(in srgb,var(--accent-2) 14%, transparent); border-color:color-mix(in srgb,var(--accent-2) 30%, transparent); }
+.host{ font-size:11.8px; color:var(--dim); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+.copy{
+  position:relative; z-index:2; flex:none;
+  width:34px;height:34px; border-radius:10px; display:grid; place-items:center;
+  border:1px solid transparent; background:transparent; color:var(--dim); cursor:pointer;
+  opacity:0; transition:.18s ease;
+}
+.card:hover .copy, .copy:focus-visible{ opacity:1; }
+.copy:hover{ color:var(--accent); background:var(--accent-soft); border-color:var(--stroke); }
+.copy svg{ width:16px;height:16px; }
+
+/* ---------- empty ---------- */
+.empty{ display:none; text-align:center; padding:60px 20px; color:var(--muted); }
+.empty svg{ width:44px;height:44px; color:var(--dim); margin-bottom:12px; }
+body.no-results .empty{ display:block; }
+
+/* ---------- footer ---------- */
+footer{
+  margin:34px 0 60px; padding-top:20px; border-top:1px solid var(--stroke);
+  display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between;
+  color:var(--dim); font-size:13px;
+}
+footer a{ color:var(--muted); text-decoration:none; border-bottom:1px dashed var(--stroke); }
+footer a:hover{ color:var(--accent); border-color:var(--accent); }
+
+/* ---------- toast + to-top ---------- */
+.toast{
+  position:fixed; left:50%; bottom:28px; transform:translate(-50%,24px);
+  padding:11px 18px; border-radius:12px; font-size:14px; font-weight:600;
+  background:color-mix(in srgb,var(--bg) 80%, transparent); color:var(--text);
+  border:1px solid color-mix(in srgb,var(--accent) 45%, transparent);
+  box-shadow:var(--shadow-lg); backdrop-filter:blur(12px);
+  opacity:0; pointer-events:none; transition:.25s ease; z-index:60;
+}
+.toast.show{ opacity:1; transform:translate(-50%,0); }
+#toTop{
+  position:fixed; right:22px; bottom:22px; z-index:50;
+  opacity:0; pointer-events:none; transform:translateY(10px); transition:.22s ease;
+  box-shadow:var(--shadow-sm); background:color-mix(in srgb,var(--bg) 75%, transparent);
+  backdrop-filter:blur(10px);
+}
+#toTop.show{ opacity:1; pointer-events:auto; transform:none; }
+
+::selection{ background:var(--accent); color:#04120c; }
+:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:8px; }
+
+/* scrollbar */
+*::-webkit-scrollbar{ width:11px;height:11px; }
+*::-webkit-scrollbar-thumb{ background:var(--stroke-strong); border-radius:99px; border:3px solid transparent; background-clip:content-box; }
+*::-webkit-scrollbar-thumb:hover{ background:var(--accent); background-clip:content-box; }
+
+@media (max-width:640px){
+  header.hero{ padding:36px 0 18px; }
+  .toolbar{ top:70px; }
+  .grid{ grid-template-columns:1fr; }
+  .count{ width:100%; margin-left:0; text-align:right; }
+}
+@media print{
+  .topbar,.toolbar,#toTop,.copy,.bg-photo,.bg-glow{ display:none !important; }
+  body{ background:#fff; color:#000; }
+  .cat,.card{ break-inside:avoid; box-shadow:none; }
+}
+@media (prefers-reduced-motion:reduce){ *{ transition:none !important; animation:none !important; } }
+</style>
+</head>
+
+<body>
+<div class="bg-photo"></div>
+<div class="bg-veil"></div>
+<div class="bg-glow"></div>
+
+<!-- ======================= TOP BAR ======================= -->
+<div class="topbar">
+  <div class="wrap">
+    <div class="brand">
+      <span class="mark">AI</span>
+      <span>
+        <span class="name">AIHelper</span>
+        <small>Mods Update Report</small>
+      </span>
+    </div>
+    <span class="spacer"></span>
+    <button class="icon-btn" id="themeBtn" title="Светлая / тёмная тема" aria-label="Переключить тему">
+      <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </div>
+</div>
+
+<main class="wrap">
+
+  <!-- ======================= HERO ======================= -->
+  <header class="hero">
+    <span class="eyebrow"><span class="dot"></span> Полезные ресурсы</span>
+    <h1>Ссылки</h1>
+    <p class="lede">Проверенные источники карточек, модов и сообществ для игр Illusion. <b>Клик по строке отобразит информацию</b> — разделы сворачиваются, а поиск работает мгновенно.</p>
+  </header>
+
+  <!-- ======================= TOOLBAR ======================= -->
+  <div class="toolbar" role="search">
+    <label class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+      <input id="q" type="search" placeholder="Поиск по названию, описанию или домену…" autocomplete="off" aria-label="Поиск по ссылкам">
+      <span class="kbd">/</span>
+    </label>
+    <button class="btn" id="expandAll">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 10 5 5 5-5"/><path d="M4 5h16"/></svg>
+      Развернуть всё
+    </button>
+    <button class="btn ghost" id="collapseAll">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 14 5-5 5 5"/><path d="M4 19h16"/></svg>
+      Свернуть
+    </button>
+    <span class="count" id="count"></span>
+  </div>
+
+  <!-- ======================= CATEGORIES (rendered by JS) ======================= -->
+  <section id="cats"></section>
+
+  <div class="empty">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2M8.5 11h5"/></svg>
+    <p>Ничего не найдено. Попробуйте изменить запрос.</p>
+  </div>
+
+  <!-- ======================= FOOTER ======================= -->
+  <footer>
+    <span>© <span id="year"></span> AIHelper · Organized ModPack — отчёт об обновлении модов</span>
+    <span>Все ссылки открываются в новой вкладке · <a href="https://discord.gg/6Y9HxS9M" target="_blank" rel="noopener noreferrer">Поддержка в Discord</a></span>
+  </footer>
+</main>
+
+<button class="icon-btn" id="toTop" title="Наверх" aria-label="Наверх">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 6-6 6 6"/></svg>
+</button>
+
+<div class="toast" id="toast" role="status" aria-live="polite">Ссылка скопирована</div>
+
+<script>
+/* =========================================================
+   DATA — add / edit links here
+   ========================================================= */
+const ICONS = {
+  discord: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12h.01M16 12h.01M7.5 18s-1 1-2 1c0-2-1-4.5-1-7C4.5 8 6 5.5 9 5l.7 1.4a12 12 0 0 1 4.6 0L15 5c3 .5 4.5 3 4.5 7 0 2.5-1 5-1 7-1 0-2-1-2-1"/><path d="M8.5 16.5c2.5 1 4.5 1 7 0"/></svg>',
+  cards:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="12" height="15" rx="2"/><path d="M8 9h2M8 13h4"/><path d="M17 7.5 20.4 8a1.6 1.6 0 0 1 1.3 1.9l-1.8 8.4"/></svg>'
+};
+
+const DATA = [
+  {
+    id: 'builds',
+    title: 'Поддерживаемые сборки',
+    sub: 'Официальные каналы поддержки и загрузки',
+    icon: ICONS.discord,
+    open: true,
+    links: [
+      { name:'Дискорд AIHelper', url:'https://discord.gg/6Y9HxS9M',
+        desc:'Основной канал поддержки сборок: новости, обновления, помощь с установкой.', tags:['Discord'] }
+    ]
+  },
+  {
+    id: 'chars',
+    title: 'Персонажи',
+    sub: 'Где искать карточки для Koikatsu и других игр Illusion',
+    icon: ICONS.cards,
+    open: true,
+    links: [
+      { name:'SUKEBEI.NYAA.SI', url:'https://sukebei.nyaa.si/view/3330941',
+        desc:'Большой сборник карточек для Koikatsu одним архивом.', tags:['Торрент'], warn:true },
+      { name:'ILLUSIONCARDS.BOORU.ORG', url:'https://illusioncards.booru.org/index.php?page=post&s=list&tags=koikatsu',
+        desc:'Карточки для игр от Illusion с удобным поиском по тегам.', tags:['Booru'] },
+      { name:'DB.BEPIS.IO', url:'https://db.bepis.io/koikatsu',
+        desc:'Огромная база карточек для игр от Illusion и Kiss.', tags:['База карточек'] },
+      { name:'KENZATO.UK', url:'https://kenzato.uk/booru/category/KK',
+        desc:'Kenzato Booru — раздел Koikatsu с регулярными пополнениями.', tags:['Booru'] },
+      { name:'WWW.PIXIV.NET', url:'https://www.pixiv.net/en/tags/%E3%82%AD%E3%83%A3%E3%83%A9%E9%85%8D%E5%B8%83%28%E3%82%B3%E3%82%A4%E3%82%AB%E3%83%84%29/artworks',
+        desc:'Карточки для игр от Illusion по тегу «キャラ配布 (コイカツ)».', tags:['Арт / Pixiv'] },
+      { name:'DISCORD.GG / illusionsoft', url:'https://discord.gg/illusionsoft',
+        desc:'Дискорд-канал с контентом для игр от Illusion.', tags:['Discord'] },
+      { name:'DISCORD.GG / Koikatsu', url:'https://discord.gg/sZay4CvBrG',
+        desc:'Канал Discord с контентом для Koikatsu.', tags:['Discord'] }
+    ]
+  }
+];
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+const extIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg>';
+const copyIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg>';
+
+const hostOf = u => { try { return new URL(u).hostname.replace(/^www\./,''); } catch(e){ return u; } };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const catsEl = document.getElementById('cats');
+catsEl.innerHTML = DATA.map(cat => `
+  <details class="cat" id="cat-${cat.id}" ${cat.open ? 'open' : ''}>
+    <summary>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+      <span class="cat-ico">${cat.icon}</span>
+      <span>
+        <h2>${esc(cat.title)}</h2>
+        <p class="sub">${esc(cat.sub)}</p>
+      </span>
+      <span class="badge">${cat.links.length}</span>
+    </summary>
+    <div class="cat-body">
+      <div class="grid">
+        ${cat.links.map(l => {
+          const host = hostOf(l.url);
+          return `
+          <article class="card" data-s="${esc((l.name+' '+l.desc+' '+host+' '+(l.tags||[]).join(' ')).toLowerCase())}">
+            <span class="fav" aria-hidden="true">
+              <img src="https://www.google.com/s2/favicons?sz=64&domain=${encodeURIComponent(host)}" alt=""
+                   onerror="this.remove()" loading="lazy">
+              <span style="position:absolute">${esc(host[0].toUpperCase())}</span>
+            </span>
+            <div class="card-main">
+              <a class="title" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${esc(l.name)} ${extIcon}</a>
+              <p class="desc">${esc(l.desc)}</p>
+              <div class="meta">
+                ${(l.tags||[]).map(t => `<span class="tag${l.warn ? ' warn' : ''}">${esc(t)}</span>`).join('')}
+                <span class="host">${esc(host)}</span>
+              </div>
+            </div>
+            <button class="copy" data-url="${esc(l.url)}" title="Копировать ссылку" aria-label="Копировать ссылку">${copyIcon}</button>
+          </article>`;
+        }).join('')}
+      </div>
+    </div>
+  </details>
+`).join('');
+
+/* favicon letter fallback: hide letter when image loads */
+document.querySelectorAll('.fav img').forEach(img => {
+  img.addEventListener('load', () => { const s = img.nextElementSibling; if (s) s.style.display = 'none'; });
+});
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+const q = document.getElementById('q');
+const countEl = document.getElementById('count');
+const total = DATA.reduce((n,c) => n + c.links.length, 0);
+
+function filter(){
+  const term = q.value.trim().toLowerCase();
+  let shown = 0;
+  document.querySelectorAll('.cat').forEach(cat => {
+    let visible = 0;
+    cat.querySelectorAll('.card').forEach(card => {
+      const hit = !term || card.dataset.s.includes(term);
+      card.style.display = hit ? '' : 'none';
+      if (hit) visible++;
+    });
+    cat.querySelector('.badge').textContent = visible;
+    cat.style.display = visible ? '' : 'none';
+    if (term && visible) cat.open = true;
+    shown += visible;
+  });
+  document.body.classList.toggle('no-results', shown === 0);
+  countEl.innerHTML = term ? `Найдено <b>${shown}</b> из ${total}` : `Всего ссылок: <b>${total}</b>`;
+}
+q.addEventListener('input', filter);
+filter();
+
+/* =========================================================
+   CONTROLS
+   ========================================================= */
+document.getElementById('expandAll').onclick  = () => document.querySelectorAll('.cat').forEach(d => d.open = true);
+document.getElementById('collapseAll').onclick = () => document.querySelectorAll('.cat').forEach(d => d.open = false);
+
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && document.activeElement !== q){ e.preventDefault(); q.focus(); q.select(); }
+  if (e.key === 'Escape' && document.activeElement === q){ q.value = ''; filter(); q.blur(); }
+});
+
+/* copy link */
+const toast = document.getElementById('toast');
+let toastTimer;
+function showToast(msg){
+  toast.textContent = msg; toast.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove('show'), 1700);
+}
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.copy');
+  if (!btn) return;
+  e.preventDefault(); e.stopPropagation();
+  const url = btn.dataset.url;
+  const done = () => showToast('✓ Ссылка скопирована');
+  if (navigator.clipboard?.writeText){
+    navigator.clipboard.writeText(url).then(done).catch(() => fallbackCopy(url, done));
+  } else fallbackCopy(url, done);
+});
+function fallbackCopy(text, cb){
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); cb(); } catch(err){ showToast('Не удалось скопировать'); }
+  ta.remove();
+}
+
+/* theme */
+const root = document.documentElement, themeBtn = document.getElementById('themeBtn'), themeIcon = document.getElementById('themeIcon');
+const SUN = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+const MOON = '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>';
+function setTheme(t){
+  root.dataset.theme = t;
+  themeIcon.innerHTML = t === 'dark' ? MOON : SUN;
+  try { localStorage.setItem('mur-theme', t); } catch(e){}
+}
+setTheme((() => { try { return localStorage.getItem('mur-theme') || 'dark'; } catch(e){ return 'dark'; } })());
+themeBtn.onclick = () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
+
+/* to top */
+const toTop = document.getElementById('toTop');
+addEventListener('scroll', () => toTop.classList.toggle('show', scrollY > 400), { passive:true });
+toTop.onclick = () => scrollTo({ top:0, behavior:'smooth' });
+
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

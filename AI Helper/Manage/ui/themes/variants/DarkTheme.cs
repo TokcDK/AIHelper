@@ -24,8 +24,8 @@ namespace AIHelper.Manage.ui.themes
                 SurfaceAlt = Color.FromArgb(255, 45, 45, 48),
                 Border = Color.FromArgb(255, 63, 63, 70),
 
-                Text = Color.FromArgb(255, 232, 232, 232),
-                TextMuted = Color.FromArgb(255, 157, 163, 171),
+                Text = Color.White,
+                TextMuted = Color.DarkGray,
 
                 TitleBar = Color.FromArgb(255, 22, 25, 28),
                 TitleBarText = Color.FromArgb(255, 240, 242, 244),
@@ -38,7 +38,7 @@ namespace AIHelper.Manage.ui.themes
                 ButtonText = Color.FromArgb(255, 232, 232, 232),
                 ButtonHover = Color.FromArgb(255, 63, 63, 68),
                 ButtonPressed = Color.FromArgb(255, 43, 43, 47),
-                ButtonBorder = Color.FromArgb(255, 70, 70, 75),
+                ButtonBorder = Color.FromArgb(255, 90, 90, 95),
 
                 Danger = Color.FromArgb(255, 196, 43, 28),
                 DangerText = Color.FromArgb(255, 255, 255, 255),
@@ -47,10 +47,10 @@ namespace AIHelper.Manage.ui.themes
                 InputText = Color.FromArgb(255, 232, 232, 232),
                 InputBorder = Color.FromArgb(255, 70, 70, 75),
 
-                TabFace = Color.FromArgb(255, 45, 45, 48),
-                TabSelectedFace = Color.FromArgb(255, 30, 30, 30),
-                TabText = Color.FromArgb(255, 157, 163, 171),
-                TabSelectedText = Color.FromArgb(255, 255, 255, 255),
+                TabFace = Color.WhiteSmoke,
+                TabSelectedFace = Color.White,
+                TabText = Color.DarkGray,
+                TabSelectedText = Color.Black,
 
                 Link = Color.FromArgb(255, 79, 163, 255),
                 Selection = Color.FromArgb(255, 9, 71, 113),

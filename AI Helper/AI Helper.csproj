@@ -193,6 +193,15 @@
     <Compile Include="Forms\Other\ThemeNameDialogForm.Designer.cs">
       <DependentUpon>ThemeNameDialogForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Other\ThemeEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Other\ThemeEditorForm.Designer.cs">
+      <DependentUpon>ThemeEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Other\ScreenColourPickerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Games\Illusion\RoomGirl.cs" />
     <Compile Include="Games\Illusion\HoneySelect2.cs" />
     <Compile Include="Games\Illusion\IllusionGameBase.cs" />
@@ -349,6 +358,9 @@
     <Compile Include="Manage\ui\UiTooltip.cs" />
     <Compile Include="Manage\ui\ButtonListLoader.cs" />
     <Compile Include="Manage\ui\NativeMethods.cs" />
+    <Compile Include="Manage\ui\ColourSwatchGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Manage\ui\ThemedScrollBars.cs" />
     <Compile Include="Manage\ui\ThemedTabControl.cs">
       <SubType>Component</SubType>
@@ -438,6 +450,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Other\ThemeNameDialogForm.resx">
       <DependentUpon>ThemeNameDialogForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Other\ThemeEditorForm.resx">
+      <DependentUpon>ThemeEditorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Games\Illusion\IllusionGameSettingsUserControl.resx">
       <DependentUpon>IllusionGameSettingsUserControl.cs</DependentUpon>

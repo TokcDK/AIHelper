@@ -76,6 +76,22 @@ namespace AIHelper.Manage.ui.themes
         private static bool _isSyncingSelector;
 
         /// <summary>
+        /// The theme being edited, or <c>null</c> while no editor is open.
+        /// </summary>
+        /// <remarks>
+        /// It is not stored and not in the theme list: a theme of the user's own only exists
+        /// once they save it. This is what is on screen in the meantime, which is how an
+        /// edit is visible while it is being made.
+        /// </remarks>
+        private static CustomTheme _colourDraft;
+
+        /// <summary>
+        /// The theme which was in use when the edit began, so throwing the edit away has
+        /// somewhere to go back to.
+        /// </summary>
+        private static IUITheme _themeBeforeEdit;
+
+        /// <summary>
         /// Raised after a theme has been applied to the main window.
         /// </summary>
         /// <remarks>
@@ -156,6 +172,135 @@ namespace AIHelper.Manage.ui.themes
             RememberThemeName(current);
 
             return current;
+        }
+
+        /// <summary>
+        /// Tells whether the colours on screen are an edit which has not been saved.
+        /// </summary>
+        internal static bool IsEditingColours
+        {
+            get { return _colourDraft != null; }
+        }
+
+        /// <summary>
+        /// Starts editing the colours of the theme in use, and returns the palette to edit.
+        /// </summary>
+        /// <remarks>
+        /// The palette handed back is a copy, for two reasons. The theme being edited is
+        /// left as it was, so the edit can be thrown away; and when that theme is one of the
+        /// compiled ones, changing it would change it for the rest of the run and for
+        /// anything else which asks for it.
+        /// <para>
+        /// The copy is applied under the name of the theme it came from, so the theme list
+        /// goes on showing the theme being edited rather than jumping to an entry which does
+        /// not exist yet. Nothing is written anywhere until the user saves it as a theme of
+        /// their own.
+        /// </para>
+        /// </remarks>
+        internal static ThemePalette BeginColourEdit()
+        {
+            var current = ManageSettings.CurrentTheme;
+
+            var draft = new CustomTheme
+            {
+                Name = current == null ? DefaultThemeName : current.Name,
+                Palette = CopyPalette(CurrentPalette ?? FallbackPalette),
+                FilePath = null
+            };
+
+            _themeBeforeEdit = current;
+            _colourDraft = draft;
+
+            SwitchToTheme(draft);
+
+            return draft.Palette;
+        }
+
+        /// <summary>
+        /// Repaints the window from the palette being edited.
+        /// </summary>
+        /// <remarks>
+        /// Called for every change the editor makes, which is what makes the edit live. The
+        /// current theme is not moved and the selector is not synced: it already is the
+        /// draft, and doing either again for every keystroke would be work with no effect.
+        /// </remarks>
+        internal static void ApplyColourEdit()
+        {
+            if (_colourDraft == null) return;
+
+            SetTheme(_colourDraft);
+        }
+
+        /// <summary>
+        /// Ends an edit, either keeping the colours which are on screen or going back to the
+        /// theme which was in use.
+        /// </summary>
+        /// <param name="keep">
+        /// <c>true</c> to leave the edited colours in place, <c>false</c> to go back.
+        /// </param>
+        /// <remarks>
+        /// Keeping them does not save them. They stay on screen, and the theme they came
+        /// from is left alone, until the user saves them as a theme of their own; that is
+        /// the step which writes a file and gives them a name.
+        /// </remarks>
+        internal static void EndColourEdit(bool keep)
+        {
+            var draft = _colourDraft;
+            var previous = _themeBeforeEdit;
+
+            _colourDraft = null;
+            _themeBeforeEdit = null;
+
+            if (draft == null || keep) return;
+
+            SwitchToTheme(previous ?? FindTheme(DefaultThemeName));
+        }
+
+        /// <summary>
+        /// A palette which can be changed without changing the one it came from.
+        /// </summary>
+        /// <remarks>
+        /// Copied through the role list rather than property by property, so a role added to
+        /// the palette is copied without this being remembered.
+        /// </remarks>
+        private static ThemePalette CopyPalette(ThemePalette source)
+        {
+            var copy = new ThemePalette();
+
+            if (source == null) return copy;
+
+            foreach (var role in ThemePalette.ColourRoles())
+            {
+                role.SetValue(copy, role.GetValue(source, null), null);
+            }
+
+            copy.IsDark = source.IsDark;
+
+            return copy;
+        }
+
+        /// <summary>
+        /// Tells whether a name is already used by a theme, stored or compiled in.
+        /// </summary>
+        /// <remarks>
+        /// The compiled themes count as well as the saved ones. The list is the only way to
+        /// choose a theme and the settings file remembers the choice by name, so a saved
+        /// theme named after a compiled one would make both the list and the remembered name
+        /// ambiguous - and saving one would look like it had done nothing.
+        /// </remarks>
+        /// <param name="except">
+        /// The theme which is allowed to keep the name, which is the one being renamed.
+        /// </param>
+        internal static bool IsThemeNameTaken(string name, CustomTheme except)
+        {
+            // the store answers for the saved themes, and turns an empty name down
+            if (CustomThemeStore.IsNameTaken(name, except)) return true;
+
+            var candidate = name.Trim();
+
+            return GetList().Any(theme =>
+                !(theme is CustomTheme)
+                && string.Equals(theme.Name, candidate, StringComparison.CurrentCultureIgnoreCase));
         }
 
         /// <summary>

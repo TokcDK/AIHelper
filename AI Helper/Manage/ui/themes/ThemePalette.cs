@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Reflection;
 
 namespace AIHelper.Manage.ui.themes
 {
@@ -24,6 +27,27 @@ namespace AIHelper.Manage.ui.themes
     /// </remarks>
     public class ThemePalette
     {
+        /// <summary>
+        /// Every colour role of a palette, in the order they are written and shown.
+        /// </summary>
+        /// <remarks>
+        /// Discovered rather than listed, and the one place the set of roles is decided:
+        /// <see cref="Validate"/> walks it, the theme store writes and reads it, and the
+        /// theme editor offers it. A role added to this class is therefore validated,
+        /// saved, read back and made editable without anything else being touched.
+        /// <para>
+        /// The order is by name so that a saved file, the editor's list and a comparison
+        /// between two palettes all run through the roles the same way, and so that adding
+        /// a role appends it to a file instead of reshuffling every line.
+        /// </para>
+        /// </remarks>
+        private static readonly PropertyInfo[] ColourRoleList = typeof(ThemePalette)
+            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .Where(property => property.CanRead && property.CanWrite)
+            .Where(property => property.PropertyType == typeof(Color))
+            .OrderBy(property => property.Name, StringComparer.Ordinal)
+            .ToArray();
+
         /// <summary>
         /// Colour of the window itself, behind the content surfaces.
         /// </summary>
@@ -241,6 +265,14 @@ namespace AIHelper.Manage.ui.themes
             if (ProgressBar.IsEmpty) ProgressBar = Accent;
 
             if (Window.IsEmpty) Window = Surface;
+
+            // Text is settled before the roles which are derived from it, and it is derived
+            // from the surface it is read on. A theme file which leaves it out, or spells it
+            // so badly that it cannot be read, would otherwise come back with every label on
+            // the designer colour it was given - which is the failure this method exists to
+            // prevent.
+            if (Text.IsEmpty) Text = Contrast(Surface);
+
             if (SurfaceAlt.IsEmpty) SurfaceAlt = Blend(Surface, contrastDirection, 0.04f);
             if (Border.IsEmpty) Border = Blend(Surface, Text, 0.18f);
             if (TextMuted.IsEmpty) TextMuted = Blend(Text, Surface, 0.42f);
@@ -281,55 +313,31 @@ namespace AIHelper.Manage.ui.themes
         }
 
         /// <summary>
+        /// The colour roles of a palette, in the order they are written and shown.
+        /// </summary>
+        /// <remarks>
+        /// The list behind <see cref="Validate"/>, the theme store and the theme editor, so
+        /// all three agree on what a role is without any of them keeping its own copy.
+        /// </remarks>
+        internal static IReadOnlyList<PropertyInfo> ColourRoles()
+        {
+            return ColourRoleList;
+        }
+
+        /// <summary>
         /// Returns the first role which was never assigned. A palette which reports
         /// a name here is incomplete and will leave that part of the window on its
         /// designer colour.
         /// </summary>
+        /// <remarks>
+        /// Walks the discovered roles rather than a list written out here, so a role added
+        /// to this class is covered without this method being remembered.
+        /// </remarks>
         public string Validate()
         {
-            var roles = new (string name, Color color)[]
+            foreach (var role in ColourRoleList)
             {
-                (nameof(Window), Window),
-                (nameof(Surface), Surface),
-                (nameof(SurfaceAlt), SurfaceAlt),
-                (nameof(Border), Border),
-                (nameof(Text), Text),
-                (nameof(TextMuted), TextMuted),
-                (nameof(TitleBar), TitleBar),
-                (nameof(TitleBarText), TitleBarText),
-                (nameof(TitleBarMuted), TitleBarMuted),
-                (nameof(Accent), Accent),
-                (nameof(AccentText), AccentText),
-                (nameof(AccentHover), AccentHover),
-                (nameof(ButtonFace), ButtonFace),
-                (nameof(ButtonText), ButtonText),
-                (nameof(ButtonHover), ButtonHover),
-                (nameof(ButtonPressed), ButtonPressed),
-                (nameof(ButtonBorder), ButtonBorder),
-                (nameof(ButtonDisabledText), ButtonDisabledText),
-                (nameof(Danger), Danger),
-                (nameof(DangerHover), DangerHover),
-                (nameof(DangerText), DangerText),
-                (nameof(InputFace), InputFace),
-                (nameof(InputText), InputText),
-                (nameof(InputBorder), InputBorder),
-                (nameof(InputDisabledText), InputDisabledText),
-                (nameof(TabFace), TabFace),
-                (nameof(TabSelectedFace), TabSelectedFace),
-                (nameof(TabText), TabText),
-                (nameof(TabSelectedText), TabSelectedText),
-                (nameof(Link), Link),
-                (nameof(LinkVisited), LinkVisited),
-                (nameof(LinkHover), LinkHover),
-                (nameof(Selection), Selection),
-                (nameof(SelectionText), SelectionText),
-                (nameof(ProgressBar), ProgressBar),
-                (nameof(ProgressBarTrack), ProgressBarTrack),
-            };
-
-            foreach (var (name, color) in roles)
-            {
-                if (color.IsEmpty) return name;
+                if (((Color)role.GetValue(this, null)).IsEmpty) return role.Name;
             }
 
             return null;

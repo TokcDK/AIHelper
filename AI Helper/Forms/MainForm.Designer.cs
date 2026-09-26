@@ -65,6 +65,7 @@
             this.ThemeSelectLabel = new System.Windows.Forms.Label();
             this.ThemeSelectTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.SelectThemeComboBox = new System.Windows.Forms.ComboBox();
+            this.EditThemeButton = new System.Windows.Forms.Button();
             this.SaveThemeButton = new System.Windows.Forms.Button();
             this.RenameThemeButton = new System.Windows.Forms.Button();
             this.DeleteThemeButton = new System.Windows.Forms.Button();
@@ -596,15 +597,17 @@
             // the colours which are on screen, so it stays available whatever is selected;
             // renaming and deleting only apply to a theme the user made, so those two are
             // enabled by the form depending on the selection.
-            this.ThemeSelectTableLayoutPanel.ColumnCount = 4;
+            this.ThemeSelectTableLayoutPanel.ColumnCount = 5;
             this.ThemeSelectTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.ThemeSelectTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.ThemeSelectTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.ThemeSelectTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.ThemeSelectTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.ThemeSelectTableLayoutPanel.Controls.Add(this.SelectThemeComboBox, 0, 0);
-            this.ThemeSelectTableLayoutPanel.Controls.Add(this.SaveThemeButton, 1, 0);
-            this.ThemeSelectTableLayoutPanel.Controls.Add(this.RenameThemeButton, 2, 0);
-            this.ThemeSelectTableLayoutPanel.Controls.Add(this.DeleteThemeButton, 3, 0);
+            this.ThemeSelectTableLayoutPanel.Controls.Add(this.EditThemeButton, 1, 0);
+            this.ThemeSelectTableLayoutPanel.Controls.Add(this.SaveThemeButton, 2, 0);
+            this.ThemeSelectTableLayoutPanel.Controls.Add(this.RenameThemeButton, 3, 0);
+            this.ThemeSelectTableLayoutPanel.Controls.Add(this.DeleteThemeButton, 4, 0);
             this.ThemeSelectTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ThemeSelectTableLayoutPanel.Location = new System.Drawing.Point(0, 80);
             this.ThemeSelectTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0, 0, 0, 6);
@@ -625,6 +628,23 @@
             this.SelectThemeComboBox.Size = new System.Drawing.Size(352, 23);
             this.SelectThemeComboBox.TabIndex = 0;
             this.SelectThemeComboBox.SelectedIndexChanged += new System.EventHandler(this.SelectThemeComboBox_SelectedIndexChanged);
+            // 
+            // EditThemeButton
+            // 
+            this.EditThemeButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.EditThemeButton.AutoSize = true;
+            this.EditThemeButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.EditThemeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.EditThemeButton.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.EditThemeButton.Location = new System.Drawing.Point(302, 0);
+            this.EditThemeButton.Margin = new System.Windows.Forms.Padding(6, 0, 0, 0);
+            this.EditThemeButton.Name = "EditThemeButton";
+            this.EditThemeButton.Padding = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.EditThemeButton.Size = new System.Drawing.Size(50, 23);
+            this.EditThemeButton.TabIndex = 1;
+            this.EditThemeButton.Text = "Edit";
+            this.EditThemeButton.UseVisualStyleBackColor = false;
+            this.EditThemeButton.Click += new System.EventHandler(this.EditThemeButton_Click);
             // 
             // SaveThemeButton
             // 
@@ -968,6 +988,7 @@
         private System.Windows.Forms.Label ThemeSelectLabel;
         internal System.Windows.Forms.ComboBox SelectThemeComboBox;
         private System.Windows.Forms.TableLayoutPanel ThemeSelectTableLayoutPanel;
+        private System.Windows.Forms.Button EditThemeButton;
         private System.Windows.Forms.Button SaveThemeButton;
         private System.Windows.Forms.Button RenameThemeButton;
         private System.Windows.Forms.Button DeleteThemeButton;

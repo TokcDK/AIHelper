@@ -272,6 +272,24 @@ namespace AIHelper
         }
 
         /// <summary>
+        /// Opens the editor for the colours of the theme in use.
+        /// </summary>
+        /// <remarks>
+        /// The editor works on a copy of the palette and puts every change on the window as
+        /// it is made, so a colour is judged on the real thing rather than on a preview of
+        /// it. Keeping the result is the Save button's job: nothing is written until then,
+        /// and the theme the colours were taken from is left alone.
+        /// </remarks>
+        private void EditThemeButton_Click(object sender, EventArgs e)
+        {
+            ThemeEditorForm.Edit(this);
+
+            // the colours may have changed, and saving them makes a theme which the list
+            // has not been told about yet
+            UpdateCustomThemeButtons();
+        }
+
+        /// <summary>
         /// Keeps the colours which are on screen now as a theme of the user's own.
         /// </summary>
         /// <remarks>
@@ -359,6 +377,12 @@ namespace AIHelper
         /// <summary>
         /// Returns why a theme cannot be given a name, or <c>null</c> when it can.
         /// </summary>
+        /// <remarks>
+        /// The name has to be free against every theme, not only against the saved ones: a
+        /// saved theme named after one of the compiled themes would show up twice in the
+        /// list, and the settings file, which remembers the choice by name, could no longer
+        /// tell the two apart.
+        /// </remarks>
         /// <param name="except">
         /// The theme being renamed, which is allowed to keep the name it already has.
         /// </param>
@@ -366,7 +390,7 @@ namespace AIHelper
         {
             if (string.IsNullOrEmpty(name)) return T._("A theme needs a name.");
 
-            if (CustomThemeStore.IsNameTaken(name, except))
+            if (ThemesLoader.IsThemeNameTaken(name, except))
             {
                 return string.Format(T._("There is already a theme named \"{0}\". Please use another name."), name);
             }

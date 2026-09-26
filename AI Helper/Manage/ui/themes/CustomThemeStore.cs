@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using INIFileMan;
 using NLog;
 
@@ -37,6 +36,12 @@ namespace AIHelper.Manage.ui.themes
         private const string NameKey = "Name";
 
         /// <summary>
+        /// Key holding whether the theme is a dark one. The only value in the file which is
+        /// not a colour, so it is written and read on its own.
+        /// </summary>
+        private const string IsDarkKey = "IsDark";
+
+        /// <summary>
         /// Prefix of every file this store writes, so it can find its own files without
         /// mistaking anything else in the folder for a theme.
         /// </summary>
@@ -50,23 +55,18 @@ namespace AIHelper.Manage.ui.themes
         /// </summary>
         internal const int MaxNameLength = 64;
 
-        static readonly Logger _log = LogManager.GetCurrentClassLogger();
-
         /// <summary>
-        /// The roles of a palette, discovered rather than listed.
+        /// Line written above the name, saying how the colours below it are spelled.
         /// </summary>
         /// <remarks>
-        /// Reflection on purpose. A role added to <see cref="ThemePalette"/> is then
-        /// saved and read back without anything here being touched, and the failure mode
-        /// of forgetting to update a hand written list is a colour which silently
-        /// reverts to a derived one every time the application restarts.
+        /// The file is meant to be opened and changed by hand, so it says what it expects
+        /// rather than leaving that to be worked out from the values. It rides on the name
+        /// because that is the first key in the file.
         /// </remarks>
-        private static readonly PropertyInfo[] PaletteRoles = typeof(ThemePalette)
-            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-            .Where(property => property.CanRead && property.CanWrite)
-            .Where(property => property.PropertyType == typeof(Color) || property.PropertyType == typeof(bool))
-            .OrderBy(property => property.Name, StringComparer.Ordinal)
-            .ToArray();
+        private const string FormatHint =
+            "A colour is written as #AARRGGBB - alpha, red, green and blue as hex. The alpha may be left out.";
+
+        static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Every theme the user has saved, in the order they are shown.
@@ -287,7 +287,7 @@ namespace AIHelper.Manage.ui.themes
 
                 var ini = ManageIni.GetINIFile(theme.FilePath);
 
-                ini.SetKey(SectionName, NameKey, theme.Name, false);
+                ini.SetKey(SectionName, NameKey, theme.Name, FormatHint, false);
                 WritePalette(ini, theme.Palette);
 
                 // one write for the whole theme: the last argument of SetKey defers the
@@ -303,26 +303,39 @@ namespace AIHelper.Manage.ui.themes
             }
         }
 
+        /// <summary>
+        /// Writes the palette out, one role per line.
+        /// </summary>
+        /// <remarks>
+        /// A colour is written as <c>#AARRGGBB</c>, the form used wherever colours are kept
+        /// in a file, so a theme of the user's own can be opened and changed by hand without
+        /// working out what the program meant by the number it stored. The alpha is kept
+        /// because a role may carry one, and dropping it would change the colour rather than
+        /// only its spelling.
+        /// </remarks>
         private static void WritePalette(INIFile ini, ThemePalette palette)
         {
-            foreach (var role in PaletteRoles)
+            foreach (var role in ThemePalette.ColourRoles())
             {
-                var value = role.GetValue(palette, null);
-                string text;
+                var colour = (Color)role.GetValue(palette, null);
 
-                if (role.PropertyType == typeof(Color))
-                {
-                    // the whole ARGB value: a role may carry an alpha, and dropping it
-                    // would change the colour rather than only its spelling
-                    text = ((Color)value).ToArgb().ToString(CultureInfo.InvariantCulture);
-                }
-                else
-                {
-                    text = ((bool)value).ToString(CultureInfo.InvariantCulture);
-                }
+                // a role which was never set is left out rather than written as transparent
+                // black, because the two are not the same on the way back in: the missing
+                // one is derived from the rest of the palette, the zero one is not
+                if (colour.IsEmpty) continue;
 
-                ini.SetKey(SectionName, role.Name, text, false);
+                ini.SetKey(SectionName, role.Name, HexColour(colour), false);
             }
+
+            ini.SetKey(SectionName, IsDarkKey, palette.IsDark.ToString(CultureInfo.InvariantCulture), false);
+        }
+
+        /// <summary>
+        /// A colour as the hex form everyone recognises.
+        /// </summary>
+        internal static string HexColour(Color colour)
+        {
+            return "#" + colour.ToArgb().ToString("X8", CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -339,33 +352,34 @@ namespace AIHelper.Manage.ui.themes
         {
             var palette = new ThemePalette();
 
-            foreach (var role in PaletteRoles)
+            foreach (var role in ThemePalette.ColourRoles())
             {
                 if (!ini.KeyExists(role.Name, SectionName)) continue;
 
                 var text = ini.GetKey(SectionName, role.Name);
 
-                if (role.PropertyType == typeof(Color))
+                if (!TryParseColour(text, out var colour))
                 {
-                    if (!TryParseArgb(text, out var argb))
-                    {
-                        _log.Warn("Role '" + role.Name + "' of the theme file holds '" + text
-                            + "', which is not a colour, and is left out: " + path);
-                        continue;
-                    }
+                    _log.Warn("Role '" + role.Name + "' of the theme file holds '" + text
+                        + "', which is not a colour, and is left out: " + path);
+                    continue;
+                }
 
-                    role.SetValue(palette, Color.FromArgb(argb), null);
+                role.SetValue(palette, colour, null);
+            }
+
+            if (ini.KeyExists(IsDarkKey, SectionName))
+            {
+                var text = ini.GetKey(SectionName, IsDarkKey);
+
+                if (TryParseFlag(text, out var isDark))
+                {
+                    palette.IsDark = isDark;
                 }
                 else
                 {
-                    if (!TryParseFlag(text, out var flag))
-                    {
-                        _log.Warn("Role '" + role.Name + "' of the theme file holds '" + text
-                            + "', which is not true or false, and is left out: " + path);
-                        continue;
-                    }
-
-                    role.SetValue(palette, flag, null);
+                    _log.Warn("'" + IsDarkKey + "' of the theme file holds '" + text
+                        + "', which is not true or false, and is left out: " + path);
                 }
             }
 
@@ -373,13 +387,141 @@ namespace AIHelper.Manage.ui.themes
         }
 
         /// <summary>
-        /// Reads a colour value, with or without the sign.
+        /// Reads a colour written in any of the spellings a person, or an older version of
+        /// this program, is likely to have used.
         /// </summary>
         /// <remarks>
-        /// The writer stores what <see cref="Color.ToArgb"/> returns, which is a signed
-        /// 32 bit number. The same colour written by hand or by another tool is usually the
-        /// unsigned one, and refusing it would drop the role and put that part of the
-        /// window back on a derived colour without anything saying so.
+        /// Deliberately forgiving. The file is there to be edited by hand, so a value typed
+        /// as <c>#FF0078D7</c>, or left over from the version which wrote the packed number,
+        /// has to keep its role. Refusing it would put that part of the window back on a
+        /// derived colour without anything saying so.
+        /// </remarks>
+        internal static bool TryParseColour(string text, out Color colour)
+        {
+            colour = Color.Empty;
+
+            text = StripComment(text);
+            if (text.Length == 0) return false;
+
+            // #AARRGGBB, or #RRGGBB for a colour with no transparency in it
+            if (text[0] == '#') return TryParseHex(text.Substring(1), out colour);
+
+            // A, R, G, B
+            var parts = text.Split(',');
+            if (parts.Length == 4)
+            {
+                var channels = new int[4];
+
+                for (var i = 0; i < 4; i++)
+                {
+                    if (!TryParseChannel(parts[i], out channels[i])) return false;
+                }
+
+                colour = Color.FromArgb(channels[0], channels[1], channels[2], channels[3]);
+                return true;
+            }
+
+            // a name from the known colour table, such as Red or ControlText
+            var named = Color.FromName(text);
+            if (named.IsKnownColor)
+            {
+                // taken apart and put back together, so what is handed out is the colour
+                // itself rather than one which also claims to be that name
+                colour = Color.FromArgb(named.A, named.R, named.G, named.B);
+                return true;
+            }
+
+            // the packed number an older version of this program wrote
+            if (TryParseArgb(text, out var argb))
+            {
+                colour = Color.FromArgb(argb);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Removes a comment a person left on the same line as the value, and the quotes
+        /// they may have wrapped it in.
+        /// </summary>
+        /// <remarks>
+        /// The ini library only takes off the comments it wrote itself, which sit on their
+        /// own line; one typed after a value is handed back as part of it, and so is a pair
+        /// of quotes. A <c>#</c> starts a comment only once the value has begun, because a
+        /// value which starts with one is the hex form - and the quotes come off first, or
+        /// the <c>#</c> inside them would look like the start of a comment.
+        /// </remarks>
+        private static string StripComment(string text)
+        {
+            if (text == null) return string.Empty;
+
+            text = TrimQuotes(text.Trim());
+
+            var semicolon = text.IndexOf(';');
+            if (semicolon >= 0) text = text.Substring(0, semicolon);
+
+            // the quotes may have been on the other side of the note, and the hash only
+            // means a comment once they are off
+            text = TrimQuotes(text.Trim());
+
+            var hash = text.IndexOf('#', text.Length > 0 && text[0] == '#' ? 1 : 0);
+            if (hash >= 0) text = text.Substring(0, hash);
+
+            return TrimQuotes(text.Trim());
+        }
+
+        /// <summary>
+        /// Takes a pair of quotes off a value, if it is wrapped in one.
+        /// </summary>
+        private static string TrimQuotes(string text)
+        {
+            if (text.Length < 2) return text;
+            if (text[0] != '"' || text[text.Length - 1] != '"') return text;
+
+            return text.Substring(1, text.Length - 2).Trim();
+        }
+
+        /// <summary>
+        /// Reads the digits of a hex colour, with or without the alpha.
+        /// </summary>
+        private static bool TryParseHex(string digits, out Color colour)
+        {
+            colour = Color.Empty;
+
+            if (digits.Length != 6 && digits.Length != 8) return false;
+
+            if (!uint.TryParse(digits, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var packed)) return false;
+
+            colour = digits.Length == 6
+                ? Color.FromArgb(255, (int)(packed >> 16) & 0xFF, (int)(packed >> 8) & 0xFF, (int)packed & 0xFF)
+                : Color.FromArgb(unchecked((int)packed));
+
+            return true;
+        }
+
+        /// <summary>
+        /// Reads one channel of a colour, which has to be a whole number from 0 to 255.
+        /// </summary>
+        private static bool TryParseChannel(string text, out int channel)
+        {
+            channel = 0;
+
+            if (!int.TryParse(text.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var value)) return false;
+            if (value < 0 || value > 255) return false;
+
+            channel = value;
+            return true;
+        }
+
+        /// <summary>
+        /// Reads a colour as the packed number an older version of this program wrote, with
+        /// or without the sign.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="Color.ToArgb"/> returns a signed 32 bit number, so the same colour
+        /// written by hand or by another tool is usually the unsigned one. Both are read,
+        /// so that a theme saved by the version which stored the number keeps its colours.
         /// </remarks>
         private static bool TryParseArgb(string text, out int argb)
         {

@@ -31,7 +31,7 @@ namespace AIHelper.Manage.ui.themes
                 TitleBarText = Color.FromArgb(255, 240, 242, 244),
                 TitleBarMuted = Color.FromArgb(255, 140, 148, 156),
 
-                Accent = Color.FromArgb(255, 55, 148, 255),
+                Accent = Color.White,
                 AccentText = Color.FromArgb(255, 255, 255, 255),
 
                 ButtonFace = Color.FromArgb(255, 51, 51, 55),
@@ -57,7 +57,7 @@ namespace AIHelper.Manage.ui.themes
                 SelectionText = Color.FromArgb(255, 255, 255, 255),
 
                 ProgressBar = Color.FromArgb(255, 55, 148, 255),
-            }.Complete();
+            };
         }
     }
 }

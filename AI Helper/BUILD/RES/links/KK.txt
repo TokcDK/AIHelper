@@ -14,10 +14,10 @@
 ;
 ;Resources with characters cards
 Characters{{link}}Note: Always download original PNG card files (not thumbnails). Place female cards in UserData\Chara\female, male in UserData\Chara\male. Many cards require matching mods from HF Patch / Sideloader packs. KK cards can often convert to KKS; reverse is not supported.{{link}}
-Characters{{link}}BepisDB – largest organized database of cards, scenes, clothing (hundreds of thousands of entries, advanced search/tags)<ru-RU>BepisDB – крупнейшая организованная база карточек, сцен, одежды{{link}}https://db.bepis.moe/koikatsu
+Characters{{link}}BepisDB – largest organized database of cards, scenes, clothing (hundreds of thousands of entries, advanced search/tags)<ru-RU>BepisDB – крупнейшая организованная база карточек, сцен, одежды (сотни тысяч записей, расширенный поиск/теги){{link}}https://db.bepis.moe/koikatsu
 Characters{{link}}[Torrent]Combined Communities Character Card Pack v3<ru-RU>[Торрент]Большой сборник карточек для Koikatsu{{link}}https://sukebei.nyaa.si/view/3330941
 Characters{{link}}Illusion cards (Booru)<ru-RU>Карточки для игр от Illusion{{link}}https://illusioncards.booru.org/index.php?page=post&s=list&tags=koikatsu
-Characters{{link}}Kenzato Booru (strong for anime-style & original characters){{link}}https://kenzato.uk/booru/category/KK
+Characters{{link}}Kenzato Booru (strong for anime-style & original characters)<ru-RU>Kenzato Booru (сильный для аниме-стиля и оригинальных персонажей){{link}}https://kenzato.uk/booru/category/KK
 Characters{{link}}Cards for Illusion games (Pixiv tag search)<ru-RU>Карточки для игр от Illusion (поиск по тегу Pixiv){{link}}https://www.pixiv.net/en/tags/%E3%82%AD%E3%83%A3%E3%83%A9%E9%85%8D%E5%B8%83%28%E3%82%B3%E3%82%A4%E3%82%AB%E3%83%84%29/artworks
 Characters{{link}}Discord channel with content for Illusion games<ru-RU>Дискорд канал с контентом для игр от Illusion{{link}}https://discord.gg/illusionsoft
 Characters{{link}}Koikatsu! Discord. Content for Koikatsu<ru-RU>Канал Дискорд с контентом для Койкатсу{{link}}https://discord.gg/sZay4CvBrG
@@ -28,12 +28,14 @@ Characters{{link}}Pixiv outfits tag<ru-RU>Pixiv тег для костюмов{{
 Characters{{link}}Pixiv scenes tag<ru-RU>Pixiv тег для сцен{{link}}https://www.pixiv.net/en/tags/シーン配布(コイカツ!)/
 Characters{{link}}Pixiv mods tag<ru-RU>Pixiv тег для модов{{link}}https://www.pixiv.net/en/tags/MOD配布(コイカツ)/
 Characters{{link}}koikatsu-info (Japanese site with character cards & scene data)<ru-RU>Японский сайт с карточками и сценами{{link}}https://koikatsu-info.net/download-category/character_card/
-
+Characters{{link}}r/IllusionGameCards – Reddit community for sharing character collections & cards (with zipmods)<ru-RU>r/IllusionGameCards – Reddit-сообщество для обмена коллекциями карточек (с zipmods){{link}}https://www.reddit.com/r/IllusionGameCards/
 ;Mods and essential tools
-Mods{{link}}KKManager / Sideloader modpacks (for updating content mods)<ru-RU>KKManager и Sideloader модпаки{{link}}https://github.com/IllusionMods
-Mods{{link}}IllusionMods GitHub (plugins, modding tools, KK_Plugins etc.)<ru-RU>IllusionMods на GitHub{{link}}https://github.com/IllusionMods
-
+Mods{{link}}KKManager / Sideloader modpacks (for updating content mods)<ru-RU>KKManager и Sideloader модпаки{{link}}https://github.com/IllusionMods/KKManager
+Mods{{link}}IllusionMods GitHub (plugins, modding tools, KK_Plugins etc.)<ru-RU>IllusionMods на GitHub (плагины, инструменты моддинга, KK_Plugins и др.){{link}}https://github.com/IllusionMods
+Mods{{link}}Sideloader Modpack browser & single-file downloads (zipmods for clothing, hair, items)<ru-RU>Браузер Sideloader Modpack и загрузка отдельных zipmods (одежда, волосы, предметы){{link}}https://sideload.betterrepack.com/
+Mods{{link}}HF Patch for Koikatsu / Koikatsu Party (essential plugins, translations, fixes; enables loading most cards/scenes)<ru-RU>HF Patch для Koikatsu / Koikatsu Party (основные плагины, переводы, исправления; позволяет загружать большинство карточек/сцен){{link}}https://github.com/ManlyMarco/KK-HF_Patch
 ;Other useful resources
-Resources{{link}}r/KoikatsuParty Reddit wiki & discussions (card sources, guides)<ru-RU>Reddit r/KoikatsuParty{{link}}https://www.reddit.com/r/KoikatsuParty/
-Resources{{link}}KK Library – local Scene & Card Library Manager (organize cards/scenes)<ru-RU>KK Library – локальный менеджер карточек и сцен{{link}}https://kklibrary.pages.dev/
+Resources{{link}}r/KoikatsuParty Reddit wiki & discussions (card sources, guides)<ru-RU>Reddit r/KoikatsuParty (вики, обсуждения, источники карточек, гайды){{link}}https://www.reddit.com/r/KoikatsuParty/
+Resources{{link}}KK Library – local Scene & Card Library Manager (organize cards/scenes)<ru-RU>KK Library – локальный менеджер карточек и сцен{{link}}https://kklibrary.dev/
 Resources{{link}}PluginDataReader / card tools (browser-based card inspection)<ru-RU>Инструменты для чтения карточек{{link}}https://koikatsucards.com/en
+Resources{{link}}Koikatsu Discord (main community hub for help, cards, mods, requests)<ru-RU>Основной Discord Koikatsu (помощь, карточки, моды, запросы){{link}}https://discord.gg/koikatsu

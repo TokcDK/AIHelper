@@ -1,4 +1,5 @@
 ﻿using AIHelper.Manage;
+using AIHelper.Manage.ui;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,6 +15,15 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
         public BepinExForm()
         {
             InitializeComponent();
+
+            //the tool tip is not part of the designer's component container, so it is
+            //released when the panel is
+            Disposed += OnDisposed;
+        }
+
+        private void OnDisposed(object sender, EventArgs e)
+        {
+            DisposeTooltips();
         }
 
         double _version;
@@ -26,37 +36,35 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
             SetTooltips();
         }
 
-        ToolTip _thToolTip;
+        private UiTooltip _toolTip;
+
         private void SetTooltips()
         {
-            //http://qaru.site/questions/47162/c-how-do-i-add-a-tooltip-to-a-control
-            //THMainResetTableButton
-            _thToolTip = new ToolTip
-            {
-                // Set up the delays for the ToolTip.
-                AutoPopDelay = 32000,
-                InitialDelay = 1000,
-                ReshowDelay = 500,
-                UseAnimation = true,
-                UseFading = true,
-                // Force the ToolTip text to be displayed whether or not the form is active.
-                //ShowAlways = true
-            };
+            DisposeTooltips();
 
-            _thToolTip.SetToolTip(BepinExLogTargetLinkLabel, T._("Log target selection.\n\n" +
+            _toolTip = new UiTooltip();
+
+            _toolTip.Set(BepinExLogTargetLinkLabel, T._("Log target selection.\n\n" +
                 "Show logs in console window or to file on disk.\nOther log parameters depend on selected target"));
-            _thToolTip.SetToolTip(label1, T._("Select all log levels"));
-            _thToolTip.SetToolTip(label2, T._("Clear selection of log levels"));
-            _thToolTip.SetToolTip(BepInExSettingsLogCheckedListBox, T._("Log levels. How many messages will be displayed"));
+            _toolTip.Set(BepInExLevelsSelectAllLabel, T._("Select all log levels"));
+            _toolTip.Set(BepInExLevelsClearLabel, T._("Clear selection of log levels"));
+            _toolTip.Set(BepInExSettingsLogCheckedListBox, T._("Log levels. How many messages will be displayed"));
 
-            _thToolTip.SetToolTip(OpenLogLinkLabel, T._("Open BepinEx log if found"));
-            _thToolTip.SetToolTip(BepInExSettingsDisplayedLogLevelLabel, T._("Click here to select log level\n" +
+            _toolTip.Set(OpenLogLinkLabel, T._("Open BepinEx log if found"));
+            _toolTip.Set(BepInExSettingsDisplayedLogLevelLabel, T._("Click here to select log level\n" +
                 "Only displays the specified log level and above in the console output"));
-            _thToolTip.SetToolTip(BepInExSettingsLogCheckBox, T._("Click to enable log"));
+            _toolTip.Set(BepInExSettingsLogCheckBox, T._("Click to enable log"));
 
-            _thToolTip.SetToolTip(BepinExHelpLinkLabel, T._("Open BepInEx documentation"));
-            _thToolTip.SetToolTip(BepinExLogOpenConfigFileLinkLabel, T._("Open BepInEx configuration file in Notepad"));
-            ////////////////////////////
+            _toolTip.Set(BepinExHelpLinkLabel, T._("Open BepInEx documentation"));
+            _toolTip.Set(BepinExLogOpenConfigFileLinkLabel, T._("Open BepInEx configuration file in Notepad"));
+        }
+
+        private void DisposeTooltips()
+        {
+            if (_toolTip == null) return;
+
+            _toolTip.Dispose();
+            _toolTip = null;
         }
 
         private string GetBepInExVersionString()
@@ -188,10 +196,6 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
             }
         }
 
-        private void BepInExSettingsLogCheckedListBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-        }
-
         private void BepInExSettingsLogCheckedListBox_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (_isInit)
@@ -276,7 +280,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
             Process.Start("https://github.com/BepInEx/BepInEx/wiki");
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void BepInExLevelsSelectAllLabel_Click(object sender, EventArgs e)
         {
             _isInit = true;
             ClbCheckAllItems();
@@ -284,7 +288,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
             _isInit = false;
         }
 
-        private void label2_Click(object sender, EventArgs e)
+        private void BepInExLevelsClearLabel_Click(object sender, EventArgs e)
         {
             _isInit = true;
             ClbUncheckAllItems();

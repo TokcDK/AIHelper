@@ -1,5 +1,6 @@
 ﻿using AIHelper.Manage;
 using AIHelper.Manage.FoldersTab.Folders;
+using AIHelper.Manage.ui;
 using AIHelper.Manage.ui.themes;
 using AIHelper.Manage.Update;
 using AIHelper.Manage.Update.Targets;
@@ -73,8 +74,13 @@ namespace AIHelper
             this.FormBorderStyle = FormBorderStyle.None;
             this.DoubleBuffered = true;
             this.SetStyle(ControlStyles.ResizeRedraw, true);
-            this.MinimumSize = new Size(480, 260);
+            this.MinimumSize = new Size(520, 360);
             //---
+
+            // the launch page builds its function row while the application runs and
+            // colours it to match the theme, so it has to be rebuilt when the theme
+            // changes rather than just recoloured
+            ThemesLoader.ThemeApplied += OnThemeApplied;
 
             ManageMainFormService.CalcSizeDependOnDesktop(this);
 
@@ -212,8 +218,8 @@ namespace AIHelper
             this.StudioButton.Text = string.Format("{0} {1}", T._("🎨"), T._("Studio"));
             this.MOButton.Text = string.Format("{0} {1}", T._("📦"), T._("Manager"));
             this.SettingsButton.Text = string.Format("{0} {1}", T._("⚙"), T._("Settings"));
-            this.LaunchTabTheAppTitleLabel.Text = T._("-  Ằ🌶Ḩelper  -");
-            this.SelectedGameLabelOwnColor.Text = T._("GameTitle");
+            this.LaunchTabTheAppTitleAccentLabel.Text = T._("-  Ằ🌶Ḩelper  -");
+            this.SelectedGameTitleMutedLabel.Text = T._("GameTitle");
             this.SettingsTabPage.Text = string.Format("{0} {1}", T._("🔧"), T._("Settings"));
             this.SettingsTabGeneralTabPage.Text = string.Format("{0} {1}", T._("★"), T._("General"));
             this.CurrentGameLabel.Text = T._("Current Game:");
@@ -229,8 +235,10 @@ namespace AIHelper
             this.SettingsTabDisplayTabPage.Text = string.Format("{0} {1}", T._("🔳"), T._("Display"));
             this.ToolsTabPage.Text = string.Format("{0} {1}", T._("🔨"), T._("Tools"));
             this.FoldersTabPage.Text = string.Format("{0} {1}", T._("🗁"), T._("Folders"));
-            this.FormMinimizeButton.Text = T._("_");
-            this.FormCloseButton.Text = T._("X");
+            // the window chrome uses symbols rather than letters: they read the same in
+            // every language and they are what a window is expected to look like
+            this.FormMinimizeButton.Text = "–";
+            this.FormCloseButton.Text = "✕";
             this.FormTitleLabel.Text = T._("AIHelper");
             this.Text = string.Format("{0} [{1}]", T._("AI Helper"), T._("Organized modpack"));
         }
@@ -252,89 +260,56 @@ namespace AIHelper
         /// </summary>
         internal void DisposeTooltips()
         {
-            try
-            {
-                if (_thToolTip != null)
-                {
-                    _thToolTip.RemoveAll();
-                    _thToolTip.Dispose();
-                }
-            }
-            catch (Exception ex)
-            {
-                _log.Debug("An error occured while SetTooltips. error:\r\n" + ex);
-            }
+            if (_thToolTip == null) return;
+
+            _thToolTip.Dispose();
+            _thToolTip = null;
         }
 
         /// <summary>
         /// App's tooltips
         /// </summary>
-        private ToolTip _thToolTip;
+        private UiTooltip _thToolTip;
         internal void SetTooltips()
         {
             DisposeTooltips();
 
-            //http://qaru.site/questions/47162/c-how-do-i-add-a-tooltip-to-a-control
-            //THMainResetTableButton
-            _thToolTip = new ToolTip
-            {
-                // Set up the delays for the ToolTip.
-                AutoPopDelay = 32000,
-                InitialDelay = 1000,
-                ReshowDelay = 500,
-                UseAnimation = true,
-                UseFading = true,
-                // Force the ToolTip text to be displayed whether or not the form is active.
-                ShowAlways = true
-            };
+            _thToolTip = new UiTooltip();
 
             if (AIGirlHelperTabControl.SelectedTab == LaunchTabPage)
             {
-                _thToolTip.SetToolTip(SelectedGameLabelOwnColor, T._("Selected game title"));
+                _thToolTip.Set(SelectedGameTitleMutedLabel, T._("Selected game title"));
 
                 //Launch
-                _thToolTip.SetToolTip(VRGameCheckBox, T._("Check to run VR exe instead on standart"));
+                _thToolTip.Set(VRGameCheckBox, T._("Check to run VR exe instead on standart"));
 
-                _thToolTip.SetToolTip(GameButton, IsMoMode ? T._("Will execute the Game")
+                _thToolTip.Set(GameButton, IsMoMode ? T._("Will execute the Game")
                     + T._(" from Mod Organizer with attached mods")
                     : T._("Will execute the Game")
                     );
-                _thToolTip.SetToolTip(StudioButton, IsMoMode ? T._("Will execute Studio")
+                _thToolTip.Set(StudioButton, IsMoMode ? T._("Will execute Studio")
                     + T._(" from Mod Organizer with attached mods")
                     : T._("Will execute Studio")
                     );
-                _thToolTip.SetToolTip(MOButton, T._("Will execute Mod Organizer mod manager where you can manage your mods"));
-                _thToolTip.SetToolTip(JPLauncherRunLinkLabel, IsMoMode ?
+                _thToolTip.Set(MOButton, T._("Will execute Mod Organizer mod manager where you can manage your mods"));
+                _thToolTip.Set(JPLauncherRunLinkLabel, IsMoMode ?
                       T._("Will execute original game launcher")
                     + T._(" from Mod Organizer with attached mods")
                     : T._("Will execute original game launcher")
                     );
-                _thToolTip.SetToolTip(SettingsButton, T._("Will be opened Settings tab"));
-                _thToolTip.SetToolTip(OpenLogLinkLabel, T._("Open BepinEx log if found"));
+                _thToolTip.Set(SettingsButton, T._("Will be opened Settings tab"));
+                _thToolTip.Set(OpenLogLinkLabel, T._("Open BepinEx log if found"));
             }
             else if (AIGirlHelperTabControl.SelectedTab == SettingsTabPage)
             {
-                _thToolTip.SetToolTip(AutoShortcutRegistryCheckBox, T._("When checked will create shortcut for the AI Helper on Desktop and will fix registry if need"));
-                //_thToolTip.SetToolTip(ResolutionComboBox, T._("Select preferred screen resolution"));
-                //_thToolTip.SetToolTip(FullScreenCheckBox, T._("When checked game will be in fullscreen mode"));
-                //_thToolTip.SetToolTip(QualityComboBox, T._("Select preferred graphics quality"));
-                _thToolTip.SetToolTip(CreateShortcutLinkLabel, T._("Will create shortcut in Desktop if not exist"));
-                _thToolTip.SetToolTip(FixRegistryLinkLabel, T._("Will set Data dir with game files as install dir in registry"));
+                _thToolTip.Set(AutoShortcutRegistryCheckBox, T._("When checked will create shortcut for the AI Helper on Desktop and will fix registry if need"));
+                _thToolTip.Set(CreateShortcutLinkLabel, T._("Will create shortcut in Desktop if not exist"));
+                _thToolTip.Set(FixRegistryLinkLabel, T._("Will set Data dir with game files as install dir in registry"));
 
-                _thToolTip.SetToolTip(ExtraSettingsLinkLabel, T._("Open extra setting window for plugins and etc"));
+                _thToolTip.Set(ExtraSettingsLinkLabel, T._("Open extra setting window for plugins and etc"));
 
-                _thToolTip.SetToolTip(CurrentGameComboBox, T._("List of found games. Current") + ": " + ManageSettings.Games.Game.GameDisplayingName);
-
-
+                _thToolTip.Set(CurrentGameComboBox, T._("List of found games. Current") + ": " + ManageSettings.Games.Game.GameDisplayingName);
             }
-            else if (AIGirlHelperTabControl.SelectedTab == ToolsTabPage)
-            {
-
-            }
-            else if (AIGirlHelperTabControl.SelectedTab == FoldersTabPage)
-            {
-            }
-            ////////////////////////////
         }
 
         /// <summary>
@@ -373,11 +348,20 @@ namespace AIHelper
 
             if (AutoShortcutRegistryCheckBox.Checked) ManageOther.AutoShortcutAndRegystry();
 
-            SelectedGameLabelOwnColor.Text = ManageSettings.Games.Game.GameDisplayingName + "❤";
+            SelectedGameTitleMutedLabel.Text = ManageSettings.Games.Game.GameDisplayingName + "❤";
             this.FormTitleLabel.Text = "AI Helper" + " | " + ManageSettings.Games.Game.GameDisplayingName;
 
             ThemesLoader.SetTheme();
 
+            ManageTabs.LoadContent();
+        }
+
+        /// <summary>
+        /// Rebuilds the parts of the window which colour themselves, so they pick up
+        /// the theme which was just applied.
+        /// </summary>
+        private void OnThemeApplied(object sender, EventArgs e)
+        {
             ManageTabs.LoadContent();
         }
 
@@ -598,7 +582,7 @@ namespace AIHelper
                     _extraSettingsForm.Size = ManageSettings.MainForm.Size;
                 });
 
-                ThemesLoader.SetTheme(ManageSettings.CurrentTheme, _extraSettingsForm);
+                ThemesLoader.ApplyTheme(_extraSettingsForm);
                 _extraSettingsForm.Show();
                 _extraSettingsForm.TopMost = true;
             }
@@ -680,6 +664,10 @@ namespace AIHelper
             {
                 case 1:
                     ManageSettings.ReloadGameSettings(SettingsTabDisplayTabPageGameBackgroundPanel);
+
+                    // the settings control of the game is created while the application
+                    // runs, so it has to be themed after it is put in place
+                    ThemesLoader.ApplyTheme(SettingsTabDisplayTabPageGameBackgroundPanel);
                     break;
                 default:
                     break;

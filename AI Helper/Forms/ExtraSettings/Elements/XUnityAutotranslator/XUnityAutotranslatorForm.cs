@@ -1,4 +1,5 @@
 ﻿using AIHelper.Manage;
+using AIHelper.Manage.ui;
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -13,6 +14,15 @@ namespace AIHelper.Forms.ExtraSettings.Elements
         public XUnityAutotranslatorForm()
         {
             InitializeComponent();
+
+            //the tool tip is not part of the designer's component container, so it is
+            //released when the panel is
+            Disposed += OnDisposed;
+        }
+
+        private void OnDisposed(object sender, EventArgs e)
+        {
+            DisposeTooltips();
         }
 
         private void XUnityAutotranslatorForm_Load(object sender, EventArgs e)
@@ -140,7 +150,7 @@ namespace AIHelper.Forms.ExtraSettings.Elements
                     };
         }
 
-        ToolTip _thToolTip;
+        private UiTooltip _toolTip;
 
         private void SetLocalizationStrings()
         {
@@ -152,27 +162,17 @@ namespace AIHelper.Forms.ExtraSettings.Elements
 
         private void SetTooltips()
         {
-            //http://qaru.site/questions/47162/c-how-do-i-add-a-tooltip-to-a-control
-            //THMainResetTableButton
-            _thToolTip = new ToolTip
-            {
-                // Set up the delays for the ToolTip.
-                AutoPopDelay = 32000,
-                InitialDelay = 1000,
-                ReshowDelay = 500,
-                UseAnimation = true,
-                UseFading = true,
-                // Force the ToolTip text to be displayed whether or not the form is active.
-                //ShowAlways = true
-            };
+            DisposeTooltips();
 
-            _thToolTip.SetToolTip(XUAcfgFileOpenLinkLabel, T._("Open file with all settings"));
-            _thToolTip.SetToolTip(XUAHelpLinkLabel, T._("Open XUA documentation"));
-            _thToolTip.SetToolTip(XUAFromLanguageComboBox, T._("List of source languages. From which translate"));
-            _thToolTip.SetToolTip(XUALanguageComboBox, T._("List of target languages. To which translate"));
-            _thToolTip.SetToolTip(XUAEndpointComboBox, T._("List of translation services"));
+            _toolTip = new UiTooltip();
 
-            _thToolTip.SetToolTip(XUAEndpointComboBox,
+            _toolTip.Set(XUAcfgFileOpenLinkLabel, T._("Open file with all settings"));
+            _toolTip.Set(XUAHelpLinkLabel, T._("Open XUA documentation"));
+            _toolTip.Set(XUAFromLanguageComboBox, T._("List of source languages. From which translate"));
+            _toolTip.Set(XUALanguageComboBox, T._("List of target languages. To which translate"));
+            _toolTip.Set(XUAEndpointComboBox, T._("List of translation services"));
+
+            _toolTip.Set(XUAEndpointComboBox,
                 T._("From XUA documentation.\nThe supported translators are: ")
                 + "\n\n" +
                 T._("GoogleTranslate, based on the online Google translation service. Does not require authentication.")
@@ -202,8 +202,14 @@ namespace AIHelper.Forms.ExtraSettings.Elements
                 T._("LecPowerTranslator15, based on LEC's Power Translator. Does not require authentication, but does require the software installed.")
 
                 );
+        }
 
-            ////////////////////////////
+        private void DisposeTooltips()
+        {
+            if (_toolTip == null) return;
+
+            _toolTip.Dispose();
+            _toolTip = null;
         }
 
         private void XUAHelpLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

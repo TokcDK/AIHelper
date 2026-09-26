@@ -39,31 +39,37 @@
             this.ExtraSettingsPanel.Controls.Add(this.ExtraSettingsFlowLayoutPanel);
             this.ExtraSettingsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ExtraSettingsPanel.Location = new System.Drawing.Point(0, 0);
+            this.ExtraSettingsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.ExtraSettingsPanel.Name = "ExtraSettingsPanel";
-            this.ExtraSettingsPanel.Size = new System.Drawing.Size(354, 187);
+            this.ExtraSettingsPanel.Padding = new System.Windows.Forms.Padding(12);
+            this.ExtraSettingsPanel.Size = new System.Drawing.Size(420, 440);
             this.ExtraSettingsPanel.TabIndex = 0;
             // 
             // ExtraSettingsFlowLayoutPanel
             // 
+            // The settings panels of the found plugins are docked in here while the
+            // window is shown, so the panel scrolls rather than clips when there are
+            // more of them than fit.
             this.ExtraSettingsFlowLayoutPanel.AutoScroll = true;
             this.ExtraSettingsFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ExtraSettingsFlowLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.ExtraSettingsFlowLayoutPanel.Location = new System.Drawing.Point(12, 12);
+            this.ExtraSettingsFlowLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.ExtraSettingsFlowLayoutPanel.Name = "ExtraSettingsFlowLayoutPanel";
-            this.ExtraSettingsFlowLayoutPanel.Size = new System.Drawing.Size(354, 187);
+            this.ExtraSettingsFlowLayoutPanel.Size = new System.Drawing.Size(396, 416);
             this.ExtraSettingsFlowLayoutPanel.TabIndex = 0;
             // 
             // ExtraSettings
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Gray;
-            this.ClientSize = new System.Drawing.Size(354, 187);
+            this.ClientSize = new System.Drawing.Size(420, 440);
             this.Controls.Add(this.ExtraSettingsPanel);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MinimumSize = new System.Drawing.Size(420, 300);
             this.Name = "ExtraSettings";
             this.Text = "Extra";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ExtraSettings_FormClosing);
             this.Load += new System.EventHandler(this.ExtraSettings_Load);
             this.ExtraSettingsPanel.ResumeLayout(false);
             this.ResumeLayout(false);

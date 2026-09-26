@@ -28,73 +28,91 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.LevelsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.LevelsFlowLayoutPanel.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // LevelsFlowLayoutPanel
+            // 
+            // The levels are a list, so they are laid out from the top down and the
+            // panel scrolls when there are more of them than fit.
+            this.LevelsFlowLayoutPanel.AutoScroll = true;
+            this.LevelsFlowLayoutPanel.Controls.Add(this.checkBox1);
+            this.LevelsFlowLayoutPanel.Controls.Add(this.checkBox2);
+            this.LevelsFlowLayoutPanel.Controls.Add(this.checkBox3);
+            this.LevelsFlowLayoutPanel.Controls.Add(this.checkBox4);
+            this.LevelsFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.LevelsFlowLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.LevelsFlowLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.LevelsFlowLayoutPanel.Name = "LevelsFlowLayoutPanel";
+            this.LevelsFlowLayoutPanel.Padding = new System.Windows.Forms.Padding(12);
+            this.LevelsFlowLayoutPanel.Size = new System.Drawing.Size(170, 150);
+            this.LevelsFlowLayoutPanel.TabIndex = 0;
+            this.LevelsFlowLayoutPanel.WrapContents = false;
             // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
             this.checkBox1.Location = new System.Drawing.Point(12, 12);
+            this.checkBox1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(36, 17);
+            this.checkBox1.Size = new System.Drawing.Size(41, 19);
             this.checkBox1.TabIndex = 0;
             this.checkBox1.Text = "all";
-            this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // checkBox2
             // 
             this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(12, 35);
+            this.checkBox2.Location = new System.Drawing.Point(12, 39);
+            this.checkBox2.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(56, 17);
+            this.checkBox2.Size = new System.Drawing.Size(62, 19);
             this.checkBox2.TabIndex = 1;
             this.checkBox2.Text = "debug";
-            this.checkBox2.UseVisualStyleBackColor = true;
             // 
             // checkBox3
             // 
             this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(12, 58);
+            this.checkBox3.Location = new System.Drawing.Point(12, 66);
+            this.checkBox3.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(44, 17);
+            this.checkBox3.Size = new System.Drawing.Size(47, 19);
             this.checkBox3.TabIndex = 2;
             this.checkBox3.Text = "info";
-            this.checkBox3.UseVisualStyleBackColor = true;
             // 
             // checkBox4
             // 
             this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(12, 81);
+            this.checkBox4.Location = new System.Drawing.Point(12, 93);
+            this.checkBox4.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(40, 17);
+            this.checkBox4.Size = new System.Drawing.Size(43, 19);
             this.checkBox4.TabIndex = 3;
             this.checkBox4.Text = "bla";
-            this.checkBox4.UseVisualStyleBackColor = true;
             // 
             // LogLevelselectionForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.DimGray;
-            this.ClientSize = new System.Drawing.Size(106, 132);
-            this.Controls.Add(this.checkBox4);
-            this.Controls.Add(this.checkBox3);
-            this.Controls.Add(this.checkBox2);
-            this.Controls.Add(this.checkBox1);
-            this.ForeColor = System.Drawing.Color.White;
+            this.ClientSize = new System.Drawing.Size(170, 150);
+            this.Controls.Add(this.LevelsFlowLayoutPanel);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "LogLevelselectionForm";
             this.Text = "LogLevelselectionForm";
+            this.LevelsFlowLayoutPanel.ResumeLayout(false);
+            this.LevelsFlowLayoutPanel.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
+        private System.Windows.Forms.FlowLayoutPanel LevelsFlowLayoutPanel;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.CheckBox checkBox2;
         private System.Windows.Forms.CheckBox checkBox3;

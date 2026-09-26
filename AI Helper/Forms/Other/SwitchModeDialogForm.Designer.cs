@@ -28,177 +28,188 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.MakeBuckupCheckBox = new System.Windows.Forms.CheckBox();
+            this.MainPanel = new System.Windows.Forms.Panel();
+            this.DialogLayoutTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.MessageLayoutTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.MessageTextTextBox = new System.Windows.Forms.TextBox();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.MakeBuckupCheckBox = new System.Windows.Forms.CheckBox();
             this.DoNotSwitchCheckBox = new System.Windows.Forms.CheckBox();
-            this.panel1.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
+            this.ButtonsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.btnSwitchMode = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.MainPanel.SuspendLayout();
+            this.DialogLayoutTableLayoutPanel.SuspendLayout();
+            this.MessageLayoutTableLayoutPanel.SuspendLayout();
+            this.ButtonsTableLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
-            // panel1
+            // MainPanel
             // 
-            this.panel1.Controls.Add(this.tableLayoutPanel1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(354, 187);
-            this.panel1.TabIndex = 0;
+            this.MainPanel.Controls.Add(this.DialogLayoutTableLayoutPanel);
+            this.MainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MainPanel.Location = new System.Drawing.Point(0, 0);
+            this.MainPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.MainPanel.Name = "MainPanel";
+            this.MainPanel.Padding = new System.Windows.Forms.Padding(12);
+            this.MainPanel.Size = new System.Drawing.Size(400, 220);
+            this.MainPanel.TabIndex = 0;
             // 
-            // tableLayoutPanel1
+            // DialogLayoutTableLayoutPanel
             // 
-            this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.panel2, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.panel3, 0, 1);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 83.95722F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 16.04278F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(354, 187);
-            this.tableLayoutPanel1.TabIndex = 0;
+            this.DialogLayoutTableLayoutPanel.ColumnCount = 1;
+            this.DialogLayoutTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.DialogLayoutTableLayoutPanel.Controls.Add(this.MessageLayoutTableLayoutPanel, 0, 0);
+            this.DialogLayoutTableLayoutPanel.Controls.Add(this.ButtonsTableLayoutPanel, 0, 1);
+            this.DialogLayoutTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DialogLayoutTableLayoutPanel.Location = new System.Drawing.Point(12, 12);
+            this.DialogLayoutTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.DialogLayoutTableLayoutPanel.Name = "DialogLayoutTableLayoutPanel";
+            this.DialogLayoutTableLayoutPanel.RowCount = 2;
+            this.DialogLayoutTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.DialogLayoutTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
+            this.DialogLayoutTableLayoutPanel.Size = new System.Drawing.Size(376, 196);
+            this.DialogLayoutTableLayoutPanel.TabIndex = 0;
             // 
-            // panel2
+            // MessageLayoutTableLayoutPanel
             // 
-            this.panel2.Controls.Add(this.DoNotSwitchCheckBox);
-            this.panel2.Controls.Add(this.MakeBuckupCheckBox);
-            this.panel2.Controls.Add(this.MessageTextTextBox);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(3, 3);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(348, 151);
-            this.panel2.TabIndex = 0;
+            // The message takes the room there is, the two options sit in a row under it
+            // and the third column keeps them from being spread over the whole width.
+            this.MessageLayoutTableLayoutPanel.ColumnCount = 3;
+            this.MessageLayoutTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.MessageLayoutTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.MessageLayoutTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.MessageLayoutTableLayoutPanel.Controls.Add(this.MessageTextTextBox, 0, 0);
+            this.MessageLayoutTableLayoutPanel.Controls.Add(this.MakeBuckupCheckBox, 0, 1);
+            this.MessageLayoutTableLayoutPanel.Controls.Add(this.DoNotSwitchCheckBox, 1, 1);
+            this.MessageLayoutTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MessageLayoutTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.MessageLayoutTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.MessageLayoutTableLayoutPanel.Name = "MessageLayoutTableLayoutPanel";
+            this.MessageLayoutTableLayoutPanel.RowCount = 2;
+            this.MessageLayoutTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.MessageLayoutTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.MessageLayoutTableLayoutPanel.Size = new System.Drawing.Size(376, 152);
+            this.MessageLayoutTableLayoutPanel.TabIndex = 0;
+            // 
+            // MessageTextTextBox
+            // 
+            // A read only box rather than a label, because the message is long and has to
+            // be selectable so it can be copied out.
+            this.MessageTextTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MessageLayoutTableLayoutPanel.SetColumnSpan(this.MessageTextTextBox, 3);
+            this.MessageTextTextBox.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MessageTextTextBox.Location = new System.Drawing.Point(0, 0);
+            this.MessageTextTextBox.Margin = new System.Windows.Forms.Padding(0, 0, 0, 10);
+            this.MessageTextTextBox.Multiline = true;
+            this.MessageTextTextBox.Name = "MessageTextTextBox";
+            this.MessageTextTextBox.ReadOnly = true;
+            this.MessageTextTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.MessageTextTextBox.Size = new System.Drawing.Size(376, 119);
+            this.MessageTextTextBox.TabIndex = 0;
+            this.MessageTextTextBox.Text = "Game mode will be changed to normal when ";
+            this.MessageTextTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // MakeBuckupCheckBox
             // 
             this.MakeBuckupCheckBox.AutoSize = true;
             this.MakeBuckupCheckBox.Checked = true;
             this.MakeBuckupCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.MakeBuckupCheckBox.ForeColor = System.Drawing.Color.White;
-            this.MakeBuckupCheckBox.Location = new System.Drawing.Point(3, 131);
+            this.MakeBuckupCheckBox.Location = new System.Drawing.Point(0, 129);
+            this.MakeBuckupCheckBox.Margin = new System.Windows.Forms.Padding(0, 0, 20, 0);
             this.MakeBuckupCheckBox.Name = "MakeBuckupCheckBox";
-            this.MakeBuckupCheckBox.Size = new System.Drawing.Size(92, 17);
-            this.MakeBuckupCheckBox.TabIndex = 0;
-            this.MakeBuckupCheckBox.Text = "Make buckup";
-            this.MakeBuckupCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // MessageTextTextBox
-            // 
-            this.MessageTextTextBox.BackColor = System.Drawing.Color.Gray;
-            this.MessageTextTextBox.Font = new System.Drawing.Font("Arial Narrow", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MessageTextTextBox.ForeColor = System.Drawing.Color.White;
-            this.MessageTextTextBox.Location = new System.Drawing.Point(0, 3);
-            this.MessageTextTextBox.Multiline = true;
-            this.MessageTextTextBox.Name = "MessageTextTextBox";
-            this.MessageTextTextBox.ReadOnly = true;
-            this.MessageTextTextBox.Size = new System.Drawing.Size(345, 125);
-            this.MessageTextTextBox.TabIndex = 0;
-            this.MessageTextTextBox.Text = "Game mode will be changed to normal when ";
-            this.MessageTextTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.tableLayoutPanel2);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(0, 157);
-            this.panel3.Margin = new System.Windows.Forms.Padding(0);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(354, 30);
-            this.panel3.TabIndex = 1;
-            // 
-            // tableLayoutPanel2
-            // 
-            this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Controls.Add(this.button1, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.button2, 1, 0);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 1;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(354, 30);
-            this.tableLayoutPanel2.TabIndex = 0;
-            // 
-            // button1
-            // 
-            this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button1.Location = new System.Drawing.Point(3, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(171, 24);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Switch mode";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // button2
-            // 
-            this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button2.Location = new System.Drawing.Point(180, 3);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(171, 24);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Cancel";
-            this.button2.UseVisualStyleBackColor = true;
+            this.MakeBuckupCheckBox.Size = new System.Drawing.Size(101, 19);
+            this.MakeBuckupCheckBox.TabIndex = 1;
+            this.MakeBuckupCheckBox.Text = "Make backup";
             // 
             // DoNotSwitchCheckBox
             // 
             this.DoNotSwitchCheckBox.AutoSize = true;
-            this.DoNotSwitchCheckBox.ForeColor = System.Drawing.Color.White;
-            this.DoNotSwitchCheckBox.Location = new System.Drawing.Point(101, 131);
+            this.DoNotSwitchCheckBox.Location = new System.Drawing.Point(121, 129);
+            this.DoNotSwitchCheckBox.Margin = new System.Windows.Forms.Padding(0);
             this.DoNotSwitchCheckBox.Name = "DoNotSwitchCheckBox";
-            this.DoNotSwitchCheckBox.Size = new System.Drawing.Size(91, 17);
-            this.DoNotSwitchCheckBox.TabIndex = 1;
+            this.DoNotSwitchCheckBox.Size = new System.Drawing.Size(101, 19);
+            this.DoNotSwitchCheckBox.TabIndex = 2;
             this.DoNotSwitchCheckBox.Text = "Do not switch";
-            this.DoNotSwitchCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // ButtonsTableLayoutPanel
+            // 
+            this.ButtonsTableLayoutPanel.ColumnCount = 3;
+            this.ButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.ButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.ButtonsTableLayoutPanel.Controls.Add(this.btnSwitchMode, 1, 0);
+            this.ButtonsTableLayoutPanel.Controls.Add(this.btnCancel, 2, 0);
+            this.ButtonsTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ButtonsTableLayoutPanel.Location = new System.Drawing.Point(0, 152);
+            this.ButtonsTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.ButtonsTableLayoutPanel.Name = "ButtonsTableLayoutPanel";
+            this.ButtonsTableLayoutPanel.RowCount = 1;
+            this.ButtonsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ButtonsTableLayoutPanel.Size = new System.Drawing.Size(376, 44);
+            this.ButtonsTableLayoutPanel.TabIndex = 1;
+            // 
+            // btnSwitchMode
+            // 
+            this.btnSwitchMode.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnSwitchMode.AutoSize = true;
+            this.btnSwitchMode.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnSwitchMode.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnSwitchMode.Location = new System.Drawing.Point(152, 6);
+            this.btnSwitchMode.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.btnSwitchMode.MinimumSize = new System.Drawing.Size(96, 32);
+            this.btnSwitchMode.Name = "btnSwitchMode";
+            this.btnSwitchMode.Padding = new System.Windows.Forms.Padding(14, 6, 14, 6);
+            this.btnSwitchMode.Size = new System.Drawing.Size(104, 32);
+            this.btnSwitchMode.TabIndex = 0;
+            this.btnSwitchMode.Text = "Switch mode";
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnCancel.AutoSize = true;
+            this.btnCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(264, 6);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.btnCancel.MinimumSize = new System.Drawing.Size(96, 32);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Padding = new System.Windows.Forms.Padding(14, 6, 14, 6);
+            this.btnCancel.Size = new System.Drawing.Size(96, 32);
+            this.btnCancel.TabIndex = 1;
+            this.btnCancel.Text = "Cancel";
             // 
             // SwitchModeDialogForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AcceptButton = this.btnSwitchMode;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Gray;
-            this.ClientSize = new System.Drawing.Size(354, 187);
-            this.Controls.Add(this.panel1);
+            this.CancelButton = this.btnCancel;
+            this.ClientSize = new System.Drawing.Size(400, 220);
+            this.Controls.Add(this.MainPanel);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "SwitchModeDialogForm";
-            this.Text = "text";
+            this.Text = "Mode switch";
             this.Load += new System.EventHandler(this.SwitchModeDialogForm_Load);
-            this.panel1.ResumeLayout(false);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.tableLayoutPanel2.ResumeLayout(false);
+            this.MainPanel.ResumeLayout(false);
+            this.DialogLayoutTableLayoutPanel.ResumeLayout(false);
+            this.MessageLayoutTableLayoutPanel.ResumeLayout(false);
+            this.MessageLayoutTableLayoutPanel.PerformLayout();
+            this.ButtonsTableLayoutPanel.ResumeLayout(false);
+            this.ButtonsTableLayoutPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel MainPanel;
+        private System.Windows.Forms.TableLayoutPanel DialogLayoutTableLayoutPanel;
+        private System.Windows.Forms.TableLayoutPanel MessageLayoutTableLayoutPanel;
         private System.Windows.Forms.TextBox MessageTextTextBox;
-        private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TableLayoutPanel ButtonsTableLayoutPanel;
+        private System.Windows.Forms.Button btnSwitchMode;
+        private System.Windows.Forms.Button btnCancel;
         public System.Windows.Forms.CheckBox MakeBuckupCheckBox;
         public System.Windows.Forms.CheckBox DoNotSwitchCheckBox;
     }

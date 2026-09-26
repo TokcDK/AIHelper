@@ -1,13 +1,16 @@
 ﻿using AIHelper.Manage;
-using NLog;
+using AIHelper.Manage.ui;
+using AIHelper.Manage.ui.themes;
 using System;
 using System.Windows.Forms;
 
 namespace AIHelper.Forms.Other
 {
+    /// <summary>
+    /// Dialog which explains what a mode switch does and asks whether to go ahead.
+    /// </summary>
     public partial class SwitchModeDialogForm : Form
     {
-        static readonly Logger _log = LogManager.GetCurrentClassLogger();
         public SwitchModeDialogForm()
         {
             InitializeComponent();
@@ -16,6 +19,12 @@ namespace AIHelper.Forms.Other
         private void SwitchModeDialogForm_Load(object sender, EventArgs e)
         {
             SetTranslations();
+
+            // the dialog is opened from the tools tab while the program runs, so it
+            // takes the theme in use rather than the one which was current when it was
+            // created
+            ThemesLoader.ApplyTheme(this);
+
             SetTooltips();
 
             if (!ManageSettings.IsMoMode)
@@ -29,7 +38,6 @@ namespace AIHelper.Forms.Other
             this.Size = ManageSettings.MainForm.Size;
         }
 
-        private ToolTip _thToolTip;
         private void SetTranslations()
         {
             MessageTextTextBox.Text = (ManageSettings.IsMoMode? T._(
@@ -49,52 +57,34 @@ namespace AIHelper.Forms.Other
 
             this.Text = T._("Mode switch. Current mode:") + " " + (ManageSettings.IsMoMode? T._("MO mode") : T._("Normal mode"));
             MakeBuckupCheckBox.Text = T._("Make backup");
-            button1.Text = T._("Switch mode");
-            button2.Text = T._("Cancel");
+            btnSwitchMode.Text = T._("Switch mode");
+            btnCancel.Text = T._("Cancel");
         }
+
+        private UiTooltip _toolTip;
 
         /// <summary>
         /// remove all tooltips and dispose resources
         /// </summary>
         internal void DisposeTooltips()
         {
-            try
-            {
-                if (_thToolTip != null)
-                {
-                    _thToolTip.RemoveAll();
-                    _thToolTip.Dispose();
-                }
-            }
-            catch (Exception ex)
-            {
-                _log.Debug("An error occured while SetTooltips. error:\r\n" + ex);
-            }
+            if (_toolTip == null) return;
+
+            _toolTip.Dispose();
+            _toolTip = null;
         }
 
         internal void SetTooltips()
         {
             DisposeTooltips();
 
-            //http://qaru.site/questions/47162/c-how-do-i-add-a-tooltip-to-a-control
-            //THMainResetTableButton
-            _thToolTip = new ToolTip
-            {
-                // Set up the delays for the ToolTip.
-                AutoPopDelay = 32000,
-                InitialDelay = 1000,
-                ReshowDelay = 500,
-                UseAnimation = true,
-                UseFading = true,
-                // Force the ToolTip text to be displayed whether or not the form is active.
-                ShowAlways = true
-            };
-            _thToolTip.SetToolTip(MakeBuckupCheckBox,
+            _toolTip = new UiTooltip();
+
+            _toolTip.Set(MakeBuckupCheckBox,
                 T._("Enables backup creation of selected game before mode switch\n" +
                 " to be possible to restore Data and Mods dirs.\n" +
                 "\n" +
-                "Backup creating using ntfs hardlinks and not consumes any extra space.")
-                );
+                "Backup creating using ntfs hardlinks and not consumes any extra space."));
         }
     }
 }

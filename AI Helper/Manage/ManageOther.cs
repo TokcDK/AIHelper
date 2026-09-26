@@ -1,4 +1,5 @@
 ﻿using AIHelper.Games;
+using AIHelper.Manage.ui.themes;
 using AIHelper.SharedData;
 using GetListOfSubClasses;
 using INIFileMan;
@@ -41,10 +42,23 @@ namespace AIHelper.Manage
             }
         }
 
+        /// <summary>
+        /// Shows whether a check box is on by colouring its caption.
+        /// </summary>
+        /// <remarks>
+        /// The colours come from the theme rather than from a fixed pair, because a
+        /// fixed pale green is only readable on a dark surface. The accent is used
+        /// while it is on and the ordinary text colour while it is off, so the caption
+        /// stays readable whichever theme is in use.
+        /// </remarks>
         public static void CheckBoxChangeColor(CheckBox checkBox)
         {
-            // same checked color as for labels to keep the app style
-            checkBox.ForeColor = checkBox.Checked ? ManageLabelExtensions.Checked : Color.White;
+            if (checkBox == null) return;
+
+            var palette = ThemesLoader.CurrentPalette;
+            if (palette == null) return;
+
+            checkBox.ForeColor = checkBox.Checked ? palette.Accent : palette.Text;
         }
 
         public static void AutoShortcutAndRegystry()

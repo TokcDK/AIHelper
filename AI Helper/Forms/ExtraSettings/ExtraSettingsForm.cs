@@ -4,7 +4,6 @@ using AIHelper.Manage;
 using AIHelper.Manage.ui.themes;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace AIHelper
@@ -41,34 +40,29 @@ namespace AIHelper
                 element.Init();
                 if (element.Check() && element.ElementToShow != null)
                 {
-                    //element.ElementInit();
-                    //element.Show(this);
-                    //var size = element.form.Size;
-                    //Button b = new Button();
-                    //ExtraSettingsFlowLayoutPanel.Controls.Add(element.ElementToPlace);
-                    //element.ElementToPlace.Show();
                     ExtraSettingsFlowLayoutPanel.Controls.Add(element.ElementToShow);
-                    element.ElementToShow.ForeColor = this.ForeColor;
 
-                    ThemesLoader.SetTheme(ManageSettings.CurrentTheme, element.ElementToShow);
+                    //the panel is built by the plugin while the program is already
+                    //running, so it was not there when the form itself was themed
+                    ThemesLoader.ApplyTheme(element.ElementToShow);
                     element.ElementToShow.Show();
                 }
                 else
                 {
+                    //a label rather than nothing, so a plugin which is not installed
+                    //shows as such instead of leaving an unexplained gap
                     Label l = new Label
                     {
                         AutoSize = true,
-                        Text = element.Title + " " + T._("not found"),
-                        ForeColor = Color.White
+                        Margin = new Padding(6, 4, 6, 4),
+                        Text = element.Title + " " + T._("not found")
                     };
-                    this.Controls.Add(l);
-                    l.Show();
+                    ExtraSettingsFlowLayoutPanel.Controls.Add(l);
                 }
             }
-        }
 
-        private void ExtraSettings_FormClosing(object sender, FormClosingEventArgs e)
-        {
+            //the labels added above and any control a plugin created are themed here
+            ThemesLoader.ApplyTheme(ExtraSettingsFlowLayoutPanel);
         }
     }
 }

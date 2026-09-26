@@ -1,5 +1,6 @@
 ﻿using AIHelper.Manage;
-using NLog;
+using AIHelper.Manage.ui;
+using AIHelper.Manage.ui.themes;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -7,9 +8,11 @@ using System.Windows.Forms;
 
 namespace AIHelper.Forms.Other
 {
+    /// <summary>
+    /// Dialog with the options the mod update pass runs with.
+    /// </summary>
     public partial class UpdateOptionsDialogForm : Form
     {
-        static readonly Logger _log = LogManager.GetCurrentClassLogger();
         public UpdateOptionsDialogForm()
         {
             InitializeComponent();
@@ -84,6 +87,11 @@ namespace AIHelper.Forms.Other
         {
             SetTranslations();
 
+            // the dialog is opened from the tools tab while the program runs, so it
+            // takes the theme in use rather than the one which was current when it was
+            // created
+            ThemesLoader.ApplyTheme(this);
+
             SetTooltips();
 
             UpdateButtonOptionsRefresh();
@@ -104,69 +112,43 @@ namespace AIHelper.Forms.Other
             btnCancel.Text = T._("Cancel");
         }
 
-        private ToolTip _thToolTip;
+        private UiTooltip _toolTip;
 
         /// <summary>
         /// remove all tooltips and dispose resources
         /// </summary>
         internal void DisposeTooltips()
         {
-            try
-            {
-                if (_thToolTip != null)
-                {
-                    _thToolTip.RemoveAll();
-                    _thToolTip.Dispose();
-                }
-            }
-            catch (Exception ex)
-            {
-                _log.Error("An error occured while SetTooltips. error:\r\n" + ex);
-            }
+            if (_toolTip == null) return;
+
+            _toolTip.Dispose();
+            _toolTip = null;
         }
 
         internal void SetTooltips()
         {
             DisposeTooltips();
 
-            //http://qaru.site/questions/47162/c-how-do-i-add-a-tooltip-to-a-control
-            //THMainResetTableButton
-            _thToolTip = new ToolTip
-            {
-                // Set up the delays for the ToolTip.
-                AutoPopDelay = 32000,
-                InitialDelay = 1000,
-                ReshowDelay = 500,
-                UseAnimation = true,
-                UseFading = true,
-                // Force the ToolTip text to be displayed whether or not the form is active.
-                ShowAlways = true
-            };
+            _toolTip = new UiTooltip();
 
-            _thToolTip.SetToolTip(OpenOldVersionsDirButton,
-                T._("Open older plugins buckup folder")
-                );
-            _thToolTip.SetToolTip(btnUpdateMods,
+            var sideloaderPacksWarning = T._("Warning! More of packs you check more of memory game will consume.") + "\n" +
+                T._("Check only what you really using or you can 16+ gb of memory.");
+
+            _toolTip.Set(OpenOldVersionsDirButton, T._("Open older plugins buckup folder"));
+            _toolTip.Set(btnUpdateMods,
                 T._("Update Mod Organizer and enabled mods") + "\n" +
                 T._("Mod Organizer already have hardcoded info") + "\n" +
                 T._("Mods will be updated if there exist info in meta.ini notes or in updateInfo.txt") + "\n" +
-                T._("After plugins update check will be executed KKManager StandaloneUpdater for Sideloader modpack updates check for games where it is possible")
-                );
-            var sideloaderPacksWarning = T._("Warning! More of packs you check more of memory game will consume.") + "\n" +
-                T._("Check only what you really using or you can 16+ gb of memory.");
-            _thToolTip.SetToolTip(UpdateZipmodsCheckBox, T._("Check if need to run update check for sideloader modpacks.") + "\n\n" +
-                sideloaderPacksWarning
-                );
-            _thToolTip.SetToolTip(UpdatePluginsCheckBox, T._("Check if need to run update check for plugins and Mod Organizer.")
-                );
-            _thToolTip.SetToolTip(CheckEnabledModsOnlyCheckBox, T._("Check updates only for enabled plugins.")
-                );
-            _thToolTip.SetToolTip(BleadingEdgeZipmodsCheckBox,
+                T._("After plugins update check will be executed KKManager StandaloneUpdater for Sideloader modpack updates check for games where it is possible"));
+            _toolTip.Set(UpdateZipmodsCheckBox,
+                T._("Check if need to run update check for sideloader modpacks.") + "\n\n" +
+                sideloaderPacksWarning);
+            _toolTip.Set(UpdatePluginsCheckBox, T._("Check if need to run update check for plugins and Mod Organizer."));
+            _toolTip.Set(CheckEnabledModsOnlyCheckBox, T._("Check updates only for enabled plugins."));
+            _toolTip.Set(BleadingEdgeZipmodsCheckBox,
                 T._("Check also updates of Bleeding Edge Sideloader Modpack in KKManager") + "\n" +
                 T._("Bleeding Edge Sideloader modpack contains test versions of zipmods which is still not added in main modpacks") + "\n\n" +
-                sideloaderPacksWarning
-                );
-            ////////////////////////////
+                sideloaderPacksWarning);
         }
 
         private void UpdateOptionsDialogForm_FormClosing(object sender, FormClosingEventArgs e)

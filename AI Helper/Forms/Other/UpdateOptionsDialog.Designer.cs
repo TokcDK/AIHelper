@@ -30,23 +30,19 @@
         {
             this.UpdateOptionsPanel = new System.Windows.Forms.Panel();
             this.UpdateOptionsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.UpdateOptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.UpdateZipmodsCheckBox = new System.Windows.Forms.CheckBox();
             this.BleadingEdgeZipmodsCheckBox = new System.Windows.Forms.CheckBox();
             this.UpdatePluginsCheckBox = new System.Windows.Forms.CheckBox();
             this.CheckEnabledModsOnlyCheckBox = new System.Windows.Forms.CheckBox();
+            this.ButtonsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.OpenOldVersionsDirButton = new System.Windows.Forms.Button();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.btnCancel = new System.Windows.Forms.Button();
             this.btnUpdateMods = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.UpdateOptionsPanel.SuspendLayout();
             this.UpdateOptionsTableLayoutPanel.SuspendLayout();
-            this.panel1.SuspendLayout();
             this.UpdateOptionsFlowLayoutPanel.SuspendLayout();
-            this.panel2.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.ButtonsTableLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // UpdateOptionsPanel
@@ -54,71 +50,68 @@
             this.UpdateOptionsPanel.Controls.Add(this.UpdateOptionsTableLayoutPanel);
             this.UpdateOptionsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.UpdateOptionsPanel.Location = new System.Drawing.Point(0, 0);
+            this.UpdateOptionsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.UpdateOptionsPanel.Name = "UpdateOptionsPanel";
-            this.UpdateOptionsPanel.Size = new System.Drawing.Size(354, 191);
+            this.UpdateOptionsPanel.Padding = new System.Windows.Forms.Padding(12);
+            this.UpdateOptionsPanel.Size = new System.Drawing.Size(400, 220);
             this.UpdateOptionsPanel.TabIndex = 0;
             // 
             // UpdateOptionsTableLayoutPanel
             // 
             this.UpdateOptionsTableLayoutPanel.ColumnCount = 1;
-            this.UpdateOptionsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 48.0226F));
-            this.UpdateOptionsTableLayoutPanel.Controls.Add(this.panel1, 0, 0);
-            this.UpdateOptionsTableLayoutPanel.Controls.Add(this.panel2, 0, 1);
+            this.UpdateOptionsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.UpdateOptionsTableLayoutPanel.Controls.Add(this.UpdateOptionsFlowLayoutPanel, 0, 0);
+            this.UpdateOptionsTableLayoutPanel.Controls.Add(this.ButtonsTableLayoutPanel, 0, 1);
             this.UpdateOptionsTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.UpdateOptionsTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.UpdateOptionsTableLayoutPanel.Location = new System.Drawing.Point(12, 12);
+            this.UpdateOptionsTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.UpdateOptionsTableLayoutPanel.Name = "UpdateOptionsTableLayoutPanel";
             this.UpdateOptionsTableLayoutPanel.RowCount = 2;
-            this.UpdateOptionsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 77.48691F));
-            this.UpdateOptionsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 22.51309F));
-            this.UpdateOptionsTableLayoutPanel.Size = new System.Drawing.Size(354, 191);
+            this.UpdateOptionsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.UpdateOptionsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
+            this.UpdateOptionsTableLayoutPanel.Size = new System.Drawing.Size(376, 196);
             this.UpdateOptionsTableLayoutPanel.TabIndex = 0;
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.UpdateOptionsFlowLayoutPanel);
-            this.panel1.Controls.Add(this.OpenOldVersionsDirButton);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(3, 3);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(348, 141);
-            this.panel1.TabIndex = 0;
             // 
             // UpdateOptionsFlowLayoutPanel
             // 
+            // The checkboxes are added and removed here while the dialog runs, so the
+            // panel scrolls and lays them out from the top down rather than in a row.
+            this.UpdateOptionsFlowLayoutPanel.AutoScroll = true;
             this.UpdateOptionsFlowLayoutPanel.Controls.Add(this.UpdateZipmodsCheckBox);
             this.UpdateOptionsFlowLayoutPanel.Controls.Add(this.BleadingEdgeZipmodsCheckBox);
             this.UpdateOptionsFlowLayoutPanel.Controls.Add(this.UpdatePluginsCheckBox);
             this.UpdateOptionsFlowLayoutPanel.Controls.Add(this.CheckEnabledModsOnlyCheckBox);
+            this.UpdateOptionsFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.UpdateOptionsFlowLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.UpdateOptionsFlowLayoutPanel.Location = new System.Drawing.Point(9, 3);
+            this.UpdateOptionsFlowLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.UpdateOptionsFlowLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
             this.UpdateOptionsFlowLayoutPanel.Name = "UpdateOptionsFlowLayoutPanel";
-            this.UpdateOptionsFlowLayoutPanel.Size = new System.Drawing.Size(330, 106);
-            this.UpdateOptionsFlowLayoutPanel.TabIndex = 5;
+            this.UpdateOptionsFlowLayoutPanel.Size = new System.Drawing.Size(376, 152);
+            this.UpdateOptionsFlowLayoutPanel.TabIndex = 0;
+            this.UpdateOptionsFlowLayoutPanel.WrapContents = false;
             // 
             // UpdateZipmodsCheckBox
             // 
             this.UpdateZipmodsCheckBox.AutoSize = true;
             this.UpdateZipmodsCheckBox.Checked = true;
             this.UpdateZipmodsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.UpdateZipmodsCheckBox.ForeColor = System.Drawing.Color.White;
-            this.UpdateZipmodsCheckBox.Location = new System.Drawing.Point(3, 3);
+            this.UpdateZipmodsCheckBox.Location = new System.Drawing.Point(0, 0);
+            this.UpdateZipmodsCheckBox.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.UpdateZipmodsCheckBox.Name = "UpdateZipmodsCheckBox";
-            this.UpdateZipmodsCheckBox.Size = new System.Drawing.Size(102, 17);
+            this.UpdateZipmodsCheckBox.Size = new System.Drawing.Size(116, 19);
             this.UpdateZipmodsCheckBox.TabIndex = 0;
             this.UpdateZipmodsCheckBox.Text = "Update zipmods";
-            this.UpdateZipmodsCheckBox.UseVisualStyleBackColor = true;
             this.UpdateZipmodsCheckBox.CheckedChanged += new System.EventHandler(this.UpdateZipmodsCheckBox_CheckedChanged);
             // 
             // BleadingEdgeZipmodsCheckBox
             // 
             this.BleadingEdgeZipmodsCheckBox.AutoSize = true;
-            this.BleadingEdgeZipmodsCheckBox.ForeColor = System.Drawing.Color.White;
-            this.BleadingEdgeZipmodsCheckBox.Location = new System.Drawing.Point(3, 26);
+            this.BleadingEdgeZipmodsCheckBox.Location = new System.Drawing.Point(0, 27);
+            this.BleadingEdgeZipmodsCheckBox.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.BleadingEdgeZipmodsCheckBox.Name = "BleadingEdgeZipmodsCheckBox";
-            this.BleadingEdgeZipmodsCheckBox.Size = new System.Drawing.Size(145, 17);
+            this.BleadingEdgeZipmodsCheckBox.Size = new System.Drawing.Size(163, 19);
             this.BleadingEdgeZipmodsCheckBox.TabIndex = 1;
             this.BleadingEdgeZipmodsCheckBox.Text = "Check test zipmods pack";
-            this.BleadingEdgeZipmodsCheckBox.UseVisualStyleBackColor = true;
             this.BleadingEdgeZipmodsCheckBox.CheckedChanged += new System.EventHandler(this.BleadingEdgeZipmodsCheckBox_CheckedChanged);
             // 
             // UpdatePluginsCheckBox
@@ -126,13 +119,12 @@
             this.UpdatePluginsCheckBox.AutoSize = true;
             this.UpdatePluginsCheckBox.Checked = true;
             this.UpdatePluginsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.UpdatePluginsCheckBox.ForeColor = System.Drawing.Color.White;
-            this.UpdatePluginsCheckBox.Location = new System.Drawing.Point(3, 49);
+            this.UpdatePluginsCheckBox.Location = new System.Drawing.Point(0, 54);
+            this.UpdatePluginsCheckBox.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.UpdatePluginsCheckBox.Name = "UpdatePluginsCheckBox";
-            this.UpdatePluginsCheckBox.Size = new System.Drawing.Size(97, 17);
+            this.UpdatePluginsCheckBox.Size = new System.Drawing.Size(110, 19);
             this.UpdatePluginsCheckBox.TabIndex = 2;
             this.UpdatePluginsCheckBox.Text = "Update plugins";
-            this.UpdatePluginsCheckBox.UseVisualStyleBackColor = true;
             this.UpdatePluginsCheckBox.CheckedChanged += new System.EventHandler(this.UpdatePluginsCheckBox_CheckedChanged);
             // 
             // CheckEnabledModsOnlyCheckBox
@@ -140,88 +132,101 @@
             this.CheckEnabledModsOnlyCheckBox.AutoSize = true;
             this.CheckEnabledModsOnlyCheckBox.Checked = true;
             this.CheckEnabledModsOnlyCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CheckEnabledModsOnlyCheckBox.ForeColor = System.Drawing.Color.White;
-            this.CheckEnabledModsOnlyCheckBox.Location = new System.Drawing.Point(3, 72);
+            this.CheckEnabledModsOnlyCheckBox.Location = new System.Drawing.Point(0, 81);
+            this.CheckEnabledModsOnlyCheckBox.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.CheckEnabledModsOnlyCheckBox.Name = "CheckEnabledModsOnlyCheckBox";
-            this.CheckEnabledModsOnlyCheckBox.Size = new System.Drawing.Size(124, 17);
+            this.CheckEnabledModsOnlyCheckBox.Size = new System.Drawing.Size(141, 19);
             this.CheckEnabledModsOnlyCheckBox.TabIndex = 3;
             this.CheckEnabledModsOnlyCheckBox.Text = "Only enabled plugins";
-            this.CheckEnabledModsOnlyCheckBox.UseVisualStyleBackColor = true;
             this.CheckEnabledModsOnlyCheckBox.CheckedChanged += new System.EventHandler(this.CheckEnabledModsOnlyCheckBox_CheckedChanged);
+            // 
+            // ButtonsTableLayoutPanel
+            // 
+            // The first column takes the slack, so the three buttons keep their own size
+            // and sit against the right edge however wide the dialog is.
+            this.ButtonsTableLayoutPanel.ColumnCount = 4;
+            this.ButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.ButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.ButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.ButtonsTableLayoutPanel.Controls.Add(this.OpenOldVersionsDirButton, 1, 0);
+            this.ButtonsTableLayoutPanel.Controls.Add(this.btnUpdateMods, 2, 0);
+            this.ButtonsTableLayoutPanel.Controls.Add(this.btnCancel, 3, 0);
+            this.ButtonsTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ButtonsTableLayoutPanel.Location = new System.Drawing.Point(0, 152);
+            this.ButtonsTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.ButtonsTableLayoutPanel.Name = "ButtonsTableLayoutPanel";
+            this.ButtonsTableLayoutPanel.RowCount = 1;
+            this.ButtonsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ButtonsTableLayoutPanel.Size = new System.Drawing.Size(376, 44);
+            this.ButtonsTableLayoutPanel.TabIndex = 1;
             // 
             // OpenOldVersionsDirButton
             // 
-            this.OpenOldVersionsDirButton.Location = new System.Drawing.Point(177, 115);
+            this.OpenOldVersionsDirButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.OpenOldVersionsDirButton.AutoSize = true;
+            this.OpenOldVersionsDirButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.OpenOldVersionsDirButton.Location = new System.Drawing.Point(40, 6);
+            this.OpenOldVersionsDirButton.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.OpenOldVersionsDirButton.MinimumSize = new System.Drawing.Size(96, 32);
             this.OpenOldVersionsDirButton.Name = "OpenOldVersionsDirButton";
-            this.OpenOldVersionsDirButton.Size = new System.Drawing.Size(168, 23);
-            this.OpenOldVersionsDirButton.TabIndex = 4;
+            this.OpenOldVersionsDirButton.Padding = new System.Windows.Forms.Padding(14, 6, 14, 6);
+            this.OpenOldVersionsDirButton.Size = new System.Drawing.Size(96, 32);
+            this.OpenOldVersionsDirButton.TabIndex = 0;
             this.OpenOldVersionsDirButton.Text = "Old versions";
-            this.OpenOldVersionsDirButton.UseVisualStyleBackColor = true;
             this.OpenOldVersionsDirButton.Click += new System.EventHandler(this.OpenOldVersionsDirButton_Click);
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.tableLayoutPanel1);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(3, 150);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(348, 38);
-            this.panel2.TabIndex = 1;
-            // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.btnCancel, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btnUpdateMods, 0, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 1;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(348, 38);
-            this.tableLayoutPanel1.TabIndex = 0;
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(177, 3);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(168, 32);
-            this.btnCancel.TabIndex = 1;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // btnUpdateMods
             // 
+            this.btnUpdateMods.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnUpdateMods.AutoSize = true;
+            this.btnUpdateMods.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnUpdateMods.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnUpdateMods.Location = new System.Drawing.Point(3, 3);
+            this.btnUpdateMods.Location = new System.Drawing.Point(144, 6);
+            this.btnUpdateMods.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.btnUpdateMods.MinimumSize = new System.Drawing.Size(96, 32);
             this.btnUpdateMods.Name = "btnUpdateMods";
-            this.btnUpdateMods.Size = new System.Drawing.Size(168, 32);
-            this.btnUpdateMods.TabIndex = 0;
+            this.btnUpdateMods.Padding = new System.Windows.Forms.Padding(14, 6, 14, 6);
+            this.btnUpdateMods.Size = new System.Drawing.Size(96, 32);
+            this.btnUpdateMods.TabIndex = 1;
             this.btnUpdateMods.Text = "Start";
-            this.btnUpdateMods.UseVisualStyleBackColor = true;
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnCancel.AutoSize = true;
+            this.btnCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(248, 6);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.btnCancel.MinimumSize = new System.Drawing.Size(96, 32);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Padding = new System.Windows.Forms.Padding(14, 6, 14, 6);
+            this.btnCancel.Size = new System.Drawing.Size(96, 32);
+            this.btnCancel.TabIndex = 2;
+            this.btnCancel.Text = "Cancel";
             // 
             // UpdateOptionsDialogForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AcceptButton = this.btnUpdateMods;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Gray;
-            this.ClientSize = new System.Drawing.Size(354, 191);
+            this.CancelButton = this.btnCancel;
+            this.ClientSize = new System.Drawing.Size(400, 220);
             this.Controls.Add(this.UpdateOptionsPanel);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.MinimumSize = new System.Drawing.Size(360, 200);
             this.Name = "UpdateOptionsDialogForm";
             this.Text = "Update options";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.UpdateOptionsDialogForm_FormClosing);
             this.Load += new System.EventHandler(this.UpdateOptionsDialogForm_Load);
             this.UpdateOptionsPanel.ResumeLayout(false);
             this.UpdateOptionsTableLayoutPanel.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
             this.UpdateOptionsFlowLayoutPanel.ResumeLayout(false);
             this.UpdateOptionsFlowLayoutPanel.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.tableLayoutPanel1.ResumeLayout(false);
+            this.ButtonsTableLayoutPanel.ResumeLayout(false);
+            this.ButtonsTableLayoutPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -230,9 +235,7 @@
 
         private System.Windows.Forms.Panel UpdateOptionsPanel;
         private System.Windows.Forms.TableLayoutPanel UpdateOptionsTableLayoutPanel;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel ButtonsTableLayoutPanel;
         private System.Windows.Forms.Button btnCancel;
         public System.Windows.Forms.CheckBox UpdateZipmodsCheckBox;
         public System.Windows.Forms.CheckBox BleadingEdgeZipmodsCheckBox;

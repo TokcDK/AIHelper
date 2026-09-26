@@ -28,155 +28,174 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.btnStart = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.MainPanel = new System.Windows.Forms.Panel();
+            this.OptionsLayoutTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.OptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.cbxMoveIntoNewMod = new System.Windows.Forms.CheckBox();
             this.cbxIgnoreSymlinks = new System.Windows.Forms.CheckBox();
             this.cbxIgnoreShortcuts = new System.Windows.Forms.CheckBox();
-            this.panel1.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
+            this.ButtonsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.btnStart = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
+            this.MainPanel.SuspendLayout();
+            this.OptionsLayoutTableLayoutPanel.SuspendLayout();
+            this.OptionsFlowLayoutPanel.SuspendLayout();
+            this.ButtonsTableLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
-            // panel1
+            // MainPanel
             // 
-            this.panel1.Controls.Add(this.tableLayoutPanel1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(354, 187);
-            this.panel1.TabIndex = 0;
+            this.MainPanel.Controls.Add(this.OptionsLayoutTableLayoutPanel);
+            this.MainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MainPanel.Location = new System.Drawing.Point(0, 0);
+            this.MainPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.MainPanel.Name = "MainPanel";
+            this.MainPanel.Padding = new System.Windows.Forms.Padding(12);
+            this.MainPanel.Size = new System.Drawing.Size(400, 220);
+            this.MainPanel.TabIndex = 0;
             // 
-            // tableLayoutPanel1
+            // OptionsLayoutTableLayoutPanel
             // 
-            this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 72.19251F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 27.80749F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(354, 187);
-            this.tableLayoutPanel1.TabIndex = 0;
+            this.OptionsLayoutTableLayoutPanel.ColumnCount = 1;
+            this.OptionsLayoutTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.OptionsLayoutTableLayoutPanel.Controls.Add(this.OptionsFlowLayoutPanel, 0, 0);
+            this.OptionsLayoutTableLayoutPanel.Controls.Add(this.ButtonsTableLayoutPanel, 0, 1);
+            this.OptionsLayoutTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.OptionsLayoutTableLayoutPanel.Location = new System.Drawing.Point(12, 12);
+            this.OptionsLayoutTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.OptionsLayoutTableLayoutPanel.Name = "OptionsLayoutTableLayoutPanel";
+            this.OptionsLayoutTableLayoutPanel.RowCount = 2;
+            this.OptionsLayoutTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.OptionsLayoutTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
+            this.OptionsLayoutTableLayoutPanel.Size = new System.Drawing.Size(376, 196);
+            this.OptionsLayoutTableLayoutPanel.TabIndex = 0;
             // 
-            // tableLayoutPanel2
+            // OptionsFlowLayoutPanel
             // 
-            this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 48.27586F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 51.72414F));
-            this.tableLayoutPanel2.Controls.Add(this.btnStart, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.btnCancel, 1, 0);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 138);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 1;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(348, 46);
-            this.tableLayoutPanel2.TabIndex = 0;
-            // 
-            // btnStart
-            // 
-            this.btnStart.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnStart.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnStart.Location = new System.Drawing.Point(3, 3);
-            this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(162, 40);
-            this.btnStart.TabIndex = 0;
-            this.btnStart.Text = "OK";
-            this.btnStart.UseVisualStyleBackColor = true;
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnCancel.Location = new System.Drawing.Point(171, 3);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(174, 40);
-            this.btnCancel.TabIndex = 1;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.Controls.Add(this.cbxMoveIntoNewMod);
-            this.flowLayoutPanel1.Controls.Add(this.cbxIgnoreSymlinks);
-            this.flowLayoutPanel1.Controls.Add(this.cbxIgnoreShortcuts);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 3);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(348, 129);
-            this.flowLayoutPanel1.TabIndex = 1;
+            this.OptionsFlowLayoutPanel.AutoScroll = true;
+            this.OptionsFlowLayoutPanel.Controls.Add(this.cbxMoveIntoNewMod);
+            this.OptionsFlowLayoutPanel.Controls.Add(this.cbxIgnoreSymlinks);
+            this.OptionsFlowLayoutPanel.Controls.Add(this.cbxIgnoreShortcuts);
+            this.OptionsFlowLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.OptionsFlowLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.OptionsFlowLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.OptionsFlowLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.OptionsFlowLayoutPanel.Name = "OptionsFlowLayoutPanel";
+            this.OptionsFlowLayoutPanel.Size = new System.Drawing.Size(376, 152);
+            this.OptionsFlowLayoutPanel.TabIndex = 0;
+            this.OptionsFlowLayoutPanel.WrapContents = false;
             // 
             // cbxMoveIntoNewMod
             // 
             this.cbxMoveIntoNewMod.AutoSize = true;
-            this.cbxMoveIntoNewMod.Location = new System.Drawing.Point(3, 3);
+            this.cbxMoveIntoNewMod.Location = new System.Drawing.Point(0, 0);
+            this.cbxMoveIntoNewMod.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.cbxMoveIntoNewMod.Name = "cbxMoveIntoNewMod";
-            this.cbxMoveIntoNewMod.Size = new System.Drawing.Size(150, 17);
+            this.cbxMoveIntoNewMod.Size = new System.Drawing.Size(150, 19);
             this.cbxMoveIntoNewMod.TabIndex = 0;
-            this.cbxMoveIntoNewMod.Text = "Remove into the new mod";
-            this.cbxMoveIntoNewMod.UseVisualStyleBackColor = true;
+            this.cbxMoveIntoNewMod.Text = "Move to the new mod";
             // 
             // cbxIgnoreSymlinks
             // 
             this.cbxIgnoreSymlinks.AutoSize = true;
             this.cbxIgnoreSymlinks.Checked = true;
             this.cbxIgnoreSymlinks.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbxIgnoreSymlinks.Location = new System.Drawing.Point(3, 26);
+            this.cbxIgnoreSymlinks.Location = new System.Drawing.Point(0, 27);
+            this.cbxIgnoreSymlinks.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.cbxIgnoreSymlinks.Name = "cbxIgnoreSymlinks";
-            this.cbxIgnoreSymlinks.Size = new System.Drawing.Size(98, 17);
+            this.cbxIgnoreSymlinks.Size = new System.Drawing.Size(104, 19);
             this.cbxIgnoreSymlinks.TabIndex = 1;
             this.cbxIgnoreSymlinks.Text = "Ignore symlinks";
-            this.cbxIgnoreSymlinks.UseVisualStyleBackColor = true;
             // 
             // cbxIgnoreShortcuts
             // 
             this.cbxIgnoreShortcuts.AutoSize = true;
-            this.cbxIgnoreShortcuts.Location = new System.Drawing.Point(3, 49);
+            this.cbxIgnoreShortcuts.Location = new System.Drawing.Point(0, 54);
+            this.cbxIgnoreShortcuts.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.cbxIgnoreShortcuts.Name = "cbxIgnoreShortcuts";
-            this.cbxIgnoreShortcuts.Size = new System.Drawing.Size(102, 17);
+            this.cbxIgnoreShortcuts.Size = new System.Drawing.Size(108, 19);
             this.cbxIgnoreShortcuts.TabIndex = 2;
             this.cbxIgnoreShortcuts.Text = "Ignore shortcuts";
-            this.cbxIgnoreShortcuts.UseVisualStyleBackColor = true;
+            // 
+            // ButtonsTableLayoutPanel
+            // 
+            this.ButtonsTableLayoutPanel.ColumnCount = 3;
+            this.ButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.ButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.ButtonsTableLayoutPanel.Controls.Add(this.btnStart, 1, 0);
+            this.ButtonsTableLayoutPanel.Controls.Add(this.btnCancel, 2, 0);
+            this.ButtonsTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ButtonsTableLayoutPanel.Location = new System.Drawing.Point(0, 152);
+            this.ButtonsTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.ButtonsTableLayoutPanel.Name = "ButtonsTableLayoutPanel";
+            this.ButtonsTableLayoutPanel.RowCount = 1;
+            this.ButtonsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ButtonsTableLayoutPanel.Size = new System.Drawing.Size(376, 44);
+            this.ButtonsTableLayoutPanel.TabIndex = 1;
+            // 
+            // btnStart
+            // 
+            this.btnStart.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnStart.AutoSize = true;
+            this.btnStart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnStart.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnStart.Location = new System.Drawing.Point(160, 6);
+            this.btnStart.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.btnStart.MinimumSize = new System.Drawing.Size(96, 32);
+            this.btnStart.Name = "btnStart";
+            this.btnStart.Padding = new System.Windows.Forms.Padding(14, 6, 14, 6);
+            this.btnStart.Size = new System.Drawing.Size(96, 32);
+            this.btnStart.TabIndex = 0;
+            this.btnStart.Text = "OK";
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnCancel.AutoSize = true;
+            this.btnCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(264, 6);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.btnCancel.MinimumSize = new System.Drawing.Size(96, 32);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Padding = new System.Windows.Forms.Padding(14, 6, 14, 6);
+            this.btnCancel.Size = new System.Drawing.Size(96, 32);
+            this.btnCancel.TabIndex = 1;
+            this.btnCancel.Text = "Cancel";
             // 
             // CleanOptionsDialogForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AcceptButton = this.btnStart;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Gray;
-            this.ClientSize = new System.Drawing.Size(354, 187);
-            this.Controls.Add(this.panel1);
+            this.CancelButton = this.btnCancel;
+            this.ClientSize = new System.Drawing.Size(400, 220);
+            this.Controls.Add(this.MainPanel);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "CleanOptionsDialogForm";
-            this.Text = "Options";
+            this.Text = "Cleaning options";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CleanOptionsDialogForm_FormClosing);
             this.Load += new System.EventHandler(this.CleanOptionsDialogForm_Load);
-            this.panel1.ResumeLayout(false);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
+            this.MainPanel.ResumeLayout(false);
+            this.OptionsLayoutTableLayoutPanel.ResumeLayout(false);
+            this.OptionsFlowLayoutPanel.ResumeLayout(false);
+            this.OptionsFlowLayoutPanel.PerformLayout();
+            this.ButtonsTableLayoutPanel.ResumeLayout(false);
+            this.ButtonsTableLayoutPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.Panel MainPanel;
+        private System.Windows.Forms.TableLayoutPanel OptionsLayoutTableLayoutPanel;
+        private System.Windows.Forms.TableLayoutPanel ButtonsTableLayoutPanel;
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.FlowLayoutPanel OptionsFlowLayoutPanel;
         public System.Windows.Forms.CheckBox cbxMoveIntoNewMod;
         public System.Windows.Forms.CheckBox cbxIgnoreSymlinks;
         public System.Windows.Forms.CheckBox cbxIgnoreShortcuts;

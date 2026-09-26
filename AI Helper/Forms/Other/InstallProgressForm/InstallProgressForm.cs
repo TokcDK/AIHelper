@@ -66,10 +66,7 @@ namespace AIHelper.Forms.Other
 
             // the window is opened from the tools tab, so it gets the same theme as
             // the rest of the application
-            if (ManageSettings.CurrentTheme != null)
-            {
-                ThemesLoader.SetTheme(ManageSettings.CurrentTheme, this);
-            }
+            ThemesLoader.ApplyTheme(this);
 
             ResetToReadyState();
 

@@ -1,78 +1,99 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using AIHelper.Manage.ui;
 using AIHelper.Manage.ui.themes;
 
 namespace AIHelper.Manage.Functions
 {
-    internal class FunctionsForFlpLoader
+    /// <summary>
+    /// Builds the row of function symbols shown under the launch buttons.
+    /// </summary>
+    internal static class FunctionsForFlpLoader
     {
+        /// <summary>
+        /// Explains the symbols. Replaced whenever the row is rebuilt, so the tip
+        /// never outlives the labels it describes.
+        /// </summary>
+        private static UiTooltip _tooltip;
+
         internal static void Load()
         {
-            var functions = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFunctionForFlp>();
-
             var panel = ManageSettings.MainForm.FunctionsForFLPTableLayoutPanel;
 
-            var flp = new FlowLayoutPanel();
+            // the row is rebuilt when the game changes as well as when the tab is
+            // opened, so the previous one has to go first or the symbols pile up
+            panel.Controls.Clear();
 
-            var ttip = new ToolTip();
-
-            foreach (var f in functions)
+            if (_tooltip != null)
             {
-                var l = new Label
-                {
-                    AutoSize = true,
-                    Text = string.IsNullOrWhiteSpace(f.Symbol) ? "f" : f.Symbol,
-                    Name = $"flpf{ManageSettings.ThemeLabelColorSetIgnoreNameMark}"
-                };
-                IUITheme theme = ManageSettings.CurrentTheme;
-                if (f is IFunctionForFlpTextOptions fe)
-                {
-                    if (fe.Font != null) l.Font = fe.Font;
-                    if (fe.ForeColor != null) l.ForeColor = (Color)fe.ForeColor;
-                }
-                l.Click += new EventHandler((o, e) =>
-                {
-                    // place last used control as first
-                    //int i = 0;
-                    //var controls = new Control[flp.Controls.Count];
-                    //controls[i++] = o as Control;
-                    //foreach (var flpc in flp.Controls)
-                    //{
-                    //    if (object.Equals(flpc, o)) continue;
-
-                    //    controls[i++] = flpc as Control;
-                    //}
-                    //flp.Controls.AddRange(controls);
-
-                    f.OnClick(o, e);
-                });
-                ttip.SetToolTip(l, f.Description);
-
-                flp.Controls.Add(l);
+                _tooltip.Dispose();
+                _tooltip = null;
             }
 
-            if (flp.Controls.Count == 0) return;
+            var functions = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFunctionForFlp>();
+            var palette = ThemesLoader.CurrentPalette;
 
-            // setup for place in center of 1 cell sized panel
-            // center flp elements settings got from here: https://stackoverflow.com/a/38824845
-            flp.AutoSize = true;
-            flp.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            flp.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
-            flp.AutoScroll = true;
-            flp.WrapContents = false;
+            var flowPanel = new FlowLayoutPanel
+            {
+                // centering inside the single cell this is put into
+                Anchor = AnchorStyles.None,
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                AutoScroll = true,
+                WrapContents = false,
+                Margin = new Padding(0),
+            };
 
-            // Set up the delays for the ToolTip.
-            ttip.AutoPopDelay = 32000;
-            ttip.InitialDelay = 1000;
-            ttip.ReshowDelay = 500;
-            ttip.UseAnimation = true;
-            ttip.UseFading = true;
-            // Force the ToolTip text to be displayed whether or not the form is active.
-            ttip.ShowAlways = true;
+            var tooltip = new UiTooltip();
 
-            panel.Controls.Add(flp);
+            foreach (var function in functions)
+            {
+                var symbol = new Label
+                {
+                    AutoSize = true,
+                    Text = string.IsNullOrWhiteSpace(function.Symbol) ? "f" : function.Symbol,
+                    // a function picks its own colour to tell it apart from the others,
+                    // so the theme must leave this label alone
+                    Name = "flpf" + ManageSettings.ThemeLabelColorSetIgnoreNameMark,
+                    Cursor = Cursors.Hand,
+                    Margin = new Padding(6, 2, 6, 2),
+                };
+
+                var textOptions = function as IFunctionForFlpTextOptions;
+                if (textOptions != null)
+                {
+                    if (textOptions.Font != null) symbol.Font = textOptions.Font;
+
+                    if (textOptions.ForeColor != null)
+                    {
+                        var color = (Color)textOptions.ForeColor;
+                        symbol.ForeColor = palette == null ? color : palette.MakeReadable(color);
+                    }
+                }
+
+                // the loop variable is captured by the handler, so it needs its own copy
+                var clickedFunction = function;
+                symbol.Click += new EventHandler((o, e) => clickedFunction.OnClick(o, e));
+
+                tooltip.Set(symbol, function.Description);
+
+                flowPanel.Controls.Add(symbol);
+            }
+
+            if (flowPanel.Controls.Count == 0)
+            {
+                tooltip.Dispose();
+                return;
+            }
+
+            _tooltip = tooltip;
+
+            panel.Controls.Add(flowPanel);
+
+            // the labels are placed by hand, so the panel they sit on is the only
+            // thing which needs a colour
+            ThemesLoader.ApplyTheme(flowPanel);
         }
     }
 }

@@ -72,7 +72,7 @@ namespace AIHelper.Manage.Functions.BindMOProfileToExe
             }
             ExesComboBox.DataSource = currentGameExeList;
 
-            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, this);
+            ThemesLoader.ApplyTheme(this);
         }
 
         private void AddExeButton_Click(object sender, EventArgs e)

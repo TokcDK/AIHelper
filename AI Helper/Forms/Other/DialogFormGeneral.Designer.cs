@@ -29,79 +29,49 @@
         private void InitializeComponent()
         {
             this.MainPanel = new System.Windows.Forms.Panel();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.ChoiceTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.btnStart = new System.Windows.Forms.Button();
+            this.DialogLayoutTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.InfoOptionsPanel = new System.Windows.Forms.Panel();
             this.flpOptions = new System.Windows.Forms.FlowLayoutPanel();
+            this.ChoiceTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.btnStart = new System.Windows.Forms.Button();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.MainPanel.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.ChoiceTableLayoutPanel.SuspendLayout();
+            this.DialogLayoutTableLayoutPanel.SuspendLayout();
             this.InfoOptionsPanel.SuspendLayout();
+            this.ChoiceTableLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // MainPanel
             // 
-            this.MainPanel.Controls.Add(this.tableLayoutPanel1);
+            // The whole content of the dialog sits here so the padding is applied once
+            // instead of on every row.
+            this.MainPanel.Controls.Add(this.DialogLayoutTableLayoutPanel);
             this.MainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainPanel.Location = new System.Drawing.Point(0, 0);
+            this.MainPanel.Margin = new System.Windows.Forms.Padding(0);
             this.MainPanel.Name = "MainPanel";
-            this.MainPanel.Size = new System.Drawing.Size(354, 191);
+            this.MainPanel.Padding = new System.Windows.Forms.Padding(12);
+            this.MainPanel.Size = new System.Drawing.Size(400, 220);
             this.MainPanel.TabIndex = 0;
             // 
-            // tableLayoutPanel1
+            // DialogLayoutTableLayoutPanel
             // 
-            this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Controls.Add(this.ChoiceTableLayoutPanel, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.InfoOptionsPanel, 0, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 78.01047F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 21.98953F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(354, 191);
-            this.tableLayoutPanel1.TabIndex = 0;
-            // 
-            // ChoiceTableLayoutPanel
-            // 
-            this.ChoiceTableLayoutPanel.ColumnCount = 2;
-            this.ChoiceTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.ChoiceTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.ChoiceTableLayoutPanel.Controls.Add(this.btnCancel, 1, 0);
-            this.ChoiceTableLayoutPanel.Controls.Add(this.btnStart, 0, 0);
-            this.ChoiceTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ChoiceTableLayoutPanel.Location = new System.Drawing.Point(0, 148);
-            this.ChoiceTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
-            this.ChoiceTableLayoutPanel.Name = "ChoiceTableLayoutPanel";
-            this.ChoiceTableLayoutPanel.RowCount = 1;
-            this.ChoiceTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.ChoiceTableLayoutPanel.Size = new System.Drawing.Size(354, 43);
-            this.ChoiceTableLayoutPanel.TabIndex = 0;
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnCancel.Location = new System.Drawing.Point(180, 3);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(171, 37);
-            this.btnCancel.TabIndex = 1;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            // 
-            // btnStart
-            // 
-            this.btnStart.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnStart.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnStart.Location = new System.Drawing.Point(3, 3);
-            this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(171, 37);
-            this.btnStart.TabIndex = 0;
-            this.btnStart.Text = "Start";
-            this.btnStart.UseVisualStyleBackColor = true;
+            // Row 0 is the options the caller fills in, row 1 is the button bar. The
+            // button bar keeps a fixed height so it does not move when options are
+            // added or removed.
+            this.DialogLayoutTableLayoutPanel.ColumnCount = 1;
+            this.DialogLayoutTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.DialogLayoutTableLayoutPanel.Controls.Add(this.InfoOptionsPanel, 0, 0);
+            this.DialogLayoutTableLayoutPanel.Controls.Add(this.ChoiceTableLayoutPanel, 0, 1);
+            this.DialogLayoutTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DialogLayoutTableLayoutPanel.Location = new System.Drawing.Point(12, 12);
+            this.DialogLayoutTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.DialogLayoutTableLayoutPanel.Name = "DialogLayoutTableLayoutPanel";
+            this.DialogLayoutTableLayoutPanel.RowCount = 2;
+            this.DialogLayoutTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.DialogLayoutTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
+            this.DialogLayoutTableLayoutPanel.Size = new System.Drawing.Size(376, 196);
+            this.DialogLayoutTableLayoutPanel.TabIndex = 0;
             // 
             // InfoOptionsPanel
             // 
@@ -110,37 +80,92 @@
             this.InfoOptionsPanel.Location = new System.Drawing.Point(0, 0);
             this.InfoOptionsPanel.Margin = new System.Windows.Forms.Padding(0);
             this.InfoOptionsPanel.Name = "InfoOptionsPanel";
-            this.InfoOptionsPanel.Size = new System.Drawing.Size(354, 148);
-            this.InfoOptionsPanel.TabIndex = 1;
+            this.InfoOptionsPanel.Size = new System.Drawing.Size(376, 152);
+            this.InfoOptionsPanel.TabIndex = 0;
             // 
             // flpOptions
             // 
+            // Filled in by the caller, so it scrolls rather than clips when there are
+            // more options than fit.
+            this.flpOptions.AutoScroll = true;
             this.flpOptions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpOptions.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpOptions.Location = new System.Drawing.Point(0, 0);
             this.flpOptions.Margin = new System.Windows.Forms.Padding(0);
             this.flpOptions.Name = "flpOptions";
-            this.flpOptions.Size = new System.Drawing.Size(354, 148);
+            this.flpOptions.Size = new System.Drawing.Size(376, 152);
             this.flpOptions.TabIndex = 0;
+            this.flpOptions.WrapContents = false;
+            // 
+            // ChoiceTableLayoutPanel
+            // 
+            // The first column takes the slack, so the two buttons stay their own size
+            // and sit against the right edge however wide the dialog is.
+            this.ChoiceTableLayoutPanel.ColumnCount = 3;
+            this.ChoiceTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ChoiceTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.ChoiceTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.ChoiceTableLayoutPanel.Controls.Add(this.btnStart, 1, 0);
+            this.ChoiceTableLayoutPanel.Controls.Add(this.btnCancel, 2, 0);
+            this.ChoiceTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ChoiceTableLayoutPanel.Location = new System.Drawing.Point(0, 152);
+            this.ChoiceTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.ChoiceTableLayoutPanel.Name = "ChoiceTableLayoutPanel";
+            this.ChoiceTableLayoutPanel.RowCount = 1;
+            this.ChoiceTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ChoiceTableLayoutPanel.Size = new System.Drawing.Size(376, 44);
+            this.ChoiceTableLayoutPanel.TabIndex = 1;
+            // 
+            // btnStart
+            // 
+            this.btnStart.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnStart.AutoSize = true;
+            this.btnStart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnStart.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnStart.Location = new System.Drawing.Point(160, 6);
+            this.btnStart.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.btnStart.MinimumSize = new System.Drawing.Size(96, 32);
+            this.btnStart.Name = "btnStart";
+            this.btnStart.Padding = new System.Windows.Forms.Padding(14, 6, 14, 6);
+            this.btnStart.Size = new System.Drawing.Size(96, 32);
+            this.btnStart.TabIndex = 0;
+            this.btnStart.Text = "Start";
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.btnCancel.AutoSize = true;
+            this.btnCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(264, 6);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.btnCancel.MinimumSize = new System.Drawing.Size(96, 32);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Padding = new System.Windows.Forms.Padding(14, 6, 14, 6);
+            this.btnCancel.Size = new System.Drawing.Size(96, 32);
+            this.btnCancel.TabIndex = 1;
+            this.btnCancel.Text = "Cancel";
             // 
             // DialogFormGeneral
             // 
             this.AcceptButton = this.btnStart;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Gray;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(354, 191);
+            this.ClientSize = new System.Drawing.Size(400, 220);
             this.Controls.Add(this.MainPanel);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.MinimumSize = new System.Drawing.Size(320, 200);
             this.Name = "DialogFormGeneral";
-            this.Text = "_";
+            this.Text = "Options";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form_Closing);
             this.Load += new System.EventHandler(this.Form_Load);
             this.MainPanel.ResumeLayout(false);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.ChoiceTableLayoutPanel.ResumeLayout(false);
+            this.DialogLayoutTableLayoutPanel.ResumeLayout(false);
             this.InfoOptionsPanel.ResumeLayout(false);
+            this.ChoiceTableLayoutPanel.ResumeLayout(false);
+            this.ChoiceTableLayoutPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -148,7 +173,7 @@
         #endregion
 
         private System.Windows.Forms.Panel MainPanel;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel DialogLayoutTableLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel ChoiceTableLayoutPanel;
         private System.Windows.Forms.Panel InfoOptionsPanel;
         public System.Windows.Forms.FlowLayoutPanel flpOptions;

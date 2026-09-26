@@ -28,153 +28,194 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
-            this.button1 = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
-            this.tableLayoutPanel3.SuspendLayout();
+            this.MainTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.PromptLabel = new System.Windows.Forms.Label();
+            this.HeightTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.HeightLabel = new System.Windows.Forms.Label();
+            this.HeightTextBox = new System.Windows.Forms.TextBox();
+            this.WidthTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.WidthLabel = new System.Windows.Forms.Label();
+            this.WidthTextBox = new System.Windows.Forms.TextBox();
+            this.ButtonsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.ApplyButton = new System.Windows.Forms.Button();
+            this.MainTableLayoutPanel.SuspendLayout();
+            this.HeightTableLayoutPanel.SuspendLayout();
+            this.WidthTableLayoutPanel.SuspendLayout();
+            this.ButtonsTableLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
-            // label1
+            // MainTableLayoutPanel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(38, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Heigh:";
+            // Every row is as tall as what it holds, so the dialog is as tall as the
+            // question, the two fields and the button need and no taller.
+            this.MainTableLayoutPanel.ColumnCount = 1;
+            this.MainTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.MainTableLayoutPanel.Controls.Add(this.PromptLabel, 0, 0);
+            this.MainTableLayoutPanel.Controls.Add(this.HeightTableLayoutPanel, 0, 1);
+            this.MainTableLayoutPanel.Controls.Add(this.WidthTableLayoutPanel, 0, 2);
+            this.MainTableLayoutPanel.Controls.Add(this.ButtonsTableLayoutPanel, 0, 3);
+            this.MainTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MainTableLayoutPanel.Location = new System.Drawing.Point(12, 12);
+            this.MainTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.MainTableLayoutPanel.Name = "MainTableLayoutPanel";
+            this.MainTableLayoutPanel.RowCount = 4;
+            this.MainTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.MainTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.MainTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.MainTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 44F));
+            this.MainTableLayoutPanel.Size = new System.Drawing.Size(236, 166);
+            this.MainTableLayoutPanel.TabIndex = 0;
             // 
-            // label2
+            // PromptLabel
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(39, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Width:";
+            this.PromptLabel.AutoSize = true;
+            this.PromptLabel.Location = new System.Drawing.Point(0, 0);
+            this.PromptLabel.Margin = new System.Windows.Forms.Padding(0, 0, 0, 12);
+            this.PromptLabel.Name = "PromptLabel";
+            this.PromptLabel.Size = new System.Drawing.Size(205, 15);
+            this.PromptLabel.TabIndex = 0;
+            this.PromptLabel.Text = "Please input your custom resolution.";
             // 
-            // textBox1
+            // HeightTableLayoutPanel
             // 
-            this.textBox1.Location = new System.Drawing.Point(65, 3);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 21);
-            this.textBox1.TabIndex = 2;
-            this.textBox1.Text = "1024";
+            this.HeightTableLayoutPanel.ColumnCount = 2;
+            this.HeightTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.HeightTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.HeightTableLayoutPanel.Controls.Add(this.HeightLabel, 0, 0);
+            this.HeightTableLayoutPanel.Controls.Add(this.HeightTextBox, 1, 0);
+            this.HeightTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.HeightTableLayoutPanel.Location = new System.Drawing.Point(0, 27);
+            this.HeightTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.HeightTableLayoutPanel.Name = "HeightTableLayoutPanel";
+            this.HeightTableLayoutPanel.RowCount = 1;
+            this.HeightTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.HeightTableLayoutPanel.Size = new System.Drawing.Size(236, 29);
+            this.HeightTableLayoutPanel.TabIndex = 1;
             // 
-            // textBox2
+            // HeightLabel
             // 
-            this.textBox2.Location = new System.Drawing.Point(64, 3);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 21);
-            this.textBox2.TabIndex = 3;
-            this.textBox2.Text = "768";
+            this.HeightLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.HeightLabel.AutoSize = true;
+            this.HeightLabel.Location = new System.Drawing.Point(0, 7);
+            this.HeightLabel.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
+            this.HeightLabel.Name = "HeightLabel";
+            this.HeightLabel.Size = new System.Drawing.Size(46, 15);
+            this.HeightLabel.TabIndex = 0;
+            this.HeightLabel.Text = "Height:";
             // 
-            // label3
+            // HeightTextBox
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(3, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(183, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Please Input your custom resolution.";
+            this.HeightTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.HeightTextBox.Location = new System.Drawing.Point(58, 0);
+            this.HeightTextBox.Margin = new System.Windows.Forms.Padding(0);
+            this.HeightTextBox.Name = "HeightTextBox";
+            this.HeightTextBox.Size = new System.Drawing.Size(178, 23);
+            this.HeightTextBox.TabIndex = 1;
+            this.HeightTextBox.Text = "1024";
             // 
-            // tableLayoutPanel1
+            // WidthTableLayoutPanel
             // 
-            this.tableLayoutPanel1.BackColor = System.Drawing.Color.Gray;
-            this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.button1, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.label3, 0, 0);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.ForeColor = System.Drawing.Color.White;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 4;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(215, 150);
-            this.tableLayoutPanel1.TabIndex = 5;
+            this.WidthTableLayoutPanel.ColumnCount = 2;
+            this.WidthTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.WidthTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.WidthTableLayoutPanel.Controls.Add(this.WidthLabel, 0, 0);
+            this.WidthTableLayoutPanel.Controls.Add(this.WidthTextBox, 1, 0);
+            this.WidthTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.WidthTableLayoutPanel.Location = new System.Drawing.Point(0, 64);
+            this.WidthTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.WidthTableLayoutPanel.Name = "WidthTableLayoutPanel";
+            this.WidthTableLayoutPanel.RowCount = 1;
+            this.WidthTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.WidthTableLayoutPanel.Size = new System.Drawing.Size(236, 29);
+            this.WidthTableLayoutPanel.TabIndex = 2;
             // 
-            // tableLayoutPanel2
+            // WidthLabel
             // 
-            this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 29.94924F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70.05076F));
-            this.tableLayoutPanel2.Controls.Add(this.textBox1, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.label1, 0, 0);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 48);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 1;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(209, 31);
-            this.tableLayoutPanel2.TabIndex = 5;
+            this.WidthLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.WidthLabel.AutoSize = true;
+            this.WidthLabel.Location = new System.Drawing.Point(0, 7);
+            this.WidthLabel.Margin = new System.Windows.Forms.Padding(0, 0, 12, 0);
+            this.WidthLabel.Name = "WidthLabel";
+            this.WidthLabel.Size = new System.Drawing.Size(42, 15);
+            this.WidthLabel.TabIndex = 0;
+            this.WidthLabel.Text = "Width:";
             // 
-            // tableLayoutPanel3
+            // WidthTextBox
             // 
-            this.tableLayoutPanel3.ColumnCount = 2;
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 29.44162F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70.55837F));
-            this.tableLayoutPanel3.Controls.Add(this.label2, 0, 0);
-            this.tableLayoutPanel3.Controls.Add(this.textBox2, 1, 0);
-            this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 85);
-            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-            this.tableLayoutPanel3.RowCount = 1;
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(209, 31);
-            this.tableLayoutPanel3.TabIndex = 6;
+            this.WidthTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.WidthTextBox.Location = new System.Drawing.Point(54, 0);
+            this.WidthTextBox.Margin = new System.Windows.Forms.Padding(0);
+            this.WidthTextBox.Name = "WidthTextBox";
+            this.WidthTextBox.Size = new System.Drawing.Size(182, 23);
+            this.WidthTextBox.TabIndex = 1;
+            this.WidthTextBox.Text = "768";
             // 
-            // button1
+            // ButtonsTableLayoutPanel
             // 
-            this.button1.ForeColor = System.Drawing.Color.Black;
-            this.button1.Location = new System.Drawing.Point(3, 122);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(106, 25);
-            this.button1.TabIndex = 7;
-            this.button1.Text = "Apply";
-            this.button1.UseVisualStyleBackColor = true;
+            this.ButtonsTableLayoutPanel.ColumnCount = 2;
+            this.ButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ButtonsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.ButtonsTableLayoutPanel.Controls.Add(this.ApplyButton, 1, 0);
+            this.ButtonsTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ButtonsTableLayoutPanel.Location = new System.Drawing.Point(0, 122);
+            this.ButtonsTableLayoutPanel.Margin = new System.Windows.Forms.Padding(0);
+            this.ButtonsTableLayoutPanel.Name = "ButtonsTableLayoutPanel";
+            this.ButtonsTableLayoutPanel.RowCount = 1;
+            this.ButtonsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.ButtonsTableLayoutPanel.Size = new System.Drawing.Size(236, 44);
+            this.ButtonsTableLayoutPanel.TabIndex = 3;
+            // 
+            // ApplyButton
+            // 
+            this.ApplyButton.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.ApplyButton.AutoSize = true;
+            this.ApplyButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ApplyButton.Location = new System.Drawing.Point(140, 6);
+            this.ApplyButton.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.ApplyButton.MinimumSize = new System.Drawing.Size(96, 32);
+            this.ApplyButton.Name = "ApplyButton";
+            this.ApplyButton.Padding = new System.Windows.Forms.Padding(14, 6, 14, 6);
+            this.ApplyButton.Size = new System.Drawing.Size(96, 32);
+            this.ApplyButton.TabIndex = 0;
+            this.ApplyButton.Text = "Apply";
             // 
             // CustomResolution
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AcceptButton = this.ApplyButton;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(215, 150);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.ClientSize = new System.Drawing.Size(260, 190);
+            this.Controls.Add(this.MainTableLayoutPanel);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "CustomResolution";
+            this.Padding = new System.Windows.Forms.Padding(12);
             this.Text = "Custom Resolution";
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
-            this.tableLayoutPanel3.ResumeLayout(false);
-            this.tableLayoutPanel3.PerformLayout();
+            this.MainTableLayoutPanel.ResumeLayout(false);
+            this.MainTableLayoutPanel.PerformLayout();
+            this.HeightTableLayoutPanel.ResumeLayout(false);
+            this.HeightTableLayoutPanel.PerformLayout();
+            this.WidthTableLayoutPanel.ResumeLayout(false);
+            this.WidthTableLayoutPanel.PerformLayout();
+            this.ButtonsTableLayoutPanel.ResumeLayout(false);
+            this.ButtonsTableLayoutPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label HeightLabel;
+        private System.Windows.Forms.Label WidthLabel;
+        private System.Windows.Forms.TextBox HeightTextBox;
+        private System.Windows.Forms.TextBox WidthTextBox;
+        private System.Windows.Forms.Label PromptLabel;
+        private System.Windows.Forms.TableLayoutPanel MainTableLayoutPanel;
+        private System.Windows.Forms.TableLayoutPanel WidthTableLayoutPanel;
+        private System.Windows.Forms.TableLayoutPanel HeightTableLayoutPanel;
+        private System.Windows.Forms.TableLayoutPanel ButtonsTableLayoutPanel;
+        private System.Windows.Forms.Button ApplyButton;
     }
 }

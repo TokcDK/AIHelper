@@ -337,6 +337,9 @@
     <Compile Include="Manage\ui\themes\variants\CrazyTheme.cs" />
     <Compile Include="Manage\ui\themes\ThemesLoader.cs" />
     <Compile Include="Manage\ui\themes\IUITheme.cs" />
+    <Compile Include="Manage\ui\themes\ThemePalette.cs" />
+    <Compile Include="Manage\ui\UiTooltip.cs" />
+    <Compile Include="Manage\ui\ButtonListLoader.cs" />
     <Compile Include="Manage\Update\Sources\UserAgents.cs" />
     <Compile Include="Manage\Update\Sources\WebClientEx.cs">
       <SubType>Component</SubType>

@@ -1195,7 +1195,35 @@ namespace AIHelper.Manage
         public static IUITheme CurrentTheme { get; internal set; }
         public static string IniThemeKeyName { get => "Theme"; }
         public static string IniSettingsSectionName { get => "Settings"; }
+
+        /// <summary>
+        /// A control whose name contains this keeps the colours it was given instead
+        /// of being themed, for the few places that colour themselves on purpose.
+        /// </summary>
         public static string ThemeLabelColorSetIgnoreNameMark { get => "OwnColor"; }
+
+        /// <summary>
+        /// A control whose name contains this is drawn as title bar chrome, and so is
+        /// everything placed inside it.
+        /// </summary>
+        public static string ThemeTitleBarNameMark { get => "TitleBar"; }
+
+        /// <summary>
+        /// A control whose name contains this is drawn in the accent colour: the
+        /// primary action, or a heading worth pointing at.
+        /// </summary>
+        public static string ThemeAccentNameMark { get => "Accent"; }
+
+        /// <summary>
+        /// A control whose name contains this is drawn in the muted text colour.
+        /// </summary>
+        public static string ThemeMutedNameMark { get => "Muted"; }
+
+        /// <summary>
+        /// A control whose name contains this is drawn in the colour reserved for
+        /// actions which destroy something.
+        /// </summary>
+        public static string ThemeDangerNameMark { get => "Danger"; }
         public static string MOProfileSettingsIniForcedLibrariesSectionName { get => "forced_libraries"; }
         public static string ModsDirName { get; } = "Mods";
         public static string DataDirName { get; } = "Data";

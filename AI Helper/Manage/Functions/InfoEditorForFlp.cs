@@ -239,7 +239,6 @@ namespace AIHelper.Manage.Functions
                 var l = new Label
                 {
                     Text = newModData.LabelText + ":",
-                    ForeColor = Color.White,
                     Size = new System.Drawing.Size(150, _elHeight),
                 };
                 var urlTextBox = new TextBox
@@ -303,7 +302,6 @@ namespace AIHelper.Manage.Functions
             {
                 Text = T._("Version from file"),
                 Checked = false,
-                ForeColor = Color.White,
                 Size = new System.Drawing.Size(containerWidth - 20, _elHeight + 5),
                 Anchor = AnchorStyles.Left,
                 TextAlign = ContentAlignment.MiddleLeft,

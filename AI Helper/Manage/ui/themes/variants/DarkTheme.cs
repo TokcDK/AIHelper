@@ -5,6 +5,12 @@ namespace AIHelper.Manage.ui.themes
     /// <summary>
     /// Dark theme: the neutral greys and the blue accent of a modern dark editor.
     /// </summary>
+    /// <remarks>
+    /// The palette ends in <see cref="ThemePalette.Complete"/> like every other theme.
+    /// It used to be the one theme which did not, and the roles it therefore left empty
+    /// - the hover shades, the disabled text and the progress bar track - fell back to
+    /// the WinForms defaults instead of following the theme.
+    /// </remarks>
     internal class DarkTheme : IUITheme
     {
         public string Name { get { return "Dark"; } }
@@ -15,6 +21,9 @@ namespace AIHelper.Manage.ui.themes
 
         private static ThemePalette BuildPalette()
         {
+            // one blue for the accent and the progress bar, so the two cannot drift
+            var accent = Color.FromArgb(255, 55, 148, 255);
+
             return new ThemePalette
             {
                 IsDark = true,
@@ -31,8 +40,10 @@ namespace AIHelper.Manage.ui.themes
                 TitleBarText = Color.FromArgb(255, 240, 242, 244),
                 TitleBarMuted = Color.FromArgb(255, 140, 148, 156),
 
-                Accent = Color.White,
-                AccentText = Color.FromArgb(255, 255, 255, 255),
+                // a white accent made a primary button white on white: the face and the
+                // text on it have to differ, and this is the blue the theme describes
+                Accent = accent,
+                AccentText = Color.White,
 
                 ButtonFace = Color.FromArgb(255, 51, 51, 55),
                 ButtonText = Color.FromArgb(255, 232, 232, 232),
@@ -47,17 +58,21 @@ namespace AIHelper.Manage.ui.themes
                 InputText = Color.FromArgb(255, 232, 232, 232),
                 InputBorder = Color.FromArgb(255, 70, 70, 75),
 
-                TabFace = Color.WhiteSmoke,
-                TabSelectedFace = Color.White,
-                TabText = Color.DarkGray,
-                TabSelectedText = Color.Black,
+                // the strip is the window chrome behind the headers, and the selected
+                // header is the surface the page below it is drawn on, so the two read as
+                // one piece. These were light, which left a bright band across the top of
+                // a dark window.
+                TabFace = Color.FromArgb(255, 30, 30, 30),
+                TabSelectedFace = Color.FromArgb(255, 37, 37, 38),
+                TabText = Color.FromArgb(255, 160, 160, 165),
+                TabSelectedText = Color.White,
 
                 Link = Color.FromArgb(255, 79, 163, 255),
                 Selection = Color.FromArgb(255, 9, 71, 113),
                 SelectionText = Color.FromArgb(255, 255, 255, 255),
 
-                ProgressBar = Color.FromArgb(255, 55, 148, 255),
-            };
+                ProgressBar = accent,
+            }.Complete();
         }
     }
 }

@@ -35,7 +35,7 @@
             this.FormTitleLabel = new System.Windows.Forms.Label();
             this.FormMinimizeButton = new System.Windows.Forms.Button();
             this.FormCloseButton = new System.Windows.Forms.Button();
-            this.AIGirlHelperTabControl = new System.Windows.Forms.TabControl();
+            this.AIGirlHelperTabControl = new AIHelper.Manage.ui.ThemedTabControl();
             this.LaunchTabPage = new System.Windows.Forms.TabPage();
             this.LaunchTabPageBackgroundPanel = new System.Windows.Forms.Panel();
             this.LaunchTabTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -52,7 +52,7 @@
             this.FunctionsForFLPTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.SettingsTabPage = new System.Windows.Forms.TabPage();
             this.SettingsTabPageBackgroundPanel = new System.Windows.Forms.Panel();
-            this.SettingsTabControl = new System.Windows.Forms.TabControl();
+            this.SettingsTabControl = new AIHelper.Manage.ui.ThemedTabControl();
             this.SettingsTabGeneralTabPage = new System.Windows.Forms.TabPage();
             this.SettingsTabGeneralTabPageBackgroundPanel = new System.Windows.Forms.Panel();
             this.SettingsTabGeneralTabPageTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
@@ -852,7 +852,7 @@
         internal System.Windows.Forms.Label FormTitleLabel;
         internal System.Windows.Forms.Button FormMinimizeButton;
         internal System.Windows.Forms.Button FormCloseButton;
-        internal System.Windows.Forms.TabControl AIGirlHelperTabControl;
+        internal AIHelper.Manage.ui.ThemedTabControl AIGirlHelperTabControl;
         internal System.Windows.Forms.TabPage LaunchTabPage;
         private System.Windows.Forms.Panel LaunchTabPageBackgroundPanel;
         private System.Windows.Forms.TableLayoutPanel LaunchTabTableLayoutPanel;
@@ -869,7 +869,7 @@
         internal System.Windows.Forms.TableLayoutPanel FunctionsForFLPTableLayoutPanel;
         internal System.Windows.Forms.TabPage SettingsTabPage;
         private System.Windows.Forms.Panel SettingsTabPageBackgroundPanel;
-        private System.Windows.Forms.TabControl SettingsTabControl;
+        private AIHelper.Manage.ui.ThemedTabControl SettingsTabControl;
         private System.Windows.Forms.TabPage SettingsTabGeneralTabPage;
         private System.Windows.Forms.Panel SettingsTabGeneralTabPageBackgroundPanel;
         private System.Windows.Forms.TableLayoutPanel SettingsTabGeneralTabPageTableLayoutPanel;

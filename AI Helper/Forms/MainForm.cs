@@ -363,6 +363,76 @@ namespace AIHelper
         private void OnThemeApplied(object sender, EventArgs e)
         {
             ManageTabs.LoadContent();
+
+            // the tab headers are measured while the theme is applied, and a longer
+            // caption can make the strip wider than the window is
+            EnsureWindowFitsContent();
+        }
+
+        /// <summary>
+        /// Makes sure the window is wide enough for what it has to show.
+        /// </summary>
+        /// <remarks>
+        /// Every tab header is as wide as the longest caption of the strip, so a caption
+        /// which grew - a different language, or a wider font - can make the strip wider
+        /// than the window, and a tab strip does not scroll: the last header is simply
+        /// cut off. The window is grown instead. It is only ever grown and never shrunk,
+        /// so this cannot undo a size the user chose.
+        /// </remarks>
+        private void EnsureWindowFitsContent()
+        {
+            if (!IsHandleCreated) return;
+
+            var required = GetRequiredClientWidth();
+            if (required <= 0) return;
+
+            // a window wider than the screen would put its own window buttons out of
+            // reach, so the screen wins when the two disagree
+            var desktop = Screen.FromControl(this).WorkingArea.Width;
+            if (required > desktop) required = desktop;
+
+            // nothing on this window, but a borderless window is not assumed to be the
+            // only kind there will ever be
+            var frame = Width - ClientSize.Width;
+
+            if (MinimumSize.Width < required + frame)
+            {
+                MinimumSize = new Size(required + frame, MinimumSize.Height);
+            }
+
+            if (ClientSize.Width < required)
+            {
+                Width = required + frame;
+            }
+        }
+
+        /// <summary>
+        /// Width the window body needs so that neither the tab strip nor the launch page
+        /// is clipped.
+        /// </summary>
+        private int GetRequiredClientWidth()
+        {
+            var strip = ThemesLoader.MeasureTabStripWidth(AIGirlHelperTabControl);
+
+            // the pages sit inside the tab strip, inset by its own frame
+            var pageInset = AIGirlHelperTabControl.ClientSize.Width - AIGirlHelperTabControl.DisplayRectangle.Width;
+
+            // the four launch buttons sit in a grid of a fixed width, and the page clips
+            // them rather than scrolling
+            var launchPage = LaunchTabSubMainButtonsTableLayoutPanel.PreferredSize.Width
+                           + LaunchTabTableLayoutPanel.Padding.Horizontal
+                           + Math.Max(0, pageInset);
+
+            return Math.Max(strip, launchPage) + Padding.Horizontal;
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+
+            // the first theme pass can run before the window has a handle, and the sizes
+            // it needs are only final once the window is on screen
+            EnsureWindowFitsContent();
         }
 
         private void CommonModeSpecificSetup()
@@ -611,29 +681,22 @@ namespace AIHelper
 
         private void AI_Helper_FormClosing(object sender, FormClosingEventArgs e)
         {
-            var ini = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
-
-            foreach (var (condition, sectionName, keyName, value) in new (bool condition, string sectionName, string keyName, string value)[]
+            try
             {
-                (ManageSettings.Games.Game != null, "Settings", "selected_game", ManageSettings.CurrentGameDirName),
-                (this.Width > 0, "Settings", "Width", this.Width.ToString()),
-                (this.Height > 0, "Settings", "Height", this.Height.ToString()),
-            })
-            {
-                try
+                if (ManageSettings.Games.Game != null)
                 {
-                    if (!condition)
-                    {
-                        _log.Debug($"Skipping ini setting save for section '{sectionName}', key '{keyName}' due to condition being false.");
-                        continue;
-                    }
-                    ini.SetKey(sectionName, keyName, value);
-                }
-                catch (Exception ex)
-                {
-                    _log.Debug("An error occurred in time of ini settings save while the app closing . error:\r\n" + ex);
+                    ManageIni.GetINIFile(ManageSettings.AiHelperIniPath)
+                        .SetKey(ManageSettings.IniSettingsSectionName, "selected_game", ManageSettings.CurrentGameDirName);
                 }
             }
+            catch (Exception ex)
+            {
+                _log.Debug("An error occurred in time of ini settings save while the app closing . error:\r\n" + ex);
+            }
+
+            // the size is written whenever the user stops resizing the window as well;
+            // this covers a window closed before that write had a chance to happen
+            ManageMainFormService.SaveSize(this);
         }
 
         private void AIGirlHelperTabControl_Selected(object sender, TabControlEventArgs e)

@@ -42,15 +42,22 @@ namespace AIHelper.Manage.ui.themes
         private const int TabAccentStripHeight = 3;
 
         /// <summary>
-        /// Space between the tab caption and the edges of its header.
+        /// Space added around the caption inside a tab header, on top of the padding the
+        /// control applies to it itself.
         /// </summary>
-        private const int TabHorizontalPadding = 18;
-        private const int TabVerticalPadding = 6;
+        private const int TabExtraWidth = 6;
+        private const int TabExtraHeight = 2;
 
         /// <summary>
         /// Narrowest tab header, so a short caption does not produce a tiny tab.
         /// </summary>
-        private const int MinTabWidth = 72;
+        private const int MinTabWidth = 64;
+
+        /// <summary>
+        /// Space the tab strip leaves beside its headers. The window has to be wide
+        /// enough for this as well, or the last header is cut off.
+        /// </summary>
+        private const int TabStripMargin = 6;
 
         /// <summary>
         /// Used to draw a control while no theme has been applied yet.
@@ -104,8 +111,19 @@ namespace AIHelper.Manage.ui.themes
         /// <summary>
         /// Applies a theme to the main window.
         /// </summary>
+        /// <remarks>
+        /// A theme which draws its own colours is asked for a new set here, before the
+        /// window is walked, so that every control of one pass is painted from the same
+        /// palette. Doing it per control instead would leave the window a patchwork of
+        /// several draws.
+        /// </remarks>
         internal static void SetTheme(IUITheme theme)
         {
+            if (theme == null) return;
+
+            var rollable = theme as IRollableTheme;
+            if (rollable != null) rollable.Roll();
+
             SetTheme(theme, ManageSettings.MainForm);
 
             var handler = ThemeApplied;
@@ -174,8 +192,9 @@ namespace AIHelper.Manage.ui.themes
         /// Switches to the random colour theme.
         /// </summary>
         /// <remarks>
-        /// The theme draws its palette when it is created, so asking for a new
-        /// instance is what produces a new set of colours.
+        /// Asking for the theme is enough to get new colours: it draws them every time
+        /// it is applied, so every pass over the window - picking it in the list, and
+        /// every game change after that - comes out different.
         /// </remarks>
         internal static void SetRandomColors()
         {
@@ -226,11 +245,14 @@ namespace AIHelper.Manage.ui.themes
                 }
             }
 
-            SyncThemeSelector();
-
             // applied unconditionally: the theme may already be the right one, but the
             // controls it has to reach may have been created since the last pass
             SetTheme(ManageSettings.CurrentTheme ?? GetDefaultTheme(themes));
+
+            // after the theme, not before: theming the selector makes it flat and owner
+            // drawn, which recreates its handle the first time, and a data bound drop
+            // down which has its handle recreated loses the selection it was showing
+            SyncThemeSelector();
         }
 
         /// <summary>
@@ -351,6 +373,13 @@ namespace AIHelper.Manage.ui.themes
             var isAccent = HasMark(control, ManageSettings.ThemeAccentNameMark);
             var isDanger = HasMark(control, ManageSettings.ThemeDangerNameMark);
 
+            // a scroll bar is drawn by Windows and ignores the colours it is given, so
+            // it has to be asked for a visual style of its own instead
+            if (CanHaveScrollBars(control))
+            {
+                ThemedScrollBars.Apply(control, palette.IsDark);
+            }
+
             // the colour text takes on the surface it sits on
             var textColor = isOnTitleBar ? palette.TitleBarText : palette.Text;
             var mutedColor = isOnTitleBar ? palette.TitleBarMuted : palette.TextMuted;
@@ -426,17 +455,14 @@ namespace AIHelper.Manage.ui.themes
             var comboBox = control as ComboBox;
             if (comboBox != null)
             {
-                comboBox.BackColor = palette.InputFace;
-                comboBox.ForeColor = palette.InputText;
+                ApplyComboBox(palette, comboBox);
                 return;
             }
 
             var listBox = control as ListBox;
             if (listBox != null)
             {
-                listBox.BackColor = palette.InputFace;
-                listBox.ForeColor = palette.InputText;
-                listBox.BorderStyle = BorderStyle.FixedSingle;
+                ApplyListBox(palette, listBox);
                 return;
             }
 
@@ -459,8 +485,7 @@ namespace AIHelper.Manage.ui.themes
             var progressBar = control as ProgressBar;
             if (progressBar != null)
             {
-                progressBar.ForeColor = palette.ProgressBar;
-                progressBar.BackColor = palette.ProgressBarTrack;
+                ApplyProgressBar(palette, progressBar);
                 return;
             }
 
@@ -544,6 +569,14 @@ namespace AIHelper.Manage.ui.themes
             tabControl.SizeMode = TabSizeMode.Fixed;
             tabControl.ItemSize = MeasureTabHeader(tabControl);
 
+            // the area behind the headers is painted by the control itself and ignores
+            // BackColor, so a control which can paint it is told which colour to use
+            var themed = tabControl as ThemedTabControl;
+            if (themed != null)
+            {
+                themed.StripColor = palette.TabFace;
+            }
+
             // the event is a member of the control, so it survives re-applying the
             // theme; removing it first keeps a single subscription
             tabControl.DrawItem -= DrawTabHeader;
@@ -551,20 +584,48 @@ namespace AIHelper.Manage.ui.themes
         }
 
         /// <summary>
+        /// Width the tab strip needs for its headers.
+        /// </summary>
+        /// <remarks>
+        /// Every header is as wide as the longest caption, so the strip is as wide as
+        /// all of them put together. The window uses this to stay wide enough: a longer
+        /// caption - a different language, for instance - would otherwise push the last
+        /// header past the edge of the window, and a tab strip does not scroll.
+        /// </remarks>
+        internal static int MeasureTabStripWidth(TabControl tabControl)
+        {
+            if (tabControl == null || tabControl.TabCount == 0) return 0;
+
+            return tabControl.ItemSize.Width * tabControl.TabCount
+                 + tabControl.Padding.X * 2
+                 + TabStripMargin;
+        }
+
+        /// <summary>
         /// Size of one tab header, wide enough for the longest caption of the strip.
         /// </summary>
+        /// <remarks>
+        /// The control pads the caption inside its header itself, and clips the caption
+        /// rather than growing the header when that padding does not fit. The header is
+        /// therefore measured from the padding the control reports, not from a constant
+        /// here: the two have to agree, and the one which draws is the control.
+        /// </remarks>
         private static Size MeasureTabHeader(TabControl tabControl)
         {
             var font = tabControl.Font;
+            var padding = tabControl.Padding;
 
             var width = MinTabWidth;
             foreach (TabPage page in tabControl.TabPages)
             {
-                var captionWidth = TextRenderer.MeasureText(page.Text, font).Width + TabHorizontalPadding * 2;
+                var captionWidth = TextRenderer.MeasureText(page.Text, font).Width
+                                 + padding.X * 2
+                                 + TabExtraWidth;
+
                 if (captionWidth > width) width = captionWidth;
             }
 
-            return new Size(width, font.Height + TabVerticalPadding * 2);
+            return new Size(width, font.Height + padding.Y * 2 + TabExtraHeight);
         }
 
         private static void DrawTabHeader(object sender, DrawItemEventArgs e)
@@ -590,9 +651,11 @@ namespace AIHelper.Manage.ui.themes
             }
             else
             {
+                var inset = tabControl.Padding.Y;
+
                 using (var separator = new Pen(palette.Border))
                 {
-                    e.Graphics.DrawLine(separator, bounds.Right - 1, bounds.Y + TabVerticalPadding, bounds.Right - 1, bounds.Bottom - TabVerticalPadding);
+                    e.Graphics.DrawLine(separator, bounds.Right - 1, bounds.Y + inset, bounds.Right - 1, bounds.Bottom - inset);
                 }
             }
 
@@ -731,6 +794,206 @@ namespace AIHelper.Manage.ui.themes
             {
                 bordered.BorderStyle = BorderStyle.FixedSingle;
             }
+        }
+
+        /// <summary>
+        /// Colours a drop down.
+        /// </summary>
+        /// <remarks>
+        /// A drop down list is drawn by Windows, which ignores both the background and
+        /// the text colour it is given, so the closed drop down and the entries it drops
+        /// stayed on the system colours in every theme. Drawing it flat makes WinForms
+        /// paint the closed drop down itself, and owner drawing the entries does the
+        /// same for the list. The one pixel outline a flat drop down draws for itself is
+        /// still the system colour: a drop down does not expose the outline the way a
+        /// button does, so there is nothing to point at the theme.
+        /// </remarks>
+        private static void ApplyComboBox(ThemePalette palette, ComboBox comboBox)
+        {
+            comboBox.FlatStyle = FlatStyle.Flat;
+            comboBox.BackColor = palette.InputFace;
+            comboBox.ForeColor = palette.InputText;
+
+            comboBox.DrawMode = DrawMode.OwnerDrawFixed;
+
+            // as with the tab strip: the handler reads the palette when it paints, and
+            // removing it first keeps a single subscription
+            comboBox.DrawItem -= DrawComboBoxItem;
+            comboBox.DrawItem += DrawComboBoxItem;
+        }
+
+        /// <summary>
+        /// Draws one entry of a drop down list.
+        /// </summary>
+        private static void DrawComboBoxItem(object sender, DrawItemEventArgs e)
+        {
+            var comboBox = sender as ComboBox;
+            if (comboBox == null) return;
+
+            var palette = CurrentPalette ?? FallbackPalette;
+            var bounds = e.Bounds;
+
+            var isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
+
+            using (var background = new SolidBrush(isSelected ? palette.Selection : palette.InputFace))
+            {
+                e.Graphics.FillRectangle(background, bounds);
+            }
+
+            if (e.Index < 0 || e.Index >= comboBox.Items.Count) return;
+
+            TextRenderer.DrawText(
+                e.Graphics,
+                comboBox.GetItemText(comboBox.Items[e.Index]),
+                comboBox.Font,
+                bounds,
+                isSelected ? palette.SelectionText : palette.InputText,
+                TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+        }
+
+        /// <summary>
+        /// Colours a list.
+        /// </summary>
+        /// <remarks>
+        /// The rows are drawn here rather than by Windows. A list takes the highlight it
+        /// puts behind the selected row from the system and offers no property to change
+        /// it, so the selection colour of the theme never appeared: the background
+        /// followed the theme and the selected row stayed the system blue. It is the same
+        /// thing that happens to a drop down, and it has the same answer.
+        /// </remarks>
+        private static void ApplyListBox(ThemePalette palette, ListBox listBox)
+        {
+            listBox.BackColor = palette.InputFace;
+            listBox.ForeColor = palette.InputText;
+            listBox.BorderStyle = BorderStyle.FixedSingle;
+
+            // a checked list draws its own check boxes, and taking its rows over would
+            // mean drawing those as well. Its colours are still worth setting, so it
+            // stops here rather than being skipped.
+            if (listBox is CheckedListBox) return;
+
+            // owner drawing replaces the row height with the fixed one, so the height the
+            // list already used is kept and the rows do not change size
+            var itemHeight = listBox.ItemHeight;
+
+            listBox.DrawMode = DrawMode.OwnerDrawFixed;
+
+            if (itemHeight > 0 && listBox.ItemHeight != itemHeight)
+            {
+                listBox.ItemHeight = itemHeight;
+            }
+
+            // as with the tab strip and the drop down: the handler reads the palette when
+            // it paints, and removing it first keeps a single subscription
+            listBox.DrawItem -= DrawListBoxItem;
+            listBox.DrawItem += DrawListBoxItem;
+        }
+
+        /// <summary>
+        /// Draws one row of a list.
+        /// </summary>
+        private static void DrawListBoxItem(object sender, DrawItemEventArgs e)
+        {
+            var listBox = sender as ListBox;
+            if (listBox == null) return;
+
+            var palette = CurrentPalette ?? FallbackPalette;
+            var bounds = e.Bounds;
+
+            var isSelected = (e.State & DrawItemState.Selected) == DrawItemState.Selected;
+            var isFocused = (e.State & DrawItemState.Focus) == DrawItemState.Focus;
+
+            var background = isSelected ? palette.Selection : palette.InputFace;
+            var foreground = isSelected ? palette.SelectionText : palette.InputText;
+
+            using (var brush = new SolidBrush(background))
+            {
+                e.Graphics.FillRectangle(brush, bounds);
+            }
+
+            if (e.Index < 0 || e.Index >= listBox.Items.Count)
+            {
+                // an empty row is still filled, so the list does not show the system
+                // colour in the gap below the last entry
+                return;
+            }
+
+            TextRenderer.DrawText(
+                e.Graphics,
+                listBox.GetItemText(listBox.Items[e.Index]),
+                listBox.Font,
+                bounds,
+                foreground,
+                TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+
+            // the keyboard still has to show where it is, so the focus mark is kept and
+            // drawn in the theme's own colours rather than the system ones
+            if (isSelected && isFocused)
+            {
+                ControlPaint.DrawFocusRectangle(e.Graphics, bounds, foreground, background);
+            }
+        }
+
+        /// <summary>
+        /// Tells whether a control can show a scroll bar of its own.
+        /// </summary>
+        /// <remarks>
+        /// Only the controls which can are asked for a themed scroll bar: the call
+        /// changes how the whole window is drawn, so handing it to a control which never
+        /// shows one would be asking for a change nobody can see.
+        /// </remarks>
+        private static bool CanHaveScrollBars(Control control)
+        {
+            return control is ScrollableControl
+                || control is TextBoxBase
+                || control is ListBox
+                || control is ListView
+                || control is TreeView
+                || control is ComboBox
+                || control is ScrollBar;
+        }
+
+        /// <summary>
+        /// Colours a progress bar.
+        /// </summary>
+        /// <remarks>
+        /// A progress bar with visual styles on is drawn by Windows and ignores the
+        /// colours it is given, so the bar stayed the system green in every theme.
+        /// Turning the visual style off for this one control makes Windows draw it the
+        /// classic way instead, and the classic way is the one which honours a bar
+        /// colour and a trough colour.
+        /// </remarks>
+        private static void ApplyProgressBar(ThemePalette palette, ProgressBar progressBar)
+        {
+            progressBar.ForeColor = palette.ProgressBar;
+            progressBar.BackColor = palette.ProgressBarTrack;
+
+            // the colours only take effect once the visual style is off, and the style can
+            // only be turned off once the control has a handle
+            progressBar.HandleCreated -= OnProgressBarHandleCreated;
+            progressBar.HandleCreated += OnProgressBarHandleCreated;
+
+            if (progressBar.IsHandleCreated)
+            {
+                DisableVisualStyle(progressBar);
+            }
+        }
+
+        private static void OnProgressBarHandleCreated(object sender, EventArgs e)
+        {
+            var progressBar = sender as ProgressBar;
+            if (progressBar == null) return;
+
+            DisableVisualStyle(progressBar);
+        }
+
+        /// <summary>
+        /// Asks Windows to draw a control the classic way rather than with its visual
+        /// style. An empty style name is how a style is removed.
+        /// </summary>
+        private static void DisableVisualStyle(Control control)
+        {
+            NativeMethods.SetWindowTheme(control.Handle, string.Empty, string.Empty);
         }
 
         /// <summary>

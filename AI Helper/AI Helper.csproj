@@ -340,6 +340,11 @@
     <Compile Include="Manage\ui\themes\ThemePalette.cs" />
     <Compile Include="Manage\ui\UiTooltip.cs" />
     <Compile Include="Manage\ui\ButtonListLoader.cs" />
+    <Compile Include="Manage\ui\NativeMethods.cs" />
+    <Compile Include="Manage\ui\ThemedScrollBars.cs" />
+    <Compile Include="Manage\ui\ThemedTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Manage\Update\Sources\UserAgents.cs" />
     <Compile Include="Manage\Update\Sources\WebClientEx.cs">
       <SubType>Component</SubType>

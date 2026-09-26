@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Drawing;
-using System.Threading.Tasks;
+using System.Globalization;
 using System.Windows.Forms;
 using AIHelper.Utils;
 using NLog;
@@ -14,12 +14,22 @@ namespace AIHelper.Manage
     {
         static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
-#if !DEBUG
         /// <summary>
-        /// Guards against re-entering the size-changed handler while the size is being written to ini
+        /// The ini keys the window size is stored under. These are the names older
+        /// versions wrote, so a size stored by one of those is still read.
         /// </summary>
-        static bool _isWritingSize;
-#endif
+        private const string IniWidthKey = "Width";
+        private const string IniHeightKey = "Height";
+
+        /// <summary>
+        /// How long the window has to stay at one size before it is written to the ini.
+        /// </summary>
+        /// <remarks>
+        /// Dragging the edge of a window raises a size change for every step of the drag,
+        /// and writing the file once per step would be a lot of writes for one resize.
+        /// The write waits for the drag to stop instead.
+        /// </remarks>
+        private const int SizeSaveDelayMilliseconds = 500;
 
         internal static void CalcSizeDependOnDesktop(Form f)
         {
@@ -31,71 +41,139 @@ namespace AIHelper.Manage
         }
 
         /// <summary>
-        /// set form size from ini or calculate default size from the desktop resolution
+        /// Sets the form size from the ini file, or from the desktop resolution when
+        /// there is no usable size stored.
         /// </summary>
-        /// <param name="f"></param>
         private static void ApplyInitialFormSize(Form f)
         {
-            // get size from ini
-            bool isSizeGotFromIni = false;
-#if !DEBUG
-            var ini = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
-            if(ini.KeyExists(nameof(f.Width), ManageSettings.IniSettingsSectionName)
-                && ini.KeyExists(nameof(f.Height), ManageSettings.IniSettingsSectionName))
-            {
-                var ww = ini.GetKey(ManageSettings.IniSettingsSectionName, nameof(f.Width));
-                var wh = ini.GetKey(ManageSettings.IniSettingsSectionName, nameof(f.Height));
-                if (int.TryParse(ww, out int wwi) && int.TryParse(wh, out int whi))
-                {
-                    f.Size = new Size(wwi, whi);
-                    isSizeGotFromIni = true;
-                }
-            }
-#endif
+            if (TryApplyStoredSize(f)) return;
 
-            if (isSizeGotFromIni) return;
-
-            // set default size depend on desktop
-            var resolution = Screen.PrimaryScreen.Bounds;
-            int w = (int)(resolution.Width / 3.2);
-            f.Size = new Size(w, (int)(w * 0.6));
+            ApplyDefaultSize(f);
         }
 
         /// <summary>
-        /// save form size in ini when the form size was changed
+        /// Applies the size the window was left at last time.
         /// </summary>
-        /// <param name="f"></param>
+        /// <returns>
+        /// <c>false</c> when nothing usable was stored, so the caller falls back to a
+        /// size calculated from the desktop.
+        /// </returns>
+        private static bool TryApplyStoredSize(Form f)
+        {
+            try
+            {
+                var ini = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
+                var section = ManageSettings.IniSettingsSectionName;
+
+                if (!ini.KeyExists(IniWidthKey, section) || !ini.KeyExists(IniHeightKey, section)) return false;
+
+                if (!TryParseSize(ini.GetKey(section, IniWidthKey), out var width)) return false;
+                if (!TryParseSize(ini.GetKey(section, IniHeightKey), out var height)) return false;
+
+                var size = ClampToScreen(f, new Size(width, height));
+                if (size.Width <= 0 || size.Height <= 0) return false;
+
+                f.Size = size;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Failed to read the stored main form size. Error:\r\n" + ex);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Size the window gets when it has never been resized: a fraction of the
+        /// desktop, but never smaller than the window allows.
+        /// </summary>
+        private static void ApplyDefaultSize(Form f)
+        {
+            var desktop = Screen.PrimaryScreen.WorkingArea;
+
+            var width = Math.Max(f.MinimumSize.Width, (int)(desktop.Width / 3.2));
+            var height = Math.Max(f.MinimumSize.Height, (int)(width * 0.6));
+
+            f.Size = ClampToScreen(f, new Size(width, height));
+        }
+
+        /// <summary>
+        /// Keeps a size within what the window and the screen allow.
+        /// </summary>
+        /// <remarks>
+        /// A size stored on a larger monitor would otherwise open the window larger than
+        /// the screen it is opened on, with its window buttons out of reach.
+        /// </remarks>
+        private static Size ClampToScreen(Form f, Size size)
+        {
+            var desktop = Screen.PrimaryScreen.WorkingArea;
+
+            var width = Math.Min(Math.Max(size.Width, f.MinimumSize.Width), desktop.Width);
+            var height = Math.Min(Math.Max(size.Height, f.MinimumSize.Height), desktop.Height);
+
+            return new Size(width, height);
+        }
+
+        /// <summary>
+        /// Reads a size which was written in the invariant format, so the value does not
+        /// depend on the language the application happens to be running in.
+        /// </summary>
+        private static bool TryParseSize(string value, out int size)
+        {
+            return int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out size);
+        }
+
+        /// <summary>
+        /// Saves the form size in the ini file once the user has stopped resizing it.
+        /// </summary>
+        /// <remarks>
+        /// The timer belongs to the window, so the size is read on the thread which owns
+        /// the window rather than from a worker thread, and it is read after the drag has
+        /// finished rather than while the window is still moving.
+        /// </remarks>
         private static void TrackFormSizeChanges(Form f)
         {
-#if !DEBUG
-            // register size changed to save window size
-            f.SizeChanged += new EventHandler((o, e) =>
+            var saveTimer = new Timer { Interval = SizeSaveDelayMilliseconds };
+
+            saveTimer.Tick += (o, e) =>
             {
-                if (_isWritingSize) return;
+                saveTimer.Stop();
+                SaveSize(f);
+            };
 
-                _isWritingSize = true;
+            f.SizeChanged += (o, e) =>
+            {
+                saveTimer.Stop();
+                saveTimer.Start();
+            };
 
-                Task.Delay(1000).ContinueWith(t =>
-                {
-                    try
-                    {
-                        // save window size
-                        var ini1 = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
+            f.FormClosed += (o, e) => saveTimer.Dispose();
+        }
 
-                        ini1.SetKey(ManageSettings.IniSettingsSectionName, nameof(f.Width), f.Width + "");
-                        ini1.SetKey(ManageSettings.IniSettingsSectionName, nameof(f.Height), f.Height + "");
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.Error("Failed to save the main form size. Error:\r\n" + ex);
-                    }
-                    finally
-                    {
-                        _isWritingSize = false;
-                    }
-                });
-            });
-#endif
+        /// <summary>
+        /// Writes the current size of the form to the ini file.
+        /// </summary>
+        /// <remarks>
+        /// Called whenever the user stops resizing the window, and once more while it
+        /// closes in case it was closed before that write happened.
+        /// </remarks>
+        internal static void SaveSize(Form f)
+        {
+            try
+            {
+                // a minimized window reports the size it will return to
+                var size = f.WindowState == FormWindowState.Normal ? f.Size : f.RestoreBounds.Size;
+                if (size.Width <= 0 || size.Height <= 0) return;
+
+                var ini = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
+
+                ini.SetKey(ManageSettings.IniSettingsSectionName, IniWidthKey, size.Width.ToString(CultureInfo.InvariantCulture));
+                ini.SetKey(ManageSettings.IniSettingsSectionName, IniHeightKey, size.Height.ToString(CultureInfo.InvariantCulture));
+            }
+            catch (Exception ex)
+            {
+                _log.Error("Failed to save the main form size. Error:\r\n" + ex);
+            }
         }
 
         /// <summary>

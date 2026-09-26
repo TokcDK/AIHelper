@@ -23,4 +23,22 @@
         /// </summary>
         ThemePalette Palette { get; }
     }
+
+    /// <summary>
+    /// A theme which draws new colours every time it is applied, instead of keeping the
+    /// same palette for as long as the application runs.
+    /// </summary>
+    /// <remarks>
+    /// Separate from <see cref="IUITheme"/> on purpose. Almost every theme is a fixed
+    /// set of colours, and only the random one has anything to redraw, so asking all of
+    /// them to implement a redraw they do not have would be noise. The loader only has
+    /// to look for this interface to know which themes want a new draw.
+    /// </remarks>
+    internal interface IRollableTheme
+    {
+        /// <summary>
+        /// Draws a new set of colours, which replaces the palette of this instance.
+        /// </summary>
+        void Roll();
+    }
 }

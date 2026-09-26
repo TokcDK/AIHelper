@@ -465,7 +465,7 @@
     <Content Include="BUILD\MO\plugins\basic_games\games\game_koikatu.py" />
     <Content Include="BUILD\MO\plugins\basic_games\games\game_roomgirl.py" />
     <Content Include="helpericon.ico" />
-    <Content Include="BUILD\RES\links\AI.txt" />
+    <Content Include="BUILD\RES\links\AIS.txt" />
     <Content Include="BUILD\RES\links\Default.txt" />
     <Content Include="BUILD\RES\links\HS.txt" />
     <Content Include="BUILD\RES\links\HS2.txt" />

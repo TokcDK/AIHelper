@@ -74,7 +74,8 @@ namespace AIHelper.Forms.ExtraSettings.Elements.BepinEx
             var bepInExDllPath = ManageModOrganizer.GetLastPath(fullPath);
             if (File.Exists(bepInExDllPath))
             {
-                var ver = FileVersionInfo.GetVersionInfo(bepInExDllPath).ProductVersion;
+                var fileVersionInfo = FileVersionInfo.GetVersionInfo(bepInExDllPath);
+                var ver = fileVersionInfo.FileVersion;
                 return ver;
             }
 

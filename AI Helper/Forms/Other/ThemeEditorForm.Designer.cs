@@ -43,7 +43,7 @@
             this.RolesOwnColorListBox = new System.Windows.Forms.ListBox();
             this.EditLayoutTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.PreviewOwnColorPanel = new System.Windows.Forms.Panel();
-            this.txtColourHex = new System.Windows.Forms.TextBox();
+            this.txtColourHex = new AIHelper.Manage.ui.ThemedTextBox();
             this.ColourButtonsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.btnPick = new System.Windows.Forms.Button();
             this.btnFromScreen = new System.Windows.Forms.Button();
@@ -334,7 +334,7 @@
         private System.Windows.Forms.ListBox RolesOwnColorListBox;
         private System.Windows.Forms.TableLayoutPanel EditLayoutTableLayoutPanel;
         private System.Windows.Forms.Panel PreviewOwnColorPanel;
-        private System.Windows.Forms.TextBox txtColourHex;
+        private AIHelper.Manage.ui.ThemedTextBox txtColourHex;
         private System.Windows.Forms.FlowLayoutPanel ColourButtonsFlowLayoutPanel;
         private System.Windows.Forms.Button btnPick;
         private System.Windows.Forms.Button btnFromScreen;

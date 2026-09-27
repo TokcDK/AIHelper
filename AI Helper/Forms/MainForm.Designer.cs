@@ -73,26 +73,26 @@
             this.CurrentGameLabel = new System.Windows.Forms.Label();
             this.ManageGameTableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.CurrentGamePanel1 = new System.Windows.Forms.Panel();
-            this.CurrentGameTitleTextBox = new System.Windows.Forms.TextBox();
-            this.CurrentGameComboBox = new System.Windows.Forms.ComboBox();
+            this.CurrentGameTitleTextBox = new AIHelper.Manage.ui.ThemedTextBox();
+            this.CurrentGameComboBox = new AIHelper.Manage.ui.ThemedComboBox();
             this.AddGameButton = new System.Windows.Forms.Button();
             this.ThemeSelectLabel = new System.Windows.Forms.Label();
             this.ThemeSelectTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.SelectThemeComboBox = new System.Windows.Forms.ComboBox();
+            this.SelectThemeComboBox = new AIHelper.Manage.ui.ThemedComboBox();
             this.EditThemeButton = new System.Windows.Forms.Button();
             this.SaveThemeButton = new System.Windows.Forms.Button();
             this.RenameThemeButton = new System.Windows.Forms.Button();
             this.DeleteThemeButton = new System.Windows.Forms.Button();
             this.OtherSettingsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.BepInExLogTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.BepInExConsoleCheckBox = new System.Windows.Forms.CheckBox();
+            this.BepInExConsoleCheckBox = new AIHelper.Manage.ui.ThemedCheckBox();
             this.OpenLogLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.VRGameCheckBox = new System.Windows.Forms.CheckBox();
+            this.VRGameCheckBox = new AIHelper.Manage.ui.ThemedCheckBox();
             this.JPLauncherRunLinkLabel = new System.Windows.Forms.LinkLabel();
             this.ExtraSettingsLinkLabel = new System.Windows.Forms.LinkLabel();
             this.FixRegistryLinkLabel = new System.Windows.Forms.LinkLabel();
             this.CreateShortcutLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.AutoShortcutRegistryCheckBox = new System.Windows.Forms.CheckBox();
+            this.AutoShortcutRegistryCheckBox = new AIHelper.Manage.ui.ThemedCheckBox();
             this.SettingsTabDisplayTabPage = new System.Windows.Forms.TabPage();
             this.SettingsTabDisplayTabPageGameBackgroundPanel = new System.Windows.Forms.Panel();
             this.ToolsTabPage = new System.Windows.Forms.TabPage();
@@ -303,8 +303,8 @@
             // 
             // LaunchTabTheAppTitleAccentLabel
             // 
-            // The name carries the accent mark, so the theme paints it in the accent
-            // colour instead of the normal text colour.
+            // The name carries the app title mark, so the theme paints it in the colour
+            // the launch page gives its title, apart from the accent and the muted text.
             this.LaunchTabTheAppTitleAccentLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LaunchTabTheAppTitleAccentLabel.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.LaunchTabTheAppTitleAccentLabel.Location = new System.Drawing.Point(0, 0);
@@ -317,8 +317,8 @@
             // 
             // SelectedGameTitleMutedLabel
             // 
-            // The name carries the muted mark, so the theme paints it in the secondary
-            // text colour and it never competes with the title above it.
+            // The name carries the selected game title mark, so the theme paints it in
+            // the colour the launch page gives the game, apart from the title above it.
             this.SelectedGameTitleMutedLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SelectedGameTitleMutedLabel.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.SelectedGameTitleMutedLabel.Location = new System.Drawing.Point(0, 67);
@@ -996,11 +996,11 @@
         private System.Windows.Forms.Label CurrentGameLabel;
         private System.Windows.Forms.TableLayoutPanel ManageGameTableLayoutPanel1;
         private System.Windows.Forms.Panel CurrentGamePanel1;
-        internal System.Windows.Forms.TextBox CurrentGameTitleTextBox;
-        internal System.Windows.Forms.ComboBox CurrentGameComboBox;
+        internal AIHelper.Manage.ui.ThemedTextBox CurrentGameTitleTextBox;
+        internal AIHelper.Manage.ui.ThemedComboBox CurrentGameComboBox;
         private System.Windows.Forms.Button AddGameButton;
         private System.Windows.Forms.Label ThemeSelectLabel;
-        internal System.Windows.Forms.ComboBox SelectThemeComboBox;
+        internal AIHelper.Manage.ui.ThemedComboBox SelectThemeComboBox;
         private System.Windows.Forms.TableLayoutPanel ThemeSelectTableLayoutPanel;
         private System.Windows.Forms.Button EditThemeButton;
         private System.Windows.Forms.Button SaveThemeButton;
@@ -1008,14 +1008,14 @@
         private System.Windows.Forms.Button DeleteThemeButton;
         private System.Windows.Forms.FlowLayoutPanel OtherSettingsFlowLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel BepInExLogTableLayoutPanel;
-        private System.Windows.Forms.CheckBox BepInExConsoleCheckBox;
+        private AIHelper.Manage.ui.ThemedCheckBox BepInExConsoleCheckBox;
         private System.Windows.Forms.LinkLabel OpenLogLinkLabel;
-        public System.Windows.Forms.CheckBox VRGameCheckBox;
+        internal AIHelper.Manage.ui.ThemedCheckBox VRGameCheckBox;
         private System.Windows.Forms.LinkLabel JPLauncherRunLinkLabel;
         private System.Windows.Forms.LinkLabel ExtraSettingsLinkLabel;
         private System.Windows.Forms.LinkLabel FixRegistryLinkLabel;
         private System.Windows.Forms.LinkLabel CreateShortcutLinkLabel;
-        internal System.Windows.Forms.CheckBox AutoShortcutRegistryCheckBox;
+        internal AIHelper.Manage.ui.ThemedCheckBox AutoShortcutRegistryCheckBox;
         private System.Windows.Forms.TabPage SettingsTabDisplayTabPage;
         private System.Windows.Forms.Panel SettingsTabDisplayTabPageGameBackgroundPanel;
         internal System.Windows.Forms.TabPage ToolsTabPage;

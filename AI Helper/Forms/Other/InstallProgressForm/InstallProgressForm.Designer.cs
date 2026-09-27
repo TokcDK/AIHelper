@@ -37,7 +37,7 @@
             this.lblStep = new System.Windows.Forms.Label();
             this.progressStep = new System.Windows.Forms.ProgressBar();
             this.lblFolder = new System.Windows.Forms.Label();
-            this.txtLog = new System.Windows.Forms.TextBox();
+            this.txtLog = new AIHelper.Manage.ui.ThemedTextBox();
             this.buttonsTable = new System.Windows.Forms.TableLayoutPanel();
             this.btnStart = new System.Windows.Forms.Button();
             this.btnOpenFolder = new System.Windows.Forms.Button();
@@ -265,7 +265,7 @@
         private System.Windows.Forms.Label lblStep;
         private System.Windows.Forms.ProgressBar progressStep;
         private System.Windows.Forms.Label lblFolder;
-        private System.Windows.Forms.TextBox txtLog;
+        private AIHelper.Manage.ui.ThemedTextBox txtLog;
         private System.Windows.Forms.TableLayoutPanel buttonsTable;
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Button btnOpenFolder;

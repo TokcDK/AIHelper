@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             this.BepinExSettingsPanel = new System.Windows.Forms.Panel();
-            this.BepInExSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.BepInExSettingsGroupBox = new AIHelper.Manage.ui.ThemedGroupBox();
             this.BepInExSettingsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.BepInExSettingsDisplayedLogLevelLabel = new System.Windows.Forms.Label();
             this.OpenLogLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.BepInExSettingsLogCheckBox = new System.Windows.Forms.CheckBox();
+            this.BepInExSettingsLogCheckBox = new AIHelper.Manage.ui.ThemedCheckBox();
             this.BepInExLevelButtonsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.BepInExLevelsSelectAllLabel = new System.Windows.Forms.Label();
             this.BepInExLevelsClearLabel = new System.Windows.Forms.Label();
@@ -287,7 +287,7 @@
         #endregion
 
         private System.Windows.Forms.Panel BepinExSettingsPanel;
-        private System.Windows.Forms.GroupBox BepInExSettingsGroupBox;
+        private AIHelper.Manage.ui.ThemedGroupBox BepInExSettingsGroupBox;
         private System.Windows.Forms.TableLayoutPanel BepInExSettingsTableLayoutPanel;
         private System.Windows.Forms.LinkLabel BepinExLogTargetLinkLabel;
         private System.Windows.Forms.CheckedListBox BepInExSettingsLogCheckedListBox;
@@ -298,7 +298,7 @@
         private System.Windows.Forms.FlowLayoutPanel BepInExLevelButtonsFlowLayoutPanel;
         private System.Windows.Forms.Label BepInExLevelsSelectAllLabel;
         private System.Windows.Forms.Label BepInExLevelsClearLabel;
-        private System.Windows.Forms.CheckBox BepInExSettingsLogCheckBox;
+        private AIHelper.Manage.ui.ThemedCheckBox BepInExSettingsLogCheckBox;
         private System.Windows.Forms.LinkLabel OpenLogLinkLabel;
         private System.Windows.Forms.Label BepInExSettingsDisplayedLogLevelLabel;
     }

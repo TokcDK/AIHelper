@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             this.LevelsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.checkBox1 = new AIHelper.Manage.ui.ThemedCheckBox();
+            this.checkBox2 = new AIHelper.Manage.ui.ThemedCheckBox();
+            this.checkBox3 = new AIHelper.Manage.ui.ThemedCheckBox();
+            this.checkBox4 = new AIHelper.Manage.ui.ThemedCheckBox();
             this.LevelsFlowLayoutPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -113,9 +113,9 @@
         #endregion
 
         private System.Windows.Forms.FlowLayoutPanel LevelsFlowLayoutPanel;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.CheckBox checkBox3;
-        private System.Windows.Forms.CheckBox checkBox4;
+        private AIHelper.Manage.ui.ThemedCheckBox checkBox1;
+        private AIHelper.Manage.ui.ThemedCheckBox checkBox2;
+        private AIHelper.Manage.ui.ThemedCheckBox checkBox3;
+        private AIHelper.Manage.ui.ThemedCheckBox checkBox4;
     }
 }

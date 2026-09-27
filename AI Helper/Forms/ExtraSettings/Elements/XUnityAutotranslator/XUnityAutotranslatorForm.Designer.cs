@@ -29,16 +29,16 @@
         private void InitializeComponent()
         {
             this.XUASettingsPanel = new System.Windows.Forms.Panel();
-            this.XUAGroupBox = new System.Windows.Forms.GroupBox();
+            this.XUAGroupBox = new AIHelper.Manage.ui.ThemedGroupBox();
             this.XUASettingsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.XUALanguageLabel = new System.Windows.Forms.Label();
             this.XUAHelpLinkLabel = new System.Windows.Forms.LinkLabel();
-            this.XUAFromLanguageComboBox = new System.Windows.Forms.ComboBox();
+            this.XUAFromLanguageComboBox = new AIHelper.Manage.ui.ThemedComboBox();
             this.XUAFromLanguageArrowLabel = new System.Windows.Forms.Label();
-            this.XUALanguageComboBox = new System.Windows.Forms.ComboBox();
+            this.XUALanguageComboBox = new AIHelper.Manage.ui.ThemedComboBox();
             this.XUALanguageArrowLabel = new System.Windows.Forms.Label();
             this.XUATranslateServiceLabel = new System.Windows.Forms.Label();
-            this.XUAEndpointComboBox = new System.Windows.Forms.ComboBox();
+            this.XUAEndpointComboBox = new AIHelper.Manage.ui.ThemedComboBox();
             this.XUAcfgFileOpenLinkLabel = new System.Windows.Forms.LinkLabel();
             this.XUASettingsPanel.SuspendLayout();
             this.XUAGroupBox.SuspendLayout();
@@ -232,17 +232,17 @@
 
         #endregion
 
-        private System.Windows.Forms.GroupBox XUAGroupBox;
+        private AIHelper.Manage.ui.ThemedGroupBox XUAGroupBox;
         private System.Windows.Forms.TableLayoutPanel XUASettingsTableLayoutPanel;
         private System.Windows.Forms.LinkLabel XUAHelpLinkLabel;
         private System.Windows.Forms.LinkLabel XUAcfgFileOpenLinkLabel;
-        private System.Windows.Forms.ComboBox XUAEndpointComboBox;
+        private AIHelper.Manage.ui.ThemedComboBox XUAEndpointComboBox;
         private System.Windows.Forms.Label XUATranslateServiceLabel;
         private System.Windows.Forms.Label XUAFromLanguageArrowLabel;
         private System.Windows.Forms.Label XUALanguageArrowLabel;
-        private System.Windows.Forms.ComboBox XUALanguageComboBox;
+        private AIHelper.Manage.ui.ThemedComboBox XUALanguageComboBox;
         private System.Windows.Forms.Label XUALanguageLabel;
-        private System.Windows.Forms.ComboBox XUAFromLanguageComboBox;
+        private AIHelper.Manage.ui.ThemedComboBox XUAFromLanguageComboBox;
         private System.Windows.Forms.Panel XUASettingsPanel;
     }
 }

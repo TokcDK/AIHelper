@@ -31,9 +31,9 @@
             this.ContentTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.SelectorsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.ProfileLabel = new System.Windows.Forms.Label();
-            this.ProfilesComboBox = new System.Windows.Forms.ComboBox();
+            this.ProfilesComboBox = new AIHelper.Manage.ui.ThemedComboBox();
             this.ExesLabel = new System.Windows.Forms.Label();
-            this.ExesComboBox = new System.Windows.Forms.ComboBox();
+            this.ExesComboBox = new AIHelper.Manage.ui.ThemedComboBox();
             this.ExeButtonsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.AddExeButton = new System.Windows.Forms.Button();
             this.RemoveExeButton = new System.Windows.Forms.Button();
@@ -217,9 +217,9 @@
         private System.Windows.Forms.TableLayoutPanel ContentTableLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel SelectorsTableLayoutPanel;
         private System.Windows.Forms.Label ProfileLabel;
-        private System.Windows.Forms.ComboBox ProfilesComboBox;
+        private AIHelper.Manage.ui.ThemedComboBox ProfilesComboBox;
         private System.Windows.Forms.Label ExesLabel;
-        private System.Windows.Forms.ComboBox ExesComboBox;
+        private AIHelper.Manage.ui.ThemedComboBox ExesComboBox;
         private System.Windows.Forms.TableLayoutPanel ExeButtonsTableLayoutPanel;
         private System.Windows.Forms.Button AddExeButton;
         private System.Windows.Forms.Button RemoveExeButton;

@@ -32,10 +32,10 @@
             this.PromptLabel = new System.Windows.Forms.Label();
             this.HeightTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.HeightLabel = new System.Windows.Forms.Label();
-            this.HeightTextBox = new System.Windows.Forms.TextBox();
+            this.HeightTextBox = new AIHelper.Manage.ui.ThemedTextBox();
             this.WidthTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.WidthLabel = new System.Windows.Forms.Label();
-            this.WidthTextBox = new System.Windows.Forms.TextBox();
+            this.WidthTextBox = new AIHelper.Manage.ui.ThemedTextBox();
             this.ButtonsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.ApplyButton = new System.Windows.Forms.Button();
             this.MainTableLayoutPanel.SuspendLayout();
@@ -209,8 +209,8 @@
 
         private System.Windows.Forms.Label HeightLabel;
         private System.Windows.Forms.Label WidthLabel;
-        private System.Windows.Forms.TextBox HeightTextBox;
-        private System.Windows.Forms.TextBox WidthTextBox;
+        private AIHelper.Manage.ui.ThemedTextBox HeightTextBox;
+        private AIHelper.Manage.ui.ThemedTextBox WidthTextBox;
         private System.Windows.Forms.Label PromptLabel;
         private System.Windows.Forms.TableLayoutPanel MainTableLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel WidthTableLayoutPanel;

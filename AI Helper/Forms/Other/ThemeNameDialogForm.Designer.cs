@@ -39,7 +39,7 @@
             this.MainPanel = new System.Windows.Forms.Panel();
             this.LayoutTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.lblThemeName = new System.Windows.Forms.Label();
-            this.txtThemeName = new System.Windows.Forms.TextBox();
+            this.txtThemeName = new AIHelper.Manage.ui.ThemedTextBox();
             this.ButtonsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.btnStart = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -176,6 +176,6 @@
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Label lblThemeName;
-        private System.Windows.Forms.TextBox txtThemeName;
+        private AIHelper.Manage.ui.ThemedTextBox txtThemeName;
     }
 }

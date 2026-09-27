@@ -666,6 +666,8 @@ namespace AIHelper.Manage.ui.themes
             var isMuted = HasMark(control, ManageSettings.ThemeMutedNameMark);
             var isAccent = HasMark(control, ManageSettings.ThemeAccentNameMark);
             var isDanger = HasMark(control, ManageSettings.ThemeDangerNameMark);
+            var isAppTitle = HasMark(control, ManageSettings.ThemeAppTitleNameMark);
+            var isGameTitle = HasMark(control, ManageSettings.ThemeGameTitleNameMark);
 
             // a scroll bar is drawn by Windows and ignores the colours it is given, so
             // it has to be asked for a visual style of its own instead
@@ -674,12 +676,12 @@ namespace AIHelper.Manage.ui.themes
                 ThemedScrollBars.Apply(control, palette.IsDark);
             }
 
-            // the colour text takes on the surface it sits on
-            var textColor = isOnTitleBar ? palette.TitleBarText : palette.Text;
-            var mutedColor = isOnTitleBar ? palette.TitleBarMuted : palette.TextMuted;
-
-            if (isMuted) textColor = mutedColor;
-            if (isAccent) textColor = palette.Accent;
+            // the colour text takes on the surface it sits on. Each family of control
+            // has a role of its own for it, and a mark on the control overrides that.
+            var textColor = MarkedText(palette, isOnTitleBar, isMuted, isAccent, isAppTitle, isGameTitle,
+                isOnTitleBar ? palette.TitleBarText : palette.Text);
+            var groupText = MarkedText(palette, isOnTitleBar, isMuted, isAccent, isAppTitle, isGameTitle, palette.GroupText);
+            var checkText = MarkedText(palette, isOnTitleBar, isMuted, isAccent, isAppTitle, isGameTitle, palette.CheckText);
 
             var form = control as Form;
             if (form != null)
@@ -705,8 +707,7 @@ namespace AIHelper.Manage.ui.themes
             var groupBox = control as GroupBox;
             if (groupBox != null)
             {
-                groupBox.BackColor = palette.SurfaceAlt;
-                groupBox.ForeColor = textColor;
+                ApplyGroupBox(palette, groupBox, groupText);
                 return;
             }
 
@@ -720,8 +721,7 @@ namespace AIHelper.Manage.ui.themes
             var checkBox = control as CheckBox;
             if (checkBox != null)
             {
-                // left transparent so the surface behind it shows through
-                checkBox.ForeColor = textColor;
+                ApplyCheckBox(palette, checkBox, checkText);
                 return;
             }
 
@@ -792,6 +792,74 @@ namespace AIHelper.Manage.ui.themes
         }
 
         /// <summary>
+        /// The colour text takes on a surface: the colour a mark on the control asks
+        /// for, and otherwise the role that control family gives its text.
+        /// </summary>
+        /// <remarks>
+        /// The marks are tested most specific first. A control can carry more than one
+        /// of them by accident - the launch page title is named for the accent it used
+        /// to be drawn in as well as for what it is - and the one that says what the
+        /// control <em>is</em> has to win over the one that only said how it looked.
+        /// </remarks>
+        private static Color MarkedText(ThemePalette palette, bool isOnTitleBar, bool isMuted, bool isAccent,
+            bool isAppTitle, bool isGameTitle, Color role)
+        {
+            if (isAppTitle) return palette.LaunchTitleText;
+            if (isGameTitle) return palette.LaunchGameText;
+            if (isAccent) return palette.Accent;
+            if (isMuted) return isOnTitleBar ? palette.TitleBarMuted : palette.TextMuted;
+
+            return role;
+        }
+
+        /// <summary>
+        /// Colours a group box.
+        /// </summary>
+        /// <remarks>
+        /// A group box draws its own frame, in a system colour which no property
+        /// reaches, so the frame is drawn by the control instead - see
+        /// <see cref="ThemedGroupBox"/>. Its face and caption are set here either way,
+        /// so a group box nobody re-registered still follows the theme, only without a
+        /// frame colour of its own.
+        /// </remarks>
+        private static void ApplyGroupBox(ThemePalette palette, GroupBox groupBox, Color textColor)
+        {
+            groupBox.BackColor = palette.GroupFace;
+            groupBox.ForeColor = textColor;
+
+            var themed = groupBox as ThemedGroupBox;
+            if (themed != null)
+            {
+                themed.BorderColour = palette.GroupBorder;
+            }
+        }
+
+        /// <summary>
+        /// Colours a check box.
+        /// </summary>
+        /// <remarks>
+        /// A check box draws the box beside its caption with the system colours and
+        /// ignores the background and the border colour it is offered, so no theme could
+        /// reach it. A <see cref="ThemedCheckBox"/> draws the box itself and is told the
+        /// three colours here. A plain check box is still drawn flat, and given its
+        /// caption colour, so a control nobody re-registered is not left unthemed.
+        /// </remarks>
+        private static void ApplyCheckBox(ThemePalette palette, CheckBox checkBox, Color textColor)
+        {
+            // flat is what makes the box a shape rather than a picture of the system
+            // theme, and it is the shape the themed box is drawn over
+            checkBox.FlatStyle = FlatStyle.Flat;
+            checkBox.ForeColor = textColor;
+
+            var themed = checkBox as ThemedCheckBox;
+            if (themed == null) return;
+
+            themed.GlyphFace = palette.CheckFace;
+            themed.GlyphBorder = palette.CheckBorder;
+            themed.GlyphMark = palette.CheckMark;
+        }
+
+        /// <summary>
         /// Colours a container.
         /// </summary>
         /// <remarks>
@@ -849,16 +917,20 @@ namespace AIHelper.Manage.ui.themes
         /// Colours a tab strip and switches it to owner drawing.
         /// </summary>
         /// <remarks>
-        /// A tab strip drawn by the system ignores the theme completely, so the
-        /// headers are drawn here instead: flat, with an accent strip on the selected
-        /// one. The handler reads the palette when it paints rather than capturing it,
-        /// so switching themes repaints the headers correctly.
+        /// A tab strip drawn by the system ignores the theme completely, so the headers
+        /// and the strip behind them are drawn by <see cref="ThemedTabControl"/> instead:
+        /// flat, with a frame around each header and an accent strip on the selected one.
+        /// The drawing reads the palette when it paints rather than capturing it, so
+        /// switching themes repaints the strip correctly.
         /// </remarks>
         private static void ApplyTabControl(ThemePalette palette, TabControl tabControl)
         {
             tabControl.BackColor = palette.TabFace;
             tabControl.ForeColor = palette.TabText;
 
+            // owner drawing is kept because that is what fixes the size of a header;
+            // the headers themselves are painted by the strip, which needs the whole
+            // header rather than the rectangle an owner draw is handed
             tabControl.DrawMode = TabDrawMode.OwnerDrawFixed;
             tabControl.SizeMode = TabSizeMode.Fixed;
             tabControl.ItemSize = MeasureTabHeader(tabControl);
@@ -922,46 +994,100 @@ namespace AIHelper.Manage.ui.themes
             return new Size(width, font.Height + padding.Y * 2 + TabExtraHeight);
         }
 
-        private static void DrawTabHeader(object sender, DrawItemEventArgs e)
+        /// <summary>
+        /// Paints one tab header: its face, its frame, its caption and, on the selected
+        /// one, the accent bar which marks it as selected.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The whole header is painted, including the two pixel frame the control draws
+        /// around it. That frame is a system colour with no property behind it, which is
+        /// what the light outline around a tab was; painting the header in full is what
+        /// makes it the theme's.
+        /// </para>
+        /// <para>
+        /// The rectangle comes from the control rather than from the bounds an owner draw
+        /// is handed. The two differ - the owner draw rectangle is inset by that same
+        /// frame - and the strip needs the whole header, so it asks for it and the owner
+        /// drawing uses the same answer, which is also what keeps the caption where it
+        /// was.
+        /// </para>
+        /// </remarks>
+        internal static void PaintTabHeader(Graphics graphics, TabControl tabControl, int index)
         {
-            var tabControl = sender as TabControl;
-            if (tabControl == null || e.Index < 0 || e.Index >= tabControl.TabPages.Count) return;
+            if (graphics == null || tabControl == null) return;
+            if (index < 0 || index >= tabControl.TabPages.Count) return;
 
             var palette = CurrentPalette ?? FallbackPalette;
-            var isSelected = tabControl.SelectedIndex == e.Index;
-            var bounds = e.Bounds;
+            var isSelected = tabControl.SelectedIndex == index;
+            var bounds = tabControl.GetTabRect(index);
 
             using (var background = new SolidBrush(isSelected ? palette.TabSelectedFace : palette.TabFace))
             {
-                e.Graphics.FillRectangle(background, bounds);
+                graphics.FillRectangle(background, bounds);
+            }
+
+            using (var border = new Pen(palette.TabBorder))
+            {
+                DrawTabFrame(graphics, border, bounds, isSelected);
             }
 
             if (isSelected)
             {
                 using (var accent = new SolidBrush(palette.Accent))
                 {
-                    e.Graphics.FillRectangle(accent, new Rectangle(bounds.X, bounds.Y, bounds.Width, TabAccentStripHeight));
+                    graphics.FillRectangle(accent, new Rectangle(bounds.X, bounds.Y, bounds.Width, TabAccentStripHeight));
                 }
             }
-            else
-            {
-                var inset = tabControl.Padding.Y;
-
-                using (var separator = new Pen(palette.Border))
-                {
-                    e.Graphics.DrawLine(separator, bounds.Right - 1, bounds.Y + inset, bounds.Right - 1, bounds.Bottom - inset);
-                }
-            }
-
-            var textColor = isSelected ? palette.TabSelectedText : palette.TabText;
 
             TextRenderer.DrawText(
-                e.Graphics,
-                tabControl.TabPages[e.Index].Text,
+                graphics,
+                tabControl.TabPages[index].Text,
                 tabControl.Font,
                 bounds,
-                textColor,
+                isSelected ? palette.TabSelectedText : palette.TabText,
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+        }
+
+        /// <summary>
+        /// Draws the outline of one header.
+        /// </summary>
+        /// <remarks>
+        /// The selected header is left open at the bottom, so it joins the page under it
+        /// instead of being cut off from it - which is how a tab strip shows which page is
+        /// the one on screen. Its top edge is drawn as well even though the accent bar
+        /// covers it, so the outline of a header does not depend on whether it is
+        /// selected.
+        /// </remarks>
+        private static void DrawTabFrame(Graphics graphics, Pen border, Rectangle bounds, bool isSelected)
+        {
+            var left = bounds.Left;
+            var top = bounds.Top;
+            var right = bounds.Right - 1;
+            var bottom = bounds.Bottom - 1;
+
+            graphics.DrawLine(border, left, top, right, top);
+            graphics.DrawLine(border, left, top, left, bottom);
+            graphics.DrawLine(border, right, top, right, bottom);
+
+            if (!isSelected) graphics.DrawLine(border, left, bottom, right, bottom);
+        }
+
+        /// <summary>
+        /// Paints one header for the control's own owner drawing.
+        /// </summary>
+        /// <remarks>
+        /// The strip paints its own headers, so this is only reached if something draws
+        /// the control through the native path. It stays because the control is kept in
+        /// owner draw mode - that is what fixes the header size - and a mode with no
+        /// handler would leave those headers blank.
+        /// </remarks>
+        private static void DrawTabHeader(object sender, DrawItemEventArgs e)
+        {
+            var tabControl = sender as TabControl;
+            if (tabControl == null) return;
+
+            PaintTabHeader(e.Graphics, tabControl, e.Index);
         }
 
         /// <summary>
@@ -1068,7 +1194,9 @@ namespace AIHelper.Manage.ui.themes
         /// on the surface colour instead of the input colour. That keeps the log
         /// window and the message boxes from looking editable. Every box keeps a
         /// single line border, because a read only box sits on the same colour as the
-        /// panel around it in the light theme and would otherwise have no edge.
+        /// panel around it in the light theme and would otherwise have no edge - and
+        /// that border is the one an edit control draws in its own colour, so a box
+        /// which can paint it is told which colour to use.
         /// </remarks>
         private static void ApplyTextBox(ThemePalette palette, TextBoxBase textBox)
         {
@@ -1088,6 +1216,12 @@ namespace AIHelper.Manage.ui.themes
             {
                 bordered.BorderStyle = BorderStyle.FixedSingle;
             }
+
+            var themed = textBox as ThemedTextBox;
+            if (themed != null)
+            {
+                themed.BorderColour = palette.InputBorder;
+            }
         }
 
         /// <summary>
@@ -1099,8 +1233,9 @@ namespace AIHelper.Manage.ui.themes
         /// stayed on the system colours in every theme. Drawing it flat makes WinForms
         /// paint the closed drop down itself, and owner drawing the entries does the
         /// same for the list. The one pixel outline a flat drop down draws for itself is
-        /// still the system colour: a drop down does not expose the outline the way a
-        /// button does, so there is nothing to point at the theme.
+        /// still the system colour, because a drop down does not expose the outline the
+        /// way a button does; a <see cref="ThemedComboBox"/> paints over it, and a plain
+        /// drop down keeps it.
         /// </remarks>
         private static void ApplyComboBox(ThemePalette palette, ComboBox comboBox)
         {
@@ -1109,6 +1244,12 @@ namespace AIHelper.Manage.ui.themes
             comboBox.ForeColor = palette.InputText;
 
             comboBox.DrawMode = DrawMode.OwnerDrawFixed;
+
+            var themed = comboBox as ThemedComboBox;
+            if (themed != null)
+            {
+                themed.BorderColour = palette.InputBorder;
+            }
 
             // as with the tab strip: the handler reads the palette when it paints, and
             // removing it first keeps a single subscription

@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using AIHelper.Data.Modlist;
 using AIHelper.Forms.Other;
+using AIHelper.Manage.ui;
 using AIHelper.Manage.ui.themes;
 using MAB.DotIgnore;
 using NLog;
@@ -42,14 +43,14 @@ namespace AIHelper.Manage.Functions
             };
 
             // option place into form
-            var cbxMoveIntoNewMod = new CheckBox();
+            var cbxMoveIntoNewMod = new ThemedCheckBox();
             cbxMoveIntoNewMod.Text = T._("Move into new mod");
             cbxMoveIntoNewMod.AutoSize = true;
-            var cbxIgnoreSymlinks = new CheckBox();
+            var cbxIgnoreSymlinks = new ThemedCheckBox();
             cbxIgnoreSymlinks.Text = T._("Ignore symlinks");
             cbxIgnoreSymlinks.AutoSize = true;
             cbxIgnoreSymlinks.Checked = true;
-            var cbxIgnoreShortcuts = new CheckBox();
+            var cbxIgnoreShortcuts = new ThemedCheckBox();
             cbxIgnoreShortcuts.Text = T._("Ignore shortcurs");
             cbxIgnoreShortcuts.AutoSize = true;
             options.flpOptions.Controls.Add(cbxMoveIntoNewMod);

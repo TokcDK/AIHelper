@@ -31,9 +31,9 @@
             this.MainPanel = new System.Windows.Forms.Panel();
             this.DialogLayoutTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.MessageLayoutTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.MessageTextTextBox = new System.Windows.Forms.TextBox();
-            this.MakeBuckupCheckBox = new System.Windows.Forms.CheckBox();
-            this.DoNotSwitchCheckBox = new System.Windows.Forms.CheckBox();
+            this.MessageTextTextBox = new AIHelper.Manage.ui.ThemedTextBox();
+            this.MakeBuckupCheckBox = new AIHelper.Manage.ui.ThemedCheckBox();
+            this.DoNotSwitchCheckBox = new AIHelper.Manage.ui.ThemedCheckBox();
             this.ButtonsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.btnSwitchMode = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -206,11 +206,11 @@
         private System.Windows.Forms.Panel MainPanel;
         private System.Windows.Forms.TableLayoutPanel DialogLayoutTableLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel MessageLayoutTableLayoutPanel;
-        private System.Windows.Forms.TextBox MessageTextTextBox;
+        private AIHelper.Manage.ui.ThemedTextBox MessageTextTextBox;
         private System.Windows.Forms.TableLayoutPanel ButtonsTableLayoutPanel;
         private System.Windows.Forms.Button btnSwitchMode;
         private System.Windows.Forms.Button btnCancel;
-        public System.Windows.Forms.CheckBox MakeBuckupCheckBox;
-        public System.Windows.Forms.CheckBox DoNotSwitchCheckBox;
+        internal AIHelper.Manage.ui.ThemedCheckBox MakeBuckupCheckBox;
+        internal AIHelper.Manage.ui.ThemedCheckBox DoNotSwitchCheckBox;
     }
 }

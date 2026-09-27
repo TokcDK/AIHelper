@@ -196,6 +196,68 @@ namespace AIHelper.Manage.ui.themes
         public Color TabSelectedText { get; set; }
 
         /// <summary>
+        /// Colour of the outline drawn around a tab header.
+        /// </summary>
+        /// <remarks>
+        /// A tab strip draws a two pixel frame around every header itself, in a
+        /// system colour no property reaches, so the frame is drawn by the theme
+        /// instead and this is what it is drawn in. A theme which leaves it out gets
+        /// the ordinary border colour, which is what the frame around an unselected
+        /// header used to be drawn with.
+        /// </remarks>
+        public Color TabBorder { get; set; }
+
+        /// <summary>
+        /// Face colour of a group box: the panel its contents sit on.
+        /// </summary>
+        public Color GroupFace { get; set; }
+
+        /// <summary>
+        /// Colour of the caption of a group box.
+        /// </summary>
+        public Color GroupText { get; set; }
+
+        /// <summary>
+        /// Colour of the frame around a group box.
+        /// </summary>
+        public Color GroupBorder { get; set; }
+
+        /// <summary>
+        /// Face colour of the box of a check box, in every state.
+        /// </summary>
+        public Color CheckFace { get; set; }
+
+        /// <summary>
+        /// Colour of the caption of a check box.
+        /// </summary>
+        public Color CheckText { get; set; }
+
+        /// <summary>
+        /// Colour of the outline of the box of a check box.
+        /// </summary>
+        public Color CheckBorder { get; set; }
+
+        /// <summary>
+        /// Colour of the tick inside a checked box.
+        /// </summary>
+        public Color CheckMark { get; set; }
+
+        /// <summary>
+        /// Colour of the application name on the launch page.
+        /// </summary>
+        /// <remarks>
+        /// Named apart from <see cref="Accent"/> on purpose: the name is the largest
+        /// text in the window, and a theme which wants a loud accent on its buttons
+        /// usually does not want the same colour behind its name.
+        /// </remarks>
+        public Color LaunchTitleText { get; set; }
+
+        /// <summary>
+        /// Colour of the name of the selected game, under the application name.
+        /// </summary>
+        public Color LaunchGameText { get; set; }
+
+        /// <summary>
         /// Colour of a link at rest.
         /// </summary>
         public Color Link { get; set; }
@@ -303,6 +365,26 @@ namespace AIHelper.Manage.ui.themes
             if (TabSelectedFace.IsEmpty) TabSelectedFace = Surface;
             if (TabText.IsEmpty) TabText = TextMuted;
             if (TabSelectedText.IsEmpty) TabSelectedText = Text;
+            if (TabBorder.IsEmpty) TabBorder = Border;
+
+            // The roles of the controls which are painted by the theme rather than by
+            // Windows. Each falls back to the role it borrowed before it existed, so a
+            // theme written before them looks the same with them as without.
+            if (GroupFace.IsEmpty) GroupFace = SurfaceAlt;
+            if (GroupText.IsEmpty) GroupText = Text;
+            if (GroupBorder.IsEmpty) GroupBorder = Border;
+
+            if (CheckFace.IsEmpty) CheckFace = InputFace;
+            if (CheckText.IsEmpty) CheckText = Text;
+            if (CheckBorder.IsEmpty) CheckBorder = Border;
+
+            // the tick is a small shape on the box face, so it is derived the way every
+            // other mark on a surface is: the one of black and white which is readable
+            // there. A theme which would rather have its accent in the box can say so.
+            if (CheckMark.IsEmpty) CheckMark = Contrast(CheckFace);
+
+            if (LaunchTitleText.IsEmpty) LaunchTitleText = Accent;
+            if (LaunchGameText.IsEmpty) LaunchGameText = TextMuted;
 
             if (LinkHover.IsEmpty) LinkHover = Blend(Link, contrastDirection, 0.20f);
             if (LinkVisited.IsEmpty) LinkVisited = Link;

@@ -1233,6 +1233,28 @@ namespace AIHelper.Manage
         /// actions which destroy something.
         /// </summary>
         public static string ThemeDangerNameMark { get => "Danger"; }
+
+        /// <summary>
+        /// A control whose name contains this is the application name on the launch
+        /// page, and is drawn in the colour that page gives its title.
+        /// </summary>
+        /// <remarks>
+        /// A mark of its own rather than the accent mark it used to carry: the title is
+        /// the largest text in the window, and a theme which wants a loud accent on its
+        /// buttons usually does not want the same colour behind its name. The mark names
+        /// the control it belongs to, so nothing else can match it by accident.
+        /// </remarks>
+        public static string ThemeAppTitleNameMark { get => "AppTitle"; }
+
+        /// <summary>
+        /// A control whose name contains this is the name of the selected game under
+        /// that title, and is drawn in the colour the launch page gives it.
+        /// </summary>
+        /// <remarks>
+        /// Named for the control rather than for "game title" alone, which would also
+        /// match the box holding the game name in the settings tab.
+        /// </remarks>
+        public static string ThemeGameTitleNameMark { get => "SelectedGameTitle"; }
         public static string MOProfileSettingsIniForcedLibrariesSectionName { get => "forced_libraries"; }
         public static string ModsDirName { get; } = "Mods";
         public static string DataDirName { get; } = "Data";

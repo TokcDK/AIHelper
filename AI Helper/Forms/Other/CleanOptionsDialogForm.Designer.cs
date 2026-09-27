@@ -31,9 +31,9 @@
             this.MainPanel = new System.Windows.Forms.Panel();
             this.OptionsLayoutTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.OptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.cbxMoveIntoNewMod = new System.Windows.Forms.CheckBox();
-            this.cbxIgnoreSymlinks = new System.Windows.Forms.CheckBox();
-            this.cbxIgnoreShortcuts = new System.Windows.Forms.CheckBox();
+            this.cbxMoveIntoNewMod = new AIHelper.Manage.ui.ThemedCheckBox();
+            this.cbxIgnoreSymlinks = new AIHelper.Manage.ui.ThemedCheckBox();
+            this.cbxIgnoreShortcuts = new AIHelper.Manage.ui.ThemedCheckBox();
             this.ButtonsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.btnStart = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -196,8 +196,8 @@
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.FlowLayoutPanel OptionsFlowLayoutPanel;
-        public System.Windows.Forms.CheckBox cbxMoveIntoNewMod;
-        public System.Windows.Forms.CheckBox cbxIgnoreSymlinks;
-        public System.Windows.Forms.CheckBox cbxIgnoreShortcuts;
+        internal AIHelper.Manage.ui.ThemedCheckBox cbxMoveIntoNewMod;
+        internal AIHelper.Manage.ui.ThemedCheckBox cbxIgnoreSymlinks;
+        internal AIHelper.Manage.ui.ThemedCheckBox cbxIgnoreShortcuts;
     }
 }

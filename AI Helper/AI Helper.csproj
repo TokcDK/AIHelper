@@ -365,6 +365,18 @@
     <Compile Include="Manage\ui\ThemedTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Manage\ui\ThemedCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Manage\ui\ThemedComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Manage\ui\ThemedGroupBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Manage\ui\ThemedTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Manage\Update\Sources\UserAgents.cs" />
     <Compile Include="Manage\Update\Sources\WebClientEx.cs">
       <SubType>Component</SubType>

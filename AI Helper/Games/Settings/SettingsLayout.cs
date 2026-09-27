@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using AIHelper.Manage.ui;
 
 namespace AIHelper.Games.Settings
 {
@@ -63,7 +64,7 @@ namespace AIHelper.Games.Settings
         /// </summary>
         internal static ComboBox CreateDropDown(string[] items, EventHandler onSelectionChanged)
         {
-            var dropDown = new ComboBox
+            var dropDown = new ThemedComboBox
             {
                 Dock = DockStyle.Fill,
                 DropDownStyle = ComboBoxStyle.DropDownList,
@@ -81,7 +82,7 @@ namespace AIHelper.Games.Settings
         /// </summary>
         internal static CheckBox CreateCheckBox(EventHandler onCheckedChanged)
         {
-            var checkBox = new CheckBox
+            var checkBox = new ThemedCheckBox
             {
                 Dock = DockStyle.Fill,
                 Text = string.Empty,

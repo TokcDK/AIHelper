@@ -90,5 +90,45 @@ namespace AIHelper.Manage.ui
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool GetComboBoxInfo(IntPtr hWnd, ref ComboBoxInfo info);
+
+        /// <summary>
+        /// A device context for the whole window, frame included.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="System.Drawing.Graphics.FromHwnd"/> hands back a context for the
+        /// client area only, whose origin is the inside of the frame, so a frame cannot be
+        /// drawn with it. This one has the window's own origin, which is where the frame
+        /// is. It has to be given back with <see cref="ReleaseDeviceContext"/>.
+        /// </remarks>
+        [DllImport("user32.dll")]
+        internal static extern IntPtr GetWindowDC(IntPtr hWnd);
+
+        /// <summary>
+        /// Gives back a context taken with <see cref="GetWindowDC"/>.
+        /// </summary>
+        [DllImport("user32.dll")]
+        internal static extern int ReleaseDC(IntPtr hWnd, IntPtr hDC);
+
+        /// <summary>
+        /// Adds the client area of a window to its update region.
+        /// </summary>
+        internal const uint RedrawInvalidate = 0x0001;
+
+        /// <summary>
+        /// Adds the frame of a window to its update region as well.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="System.Windows.Forms.Control.Invalidate()"/> reaches the client
+        /// area only, and a frame drawn by the theme lives outside it, so recolouring a
+        /// frame would not show until something else happened to repaint it.
+        /// </remarks>
+        internal const uint RedrawFrame = 0x0400;
+
+        /// <summary>
+        /// Marks a window for repainting, frame included when asked for.
+        /// </summary>
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool RedrawWindow(IntPtr hWnd, IntPtr updateRect, IntPtr updateRegion, uint flags);
     }
 }

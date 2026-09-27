@@ -719,7 +719,7 @@ namespace AIHelper
             VRGameCheckBox.Visible = ManageSettings.CurrentGameIsHaveVr;
         }
 
-        private void CheckBox1_CheckedChanged(object sender, EventArgs e)
+        private void AutoShortcutRegistryCheckBoxCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             ManageOther.CheckBoxChangeColor(sender as CheckBox);
             ManageSettings.AutoShortcutRegistryCheckBoxChecked = AutoShortcutRegistryCheckBox.Checked;

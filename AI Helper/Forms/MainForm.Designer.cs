@@ -831,7 +831,7 @@
             this.AutoShortcutRegistryCheckBox.Text = "Autoshortcut";
             this.AutoShortcutRegistryCheckBox.UseVisualStyleBackColor = true;
             this.AutoShortcutRegistryCheckBox.Visible = false;
-            this.AutoShortcutRegistryCheckBox.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
+            this.AutoShortcutRegistryCheckBox.CheckedChanged += new System.EventHandler(this.AutoShortcutRegistryCheckBoxCheckBox_CheckedChanged);
             // 
             // SettingsTabDisplayTabPage
             // 

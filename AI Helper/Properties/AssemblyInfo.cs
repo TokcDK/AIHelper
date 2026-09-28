@@ -32,6 +32,10 @@ using System.Runtime.InteropServices;
 // Можно задать все значения или принять номера сборки и редакции по умолчанию 
 // используя "*", как показано ниже:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("25.12.11.1")]
-[assembly: AssemblyFileVersion("25.12.11.1")]
+//
+// Версия сборки здесь больше не задается вручную. При каждой сборке цель
+// SetAppVersion в AI Helper.csproj создает VersionInfo.g.cs с атрибутами
+// AssemblyVersion, AssemblyFileVersion и AssemblyInformationalVersion
+// в формате yy.M.d.N, где N — номер выпуска за этот день.
+// Журнал выпусков — файл version.txt рядом с проектом.
 [assembly: NeutralResourcesLanguage("en")]

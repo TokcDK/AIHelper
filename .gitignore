@@ -356,4 +356,7 @@ healthchecksdb
 # git
 .github/
 
+# release ledger written by the SetAppVersion target on Release builds
+/AI Helper/version.txt
+
 tests/

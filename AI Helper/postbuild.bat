@@ -9,7 +9,10 @@
 ::    arg1  targetDir          build output dir, ends with a slash
 ::    arg2  targetName         assembly name without extension
 ::    arg3  projectDir         project dir, ends with a slash
-::    arg4  versionNumber      assembly version, resolved by PostBuildMacros
+::    arg4  versionNumber      assembly version, read back from the built assembly by
+::                             PostBuildMacros. Generated at build time by the
+::                             SetAppVersion target as yy.M.d.N and reused as-is by
+::                             Debug builds, so only a Release build moves it on.
 ::    arg5  configurationName  Debug or Release
 ::
 ::  The csproj maps arg1-arg5 to TargetDir, TargetName, ProjectDir,

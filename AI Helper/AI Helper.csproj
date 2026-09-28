@@ -756,6 +756,141 @@
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- ======================================================================
+       Build version, generated automatically.
+
+       The version has the shape <2-digit year>.<month>.<day>.<release number
+       of that day>, for example 26.9.28.1, and it is produced on every build:
+
+         Release  the previous version is read from version.txt. When it was
+                  written on the same day its last number is incremented,
+                  otherwise the counter starts over at 1. The new value is
+                  written back, so version.txt is the release ledger.
+         Debug    the stored version is used as it stands and version.txt is
+                  never written, so a debug build carries the version of the
+                  last release and repeated debug builds stay identical.
+
+       Properties/AssemblyInfo.cs no longer declares AssemblyVersion or
+       AssemblyFileVersion: they are emitted into
+       obj\Configuration\VersionInfo.g.cs by the target below.
+
+       postbuild.bat needs no change. The existing PostBuildMacros target reads
+       the version back out of the built assembly and passes it as argument 4,
+       so the release archive stays named "name version.7z".
+       ====================================================================== -->
+  <PropertyGroup>
+    <AppVersionDateFormat>yy.M.d</AppVersionDateFormat>
+    <VersionStateFile Condition="'$(VersionStateFile)' == ''">$(MSBuildProjectDirectory)\version.txt</VersionStateFile>
+    <AppVersionGeneratedFile>$(IntermediateOutputPath)VersionInfo.g.cs</AppVersionGeneratedFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Registered for Clean too, so a cleaned build does not leave the file behind. -->
+    <FileWrites Include="$(AppVersionGeneratedFile)" />
+  </ItemGroup>
+  <UsingTask TaskName="ComputeAppVersion" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <VersionFile ParameterType="System.String" Required="true" />
+      <DateFormat ParameterType="System.String" Required="true" />
+      <Configuration ParameterType="System.String" Required="true" />
+      <IsReleaseBuild ParameterType="System.Boolean" Required="true" />
+      <AppVersion ParameterType="System.String" Output="true" />
+      <AssemblyVersion ParameterType="System.String" Output="true" />
+      <Bumped ParameterType="System.Boolean" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.Globalization" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Text" />
+      <Code Type="Fragment" Language="cs">
+      <![CDATA[
+        // Version of the previous build; empty when the ledger is missing.
+        var stored = File.Exists(VersionFile) ? File.ReadAllText(VersionFile).Trim() : string.Empty;
+
+        // Local time: a release is dated by the day the author worked.
+        var today = DateTime.Now.ToString(DateFormat, CultureInfo.InvariantCulture);
+        var prefix = today + ".";
+
+        if (IsReleaseBuild)
+        {
+            // A ledger written on another day belongs to another day's counter,
+            // so only a same-day entry may be incremented.
+            var releaseNumber = 0;
+            if (stored.StartsWith(prefix, StringComparison.Ordinal))
+            {
+                var lastDot = stored.LastIndexOf('.');
+                int.TryParse(stored.Substring(lastDot + 1), NumberStyles.Integer, CultureInfo.InvariantCulture, out releaseNumber);
+            }
+            releaseNumber++;
+
+            AppVersion = prefix + releaseNumber.ToString(CultureInfo.InvariantCulture);
+
+            var directory = Path.GetDirectoryName(VersionFile);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory)) Directory.CreateDirectory(directory);
+            File.WriteAllText(VersionFile, AppVersion + Environment.NewLine, new UTF8Encoding(false));
+            Bumped = true;
+        }
+        else
+        {
+            // Not a release: reuse the ledger untouched, so the number survives
+            // any number of debug builds and only a release moves it on.
+            AppVersion = stored.Length > 0 ? stored : "0.0.0.0";
+            Bumped = false;
+        }
+
+        // The assembly metadata is read back as a System.Version, which drops
+        // leading zeroes and rejects anything else, so normalise the value here
+        // and fail loudly instead of emitting an attribute the compiler refuses.
+        Version parsed;
+        if (System.Version.TryParse(AppVersion, out parsed))
+        {
+            AssemblyVersion = parsed.ToString();
+        }
+        else
+        {
+            AssemblyVersion = "0.0.0.0";
+            Log.LogError("AppVersion: '" + AppVersion + "' from '" + VersionFile + "' is not a usable version.");
+        }
+
+        Log.LogMessage(MessageImportance.High, "AppVersion: " + AppVersion + " (" + Configuration + ", written=" + Bumped + ")");
+      ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+  <Target Name="SetAppVersion" BeforeTargets="CoreCompile" Condition="'$(AppVersionGenerated)' != 'true'">
+    <PropertyGroup>
+      <!-- Only a configuration whose name starts with "Release" bumps the ledger. -->
+      <_AppVersionConfiguration>$(Configuration.ToLowerInvariant())</_AppVersionConfiguration>
+      <_AppVersionIsRelease>false</_AppVersionIsRelease>
+      <_AppVersionIsRelease Condition="$(_AppVersionConfiguration.StartsWith('release'))">true</_AppVersionIsRelease>
+    </PropertyGroup>
+    <ComputeAppVersion VersionFile="$(VersionStateFile)" DateFormat="$(AppVersionDateFormat)" Configuration="$(Configuration)" IsReleaseBuild="$(_AppVersionIsRelease)">
+      <Output TaskParameter="AppVersion" PropertyName="AppVersion" />
+      <Output TaskParameter="AssemblyVersion" PropertyName="AppVersionNormalized" />
+      <Output TaskParameter="Bumped" PropertyName="AppVersionWritten" />
+    </ComputeAppVersion>
+    <ItemGroup>
+      <_AppVersionSourceLine Include="// ------------------------------------------------------------------------------" />
+      <_AppVersionSourceLine Include="// &lt;auto-generated&gt;" />
+      <_AppVersionSourceLine Include="//     Emitted by the SetAppVersion target of AI Helper.csproj." />
+      <_AppVersionSourceLine Include="//     Change version.txt or that target, not this file." />
+      <_AppVersionSourceLine Include="// &lt;/auto-generated&gt;" />
+      <_AppVersionSourceLine Include="// ------------------------------------------------------------------------------" />
+      <_AppVersionSourceLine Include="using System.Reflection%3B" />
+      <_AppVersionSourceLine Include="[assembly: AssemblyVersion(&quot;$(AppVersionNormalized)&quot;)]" />
+      <_AppVersionSourceLine Include="[assembly: AssemblyFileVersion(&quot;$(AppVersionNormalized)&quot;)]" />
+      <_AppVersionSourceLine Include="[assembly: AssemblyInformationalVersion(&quot;$(AppVersion)&quot;)]" />
+    </ItemGroup>
+    <WriteLinesToFile File="$(AppVersionGeneratedFile)" Lines="@(_AppVersionSourceLine)" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <ItemGroup>
+      <Compile Include="$(AppVersionGeneratedFile)" />
+      <FileWrites Include="$(AppVersionGeneratedFile)" />
+    </ItemGroup>
+    <PropertyGroup>
+      <AppVersionGenerated>true</AppVersionGenerated>
+    </PropertyGroup>
+    <Message Importance="High" Text="AppVersion: $(AppVersion) written to $(AppVersionGeneratedFile) (ledger $(VersionStateFile))" />
+  </Target>
   <PropertyGroup>
     <PostBuildEvent>call "$(ProjectDir)postbuild.bat" "$(TargetDir)" "$(TargetName)" "$(ProjectDir)" "@(VersionNumber)" $(ConfigurationName)
 exit 0</PostBuildEvent>

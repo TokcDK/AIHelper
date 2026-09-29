@@ -285,7 +285,7 @@ namespace AIHelper.Manage.ui.themes
                     Directory.CreateDirectory(folder);
                 }
 
-                var ini = ManageIni.GetINIFile(theme.FilePath);
+                var ini = ManageIni.GetINIFile(theme.FilePath, false); // false file create, we will write ini later, so don't create it yet
 
                 ini.SetKey(SectionName, NameKey, theme.Name, FormatHint, false);
                 WritePalette(ini, theme.Palette);

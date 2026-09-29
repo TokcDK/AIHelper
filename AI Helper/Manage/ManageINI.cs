@@ -14,7 +14,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         public static INIFile GetINIFile(string iniPath, bool createIfNoIni = true)
         {
-            var ini = new INIFile(iniPath, forceCreate: createIfNoIni);
+            var ini = new INIFile(iniPath, createIfNoIni);
             if (ini.Configuration == null)
             {
                 if (createIfNoIni)

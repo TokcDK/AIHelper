@@ -259,6 +259,7 @@
     <Compile Include="Games\GamePresets.cs" />
     <Compile Include="Games\GameFolderLayout.cs" />
     <Compile Include="Games\GameFolderRegistry.cs" />
+    <Compile Include="Games\GameSwitch.cs" />
     <Compile Include="Manage\FoldersTab\FoldersTabButtonsLoader.cs" />
     <Compile Include="Manage\FoldersTab\Folders\SimpleFolderOpen\Open2MODirButtonData.cs" />
     <Compile Include="Manage\FoldersTab\Folders\SimpleFolderOpen\OpenMODirButtonData.cs" />
@@ -430,6 +431,7 @@
     <Compile Include="Utils\Shortcut.cs" />
     <Compile Include="Manage\ManageXML.cs" />
     <Compile Include="Manage\ManageOther.cs" />
+    <Compile Include="Manage\SelectedGameStore.cs" />
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

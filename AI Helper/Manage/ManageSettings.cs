@@ -415,9 +415,6 @@ namespace AIHelper.Manage
             return CurrentGame.GetGameConfigFilePath(parentPath);
         }
 
-        internal static int CurrentGameIndex => 0;
-
-
         internal static string SettingsExePath => Path.Combine(CurrentGameDataDirPath, IniSettingsExeName + ".exe");
 
 
@@ -693,6 +690,7 @@ namespace AIHelper.Manage
         public static string KnownGamesIniKeyName { get => "known_games"; }
         public static string SettingsIniSectionName { get => "Settings"; }
         public static string SelectedGameIniKeyName { get => "selected_game"; }
+        public static string AutoShortcutIniKeyName { get => "autoCreateShortcutAndFixRegystry"; }
 
         /// <summary>
         /// List of forms which need to be minimized

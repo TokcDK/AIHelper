@@ -487,10 +487,8 @@ namespace AIHelper.Manage
 
                 var games = ManageSettings.Games.Games ?? new List<GameBase>();
 
-                // selected game folder name saved in the app ini
-                string selectedGameName = ini == null
-                    ? string.Empty
-                    : ini.GetKey(ManageSettings.SettingsIniSectionName, ManageSettings.SelectedGameIniKeyName);
+                // folder name of the game which was selected the last time
+                string selectedGameName = SelectedGameStore.Read();
 
                 var selectedGame = games.FirstOrDefault(g => string.Equals(g.GameDirName, selectedGameName, StringComparison.InvariantCultureIgnoreCase));
                 if (selectedGame == null && games.Count > 0)
@@ -501,7 +499,7 @@ namespace AIHelper.Manage
 
                 if (selectedGame != null) ManageSettings.Games.Game = selectedGame;
 
-                UpdateGamesListUi(main, games);
+                main.RebindGameList(games);
 
                 if (ini != null)
                 {
@@ -602,23 +600,6 @@ namespace AIHelper.Manage
         }
 
         /// <summary>
-        /// update games list controls of the <paramref name="main"/> form
-        /// </summary>
-        /// <param name="main"></param>
-        /// <param name="games"></param>
-        private static void UpdateGamesListUi(MainForm main, List<GameBase> games)
-        {
-            // the members are set before the data source: a source which is set first is
-            // bound once with the members of the previous list
-            main.CurrentGameComboBox.DisplayMember = "GameDirName";
-            main.CurrentGameComboBox.ValueMember = "GameDirName";
-            main.CurrentGameComboBox.DataSource = games;
-
-            // no reason to switch the game when it is the only one
-            main.CurrentGameComboBox.Enabled = games.Count != 1;
-        }
-
-        /// <summary>
         /// set current game title in the <paramref name="main"/> form
         /// </summary>
         /// <param name="main"></param>
@@ -631,17 +612,6 @@ namespace AIHelper.Manage
 
             // the box only shows the name of the current game, so it is not editable
             main.CurrentGameTitleTextBox.Enabled = false;
-        }
-
-        public static void SetSelectedGameIndexAndBasicVariables(MainForm main)
-        {
-            //ManageSettings.Games.CurrentGameListIndex = index;
-            //ManageSettings.Games.Game = ManageSettings.Games.Games[ManageSettings.Games.CurrentGameListIndex];
-            //CurrentGameComboBox.SelectedIndex = index;
-
-            //set checkbox
-            ManageSettings.AutoShortcutRegistryCheckBoxChecked = bool.Parse(ManageIni.GetIniValueIfExist(ManageSettings.AiHelperIniPath, "autoCreateShortcutAndFixRegystry", "Settings", "False"));
-            main.AutoShortcutRegistryCheckBox.Checked = ManageSettings.AutoShortcutRegistryCheckBoxChecked;
         }
     }
 }

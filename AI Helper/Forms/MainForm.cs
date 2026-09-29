@@ -1,4 +1,5 @@
 ﻿using AIHelper.Forms.Other;
+using AIHelper.Games;
 using AIHelper.Manage;
 using AIHelper.Manage.FoldersTab.Folders;
 using AIHelper.Manage.ui;
@@ -549,8 +550,12 @@ namespace AIHelper
             }
 
             AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
-            CurrentGameComboBox.Text = ManageSettings.Games.Game.GameDirName;
-            CurrentGameComboBox.SelectedIndex = ManageSettings.CurrentGameIndex;
+
+            // the combo shows the current game. It is bound to the games themselves, so the
+            // game is selected by object: a folder name assigned to SelectedItem is silently
+            // ignored, because the items are games and not names, and SelectedValue clears
+            // the selection when the name is not in the list.
+            CurrentGameComboBox.SelectedItem = ManageSettings.Games.Game;
 
             GetEnableDisableLaunchTabButtons();
 
@@ -723,7 +728,10 @@ namespace AIHelper
         {
             ManageOther.CheckBoxChangeColor(sender as CheckBox);
             ManageSettings.AutoShortcutRegistryCheckBoxChecked = AutoShortcutRegistryCheckBox.Checked;
-            ManageIni.GetINIFile(ManageSettings.AiHelperIniPath).SetKey("Settings", "autoCreateShortcutAndFixRegystry", ManageSettings.AutoShortcutRegistryCheckBoxChecked.ToString(CultureInfo.InvariantCulture));
+            ManageIni.GetINIFile(ManageSettings.AiHelperIniPath).SetKey(
+                ManageSettings.SettingsIniSectionName,
+                ManageSettings.AutoShortcutIniKeyName,
+                ManageSettings.AutoShortcutRegistryCheckBoxChecked.ToString(CultureInfo.InvariantCulture));
         }
 
         private void FixRegistryButton_Click(object sender, EventArgs e)
@@ -798,39 +806,138 @@ namespace AIHelper
             OpenBepinexLog();
         }
 
+        /// <summary>
+        /// true while the list of games is being rebuilt, when a selection the combo
+        /// reports is not a request from the user.
+        /// </summary>
+        private bool _isRebuildingGameList;
+
+        /// <summary>
+        /// Binds the combo to the games and keeps the selection on the current game.
+        /// </summary>
+        /// <param name="games">games to show, in the order they are shown in</param>
+        /// <remarks>
+        /// Binding moves the selection to the first game and reports it, and
+        /// <see cref="CurrentGameComboBox_SelectedIndexChanged"/> takes a reported selection
+        /// for a request to switch. The flag keeps that report out of the switch, so
+        /// rebuilding the list cannot change the current game - which is what used to happen
+        /// when a game was added while the application was running.
+        /// </remarks>
+        internal void RebindGameList(List<GameBase> games)
+        {
+            _isRebuildingGameList = true;
+            try
+            {
+                // the members are set before the data source: a source which is set first is
+                // bound once with the members of the previous list
+                CurrentGameComboBox.DisplayMember = "GameDirName";
+                CurrentGameComboBox.ValueMember = "GameDirName";
+                CurrentGameComboBox.DataSource = games;
+
+                CurrentGameComboBox.SelectedItem = ManageSettings.Games.Game;
+            }
+            finally
+            {
+                _isRebuildingGameList = false;
+            }
+
+            // no reason to switch the game when it is the only one
+            CurrentGameComboBox.Enabled = games.Count != 1;
+        }
+
+        /// <summary>
+        /// Switches the application to the game the user picked in the list of games.
+        /// </summary>
+        /// <remarks>
+        /// The event is also raised when the selection is moved by the application itself:
+        /// while the list is bound, and by <see cref="UpdateData"/> putting the combo back
+        /// on the current game. Only a selection which names a game other than the current
+        /// one asks for a switch, so this stays a thin adapter and the work is in
+        /// <see cref="SwitchToGame"/>.
+        /// </remarks>
         private void CurrentGameComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ManageSettings.INITDone && !ManageSettings.CurrentGameIsChanging && !ManageSettings.SetModOrganizerINISettingsForTheGame)
+            // the list is being rebuilt, and the selection it reports is not a request
+            if (_isRebuildingGameList) return;
+
+            // the list is still being built, and the game is taken from the settings by then
+            if (!ManageSettings.INITDone) return;
+
+            // a switch is running; the selection changes it makes are not a request
+            if (ManageSettings.CurrentGameIsChanging) return;
+
+            var game = CurrentGameComboBox.SelectedItem as GameBase;
+            if (game == null) return;
+
+            // the refresh puts the combo back on the current game, which is not a switch
+            if (ReferenceEquals(game, ManageSettings.Games.Game)) return;
+
+            SwitchToGame(game);
+        }
+
+        /// <summary>
+        /// Makes <paramref name="game"/> the game the application works with and shows it.
+        /// </summary>
+        /// <param name="game">game to switch to</param>
+        /// <remarks>
+        /// The flag is reset in a <c>finally</c> because it is what
+        /// <see cref="ManageOther.WaitIfGameIsChanging"/> and the Mod Organizer ini writer
+        /// watch. Leaving it set after a failure would make every later launch wait for it
+        /// to clear and would stop the game from ever being switched again.
+        /// </remarks>
+        private void SwitchToGame(GameBase game)
+        {
+            ManageSettings.CurrentGameIsChanging = true;
+            try
             {
-                ManageSettings.CurrentGameIsChanging = true;
+                // a window which shows the game being left must not stay on screen
+                CloseExtraForms();
 
-                ManageSettings.Games.Game = ManageSettings.Games.Games[(sender as ComboBox).SelectedIndex];
-                ManageOther.SetSelectedGameIndexAndBasicVariables(this);
-                ActionsOnGameChanged();
+                GameSwitch.Apply(game);
 
-                ManageIni.GetINIFile(ManageSettings.AiHelperIniPath).SetKey("Settings", "selected_game", ManageSettings.CurrentGameDirName);
+                // the refresh below acts on this application wide setting, and this is the
+                // only place it is read from the ini
+                LoadAutoShortcutSetting();
+
+                SelectedGameStore.Save(game.GameDirName);
 
                 UpdateData();
 
-                ManageSettings.CurrentGameIsChanging = false;
+                CurrentGameTitleTextBox.Text = game.GameDisplayingName;
             }
-            else
+            finally
             {
-                CurrentGameComboBox.SelectedItem = ManageSettings.CurrentGameDirName;
+                ManageSettings.CurrentGameIsChanging = false;
             }
         }
 
-        private void ActionsOnGameChanged()
+        /// <summary>
+        /// Puts the persisted auto shortcut setting on the check box which drives it.
+        /// </summary>
+        /// <remarks>
+        /// The box is hidden and only its state is used, by <see cref="UpdateData"/>, so the
+        /// setting is read here rather than from the box. It belongs to the application and
+        /// not to a game; this is the only path which loads it, which means a setting the
+        /// user saved is not applied until the first switch.
+        /// </remarks>
+        private void LoadAutoShortcutSetting()
         {
-            CloseExtraForms();
-            ManageModOrganizer.RedefineGameMoData();
-            ManageSettings.BepInExCfgFilePath = string.Empty;
-            ManageSettings.MOSelectedProfileDirName = string.Empty;
+            // a value which cannot be read counts as off rather than throwing: this runs
+            // inside the switch, and the settings file is a plain ini which can be edited
+            bool enabled;
+            if (!bool.TryParse(
+                    ManageIni.GetIniValueIfExist(
+                        ManageSettings.AiHelperIniPath,
+                        ManageSettings.AutoShortcutIniKeyName,
+                        ManageSettings.SettingsIniSectionName,
+                        "False"),
+                    out enabled))
+            {
+                enabled = false;
+            }
 
-            ManageModOrganizer.CheckBaseGamesPy();
-
-            ManageSettings.Games.Game.InitActions();
-            CurrentGameTitleTextBox.Text = ManageSettings.Games.Game.GameDisplayingName;
+            ManageSettings.AutoShortcutRegistryCheckBoxChecked = enabled;
+            AutoShortcutRegistryCheckBox.Checked = enabled;
         }
 
         private void CloseExtraForms()
@@ -891,17 +998,11 @@ namespace AIHelper
 
         private void AI_Helper_FormClosing(object sender, FormClosingEventArgs e)
         {
-            try
+            if (ManageSettings.Games.Game != null)
             {
-                if (ManageSettings.Games.Game != null)
-                {
-                    ManageIni.GetINIFile(ManageSettings.AiHelperIniPath)
-                        .SetKey(ManageSettings.IniSettingsSectionName, "selected_game", ManageSettings.CurrentGameDirName);
-                }
-            }
-            catch (Exception ex)
-            {
-                _log.Debug("An error occurred in time of ini settings save while the app closing . error:\r\n" + ex);
+                // a failure is reported by the store: a window which is closing must not be
+                // stopped by a settings file which cannot be written
+                SelectedGameStore.Save(ManageSettings.CurrentGameDirName);
             }
 
             // the size is written whenever the user stops resizing the window as well;

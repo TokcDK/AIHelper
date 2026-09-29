@@ -64,6 +64,11 @@ namespace AIHelper.Manage.ui
                     MinimumSize = new Size(0, 34),
                 };
 
+                // a button which cannot run right now is shown disabled, so the reason is
+                // visible before it is pressed rather than after
+                var availability = data as IButtonDataAvailability;
+                button.Enabled = availability == null || availability.IsAvailable;
+
                 // the loop variable is captured by the handler, so it needs its own copy
                 var clickedData = data;
                 button.Click += new EventHandler((o, e) => clickedData.OnClick(o, e));

@@ -16,13 +16,20 @@ using static AIHelper.Manage.ManageModOrganizer;
 
 namespace AIHelper.Manage.Functions
 {
-    internal class DataDirCleaner : FunctionForFlpBase
+    internal class DataDirCleaner : FunctionForFlpBase, IFunctionForFlpAvailability
     {
         readonly Logger _log = LogManager.GetCurrentClassLogger();
 
         public override string Symbol => "🧹";
 
         public override string Description => T._("Clean game dir from external files using black and white lists");
+
+        /// <summary>
+        /// The cleaner moves the files which are not part of the game out of the Data folder,
+        /// and only Mod Organizer knows where the files of a mod belong, so it is available
+        /// in MO mode alone. It used to be a symbol which did nothing when it was pressed.
+        /// </summary>
+        public bool IsAvailable => ManageSettings.IsMoMode;
 
         public override void OnClick(object o, EventArgs e)
         {

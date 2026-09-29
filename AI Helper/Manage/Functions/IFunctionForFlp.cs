@@ -23,4 +23,18 @@ namespace AIHelper.Manage.Functions
         Color? ForeColor { get; } 
         Font Font { get; }
     }
+
+    /// <summary>
+    /// Optional part of a function description: whether the function can be used right now.
+    /// </summary>
+    /// <remarks>
+    /// A function which cannot run is drawn in the colour the theme reserves for what is
+    /// unavailable and does not react to a click, rather than failing when it is used. A
+    /// description which does not implement this is always available, which keeps the check
+    /// out of the functions which do not need it.
+    /// </remarks>
+    public interface IFunctionForFlpAvailability
+    {
+        bool IsAvailable { get; }
+    }
 }

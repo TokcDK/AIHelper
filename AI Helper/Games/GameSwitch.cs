@@ -31,16 +31,21 @@ namespace AIHelper.Games
 
             ManageSettings.Games.Game = game;
 
-            // the Mod Organizer files of the app are links to the ones of the current
-            // game, so they are relinked before anything reads them
-            ManageModOrganizer.RedefineGameMoData();
+            // the Mod Organizer data of the game is maintained only while Mod Organizer is
+            // installed: the files of the app which link to it are not read without it
+            if (ManageModOrganizer.IsInstalled)
+            {
+                // the Mod Organizer files of the app are links to the ones of the current
+                // game, so they are relinked before anything reads them
+                ManageModOrganizer.RedefineGameMoData();
+
+                ManageModOrganizer.CheckBaseGamesPy();
+            }
 
             // both are resolved for the current game on first read and cached, so the
             // values of the game being left must not survive the switch
             ManageSettings.BepInExCfgFilePath = string.Empty;
             ManageSettings.MOSelectedProfileDirName = string.Empty;
-
-            ManageModOrganizer.CheckBaseGamesPy();
 
             // the preset of the new game gets its chance to prepare the game folder
             game.InitActions();

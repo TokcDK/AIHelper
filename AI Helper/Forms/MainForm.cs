@@ -142,6 +142,17 @@ namespace AIHelper
 
         #endregion
 
+        /// <summary>
+        /// Prepares the Mod Organizer data of the current game and finishes the start of
+        /// the application.
+        /// </summary>
+        /// <remarks>
+        /// Mod Organizer is optional, so nothing here may end the process. Without it the
+        /// game is worked with directly and the Mod Organizer data of the game folder is
+        /// left untouched: there is nothing to maintain when nothing of Mod Organizer is
+        /// there. The mode is decided before anything reads it, and the Mod Organizer
+        /// maintenance runs only when there is an installation to maintain.
+        /// </remarks>
         private async void CheckMoAndEndInit()
         {
             //MO data parse
@@ -149,19 +160,23 @@ namespace AIHelper
 
             await CheckUpdateModOrganizer();
 
-            ManageSettings.MOIsNew = IsMo23OrNever();
+            SetMoMode();
 
-            ManageModOrganizer.RedefineGameMoData();
+            if (ManageModOrganizer.IsInstalled)
+            {
+                ManageSettings.MOIsNew = IsMo23OrNever();
 
-            ManageModOrganizer.CleanMoFolder();
-            //
-            ManageModOrganizer.CheckBaseGamesPy();
-            //
-            ManageSettings.Games.Game.GameName = ManageModOrganizer.GetMoBasicGamePluginGameName();
+                ManageModOrganizer.RedefineGameMoData();
+
+                ManageModOrganizer.CleanMoFolder();
+                //
+                ManageModOrganizer.CheckBaseGamesPy();
+                //
+                ManageSettings.Games.Game.GameName = ManageModOrganizer.GetMoBasicGamePluginGameName();
+            }
 
             CleanLog();
 
-            SetMoMode(false);
             ManageSettings.Games.Game.InitActions();
 
             SetLocalizationStrings();
@@ -171,9 +186,19 @@ namespace AIHelper
             ManageSettings.INITDone = true;
         }
 
+        /// <summary>
+        /// Offers to install Mod Organizer when it is missing from the application folder.
+        /// </summary>
+        /// <remarks>
+        /// Mod Organizer is not required: without it the game is launched directly and the
+        /// features which run through it are unavailable, but the application works. A
+        /// declined offer therefore leaves the application running. It must never close the
+        /// window, because this runs while the window is still being constructed and the
+        /// window has no handle yet - closing it there disposed it and the start failed.
+        /// </remarks>
         private async Task CheckUpdateModOrganizer()
         {
-            if (File.Exists(ManageSettings.AppMOexePath))
+            if (ManageModOrganizer.IsInstalled)
             {
                 return;
             }
@@ -181,18 +206,15 @@ namespace AIHelper
             var moDownloadOffer = MessageBox.Show(T._("Mod Organizer is missing in the app dir. Need to download latest version for to be able to manage mods by MO. Download latest?"), T._("Mod Organizer not found!"), MessageBoxButtons.OKCancel);
             if (DialogResult.OK != moDownloadOffer)
             {
-                MessageBox.Show(T._("Application will exit now. You can manually put Mod Organizer in MO folder next to the program."));
-                Directory.CreateDirectory("MO");
+                MessageBox.Show(T._("The application will continue without Mod Organizer. Mod Organizer features will be unavailable and the game will be launched directly.")
+                    + Environment.NewLine + T._("You can put Mod Organizer in the MO folder next to the program later."));
 
+                // the download page is opened so Mod Organizer can be installed by hand
                 ManageModOrganizer.OpenModOrganizerWebPage();
-
-                this.Close();
-                Application.Exit();
                 return;
             }
 
             await new Updater(null).Update(new List<UpdateTargetBase>() { new Mo(new UpdateInfo(null)) }).ConfigureAwait(true);
-
         }
 
         private static void CleanLog()
@@ -497,7 +519,9 @@ namespace AIHelper
                     + T._(" from Mod Organizer with attached mods")
                     : T._("Will execute Studio")
                     );
-                _thToolTip.Set(MOButton, T._("Will execute Mod Organizer mod manager where you can manage your mods"));
+                _thToolTip.Set(MOButton, ManageModOrganizer.IsInstalled
+                    ? T._("Will execute Mod Organizer mod manager where you can manage your mods")
+                    : T._("Mod Organizer is not installed"));
                 _thToolTip.Set(JPLauncherRunLinkLabel, IsMoMode ?
                       T._("Will execute original game launcher")
                     + T._(" from Mod Organizer with attached mods")
@@ -540,13 +564,11 @@ namespace AIHelper
 
             Directory.CreateDirectory(ManageSettings.CurrentGameDataDirPath);
 
+            // the work which belongs to Mod Organizer mode. IsMoMode is never true without
+            // an installation, so this cannot run on a machine which has none.
             if (IsMoMode)
             {
                 MOModeSpecificSetup();
-            }
-            else
-            {
-                CommonModeSpecificSetup();
             }
 
             AIGirlHelperTabControl.SelectedTab = LaunchTabPage;
@@ -557,6 +579,7 @@ namespace AIHelper
             // the selection when the name is not in the list.
             CurrentGameComboBox.SelectedItem = ManageSettings.Games.Game;
 
+            // which of the launch buttons can be used is decided in one place, for both modes
             GetEnableDisableLaunchTabButtons();
 
             SetTooltips();
@@ -650,11 +673,13 @@ namespace AIHelper
             EnsureWindowFitsContent();
         }
 
-        private void CommonModeSpecificSetup()
-        {
-            StudioButton.Enabled = false;
-        }
-
+        /// <summary>
+        /// Prepares the Mod Organizer data of the current game for MO mode.
+        /// </summary>
+        /// <remarks>
+        /// Everything here reads or writes files which belong to Mod Organizer, so it is
+        /// only reached in MO mode, which needs the installation.
+        /// </remarks>
         private void MOModeSpecificSetup()
         {
             ManageModOrganizer.RestoreModlist();
@@ -677,7 +702,17 @@ namespace AIHelper
             new Thread(obj => RunSlowActions()).Start();
         }
 
-        private static void SetMoMode(bool setText = true)
+        /// <summary>
+        /// Decides the mode of the current game.
+        /// </summary>
+        /// <remarks>
+        /// What is read here is the game folder: a game which was converted to normal mode
+        /// keeps a file describing that conversion, and one which was not is worked with
+        /// through Mod Organizer. Whether the mode can actually be used is decided by
+        /// <see cref="ManageSettings.IsMoMode"/> itself, which reports Mod Organizer mode
+        /// only while Mod Organizer is installed.
+        /// </remarks>
+        private static void SetMoMode()
         {
             IsMoMode = !File.Exists(ManageSettings.CurrentGameMoToStandartConvertationOperationsListFilePath);
         }
@@ -697,6 +732,15 @@ namespace AIHelper
             ManageModOrganizer.SetModOrganizerIniSettingsForTheGame();
         }
 
+        /// <summary>
+        /// Makes every launch button match what can actually be started right now.
+        /// </summary>
+        /// <remarks>
+        /// The game, the studio and the settings launcher are files of the game folder and
+        /// are started directly in normal mode, so they only need the file to be there. The
+        /// manager button starts Mod Organizer itself and is therefore only usable while
+        /// Mod Organizer is installed.
+        /// </remarks>
         private void GetEnableDisableLaunchTabButtons()
         {
             if (AIGirlHelperTabControl.SelectedTab.Name != "LaunchTabPage") return;
@@ -704,6 +748,8 @@ namespace AIHelper
             JPLauncherRunLinkLabel.Enabled = File.Exists(Path.Combine(ManageSettings.CurrentGameDataDirPath, ManageSettings.IniSettingsExeName + ".exe"));
             GameButton.Enabled = File.Exists(Path.Combine(ManageSettings.CurrentGameDataDirPath, ManageSettings.CurrentGameExeName + ".exe"));
             StudioButton.Enabled = File.Exists(Path.Combine(ManageSettings.CurrentGameDataDirPath, ManageSettings.StudioExeName + ".exe"));
+
+            MOButton.Enabled = ManageModOrganizer.IsInstalled;
 
             //Set BepInEx log data
             if (ManageSettings.BepInExCfgFilePath.Length > 0 && File.Exists(ManageSettings.BepInExCfgFilePath))
@@ -743,22 +789,45 @@ namespace AIHelper
             FixRegistryLinkLabel.Enabled = true;
         }
 
+        /// <summary>
+        /// Starts Mod Organizer itself.
+        /// </summary>
+        /// <remarks>
+        /// The button is disabled without an installation, so this is the second line of
+        /// defence: the check is here as well because the button is rebuilt while the
+        /// application runs and an installation can disappear in between.
+        /// </remarks>
         private async void MOButton_Click(object sender, EventArgs e)
         {
             OnOffButtons(false);
 
-            await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
+            try
+            {
+                await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
-            if (IsMoMode)
-            {
-                ManageProcess.KillProcessesByName(Path.GetFileNameWithoutExtension(ManageSettings.AppMOexePath));
-                ManageProcess.RunProgramAndWaitHidden(ManageSettings.AppMOexePath, string.Empty);
+                if (!ManageModOrganizer.IsInstalled)
+                {
+                    MessageBox.Show(T._("Mod Organizer is not installed.") + Environment.NewLine
+                        + T._("Put Mod Organizer in the MO folder next to the program to be able to manage mods with it."));
+
+                    return;
+                }
+
+                if (IsMoMode)
+                {
+                    ManageProcess.KillProcessesByName(Path.GetFileNameWithoutExtension(ManageSettings.AppMOexePath));
+                    ManageProcess.RunProgramAndWaitHidden(ManageSettings.AppMOexePath, string.Empty);
+                }
+                else
+                {
+                    MessageBox.Show(T._("Game in Common mode now.\n To execute Mod Organizer convert game back\n to MO mode by button in Tools tab"));
+                }
             }
-            else
+            finally
             {
-                MessageBox.Show(T._("Game in Common mode now.\n To execute Mod Organizer convert game back\n to MO mode by button in Tools tab"));
+                // never leave the window disabled, whatever the launch did
+                OnOffButtons();
             }
-            OnOffButtons();
         }
 
         private void SettingsButton_Click(object sender, EventArgs e)
@@ -979,21 +1048,36 @@ namespace AIHelper
             }
         }
 
+        /// <summary>
+        /// Starts the settings launcher of the game.
+        /// </summary>
+        /// <remarks>
+        /// Through Mod Organizer in MO mode and directly in normal mode. The mode is never
+        /// MO mode without Mod Organizer, so the shortcut form of the launch is only ever
+        /// used when there is an exe to hand it to.
+        /// </remarks>
         private async void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             OnOffButtons(false);
 
-            await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
+            try
+            {
+                await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
-            if (IsMoMode)
-            {
-                ManageProcess.RunProgramAndWaitHidden(ManageSettings.AppMOexePath, "moshortcut://:" + ManageSettings.IniSettingsExeName);
+                if (IsMoMode)
+                {
+                    ManageProcess.RunProgramAndWaitHidden(ManageSettings.AppMOexePath, "moshortcut://:" + ManageSettings.IniSettingsExeName);
+                }
+                else
+                {
+                    ManageProcess.RunProgramAndWaitHidden(Path.Combine(ManageSettings.CurrentGameDataDirPath, ManageSettings.IniSettingsExeName + ".exe"), string.Empty);
+                }
             }
-            else
+            finally
             {
-                ManageProcess.RunProgramAndWaitHidden(Path.Combine(ManageSettings.CurrentGameDataDirPath, ManageSettings.IniSettingsExeName + ".exe"), string.Empty);
+                // never leave the window disabled, whatever the launch did
+                OnOffButtons();
             }
-            OnOffButtons();
         }
 
         private void AI_Helper_FormClosing(object sender, FormClosingEventArgs e)

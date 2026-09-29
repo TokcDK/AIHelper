@@ -27,6 +27,18 @@ namespace AIHelper.Manage
 
         internal static readonly char[] PathSeparatorChars = new char[] { '\\', '/' };
 
+        /// <summary>
+        /// true when Mod Organizer is installed in the application folder.
+        /// </summary>
+        /// <remarks>
+        /// Mod Organizer is optional. Everything which starts an exe through it, or which
+        /// reads a file it owns, has to ask this first: without the installation there is
+        /// no exe to start and no ini to read. The answer is read from the file system
+        /// rather than remembered, because Mod Organizer can be installed while the
+        /// application runs - by the updater, or by the user putting it in the folder.
+        /// </remarks>
+        internal static bool IsInstalled => File.Exists(ManageSettings.AppMOexePath);
+
         internal static bool IsInOverwriteFolder(this string filePath)
         {
             return filePath.ToUpperInvariant().Contains(ManageSettings.CurrentGameOverwriteFolderPath.ToUpperInvariant());
@@ -104,7 +116,10 @@ namespace AIHelper.Manage
         /// <returns></returns>
         private static IEnumerable<string> GetCustomExeTitlesFromBasicGamePlugin(string exeName)
         {
-            var pluginPath = ManageSettings.CurrentGameMoGamePyPluginPath;
+            // the plugin belongs to Mod Organizer and is simply not there without it
+            var pluginPath = GetMoBasicGamePluginPath();
+            if (pluginPath == null) yield break;
+
             var pluginText = File.ReadAllText(pluginPath);
 
             foreach (Match customExeInfoMatch in Regex.Matches(pluginText, @"\s*mobase\.ExecutableInfo\(\s*\""([^\""]+)\"",\s*QFileInfo\(self\.gameDirectory\(\), \""Data\/([^\""]+)\""\),"))
@@ -1235,8 +1250,18 @@ namespace AIHelper.Manage
             ManageSettings.AppMOcategoriesFilePath.ReCreateFileLinkWhenNotValid(ManageSettings.CurrentGameMOcategoriesFilePath, true);
         }
 
+        /// <summary>
+        /// Version of the installed Mod Organizer, or an empty string when it is not
+        /// installed.
+        /// </summary>
+        /// <remarks>
+        /// Asked before anything reads a file of the installation, so it has to answer for
+        /// a machine without Mod Organizer as well.
+        /// </remarks>
         internal static string GetMoVersion()
         {
+            if (!IsInstalled) return string.Empty;
+
             var exeversion = System.Diagnostics.FileVersionInfo.GetVersionInfo(ManageSettings.AppMOexePath);
             return exeversion.FileVersion ?? string.Empty;
         }
@@ -3030,12 +3055,37 @@ namespace AIHelper.Manage
         /// <summary>
         /// get GameName value frome basicgame plugin
         /// </summary>
-        /// <returns></returns>
+        /// <returns>the game name, or an empty string when the plugin of the game is not there</returns>
+        /// <remarks>
+        /// The plugin belongs to Mod Organizer, so it is missing whenever Mod Organizer is
+        /// not installed. The name is only used to fill the Mod Organizer ini, which is not
+        /// written without Mod Organizer, so an empty name is a usable answer.
+        /// </remarks>
         internal static string GetMoBasicGamePluginGameName()
         {
-            Match gameName = Regex.Match(File.ReadAllText(Path.Combine(ManageSettings.MoBaseGamesPluginGamesDirPath, ManageSettings.Games.Game.BasicGamePluginName + ".py")), @"GameName \= \""([^\""]+)\""");
+            var pluginPath = GetMoBasicGamePluginPath();
+            if (pluginPath == null) return string.Empty;
+
+            Match gameName = Regex.Match(File.ReadAllText(pluginPath), @"GameName \= \""([^\""]+)\""");
 
             return gameName.Success ? gameName.Groups[1].Value : "";
+        }
+
+        /// <summary>
+        /// Path of the basic game plugin of the current game, or null when the file is not
+        /// there.
+        /// </summary>
+        /// <remarks>
+        /// The one place which says where the plugin of a game lives. It is a file of the
+        /// Mod Organizer installation, so it can be missing.
+        /// </remarks>
+        private static string GetMoBasicGamePluginPath()
+        {
+            var pluginPath = Path.Combine(
+                ManageSettings.MoBaseGamesPluginGamesDirPath,
+                ManageSettings.Games.Game.BasicGamePluginName + ".py");
+
+            return File.Exists(pluginPath) ? pluginPath : null;
         }
 
         internal static IEnumerable<string> GetBoundExes(string profileName)

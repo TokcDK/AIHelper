@@ -61,19 +61,6 @@ namespace AIHelper.Manage
 
         internal static string GameUpdateInstallerIniFileName => "gameupdate.ini";
 
-        internal static string CurrentGameMoGamePyPluginPath =>
-#pragma warning disable CA1308 // Normalize strings to uppercase
-            Path.Combine(AppModOrganizerDirPath, "plugins", "basic_games", "games", ManageSettings.Games.Game.BasicGamePluginName
-                //+ GetCurrentGameExeName()
-                //.Replace("_64", string.Empty)
-                //.Replace("_32", string.Empty)
-                //.Replace("AI-Syoujyo", "aigirl")
-                //.Replace("Honey Select", "honeyselect")
-                //.ToLowerInvariant()
-                + ".py"
-                );
-#pragma warning restore CA1308 // Normalize strings to uppercase
-
         /// <summary>
         /// name of Update section in app ini
         /// </summary>
@@ -935,11 +922,28 @@ namespace AIHelper.Manage
         }
 
         /// <summary>
-        /// True when mo mode activated
+        /// True when the current game is managed through Mod Organizer, false when it is
+        /// worked with directly.
         /// </summary>
-        /// <returns></returns>
+        /// <remarks>
+        /// The value which is assigned is the mode the game folder was converted to. It is
+        /// reported as false while Mod Organizer is not installed, because Mod Organizer
+        /// mode needs Mod Organizer: the installation decides the mode, whoever assigned
+        /// it. Deciding it here rather than in every caller is what keeps "in MO mode" and
+        /// "has Mod Organizer" from ever disagreeing, and the assigned value is kept, so
+        /// the mode comes back on its own once Mod Organizer is installed.
+        /// </remarks>
+        internal static bool IsMoMode
+        {
+            get { return _isMoMode && ManageModOrganizer.IsInstalled; }
+            set { _isMoMode = value; }
+        }
 
-        internal static bool IsMoMode { get; set; } = true;
+        /// <summary>
+        /// The mode the current game folder was converted to, before the installation of
+        /// Mod Organizer is taken into account.
+        /// </summary>
+        private static bool _isMoMode = true;
 
 
         internal static string CurrentGameInstallDirPath => Path.Combine(AppResDirPath, "install", CurrentGameDirName);

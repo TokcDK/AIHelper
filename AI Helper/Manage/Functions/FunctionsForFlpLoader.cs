@@ -49,6 +49,11 @@ namespace AIHelper.Manage.Functions
 
             foreach (var function in functions)
             {
+                // a function which cannot run right now is drawn as unavailable and does not
+                // react to a click, so the reason is visible before it is used
+                var availability = function as IFunctionForFlpAvailability;
+                var isAvailable = availability == null || availability.IsAvailable;
+
                 var symbol = new Label
                 {
                     AutoSize = true,
@@ -56,25 +61,34 @@ namespace AIHelper.Manage.Functions
                     // a function picks its own colour to tell it apart from the others,
                     // so the theme must leave this label alone
                     Name = "flpf" + ManageSettings.ThemeLabelColorSetIgnoreNameMark,
-                    Cursor = Cursors.Hand,
+                    Cursor = isAvailable ? Cursors.Hand : Cursors.Default,
                     Margin = new Padding(6, 2, 6, 2),
                 };
 
-                var textOptions = function as IFunctionForFlpTextOptions;
-                if (textOptions != null)
+                if (isAvailable)
                 {
-                    if (textOptions.Font != null) symbol.Font = textOptions.Font;
-
-                    if (textOptions.ForeColor != null)
+                    var textOptions = function as IFunctionForFlpTextOptions;
+                    if (textOptions != null)
                     {
-                        var color = (Color)textOptions.ForeColor;
-                        symbol.ForeColor = palette == null ? color : palette.MakeReadable(color);
-                    }
-                }
+                        if (textOptions.Font != null) symbol.Font = textOptions.Font;
 
-                // the loop variable is captured by the handler, so it needs its own copy
-                var clickedFunction = function;
-                symbol.Click += new EventHandler((o, e) => clickedFunction.OnClick(o, e));
+                        if (textOptions.ForeColor != null)
+                        {
+                            var color = (Color)textOptions.ForeColor;
+                            symbol.ForeColor = palette == null ? color : palette.MakeReadable(color);
+                        }
+                    }
+
+                    // the loop variable is captured by the handler, so it needs its own copy
+                    var clickedFunction = function;
+                    symbol.Click += new EventHandler((o, e) => clickedFunction.OnClick(o, e));
+                }
+                else
+                {
+                    // the colour of what cannot be used belongs to the theme, so it stays
+                    // readable on the surface it is drawn on
+                    symbol.ForeColor = palette == null ? SystemColors.GrayText : palette.ButtonDisabledText;
+                }
 
                 tooltip.Set(symbol, function.Description);
 

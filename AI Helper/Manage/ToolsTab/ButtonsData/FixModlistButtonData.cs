@@ -4,11 +4,17 @@ using AIHelper.Manage.Functions;
 
 namespace AIHelper.Manage.ToolsTab.ButtonsData
 {
-    internal class FixModlistButtonData : IToolsTabButtonData
+    internal class FixModlistButtonData : IToolsTabButtonData, IButtonDataAvailability
     {
         public string Text => T._("Fix modlist");
 
         public string Description => T._("Fix problems in current enabled mods list");
+
+        /// <summary>
+        /// The fixes need a Mod Organizer mod list, so they need Mod Organizer: the button
+        /// offers to convert the game to MO mode when it is not there yet.
+        /// </summary>
+        public bool IsAvailable => ManageModOrganizer.IsInstalled;
 
         public void OnClick(object o, EventArgs e)
         {

@@ -15,7 +15,7 @@ using NLog;
 
 namespace AIHelper.Manage.ToolsTab.ButtonsData
 {
-    internal class InstallModsButtonData : IToolsTabButtonData
+    internal class InstallModsButtonData : IToolsTabButtonData, IButtonDataAvailability
     {
         static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
@@ -25,6 +25,12 @@ namespace AIHelper.Manage.ToolsTab.ButtonsData
             T._(" to MO format in Mods when possible") : 
             T._(" to the game folder when possible")
             );
+
+        /// <summary>
+        /// Installing only makes sense through Mod Organizer: it needs Mod Organizer to be
+        /// installed, and it offers to convert the game to MO mode when it is not there yet.
+        /// </summary>
+        public bool IsAvailable => ManageModOrganizer.IsInstalled;
 
         public void OnClick(object o, EventArgs e)
         {

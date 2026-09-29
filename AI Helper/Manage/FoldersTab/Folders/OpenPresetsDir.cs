@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using AIHelper.Manage.Functions;
+using AIHelper.Manage.ToolsTab;
 using NLog;
 
 namespace AIHelper.Manage.FoldersTab
@@ -35,12 +36,19 @@ namespace AIHelper.Manage.FoldersTab
 
                 string CharacterDirSubpath = ManageSettings.Games.Game.CharacterPresetsFolderSubPath;
 
-                string exePath = IsMO ? Path.Combine(ManageSettings.AppModOrganizerDirPath, "explorer++", "Explorer++.exe") : "explorer.exe";
-                string presetsDirPath = IsMO && ManageSettings.IsMoMode ? Path.Combine(ManageSettings.CurrentGameDataDirPath) + "\\" + CharacterDirSubpath : ManageSettings.GetUserfilesDirectoryPath(CharacterDirSubpath);
+                // the folder can only be opened through Mod Organizer while the game is in MO
+                // mode, and MO mode needs Mod Organizer. Everything below follows from this
+                // one answer, including which exe is started, so a machine without Mod
+                // Organizer opens the folder with the explorer of Windows instead of failing
+                // on an exe which is not there.
+                bool useModOrganizer = IsMO && ManageSettings.IsMoMode;
+
+                string exePath = useModOrganizer ? Path.Combine(ManageSettings.AppModOrganizerDirPath, "explorer++", "Explorer++.exe") : "explorer.exe";
+                string presetsDirPath = useModOrganizer ? Path.Combine(ManageSettings.CurrentGameDataDirPath) + "\\" + CharacterDirSubpath : ManageSettings.GetUserfilesDirectoryPath(CharacterDirSubpath);
 
                 Directory.CreateDirectory(presetsDirPath);
 
-                if (IsMO && ManageSettings.IsMoMode)
+                if (useModOrganizer)
                 {
                     ManageSettings.MainForm.OnOffButtons(false);
                     areButtonsDisabled = true;
@@ -101,12 +109,18 @@ namespace AIHelper.Manage.FoldersTab
             }
         }
     }
-    internal class OpenPresetsDirMO : OpenPresetsDir
+    internal class OpenPresetsDirMO : OpenPresetsDir, IButtonDataAvailability
     {
         public override string Text => base.Text + "MO";
 
         public override string Description => base.Description + " " + T._("using Mod Organizer");
 
         protected override bool IsMO => true;
+
+        /// <summary>
+        /// This one opens the folder through Mod Organizer, so it needs Mod Organizer to be
+        /// installed. The plain button opens the same folder with the explorer of Windows.
+        /// </summary>
+        public bool IsAvailable => ManageModOrganizer.IsInstalled;
     }
 }

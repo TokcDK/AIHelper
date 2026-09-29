@@ -5,9 +5,9 @@ using INIFileMan;
 using NLog;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -292,7 +292,7 @@ namespace AIHelper.Manage
                 // create UserData dir and setup.xml file in it
                 string userDataDirPath = Path.Combine(dataDirPath, "UserData");
                 Directory.CreateDirectory(userDataDirPath);
-                File.WriteAllText(Path.Combine(userDataDirPath, "setup.xml"), ManageSettings.DefaultSetupXmlValue);
+                File.WriteAllText(Path.Combine(userDataDirPath, "setup.xml"), ManageSettings.DefaultSetupXmlValue, Encoding.GetEncoding("UTF-16"));
 
                 // the folders and the Mod Organizer data of the game, exactly the way a
                 // game the user added gets them

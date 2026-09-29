@@ -1,7 +1,6 @@
 ﻿using AIHelper.Games;
 using AIHelper.Manage.ui.themes;
 using AIHelper.SharedData;
-using GetListOfSubClasses;
 using INIFileMan;
 using NLog;
 using System;
@@ -156,331 +155,311 @@ namespace AIHelper.Manage
         ////            ReportForm.Controls.Add(ReportTB);
         ////            ReportForm.Show();
         //        }
+        /// <summary>
+        /// Builds the list of the games which are in the games base folder.
+        /// </summary>
+        /// <remarks>
+        /// A game is a folder which holds the main exe of one of the game presets in its
+        /// data folder, or which is named by a list file in the games base folder. The
+        /// folder structure of every game which is found is completed while the list is
+        /// built, so a build the user copied in can be managed right away.
+        /// </remarks>
         internal static void GetListOfExistsGames()
         {
-            List<Type> listOfGames = Inherited.GetListOfInheritedTypes(typeof(GameBase));
+            Directory.CreateDirectory(ManageSettings.GamesBaseFolderPath); // create games dir
 
-            var listOfGameDirs = new List<GameBase>();
+            // folders in the games dir and folders named by the list files in it.
+            // Materialised on purpose: the folders of a game are created while the list is
+            // built, and a folder tree must not be walked while it is changed.
+            var gameDirPaths = Directory.EnumerateDirectories(ManageSettings.GamesBaseFolderPath)
+                .Concat(GameFolderRegistry.ReadGameFolderPaths())
+                .ToArray();
 
-            Directory.CreateDirectory(ManageSettings.GamesBaseFolderPath);// create games dir
+            // the game name of a Mod Organizer ini is read from the basic game plugin of
+            // the current game, so a game has to be the current one while its folder is
+            // completed. The list is filled in place and is only read by the caller once
+            // the whole scan is done.
+            var gameData = new GameData();
+            ManageSettings.Games = gameData;
 
-            // not empty txt diles in games dir where 1st line is exists dir path
-            var foundPathInTxt = GetGamesFromTxt();
+            var games = new List<GameBase>();
+            var addedGameDirPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            // dirs in games dir
-            var dirs = Directory.EnumerateDirectories(ManageSettings.GamesBaseFolderPath).Concat(foundPathInTxt);
-            var added = new HashSet<string>();
-            ManageSettings.Games = new GameData();
-
-            foreach (var pathString in dirs)
+            foreach (var pathString in gameDirPaths)
             {
-                string gameDirPath = GetGameDirPath(pathString);
+                string gameDirPath = GameFolderRegistry.GetGameDirPath(pathString);
 
-                if (string.IsNullOrWhiteSpace(gameDirPath)) continue; // skip invalid path
+                if (gameDirPath == null) continue; // skip invalid path
                 if (!Directory.Exists(gameDirPath)) continue; // skip not exists
-                if (added.Contains(gameDirPath)) continue; // skip duples
+                if (!addedGameDirPaths.Add(gameDirPath)) continue; // skip duples
 
-                foreach (var gameType in listOfGames)
-                {
-                    if (TryAddTheGameIntoGamesList(gameType, gameDirPath, listOfGameDirs, added))
-                    {
-                        break;
-                    }
-                }
+                var game = FindGame(gameDirPath);
+                if (game == null) continue;
+
+                games.Add(game);
             }
 
-            ManageSettings.Games.Games = listOfGameDirs;
-            if (ManageSettings.Games.Games.Count > 0) ManageSettings.Games.Game = listOfGameDirs[0];
-
-        }
-
-        private static string GetGameDirPath(string pathString)
-        {
-            try
-            {
-                return Path.GetFullPath(pathString);
-            }
-            catch (Exception ex)
-            {
-                // skip when invalid chars in path
-                _log.Debug("Invalid game path skipped. Path=" + pathString + "\r\nError:\r\n" + ex.Message);
-                return "";
-            }
-        }
-
-        private static bool TryAddTheGameIntoGamesList(Type gameType, string gameDirPath, List<GameBase> listOfGameDirs, HashSet<string> added)
-        {
-            var game = (GameBase)Activator.CreateInstance(gameType);
-
-            bool exeInData = File.Exists(Path.Combine(gameDirPath, ManageSettings.DataDirName, game.GameExeName + ".exe"));
-            bool exeInRoot = File.Exists(Path.Combine(gameDirPath, game.GameExeName + ".exe"));
-
-            if (!exeInData && exeInRoot)
-            {
-                SortFilesForMO(gameDirPath);
-            }
-
-            if (!File.Exists(Path.Combine(gameDirPath, ManageSettings.DataDirName, game.GameExeName + ".exe"))) return false;
-
-            game.GameDirInfo = new DirectoryInfo(gameDirPath);
-            ManageSettings.Games.Game = game; // temp set current game
-
-            var mods = Path.Combine(gameDirPath, ManageSettings.ModsDirName);
-            Directory.CreateDirectory(mods);
-
-            //  check and write mod organizer dir
-            var mo = Path.Combine(gameDirPath, ManageSettings.AppModOrganizerDirName);
-            Directory.CreateDirectory(mo);
-
-            //  check and write mod organizer ini
-            CheckAndWriteMOini(mo, game, gameDirPath);
-
-            // check and write categories dat
-            var catDat = Path.Combine(mo, ManageSettings.MoCategoriesFileName);
-            if (!File.Exists(catDat)) File.WriteAllText(catDat, "");
-
-            // check and write default profile
-            WriteDefaultMOProfile(mo);
-
-            listOfGameDirs.Add(game);
-            added.Add(gameDirPath); // add game path to the added list to prevent duplicates
-
-            return true;
-        }
-
-        private static void WriteDefaultMOProfile(string mo)
-        {
-            var profiles = Path.Combine(mo, ManageSettings.MoProfilesDirName);
-            var defaultProfile = Path.Combine(profiles, "Default");
-            if (!Directory.Exists(defaultProfile))
-            {
-                Directory.CreateDirectory(defaultProfile);
-                File.WriteAllText(Path.Combine(defaultProfile, "modlist.txt"), "# This file was automatically generated by Mod Organizer.\r\n");
-            }
-        }
-
-        private static void CheckAndWriteMOini(string mo, GameBase game, string gameDirPath)
-        {
-            var moIni = Path.Combine(mo, ManageSettings.MoIniFileName);
-            if (File.Exists(moIni))
-            {
-                return;
-            }
-
-            File.WriteAllText(moIni, Properties.Resources.defmoini);
-
-            var ini = ManageIni.GetINIFile(moIni);
-
-            // check mo ini game parameters exist
-            ini.SetKey("General", "gameName", game.GetGameName());
-            ini.SetKey("General", "gamePath", "@ByteArray(" + Path.Combine(game.GameDirInfo.Parent.FullName, game.GameDirName).Replace("\\", "\\\\") + ")");
-            ini.SetKey("General", "selected_profile", "@ByteArray(Default)");
-            ini.SetKey("Settings", "mod_directory", Path.Combine(gameDirPath, ManageSettings.ModsDirName).Replace("\\", "\\\\"));
-            ini.SetKey("Settings", "download_directory", Path.Combine(gameDirPath, "Downloads").Replace("\\", "\\\\"));
-            ini.SetKey("Settings", "profiles_directory", Path.Combine(gameDirPath, ManageSettings.AppModOrganizerDirName, "profiles").Replace("\\", "\\\\"));
-            ini.SetKey("Settings", "overwrite_directory", Path.Combine(gameDirPath, ManageSettings.AppModOrganizerDirName, "overwrite").Replace("\\", "\\\\"));
-        }
-
-        private static void SortFilesForMO(string gameDirPath)
-        {
-            // when all game files in root dir
-            var dataDir = Path.Combine(gameDirPath, ManageSettings.DataDirName);
-            Directory.CreateDirectory(dataDir);
-
-            // move dirs except data into data
-            foreach (var dir in Directory.GetDirectories(gameDirPath))
-            {
-                if (string.Equals(dir, dataDir)) continue;
-
-                Directory.Move(dir, Path.Combine(dataDir, Path.GetFileName(dir)));
-            }
-            // move files into data
-            foreach (var file in Directory.GetFiles(gameDirPath))
-            {
-                File.Move(file, Path.Combine(dataDir, Path.GetFileName(file)));
-            }
-        }
-
-        private static IEnumerable<string> GetGamesFromTxt()
-        {
-            // Directory.EnumerateFiles(GetGamesBaseFolderPath(), "*.txt").Where(t => new FileInfo(t).Length > 3 && Directory.Exists(Path.GetFullPath(File.ReadAllLines(t)[0]))).Select(t => File.ReadAllLines(t)[0])
-
-            foreach (var txt in Directory.EnumerateFiles(ManageSettings.GamesBaseFolderPath, "*.txt"))
-            {
-                if (new FileInfo(txt).Length < 4) continue;
-
-                using (StreamReader sr = new StreamReader(txt))
-                {
-                    while (!sr.EndOfStream)
-                    {
-                        var line = sr.ReadLine();
-                        if (string.IsNullOrWhiteSpace(line)) continue;
-                        if (line.TrimStart().StartsWith(";")) continue;
-
-                        var path = GetGameDirPath(line);
-                        if (string.IsNullOrWhiteSpace(path) || !Directory.Exists(path)) continue;
-
-                        yield return path;
-                    }
-                }
-            }
+            gameData.Games = games;
+            if (games.Count > 0) gameData.Game = games[0];
         }
 
         /// <summary>
-        /// Create a dummy game in games folder for first run when no games found
+        /// Completes the folder structure of a game folder and returns the game it holds.
         /// </summary>
-        /// <param name="main"></param>
-        /// <returns>main dummy exe path</returns>
-        private static string CreateDummyGame()
+        /// <param name="gameDirPath">folder which is expected to hold a game</param>
+        /// <returns>the game, or null when the folder does not hold a known game</returns>
+        private static GameBase FindGame(string gameDirPath)
+        {
+            // the presets are tried in a fixed order: a folder which holds the exes of two
+            // games has to be claimed by the same game on every run
+            foreach (var gameType in GamePresets.Types)
+            {
+                GameBase game;
+                try
+                {
+                    game = (GameBase)Activator.CreateInstance(gameType);
+                }
+                catch (Exception ex)
+                {
+                    // a preset which cannot be created must not cost the games of the others
+                    _log.Warn("Failed to create the game preset " + gameType.Name + ". Error:\r\n" + ex);
+                    continue;
+                }
+
+                // the files of a build which is not sorted yet are in the game folder
+                // itself rather than in its data folder
+                if (!GameFolderLayout.HasDataExe(game, gameDirPath) && GameFolderLayout.HasRootExe(game, gameDirPath))
+                {
+                    GameFolderLayout.MoveGameFilesIntoDataFolder(gameDirPath);
+                }
+
+                if (!GameFolderLayout.HasDataExe(game, gameDirPath)) continue;
+
+                game.GameDirInfo = new DirectoryInfo(gameDirPath);
+                ManageSettings.Games.Game = game; // temp set current game
+
+                try
+                {
+                    GameFolderLayout.EnsureCreated(gameDirPath, game.GetGameName(), Properties.Resources.defmoini);
+                }
+                catch (Exception ex)
+                {
+                    // a folder which cannot be completed is a game all the same: the user
+                    // can see it, and the app completes it on the next start
+                    _log.Error("Failed to complete the folder of the game " + gameDirPath + ". Error:\r\n" + ex);
+                }
+
+                return game;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Folder and exe name of the placeholder game which is created when no game was
+        /// found at all.
+        /// </summary>
+        /// <remarks>
+        /// The exe is the main exe of the Koikatsu preset, because a folder is only
+        /// accepted as a game when its data folder holds the main exe of a preset.
+        /// </remarks>
+        private const string DummyGameDirName = "DummyGame";
+        private const string DummyGameExeName = "Koikatu";
+        private const string DummyGameExeContent = "This is dummy game exe file.";
+        private const string DummyGameInitSettingExeContent = "This is dummy InitSetting exe file.";
+        private const string DummyGameDataDirName = DummyGameExeName + "_Data";
+
+        /// <summary>
+        /// Creates a dummy game in the games folder, used on the first run when no game
+        /// was found, so the user has something to start from.
+        /// </summary>
+        /// <returns>true when the dummy game was created</returns>
+        private static bool CreateDummyGame()
         {
             try
             {
-                string newGameDirName = "DummyGame";
-                string newGameDirPath = Path.Combine(ManageSettings.GamesBaseFolderPath, newGameDirName);
-                Directory.CreateDirectory(newGameDirPath);
+                string dummyGameDirPath = Path.Combine(ManageSettings.GamesBaseFolderPath, DummyGameDirName);
+                Directory.CreateDirectory(dummyGameDirPath);
 
-                // create data dir and main dummy exe
-                string dataDirPath = Path.Combine(newGameDirPath, ManageSettings.DataDirName);
+                // the game itself: a folder is only accepted as a game when its data
+                // folder holds the main exe of one of the presets
+                string dataDirPath = Path.Combine(dummyGameDirPath, ManageSettings.DataDirName);
                 Directory.CreateDirectory(dataDirPath);
-                string dummyExePath = Path.Combine(dataDirPath, "Koikatu.exe");
-                File.WriteAllText(dummyExePath, "This is dummy game exe file.");
-                File.WriteAllText(Path.Combine(dataDirPath, "InitSetting.exe"), "This is dummy InitSetting exe file.");
-                Directory.CreateDirectory(Path.Combine(dataDirPath, "Koikatsu_data"));
-                // create UserData dir
+                File.WriteAllText(Path.Combine(dataDirPath, DummyGameExeName + ".exe"), DummyGameExeContent);
+                File.WriteAllText(Path.Combine(dataDirPath, ManageSettings.DefaultInitSettingExeName + ".exe"), DummyGameInitSettingExeContent);
+                Directory.CreateDirectory(Path.Combine(dataDirPath, DummyGameDataDirName));
+
+                // create UserData dir and setup.xml file in it
                 string userDataDirPath = Path.Combine(dataDirPath, "UserData");
                 Directory.CreateDirectory(userDataDirPath);
-                // create setup.xml file in UserData
                 File.WriteAllText(Path.Combine(userDataDirPath, "setup.xml"), ManageSettings.DefaultSetupXmlValue);
 
-                // create mods dir
-                string modsDirPath = Path.Combine(newGameDirPath, ManageSettings.ModsDirName);
-                Directory.CreateDirectory(modsDirPath);
-                File.WriteAllText(Path.Combine(dataDirPath, "Koikatsu.exe"), "This is dummy game exe file.");
+                // the folders and the Mod Organizer data of the game, exactly the way a
+                // game the user added gets them
+                GameFolderLayout.EnsureCreated(dummyGameDirPath, DummyGameExeName, Properties.Resources.defmoini);
 
-                //create the game MO dir
-                var mo = Path.Combine(newGameDirPath, ManageSettings.AppModOrganizerDirName);
-                Directory.CreateDirectory(mo);
-                // create dummy ModOrganizer.ini
-                File.WriteAllText(Path.Combine(mo, "ModOrganizer.ini"), $"[General]\r\ngameName=Koikatsu\r\ngamePath=@ByteArray({newGameDirPath})\r\nselected_profile=@ByteArray(Default)\r\nversion=2.4.2\r\nfirst_start=false");
-                // create empty categories.dat
-                File.WriteAllText(Path.Combine(mo, "categories.dat"), "");
-                // create default profile
-                var profiles = Path.Combine(mo, "profiles");
-                var defaultProfile = Path.Combine(profiles, "Default");
-                Directory.CreateDirectory(defaultProfile);
-                // create empty modlist.txt
-                File.WriteAllText(Path.Combine(defaultProfile, "modlist.txt"), "# This file was automatically generated by Mod Organizer.\r\n");
-                // create overwrite dir
-                var overwrite = Path.Combine(mo, "overwrite");
-                Directory.CreateDirectory(overwrite);
-
-                return dummyExePath;
+                return true;
             }
             catch (Exception ex)
             {
                 _log.Error("Failed to create the dummy game. Error:\r\n" + ex);
-                return "";
+                return false;
             }
         }
 
-        internal static bool AddNewGame(MainForm main, string newGameMainExePath = "")
+        /// <summary>
+        /// Asks the user for the exe of a game and adds the game it belongs to to the list
+        /// of the managed games.
+        /// </summary>
+        /// <param name="main">form which shows the list of games</param>
+        /// <returns>true when a game was added</returns>
+        internal static bool AddNewGame(MainForm main)
         {
-            if(string.IsNullOrWhiteSpace(newGameMainExePath))
-            {
-                var browseDialog = new OpenFileDialog();
-                browseDialog.Filter = "Game exe|*.exe";
-                browseDialog.Multiselect = false;
-                browseDialog.Title = T._("Select exe in the game dir you want to add..");
-                var result = browseDialog.ShowDialog();
-                if (result != DialogResult.OK)
-                {
-                    return false;
-                }
+            string gameExePath = AskForGameExePath();
+            if (string.IsNullOrEmpty(gameExePath)) return false; // the user cancelled
 
-                newGameMainExePath = browseDialog.FileName;
+            if (!TryAddGameFolder(gameExePath, out string gameDirPath))
+            {
+                MessageBox.Show(T._("This exe does not belong to a supported game")
+                    + ":" + Environment.NewLine + gameExePath);
+                return false;
             }
 
-            if (!File.Exists(newGameMainExePath)) return false;
-
-            string exeName = Path.GetFileNameWithoutExtension(newGameMainExePath);
-
-            // check if exe is exe of one of valid games
-            if (!IsKnownGameExe(exeName)) return false;
-
-            string gameTxtPath = Path.Combine(ManageSettings.GamesBaseFolderPath, $"{exeName}.txt");
-
-            string parentDir = Path.GetDirectoryName(newGameMainExePath);
-            bool isInData = string.Equals(Path.GetFileName(parentDir), ManageSettings.DataDirName, StringComparison.InvariantCultureIgnoreCase);
-
-            string gamePathToAdd = isInData ? Path.GetDirectoryName(parentDir) : parentDir;
-
-            // add game path to txt with selected exe name
-            if (File.Exists(gameTxtPath))
-            {
-                bool lineAlreadyAdded = false;
-                var lines = File.ReadAllLines(gameTxtPath);
-                foreach (var line in lines)
-                {
-                    if (string.Equals(gamePathToAdd, line, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        lineAlreadyAdded = true;
-                        break;
-                    }
-                }
-
-                // write new path in the file if missing
-                if (!lineAlreadyAdded) File.WriteAllLines(gameTxtPath, lines.Concat(new[] { gamePathToAdd }).ToArray());
-            }
-            else File.WriteAllText(gameTxtPath, $"{gamePathToAdd}\r\n");
-
-            // update games list
-            ManageOther.SetListOfAddedGames(main);
+            // rebuild the list from the folders, so the game which was added can be
+            // selected and managed right away
+            SetListOfAddedGames(main);
+            SelectGameInUi(main, gameDirPath);
 
             return true;
         }
 
         /// <summary>
-        /// true when exe with the <paramref name="exeName"/> name is main or additional exe of one of the known games
+        /// Asks the user for the exe of a game.
         /// </summary>
-        /// <param name="exeName"></param>
-        /// <returns></returns>
-        private static bool IsKnownGameExe(string exeName)
+        /// <returns>the exe path, or an empty string when the user cancelled</returns>
+        private static string AskForGameExePath()
         {
-            foreach (var gameType in Inherited.GetListOfInheritedTypes(typeof(GameBase)))
+            using (var browseDialog = new OpenFileDialog())
             {
-                var game = (GameBase)Activator.CreateInstance(gameType);
-                if (game.GameExeName == exeName
-                    || game.GameExeNameX32 == exeName
-                    || game.GameExeNameVr == exeName
-                    || game.GameStudioExeName == exeName
-                    || game.GameStudioExeNameX32 == exeName
-                    || game.IniSettingsExeName == exeName
-                    )
-                {
-                    return true;
-                }
-            }
+                browseDialog.Filter = "Game exe|*.exe";
+                browseDialog.Multiselect = false;
+                browseDialog.Title = T._("Select exe in the game dir you want to add..");
 
-            return false;
+                return browseDialog.ShowDialog() == DialogResult.OK
+                    ? browseDialog.FileName
+                    : string.Empty;
+            }
         }
 
+        /// <summary>
+        /// Adds the game the given exe belongs to to the list of the game folders the app
+        /// manages.
+        /// </summary>
+        /// <param name="gameExePath">exe which was picked</param>
+        /// <param name="gameDirPath">folder of the game, once it is registered</param>
+        /// <returns>true when the game folder is registered</returns>
+        /// <remarks>
+        /// Nothing is shown to the user here: the caller decides how to report an exe which
+        /// could not be added.
+        /// </remarks>
+        internal static bool TryAddGameFolder(string gameExePath, out string gameDirPath)
+        {
+            gameDirPath = null;
+
+            if (string.IsNullOrWhiteSpace(gameExePath) || !File.Exists(gameExePath)) return false;
+
+            string exeName = Path.GetFileNameWithoutExtension(gameExePath);
+
+            // only the exe of one of the known games can be added, because a game is found
+            // by its main exe while the list of games is built
+            if (!GamePresets.TryFindByExeName(exeName, out _)) return false;
+
+            string gameDirPathToAdd = GetGameDirPathOfExe(gameExePath);
+            if (gameDirPathToAdd == null) return false;
+
+            if (!GameFolderRegistry.AddGameFolder(gameDirPathToAdd, exeName)) return false;
+
+            gameDirPath = gameDirPathToAdd;
+            return true;
+        }
+
+        /// <summary>
+        /// Folder of the game an exe belongs to: the folder of the exe, or the folder above
+        /// it when the exe is in the data folder of the game.
+        /// </summary>
+        /// <param name="gameExePath">exe of a game</param>
+        /// <returns>the game folder, or null when the path cannot be used</returns>
+        private static string GetGameDirPathOfExe(string gameExePath)
+        {
+            string exeDirPath = Path.GetDirectoryName(gameExePath);
+            if (string.IsNullOrEmpty(exeDirPath)) return null;
+
+            bool isInDataDir = string.Equals(
+                Path.GetFileName(exeDirPath),
+                ManageSettings.DataDirName,
+                StringComparison.OrdinalIgnoreCase);
+
+            string gameDirPath = isInDataDir ? Path.GetDirectoryName(exeDirPath) : exeDirPath;
+
+            return GameFolderRegistry.GetGameDirPath(gameDirPath);
+        }
+
+        /// <summary>
+        /// Makes the game of the given folder the current one of the
+        /// <paramref name="main"/> form.
+        /// </summary>
+        /// <param name="main">form which shows the list of games</param>
+        /// <param name="gameDirPath">folder of the game to select</param>
+        /// <remarks>
+        /// The form switches the game when the selection of the combo box changes, so the
+        /// current game is not set here - selecting the game is enough, and it is the same
+        /// path a game the user picks in the list takes.
+        /// </remarks>
+        private static void SelectGameInUi(MainForm main, string gameDirPath)
+        {
+            var games = ManageSettings.Games.Games;
+            if (games == null) return;
+
+            int index = games.FindIndex(game => game.GameDirInfo != null
+                && string.Equals(game.GameDirInfo.FullName, gameDirPath, StringComparison.OrdinalIgnoreCase));
+
+            // nothing to do when the game is the selected one already
+            if (index < 0 || index == main.CurrentGameComboBox.SelectedIndex) return;
+
+            main.CurrentGameComboBox.SelectedIndex = index;
+        }
+
+        /// <summary>
+        /// The game folders which are saved in the app ini.
+        /// </summary>
+        /// <param name="ini">app ini</param>
+        /// <returns>the folders which exist, never null</returns>
         public static List<string> GetKnownGames(INIFile ini)
         {
-            List<string> list = new List<string>();
-            if (ini == null) return list;
+            var knownGames = new List<string>();
+            if (ini == null) return knownGames;
 
             var games = ini.GetKey(ManageSettings.SettingsIniSectionName, ManageSettings.KnownGamesIniKeyName);
+            if (string.IsNullOrWhiteSpace(games)) return knownGames;
 
-            if (!string.IsNullOrWhiteSpace(games))
+            foreach (var gamePath in games.Split('|'))
             {
-                var gamesList = games.Split('|');
-                gamesList = gamesList.Where(p => Directory.Exists(p)).Distinct().ToArray();
-                foreach (var path in gamesList) list.Add(path);
+                if (string.IsNullOrWhiteSpace(gamePath)) continue;
+                if (!Directory.Exists(gamePath)) continue;
+                if (ContainsGamePath(knownGames, gamePath)) continue;
+
+                knownGames.Add(gamePath);
             }
 
-            return list;
+            return knownGames;
         }
 
+        /// <summary>
+        /// Rebuilds the list of the games from the games base folder and shows it in the
+        /// <paramref name="main"/> form.
+        /// </summary>
+        /// <param name="main">form which shows the list of games</param>
+        /// <returns>false when no game was found: the app cannot be used without one</returns>
         public static bool SetListOfAddedGames(MainForm main)
         {
             try
@@ -488,59 +467,23 @@ namespace AIHelper.Manage
                 var ini = ManageIni.GetINIFile(ManageSettings.AiHelperIniPath);
                 ManageSettings.KnownGames = GetKnownGames(ini);
 
-                ManageOther.GetListOfExistsGames();
+                GetListOfExistsGames();
 
-                bool isNoGamesFound = ManageSettings.KnownGames.Count == 0 && (ManageSettings.Games.Games == null || ManageSettings.Games.Games.Count == 0);
-
-                if (isNoGamesFound)
+                if (!HasAnyGame())
                 {
-                    isNoGamesFound = !AddNewGame(main, ManageOther.CreateDummyGame()) && ManageSettings.KnownGames.Count == 0 && (ManageSettings.Games.Games == null || ManageSettings.Games.Games.Count == 0);
+                    // first run: create a game the user can start from and look again
+                    CreateDummyGame();
+                    GetListOfExistsGames();
                 }
 
-                if (isNoGamesFound)
+                if (!HasAnyGame())
                 {
-                    MessageBox.Show(T._("Games not found") + "."
-                        + Environment.NewLine + T._("Need atleast one game in subfolder in Games folder") + "."
-                        + Environment.NewLine + "----------------"
-                        + Environment.NewLine + T._("List of games") + ":"
-                        + Environment.NewLine + ManageSettings.FolderNamesOfFoundGame
-                        + Environment.NewLine + "----------------"
-                        + Environment.NewLine + T._("The game folder must contain") + ":"
-                        + Environment.NewLine + "Data" + " - " + T._("main game data")
-                        + Environment.NewLine + "Mods" + " - " + T._("game mods in subfolders")
-                        + Environment.NewLine + "MO" + " - " + T._("Mod Organizer folder with next data") + ":"
-                        + Environment.NewLine + "  " + "profiles" + " - " + T._("profiles folder with mod combinations")
-                        + Environment.NewLine + "  " + "categories.dat" + " - " + T._("list of categories for mods")
-                        + Environment.NewLine + "  " + "ModOrganizer.ini" + " - " + T._("Mod Organizer settings for the game")
-                        + Environment.NewLine + "  " + T._("in place of any not exists MO data files will be created empty.")
-                        );
+                    ShowGamesNotFoundMessage();
                     //Application.Exit();
                     return false;
                 }
-                else
-                {
-                    List<string> newGamesReport = new List<string>();
-                    foreach (var game in ManageSettings.Games.Games)
-                    {
-                        var gamePath = game.GamePath;
-                        if (ManageSettings.KnownGames.Contains(gamePath)) continue;
 
-                        ManageSettings.KnownGames.Add(gamePath);
-                        newGamesReport.Add("\n" + game.GameDisplayingName + ": " + gamePath);
-                    }
-
-                    newGamesReport = newGamesReport.OrderBy(p => p).ToList();
-
-                    if (newGamesReport.Count > 0)
-                    {
-                        MessageBox.Show(T._("New games:") +
-                            "\n"
-                            + Environment.NewLine + "----------------"
-                            + string.Join("", newGamesReport)
-                            + Environment.NewLine + "----------------"
-                        );
-                    }
-                }
+                ReportNewGames();
 
                 var games = ManageSettings.Games.Games ?? new List<GameBase>();
 
@@ -560,17 +503,102 @@ namespace AIHelper.Manage
 
                 UpdateGamesListUi(main, games);
 
-                ini.SetKey(ManageSettings.SettingsIniSectionName, ManageSettings.KnownGamesIniKeyName, string.Join("|", ManageSettings.KnownGames));
+                if (ini != null)
+                {
+                    ini.SetKey(ManageSettings.SettingsIniSectionName, ManageSettings.KnownGamesIniKeyName, string.Join("|", ManageSettings.KnownGames));
+                }
 
                 SetCurrentGameTitle(main);
             }
             catch (Exception ex)
             {
-                _log.Debug("An error occured while SetListOfGames.path=" + ManageSettings.AiHelperIniPath + "\r\n error:\r\n" + ex);
+                _log.Error("An error occured while the list of games was built. ini=" + ManageSettings.AiHelperIniPath + "\r\n error:\r\n" + ex);
                 return false;
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// true when a game was found, either in a folder or in the app ini.
+        /// </summary>
+        private static bool HasAnyGame()
+        {
+            if (ManageSettings.KnownGames != null && ManageSettings.KnownGames.Count > 0) return true;
+
+            return ManageSettings.Games != null
+                && ManageSettings.Games.Games != null
+                && ManageSettings.Games.Games.Count > 0;
+        }
+
+        /// <summary>
+        /// Adds the games which are not known yet to the known games list and tells the
+        /// user about them.
+        /// </summary>
+        private static void ReportNewGames()
+        {
+            var newGamesReport = new List<string>();
+
+            foreach (var game in ManageSettings.Games.Games)
+            {
+                var gamePath = game.GamePath;
+                if (ContainsGamePath(ManageSettings.KnownGames, gamePath)) continue;
+
+                ManageSettings.KnownGames.Add(gamePath);
+                newGamesReport.Add("\n" + game.GameDisplayingName + ": " + gamePath);
+            }
+
+            if (newGamesReport.Count == 0) return;
+
+            newGamesReport = newGamesReport.OrderBy(p => p).ToList();
+
+            MessageBox.Show(T._("New games:") +
+                "\n"
+                + Environment.NewLine + "----------------"
+                + string.Join("", newGamesReport)
+                + Environment.NewLine + "----------------"
+            );
+        }
+
+        /// <summary>
+        /// true when the list holds the path of a game.
+        /// </summary>
+        /// <remarks>
+        /// A game folder is a folder of this machine, so the case of the path is not part
+        /// of its identity.
+        /// </remarks>
+        private static bool ContainsGamePath(IEnumerable<string> gamePaths, string gamePath)
+        {
+            if (gamePaths == null || string.IsNullOrWhiteSpace(gamePath)) return false;
+
+            foreach (var knownGamePath in gamePaths)
+            {
+                if (string.Equals(knownGamePath, gamePath, StringComparison.OrdinalIgnoreCase)) return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Tells the user that no game was found and what a game folder has to contain.
+        /// </summary>
+        private static void ShowGamesNotFoundMessage()
+        {
+            MessageBox.Show(T._("Games not found") + "."
+                + Environment.NewLine + T._("Need atleast one game in subfolder in Games folder") + "."
+                + Environment.NewLine + "----------------"
+                + Environment.NewLine + T._("List of games") + ":"
+                + Environment.NewLine + ManageSettings.FolderNamesOfFoundGame
+                + Environment.NewLine + "----------------"
+                + Environment.NewLine + T._("The game folder must contain") + ":"
+                + Environment.NewLine + "Data" + " - " + T._("main game data")
+                + Environment.NewLine + "Mods" + " - " + T._("game mods in subfolders")
+                + Environment.NewLine + "MO" + " - " + T._("Mod Organizer folder with next data") + ":"
+                + Environment.NewLine + "  " + "profiles" + " - " + T._("profiles folder with mod combinations")
+                + Environment.NewLine + "  " + "categories.dat" + " - " + T._("list of categories for mods")
+                + Environment.NewLine + "  " + "ModOrganizer.ini" + " - " + T._("Mod Organizer settings for the game")
+                + Environment.NewLine + "  " + T._("in place of any not exists MO data files will be created empty.")
+                );
         }
 
         /// <summary>
@@ -580,9 +608,11 @@ namespace AIHelper.Manage
         /// <param name="games"></param>
         private static void UpdateGamesListUi(MainForm main, List<GameBase> games)
         {
-            main.CurrentGameComboBox.DataSource = games;
+            // the members are set before the data source: a source which is set first is
+            // bound once with the members of the previous list
             main.CurrentGameComboBox.DisplayMember = "GameDirName";
             main.CurrentGameComboBox.ValueMember = "GameDirName";
+            main.CurrentGameComboBox.DataSource = games;
 
             // no reason to switch the game when it is the only one
             main.CurrentGameComboBox.Enabled = games.Count != 1;
@@ -598,6 +628,8 @@ namespace AIHelper.Manage
             if (currentGame == null) return;
 
             main.CurrentGameTitleTextBox.Text = currentGame.GameDisplayingName;
+
+            // the box only shows the name of the current game, so it is not editable
             main.CurrentGameTitleTextBox.Enabled = false;
         }
 

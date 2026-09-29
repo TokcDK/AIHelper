@@ -3,6 +3,7 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace AIHelper.Games
@@ -189,6 +190,70 @@ namespace AIHelper.Games
         /// </summary>
         /// <returns>the extra executables, never null</returns>
         public virtual IReadOnlyList<string> AdditionalExecutables => Array.Empty<string>();
+
+        /// <summary>
+        /// Every exe name the game can be started with: the main exe, its x32 and vr
+        /// builds, the studio, the settings launcher and the additional executables.
+        /// </summary>
+        /// <remarks>
+        /// A game is recognized in a folder by its main exe only, but any of these names
+        /// is accepted when the user picks the exe to add, because the folder of the game
+        /// has to be found whichever build the user starts. The names are declared here
+        /// rather than in the code which looks for a game, so a preset which adds an exe
+        /// does not have to be taught to that code as well.
+        /// </remarks>
+        /// <returns>the names without the extension, without empty ones, never null</returns>
+        public virtual IReadOnlyList<string> KnownExeNames
+        {
+            get
+            {
+                var exeNames = new List<string>
+                {
+                    GameExeName,
+                    GameExeNameX32,
+                    GameExeNameVr,
+                    GameStudioExeName,
+                    GameStudioExeNameX32,
+                    IniSettingsExeName
+                };
+
+                foreach (var additionalExePath in AdditionalExecutables)
+                {
+                    exeNames.Add(Path.GetFileNameWithoutExtension(additionalExePath));
+                }
+
+                return exeNames.Where(exeName => !string.IsNullOrWhiteSpace(exeName)).ToArray();
+            }
+        }
+
+        /// <summary>
+        /// true when <paramref name="exeName"/> is one of <see cref="KnownExeNames"/>.
+        /// </summary>
+        /// <param name="exeName">exe file name, with or without the extension</param>
+        /// <returns>true when the exe belongs to the game</returns>
+        /// <remarks>
+        /// The comparison ignores the case: an exe is a file of this machine, and the
+        /// user may pick it in any case the file system reports it in.
+        /// </remarks>
+        public bool IsKnownExeName(string exeName)
+        {
+            if (string.IsNullOrWhiteSpace(exeName))
+            {
+                return false;
+            }
+
+            string name = Path.GetFileNameWithoutExtension(exeName);
+
+            foreach (var knownExeName in KnownExeNames)
+            {
+                if (string.Equals(knownExeName, name, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         /// <summary>
         /// Folder names the game itself owns. Content inside them must not be

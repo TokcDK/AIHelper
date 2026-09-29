@@ -230,7 +230,7 @@ namespace AIHelper
             this.SaveThemeButton.Text = T._("Save");
             this.RenameThemeButton.Text = T._("Rename");
             this.DeleteThemeButton.Text = T._("Delete");
-            this.OpenLogLinkLabel.Text = T._("log");
+            this.OpenLogLinkLabel.Text = T._("BepInEx log");
             this.VRGameCheckBox.Text = T._("vr");
             this.JPLauncherRunLinkLabel.Text = T._("JP Launcher");
             this.ExtraSettingsLinkLabel.Text = T._("Extra Settings");

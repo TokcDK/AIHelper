@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AIHelper.Data.Modlist;
@@ -48,67 +47,6 @@ namespace AIHelper.Manage
             }
 
             UpdateModsFinalize();
-        }
-
-        /// <summary>
-        /// read mod name - update info pairs from the update info file
-        /// </summary>
-        /// <param name="sourceId">reserved for the sources separation, the file is shared between the sources now</param>
-        /// <returns>mod name - update info pairs or empty dictionary when the file is missing</returns>
-        public static Dictionary<string, string> GetUpdateInfosFromFile(string sourceId)
-        {
-            var d = new Dictionary<string, string>();
-
-            if (!File.Exists(ManageSettings.UpdateInfosFilePath)) return d;
-
-            using (StreamReader sr = new StreamReader(ManageSettings.UpdateInfosFilePath))
-            {
-                string line;
-                string modName = "";
-                while ((line = sr.ReadLine()) != null)
-                {
-                    if (string.IsNullOrWhiteSpace(line) || line.TrimStart()[0] == ';') continue;
-
-                    if (modName.Length == 0)
-                    {
-                        modName = line;
-                    }
-                    else if (Regex.IsMatch(line, "^[a-zA-Z0-9]+::[^:]+::$"))
-                    {
-                        d.Add(modName, line);
-                        modName = "";
-                    }
-                }
-            }
-
-            return d;
-        }
-
-        internal static Dictionary<string, string> GetUpdateInfos(string sourceId, bool onlyActive = true)
-        {
-            var infos = new Dictionary<string, string>();
-            try
-            {
-                var updateInfoList = GetUpdateInfosFromFile(sourceId);
-                if (updateInfoList.Count == 0) return infos;
-
-                // update options of the dialog are used when the dialog was created
-                bool enabledModsOnly = UpdateOptions != null ? UpdateOptions.CheckEnabledModsOnlyCheckBox.Checked : onlyActive;
-
-                foreach (var modname in ManageModOrganizer.EnumerateModNamesListFromActiveMoProfile(enabledModsOnly))
-                {
-                    if (updateInfoList.ContainsKey(modname) && !infos.ContainsKey(modname))
-                    {
-                        infos.Add(modname, updateInfoList[modname]);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _log.Error("An error while get update infos:\r\n" + ex + "\r\ninfos count=" + infos.Count);
-            }
-
-            return infos;
         }
 
         private static async Task UpdateByUpdater()

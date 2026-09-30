@@ -5,13 +5,13 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AIHelper.Data.Modlist;
 using AIHelper.Manage.ui.themes;
 using AIHelper.Manage.Update;
 using AIHelper.Manage.Update.Sources;
-using AIHelper.Manage.Update.Targets.Mods;
 using INIFileMan;
 using NLog;
 
@@ -402,66 +402,38 @@ namespace AIHelper.Manage.Functions
                         return;
                     }
 
+                    var newRecord = new GithubUpdateRecord(
+                        ownerName,
+                        repositoryName,
+                        startsWith,
+                        endsWithPropData.TextBoxText,
+                        verFromFile.Checked);
+
                     foreach (var modInfo in _updateInfoDatas)
                     {
-                        if (modInfo.GitInfo.Owner != ownerName) continue;
-                        if (modInfo.GitInfo.Repository != repositoryName) continue;
-                        if (modInfo.GitInfo.FileStartsWith != startsWith) continue;
-                        if (modInfo.GitInfo.FileEndsWith != endsWith) continue;
+                        if (!newRecord.PointsAtSameFileAs(ToUpdateRecord(modInfo.GitInfo))) continue;
 
                         Log(T._($"Mod '{modInfo.ModName}' have same Owner,Repository,start/end"));
                         return;
                     }
 
-                    var info = new Update.UpdateInfo
-                    {
-                        TargetFolderPath = targetDirPathInfo,
-                        TargetFolderUpdateInfo = new string[3] { ownerName, repositoryName, startsWith }
-                    };
-
-                    if (!string.IsNullOrWhiteSpace(endsWith))
-                    {
-                        info.TargetFolderUpdateInfo = info.TargetFolderUpdateInfo.Concat(new string[1] { endsWithPropData.TextBoxText }).ToArray();
-                    }
-                    info.TargetFolderUpdateInfo = info.TargetFolderUpdateInfo.Concat(new string[1] { verFromFile.Checked.ToString() }).ToArray();
-
-                    var ghub = new Github(info);
-
-                    info.TargetLastVersion = ghub.GetLastVersion();
-
-                    if (info.TargetLastVersion.Length == 0)
-                    {
-                        Log(T._("Cant get last version"));
-                        return;
-                    }
-
-                    string targetLastVersion = info.TargetLastVersion;
-                    UpdateTools.CleanVersion(ref targetLastVersion);
-                    info.TargetLastVersion = targetLastVersion;
-
-                    if (!info.TargetLastVersion.IsNewerOf("0", false))
-                    {
-                        Log(T._("Version is lesser. Check entered data."));
-                        return;
-                    }
-
                     var modData = new ModData
                     {
-                        Path = info.TargetFolderPath.FullName,
+                        Path = targetDirPathInfo.FullName,
                         Name = modnamePropData.TextBoxText,
                         Priority = 9999
                     };
 
                     var ginfo = new GitUpdateInfoData(modData)
                     {
-                        Owner = ownerName,
-                        Repository = repositoryName,
-                        FileStartsWith = startsWith,
-                        FileEndsWith = endsWithPropData.TextBoxText,
-                        VersionFromFile = verFromFile.Checked
+                        Owner = newRecord.Owner,
+                        Repository = newRecord.Repository,
+                        FileStartsWith = newRecord.FileStartsWith,
+                        FileEndsWith = newRecord.FileEndsWith,
+                        VersionFromFile = newRecord.VersionFromFile
                     };
 
-                    GetGHubFile(ghub, ginfo);
+                    GetGithubFile(newRecord, ginfo);
                 }
                 catch (Exception ex)
                 {
@@ -482,43 +454,77 @@ namespace AIHelper.Manage.Functions
             addModPanelIsLoading = false;
         }
 
-        private async void GetGHubFile(Github ghub, GitUpdateInfoData ginfo)
+        /// <summary>
+        /// Downloads the release the record points at and adds it as a mod.
+        /// <para>
+        /// The lookup and the download are the update engine's; what happens here is
+        /// the ordering the editor needs — resolve the version first, then put the
+        /// files in place, and only then write the record into meta.ini, so that a
+        /// failed download never leaves a mod that claims to be updatable.
+        /// </para>
+        /// </summary>
+        private async void GetGithubFile(GithubUpdateRecord record, GitUpdateInfoData ginfo)
         {
             //NOTE: this stays async void because the enclosing LoadAddModPanel is synchronous, so the caller
             //cannot await it. An exception thrown after the first await of an async void method cannot be caught
             //by the caller and would crash the process, so the whole body must be guarded here.
             try
             {
-                bool getfileIsTrue = await ghub.GetFile().ConfigureAwait(true); // download latest file
-                if (!getfileIsTrue)
+                using (var engine = new UpdateEngineFactory())
                 {
-                    Log(T._("Cant download file!"));
-                    return;
+                    var probe = new GithubUpdateProbe(engine.GithubSource);
+
+                    var latest = await probe
+                        .FindLatestAsync(record, CancellationToken.None)
+                        .ConfigureAwait(true);
+
+                    if (latest == null || string.IsNullOrWhiteSpace(latest.VersionString))
+                    {
+                        Log(T._("Cant get last version"));
+                        return;
+                    }
+
+                    var targetFolderPath = ginfo.Mod.Path;
+
+                    if (!await probe
+                            .DownloadAndInstallAsync(latest, targetFolderPath, CancellationToken.None)
+                            .ConfigureAwait(true))
+                    {
+                        Log(T._("Cant download file!"));
+                        return;
+                    }
+
+                    ginfo.Mod.MetaIni = new INIFile(Path.Combine(targetFolderPath, "meta.ini"), true);
+
+                    ginfo.Write();
+
+                    Log(T._("Mod succesfully downloaded and added!"));
+
+                    // The mod was successfully downloaded and added: build one new
+                    // ModInfoBuild with the entered values and append it to the cache.
+                    AddNewModInfoBuild(ginfo);
                 }
-
-                var t = new ModsMeta(ghub.Info);
-
-                if (!t.UpdateFiles())
-                {
-                    Log(T._("Cant move file into mods dir"));
-                    return;
-                }
-
-                ginfo.Mod.MetaIni = new INIFile(Path.Combine(ghub.Info.TargetFolderPath.FullName, "meta.ini"), true);
-
-                ginfo.Write();
-
-                Log(T._("Mod succesfully downloaded and added!"));
-
-                // The mod was successfully downloaded and added: build one new
-                // ModInfoBuild with the entered values and append it to the cache.
-                AddNewModInfoBuild(ginfo);
             }
             catch (Exception ex)
             {
                 Log(T._("Error: ") + ex.Message);
                 _log.Error("Failed to download and add the mod. Error:\r\n" + ex);
             }
+        }
+
+        /// <summary>
+        /// Reads a record out of the fields the editor holds, so that two entries
+        /// feeding off the same release can be recognised through the comparison the
+        /// record itself offers instead of by comparing four fields by hand.
+        /// </summary>
+        private static GithubUpdateRecord ToUpdateRecord(GitUpdateInfoData gitInfo)
+        {
+            return new GithubUpdateRecord(
+                gitInfo.Owner,
+                gitInfo.Repository,
+                gitInfo.FileStartsWith,
+                gitInfo.FileEndsWith,
+                gitInfo.VersionFromFile);
         }
 
         private void AddNewModInfoBuild(GitUpdateInfoData ginfo)
@@ -583,38 +589,32 @@ namespace AIHelper.Manage.Functions
                 var updateInfoIsEmpty = string.IsNullOrWhiteSpace(updateInfo);
                 if (urlInfoIsEmpty && updateInfoIsEmpty) continue;
 
-                var github = new Github(null);
-                var urlMatch = Regex.Match(url, $@"(https?:\/\/){github.Url}\/([^\/]+)\/([^\/]+)", RegexOptions.IgnoreCase);
+                var urlMatch = Regex.Match(
+                    url,
+                    $@"(https?:\/\/){UpdateRecordParser.SourceHost}\/([^\/]+)\/([^\/]+)",
+                    RegexOptions.IgnoreCase);
+
                 var infoData = new UpdateInfoData(mod)
                 {
                     ToolTip = _toolTip
                 };
 
-                if (!updateInfoIsEmpty && updateInfo.StartsWith(github.InfoId))
+                // A stored record is only read when it really is one. The value may
+                // equally well be a plain note, and taking "first,second" out of a
+                // sentence would invent an owner and a repository.
+                GithubUpdateRecord storedRecord = null;
+                var hasStoredRecord = !updateInfoIsEmpty
+                                      && updateInfo.TrimStart().StartsWith(
+                                          UpdateRecordParser.SourceId, StringComparison.OrdinalIgnoreCase)
+                                      && UpdateRecordParser.TryParseStoredValue(updateInfo, out storedRecord);
+
+                if (hasStoredRecord)
                 {
-                    var extractedInfo = updateInfo
-                        .Remove(updateInfo.Length - 2)
-                        .Remove(0, github.InfoId.Length + 2).Split(',');
-
-                    var owner = extractedInfo[0];
-                    var repName = extractedInfo[1];
-                    var start = extractedInfo[2];
-                    var end = "";
-                    if (extractedInfo.Length > 3)
-                    {
-                        end = extractedInfo[3];
-                    }
-                    var isFromFile = false;
-                    if (extractedInfo.Length > 4 && bool.TryParse(extractedInfo[4], out bool b))
-                    {
-                        isFromFile = b;
-                    }
-
-                    infoData.GitInfo.Owner = owner.Trim();
-                    infoData.GitInfo.Repository = repName.Trim();
-                    infoData.GitInfo.FileStartsWith = start.Trim();
-                    infoData.GitInfo.FileEndsWith = end.Trim();
-                    infoData.GitInfo.VersionFromFile = isFromFile;
+                    infoData.GitInfo.Owner = storedRecord.Owner;
+                    infoData.GitInfo.Repository = storedRecord.Repository;
+                    infoData.GitInfo.FileStartsWith = storedRecord.FileStartsWith;
+                    infoData.GitInfo.FileEndsWith = storedRecord.FileEndsWith;
+                    infoData.GitInfo.VersionFromFile = storedRecord.VersionFromFile;
                 }
                 else if (urlMatch.Success)
                 {
@@ -948,8 +948,7 @@ namespace AIHelper.Manage.Functions
 
         public class GitUpdateInfoData
         {
-            public string Site { get; } = "github.com";
-            public string Marker { get; } = "updgit";
+            public string Site { get; } = UpdateRecordParser.SourceHost;
 
             public string Owner { get; set; } = "";
             public string Repository { get; set; } = "";
@@ -978,9 +977,10 @@ namespace AIHelper.Manage.Functions
                 bool hasGitHubUrlData = Owner.Length > 0 && Repository.Length > 0;
                 if (hasGitHubUrlData && FileStartsWith.Length > 0)
                 {
-                    var fileEnds = FileEndsWith.Length > 0 ? "," + FileEndsWith : "";
-                    var verFromFile = (VersionFromFile && fileEnds.Length > 0 ? "," + VersionFromFile : "").ToLowerInvariant();
-                    var newInfo = $"{Marker}::{Owner},{Repository},{FileStartsWith}{fileEnds}{verFromFile}::";
+                    // Written through the parser, so the shape stored by the editor is
+                    // the one shape every reader of the file agrees on.
+                    var newInfo = UpdateRecordParser.Format(
+                        new GithubUpdateRecord(Owner, Repository, FileStartsWith, FileEndsWith, VersionFromFile));
 
                     var currentInfo = INI.GetKey(ManageSettings.AiMetaIniSectionName, ManageSettings.AiMetaIniKeyUpdateName);
 

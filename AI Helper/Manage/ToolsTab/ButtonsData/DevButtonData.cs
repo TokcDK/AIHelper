@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using AIHelper.Manage.Functions;
+using AIHelper.Manage.Update.Providers;
 using INIFileMan;
 
 namespace AIHelper.Manage.ToolsTab.ButtonsData
@@ -32,7 +33,7 @@ namespace AIHelper.Manage.ToolsTab.ButtonsData
             var updateInfos = new Dictionary<string, string>();
             if (File.Exists(ManageSettings.UpdateInfosFilePath))
             {
-                updateInfos = ManageUpdateMods.GetUpdateInfosFromFile("updgit");
+                updateInfos = UpdateInfoFileProvider.ReadRecordsByModName();
             }
 
             foreach (var mod in ManageModOrganizer.GetModNamesListFromActiveMoProfile(false))

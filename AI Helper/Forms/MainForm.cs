@@ -5,7 +5,6 @@ using AIHelper.Manage.FoldersTab.Folders;
 using AIHelper.Manage.ui;
 using AIHelper.Manage.ui.themes;
 using AIHelper.Manage.Update;
-using AIHelper.Manage.Update.Targets;
 using CheckForEmptyDir;
 using NLog;
 using System;
@@ -214,7 +213,7 @@ namespace AIHelper
                 return;
             }
 
-            await new Updater(null).Update(new List<UpdateTargetBase>() { new Mo(new UpdateInfo(null)) }).ConfigureAwait(true);
+            await new Updater(null).UpdateModOrganizer().ConfigureAwait(true);
         }
 
         private static void CleanLog()

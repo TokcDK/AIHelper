@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -14,460 +13,307 @@ using static AIHelper.Manage.ManageModOrganizer;
 
 namespace AIHelper.Manage
 {
+    /// <summary>
+    /// Runs the update mods pass: the plugins through the updater, and the zipmods through
+    /// the KKManager standalone updater followed by a sort of what it left behind.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This class is the pass and nothing else. What has to be moved and where is
+    /// <see cref="ZipmodsSorter"/>, the window which is shown while the pass runs is
+    /// <see cref="ZipmodsUpdateProgressForm"/>, and the updater itself is
+    /// <see cref="Updater"/>. What is left here is the order the steps run in, and the
+    /// cleanup which has to happen whatever that order came to.
+    /// </para>
+    /// <para>
+    /// The pass changes things which outlive it - the modlist is force enabled and a window
+    /// is put on screen - so both are undone in one cleanup instead of at the end of the
+    /// happy path. A pass which stopped half way used to leave the window up and every mod
+    /// with a sideloader modpack enabled, with nothing on screen to say why.
+    /// </para>
+    /// </remarks>
     class ManageUpdateMods
     {
         static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
-        static UpdateOptionsDialogForm UpdateOptions;
+        /// <summary>
+        /// Suffix of the copy of the modlist which is taken before the mods are force
+        /// enabled. It is the file <see cref="ManageModOrganizer.RestoreModlist"/> puts back.
+        /// </summary>
+        private const string ModlistBackupSuffix = ".prezipmodsUpdate";
 
+        /// <summary>
+        /// Name without extension of the KKManager standalone updater executable, which is
+        /// how Mod Organizer's list of custom executables is searched.
+        /// </summary>
+        private const string StandaloneUpdaterExeName = "StandaloneUpdater";
+
+        /// <summary>
+        /// Title the standalone updater is registered under in Mod Organizer, and therefore
+        /// the title of the shortcut the pass starts it through.
+        /// </summary>
+        private const string StandaloneUpdaterTitle = "KKManagerStandaloneUpdater";
+
+        /// <summary>
+        /// Version written into the meta.ini of the mod which collects the files the updater
+        /// creates for itself.
+        /// </summary>
+        private const string KKManagerFilesModVersion = "1.0";
+
+        /// <summary>
+        /// Runs the pass, after asking which parts of it to run.
+        /// </summary>
         public static async Task UpdateMods()
         {
-            UpdateOptions = new UpdateOptionsDialogForm
+            // the dialog is kept for the whole pass rather than for the question alone: the
+            // updater reads the choices the user made from it
+            using (var updateOptions = new UpdateOptionsDialogForm
             {
                 Location = new Point(ManageSettings.MainForm.Location.X, ManageSettings.MainForm.Location.Y),
                 StartPosition = FormStartPosition.Manual
-            };
-
-            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, UpdateOptions);
-            DialogResult result = UpdateOptions.ShowDialog();
-            if (result != DialogResult.OK) return;
-
-            UpdateModsInit();
-
-            //if (ManageSettings.MainForm.UpdatePluginsLabel.IsChecked())
-            if (UpdateOptions.UpdatePluginsCheckBox.Checked)
+            })
             {
-                await UpdateByUpdater().ConfigureAwait(true);
-            }
+                ThemesLoader.SetTheme(ManageSettings.CurrentTheme, updateOptions);
 
-            //if (ManageSettings.MainForm.UseKKmanagerUpdaterLabel.IsChecked())
-            if (UpdateOptions.UpdateZipmodsCheckBox.Checked)
-            {
-               await UpdateZipmods().ConfigureAwait(true);
-            }
+                if (updateOptions.ShowDialog() != DialogResult.OK) return;
 
-            UpdateModsFinalize();
+                ManageSettings.MainForm.AIGirlHelperTabControl.Enabled = false;
+
+                try
+                {
+                    if (updateOptions.UpdatePluginsCheckBox.Checked)
+                    {
+                        await UpdateByUpdater(updateOptions).ConfigureAwait(true);
+                    }
+
+                    if (updateOptions.UpdateZipmodsCheckBox.Checked)
+                    {
+                        await UpdateZipmods().ConfigureAwait(true);
+                    }
+                }
+                finally
+                {
+                    // the window is usable again whatever the pass did. Leaving it disabled
+                    // is what makes a failure look like the application has frozen.
+                    ManageSettings.MainForm.UpdateData();
+                    ManageSettings.MainForm.AIGirlHelperTabControl.Enabled = true;
+                }
+            }
         }
 
-        private static async Task UpdateByUpdater()
+        /// <summary>
+        /// Updates the plugins through the updater.
+        /// </summary>
+        private static async Task UpdateByUpdater(UpdateOptionsDialogForm updateOptions)
         {
             ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize);
 
-            var updater = new Updater(UpdateOptions);
-
-            //update plugins in mo mode
-            if (Manage.ManageSettings.IsMoMode) await updater.Update().ConfigureAwait(true);
-
-            if (updater.UpdatedAny) // make data update only when was updated any. Maybe required after update of MO or BepinEx
+            try
             {
-                ManageModOrganizer.CleanMoFolder();
-                //
-                ManageModOrganizer.CheckBaseGamesPy();
-                //
-                ManageModOrganizer.RedefineGameMoData();
-            }
+                var updater = new Updater(updateOptions);
 
-            ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize);
+                // the updater works on a managed installation, which only exists in mo mode
+                if (ManageSettings.IsMoMode) await updater.Update().ConfigureAwait(true);
+
+                if (updater.UpdatedAny)
+                {
+                    // the data of the managed installation is rebuilt only when something was
+                    // updated, because it is the update which can make it stale
+                    ManageModOrganizer.CleanMoFolder();
+                    ManageModOrganizer.CheckBaseGamesPy();
+                    ManageModOrganizer.RedefineGameMoData();
+                }
+            }
+            finally
+            {
+                ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize);
+            }
         }
 
+        /// <summary>
+        /// Runs the KKManager standalone updater and puts what it leaves behind where it
+        /// belongs.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Everything from the moment the window is opened runs inside one cleanup, so that
+        /// the window is closed and the modlist is put back whether the pass finished,
+        /// failed, or was stopped from inside the updater.
+        /// </para>
+        /// <para>
+        /// The sort runs even when the updater was stopped early. What it wrote before that
+        /// is still in the wrong place, and putting it right is the whole point of the sort.
+        /// </para>
+        /// </remarks>
         private static Task UpdateZipmods()
         {
+            // the check and the sort are both about sideloader modpacks, which only some of
+            // the games have
+            if (!ManageSettings.Games.Game.IsHaveSideloaderMods) return Task.CompletedTask;
 
-            //run zipmod's check if updater found and only for KK, AI, HS2
-            if (!ManageSettings.Games.Game.IsHaveSideloaderMods || !File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath)) return Task.CompletedTask;
+            // without the updater there is nothing to run
+            if (!File.Exists(ManageSettings.KkManagerStandaloneUpdaterExePath)) return Task.CompletedTask;
 
-            if (!Manage.ManageSettings.IsMoMode)
+            if (!ManageSettings.IsMoMode)
             {
-                //run updater normal
-                ManageProcess.RunProgramAndWaitHidden(ManageSettings.KkManagerStandaloneUpdaterExePath, "\"" + ManageSettings.CurrentGameDataDirPath + "\"");
+                // there is no mod organizer, so the updater is pointed at the game data
+                // directory and what it writes there stays there
+                RunUpdater(
+                    ManageSettings.KkManagerStandaloneUpdaterExePath,
+                    "\"" + ManageSettings.CurrentGameDataDirPath + "\"");
+
                 return Task.CompletedTask;
             }
 
-            //add updater as new exe in mo list if not exists
-            //if (!ManageMO.IsMOcustomExecutableTitleByExeNameExists("StandaloneUpdater"))
+            // read once: the property creates the overwrite folder as a side effect, and
+            // every step of the pass would otherwise read it again
+            var sortDirPaths = ManageSettings.KKManagerUpdateSortDirs.ToArray();
+
+            EnsureStandaloneUpdaterIsRegistered();
+
+            ZipmodsUpdateProgressForm progressForm = null;
+            var isModlistModified = false;
+
+            try
             {
-                var kkManagerStandaloneUpdater = new ManageModOrganizer.CustomExecutables.CustomExecutable
-                {
-                    Title = "KKManagerStandaloneUpdater",
-                    Binary = ManageSettings.KkManagerStandaloneUpdaterExePath,
-                    Arguments = ManageSettings.CurrentGameDataDirPath,
-                    MoTargetMod = ManageSettings.KKManagerFilesModName
-                };
+                progressForm = ZipmodsUpdateProgressForm.Open(ManageSettings.MainForm);
 
-                var kkManagerFilesModPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, ManageSettings.KKManagerFilesModName);
-                if (!Directory.Exists(kkManagerFilesModPath))
-                {
-                    Directory.CreateDirectory(kkManagerFilesModPath);
-                    ManageModOrganizer.WriteMetaIni(
-                        kkManagerFilesModPath,
-                        categoryNames: "",
-                        version: "1.0",
-                        comments: "",
-                        notes: T._("KKManager's and it's Standalone Updater's new created files stored here")
-                        //notes: ManageSettings.KKManagerFilesNotes()
-                        );
+                progressForm.SetStatus(T._("Getting zipmods info") + "..");
 
-                    ManageModOrganizer.InsertMod(
-                        modname: ManageSettings.KKManagerFilesModName,
-                        modAfterWhichInsert: "Low priority_separator"
-                        );
-                }
+                // which modpack a zipmod belongs to is decided from the zipmods which are
+                // installed, so the list has to be built before the updater changes anything
+                var zipmodsGuidList = new ZipmodGUIIds();
 
-                ManageModOrganizer.InsertCustomExecutable(kkManagerStandaloneUpdater);
+                progressForm.SetStatus(T._("Preactivate mods with Sideloader packs") + "..");
+
+                // the updater writes into the mods, so the mods it writes into have to be
+                // enabled first
+                BackupModlist();
+                isModlistModified = true;
+
+                EnableSideloaderMods();
+
+                // a download which failed earlier leaves the updater looking for a directory
+                // it did not create itself, and it refuses to start without one
+                Directory.CreateDirectory(ManageSettings.KKManagerDownloadsTempDir);
+
+                progressForm.SetStatus(T._("Update zipmods") + "..");
+
+                RunUpdater(
+                    ManageSettings.AppMOexePath,
+                    "moshortcut://:" + ManageModOrganizer.GetMOcustomExecutableTitleByExeName(StandaloneUpdaterExeName));
+
+                // put back before the sort, so the mods are enabled only for as long as the
+                // updater runs
+                ManageModOrganizer.RestoreModlist();
+                isModlistModified = false;
+
+                progressForm.SetStatus(T._("Sorting zipmods") + "..");
+
+                new ZipmodsSorter(
+                    zipmodsGuidList,
+                    sortDirPaths,
+                    ManageSettings.CurrentGameModsDirPath,
+                    ManageSettings.CurrentGameDataDirPath,
+                    ManageSettings.DateTimeBasedSuffix)
+                    .Sort();
             }
-
-            progressForm = new Form
+            finally
             {
-                StartPosition = FormStartPosition.CenterScreen,
-                Size = new Size(400, 50),
-                Text = T._("Getting zipmods info") + "..",
-                FormBorderStyle = FormBorderStyle.FixedToolWindow
-            };
-            progressForm.Show();
+                // the window goes first: it is the visible half of the cleanup, and it must
+                // not be left behind by a failure in the other half
+                if (progressForm != null) progressForm.CloseSafely();
 
-            zipmodsGuidList = new ZipmodGUIIds();
-
-            progressForm.Text = T._("Preactivate mods with Sideloader packs") + "..";
-            //activate all mods with Sideloader modpack inside
-            ActivateSideloaderMods();
-
-            FixKKmanagerUpdaterFailedDownloads();
-
-            progressForm.Text = T._("Update zipmods") + "..";
-            ManageProcess.RunProgramAndWaitHidden(ManageSettings.AppMOexePath, "moshortcut://:" + ManageModOrganizer.GetMOcustomExecutableTitleByExeName("StandaloneUpdater"));
-
-            //restore modlist
-            ManageModOrganizer.RestoreModlist();
-
-            progressForm.Text = T._("Sorting zipmods") + "..";
-            //restore zipmods to source mods
-            MoveZipModsFromOverwriteToSourceMod();
-
-            progressForm.Dispose();
+                // the only way back for a pass which stopped before the restore above
+                if (isModlistModified) ManageModOrganizer.RestoreModlist();
+            }
 
             return Task.CompletedTask;
         }
 
-        static ZipmodGUIIds zipmodsGuidList;
-        static Form progressForm;
-        //static ProgressBar pBar;
-
         /// <summary>
-        /// prevents failed kkmanager updater file creation when run from mo
+        /// Runs a program hidden, waits for it, and writes down how it exited.
         /// </summary>
-        private static void FixKKmanagerUpdaterFailedDownloads()
+        /// <remarks>
+        /// The exit code is recorded rather than acted on. The updater is a separate program
+        /// with its own idea of what a stopped update is, and everything it wrote before
+        /// stopping still has to be sorted - but a run which ended early is exactly what is
+        /// worth knowing about when this pass is reported as having gone wrong.
+        /// </remarks>
+        private static void RunUpdater(string fileName, string arguments)
         {
-            Directory.CreateDirectory(ManageSettings.KKManagerDownloadsTempDir);
-        }
+            ManageProcess.RunProgramAndWaitHidden(fileName, arguments, out int exitCode);
 
-        private static void UpdateModsInit()
-        {
-            ManageSettings.MainForm.AIGirlHelperTabControl.Enabled = false;
-        }
-
-        private static void UpdateModsFinalize()
-        {
-            ManageSettings.MainForm.UpdateData();
-
-            ManageSettings.MainForm.AIGirlHelperTabControl.Enabled = true;
-        }
-
-        private static void MoveZipModsFromOverwriteToSourceMod()
-        {
-            //progressForm = new Form
-            //{
-            //    StartPosition = FormStartPosition.CenterScreen,
-            //    Size = new Size(400, 50),
-            //    Text = T._("Sideloader dirs sorting") + "..",
-            //    FormBorderStyle = FormBorderStyle.FixedToolWindow
-            //};
-
-            //pBar = new ProgressBar
-            //{
-            //    Dock = DockStyle.Bottom
-            //};
-
-            //progressForm.Controls.Add(pBar);
-            //progressForm.Show();
-
-            SortZipmodsPacks();
-
-            //if (pBar.Value < pBar.Maximum)
-            //{
-            //    pBar.Value = pBar.Maximum == 100 ? pBar.Maximum - 1 : pBar.Value + 1;
-            //}
-            //progressForm.Text = T._("Sorting") + ":" + "Sideloader ModPack - Community UserData";
-            SortCommunityUserDataPack();
-
-            AfterZipmodsUpdateCleanDirs();
-
-            //progressForm.Dispose();
-        }
-
-        private static void AfterZipmodsUpdateCleanDirs()
-        {
-            foreach (var sortingDirPath in ManageSettings.KKManagerUpdateSortDirs)
-            {
-                // clean temp dir
-                CleanKKManagerTempDir(sortingDirPath);
-            }
-
-            // clean temp in data
-            CleanKKManagerTempDir(ManageSettings.CurrentGameDataDirPath);
-        }
-
-        private static void CleanKKManagerTempDir(string targetDir)
-        {
-            ManageFilesFoldersExtensions.DeleteEmptySubfolders(targetDir);
-        }
-
-        private static void SortCommunityUserDataPack()
-        {
-            //sort community userdata
-            var communityUserDataPack = new DirectoryInfo(Path.Combine(ManageSettings.CurrentGameModsDirPath, "Sideloader ModPack - Community UserData"));
-
-            Parallel.ForEach(ManageSettings.KKManagerUpdateSortDirs, sortingDirPath =>
-            {
-                var charaDir = new DirectoryInfo(Path.Combine(sortingDirPath, "UserData", "chara"));
-                if (!charaDir.Exists) return;
-
-                Parallel.ForEach(new[] { "female", "male" }, genderDirName =>
-                {
-                    var genderDir = new DirectoryInfo(Path.Combine(charaDir.FullName, genderDirName));
-                    if (!genderDir.Exists) return;
-
-                    Parallel.ForEach(genderDir.EnumerateDirectories("[Community] *"), charaCommunityDir =>
-                    {
-                        Parallel.ForEach(charaCommunityDir.EnumerateFiles("*.*", searchOption: SearchOption.AllDirectories), charaFile =>
-                        {
-                            try
-                            {
-                                var targetPath = new FileInfo(charaFile.FullName.Replace(sortingDirPath, communityUserDataPack.FullName));
-
-                                MoveSideloaderPackFile(charaFile, targetPath);
-                            }
-                            catch (Exception ex)
-                            {
-                                _log.Error("Failed to sort chara card: " + charaFile.FullName + "\r\nerror:\r\n" + ex);
-                            }
-                        });
-                    });
-
-                    var infoFile = new FileInfo(Path.Combine(genderDir.FullName, "Want your cards or scenes in BetterRepack.txt"));
-                    if (!infoFile.Exists) return;
-
-                    try
-                    {
-                        var targetPath = new FileInfo(infoFile.FullName.Replace(sortingDirPath, communityUserDataPack.FullName));
-
-                        MoveSideloaderPackFile(infoFile, targetPath);
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.Error("Failed to sort chara card: " + infoFile.FullName + "\r\nerror:\r\n" + ex);
-                    }
-                });
-            });
-        }
-
-        private static void MoveSideloaderPackFile(FileInfo sourcePath, FileInfo targetPath)
-        {
-            if (targetPath.Exists)
-            {
-                if (targetPath.Length == sourcePath.Length && targetPath.GetCrc32() == sourcePath.GetCrc32())
-                {
-                    sourcePath.DeleteReadOnly();
-                }
-                else
-                {
-                    targetPath = targetPath.GetNewTargetName();
-                }
-            }
-
-            targetPath.Directory.Create();
-            sourcePath.MoveTo(targetPath.FullName);
-        }
-
-        private static void SortZipmodsPacks()
-        {
-            Parallel.ForEach(ManageSettings.KKManagerUpdateSortDirs, sortingDirPath =>
-            {
-                var sortingDir = new DirectoryInfo(Path.Combine(sortingDirPath, "mods"));
-
-                if (!sortingDir.Exists) return;
-
-                //var modpackFilters = new Dictionary<string, string>
-                //{
-                //    { "Sideloader Modpack - KK_UncensorSelector", @"^\[KK\]\[Female\].*$" }//sideloader dir name /files regex filter
-                //};
-
-                var sideloaderModpackDirs = sortingDir.GetDirectories().Where(dirPath =>
-                    dirPath.Name.StartsWith("Sideloader Modpack", comparisonType: StringComparison.InvariantCultureIgnoreCase) &&
-                    !ManageSettings.KKManagerUpdateSortDirs.Contains(dirPath.Name));
-
-                if (!sideloaderModpackDirs.Any()) return;
-
-                var sideloaderModpacks = GetSideloaderModpackTargetDirs();
-
-                //pBar.Invoke((Action)(() => pBar.Maximum = dirs.Count() + 1));
-                //pBar.Invoke((Action)(() => pBar.Value = 0));
-
-                var timeInfo = ManageSettings.DateTimeBasedSuffix;
-
-                Parallel.ForEach(sideloaderModpackDirs, sideloaderModpackDir =>
-                {
-                    //if (pBar.Value < pBar.Maximum)
-                    //{
-                    //    pBar.Invoke((Action)(() => pBar.Value++));
-                    //}
-
-                    //if (!dir.ToUpperInvariant().Contains("SIDELOADER MODPACK"))
-                    //{
-                    //    continue;
-                    //}
-
-                    //set sideloader dir name
-                    var sideloaderDirName = sideloaderModpackDir.Name;
-
-                    //progressForm.Text = T._("Sorting") + ":" + sideloaderDirName;
-
-                    var isUncensorSelector = IsUncensorSelector(sideloaderDirName);
-                    var isMaleUncensorSelector = isUncensorSelector && sideloaderModpacks.ContainsKey(sideloaderDirName + "M");
-                    var isFemaleUncensorSelector = isUncensorSelector && sideloaderModpacks.ContainsKey(sideloaderDirName + "F");
-                    var isSortingModpack = sideloaderModpacks.ContainsKey(sideloaderDirName) || isMaleUncensorSelector || isFemaleUncensorSelector;
-                    Parallel.ForEach(sideloaderModpackDir.EnumerateFiles("*.*", SearchOption.AllDirectories), fileInfo =>
-                    {
-                    try
-                    {
-                        var filePath = fileInfo.FullName;
-
-                        // Check if TargetIsInSideloader by guid
-                        var guid = ManageArchive.GetZipmodGuid(filePath);
-                        bool isGuid = guid.Length > 0 && zipmodsGuidList.GUIDList.ContainsKey(guid);
-                        string targetModPath = isGuid ? zipmodsGuidList.GUIDList[guid].FileInfo.FullName.GetPathInMods() : "";
-                        var pathElements = !string.IsNullOrWhiteSpace(targetModPath) ? filePath.Replace(sortingDirPath, "").Split(new char[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries) : null;
-                        var targetZipModDirName = pathElements != null && pathElements.Length > 1 ? pathElements[1] : ""; // %modpath%\mods\%sideloadermodpackdir%
-                        var targetIsInSideloader = targetZipModDirName.ToUpperInvariant().Contains("SIDELOADER MODPACK"); // dir in mods is sideloader
-
-                        if (isGuid && !targetIsInSideloader/*do not touch sideloader files and let them be updated properly*/)//move by guid
-                        {
-                            // target mod path is known by the zipmod guid
-                            MoveZipmodFile(
-                                filePath,
-                                filePath.Replace(sortingDir.FullName, targetModPath),
-                                filePath.Replace(sortingDir.FullName, targetModPath + timeInfo)
-                                );
-                        }
-                        else if (isSortingModpack)
-                        {
-                            var sortMale = isMaleUncensorSelector && Path.GetExtension(filePath).StartsWith(".zip", StringComparison.InvariantCultureIgnoreCase) && (Path.GetFileNameWithoutExtension(filePath).Contains("[Penis]") || Path.GetFileNameWithoutExtension(filePath).Contains("[Balls]"));
-                            var sortFemale = isFemaleUncensorSelector && Path.GetExtension(filePath).StartsWith(".zip", StringComparison.InvariantCultureIgnoreCase) && Path.GetFileNameWithoutExtension(filePath).Contains("[Female]");
-
-                            var targetModName = sideloaderModpacks[sideloaderDirName + (sortFemale ? "F" : sortMale ? "M" : "")];
-
-                            // file subpath in the sideloader dir
-                            var fileSubPathInSideloaderDir = filePath.Replace(sideloaderModpackDir.FullName, "");
-
-                            //get target path for the zipmod
-                            MoveZipmodFile(
-                                filePath,
-                                GetSideloaderTargetFilePath(targetModName, sideloaderDirName, fileSubPathInSideloaderDir, string.Empty),
-                                GetSideloaderTargetFilePath(targetModName, sideloaderDirName, fileSubPathInSideloaderDir, timeInfo)
-                                );
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.Error($"Failed to sort file '{fileInfo.FullName}'\r\nError:\r\n{ex}");                    
-                    }
-                    });
-                });
-            });
+            _log.Info("'" + fileName + "' finished with exit code " + exitCode + ".");
         }
 
         /// <summary>
-        /// Move the zipmod file to the target path.
-        /// When the target file is already exists: identical files are deduplicated (source file is removed),
-        /// older target file is moved to the <paramref name="olderTargetFilePath"/>,
-        /// else the source file is moved to the <paramref name="olderTargetFilePath"/> to keep the target file.
+        /// Registers the standalone updater as a custom executable of Mod Organizer, and
+        /// makes sure the mod its own files go into exists.
         /// </summary>
-        /// <param name="filePath">source zipmod file path</param>
-        /// <param name="targetFilePath">required target zipmod file path</param>
-        /// <param name="olderTargetFilePath">target file path with the date suffix which is used for the older file</param>
-        private static void MoveZipmodFile(string filePath, string targetFilePath, string olderTargetFilePath)
+        /// <remarks>
+        /// Both are what makes the updater runnable from here: the shortcut this pass starts
+        /// is the one Mod Organizer builds from that entry, and the updater refuses to run
+        /// when the mod it writes into is missing.
+        /// </remarks>
+        private static void EnsureStandaloneUpdaterIsRegistered()
         {
-            bool isTargetExists = File.Exists(targetFilePath);
-            bool isSourceExists = File.Exists(filePath);
-
-            ManageStrings.CheckForLongPath(ref filePath);
-            ManageStrings.CheckForLongPath(ref targetFilePath);
-            ManageStrings.CheckForLongPath(ref olderTargetFilePath);
-
-            if (!isSourceExists)
+            var kkManagerStandaloneUpdater = new ManageModOrganizer.CustomExecutables.CustomExecutable
             {
-                return;
-            }
-            else if (isTargetExists)
+                Title = StandaloneUpdaterTitle,
+                Binary = ManageSettings.KkManagerStandaloneUpdaterExePath,
+                Arguments = ManageSettings.CurrentGameDataDirPath,
+                MoTargetMod = ManageSettings.KKManagerFilesModName
+            };
+
+            var kkManagerFilesModPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, ManageSettings.KKManagerFilesModName);
+
+            if (!Directory.Exists(kkManagerFilesModPath))
             {
-                var targetInfo = new FileInfo(targetFilePath);
-                var sourceInfo = new FileInfo(filePath);
-                if (targetInfo.Length == sourceInfo.Length && targetInfo.GetCrc32() == sourceInfo.GetCrc32())
-                {
-                    // same file already moved before
-                    sourceInfo.Delete();
-                    return;
-                }
-                else if (targetInfo.LastWriteTime < sourceInfo.LastWriteTime)
-                {
-                    // keep the older target file
-                    Directory.CreateDirectory(Path.GetDirectoryName(olderTargetFilePath));
-                    if (!File.Exists(olderTargetFilePath))
-                        File.Move(targetFilePath, olderTargetFilePath); // move older target file
-                }
-                else
-                {
-                    // keep the target file and place the source file near it
-                    targetFilePath = olderTargetFilePath;
-                }
+                Directory.CreateDirectory(kkManagerFilesModPath);
+
+                ManageModOrganizer.WriteMetaIni(
+                    kkManagerFilesModPath,
+                    categoryNames: "",
+                    version: KKManagerFilesModVersion,
+                    comments: "",
+                    notes: T._("KKManager's and it's Standalone Updater's new created files stored here")
+                    );
+
+                ManageModOrganizer.InsertMod(
+                    modname: ManageSettings.KKManagerFilesModName,
+                    modAfterWhichInsert: "Low priority_separator"
+                    );
             }
 
-            Directory.CreateDirectory(Path.GetDirectoryName(targetFilePath));//create parent dir
-
-            try
-            {
-                File.Move(filePath, targetFilePath);//move file to the marked mod
-            }
-            catch (IOException ex)
-            {
-                _log.Error($"An error occurred while moving the file. Error:\r\n{ex}\r\nFile='{filePath}'\r\nTarget File='{targetFilePath}'");
-            }
+            ManageModOrganizer.InsertCustomExecutable(kkManagerStandaloneUpdater);
         }
 
         /// <summary>
-        /// Get target file path for the zipmod of the sideloader modpack dir inside the target mod
+        /// Copies the modlist, so that it can be put back when the pass is over.
         /// </summary>
-        /// <param name="targetModName">name of the mod which is target for the sideloader modpack</param>
-        /// <param name="sideloaderDirName">name of the sideloader modpack dir in the mods dir of the target mod</param>
-        /// <param name="fileSubPath">file sub path in the sideloader dir</param>
-        /// <param name="targetModNameSuffix">suffix for the target mod name, used for the date marked mod name</param>
-        /// <returns></returns>
-        private static string GetSideloaderTargetFilePath(string targetModName, string sideloaderDirName, string fileSubPath, string targetModNameSuffix)
+        /// <remarks>
+        /// A copy left behind by a pass which did not finish is overwritten rather than
+        /// refused. The modlist which is current now is the one which has to be put back, and
+        /// refusing would make the next update after a failure impossible to run at all.
+        /// </remarks>
+        private static void BackupModlist()
         {
-            return ManageSettings.CurrentGameModsDirPath
-                + Path.DirectorySeparatorChar + targetModName + targetModNameSuffix //mod name
-                + Path.DirectorySeparatorChar + "mods" //mods dir
-                + Path.DirectorySeparatorChar + sideloaderDirName // sideloader dir name
-                + fileSubPath; // file subpath in sideloader dir
+            var modlistPath = ManageSettings.CurrentMoProfileModlistPath;
+
+            File.Copy(modlistPath, modlistPath + ModlistBackupSuffix, overwrite: true);
         }
 
         /// <summary>
-        /// activate all mods with sideloader modpack inside mods folder
+        /// Enables the mods which carry a sideloader modpack, so that the updater can write
+        /// into them.
         /// </summary>
-        private static void ActivateSideloaderMods()
+        /// <remarks>
+        /// The modlist has to have been copied first: the enabled state is put back from that
+        /// copy when the pass is over, and there is no other record of what it was.
+        /// </remarks>
+        private static void EnableSideloaderMods()
         {
-            // buckup modlist
-            File.Copy(ManageSettings.CurrentMoProfileModlistPath, ManageSettings.CurrentMoProfileModlistPath + ".prezipmodsUpdate");
-
             var modlist = new ModlistData();
 
             var kkManagerFilesMod = modlist.Mods.FirstOrDefault(m => m.Name == ManageSettings.KKManagerFilesModName);
@@ -475,8 +321,8 @@ namespace AIHelper.Manage
 
             Parallel.ForEach(modlist.Mods, item =>
             {
-                if (item.IsEnabled 
-                || !item.IsExist 
+                if (item.IsEnabled
+                || !item.IsExist
                 || item.Type is ModType.Separator) return;
 
                 if (Directory.Exists(Path.Combine(item.Path, "mods"))

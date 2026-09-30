@@ -11,8 +11,35 @@ namespace AIHelper.Manage
     {
         static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
+        /// <summary>
+        /// Exit code reported for a program which was not run at all.
+        /// </summary>
+        internal const int ProgramNotRunExitCode = -1;
+
         public static void RunProgramAndWaitHidden(string fileName, string arguments = "")
         {
+            RunProgramAndWaitHidden(fileName, arguments, out _);
+        }
+
+        /// <summary>
+        /// Runs a program hidden and waits for it to exit, reporting how it exited.
+        /// </summary>
+        /// <remarks>
+        /// The exit code is the only trace left by a run which ended before it was done:
+        /// a user who stopped the program from inside it closes a window, and nothing else
+        /// about the run says so. Reporting it here is what lets a caller tell that apart
+        /// from a run which finished.
+        /// </remarks>
+        /// <param name="fileName">Path of the program to run.</param>
+        /// <param name="arguments">Arguments for the program, or an empty string for none.</param>
+        /// <param name="exitCode">
+        /// Exit code of the program, or <see cref="ProgramNotRunExitCode"/> when it was not
+        /// run at all.
+        /// </param>
+        public static void RunProgramAndWaitHidden(string fileName, string arguments, out int exitCode)
+        {
+            exitCode = ProgramNotRunExitCode;
+
             if (!File.Exists(fileName))
             {
                 return;
@@ -42,6 +69,8 @@ namespace AIHelper.Manage
                 {
                     _ = program.Start();
                     program.WaitForExit();
+
+                    exitCode = program.ExitCode;
                 }
                 finally
                 {

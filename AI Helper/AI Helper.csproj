@@ -380,6 +380,7 @@
     <Compile Include="Manage\ui\ThemedTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Manage\ui\ThemedToolStrip.cs" />
     <Compile Include="Manage\Update\Backup\ModFolderBackupService.cs" />
     <Compile Include="Manage\Update\Installers\MetaIniPreservingInstaller.cs" />
     <Compile Include="Manage\Update\Installers\ModOrganizerInstaller.cs" />

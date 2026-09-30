@@ -783,10 +783,33 @@ namespace AIHelper.Manage.ui.themes
                 return;
             }
 
+            var pictureBox = control as PictureBox;
+            if (pictureBox != null)
+            {
+                // a picture is drawn over whatever its parent painted, so it must not put
+                // a face of its own behind an image which has transparent parts
+                pictureBox.BackColor = Color.Transparent;
+                return;
+            }
+
+            var toolStrip = control as ToolStrip;
+            if (toolStrip != null)
+            {
+                ThemedToolStrip.Apply(toolStrip, palette);
+                return;
+            }
+
             var panel = control as Panel;
             if (panel != null)
             {
-                ApplyPanel(palette, panel, isOnTitleBar, textColor);
+                ApplyContainer(palette, panel, isOnTitleBar, textColor);
+                return;
+            }
+
+            var userControl = control as UserControl;
+            if (userControl != null)
+            {
+                ApplyContainer(palette, userControl, isOnTitleBar, textColor);
                 return;
             }
         }
@@ -863,23 +886,33 @@ namespace AIHelper.Manage.ui.themes
         /// Colours a container.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// A container which is the body of a window or of a tab paints the surface
         /// colour. Every container inside one is left transparent instead, so it shows
         /// what its parent painted. That is what keeps a table of settings inside a
         /// group box from punching a differently coloured hole in it.
+        /// </para>
+        /// <para>
+        /// A user control is a container as well and is treated the same way. It used to
+        /// be missing from the type switch altogether, so a composite control kept the
+        /// face its designer gave it while the labels inside it were themed. That is what
+        /// left the cards of the updater window white in a dark theme, with their captions
+        /// drawn in the theme's light text colour on top of that white - which is why the
+        /// current version and the name of the target could not be read.
+        /// </para>
         /// </remarks>
-        private static void ApplyPanel(ThemePalette palette, Panel panel, bool isOnTitleBar, Color textColor)
+        private static void ApplyContainer(ThemePalette palette, Control container, bool isOnTitleBar, Color textColor)
         {
-            panel.ForeColor = textColor;
+            container.ForeColor = textColor;
 
             if (isOnTitleBar)
             {
-                panel.BackColor = palette.TitleBar;
+                container.BackColor = palette.TitleBar;
                 return;
             }
 
-            var isWindowBody = panel.Parent is Form || panel.Parent is TabPage;
-            panel.BackColor = isWindowBody ? palette.Surface : Color.Transparent;
+            var isWindowBody = container.Parent is Form || container.Parent is TabPage;
+            container.BackColor = isWindowBody ? palette.Surface : Color.Transparent;
         }
 
         /// <summary>

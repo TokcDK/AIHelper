@@ -70,7 +70,9 @@ namespace AIHelper.Manage.ToolsTab.ButtonsData
                     // The window owns the install. It does nothing until its own install
                     // button is pressed, so no file is moved before the user asks for it,
                     // and it shows the progress of every step and the log while it runs.
-                    using (var installForm = new InstallProgressForm(() => InstallModFilesAndCleanEmptyFolder(installers)))
+                    // It is told what the install folder accepts, which it lists before
+                    // the run so the user can check the folder against it.
+                    using (var installForm = new InstallProgressForm(DescribeInstallableContent(installers), () => InstallModFilesAndCleanEmptyFolder(installers)))
                     {
                         installForm.ShowDialog(ManageSettings.MainForm);
                     }
@@ -93,6 +95,24 @@ namespace AIHelper.Manage.ToolsTab.ButtonsData
                 //never leave the main form disabled after a failure
                 ManageSettings.MainForm.OnOffButtons();
             }
+        }
+
+        /// <summary>
+        /// Lines which describe what can be placed in the install folder, taken from the
+        /// installers themselves so the shown list can not go out of date.
+        /// </summary>
+        /// <param name="installers">Installers of the run, in the order they run in</param>
+        /// <returns>One line per installer</returns>
+        private static List<string> DescribeInstallableContent(List<ModInstallerBase> installers)
+        {
+            var lines = new List<string>();
+
+            foreach (var installer in installers)
+            {
+                lines.Add(installer.ContentDescription);
+            }
+
+            return lines;
         }
 
         /// <summary>

@@ -6,5 +6,7 @@
     class CharacterFrontgroundCardInstaller : CardframesCardInstallerBase
     {
         public override string[] Masks => new[] { "cf" };
+
+        public override string ContentDescription => "Character foreground cards (folder 'cf')";
     }
 }

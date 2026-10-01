@@ -1,4 +1,5 @@
 ﻿using AIHelper.Install;
+using AIHelper.Install.Types;
 using AIHelper.Manage;
 using AIHelper.Manage.Logging;
 using AIHelper.Manage.ui.themes;
@@ -19,7 +20,10 @@ namespace AIHelper.Forms.Other
     /// <remarks>
     /// <para>
     /// The window opens when the install button is pressed but does nothing until its
-    /// own install button is pressed, so the folder can be checked first.
+    /// own install button is pressed, so the folder can be checked first. What can be
+    /// placed in that folder is listed in the window, and the list is taken from the
+    /// installers themselves (see <see cref="ModInstallerBase.ContentDescription"/>),
+    /// so it can not go out of date.
     /// </para>
     /// <para>
     /// Two progress bars are shown: one for the whole run (which installer is
@@ -29,10 +33,10 @@ namespace AIHelper.Forms.Other
     /// </para>
     /// <para>
     /// The log box is fed by <see cref="InstallLogTarget"/>, which is an NLog target
-    /// added next to the file target, so the window shows exactly what is written to
-    /// the log file. Entries are collected in a queue and appended on a timer instead
-    /// of once per entry, because a chatty install would otherwise flood the message
-    /// pump.
+    /// added next to the file target. It forwards the entries of info level and above,
+    /// which is what a user needs to follow a run, while the file keeps every level.
+    /// Entries are collected in a queue and appended on a timer instead of once per
+    /// entry, because a chatty install would otherwise flood the message pump.
     /// </para>
     /// </remarks>
     public partial class InstallProgressForm : Form
@@ -47,14 +51,26 @@ namespace AIHelper.Forms.Other
 
         private readonly Action _installAction;
 
+        /// <summary>
+        /// Lines which describe what can be placed in the install folder, one per
+        /// installer of the run.
+        /// </summary>
+        private readonly IReadOnlyList<string> _installableContent;
+
         private readonly ConcurrentQueue<string> _pendingLogLines = new ConcurrentQueue<string>();
         private readonly List<string> _logLines = new List<string>();
 
         private bool _isRunning;
         private bool _isDetached;
 
-        public InstallProgressForm(Action installAction)
+        /// <param name="installableContent">
+        /// Description of the content the install folder accepts, one line per installer
+        /// (see <see cref="ModInstallerBase.ContentDescription"/>)
+        /// </param>
+        /// <param name="installAction">Action which runs the install</param>
+        public InstallProgressForm(IReadOnlyList<string> installableContent, Action installAction)
         {
+            _installableContent = installableContent ?? new string[0];
             _installAction = installAction;
 
             InitializeComponent();
@@ -247,6 +263,7 @@ namespace AIHelper.Forms.Other
             lblStatus.Text = T._("Ready to install");
             lblStep.Text = string.Empty;
             lblFolder.Text = T._("Install folder") + ": " + ManageSettings.Install2MoDirPath;
+            txtInstallableContent.Text = BuildInstallableContentText();
 
             btnStart.Enabled = true;
             btnOpenFolder.Enabled = true;
@@ -297,9 +314,28 @@ namespace AIHelper.Forms.Other
         {
             Text = T._("Install mods");
 
+            lblInstallableContent.Text = T._("Content which can be placed in the install folder");
+
             btnStart.Text = T._("Install");
             btnOpenFolder.Text = T._("Open install folder");
             btnClose.Text = T._("Close");
+        }
+
+        /// <summary>
+        /// Text of the list of content the install folder accepts. The lines come from
+        /// the installers, so an installer which changes what it takes changes this list
+        /// with it.
+        /// </summary>
+        private string BuildInstallableContentText()
+        {
+            var lines = new List<string>();
+
+            foreach (var line in _installableContent)
+            {
+                lines.Add(T._(line));
+            }
+
+            return string.Join(Environment.NewLine, lines);
         }
 
         /// <summary>

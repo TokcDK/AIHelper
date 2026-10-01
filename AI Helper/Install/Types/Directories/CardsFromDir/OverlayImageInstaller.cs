@@ -10,6 +10,8 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
     {
         public override string[] Masks => new[] { "o" };
 
+        public override string ContentDescription => "Overlay images (folder 'o')";
+
         protected override string TargetSuffix => "Overlays";
 
         protected override bool MoveByContentType(string contentType, string dir, string targetFolder, bool moveInThisFolder = false)

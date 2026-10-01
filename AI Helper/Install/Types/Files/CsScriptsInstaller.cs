@@ -11,6 +11,8 @@ namespace AIHelper.Install.Types.Files
     {
         public override string[] Masks => new[] { "*.cs" };
 
+        public override string ContentDescription => "ScriptLoader scripts (*.cs)";
+
         protected override bool Get(FileInfo csFile)
         {
             string name = Path.GetFileNameWithoutExtension(csFile.Name);

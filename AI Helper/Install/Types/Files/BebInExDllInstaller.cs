@@ -12,6 +12,8 @@ namespace AIHelper.Install.Types.Files
     {
         public override string[] Masks => new[] { "*.dll" };
 
+        public override string ContentDescription => "BepInEx plugin dlls (*.dll)";
+
         protected override bool Get(FileInfo dllfile)
         {
             if (dllfile == null)

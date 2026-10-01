@@ -6,5 +6,7 @@
     class CharacterBackgroundCardInstaller : CardframesCardInstallerBase
     {
         public override string[] Masks => new[] { "cb" };
+
+        public override string ContentDescription => "Character background cards (folder 'cb')";
     }
 }

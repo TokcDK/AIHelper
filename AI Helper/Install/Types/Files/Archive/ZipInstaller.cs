@@ -14,6 +14,8 @@ namespace AIHelper.Install.Types.Files.Archive
     {
         public override string[] Masks => new[] { "*.zip" };
 
+        public override string ContentDescription => "Zip archives (*.zip): mods, zipmods and scripts";
+
         protected override bool Get(FileInfo zipfile)
         {
             string zipName = Path.GetFileNameWithoutExtension(zipfile.FullName);

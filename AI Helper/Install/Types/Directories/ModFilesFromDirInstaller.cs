@@ -34,6 +34,8 @@ namespace AIHelper.Install.Types.Directories
 
         public override int Order => base.Order / 3;
 
+        public override string ContentDescription => "Mod folders: a folder with mod files or mod subfolders";
+
         protected override bool Get(DirectoryInfo directoryInfo)
         {
             if (directoryInfo == null

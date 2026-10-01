@@ -33,6 +33,17 @@ namespace AIHelper.Install.Types
         public abstract string[] Masks { get; }
 
         /// <summary>
+        /// Short description of the content this installer takes from the install folder,
+        /// written for the user (for example "BepInEx plugin dlls (*.dll)").
+        /// <br/>
+        /// It is what the install window shows as the list of files which can be placed in
+        /// the install folder, so it must describe what <see cref="Masks"/> selects and
+        /// nothing else. Declaring it is required, which is what keeps that list actual:
+        /// an installer can not exist without saying what it takes.
+        /// </summary>
+        public abstract string ContentDescription { get; }
+
+        /// <summary>
         /// Enumerates content of <paramref name="directoryInfo"/> by every mask from <see cref="Masks"/>
         /// and passes each found entry to <paramref name="processEntry"/>.
         /// <br/>

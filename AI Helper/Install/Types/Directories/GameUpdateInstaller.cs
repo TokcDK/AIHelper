@@ -23,6 +23,8 @@ namespace AIHelper.Install.Types.Directories
 
         public override int Order => base.Order / 5;
 
+        public override string ContentDescription => "Game update made by the update maker (a folder with its update info file)";
+
         private static string GameUpdateInfoFileName => ManageSettings.GameUpdateInstallerIniFileName;
 
         private DirectoryInfo _dir;

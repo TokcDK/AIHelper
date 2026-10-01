@@ -37,6 +37,8 @@
             this.lblStep = new System.Windows.Forms.Label();
             this.progressStep = new System.Windows.Forms.ProgressBar();
             this.lblFolder = new System.Windows.Forms.Label();
+            this.lblInstallableContent = new System.Windows.Forms.Label();
+            this.txtInstallableContent = new AIHelper.Manage.ui.ThemedTextBox();
             this.txtLog = new AIHelper.Manage.ui.ThemedTextBox();
             this.buttonsTable = new System.Windows.Forms.TableLayoutPanel();
             this.btnStart = new System.Windows.Forms.Button();
@@ -89,17 +91,21 @@
             this.infoTable.Controls.Add(this.lblStep, 0, 2);
             this.infoTable.Controls.Add(this.progressStep, 0, 3);
             this.infoTable.Controls.Add(this.lblFolder, 0, 4);
+            this.infoTable.Controls.Add(this.lblInstallableContent, 0, 5);
+            this.infoTable.Controls.Add(this.txtInstallableContent, 0, 6);
             this.infoTable.Dock = System.Windows.Forms.DockStyle.Fill;
             this.infoTable.Location = new System.Drawing.Point(0, 0);
             this.infoTable.Margin = new System.Windows.Forms.Padding(0, 0, 0, 12);
             this.infoTable.Name = "infoTable";
-            this.infoTable.RowCount = 5;
+            this.infoTable.RowCount = 7;
             this.infoTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.infoTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
             this.infoTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
             this.infoTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
             this.infoTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
-            this.infoTable.Size = new System.Drawing.Size(680, 112);
+            this.infoTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
+            this.infoTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 88F));
+            this.infoTable.Size = new System.Drawing.Size(680, 222);
             this.infoTable.TabIndex = 0;
             // 
             // lblStatus
@@ -158,19 +164,49 @@
             this.lblFolder.Text = "2MO";
             this.lblFolder.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // lblInstallableContent
+            // 
+            // Caption of the list of content the install folder accepts.
+            this.lblInstallableContent.AutoEllipsis = true;
+            this.lblInstallableContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblInstallableContent.Location = new System.Drawing.Point(0, 112);
+            this.lblInstallableContent.Margin = new System.Windows.Forms.Padding(0);
+            this.lblInstallableContent.Name = "lblInstallableContent";
+            this.lblInstallableContent.Size = new System.Drawing.Size(680, 22);
+            this.lblInstallableContent.TabIndex = 5;
+            this.lblInstallableContent.Text = "Content which can be placed in the install folder";
+            this.lblInstallableContent.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // txtInstallableContent
+            // 
+            // Filled from the installers themselves, so it is read only and monospaced
+            // like the log rather than an input field.
+            this.txtInstallableContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtInstallableContent.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.txtInstallableContent.HideSelection = false;
+            this.txtInstallableContent.Location = new System.Drawing.Point(0, 134);
+            this.txtInstallableContent.Margin = new System.Windows.Forms.Padding(0);
+            this.txtInstallableContent.Multiline = true;
+            this.txtInstallableContent.Name = "txtInstallableContent";
+            this.txtInstallableContent.ReadOnly = true;
+            this.txtInstallableContent.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtInstallableContent.Size = new System.Drawing.Size(680, 88);
+            this.txtInstallableContent.TabIndex = 6;
+            this.txtInstallableContent.WordWrap = false;
+            // 
             // txtLog
             // 
             // Read only and monospaced, so it reads as output rather than as a field.
             this.txtLog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtLog.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.txtLog.HideSelection = false;
-            this.txtLog.Location = new System.Drawing.Point(0, 124);
+            this.txtLog.Location = new System.Drawing.Point(0, 234);
             this.txtLog.Margin = new System.Windows.Forms.Padding(0);
             this.txtLog.Multiline = true;
             this.txtLog.Name = "txtLog";
             this.txtLog.ReadOnly = true;
             this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtLog.Size = new System.Drawing.Size(680, 329);
+            this.txtLog.Size = new System.Drawing.Size(680, 219);
             this.txtLog.TabIndex = 1;
             this.txtLog.WordWrap = false;
             // 
@@ -265,6 +301,8 @@
         private System.Windows.Forms.Label lblStep;
         private System.Windows.Forms.ProgressBar progressStep;
         private System.Windows.Forms.Label lblFolder;
+        private System.Windows.Forms.Label lblInstallableContent;
+        private AIHelper.Manage.ui.ThemedTextBox txtInstallableContent;
         private AIHelper.Manage.ui.ThemedTextBox txtLog;
         private System.Windows.Forms.TableLayoutPanel buttonsTable;
         private System.Windows.Forms.Button btnStart;

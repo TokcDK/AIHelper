@@ -7,6 +7,8 @@
     {
         public override string[] Masks => new[] { "c" };
 
+        public override string ContentDescription => "Coordinate cards (folder 'c')";
+
         protected override string TargetSuffix => "Coordinate";
     }
 }

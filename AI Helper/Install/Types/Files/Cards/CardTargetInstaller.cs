@@ -45,7 +45,7 @@ namespace AIHelper.Install.Types.Files.Cards
 
         public override string[] Masks => new[] { "*" + CardImageExtension };
 
-        public override string ContentDescription => "Cards (*.png) of any kind: filed by the tag the game wrote into the file";
+        public override string ContentDescription => T._("Cards (*.png) of any kind: filed by the tag the game wrote into the file");
 
         protected override bool Get(FileInfo cardInfo)
         {

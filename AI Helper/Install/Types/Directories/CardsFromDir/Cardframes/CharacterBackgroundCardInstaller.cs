@@ -7,6 +7,6 @@
     {
         public override string[] Masks => new[] { "cb" };
 
-        public override string ContentDescription => "Character background cards (folder 'cb')";
+        public override string ContentDescription => T._("Character background cards (folder 'cb')");
     }
 }

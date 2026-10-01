@@ -7,6 +7,6 @@
     {
         public override string[] Masks => new[] { "m" };
 
-        public override string ContentDescription => "Male character cards (folder 'm')";
+        public override string ContentDescription => T._("Male character cards (folder 'm')");
     }
 }

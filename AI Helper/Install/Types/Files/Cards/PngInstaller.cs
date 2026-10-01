@@ -20,7 +20,7 @@ namespace AIHelper.Install.Types.Files.Cards
 
         public override string[] Masks => new[] { "*" + ImageExtension };
 
-        public override string ContentDescription => "Card images (*.png) which content could not be recognized";
+        public override string ContentDescription => T._("Card images (*.png) which content could not be recognized");
 
         protected override bool Get(FileInfo pngInfo)
         {

@@ -4,6 +4,6 @@
     {
         public override string[] Masks => new[] { "*.rar" };
 
-        public override string ContentDescription => "Rar archives (*.rar): extracted to a subfolder of the install folder";
+        public override string ContentDescription => T._("Rar archives (*.rar): extracted to a subfolder of the install folder");
     }
 }

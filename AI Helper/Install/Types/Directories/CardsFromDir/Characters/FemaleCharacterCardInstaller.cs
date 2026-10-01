@@ -7,7 +7,7 @@
     {
         public override string[] Masks => new[] { "f" };
 
-        public override string ContentDescription => "Female character cards (folder 'f')";
+        public override string ContentDescription => T._("Female character cards (folder 'f')");
 
         protected override bool MoveByContentType(string contentType, string fDir, string targetFolder, bool moveInThisFolder = false)
         {

@@ -10,7 +10,7 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
     {
         public override string[] Masks => new[] { "o" };
 
-        public override string ContentDescription => "Overlay images (folder 'o')";
+        public override string ContentDescription => T._("Overlay images (folder 'o')");
 
         protected override string TargetSuffix => "Overlays";
 

@@ -14,7 +14,7 @@ namespace AIHelper.Install.Types.Files.Archive
     {
         public override string[] Masks => new[] { "*.zip" };
 
-        public override string ContentDescription => "Zip archives (*.zip): mods, zipmods and scripts";
+        public override string ContentDescription => T._("Zip archives (*.zip): mods, zipmods and scripts");
 
         protected override bool Get(FileInfo zipfile)
         {

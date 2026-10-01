@@ -7,7 +7,7 @@
     {
         public override string[] Masks => new[] { "s" };
 
-        public override string ContentDescription => "Studio scene cards (folder 's')";
+        public override string ContentDescription => T._("Studio scene cards (folder 's')");
 
         protected override string TargetSuffix => "Scenes";
     }

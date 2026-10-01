@@ -22,7 +22,7 @@ namespace AIHelper.Install.Types.Files.Archive
 
         public override string[] Masks => new[] { "*.zipmod" };
 
-        public override string ContentDescription => "Sideloader zipmods (*.zipmod): not extracted, placed in the mods subfolder of their mod dir";
+        public override string ContentDescription => T._("Sideloader zipmods (*.zipmod): not extracted, placed in the mods subfolder of their mod dir");
 
         protected override bool Get(FileInfo zipfile)
         {

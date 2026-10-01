@@ -10,7 +10,7 @@ namespace AIHelper.Install.Types.Directories.CardsFromDir
     {
         public override string[] Masks => new[] { "h", "h1", "h2", "h3", "h4" };
 
-        public override string ContentDescription => "Home project cards (folders 'h', 'h1'..'h4')";
+        public override string ContentDescription => T._("Home project cards (folders 'h', 'h1'..'h4')");
 
         protected override string TargetSuffix => "Housing";
 

@@ -52,6 +52,17 @@ namespace AIHelper.Manage.Update.Installers
             _modOrganizerInstallPath = modOrganizerInstallPath ?? string.Empty;
         }
 
+        /// <summary>
+        /// Decided by the installer this one wraps. A decorator adds the Mod Organizer
+        /// specific files around the inner installer and neither downloads the update nor
+        /// rolls it back itself, so the engine has to treat the pair exactly as it treats
+        /// the inner one.
+        /// </summary>
+        public bool IsSelfContained
+        {
+            get { return _inner != null && _inner.IsSelfContained; }
+        }
+
         public bool CanInstall(InstallContext context)
         {
             return IsModOrganizer(context) && _inner != null && _inner.CanInstall(context);

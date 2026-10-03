@@ -36,6 +36,16 @@ namespace AIHelper.Manage.Update.Installers
             _inner = inner;
         }
 
+        /// <summary>
+        /// Decided by the installer this one wraps. A decorator adds a preservation step
+        /// around the inner installer and neither downloads the update nor rolls it back
+        /// itself, so the engine has to treat the pair exactly as it treats the inner one.
+        /// </summary>
+        public bool IsSelfContained
+        {
+            get { return _inner != null && _inner.IsSelfContained; }
+        }
+
         public bool CanInstall(InstallContext context)
         {
             return _inner != null && _inner.CanInstall(context);

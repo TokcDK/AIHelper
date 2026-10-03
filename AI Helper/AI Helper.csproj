@@ -809,17 +809,26 @@
        The version has the shape <2-digit year>.<month>.<day>.<release number
        of that day>, for example 26.9.28.1, and it is produced on every build:
 
-         Release  the previous version is read from version.txt. When it was
-                  written on the same day its last number is incremented,
-                  otherwise the counter starts over at 1. The new value is
-                  written back, so version.txt is the release ledger.
+         Release  the previous version is read from version.txt. The counter
+                  belongs to a single day, so it continues only while the
+                  ledger was written today and restarts at 1 as soon as the
+                  day, month or year part changes (25.11.3.4 on the 3rd, then
+                  25.11.4.1 on the 4th). The new value is written back, so
+                  version.txt is the release ledger. A ledger that has gone
+                  missing cannot hand out a number that is already taken: the
+                  archives already produced today act as a floor.
          Debug    the stored version is used as it stands and version.txt is
                   never written, so a debug build carries the version of the
                   last release and repeated debug builds stay identical.
 
        Properties/AssemblyInfo.cs no longer declares AssemblyVersion or
-       AssemblyFileVersion: they are emitted into
-       obj\Configuration\VersionInfo.g.cs by the target below.
+       AssemblyFileVersion: the target below emits them into
+       obj\<Configuration>\VersionInfo.g.cs, or obj\<Platform>\<Configuration>\
+       for a platform other than AnyCPU, and that file is compiled in.
+
+       A build can be reproduced for another day with
+       -p:AppVersionToday=25.11.4, which is how the reset rule is exercised
+       without waiting for the date to roll over.
 
        postbuild.bat needs no change. The existing PostBuildMacros target reads
        the version back out of the built assembly and passes it as argument 4,
@@ -838,6 +847,8 @@
     <ParameterGroup>
       <VersionFile ParameterType="System.String" Required="true" />
       <DateFormat ParameterType="System.String" Required="true" />
+      <TodayOverride ParameterType="System.String" />
+      <ReleasesDirectory ParameterType="System.String" />
       <Configuration ParameterType="System.String" Required="true" />
       <IsReleaseBuild ParameterType="System.Boolean" Required="true" />
       <AppVersion ParameterType="System.String" Output="true" />
@@ -851,30 +862,91 @@
       <Using Namespace="System.Text" />
       <Code Type="Fragment" Language="cs"><![CDATA[
         // Version of the previous build; empty when the ledger is missing.
-        var stored = File.Exists(VersionFile) ? File.ReadAllText(VersionFile).Trim() : string.Empty;
+        var stored = string.Empty;
+        try
+        {
+            if (File.Exists(VersionFile)) stored = File.ReadAllText(VersionFile).Trim();
+        }
+        catch (Exception ex)
+        {
+            Log.LogError("AppVersion: could not read the ledger '" + VersionFile + "': " + ex.Message);
+        }
 
         // Local time: a release is dated by the day the author worked.
-        var today = DateTime.Now.ToString(DateFormat, CultureInfo.InvariantCulture);
+        var today = string.IsNullOrEmpty(TodayOverride)
+            ? DateTime.Now.ToString(DateFormat, CultureInfo.InvariantCulture)
+            : TodayOverride.Trim();
         var prefix = today + ".";
 
         if (IsReleaseBuild)
         {
-            // A ledger written on another day belongs to another day's counter,
-            // so only a same-day entry may be incremented.
+            // The counter belongs to one day only. It continues while the ledger was
+            // written today and restarts at 1 as soon as the day, month or year part
+            // changes: 25.11.3.4 on the 3rd, then 25.11.4.1 on the 4th.
             var releaseNumber = 0;
             if (stored.StartsWith(prefix, StringComparison.Ordinal))
             {
                 var lastDot = stored.LastIndexOf('.');
                 int.TryParse(stored.Substring(lastDot + 1), NumberStyles.Integer, CultureInfo.InvariantCulture, out releaseNumber);
             }
+
+            // The ledger is not under version control, so it can go missing without
+            // anything noticing. The archives already produced today are the record of the
+            // numbers that have been taken, and they are the floor: a lost ledger then
+            // costs a gap in the sequence instead of a number that is already in use.
+            var highestTaken = 0;
+            try
+            {
+                if (!string.IsNullOrEmpty(ReleasesDirectory) && Directory.Exists(ReleasesDirectory))
+                {
+                    foreach (var archivePath in Directory.GetFiles(ReleasesDirectory))
+                    {
+                        // "<name> <version>.<ext>": the version is the last space separated part.
+                        var archiveName = Path.GetFileNameWithoutExtension(archivePath);
+                        var separator = archiveName.LastIndexOf(' ');
+                        if (separator < 0) continue;
+
+                        var archiveVersion = archiveName.Substring(separator + 1);
+                        if (!archiveVersion.StartsWith(prefix, StringComparison.Ordinal)) continue;
+
+                        var archiveNumber = 0;
+                        if (int.TryParse(archiveVersion.Substring(prefix.Length), NumberStyles.Integer, CultureInfo.InvariantCulture, out archiveNumber)
+                            && archiveNumber > highestTaken)
+                        {
+                            highestTaken = archiveNumber;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // A folder that cannot be listed costs the safety net, not the build.
+                Log.LogMessage(MessageImportance.High, "AppVersion: could not read the archives in '" + ReleasesDirectory + "': " + ex.Message);
+            }
+
+            if (releaseNumber < highestTaken)
+            {
+                releaseNumber = highestTaken;
+                Log.LogMessage(MessageImportance.High, "AppVersion: the ledger '" + VersionFile + "' is behind the archives in '"
+                    + ReleasesDirectory + "'; continuing from " + highestTaken + ".");
+            }
+
             releaseNumber++;
 
             AppVersion = prefix + releaseNumber.ToString(CultureInfo.InvariantCulture);
 
-            var directory = Path.GetDirectoryName(VersionFile);
-            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory)) Directory.CreateDirectory(directory);
-            File.WriteAllText(VersionFile, AppVersion + Environment.NewLine, new UTF8Encoding(false));
-            Bumped = true;
+            try
+            {
+                var directory = Path.GetDirectoryName(VersionFile);
+                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory)) Directory.CreateDirectory(directory);
+                File.WriteAllText(VersionFile, AppVersion + Environment.NewLine, new UTF8Encoding(false));
+                Bumped = true;
+            }
+            catch (Exception ex)
+            {
+                Bumped = false;
+                Log.LogError("AppVersion: could not write the ledger '" + VersionFile + "': " + ex.Message);
+            }
         }
         else
         {
@@ -909,10 +981,9 @@
       <_AppVersionIsRelease>false</_AppVersionIsRelease>
       <_AppVersionIsRelease Condition="$(_AppVersionConfiguration.StartsWith('release'))">true</_AppVersionIsRelease>
     </PropertyGroup>
-    <ComputeAppVersion VersionFile="$(VersionStateFile)" DateFormat="$(AppVersionDateFormat)" Configuration="$(Configuration)" IsReleaseBuild="$(_AppVersionIsRelease)">
+    <ComputeAppVersion VersionFile="$(VersionStateFile)" DateFormat="$(AppVersionDateFormat)" TodayOverride="$(AppVersionToday)" ReleasesDirectory="$(TargetDir)RELEASES" Configuration="$(Configuration)" IsReleaseBuild="$(_AppVersionIsRelease)">
       <Output TaskParameter="AppVersion" PropertyName="AppVersion" />
       <Output TaskParameter="AssemblyVersion" PropertyName="AppVersionNormalized" />
-      <Output TaskParameter="Bumped" PropertyName="AppVersionWritten" />
     </ComputeAppVersion>
     <ItemGroup>
       <_AppVersionSourceLine Include="// ------------------------------------------------------------------------------" />

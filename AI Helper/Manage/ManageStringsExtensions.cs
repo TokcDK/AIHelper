@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 
 namespace AIHelper.Manage
 {
@@ -114,14 +113,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         internal static string ToHex(this string inputString)
         {
-            var s = new System.Text.StringBuilder();
-
-            foreach (var c in inputString)
-            {
-                s.Append(c.ToHex());
-            }
-
-            return s.ToString();
+            return inputString.ToHex(skipCharsWhichDoNotNeedIt: false);
         }
 
         /// <summary>
@@ -129,14 +121,19 @@ namespace AIHelper.Manage
         /// Converts only required chars, not latin or symbols.
         /// </summary>
         /// <param name="inputString"></param>
+        /// <param name="skipCharsWhichDoNotNeedIt">
+        /// true to leave the characters that survive a hex round trip as they are, which is
+        /// what meta.ini values want; false to hex every character, which is what a value
+        /// has to become before it is stored anywhere that counts characters.
+        /// </param>
         /// <returns></returns>
-        internal static string ToHexForMetaIni(this string inputString)
+        internal static string ToHex(this string inputString, bool skipCharsWhichDoNotNeedIt)
         {
-            var s = new System.Text.StringBuilder();
+            var s = new StringBuilder();
 
             foreach (var c in inputString)
             {
-                if (c.IsNotNeedToBeHexed())
+                if (skipCharsWhichDoNotNeedIt && c.IsNotNeedToBeHexed())
                 {
                     s.Append(c);
                 }

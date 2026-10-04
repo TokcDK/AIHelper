@@ -430,6 +430,11 @@ namespace AIHelper.Manage.ModeSwitch
             {
                 // must be one ':' in absolute path or no one if relative path
                 _log.Warn("Something wrong and where was wrong operation parameters value in MoveFilesByOperationsList. Operation value:\r\n" + operation);
+
+                // The record cannot be read as two paths, so it is skipped like the record
+                // with the wrong number of parts above. Acting on it would move whatever
+                // the stray separator happens to split into.
+                return;
             }
 
             if (IsDirSymlink(movePaths)) return;

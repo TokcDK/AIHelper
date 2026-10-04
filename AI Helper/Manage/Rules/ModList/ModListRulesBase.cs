@@ -9,7 +9,7 @@ namespace AIHelper.Manage.Rules.ModList
 {
     internal abstract class ModListRulesBase
     {
-        protected static Logger _log = LogManager.GetCurrentClassLogger();
+        protected static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
         protected ModListData ModlistData;
 

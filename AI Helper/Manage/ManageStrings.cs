@@ -67,57 +67,15 @@ namespace AIHelper.Manage
         /// <summary>
         /// If string is multiline
         /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
+        /// <param name="input">The text to test. Null counts as a single line.</param>
+        /// <returns>true when the text holds at least one line break.</returns>
         internal static bool IsMultiline(this string input)
         {
-            //inputString="line1\r\n"
-            //00.00066x100000
-            //var count = 0;
-            //var index = -1;
+            // A null or empty value has no line break in it. SplitToLines accepts a null
+            // input and then hands it here, so this has to as well.
+            if (string.IsNullOrEmpty(input)) return false;
 
-            //do
-            //{
-            //    if (++count > 1)
-            //    {
-            //        return true;
-            //    }
-
-            //    index = inputString.IndexOf('\n', index + 1);
-            //}
-            //while (index != -1);
-
-            //return false;
-
-            //inputString="line1\r\n"
-            //00.00055x100000
-            return input.IndexOf('\n', 0) > -1;
-
-            //inputString="line1\r\n"
-            //00.0021x100000
-            //return inputString.Contains("\n");
-
-            ///old
-            //{
-            //0.0035x100000
-            //if (input != null)
-            //{
-            //    using (System.IO.StringReader reader = new System.IO.StringReader(input))
-            //    {
-            //        int i = 0;
-            //        while (reader.ReadLine() != null)
-            //        {
-            //            i++;
-            //            if (i > 1)
-            //            {
-            //                return true;
-            //            }
-            //        }
-            //    }
-            //}
-
-            //return false;
-            //}
+            return input.IndexOf('\n') > -1;
         }
 
         internal static string TrimFileVersion(this string fileVersion)

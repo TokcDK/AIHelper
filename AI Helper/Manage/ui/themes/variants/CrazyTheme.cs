@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Drawing;
+using AIHelper.Manage.ui.themes;
 
-namespace AIHelper.Manage.ui.themes
+namespace AIHelper.Manage.ui.themes.variants
 {
     /// <summary>
     /// Random theme: a new set of colours every time it is applied.

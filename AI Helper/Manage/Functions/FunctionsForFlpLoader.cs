@@ -31,7 +31,7 @@ namespace AIHelper.Manage.Functions
                 _tooltip = null;
             }
 
-            var functions = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFunctionForFlp>();
+            var functions = GetListOfSubClasses.Inherited.GetInterfaceImplementations<IFunctionForFlp>();
             var palette = ThemesLoader.CurrentPalette;
 
             var flowPanel = new FlowLayoutPanel

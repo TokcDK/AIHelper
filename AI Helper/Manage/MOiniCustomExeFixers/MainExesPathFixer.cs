@@ -6,9 +6,37 @@ using static AIHelper.Manage.ManageModOrganizer;
 
 namespace AIHelper.Manage.MOiniCustomExeFixers
 {
-    public class MainExesPathFixer : ICustomExePathFixerBase
+    internal class MainExesPathFixer : ICustomExePathFixerBase
     {
         static readonly Logger _log = LogManager.GetCurrentClassLogger();
+
+        /// <summary>
+        /// The game dir path as an MO ini wants to see it: the part above the game dir name,
+        /// without a trailing separator.
+        /// </summary>
+        /// <remarks>
+        /// The ini stores paths as they were on the machine the mod was made on, so a
+        /// profile moved to another folder keeps a path pointing at the old place. Both
+        /// branches below rebuild the same prefix from the current settings, so it is
+        /// worked out once here rather than twice.
+        /// </remarks>
+        private static string GetGameDirRootPath()
+        {
+            var currentGameDirPath = ManageSettings.CurrentGameDirPath;
+            var gameDirNameIndex = currentGameDirPath.IndexOf("\\" + ManageSettings.CurrentGameDirName, StringComparison.Ordinal);
+
+            if (gameDirNameIndex < 0)
+            {
+                // The game dir is not inside the path, so there is nothing to strip. Say so
+                // instead of handing Remove(-1) an exception.
+                _log.Warn("The game dir name '" + ManageSettings.CurrentGameDirName
+                    + "' is not a part of the game dir path '" + currentGameDirPath + "'.");
+
+                return currentGameDirPath.TrimEnd('\\');
+            }
+
+            return currentGameDirPath.Remove(gameDirNameIndex).TrimEnd('\\');
+        }
 
         public void TryFix(CustomExeFixData data)
         {
@@ -39,7 +67,7 @@ namespace AIHelper.Manage.MOiniCustomExeFixers
                             int index = path.ToUpperInvariant().IndexOf(subdata.ToUpperInvariant());
                             if (index == -1) continue;
 
-                            var gamePath = Path.Combine(ManageSettings.CurrentGameDirPath.Remove(ManageSettings.CurrentGameDirPath.IndexOf("\\" + ManageSettings.CurrentGameDirName))).TrimEnd('\\').Replace("\\", "\\\\");
+                            var gamePath = Path.Combine(GetGameDirRootPath()).Replace("\\", "\\\\");
                             var fixedPath = $"{gamePath}{path.Substring(index)}";
 
                             data.Path = data.Path
@@ -47,6 +75,12 @@ namespace AIHelper.Manage.MOiniCustomExeFixers
                                 .Insert(match.Index, fixedPath);
 
                             isAnyChanged = true;
+
+                            // data.Path has just been rewritten and match.Index still points
+                            // into the text as it was before. Matching again would splice a
+                            // second, doubled path into it, so one match is fixed once and the
+                            // next one is picked up by the enclosing loop.
+                            break;
                         }
                         catch (Exception ex)
                         {
@@ -55,7 +89,9 @@ namespace AIHelper.Manage.MOiniCustomExeFixers
                         }
                     }
 
-                    if (!isAnyChanged) return;
+                    // One path in the arguments that cannot be rebuilt says nothing about the
+                    // others, so the loop goes on with the next match instead of giving up.
+                    if (!isAnyChanged) continue;
 
                     data.CustomExeData.Attribute[data.Attribute] = data.Path;
                 }
@@ -83,9 +119,9 @@ namespace AIHelper.Manage.MOiniCustomExeFixers
                     ("////" + ManageSettings.CurrentGameDirName + "////data////" + ManageSettings.CurrentGame.GameStudioExeNameX32 + ".exe", "////"),
                 })
                 {
-                    if (!data.Path.EndsWith(subdata, StringComparison.InvariantCultureIgnoreCase)) continue;
+                    if (!data.Path.EndsWith(subdata, StringComparison.OrdinalIgnoreCase)) continue;
 
-                    var gamePath = Path.Combine(ManageSettings.CurrentGameDirPath.Remove(ManageSettings.CurrentGameDirPath.IndexOf("\\" + ManageSettings.CurrentGameDirName))).Replace("////", "/").Replace("//", "/").Replace("\\", "/");
+                    var gamePath = Path.Combine(GetGameDirRootPath()).Replace("////", "/").Replace("//", "/").Replace("\\", "/");
                     var fixedPath = $"{gamePath}/{subdata.Replace(slash, "/")}";
 
                     if (File.Exists(fixedPath)) data.CustomExeData.Attribute[data.Attribute] = CustomExecutables.NormalizePath(fixedPath);
@@ -104,7 +140,7 @@ namespace AIHelper.Manage.MOiniCustomExeFixers
                     ("////" + ManageSettings.CurrentGameDirName + "////Data", "////"),
                 })
                 {
-                    if (!data.Path.EndsWith(subdata, StringComparison.InvariantCultureIgnoreCase)) continue;
+                    if (!data.Path.EndsWith(subdata, StringComparison.OrdinalIgnoreCase)) continue;
 
                     var fixedPath = $"{ManageSettings.CurrentGameDirPath}/Data";
 

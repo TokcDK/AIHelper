@@ -3,23 +3,20 @@ using System.Runtime.InteropServices;
 
 namespace AIHelper.Manage
 {
-    static class ManageHardlinks
+    /// <summary>
+    /// Create hardlink for selected file
+    /// </summary>
+    internal static class ManageHardlinks
     {
-        [DllImport("Kernel32.dll", CharSet = CharSet.Unicode)]
-        static extern bool CreateHardLink(
-        string lpFileName,
-        string lpExistingFileName,
-        IntPtr lpSecurityAttributes
-        );
-
         /// <summary>
-        /// Create hardlink for selected file
+        /// Makes <paramref name="fileName"/> another name for the file
+        /// <paramref name="existingFileName"/> already has.
         /// </summary>
-        /// <param name="existingFileName"></param>
-        /// <param name="fileName"></param>
+        /// <param name="existingFileName">The name the data already has.</param>
+        /// <param name="fileName">The name to add.</param>
         internal static void CreateHardlink(this string existingFileName, string fileName)
         {
-            CreateHardLink(fileName, existingFileName, IntPtr.Zero);
+            NativeMethods.CreateHardLink(fileName, existingFileName, IntPtr.Zero);
         }
     }
 }

@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AIHelper.Manage.Functions;
-
-namespace AIHelper.Manage.FoldersTab.Folders
+﻿namespace AIHelper.Manage.FoldersTab.Folders
 {
     internal class OpenGameDirButtonData : SimpleFolderOpenBase
     {

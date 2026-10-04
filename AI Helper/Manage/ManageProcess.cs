@@ -52,7 +52,7 @@ namespace AIHelper.Manage
                 //MessageBox.Show("outdir=" + outdir);
                 program.StartInfo.FileName = fileName;
 
-                if (arguments.Length > 0)
+                if (!string.IsNullOrEmpty(arguments))
                 {
                     program.StartInfo.Arguments = arguments;
                 }
@@ -178,21 +178,29 @@ namespace AIHelper.Manage
         /// </summary>
         /// <param name="isGame">Indicates whether to run the main game (true) or the studio (false).</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        internal async static Task RunMainGameStudioExe(bool isGame)
+        internal static async Task RunMainGameStudioExe(bool isGame)
         {
             ManageSettings.MainForm.OnOffButtons(false);
 
-            await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
+            try
+            {
+                await Task.Run(() => ManageOther.WaitIfGameIsChanging()).ConfigureAwait(true);
 
-            bool isVr = ManageSettings.CurrentGameIsHaveVr && ManageSettings.MainForm.VRGameCheckBox.Checked;
+                bool isVr = ManageSettings.CurrentGameIsHaveVr && ManageSettings.MainForm.VRGameCheckBox.Checked;
 
-            var (exePath, arguments, oldMOProfileName) = ManageProcess.GetGameStudioLaunchExecutionParameters(isGame, isVr);
+                var (exePath, arguments, oldMOProfileName) = ManageProcess.GetGameStudioLaunchExecutionParameters(isGame, isVr);
 
-            ManageProcess.KillProcessesByName(Path.GetFileNameWithoutExtension(exePath));
-            ManageProcess.RunProgramAndWaitHidden(exePath, arguments);
-            ManageProcess.OnAfterRunMainGameStudioExe(oldMOProfileName);
-
-            ManageSettings.MainForm.OnOffButtons();
+                ManageProcess.KillProcessesByName(Path.GetFileNameWithoutExtension(exePath));
+                ManageProcess.RunProgramAndWaitHidden(exePath, arguments);
+                ManageProcess.OnAfterRunMainGameStudioExe(oldMOProfileName);
+            }
+            finally
+            {
+                // The launch window is put back in the finally, not after the body: a
+                // failure anywhere above would otherwise leave the whole window disabled
+                // with no way to get it back.
+                ManageSettings.MainForm.OnOffButtons();
+            }
         }
     }
 }

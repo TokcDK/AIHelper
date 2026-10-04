@@ -17,7 +17,7 @@ using NLog;
 
 namespace AIHelper.Manage.Functions
 {
-    internal class InfoEditorForFlp : FunctionForFlpBase
+    internal class InfoEditorForFlp : FunctionForFlpBase, IDisposable
     {
         static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
@@ -46,9 +46,53 @@ namespace AIHelper.Manage.Functions
         bool _isWriting;
 
         // Controls of the currently opened editor (used by filter and by "add mod" flow).
+        // They are children of the editor form and are released when a session ends.
         FlowLayoutPanel _modsListFlowPanel;
         TextBox _filterTextBox;
+
+        // The tooltip is a component rather than a control, so the editor form does not
+        // dispose it and this object has to.
         ToolTip _toolTip;
+
+        /// <summary>
+        /// Releases what an editor session created that the editor form cannot release itself.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// <para>
+        /// Releases what an editor session created and lets go of its controls.
+        /// </para>
+        /// <para>
+        /// The tooltip is the one thing the editor form cannot release itself: a
+        /// <see cref="ToolTip"/> is a component and not a child control, so it stays alive
+        /// after the form closes. The panel and the filter box are children of that form
+        /// and are disposed with it; disposing them again here is harmless, because
+        /// <see cref="Control.Dispose()"/> is idempotent, and it is what makes the
+        /// ownership this object has over them explicit. The cached mod info blocks stay
+        /// on <see cref="_modInfoBuilds"/> until the next session clears them.
+        /// </para>
+        /// </summary>
+        /// <param name="disposing">
+        /// false when called from a finalizer, where only unmanaged resources may be touched.
+        /// </param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing) return;
+
+            _toolTip?.Dispose();
+            _toolTip = null;
+
+            _filterTextBox?.Dispose();
+            _filterTextBox = null;
+
+            _modsListFlowPanel?.Dispose();
+            _modsListFlowPanel = null;
+        }
 
         private static void InitLogTextBox()
         {
@@ -165,6 +209,11 @@ namespace AIHelper.Manage.Functions
             LoadGitInfos(modUpdateInfosForm, _modsListFlowPanel);
 
             modUpdateInfosForm.Size = new System.Drawing.Size(modUpdateInfosForm.Width * 2, modUpdateInfosForm.Height * 2);
+
+            // The editor is shown modeless, so its session ends with the form rather than
+            // with this method. The tooltip is not a child of that form and has to be
+            // released explicitly.
+            modUpdateInfosForm.FormClosed += (o, e) => Dispose();
             modUpdateInfosForm.Show(ManageSettings.MainForm);
 
             _isReading = false;

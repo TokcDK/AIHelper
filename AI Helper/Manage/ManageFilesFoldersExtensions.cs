@@ -1,5 +1,4 @@
-﻿using AIHelper.SharedData;
-using CheckForEmptyDir;
+﻿using CheckForEmptyDir;
 using NLog;
 using Soft160.Data.Cryptography;
 using System;
@@ -7,7 +6,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace AIHelper.Manage
@@ -526,10 +524,6 @@ namespace AIHelper.Manage
 
         }
 
-        [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool DeleteFile(string name);
-
         /// <summary>
         /// must unlock locked file and delete after?
         /// </summary>
@@ -537,7 +531,7 @@ namespace AIHelper.Manage
         /// <returns></returns>
         public static bool Unblock(string fileName)
         {
-            return DeleteFile(fileName + ":Zone.Identifier");
+            return NativeMethods.DeleteFile(fileName + ":Zone.Identifier");
         }
 
         /// <summary>
@@ -553,12 +547,19 @@ namespace AIHelper.Manage
         /// <summary>
         /// true if file is picture
         /// </summary>
-        /// <param name="fileExtension"></param>
+        /// <param name="fileExtension">The extension, including the leading dot, or null.</param>
         /// <returns></returns>
         internal static bool IsPictureExtension(this string fileExtension)
         {
-            fileExtension = fileExtension.ToLowerInvariant();
-            return !string.IsNullOrWhiteSpace(fileExtension) && (fileExtension == ".jpg" || fileExtension == ".png" || fileExtension == ".bmp");
+            // Path.GetExtension returns null for a name without one, so the test has to
+            // come before anything that reads the value. The comparison itself is
+            // OrdinalIgnoreCase, because an extension is not culture and must not be
+            // matched with the culture's casing rules.
+            if (string.IsNullOrWhiteSpace(fileExtension)) return false;
+
+            return string.Equals(fileExtension, ".jpg", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(fileExtension, ".png", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(fileExtension, ".bmp", StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>

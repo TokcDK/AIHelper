@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
+using AIHelper.Manage.ui.themes;
 
-namespace AIHelper.Manage.ui.themes
+namespace AIHelper.Manage.ui.themes.variants
 {
     /// <summary>
     /// Green theme: pale green surfaces with a deep forest accent.

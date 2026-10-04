@@ -62,7 +62,7 @@ namespace AIHelper.Manage.ui.themes
         /// <summary>
         /// Used to draw a control while no theme has been applied yet.
         /// </summary>
-        private static readonly ThemePalette FallbackPalette = new DefaultTheme().Palette;
+        private static readonly ThemePalette FallbackPalette = new variants.DefaultTheme().Palette;
 
         /// <summary>
         /// Set once the theme list has been put into the selector of the main window.
@@ -127,7 +127,7 @@ namespace AIHelper.Manage.ui.themes
         /// </remarks>
         internal static List<IUITheme> GetList()
         {
-            var themes = GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IUITheme>()
+            var themes = GetListOfSubClasses.Inherited.GetInterfaceImplementations<IUITheme>()
                 .Where(theme => !(theme is CustomTheme))
                 .ToList();
 

@@ -90,7 +90,12 @@ namespace AIHelper.Manage
                     {
                         if (entry.FullName.EndsWith("manifest.xml", StringComparison.OrdinalIgnoreCase))
                         {
-                            return ManageXml.ReadXmlValue(entry.Open(), "manifest/guid");
+                            // the entry owns the stream and the archive is about to be
+                            // closed, so it has to be released here
+                            using (Stream manifest = entry.Open())
+                            {
+                                return ManageXml.ReadXmlValue(manifest, "manifest/guid");
+                            }
                         }
                     }
                 }

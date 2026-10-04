@@ -2,11 +2,10 @@
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using AIHelper.Manage.Functions;
 using AIHelper.Manage.ToolsTab;
 using NLog;
 
-namespace AIHelper.Manage.FoldersTab
+namespace AIHelper.Manage.FoldersTab.Folders
 {
     internal class OpenPresetsDir : IFolderTabButtonData
     {

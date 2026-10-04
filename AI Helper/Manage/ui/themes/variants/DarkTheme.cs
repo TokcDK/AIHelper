@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
+using AIHelper.Manage.ui.themes;
 
-namespace AIHelper.Manage.ui.themes
+namespace AIHelper.Manage.ui.themes.variants
 {
     /// <summary>
     /// Dark theme: the neutral greys and the blue accent of a modern dark editor.

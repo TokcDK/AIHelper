@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
-namespace AIHelper.Manage
+namespace AIHelper.Manage.Rules
 {
     internal class ManageRules
     {

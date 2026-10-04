@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
+using AIHelper.Manage.ui.themes;
 
-namespace AIHelper.Manage.ui.themes
+namespace AIHelper.Manage.ui.themes.variants
 {
     /// <summary>
     /// Classic grey theme, the colours Windows used before themes existed: a light

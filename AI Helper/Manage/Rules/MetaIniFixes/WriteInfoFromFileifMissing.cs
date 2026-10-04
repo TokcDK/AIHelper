@@ -4,14 +4,15 @@ using System.IO;
 
 namespace AIHelper.Manage.Rules.MetaIniFixes
 {
+    /// <summary>
+    /// Writes the modlist rules the fix has worked out into meta.ini, unless the mod
+    /// already carries them.
+    /// </summary>
     class WriteInfoFromFileifMissing : ModlistDataMetaIniFixesBase
     {
-        /// <summary>
-        /// fix for incorrect gameName set for the mod
-        /// </summary>
-        /// <param name="modlistData"></param>
-        /// <param name="ini"></param>
-        /// <param name="mod"></param>
+        /// <param name="modlistData">The rules as they stand after the fixes were applied.</param>
+        /// <param name="ini">The mod's meta.ini.</param>
+        /// <param name="mod">The mod's folder.</param>
         public WriteInfoFromFileifMissing(ModListData modlistData, INIFile ini, string mod) : base(modlistData, ini, mod)
         {
         }
@@ -32,11 +33,5 @@ namespace AIHelper.Manage.Rules.MetaIniFixes
 
             return true;
         }
-    }
-
-    public class ModRules
-    {
-        public string ModDirName { get; set; }
-        public string Rules { get; set; }
     }
 }

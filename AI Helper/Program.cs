@@ -3,7 +3,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -11,17 +10,6 @@ namespace AIHelper
 {
     internal static class Program
     {
-        //предотвратить повторный запуск и показать окно, если свернуто
-        //https://stackoverflow.com/questions/184084/how-to-force-c-sharp-net-app-to-run-only-one-instance-in-windows
-        //https://stackoverflow.com/questions/4566632/maximize-another-process-window-in-net
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        //static extern bool SetForegroundWindow(IntPtr hWnd);
-        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-        // Pinvoke declaration for ShowWindow
-        private const int SwRestore = 9;
-
         //appname
         internal static readonly string AppName = ManageSettings.ApplicationProductName = Application.ProductName;
 
@@ -45,13 +33,16 @@ namespace AIHelper
                 }
                 else
                 {
+                    //A second copy was started, so bring the window of the running one back
+                    //instead of opening a second one.
+                    //https://stackoverflow.com/questions/184084/how-to-force-c-sharp-net-app-to-run-only-one-instance-in-windows
+                    //https://stackoverflow.com/questions/4566632/maximize-another-process-window-in-net
                     Process current = Process.GetCurrentProcess();
                     foreach (Process process in Process.GetProcessesByName(current.ProcessName))
                     {
                         if (process.Id != current.Id)
                         {
-                            ShowWindow(process.MainWindowHandle, SwRestore);
-                            //SetForegroundWindow(process.MainWindowHandle);
+                            NativeMethods.ShowWindow(process.MainWindowHandle, NativeMethods.ShowRestore);
                             break;
                         }
                     }

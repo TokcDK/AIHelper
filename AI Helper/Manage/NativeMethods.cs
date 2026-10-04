@@ -1,27 +1,30 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace AIHelper.Manage.ui
+namespace AIHelper.Manage
 {
     /// <summary>
-    /// The few native calls the interface needs, which WinForms does not expose.
+    /// The native calls this application needs and the framework does not expose.
     /// </summary>
     /// <remarks>
-    /// <para>
-    /// A scroll bar is drawn by Windows rather than by WinForms, so it ignores the
-    /// colour it is given and stays light grey whatever theme is applied. The only
-    /// supported way to recolour one is to ask Windows for a different visual style
-    /// for the window which owns it, and that call is not wrapped by WinForms.
-    /// </para>
     /// <para>
     /// The class carries the conventional name on purpose. CA1060 wants native
     /// declarations to sit in a class called <c>NativeMethods</c>, and this project
     /// builds with every analyser enabled while keeping its warning count fixed, so
     /// declaring them anywhere else would add a warning to the build.
     /// </para>
+    /// <para>
+    /// Only the declarations live here. What the application does with them belongs to
+    /// the caller, so the code that needs a call stays with the work it serves rather
+    /// than with the platform boundary.
+    /// </para>
     /// </remarks>
     internal static class NativeMethods
     {
+        // ------------------------------------------------------------------
+        // Window appearance
+        // ------------------------------------------------------------------
+
         /// <summary>
         /// Visual style Windows uses for a dark scroll bar.
         /// </summary>
@@ -130,5 +133,58 @@ namespace AIHelper.Manage.ui
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool RedrawWindow(IntPtr hWnd, IntPtr updateRect, IntPtr updateRegion, uint flags);
+
+        /// <summary>
+        /// Show command that brings a window back from minimised without activating it.
+        /// </summary>
+        internal const int ShowRestore = 9;
+
+        /// <summary>
+        /// Shows a window in the state <paramref name="nCmdShow"/> asks for.
+        /// </summary>
+        /// <remarks>
+        /// Windows does not restore a window on its own when a second copy of the
+        /// application is started, so the running one has to be told to.
+        /// <c>SetForegroundWindow</c> on its own is not enough.
+        /// </remarks>
+        /// <param name="hWnd">Handle of the window to show.</param>
+        /// <param name="nCmdShow">
+        /// The state to show it in, <see cref="ShowRestore"/> for a minimised window.
+        /// </param>
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        // ------------------------------------------------------------------
+        // Filesystem
+        // ------------------------------------------------------------------
+
+        /// <summary>
+        /// Makes <paramref name="fileName"/> another name for the file
+        /// <paramref name="existingFileName"/> already has.
+        /// </summary>
+        /// <remarks>
+        /// The two names then refer to one set of data on disk, so a file edited through
+        /// either of them is seen through both. Removing one name leaves the data in place
+        /// as long as the other name still exists.
+        /// </remarks>
+        [DllImport("Kernel32.dll", CharSet = CharSet.Unicode)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool CreateHardLink(
+            string lpFileName,
+            string lpExistingFileName,
+            IntPtr lpSecurityAttributes);
+
+        /// <summary>
+        /// Marks a file for deletion on its next close, which is how Windows takes away
+        /// the read-only block files downloaded from the internet carry.
+        /// </summary>
+        /// <remarks>
+        /// Returns false instead of throwing when the file is not there, which is the case
+        /// the callers treat as nothing to do.
+        /// </remarks>
+        [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool DeleteFile(string name);
     }
 }

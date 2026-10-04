@@ -132,7 +132,7 @@ namespace AIHelper.Install.Cards
             List<GameBase> games;
             try
             {
-                games = Inherited.GetListOfinheritedSubClasses<GameBase>();
+                games = Inherited.GetListOfInheritedSubClasses<GameBase>();
             }
             catch (Exception ex)
             {

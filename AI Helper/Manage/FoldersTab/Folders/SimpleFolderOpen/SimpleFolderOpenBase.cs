@@ -1,15 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AIHelper.Manage.Functions;
 
 namespace AIHelper.Manage.FoldersTab.Folders
 {
-    public abstract class SimpleFolderOpenBase : IFolderTabButtonData
+    /// <summary>
+    /// Base for the buttons of the folders tab which do nothing but open one folder.
+    /// </summary>
+    /// <remarks>
+    /// The button's <see cref="DirPath"/> is both what it announces and what it opens, so
+    /// the guard and the explorer call below stay in step with the description a subclass
+    /// writes.
+    /// </remarks>
+    internal abstract class SimpleFolderOpenBase : IFolderTabButtonData
     {
         public abstract string Text { get; }
 

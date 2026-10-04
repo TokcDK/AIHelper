@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
+using AIHelper.Manage.ui.themes;
 
-namespace AIHelper.Manage.ui.themes
+namespace AIHelper.Manage.ui.themes.variants
 {
     /// <summary>
     /// Light theme the application starts with: white content surfaces, a slate

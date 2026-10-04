@@ -23,7 +23,7 @@ namespace AIHelper.Manage.ModeSwitch
             }
         }
 
-        protected static Logger _log = LogManager.GetCurrentClassLogger();
+        protected static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Text for switch confirmation dialog
@@ -36,68 +36,55 @@ namespace AIHelper.Manage.ModeSwitch
         protected abstract void Action();
 
         /// <summary>
-        /// When switch to normal mode make backup of Data and Mods dirs using ntfs hard links
+        /// Asks for confirmation, takes the backup the user asked for and then hands over to
+        /// the concrete switcher.
         /// </summary>
-        public bool MakeBackup = true;
-
-        public async void Switch()
+        /// <remarks>
+        /// The switch itself is currently disabled: <see cref="Action"/> is not invoked, so
+        /// this only refreshes the window after the backup. The call site is left in place,
+        /// commented out, to keep the place where it belongs.
+        /// </remarks>
+        internal void Switch()
         {
             ManageSettings.MainForm.OnOffButtons(false);
 
-            SwitchModeDialogForm dialog = new SwitchModeDialogForm
+            bool makeBackup;
+            bool doNotSwitch;
+
+            // The dialog owns a window handle and the tooltip for its controls, so it is
+            // released as soon as it has been answered.
+            using (var dialog = new SwitchModeDialogForm
             {
                 Location = new Point(ManageSettings.MainForm.Location.X, ManageSettings.MainForm.Location.Y),
                 StartPosition = FormStartPosition.Manual
-            };
-
-            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, dialog);
-            DialogResult result = dialog.ShowDialog();
-            if (result != DialogResult.OK)
+            })
             {
-                ManageSettings.MainForm.OnOffButtons();
-                return;
-            }
+                ThemesLoader.SetTheme(ManageSettings.CurrentTheme, dialog);
 
-            MakeBackup = dialog.MakeBuckupCheckBox.Checked;
+                if (dialog.ShowDialog() != DialogResult.OK)
+                {
+                    ManageSettings.MainForm.OnOffButtons();
+                    return;
+                }
+
+                // The dialog's answers are the only things which decide whether the Data and
+                // Mods dirs are backed up with ntfs hard links and whether the switch runs.
+                makeBackup = dialog.MakeBuckupCheckBox.Checked;
+                doNotSwitch = dialog.DoNotSwitchCheckBox.Checked;
+            }
 
             // First, create a backup of the game
-            if (MakeBackup)
+            if (makeBackup)
                 new GameBackuper().CreateDataModsBakOfCurrentGame();
 
-            if (!dialog.DoNotSwitchCheckBox.Checked)
+            if (!doNotSwitch)
             {
-                //await Task.Run(() => Action()).ConfigureAwait(true);
+                // The switch is disabled on purpose. This is where it belongs when it is
+                // turned back on, guarded by the dialog's "do not switch" checkbox:
+                // Task.Run(() => Action()).ConfigureAwait(true);
             }
 
-            //try
-            //{
-            //    ManageSettings.MainForm.MOCommonModeSwitchButton.Text = MOmode ? T._("MOToCommon") : T._("CommonToMO");
-            //}
-            //catch (Exception ex)
-            //{
-            //    _log.Info("An error occured while change mode switch button text: \r\n" + ex);
-            //}
-
             ManageSettings.MainForm.UpdateData();
-
-            //DialogResult result = MessageBox.Show(
-            //    DialogText,
-            //    T._("Confirmation"),
-            //    MessageBoxButtons.OKCancel);
-            //if (result == DialogResult.OK)
-            //{
-            //    await Task.Run(() => Action()).ConfigureAwait(true);
-
-            //    try
-            //    {
-            //        ManageSettings.MainForm.MOCommonModeSwitchButton.Text = MOmode ? T._("MOToCommon") : T._("CommonToMO");
-            //    }
-            //    catch
-            //    {
-            //    }
-
-            //    ManageSettings.MainForm.FoldersInit();
-            //}
 
             ManageSettings.MainForm.OnOffButtons();
         }

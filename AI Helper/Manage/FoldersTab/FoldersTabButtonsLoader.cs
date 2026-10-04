@@ -1,6 +1,6 @@
 ﻿using AIHelper.Manage.ui;
 
-namespace AIHelper.Manage.Functions
+namespace AIHelper.Manage.FoldersTab
 {
     /// <summary>
     /// Fills the folders tab with the buttons the assembly provides.
@@ -11,7 +11,7 @@ namespace AIHelper.Manage.Functions
         {
             ButtonListLoader.Load(
                 ManageSettings.MainForm.FoldersTabPageBackgroundPanel,
-                GetListOfSubClasses.Inherited.GetInterfaceImplimentations<IFolderTabButtonData>());
+                GetListOfSubClasses.Inherited.GetInterfaceImplementations<IFolderTabButtonData>());
         }
     }
 }

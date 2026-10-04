@@ -3266,12 +3266,12 @@ namespace AIHelper.Manage
 
                 if (comments.Length > 0)
                 {
-                    ini.SetKey("General", "comments", comments.ToHexForMetaIni());
+                    ini.SetKey("General", "comments", comments.ToHex(skipCharsWhichDoNotNeedIt: true));
                 }
 
                 if (notes.Length > 0)
                 {
-                    ini.SetKey("General", "notes", ("\"" + notes.Replace(Environment.NewLine, "<br>") + "\"").ToHexForMetaIni());
+                    ini.SetKey("General", "notes", ("\"" + notes.Replace(Environment.NewLine, "<br>") + "\"").ToHex(skipCharsWhichDoNotNeedIt: true));
                 }
 
                 ini.SetKey("General", "validated", "true");

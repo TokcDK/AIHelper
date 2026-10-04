@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
+using AIHelper.Manage.ui.themes;
 
-namespace AIHelper.Manage.ui.themes
+namespace AIHelper.Manage.ui.themes.variants
 {
     /// <summary>
     /// Cherry and black theme: warm near black surfaces with a cherry red accent.

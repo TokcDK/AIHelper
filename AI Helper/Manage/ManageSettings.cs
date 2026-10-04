@@ -696,8 +696,7 @@ namespace AIHelper.Manage
                 (string language)
         {
             EnsureInitialized();
-            LanguageModeMap.TryGetValue(language, out string mode);
-            return mode;
+            return LanguageModeMap.TryGetValue(language, out string mode) ? mode : string.Empty;
         }
 
         /// <summary>
@@ -709,8 +708,7 @@ namespace AIHelper.Manage
                 (string identifier)
         {
             EnsureInitialized(true);
-            LanguageModeMapReversed.TryGetValue(identifier, out string language);
-            return language;
+            return LanguageModeMapReversed.TryGetValue(identifier, out string language) ? language : string.Empty;
         }
 
         /// <summary>

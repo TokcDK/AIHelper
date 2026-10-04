@@ -12,21 +12,25 @@ namespace AIHelper.Manage.MOiniCustomExeFixers
             {
                 if (File.Exists(data.Path)) return;
 
-                foreach (var subPath in new[] { "/MO/explorer++/Explorer++.exe" })
-                    if (TryFixSubPath(data, subPath, out var outPath))
-                    {
-                        if (File.Exists(outPath)) data.CustomExeData.Attribute[data.Attribute] = CustomExecutables.NormalizePath(outPath);
-                    }
+                const string subPath = "/MO/explorer++/Explorer++.exe";
+
+                if (TryFixSubPath(data, subPath, out var outPath)
+                    && File.Exists(outPath))
+                {
+                    data.CustomExeData.Attribute[data.Attribute] = CustomExecutables.NormalizePath(outPath);
+                }
             }
             else if (data.Attribute == "workingDirectory")
             {
                 if (Directory.Exists(data.Path)) return;
 
-                foreach (var subPath in new[] { "/MO/explorer++" }) 
-                    if (TryFixSubPath(data, subPath, out var outPath))
-                    {
-                        if (Directory.Exists(outPath)) data.CustomExeData.Attribute[data.Attribute] = CustomExecutables.NormalizePath(outPath);
-                    }
+                const string subPath = "/MO/explorer++";
+
+                if (TryFixSubPath(data, subPath, out var outPath)
+                    && Directory.Exists(outPath))
+                {
+                    data.CustomExeData.Attribute[data.Attribute] = CustomExecutables.NormalizePath(outPath);
+                }
             }
         }
 
@@ -34,7 +38,8 @@ namespace AIHelper.Manage.MOiniCustomExeFixers
         {
             outPath = null;
 
-            if (!data.Path.EndsWith(subPath, StringComparison.InvariantCultureIgnoreCase)) return false;
+            // OrdinalIgnoreCase, not a culture comparison: a path is not text in a language.
+            if (!data.Path.EndsWith(subPath, StringComparison.OrdinalIgnoreCase)) return false;
 
             outPath = ManageSettings.ApplicationStartupPath.TrimEnd('/').TrimEnd('\\').Replace("\\", "/") + subPath;
 

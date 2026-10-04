@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using AIHelper.Manage.Functions;
+using AIHelper.Manage.Rules;
 
 namespace AIHelper.Manage.ToolsTab.ButtonsData
 {

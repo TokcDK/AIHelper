@@ -17,6 +17,13 @@ namespace AIHelper.Manage.Update.Installers
     /// kept aside and put back when the install replaced it.
     /// </para>
     /// <para>
+    /// A clean extraction already keeps a meta.ini it finds in the folder, so for a mod
+    /// archive this decorator is usually a no-op. It stays because the guarantee has to
+    /// hold for every install kind, including the ones that merely write over the folder:
+    /// the file is what makes the mod a mod, and losing it must not depend on which
+    /// installer the engine happened to pick.
+    /// </para>
+    /// <para>
     /// A decorator rather than a second archive installer: which archives get
     /// extracted is not this class's business, so it asks the installer it wraps and
     /// only adds the one thing it knows about.

@@ -37,14 +37,46 @@ namespace AIHelper.Manage.Update
         /// </summary>
         internal bool VersionFromFile { get; }
 
+        /// <summary>
+        /// How the release file of this record is installed.
+        /// <para>
+        /// A record read from a mod's own file describes a mod archive, so the default
+        /// is the clean extraction a mod folder needs: the new version must not be
+        /// unpacked over the files of the old one. Mod Organizer is not a mod and its
+        /// record is hardcoded, so it asks for <see cref="InstallKind.RunInstaller"/>
+        /// instead — and that request is the only thing keeping the archive installer
+        /// away from it, because the engine's resolver takes the first installer that
+        /// accepts the asset.
+        /// </para>
+        /// </summary>
+        internal InstallKind InstallKind { get; }
+
+        /// <summary>
+        /// Command line for <see cref="InstallKind.RunInstaller"/>. The engine replaces
+        /// the <c>{installPath}</c> token with the target's install path. Unused by the
+        /// other install kinds.
+        /// </summary>
+        internal string InstallArguments { get; }
+
+        /// <param name="installKind">
+        /// How to install the file. The default is what a record read from a mod's
+        /// meta.ini or updateinfo.txt describes.
+        /// </param>
+        /// <param name="installArguments">
+        /// Command line for <see cref="InstallKind.RunInstaller"/>, or null.
+        /// </param>
         internal GithubUpdateRecord(string owner, string repository, string fileStartsWith,
-            string fileEndsWith, bool versionFromFile)
+            string fileEndsWith, bool versionFromFile,
+            InstallKind installKind = InstallKind.ExtractArchiveToCleanRoot,
+            string installArguments = null)
         {
             Owner = (owner ?? string.Empty).Trim();
             Repository = (repository ?? string.Empty).Trim();
             FileStartsWith = (fileStartsWith ?? string.Empty).Trim();
             FileEndsWith = (fileEndsWith ?? string.Empty).Trim();
             VersionFromFile = versionFromFile;
+            InstallKind = installKind;
+            InstallArguments = installArguments;
         }
 
         /// <summary>
@@ -103,10 +135,11 @@ namespace AIHelper.Manage.Update
                     {
                         FileNameMask = ToFileNameMask(),
 
-                        // Extracting into the root of the target folder is the
-                        // default the update pass has always used, and it is what
-                        // a BepInEx plugin or a mod archive expects.
-                        InstallKind = InstallKind.ExtractZipToRoot
+                        // How the file is installed is part of what the record says
+                        // about itself: a mod archive into an emptied folder, the Mod
+                        // Organizer installer by running it.
+                        InstallKind = this.InstallKind,
+                        InstallArguments = InstallArguments
                     }
                 }
             };

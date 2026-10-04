@@ -691,3 +691,66 @@ expect, and the game file already holds the same list.
 
 The engine's own default store (`ManifestSkippedVersionStore`, a JSON file in the
 target folder) is used only by the standalone `ModUpdaterManual1` harness.
+
+---
+
+## 16. Installing a mod archive
+
+An archive is unpacked over whatever the mod folder already holds, so a file the new
+version no longer ships — a script the author deleted, a texture that was renamed, a
+plugin that moved — stays behind and the game goes on loading it. The result is a folder
+that is neither version, and the fault is hard to attribute. A mod is therefore installed
+with `InstallKind.ExtractArchiveToCleanRoot`, which is what `GithubUpdateRecord` asks for
+by default: the folder is emptied before the archive is unpacked, so it ends up holding
+exactly the new version.
+
+What survives the clean:
+
+| Survives | Why |
+|----------|-----|
+| `meta.ini` | the engine's `ArchiveInstaller` default — it is what makes the folder a mod, and no mod archive ships one |
+| anything in `AssetSpec.PreservedFiles` | a mod that keeps a file of its own (a config, a save) declares it here; the list **adds to** the default, it does not replace it |
+| symbolic links and junctions | a link points outside the folder and was not put there by the archive |
+
+Links are never walked into either. The cleaner recurses by hand instead of using
+`SearchOption.AllDirectories`, which descends through reparse points and would enumerate —
+and then delete — whatever a link points at. `ReparsePoint` owns that rule, and the
+extractor uses it as well: a link standing where the archive wants a file is replaced by
+the real file rather than written through, because writing through it would change a file
+outside the target folder.
+
+The folder is not emptied before the download. The backup is a copy of the mod's own
+content and is taken before the install, so an install that fails is rolled back.
+
+### How a record says which installer to use
+
+`GithubUpdateRecord` carries its own `InstallKind` and `InstallArguments`, because the
+engine's resolver takes the **first** installer that accepts the asset. A record read from
+a mod's `meta.ini` or `updateinfo.txt` describes a mod archive; the hardcoded Mod Organizer
+record describes an installer executable and therefore asks for
+`InstallKind.RunInstaller`:
+
+```csharp
+// Providers\ModOrganizerUpdateRecordProvider.cs
+new GithubUpdateRecord(Owner, Repository, FileStartsWith, FileEndsWith, VersionFromFile,
+    InstallKind.RunInstaller, "/dir=\"{installPath}\" /noicons /nocancel /norestart /silent")
+```
+
+Leaving Mod Organizer on the archive default is not a smaller change, it is a broken one:
+the archive installer is first in the resolver, it accepts any kind that unpacks, and it
+would try to unzip `Mod.Organizer-<version>.exe`, which is not an archive. The switches are
+the ones the update pass has always passed, and the engine replaces `{installPath}` with
+the install path of the target.
+
+---
+
+## 17. The update window
+
+* The list of found versions is cleared for a target as soon as it is installed: the
+  version that was just installed is no longer on offer, and the remaining rows describe
+  the same outdated state the check compared against. The next check finds what is
+  actually current.
+* A failed install leaves the rows in place, so the install can be retried without running
+  the check again. The button needs no separate "already tried" flag for this: what may be
+  installed is exactly what the list shows.
+

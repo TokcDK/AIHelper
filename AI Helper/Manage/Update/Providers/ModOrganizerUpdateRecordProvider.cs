@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ModUpdater.Core.Domain;
 
 namespace AIHelper.Manage.Update.Providers
 {
@@ -33,13 +34,27 @@ namespace AIHelper.Manage.Update.Providers
         /// </summary>
         private const bool VersionFromFile = false;
 
+        /// <summary>
+        /// Switches that keep the Mod Organizer installer silent and unattended, and
+        /// send it to the folder this application manages. The engine replaces
+        /// <c>{installPath}</c> with the install path of the target.
+        /// </summary>
+        private const string InstallerArguments =
+            "/dir=\"{installPath}\" /noicons /nocancel /norestart /silent";
+
         public IEnumerable<UpdatableFolder> GetUpdatableFolders()
         {
             return new[]
             {
                 new UpdatableFolder(
                     ManageSettings.AppModOrganizerDirPath,
-                    new GithubUpdateRecord(Owner, Repository, FileStartsWith, FileEndsWith, VersionFromFile))
+                    new GithubUpdateRecord(Owner, Repository, FileStartsWith, FileEndsWith, VersionFromFile,
+                        // The release file is an installer, and saying so is what keeps
+                        // the engine from handing it to the archive installer: the
+                        // resolver takes the first installer that accepts the asset,
+                        // and the archive installer would accept any install kind that
+                        // unpacks, only to fail on an executable that is not an archive.
+                        InstallKind.RunInstaller, InstallerArguments))
             };
         }
     }

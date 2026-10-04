@@ -396,6 +396,7 @@
     <Compile Include="Manage\Update\Updater.cs" />
     <Compile Include="Manage\Update\UpdateTools.cs" />
     <Compile Include="Manage\Update\Versioning\MetaIniVersionProvider.cs" />
+    <Compile Include="Manage\Update\Versioning\SkippedVersionStore.cs" />
     <Compile Include="Manage\Update\Versioning\UpdateToolsVersionComparer.cs" />
     <Compile Include="Manage\Update\ZipmodsSorter.cs" />
     <Compile Include="Properties\Settings.Designer.cs">

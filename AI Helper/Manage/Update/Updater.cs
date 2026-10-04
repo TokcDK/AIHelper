@@ -138,7 +138,12 @@ namespace AIHelper.Manage.Update
                 // not by the one it raises for a target it merely finished with.
                 manager.TargetUpdated += OnTargetUpdated;
 
-                using (var updaterForm = new UpdaterForm(manager))
+                using (var updaterForm = new UpdaterForm(
+                    manager,
+                    // Windows the window opens for itself (the skipped version editor) are
+                    // themed through the same call, so a dialog created by the engine's UI
+                    // layer does not come up with the system colours in a dark theme.
+                    control => ThemesLoader.SetTheme(ManageSettings.CurrentTheme, control)))
                 {
                     ThemesLoader.SetTheme(ManageSettings.CurrentTheme, updaterForm);
 

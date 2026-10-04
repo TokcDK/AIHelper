@@ -639,3 +639,55 @@ internal static async Task RunUpdateAsync()
     ManageModOrganizer.RedefineGameMoData();
 }
 ```
+
+---
+
+## 15. Skipping a version
+
+A version that is broken for the user has to be skippable without turning the
+check off for the whole mod. A skip is recorded per target and per version, and
+the check drops a skipped version from its result while saying so in the target's
+log.
+
+```csharp
+// IUpdateManager
+Task<IReadOnlyList<string>> GetSkippedVersionsAsync(UpdateTarget target, CancellationToken ct);
+Task<IReadOnlyList<string>> SkipVersionAsync(UpdateCandidate candidate, CancellationToken ct);
+Task<IReadOnlyList<string>> SetSkippedVersionsAsync(
+    UpdateTarget target, IReadOnlyList<string> versions, CancellationToken ct);
+```
+
+* `SkipVersionAsync` adds the candidate's version and returns the new list. The
+  UI then removes every row with that version, because one version may be offered
+  by several sources of the same target.
+* `SetSkippedVersionsAsync` replaces the whole list — this is what the "Skipped
+  versions" editor uses. An empty list clears the skips.
+* All three return the resulting list, so the caller never re-reads the store.
+
+The filtering lives in `UpdateManager`, not in `UpdateCheckService`: the check
+service answers only "which versions are newer than the installed one", and the
+decision "offer it or not" is taken where a message can be raised for the target.
+`SkippedVersions` (`ModUpdater.Core`) owns the format rules — trim, drop empty,
+de-duplicate ignoring case, comma separated — so every store agrees on what a
+list is.
+
+### Where a skip is stored
+
+The engine defines the port (`ISkippedVersionStore`), the host implements it.
+This application uses `SkippedVersionStore` (`Manage\Update\Versioning`) and
+writes **both** places:
+
+| Where | Shape | Why |
+|-------|-------|-----|
+| the mod's `meta.ini` | `[AISettings]` `SkipVersions=1.2.3,4.5.6` | travels with the mod, next to the update record |
+| `RES\update\<game>\SkipVersions.ini` | section = the target path, key `versions` | survives a replaced mod folder, and is the only place a non-mod target (Mod Organizer) can record a skip |
+
+The effective list is the union of the two, so a skip is never lost because one
+of the files was rebuilt. The section name is the full target path; the INI
+parser this application uses reads a section name literally, so a path containing
+`[`, `]`, `;` or `#` still round-trips. A `meta.ini` that does not exist is never
+created — creating one would add a file to a mod folder Mod Organizer did not
+expect, and the game file already holds the same list.
+
+The engine's own default store (`ManifestSkippedVersionStore`, a JSON file in the
+target folder) is used only by the standalone `ModUpdaterManual1` harness.

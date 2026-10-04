@@ -1,17 +1,14 @@
-﻿using System.Collections.Generic;
-
-namespace AIHelper.Install.UpdateMaker
+﻿namespace AIHelper.Install.UpdateMaker
 {
     /// <summary>
-    /// Base class of the update makers which are describing a content type of the game dir
+    /// Describes one content type of the game dir which can be packed into an update
     /// </summary>
+    /// <remarks>
+    /// A maker holds no state: it only names the content type and the update maker ini keys
+    /// which belong to it, so the same instance can be asked for the same answers at any time.
+    /// </remarks>
     abstract class UpdateMakerBase
     {
-        /// <summary>
-        /// Paths which must be excluded from the update
-        /// </summary>
-        public HashSet<string> Blacklist { get; set; } = new HashSet<string>();
-
         /// <summary>
         /// Directory name of the content type in the game dir
         /// </summary>
@@ -28,8 +25,8 @@ namespace AIHelper.Install.UpdateMaker
         public virtual string FilesKey => DirName + "Files";
 
         /// <summary>
-        /// True when at least one file of the content type was copied to the update dir
+        /// Key name of the game update flag which tells the installer to update this content type
         /// </summary>
-        public bool IsAnyFileCopied { get; set; }
+        public virtual string UpdateKey => "Update" + DirName;
     }
 }

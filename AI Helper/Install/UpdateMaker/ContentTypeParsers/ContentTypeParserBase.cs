@@ -1,89 +1,86 @@
 ﻿using INIFileMan;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace AIHelper.Install.UpdateMaker
 {
     /// <summary>
-    /// Base class of the parsers which are copying content of the selected content type
-    /// from the game dir to the update dir
+    /// Copies the content of one content type of the game dir to the update dir
     /// </summary>
+    /// <remarks>
+    /// A parser holds no per-run state: the content type it works on is passed in on every call,
+    /// so one instance can be reused for every maker without one maker's data leaking into another.
+    /// </remarks>
     abstract class ContentTypeParserBase
     {
-        /// <summary>
-        /// ini file with the update maker parameters
-        /// </summary>
-        protected readonly INIFile Ini;
-
-        /// <summary>
-        /// Update maker of the content type which is processed now
-        /// </summary>
-        internal UpdateMakerBase Maker { get; set; }
+        private readonly INIFile _ini;
 
         protected ContentTypeParserBase(INIFile ini)
         {
-            Ini = ini;
+            _ini = ini;
         }
 
         /// <summary>
-        /// True when the paths key of this content type is set in the ini
+        /// Key with the list of paths which must be copied for the content type
         /// </summary>
-        public bool IsNeedToCopy => Ini.KeyExists(PathsKeyName);
+        protected abstract string GetPathsKey(UpdateMakerBase maker);
 
         /// <summary>
-        /// Key name with the list of paths which must be copied
-        /// </summary>
-        protected abstract string PathsKeyName { get; }
-
-        /// <summary>
-        /// Key name with the list of paths which must be excluded from the copy
+        /// Key with the list of paths which must be excluded from the copy
         /// </summary>
         protected abstract string BlacklistKeyName { get; }
 
         /// <summary>
-        /// Key name with the list of paths which must be removed from the game during the update
+        /// Key with the list of paths which must be removed from the game during the update
         /// </summary>
         public abstract string RemoveKeyName { get; }
 
         /// <summary>
-        /// Paths which must be removed from the game during the update
+        /// True when the update maker ini selects any content of <paramref name="maker"/>'s content type
         /// </summary>
-        public HashSet<string> RemoveList { get; private set; } = new HashSet<string>();
-
-        /// <summary>
-        /// Paths which are copied to the update dir
-        /// </summary>
-        public HashSet<string> IncludedList { get; private set; } = new HashSet<string>();
-
-        /// <summary>
-        /// True when the blacklist from the ini must be used
-        /// </summary>
-        protected bool UseBlacklist { get; private set; }
-
-        /// <summary>
-        /// Copies content of the selected content type from <paramref name="gameDirPath"/> to <paramref name="updateDirPath"/>
-        /// </summary>
-        /// <param name="gameDirPath">Directory of the content type in the game dir</param>
-        /// <param name="updateDirPath">Directory of the content type in the update dir</param>
-        public void CopyIncludedContent(string gameDirPath, string updateDirPath)
+        public bool IsSelectedFor(UpdateMakerBase maker)
         {
-            IncludedList = SplitPaths(Ini.GetKey("", PathsKeyName));
-            RemoveList = SplitPaths(Ini.GetKey("", BlacklistKeyName));
-
-            // maker must always use the current remove list because the same parser instance is reused for every maker
-            Maker.Blacklist = RemoveList;
-            UseBlacklist = RemoveList.Count > 0;
-
-            if (IncludedList.Count > 0)
-            {
-                CopyPaths(IncludedList, gameDirPath, updateDirPath);
-            }
+            return _ini.KeyExists(GetPathsKey(maker));
         }
 
         /// <summary>
-        /// Copies <paramref name="paths"/> of the content type from <paramref name="gameDirPath"/> to <paramref name="updateDirPath"/>
+        /// Paths which must be removed from the game during the update
         /// </summary>
-        protected abstract void CopyPaths(HashSet<string> paths, string gameDirPath, string updateDirPath);
+        /// <remarks>
+        /// The blacklist doubles as the removal list: a path excluded from the update is also removed
+        /// from the game, so the game can not keep a stale copy next to the updated one.
+        /// Records are relative to the game dir and start with the content type dir name.
+        /// </remarks>
+        public HashSet<string> ReadRemoveList()
+        {
+            return SplitPaths(_ini.GetKey("", BlacklistKeyName));
+        }
+
+        /// <summary>
+        /// Copies the content of <paramref name="maker"/>'s content type selected in the ini
+        /// from <paramref name="gameDirPath"/> to <paramref name="updateDirPath"/>
+        /// </summary>
+        /// <param name="maker">Content type which is processed now</param>
+        /// <param name="gameDirPath">Directory of the content type in the game dir</param>
+        /// <param name="updateDirPath">Directory of the content type in the update dir</param>
+        /// <returns>True when at least one entry was copied</returns>
+        public bool CopyContent(UpdateMakerBase maker, string gameDirPath, string updateDirPath)
+        {
+            var includedPaths = SplitPaths(_ini.GetKey("", GetPathsKey(maker)));
+            if (includedPaths.Count == 0)
+            {
+                return false;
+            }
+
+            return CopyPaths(includedPaths, ReadRemoveList(), maker, gameDirPath, updateDirPath);
+        }
+
+        /// <summary>
+        /// Copies <paramref name="paths"/> of the content type, skipping the <paramref name="blacklist"/> records
+        /// </summary>
+        /// <returns>True when at least one entry was copied</returns>
+        protected abstract bool CopyPaths(HashSet<string> paths, HashSet<string> blacklist, UpdateMakerBase maker, string gameDirPath, string updateDirPath);
 
         /// <summary>
         /// True when <paramref name="paths"/> requires copying of the whole content type dir
@@ -94,13 +91,22 @@ namespace AIHelper.Install.UpdateMaker
         }
 
         /// <summary>
+        /// True when the blacklist excludes the <paramref name="subPath"/> of <paramref name="maker"/>'s content type
+        /// </summary>
+        protected static bool IsBlacklisted(HashSet<string> blacklist, UpdateMakerBase maker, string subPath)
+        {
+            // records are relative to the game dir, so the content type dir name is their first segment
+            return blacklist.Contains(maker.DirName + Path.DirectorySeparatorChar + subPath);
+        }
+
+        /// <summary>
         /// Splits comma separated list of paths and skips empty records
         /// </summary>
         private static HashSet<string> SplitPaths(string value)
         {
             return string.IsNullOrWhiteSpace(value)
                 ? new HashSet<string>()
-                : value.Split(',').Where(path => !string.IsNullOrWhiteSpace(path)).ToHashSet();
+                : value.Split(',').Select(path => path.Trim()).Where(path => path.Length > 0).ToHashSet();
         }
     }
 }

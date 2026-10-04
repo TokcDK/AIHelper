@@ -10,7 +10,6 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using AIHelper.Manage.Functions;
-using AIHelper.Install.Types.Directories;
 using NLog;
 
 namespace AIHelper.Manage.ToolsTab.ButtonsData
@@ -41,9 +40,12 @@ namespace AIHelper.Manage.ToolsTab.ButtonsData
         {
             try
             {
-                if (new UpdateMaker().MakeUpdate())
+                var updateMaker = new UpdateMaker();
+                if (updateMaker.MakeUpdate())
                 {
-                    MessageBox.Show("Made update instead");
+                    // the maker only builds the package, showing it to the user is a UI concern
+                    OpenFolderInExplorer(updateMaker.UpdateDirPath);
+                    MessageBox.Show(T._("Made update instead"));
                     return;
                 }
 
@@ -116,38 +118,19 @@ namespace AIHelper.Manage.ToolsTab.ButtonsData
         }
 
         /// <summary>
-        /// Opens the folder the user drops the files to install into.
+        /// Opens the selected folder in the file explorer.
         /// </summary>
-        private static void OpenInstallFolder()
+        /// <param name="folderPath">Path of the folder to open</param>
+        private static void OpenFolderInExplorer(string folderPath)
         {
             try
             {
-                Directory.CreateDirectory(ManageSettings.Install2MoDirPath);
-
-                Process.Start("explorer.exe", ManageSettings.Install2MoDirPath);
+                Process.Start("explorer.exe", folderPath);
             }
             catch (Exception ex)
             {
-                _log.Error("Failed to open the install folder. Error:\r\n" + ex);
+                _log.Error("Failed to open the folder. Path:" + folderPath + "\r\nError:\r\n" + ex);
             }
-        }
-
-        private static bool IsInstallDirHasAnyRequiredFileFrom(List<ModInstallerBase> installers)
-        {
-            foreach (var installer in installers)
-            {
-                var IsDirInstaller = installer is DirectoriesInstallerBase;
-                foreach (var mask in installer.Masks)
-                {
-                    if ((IsDirInstaller && ManageFilesFoldersExtensions.IsAnySubDirExistsInTheDir(ManageSettings.Install2MoDirPath, mask))
-                        || (!IsDirInstaller && ManageFilesFoldersExtensions.IsAnyFileExistsInTheDir(ManageSettings.Install2MoDirPath, mask, allDirectories: false)))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
         }
 
         private static void InstallModFilesAndCleanEmptyFolder(List<ModInstallerBase> installers)

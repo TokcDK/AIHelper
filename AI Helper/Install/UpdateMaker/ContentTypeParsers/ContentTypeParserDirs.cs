@@ -6,7 +6,7 @@ using System.IO;
 namespace AIHelper.Install.UpdateMaker
 {
     /// <summary>
-    /// Copies dirs of the selected content type from the game dir to the update dir
+    /// Copies dirs of a content type from the game dir to the update dir
     /// </summary>
     class ContentTypeParserDirs : ContentTypeParserBase
     {
@@ -14,63 +14,72 @@ namespace AIHelper.Install.UpdateMaker
         {
         }
 
-        protected override string PathsKeyName => Maker.DirsKey;
+        protected override string GetPathsKey(UpdateMakerBase maker)
+        {
+            return maker.DirsKey;
+        }
 
         protected override string BlacklistKeyName => "BlacklistDirs";
 
         public override string RemoveKeyName => "RemoveDirs";
 
-        protected override void CopyPaths(HashSet<string> paths, string gameDirPath, string updateDirPath)
+        protected override bool CopyPaths(HashSet<string> paths, HashSet<string> blacklist, UpdateMakerBase maker, string gameDirPath, string updateDirPath)
         {
             if (IsCopyAllRequested(paths))
             {
-                CopyAllDirs(gameDirPath, updateDirPath);
-                return;
+                return CopyAllDirs(blacklist, maker, gameDirPath, updateDirPath);
             }
 
+            // an explicitly selected dir wins over the blacklist, exactly like an explicitly selected file
+            var anyCopied = false;
             foreach (var subPath in paths)
             {
-                if (CopyDirBySubPath(subPath, gameDirPath, updateDirPath))
+                if (CopyDirBySubPath(subPath, blacklist, gameDirPath, updateDirPath))
                 {
-                    Maker.IsAnyFileCopied = true;
+                    anyCopied = true;
                 }
             }
+
+            return anyCopied;
         }
 
-        private void CopyAllDirs(string gameDirPath, string updateDirPath)
+        /// <summary>
+        /// Copies every dir of the content type which is not blacklisted
+        /// </summary>
+        private static bool CopyAllDirs(HashSet<string> blacklist, UpdateMakerBase maker, string gameDirPath, string updateDirPath)
         {
-            foreach (var dir in Directory.EnumerateDirectories(gameDirPath, "*"))
+            var anyCopied = false;
+
+            foreach (var dirPath in Directory.EnumerateDirectories(gameDirPath, "*"))
             {
-                if (UseBlacklist && dir.ContainsAnyFrom(RemoveList)) continue;
-
-                var subPath = dir.Replace(gameDirPath + Path.DirectorySeparatorChar, string.Empty);
-
-                if (CopyDirBySubPath(subPath, gameDirPath, updateDirPath))
+                var subPath = Path.GetFileName(dirPath);
+                if (IsBlacklisted(blacklist, maker, subPath))
                 {
-                    Maker.IsAnyFileCopied = true;
+                    continue;
+                }
+
+                if (CopyDirBySubPath(subPath, blacklist, gameDirPath, updateDirPath))
+                {
+                    anyCopied = true;
                 }
             }
+
+            return anyCopied;
         }
 
-        private bool CopyDirBySubPath(string subPath, string sourceDir, string targetDir)
+        /// <summary>
+        /// Copies the <paramref name="subPath"/> dir of the content type to the update dir
+        /// </summary>
+        private static bool CopyDirBySubPath(string subPath, HashSet<string> blacklist, string sourceDir, string targetDir)
         {
-            if (UseBlacklist && Maker.Blacklist.Contains(Maker.DirName + Path.DirectorySeparatorChar + subPath))
+            var source = new DirectoryInfo(Path.Combine(sourceDir, subPath));
+            if (!source.Exists)
             {
-                RemoveList.Add(subPath);
                 return false;
             }
 
-            var path = new DirectoryInfo(sourceDir + Path.DirectorySeparatorChar + subPath);
-
-            if (!path.Exists)
-            {
-                return false;
-            }
-
-            var targetPath = new DirectoryInfo(targetDir + Path.DirectorySeparatorChar + subPath);
-            targetPath.Parent.Create();
-
-            path.CopyAll(targetPath, exclusions: Maker.Blacklist);
+            // CopyAll creates the target dir itself and skips the nested entries of the blacklist
+            source.CopyAll(new DirectoryInfo(Path.Combine(targetDir, subPath)), exclusions: blacklist);
 
             return true;
         }

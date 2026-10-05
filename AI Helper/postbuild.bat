@@ -86,7 +86,8 @@ if exist "%projectBasicGamesPluginsDir%\" (
 	robocopy "%projectBasicGamesPluginsDir% " "%targetBasicGamesPluginsDir%\ " *.py /MIR /COPYALL /B /R:3 /W:1
 )
 :: 4b. HTML report templates plus the per-game background images beside them.
-set themeDefaultSubPath=theme\default
+set themeRootSubPath=theme
+set themeDefaultSubPath=%themeRootSubPath%\default
 set reportDirSubPath=%themeDefaultSubPath%\report
 set reportTemplateFileName=ReportTemplate.html
 set projectReportDir=%projectResDir%\%reportDirSubPath%
@@ -95,7 +96,16 @@ set targetReportDir=%targetResDir%\%reportDirSubPath%
 set targetReportTemplatePath=%targetReportDir%\%reportTemplateFileName%
 if exist "%projectReportTemplatePath%" (
 	echo copy report templates and game backgrounds..
+	:: copy the report template and any game backgrounds beside it, mirroring the subtree so that any missing backgrounds are removed from the output.
 	robocopy "%projectReportDir% " "%targetReportDir%\ " *.html *.jpg /MIR /COPYALL /B /R:3 /W:1
+)
+set themeCustomSubPath=%themeRootSubPath%\custom
+set themeCustomProjectSubPath=%projectResDir%\%themeCustomSubPath%
+:: 4b. Custom themes, if any exist.
+if exist "%themeCustomProjectSubPath%\" (
+	echo copy custom themes..
+	:: copy the custom theme .ini files
+	robocopy "%themeCustomProjectSubPath% " "%targetResDir%\%themeCustomSubPath%\ " *.ini /COPYALL /B /R:3 /W:1
 )
 :: 4c. Web link definitions consumed by the links UI.
 set projectResLinksDir=%projectResDir%\links

@@ -1,337 +1,184 @@
 ﻿using System;
-using System.Drawing;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using AIHelper.Data.Modlist;
+using AIHelper.Manage.ui;
 using AIHelper.Manage.ui.themes;
-using AIHelper.Manage.Update;
+using INIFileMan;
 
 namespace AIHelper.Manage.Functions.InfoEditor
 {
     /// <summary>
-    /// The "Add" tab of the mod info editor: the form which adds a mod from the url of
-    /// its release.
+    /// The "Add" tab of the mod info editor: one tab per update source, each holding the
+    /// form that source builds for adding a mod of its own kind, and the log box they all
+    /// report into.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// Kept beside <see cref="InfoEditorForFlp"/> as a part of it rather than as a class of
-    /// its own, because the form has no meaning outside the session which owns the mod list
-    /// and the log box it reports into. What it does have is a concern of its own — reading
-    /// a form and turning it into a request — and that is what lives in this file.
+    /// its own, because what happens here is the editor's half of adding a mod: the mods
+    /// directory, the names already taken, and the meta.ini which is written once the files
+    /// are in place. What a source owns is the other half — the form, and the download.
+    /// </para>
+    /// <para>
+    /// The two halves meet at <see cref="UpdateSourceAddControl.AddRequested"/>: a source
+    /// reads its form and says what the user asked for, and the editor decides whether it
+    /// may be done and then does it.
+    /// </para>
     /// </remarks>
     internal partial class InfoEditorForFlp
     {
-        /// <summary>Directory name offered before a url has been entered.</summary>
-        const string DefaultModDirName = "NewMod";
-
-        /// <summary>Url offered as the shape of what is expected.</summary>
-        const string DefaultModUrl = "https://github.com/Owner/Name";
+        /// <summary>Height of the log box below the source tabs.</summary>
+        const int LogBoxHeight = 120;
 
         /// <summary>
-        /// Narrowest the add-mod tab is laid out at while it has not been shown yet and its
-        /// real width is still unknown.
-        /// </summary>
-        const int MinAddModPanelWidth = 200;
-
-        /// <summary>Width of the caption of a field of the form.</summary>
-        const int AddModLabelWidth = 150;
-
-        /// <summary>Room a value field leaves for the caption and for its margins.</summary>
-        const int AddModValueWidthReserve = 20;
-
-        /// <summary>How much narrower than the tab the log box is kept.</summary>
-        const int LogBoxWidthReserve = 10;
-
-        /// <summary>
-        /// One field of the add-mod form: its caption, the value it holds and the text box
-        /// the value is edited in.
+        /// Builds the add-mod tab: the strip of sources, and the log box under it.
         /// </summary>
         /// <remarks>
-        /// The value is public because the text box is bound to it, and a binding only
-        /// reaches public members.
+        /// The log box is shared by every source rather than repeated in each tab: what it
+        /// reports is what happened to the mod being added, and which source it came from is
+        /// already visible in the strip above it.
         /// </remarks>
-        private sealed class NewModField
+        private void LoadAddModTab(Control addModContainer)
         {
-            internal NewModField(string labelText, string value)
-            {
-                LabelText = labelText;
-                Value = value;
-            }
-
-            internal string LabelText { get; }
-
-            /// <summary>Value of the field, kept in step with the text box by a binding.</summary>
-            public string Value { get; set; }
-
-            /// <summary>Text box the value is edited in. Set while the form is built.</summary>
-            internal TextBox Editor { get; set; }
-        }
-
-        /// <summary>
-        /// Builds the add-mod tab: the fields describing a mod to add, the buttons which open
-        /// what has been entered, and the log box the download reports into.
-        /// </summary>
-        private void LoadAddModPanel(Control addModContainer)
-        {
-            // The fields are wired to their values as they are built, which raises the change
-            // events before the user has done anything. The flag is what keeps those from
-            // being taken for edits.
-            bool addModPanelIsLoading = true;
-
             addModContainer.Controls.Clear();
 
-            var modUpdateInfoMainFlp = new FlowLayoutPanel
+            var addModLayout = new TableLayoutPanel
+            {
+                RowCount = 2,
+                ColumnCount = 1,
+                Dock = DockStyle.Fill,
+                Margin = new Padding(0),
+            };
+            addModLayout.RowStyles.Add(new RowStyle { SizeType = SizeType.Percent, Height = 100 });
+            addModLayout.RowStyles.Add(new RowStyle { SizeType = SizeType.Absolute, Height = LogBoxHeight });
+
+            var sourceTabs = new ThemedTabControl
             {
                 Dock = DockStyle.Fill,
                 Margin = new Padding(0),
-                FlowDirection = FlowDirection.TopDown,
             };
 
-            // Tab page content gets its real width only when the tab is displayed;
-            // guard against an uninitialized width so control sizes stay valid.
-            int containerWidth = addModContainer.Width > MinAddModPanelWidth ? addModContainer.Width : MinAddModPanelWidth;
-
-            var modDirNameField = new NewModField(T._("Mod dir name"), DefaultModDirName);
-            var urlField = new NewModField(T._("Url"), DefaultModUrl);
-            var fileStartsWithField = new NewModField(T._("File starts with"), "");
-            var fileEndsWithField = new NewModField(T._("File ends with"), "");
-            var fields = new[] { modDirNameField, urlField, fileStartsWithField, fileEndsWithField };
-
-            foreach (var field in fields)
+            foreach (var source in UpdateSourceCatalog.All)
             {
-                var propertyFlp = new FlowLayoutPanel
+                var addControl = source.CreateAddControl(Log);
+                addControl.AddRequested += OnAddModRequested;
+
+                var sourceTabPage = new TabPage
                 {
-                    FlowDirection = FlowDirection.LeftToRight,
-                    Margin = new Padding(0),
+                    Text = source.Name,
+                    // The page scrolls rather than the form: a form sized to its content and
+                    // docked to the top is what keeps the buttons off a band of empty space.
+                    AutoScroll = true,
                 };
-                var label = new Label
-                {
-                    Text = field.LabelText + ":",
-                    Size = new Size(AddModLabelWidth, ElementHeight),
-                };
-                var valueTextBox = new TextBox
-                {
-                    Size = new Size(containerWidth - label.Width - AddModValueWidthReserve, ElementHeight),
-                    Margin = new Padding(1, 1, 10, 1),
-                };
-                valueTextBox.DataBindings.Add(new Binding(
-                    nameof(valueTextBox.Text), field, nameof(field.Value), true, DataSourceUpdateMode.OnPropertyChanged));
+                sourceTabPage.Controls.Add(addControl.Control);
 
-                valueTextBox.TextChanged += (o, e) =>
-                {
-                    if (addModPanelIsLoading) return;
-
-                    // compared by identity rather than by caption: the caption is shown text
-                    // and may be translated, the entry itself is what identifies it
-                    if (ReferenceEquals(field, urlField)) SetModNameFromUrl(urlField.Value, modDirNameField);
-                };
-                field.Editor = valueTextBox;
-
-                propertyFlp.Controls.Add(label);
-                propertyFlp.Controls.Add(valueTextBox);
-
-                var labelWidth = label.Width + (label.Margin.Horizontal * 2);
-                var labelHeight = label.Height + (label.Margin.Vertical * 2);
-                var boxWidth = valueTextBox.Width + (valueTextBox.Margin.Horizontal * 2);
-                var boxHeight = valueTextBox.Height + (valueTextBox.Margin.Vertical * 2);
-                propertyFlp.Size = new Size(labelWidth + boxWidth, labelHeight + boxHeight);
-
-                modUpdateInfoMainFlp.Controls.Add(propertyFlp);
+                sourceTabs.TabPages.Add(sourceTabPage);
             }
 
-            var versionFromFile = new CheckBox
-            {
-                Text = T._("Version from file"),
-                Checked = false,
-                Size = new Size(containerWidth - AddModValueWidthReserve, ElementHeight + 5),
-                TextAlign = ContentAlignment.MiddleLeft,
-            };
-            modUpdateInfoMainFlp.Controls.Add(versionFromFile);
+            var logBox = EnsureLogBox();
+            logBox.Dock = DockStyle.Fill;
 
-            var openWebButton = new Button
-            {
-                Text = T._("Web")
-            };
-            openWebButton.Click += (o, e) => ManageProcess.SimpleRunProcess(urlField.Value);
-            modUpdateInfoMainFlp.Controls.Add(openWebButton);
+            addModLayout.Controls.Add(sourceTabs, 0, 0);
+            addModLayout.Controls.Add(logBox, 0, 1);
 
-            var openDirButton = new Button
+            addModContainer.Controls.Add(addModLayout);
+
+            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, addModContainer);
+        }
+
+        /// <summary>
+        /// Handles a source asking for a mod to be added.
+        /// </summary>
+        /// <remarks>
+        /// A form's event handler may not return a task, so the work is awaited here and the
+        /// method which does it keeps its exceptions to itself: an exception escaping an
+        /// async void handler would take the application down instead of being logged.
+        /// </remarks>
+        private async void OnAddModRequested(object sender, AddModRequestEventArgs e)
+        {
+            await AddModAsync(e).ConfigureAwait(true);
+        }
+
+        /// <summary>
+        /// Adds the mod a source asked for: checks the name against the mods folder, asks the
+        /// source to download and install it, and only then writes the record into meta.ini.
+        /// </summary>
+        /// <remarks>
+        /// The order is the point. Resolving and installing first means a failed download
+        /// never leaves a mod which claims to be updatable, and the record is what the update
+        /// pass reads.
+        /// </remarks>
+        private async Task AddModAsync(AddModRequestEventArgs request)
+        {
+            try
             {
-                Text = T._("Dir")
-            };
-            openDirButton.Click += (o, e) =>
-            {
-                var dirPath = Path.Combine(ManageSettings.CurrentGameModsDirPath, modDirNameField.Value);
-                if (!Directory.Exists(dirPath))
+                var data = request.Data;
+
+                // The name is typed by the user and is combined with the mods directory, so
+                // whether it may be one is the editor's check and not the form's.
+                if (!IsValidModDirName(request.ModDirectoryName))
                 {
-                    Log(T._("Mod dir missing. Mod still is not added!"));
+                    Log(T._("Mod dir name is not a valid folder name"));
                     return;
                 }
 
-                ManageProcess.SimpleRunProcess(dirPath);
-            };
-            modUpdateInfoMainFlp.Controls.Add(openDirButton);
-
-            var downloadAndAddMod = new Button
-            {
-                Text = T._("Add")
-            };
-            downloadAndAddMod.Click += async (o, e) =>
-            {
-                if (addModPanelIsLoading) return;
-
-                await AddModFromFormAsync(
-                    modDirNameField, urlField, fileStartsWithField, fileEndsWithField, versionFromFile)
-                    .ConfigureAwait(true);
-            };
-            modUpdateInfoMainFlp.Controls.Add(downloadAndAddMod);
-
-            var logBox = EnsureLogBox();
-            logBox.Width = containerWidth - LogBoxWidthReserve;
-            modUpdateInfoMainFlp.Controls.Add(logBox);
-
-            addModContainer.Controls.Add(modUpdateInfoMainFlp);
-
-            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, addModContainer);
-
-            addModPanelIsLoading = false;
-        }
-
-        /// <summary>
-        /// Fills the mod directory name from the repository url the user typed, unless the
-        /// name was already set to something of their own.
-        /// </summary>
-        private void SetModNameFromUrl(string url, NewModField modDirNameField)
-        {
-            if (string.IsNullOrWhiteSpace(url)) return;
-
-            // A name the user has already changed is left alone: the url is there to fill a
-            // gap, not to overwrite a choice.
-            if (!string.IsNullOrWhiteSpace(modDirNameField.Value)
-                && modDirNameField.Value != DefaultModDirName) return;
-
-            try
-            {
-                string owner;
-                string repository;
-                if (!GithubUrl.TryParse(url, out owner, out repository)) return;
-
-                modDirNameField.Editor.Text = repository;
-
-                Log(T._("Mod name set from url"));
-            }
-            catch (Exception ex)
-            {
-                _log.Warn("Failed to set the mod name from the url. Error:\r\n" + ex);
-            }
-        }
-
-        /// <summary>
-        /// Handles the "Add" button: checks what the form holds, then asks for the mod to be
-        /// downloaded and added.
-        /// </summary>
-        private async Task AddModFromFormAsync(
-            NewModField modDirNameField,
-            NewModField urlField,
-            NewModField fileStartsWithField,
-            NewModField fileEndsWithField,
-            CheckBox versionFromFile)
-        {
-            try
-            {
-                var newRecord = BuildNewModRecord(
-                    modDirNameField, urlField, fileStartsWithField, fileEndsWithField, versionFromFile);
-                if (newRecord == null) return;
-
                 var targetDirPathInfo = new DirectoryInfo(
-                    Path.Combine(ManageSettings.CurrentGameModsDirPath, modDirNameField.Value));
+                    Path.Combine(ManageSettings.CurrentGameModsDirPath, request.ModDirectoryName));
+
                 if (targetDirPathInfo.Exists)
                 {
                     Log(T._("Target mod dir is exists!"));
                     return;
                 }
 
-                foreach (var modInfoBlock in _modInfoBlocks)
-                {
-                    if (!newRecord.PointsAtSameFileAs(modInfoBlock.InfoData.GitInfo.ToRecord())) continue;
+                if (IsAlreadyListed(data)) return;
 
-                    Log(T._("Mod '{0}' has the same Owner, Repository, start/end", modInfoBlock.InfoData.ModName));
+                data.Mod.Path = targetDirPathInfo.FullName;
+
+                if (!await data.Source
+                        .DownloadAndInstallAsync(data, targetDirPathInfo.FullName, Log, CancellationToken.None)
+                        .ConfigureAwait(true))
+                {
                     return;
                 }
 
-                var modData = new ModData
-                {
-                    Path = targetDirPathInfo.FullName,
-                    Name = modDirNameField.Value,
-                    Priority = 9999
-                };
+                data.Mod.MetaIni = new INIFile(Path.Combine(targetDirPathInfo.FullName, "meta.ini"), true);
 
-                var ginfo = new GitUpdateInfoData(modData)
-                {
-                    Owner = newRecord.Owner,
-                    Repository = newRecord.Repository,
-                    FileStartsWith = newRecord.FileStartsWith,
-                    FileEndsWith = newRecord.FileEndsWith,
-                    VersionFromFile = newRecord.VersionFromFile
-                };
+                data.Write();
 
-                await AddModAsync(newRecord, ginfo).ConfigureAwait(true);
+                Log(T._("Mod succesfully downloaded and added!"));
+
+                // The mod was successfully downloaded and added: build one new block with the
+                // entered values and append it to the cache.
+                AddNewModInfoBlock(data);
             }
             catch (Exception ex)
             {
                 Log(T._("Error: ") + ex.Message);
+                _log.Error("Failed to download and add the mod. Error:\r\n" + ex);
             }
         }
 
         /// <summary>
-        /// Turns the values of the add-mod form into the record the download needs.
+        /// True when a mod the editor already shows is fed by the same release file, which
+        /// makes the one being added a duplicate.
         /// </summary>
-        /// <returns>The record, or null when the form cannot be used.</returns>
-        private GithubUpdateRecord BuildNewModRecord(
-            NewModField modDirNameField,
-            NewModField urlField,
-            NewModField fileStartsWithField,
-            NewModField fileEndsWithField,
-            CheckBox versionFromFile)
+        private bool IsAlreadyListed(UpdateSourceData data)
         {
-            if (string.IsNullOrWhiteSpace(modDirNameField.Value))
+            foreach (var modInfoBlock in _modInfoBlocks)
             {
-                Log(T._("Mod name is empty"));
-                return null;
+                foreach (var existingData in modInfoBlock.InfoData.Sources)
+                {
+                    if (!data.PointsAtSameFileAs(existingData)) continue;
+
+                    Log(T._("Mod '{0}' has the same Owner, Repository, start/end", modInfoBlock.InfoData.ModName));
+                    return true;
+                }
             }
 
-            if (!IsValidModDirName(modDirNameField.Value))
-            {
-                Log(T._("Mod dir name is not a valid folder name"));
-                return null;
-            }
-
-            if (string.IsNullOrWhiteSpace(urlField.Value))
-            {
-                Log(T._("Url s empty"));
-                return null;
-            }
-
-            if (string.IsNullOrWhiteSpace(fileStartsWithField.Value))
-            {
-                Log($"{fileStartsWithField.LabelText} {T._("value is empty")}");
-                return null;
-            }
-
-            string owner;
-            string repository;
-            if (!GithubUrl.TryParse(urlField.Value, out owner, out repository))
-            {
-                Log(T._("Url is not recognized"));
-                return null;
-            }
-
-            return new GithubUpdateRecord(
-                owner,
-                repository,
-                fileStartsWithField.Value,
-                fileEndsWithField.Value,
-                versionFromFile.Checked);
+            return false;
         }
 
         /// <summary>

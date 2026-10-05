@@ -1,23 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AIHelper.Data.Modlist;
 using AIHelper.Manage.ui;
 using AIHelper.Manage.ui.themes;
-using AIHelper.Manage.Update;
-using AIHelper.Manage.Update.Sources;
-using INIFileMan;
 using NLog;
 
 namespace AIHelper.Manage.Functions.InfoEditor
 {
     /// <summary>
-    /// The "mods update info editor" symbol: opens the window in which the github
+    /// The "mods update info editor" symbol: opens the window in which the update
     /// coordinates the updater works from can be read and edited, mod by mod.
     /// </summary>
     /// <remarks>
@@ -29,20 +24,26 @@ namespace AIHelper.Manage.Functions.InfoEditor
     /// controls down with it.
     /// </para>
     /// <para>
-    /// Everything which is not this window lives in its own file: the models in
-    /// <c>InfoEditorModels.cs</c>, one mod's block in <c>ModInfoBlock.cs</c>, the
-    /// buttons of a block in <c>ModUpdateInfoButtons.cs</c> and the add-mod tab in
-    /// <c>InfoEditorForFlp.AddModTab.cs</c>.
+    /// The editor knows no update host. Each mod block gets one tab per source which holds
+    /// data for that mod, and the control inside a tab is built by that source; the add tab
+    /// is the same idea seen from the other side, one tab per source holding the form which
+    /// adds a mod of its kind. What stays here is the part which is the same for all of
+    /// them: the window, the filter, the log box, the mods folder, and the storing of an
+    /// edited value.
+    /// </para>
+    /// <para>
+    /// Everything which is not this window lives in its own file: the source abstraction in
+    /// <c>IUpdateSource.cs</c> and <c>UpdateSourceData.cs</c>, the controls a source builds in
+    /// <c>UpdateSourceInfoControl.cs</c> and <c>UpdateSourceAddControl.cs</c>, the github
+    /// implementation in <c>GithubUpdateSource.cs</c>, <c>GithubUpdateData.cs</c> and
+    /// <c>GithubAddModControl.cs</c>, one mod's block in <c>ModInfoBlock.cs</c>, its buttons
+    /// in <c>ModUpdateInfoButtons.cs</c>, the measurements in <c>EditorLayout.cs</c>, and the
+    /// add tab with the adding of a mod in <c>InfoEditorForFlp.AddModTab.cs</c>.
     /// </para>
     /// </remarks>
     internal partial class InfoEditorForFlp : FunctionForFlpBase, IDisposable
     {
         static readonly Logger _log = LogManager.GetCurrentClassLogger();
-
-        /// <summary>
-        /// Height of a single row of controls in the editor.
-        /// </summary>
-        const int ElementHeight = 13;
 
         /// <summary>
         /// Height of the header row which holds the filter field.
@@ -61,7 +62,7 @@ namespace AIHelper.Manage.Functions.InfoEditor
         /// A text field raises its change event once per character, and every one of them
         /// would otherwise rewrite meta.ini. The wait is what turns a burst of keystrokes
         /// into one write, and the value written at the end of it is the last one, because
-        /// the field is read through its binding rather than from the event.
+        /// the field pushes what was typed into the data as it is typed.
         /// </remarks>
         static readonly TimeSpan WriteBackDelay = TimeSpan.FromSeconds(1);
 
@@ -84,10 +85,10 @@ namespace AIHelper.Manage.Functions.InfoEditor
         bool _isReading;
         bool _isWriting;
 
-        // Coordinates whose fields were edited while a write was already waiting. A write
-        // covers one block, so without this a mod edited in the second after another one
+        // Data whose fields were edited while a write was already waiting. A write covers one
+        // source's data, so without this a second mod edited in the second after another one
         // would keep its old value in the ini.
-        readonly HashSet<UpdateInfoData> _pendingWrites = new HashSet<UpdateInfoData>();
+        readonly HashSet<UpdateSourceData> _pendingWrites = new HashSet<UpdateSourceData>();
 
         // Controls of the currently opened editor (used by the filter and by the 'add mod'
         // tab). They are children of the editor form and are released when a session ends.
@@ -164,11 +165,12 @@ namespace AIHelper.Manage.Functions.InfoEditor
 
             // A fresh editor session: reset caches so mod infos are read once per form.
             _modInfoBlocks.Clear();
+            _pendingWrites.Clear();
 
             var modUpdateInfosForm = CreateEditorForm();
 
             // Build and cache all mod infos once.
-            LoadGitInfos(modUpdateInfosForm);
+            LoadModInfos(modUpdateInfosForm);
 
             // applied after the infos are built, so the blocks it has to reach exist
             ThemesLoader.SetTheme(ManageSettings.CurrentTheme, modUpdateInfosForm);
@@ -185,7 +187,7 @@ namespace AIHelper.Manage.Functions.InfoEditor
 
         /// <summary>
         /// Builds the editor window: a filter row above a tab strip which holds the mod
-        /// list and the add-mod form.
+        /// list and the add-mod forms.
         /// </summary>
         /// <remarks>
         /// The strip is a <see cref="ThemedTabControl"/> rather than a plain
@@ -276,8 +278,8 @@ namespace AIHelper.Manage.Functions.InfoEditor
         }
 
         /// <summary>
-        /// The content tab strip: the mod list, and the add-mod form built on the first
-        /// visit to its tab.
+        /// The content tab strip: the mod list, and the add-mod tab built on the first
+        /// visit to it.
         /// </summary>
         /// <remarks>
         /// The tab pages carry no visual style setting of their own. The theme turns that
@@ -300,12 +302,14 @@ namespace AIHelper.Manage.Functions.InfoEditor
             modUpdateInfosTabControl.TabPages.Add(allModsTabPage);
             modUpdateInfosTabControl.TabPages.Add(addModTabPage);
 
-            // Build "Add mod" tab page lazily on its first selection.
+            // Build "Add mod" tab page lazily on its first selection: every source is asked
+            // for its form there, and a source which cannot be reached would otherwise delay
+            // a window the user opened to look at the list.
             modUpdateInfosTabControl.SelectedIndexChanged += (o, e) =>
             {
                 if (modUpdateInfosTabControl.SelectedTab == addModTabPage && addModTabPage.Controls.Count == 0)
                 {
-                    LoadAddModPanel(addModTabPage);
+                    LoadAddModTab(addModTabPage);
                 }
             };
 
@@ -375,18 +379,18 @@ namespace AIHelper.Manage.Functions.InfoEditor
         /// Builds one mod info block with the write back muted for the length of the build.
         /// </summary>
         /// <remarks>
-        /// Building a block wires its fields to the record, and attaching a binding pushes
-        /// the stored value into the field, which raises the change event and would write
-        /// that value straight back to the ini. Muting the write back is what keeps reading
-        /// a record from looking like the user editing it. The mute lives here, around the
-        /// one call which needs it, so no caller can leave the flag set.
+        /// Building a block wires its fields to the data, and attaching a binding pushes the
+        /// stored value into the field, which raises the change event and would write that
+        /// value straight back to the ini. Muting the write back is what keeps reading a
+        /// record from looking like the user editing it. The mute lives here, around the one
+        /// call which needs it, so no caller can leave the flag set.
         /// </remarks>
         private ModInfoBlock CreateModInfoBlock(UpdateInfoData infoData)
         {
             _isReading = true;
             try
             {
-                return new ModInfoBlock(infoData, _toolTip, ElementHeight, WriteValue);
+                return new ModInfoBlock(infoData, _toolTip, WriteValue);
             }
             finally
             {
@@ -397,13 +401,14 @@ namespace AIHelper.Manage.Functions.InfoEditor
         /// <summary>
         /// Adds the block of a mod that was just downloaded and added to the open editor.
         /// </summary>
-        private void AddNewModInfoBlock(GitUpdateInfoData ginfo)
+        private void AddNewModInfoBlock(UpdateSourceData data)
         {
             if (_modsListFlowPanel == null) return;
 
             if (_toolTip == null) _toolTip = CreateToolTip();
 
-            var infoData = new UpdateInfoData(ginfo.Mod, ginfo);
+            var infoData = new UpdateInfoData(data.Mod);
+            infoData.Sources.Add(data);
 
             var modInfoBlock = CreateModInfoBlock(infoData);
 
@@ -416,7 +421,7 @@ namespace AIHelper.Manage.Functions.InfoEditor
         }
 
         /// <summary>
-        /// Reads the stored github info of every mod and builds its info block.
+        /// Reads what every update source holds for every mod and builds the mod info blocks.
         /// </summary>
         /// <remarks>
         /// The blocks are added to <see cref="_modsListFlowPanel"/>, which the editor form
@@ -425,7 +430,7 @@ namespace AIHelper.Manage.Functions.InfoEditor
         /// the widest block, and theming it is left to the caller, which does it once the
         /// blocks exist.
         /// </remarks>
-        private void LoadGitInfos(Form form)
+        private void LoadModInfos(Form form)
         {
             // Already read blocks are cached: do not rebuild them.
             if (_modInfoBlocks.Count > 0)
@@ -437,8 +442,6 @@ namespace AIHelper.Manage.Functions.InfoEditor
             _toolTip = CreateToolTip();
 
             var mods = new ModlistData();
-            var sectionName = ManageSettings.AiMetaIniSectionName;
-            var keyName = ManageSettings.AiMetaIniKeyUpdateName;
 
             foreach (var mod in mods
                 .Mods
@@ -447,7 +450,7 @@ namespace AIHelper.Manage.Functions.InfoEditor
                 && !(m.Type is ModType.Overwrite)
                 ))
             {
-                var infoData = TryReadUpdateInfo(mod, sectionName, keyName);
+                var infoData = TryReadUpdateInfo(mod);
                 if (infoData == null) continue;
 
                 var modInfoBlock = CreateModInfoBlock(infoData);
@@ -466,65 +469,39 @@ namespace AIHelper.Manage.Functions.InfoEditor
         }
 
         /// <summary>
-        /// Reads the github coordinates a mod carries in its meta.ini.
+        /// Collects the data every update source holds for one mod.
         /// </summary>
         /// <remarks>
-        /// A stored record is only read when it really is one. The value may equally well be
-        /// a plain note, and taking "first,second" out of a sentence would invent an owner
-        /// and a repository. When there is no record the url is read instead, and when
-        /// neither yields coordinates the mod is not one the editor can show.
+        /// The sources are asked rather than searched: which files a host keeps its
+        /// coordinates in, and what counts as a usable value there, is the host's own
+        /// question. A mod no source has anything for is not one the editor can show.
         /// </remarks>
         /// <param name="mod">Mod to read.</param>
-        /// <param name="sectionName">Section the record is stored in.</param>
-        /// <param name="keyName">Key the record is stored under.</param>
-        /// <returns>The coordinates, or null when the mod carries none.</returns>
-        private UpdateInfoData TryReadUpdateInfo(ModData mod, string sectionName, string keyName)
+        /// <returns>The data, or null when no source has any for this mod.</returns>
+        private static UpdateInfoData TryReadUpdateInfo(ModData mod)
         {
-            var ini = mod.MetaIni;
-            if (ini == null) return null; // skip when no ini
-
-            var url = ini.GetKey("General", "url");
-            var updateInfo = ini.GetKey(sectionName, keyName);
-            if (string.IsNullOrWhiteSpace(url) && string.IsNullOrWhiteSpace(updateInfo)) return null;
-
             var infoData = new UpdateInfoData(mod);
 
-            GithubUpdateRecord storedRecord = null;
-            var hasStoredRecord = !string.IsNullOrWhiteSpace(updateInfo)
-                                  && updateInfo.TrimStart().StartsWith(
-                                      UpdateRecordParser.SourceId, StringComparison.OrdinalIgnoreCase)
-                                  && UpdateRecordParser.TryParseStoredValue(updateInfo, out storedRecord);
-
-            if (hasStoredRecord)
+            foreach (var source in UpdateSourceCatalog.All)
             {
-                infoData.GitInfo.Owner = storedRecord.Owner;
-                infoData.GitInfo.Repository = storedRecord.Repository;
-                infoData.GitInfo.FileStartsWith = storedRecord.FileStartsWith;
-                infoData.GitInfo.FileEndsWith = storedRecord.FileEndsWith;
-                infoData.GitInfo.VersionFromFile = storedRecord.VersionFromFile;
+                UpdateSourceData sourceData;
+                if (!source.TryReadData(mod, out sourceData)) continue;
 
-                return infoData;
+                infoData.Sources.Add(sourceData);
             }
 
-            string owner;
-            string repository;
-            if (!GithubUrl.TryParse(url, out owner, out repository)) return null;
-
-            infoData.GitInfo.Owner = owner;
-            infoData.GitInfo.Repository = repository;
-
-            return infoData;
+            return infoData.Sources.Count == 0 ? null : infoData;
         }
 
         /// <summary>
-        /// Stores the value of the field the user just edited, once the edits have settled.
+        /// Stores the data the user just edited, once the edits have settled.
         /// </summary>
-        /// <param name="binding">
-        /// Binding of the edited field. The value is read through it rather than from the
-        /// control, so the last edit of a burst is the one which is stored.
+        /// <param name="data">
+        /// Data of the source whose field was edited. The value is already in it: the control
+        /// pushes what is typed as it is typed, so the last edit of a burst is the one which
+        /// is stored.
         /// </param>
-        /// <param name="infoData">Coordinates the field belongs to.</param>
-        private async void WriteValue(Binding binding, UpdateInfoData infoData)
+        private async void WriteValue(UpdateSourceData data)
         {
             // The mute is what keeps the values pushed in while a block is being built from
             // being written back as if the user had edited them.
@@ -532,7 +509,7 @@ namespace AIHelper.Manage.Functions.InfoEditor
 
             // The edit is remembered even when a write is already waiting, so that a second
             // mod edited during the wait is stored as well.
-            _pendingWrites.Add(infoData);
+            _pendingWrites.Add(data);
 
             if (_isWriting) return;
 
@@ -540,20 +517,18 @@ namespace AIHelper.Manage.Functions.InfoEditor
             try
             {
                 // ConfigureAwait(true) keeps the continuation on the UI thread, which the
-                // binding needs; the flag is reset in the finally, so a failure cannot leave
-                // the editor muted for the rest of the session.
+                // data is only ever touched from; the flag is reset in the finally, so a
+                // failure cannot leave the editor muted for the rest of the session.
                 await Task.Delay(WriteBackDelay).ConfigureAwait(true);
-
-                binding.WriteValue(); // force write property value before try write ini
 
                 // Taken before the writes run: an edit made while they run belongs to the
                 // next wait rather than to this one, which is about to be forgotten.
-                var pending = new List<UpdateInfoData>(_pendingWrites);
+                var pending = new List<UpdateSourceData>(_pendingWrites);
                 _pendingWrites.Clear();
 
-                foreach (var pendingInfoData in pending)
+                foreach (var pendingData in pending)
                 {
-                    pendingInfoData.GitInfo.Write();
+                    pendingData.Write();
                 }
             }
             catch (Exception ex)
@@ -563,61 +538,6 @@ namespace AIHelper.Manage.Functions.InfoEditor
             finally
             {
                 _isWriting = false;
-            }
-        }
-
-        /// <summary>
-        /// Downloads the release the record points at and adds it as a mod.
-        /// <para>
-        /// The lookup and the download are the update engine's; what happens here is
-        /// the ordering the editor needs — resolve the version first, then put the
-        /// files in place, and only then write the record into meta.ini, so that a
-        /// failed download never leaves a mod that claims to be updatable.
-        /// </para>
-        /// </summary>
-        private async Task AddModAsync(GithubUpdateRecord record, GitUpdateInfoData ginfo)
-        {
-            try
-            {
-                using (var engine = new UpdateEngineFactory())
-                {
-                    var probe = new GithubUpdateProbe(engine.GithubSource);
-
-                    var latest = await probe
-                        .FindLatestAsync(record, CancellationToken.None)
-                        .ConfigureAwait(true);
-
-                    if (latest == null || string.IsNullOrWhiteSpace(latest.VersionString))
-                    {
-                        Log(T._("Cant get last version"));
-                        return;
-                    }
-
-                    var targetFolderPath = ginfo.Mod.Path;
-
-                    if (!await probe
-                            .DownloadAndInstallAsync(latest, targetFolderPath, CancellationToken.None)
-                            .ConfigureAwait(true))
-                    {
-                        Log(T._("Cant download file!"));
-                        return;
-                    }
-
-                    ginfo.Mod.MetaIni = new INIFile(Path.Combine(targetFolderPath, "meta.ini"), true);
-
-                    ginfo.Write();
-
-                    Log(T._("Mod succesfully downloaded and added!"));
-
-                    // The mod was successfully downloaded and added: build one new block with
-                    // the entered values and append it to the cache.
-                    AddNewModInfoBlock(ginfo);
-                }
-            }
-            catch (Exception ex)
-            {
-                Log(T._("Error: ") + ex.Message);
-                _log.Error("Failed to download and add the mod. Error:\r\n" + ex);
             }
         }
     }

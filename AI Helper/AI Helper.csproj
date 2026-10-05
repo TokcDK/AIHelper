@@ -277,6 +277,10 @@
     <Compile Include="Manage\Functions\FunctionsForFlpLoader.cs" />
     <Compile Include="Manage\Functions\IFunctionForFlp.cs" />
     <Compile Include="Manage\Functions\InfoEditorForFlp.cs" />
+    <Compile Include="Manage\Functions\InfoEditorForFlp.AddModTab.cs" />
+    <Compile Include="Manage\Functions\InfoEditorModels.cs" />
+    <Compile Include="Manage\Functions\ModInfoBlock.cs" />
+    <Compile Include="Manage\Functions\ModUpdateInfoButtons.cs" />
     <Compile Include="Manage\Functions\ShowReportFromLinksForFlp.cs" />
     <Compile Include="Manage\Functions\UpdaterForFlp.cs" />
     <Compile Include="Manage\Functions\MOModeSwitchForFlp.cs" />
@@ -388,6 +392,8 @@
     <Compile Include="Manage\Update\UpdateEngineFactory.cs" />
     <Compile Include="Manage\Update\UpdateIo.cs" />
     <Compile Include="Manage\Update\GithubUpdateRecord.cs" />
+    <Compile Include="Manage\Update\GithubUrl.cs" />
+    <Compile Include="Manage\Update\MetaIniUpdateRecordWriter.cs" />
     <Compile Include="Manage\Update\UpdateRecordCatalog.cs" />
     <Compile Include="Manage\Update\UpdateRecordParser.cs" />
     <Compile Include="Manage\Update\Updater.cs" />

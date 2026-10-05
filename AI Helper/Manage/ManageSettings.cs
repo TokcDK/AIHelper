@@ -555,7 +555,7 @@ namespace AIHelper.Manage
         /// Beside the settings file rather than under RES. RES is replaced when the
         /// application is updated, and a theme the user made is theirs to keep.
         /// </remarks>
-        internal static string CustomThemesFolder => Path.Combine(ManageSettings.ApplicationStartupPath, "themes");
+        internal static string CustomThemesFolder => Path.Combine(ThemesDir, "Custom");
 
         internal static int GetCurrentGameIndexByFolderName(List<GameBase> listOfGames, string folderName)
         {

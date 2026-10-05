@@ -1,6 +1,6 @@
 ﻿using AIHelper.Manage.Update;
 
-namespace AIHelper.Manage.Functions
+namespace AIHelper.Manage.Functions.InfoEditor
 {
     /// <summary>
     /// A button of one mod info block: what it says, what it explains and where it

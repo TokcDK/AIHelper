@@ -3,7 +3,7 @@ using AIHelper.Data.Modlist;
 using AIHelper.Manage.Update;
 using INIFileMan;
 
-namespace AIHelper.Manage.Functions
+namespace AIHelper.Manage.Functions.InfoEditor
 {
     /// <summary>
     /// One mod shown in the mods update info editor: the mod itself together with the

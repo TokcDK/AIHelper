@@ -276,11 +276,11 @@
     <Compile Include="Manage\Functions\FunctionForFlpBase.cs" />
     <Compile Include="Manage\Functions\FunctionsForFlpLoader.cs" />
     <Compile Include="Manage\Functions\IFunctionForFlp.cs" />
-    <Compile Include="Manage\Functions\InfoEditorForFlp.cs" />
-    <Compile Include="Manage\Functions\InfoEditorForFlp.AddModTab.cs" />
-    <Compile Include="Manage\Functions\InfoEditorModels.cs" />
-    <Compile Include="Manage\Functions\ModInfoBlock.cs" />
-    <Compile Include="Manage\Functions\ModUpdateInfoButtons.cs" />
+    <Compile Include="Manage\Functions\InfoEditor\InfoEditorForFlp.cs" />
+    <Compile Include="Manage\Functions\InfoEditor\InfoEditorForFlp.AddModTab.cs" />
+    <Compile Include="Manage\Functions\InfoEditor\InfoEditorModels.cs" />
+    <Compile Include="Manage\Functions\InfoEditor\ModInfoBlock.cs" />
+    <Compile Include="Manage\Functions\InfoEditor\ModUpdateInfoButtons.cs" />
     <Compile Include="Manage\Functions\ShowReportFromLinksForFlp.cs" />
     <Compile Include="Manage\Functions\UpdaterForFlp.cs" />
     <Compile Include="Manage\Functions\MOModeSwitchForFlp.cs" />

@@ -14,7 +14,7 @@ using AIHelper.Manage.Update.Sources;
 using INIFileMan;
 using NLog;
 
-namespace AIHelper.Manage.Functions
+namespace AIHelper.Manage.Functions.InfoEditor
 {
     /// <summary>
     /// The "mods update info editor" symbol: opens the window in which the github
@@ -455,8 +455,8 @@ namespace AIHelper.Manage.Functions
                 _modInfoBlocks.Add(modInfoBlock);
                 _modsListFlowPanel.Controls.Add(modInfoBlock.Control);
 
-                var blockWidth = modInfoBlock.Control.Width + (modInfoBlock.Control.Margin.Horizontal * 2);
-                var blockHeight = modInfoBlock.Control.Height + (modInfoBlock.Control.Margin.Vertical * 2);
+                var blockWidth = modInfoBlock.Control.Width + modInfoBlock.Control.Margin.Horizontal * 2;
+                var blockHeight = modInfoBlock.Control.Height + modInfoBlock.Control.Margin.Vertical * 2;
                 form.Size = new Size
                     (
                     blockWidth > form.Width ? blockWidth : form.Width

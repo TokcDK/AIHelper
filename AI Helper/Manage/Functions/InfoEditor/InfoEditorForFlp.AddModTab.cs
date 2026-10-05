@@ -7,7 +7,7 @@ using AIHelper.Data.Modlist;
 using AIHelper.Manage.ui.themes;
 using AIHelper.Manage.Update;
 
-namespace AIHelper.Manage.Functions
+namespace AIHelper.Manage.Functions.InfoEditor
 {
     /// <summary>
     /// The "Add" tab of the mod info editor: the form which adds a mod from the url of

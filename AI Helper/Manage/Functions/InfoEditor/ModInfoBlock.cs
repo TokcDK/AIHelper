@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using AIHelper.Manage.Update;
 
-namespace AIHelper.Manage.Functions
+namespace AIHelper.Manage.Functions.InfoEditor
 {
     /// <summary>
     /// The UI block of one mod: its name, one editor per github field and the buttons
@@ -100,8 +100,8 @@ namespace AIHelper.Manage.Functions
         private static Size OccupiedSize(Control control)
         {
             return new Size(
-                control.Width + (control.Margin.Horizontal * 2),
-                control.Height + (control.Margin.Vertical * 2));
+                control.Width + control.Margin.Horizontal * 2,
+                control.Height + control.Margin.Vertical * 2);
         }
 
         /// <summary>

@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AIHelper.Data.Modlist;
+using AIHelper.Manage.ui;
 using AIHelper.Manage.ui.themes;
 using AIHelper.Manage.Update;
 using AIHelper.Manage.Update.Sources;
@@ -33,6 +34,22 @@ namespace AIHelper.Manage.Functions
         public override Color? ForeColor => Color.LightSkyBlue;
 
         public static RichTextBox Logtb { get; set; }
+
+        /// <summary>
+        /// Height of the header row which holds the filter field.
+        /// </summary>
+        const int HeaderRowHeight = 30;
+
+        /// <summary>
+        /// Width of the filter field in the header row.
+        /// </summary>
+        const int FilterBoxWidth = 320;
+
+        /// <summary>
+        /// Narrowest the add-mod tab is laid out at while it has not been shown yet and
+        /// its real width is still unknown.
+        /// </summary>
+        const int MinAddModPanelWidth = 200;
 
         readonly int _elHeight = 13;
 
@@ -94,15 +111,32 @@ namespace AIHelper.Manage.Functions
             _modsListFlowPanel = null;
         }
 
+        /// <summary>
+        /// Makes sure the log box exists, creating it when the previous editor session
+        /// took it down together with its form.
+        /// </summary>
+        /// <remarks>
+        /// The test is for a missing or disposed box rather than for an accessible one. The
+        /// box is a child of the add-mod tab, so it is not accessible while that tab is not
+        /// the selected one, and treating that as "gone" would throw away the log every time
+        /// the user looked at another tab.
+        /// </remarks>
         private static void InitLogTextBox()
         {
-            if (Logtb == null || !Logtb.IsAccessible || Logtb.IsDisposed)
-            {
-                Logtb = new RichTextBox() { ReadOnly = true, Width = 200 };
-            }
+            if (Logtb != null && !Logtb.IsDisposed) return;
+
+            Logtb = new RichTextBox() { ReadOnly = true, Width = 200 };
         }
 
-        static void Log(string v) { Logtb.Text += v + "\r\n"; }
+        /// <summary>
+        /// Appends a line to the log box, creating the box when it is not there yet.
+        /// </summary>
+        static void Log(string v)
+        {
+            InitLogTextBox();
+
+            Logtb.Text += v + "\r\n";
+        }
 
         private static ToolTip CreateToolTip()
         {
@@ -123,6 +157,35 @@ namespace AIHelper.Manage.Functions
             _modInfoBuilds.Clear();
             _updateInfoDatas.Clear();
 
+            var modUpdateInfosForm = CreateEditorForm();
+
+            // Build and cache all mod infos once.
+            LoadGitInfos(modUpdateInfosForm);
+
+            // applied after the infos are built, so the blocks it has to reach exist
+            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, modUpdateInfosForm);
+
+            modUpdateInfosForm.Size = new System.Drawing.Size(modUpdateInfosForm.Width * 2, modUpdateInfosForm.Height * 2);
+
+            // The editor is shown modeless, so its session ends with the form rather than
+            // with this method. The tooltip is not a child of that form and has to be
+            // released explicitly.
+            modUpdateInfosForm.FormClosed += (o, e) => Dispose();
+            modUpdateInfosForm.Show(ManageSettings.MainForm);
+        }
+
+        /// <summary>
+        /// Builds the editor window: a filter row above a tab strip which holds the mod
+        /// list and the add-mod form.
+        /// </summary>
+        /// <remarks>
+        /// The strip is a <see cref="ThemedTabControl"/> rather than a plain
+        /// <see cref="TabControl"/>. A plain strip paints the area behind its headers
+        /// itself and ignores the colour it is given there, so that area kept the system
+        /// colour whatever theme was applied, while the headers sitting on it were themed.
+        /// </remarks>
+        private Form CreateEditorForm()
+        {
             var modUpdateInfosForm = new Form
             {
                 Text = T._("Mods update info settings") + " (" + ManageSettings.CurrentGameDisplayingName + ")",
@@ -139,7 +202,7 @@ namespace AIHelper.Manage.Functions
             modUpdateInfosTableLayoutPanel.RowStyles.Add(new RowStyle
             {
                 SizeType = SizeType.Absolute,
-                Height = 30,
+                Height = HeaderRowHeight,
             });
             modUpdateInfosTableLayoutPanel.RowStyles.Add(new RowStyle
             {
@@ -147,45 +210,82 @@ namespace AIHelper.Manage.Functions
                 Height = 100,
             });
 
-            // Header: filter field which dynamically filters all displayed mod infos.
+            _modsListFlowPanel = CreateModsListPanel();
+
+            modUpdateInfosTableLayoutPanel.Controls.Add(CreateFilterRow(), 0, 0);
+            modUpdateInfosTableLayoutPanel.Controls.Add(CreateContentTabs(), 0, 1);
+            modUpdateInfosForm.Controls.Add(modUpdateInfosTableLayoutPanel);
+
+            return modUpdateInfosForm;
+        }
+
+        /// <summary>
+        /// The scrolling panel every mod info block is added to.
+        /// </summary>
+        private static FlowLayoutPanel CreateModsListPanel()
+        {
+            return new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                AutoScroll = true,
+                Margin = new Padding(0),
+            };
+        }
+
+        /// <summary>
+        /// The header row: the filter field which dynamically filters the displayed mod infos.
+        /// </summary>
+        /// <remarks>
+        /// The row lays its children out in flow order, so neither of them carries an
+        /// anchor: a flow layout ignores one and positions the control itself.
+        /// </remarks>
+        private FlowLayoutPanel CreateFilterRow()
+        {
             var filterFlowLayoutPanel = new FlowLayoutPanel
             {
                 FlowDirection = FlowDirection.LeftToRight,
                 Dock = DockStyle.Fill,
                 Margin = new Padding(0),
             };
+
             var filterLabel = new Label
             {
                 Text = T._("Filter") + ":",
                 AutoSize = true,
-                Anchor = AnchorStyles.Left,
             };
+
             _filterTextBox = new TextBox
             {
-                Width = 320,
-                Anchor = AnchorStyles.Left,
+                Width = FilterBoxWidth,
             };
             _filterTextBox.TextChanged += (o, e) => ApplyFilter();
+
             filterFlowLayoutPanel.Controls.Add(filterLabel);
             filterFlowLayoutPanel.Controls.Add(_filterTextBox);
-            modUpdateInfosTableLayoutPanel.SetRow(filterFlowLayoutPanel, 0);
 
-            // Content: tab control with tab pages instead of the two buttons.
-            var modUpdateInfosTabControl = new TabControl
+            return filterFlowLayoutPanel;
+        }
+
+        /// <summary>
+        /// The content tab strip: the mod list, and the add-mod form built on the first
+        /// visit to its tab.
+        /// </summary>
+        /// <remarks>
+        /// The tab pages carry no visual style setting of their own. The theme turns that
+        /// style off for every page it reaches, because a page which keeps it ignores the
+        /// background colour the theme gives it.
+        /// </remarks>
+        private ThemedTabControl CreateContentTabs()
+        {
+            var modUpdateInfosTabControl = new ThemedTabControl
             {
                 Dock = DockStyle.Fill,
                 Margin = new Padding(0),
             };
 
-            var allModsTabPage = new TabPage { Text = T._("All"), UseVisualStyleBackColor = true };
-            var addModTabPage = new TabPage { Text = T._("Add"), UseVisualStyleBackColor = true };
+            var allModsTabPage = new TabPage { Text = T._("All") };
+            var addModTabPage = new TabPage { Text = T._("Add") };
 
-            _modsListFlowPanel = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Fill,
-                AutoScroll = true,
-                Margin = new Padding(0),
-            };
             allModsTabPage.Controls.Add(_modsListFlowPanel);
 
             modUpdateInfosTabControl.TabPages.Add(allModsTabPage);
@@ -200,23 +300,7 @@ namespace AIHelper.Manage.Functions
                 }
             };
 
-            modUpdateInfosTableLayoutPanel.SetRow(modUpdateInfosTabControl, 1);
-            modUpdateInfosTableLayoutPanel.Controls.Add(filterFlowLayoutPanel);
-            modUpdateInfosTableLayoutPanel.Controls.Add(modUpdateInfosTabControl);
-            modUpdateInfosForm.Controls.Add(modUpdateInfosTableLayoutPanel);
-
-            // Build and cache all mod infos once.
-            LoadGitInfos(modUpdateInfosForm, _modsListFlowPanel);
-
-            modUpdateInfosForm.Size = new System.Drawing.Size(modUpdateInfosForm.Width * 2, modUpdateInfosForm.Height * 2);
-
-            // The editor is shown modeless, so its session ends with the form rather than
-            // with this method. The tooltip is not a child of that form and has to be
-            // released explicitly.
-            modUpdateInfosForm.FormClosed += (o, e) => Dispose();
-            modUpdateInfosForm.Show(ManageSettings.MainForm);
-
-            _isReading = false;
+            return modUpdateInfosTabControl;
         }
 
         private void ApplyFilter()
@@ -264,11 +348,11 @@ namespace AIHelper.Manage.Functions
 
             // Tab page content gets its real width only when the tab is displayed;
             // guard against an uninitialized width so control sizes stay valid.
-            int containerWidth = addModContainer.Width > 200 ? addModContainer.Width : 200;
+            int containerWidth = addModContainer.Width > MinAddModPanelWidth ? addModContainer.Width : MinAddModPanelWidth;
 
             var defaultModDirName = "NewMod";
             var modnamePropData = new NewModPropData(T._("Mod dir name"), defaultModDirName);
-            var urlPropData = new NewModPropData("Url", "https://github.com/Owner/Name");
+            var urlPropData = new NewModPropData(T._("Url"), "https://github.com/Owner/Name");
             var startsWithPropData = new NewModPropData(T._("File starts with"), "");
             var endsWithPropData = new NewModPropData(T._("File ends with"), "");
             var newModDatas = new NewModPropData[]
@@ -290,25 +374,27 @@ namespace AIHelper.Manage.Functions
                     Text = newModData.LabelText + ":",
                     Size = new System.Drawing.Size(150, _elHeight),
                 };
-                var urlTextBox = new TextBox
+                var valueTextBox = new TextBox
                 {
                     Size = new System.Drawing.Size(containerWidth - l.Width - 20, _elHeight),
                     Margin = new Padding(1, 1, 10, 1),
                 };
-                urlTextBox.DataBindings.Add(new Binding(nameof(urlTextBox.Text), newModData, nameof(newModData.TextBoxText), true, DataSourceUpdateMode.OnPropertyChanged));
-                urlTextBox.TextChanged += new System.EventHandler((o, e) =>
+                valueTextBox.DataBindings.Add(new Binding(nameof(valueTextBox.Text), newModData, nameof(newModData.TextBoxText), true, DataSourceUpdateMode.OnPropertyChanged));
+                valueTextBox.TextChanged += new System.EventHandler((o, e) =>
                 {
                     if (addModPanelIsLoading) return;
 
-                    if (newModData.LabelText == urlPropData.LabelText)
+                    // compared by identity rather than by caption: the caption is shown
+                    // text and may be translated, the entry itself is what identifies it
+                    if (ReferenceEquals(newModData, urlPropData))
                     {
                         try
                         {
-                            if (string.IsNullOrWhiteSpace(urlTextBox.Text)) return;
+                            if (string.IsNullOrWhiteSpace(valueTextBox.Text)) return;
                             if (!string.IsNullOrWhiteSpace(modnamePropData.TextBoxText)
                             && modnamePropData.TextBoxText != defaultModDirName) return;
 
-                            var urlGithubMatch = Regex.Match(urlTextBox.Text, @"(^.*https?\:\/\/)?github\.com\/([^\/]+)\/([^\/\? ]+).*$", RegexOptions.IgnoreCase);
+                            var urlGithubMatch = Regex.Match(valueTextBox.Text, @"(^.*https?\:\/\/)?github\.com\/([^\/]+)\/([^\/\? ]+).*$", RegexOptions.IgnoreCase);
                             if (!urlGithubMatch.Success) return;
                             if (urlGithubMatch.Groups.Count != 4) return;
 
@@ -329,17 +415,17 @@ namespace AIHelper.Manage.Functions
                         }
                     }
 
-                    urlTextBox.DataBindings[0].WriteValue();
+                    valueTextBox.DataBindings[0].WriteValue();
                 });
-                newModData.TB = urlTextBox;
+                newModData.TB = valueTextBox;
 
                 propertyFlp.Controls.Add(l);
-                propertyFlp.Controls.Add(urlTextBox);
+                propertyFlp.Controls.Add(valueTextBox);
 
                 var lWidth = l.Width + (l.Margin.Horizontal * 2);
                 var lHeight = l.Height + (l.Margin.Vertical * 2);
-                var tbWidth = urlTextBox.Width + (urlTextBox.Margin.Horizontal * 2);
-                var tbHeight = urlTextBox.Height + (urlTextBox.Margin.Vertical * 2);
+                var tbWidth = valueTextBox.Width + (valueTextBox.Margin.Horizontal * 2);
+                var tbHeight = valueTextBox.Height + (valueTextBox.Margin.Vertical * 2);
                 var ltbWidth = lWidth + tbWidth;
                 var ltbHeight = lHeight + tbHeight;
                 propertyFlp.Size = new System.Drawing.Size(ltbWidth, ltbHeight);
@@ -352,14 +438,13 @@ namespace AIHelper.Manage.Functions
                 Text = T._("Version from file"),
                 Checked = false,
                 Size = new System.Drawing.Size(containerWidth - 20, _elHeight + 5),
-                Anchor = AnchorStyles.Left,
                 TextAlign = ContentAlignment.MiddleLeft,
             };
             modUpdateInfoMainFlp.Controls.Add(verFromFile);
 
             var tryLoadInfo = new Button
             {
-                Text = "Web"
+                Text = T._("Web")
             };
             tryLoadInfo.Click += new EventHandler((o, e) =>
             {
@@ -576,6 +661,30 @@ namespace AIHelper.Manage.Functions
                 gitInfo.VersionFromFile);
         }
 
+        /// <summary>
+        /// Builds one mod info block with the write back muted for the length of the build.
+        /// </summary>
+        /// <remarks>
+        /// Building a block wires its fields to the record, and attaching a binding pushes
+        /// the stored value into the field, which raises the change event and would write
+        /// that value straight back to the ini. Muting the write back is what keeps reading
+        /// a record from looking like the user editing it. The mute lives here, around the
+        /// one call which needs it, so no caller can leave the flag set - which is what it
+        /// used to do, leaving the flag to be cleared by whoever called the loader.
+        /// </remarks>
+        private ModInfoBuild BuildModInfo(UpdateInfoData infoData)
+        {
+            _isReading = true;
+            try
+            {
+                return new ModInfoBuild(infoData, _toolTip, _elHeight, WriteValue);
+            }
+            finally
+            {
+                _isReading = false;
+            }
+        }
+
         private void AddNewModInfoBuild(GitUpdateInfoData ginfo)
         {
             if (_modsListFlowPanel == null) return;
@@ -588,9 +697,7 @@ namespace AIHelper.Manage.Functions
                 ToolTip = _toolTip,
             };
 
-            _isReading = true;
-            var modInfoBuild = new ModInfoBuild(infoData, _toolTip, _elHeight, WriteValue);
-            _isReading = false;
+            var modInfoBuild = BuildModInfo(infoData);
 
             _modInfoBuilds.Add(modInfoBuild);
             _updateInfoDatas.Add(infoData);
@@ -601,7 +708,17 @@ namespace AIHelper.Manage.Functions
             ApplyFilter();
         }
 
-        private void LoadGitInfos(Form f, FlowLayoutPanel modsListFlowPanel)
+        /// <summary>
+        /// Reads the stored github info of every mod and builds its info block.
+        /// </summary>
+        /// <remarks>
+        /// The blocks are added to <see cref="_modsListFlowPanel"/>, which the editor form
+        /// owns, rather than to a panel handed in: it is the one the filter works on and the
+        /// one the added mods are appended to later. The form is only needed to widen it to
+        /// the widest block, and theming it is left to the caller, which does it once the
+        /// blocks exist.
+        /// </remarks>
+        private void LoadGitInfos(Form form)
         {
             // Already read ModInfoBuild instances are cached: do not rebuild them.
             if (_modInfoBuilds.Count > 0)
@@ -611,8 +728,6 @@ namespace AIHelper.Manage.Functions
             }
 
             _toolTip = CreateToolTip();
-
-            _isReading = true;
 
             var mods = new ModlistData();
             var sectionName = ManageSettings.AiMetaIniSectionName;
@@ -675,22 +790,20 @@ namespace AIHelper.Manage.Functions
                     continue;
                 }
 
-                var modInfoBuild = new ModInfoBuild(infoData, _toolTip, _elHeight, WriteValue);
+                var modInfoBuild = BuildModInfo(infoData);
 
                 _modInfoBuilds.Add(modInfoBuild);
                 _updateInfoDatas.Add(infoData);
-                modsListFlowPanel.Controls.Add(modInfoBuild.Control);
+                _modsListFlowPanel.Controls.Add(modInfoBuild.Control);
 
                 var curModFlpWidth = modInfoBuild.Control.Width + (modInfoBuild.Control.Margin.Horizontal * 2);
                 var curModFlpHeight = modInfoBuild.Control.Height + (modInfoBuild.Control.Margin.Vertical * 2);
-                f.Size = new System.Drawing.Size
+                form.Size = new System.Drawing.Size
                     (
-                    curModFlpWidth > f.Width ? curModFlpWidth : f.Width
-                    , curModFlpHeight > f.Height ? curModFlpHeight : f.Height
+                    curModFlpWidth > form.Width ? curModFlpWidth : form.Width
+                    , curModFlpHeight > form.Height ? curModFlpHeight : form.Height
                     );
             }
-
-            ThemesLoader.SetTheme(ManageSettings.CurrentTheme, f);
         }
 
         private void WriteValue(Control cb, UpdateInfoData infoData)
@@ -814,7 +927,7 @@ namespace AIHelper.Manage.Functions
             {
                 var repNameLabel = new Label
                 {
-                    Text = "Github",
+                    Text = T._("Github"),
                     Size = new System.Drawing.Size(100, _elHeight * 3),
                     Margin = new Padding(0),
                 };
@@ -907,7 +1020,7 @@ namespace AIHelper.Manage.Functions
                 }
             }
 
-            private void AddButtons(FlowLayoutPanel currentModFlowPanel)
+            private void AddButtons(FlowLayoutPanel githubDataFlowPanel)
             {
                 var buttonsFlp = new FlowLayoutPanel
                 {
@@ -916,35 +1029,38 @@ namespace AIHelper.Manage.Functions
                     BorderStyle = BorderStyle.Fixed3D,
                 };
 
-                foreach (var buttonData in new IModUpdateInfoButton[2]
+                foreach (var buttonData in new IModUpdateInfoButton[]
                 {
                 new OpenWebPage(),
                 new OpenModDir(),
                 })
                 {
-                    var openWebPageButton = new Button()
+                    // no explicit size: the button measures itself from its caption, and a
+                    // size set on an auto sized button is overwritten on the next layout
+                    var button = new Button()
                     {
                         AutoSize = true,
-                        Size = new System.Drawing.Size(40, _elHeight),
                         Text = buttonData.Text,
                     };
-                    _toolTip.SetToolTip(openWebPageButton, buttonData.Description);
-                    openWebPageButton.Click += (o, e) =>
+                    _toolTip.SetToolTip(button, buttonData.Description);
+                    button.Click += (o, e) =>
                     {
                         Process.Start(buttonData.GetProcessStartTarget(_infoData));
                     };
-                    buttonsFlp.Controls.Add(openWebPageButton);
-
-                    var buttonsFlpWidth = buttonsFlp.Width + (buttonsFlp.Margin.Horizontal * 2);
-                    var buttonsFlpHeight = buttonsFlp.Height + (buttonsFlp.Margin.Vertical * 2);
-                    currentModFlowPanel.Size = new System.Drawing.Size
-                        (
-                        buttonsFlpWidth > currentModFlowPanel.Width ? buttonsFlpWidth : currentModFlowPanel.Width
-                        , currentModFlowPanel.Height + buttonsFlpHeight
-                        );
+                    buttonsFlp.Controls.Add(button);
                 }
 
-                currentModFlowPanel.Controls.Add(buttonsFlp);
+                githubDataFlowPanel.Controls.Add(buttonsFlp);
+
+                // measured once, after every button is in. Growing the panel per button
+                // counted the same row twice and left the block taller than its content.
+                var buttonsFlpWidth = buttonsFlp.Width + (buttonsFlp.Margin.Horizontal * 2);
+                var buttonsFlpHeight = buttonsFlp.Height + (buttonsFlp.Margin.Vertical * 2);
+                githubDataFlowPanel.Size = new System.Drawing.Size
+                    (
+                    buttonsFlpWidth > githubDataFlowPanel.Width ? buttonsFlpWidth : githubDataFlowPanel.Width
+                    , githubDataFlowPanel.Height + buttonsFlpHeight
+                    );
             }
         }
 

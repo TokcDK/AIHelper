@@ -494,6 +494,7 @@
       <Link>.editorconfig</Link>
     </None>
     <None Include="app.manifest" />
+    <None Include="BUILD\RES\theme\custom\theme_20260926_000001.ini" />
     <None Include="postbuild.bat" />
     <None Include="BUILD\MO\DefaultModOrganizer.ini" />
     <None Include="BUILD\RES\locale\ru-RU\LC_MESSAGES\helper.mo" />

@@ -51,8 +51,7 @@ namespace AIHelper.Manage.Functions.InfoEditor
         {
             // Data of another source can never be the same release file, so the comparison
             // is between two github records or it is no match at all.
-            var otherGithub = other as GithubUpdateData;
-            if (otherGithub == null) return false;
+            if (!(other is GithubUpdateData otherGithub)) return false;
 
             return ToRecord().PointsAtSameFileAs(otherGithub.ToRecord());
         }

@@ -75,9 +75,7 @@ namespace AIHelper.Manage.Functions.InfoEditor
             // No record: the url Mod Organizer shows is the other place the coordinates may
             // be. When neither yields them the mod is not one this source can show, and
             // saying so is what keeps a plain note from becoming a mod entry.
-            string owner;
-            string repository;
-            if (!GithubUrl.TryParse(url, out owner, out repository)) return false;
+            if (!GithubUrl.TryParse(url, out string owner, out string repository)) return false;
 
             githubData.Owner = owner;
             githubData.Repository = repository;
@@ -100,8 +98,7 @@ namespace AIHelper.Manage.Functions.InfoEditor
 
         public string GetWebUrl(UpdateSourceData data)
         {
-            var githubData = data as GithubUpdateData;
-            if (githubData == null) return null;
+            if (!(data is GithubUpdateData githubData)) return null;
 
             // The newest release is what a user opening the page of a mod wants to see, and
             // the release list is where the file the record describes lives.
@@ -112,8 +109,7 @@ namespace AIHelper.Manage.Functions.InfoEditor
         public async Task<bool> DownloadAndInstallAsync(UpdateSourceData data, string targetFolderPath,
             Action<string> log, CancellationToken cancellationToken)
         {
-            var githubData = data as GithubUpdateData;
-            if (githubData == null)
+            if (!(data is GithubUpdateData githubData))
             {
                 // Not reachable through the editor, which only ever hands back the data its
                 // own add control built. Reported rather than thrown so that a mistake here

@@ -77,7 +77,7 @@ namespace AIHelper.Manage.Functions.InfoEditor
         /// taken for edits. It belongs to the control rather than to the editor, because the
         /// editor holds one form per source and one form's loading must not mute another's.
         /// </summary>
-        private bool _isLoading;
+        private readonly bool _isLoading;
 
         internal GithubAddModControl(Action<string> log)
             : base(log)
@@ -286,9 +286,7 @@ namespace AIHelper.Manage.Functions.InfoEditor
 
             try
             {
-                string owner;
-                string repository;
-                if (!GithubUrl.TryParse(url, out owner, out repository)) return;
+                if (!GithubUrl.TryParse(url, out string owner, out string repository)) return;
 
                 modDirNameField.Editor.Text = repository;
 

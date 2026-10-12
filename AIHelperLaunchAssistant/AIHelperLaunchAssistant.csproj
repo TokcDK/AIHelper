@@ -3,12 +3,12 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{3F7C1E64-9A2B-4D5E-8C71-0B4D6A9E2F13}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>AIHelperLaunchAssistant</RootNamespace>
     <AssemblyName>aihelper-launch-assistant</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
@@ -23,31 +23,25 @@
     -->
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <!--
-      One platform for every configuration. The tool is a companion to a 64-bit application, and a
-      32-bit build would only add WOW64 to the picture.
+      AnyCPU. Nothing here needs a wider pointer - every handle the tool holds is an IntPtr and every
+      structure it declares is sized by Marshal.SizeOf - so one build serves both solution platforms
+      and the result is not tied to the machine that produced it. Prefer32Bit is off, so it runs as
+      64-bit on a 64-bit system (no WOW64 in the picture) and still runs on a 32-bit one.
     -->
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <!--
-    The tool ships inside the application folder, at RES\tools\aihelper-launch-assistant, so that is
-    where its output is written. Debug and Release share a folder on purpose, exactly as the
-    application's own configurations do, so the copy the application archives is always the one that
-    was built last. AssistantToolsDir can be overridden from the command line.
+    The tool is gathered in the repository's tools folder, beside the solution, instead of being
+    written into a build of the application. postbuild.bat of AI Helper copies it from there into
+    RES\tools of the application's output, which is the folder the application reads it from at run
+    time, so one build of the tool serves every platform and no build of the application has to
+    produce it. Debug and Release share the folder on purpose, exactly as the application's own
+    configurations do, so the copy that gets archived is always the one that was built last.
+    AssistantToolsDir can be overridden from the command line.
   -->
-  <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
-    <AssistantToolsDir Condition=" '$(AssistantToolsDir)' == '' ">$(MSBuildProjectDirectory)\..\AI Helper\bin\AIHelper\RES\tools\aihelper-launch-assistant</AssistantToolsDir>
-  </PropertyGroup>
-  <!--
-    The AnyCPU configurations of AI Helper deploy straight into the game folder instead of into bin,
-    so the tool follows them there. This has to stay in step with OutputPath in AI Helper.csproj: the
-    tool has to end up in the RES folder of the application that starts it, because that is where the
-    application looks for it.
-  -->
-  <PropertyGroup Condition=" '$(Platform)' != 'x64' ">
-    <AssistantToolsDir Condition=" '$(AssistantToolsDir)' == '' ">L:\illusion\Organized ModPack\RES\tools\aihelper-launch-assistant</AssistantToolsDir>
-  </PropertyGroup>
   <PropertyGroup>
+    <AssistantToolsDir Condition=" '$(AssistantToolsDir)' == '' ">$(MSBuildProjectDirectory)\..\tools\aihelper-launch-assistant</AssistantToolsDir>
     <OutputPath>$(AssistantToolsDir)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
@@ -62,12 +56,6 @@
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <OutputPath>..\tools\aihelper-launch-assistant\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>..\tools\aihelper-launch-assistant\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <!--

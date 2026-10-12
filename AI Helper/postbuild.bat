@@ -22,7 +22,9 @@
 ::    1. reads and validates the arguments
 ::    2. moves the referenced libraries out of the app root into RES\lib
 ::    3. mirrors the static BUILD\RES content next to the freshly built exe
-::    4. in Release only, builds a symlinked RELEASE skeleton and archives it
+::    4. copies the tools from the repository's tools folder into RES\tools of
+::       the output, which is where the application reads them from
+::    5. in Release only, builds a symlinked RELEASE skeleton and archives it
 ::
 ::  Delayed expansion is enabled because several variables are both set and read
 ::  inside the same parenthesised block.
@@ -122,7 +124,29 @@ if exist "%projectResLocaleDir%" (
 	robocopy "%projectResLocaleDir% " "%targetResLocaleDir%\ " *.po *.mo /MIR /COPYALL /B /R:3 /W:1
 )
 
-:: ---- 5. Release packaging, Release configuration only ----------------------
+:: ---- 5. Tools from the repository's tools folder ---------------------------
+:: The tools are built and gathered in <repo>\tools, outside the application's
+:: output, so that a build of the application does not have to be what produces
+:: them and one build of a tool serves every platform. They still have to end up
+:: in RES\tools of the output: that is the folder the application reads them from
+:: at run time, and it is what the Release step below links into the skeleton.
+:: Each block is skipped when its source is missing, so a checkout that has never
+:: built a tool still builds.
+
+set projectToolsDir=%projectDir%\..\tools
+set targetToolsDir=%targetResDir%\tools
+set kkManagerFolderName=kkmanager
+if exist "%projectToolsDir%\!kkManagerFolderName!\" (
+	echo copy kkmanager tool..
+	robocopy "%projectToolsDir%\!kkManagerFolderName!\ " "%targetToolsDir%\!kkManagerFolderName!\ " *.* /MIR /COPYALL /B /R:3 /W:1
+)
+set launchAssistantFolderName=aihelper-launch-assistant
+if exist "%projectToolsDir%\!launchAssistantFolderName!\" (
+	echo copy the launch tool..
+	robocopy "%projectToolsDir%\!launchAssistantFolderName!\ " "%targetToolsDir%\!launchAssistantFolderName!\ " *.* /MIR /COPYALL /B /R:3 /W:1
+)
+
+:: ---- 6. Release packaging, Release configuration only ----------------------
 :: release creation
 set releasesDirPath=%targetDir%RELEASES
 if not exist "%releasesDirPath%" md "%releasesDirPath%"
@@ -229,6 +253,6 @@ if "%configurationName%" == "Release" (
 	!archiveAppRun!
 )
 
-:: ---- 6. Done ---------------------------------------------------------------
+:: ---- 7. Done ---------------------------------------------------------------
 :exit
 echo postbuild script finished!

@@ -29,7 +29,6 @@
     <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-
   <!--
     The tool ships inside the application folder, at RES\tools\aihelper-launch-assistant, so that is
     where its output is written. Debug and Release share a folder on purpose, exactly as the
@@ -52,7 +51,6 @@
     <OutputPath>$(AssistantToolsDir)\</OutputPath>
     <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
-
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -65,7 +63,6 @@
     <Optimize>true</Optimize>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
-
   <ItemGroup>
     <!--
       The base class library and nothing else. No WinForms, no System.Drawing, no logging framework:
@@ -74,7 +71,6 @@
     -->
     <Reference Include="System" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Include="ApplicationInfo.cs" />
     <Compile Include="AssistantOutcome.cs" />
@@ -98,7 +94,6 @@
     <Compile Include="Win32.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <!--
       The command line format, shared with AI Helper. AI Helper writes the line this tool is started
@@ -110,14 +105,11 @@
       <Link>Shared\ArgumentQuoting.cs</Link>
     </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Include="aihelper-launch-assistant.ico" />
   </ItemGroup>
-
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -163,12 +163,37 @@ if "%configurationName%" == "Release" (
 
 		MKLINK "%targetReleaseResDir%\%reportDirSubPath%" "%targetReportDir%" /D
 	)
+	:: Tools. The parent directory is made once, before either of the tools below is linked. It
+	:: used to be made inside the KKManager branch, so the skeleton's RES\tools existed only when
+	:: KKManager happened to be linked, and the tool added below had nowhere to be linked into.
+	set toolsSubPath=tools
+	if not exist "%targetReleaseResDir%\!toolsSubPath!" (
+		echo make tools dir
+		MD "%targetReleaseResDir%\!toolsSubPath!"
+	)
+
 	:: KKManager updater tool.
 	set kkManSubpath=tools\kkmanager
 	if not exist "%targetReleaseDir%\!kkManSubpath!" (
 		echo make link for kkman
-		MD "%targetReleaseResDir%\tools"
 		MKLINK "%targetReleaseResDir%\!kkManSubpath!" "%targetResDir%\!kkManSubpath!" /D
+	)
+
+	:: The launch tool, which the application starts instead of staying in memory for the whole of
+	:: a game session. Linked only when it was built: a build of the application alone leaves it out,
+	:: and the application falls back to starting the game itself.
+	set launchAssistantSubpath=tools\aihelper-launch-assistant
+	if not exist "%targetReleaseDir%\!launchAssistantSubpath!" (
+		if exist "%targetResDir%\!launchAssistantSubpath!\" (
+			echo make link for the launch tool
+			MKLINK "%targetReleaseResDir%\!launchAssistantSubpath!" "%targetResDir%\!launchAssistantSubpath!" /D
+
+			:: Its symbols and the log it writes while it runs are the build machine's leftovers and
+			:: have no business in a release. The tool's own build removes the symbols in Release, but
+			:: the last build of it is not necessarily the one that produced this folder.
+			if exist "%targetResDir%\!launchAssistantSubpath!\*.pdb" Del "%targetResDir%\!launchAssistantSubpath!\*.pdb"
+			if exist "%targetResDir%\!launchAssistantSubpath!\*.log" Del "%targetResDir%\!launchAssistantSubpath!\*.log"
+		)
 	)
 	:: The application executable itself.
 	if not exist "%targetReleaseDir%\%targetName%.exe" (

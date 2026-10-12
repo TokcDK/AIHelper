@@ -14,11 +14,22 @@ namespace AIHelper
         internal static readonly string AppName = ManageSettings.ApplicationProductName = Application.ProductName;
 
         /// <summary>
+        /// How this instance of the application was started, read once at the start.
+        /// </summary>
+        /// <remarks>
+        /// Set before anything else runs, so that whatever reads it later - the start of the main
+        /// window in particular - sees the command line rather than the empty default.
+        /// </remarks>
+        internal static StartupOptions Startup { get; private set; } = StartupOptions.Empty;
+
+        /// <summary>
         /// Главная точка входа для приложения.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
+            Startup = StartupOptions.Parse(args);
+
             using (Mutex mutex = new Mutex(true, AppName, out bool createdNew))
             {
                 if (createdNew)

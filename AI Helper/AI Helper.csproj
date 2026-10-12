@@ -154,9 +154,11 @@
     </Compile>
     <Compile Include="Manage\Functions\BindMOProfileToExe\BindMOProfileToExeForFlp.cs" />
     <Compile Include="Manage\Logging\InstallLogTarget.cs" />
+    <Compile Include="Manage\ManageLaunchAssistant.cs" />
     <Compile Include="Manage\ManageMath.cs" />
     <Compile Include="Manage\ManageModlistExtensions.cs" />
     <Compile Include="Manage\ManageTabs.cs" />
+    <Compile Include="Manage\StartupOptions.cs" />
     <Compile Include="Forms\Other\CleanOptionsDialogForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -518,6 +520,18 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <!--
+      The command line format, shared with aihelper-launch-assistant. This application writes the
+      line the tool is started with, the tool writes the line this application is started with, and
+      each of them takes the other's apart, so every one of them has to apply exactly the same
+      quoting rules - see the remarks on the file itself. Linked rather than copied: it is one
+      format, and a second copy would be free to drift from the first.
+    -->
+    <Compile Include="..\Shared\ArgumentQuoting.cs">
+      <Link>Utils\ArgumentQuoting.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -174,6 +174,8 @@ namespace AIHelper
                 ManageSettings.Games.Game.GameName = ManageModOrganizer.GetMoBasicGamePluginGameName();
             }
 
+            RestoreMoProfileFromPreviousSession();
+
             CleanLog();
 
             ManageSettings.Games.Game.InitActions();
@@ -183,6 +185,22 @@ namespace AIHelper
             UpdateData();
 
             ManageSettings.INITDone = true;
+        }
+
+        /// <summary>
+        /// Puts Mod Organizer back on the profile the previous session was working in.
+        /// </summary>
+        /// <remarks>
+        /// Only ever set when this application was started by aihelper-launch-assistant, which is what
+        /// happens when a game that tool launched has ended: the launch switched Mod Organizer to the
+        /// profile of the game, and the application was closed for the whole session, so the profile
+        /// the user was working in comes back with this start. Applied here rather than earlier
+        /// because the restore needs the mode to be known and Mod Organizer to be installed, and both
+        /// are settled by the time this runs.
+        /// </remarks>
+        private static void RestoreMoProfileFromPreviousSession()
+        {
+            ManageProcess.RestoreMoProfile(Program.Startup.RestoreMoProfileName);
         }
 
         /// <summary>

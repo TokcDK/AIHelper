@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using AIHelper.Forms.Other;
 using AIHelper.Manage.ui.themes;
 using AIHelper.Manage.Update.Providers;
+using AIHelper.Manage.Update.SelfUpdate;
 using ModUpdater.Core.Application;
 using ModUpdater.Core.Domain;
 using ModUpdater.Core.Infrastructure.Sources;
@@ -247,16 +247,7 @@ namespace AIHelper.Manage.Update
 
             foreach (var folder in folders)
             {
-                var isModOrganizer = folder.Kind == UpdatableFolderKind.ModOrganizer;
-
-                // Mod Organizer is read from its own executable rather than from a
-                // record, because that is the only place its version is written. The
-                // application's version is read from a program file as well, but by the
-                // version store, which has to answer again on every check - see
-                // ApplicationVersionProvider.
-                var currentVersion = isModOrganizer ? ReadModOrganizerVersion() : null;
-
-                var binding = new SourceBinding(source, folder.Record.ToSourceConfig(currentVersion));
+                var binding = new SourceBinding(source, folder.Record.ToSourceConfig(DeclaredVersionOf(folder)));
 
                 targets.Add(new UpdateTarget(
                     // The folder path doubles as the id: the engine keys its per
@@ -308,6 +299,42 @@ namespace AIHelper.Manage.Update
         }
 
         /// <summary>
+        /// Version already installed, as the folder's record has to declare it.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// A mod declares nothing here: its version is read from its own meta.ini by the version
+        /// store, which is also what writes it back after an update. The two folders that are not
+        /// mods have no meta.ini, so their version is read from the program file that carries it -
+        /// Mod Organizer's executable, and this application's own - and declared with the record
+        /// instead.
+        /// </para>
+        /// <para>
+        /// Declaring it is what lets the update window show the version before the first check,
+        /// and after a check that found nothing: with no candidate to carry it, the row falls back
+        /// to the version the record declares, and a record that declares the "version not set"
+        /// default shows the target as undetermined. See also
+        /// <see cref="Versioning.ApplicationVersionProvider"/>, which answers the same question
+        /// again on every check, so that a release already waiting in the payload folder is not
+        /// offered a second time in the same session.
+        /// </para>
+        /// </remarks>
+        private static string DeclaredVersionOf(UpdatableFolder folder)
+        {
+            switch (folder.Kind)
+            {
+                case UpdatableFolderKind.ModOrganizer:
+                    return ReadModOrganizerVersion();
+
+                case UpdatableFolderKind.Application:
+                    return ApplicationVersion.ReadInstalled();
+
+                default:
+                    return null;
+            }
+        }
+
+        /// <summary>
         /// Version of the installed Mod Organizer, read from its executable. The
         /// engine compares it with the release tag, so it has to be the real version
         /// and not something out of a config file.
@@ -315,25 +342,9 @@ namespace AIHelper.Manage.Update
         /// <returns>The version, or null when Mod Organizer is not installed.</returns>
         private static string ReadModOrganizerVersion()
         {
-            var modOrganizerExePath = ManageSettings.AppMOexePath;
-
-            try
-            {
-                if (!File.Exists(modOrganizerExePath)) return null;
-
-                var versionInfo = FileVersionInfo.GetVersionInfo(modOrganizerExePath);
-
-                // ProductVersion is null when the resource is missing, and FileVersion
-                // is not filled in by every build either.
-                return !string.IsNullOrWhiteSpace(versionInfo.ProductVersion)
-                    ? versionInfo.ProductVersion
-                    : versionInfo.FileVersion;
-            }
-            catch (Exception ex)
-            {
-                _log.Warn(ex, "Update: failed to read the version of '" + modOrganizerExePath + "'.");
-                return null;
-            }
+            // The reader the application's own version goes through as well: which field of a
+            // version resource wins is one rule, and it is kept in one place.
+            return ApplicationVersion.ReadFromFile(ManageSettings.AppMOexePath);
         }
 
         #endregion

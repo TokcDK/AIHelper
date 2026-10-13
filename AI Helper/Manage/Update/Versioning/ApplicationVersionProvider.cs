@@ -14,10 +14,19 @@ namespace AIHelper.Manage.Update.Versioning
     /// <remarks>
     /// <para>
     /// The application is asked about in the same way as a mod, and answered differently,
-    /// because there is no file of its own to keep a version in. What is read is the version of
-    /// the program that the next start will run - the waiting update when there is one, the
-    /// running program otherwise - so that a session which has already downloaded a release
-    /// does not offer the same release again.
+    /// because there is no file of its own to keep a version in. What is read is the newer of the
+    /// two program files that can carry it - the waiting update and the running program - so
+    /// that a session which has already downloaded a release does not offer the same release
+    /// again. See <see cref="ApplicationVersion.ReadInstalled"/>.
+    /// </para>
+    /// <para>
+    /// The same version is also declared with the target's record by the pass itself
+    /// (<c>Updater.DeclaredVersionOf</c>), and the two are not a duplication to be collapsed:
+    /// the record is read once, when the pass is built, and is what the update window shows
+    /// before the first check and after a check that found nothing; this store is asked again on
+    /// every check, which is the only way a release unpacked into the payload folder *during*
+    /// the session stops being offered. The engine takes the newer of the two answers, so they
+    /// can only ever agree.
     /// </para>
     /// <para>
     /// The version is not written back after an install. There is nowhere to write it: the

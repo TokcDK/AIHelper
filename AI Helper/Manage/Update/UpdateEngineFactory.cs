@@ -95,7 +95,10 @@ namespace AIHelper.Manage.Update
             var appUpdatePath = SelfUpdatePaths.PendingUpdateDirectory;
 
             // A mod keeps its version in its own meta.ini; the two targets that are not mods
-            // have no meta.ini, and the application answers from its program file instead.
+            // have no meta.ini, and the application answers from its program file instead. Its
+            // version is also declared with the record by the pass, which is what the update
+            // window shows before the first check - see ApplicationVersionProvider for why the
+            // two are both there and cannot disagree.
             var versionProvider = new ApplicationVersionProvider(
                 new MetaIniVersionProvider(_nonModFolderPaths), appUpdatePath);
 

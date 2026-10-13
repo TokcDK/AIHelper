@@ -16,11 +16,11 @@ namespace AIHelper.Manage.Update.SelfUpdate
     /// which version is installed.
     /// </para>
     /// <para>
-    /// Two files are asked, and which one depends on why the question is being asked. The check
-    /// asks about the pending update when there is one, because that is what the user will be
-    /// running the next time this application starts: without that, every check would see the
-    /// running copy as old and download the same release again. Everything else asks about the
-    /// running program.
+    /// Two files are asked, and which answer is used depends on why the question is being asked.
+    /// The check asks for the newer of the two, because that is what the user will be running
+    /// the next time this application starts: without the waiting update being counted, every
+    /// check would see the running copy as old and download the same release again. Everything
+    /// else asks about the running program alone.
     /// </para>
     /// </remarks>
     internal static class ApplicationVersion
@@ -28,15 +28,31 @@ namespace AIHelper.Manage.Update.SelfUpdate
         static readonly Logger _log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
-        /// Version to compare releases against: the pending update when one is waiting, the
-        /// running program otherwise.
+        /// Version to compare releases against: the newer of the update waiting to be applied
+        /// and the program this process is running.
         /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Both files are asked and the newer answer wins, rather than the waiting update being
+        /// preferred because it is waiting. The folder outlives the session that made it, so the
+        /// two can be in either order: an application updated by other means in the meantime
+        /// runs a version that folder does not hold, and answering with the folder's would offer
+        /// the newer version that is already installed again for ever.
+        /// </para>
+        /// <para>
+        /// A version that cannot be read from one of the two is answered with the other, and with
+        /// null only when neither can be read.
+        /// </para>
+        /// </remarks>
         internal static string ReadInstalled()
         {
+            var runningVersion = ReadFromFile(System.Windows.Forms.Application.ExecutablePath);
             var pendingVersion = ReadFromFile(SelfUpdatePaths.PendingApplicationExecutablePath);
-            if (!string.IsNullOrWhiteSpace(pendingVersion)) return pendingVersion;
 
-            return ReadFromFile(System.Windows.Forms.Application.ExecutablePath);
+            if (string.IsNullOrWhiteSpace(pendingVersion)) return runningVersion;
+            if (string.IsNullOrWhiteSpace(runningVersion)) return pendingVersion;
+
+            return UpdateTools.IsNewerOf(pendingVersion, runningVersion) ? pendingVersion : runningVersion;
         }
 
         /// <summary>

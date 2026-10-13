@@ -848,15 +848,24 @@
          Release  the version of the previous build's exe is read. It continues
                   while that build was made today, and restarts at 1 as soon as
                   the day, month or year part changes (25.11.3.4 on the 3rd,
-                  then 25.11.4.1 on the 4th). No exe means there is nothing to
-                  continue from, so the first release in an empty output folder
-                  also starts at <today>.1.
+                  then 25.11.4.1 on the 4th).
          Debug    the version found in the output folder is used as it stands, so
                   a debug build reports the last release and repeated debug
-                  builds stay identical. Nothing is written, so a debug build can
-                  never move the counter on. With no exe yet it falls back to
-                  0.0.0.0 rather than today's date, so it cannot seed a release
-                  number either.
+                  builds stay identical. Nothing is written, so a debug build
+                  never moves the counter on.
+
+       "Nothing to continue from" means the same thing in both configurations,
+       and there are three ways to be in it: no exe in the output folder at all,
+       an exe that reports 0.0.0.0 - which is what an earlier build left behind
+       when it had nothing to continue from either - or an exe whose version
+       cannot be read. Each of them falls back to <today>.1, so a debug build in
+       an empty folder is dated like a first release instead of claiming
+       0.0.0.0. The consequence to know about: that debug build leaves <today>.1
+       in the output folder, and because Debug|x64 and Release|x64 share one
+       OutputPath, the day's first real release then continues from it and comes
+       out as <today>.2, leaving 1 unreleased. That is a gap in the sequence,
+       never a reused number, which is the same trade the counter makes
+       everywhere else.
 
        The counter lives in the exe, so anything that deletes the exe restarts
        the day: "Clean" and "Rebuild" remove it, and the next build then starts
@@ -934,13 +943,20 @@
                     Log.LogError("AppVersion: could not read the version of '" + PreviousFile + "': " + inner.Message);
                 }
             }
+        }
 
-            // An exe that carries no version is not something to guess at: continuing from a made
-            // up number could reissue a version that has already been released.
-            if (previous.Length == 0 && !Log.HasLoggedErrors)
-            {
-                Log.LogError("AppVersion: '" + PreviousFile + "' exists but carries no version. Delete it and build again.");
-            }
+        // The previous version counts only if it is a real version that is not all zeroes. 0.0.0.0
+        // is what an earlier build left behind when it too had nothing to continue from, so it is a
+        // hole rather than a version, and a malformed one is no better. Reading either as "nothing
+        // to continue from" is what stops 0.0.0.0 from sticking to every later build in this folder.
+        Version seen = null;
+        var usable = previous.Length > 0
+            && System.Version.TryParse(previous, out seen)
+            && !(seen.Major == 0 && seen.Minor == 0 && seen.Build <= 0 && seen.Revision <= 0);
+        if (!usable && File.Exists(PreviousFile) && !Log.HasLoggedErrors)
+        {
+            Log.LogMessage(MessageImportance.High, "AppVersion: '" + PreviousFile + "' carries no usable version ('"
+                + previous + "'); dating this build instead of continuing from it.");
         }
 
         if (IsReleaseBuild)
@@ -950,7 +966,7 @@
             // makes the day, month and year boundaries all restart the counter, and the trailing
             // dot is what stops 25.1.3 from matching 25.11.3.7.
             var releaseNumber = 1;
-            if (previous.StartsWith(prefix, StringComparison.Ordinal))
+            if (usable && previous.StartsWith(prefix, StringComparison.Ordinal))
             {
                 var continued = 0;
                 if (int.TryParse(previous.Substring(prefix.Length), NumberStyles.Integer, CultureInfo.InvariantCulture, out continued)
@@ -967,13 +983,17 @@
 
             AppVersion = prefix + releaseNumber.ToString(CultureInfo.InvariantCulture);
         }
-        else
+        else if (usable)
         {
             // A debug build never moves the counter on: it reports the version already in the
             // output folder, which is the last release, so repeated debug builds stay identical.
-            // With no exe there is no release to report, and 0.0.0.0 is used rather than today's
-            // date so that a debug build cannot seed a release number either.
-            AppVersion = previous.Length > 0 ? previous : "0.0.0.0";
+            AppVersion = previous;
+        }
+        else
+        {
+            // Nothing to report yet, so be dated like the first release of the day rather than
+            // claiming 0.0.0.0, which is what an unbuilt output folder used to produce.
+            AppVersion = prefix + "1";
         }
 
         // The assembly metadata is read back as a System.Version, which drops leading zeroes and

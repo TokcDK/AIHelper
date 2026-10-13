@@ -13,9 +13,12 @@
 # the update has been applied, so only name what the release really replaces; to keep a folder,
 # exclude it with '!'.
 
-# The application itself. Its RES folder is where the release keeps the libraries, the
-# localization catalogues, the report templates, the web link definitions and the bundled tools.
+# The application itself, and the config file beside it - which carries its binding redirects,
+# its RES\lib probing path, its NLog target and its settings defaults. Its RES folder is where
+# the release keeps the libraries, the localization catalogues, the report templates, the web
+# link definitions and the bundled tools.
 AI Helper.exe
+AI Helper.exe.config
 RES
 
 # The game plugins Mod Organizer loads, which the release ships as well.

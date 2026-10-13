@@ -19,13 +19,14 @@
 ::  The csproj maps arg1-arg5 to TargetDir, TargetName, ProjectDir,
 ::  VersionNumber and ConfigurationName.
 ::
-::  What this script does:
+::  What this script does, in the order of the numbered steps below:
 ::    1. reads and validates the arguments
-::    2. moves the referenced libraries out of the app root into RES\lib
-::    3. mirrors the static BUILD\RES content next to the freshly built exe
-::    4. copies the tools from the repository's tools folder into RES\tools of
+::    2. derives the source and destination roots
+::    3. moves the referenced libraries out of the app root into RES\lib
+::    4. mirrors the static BUILD\RES content next to the freshly built exe
+::    5. copies the tools from the repository's tools folder into RES\tools of
 ::       the output, which is where the application reads them from
-::    5. in Release only, builds a symlinked RELEASE skeleton and archives it
+::    6. in Release only, copies the payload into RELEASE and archives it
 ::
 ::  Delayed expansion is enabled because several variables are both set and read
 ::  inside the same parenthesised block.
@@ -99,7 +100,7 @@ set targetReportDir=%targetResDir%\%reportDirSubPath%
 set targetReportTemplatePath=%targetReportDir%\%reportTemplateFileName%
 if exist "%projectReportTemplatePath%" (
 	echo copy report templates and game backgrounds..
-	:: copy the report template and any game backgrounds beside it, mirroring the subtree so that any missing backgrounds are removed from the output.
+	rem copy the report template and any game backgrounds beside it, mirroring the subtree so that any missing backgrounds are removed from the output.
 	robocopy "%projectReportDir% " "%targetReportDir%\ " *.html *.jpg /MIR /COPYALL /B /R:3 /W:1
 )
 set themeCustomSubPath=%themeRootSubPath%\custom
@@ -107,7 +108,7 @@ set themeCustomProjectSubPath=%projectResDir%\%themeCustomSubPath%
 :: 4b. Custom themes, if any exist.
 if exist "%themeCustomProjectSubPath%\" (
 	echo copy custom themes..
-	:: copy the custom theme .ini files
+	rem copy the custom theme .ini files
 	robocopy "%themeCustomProjectSubPath% " "%targetResDir%\%themeCustomSubPath%\ " *.ini /COPYALL /B /R:3 /W:1
 )
 :: 4c. Web link definitions consumed by the links UI.
@@ -147,9 +148,12 @@ if exist "%projectToolsDir%\!launchAssistantFolderName!\" (
 	echo copy the launch tool..
 	robocopy "%projectToolsDir%\!launchAssistantFolderName!\ " "%targetToolsDir%\!launchAssistantFolderName!\ " *.* /MIR /COPYALL /B /R:3 /W:1
 
-	:: The log the tool writes while it runs belongs where it runs and not in a build output. A copy
-	:: mirrored in from the repository's tools folder is this machine's leftover from having run the
-	:: tool there, and the tool writes a fresh one beside itself wherever it is deployed.
+	rem A release ships programs and not the symbols they were built from, nor the log a tool writes
+	rem while it runs. The log belongs where it runs and not in a build output - a copy mirrored in
+	rem from the repository's tools folder is this machine's leftover from having run the tool there -
+	rem and the program database is for whoever debugs the tool where it is built. Both exclusions
+	rem are made for both tools, because the release block below ships the two the same way.
+	if exist "%targetToolsDir%\!launchAssistantFolderName!\*.pdb" Del "%targetToolsDir%\!launchAssistantFolderName!\*.pdb"
 	if exist "%targetToolsDir%\!launchAssistantFolderName!\*.log" Del "%targetToolsDir%\!launchAssistantFolderName!\*.log"
 )
 set updaterFolderName=aihelper-updater
@@ -157,9 +161,9 @@ if exist "%projectToolsDir%\!updaterFolderName!\" (
 	echo copy the updater tool..
 	robocopy "%projectToolsDir%\!updaterFolderName!\ " "%targetToolsDir%\!updaterFolderName!\ " *.* /MIR /COPYALL /B /R:3 /W:1
 
-	:: A release ships programs and not the symbols they were built from. The program database is
-	:: for whoever debugs the tool where it is built, and nothing that ships reads it.
+	rem The same two exclusions as the launch tool above.
 	if exist "%targetToolsDir%\!updaterFolderName!\*.pdb" Del "%targetToolsDir%\!updaterFolderName!\*.pdb"
+	if exist "%targetToolsDir%\!updaterFolderName!\*.log" Del "%targetToolsDir%\!updaterFolderName!\*.log"
 )
 
 :: ---- 6. Release packaging, Release configuration only ----------------------
@@ -172,113 +176,106 @@ set targetReleaseResDir=%targetReleaseDir%\RES
 if "%configurationName%" == "Release" (
 	echo Release creation..
 
-	:: recreate release dir
+	rem recreate release dir
 	if exist "%targetReleaseDir%" rd "%targetReleaseDir%" /s /q
 	md "%targetReleaseDir%"
 	md "%targetReleaseResDir%"
 
-	:: Build the RELEASE skeleton out of symlinks pointing back into the normal
-	:: build output, so the archive step picks up the real single copy of each
-	:: payload instead of duplicating it.
-	::make symlinks for dirs and files
-	set targetReleaseBasicGamesPluginsDir=%targetReleaseDir%\%modOrganizerBasicGamesPluginsDirSubPath%
-	:: Mod Organizer basic_games plugins. The parent dir must exist first.
-	if not exist "!targetReleaseBasicGamesPluginsDir!" (
-		echo make link for basic games plugins dir
-		:: make parent dir
-		md "%targetReleaseDir%\%moBasicGamesSubPath%"
+	rem The release folder is a real copy of the payload and not a skeleton of symlinks. It used to
+	rem be built out of MKLINK /D links pointing back into the build output, which kept one copy of
+	rem every file on disk - but a link is not a file. An archiver that stores the links instead of
+	rem following them packs a release of broken entries: Compress-Archive does, and 7-Zip only
+	rem happens to follow them. Creating the links also needs a privilege a normal build does not
+	rem have - Developer Mode or an elevated prompt - and copying needs none. It costs space in a
+	rem folder the next build deletes, and it is what makes the release self-contained and the
+	rem archive trustworthy.
+	rem Note for anyone editing these comments: a closing parenthesis in one of them closes this
+	rem block early and cmd aborts the whole batch with "was unexpected at this time". Keep the
+	rem comments inside a block free of parentheses.
 
-		MKLINK "!targetReleaseBasicGamesPluginsDir!" "%targetBasicGamesPluginsDir%" /D
-	)
-	:: Localization catalogues.
-	if not exist "%targetReleaseResDir%\locale" (
-		echo make link for locale dir
-		MKLINK "%targetReleaseResDir%\locale" "%targetResLocaleDir%" /D
-	)
-	:: Report template and game backgrounds.
-	if not exist "%targetReleaseResDir%\%reportDirSubPath%" (
-		echo make link for report dir
-		:: make parent dir
-		md "%targetReleaseResDir%\%themeDefaultSubPath%"
-
-		MKLINK "%targetReleaseResDir%\%reportDirSubPath%" "%targetReportDir%" /D
-	)
-	:: Tools. The parent directory is made once, before either of the tools below is linked. It
-	:: used to be made inside the KKManager branch, so the skeleton's RES\tools existed only when
-	:: KKManager happened to be linked, and the tool added below had nowhere to be linked into.
-	set toolsSubPath=tools
-	if not exist "%targetReleaseResDir%\!toolsSubPath!" (
-		echo make tools dir
-		MD "%targetReleaseResDir%\!toolsSubPath!"
+	rem The application, and the config file that carries its binding redirects, its RES\lib probing
+	rem path, its NLog target and its settings defaults. It is not optional: a release that leaves it
+	rem out logs nothing at all, because the log target is a section of this file.
+	echo copy the app exe and its config..
+	copy /Y "%targetDir%\%targetName%.exe" "%targetReleaseDir%\%targetName%.exe" >nul
+	if exist "%targetDir%\%targetName%.exe.config" (
+		copy /Y "%targetDir%\%targetName%.exe.config" "%targetReleaseDir%\%targetName%.exe.config" >nul
 	)
 
-	:: KKManager updater tool.
-	set kkManSubpath=tools\kkmanager
-	if not exist "%targetReleaseDir%\!kkManSubpath!" (
-		echo make link for kkman
-		MKLINK "%targetReleaseResDir%\!kkManSubpath!" "%targetResDir%\!kkManSubpath!" /D
+	rem RES, one subtree at a time, exactly as step 4 mirrored it into the output - which is what the
+	rem application reads at run time. The subtrees are listed here rather than derived, and that list
+	rem is why the web link definitions and the shipped custom theme used to reach the output and never
+	rem the release; anything added to BUILD\RES from now on has to be added here too.
+	rem A release ships programs and not the symbols they were built from, so RES\lib loses its program
+	rem databases and XML documentation files and RES\tools its program databases and the log a tool
+	rem leaves on the machine that ran it. This is also where those files stop being deleted from the
+	rem build output: the old code deleted them *through* the link, so a Release build stripped the
+	rem symbols out of RES\lib of the very folder a debug session reads them from.
+	echo copy libs to the release..
+	robocopy "%targetLibDir% " "%targetReleaseResDir%\lib\ " *.* /MIR /COPYALL /B /R:3 /W:1 /XF *.pdb *.xml
+
+	if exist "%targetResLocaleDir%\" (
+		echo copy localization files to the release..
+		robocopy "%targetResLocaleDir% " "%targetReleaseResDir%\locale\ " *.* /MIR /COPYALL /B /R:3 /W:1
 	)
 
-	:: The launch tool, which the application starts instead of staying in memory for the whole of
-	:: a game session. Linked only when it was built: a build of the application alone leaves it out,
-	:: and the application falls back to starting the game itself.
-	set launchAssistantSubpath=tools\aihelper-launch-assistant
-	if not exist "%targetReleaseDir%\!launchAssistantSubpath!" (
-		if exist "%targetResDir%\!launchAssistantSubpath!\" (
-			echo make link for the launch tool
-			MKLINK "%targetReleaseResDir%\!launchAssistantSubpath!" "%targetResDir%\!launchAssistantSubpath!" /D
-
-			:: The log it writes while it runs is the build machine's leftover and has no business in
-			:: a release. Its build keeps the program database among the intermediates and never writes
-			:: one beside the exe, so the symbols are only ever left over from an older build of it.
-			if exist "%targetResDir%\!launchAssistantSubpath!\*.pdb" Del "%targetResDir%\!launchAssistantSubpath!\*.pdb"
-			if exist "%targetResDir%\!launchAssistantSubpath!\*.log" Del "%targetResDir%\!launchAssistantSubpath!\*.log"
-		)
+	if exist "%targetResLinksDir%\" (
+		echo copy weblinks info txt to the release..
+		robocopy "%targetResLinksDir% " "%targetReleaseResDir%\links\ " *.* /MIR /COPYALL /B /R:3 /W:1
 	)
 
-	:: The updater, which applies a downloaded update after the application has closed. Linked on the
-	:: same terms as the launch tool: a build that did not produce it leaves it out, and an update
-	:: then waits until one that did. Unlike the launch tool its build does write a program database
-	:: beside the exe, so both are deleted here - and deleted through the link, which is what removes
-	:: them from the shared RES\tools folder rather than from a private copy.
-	set updaterSubpath=tools\aihelper-updater
-	if not exist "%targetReleaseDir%\!updaterSubpath!" (
-		if exist "%targetResDir%\!updaterSubpath!\" (
-			echo make link for the updater tool
-			MKLINK "%targetReleaseResDir%\!updaterSubpath!" "%targetResDir%\!updaterSubpath!" /D
+	if exist "%targetReportDir%\" (
+		echo copy report templates to the release..
+		robocopy "%targetReportDir% " "%targetReleaseResDir%\%reportDirSubPath%\ " *.* /MIR /COPYALL /B /R:3 /W:1
+	)
 
-			if exist "%targetResDir%\!updaterSubpath!\*.pdb" Del "%targetResDir%\!updaterSubpath!\*.pdb"
-			if exist "%targetResDir%\!updaterSubpath!\*.log" Del "%targetResDir%\!updaterSubpath!\*.log"
-		)
+	if exist "%targetResDir%\%themeCustomSubPath%\" (
+		echo copy custom themes to the release..
+		robocopy "%targetResDir%\%themeCustomSubPath% " "%targetReleaseResDir%\%themeCustomSubPath%\ " *.* /MIR /COPYALL /B /R:3 /W:1
 	)
-	:: The application executable itself.
-	if not exist "%targetReleaseDir%\%targetName%.exe" (
-		echo make link for the app exe
-		MKLINK "%targetReleaseDir%\%targetName%.exe" "%targetDir%\%targetName%.exe"
+
+	if exist "%targetToolsDir%\" (
+		echo copy the tools to the release..
+		robocopy "%targetToolsDir% " "%targetReleaseResDir%\tools\ " *.* /MIR /COPYALL /B /R:3 /W:1 /XF *.pdb *.log
 	)
-	:: The relocated dependencies. A release must not ship debug symbols or XML
-	:: docs - note these are deleted through the link, so they are removed from
-	:: the shared RES\lib folder and not from a private copy.
-	set targetReleaseLibDir=%targetReleaseResDir%\lib
-	if not exist "!targetReleaseLibDir!" (
-		echo make link for the app exe libs dir
-		MKLINK "!targetReleaseLibDir!" "%targetLibDir%" /D
-		Del "!targetReleaseLibDir!\*.pdb"
-		Del "!targetReleaseLibDir!\*.xml"
+
+	rem Mod Organizer's own copy of the game detection plugins. The application reads them from
+	rem RES\MO and copies the plugin of the current game into the Mod Organizer folder, so a release
+	rem without them cannot repair that folder.
+	if exist "%targetResDir%\%modOrganizerBasicGamesPluginsDirSubPath%\" (
+		echo copy basic games plugins into RES to the release..
+		robocopy "%targetResDir%\%modOrganizerBasicGamesPluginsDirSubPath% " "%targetReleaseResDir%\%modOrganizerBasicGamesPluginsDirSubPath%\ " *.* /MIR /COPYALL /B /R:3 /W:1
 	)
-	:: Per-game base info. Copied for real, unlike the links above.
+
+	rem The same plugins again where Mod Organizer loads them from, which is the path the updater's
+	rem rules file names. Both copies ship: the one under RES is the application's source, this one
+	rem is already in place for a fresh install.
+	if exist "%targetBasicGamesPluginsDir%\" (
+		echo copy basic games plugins to the release..
+		robocopy "%targetBasicGamesPluginsDir% " "%targetReleaseDir%\%modOrganizerBasicGamesPluginsDirSubPath%\ " *.* /MIR /COPYALL /B /R:3 /W:1
+	)
+
+	rem Per-game base info. Copied from the checked-in BUILD folder, not from the output, which never
+	rem gets it.
 	if exist "%projectBuildDir%\Games" (
 		echo games dir with base info
 		robocopy "%projectBuildDir%\Games\ " "%targetReleaseDir%\Games\ " *.* /MIR /COPYALL /B /R:3 /W:1
 	)
 
-	:: Pack the release. Two packers are declared but only the one selected by
-	:: "archiveAppRun" runs, so switching packers is a one-line change.
-	:: create archive of the release
+	rem Pack the release. Two packers are declared but only the one selected by
+	rem "archiveAppRun" runs, so switching packers is a one-line change. Both now pack a folder of
+	rem real files, which is what Compress-Archive needs to produce anything usable at all.
+	rem create archive of the release
 	set destinationName=%targetName% %versionNumber%
 	set destinationPath=%releasesDirPath%\!destinationName!
+	rem 7-Zip's "a" updates an archive that already exists instead of replacing it, so an archive
+	rem left by an earlier build of the same version would keep every file the new release no longer
+	rem ships - and the version can repeat, because Clean deletes the exe the counter is read from.
+	rem Removing the destination first is what makes the archive the release folder and nothing else.
+	if exist "!destinationPath!.zip" Del "!destinationPath!.zip"
+	if exist "!destinationPath!.7z" Del "!destinationPath!.7z"
 	set powershellApp=powershell Compress-Archive -Path '%targetReleaseDir%\*' -DestinationPath '!destinationPath!.zip' -Force
-	set sevenZipApp7z="C:\Program Files\7-Zip\7z.exe" a "!destinationPath!.7z" -m0=LZMA2:d=96m:fb=128 -mx=9 -mmt4 "%targetReleaseDir%\*"
+	set sevenZipApp7z="C:\Program Files\7-Zip\7z.exe" a -y "!destinationPath!.7z" -m0=LZMA2:d=96m:fb=128 -mx=9 -mmt4 "%targetReleaseDir%\*"
 	set archiveAppRun=!sevenZipApp7z!	
 	echo '!destinationPath!' archive creating..
 	echo run archive creation command: !archiveAppRun!

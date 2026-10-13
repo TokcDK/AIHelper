@@ -37,5 +37,7 @@ using System.Runtime.InteropServices;
 // SetAppVersion в AI Helper.csproj создает VersionInfo.g.cs с атрибутами
 // AssemblyVersion, AssemblyFileVersion и AssemblyInformationalVersion
 // в формате yy.M.d.N, где N — номер выпуска за этот день.
-// Журнал выпусков — файл version.txt рядом с проектом.
+// Номер выпуска берется из версии exe в папке сборки: сборка Release
+// увеличивает его на 1, если exe собран в тот же день, иначе начинает день
+// заново с 1. Отдельного файла-журнала больше нет.
 [assembly: NeutralResourcesLanguage("en")]

@@ -11,8 +11,9 @@
 ::    arg3  projectDir         project dir, ends with a slash
 ::    arg4  versionNumber      assembly version, read back from the built assembly by
 ::                             PostBuildMacros. Generated at build time by the
-::                             SetAppVersion target as yy.M.d.N and reused as-is by
-::                             Debug builds, so only a Release build moves it on.
+::                             SetAppVersion target as yy.M.d.N, from the version of
+::                             the exe this build replaced, so only a Release build
+::                             moves it on.
 ::    arg5  configurationName  Debug or Release
 ::
 ::  The csproj maps arg1-arg5 to TargetDir, TargetName, ProjectDir,

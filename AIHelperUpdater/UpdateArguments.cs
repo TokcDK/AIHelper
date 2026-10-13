@@ -15,7 +15,7 @@ namespace AIHelperUpdater
     /// </para>
     /// <para>
     /// Only two things are passed. Everything else is derived: the application folder is the
-    /// folder of the program to start, the payload is RES\updates\appupdate inside it, and the
+    /// folder of the program to start, the payload is RES\update\appupdate inside it, and the
     /// rules file sits beside this program. A path that is already implied is not passed as
     /// well, because that would be a second place for it to be wrong.
     /// </para>

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,9 +20,10 @@ namespace AIHelper.Manage.Update.Versioning
     /// Organizer itself keeps the version of a mod.
     /// </para>
     /// <para>
-    /// The Mod Organizer installation is not a mod and has no meta.ini, so its
-    /// version is not read or written here: it is read from the executable and
-    /// passed in as the configured version of the target.
+    /// The targets that are not mods — the Mod Organizer installation and the application
+    /// itself — have no meta.ini, so their version is not read or written here. Mod
+    /// Organizer's is read from its executable and passed in as the configured version of
+    /// the target; the application's is answered by <see cref="ApplicationVersionProvider"/>.
     /// </para>
     /// </summary>
     internal sealed class MetaIniVersionProvider : IInstalledVersionProvider
@@ -37,41 +39,54 @@ namespace AIHelper.Manage.Update.Versioning
         /// <summary>Key of meta.ini that holds the version.</summary>
         private const string VersionKey = "version";
 
-        private readonly string _modOrganizerInstallPath;
+        /// <summary>Folders of the pass that are not mods and have no meta.ini.</summary>
+        private readonly IReadOnlyList<string> _nonModFolderPaths;
 
-        /// <param name="modOrganizerInstallPath">
-        /// Folder of the Mod Organizer installation, used to recognise the one
-        /// target that must not be treated as a mod.
+        /// <param name="nonModFolderPaths">
+        /// Folders of the pass that are not mods, which are the ones this store leaves alone.
         /// </param>
-        internal MetaIniVersionProvider(string modOrganizerInstallPath)
+        internal MetaIniVersionProvider(IReadOnlyCollection<string> nonModFolderPaths)
         {
-            _modOrganizerInstallPath = modOrganizerInstallPath ?? string.Empty;
+            _nonModFolderPaths = nonModFolderPaths == null
+                ? new List<string>()
+                : new List<string>(nonModFolderPaths);
         }
 
         public Task<string> GetCurrentVersionAsync(UpdateTarget target, AssetSpec asset, CancellationToken ct)
         {
-            if (target == null || IsModOrganizerTarget(target)) return Task.FromResult<string>(null);
+            if (!IsMod(target)) return Task.FromResult<string>(null);
 
             return Task.FromResult(ReadVersion(target.InstallPath));
         }
 
         public Task SetCurrentVersionAsync(UpdateTarget target, AssetSpec asset, VersionInfo version, CancellationToken ct)
         {
-            if (target == null || IsModOrganizerTarget(target)) return Task.CompletedTask;
+            if (!IsMod(target)) return Task.CompletedTask;
 
             WriteVersion(target.InstallPath, version != null ? version.VersionString : null);
             return Task.CompletedTask;
         }
 
         /// <summary>
-        /// True for the Mod Organizer installation, which has no meta.ini.
+        /// True for a target whose version is kept in its own meta.ini.
         /// </summary>
-        private bool IsModOrganizerTarget(UpdateTarget target)
+        /// <remarks>
+        /// Asked by install path because that is all the engine hands a version store, and
+        /// because the path is what makes a target unique.
+        /// </remarks>
+        private bool IsMod(UpdateTarget target)
         {
-            if (_modOrganizerInstallPath.Length == 0) return false;
+            if (target == null) return false;
 
-            return string.Equals(
-                target.InstallPath, _modOrganizerInstallPath, StringComparison.OrdinalIgnoreCase);
+            foreach (var folderPath in _nonModFolderPaths)
+            {
+                if (string.Equals(target.InstallPath, folderPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>

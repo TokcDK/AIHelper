@@ -54,7 +54,8 @@ namespace AIHelper.Manage.Update.Providers
                         // resolver takes the first installer that accepts the asset,
                         // and the archive installer would accept any install kind that
                         // unpacks, only to fail on an executable that is not an archive.
-                        InstallKind.RunInstaller, InstallerArguments))
+                        InstallKind.RunInstaller, InstallerArguments),
+                    UpdatableFolderKind.ModOrganizer)
             };
         }
     }

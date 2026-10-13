@@ -1,108 +1,34 @@
 using System;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using ModUpdater.Core.Domain;
+using AIHelper.Manage.Update.Versioning;
 using NLog;
 
 namespace AIHelper.Manage.Update.SelfUpdate
 {
     /// <summary>
-    /// The two moments AI Helper takes part in its own update: the check the update pass runs,
-    /// and the hand-off the next start performs.
+    /// The application's own update, as seen from a start: hand a waiting update over to
+    /// aihelper-updater, and report a failure the tool left behind.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The update is deliberately split across two sessions. A check that runs while the
-    /// application is open can only get the new version as far as the disk - the files being
-    /// replaced are the ones this process is running from - so it leaves the release in
-    /// RES\updates\appupdate and stops there. The next start sees the folder, starts
-    /// aihelper-updater and closes, and the tool does the rest while nothing of the application
+    /// The update is deliberately split across two sessions, and this is the second one. The
+    /// new version is checked for and downloaded by the update pass, while the application is
+    /// open - the pass is <see cref="Updater"/>, and the application is one of the rows in its
+    /// window like any mod. That pass can only get the release as far as the disk, because the
+    /// files being replaced are the ones this process is running from. The next start finds
+    /// the folder and hands over, and the tool does the rest while nothing of the application
     /// is in memory.
     /// </para>
     /// <para>
-    /// Both halves live here because they are the same feature seen from either side, and
-    /// because the second one is what the first one is for: the check is written to leave behind
-    /// exactly what the hand-off looks for.
-    /// </para>
-    /// <para>
-    /// No window is shown and no question is asked here. The check is started from the update
+    /// No window is shown and no question is asked here. The check was started from the update
     /// options, which is where the user asked for it, and the hand-off happens on a start the
     /// user is not watching - the tool restarts the application when it is done, so the screen
     /// the user comes back to is the one they left.
     /// </para>
     /// </remarks>
-    internal static class SelfUpdateRunner
+    internal static class SelfUpdateHandoff
     {
         static readonly Logger _log = LogManager.GetCurrentClassLogger();
-
-        /// <summary>
-        /// Checks GitHub for a newer AI Helper and, when there is one, downloads it and leaves it
-        /// ready for the next start.
-        /// </summary>
-        /// <param name="reportStatus">
-        /// Called with the phase the pass has reached, in the language of the interface, or null
-        /// when there is nothing to report to.
-        /// </param>
-        /// <param name="ct">Cancellation token.</param>
-        /// <returns>What the check came to.</returns>
-        internal static async Task<SelfUpdateResult> PrepareAsync(Action<string> reportStatus, CancellationToken ct)
-        {
-            // The engine is assembled for this pass alone and owns the HTTP client it creates,
-            // so it is disposed here - the same shape as the pass the mods are updated by.
-            using (var engine = new UpdateEngineFactory())
-            {
-                var service = new SelfUpdateService(engine.GithubSource);
-
-                Report(reportStatus, T._("Check AI Helper update") + "..");
-
-                VersionInfo latest;
-                try
-                {
-                    latest = await service.FindUpdateAsync(ct).ConfigureAwait(true);
-                }
-                catch (OperationCanceledException)
-                {
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    _log.Error(ex, "Self update: the update check failed.");
-                    return SelfUpdateResult.Failed(ex.Message);
-                }
-
-                if (latest == null) return SelfUpdateResult.UpToDate();
-
-                Report(reportStatus, T._("Download AI Helper update") + "..");
-
-                bool downloaded;
-                try
-                {
-                    downloaded = await service.DownloadAsync(latest, ct).ConfigureAwait(true);
-                }
-                catch (OperationCanceledException)
-                {
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    _log.Error(ex, "Self update: the download failed.");
-                    return SelfUpdateResult.Failed(ex.Message);
-                }
-
-                if (!downloaded) return SelfUpdateResult.Failed("the new version could not be downloaded");
-
-                // The tool is refreshed now, while this process is running and its files are
-                // free, because the next start is going to run it and from then on nothing can
-                // replace it. See the remarks on PendingUpdate.RefreshUpdaterTool.
-                if (!PendingUpdate.RefreshUpdaterTool())
-                {
-                    return SelfUpdateResult.Failed("the update tool could not be updated");
-                }
-
-                return SelfUpdateResult.Ready(latest.VersionString);
-            }
-        }
 
         /// <summary>
         /// Applies an update left behind by an earlier session, if there is one.
@@ -115,7 +41,7 @@ namespace AIHelper.Manage.Update.SelfUpdate
         /// skipping it would make it be found again on every start.
         /// </para>
         /// <para>
-        /// The one thing checked on top of that is that the update is not older than what is
+        /// The one thing checked on top of that is that the update is newer than what is
         /// running. It cannot normally be - a release is only downloaded when it is newer than
         /// the version at the time - but the folder outlives the session that made it, and an
         /// application updated by other means in the meantime must not be taken backwards by a
@@ -150,9 +76,9 @@ namespace AIHelper.Manage.Update.SelfUpdate
                 return false;
             }
 
-            // Both of these can fail, and both have already said why in the log. The application
-            // is then left running with the update still on disk, which is the one state from
-            // which the user can do something about it.
+            // The tool is replaced before it is started and not after: it is the program that
+            // moves the new version over the old one, so the copy that moves the files has to
+            // be the new one, and once it is running its own files are locked.
             if (!PendingUpdate.RefreshUpdaterTool()) return false;
 
             return PendingUpdateLauncher.TryHandOff();
@@ -212,21 +138,13 @@ namespace AIHelper.Manage.Update.SelfUpdate
 
             if (string.IsNullOrWhiteSpace(pendingVersion)) return true;
 
-            var comparer = new SelfUpdateVersionComparer();
+            var comparer = new UpdateToolsVersionComparer();
 
-            // Compare answers "is the second argument newer than the first", so this is
-            // "the waiting version is not older than the running one".
-            return comparer.Compare(ApplicationVersion.ReadRunning(), pendingVersion) >= 0;
-        }
-
-        /// <summary>
-        /// Passes a phase on to whoever asked to be told about it.
-        /// </summary>
-        private static void Report(Action<string> reportStatus, string statusText)
-        {
-            if (reportStatus == null) return;
-
-            reportStatus(statusText);
+            // Compare answers "is the second argument newer than the first", so this asks the
+            // question the method is named after: the waiting version against the running one.
+            // A version the comparer cannot tell apart from the running one counts as not newer,
+            // which is the right answer for it - there would be nothing to apply.
+            return comparer.Compare(ApplicationVersion.ReadRunning(), pendingVersion) > 0;
         }
     }
 }

@@ -4,62 +4,45 @@ using System.Windows.Forms;
 namespace AIHelper.Manage.Update.SelfUpdate
 {
     /// <summary>
-    /// Everything the application's own update is made of: where its releases come from, and the
-    /// folders it works with.
+    /// The folders the application's own update works with, and the file names in them.
     /// </summary>
     /// <remarks>
     /// <para>
     /// The layout mirrors the one aihelper-updater works with, and the two have to agree - the
     /// application writes into the folders the tool reads from, and the tool is started with a
-    /// path rather than with this class. The names are therefore constants on both sides, and the
-    /// shape of the exchange is one folder:
+    /// path rather than with this class. The names are therefore constants on both sides, and
+    /// the shape of the exchange is one folder:
     /// </para>
     /// <list type="bullet">
     /// <item>
-    /// RES\updates\appupdate - a downloaded and unpacked release. Its presence is the whole
-    /// message "an update is ready": the application looks for the program and a RES folder in it
-    /// and hands over to the tool, which moves it over the application.
+    /// RES\update\appupdate - a downloaded and unpacked release. Its presence is the whole
+    /// message "an update is ready": the application looks for the program and a RES folder in
+    /// it and hands over to the tool, which moves it over the application.
     /// </item>
     /// <item>
     /// RES\tools\aihelper-updater - the tool itself. The application refreshes it from the
     /// payload *before* starting it, because once it runs its own files are locked.
     /// </item>
     /// </list>
+    /// <para>
+    /// The payload is unpacked into RES\update rather than into a folder of its own because
+    /// that is where this application already keeps everything an update works with: the per
+    /// game data, the update check dates, the downloads. It is also the folder aihelper-updater
+    /// reserves for its own backup and its log, so the payload, the backup and the log all
+    /// survive the update they are part of - the update replaces RES, and anything of it kept
+    /// inside the replaced part would be lost by it.
+    /// </para>
     /// </remarks>
     internal static class SelfUpdatePaths
     {
-        /// <summary>Owner of the repository the releases are published in.</summary>
-        internal const string RepositoryOwner = "TokcDK";
-
-        /// <summary>Repository the releases are published in.</summary>
-        internal const string RepositoryName = "AIHelper";
-
-        /// <summary>
-        /// Start of the release file name.
-        /// </summary>
-        /// <remarks>
-        /// The prefix is what makes the mask a mask: without it any file of the release would
-        /// match, and the archive is not the only thing a release may carry. The separator in the
-        /// name is a dot and not the space the archive is built with, because GitHub replaces the
-        /// spaces of an uploaded asset name - "AI Helper 26.10.13.3.7z" is published as
-        /// "AI.Helper.26.10.13.3.7z".
-        /// </remarks>
-        internal const string ReleaseFileStartsWith = "AI.Helper";
-
-        /// <summary>End of the release file name.</summary>
-        internal const string ReleaseFileEndsWith = ".7z";
-
         /// <summary>Folder of the tool inside RES\tools.</summary>
         internal const string UpdaterToolFolderName = "aihelper-updater";
 
         /// <summary>File name of the tool.</summary>
         internal const string UpdaterExecutableName = "aihelper-updater.exe";
 
-        /// <summary>Folder of a downloaded release inside RES\updates.</summary>
+        /// <summary>Folder a downloaded release is unpacked into, inside RES\update.</summary>
         internal const string PendingUpdateFolderName = "appupdate";
-
-        /// <summary>Folder the downloaded releases are unpacked into.</summary>
-        internal const string UpdatesFolderName = "updates";
 
         /// <summary>Folder name of the application's RES, which is what a release carries.</summary>
         internal const string ResFolderName = "RES";
@@ -83,7 +66,7 @@ namespace AIHelper.Manage.Update.SelfUpdate
         /// <summary>Folder a downloaded release is unpacked into.</summary>
         internal static string PendingUpdateDirectory
         {
-            get { return Path.Combine(ManageSettings.AppResDirPath, UpdatesFolderName, PendingUpdateFolderName); }
+            get { return Path.Combine(ManageSettings.ModsUpdateDirPath, PendingUpdateFolderName); }
         }
 
         /// <summary>File name of the running application, which is what a release replaces.</summary>

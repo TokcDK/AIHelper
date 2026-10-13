@@ -13,22 +13,22 @@ namespace AIHelperUpdater
     /// </para>
     /// <list type="bullet">
     /// <item>
-    /// the payload is *inside* the application folder (RES\updates\appupdate), so moving the
+    /// the payload is *inside* the application folder (RES\update\appupdate), so moving the
     /// application's own RES folder has to leave the payload, the backup and this program's own
     /// folder where they are - see <see cref="IsReserved"/>. A backup that swallowed its own
     /// source or destination would take the update down with it.
     /// </item>
     /// <item>
-    /// the log and the backup both live under RES\update, which is the folder the application
-    /// already keeps per-game update data in. That is deliberate: the update replaces RES, and
-    /// anything of the update kept inside the replaced part would be lost by the update.
+    /// everything the update works with - the payload, the backup, the log and the failure
+    /// marker - lives under RES\update, which is the folder the application already keeps
+    /// per-game update data in. That is deliberate: the update replaces RES, and anything of the
+    /// update kept inside the replaced part would be lost by the update.
     /// </item>
     /// </list>
     /// </remarks>
     internal sealed class UpdateLayout
     {
         internal const string ResFolderName = "RES";
-        internal const string UpdatesFolderName = "updates";
         internal const string UpdateFolderName = "update";
         internal const string ToolsFolderName = "tools";
         internal const string PayloadFolderName = "appupdate";
@@ -58,19 +58,20 @@ namespace AIHelperUpdater
             ToolDirectory = Normalize(toolDirectory);
 
             ResDirectory = Path.Combine(ApplicationDirectory, ResFolderName);
-            PayloadDirectory = Path.Combine(ResDirectory, UpdatesFolderName, PayloadFolderName);
+            PayloadDirectory = Path.Combine(ResDirectory, UpdateFolderName, PayloadFolderName);
             FailedPayloadDirectory = PayloadDirectory + FailedPayloadSuffix;
             BackupDirectory = Path.Combine(ResDirectory, UpdateFolderName, "app", "old");
             RulesFilePath = Path.Combine(ToolDirectory, RulesFileName);
             LogFilePath = Path.Combine(ResDirectory, UpdateFolderName, LogFileName);
             FailureMarkerFilePath = Path.Combine(ResDirectory, UpdateFolderName, FailureMarkerFileName);
 
-            // The three folders the update may never move, in either direction: the payload it
-            // reads from, the workspace it writes its backup and its log into, and the folder
-            // this program is running from - whose files are locked by this very process.
+            // The two folders the update may never move, in either direction: the workspace it
+            // reads its payload from and writes its backup and its log into - which is RES\update
+            // as a whole, so that the per-game update data kept beside the payload is left alone
+            // as well - and the folder this program is running from, whose files are locked by
+            // this very process.
             _reservedPaths = new[]
             {
-                Path.Combine(ResDirectory, UpdatesFolderName),
                 Path.Combine(ResDirectory, UpdateFolderName),
                 Path.Combine(ResDirectory, ToolsFolderName, UpdaterToolFolderName)
             };
@@ -118,7 +119,7 @@ namespace AIHelperUpdater
         /// Asked about a path on either side of a move, because what matters differs: while the
         /// backup is being taken it is the application's own folders that must not be moved, and
         /// while the payload is being applied it is the destinations that must not be written to.
-        /// Both are these three.
+        /// Both are these two.
         /// </remarks>
         /// <param name="absolutePath">Path to test.</param>
         internal bool IsReserved(string absolutePath)

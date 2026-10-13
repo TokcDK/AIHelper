@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using AIHelper.Manage.Update.Backup;
 using AIHelper.Manage.Update.Installers;
+using AIHelper.Manage.Update.SelfUpdate;
 using AIHelper.Manage.Update.Versioning;
 using ModUpdater.Core.Application;
 using ModUpdater.Core.Domain;
@@ -23,12 +24,14 @@ namespace AIHelper.Manage.Update
     /// so swapping one of them is a change here and nowhere else.
     /// </para>
     /// <para>
-    /// The engine's own defaults are deliberately not used for three of them. The
+    /// The engine's own defaults are deliberately not used for four of them. The
     /// version store is meta.ini rather than the engine's JSON manifest, because a
     /// stray file in a mod folder shows up as a Mod Organizer conflict; the skip
     /// list is kept in the same place for the same reason. The backup is a folder
     /// copy rather than a zip, because packing a mod folder follows the symlinks
-    /// this application creates and would back up the game instead.
+    /// this application creates and would back up the game instead. And the version
+    /// store, the installers and the backup all have to know which folders are not
+    /// mods, which is why they are told rather than left to work it out.
     /// </para>
     /// </summary>
     internal sealed class UpdateEngineFactory : IDisposable
@@ -48,9 +51,24 @@ namespace AIHelper.Manage.Update
         private static readonly TimeSpan RequestTimeout = TimeSpan.FromMinutes(10);
 
         private readonly HttpClient _httpClient;
+        private readonly IReadOnlyList<string> _nonModFolderPaths;
 
-        internal UpdateEngineFactory()
+        /// <param name="nonModFolderPaths">
+        /// Folders of this pass that are not mods: the Mod Organizer installation and the
+        /// application itself. They are told apart because they have no meta.ini of their own
+        /// and because a copy of one is not a version anybody wants to go back to.
+        /// <para>
+        /// Optional, because a factory is also built for its source alone - the info editor
+        /// downloads a release with it and never creates a manager - and a list that is only
+        /// read by <see cref="CreateManager"/> has no meaning for a caller that does not call it.
+        /// </para>
+        /// </param>
+        internal UpdateEngineFactory(IReadOnlyCollection<string> nonModFolderPaths = null)
         {
+            _nonModFolderPaths = nonModFolderPaths == null
+                ? new List<string>()
+                : new List<string>(nonModFolderPaths);
+
             EnsureModernTls();
 
             _httpClient = new HttpClient();
@@ -74,8 +92,12 @@ namespace AIHelper.Manage.Update
         internal IUpdateManager CreateManager(IReadOnlyList<UpdateTarget> targets)
         {
             var modOrganizerInstallPath = ManageSettings.AppModOrganizerDirPath;
+            var appUpdatePath = SelfUpdatePaths.PendingUpdateDirectory;
 
-            var versionProvider = new MetaIniVersionProvider(modOrganizerInstallPath);
+            // A mod keeps its version in its own meta.ini; the two targets that are not mods
+            // have no meta.ini, and the application answers from its program file instead.
+            var versionProvider = new ApplicationVersionProvider(
+                new MetaIniVersionProvider(_nonModFolderPaths), appUpdatePath);
 
             // The skip list is stored where this application already keeps per game
             // update data (RES\update\<game>) and inside each mod's meta.ini, so the
@@ -88,17 +110,19 @@ namespace AIHelper.Manage.Update
                 versionProvider, new UpdateToolsVersionComparer(), LogEngineMessage);
 
             // Order matters: the resolver takes the first installer that accepts the
-            // asset. The archive installer is wrapped so that a mod keeps its meta.ini,
-            // and the Mod Organizer installer claims the one target that runs an
-            // installer instead of extracting.
+            // asset. The application claims its own target because its update has to say
+            // that it takes effect on the next start; the archive installer is wrapped so
+            // that a mod keeps its meta.ini; and the Mod Organizer installer claims the one
+            // target that runs an installer instead of extracting.
             var installerResolver = new InstallerResolver(new IInstaller[]
             {
+                new AppUpdateInstaller(new ArchiveInstaller(), appUpdatePath),
                 new MetaIniPreservingInstaller(new ArchiveInstaller()),
                 new SingleFileInstaller(),
                 new ModOrganizerInstaller(new RunInstallerInstaller(), modOrganizerInstallPath)
             });
 
-            var backupService = new ModFolderBackupService(modOrganizerInstallPath);
+            var backupService = new ModFolderBackupService(_nonModFolderPaths);
 
             return new UpdateManager(
                 checkService, installerResolver, backupService, versionProvider, targets,

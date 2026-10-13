@@ -197,14 +197,14 @@ namespace AIHelper
         /// </summary>
         /// <remarks>
         /// aihelper-updater runs after this application has closed and has no window of its own,
-        /// so it leaves the reason in a file instead - see <see cref="SelfUpdateRunner"/>. It is
+        /// so it leaves the reason in a file instead - see <see cref="SelfUpdateHandoff"/>. It is
         /// read here rather than at the entry point because the message is translated and is
         /// meant to be seen next to the application, and because a start that hands over to
         /// another update never gets this far at all.
         /// </remarks>
         private static void ReportFailedUpdate()
         {
-            if (!SelfUpdateRunner.TakeFailureReport()) return;
+            if (!SelfUpdateHandoff.TakeFailureReport()) return;
 
             MessageBox.Show(
                 T._("The previous AI Helper update failed. The reason is in RES\\update\\aihelper-updater.log.") + Environment.NewLine + Environment.NewLine +

@@ -16,14 +16,15 @@ using NLog;
 namespace AIHelper.Manage.Update
 {
     /// <summary>
-    /// Runs the update pass for the plugins and for Mod Organizer.
+    /// Runs the update pass for the application itself, for Mod Organizer and for the
+    /// plugins.
     /// <para>
     /// The pass itself is the engine in ModUpdater.Core and the window the user
     /// works in is the one from ModUpdater.UI. What is left here is the part only
     /// this application can do: work out which folders can be updated and where the
-    /// new version of each one comes from — the hardcoded Mod Organizer record, the
-    /// per game updateinfo.txt and the meta.ini of each mod — and hand that to the
-    /// engine.
+    /// new version of each one comes from — the hardcoded records of the application
+    /// and of Mod Organizer, the per game updateinfo.txt and the meta.ini of each mod —
+    /// and hand that to the engine.
     /// </para>
     /// <para>
     /// Every folder is checked and installed independently, so one mod that cannot
@@ -52,35 +53,60 @@ namespace AIHelper.Manage.Update
         internal bool UpdatedAny { get; private set; }
 
         /// <summary>
-        /// Checks Mod Organizer and every mod that carries an update record, and lets
-        /// the user install what was found.
+        /// Checks the application, Mod Organizer and every mod that carries an update
+        /// record, and lets the user install what was found.
         /// </summary>
+        /// <remarks>
+        /// Everything the pass is made of is one list in one window, because that is what
+        /// the user asked for by starting the pass: the application's own update is not a
+        /// separate program with a separate window any more, it is a row of this one.
+        /// </remarks>
         internal Task Update()
         {
-            return RunAsync(CollectFolders(includeMods: true));
+            // The mods need a managed installation, so a pass run outside Mod Organizer
+            // mode is a pass over the application alone. Without that, the mods of a game
+            // this application does not manage would be offered for update, and there is
+            // nothing of them to update.
+            return RunAsync(CollectFolders(ManageSettings.IsMoMode, IsAppUpdateChosen()));
         }
 
         /// <summary>
         /// The same pass for Mod Organizer alone.
         /// <para>
         /// Used when Mod Organizer is missing and installing it is the whole point,
-        /// so the folder it will be installed into does not exist yet.
+        /// so the folder it will be installed into does not exist yet. The application is
+        /// left out on purpose: it is asked about here because Mod Organizer is wanted, and
+        /// offering an update of the application on top of that would be answering a
+        /// question nobody asked.
         /// </para>
         /// </summary>
         internal Task UpdateModOrganizer()
         {
-            return RunAsync(CollectFolders(includeMods: false));
+            return RunAsync(CollectFolders(includeModOrganizer: true, includeApp: false));
         }
 
         #region Which folders can be updated
 
         /// <summary>
+        /// Whether the application's own update was chosen in the options dialog.
+        /// </summary>
+        /// <remarks>
+        /// A pass started without the dialog - the one that offers Mod Organizer - is not
+        /// asked about the application, and answers for the dialog by leaving it out.
+        /// </remarks>
+        private bool IsAppUpdateChosen()
+        {
+            return _updateOptions != null && _updateOptions.UpdateAppCheckBox.Checked;
+        }
+
+        /// <summary>
         /// Gathers the folders that carry an update record.
         /// </summary>
-        /// <param name="includeMods">
-        /// False to leave the mods alone and only offer Mod Organizer itself.
+        /// <param name="includeModOrganizer">
+        /// False to leave Mod Organizer and the mods inside it alone.
         /// </param>
-        private IReadOnlyList<UpdatableFolder> CollectFolders(bool includeMods)
+        /// <param name="includeApp">Whether the application itself is offered.</param>
+        private IReadOnlyList<UpdatableFolder> CollectFolders(bool includeModOrganizer, bool includeApp)
         {
             // The dialog is the only thing that knows whether switched off mods are
             // wanted. Without it the answer is to leave them alone: a mod the user
@@ -90,12 +116,17 @@ namespace AIHelper.Manage.Update
 
             var catalog = new UpdateRecordCatalog();
 
-            catalog.Add(new ModOrganizerUpdateRecordProvider());
+            // The application comes first in the list, and the order matters only for the
+            // mass install: a target is installed before the targets that depend on it, and
+            // nothing depends on the application.
+            if (includeApp) catalog.Add(new AppUpdateRecordProvider());
+
+            if (includeModOrganizer) catalog.Add(new ModOrganizerUpdateRecordProvider());
 
             // Mods only exist inside Mod Organizer, and their records live in files
             // Mod Organizer writes, so without an installation there is nothing to
             // read and nothing to update.
-            if (includeMods && ManageModOrganizer.IsInstalled)
+            if (includeModOrganizer && ManageModOrganizer.IsInstalled)
             {
                 // updateinfo.txt before meta.ini, so that a mod listed in the file is
                 // taken from there and the file stays the place to override a record
@@ -129,7 +160,7 @@ namespace AIHelper.Manage.Update
                 return Task.CompletedTask;
             }
 
-            using (var engine = new UpdateEngineFactory())
+            using (var engine = new UpdateEngineFactory(CollectNonModFolderPaths(folders)))
             {
                 var manager = engine.CreateManager(BuildTargets(folders, engine.GithubSource));
 
@@ -185,6 +216,28 @@ namespace AIHelper.Manage.Update
         #region Targets
 
         /// <summary>
+        /// The folders of the pass that are not mods.
+        /// </summary>
+        /// <remarks>
+        /// Two things downstream ask the same question about the same list - whether the
+        /// version of a target is kept in its own meta.ini, and whether a target is backed up
+        /// as a mod folder - so the answer is worked out once, here, from what the records say
+        /// each folder is, and handed to both.
+        /// </remarks>
+        /// <param name="folders">Folders the pass is made of.</param>
+        private static IReadOnlyList<string> CollectNonModFolderPaths(IReadOnlyList<UpdatableFolder> folders)
+        {
+            var result = new List<string>();
+
+            foreach (var folder in folders)
+            {
+                if (folder.Kind != UpdatableFolderKind.Mod) result.Add(folder.FolderPath);
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Describes the folders to the engine.
         /// </summary>
         private static List<UpdateTarget> BuildTargets(
@@ -194,10 +247,13 @@ namespace AIHelper.Manage.Update
 
             foreach (var folder in folders)
             {
-                var isModOrganizer = IsModOrganizerFolder(folder.FolderPath);
+                var isModOrganizer = folder.Kind == UpdatableFolderKind.ModOrganizer;
 
                 // Mod Organizer is read from its own executable rather than from a
-                // record, because that is the only place its version is written.
+                // record, because that is the only place its version is written. The
+                // application's version is read from a program file as well, but by the
+                // version store, which has to answer again on every check - see
+                // ApplicationVersionProvider.
                 var currentVersion = isModOrganizer ? ReadModOrganizerVersion() : null;
 
                 var binding = new SourceBinding(source, folder.Record.ToSourceConfig(currentVersion));
@@ -207,15 +263,39 @@ namespace AIHelper.Manage.Update
                     // target bookkeeping by it, and the path is what makes a folder
                     // unique — two mods can carry the same name in different games.
                     folder.FolderPath,
-                    isModOrganizer ? ModOrganizerDisplayName : Path.GetFileName(folder.FolderPath),
+                    DisplayNameOf(folder),
                     folder.FolderPath,
                     new[] { binding },
                     // Mods live inside the Mod Organizer folder, so Mod Organizer is
-                    // installed before them and not after.
-                    isModOrganizer ? null : ModOrganizerTargetId));
+                    // installed before them and not after. The targets that are not mods
+                    // are independent of each other and of it.
+                    folder.Kind == UpdatableFolderKind.Mod ? ModOrganizerTargetId : null));
             }
 
             return targets;
+        }
+
+        /// <summary>
+        /// Name a folder is shown under in the window.
+        /// </summary>
+        /// <remarks>
+        /// A mod is shown under the name of its folder, which is the name Mod Organizer shows
+        /// it under as well. The two targets that are not mods have no folder of their own to
+        /// be named after: one is the installation, the other is this program.
+        /// </remarks>
+        private static string DisplayNameOf(UpdatableFolder folder)
+        {
+            switch (folder.Kind)
+            {
+                case UpdatableFolderKind.ModOrganizer:
+                    return ModOrganizerDisplayName;
+
+                case UpdatableFolderKind.Application:
+                    return ManageSettings.ApplicationProductName;
+
+                default:
+                    return Path.GetFileName(folder.FolderPath);
+            }
         }
 
         /// <summary>Name Mod Organizer is shown under in the window.</summary>
@@ -225,12 +305,6 @@ namespace AIHelper.Manage.Update
         private static string ModOrganizerTargetId
         {
             get { return ManageSettings.AppModOrganizerDirPath; }
-        }
-
-        private static bool IsModOrganizerFolder(string folderPath)
-        {
-            return string.Equals(
-                folderPath, ManageSettings.AppModOrganizerDirPath, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>

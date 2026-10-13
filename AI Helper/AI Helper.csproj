@@ -391,8 +391,10 @@
     </Compile>
     <Compile Include="Manage\ui\ThemedToolStrip.cs" />
     <Compile Include="Manage\Update\Backup\ModFolderBackupService.cs" />
+    <Compile Include="Manage\Update\Installers\AppUpdateInstaller.cs" />
     <Compile Include="Manage\Update\Installers\MetaIniPreservingInstaller.cs" />
     <Compile Include="Manage\Update\Installers\ModOrganizerInstaller.cs" />
+    <Compile Include="Manage\Update\Providers\AppUpdateRecordProvider.cs" />
     <Compile Include="Manage\Update\Providers\IUpdateRecordProvider.cs" />
     <Compile Include="Manage\Update\Providers\MetaIniUpdateRecordProvider.cs" />
     <Compile Include="Manage\Update\Providers\ModOrganizerUpdateRecordProvider.cs" />
@@ -400,13 +402,8 @@
     <Compile Include="Manage\Update\SelfUpdate\ApplicationVersion.cs" />
     <Compile Include="Manage\Update\SelfUpdate\PendingUpdate.cs" />
     <Compile Include="Manage\Update\SelfUpdate\PendingUpdateLauncher.cs" />
-    <Compile Include="Manage\Update\SelfUpdate\ReleaseNumberComparer.cs" />
-    <Compile Include="Manage\Update\SelfUpdate\SelfUpdateOutcome.cs" />
+    <Compile Include="Manage\Update\SelfUpdate\SelfUpdateHandoff.cs" />
     <Compile Include="Manage\Update\SelfUpdate\SelfUpdatePaths.cs" />
-    <Compile Include="Manage\Update\SelfUpdate\SelfUpdateResult.cs" />
-    <Compile Include="Manage\Update\SelfUpdate\SelfUpdateRunner.cs" />
-    <Compile Include="Manage\Update\SelfUpdate\SelfUpdateService.cs" />
-    <Compile Include="Manage\Update\SelfUpdate\SelfUpdateVersionComparer.cs" />
     <Compile Include="Manage\Update\Sources\GithubUpdateProbe.cs" />
     <Compile Include="Manage\Update\UpdatableFolder.cs" />
     <Compile Include="Manage\Update\UpdateEngineFactory.cs" />
@@ -418,6 +415,7 @@
     <Compile Include="Manage\Update\UpdateRecordParser.cs" />
     <Compile Include="Manage\Update\Updater.cs" />
     <Compile Include="Manage\Update\UpdateTools.cs" />
+    <Compile Include="Manage\Update\Versioning\ApplicationVersionProvider.cs" />
     <Compile Include="Manage\Update\Versioning\MetaIniVersionProvider.cs" />
     <Compile Include="Manage\Update\Versioning\SkippedVersionStore.cs" />
     <Compile Include="Manage\Update\Versioning\UpdateToolsVersionComparer.cs" />

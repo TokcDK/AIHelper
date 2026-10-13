@@ -48,7 +48,7 @@ namespace AIHelper
                     // session has happened by then, the less of it is thrown away by the restart
                     // the tool performs when it is done. This is the whole of the hand-off: the
                     // tool does everything else, and this process ends right here.
-                    if (SelfUpdateRunner.TryApplyPendingUpdate())
+                    if (SelfUpdateHandoff.TryApplyPendingUpdate())
                     {
                         return;
                     }

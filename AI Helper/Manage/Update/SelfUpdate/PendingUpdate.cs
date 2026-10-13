@@ -5,14 +5,15 @@ namespace AIHelper.Manage.Update.SelfUpdate
 {
     /// <summary>
     /// The update that was downloaded and is waiting to be applied: the folder
-    /// RES\updates\appupdate and what can be done with it.
+    /// RES\update\appupdate and what can be done with it.
     /// </summary>
     /// <remarks>
     /// <para>
     /// This folder is the whole message between the two halves of the self update. One session
-    /// downloads into it, and the next start finds it and hands over to aihelper-updater - so
-    /// the presence of a complete update is the thing that is asked about, and not a flag
-    /// somewhere else that could disagree with what is on disk.
+    /// downloads into it - the update pass does, while the application is open - and the next
+    /// start finds it and hands over to aihelper-updater. The presence of a complete update is
+    /// therefore the thing that is asked about, and not a flag somewhere else that could
+    /// disagree with what is on disk.
     /// </para>
     /// <para>
     /// The folder holds a release unpacked as it was packed: the program and a RES folder, the
@@ -63,21 +64,23 @@ namespace AIHelper.Manage.Update.SelfUpdate
         /// replace them any more.
         /// </para>
         /// <para>
-        /// An update that ships no copy of the tool is not a failure: the deployed one is then
-        /// the only one there is, and it is used as it is. That is what makes the very first
-        /// release with a tool in it - and a release built before the tool existed - work.
+        /// A release that carries no tool is therefore not an update this program can apply, and
+        /// the hand-off is refused rather than started with whatever copy happens to be deployed:
+        /// the deployed one belongs to the version being replaced, and letting it move the new
+        /// files would be running the old program over the new one. The payload is what decides,
+        /// so the check belongs here and not at the call site.
         /// </para>
         /// </remarks>
-        /// <returns>True when the deployed tool is up to date.</returns>
+        /// <returns>True when the deployed tool was refreshed from the update.</returns>
         internal static bool RefreshUpdaterTool()
         {
             var sourceDirectoryPath = SelfUpdatePaths.PendingUpdaterToolDirectory;
 
             if (!Directory.Exists(sourceDirectoryPath))
             {
-                _log.Info("Self update: the update ships no " + SelfUpdatePaths.UpdaterToolFolderName
-                          + ", the installed one is used as it is.");
-                return true;
+                _log.Error("Self update: the update ships no " + SelfUpdatePaths.UpdaterToolFolderName
+                           + " in '" + sourceDirectoryPath + "', so it cannot be applied.");
+                return false;
             }
 
             if (!UpdateIo.TryCopyDirectory(sourceDirectoryPath, SelfUpdatePaths.UpdaterToolDirectory))

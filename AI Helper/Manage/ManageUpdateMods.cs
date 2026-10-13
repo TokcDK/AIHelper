@@ -2,31 +2,29 @@
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AIHelper.Data.Modlist;
 using AIHelper.Forms.Other;
 using AIHelper.Manage.ui.themes;
 using AIHelper.Manage.Update;
-using AIHelper.Manage.Update.SelfUpdate;
 using NLog;
 using static AIHelper.Manage.ManageModOrganizer;
 
 namespace AIHelper.Manage
 {
     /// <summary>
-    /// Runs the update pass: AI Helper itself through its own update, the plugins through the
-    /// updater, and the zipmods through the KKManager standalone updater followed by a sort of
-    /// what it left behind.
+    /// Runs the update pass: AI Helper, Mod Organizer and the plugins through the updater, and
+    /// the zipmods through the KKManager standalone updater followed by a sort of what it left
+    /// behind.
     /// </summary>
     /// <remarks>
     /// <para>
     /// This class is the pass and nothing else. What has to be moved and where is
     /// <see cref="ZipmodsSorter"/>, the window which is shown while a step runs is
-    /// <see cref="UpdateProgressForm"/>, the updater itself is <see cref="Updater"/>, and the
-    /// application's own update is <see cref="SelfUpdateRunner"/>. What is left here is the order
-    /// the steps run in, and the cleanup which has to happen whatever that order came to.
+    /// <see cref="UpdateProgressForm"/>, and the updater - the application, Mod Organizer and
+    /// the plugins alike - is <see cref="Updater"/>. What is left here is the order the steps
+    /// run in, and the cleanup which has to happen whatever that order came to.
     /// </para>
     /// <para>
     /// The pass changes things which outlive it - the modlist is force enabled and a window
@@ -84,15 +82,10 @@ namespace AIHelper.Manage
 
                 try
                 {
-                    // The application's own update runs first: it is the shortest step, it is the
-                    // one whose result the user has to be told about, and everything below it
-                    // works the same whether or not it found something.
-                    if (updateOptions.UpdateAppCheckBox.Checked)
-                    {
-                        await UpdateApp().ConfigureAwait(true);
-                    }
-
-                    if (updateOptions.UpdatePluginsCheckBox.Checked)
+                    // The updater covers the application, Mod Organizer and the plugins in one
+                    // window, so it is started when either of the two steps it answers for was
+                    // chosen. A pass with nothing in it opens no window at all.
+                    if (updateOptions.UpdatePluginsCheckBox.Checked || updateOptions.UpdateAppCheckBox.Checked)
                     {
                         await UpdateByUpdater(updateOptions).ConfigureAwait(true);
                     }
@@ -113,86 +106,13 @@ namespace AIHelper.Manage
         }
 
         /// <summary>
-        /// Checks for a newer AI Helper and gets it ready for the next start.
+        /// Updates the application, Mod Organizer and the plugins through the updater.
         /// </summary>
         /// <remarks>
-        /// <para>
-        /// The new version is downloaded but not applied: the files it replaces are the ones this
-        /// process is running from. It is left in the payload folder and applied on the next
-        /// start, by a small separate program - see <see cref="SelfUpdateRunner"/>. The user is
-        /// told which of the two happened, because nothing on screen changes either way.
-        /// </para>
-        /// <para>
-        /// A failure is reported and not thrown: the rest of the pass is about the mods and has
-        /// nothing to do with the application's own update, so a repository that cannot be
-        /// reached must not stop it.
-        /// </para>
+        /// The pass is made of what this installation can actually update: the mods need a managed
+        /// installation, while the application needs neither Mod Organizer nor a game. The updater
+        /// works that out from the mode, so this is one call whether or not Mod Organizer is here.
         /// </remarks>
-        private static async Task UpdateApp()
-        {
-            UpdateProgressForm progressForm = null;
-
-            try
-            {
-                progressForm = UpdateProgressForm.Open(ManageSettings.MainForm, T._("Update AI Helper"));
-
-                var result = await SelfUpdateRunner
-                    .PrepareAsync(progressForm.SetStatus, CancellationToken.None)
-                    .ConfigureAwait(true);
-
-                ReportSelfUpdate(result);
-            }
-            finally
-            {
-                // the window goes first, whatever the check came to
-                if (progressForm != null) progressForm.CloseSafely();
-            }
-        }
-
-        /// <summary>
-        /// Tells the user what the application's own update came to.
-        /// </summary>
-        /// <remarks>
-        /// The reason a check failed is in the log rather than in the message: it is an HTTP
-        /// status or an exception text, and the user can do nothing with either. What the message
-        /// says is what the user can act on - that there is nothing to do, or that the new
-        /// version is waiting for the next start.
-        /// </remarks>
-        private static void ReportSelfUpdate(SelfUpdateResult result)
-        {
-            switch (result.Outcome)
-            {
-                case SelfUpdateOutcome.UpToDate:
-                    MessageBox.Show(
-                        T._("AI Helper is up to date."),
-                        T._("Update AI Helper"),
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-                    break;
-
-                case SelfUpdateOutcome.Ready:
-                    MessageBox.Show(
-                        string.Format(
-                            T._("AI Helper {0} has been downloaded. It will be installed the next time the application starts."),
-                            result.Version),
-                        T._("Update AI Helper"),
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-                    break;
-
-                default:
-                    MessageBox.Show(
-                        T._("The AI Helper update could not be downloaded. See the log for details."),
-                        T._("Update AI Helper"),
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning);
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Updates the plugins through the updater.
-        /// </summary>
         private static async Task UpdateByUpdater(UpdateOptionsDialogForm updateOptions)
         {
             ManageOther.SwitchFormMinimizedNormalAll(ManageSettings.ListOfFormsForMinimize);
@@ -201,13 +121,13 @@ namespace AIHelper.Manage
             {
                 var updater = new Updater(updateOptions);
 
-                // the updater works on a managed installation, which only exists in mo mode
-                if (ManageSettings.IsMoMode) await updater.Update().ConfigureAwait(true);
+                await updater.Update().ConfigureAwait(true);
 
-                if (updater.UpdatedAny)
+                if (updater.UpdatedAny && ManageSettings.IsMoMode)
                 {
                     // the data of the managed installation is rebuilt only when something was
-                    // updated, because it is the update which can make it stale
+                    // updated, because it is the update which can make it stale - and only when
+                    // there is a managed installation to rebuild
                     ManageModOrganizer.CleanMoFolder();
                     ManageModOrganizer.CheckBaseGamesPy();
                     ManageModOrganizer.RedefineGameMoData();

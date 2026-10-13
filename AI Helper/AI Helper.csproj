@@ -523,11 +523,12 @@
   </ItemGroup>
   <ItemGroup>
     <!--
-      The command line format, shared with aihelper-launch-assistant. This application writes the
-      line the tool is started with, the tool writes the line this application is started with, and
-      each of them takes the other's apart, so every one of them has to apply exactly the same
-      quoting rules - see the remarks on the file itself. Linked rather than copied: it is one
-      format, and a second copy would be free to drift from the first.
+      The command line format this application shares with aihelper-launch-assistant. This
+      application writes the line the tool is started with; the tool takes that line apart and writes
+      the lines the game and the restarted application are started with. Both ends have to apply
+      exactly the same quoting rules - see the remarks on the file itself, and its counterpart in
+      AIHelperLaunchAssistant\ArgumentQuoting.cpp. The rules are written twice, once per language,
+      and the end-to-end harness is what keeps the two from drifting apart.
     -->
     <Compile Include="..\Shared\ArgumentQuoting.cs">
       <Link>Utils\ArgumentQuoting.cs</Link>
@@ -1040,8 +1041,18 @@ exit 0</PostBuildEvent>
    </PostBuildEventDependsOn>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <!--
+       The launch assistant is built here rather than by a project of its own. It is native C++ and
+       has no reference to this application, so nothing in the solution has to know about it - but it
+       does have to exist before this application is packaged, because postbuild.bat copies it out of
+       the repository's tools folder into RES\tools of the output. Building it on this path is also
+       what makes one build of this application a complete payload.
+
+       A failure here fails the build. The assistant is not optional: without it this application
+       stays in memory for the length of a whole game session, which is what it was written to stop
+       doing. build-assistant.bat reports a missing C++ toolchain as the reason.
+    -->
+    <PreBuildEvent>call "$(ProjectDir)..\AIHelperLaunchAssistant\build-assistant.bat" "$(ConfigurationName)" "$(ProjectDir)..\tools\aihelper-launch-assistant"</PreBuildEvent>
   </PropertyGroup>
   <Target Name="PostBuildMacros">
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">

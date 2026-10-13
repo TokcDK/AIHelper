@@ -7,12 +7,17 @@ namespace AIHelper.Shared
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This file is compiled into two programs: AI Helper and aihelper-launch-assistant. It is one
-    /// file rather than one copy per program because the two of them are two ends of the same wire.
-    /// AI Helper writes the command line the assistant is started with, the assistant takes that line
-    /// apart and writes the command line AI Helper is started with again, and AI Helper takes that one
-    /// apart as well. Three writers and readers of one format, and a format that is only correct if
-    /// every one of them agrees on it.
+    /// This is the C# half of a format shared with aihelper-launch-assistant. AI Helper writes the
+    /// command line the assistant is started with; the assistant takes that line apart and writes the
+    /// command lines the game and the restarted AI Helper are started with. Every one of those
+    /// programs is a writer and a reader of the same format, and it is only correct if all of them
+    /// agree on it.
+    /// </para>
+    /// <para>
+    /// The other half is AIHelperLaunchAssistant\ArgumentQuoting.cpp, which applies the same rules in
+    /// the language the assistant is written in. The two cannot be one file, so they are kept in step
+    /// by hand and held together by the end-to-end harness: it starts the real assistant with a line
+    /// built here and reads back what the programs that assistant starts actually received.
     /// </para>
     /// <para>
     /// The rules below are the ones CommandLineToArgvW - which is what each of those programs uses to

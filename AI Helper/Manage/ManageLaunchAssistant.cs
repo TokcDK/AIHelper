@@ -17,10 +17,14 @@ namespace AIHelper.Manage
     /// <para>
     /// The tool exists so that this application does not have to stay in memory for the length of a
     /// game session. It is started with the program to run, waits for this process to end, starts the
-    /// program, keeps an icon in the notification area while the program runs and starts this
-    /// application again when the program ends. Nothing of the game is left to do here after the
-    /// hand-off, which is the point: the launch is started from this application and finished by the
-    /// tool, so only one of the two is ever resident.
+    /// program, waits for that program and starts this application again when it ends. Nothing of the
+    /// game is left to do here after the hand-off, which is the point: the launch is started from
+    /// this application and finished by the tool, so only one of the two is ever resident.
+    /// </para>
+    /// <para>
+    /// The tool is native C++ with no window, no notification area icon and no runtime, because it is
+    /// the one that stays resident. It is built by the PreBuildEvent in the csproj into the
+    /// repository's tools folder, from where postbuild.bat copies it into RES\tools of the output.
     /// </para>
     /// <para>
     /// The tool is a separate program, so the only thing between them is a command line. It is built
@@ -85,7 +89,6 @@ namespace AIHelper.Manage
                 GetTargetWorkingDirectory(targetExePath, targetArguments),
                 Application.ExecutablePath,
                 Process.GetCurrentProcess().Id,
-                Path.GetFileNameWithoutExtension(Application.ExecutablePath),
                 oldMoProfileName);
 
             var startInfo = new ProcessStartInfo
@@ -161,7 +164,6 @@ namespace AIHelper.Manage
             string targetWorkingDirectory,
             string hostExePath,
             int hostProcessId,
-            string hostProcessName,
             string oldMoProfileName)
         {
             var arguments = new List<string> { "--target", targetExePath };
@@ -183,11 +185,9 @@ namespace AIHelper.Manage
             arguments.Add("--host");
             arguments.Add(hostExePath);
 
-            arguments.Add("--host-name");
-            arguments.Add(hostProcessName);
-
-            // Pinned to this instance rather than to the name: a second copy of the application
-            // started by the user would otherwise keep the game from starting.
+            // Pinned to this instance rather than to a name: a second copy of the application started
+            // by the user would otherwise keep the game from starting. The id is the whole of the
+            // identity the tool needs - it waits for that process and starts the one named above.
             arguments.Add("--host-pid");
             arguments.Add(hostProcessId.ToString(CultureInfo.InvariantCulture));
 

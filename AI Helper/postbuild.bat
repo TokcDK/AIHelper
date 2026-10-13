@@ -125,12 +125,13 @@ if exist "%projectResLocaleDir%" (
 )
 
 :: ---- 5. Tools from the repository's tools folder ---------------------------
-:: The tools are built and gathered in <repo>\tools, outside the application's
-:: output, so that a build of the application does not have to be what produces
-:: them and one build of a tool serves every platform. They still have to end up
-:: in RES\tools of the output: that is the folder the application reads them from
-:: at run time, and it is what the Release step below links into the skeleton.
-:: Each block is skipped when its source is missing, so a checkout that has never
+:: The tools are gathered in <repo>\tools, outside the application's output, so
+:: that one build of a tool serves every platform. The launch assistant is built
+:: there by the PreBuildEvent in the csproj, which has already run by the time
+:: this script does; the rest are put there by hand. They still have to end up in
+:: RES\tools of the output: that is the folder the application reads them from at
+:: run time, and it is what the Release step below links into the skeleton. Each
+:: block is skipped when its source is missing, so a checkout that has never
 :: built a tool still builds.
 
 set projectToolsDir=%projectDir%\..\tools
@@ -144,6 +145,11 @@ set launchAssistantFolderName=aihelper-launch-assistant
 if exist "%projectToolsDir%\!launchAssistantFolderName!\" (
 	echo copy the launch tool..
 	robocopy "%projectToolsDir%\!launchAssistantFolderName!\ " "%targetToolsDir%\!launchAssistantFolderName!\ " *.* /MIR /COPYALL /B /R:3 /W:1
+
+	:: The log the tool writes while it runs belongs where it runs and not in a build output. A copy
+	:: mirrored in from the repository's tools folder is this machine's leftover from having run the
+	:: tool there, and the tool writes a fresh one beside itself wherever it is deployed.
+	if exist "%targetToolsDir%\!launchAssistantFolderName!\*.log" Del "%targetToolsDir%\!launchAssistantFolderName!\*.log"
 )
 
 :: ---- 6. Release packaging, Release configuration only ----------------------
@@ -212,9 +218,9 @@ if "%configurationName%" == "Release" (
 			echo make link for the launch tool
 			MKLINK "%targetReleaseResDir%\!launchAssistantSubpath!" "%targetResDir%\!launchAssistantSubpath!" /D
 
-			:: Its symbols and the log it writes while it runs are the build machine's leftovers and
-			:: have no business in a release. The tool's own build removes the symbols in Release, but
-			:: the last build of it is not necessarily the one that produced this folder.
+			:: The log it writes while it runs is the build machine's leftover and has no business in
+			:: a release. Its build keeps the program database among the intermediates and never writes
+			:: one beside the exe, so the symbols are only ever left over from an older build of it.
 			if exist "%targetResDir%\!launchAssistantSubpath!\*.pdb" Del "%targetResDir%\!launchAssistantSubpath!\*.pdb"
 			if exist "%targetResDir%\!launchAssistantSubpath!\*.log" Del "%targetResDir%\!launchAssistantSubpath!\*.log"
 		)

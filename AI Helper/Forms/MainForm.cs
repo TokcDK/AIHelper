@@ -5,6 +5,7 @@ using AIHelper.Manage.FoldersTab.Folders;
 using AIHelper.Manage.ui;
 using AIHelper.Manage.ui.themes;
 using AIHelper.Manage.Update;
+using AIHelper.Manage.Update.SelfUpdate;
 using CheckForEmptyDir;
 using NLog;
 using System;
@@ -66,8 +67,10 @@ namespace AIHelper
         {
             InitializeComponent();
 
-            ManageSettings.ApplicationStartupPath = Application.StartupPath;
-            ManageSettings.ApplicationProductName = Application.ProductName;
+            // The folder the application runs from and its product name are set at the entry
+            // point and not here: Program settles both before anything of the application runs,
+            // so that whatever reads them - the hand-off to an update tool in particular - does
+            // not have to wait for this window to be constructed.
 
             Instance = this; // set instance for static access
 
@@ -154,6 +157,8 @@ namespace AIHelper
         /// </remarks>
         private async void CheckMoAndEndInit()
         {
+            ReportFailedUpdate();
+
             //MO data parse
             Directory.CreateDirectory(ManageSettings.AppModOrganizerDirPath);
 
@@ -185,6 +190,28 @@ namespace AIHelper
             UpdateData();
 
             ManageSettings.INITDone = true;
+        }
+
+        /// <summary>
+        /// Tells the user about an update that failed while the application was closed.
+        /// </summary>
+        /// <remarks>
+        /// aihelper-updater runs after this application has closed and has no window of its own,
+        /// so it leaves the reason in a file instead - see <see cref="SelfUpdateRunner"/>. It is
+        /// read here rather than at the entry point because the message is translated and is
+        /// meant to be seen next to the application, and because a start that hands over to
+        /// another update never gets this far at all.
+        /// </remarks>
+        private static void ReportFailedUpdate()
+        {
+            if (!SelfUpdateRunner.TakeFailureReport()) return;
+
+            MessageBox.Show(
+                T._("The previous AI Helper update failed. The reason is in RES\\update\\aihelper-updater.log.") + Environment.NewLine + Environment.NewLine +
+                T._("The files it replaced were copied to RES\\update\\app\\old before it started."),
+                T._("Update AI Helper"),
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
         }
 
         /// <summary>

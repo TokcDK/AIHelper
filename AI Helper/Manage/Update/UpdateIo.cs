@@ -79,6 +79,65 @@ namespace AIHelper.Manage.Update
         }
 
         /// <summary>
+        /// Copies a directory tree over another one, overwriting the files that
+        /// are already there. Never throws.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Used to refresh a deployed tool from the copy a release ships, which is
+        /// a copy over files that are already in place rather than a move: the
+        /// destination is the folder the tool runs from, so its files have to be
+        /// replaced in place, not cleared out first.
+        /// </para>
+        /// <para>
+        /// A file that only exists in the destination is left alone. The source is
+        /// a folder inside a downloaded release and the destination is a folder
+        /// that may hold anything, so there is no way to tell "a file this tool no
+        /// longer has" from "a file that was never this tool's".
+        /// </para>
+        /// </remarks>
+        /// <param name="sourceDirectoryPath">Directory to copy from.</param>
+        /// <param name="destinationDirectoryPath">Directory to copy into.</param>
+        /// <returns>True when every file was copied.</returns>
+        internal static bool TryCopyDirectory(string sourceDirectoryPath, string destinationDirectoryPath)
+        {
+            if (string.IsNullOrWhiteSpace(sourceDirectoryPath)
+                || string.IsNullOrWhiteSpace(destinationDirectoryPath))
+            {
+                return false;
+            }
+
+            try
+            {
+                Directory.CreateDirectory(destinationDirectoryPath);
+
+                foreach (var directoryPath in Directory.GetDirectories(sourceDirectoryPath))
+                {
+                    var childDestinationPath = Path.Combine(
+                        destinationDirectoryPath, Path.GetFileName(directoryPath));
+
+                    if (!TryCopyDirectory(directoryPath, childDestinationPath)) return false;
+                }
+
+                foreach (var filePath in Directory.GetFiles(sourceDirectoryPath))
+                {
+                    var destinationFilePath = Path.Combine(
+                        destinationDirectoryPath, Path.GetFileName(filePath));
+
+                    File.Copy(filePath, destinationFilePath, true);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _log.Debug("Failed to copy directory '" + sourceDirectoryPath + "' to '"
+                           + destinationDirectoryPath + "'. error:" + Environment.NewLine + ex);
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Returns the length of a file, or 0 when the file is missing or
         /// unreadable. Replaces <c>new FileInfo(path).Length</c>, which throws
         /// when the file disappears between an existence check and the read.

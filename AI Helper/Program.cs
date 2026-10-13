@@ -1,4 +1,5 @@
 ﻿using AIHelper.Manage;
+using AIHelper.Manage.Update.SelfUpdate;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -30,10 +31,28 @@ namespace AIHelper
         {
             Startup = StartupOptions.Parse(args);
 
+            // Which folder the application runs from is part of what it is, and everything that
+            // builds a path out of it - the resources, the tools, the update folders - is wrong
+            // without it. It is settled here, at the entry point, and not while the main window is
+            // being constructed: the hand-off below runs before that, and so would anything else
+            // added to the start later.
+            ManageSettings.ApplicationStartupPath = Application.StartupPath;
+
             using (Mutex mutex = new Mutex(true, AppName, out bool createdNew))
             {
                 if (createdNew)
                 {
+                    // An update downloaded by an earlier session is applied before the window is
+                    // built. The tool that applies it has to be started while this process is
+                    // still running - it waits for this process to end - and the less of the
+                    // session has happened by then, the less of it is thrown away by the restart
+                    // the tool performs when it is done. This is the whole of the hand-off: the
+                    // tool does everything else, and this process ends right here.
+                    if (SelfUpdateRunner.TryApplyPendingUpdate())
+                    {
+                        return;
+                    }
+
                     //load dll from selected subdir, need to move all related  dlls to the subdir in post build event
                     AppDomain currentDomain = AppDomain.CurrentDomain;
                     currentDomain.AssemblyResolve += new ResolveEventHandler(LoadFromSubFolder);

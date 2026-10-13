@@ -151,6 +151,15 @@ if exist "%projectToolsDir%\!launchAssistantFolderName!\" (
 	:: tool there, and the tool writes a fresh one beside itself wherever it is deployed.
 	if exist "%targetToolsDir%\!launchAssistantFolderName!\*.log" Del "%targetToolsDir%\!launchAssistantFolderName!\*.log"
 )
+set updaterFolderName=aihelper-updater
+if exist "%projectToolsDir%\!updaterFolderName!\" (
+	echo copy the updater tool..
+	robocopy "%projectToolsDir%\!updaterFolderName!\ " "%targetToolsDir%\!updaterFolderName!\ " *.* /MIR /COPYALL /B /R:3 /W:1
+
+	:: A release ships programs and not the symbols they were built from. The program database is
+	:: for whoever debugs the tool where it is built, and nothing that ships reads it.
+	if exist "%targetToolsDir%\!updaterFolderName!\*.pdb" Del "%targetToolsDir%\!updaterFolderName!\*.pdb"
+)
 
 :: ---- 6. Release packaging, Release configuration only ----------------------
 :: release creation
@@ -223,6 +232,22 @@ if "%configurationName%" == "Release" (
 			:: one beside the exe, so the symbols are only ever left over from an older build of it.
 			if exist "%targetResDir%\!launchAssistantSubpath!\*.pdb" Del "%targetResDir%\!launchAssistantSubpath!\*.pdb"
 			if exist "%targetResDir%\!launchAssistantSubpath!\*.log" Del "%targetResDir%\!launchAssistantSubpath!\*.log"
+		)
+	)
+
+	:: The updater, which applies a downloaded update after the application has closed. Linked on the
+	:: same terms as the launch tool: a build that did not produce it leaves it out, and an update
+	:: then waits until one that did. Unlike the launch tool its build does write a program database
+	:: beside the exe, so both are deleted here - and deleted through the link, which is what removes
+	:: them from the shared RES\tools folder rather than from a private copy.
+	set updaterSubpath=tools\aihelper-updater
+	if not exist "%targetReleaseDir%\!updaterSubpath!" (
+		if exist "%targetResDir%\!updaterSubpath!\" (
+			echo make link for the updater tool
+			MKLINK "%targetReleaseResDir%\!updaterSubpath!" "%targetResDir%\!updaterSubpath!" /D
+
+			if exist "%targetResDir%\!updaterSubpath!\*.pdb" Del "%targetResDir%\!updaterSubpath!\*.pdb"
+			if exist "%targetResDir%\!updaterSubpath!\*.log" Del "%targetResDir%\!updaterSubpath!\*.log"
 		)
 	)
 	:: The application executable itself.

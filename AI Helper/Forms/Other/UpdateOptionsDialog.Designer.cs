@@ -31,6 +31,7 @@
             this.UpdateOptionsPanel = new System.Windows.Forms.Panel();
             this.UpdateOptionsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.UpdateOptionsFlowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.UpdateAppCheckBox = new AIHelper.Manage.ui.ThemedCheckBox();
             this.UpdateZipmodsCheckBox = new AIHelper.Manage.ui.ThemedCheckBox();
             this.BleadingEdgeZipmodsCheckBox = new AIHelper.Manage.ui.ThemedCheckBox();
             this.UpdatePluginsCheckBox = new AIHelper.Manage.ui.ThemedCheckBox();
@@ -77,6 +78,7 @@
             // The checkboxes are added and removed here while the dialog runs, so the
             // panel scrolls and lays them out from the top down rather than in a row.
             this.UpdateOptionsFlowLayoutPanel.AutoScroll = true;
+            this.UpdateOptionsFlowLayoutPanel.Controls.Add(this.UpdateAppCheckBox);
             this.UpdateOptionsFlowLayoutPanel.Controls.Add(this.UpdateZipmodsCheckBox);
             this.UpdateOptionsFlowLayoutPanel.Controls.Add(this.BleadingEdgeZipmodsCheckBox);
             this.UpdateOptionsFlowLayoutPanel.Controls.Add(this.UpdatePluginsCheckBox);
@@ -90,27 +92,40 @@
             this.UpdateOptionsFlowLayoutPanel.TabIndex = 0;
             this.UpdateOptionsFlowLayoutPanel.WrapContents = false;
             // 
+            // UpdateAppCheckBox
+            // 
+            this.UpdateAppCheckBox.AutoSize = true;
+            this.UpdateAppCheckBox.Checked = true;
+            this.UpdateAppCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.UpdateAppCheckBox.Location = new System.Drawing.Point(0, 0);
+            this.UpdateAppCheckBox.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
+            this.UpdateAppCheckBox.Name = "UpdateAppCheckBox";
+            this.UpdateAppCheckBox.Size = new System.Drawing.Size(131, 19);
+            this.UpdateAppCheckBox.TabIndex = 0;
+            this.UpdateAppCheckBox.Text = "Update AI Helper";
+            this.UpdateAppCheckBox.CheckedChanged += new System.EventHandler(this.UpdateAppCheckBox_CheckedChanged);
+            // 
             // UpdateZipmodsCheckBox
             // 
             this.UpdateZipmodsCheckBox.AutoSize = true;
             this.UpdateZipmodsCheckBox.Checked = true;
             this.UpdateZipmodsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.UpdateZipmodsCheckBox.Location = new System.Drawing.Point(0, 0);
+            this.UpdateZipmodsCheckBox.Location = new System.Drawing.Point(0, 27);
             this.UpdateZipmodsCheckBox.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.UpdateZipmodsCheckBox.Name = "UpdateZipmodsCheckBox";
             this.UpdateZipmodsCheckBox.Size = new System.Drawing.Size(116, 19);
-            this.UpdateZipmodsCheckBox.TabIndex = 0;
+            this.UpdateZipmodsCheckBox.TabIndex = 1;
             this.UpdateZipmodsCheckBox.Text = "Update zipmods";
             this.UpdateZipmodsCheckBox.CheckedChanged += new System.EventHandler(this.UpdateZipmodsCheckBox_CheckedChanged);
             // 
             // BleadingEdgeZipmodsCheckBox
             // 
             this.BleadingEdgeZipmodsCheckBox.AutoSize = true;
-            this.BleadingEdgeZipmodsCheckBox.Location = new System.Drawing.Point(0, 27);
+            this.BleadingEdgeZipmodsCheckBox.Location = new System.Drawing.Point(0, 54);
             this.BleadingEdgeZipmodsCheckBox.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.BleadingEdgeZipmodsCheckBox.Name = "BleadingEdgeZipmodsCheckBox";
             this.BleadingEdgeZipmodsCheckBox.Size = new System.Drawing.Size(163, 19);
-            this.BleadingEdgeZipmodsCheckBox.TabIndex = 1;
+            this.BleadingEdgeZipmodsCheckBox.TabIndex = 2;
             this.BleadingEdgeZipmodsCheckBox.Text = "Check test zipmods pack";
             this.BleadingEdgeZipmodsCheckBox.CheckedChanged += new System.EventHandler(this.BleadingEdgeZipmodsCheckBox_CheckedChanged);
             // 
@@ -119,11 +134,11 @@
             this.UpdatePluginsCheckBox.AutoSize = true;
             this.UpdatePluginsCheckBox.Checked = true;
             this.UpdatePluginsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.UpdatePluginsCheckBox.Location = new System.Drawing.Point(0, 54);
+            this.UpdatePluginsCheckBox.Location = new System.Drawing.Point(0, 81);
             this.UpdatePluginsCheckBox.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.UpdatePluginsCheckBox.Name = "UpdatePluginsCheckBox";
             this.UpdatePluginsCheckBox.Size = new System.Drawing.Size(110, 19);
-            this.UpdatePluginsCheckBox.TabIndex = 2;
+            this.UpdatePluginsCheckBox.TabIndex = 3;
             this.UpdatePluginsCheckBox.Text = "Update plugins";
             this.UpdatePluginsCheckBox.CheckedChanged += new System.EventHandler(this.UpdatePluginsCheckBox_CheckedChanged);
             // 
@@ -132,11 +147,11 @@
             this.CheckEnabledModsOnlyCheckBox.AutoSize = true;
             this.CheckEnabledModsOnlyCheckBox.Checked = true;
             this.CheckEnabledModsOnlyCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CheckEnabledModsOnlyCheckBox.Location = new System.Drawing.Point(0, 81);
+            this.CheckEnabledModsOnlyCheckBox.Location = new System.Drawing.Point(0, 108);
             this.CheckEnabledModsOnlyCheckBox.Margin = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.CheckEnabledModsOnlyCheckBox.Name = "CheckEnabledModsOnlyCheckBox";
             this.CheckEnabledModsOnlyCheckBox.Size = new System.Drawing.Size(141, 19);
-            this.CheckEnabledModsOnlyCheckBox.TabIndex = 3;
+            this.CheckEnabledModsOnlyCheckBox.TabIndex = 4;
             this.CheckEnabledModsOnlyCheckBox.Text = "Only enabled plugins";
             this.CheckEnabledModsOnlyCheckBox.CheckedChanged += new System.EventHandler(this.CheckEnabledModsOnlyCheckBox_CheckedChanged);
             // 
@@ -237,6 +252,7 @@
         private System.Windows.Forms.TableLayoutPanel UpdateOptionsTableLayoutPanel;
         private System.Windows.Forms.TableLayoutPanel ButtonsTableLayoutPanel;
         private System.Windows.Forms.Button btnCancel;
+        internal AIHelper.Manage.ui.ThemedCheckBox UpdateAppCheckBox;
         internal AIHelper.Manage.ui.ThemedCheckBox UpdateZipmodsCheckBox;
         internal AIHelper.Manage.ui.ThemedCheckBox BleadingEdgeZipmodsCheckBox;
         internal AIHelper.Manage.ui.ThemedCheckBox UpdatePluginsCheckBox;

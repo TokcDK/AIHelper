@@ -2,28 +2,31 @@
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AIHelper.Data.Modlist;
 using AIHelper.Forms.Other;
 using AIHelper.Manage.ui.themes;
 using AIHelper.Manage.Update;
+using AIHelper.Manage.Update.SelfUpdate;
 using NLog;
 using static AIHelper.Manage.ManageModOrganizer;
 
 namespace AIHelper.Manage
 {
     /// <summary>
-    /// Runs the update mods pass: the plugins through the updater, and the zipmods through
-    /// the KKManager standalone updater followed by a sort of what it left behind.
+    /// Runs the update pass: AI Helper itself through its own update, the plugins through the
+    /// updater, and the zipmods through the KKManager standalone updater followed by a sort of
+    /// what it left behind.
     /// </summary>
     /// <remarks>
     /// <para>
     /// This class is the pass and nothing else. What has to be moved and where is
-    /// <see cref="ZipmodsSorter"/>, the window which is shown while the pass runs is
-    /// <see cref="ZipmodsUpdateProgressForm"/>, and the updater itself is
-    /// <see cref="Updater"/>. What is left here is the order the steps run in, and the
-    /// cleanup which has to happen whatever that order came to.
+    /// <see cref="ZipmodsSorter"/>, the window which is shown while a step runs is
+    /// <see cref="UpdateProgressForm"/>, the updater itself is <see cref="Updater"/>, and the
+    /// application's own update is <see cref="SelfUpdateRunner"/>. What is left here is the order
+    /// the steps run in, and the cleanup which has to happen whatever that order came to.
     /// </para>
     /// <para>
     /// The pass changes things which outlive it - the modlist is force enabled and a window
@@ -81,6 +84,14 @@ namespace AIHelper.Manage
 
                 try
                 {
+                    // The application's own update runs first: it is the shortest step, it is the
+                    // one whose result the user has to be told about, and everything below it
+                    // works the same whether or not it found something.
+                    if (updateOptions.UpdateAppCheckBox.Checked)
+                    {
+                        await UpdateApp().ConfigureAwait(true);
+                    }
+
                     if (updateOptions.UpdatePluginsCheckBox.Checked)
                     {
                         await UpdateByUpdater(updateOptions).ConfigureAwait(true);
@@ -98,6 +109,84 @@ namespace AIHelper.Manage
                     ManageSettings.MainForm.UpdateData();
                     ManageSettings.MainForm.AIGirlHelperTabControl.Enabled = true;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Checks for a newer AI Helper and gets it ready for the next start.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// The new version is downloaded but not applied: the files it replaces are the ones this
+        /// process is running from. It is left in the payload folder and applied on the next
+        /// start, by a small separate program - see <see cref="SelfUpdateRunner"/>. The user is
+        /// told which of the two happened, because nothing on screen changes either way.
+        /// </para>
+        /// <para>
+        /// A failure is reported and not thrown: the rest of the pass is about the mods and has
+        /// nothing to do with the application's own update, so a repository that cannot be
+        /// reached must not stop it.
+        /// </para>
+        /// </remarks>
+        private static async Task UpdateApp()
+        {
+            UpdateProgressForm progressForm = null;
+
+            try
+            {
+                progressForm = UpdateProgressForm.Open(ManageSettings.MainForm, T._("Update AI Helper"));
+
+                var result = await SelfUpdateRunner
+                    .PrepareAsync(progressForm.SetStatus, CancellationToken.None)
+                    .ConfigureAwait(true);
+
+                ReportSelfUpdate(result);
+            }
+            finally
+            {
+                // the window goes first, whatever the check came to
+                if (progressForm != null) progressForm.CloseSafely();
+            }
+        }
+
+        /// <summary>
+        /// Tells the user what the application's own update came to.
+        /// </summary>
+        /// <remarks>
+        /// The reason a check failed is in the log rather than in the message: it is an HTTP
+        /// status or an exception text, and the user can do nothing with either. What the message
+        /// says is what the user can act on - that there is nothing to do, or that the new
+        /// version is waiting for the next start.
+        /// </remarks>
+        private static void ReportSelfUpdate(SelfUpdateResult result)
+        {
+            switch (result.Outcome)
+            {
+                case SelfUpdateOutcome.UpToDate:
+                    MessageBox.Show(
+                        T._("AI Helper is up to date."),
+                        T._("Update AI Helper"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                    break;
+
+                case SelfUpdateOutcome.Ready:
+                    MessageBox.Show(
+                        string.Format(
+                            T._("AI Helper {0} has been downloaded. It will be installed the next time the application starts."),
+                            result.Version),
+                        T._("Update AI Helper"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                    break;
+
+                default:
+                    MessageBox.Show(
+                        T._("The AI Helper update could not be downloaded. See the log for details."),
+                        T._("Update AI Helper"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    break;
             }
         }
 
@@ -171,12 +260,12 @@ namespace AIHelper.Manage
 
             EnsureStandaloneUpdaterIsRegistered();
 
-            ZipmodsUpdateProgressForm progressForm = null;
+            UpdateProgressForm progressForm = null;
             var isModlistModified = false;
 
             try
             {
-                progressForm = ZipmodsUpdateProgressForm.Open(ManageSettings.MainForm);
+                progressForm = UpdateProgressForm.Open(ManageSettings.MainForm, T._("Update zipmods"));
 
                 progressForm.SetStatus(T._("Getting zipmods info") + "..");
 

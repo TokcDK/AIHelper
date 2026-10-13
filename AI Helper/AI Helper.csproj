@@ -204,7 +204,7 @@
     <Compile Include="Forms\Other\ScreenColourPickerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Other\ZipmodsUpdateProgressForm.cs">
+    <Compile Include="Forms\Other\UpdateProgressForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Games\Illusion\RoomGirl.cs" />
@@ -397,6 +397,16 @@
     <Compile Include="Manage\Update\Providers\MetaIniUpdateRecordProvider.cs" />
     <Compile Include="Manage\Update\Providers\ModOrganizerUpdateRecordProvider.cs" />
     <Compile Include="Manage\Update\Providers\UpdateInfoFileProvider.cs" />
+    <Compile Include="Manage\Update\SelfUpdate\ApplicationVersion.cs" />
+    <Compile Include="Manage\Update\SelfUpdate\PendingUpdate.cs" />
+    <Compile Include="Manage\Update\SelfUpdate\PendingUpdateLauncher.cs" />
+    <Compile Include="Manage\Update\SelfUpdate\ReleaseNumberComparer.cs" />
+    <Compile Include="Manage\Update\SelfUpdate\SelfUpdateOutcome.cs" />
+    <Compile Include="Manage\Update\SelfUpdate\SelfUpdatePaths.cs" />
+    <Compile Include="Manage\Update\SelfUpdate\SelfUpdateResult.cs" />
+    <Compile Include="Manage\Update\SelfUpdate\SelfUpdateRunner.cs" />
+    <Compile Include="Manage\Update\SelfUpdate\SelfUpdateService.cs" />
+    <Compile Include="Manage\Update\SelfUpdate\SelfUpdateVersionComparer.cs" />
     <Compile Include="Manage\Update\Sources\GithubUpdateProbe.cs" />
     <Compile Include="Manage\Update\UpdatableFolder.cs" />
     <Compile Include="Manage\Update\UpdateEngineFactory.cs" />
@@ -1042,17 +1052,23 @@ exit 0</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <!--
-       The launch assistant is built here rather than by a project of its own. It is native C++ and
-       has no reference to this application, so nothing in the solution has to know about it - but it
-       does have to exist before this application is packaged, because postbuild.bat copies it out of
-       the repository's tools folder into RES\tools of the output. Building it on this path is also
-       what makes one build of this application a complete payload.
+       The two tools this application is packaged with are built here rather than by projects of
+       their own. Neither has a reference to this application - one is native C++, the other a
+       separate program that outlives it - so nothing in the solution has to know about them, but
+       both have to exist before this application is packaged, because postbuild.bat copies them
+       out of the repository's tools folder into RES\tools of the output. Building them on this
+       path is also what makes one build of this application a complete payload.
 
-       A failure here fails the build. The assistant is not optional: without it this application
-       stays in memory for the length of a whole game session, which is what it was written to stop
-       doing. build-assistant.bat reports a missing C++ toolchain as the reason.
+       A failure here fails the build. Neither tool is optional: without the launch assistant this
+       application stays in memory for the length of a whole game session, and without the updater
+       a downloaded update can never be applied - which is what it was written to do. Each script
+       reports a missing toolchain as the reason.
+
+       The updater is given the MSBuild tools folder the build is already using, so that it does
+       not have to find one of its own; build-updater.bat falls back to vswhere when it is empty.
     -->
-    <PreBuildEvent>call "$(ProjectDir)..\AIHelperLaunchAssistant\build-assistant.bat" "$(ConfigurationName)" "$(ProjectDir)..\tools\aihelper-launch-assistant"</PreBuildEvent>
+    <PreBuildEvent>call "$(ProjectDir)..\AIHelperLaunchAssistant\build-assistant.bat" "$(ConfigurationName)" "$(ProjectDir)..\tools\aihelper-launch-assistant"
+call "$(ProjectDir)..\AIHelperUpdater\build-updater.bat" "$(ConfigurationName)" "$(MSBuildToolsPath)"</PreBuildEvent>
   </PropertyGroup>
   <Target Name="PostBuildMacros">
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">

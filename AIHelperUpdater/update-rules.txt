@@ -1,0 +1,28 @@
+# update-rules.txt - what aihelper-updater backs up before it replaces the application.
+#
+# One path per line, relative to the folder AI Helper runs from. A path may name a file or a
+# folder; a folder is taken with everything in it. Blank lines are ignored, and a line starting
+# with '#' is a comment.
+#
+# A line starting with '!' is the opposite: a path that is left where it is even though it lies
+# inside one of the folders named above. This is how what the release ships is told apart from
+# what belongs to the user, and it is the only thing standing between the two.
+#
+# The paths named here are moved - not copied - into RES\update\app\old, and the new version is
+# then moved over the application. A path named here is therefore gone from the application once
+# the update has been applied, so only name what the release really replaces; to keep a folder,
+# exclude it with '!'.
+
+# The application itself. Its RES folder is where the release keeps the libraries, the
+# localization catalogues, the report templates, the web link definitions and the bundled tools.
+AI Helper.exe
+RES
+
+# The game plugins Mod Organizer loads, which the release ships as well.
+MO\plugins\basic_games\games
+
+# Left in place: the themes the user made. They live in the folder the release also ships a theme
+# in, so without this line an update would carry them into the backup and the user would lose
+# them from the application. Add a line here for anything else of your own that lives inside the
+# folders named above - a report background in RES\theme\default\report\bg, for example.
+!RES\theme\custom

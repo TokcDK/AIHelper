@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--
+    aihelper-updater - the small program that applies a downloaded AI Helper update.
+
+    It is a project of its own and not a second entry point of the application, because
+    it runs while the application is being replaced: it has to outlive the files it
+    overwrites, wait for the application to end before it touches anything, and start the
+    application again when it is done. .NET Framework 4.7.2 is the floor the application
+    itself already requires, so the tool needs no runtime the user does not have.
+
+    It is built into the repository's tools folder - the folder one build of the
+    application gathers its tools in - and postbuild.bat copies it from there into
+    RES\tools of the output, which is where the application reads it from at run time.
+    build-updater.bat does the build and the PreBuildEvent of AI Helper.csproj calls it,
+    so one build of the application is a complete payload.
+
+    It is deliberately NOT in AI Helper.sln, for the same reason the launch assistant is
+    not: the application does not reference it, so the solution has nothing to resolve it
+    for, and a solution entry would build it a second time on every build of the solution
+    while the PreBuildEvent builds it as well. Build it through the application, or run
+    build-updater.bat directly.
+  -->
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8F3C1A64-2B7E-4D91-9A5C-6E0B4F7D1C82}</ProjectGuid>
+    <!--
+      A window application, not a console one: it is started while the application it
+      replaces is closing, and a console window appearing over the desktop at that moment
+      is noise. What it has to say goes into RES\update\aihelper-updater.log, and the one
+      thing the user has to be told - that the update failed - is a message box.
+    -->
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>AIHelperUpdater</RootNamespace>
+    <AssemblyName>aihelper-updater</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <!--
+    Any CPU, and stated rather than left to the defaults.
+
+    Left unstated, a WinExe project on Any CPU is compiled for
+    "AnyCPU, 32-bit preferred": the compiler emits the 32BITREQUIRED and
+    32BITPREFERRED flags, so the tool always runs as a 32-bit process even on a
+    64-bit Windows. That is not what Any CPU means, and it is the one platform
+    choice this tool must not make for itself - it is a file mover, it has no
+    native dependency to match, and it has to run wherever the application runs.
+    With both properties stated the image is a plain Any CPU one, which the
+    runtime starts as a 64-bit process on a 64-bit Windows and as a 32-bit
+    process on a 32-bit one.
+
+    The application itself builds as x64. The tool is not built to match it: it
+    is a separate process that starts after the application has closed, and it
+    starts the application again at the end, so the two never have to agree.
+  -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <!--
+      Straight into the repository's tools folder. There is no copy step to forget:
+      what a build produces is what postbuild.bat mirrors into RES\tools.
+    -->
+    <OutputPath>..\tools\aihelper-updater\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\tools\aihelper-updater\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApplicationUpdate.cs" />
+    <Compile Include="FileTreeMover.cs" />
+    <Compile Include="HostProcessWatcher.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="UpdateArguments.cs" />
+    <Compile Include="UpdateLayout.cs" />
+    <Compile Include="UpdateLog.cs" />
+    <Compile Include="UpdateRule.cs" />
+    <Compile Include="UpdateRulesFile.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <!--
+      The rules file is part of the tool: it is read from the folder the tool runs in, so
+      it has to be deployed beside the executable and not only live in the sources.
+    -->
+    <None Include="update-rules.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

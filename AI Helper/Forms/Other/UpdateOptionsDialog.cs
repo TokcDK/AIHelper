@@ -28,6 +28,11 @@ namespace AIHelper.Forms.Other
             Process.Start("explorer.exe", modUpdatesBakDir);
         }
 
+        private void UpdateAppCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateButtonOptionsRefresh();
+        }
+
         private void UpdateZipmodsCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             UpdateButtonOptionsRefresh();
@@ -77,10 +82,28 @@ namespace AIHelper.Forms.Other
 
             CheckEnabledModsOnlyCheckBox.Enabled = UpdatePluginsCheckBox.Checked;
             //ManageSettings.MainForm.CheckEnabledModsOnlyLabel.SetCheck(CheckEnabledModsOnlyCheckBox.Enabled);
-            btnUpdateMods.Enabled = (UpdatePluginsCheckBox.Visible && UpdatePluginsCheckBox.Checked) || (UpdateZipmodsCheckBox.Visible && UpdateZipmodsCheckBox.Checked);
+
+            // The pass runs the steps that are checked, so the button is available while at least
+            // one of them is. A step which was taken out of the dialog can not start the pass.
+            btnUpdateMods.Enabled = IsStepChosen(UpdateAppCheckBox)
+                || IsStepChosen(UpdatePluginsCheckBox)
+                || IsStepChosen(UpdateZipmodsCheckBox);
 
             BleadingEdgeZipmodsCheckBox.Checked = BleadingEdgeZipmodsCheckBox.Enabled && UpdateZipmodsCheckBox.Checked && File.Exists(ManageSettings.ZipmodsBleedingEdgeMarkFilePath);
             BleadingEdgeZipmodsCheckBox.Enabled = BleadingEdgeZipmodsCheckBox.Enabled && UpdateZipmodsCheckBox.Checked;
+        }
+
+        /// <summary>
+        /// Whether a step of the pass is both offered in the dialog and chosen by the user.
+        /// </summary>
+        /// <remarks>
+        /// A step which is not offered is one this installation can not run - the dialog takes it
+        /// out of the list - and it is checked or not independently of that, so both have to be
+        /// asked.
+        /// </remarks>
+        private static bool IsStepChosen(CheckBox stepCheckBox)
+        {
+            return stepCheckBox.Visible && stepCheckBox.Checked;
         }
 
         private void UpdateOptionsDialogForm_Load(object sender, EventArgs e)
@@ -103,6 +126,7 @@ namespace AIHelper.Forms.Other
         private void SetTranslations()
         {
             this.Text = T._("Update options");
+            UpdateAppCheckBox.Text = T._("Update AI Helper");
             UpdateZipmodsCheckBox.Text = T._("Update zipmods");
             BleadingEdgeZipmodsCheckBox.Text = T._("Check test zipmods pack");
             UpdatePluginsCheckBox.Text = T._("Update plugins");
@@ -140,6 +164,9 @@ namespace AIHelper.Forms.Other
                 T._("Mod Organizer already have hardcoded info") + "\n" +
                 T._("Mods will be updated if there exist info in meta.ini notes or in updateInfo.txt") + "\n" +
                 T._("After plugins update check will be executed KKManager StandaloneUpdater for Sideloader modpack updates check for games where it is possible"));
+            _toolTip.Set(UpdateAppCheckBox,
+                T._("Check if a newer version of AI Helper is published.") + "\n" +
+                T._("The new version is downloaded now and installed the next time the application starts."));
             _toolTip.Set(UpdateZipmodsCheckBox,
                 T._("Check if need to run update check for sideloader modpacks.") + "\n\n" +
                 sideloaderPacksWarning);

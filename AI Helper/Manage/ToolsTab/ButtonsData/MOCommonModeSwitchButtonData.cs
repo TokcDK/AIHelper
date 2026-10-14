@@ -5,7 +5,7 @@ namespace AIHelper.Manage.ToolsTab.ButtonsData
 {
     internal class MOCommonModeSwitchButtonData : IToolsTabButtonData, IButtonDataAvailability
     {
-        readonly IFunctionForFlp data = new MOModeSwitchForFlp();
+        readonly MOModeSwitchForFlp data = new MOModeSwitchForFlp();
 
         public string Text => ManageSettings.IsMoMode ? T._("MO->Common") : T._("Common->MO");
 

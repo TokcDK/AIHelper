@@ -1,16 +1,15 @@
-﻿using System;
-using AIHelper.Forms.Other;
+﻿using AIHelper.Forms.Other;
 using AIHelper.Install;
 using AIHelper.Install.Cards;
 using AIHelper.Install.Types;
 using AIHelper.Install.UpdateMaker;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using AIHelper.Manage.Functions;
-using NLog;
 
 namespace AIHelper.Manage.ToolsTab.ButtonsData
 {
@@ -20,8 +19,8 @@ namespace AIHelper.Manage.ToolsTab.ButtonsData
 
         public string Text => T._("Install");
 
-        public string Description => T._("Install mods and userdata, placed in") + " " + ManageSettings.ModsInstallDirName + (ManageSettings.IsMoMode ? 
-            T._(" to MO format in Mods when possible") : 
+        public string Description => T._("Install mods and userdata, placed in") + " " + ManageSettings.ModsInstallDirName + (ManageSettings.IsMoMode ?
+            T._(" to MO format in Mods when possible") :
             T._(" to the game folder when possible")
             );
 

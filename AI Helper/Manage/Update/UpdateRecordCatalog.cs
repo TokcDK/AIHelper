@@ -1,7 +1,7 @@
-using System;
-using System.Collections.Generic;
 using AIHelper.Manage.Update.Providers;
 using NLog;
+using System;
+using System.Collections.Generic;
 
 namespace AIHelper.Manage.Update
 {
